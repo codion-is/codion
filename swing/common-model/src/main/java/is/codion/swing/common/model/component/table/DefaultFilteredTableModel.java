@@ -23,7 +23,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.value.Value;
@@ -83,8 +83,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
 		this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
-		this.summaryModel = tableSummaryModel(builder.summaryValueProviderFactory == null ?
-						new DefaultSummaryValueProviderFactory() : builder.summaryValueProviderFactory);
+		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
+						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
 		this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
 		this.refresher = new DefaultRefresher(builder.itemSupplier == null ? this::items : builder.itemSupplier);
 		this.refresher.async().set(builder.asyncRefresh);
@@ -556,13 +556,13 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 	}
 
-	private final class DefaultSummaryValueProviderFactory implements SummaryValueProvider.Factory<C> {
+	private final class DefaultSummaryValuesFactory implements SummaryValues.Factory<C> {
 
 		@Override
-		public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(C columnIdentifier, Format format) {
+		public <T extends Number> Optional<SummaryValues<T>> createSummaryValues(C columnIdentifier, Format format) {
 			Class<?> columnClass = getColumnClass(columnIdentifier);
 			if (Number.class.isAssignableFrom(columnClass)) {
-				return Optional.of(new DefaultSummaryValueProvider<>(columnIdentifier, DefaultFilteredTableModel.this, format));
+				return Optional.of(new DefaultSummaryValues<>(columnIdentifier, DefaultFilteredTableModel.this, format));
 			}
 
 			return Optional.empty();
@@ -613,9 +613,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	}
 
 	/**
-	 * A default SummaryValueProvider implementation
+	 * A default SummaryValues implementation
 	 */
-	static final class DefaultSummaryValueProvider<T extends Number, C> implements SummaryValueProvider<T> {
+	static final class DefaultSummaryValues<T extends Number, C> implements SummaryValues<T> {
 
 		private final C columnIdentifier;
 		private final FilteredTableModel<?, C> tableModel;
@@ -627,7 +627,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		 * @param tableModel the table model
 		 * @param format the format to use for presenting the summary value
 		 */
-		DefaultSummaryValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
+		DefaultSummaryValues(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
 			this.columnIdentifier = requireNonNull(columnIdentifier);
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);
@@ -667,7 +667,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		private Supplier<Collection<R>> itemSupplier;
 		private Predicate<R> itemValidator = new ValidPredicate<>();
 		private ColumnConditionModel.Factory<C> filterModelFactory;
-		private SummaryValueProvider.Factory<C> summaryValueProviderFactory;
+		private SummaryValues.Factory<C> summaryValuesFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
@@ -683,8 +683,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 
 		@Override
-		public Builder<R, C> summaryValueProviderFactory(SummaryValueProvider.Factory<C> summaryValueProviderFactory) {
-			this.summaryValueProviderFactory = requireNonNull(summaryValueProviderFactory);
+		public Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory) {
+			this.summaryValuesFactory = requireNonNull(summaryValuesFactory);
 			return this;
 		}
 

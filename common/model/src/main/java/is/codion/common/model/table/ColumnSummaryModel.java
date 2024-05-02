@@ -30,8 +30,8 @@ import java.util.Optional;
 
 /**
  * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum &#38; maximum.<br>
- * For instances use the {@link #columnSummaryModel(SummaryValueProvider)} factory method.
- * @see #columnSummaryModel(SummaryValueProvider)
+ * For instances use the {@link #columnSummaryModel(SummaryValues)} factory method.
+ * @see #columnSummaryModel(SummaryValues)
  */
 public interface ColumnSummaryModel {
 
@@ -42,11 +42,11 @@ public interface ColumnSummaryModel {
 
 		/**
 		 * Returns a String containing the summary information for the given column
-		 * @param valueProvider the object responsible for providing the values for the summary
+		 * @param summaryValues the object responsible for providing the values for the summary
 		 * @param <T> the value type
 		 * @return a summary text
 		 */
-		<T extends Number> String summary(SummaryValueProvider<T> valueProvider);
+		<T extends Number> String summary(SummaryValues<T> summaryValues);
 	}
 
 	/**
@@ -71,19 +71,19 @@ public interface ColumnSummaryModel {
 
 	/**
 	 * Instantiates a new {@link ColumnSummaryModel}
-	 * @param valueProvider the value provider
+	 * @param summaryValues the summary values
 	 * @param <T> the value type
 	 * @return a new {@link ColumnSummaryModel} instance
 	 */
-	static <T extends Number> ColumnSummaryModel columnSummaryModel(SummaryValueProvider<T> valueProvider) {
-		return new DefaultColumnSummaryModel<>(valueProvider);
+	static <T extends Number> ColumnSummaryModel columnSummaryModel(SummaryValues<T> summaryValues) {
+		return new DefaultColumnSummaryModel<>(summaryValues);
 	}
 
 	/**
 	 * Provides the values on which to base the summary .
 	 * @param <T> the value type
 	 */
-	interface SummaryValueProvider<T extends Number> {
+	interface SummaryValues<T extends Number> {
 
 		/**
 		 * @param value the value
@@ -115,9 +115,9 @@ public interface ColumnSummaryModel {
 			 * @param columnIdentifier the column identifier
 			 * @param format the format to use
 			 * @param <T> the column type
-			 * @return a summary value provider or an empty Optional, if no summary is available for the column
+			 * @return a summary values instance or an empty Optional, if no summary is available for the column
 			 */
-			<T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(C columnIdentifier, Format format);
+			<T extends Number> Optional<SummaryValues<T>> createSummaryValues(C columnIdentifier, Format format);
 		}
 	}
 }

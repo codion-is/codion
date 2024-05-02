@@ -16,6 +16,7 @@ Codion Change Log
 - Database.databaseException() renamed exception().
 ### is codion.common.model
 - ColumnSummaryModel.SummaryValues removed, related refactoring.
+- ColumnSummaryModel.SummaryValueProvider renamed SummaryValues, related renaming.
 ### is.codion.swing.common.model
 - FilteredComboBoxModel.ItemFinder.createPredicate() renamed predicate().
 - FilteredComboBoxModel.sortVisibleItems() renamed sortItems(), now public.

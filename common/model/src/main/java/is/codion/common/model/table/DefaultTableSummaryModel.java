@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 
 import java.text.Format;
 import java.text.NumberFormat;
@@ -30,11 +30,11 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultTableSummaryModel<C> implements TableSummaryModel<C> {
 
-	private final SummaryValueProvider.Factory<C> summaryModelFactory;
+	private final SummaryValues.Factory<C> summaryValuesFactory;
 	private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
 
-	DefaultTableSummaryModel(SummaryValueProvider.Factory<C> summaryModelFactory) {
-		this.summaryModelFactory = requireNonNull(summaryModelFactory);
+	DefaultTableSummaryModel(SummaryValues.Factory<C> summaryValuesFactory) {
+		this.summaryValuesFactory = requireNonNull(summaryValuesFactory);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ final class DefaultTableSummaryModel<C> implements TableSummaryModel<C> {
 	}
 
 	private Optional<ColumnSummaryModel> createSummaryModel(C columnIdentifier, Format format) {
-		return summaryModelFactory.createSummaryValueProvider(columnIdentifier, format)
+		return summaryValuesFactory.createSummaryValues(columnIdentifier, format)
 						.map(ColumnSummaryModel::columnSummaryModel);
 	}
 }

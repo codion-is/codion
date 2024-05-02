@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ public interface TableSummaryModel<C> {
 	 * @param <C> the column identifier type
 	 * @return a new {@link TableSummaryModel} instance
 	 */
-	static <C> TableSummaryModel<C> tableSummaryModel(SummaryValueProvider.Factory<C> summaryModelFactory) {
+	static <C> TableSummaryModel<C> tableSummaryModel(SummaryValues.Factory<C> summaryModelFactory) {
 		return new DefaultTableSummaryModel<>(summaryModelFactory);
 	}
 }

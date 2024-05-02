@@ -24,7 +24,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.state.State;
@@ -83,7 +83,7 @@ import java.util.stream.Stream;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.columnPreferences;
-import static is.codion.swing.common.model.component.table.FilteredTableModel.summaryValueProvider;
+import static is.codion.swing.common.model.component.table.FilteredTableModel.summaryValues;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -1183,7 +1183,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition, ColumnFactory<Attribute<?>> columnFactory) {
 		return FilteredTableModel.builder(columnFactory, new EntityColumnValueProvider())
 						.filterModelFactory(new EntityFilterModelFactory(entityDefinition))
-						.summaryValueProviderFactory(new EntitySummaryValueProviderFactory(entityDefinition, this))
+						.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, this))
 						.itemSupplier(new EntityItemSupplier(this))
 						.itemValidator(new EntityItemValidator(entityDefinition.entityType()))
 						.build();
@@ -1249,21 +1249,21 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 	}
 
-	private static final class EntitySummaryValueProviderFactory implements SummaryValueProvider.Factory<Attribute<?>> {
+	private static final class EntitySummaryValuesFactory implements SummaryValues.Factory<Attribute<?>> {
 
 		private final EntityDefinition entityDefinition;
 		private final FilteredTableModel<?, Attribute<?>> tableModel;
 
-		private EntitySummaryValueProviderFactory(EntityDefinition entityDefinition, FilteredTableModel<?, Attribute<?>> tableModel) {
+		private EntitySummaryValuesFactory(EntityDefinition entityDefinition, FilteredTableModel<?, Attribute<?>> tableModel) {
 			this.entityDefinition = requireNonNull(entityDefinition);
 			this.tableModel = requireNonNull(tableModel);
 		}
 
 		@Override
-		public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(Attribute<?> attribute, Format format) {
+		public <T extends Number> Optional<SummaryValues<T>> createSummaryValues(Attribute<?> attribute, Format format) {
 			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
 			if (attribute.type().isNumerical() && attributeDefinition.items().isEmpty()) {
-				return Optional.of(summaryValueProvider(attribute, tableModel, format));
+				return Optional.of(summaryValues(attribute, tableModel, format));
 			}
 
 			return Optional.empty();

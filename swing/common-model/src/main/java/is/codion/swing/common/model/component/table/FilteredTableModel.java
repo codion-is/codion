@@ -21,7 +21,7 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.value.Value;
@@ -309,16 +309,16 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	}
 
 	/**
-	 * Instantiates a new {@link SummaryValueProvider} instance.
+	 * Instantiates a new {@link SummaryValues} instance.
 	 * @param columnIdentifier the column identifier
 	 * @param tableModel the table model
 	 * @param format the format
 	 * @param <T> the column value type
 	 * @param <C> the column identifier type
-	 * @return a new {@link SummaryValueProvider} instance
+	 * @return a new {@link SummaryValues} instance
 	 */
-	static <T extends Number, C> SummaryValueProvider<T> summaryValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
-		return new DefaultFilteredTableModel.DefaultSummaryValueProvider<>(columnIdentifier, tableModel, format);
+	static <T extends Number, C> SummaryValues<T> summaryValues(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
+		return new DefaultFilteredTableModel.DefaultSummaryValues<>(columnIdentifier, tableModel, format);
 	}
 
 	/**
@@ -335,10 +335,10 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 		Builder<R, C> filterModelFactory(ColumnConditionModel.Factory<C> filterModelFactory);
 
 		/**
-		 * @param summaryValueProviderFactory the column summary value provider factory
+		 * @param summaryValuesFactory the column summary values factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> summaryValueProviderFactory(SummaryValueProvider.Factory<C> summaryValueProviderFactory);
+		Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory);
 
 		/**
 		 * @param itemSupplier the item supplier

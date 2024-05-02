@@ -38,17 +38,17 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
 					.build();
 	private final Value<String> summaryText = Value.value();
 	private final State locked = State.state();
-	private final SummaryValueProvider<T> valueProvider;
+	private final SummaryValues<T> summaryValues;
 	private final List<Summary> summaries = asList(ColumnSummary.values());
 
-	DefaultColumnSummaryModel(SummaryValueProvider<T> valueProvider) {
-		this.valueProvider = requireNonNull(valueProvider);
+	DefaultColumnSummaryModel(SummaryValues<T> summaryValues) {
+		this.summaryValues = requireNonNull(summaryValues);
 		this.summary.addValidator(summary -> {
 			if (locked.get()) {
 				throw new IllegalStateException("Summary model is locked");
 			}
 		});
-		this.valueProvider.changeEvent().addListener(this::updateSummary);
+		this.summaryValues.changeEvent().addListener(this::updateSummary);
 	}
 
 	@Override
@@ -72,6 +72,6 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
 	}
 
 	private void updateSummary() {
-		summaryText.set(summary().get().summary(valueProvider));
+		summaryText.set(summary().get().summary(summaryValues));
 	}
 }
