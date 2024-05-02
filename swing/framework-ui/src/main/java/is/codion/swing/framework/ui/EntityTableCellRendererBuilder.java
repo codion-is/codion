@@ -23,7 +23,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRendererBuilder;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColorProvider;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColors;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Settings;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -43,8 +43,8 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
 		super(requireNonNull(tableModel), requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().type().valueClass(),
 						attributeDefinition.attribute().type().isBoolean() && attributeDefinition.items().isEmpty());
 		tableModel.entityDefinition().attributes().definition(attributeDefinition.attribute());
-		displayValueProvider(new DefaultDisplayValueProvider(attributeDefinition));
-		cellColorProvider(new EntityCellColorProvider(tableModel));
+		values(new EntityValues(attributeDefinition));
+		cellColors(new EntityCellColors(tableModel));
 	}
 
 	@Override
@@ -92,11 +92,11 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
 		}
 	}
 
-	private static final class DefaultDisplayValueProvider implements Function<Object, Object> {
+	private static final class EntityValues implements Function<Object, Object> {
 
 		private final AttributeDefinition<Object> objectAttributeDefinition;
 
-		private DefaultDisplayValueProvider(AttributeDefinition<?> attributeDefinition) {
+		private EntityValues(AttributeDefinition<?> attributeDefinition) {
 			this.objectAttributeDefinition = (AttributeDefinition<Object>) attributeDefinition;
 		}
 
@@ -106,11 +106,11 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
 		}
 	}
 
-	private static final class EntityCellColorProvider implements CellColorProvider<Attribute<?>> {
+	private static final class EntityCellColors implements CellColors<Attribute<?>> {
 
 		private final SwingEntityTableModel tableModel;
 
-		private EntityCellColorProvider(SwingEntityTableModel tableModel) {
+		private EntityCellColors(SwingEntityTableModel tableModel) {
 			this.tableModel = tableModel;
 		}
 

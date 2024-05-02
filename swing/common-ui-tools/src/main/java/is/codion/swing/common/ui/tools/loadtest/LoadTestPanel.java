@@ -499,7 +499,7 @@ public final class LoadTestPanel<T> extends JPanel {
 			FilteredTableCellRenderer.Builder<ApplicationRow, Integer> builder =
 							FilteredTableCellRenderer.builder(model().applicationTableModel(), column.getIdentifier(), Integer.class);
 			if (column.getIdentifier().equals(ApplicationRow.DURATION_INDEX)) {
-				builder.displayValueProvider(duration -> duration == null ? null : DURATION_FORMAT.format(duration));
+				builder.values(duration -> duration == null ? null : DURATION_FORMAT.format(duration));
 			}
 
 			return builder.build();

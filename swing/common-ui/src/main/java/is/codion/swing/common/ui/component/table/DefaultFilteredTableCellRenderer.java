@@ -43,8 +43,8 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 	private final boolean toolTipData;
 	private final boolean columnShading;
 	private final boolean alternateRowColoring;
-	private final Function<Object, Object> displayValueProvider;
-	private final CellColorProvider<C> cellColorProvider;
+	private final Function<Object, Object> values;
+	private final CellColors<C> cellColors;
 
 	/**
 	 * @param builder the builder
@@ -58,8 +58,8 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		this.toolTipData = builder.toolTipData;
 		this.columnShading = builder.columnShading;
 		this.alternateRowColoring = builder.alternateRowColoring;
-		this.displayValueProvider = builder.displayValueProvider;
-		this.cellColorProvider = builder.cellColorProvider;
+		this.values = builder.values;
+		this.cellColors = builder.cellColors;
 		setHorizontalAlignment(builder.horizontalAlignment);
 	}
 
@@ -90,9 +90,9 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																								 boolean hasFocus, int row, int column) {
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		setForeground(settings.foregroundColor(cellColorProvider.foregroundColor(row, columnIdentifier, value, isSelected)));
+		setForeground(settings.foregroundColor(cellColors.foregroundColor(row, columnIdentifier, value, isSelected)));
 		setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShading, isSelected,
-						cellColorProvider.backgroundColor(row, columnIdentifier, value, isSelected)));
+						cellColors.backgroundColor(row, columnIdentifier, value, isSelected)));
 		setBorder(hasFocus || isSearchResult(tableModel, row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 		if (toolTipData) {
 			setToolTipText(value == null ? "" : value.toString());
@@ -106,7 +106,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 	 */
 	@Override
 	protected void setValue(Object value) {
-		super.setValue(displayValueProvider.apply(value));
+		super.setValue(values.apply(value));
 	}
 
 	/**
@@ -133,7 +133,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		private final C columnIdentifier;
 		private final boolean columnShading;
 		private final boolean alternateRowColoring;
-		private final CellColorProvider<C> cellColorProvider;
+		private final CellColors<C> cellColors;
 
 		/**
 		 * @param builder the builder
@@ -147,7 +147,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 			this.columnIdentifier = requireNonNull(builder.columnIdentifier);
 			this.columnShading = builder.columnShading;
 			this.alternateRowColoring = builder.alternateRowColoring;
-			this.cellColorProvider = builder.cellColorProvider;
+			this.cellColors = builder.cellColors;
 			setHorizontalAlignment(builder.horizontalAlignment);
 			setBorderPainted(true);
 		}
@@ -179,9 +179,9 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																									 boolean hasFocus, int row, int column) {
 			getNullableModel().setState((Boolean) value);
-			setForeground(settings.foregroundColor(cellColorProvider.foregroundColor(row, columnIdentifier, value, isSelected)));
+			setForeground(settings.foregroundColor(cellColors.foregroundColor(row, columnIdentifier, value, isSelected)));
 			setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShading, isSelected,
-							cellColorProvider.backgroundColor(row, columnIdentifier, value, isSelected)));
+							cellColors.backgroundColor(row, columnIdentifier, value, isSelected)));
 			setBorder(hasFocus || isSearchResult(tableModel, row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 
 			return this;

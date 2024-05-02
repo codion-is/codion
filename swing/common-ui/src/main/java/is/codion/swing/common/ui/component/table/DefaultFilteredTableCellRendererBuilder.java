@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColorProvider;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColors;
 
 import java.time.temporal.Temporal;
 import java.util.function.Function;
@@ -45,8 +45,8 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
 	boolean alternateRowColoring = FilteredTableCellRenderer.ALTERNATE_ROW_COLORING.get();
 	int leftPadding = FilteredTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
 	int rightPadding = FilteredTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
-	Function<Object, Object> displayValueProvider = new DefaultDisplayValueProvider();
-	CellColorProvider<C> cellColorProvider = new DefaultCellColorProvider<>();
+	Function<Object, Object> values = new DefaultValues();
+	CellColors<C> cellColors = new DefaultCellColors<>();
 
 	/**
 	 * Instantiates a new builder
@@ -110,14 +110,14 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> displayValueProvider(Function<Object, Object> displayValueProvider) {
-		this.displayValueProvider = requireNonNull(displayValueProvider);
+	public final FilteredTableCellRenderer.Builder<R, C> values(Function<Object, Object> values) {
+		this.values = requireNonNull(values);
 		return this;
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> cellColorProvider(CellColorProvider<C> cellColorProvider) {
-		this.cellColorProvider = requireNonNull(cellColorProvider);
+	public final FilteredTableCellRenderer.Builder<R, C> cellColors(CellColors<C> cellColors) {
+		this.cellColors = requireNonNull(cellColors);
 		return this;
 	}
 
@@ -152,12 +152,12 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
 		return FilteredTableCellRenderer.HORIZONTAL_ALIGNMENT.get();
 	}
 
-	private static final class DefaultDisplayValueProvider implements Function<Object, Object> {
+	private static final class DefaultValues implements Function<Object, Object> {
 		@Override
 		public Object apply(Object value) {
 			return value == null ? "" : value.toString();
 		}
 	}
 
-	private static final class DefaultCellColorProvider<R> implements CellColorProvider<R> {}
+	private static final class DefaultCellColors<R> implements CellColors<R> {}
 }

@@ -42,14 +42,14 @@ final class RatingCellRendererFactory extends EntityTableCellRendererFactory {
 	protected Builder<Entity, Attribute<?>> builder(FilteredTableColumn<Attribute<?>> column) {
 		Builder<Entity, Attribute<?>> builder = super.builder(column);
 		if (column.getIdentifier().equals(ratingColumn)) {
-			builder.displayValueProvider(new RatingDisplayValueProvider())
+			builder.values(new RatingValues())
 							.toolTipData(true);
 		}
 
 		return builder;
 	}
 
-	private static class RatingDisplayValueProvider implements Function<Object, Object> {
+	private static class RatingValues implements Function<Object, Object> {
 
 		@Override
 		public Object apply(Object columnValue) {

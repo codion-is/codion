@@ -124,10 +124,10 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	}
 
 	/**
-	 * Provides cell specific color.
+	 * Provides cell specific colors.
 	 * @param <C> the column identifier type
 	 */
-	interface CellColorProvider<C> {
+	interface CellColors<C> {
 
 		/**
 		 * @param row the row number
@@ -194,16 +194,16 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 		Builder<R, C> rightPadding(int rightPadding);
 
 		/**
-		 * @param displayValueProvider provides the value to display in the cell, formatted or otherwise
+		 * @param values provides the value to display in the cell, formatted or otherwise
 		 * @return this builder instance
 		 */
-		Builder<R, C> displayValueProvider(Function<Object, Object> displayValueProvider);
+		Builder<R, C> values(Function<Object, Object> values);
 
 		/**
-		 * @param cellColorProvider provides cell/row background and foreground color
+		 * @param cellColors provides cell/row background and foreground color
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellColorProvider(CellColorProvider<C> cellColorProvider);
+		Builder<R, C> cellColors(CellColors<C> cellColors);
 
 		/**
 		 * @return a new {@link FilteredTableCellRenderer} instance based on this builder

@@ -36,6 +36,8 @@ Codion Change Log
 - FilteredTable.MoveResizeColumnKeyListener bug fixed, now longer triggers when modifiers are added, restricted to the correct keys.
 - FilteredTable, move and resize column controls added, default key stroke now configurable.
 - FilteredTable, key strokes now configurable.
+- FilteredTableCellRenderer.CollColorProvider renamed CellColors.
+- FilteredTableCellRenderer.Builder.displayValueProvider() renamed values().
 ### is.codion.swing.common.model
 - FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.framework.db.local
