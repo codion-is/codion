@@ -2536,6 +2536,7 @@ public class EntityTablePanel extends JPanel {
 							.buildValue();
 			tableModel.limit().set(Dialogs.inputDialog(limitValue)
 							.title(MESSAGES.getString("row_limit"))
+							.owner(EntityTablePanel.this)
 							.validator(new LimitValidator())
 							.show());
 		}

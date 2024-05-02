@@ -76,6 +76,7 @@ Codion Change Log
 - TabbedDetailLayout now activates parent panel when detail panel is collapsed.
 - EntityEditPanel, crud operation builders added, EntityDialogs refactored.
 - EntityTableCellRendererFactory added, related refactoring.
+- EntityTablePanel.StatusPanel.configureLimit() bug fixed, dialog now centered on table.
 
 ## 0.17.43
 ### is.codion.common.core
