@@ -95,15 +95,15 @@ public final class ServerMonitor {
 	private final Value<String> memoryUsageValue = Value.nullable("").build();
 	private final FilteredTableModel<DomainEntityDefinition, Integer> domainTableModel =
 					FilteredTableModel.builder(new DomainTableColumnFactory(), new DomainTableValues())
-									.itemSupplier(new DomainTableItemSupplier())
+									.items(new DomainTableItems())
 									.build();
 	private final FilteredTableModel<DomainReport, Integer> reportTableModel =
 					FilteredTableModel.builder(new ReportTableColumnFactory(), new ReportTableValues())
-									.itemSupplier(new ReportTableItemSupplier())
+									.items(new ReportTableItems())
 									.build();
 	private final FilteredTableModel<DomainOperation, Integer> operationTableModel =
 					FilteredTableModel.builder(new OperationTableColumnFactory(), new OperationTableValues())
-									.itemSupplier(new OperationTableItemSupplier())
+									.items(new OperationTableItems())
 									.build();
 	private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
 	private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -534,7 +534,7 @@ public final class ServerMonitor {
 		}
 	}
 
-	private final class OperationTableItemSupplier implements Supplier<Collection<DomainOperation>> {
+	private final class OperationTableItems implements Supplier<Collection<DomainOperation>> {
 
 		@Override
 		public Collection<DomainOperation> get() {
@@ -597,7 +597,7 @@ public final class ServerMonitor {
 		}
 	}
 
-	private final class ReportTableItemSupplier implements Supplier<Collection<DomainReport>> {
+	private final class ReportTableItems implements Supplier<Collection<DomainReport>> {
 
 		@Override
 		public Collection<DomainReport> get() {
@@ -667,7 +667,7 @@ public final class ServerMonitor {
 		}
 	}
 
-	private final class DomainTableItemSupplier implements Supplier<Collection<DomainEntityDefinition>> {
+	private final class DomainTableItems implements Supplier<Collection<DomainEntityDefinition>> {
 		@Override
 		public Collection<DomainEntityDefinition> get() {
 			try {

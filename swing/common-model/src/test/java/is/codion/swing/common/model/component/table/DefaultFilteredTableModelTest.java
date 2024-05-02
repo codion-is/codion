@@ -72,7 +72,7 @@ public final class DefaultFilteredTableModelTest {
 
 	private static FilteredTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
 		return FilteredTableModel.<TestRow, Integer>builder(() -> createColumns(customComparator), (row, columnIdentifier) -> row.value)
-						.itemSupplier(() -> ITEMS)
+						.items(() -> ITEMS)
 						.build();
 	}
 
@@ -184,7 +184,7 @@ public final class DefaultFilteredTableModelTest {
 		List<TestRow> items = new ArrayList<>(ITEMS);
 		FilteredTableModel<TestRow, Integer> testModel =
 						FilteredTableModel.<TestRow, Integer>builder(() -> createColumns(null), (row, columnIdentifier) -> row.value)
-										.itemSupplier(() -> items)
+										.items(() -> items)
 										.build();
 		testModel.selectionModel().selectionEvent().addListener(selectionEvents::incrementAndGet);
 		testModel.refreshStrategy().set(RefreshStrategy.MERGE);
@@ -344,7 +344,7 @@ public final class DefaultFilteredTableModelTest {
 							}
 
 							return row.value;
-						}).itemSupplier(() -> items).build();
+						}).items(() -> items).build();
 
 		testModel.refresh();
 		FilteredTableSearchModel searchModel = testModel.searchModel();

@@ -341,10 +341,10 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 		Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory);
 
 		/**
-		 * @param itemSupplier the item supplier
+		 * @param items supplies the items
 		 * @return this builder instance
 		 */
-		Builder<R, C> itemSupplier(Supplier<Collection<R>> itemSupplier);
+		Builder<R, C> items(Supplier<Collection<R>> items);
 
 		/**
 		 * Items failing validation can not be added to the model.

@@ -1184,7 +1184,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		return FilteredTableModel.builder(columnFactory, new EntityColumnValues())
 						.filterModelFactory(new EntityFilterModelFactory(entityDefinition))
 						.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, this))
-						.itemSupplier(new EntityItemSupplier(this))
+						.items(new EntityItems(this))
 						.itemValidator(new EntityItemValidator(entityDefinition.entityType()))
 						.build();
 	}
@@ -1270,11 +1270,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 	}
 
-	private static final class EntityItemSupplier implements Supplier<Collection<Entity>> {
+	private static final class EntityItems implements Supplier<Collection<Entity>> {
 
 		private final SwingEntityTableModel tableModel;
 
-		private EntityItemSupplier(SwingEntityTableModel tableModel) {
+		private EntityItems(SwingEntityTableModel tableModel) {
 			this.tableModel = requireNonNull(tableModel);
 		}
 

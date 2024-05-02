@@ -102,7 +102,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	DefaultLoadTestModel(LoadTest<T> loadTest) {
 		this.loadTest = requireNonNull(loadTest);
 		applicationTableModel = FilteredTableModel.builder(DefaultLoadTestModel::createApplicationTableModelColumns, new ApplicationColumnValues())
-						.itemSupplier(new ApplicationRowSupplier())
+						.items(new ApplicationItems())
 						.build();
 		chartUpdateSchedulerEnabled = State.and(loadTest.paused().not(), collectChartData);
 		applicationsRefreshSchedulerEnabled = State.and(loadTest.paused().not(), autoRefreshApplications);
@@ -501,7 +501,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 	}
 
-	private final class ApplicationRowSupplier implements Supplier<Collection<ApplicationRow>> {
+	private final class ApplicationItems implements Supplier<Collection<ApplicationRow>> {
 
 		@Override
 		public Collection<ApplicationRow> get() {

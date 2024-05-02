@@ -51,7 +51,7 @@ public final class ClientMonitor {
 
 	private final FilteredTableModel<RemoteClient, Integer> clientInstanceTableModel =
 					FilteredTableModel.builder(new RemoteClientColumnFactory(), new RemoteClientColumnValues())
-									.itemSupplier(new RemoteClientItemSupplier())
+									.items(new RemoteClientItems())
 									.build();
 
 	/**
@@ -81,7 +81,7 @@ public final class ClientMonitor {
 		return server;
 	}
 
-	private final class RemoteClientItemSupplier implements Supplier<Collection<RemoteClient>> {
+	private final class RemoteClientItems implements Supplier<Collection<RemoteClient>> {
 
 		@Override
 		public Collection<RemoteClient> get() {

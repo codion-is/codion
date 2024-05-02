@@ -100,7 +100,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	 * To prevent sorting set the comparator to null via {@link #comparator()} before adding items.
 	 */
 	public FilteredComboBoxModel() {
-		this.refresher = new DefaultRefresher(new DefaultItemSupplier());
+		this.refresher = new DefaultRefresher(new DefaultItems());
 		includeCondition.addListener(this::filterItems);
 		itemValidator.addValidator(validator -> items().stream()
 						.filter(Objects::nonNull)
@@ -570,8 +570,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
 	private final class DefaultRefresher extends AbstractFilteredModelRefresher<T> {
 
-		private DefaultRefresher(Supplier<Collection<T>> itemSupplier) {
-			super(itemSupplier);
+		private DefaultRefresher(Supplier<Collection<T>> items) {
+			super(items);
 		}
 
 		@Override
@@ -596,7 +596,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 		}
 	}
 
-	private final class DefaultItemSupplier implements Supplier<Collection<T>> {
+	private final class DefaultItems implements Supplier<Collection<T>> {
 
 		@Override
 		public Collection<T> get() {

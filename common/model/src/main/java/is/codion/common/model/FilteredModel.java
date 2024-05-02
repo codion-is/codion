@@ -150,7 +150,7 @@ public interface FilteredModel<T> {
 		/**
 		 * @return a Value controlling the item supplier for this refresher instance
 		 */
-		Value<Supplier<Collection<T>>> itemSupplier();
+		Value<Supplier<Collection<T>>> items();
 
 		/**
 		 * Refreshes the items in the associated filtered model.
@@ -200,14 +200,14 @@ public interface FilteredModel<T> {
 		private final Event<?> refreshEvent = Event.event();
 		private final Event<Exception> refreshFailedEvent = Event.event();
 		private final State refreshingState = State.state();
-		private final Value<Supplier<Collection<T>>> itemSupplier;
+		private final Value<Supplier<Collection<T>>> items;
 		private final State async = State.state(ASYNC_REFRESH.get());
 
 		/**
-		 * @param itemSupplier the item supplier
+		 * @param items supplies the items
 		 */
-		protected AbstractRefresher(Supplier<Collection<T>> itemSupplier) {
-			this.itemSupplier = Value.nonNull(itemSupplier).build();
+		protected AbstractRefresher(Supplier<Collection<T>> items) {
+			this.items = Value.nonNull(items).build();
 		}
 
 		@Override
@@ -216,8 +216,8 @@ public interface FilteredModel<T> {
 		}
 
 		@Override
-		public final Value<Supplier<Collection<T>>> itemSupplier() {
-			return itemSupplier;
+		public final Value<Supplier<Collection<T>>> items() {
+			return items;
 		}
 
 		@Override

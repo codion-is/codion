@@ -62,7 +62,7 @@ final class KeyBindingModel {
 		this.componentComboBoxModel = createComponentComboBoxModel(lookAndFeelComboBoxModel);
 		this.componentComboBoxModel.refresh();
 		this.tableModel = FilteredTableModel.builder(new KeyBindingColumnFactory(), new KeyBindingValues())
-						.itemSupplier(new KeyBindingItemSupplier())
+						.items(new KeyBindingItems())
 						.build();
 		bindEvents(lookAndFeelComboBoxModel);
 	}
@@ -159,7 +159,7 @@ final class KeyBindingModel {
 		}
 	}
 
-	private final class KeyBindingItemSupplier implements Supplier<Collection<KeyBinding>> {
+	private final class KeyBindingItems implements Supplier<Collection<KeyBinding>> {
 
 		@Override
 		public Collection<KeyBinding> get() {
@@ -209,16 +209,16 @@ final class KeyBindingModel {
 	private static FilteredComboBoxModel<String> createComponentComboBoxModel(
 					FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
 		FilteredComboBoxModel<String> comboBoxModel = new FilteredComboBoxModel<>();
-		comboBoxModel.refresher().itemSupplier().set(new ComponentItemSupplier(lookAndFeelComboBoxModel));
+		comboBoxModel.refresher().items().set(new ComponentItems(lookAndFeelComboBoxModel));
 
 		return comboBoxModel;
 	}
 
-	private static final class ComponentItemSupplier implements Supplier<Collection<String>> {
+	private static final class ComponentItems implements Supplier<Collection<String>> {
 
 		private final FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel;
 
-		private ComponentItemSupplier(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
+		private ComponentItems(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
 			this.lookAndFeelComboBoxModel = lookAndFeelComboBoxModel;
 		}
 
@@ -233,7 +233,7 @@ final class KeyBindingModel {
 			try {
 				return lookAndFeelProvider.lookAndFeel().getDefaults().keySet().stream()
 								.map(Object::toString)
-								.map(ComponentItemSupplier::componentName)
+								.map(ComponentItems::componentName)
 								.filter(Optional::isPresent)
 								.map(Optional::get)
 								.sorted()

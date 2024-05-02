@@ -39,7 +39,7 @@ public class DefaultFilteredTableSelectionModelTest {
 						.build();
 		FilteredTableModel<String, Integer> tableModel =
 						FilteredTableModel.<String, Integer>builder(() -> singletonList(column), (row, integer) -> row)
-										.itemSupplier(() -> data)
+										.items(() -> data)
 										.build();
 		tableModel.refresh();
 

@@ -659,7 +659,7 @@ public class EntityComponents {
 	private static <T> FilteredComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
 		FilteredComboBoxModel<T> comboBoxModel = new FilteredComboBoxModel<>();
 		Collection<T> enumConstants = asList(attribute.type().valueClass().getEnumConstants());
-		comboBoxModel.refresher().itemSupplier().set(() -> enumConstants);
+		comboBoxModel.refresher().items().set(() -> enumConstants);
 		comboBoxModel.includeNull().set(nullable);
 		comboBoxModel.refresh();
 

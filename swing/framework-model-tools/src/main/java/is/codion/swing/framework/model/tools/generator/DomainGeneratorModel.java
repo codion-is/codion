@@ -59,11 +59,11 @@ public final class DomainGeneratorModel {
 		try {
 			this.metaDataModel = new MetaDataModel(connection.getMetaData());
 			this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnFactory(), new SchemaColumnValues())
-							.itemSupplier(metaDataModel::schemas)
+							.items(metaDataModel::schemas)
 							.build();
 			this.schemaTableModel.sortModel().setSortOrder(SchemaColumnValues.SCHEMA, SortOrder.ASCENDING);
 			this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnFactory(), new DefinitionColumnValues())
-							.itemSupplier(new DefinitionItemSupplier())
+							.items(new DefinitionItems())
 							.build();
 			this.schemaTableModel.refresh();
 			bindEvents();
@@ -163,7 +163,7 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	private final class DefinitionItemSupplier implements Supplier<Collection<DefinitionRow>> {
+	private final class DefinitionItems implements Supplier<Collection<DefinitionRow>> {
 
 		@Override
 		public Collection<DefinitionRow> get() {

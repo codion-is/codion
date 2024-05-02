@@ -86,7 +86,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
 						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
 		this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
-		this.refresher = new DefaultRefresher(builder.itemSupplier == null ? this::items : builder.itemSupplier);
+		this.refresher = new DefaultRefresher(builder.items == null ? this::items : builder.items);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
 		this.itemValidator = builder.itemValidator;
@@ -503,8 +503,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 		private final Value<RefreshStrategy> refreshStrategy = Value.nonNull(RefreshStrategy.CLEAR).build();
 
-		private DefaultRefresher(Supplier<Collection<R>> itemSupplier) {
-			super(itemSupplier);
+		private DefaultRefresher(Supplier<Collection<R>> items) {
+			super(items);
 		}
 
 		@Override
@@ -519,7 +519,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 		private void merge(Collection<R> items) {
 			Set<R> itemSet = new HashSet<>(items);
-			items().stream()
+			DefaultFilteredTableModel.this.items().stream()
 							.filter(item -> !itemSet.contains(item))
 							.forEach(DefaultFilteredTableModel.this::removeItem);
 			items.forEach(this::merge);
@@ -664,7 +664,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		private final ColumnFactory<C> columnFactory;
 		private final ColumnValues<R, C> columnValues;
 
-		private Supplier<Collection<R>> itemSupplier;
+		private Supplier<Collection<R>> items;
 		private Predicate<R> itemValidator = new ValidPredicate<>();
 		private ColumnConditionModel.Factory<C> filterModelFactory;
 		private SummaryValues.Factory<C> summaryValuesFactory;
@@ -689,8 +689,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 
 		@Override
-		public Builder<R, C> itemSupplier(Supplier<Collection<R>> itemSupplier) {
-			this.itemSupplier = requireNonNull(itemSupplier);
+		public Builder<R, C> items(Supplier<Collection<R>> items) {
+			this.items = requireNonNull(items);
 			return this;
 		}
 

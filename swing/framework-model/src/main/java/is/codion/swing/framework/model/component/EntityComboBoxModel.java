@@ -99,7 +99,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		this.orderBy = Value.nullable(this.entities.definition(entityType).orderBy().orElse(null)).build();
 		this.conditionSupplier = Value.nonNull((Supplier<Condition>) new DefaultConditionSupplier()).build();
 		selectedItemTranslator().set(new SelectedItemTranslator());
-		refresher().itemSupplier().set(this::performQuery);
+		refresher().items().set(this::performQuery);
 		itemValidator().set(new ItemValidator());
 		includeCondition().set(foreignKeyIncludeCondition);
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());

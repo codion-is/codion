@@ -85,14 +85,14 @@ public final class FilteredTableModelDemo {
 
 		// Implement a item supplier responsible for supplying the table row items,
 		// without one the table can be populated by adding items manually
-		Supplier<Collection<TableRow>> itemSupplier = () -> asList(
+		Supplier<Collection<TableRow>> items = () -> asList(
 						new TableRow("A string", 42),
 						new TableRow("Another string", 43));
 
 		// Create the table model
 		FilteredTableModel<TableRow, Integer> tableModel =
 						FilteredTableModel.builder(columnFactory, columnValues)
-										.itemSupplier(itemSupplier)
+										.items(items)
 										// if true then the item supplier is called in a
 										// background thread when the model is refreshed
 										.asyncRefresh(false)

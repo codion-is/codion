@@ -71,7 +71,7 @@ public final class ClientUserMonitor {
 	private final ClientMonitor clientMonitor;
 	private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel =
 					FilteredTableModel.builder(ClientUserMonitor::createUserHistoryColumns, new UserHistoryColumnValues())
-									.itemSupplier(new UserHistoryItemSupplier())
+									.items(new UserHistoryItems())
 									.refreshStrategy(MERGE)
 									.build();
 
@@ -226,7 +226,7 @@ public final class ClientUserMonitor {
 						.build();
 	}
 
-	private final class UserHistoryItemSupplier implements Supplier<Collection<UserInfo>> {
+	private final class UserHistoryItems implements Supplier<Collection<UserInfo>> {
 
 		@Override
 		public Collection<UserInfo> get() {

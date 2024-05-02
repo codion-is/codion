@@ -256,18 +256,18 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	private <T> FilteredComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
 		FilteredComboBoxModel<T> comboBoxModel = new FilteredComboBoxModel<>();
-		comboBoxModel.refresher().itemSupplier().set(column.type().isEnum() ?
-						new EnumAttributeItemSupplier<>(column) :
-						new ColumnItemSupplier<>(connectionProvider(), column));
+		comboBoxModel.refresher().items().set(column.type().isEnum() ?
+						new EnumAttributeItems<>(column) :
+						new ColumnItems<>(connectionProvider(), column));
 
 		return comboBoxModel;
 	}
 
-	private static final class EnumAttributeItemSupplier<T> implements Supplier<Collection<T>> {
+	private static final class EnumAttributeItems<T> implements Supplier<Collection<T>> {
 
 		private final Collection<T> items;
 
-		private EnumAttributeItemSupplier(Column<T> column) {
+		private EnumAttributeItems(Column<T> column) {
 			items = asList(column.type().valueClass().getEnumConstants());
 		}
 
@@ -277,12 +277,12 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		}
 	}
 
-	private static final class ColumnItemSupplier<T> implements Supplier<Collection<T>> {
+	private static final class ColumnItems<T> implements Supplier<Collection<T>> {
 
 		private final EntityConnectionProvider connectionProvider;
 		private final Column<T> column;
 
-		private ColumnItemSupplier(EntityConnectionProvider connectionProvider, Column<T> column) {
+		private ColumnItems(EntityConnectionProvider connectionProvider, Column<T> column) {
 			this.connectionProvider = connectionProvider;
 			this.column = column;
 		}

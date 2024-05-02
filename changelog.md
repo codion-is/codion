@@ -17,6 +17,7 @@ Codion Change Log
 ### is codion.common.model
 - ColumnSummaryModel.SummaryValues removed, related refactoring.
 - ColumnSummaryModel.SummaryValueProvider renamed SummaryValues, related renaming.
+- FilteredModel.Refresher.itemSupplier() renamed items(), related renaming.
 ### is.codion.swing.common.model
 - FilteredComboBoxModel.ItemFinder.createPredicate() renamed predicate().
 - FilteredComboBoxModel.sortVisibleItems() renamed sortItems(), now public.

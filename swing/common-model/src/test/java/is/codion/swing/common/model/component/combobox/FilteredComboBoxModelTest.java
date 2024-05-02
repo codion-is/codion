@@ -346,10 +346,10 @@ public class FilteredComboBoxModelTest {
 	}
 
 	@Test
-	void itemSupplier() {
+	void items() {
 		List<Integer> values = asList(0, 1, 2);
 		FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
-		model.refresher().itemSupplier().set(() -> values);
+		model.refresher().items().set(() -> values);
 		model.refresher().refresh();
 		assertEquals(values, model.items());
 	}

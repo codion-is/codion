@@ -46,7 +46,7 @@ public class FilteredTableTest {
 
 		FilteredTableModel<List<String>, Integer> tableModel =
 						FilteredTableModel.<List<String>, Integer>builder(() -> singletonList(column), List::get)
-										.itemSupplier(() -> asList(
+										.items(() -> asList(
 														singletonList("darri"),
 														singletonList("dac"),
 														singletonList("dansinn"),
