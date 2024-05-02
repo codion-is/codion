@@ -50,9 +50,9 @@ public final class ProgressDialog extends JDialog {
 
 	private ProgressDialog(DefaultBuilder builder) {
 		super(builder.owner, builder.owner == null ? ModalityType.MODELESS : ModalityType.APPLICATION_MODAL);
-		if (builder.titleProvider != null) {
-			setTitle(builder.titleProvider.get());
-			builder.titleProvider.addConsumer(this::setTitle);
+		if (builder.title != null) {
+			setTitle(builder.title.get());
+			builder.title.addConsumer(this::setTitle);
 		}
 		if (builder.icon != null) {
 			setIconImage(builder.icon.getImage());

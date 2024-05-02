@@ -137,7 +137,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
 	@Override
 	public JDialog build() {
-		JDialog dialog = createDialog(owner, titleProvider, icon, component, size, locationRelativeTo,
+		JDialog dialog = createDialog(owner, title, icon, component, size, locationRelativeTo,
 						location, modal, resizable, onShown, keyEventBuilders);
 		if (enterAction != null) {
 			KeyEvents.builder(VK_ENTER)
@@ -164,14 +164,14 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		return dialog;
 	}
 
-	static JDialog createDialog(Window owner, ValueObserver<String> titleProvider, ImageIcon icon,
+	static JDialog createDialog(Window owner, ValueObserver<String> title, ImageIcon icon,
 															JComponent component, Dimension size, Component locationRelativeTo,
 															Point location, boolean modal, boolean resizable, Consumer<JDialog> onShown,
 															List<KeyEvents.Builder> keyEventBuilders) {
 		JDialog dialog = new JDialog(owner);
-		if (titleProvider != null) {
-			dialog.setTitle(titleProvider.get());
-			titleProvider.addConsumer(new SetDialogTitle(dialog));
+		if (title != null) {
+			dialog.setTitle(title.get());
+			title.addConsumer(new SetDialogTitle(dialog));
 		}
 		if (icon != null) {
 			dialog.setIconImage(icon.getImage());

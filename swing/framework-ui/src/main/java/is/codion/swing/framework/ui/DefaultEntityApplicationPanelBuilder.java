@@ -92,7 +92,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
 	private Function<EntityConnectionProvider, M> applicationModelFactory = new DefaultApplicationModelFactory();
 	private Function<M, P> applicationPanelFactory = new DefaultApplicationPanelFactory();
-	private ValueObserver<String> frameTitleProvider;
+	private ValueObserver<String> frameTitle;
 
 	private LoginProvider loginProvider = new DefaultDialogLoginProvider();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
@@ -205,12 +205,12 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	@Override
 	public EntityApplicationPanel.Builder<M, P> frameTitle(String frameTitle) {
-		return frameTitleProvider(Value.nullable(requireNonNull(frameTitle)).build());
+		return frameTitle(Value.nullable(requireNonNull(frameTitle)).build());
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> frameTitleProvider(ValueObserver<String> frameTitleProvider) {
-		this.frameTitleProvider = requireNonNull(frameTitleProvider);
+	public EntityApplicationPanel.Builder<M, P> frameTitle(ValueObserver<String> frameTitle) {
+		this.frameTitle = requireNonNull(frameTitle);
 		return this;
 	}
 
@@ -428,9 +428,9 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		if (maximizeFrame) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
-		if (frameTitleProvider != null) {
-			frame.setTitle(frameTitleProvider.get());
-			frameTitleProvider.addConsumer(new FrameTitleConsumer(frame));
+		if (frameTitle != null) {
+			frame.setTitle(frameTitle.get());
+			frameTitle.addConsumer(new FrameTitleConsumer(frame));
 		}
 		else {
 			frame.setTitle(createDefaultFrameTitle(applicationPanel.applicationModel()));

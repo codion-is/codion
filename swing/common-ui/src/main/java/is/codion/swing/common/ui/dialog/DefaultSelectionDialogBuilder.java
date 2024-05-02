@@ -169,9 +169,9 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 
 	private static <T> String createTitle(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
 		if (singleSelection) {
-			return builder.titleProvider == null ? MESSAGES.getString("select_value") : builder.titleProvider.get();
+			return builder.title == null ? MESSAGES.getString("select_value") : builder.title.get();
 		}
 
-		return builder.titleProvider == null ? MESSAGES.getString("select_values") : builder.titleProvider.get();
+		return builder.title == null ? MESSAGES.getString("select_values") : builder.title.get();
 	}
 }

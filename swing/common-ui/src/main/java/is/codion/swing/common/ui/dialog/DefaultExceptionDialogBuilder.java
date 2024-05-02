@@ -94,8 +94,8 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 	}
 
 	private void setTitle(Throwable rootCause) {
-		if (titleProvider == null) {
-			titleProvider(Value.nullable(messageTitle(rootCause)).build());
+		if (title == null) {
+			title(Value.nullable(messageTitle(rootCause)).build());
 		}
 	}
 
@@ -112,7 +112,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 	private void displayException(Throwable exception) {
 		ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message, systemProperties);
 		new DefaultComponentDialogBuilder(exceptionPanel)
-						.titleProvider(titleProvider)
+						.title(title)
 						.owner(owner)
 						.onShown(new OnShown(exceptionPanel))
 						.show();

@@ -80,8 +80,8 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	@Override
-	public InputDialogBuilder<T> titleProvider(ValueObserver<String> titleProvider) {
-		okCancelDialogBuilder.titleProvider(titleProvider);
+	public InputDialogBuilder<T> title(ValueObserver<String> title) {
+		okCancelDialogBuilder.title(title);
 		return this;
 	}
 

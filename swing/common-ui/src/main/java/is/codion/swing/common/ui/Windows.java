@@ -131,10 +131,10 @@ public final class Windows {
 		FrameBuilder title(String title);
 
 		/**
-		 * @param titleProvider a value observer for a dynamic dialog title
+		 * @param title a value observer for a dynamic dialog title
 		 * @return this builder instance
 		 */
-		FrameBuilder titleProvider(ValueObserver<String> titleProvider);
+		FrameBuilder title(ValueObserver<String> title);
 
 		/**
 		 * @param icon the icon
@@ -236,7 +236,7 @@ public final class Windows {
 		private final List<WindowListener> windowListeners = new ArrayList<>(0);
 
 		private ImageIcon icon;
-		private ValueObserver<String> titleProvider;
+		private ValueObserver<String> title;
 		private Consumer<WindowEvent> onClosing;
 		private Consumer<WindowEvent> onClosed;
 		private Consumer<WindowEvent> onOpened;
@@ -255,12 +255,12 @@ public final class Windows {
 
 		@Override
 		public FrameBuilder title(String title) {
-			return titleProvider(Value.nullable(title).build());
+			return title(Value.nullable(title).build());
 		}
 
 		@Override
-		public FrameBuilder titleProvider(ValueObserver<String> titleProvider) {
-			this.titleProvider = requireNonNull(titleProvider);
+		public FrameBuilder title(ValueObserver<String> title) {
+			this.title = requireNonNull(title);
 			return this;
 		}
 
@@ -348,9 +348,9 @@ public final class Windows {
 			frame.setDefaultCloseOperation(defaultCloseOperation);
 			frame.setLayout(Layouts.borderLayout());
 			frame.add(component, BorderLayout.CENTER);
-			if (titleProvider != null) {
-				frame.setTitle(titleProvider.get());
-				titleProvider.addConsumer(frame::setTitle);
+			if (title != null) {
+				frame.setTitle(title.get());
+				title.addConsumer(frame::setTitle);
 			}
 			if (icon != null) {
 				frame.setIconImage(icon.getImage());

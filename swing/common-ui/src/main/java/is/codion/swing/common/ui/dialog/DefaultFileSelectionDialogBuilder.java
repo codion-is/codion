@@ -248,7 +248,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 			if (!nullOrEmpty(startDirectory) && new File(startDirectory).exists()) {
 				fileChooserOpen.setCurrentDirectory(new File(startDirectory));
 			}
-			String dialogTitle = titleProvider == null ? defaultDialogTitle : titleProvider.get();
+			String dialogTitle = title == null ? defaultDialogTitle : title.get();
 			if (dialogTitle != null) {
 				fileChooserOpen.setDialogTitle(dialogTitle);
 			}

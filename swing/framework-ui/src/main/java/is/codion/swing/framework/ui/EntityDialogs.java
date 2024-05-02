@@ -499,13 +499,13 @@ public final class EntityDialogs {
 		@Override
 		public List<Entity> select() {
 			return new EntitySelectionDialog(tableModel, owner, locationRelativeTo,
-							titleProvider, icon, preferredSize, false).selectEntities();
+							title, icon, preferredSize, false).selectEntities();
 		}
 
 		@Override
 		public Optional<Entity> selectSingle() {
 			List<Entity> entities = new EntitySelectionDialog(tableModel, owner, locationRelativeTo,
-							titleProvider, icon, preferredSize, true).selectEntities();
+							title, icon, preferredSize, true).selectEntities();
 
 			return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
 		}
@@ -529,11 +529,11 @@ public final class EntityDialogs {
 						.build();
 
 		private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, Component locationRelativeTo,
-																	ValueObserver<String> titleObserver, ImageIcon icon, Dimension preferredSize,
+																	ValueObserver<String> title, ImageIcon icon, Dimension preferredSize,
 																	boolean singleSelection) {
-			this.dialog = new JDialog(owner, titleObserver == null ? null : titleObserver.get());
-			if (titleObserver != null) {
-				titleObserver.addConsumer(dialog::setTitle);
+			this.dialog = new JDialog(owner, title == null ? null : title.get());
+			if (title != null) {
+				title.addConsumer(dialog::setTitle);
 			}
 			if (icon != null) {
 				dialog.setIconImage(icon.getImage());

@@ -39,7 +39,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 	private int inputFieldColumns = DEFAULT_FIELD_COLUMNS;
 
 	DefaultLoginDialogBuilder() {
-		titleProvider(Value.nullable(Messages.login()).build());
+		title(Value.nullable(Messages.login()).build());
 	}
 
 	@Override
@@ -70,13 +70,13 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 	public User show() {
 		JFrame dummyFrame = null;
 		if (owner == null && isWindows()) {
-			owner = dummyFrame = createDummyFrame(titleProvider == null ? null : titleProvider.get(), icon);
+			owner = dummyFrame = createDummyFrame(title == null ? null : title.get(), icon);
 		}
 		LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent, inputFieldColumns);
 		new DefaultOkCancelDialogBuilder(loginPanel)
 						.owner(owner)
 						.resizable(false)
-						.titleProvider(titleProvider)
+						.title(title)
 						.icon(icon)
 						.okAction(loginPanel.okControl())
 						.cancelAction(loginPanel.cancelControl())

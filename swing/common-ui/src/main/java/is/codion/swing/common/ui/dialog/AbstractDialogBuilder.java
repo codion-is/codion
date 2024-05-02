@@ -43,7 +43,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 	protected Window owner;
 	protected Component locationRelativeTo;
 	protected Point location;
-	protected ValueObserver<String> titleProvider;
+	protected ValueObserver<String> title;
 	protected ImageIcon icon;
 
 	@Override
@@ -78,12 +78,12 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 
 	@Override
 	public final B title(String title) {
-		return titleProvider(Value.nullable(title).build());
+		return title(Value.nullable(title).build());
 	}
 
 	@Override
-	public final B titleProvider(ValueObserver<String> titleProvider) {
-		this.titleProvider = titleProvider;
+	public final B title(ValueObserver<String> title) {
+		this.title = title;
 		return self();
 	}
 

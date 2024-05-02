@@ -1172,7 +1172,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		 * @param frameTitle the value observer controlling the frame title
 		 * @return this Builder instance
 		 */
-		Builder<M, P> frameTitleProvider(ValueObserver<String> frameTitle);
+		Builder<M, P> frameTitle(ValueObserver<String> frameTitle);
 
 		/**
 		 * @param includeMainMenu if true then a main menu is included
