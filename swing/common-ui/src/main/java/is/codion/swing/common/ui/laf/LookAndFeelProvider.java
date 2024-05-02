@@ -18,7 +18,9 @@
  */
 package is.codion.swing.common.ui.laf;
 
+import is.codion.common.Configuration;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.LookAndFeel;
@@ -37,6 +39,20 @@ import static java.util.Objects.requireNonNull;
  * Provides a LookAndFeel implementation.
  */
 public interface LookAndFeelProvider {
+
+	/**
+	 * Specifies whether the cross platform Look and Feel should be available for selection.<br>
+	 * Value type: Boolean<br>
+	 * Default value: true
+	 */
+	PropertyValue<Boolean> CROSS_PLATFORM = Configuration.booleanValue("is.codion.swing.common.ui.laf.LookAndFeelProvider.crossPlatform", true);
+
+	/**
+	 * Specifies whether the cross platform Look and Feel should be available for selection.<br>
+	 * Value type: Boolean<br>
+	 * Default value: true
+	 */
+	PropertyValue<Boolean> SYSTEM = Configuration.booleanValue("is.codion.swing.common.ui.laf.LookAndFeelProvider.system", true);
 
 	/**
 	 * @return the look and feel info

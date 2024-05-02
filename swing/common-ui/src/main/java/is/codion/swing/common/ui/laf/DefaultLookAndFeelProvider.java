@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.laf;
 
-import is.codion.swing.common.ui.Utilities;
-
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -27,8 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.UIManager.getCrossPlatformLookAndFeelClassName;
 
 final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
 
@@ -37,11 +37,15 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
 	static final Map<String, LookAndFeelProvider> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
 
 	static {
-		LookAndFeelProvider crossPlatformProvider = lookAndFeelProvider(new LookAndFeelInfo("Cross Platform", UIManager.getCrossPlatformLookAndFeelClassName()));
-		LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.lookAndFeelInfo().getClassName(), crossPlatformProvider);
-		LookAndFeelProvider systemProvider = lookAndFeelProvider(new LookAndFeelInfo("System", Utilities.systemLookAndFeelClassName()));
-		if (!LOOK_AND_FEEL_PROVIDERS.containsKey(systemProvider.lookAndFeelInfo().getClassName())) {
-			LOOK_AND_FEEL_PROVIDERS.put(systemProvider.lookAndFeelInfo().getClassName(), systemProvider);
+		if (CROSS_PLATFORM.get()) {
+			LookAndFeelProvider crossPlatformProvider = lookAndFeelProvider(new LookAndFeelInfo("Cross Platform", getCrossPlatformLookAndFeelClassName()));
+			LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.lookAndFeelInfo().getClassName(), crossPlatformProvider);
+		}
+		if (SYSTEM.get()) {
+			LookAndFeelProvider systemProvider = lookAndFeelProvider(new LookAndFeelInfo("System", systemLookAndFeelClassName()));
+			if (!LOOK_AND_FEEL_PROVIDERS.containsKey(systemProvider.lookAndFeelInfo().getClassName())) {
+				LOOK_AND_FEEL_PROVIDERS.put(systemProvider.lookAndFeelInfo().getClassName(), systemProvider);
+			}
 		}
 	}
 

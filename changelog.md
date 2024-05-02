@@ -38,6 +38,7 @@ Codion Change Log
 - FilteredTable, key strokes now configurable.
 - FilteredTableCellRenderer.CollColorProvider renamed CellColors.
 - FilteredTableCellRenderer.Builder.displayValueProvider() renamed values().
+- LookAndFeelProvider.CROSS_PLATFORM and SYSTEM configuration values added.
 ### is.codion.swing.common.model
 - FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.framework.db.local
