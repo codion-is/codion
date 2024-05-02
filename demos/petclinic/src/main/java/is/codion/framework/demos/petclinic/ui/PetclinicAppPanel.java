@@ -106,7 +106,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 	public static void main(String[] args) throws CancelException {
 		Locale.setDefault(new Locale("en", "EN"));
 		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+						.forEach(LookAndFeelProvider::addLookAndFeel);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
 		EntityApplicationPanel.builder(PetclinicAppModel.class, PetclinicAppPanel.class)

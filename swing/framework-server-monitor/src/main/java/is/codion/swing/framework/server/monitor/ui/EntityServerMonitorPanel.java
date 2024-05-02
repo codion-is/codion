@@ -283,7 +283,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 		UiManagerDefaults.initialize();
 		Clients.resolveTrustStore();
 		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+						.forEach(LookAndFeelProvider::addLookAndFeel);
 		SwingUtilities.invokeLater(() -> {
 			try {
 				findLookAndFeelProvider(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName()))

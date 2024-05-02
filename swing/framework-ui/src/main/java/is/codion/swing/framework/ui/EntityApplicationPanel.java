@@ -565,7 +565,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	/**
 	 * Allows the user the select between the available Look and Feels, saves the selection as a user preference.
 	 * @return a Control for selecting the application look and feel
-	 * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
+	 * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelProvider)
 	 * @see LookAndFeelProvider#findLookAndFeelProvider(String)
 	 * @see Dialogs#lookAndFeelSelectionDialog()
 	 * @see LookAndFeelComboBox#ENABLE_ON_SELECTION
@@ -1073,7 +1073,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		/**
 		 * Sets the default look and feel classname, used in case no look and feel settings are found in user preferences.
 		 * Note that for an external Look and Feels to be enabled, it must be registered via
-		 * {@link LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)}
+		 * {@link LookAndFeelProvider#addLookAndFeel(LookAndFeelProvider)}
 		 * before starting the application.
 		 * @param defaultLookAndFeelClassName the default look and feel classname
 		 * @return this Builder instance
@@ -1083,7 +1083,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		/**
 		 * Sets the look and feel classname, overrides any look and feel settings found in user preferences.
 		 * Note that for an external Look and Feels to be enabled, it must be registered via
-		 * {@link LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)}
+		 * {@link LookAndFeelProvider#addLookAndFeel(LookAndFeelProvider)}
 		 * before starting the application.
 		 * @param lookAndFeelClassName the look and feel classname
 		 * @return this Builder instance

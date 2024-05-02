@@ -44,8 +44,8 @@ import static java.util.Objects.requireNonNull;
  * Instantiate via factory methods {@link #lookAndFeelComboBox()} or {@link #lookAndFeelComboBox(boolean)}.
  * @see #lookAndFeelComboBox()
  * @see #lookAndFeelComboBox(boolean)
- * @see LookAndFeelProvider#addLookAndFeelProvider(javax.swing.UIManager.LookAndFeelInfo)
- * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
+ * @see LookAndFeelProvider#addLookAndFeel(javax.swing.UIManager.LookAndFeelInfo)
+ * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelProvider)
  */
 public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvider>> {
 

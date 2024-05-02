@@ -102,7 +102,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	static {
 		FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+						.forEach(LookAndFeelProvider::addLookAndFeel);
 		findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName()))
 						.ifPresent(LookAndFeelProvider::enable);
 	}

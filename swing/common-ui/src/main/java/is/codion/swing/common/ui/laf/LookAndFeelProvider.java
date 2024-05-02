@@ -74,20 +74,20 @@ public interface LookAndFeelProvider {
 	}
 
 	/**
-	 * Adds a new LookAndFeelProvider look and feel provider.
+	 * Adds a new look and feel provider.
 	 * @param lookAndFeelInfo the look and feel info
 	 */
-	static void addLookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo) {
-		addLookAndFeelProvider(lookAndFeelProvider(lookAndFeelInfo));
+	static void addLookAndFeel(LookAndFeelInfo lookAndFeelInfo) {
+		addLookAndFeel(lookAndFeelProvider(lookAndFeelInfo));
 	}
 
 	/**
-	 * Adds a new LookAndFeelProvider look and feel provider.
+	 * Adds a new look and feel provider.
 	 * @param lookAndFeelInfo the look and feel info
 	 * @param enabler configures and enables this look and feel
 	 */
-	static void addLookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
-		addLookAndFeelProvider(lookAndFeelProvider(lookAndFeelInfo, enabler));
+	static void addLookAndFeel(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
+		addLookAndFeel(lookAndFeelProvider(lookAndFeelInfo, enabler));
 	}
 
 	/**
@@ -95,14 +95,14 @@ public interface LookAndFeelProvider {
 	 * Note that this replaces any existing look and feel provider based on the same classname.
 	 * @param lookAndFeelProvider the look and feel provider to add
 	 */
-	static void addLookAndFeelProvider(LookAndFeelProvider lookAndFeelProvider) {
+	static void addLookAndFeel(LookAndFeelProvider lookAndFeelProvider) {
 		DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS
 						.put(requireNonNull(lookAndFeelProvider).lookAndFeelInfo().getClassName(), lookAndFeelProvider);
 	}
 
 	/**
 	 * @return the available {@link LookAndFeelProvider}s
-	 * @see #addLookAndFeelProvider(LookAndFeelProvider)
+	 * @see #addLookAndFeel(LookAndFeelProvider)
 	 */
 	static Map<String, LookAndFeelProvider> lookAndFeelProviders() {
 		return Collections.unmodifiableMap(DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS);

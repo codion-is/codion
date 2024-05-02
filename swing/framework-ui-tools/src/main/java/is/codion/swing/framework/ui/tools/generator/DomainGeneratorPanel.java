@@ -183,7 +183,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	 */
 	public static void main(String[] arguments) {
 		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+						.forEach(LookAndFeelProvider::addLookAndFeel);
 		findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName()))
 						.ifPresent(LookAndFeelProvider::enable);
 		try {

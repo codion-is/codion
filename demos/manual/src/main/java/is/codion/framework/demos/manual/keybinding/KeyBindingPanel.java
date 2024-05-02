@@ -82,7 +82,7 @@ public final class KeyBindingPanel extends JPanel {
 	public static void main(String[] args) {
 		System.setProperty("sun.awt.disablegrab", "true");
 		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+						.forEach(LookAndFeelProvider::addLookAndFeel);
 		SwingUtilities.invokeLater(() -> Windows.frame(new KeyBindingPanel())
 						.title("Key Bindings")
 						.defaultCloseOperation(JFrame.EXIT_ON_CLOSE)

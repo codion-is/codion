@@ -294,7 +294,7 @@ public final class NotesDemo {
 		FilteredTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		// Make all the IntelliJ themes from Flat Look and Feel available (View -> Select Look & Feel)
 		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+						.forEach(LookAndFeelProvider::addLookAndFeel);
 
 		EntityApplicationPanel.builder(NotesApplicationModel.class, NotesApplicationPanel.class)
 						.frameTitle("Notes")

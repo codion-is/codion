@@ -75,7 +75,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 	public static void main(String[] args) throws CancelException {
 		Locale.setDefault(new Locale("en", "EN"));
 		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+						.forEach(LookAndFeelProvider::addLookAndFeel);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING

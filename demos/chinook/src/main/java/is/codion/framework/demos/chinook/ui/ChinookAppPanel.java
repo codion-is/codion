@@ -179,7 +179,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
 		Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
 		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+						.forEach(LookAndFeelProvider::addLookAndFeel);
 		Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
 		EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);

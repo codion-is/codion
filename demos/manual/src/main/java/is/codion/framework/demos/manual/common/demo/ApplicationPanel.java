@@ -410,7 +410,7 @@ public final class ApplicationPanel extends JPanel {
 
 	public static void main(String[] args) {
 		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+						.forEach(LookAndFeelProvider::addLookAndFeel);
 
 		findLookAndFeelProvider("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProIJTheme")
 						.ifPresent(LookAndFeelProvider::enable);
