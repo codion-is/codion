@@ -50,7 +50,7 @@ public final class ClientMonitor {
 	private final EntityServerAdmin server;
 
 	private final FilteredTableModel<RemoteClient, Integer> clientInstanceTableModel =
-					FilteredTableModel.builder(new RemoteClientColumnFactory(), new RemoteClientColumnValueProvider())
+					FilteredTableModel.builder(new RemoteClientColumnFactory(), new RemoteClientColumnValues())
 									.itemSupplier(new RemoteClientItemSupplier())
 									.build();
 
@@ -139,7 +139,7 @@ public final class ClientMonitor {
 		}
 	}
 
-	private static final class RemoteClientColumnValueProvider implements FilteredTableModel.ColumnValueProvider<RemoteClient, Integer> {
+	private static final class RemoteClientColumnValues implements FilteredTableModel.ColumnValues<RemoteClient, Integer> {
 
 		@Override
 		public Object value(RemoteClient row, Integer columnIdentifier) {

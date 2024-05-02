@@ -27,7 +27,7 @@ import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +70,7 @@ public final class ClientUserMonitor {
 	private final Value<Integer> idleConnectionTimeoutValue;
 	private final ClientMonitor clientMonitor;
 	private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel =
-					FilteredTableModel.builder(ClientUserMonitor::createUserHistoryColumns, new UserHistoryColumnValueProvider())
+					FilteredTableModel.builder(ClientUserMonitor::createUserHistoryColumns, new UserHistoryColumnValues())
 									.itemSupplier(new UserHistoryItemSupplier())
 									.refreshStrategy(MERGE)
 									.build();
@@ -258,7 +258,7 @@ public final class ClientUserMonitor {
 		}
 	}
 
-	private static final class UserHistoryColumnValueProvider implements ColumnValueProvider<UserInfo, Integer> {
+	private static final class UserHistoryColumnValues implements ColumnValues<UserInfo, Integer> {
 
 		@Override
 		public Object value(UserInfo row, Integer columnIdentifier) {

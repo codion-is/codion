@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
 
 import javax.swing.SortOrder;
 import java.util.ArrayList;
@@ -37,16 +37,16 @@ import static java.util.Objects.requireNonNull;
 final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortModel<R, C> {
 
 	private final FilteredTableColumnModel<C> columnModel;
-	private final ColumnValueProvider<R, C> columnValueProvider;
+	private final ColumnValues<R, C> columnValues;
 	private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
 	private final Event<C> sortingChangedEvent = Event.event();
 	private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
 	private final Set<C> columnSortingDisabled = new HashSet<>();
 	private final RowComparator comparator = new RowComparator();
 
-	DefaultFilteredTableSortModel(FilteredTableColumnModel<C> columnModel, ColumnValueProvider<R, C> columnValueProvider) {
+	DefaultFilteredTableSortModel(FilteredTableColumnModel<C> columnModel, ColumnValues<R, C> columnValues) {
 		this.columnModel = requireNonNull(columnModel);
-		this.columnValueProvider = requireNonNull(columnValueProvider);
+		this.columnValues = requireNonNull(columnValues);
 	}
 
 	@Override
@@ -167,8 +167,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 		}
 
 		private int compareRows(R rowOne, R rowTwo, C columnIdentifier, SortOrder sortOrder) {
-			Object valueOne = columnValueProvider.value(rowOne, columnIdentifier);
-			Object valueTwo = columnValueProvider.value(rowTwo, columnIdentifier);
+			Object valueOne = columnValues.value(rowOne, columnIdentifier);
+			Object valueTwo = columnValues.value(rowTwo, columnIdentifier);
 			int comparison;
 			// Define null less than everything, except null.
 			if (valueOne == null && valueTwo == null) {

@@ -1181,7 +1181,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition, ColumnFactory<Attribute<?>> columnFactory) {
-		return FilteredTableModel.builder(columnFactory, new EntityColumnValueProvider())
+		return FilteredTableModel.builder(columnFactory, new EntityColumnValues())
 						.filterModelFactory(new EntityFilterModelFactory(entityDefinition))
 						.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, this))
 						.itemSupplier(new EntityItemSupplier(this))
@@ -1189,7 +1189,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 						.build();
 	}
 
-	private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {
+	private static final class EntityColumnValues implements ColumnValues<Entity, Attribute<?>> {
 
 		@Override
 		public Object value(Entity entity, Attribute<?> attribute) {

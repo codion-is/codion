@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  * Specifies a table model supporting selection as well as filtering
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
- * @see #builder(ColumnFactory, ColumnValueProvider)
+ * @see #builder(ColumnFactory, ColumnValues)
  */
 public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
@@ -298,14 +298,14 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	/**
 	 * Instantiates a new table model builder.
 	 * @param columnFactory the column factory
-	 * @param columnValueProvider the column value provider
+	 * @param columnValues the column value provider
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 * @return a new builder instance
-	 * @throws NullPointerException in case {@code columnFactory} or {@code columnValueProvider} is null
+	 * @throws NullPointerException in case {@code columnFactory} or {@code columnValues} is null
 	 */
-	static <R, C> Builder<R, C> builder(ColumnFactory<C> columnFactory, ColumnValueProvider<R, C> columnValueProvider) {
-		return new DefaultFilteredTableModel.DefaultBuilder<>(columnFactory, columnValueProvider);
+	static <R, C> Builder<R, C> builder(ColumnFactory<C> columnFactory, ColumnValues<R, C> columnValues) {
+		return new DefaultFilteredTableModel.DefaultBuilder<>(columnFactory, columnValues);
 	}
 
 	/**
@@ -423,7 +423,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
-	interface ColumnValueProvider<R, C> {
+	interface ColumnValues<R, C> {
 
 		/**
 		 * Returns a value for the given row and columnIdentifier

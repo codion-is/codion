@@ -22,7 +22,7 @@ import is.codion.common.item.Item;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.ActionMap;
@@ -61,7 +61,7 @@ final class KeyBindingModel {
 	KeyBindingModel(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
 		this.componentComboBoxModel = createComponentComboBoxModel(lookAndFeelComboBoxModel);
 		this.componentComboBoxModel.refresh();
-		this.tableModel = FilteredTableModel.builder(new KeyBindingColumnFactory(), new KeyBindingValueProvider())
+		this.tableModel = FilteredTableModel.builder(new KeyBindingColumnFactory(), new KeyBindingValues())
 						.itemSupplier(new KeyBindingItemSupplier())
 						.build();
 		bindEvents(lookAndFeelComboBoxModel);
@@ -187,7 +187,7 @@ final class KeyBindingModel {
 		}
 	}
 
-	private static final class KeyBindingValueProvider implements ColumnValueProvider<KeyBinding, Integer> {
+	private static final class KeyBindingValues implements ColumnValues<KeyBinding, Integer> {
 
 		@Override
 		public Object value(KeyBinding keyBinding, Integer columnIdentifier) {

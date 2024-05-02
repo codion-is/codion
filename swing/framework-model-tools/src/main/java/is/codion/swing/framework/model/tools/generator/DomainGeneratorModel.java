@@ -25,7 +25,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
 import is.codion.swing.framework.model.tools.metadata.MetaDataModel;
 import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
@@ -58,11 +58,11 @@ public final class DomainGeneratorModel {
 		this.connection = requireNonNull(database, "database").createConnection(user);
 		try {
 			this.metaDataModel = new MetaDataModel(connection.getMetaData());
-			this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnFactory(), new SchemaColumnValueProvider())
+			this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnFactory(), new SchemaColumnValues())
 							.itemSupplier(metaDataModel::schemas)
 							.build();
-			this.schemaTableModel.sortModel().setSortOrder(SchemaColumnValueProvider.SCHEMA, SortOrder.ASCENDING);
-			this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnFactory(), new DefinitionColumnValueProvider())
+			this.schemaTableModel.sortModel().setSortOrder(SchemaColumnValues.SCHEMA, SortOrder.ASCENDING);
+			this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnFactory(), new DefinitionColumnValues())
 							.itemSupplier(new DefinitionItemSupplier())
 							.build();
 			this.schemaTableModel.refresh();
@@ -124,15 +124,15 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public List<FilteredTableColumn<Integer>> createColumns() {
-			FilteredTableColumn<Integer> catalogColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.CATALOG)
+			FilteredTableColumn<Integer> catalogColumn = FilteredTableColumn.builder(SchemaColumnValues.CATALOG)
 							.headerValue("Catalog")
 							.columnClass(String.class)
 							.build();
-			FilteredTableColumn<Integer> schemaColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.SCHEMA)
+			FilteredTableColumn<Integer> schemaColumn = FilteredTableColumn.builder(SchemaColumnValues.SCHEMA)
 							.headerValue("Schema")
 							.columnClass(String.class)
 							.build();
-			FilteredTableColumn<Integer> populatedColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.POPULATED)
+			FilteredTableColumn<Integer> populatedColumn = FilteredTableColumn.builder(SchemaColumnValues.POPULATED)
 							.headerValue("Populated")
 							.columnClass(Boolean.class)
 							.build();
@@ -145,15 +145,15 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public List<FilteredTableColumn<Integer>> createColumns() {
-			FilteredTableColumn<Integer> domainColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.DOMAIN)
+			FilteredTableColumn<Integer> domainColumn = FilteredTableColumn.builder(DefinitionColumnValues.DOMAIN)
 							.headerValue("Domain")
 							.columnClass(String.class)
 							.build();
-			FilteredTableColumn<Integer> entityTypeColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.ENTITY)
+			FilteredTableColumn<Integer> entityTypeColumn = FilteredTableColumn.builder(DefinitionColumnValues.ENTITY)
 							.headerValue("Entity")
 							.columnClass(String.class)
 							.build();
-			FilteredTableColumn<Integer> typeColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.TABLE_TYPE)
+			FilteredTableColumn<Integer> typeColumn = FilteredTableColumn.builder(DefinitionColumnValues.TABLE_TYPE)
 							.headerValue("Type")
 							.columnClass(String.class)
 							.preferredWidth(120)
@@ -181,7 +181,7 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	private static final class SchemaColumnValueProvider implements ColumnValueProvider<MetaDataSchema, Integer> {
+	private static final class SchemaColumnValues implements ColumnValues<MetaDataSchema, Integer> {
 
 		private static final int CATALOG = 0;
 		private static final int SCHEMA = 1;
@@ -202,7 +202,7 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	private static final class DefinitionColumnValueProvider implements ColumnValueProvider<DefinitionRow, Integer> {
+	private static final class DefinitionColumnValues implements ColumnValues<DefinitionRow, Integer> {
 
 		private static final int DOMAIN = 0;
 		private static final int ENTITY = 1;

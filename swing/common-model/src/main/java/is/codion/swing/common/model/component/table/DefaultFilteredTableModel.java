@@ -61,7 +61,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 	private final Event<?> dataChangedEvent = Event.event();
 	private final Event<?> clearedEvent = Event.event();
-	private final ColumnValueProvider<R, C> columnValueProvider;
+	private final ColumnValues<R, C> columnValues;
 	private final List<R> visibleItems = new ArrayList<>();
 	private final List<R> filteredItems = new ArrayList<>();
 	private final FilteredTableSelectionModel<R> selectionModel;
@@ -78,8 +78,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	private DefaultFilteredTableModel(DefaultBuilder<R, C> builder) {
 		this.columnModel = new DefaultFilteredTableColumnModel<>(requireNonNull(builder.columnFactory).createColumns());
 		this.searchModel = new DefaultFilteredTableSearchModel<>(this);
-		this.columnValueProvider = requireNonNull(builder.columnValueProvider);
-		this.sortModel = new DefaultFilteredTableSortModel<>(columnModel, columnValueProvider);
+		this.columnValues = requireNonNull(builder.columnValues);
+		this.sortModel = new DefaultFilteredTableSortModel<>(columnModel, columnValues);
 		this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
 		this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
@@ -362,12 +362,12 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return columnValueProvider.value(itemAt(rowIndex), columnModel().columnIdentifier(columnIndex));
+		return columnValues.value(itemAt(rowIndex), columnModel().columnIdentifier(columnIndex));
 	}
 
 	@Override
 	public String getStringAt(int rowIndex, C columnIdentifier) {
-		return columnValueProvider.string(itemAt(rowIndex), columnIdentifier);
+		return columnValues.string(itemAt(rowIndex), columnIdentifier);
 	}
 
 	@Override
@@ -588,17 +588,17 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 			return columnFilters.stream()
 							.filter(conditionModel -> conditionModel.enabled().get())
-							.allMatch(conditionModel -> accepts(item, conditionModel, columnValueProvider));
+							.allMatch(conditionModel -> accepts(item, conditionModel, columnValues));
 		}
 
-		private boolean accepts(R item, ColumnConditionModel<? extends C, ?> conditionModel, ColumnValueProvider<R, C> columnValueProvider) {
+		private boolean accepts(R item, ColumnConditionModel<? extends C, ?> conditionModel, ColumnValues<R, C> columnValues) {
 			if (conditionModel.columnClass().equals(String.class)) {
-				String stringValue = columnValueProvider.string(item, conditionModel.columnIdentifier());
+				String stringValue = columnValues.string(item, conditionModel.columnIdentifier());
 
 				return ((ColumnConditionModel<?, String>) conditionModel).accepts(stringValue.isEmpty() ? null : stringValue);
 			}
 
-			return conditionModel.accepts(columnValueProvider.comparable(item, conditionModel.columnIdentifier()));
+			return conditionModel.accepts(columnValues.comparable(item, conditionModel.columnIdentifier()));
 		}
 	}
 
@@ -662,7 +662,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	static final class DefaultBuilder<R, C> implements Builder<R, C> {
 
 		private final ColumnFactory<C> columnFactory;
-		private final ColumnValueProvider<R, C> columnValueProvider;
+		private final ColumnValues<R, C> columnValues;
 
 		private Supplier<Collection<R>> itemSupplier;
 		private Predicate<R> itemValidator = new ValidPredicate<>();
@@ -671,9 +671,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
-		DefaultBuilder(ColumnFactory<C> columnFactory, ColumnValueProvider<R, C> columnValueProvider) {
+		DefaultBuilder(ColumnFactory<C> columnFactory, ColumnValues<R, C> columnValues) {
 			this.columnFactory = requireNonNull(columnFactory);
-			this.columnValueProvider = requireNonNull(columnValueProvider);
+			this.columnValues = requireNonNull(columnValues);
 		}
 
 		@Override

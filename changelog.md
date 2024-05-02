@@ -34,6 +34,8 @@ Codion Change Log
 - FilteredTable.MoveResizeColumnKeyListener bug fixed, now longer triggers when modifiers are added, restricted to the correct keys.
 - FilteredTable, move and resize column controls added, default key stroke now configurable.
 - FilteredTable, key strokes now configurable.
+### is.codion.swing.common.model
+- FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.report() exception handling improved, now throws DatabaseException in case of an SQLException.
 - DefaultLocalEntityConnection exception handling refactored in order to guarantee rollbacks in case of RuntimeExceptions.

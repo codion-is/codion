@@ -21,7 +21,7 @@ package is.codion.manual.swing.common.model.component.table;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnFactory;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
 import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
@@ -60,7 +60,7 @@ public final class FilteredTableModelDemo {
 	}
 
 	public static FilteredTableModel<TableRow, Integer> createFilteredTableModel() {
-		// Define a factory for the table columns
+		// Implement a factory for the table columns
 		ColumnFactory<Integer> columnFactory = () -> asList(
 						FilteredTableColumn.builder(STRING_COLUMN_INDEX)
 										.headerValue("String")
@@ -71,8 +71,8 @@ public final class FilteredTableModelDemo {
 										.columnClass(Integer.class)
 										.build());
 
-		// Define a column value provider, providing the table column values
-		ColumnValueProvider<TableRow, Integer> columnValueProvider = (row, columnIdentifier) -> {
+		// Implement a ColumnValues, providing the table column values
+		ColumnValues<TableRow, Integer> columnValues = (row, columnIdentifier) -> {
 			switch (columnIdentifier) {
 				case STRING_COLUMN_INDEX:
 					return row.stringValue();
@@ -83,7 +83,7 @@ public final class FilteredTableModelDemo {
 			}
 		};
 
-		// Define an item supplier responsible for supplying the table row items,
+		// Implement a item supplier responsible for supplying the table row items,
 		// without one the table can be populated by adding items manually
 		Supplier<Collection<TableRow>> itemSupplier = () -> asList(
 						new TableRow("A string", 42),
@@ -91,7 +91,7 @@ public final class FilteredTableModelDemo {
 
 		// Create the table model
 		FilteredTableModel<TableRow, Integer> tableModel =
-						FilteredTableModel.builder(columnFactory, columnValueProvider)
+						FilteredTableModel.builder(columnFactory, columnValues)
 										.itemSupplier(itemSupplier)
 										// if true then the item supplier is called in a
 										// background thread when the model is refreshed

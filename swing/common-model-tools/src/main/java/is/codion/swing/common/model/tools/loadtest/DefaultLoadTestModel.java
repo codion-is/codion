@@ -28,7 +28,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -101,7 +101,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	DefaultLoadTestModel(LoadTest<T> loadTest) {
 		this.loadTest = requireNonNull(loadTest);
-		applicationTableModel = FilteredTableModel.builder(DefaultLoadTestModel::createApplicationTableModelColumns, new ApplicationColumnValueProvider())
+		applicationTableModel = FilteredTableModel.builder(DefaultLoadTestModel::createApplicationTableModelColumns, new ApplicationColumnValues())
 						.itemSupplier(new ApplicationRowSupplier())
 						.build();
 		chartUpdateSchedulerEnabled = State.and(loadTest.paused().not(), collectChartData);
@@ -583,7 +583,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 	}
 
-	private static final class ApplicationColumnValueProvider implements ColumnValueProvider<ApplicationRow, Integer> {
+	private static final class ApplicationColumnValues implements ColumnValues<ApplicationRow, Integer> {
 
 		@Override
 		public Object value(ApplicationRow application, Integer columnIdentifier) {

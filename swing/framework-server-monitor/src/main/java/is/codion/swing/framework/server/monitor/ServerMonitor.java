@@ -36,7 +36,7 @@ import is.codion.framework.server.EntityServerAdmin.DomainReport;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnFactory;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -94,15 +94,15 @@ public final class ServerMonitor {
 	private final Value<Integer> connectionCountValue = Value.nullable(0).build();
 	private final Value<String> memoryUsageValue = Value.nullable("").build();
 	private final FilteredTableModel<DomainEntityDefinition, Integer> domainTableModel =
-					FilteredTableModel.builder(new DomainTableColumnFactory(), new DomainTableValueProvider())
+					FilteredTableModel.builder(new DomainTableColumnFactory(), new DomainTableValues())
 									.itemSupplier(new DomainTableItemSupplier())
 									.build();
 	private final FilteredTableModel<DomainReport, Integer> reportTableModel =
-					FilteredTableModel.builder(new ReportTableColumnFactory(), new ReportTableValueProvider())
+					FilteredTableModel.builder(new ReportTableColumnFactory(), new ReportTableValues())
 									.itemSupplier(new ReportTableItemSupplier())
 									.build();
 	private final FilteredTableModel<DomainOperation, Integer> operationTableModel =
-					FilteredTableModel.builder(new OperationTableColumnFactory(), new OperationTableValueProvider())
+					FilteredTableModel.builder(new OperationTableColumnFactory(), new OperationTableValues())
 									.itemSupplier(new OperationTableItemSupplier())
 									.build();
 	private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
@@ -554,26 +554,26 @@ public final class ServerMonitor {
 		@Override
 		public List<FilteredTableColumn<Integer>> createColumns() {
 			return Arrays.asList(
-							FilteredTableColumn.builder(OperationTableValueProvider.DOMAIN)
+							FilteredTableColumn.builder(OperationTableValues.DOMAIN)
 											.headerValue(DOMAIN)
 											.columnClass(String.class)
 											.build(),
-							FilteredTableColumn.builder(OperationTableValueProvider.TYPE)
+							FilteredTableColumn.builder(OperationTableValues.TYPE)
 											.headerValue("Type")
 											.columnClass(String.class)
 											.build(),
-							FilteredTableColumn.builder(OperationTableValueProvider.OPERATION)
+							FilteredTableColumn.builder(OperationTableValues.OPERATION)
 											.headerValue("Operation")
 											.columnClass(String.class)
 											.build(),
-							FilteredTableColumn.builder(OperationTableValueProvider.CLASS)
+							FilteredTableColumn.builder(OperationTableValues.CLASS)
 											.headerValue("Class")
 											.columnClass(String.class)
 											.build());
 		}
 	}
 
-	private static final class OperationTableValueProvider implements ColumnValueProvider<DomainOperation, Integer> {
+	private static final class OperationTableValues implements ColumnValues<DomainOperation, Integer> {
 
 		private static final int DOMAIN = 0;
 		private static final int TYPE = 1;
@@ -617,30 +617,30 @@ public final class ServerMonitor {
 		@Override
 		public List<FilteredTableColumn<Integer>> createColumns() {
 			return Arrays.asList(
-							FilteredTableColumn.builder(ReportTableValueProvider.DOMAIN)
+							FilteredTableColumn.builder(ReportTableValues.DOMAIN)
 											.headerValue(DOMAIN)
 											.columnClass(String.class)
 											.build(),
-							FilteredTableColumn.builder(ReportTableValueProvider.REPORT)
+							FilteredTableColumn.builder(ReportTableValues.REPORT)
 											.headerValue("Report")
 											.columnClass(String.class)
 											.build(),
-							FilteredTableColumn.builder(ReportTableValueProvider.TYPE)
+							FilteredTableColumn.builder(ReportTableValues.TYPE)
 											.headerValue("Type")
 											.columnClass(String.class)
 											.build(),
-							FilteredTableColumn.builder(ReportTableValueProvider.PATH)
+							FilteredTableColumn.builder(ReportTableValues.PATH)
 											.headerValue("Path")
 											.columnClass(String.class)
 											.build(),
-							FilteredTableColumn.builder(ReportTableValueProvider.CACHED)
+							FilteredTableColumn.builder(ReportTableValues.CACHED)
 											.headerValue("Cached")
 											.columnClass(Boolean.class)
 											.build());
 		}
 	}
 
-	private static final class ReportTableValueProvider implements ColumnValueProvider<DomainReport, Integer> {
+	private static final class ReportTableValues implements ColumnValues<DomainReport, Integer> {
 
 		private static final int DOMAIN = 0;
 		private static final int REPORT = 1;
@@ -686,22 +686,22 @@ public final class ServerMonitor {
 		@Override
 		public List<FilteredTableColumn<Integer>> createColumns() {
 			return Arrays.asList(
-							FilteredTableColumn.builder(DomainTableValueProvider.DOMAIN)
+							FilteredTableColumn.builder(DomainTableValues.DOMAIN)
 											.headerValue(DOMAIN)
 											.columnClass(String.class)
 											.build(),
-							FilteredTableColumn.builder(DomainTableValueProvider.ENTITY)
+							FilteredTableColumn.builder(DomainTableValues.ENTITY)
 											.headerValue("Entity")
 											.columnClass(String.class)
 											.build(),
-							FilteredTableColumn.builder(DomainTableValueProvider.TABLE)
+							FilteredTableColumn.builder(DomainTableValues.TABLE)
 											.headerValue("Table")
 											.columnClass(String.class)
 											.build());
 		}
 	}
 
-	private static final class DomainTableValueProvider implements ColumnValueProvider<DomainEntityDefinition, Integer> {
+	private static final class DomainTableValues implements ColumnValues<DomainEntityDefinition, Integer> {
 
 		private static final int DOMAIN = 0;
 		private static final int ENTITY = 1;
