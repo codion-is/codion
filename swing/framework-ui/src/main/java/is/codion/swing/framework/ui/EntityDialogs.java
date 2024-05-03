@@ -41,7 +41,6 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
 import is.codion.swing.framework.ui.component.EntityComponentFactory;
-import is.codion.swing.framework.ui.component.EntityComponents;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +75,7 @@ import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Collections.singletonList;
@@ -469,7 +469,7 @@ public final class EntityDialogs {
 							.attributes().definition(attribute);
 			if (attributeDefinition.items().isEmpty() && attribute.type().isString()) {
 				//special handling for non-item based String attributes, text field panel instead of a text field
-				return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
+				return (ComponentValue<T, C>) entityComponents(editModel.entityDefinition())
 								.textFieldPanel((Attribute<String>) attribute)
 								.initialValue((String) initialValue)
 								.columns(TEXT_INPUT_PANEL_COLUMNS)

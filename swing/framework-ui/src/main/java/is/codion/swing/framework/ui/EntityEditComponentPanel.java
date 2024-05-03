@@ -104,6 +104,7 @@ import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
@@ -167,7 +168,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param editModel the edit model
 	 */
 	protected EntityEditComponentPanel(SwingEntityEditModel editModel) {
-		this(editModel, new EntityComponents(requireNonNull(editModel, "editModel").entityDefinition()));
+		this(editModel, entityComponents(requireNonNull(editModel, "editModel").entityDefinition()));
 	}
 
 	/**

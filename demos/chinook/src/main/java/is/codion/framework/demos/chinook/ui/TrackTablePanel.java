@@ -38,6 +38,7 @@ import java.math.BigDecimal;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.component.Components.bigDecimalField;
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.ResourceBundle.getBundle;
 
 public final class TrackTablePanel extends EntityTablePanel {
@@ -86,7 +87,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 		public ComponentValue<Integer, JSpinner> componentValue(Attribute<Integer> attribute,
 																														SwingEntityEditModel editModel,
 																														Integer initialValue) {
-			EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
+			EntityComponents inputComponents = entityComponents(editModel.entityDefinition());
 
 			return inputComponents.integerSpinner(attribute)
 							.initialValue(initialValue)

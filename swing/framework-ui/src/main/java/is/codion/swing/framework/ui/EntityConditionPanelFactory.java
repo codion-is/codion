@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -63,7 +64,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 	 * @param entityDefinition the entity definition
 	 */
 	public EntityConditionPanelFactory(EntityDefinition entityDefinition) {
-		this(new EntityComponents(entityDefinition));
+		this(entityComponents(entityDefinition));
 	}
 
 	/**

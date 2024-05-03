@@ -75,24 +75,22 @@ import static java.util.Objects.requireNonNull;
 /**
  * A factory for {@link ComponentBuilder} instances
  * based on attributes from a given entity definition.
+ * @see #entityComponents(EntityDefinition)
  */
-public class EntityComponents {
+public final class EntityComponents {
 
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	private final EntityDefinition entityDefinition;
 
-	/**
-	 * @param entityDefinition the entity definition
-	 */
-	public EntityComponents(EntityDefinition entityDefinition) {
+	private EntityComponents(EntityDefinition entityDefinition) {
 		this.entityDefinition = requireNonNull(entityDefinition);
 	}
 
 	/**
 	 * @return the underlying entity definition
 	 */
-	public final EntityDefinition entityDefinition() {
+	public EntityDefinition entityDefinition() {
 		return entityDefinition;
 	}
 
@@ -178,7 +176,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a JCheckBox builder
 	 */
-	public final CheckBoxBuilder checkBox(Attribute<Boolean> attribute) {
+	public CheckBoxBuilder checkBox(Attribute<Boolean> attribute) {
 		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.checkBox()
@@ -194,7 +192,7 @@ public class EntityComponents {
 	 * @param <B> the builder type
 	 * @return a JToggleButton builder
 	 */
-	public final <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(Attribute<Boolean> attribute) {
+	public <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(Attribute<Boolean> attribute) {
 		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return (ButtonBuilder<Boolean, JToggleButton, B>) Components.toggleButton()
@@ -208,7 +206,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a boolean JComboBox builder
 	 */
-	public final ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
+	public ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
 		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.booleanComboBox(booleanItemComboBoxModel())
@@ -221,7 +219,7 @@ public class EntityComponents {
 	 * @param comboBoxModel the combo box model
 	 * @return a foreign key JComboBox builder
 	 */
-	public final EntityComboBox.Builder foreignKeyComboBox(ForeignKey foreignKey,
+	public EntityComboBox.Builder foreignKeyComboBox(ForeignKey foreignKey,
 																												 EntityComboBoxModel comboBoxModel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
@@ -236,7 +234,7 @@ public class EntityComponents {
 	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key combo box panel builder
 	 */
-	public final EntityComboBoxPanel.Builder foreignKeyComboBoxPanel(ForeignKey foreignKey,
+	public EntityComboBoxPanel.Builder foreignKeyComboBoxPanel(ForeignKey foreignKey,
 																																	 EntityComboBoxModel comboBoxModel,
 																																	 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
@@ -251,7 +249,7 @@ public class EntityComponents {
 	 * @param searchModel the search model
 	 * @return a foreign key {@link EntitySearchField} builder
 	 */
-	public final EntitySearchField.Builder foreignKeySearchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
+	public EntitySearchField.Builder foreignKeySearchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntitySearchField.builder(searchModel)
@@ -264,7 +262,7 @@ public class EntityComponents {
 	 * @param searchModel the search model
 	 * @return a foreign key search field panel builder
 	 */
-	public final EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
+	public EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
 																																				 EntitySearchModel searchModel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
@@ -280,7 +278,7 @@ public class EntityComponents {
 	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key search field panel builder
 	 */
-	public final EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
+	public EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
 																																				 EntitySearchModel searchModel,
 																																				 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
@@ -295,7 +293,7 @@ public class EntityComponents {
 	 * @param <B> the builder type
 	 * @return a foreign key JTextField builder
 	 */
-	public final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> foreignKeyTextField(ForeignKey foreignKey) {
+	public <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> foreignKeyTextField(ForeignKey foreignKey) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return (TextFieldBuilder<Entity, JTextField, B>) Components.textField(Entity.class)
@@ -310,7 +308,7 @@ public class EntityComponents {
 	 * @param foreignKey the foreign key
 	 * @return a foreign key JLabel builder
 	 */
-	public final LabelBuilder<Entity> foreignKeyLabel(ForeignKey foreignKey) {
+	public LabelBuilder<Entity> foreignKeyLabel(ForeignKey foreignKey) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return Components.<Entity>label()
@@ -325,7 +323,7 @@ public class EntityComponents {
 	 * @return an {@link is.codion.common.item.Item} based JComboBox builder
 	 * @throws IllegalArgumentException in case the given attribute has no associated items
 	 */
-	public final <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {
+	public <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 		if (attributeDefinition.items().isEmpty()) {
 			throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not a item based attribute");
@@ -345,7 +343,7 @@ public class EntityComponents {
 	 * @param <B> the builder type
 	 * @return a JComboBox builder
 	 */
-	public final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
+	public <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
 																																																								 ComboBoxModel<T> comboBoxModel) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
@@ -359,7 +357,7 @@ public class EntityComponents {
 	 * @param <T> the attribute type
 	 * @return a {@link TemporalFieldPanel} builder
 	 */
-	public final <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute) {
+	public <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute) {
 		return temporalFieldPanel(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
 	}
 
@@ -370,7 +368,7 @@ public class EntityComponents {
 	 * @param <T> the attribute type
 	 * @return a {@link TemporalFieldPanel} builder
 	 */
-	public final <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute, String dateTimePattern) {
+	public <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute, String dateTimePattern) {
 		return Components.temporalFieldPanel(attribute.type().valueClass(), dateTimePattern)
 						.toolTipText(entityDefinition.attributes().definition(attribute).description())
 						.calendarIcon(ICONS.calendar());
@@ -381,7 +379,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link TextFieldPanel} builder
 	 */
-	public final TextFieldPanel.Builder textFieldPanel(Attribute<String> attribute) {
+	public TextFieldPanel.Builder textFieldPanel(Attribute<String> attribute) {
 		AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.textFieldPanel()
@@ -396,7 +394,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a JTextArea builder
 	 */
-	public final TextAreaBuilder textArea(Attribute<String> attribute) {
+	public TextAreaBuilder textArea(Attribute<String> attribute) {
 		AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
 		if (!attribute.type().isString()) {
 			throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
@@ -415,7 +413,7 @@ public class EntityComponents {
 	 * @param <B> the builder type
 	 * @return a JTextField builder
 	 */
-	public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
+	public <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		if (attribute.type().isTemporal()) {
@@ -434,7 +432,7 @@ public class EntityComponents {
 	 * @param <T> the temporal type
 	 * @return a {@link TemporalField} builder
 	 */
-	public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
+	public <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
 		return temporalField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
 	}
 
@@ -445,7 +443,7 @@ public class EntityComponents {
 	 * @param <T> the temporal type
 	 * @return a {@link TemporalField} builder
 	 */
-	public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute, String dateTimePattern) {
+	public <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute, String dateTimePattern) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.temporalField(attributeDefinition.attribute().type().valueClass(), dateTimePattern)
@@ -458,7 +456,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link NumberField} builder
 	 */
-	public final NumberField.Builder<Short> shortField(Attribute<Short> attribute) {
+	public NumberField.Builder<Short> shortField(Attribute<Short> attribute) {
 		AttributeDefinition<Short> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.shortField()
@@ -471,7 +469,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link NumberField} builder
 	 */
-	public final NumberField.Builder<Integer> integerField(Attribute<Integer> attribute) {
+	public NumberField.Builder<Integer> integerField(Attribute<Integer> attribute) {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.integerField()
@@ -484,7 +482,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link NumberField} builder
 	 */
-	public final NumberField.Builder<Long> longField(Attribute<Long> attribute) {
+	public NumberField.Builder<Long> longField(Attribute<Long> attribute) {
 		AttributeDefinition<Long> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.longField()
@@ -497,7 +495,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link NumberField} builder
 	 */
-	public final NumberField.Builder<Double> doubleField(Attribute<Double> attribute) {
+	public NumberField.Builder<Double> doubleField(Attribute<Double> attribute) {
 		AttributeDefinition<Double> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.doubleField()
@@ -511,7 +509,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link NumberField} builder
 	 */
-	public final NumberField.Builder<BigDecimal> bigDecimalField(Attribute<BigDecimal> attribute) {
+	public NumberField.Builder<BigDecimal> bigDecimalField(Attribute<BigDecimal> attribute) {
 		AttributeDefinition<BigDecimal> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.bigDecimalField()
@@ -526,7 +524,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link javax.swing.JSlider} builder
 	 */
-	public final SliderBuilder slider(Attribute<Integer> attribute) {
+	public SliderBuilder slider(Attribute<Integer> attribute) {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		BoundedRangeModel boundedRangeModel = new DefaultBoundedRangeModel();
@@ -542,7 +540,7 @@ public class EntityComponents {
 	 * @param boundedRangeModel the bounded range model
 	 * @return a {@link javax.swing.JSlider} builder
 	 */
-	public final SliderBuilder slider(Attribute<Integer> attribute, BoundedRangeModel boundedRangeModel) {
+	public SliderBuilder slider(Attribute<Integer> attribute, BoundedRangeModel boundedRangeModel) {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.slider(boundedRangeModel)
@@ -554,7 +552,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link javax.swing.JSpinner} builder
 	 */
-	public final NumberSpinnerBuilder<Integer> integerSpinner(Attribute<Integer> attribute) {
+	public NumberSpinnerBuilder<Integer> integerSpinner(Attribute<Integer> attribute) {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.integerSpinner()
@@ -568,7 +566,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link javax.swing.JSpinner} builder
 	 */
-	public final NumberSpinnerBuilder<Double> doubleSpinner(Attribute<Double> attribute) {
+	public NumberSpinnerBuilder<Double> doubleSpinner(Attribute<Double> attribute) {
 		AttributeDefinition<Double> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.doubleSpinner()
@@ -584,7 +582,7 @@ public class EntityComponents {
 	 * @param <T> the value type
 	 * @return a {@link javax.swing.JSpinner} builder
 	 */
-	public final <T> ListSpinnerBuilder<T> listSpinner(Attribute<T> attribute, SpinnerListModel listModel) {
+	public <T> ListSpinnerBuilder<T> listSpinner(Attribute<T> attribute, SpinnerListModel listModel) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.<T>listSpinner(listModel)
@@ -597,7 +595,7 @@ public class EntityComponents {
 	 * @param <T> the value type
 	 * @return a {@link javax.swing.JSpinner} builder
 	 */
-	public final <T> ItemSpinnerBuilder<T> itemSpinner(Attribute<T> attribute) {
+	public <T> ItemSpinnerBuilder<T> itemSpinner(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 		if (attributeDefinition.items().isEmpty()) {
 			throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not a item based attribute");
@@ -612,7 +610,7 @@ public class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a JFormattedTextField builder
 	 */
-	public final MaskedTextFieldBuilder maskedTextField(Attribute<String> attribute) {
+	public MaskedTextFieldBuilder maskedTextField(Attribute<String> attribute) {
 		AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.maskedTextField()
@@ -624,8 +622,16 @@ public class EntityComponents {
 	 * @param <T> the value type
 	 * @return a builder factory for a list
 	 */
-	public final <T> EntityListBuilderFactory<T> list(ListModel<T> listModel) {
+	public <T> EntityListBuilderFactory<T> list(ListModel<T> listModel) {
 		return new DefaultListBuilderFactory<>(listModel);
+	}
+
+	/**
+	 * @param entityDefinition the entity definition
+	 * @return a new {@link EntityComponents} instance
+	 */
+	public static EntityComponents entityComponents(EntityDefinition entityDefinition) {
+		return new EntityComponents(entityDefinition);
 	}
 
 	/**

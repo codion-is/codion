@@ -32,6 +32,7 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -46,7 +47,7 @@ public class SearchValueLinkTest {
 					.build();
 
 	private final EntityEditModel model = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-	private final EntityComponents inputComponents = new EntityComponents(model.entityDefinition());
+	private final EntityComponents inputComponents = entityComponents(model.entityDefinition());
 
 	@Test
 	void test() throws Exception {

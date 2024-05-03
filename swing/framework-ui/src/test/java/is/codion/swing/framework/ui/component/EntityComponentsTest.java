@@ -51,6 +51,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityComponentsTest {
@@ -64,7 +65,7 @@ public final class EntityComponentsTest {
 					.build();
 
 	private final SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
-	private final EntityComponents entityComponents = new EntityComponents(editModel.entityDefinition());
+	private final EntityComponents entityComponents = entityComponents(editModel.entityDefinition());
 
 	@Test
 	void checkBox() {

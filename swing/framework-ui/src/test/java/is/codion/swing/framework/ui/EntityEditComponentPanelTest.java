@@ -24,12 +24,12 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
-import is.codion.swing.framework.ui.component.EntityComponents;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JTextField;
 
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityEditComponentPanelTest {
@@ -46,7 +46,7 @@ public final class EntityEditComponentPanelTest {
 	void test() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
 		assertThrows(IllegalArgumentException.class, () ->
-						new EntityEditComponentPanel(editModel, new EntityComponents(editModel.entities().definition(Department.TYPE))));
+						new EntityEditComponentPanel(editModel, entityComponents(editModel.entities().definition(Department.TYPE))));
 		EntityEditComponentPanel componentPanel = new EntityEditComponentPanel(editModel);
 		componentPanel.createTextField(Employee.NAME);
 		assertThrows(IllegalStateException.class, () -> componentPanel.createTextField(Employee.NAME));

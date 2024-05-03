@@ -68,6 +68,7 @@ import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.*;
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_I;
@@ -187,7 +188,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * @param config provides access to the panel configuration
 	 */
 	public EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> config) {
-		this(editModel, new EntityComponents(editModel.entityDefinition()), config);
+		this(editModel, entityComponents(editModel.entityDefinition()), config);
 	}
 
 	/**

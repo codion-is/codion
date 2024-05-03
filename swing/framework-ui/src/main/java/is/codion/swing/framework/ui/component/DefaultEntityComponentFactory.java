@@ -29,6 +29,7 @@ import javax.swing.JComponent;
 import java.time.temporal.Temporal;
 
 import static is.codion.swing.common.ui.component.Components.fileInputPanel;
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -40,7 +41,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
 	public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
 		requireNonNull(attribute, "attribute");
 		requireNonNull(editModel, "editModel");
-		EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
+		EntityComponents inputComponents = entityComponents(editModel.entityDefinition());
 		if (attribute instanceof ForeignKey) {
 			return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue, inputComponents);
 		}
