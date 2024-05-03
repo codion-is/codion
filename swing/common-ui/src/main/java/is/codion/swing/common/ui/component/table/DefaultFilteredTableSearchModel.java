@@ -16,11 +16,12 @@
  *
  * Copyright (c) 2022 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -41,6 +42,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	private static final RowColumn NULL_COORDINATE = new DefaultRowColumn(-1, -1);
 
 	private final FilteredTableModel<?, C> tableModel;
+	private final FilteredTableColumnModel<C> columnModel;
 	private final State caseSensitive = State.builder()
 					.listener(this::performSearch)
 					.build();
@@ -58,8 +60,9 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 
 	private int searchResultIndex = -1;
 
-	DefaultFilteredTableSearchModel(FilteredTableModel<?, C> tableModel) {
+	DefaultFilteredTableSearchModel(FilteredTableModel<?, C> tableModel, FilteredTableColumnModel<C> columnModel) {
 		this.tableModel = requireNonNull(tableModel);
+		this.columnModel = requireNonNull(columnModel);
 		bindEvents();
 	}
 
@@ -170,7 +173,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 		Predicate<String> predicate = searchPredicate.get();
 		for (int row = 0; row < tableModel.getRowCount(); row++) {
 			for (int column = 0; column < tableModel.getColumnCount(); column++) {
-				if (predicate.test(tableModel.getStringAt(row, tableModel.columnModel().getColumn(column).getIdentifier()))) {
+				if (predicate.test(tableModel.getStringAt(row, columnModel.getColumn(column).getIdentifier()))) {
 					searchResults.add(new DefaultRowColumn(row, column));
 				}
 			}
@@ -184,7 +187,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	}
 
 	private void bindEvents() {
-		tableModel.columnModel().addColumnModelListener(new ClearSearchListener());
+		columnModel.addColumnModelListener(new ClearSearchListener());
 		tableModel.dataChangedEvent().addListener(() -> {
 			clearSearchResults();
 			performSearch();

@@ -58,9 +58,9 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
 	RandomPlaylistParametersPanel(EntityConnectionProvider connectionProvider) {
 		super(borderLayout());
-		this.playlistNameField = createPlaylistNameField();
-		this.noOfTracksField = createNoOfTracksField();
-		this.genreList = createGenreList(connectionProvider);
+		playlistNameField = createPlaylistNameField();
+		noOfTracksField = createNoOfTracksField();
+		genreList = createGenreList(connectionProvider);
 		add(borderLayoutPanel()
 						.northComponent(gridLayoutPanel(1, 2)
 										.add(new JLabel(BUNDLE.getString("playlist_name")))

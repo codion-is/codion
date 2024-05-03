@@ -19,10 +19,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
-import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.framework.ui.component.EntitySearchField.Selector;
 import is.codion.swing.framework.ui.component.EntitySearchField.TableSelector;
 
@@ -37,11 +34,10 @@ final class TrackSelectorFactory implements Function<EntitySearchModel, Selector
 	@Override
 	public TableSelector apply(EntitySearchModel searchModel) {
 		TableSelector selector = tableSelector(searchModel);
-		FilteredTableModel<Entity, Attribute<?>> tableModel = selector.table().getModel();
-		tableModel.columnModel().setVisibleColumns(Track.ARTIST, Track.ALBUM_FK, Track.NAME);
-		tableModel.sortModel().setSortOrder(Track.ARTIST, ASCENDING);
-		tableModel.sortModel().addSortOrder(Track.ALBUM_FK, ASCENDING);
-		tableModel.sortModel().addSortOrder(Track.NAME, ASCENDING);
+		selector.table().getColumnModel().setVisibleColumns(Track.ARTIST, Track.ALBUM_FK, Track.NAME);
+		selector.table().sortModel().setSortOrder(Track.ARTIST, ASCENDING);
+		selector.table().sortModel().addSortOrder(Track.ALBUM_FK, ASCENDING);
+		selector.table().sortModel().addSortOrder(Track.NAME, ASCENDING);
 		selector.preferredSize(new Dimension(500, 300));
 
 		return selector;

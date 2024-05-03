@@ -21,24 +21,25 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.table.TableConditionModel;
-import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.value.Value;
 
 import javax.swing.table.TableModel;
-import java.text.Format;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.model.component.table.DefaultFilteredTableModel.COMPARABLE_COMPARATOR;
+import static is.codion.swing.common.model.component.table.DefaultFilteredTableModel.STRING_COMPARATOR;
+
 /**
  * Specifies a table model supporting selection as well as filtering
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
- * @see #builder(ColumnFactory, ColumnValues)
+ * @see #builder(Columns)
  */
 public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
@@ -87,6 +88,11 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	R itemAt(int rowIndex);
 
 	/**
+	 * @return the table columns
+	 */
+	Columns<R,C> columns();
+
+	/**
 	 * Returns a String representation of the value for the given row and column.
 	 * @param rowIndex the row index
 	 * @param columnIdentifier the column identifier
@@ -116,10 +122,9 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
 	/**
 	 * Adds the given items to this table model, non-filtered items are added at the given index.
-	 * If sorting is enabled this model is sorted after the items have been added.
+	 * If a {@link #comparator()} is specified this model is sorted after the items have been added.
 	 * @param index the index at which to add the items
 	 * @param items the items to add
-	 * @see FilteredTableSortModel#sorted()
 	 */
 	void addItemsAtSorted(int index, Collection<R> items);
 
@@ -202,28 +207,22 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	<T> Collection<T> selectedValues(C columnIdentifier);
 
 	/**
-	 * @return a {@link Export} instance for exporting the table model data
-	 */
-	Export export();
-
-	/**
 	 * Default {@link RefreshStrategy#CLEAR}
 	 * @return the Value controlling the refresh strategy
 	 */
 	Value<RefreshStrategy> refreshStrategy();
 
 	/**
-	 * Sorts the visible items according to the {@link FilteredTableSortModel}, keeping the selected items.
-	 * Calling this method with the sort model disabled has no effect.
-	 * @see #sortModel()
-	 * @see FilteredTableSortModel#sorted
+	 * @return the value controlling the comparator to use when sorting
 	 */
-	void sortItems();
+	Value<Comparator<R>> comparator();
 
 	/**
-	 * @return the FilteredTableColumnModel used by this TableModel
+	 * Sorts the visible items according to {@link #comparator()}, keeping the selected items.
+	 * Calling this method when no comparator is specified has no effect.
+	 * @see #comparator()
 	 */
-	FilteredTableColumnModel<C> columnModel();
+	void sortItems();
 
 	/**
 	 * @return the selection model used by this table model
@@ -231,24 +230,9 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	FilteredTableSelectionModel<R> selectionModel();
 
 	/**
-	 * @return the sorting model
-	 */
-	FilteredTableSortModel<R, C> sortModel();
-
-	/**
-	 * @return the search model
-	 */
-	FilteredTableSearchModel searchModel();
-
-	/**
 	 * @return the filter model used by this table model
 	 */
 	TableConditionModel<C> filterModel();
-
-	/**
-	 * @return the summary model
-	 */
-	TableSummaryModel<C> summaryModel();
 
 	/**
 	 * {@inheritDoc}
@@ -297,28 +281,14 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
 	/**
 	 * Instantiates a new table model builder.
-	 * @param columnFactory the column factory
-	 * @param columnValues the column value provider
+	 * @param columns the columns
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 * @return a new builder instance
-	 * @throws NullPointerException in case {@code columnFactory} or {@code columnValues} is null
+	 * @throws NullPointerException in case {@code columnValues} is null
 	 */
-	static <R, C> Builder<R, C> builder(ColumnFactory<C> columnFactory, ColumnValues<R, C> columnValues) {
-		return new DefaultFilteredTableModel.DefaultBuilder<>(columnFactory, columnValues);
-	}
-
-	/**
-	 * Instantiates a new {@link SummaryValues} instance.
-	 * @param columnIdentifier the column identifier
-	 * @param tableModel the table model
-	 * @param format the format
-	 * @param <T> the column value type
-	 * @param <C> the column identifier type
-	 * @return a new {@link SummaryValues} instance
-	 */
-	static <T extends Number, C> SummaryValues<T> summaryValues(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
-		return new DefaultFilteredTableModel.DefaultSummaryValues<>(columnIdentifier, tableModel, format);
+	static <R, C> Builder<R, C> builder(Columns<R, C> columns) {
+		return new DefaultFilteredTableModel.DefaultBuilder<>(columns);
 	}
 
 	/**
@@ -333,12 +303,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 		 * @return this builder instance
 		 */
 		Builder<R, C> filterModelFactory(ColumnConditionModel.Factory<C> filterModelFactory);
-
-		/**
-		 * @param summaryValuesFactory the column summary values factory
-		 * @return this builder instance
-		 */
-		Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory);
 
 		/**
 		 * @param items supplies the items
@@ -373,95 +337,80 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	}
 
 	/**
-	 * Exports the table data to a String.
-	 */
-	interface Export {
-		/**
-		 * @param delimiter the column delimiter (TAB by default)
-		 * @return this Export instance
-		 */
-		Export delimiter(char delimiter);
-
-		/**
-		 * @param header include a column header
-		 * @return this Export instance
-		 */
-		Export header(boolean header);
-
-		/**
-		 * @param hidden include hidden columns
-		 * @return this Export instance
-		 */
-		Export hidden(boolean hidden);
-
-		/**
-		 * @param selected include only selected rows (default false)
-		 * @return this Export instance
-		 */
-		Export selected(boolean selected);
-
-		/**
-		 * @return the table data exported to a String
-		 */
-		String get();
-	}
-
-	/**
-	 * Provides columns for a {@link FilteredTableModel}.
-	 * @param <C> the column identifier type
-	 */
-	interface ColumnFactory<C> {
-
-		/**
-		 * @return the columns, may not be empty
-		 */
-		List<FilteredTableColumn<C>> createColumns();
-	}
-
-	/**
-	 * Provides the column value for a row and column
+	 * Specifies the columns for a table model
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
-	interface ColumnValues<R, C> {
+	interface Columns<R, C> {
 
 		/**
-		 * Returns a value for the given row and columnIdentifier
+		 * @return the column identifiers
+		 */
+		List<C> identifiers();
+
+		/**
+		 * @param identifier the column identifier
+		 * @return the column class for the given column
+		 */
+		Class<?> columnClass(C identifier);
+
+		/**
+		 * Returns a value for the given row and identifier
 		 * @param row the object representing a given row
-		 * @param columnIdentifier the column identifier
+		 * @param identifier the column identifier
 		 * @return a value for the given row and column
 		 */
-		Object value(R row, C columnIdentifier);
+		Object value(R row, C identifier);
 
 		/**
-		 * Returns a String representation of the value for the given row and columnIdentifier,
+		 * @param index the identifier index
+		 * @return the identifier at the given index
+		 */
+	  default C identifier(int index) {
+			return identifiers().get(index);
+		}
+
+		/**
+		 * Returns a String representation of the value for the given row and column,
 		 * an empty String in case of null.
 		 * @param row the row
-		 * @param columnIdentifier the column identifier
+		 * @param identifier the column identifier
 		 * @return a String representation of the value for the given row and column, an empty String in case of null
 		 */
-		default String string(R row, C columnIdentifier) {
-			Object columnValue = value(row, columnIdentifier);
+		default String string(R row, C identifier) {
+			Object columnValue = value(row, identifier);
 
 			return columnValue == null ? "" : columnValue.toString();
 		}
 
 		/**
-		 * Returns a Comparable instance for the given row and columnIdentifier.
-		 * The default implementation returns the value as is in case it's a {@link Comparable} instance,
-		 * otherwise null is returned.
+		 * Returns a Comparable instance for the given row and column.<br>
+		 * Null is returned if the underlying column value is not a {@link Comparable} instance.
 		 * @param <T> the column value type
 		 * @param row the object representing a given row
-		 * @param columnIdentifier the column identifier
+		 * @param identifier the column identifier
 		 * @return a Comparable for the given row and column
 		 */
-		default <T> Comparable<T> comparable(R row, C columnIdentifier) {
-			Object value = value(row, columnIdentifier);
+		default <T> Comparable<T> comparable(R row, C identifier) {
+			Object value = value(row, identifier);
 			if (value instanceof Comparable) {
 				return (Comparable<T>) value;
 			}
 
 			return null;
+		}
+
+		/**
+		 * Returns the comparator to use when comparing the values of the given column
+		 * @param identifier the column identifier
+		 * @return a Comparator for the given column
+		 */
+		default Comparator<?> comparator(C identifier) {
+			if (Comparable.class.isAssignableFrom(columnClass(identifier))) {
+				return COMPARABLE_COMPARATOR;
+			}
+
+			return STRING_COMPARATOR;
 		}
 	}
 }

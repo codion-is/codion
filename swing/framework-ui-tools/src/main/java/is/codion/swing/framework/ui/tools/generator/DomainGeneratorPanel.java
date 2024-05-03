@@ -24,6 +24,7 @@ import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.table.FilteredTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -32,6 +33,8 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.tools.generator.DefinitionRow;
 import is.codion.swing.framework.model.tools.generator.DomainGeneratorModel;
+import is.codion.swing.framework.model.tools.generator.DomainGeneratorModel.DefinitionColumns;
+import is.codion.swing.framework.model.tools.generator.DomainGeneratorModel.SchemaColumns;
 import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
@@ -42,6 +45,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -50,6 +54,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.*;
@@ -58,6 +63,7 @@ import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFe
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 public final class DomainGeneratorPanel extends JPanel {
@@ -76,8 +82,8 @@ public final class DomainGeneratorPanel extends JPanel {
 						.name("Populate")
 						.enabled(model.schemaModel().selectionModel().selectionNotEmpty())
 						.build();
-		FilteredTable<MetaDataSchema, Integer> schemaTable =
-						FilteredTable.builder(model.schemaModel())
+		FilteredTable<MetaDataSchema, SchemaColumns.Id> schemaTable =
+						FilteredTable.builder(model.schemaModel(), createSchemaColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.doubleClickAction(populateSchemaControl)
 										.keyEvent(KeyEvents.builder(VK_ENTER)
@@ -91,9 +97,10 @@ public final class DomainGeneratorPanel extends JPanel {
 																		.controls(table.createAutoResizeModeControl()))
 														.build())
 										.build();
+		schemaTable.sortModel().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING);
 
-		FilteredTable<DefinitionRow, Integer> domainTable =
-						FilteredTable.builder(model.definitionModel())
+		FilteredTable<DefinitionRow, DefinitionColumns.Id> domainTable =
+						FilteredTable.builder(model.definitionModel(), createDefinitionColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.popupMenuControl(FilteredTable::createAutoResizeModeControl)
 										.build();
@@ -175,6 +182,35 @@ public final class DomainGeneratorPanel extends JPanel {
 														.userPreferencePropertyName(DomainGeneratorPanel.class.getName())
 														.createControl()))
 						.build();
+	}
+
+	private static List<FilteredTableColumn<SchemaColumns.Id>> createSchemaColumns() {
+			FilteredTableColumn<SchemaColumns.Id> catalogColumn = FilteredTableColumn.builder(SchemaColumns.Id.CATALOG)
+							.headerValue("Catalog")
+							.build();
+			FilteredTableColumn<SchemaColumns.Id> schemaColumn = FilteredTableColumn.builder(SchemaColumns.Id.SCHEMA)
+							.headerValue("Schema")
+							.build();
+			FilteredTableColumn<SchemaColumns.Id> populatedColumn = FilteredTableColumn.builder(SchemaColumns.Id.POPULATED)
+							.headerValue("Populated")
+							.build();
+
+			return asList(catalogColumn, schemaColumn, populatedColumn);
+	}
+
+	private static List<FilteredTableColumn<DefinitionColumns.Id>> createDefinitionColumns() {
+			FilteredTableColumn<DefinitionColumns.Id> domainColumn = FilteredTableColumn.builder(DefinitionColumns.Id.DOMAIN)
+							.headerValue("Domain")
+							.build();
+			FilteredTableColumn<DefinitionColumns.Id> entityTypeColumn = FilteredTableColumn.builder(DefinitionColumns.Id.ENTITY)
+							.headerValue("Entity")
+							.build();
+			FilteredTableColumn<DefinitionColumns.Id> typeColumn = FilteredTableColumn.builder(DefinitionColumns.Id.TABLE_TYPE)
+							.headerValue("Type")
+							.preferredWidth(120)
+							.build();
+
+			return asList(domainColumn, entityTypeColumn, typeColumn);
 	}
 
 	/**

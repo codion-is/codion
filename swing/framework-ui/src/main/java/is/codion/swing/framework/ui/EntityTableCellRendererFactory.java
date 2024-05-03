@@ -20,9 +20,9 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Builder;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRendererFactory;
+import is.codion.swing.common.ui.component.table.FilteredTableColumn;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.table.TableCellRenderer;

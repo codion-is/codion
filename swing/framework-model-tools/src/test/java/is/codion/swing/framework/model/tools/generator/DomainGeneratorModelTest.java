@@ -20,15 +20,16 @@ package is.codion.swing.framework.model.tools.generator;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
+import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.SortOrder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Comparator;
 
 import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,11 +60,12 @@ public final class DomainGeneratorModelTest {
 	void setUp() throws Exception {
 		model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().refresh();
-		model.schemaModel().sortModel().setSortOrder(1, SortOrder.ASCENDING);
+		model.schemaModel().comparator().set(Comparator.comparing(MetaDataSchema::name));
 		model.schemaModel().selectionModel().setSelectedIndex(1);
 		model.populateSelected(schema -> {});
-		model.definitionModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
-		model.definitionModel().sortModel().addSortOrder(1, SortOrder.ASCENDING);
+		model.definitionModel().comparator().set(Comparator.
+						<DefinitionRow, String>comparing(definitionRow -> definitionRow.definition.entityType().domainType().name())
+						.thenComparing(definitionRow -> definitionRow.definition.entityType().name()));
 	}
 
 	@AfterEach

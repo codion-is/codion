@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2013 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;

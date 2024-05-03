@@ -690,10 +690,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))
 							.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-							.onClosed(windowEvent -> {
-								entityPanel.model().savePreferences();
-								entityPanel.savePreferences();
-							})
+							.onClosed(windowEvent -> entityPanel.savePreferences())
 							.show();
 		}
 	}
@@ -724,10 +721,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 							.owner(parentWindow().orElse(null))
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))
-							.onClosed(e -> {
-								entityPanel.model().savePreferences();
-								entityPanel.savePreferences();
-							})
+							.onClosed(e -> entityPanel.savePreferences())
 							.modal(modalDialog)
 							.resizable(true)
 							.show();
@@ -784,11 +778,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	/**
 	 * Called during the exit() method, override to save user preferences on program exit,
 	 * remember to call super.savePreferences() when overriding
-	 * @see EntityApplicationModel#savePreferences()
 	 */
 	protected void savePreferences() {
 		entityPanels().forEach(EntityPanel::savePreferences);
-		applicationModel().savePreferences();
 	}
 
 	private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {

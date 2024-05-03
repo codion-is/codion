@@ -59,7 +59,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
 		createTextField(Customer.STATE)
 						.columns(4)
 						.upperCase(true)
-						.selector(Dialogs.singleSelector(new StateValueSupplier()));
+						.selector(Dialogs.singleSelector(new StatesSupplier()));
 		createTextField(Customer.COUNTRY)
 						.columns(8);
 		createTextField(Customer.PHONE)
@@ -97,7 +97,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
 		addInputPanel(Customer.SUPPORTREP_FK);
 	}
 
-	private class StateValueSupplier implements Supplier<Collection<String>> {
+	private class StatesSupplier implements Supplier<Collection<String>> {
 
 		@Override
 		public Collection<String> get() {

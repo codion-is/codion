@@ -36,8 +36,8 @@ final class DenormalizedValueProvider<T> implements DerivedAttribute.Provider<T>
 	}
 
 	@Override
-	public T get(DerivedAttribute.SourceValues sourceValues) {
-		Entity foreignKeyValue = sourceValues.get(entityAttribute);
+	public T get(DerivedAttribute.SourceValues values) {
+		Entity foreignKeyValue = values.get(entityAttribute);
 
 		return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);
 	}

@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2022 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * Handles searching through a {@link FilteredTableModel}
+ * Handles searching through a {@link FilteredTable}
  */
 public interface FilteredTableSearchModel {
 

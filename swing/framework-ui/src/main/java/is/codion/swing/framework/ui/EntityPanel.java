@@ -108,6 +108,14 @@ import static javax.swing.SwingConstants.VERTICAL;
  */
 public class EntityPanel extends JPanel {
 
+	/**
+	 * Specifies whether the client should save and apply user preferences<br>
+	 * Value type: Boolean<br>
+	 * Default value: true
+	 */
+	public static final PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
+					Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useClientPreferences", true);
+
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityPanel.class, getBundle(EntityPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
@@ -627,6 +635,7 @@ public class EntityPanel extends JPanel {
 	 * Saves any user preferences for all entity panels and associated elements
 	 */
 	public void savePreferences() {
+		tablePanel.savePreferences();
 		detailPanels.forEach(EntityPanel::savePreferences);
 	}
 

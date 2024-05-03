@@ -133,12 +133,6 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	boolean containsUnsavedData();
 
 	/**
-	 * Saves any user preferences. Note that if {@link EntityModel#USE_CLIENT_PREFERENCES} is set to 'false',
-	 * calling this method has no effect. Remember to call super.savePreferences() when overriding.
-	 */
-	void savePreferences();
-
-	/**
 	 * @return an unmodifiable List containing the EntityModel instances contained
 	 * in this EntityApplicationModel
 	 */

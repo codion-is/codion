@@ -112,6 +112,7 @@ import static is.codion.swing.common.ui.dialog.Dialogs.okCancelDialog;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
 import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
@@ -892,9 +893,10 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private FilteredTable<Entity, Attribute<?>> createTable() {
-			SwingEntityTableModel tableModel = createTableModel();
+			SwingEntityTableModel tableModel = new DefaultTableModel();
 
-			return FilteredTable.builder(tableModel)
+			FilteredTable<Entity, Attribute<?>> filteredTable = FilteredTable.builder(tableModel,
+											entityTableColumns(tableModel.entityDefinition()))
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 							.cellRendererFactory(new EntityTableCellRendererFactory(tableModel))
 							.selectionMode(searchModel.singleSelection() ?
@@ -913,15 +915,11 @@ public final class EntitySearchField extends HintTextField {
 											.action(selectControl)
 											.enable(t.searchField()))
 							.build();
-		}
 
-		private SwingEntityTableModel createTableModel() {
-			SwingEntityTableModel tableModel = new DefaultTableModel();
-			Collection<Column<String>> columns = searchModel.columns();
-			tableModel.columnModel().setVisibleColumns(columns.toArray(new Attribute[0]));
-			tableModel.sortModel().setSortOrder(columns.iterator().next(), SortOrder.ASCENDING);
+			filteredTable.sortModel().setSortOrder(searchModel.columns().iterator().next(), SortOrder.ASCENDING);
+			filteredTable.getColumnModel().setVisibleColumns(searchModel.columns().toArray(new Attribute[0]));
 
-			return tableModel;
+			return filteredTable;
 		}
 
 		private void requestSearchFieldFocus() {

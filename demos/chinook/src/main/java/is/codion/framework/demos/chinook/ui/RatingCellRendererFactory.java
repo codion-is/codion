@@ -18,18 +18,26 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.common.Text;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Builder;
+import is.codion.swing.common.ui.component.table.FilteredTableColumn;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRendererFactory;
 
-import java.util.function.Function;
+import java.util.Map;
+
+import static is.codion.common.Text.rightPad;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.IntStream.rangeClosed;
 
 final class RatingCellRendererFactory extends EntityTableCellRendererFactory {
+
+	private static final Map<Integer, String> RATINGS = rangeClosed(1, 10)
+					.mapToObj(ranking -> rightPad("", ranking, '*'))
+					.collect(toMap(String::length, identity()));
 
 	private final Column<Integer> ratingColumn;
 
@@ -42,20 +50,10 @@ final class RatingCellRendererFactory extends EntityTableCellRendererFactory {
 	protected Builder<Entity, Attribute<?>> builder(FilteredTableColumn<Attribute<?>> column) {
 		Builder<Entity, Attribute<?>> builder = super.builder(column);
 		if (column.getIdentifier().equals(ratingColumn)) {
-			builder.values(new RatingValues())
+			builder.values(rating -> RATINGS.get((Integer) rating))
 							.toolTipData(true);
 		}
 
 		return builder;
-	}
-
-	private static class RatingValues implements Function<Object, Object> {
-
-		@Override
-		public Object apply(Object columnValue) {
-			int ranking = (Integer) columnValue;
-
-			return Text.leftPad("", ranking, '*');
-		}
 	}
 }

@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
-import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 

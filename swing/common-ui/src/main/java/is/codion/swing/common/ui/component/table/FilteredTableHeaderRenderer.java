@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
@@ -80,13 +79,13 @@ final class FilteredTableHeaderRenderer<R, C> implements TableCellRenderer {
 	}
 
 	private Icon sortArrowIcon(C columnIdentifier, int iconSizePixels) {
-		SortOrder sortOrder = filteredTable.getModel().sortModel().sortOrder(columnIdentifier);
+		SortOrder sortOrder = filteredTable.sortModel().sortOrder(columnIdentifier);
 		if (sortOrder == SortOrder.UNSORTED) {
 			return null;
 		}
 
 		return new Arrow(sortOrder == SortOrder.DESCENDING, iconSizePixels,
-						filteredTable.getModel().sortModel().sortPriority(columnIdentifier));
+						filteredTable.sortModel().sortPriority(columnIdentifier));
 	}
 
 	private static final class Arrow implements Icon {

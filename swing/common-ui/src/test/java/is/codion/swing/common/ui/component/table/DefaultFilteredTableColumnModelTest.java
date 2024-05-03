@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2013 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.swing.common.ui.component.table;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
+import static is.codion.swing.common.ui.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;

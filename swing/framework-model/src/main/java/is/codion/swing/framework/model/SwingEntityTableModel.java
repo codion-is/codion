@@ -22,11 +22,8 @@ import is.codion.common.Conjunction;
 import is.codion.common.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventObserver;
-import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.table.TableConditionModel;
-import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -41,32 +38,22 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.framework.model.EntityEditEvents;
-import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
-import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
-import is.codion.swing.common.model.component.table.FilteredTableSortModel;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.awt.Color;
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -81,24 +68,15 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
-import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
-import static is.codion.framework.model.EntityTableModel.ColumnPreferences.columnPreferences;
-import static is.codion.swing.common.model.component.table.FilteredTableModel.summaryValues;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * A TableModel implementation for displaying and working with entities.
  */
 public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditModel>, FilteredTableModel<Entity, Attribute<?>> {
-
-	private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
-
-	private static final String COLUMN_PREFERENCES = "-columns";
-	private static final String CONDITIONS_PREFERENCES = "-conditions";
 
 	private final FilteredTableModel<Entity, Attribute<?>> tableModel;
 	private final SwingEntityEditModel editModel;
@@ -112,8 +90,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 					.build();
 	private final State editable = State.state();
 	private final Value<Integer> limit = Value.value();
-	private final State queryHiddenColumns = State.state(EntityTableModel.QUERY_HIDDEN_COLUMNS.get());
-	private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.get());
+	private final Value<OrderBy> orderBy;
 	private final State removeDeleted = State.state(true);
 	private final Value<OnInsert> onInsert = Value.nonNull(EntityTableModel.ON_INSERT.get()).build();
 
@@ -139,17 +116,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param entityType the entityType
 	 * @param connectionProvider the connection provider
-	 * @param columnFactory the table column factory
-	 */
-	public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-															 ColumnFactory<Attribute<?>> columnFactory) {
-		this(new SwingEntityEditModel(entityType, connectionProvider), columnFactory);
-	}
-
-	/**
-	 * Instantiates a new SwingEntityTableModel.
-	 * @param entityType the entityType
-	 * @param connectionProvider the connection provider
 	 * @param conditionModelFactory the table condition model factory
 	 */
 	public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
@@ -159,58 +125,25 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
-	 * @param entityType the entityType
-	 * @param connectionProvider the connection provider
-	 * @param columnFactory the table column factory
-	 * @param conditionModelFactory the table condition model factory
-	 */
-	public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-															 ColumnFactory<Attribute<?>> columnFactory,
-															 EntityConditionModelFactory conditionModelFactory) {
-		this(new SwingEntityEditModel(entityType, connectionProvider), columnFactory, conditionModelFactory);
-	}
-
-	/**
-	 * Instantiates a new SwingEntityTableModel.
 	 * @param editModel the edit model
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
-		this(editModel, new SwingEntityColumnFactory(requireNonNull(editModel).entityDefinition()));
+		this(editModel, new SwingEntityConditionModelFactory(requireNonNull(editModel).connectionProvider()));
 	}
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param editModel the edit model
-	 * @param columnFactory the table column factory
-	 */
-	public SwingEntityTableModel(SwingEntityEditModel editModel, ColumnFactory<Attribute<?>> columnFactory) {
-		this(editModel, columnFactory, new SwingEntityConditionModelFactory(requireNonNull(editModel).connectionProvider()));
-	}
-
-	/**
-	 * Instantiates a new SwingEntityTableModel.
-	 * @param editModel the edit model
-	 * @param conditionModelFactory the table condition model factory
-	 */
-	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityConditionModelFactory conditionModelFactory) {
-		this(editModel, new SwingEntityColumnFactory(requireNonNull(editModel).entityDefinition()), conditionModelFactory);
-	}
-
-	/**
-	 * Instantiates a new SwingEntityTableModel.
-	 * @param editModel the edit model
-	 * @param columnFactory the table column factory
 	 * @param conditionModelFactory the table condition model factory
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel,
-															 ColumnFactory<Attribute<?>> columnFactory,
 															 EntityConditionModelFactory conditionModelFactory) {
 		this.editModel = requireNonNull(editModel);
-		this.tableModel = createTableModel(editModel.entityDefinition(), requireNonNull(columnFactory));
+		this.tableModel = createTableModel(editModel.entityDefinition());
 		this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
+		this.orderBy = createOrderBy();
 		this.refreshCondition = createSelect(conditionModel);
 		bindEvents();
-		applyPreferences();
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
 
@@ -240,13 +173,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final State queryHiddenColumns() {
-		return queryHiddenColumns;
-	}
-
-	@Override
-	public final State orderQueryBySortOrder() {
-		return orderQueryBySortOrder;
+	public final Value<OrderBy> orderBy() {
+		return orderBy;
 	}
 
 	@Override
@@ -311,7 +239,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		if (!editable.get() || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
 			return false;
 		}
-		Attribute<?> attribute = columnModel().columnIdentifier(modelColumnIndex);
+		Attribute<?> attribute = columns().identifier(modelColumnIndex);
 		if (attribute instanceof ForeignKey) {
 			return entityDefinition().foreignKeys().updatable((ForeignKey) attribute);
 		}
@@ -333,8 +261,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 			throw new IllegalStateException("This table model is readOnly or has disabled update");
 		}
 		Entity entity = itemAt(rowIndex).copy();
-		Attribute<?> columnIdentifier = columnModel().columnIdentifier(modelColumnIndex);
-		entity.put((Attribute<Object>) columnIdentifier, value);
+		entity.put((Attribute<Object>) columns().identifier(modelColumnIndex), value);
 		try {
 			if (entity.modified()) {
 				editModel.update(singletonList(entity));
@@ -438,36 +365,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	@Override
 	public final Collection<Entity> deleteSelected() throws DatabaseException {
 		return editModel.delete(selectionModel().getSelectedItems());
-	}
-
-	@Override
-	public final void setVisibleColumns(Attribute<?>... attributes) {
-		columnModel().setVisibleColumns(attributes);
-	}
-
-	@Override
-	public final void setVisibleColumns(List<Attribute<?>> attributes) {
-		columnModel().setVisibleColumns(attributes);
-	}
-
-	@Override
-	public final void savePreferences() {
-		if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
-			try {
-				UserPreferences.setUserPreference(userPreferencesKey() + COLUMN_PREFERENCES,
-								ColumnPreferences.toString(createColumnPreferences()));
-			}
-			catch (Exception e) {
-				LOG.error("Error while saving column preferences", e);
-			}
-			try {
-				UserPreferences.setUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES,
-								ConditionPreferences.toString(createConditionPreferences()));
-			}
-			catch (Exception e) {
-				LOG.error("Error while saving condition preferences", e);
-			}
-		}
 	}
 
 	@Override
@@ -646,11 +543,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final FilteredTableColumnModel<Attribute<?>> columnModel() {
-		return tableModel.columnModel();
-	}
-
-	@Override
 	public final <T> Collection<T> values(Attribute<?> columnIdentifier) {
 		return tableModel.values(columnIdentifier);
 	}
@@ -663,11 +555,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	@Override
 	public final <T> Collection<T> selectedValues(Attribute<?> columnIdentifier) {
 		return tableModel.selectedValues(columnIdentifier);
-	}
-
-	@Override
-	public final Export export() {
-		return tableModel.export();
 	}
 
 	@Override
@@ -686,23 +573,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final FilteredTableSortModel<Entity, Attribute<?>> sortModel() {
-		return tableModel.sortModel();
-	}
-
-	@Override
-	public final FilteredTableSearchModel searchModel() {
-		return tableModel.searchModel();
-	}
-
-	@Override
 	public final TableConditionModel<Attribute<?>> filterModel() {
 		return tableModel.filterModel();
-	}
-
-	@Override
-	public final TableSummaryModel<Attribute<?>> summaryModel() {
-		return tableModel.summaryModel();
 	}
 
 	@Override
@@ -738,6 +610,16 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	@Override
 	public final void removeTableModelListener(TableModelListener listener) {
 		tableModel.removeTableModelListener(listener);
+	}
+
+	@Override
+	public Columns<Entity, Attribute<?>> columns() {
+		return tableModel.columns();
+	}
+
+	@Override
+	public Value<Comparator<Entity>> comparator() {
+		return tableModel.comparator();
 	}
 
 	/**
@@ -819,52 +701,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		throw new IllegalArgumentException("Unsupported Color representation: " + color);
 	}
 
-	/**
-	 * The order by clause to use when selecting the data for this model.
-	 * If ordering by sort order is enabled a {@link OrderBy} clause is constructed
-	 * according to the sort order of column based attributes, otherwise the order by
-	 * clause defined for the underlying entity is returned.
-	 * @return the order by clause
-	 * @see #orderQueryBySortOrder()
-	 * @see EntityDefinition#orderBy()
-	 */
-	protected OrderBy orderBy() {
-		if (orderQueryBySortOrder.get() && sortModel().sorted()) {
-			OrderBy orderBy = orderByFromSortModel();
-			if (!orderBy.orderByColumns().isEmpty()) {
-				return orderBy;
-			}
-		}
-
-		return entityDefinition().orderBy().orElse(null);
-	}
-
-	/**
-	 * Returns the key used to identify user preferences for this table model, that is column positions, widths and such.
-	 * The default implementation is:
-	 * <pre>
-	 * {@code
-	 * return getClass().getSimpleName() + "-" + entityType();
-	 * }
-	 * </pre>
-	 * Override in case this key is not unique.
-	 * @return the key used to identify user preferences for this table model
-	 */
-	protected String userPreferencesKey() {
-		return getClass().getSimpleName() + "-" + entityType();
-	}
-
-	/**
-	 * Clears any user preferences saved for this table model
-	 */
-	final void clearPreferences() {
-		String userPreferencesKey = userPreferencesKey();
-		UserPreferences.removeUserPreference(userPreferencesKey + COLUMN_PREFERENCES);
-		UserPreferences.removeUserPreference(userPreferencesKey + CONDITIONS_PREFERENCES);
-	}
-
 	private void bindEvents() {
-		columnModel().columnHiddenEvent().addConsumer(this::onColumnHidden);
 		conditionModel.conditionChangedEvent().addListener(() -> onConditionChanged(createSelect(conditionModel)));
 		editModel.afterInsertEvent().addConsumer(this::onInsert);
 		editModel.afterUpdateEvent().addConsumer(this::onUpdate);
@@ -946,18 +783,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		conditionChanged.set(!Objects.equals(refreshCondition, condition));
 	}
 
-	private void onColumnHidden(Attribute<?> attribute) {
-		//disable the condition and filter model for the column to be hidden, to prevent confusion
-		ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
-		if (columnConditionModel != null && !columnConditionModel.locked().get()) {
-			columnConditionModel.enabled().set(false);
-		}
-		ColumnConditionModel<?, ?> filterModel = filterModel().conditionModels().get(attribute);
-		if (filterModel != null && !filterModel.locked().get()) {
-			filterModel.enabled().set(false);
-		}
-	}
-
 	/**
 	 * Replace the entities identified by the Entity.Key map keys with their respective value.
 	 * Note that this does not trigger {@link #filterItems()}, that must be done explicitly.
@@ -992,119 +817,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		return keyIndexes;
 	}
 
-	private OrderBy orderByFromSortModel() {
-		OrderBy.Builder builder = OrderBy.builder();
-		sortModel().columnSortOrder().stream()
-						.filter(columnSortOrder -> isColumn(columnSortOrder.columnIdentifier()))
-						.forEach(columnSortOrder -> {
-							switch (columnSortOrder.sortOrder()) {
-								case ASCENDING:
-									builder.ascending((Column<?>) columnSortOrder.columnIdentifier());
-									break;
-								case DESCENDING:
-									builder.descending((Column<?>) columnSortOrder.columnIdentifier());
-									break;
-								default:
-							}
-						});
-
-		return builder.build();
-	}
-
-	private boolean isColumn(Attribute<?> attribute) {
-		return entityDefinition().attributes().definition(attribute) instanceof ColumnDefinition;
-	}
-
-	private Map<Attribute<?>, ColumnPreferences> createColumnPreferences() {
-		Map<Attribute<?>, ColumnPreferences> columnPreferencesMap = new HashMap<>();
-		for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
-			Attribute<?> attribute = column.getIdentifier();
-			int index = columnModel().visible(attribute).get() ? columnModel().getColumnIndex(attribute) : -1;
-			columnPreferencesMap.put(attribute, columnPreferences(attribute, index, column.getWidth()));
-		}
-
-		return columnPreferencesMap;
-	}
-
-	private Map<Attribute<?>, ConditionPreferences> createConditionPreferences() {
-		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
-		for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
-			Attribute<?> attribute = column.getIdentifier();
-			ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
-			if (columnConditionModel != null) {
-				conditionPreferencesMap.put(attribute, conditionPreferences(attribute,
-								columnConditionModel.autoEnable().get(),
-								columnConditionModel.caseSensitive().get(),
-								columnConditionModel.automaticWildcard().get()));
-			}
-		}
-
-		return conditionPreferencesMap;
-	}
-
-	private void applyPreferences() {
-		if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
-			String columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + COLUMN_PREFERENCES, "");
-			if (columnPreferencesString.isEmpty()) {//todo remove: see if a legacy one without "-columns" postfix exists
-				columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
-			}
-			if (!columnPreferencesString.isEmpty()) {
-				applyColumnPreferences(columnPreferencesString);
-			}
-			String conditionPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES, "");
-			if (!conditionPreferencesString.isEmpty()) {
-				applyConditionPreferences(conditionPreferencesString);
-			}
-		}
-	}
-
-	private void applyColumnPreferences(String preferencesString) {
-		List<Attribute<?>> columnAttributes = columnModel().columns().stream()
-						.map(FilteredTableColumn::getIdentifier)
-						.collect(toList());
-		try {
-			ColumnPreferences.apply(this, columnAttributes, preferencesString, (attribute, columnWidth) ->
-							columnModel().column(attribute).setPreferredWidth(columnWidth));
-		}
-		catch (Exception e) {
-			LOG.error("Error while applying column preferences: {}", preferencesString, e);
-		}
-	}
-
-	private void applyConditionPreferences(String preferencesString) {
-		List<Attribute<?>> columnAttributes = columnModel().columns().stream()
-						.map(FilteredTableColumn::getIdentifier)
-						.collect(toList());
-		try {
-			ConditionPreferences.apply(this, columnAttributes, preferencesString);
-		}
-		catch (Exception e) {
-			LOG.error("Error while applying condition preferences: {}", preferencesString, e);
-		}
-	}
-
 	private Select createSelect(EntityTableConditionModel<Attribute<?>> conditionModel) {
 		return Select.where(conditionModel.where(Conjunction.AND))
 						.having(conditionModel.having(Conjunction.AND))
-						.attributes(selectAttributes())
+						.attributes(attributes().get())
 						.limit(limit().get())
-						.orderBy(orderBy())
+						.orderBy(orderBy.get())
 						.build();
-	}
-
-	private Collection<Attribute<?>> selectAttributes() {
-		FilteredTableColumnModel<Attribute<?>> columnModel = columnModel();
-		if (queryHiddenColumns.get() || columnModel.hidden().isEmpty()) {
-			return attributes.get();
-		}
-
-		return entityDefinition().attributes().selected().stream()
-						.filter(this::columnNotHidden)
-						.collect(toList());
-	}
-
-	private boolean columnNotHidden(Attribute<?> attribute) {
-		return !columnModel().containsColumn(attribute) || columnModel().visible(attribute).get();
 	}
 
 	private class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {
@@ -1117,6 +836,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 				}
 			}
 		}
+	}
+
+	private Value<OrderBy> createOrderBy() {
+		return entityDefinition().orderBy()
+						.map(entityOrderBy -> Value.nonNull(entityOrderBy).build())
+						.orElse(Value.value());
 	}
 
 	private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
@@ -1180,16 +905,36 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 	}
 
-	private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition, ColumnFactory<Attribute<?>> columnFactory) {
-		return FilteredTableModel.builder(columnFactory, new EntityColumnValues())
+	private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition) {
+		return FilteredTableModel.builder(new EntityTableColumns(entityDefinition))
 						.filterModelFactory(new EntityFilterModelFactory(entityDefinition))
-						.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, this))
 						.items(new EntityItems(this))
 						.validator(new EntityItemValidator(entityDefinition.entityType()))
 						.build();
 	}
 
-	private static final class EntityColumnValues implements ColumnValues<Entity, Attribute<?>> {
+	private static final class EntityTableColumns implements Columns<Entity, Attribute<?>> {
+
+		private final EntityDefinition entityDefinition;
+		private final List<Attribute<?>> identifiers;
+
+		private EntityTableColumns(EntityDefinition entityDefinition) {
+			this.entityDefinition = entityDefinition;
+			this.identifiers = entityDefinition.attributes().definitions().stream()
+							.filter(attributeDefinition -> !attributeDefinition.hidden())
+							.map(AttributeDefinition::attribute)
+							.collect(toUnmodifiableList());
+		}
+
+		@Override
+		public List<Attribute<?>> identifiers() {
+			return identifiers;
+		}
+
+		@Override
+		public Class<?> columnClass(Attribute<?> identifier) {
+			return identifier.type().valueClass();
+		}
 
 		@Override
 		public Object value(Entity entity, Attribute<?> attribute) {
@@ -1204,6 +949,15 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		@Override
 		public <T> Comparable<T> comparable(Entity entity, Attribute<?> attribute) {
 			return (Comparable<T>) entity.get(attribute);
+		}
+
+		@Override
+		public Comparator<?> comparator(Attribute<?> attribute) {
+			if (attribute instanceof ForeignKey) {
+				return entityDefinition.foreignKeys().referencedBy((ForeignKey) attribute).comparator();
+			}
+
+			return entityDefinition.attributes().definition(attribute).comparator();
 		}
 	}
 
@@ -1246,27 +1000,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 			}
 
 			return Arrays.asList(Operator.values());
-		}
-	}
-
-	private static final class EntitySummaryValuesFactory implements SummaryValues.Factory<Attribute<?>> {
-
-		private final EntityDefinition entityDefinition;
-		private final FilteredTableModel<?, Attribute<?>> tableModel;
-
-		private EntitySummaryValuesFactory(EntityDefinition entityDefinition, FilteredTableModel<?, Attribute<?>> tableModel) {
-			this.entityDefinition = requireNonNull(entityDefinition);
-			this.tableModel = requireNonNull(tableModel);
-		}
-
-		@Override
-		public <T extends Number> Optional<SummaryValues<T>> createSummaryValues(Attribute<?> attribute, Format format) {
-			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-			if (attribute.type().isNumerical() && attributeDefinition.items().isEmpty()) {
-				return Optional.of(summaryValues(attribute, tableModel, format));
-			}
-
-			return Optional.empty();
 		}
 	}
 

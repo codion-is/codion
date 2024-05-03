@@ -16,13 +16,14 @@
  *
  * Copyright (c) 2014 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.swing.common.ui.component.table;
+
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.SortOrder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -34,26 +35,30 @@ public class DefaultFilteredTableSortModelTest {
 
 	@Test
 	void test() {
-		FilteredTableColumn<Integer> firstColumn = FilteredTableColumn.builder(0)
-						.columnClass(String.class)
-						.build();
-		FilteredTableColumn<Integer> secondColumn = FilteredTableColumn.builder(1)
-						.columnClass(String.class)
-						.build();
-		FilteredTableColumn<Integer> thirdColumn = FilteredTableColumn.builder(2)
-						.columnClass(String.class)
-						.build();
-		FilteredTableColumnModel<Integer> columnModel = new DefaultFilteredTableColumnModel<>(Arrays.asList(firstColumn, secondColumn, thirdColumn));
-		DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<>(columnModel, (row, columnIdentifier) -> {
-			switch (columnIdentifier) {
-				case 0:
-					return row.firstValue;
-				case 1:
-					return row.secondValue.toString();
-				case 2:
-					return row.thirdValue;
-				default:
-					return null;
+		DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<>(new FilteredTableModel.Columns<Row, Integer>() {
+
+			@Override
+			public List<Integer> identifiers() {
+				return asList(0, 1, 2);
+			}
+
+			@Override
+			public Class<?> columnClass(Integer identifier) {
+				return Integer.class;
+			}
+
+			@Override
+			public Object value(Row row, Integer identifier) {
+				switch (identifier) {
+					case 0:
+						return row.firstValue;
+					case 1:
+						return row.secondValue.toString();
+					case 2:
+						return row.thirdValue;
+					default:
+						return null;
+				}
 			}
 		});
 
@@ -120,11 +125,23 @@ public class DefaultFilteredTableSortModelTest {
 
 	@Test
 	void nonComparableColumnClass() {
-		FilteredTableColumn<Integer> firstColumn = FilteredTableColumn.builder(0)
-						.columnClass(ArrayList.class)
-						.build();
-		FilteredTableColumnModel<Integer> columnModel = new DefaultFilteredTableColumnModel<>(Collections.singletonList(firstColumn));
-		DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<>(columnModel, (row, columnIdentifier) -> row.toString());
+		FilteredTableColumn<Integer> firstColumn = FilteredTableColumn.builder(0).build();
+		DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<>(new FilteredTableModel.Columns<ArrayList, Integer>() {
+			@Override
+			public List<Integer> identifiers() {
+				return Collections.singletonList(0);
+			}
+
+			@Override
+			public Class<?> columnClass(Integer identifier) {
+				return ArrayList.class;
+			}
+
+			@Override
+			public Object value(ArrayList row, Integer identifier) {
+				return row.toString();
+			}
+		});
 		List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
 		model.setSortOrder(0, SortOrder.DESCENDING);
 		collections.sort(model.comparator());

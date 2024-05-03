@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static javax.swing.ListSelectionModel.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,11 +33,23 @@ public class DefaultFilteredTableSelectionModelTest {
 
 	public DefaultFilteredTableSelectionModelTest() {
 		List<String> data = asList("A", "B", "C");
-		FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
-						.columnClass(String.class)
-						.build();
 		FilteredTableModel<String, Integer> tableModel =
-						FilteredTableModel.<String, Integer>builder(() -> singletonList(column), (row, integer) -> row)
+						FilteredTableModel.<String, Integer>builder(new FilteredTableModel.Columns<String, Integer>() {
+											@Override
+											public List<Integer> identifiers() {
+												return asList(0, 1, 2);
+											}
+
+											@Override
+											public Class<?> columnClass(Integer identifier) {
+												return String.class;
+											}
+
+											@Override
+											public Object value(String row, Integer identifier) {
+												return data.get(identifier);
+											}
+										})
 										.items(() -> data)
 										.build();
 		tableModel.refresh();

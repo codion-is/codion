@@ -110,13 +110,13 @@ public final class TrackEditPanel extends EntityEditPanel {
 	}
 
 	private void addKeyEvents() {
-		KeyEvents.Builder keyEvent = KeyEvents.builder()
+		KeyEvents.builder()
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-						.modifiers(CTRL_DOWN_MASK);
-		keyEvent.keyCode(VK_UP)
+						.modifiers(CTRL_DOWN_MASK)
+						.keyCode(VK_UP)
 						.action(Control.control(this::moveSelectionUp))
-						.enable(this);
-		keyEvent.keyCode(VK_DOWN)
+						.enable(this)
+						.keyCode(VK_DOWN)
 						.action(Control.control(this::moveSelectionDown))
 						.enable(this);
 	}

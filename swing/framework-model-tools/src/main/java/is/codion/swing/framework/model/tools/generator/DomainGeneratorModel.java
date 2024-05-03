@@ -23,13 +23,11 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
+import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
 import is.codion.swing.framework.model.tools.metadata.MetaDataModel;
 import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
-import javax.swing.SortOrder;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -40,6 +38,7 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.Separators.LINE_SEPARATOR;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -49,8 +48,8 @@ import static java.util.stream.Collectors.toList;
 public final class DomainGeneratorModel {
 
 	private final MetaDataModel metaDataModel;
-	private final FilteredTableModel<MetaDataSchema, Integer> schemaTableModel;
-	private final FilteredTableModel<DefinitionRow, Integer> definitionTableModel;
+	private final FilteredTableModel<MetaDataSchema, SchemaColumns.Id> schemaTableModel;
+	private final FilteredTableModel<DefinitionRow, DefinitionColumns.Id> definitionTableModel;
 	private final Connection connection;
 	private final Value<String> domainSourceValue = Value.value();
 
@@ -58,11 +57,10 @@ public final class DomainGeneratorModel {
 		this.connection = requireNonNull(database, "database").createConnection(user);
 		try {
 			this.metaDataModel = new MetaDataModel(connection.getMetaData());
-			this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnFactory(), new SchemaColumnValues())
+			this.schemaTableModel = FilteredTableModel.builder(new SchemaColumns())
 							.items(metaDataModel::schemas)
 							.build();
-			this.schemaTableModel.sortModel().setSortOrder(SchemaColumnValues.SCHEMA, SortOrder.ASCENDING);
-			this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnFactory(), new DefinitionColumnValues())
+			this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumns())
 							.items(new DefinitionItems())
 							.build();
 			this.schemaTableModel.refresh();
@@ -73,11 +71,11 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	public FilteredTableModel<MetaDataSchema, Integer> schemaModel() {
+	public FilteredTableModel<MetaDataSchema, SchemaColumns.Id> schemaModel() {
 		return schemaTableModel;
 	}
 
-	public FilteredTableModel<DefinitionRow, Integer> definitionModel() {
+	public FilteredTableModel<DefinitionRow, DefinitionColumns.Id> definitionModel() {
 		return definitionTableModel;
 	}
 
@@ -120,49 +118,6 @@ public final class DomainGeneratorModel {
 						.collect(Collectors.joining(LINE_SEPARATOR + LINE_SEPARATOR)));
 	}
 
-	private static final class SchemaColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
-
-		@Override
-		public List<FilteredTableColumn<Integer>> createColumns() {
-			FilteredTableColumn<Integer> catalogColumn = FilteredTableColumn.builder(SchemaColumnValues.CATALOG)
-							.headerValue("Catalog")
-							.columnClass(String.class)
-							.build();
-			FilteredTableColumn<Integer> schemaColumn = FilteredTableColumn.builder(SchemaColumnValues.SCHEMA)
-							.headerValue("Schema")
-							.columnClass(String.class)
-							.build();
-			FilteredTableColumn<Integer> populatedColumn = FilteredTableColumn.builder(SchemaColumnValues.POPULATED)
-							.headerValue("Populated")
-							.columnClass(Boolean.class)
-							.build();
-
-			return asList(catalogColumn, schemaColumn, populatedColumn);
-		}
-	}
-
-	private static final class DefinitionColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
-
-		@Override
-		public List<FilteredTableColumn<Integer>> createColumns() {
-			FilteredTableColumn<Integer> domainColumn = FilteredTableColumn.builder(DefinitionColumnValues.DOMAIN)
-							.headerValue("Domain")
-							.columnClass(String.class)
-							.build();
-			FilteredTableColumn<Integer> entityTypeColumn = FilteredTableColumn.builder(DefinitionColumnValues.ENTITY)
-							.headerValue("Entity")
-							.columnClass(String.class)
-							.build();
-			FilteredTableColumn<Integer> typeColumn = FilteredTableColumn.builder(DefinitionColumnValues.TABLE_TYPE)
-							.headerValue("Type")
-							.columnClass(String.class)
-							.preferredWidth(120)
-							.build();
-
-			return asList(domainColumn, entityTypeColumn, typeColumn);
-		}
-	}
-
 	private final class DefinitionItems implements Supplier<Collection<DefinitionRow>> {
 
 		@Override
@@ -181,15 +136,33 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	private static final class SchemaColumnValues implements ColumnValues<MetaDataSchema, Integer> {
+	public static final class SchemaColumns implements Columns<MetaDataSchema, SchemaColumns.Id> {
 
-		private static final int CATALOG = 0;
-		private static final int SCHEMA = 1;
-		private static final int POPULATED = 2;
+		public enum Id {
+			CATALOG,
+			SCHEMA,
+			POPULATED
+		}
+
+		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
 
 		@Override
-		public Object value(MetaDataSchema row, Integer columnIdentifier) {
-			switch (columnIdentifier) {
+		public List<Id> identifiers() {
+			return IDENTIFIERS;
+		}
+
+		@Override
+		public Class<?> columnClass(Id identifier) {
+			if (identifier == Id.POPULATED) {
+				return Boolean.class;
+			}
+
+			return String.class;
+		}
+
+		@Override
+		public Object value(MetaDataSchema row, Id identifier) {
+			switch (identifier) {
 				case CATALOG:
 					return row.catalog();
 				case SCHEMA:
@@ -197,20 +170,34 @@ public final class DomainGeneratorModel {
 				case POPULATED:
 					return row.populated();
 				default:
-					throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
+					throw new IllegalArgumentException("Unknown column: " + identifier);
 			}
 		}
 	}
 
-	private static final class DefinitionColumnValues implements ColumnValues<DefinitionRow, Integer> {
+	public static final class DefinitionColumns implements Columns<DefinitionRow, DefinitionColumns.Id> {
 
-		private static final int DOMAIN = 0;
-		private static final int ENTITY = 1;
-		private static final int TABLE_TYPE = 2;
+		public enum Id {
+			DOMAIN,
+			ENTITY,
+			TABLE_TYPE
+		}
+
+		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
 
 		@Override
-		public Object value(DefinitionRow row, Integer columnIdentifier) {
-			switch (columnIdentifier) {
+		public List<Id> identifiers() {
+			return IDENTIFIERS;
+		}
+
+		@Override
+		public Class<?> columnClass(Id identifier) {
+			return String.class;
+		}
+
+		@Override
+		public Object value(DefinitionRow row, Id identifier) {
+			switch (identifier) {
 				case DOMAIN:
 					return row.definition.entityType().domainType().name();
 				case ENTITY:
@@ -218,7 +205,7 @@ public final class DomainGeneratorModel {
 				case TABLE_TYPE:
 					return row.tableType;
 				default:
-					throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
+					throw new IllegalArgumentException("Unknown column: " + identifier);
 			}
 		}
 	}

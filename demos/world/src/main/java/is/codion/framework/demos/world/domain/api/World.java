@@ -244,9 +244,9 @@ public interface World {
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public Integer get(SourceValues sourceValues) {
-			Double percentage = sourceValues.get(CountryLanguage.PERCENTAGE);
-			Entity country = sourceValues.get(CountryLanguage.COUNTRY_FK);
+		public Integer get(SourceValues values) {
+			Double percentage = values.get(CountryLanguage.PERCENTAGE);
+			Entity country = values.get(CountryLanguage.COUNTRY_FK);
 			if (percentage != null && country != null && country.isNotNull(Country.POPULATION)) {
 				return Double.valueOf(country.get(Country.POPULATION) * (percentage / 100)).intValue();
 			}

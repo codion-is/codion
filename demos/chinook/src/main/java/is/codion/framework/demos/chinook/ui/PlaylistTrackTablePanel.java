@@ -29,9 +29,11 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 	public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()), config -> config
 						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory())
-						// No confirmation needed when deleting
+						// Skip confirmation when deleting
 						.deleteConfirmer(Confirmer.NONE)
 						.includeEditControl(false));
+		table().getColumnModel()
+						.setVisibleColumns(PlaylistTrack.TRACK_FK, PlaylistTrack.ARTIST, PlaylistTrack.ALBUM);
 		configureTrackConditionPanel();
 	}
 

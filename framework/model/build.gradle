@@ -9,8 +9,6 @@ dependencies {
     testImplementation project(":codion-framework-db-local")
     testImplementation project(":codion-framework-model-test")
 
-    implementation(libs.json)
-
     implementation(libs.slf4j.api)
 
     testRuntimeOnly project(":codion-dbms-h2")

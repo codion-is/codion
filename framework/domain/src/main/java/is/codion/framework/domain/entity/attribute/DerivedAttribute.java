@@ -54,9 +54,9 @@ public interface DerivedAttribute<T> extends Attribute<T> {
 	interface Provider<T> extends Serializable {
 
 		/**
-		 * @param sourceValues the source values, mapped to their respective attributes
+		 * @param values the source values, mapped to their respective attributes
 		 * @return the derived value
 		 */
-		T get(SourceValues sourceValues);
+		T get(SourceValues values);
 	}
 }

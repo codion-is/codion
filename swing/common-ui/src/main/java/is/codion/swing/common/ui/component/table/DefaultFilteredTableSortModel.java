@@ -16,11 +16,11 @@
  *
  * Copyright (c) 2013 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
+import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
 
 import javax.swing.SortOrder;
 import java.util.ArrayList;
@@ -36,17 +36,15 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortModel<R, C> {
 
-	private final FilteredTableColumnModel<C> columnModel;
-	private final ColumnValues<R, C> columnValues;
+	private final Columns<R, C> columns;
 	private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
 	private final Event<C> sortingChangedEvent = Event.event();
 	private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
 	private final Set<C> columnSortingDisabled = new HashSet<>();
 	private final RowComparator comparator = new RowComparator();
 
-	DefaultFilteredTableSortModel(FilteredTableColumnModel<C> columnModel, ColumnValues<R, C> columnValues) {
-		this.columnModel = requireNonNull(columnModel);
-		this.columnValues = requireNonNull(columnValues);
+	DefaultFilteredTableSortModel(Columns<R, C> columns) {
+		this.columns = columns;
 	}
 
 	@Override
@@ -167,8 +165,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 		}
 
 		private int compareRows(R rowOne, R rowTwo, C columnIdentifier, SortOrder sortOrder) {
-			Object valueOne = columnValues.value(rowOne, columnIdentifier);
-			Object valueTwo = columnValues.value(rowTwo, columnIdentifier);
+			Object valueOne = columns.value(rowOne, columnIdentifier);
+			Object valueTwo = columns.value(rowTwo, columnIdentifier);
 			int comparison;
 			// Define null less than everything, except null.
 			if (valueOne == null && valueTwo == null) {
@@ -182,7 +180,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 			}
 			else {
 				comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
-								k -> columnModel.column(columnIdentifier).comparator())).compare(valueOne, valueTwo);
+								k -> columns.comparator(columnIdentifier))).compare(valueOne, valueTwo);
 			}
 			if (comparison != 0) {
 				return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;

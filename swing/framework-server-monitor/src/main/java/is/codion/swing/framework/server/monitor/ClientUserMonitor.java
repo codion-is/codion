@@ -18,26 +18,20 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
+import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -47,6 +41,7 @@ import java.util.function.Supplier;
 
 import static is.codion.swing.common.model.component.table.FilteredTableModel.RefreshStrategy.MERGE;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -58,19 +53,11 @@ public final class ClientUserMonitor {
 
 	private static final int THOUSAND = 1000;
 
-	private static final int USERNAME_COLUMN = 0;
-	private static final int CLIENT_TYPE_COLUMN = 1;
-	private static final int CLIENT_VERSION_COLUMN = 2;
-	private static final int FRAMEWORK_VERSION_COLUMN = 3;
-	private static final int CLIENT_HOST_COLUMN = 4;
-	private static final int LAST_SEEN_COLUMN = 5;
-	private static final int CONNECTION_COUNT_COLUMN = 6;
-
 	private final EntityServerAdmin server;
 	private final Value<Integer> idleConnectionTimeoutValue;
 	private final ClientMonitor clientMonitor;
-	private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel =
-					FilteredTableModel.builder(ClientUserMonitor::createUserHistoryColumns, new UserHistoryColumnValues())
+	private final FilteredTableModel<UserInfo, UserHistoryColumns.Id> userHistoryTableModel =
+					FilteredTableModel.builder(new UserHistoryColumns())
 									.items(new UserHistoryItems())
 									.refreshStrategy(MERGE)
 									.build();
@@ -108,7 +95,7 @@ public final class ClientUserMonitor {
 	/**
 	 * @return a TableModel for displaying the user connection history
 	 */
-	public FilteredTableModel<?, Integer> userHistoryTableModel() {
+	public FilteredTableModel<?, UserHistoryColumns.Id> userHistoryTableModel() {
 		return userHistoryTableModel;
 	}
 
@@ -202,30 +189,6 @@ public final class ClientUserMonitor {
 		}
 	}
 
-	private static List<FilteredTableColumn<Integer>> createUserHistoryColumns() {
-		return asList(
-						createColumn(USERNAME_COLUMN, "Username", String.class),
-						createColumn(CLIENT_TYPE_COLUMN, "Client type", String.class),
-						createColumn(CLIENT_VERSION_COLUMN, "Client version", Version.class),
-						createColumn(FRAMEWORK_VERSION_COLUMN, "Framework version", Version.class),
-						createColumn(CLIENT_HOST_COLUMN, "Host", String.class),
-						createColumn(LAST_SEEN_COLUMN, "Last seen", LocalDateTime.class, new LastSeenRenderer()),
-						createColumn(CONNECTION_COUNT_COLUMN, "Connections", Integer.class));
-	}
-
-	private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue, Class<?> columnClass) {
-		return createColumn(identifier, headerValue, columnClass, null);
-	}
-
-	private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue,
-																													 Class<?> columnClass, TableCellRenderer cellRenderer) {
-		return FilteredTableColumn.builder(identifier)
-						.headerValue(headerValue)
-						.columnClass(columnClass)
-						.cellRenderer(cellRenderer)
-						.build();
-	}
-
 	private final class UserHistoryItems implements Supplier<Collection<UserInfo>> {
 
 		@Override
@@ -258,11 +221,50 @@ public final class ClientUserMonitor {
 		}
 	}
 
-	private static final class UserHistoryColumnValues implements ColumnValues<UserInfo, Integer> {
+	public static final class UserHistoryColumns implements Columns<UserInfo, UserHistoryColumns.Id> {
+
+		public enum Id {
+			USERNAME_COLUMN,
+			CLIENT_TYPE_COLUMN,
+			CLIENT_VERSION_COLUMN,
+			FRAMEWORK_VERSION_COLUMN,
+			CLIENT_HOST_COLUMN,
+			LAST_SEEN_COLUMN,
+			CONNECTION_COUNT_COLUMN
+		}
+
+		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
 
 		@Override
-		public Object value(UserInfo row, Integer columnIdentifier) {
-			switch (columnIdentifier) {
+		public List<Id> identifiers() {
+			return IDENTIFIERS;
+		}
+
+		@Override
+		public Class<?> columnClass(Id identifier) {
+			switch (identifier) {
+				case USERNAME_COLUMN:
+					return String.class;
+				case CLIENT_TYPE_COLUMN:
+					return String.class;
+				case CLIENT_VERSION_COLUMN:
+					return Version.class;
+				case FRAMEWORK_VERSION_COLUMN:
+					return Version.class;
+				case CLIENT_HOST_COLUMN:
+					return String.class;
+				case LAST_SEEN_COLUMN:
+					return LocalDateTime.class;
+				case CONNECTION_COUNT_COLUMN:
+					return Integer.class;
+				default:
+					throw new IllegalArgumentException(identifier.toString());
+			}
+		}
+
+		@Override
+		public Object value(UserInfo row, Id identifier) {
+			switch (identifier) {
 				case USERNAME_COLUMN:
 					return row.user().username();
 				case CLIENT_TYPE_COLUMN:
@@ -278,7 +280,7 @@ public final class ClientUserMonitor {
 				case CONNECTION_COUNT_COLUMN:
 					return row.connectionCount();
 				default:
-					throw new IllegalArgumentException(columnIdentifier.toString());
+					throw new IllegalArgumentException(identifier.toString());
 			}
 		}
 	}
@@ -375,23 +377,6 @@ public final class ClientUserMonitor {
 
 		public boolean isNewConnection(UUID clientId) {
 			return !this.clientId.equals(clientId);
-		}
-	}
-
-	private static final class LastSeenRenderer extends DefaultTableCellRenderer {
-
-		private final DateTimeFormatter formatter = LocaleDateTimePattern.builder()
-						.delimiterDash().yearFourDigits().hoursMinutesSeconds()
-						.build().createFormatter();
-
-		@Override
-		protected void setValue(Object value) {
-			if (value instanceof Temporal) {
-				super.setValue(formatter.format((Temporal) value));
-			}
-			else {
-				super.setValue(value);
-			}
 		}
 	}
 }

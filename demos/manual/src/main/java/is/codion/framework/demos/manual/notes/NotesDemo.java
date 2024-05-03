@@ -31,9 +31,11 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -177,12 +179,7 @@ public final class NotesDemo {
 
 		private NoteTableModel(EntityConnectionProvider connectionProvider) {
 			super(new NoteEditModel(connectionProvider));
-			// Configure the table model and columns
-			sortModel().setSortOrder(Note.CREATED, SortOrder.DESCENDING);
 			onInsert().set(OnInsert.ADD_TOP_SORTED);
-			columnModel().column(Note.NOTE).setPreferredWidth(280);
-			columnModel().column(Note.CREATED).setPreferredWidth(130);
-			columnModel().column(Note.UPDATED).setPreferredWidth(130);
 			// Case-insensitive note search with automatic wildcards
 			ColumnConditionModel<?, ?> noteConditionModel = conditionModel().conditionModel(Note.NOTE);
 			noteConditionModel.caseSensitive().set(false);
@@ -198,7 +195,13 @@ public final class NotesDemo {
 							// the value is set automatically and shouldn't be editable via the UI.
 							// Note.CREATED is excluded by default since it is not updatable.
 							.editable(attributes -> attributes.remove(Note.UPDATED)));
+			// Configure the table and columns
+			table().sortModel().setSortOrder(Note.CREATED, SortOrder.DESCENDING);
 			table().setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+			FilteredTableColumnModel<Attribute<?>> columnModel = table().columnModel();
+			columnModel.column(Note.NOTE).setPreferredWidth(280);
+			columnModel.column(Note.CREATED).setPreferredWidth(130);
+			columnModel.column(Note.UPDATED).setPreferredWidth(130);
 		}
 	}
 

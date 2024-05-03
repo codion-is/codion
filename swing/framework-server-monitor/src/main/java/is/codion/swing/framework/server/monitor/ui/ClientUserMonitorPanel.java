@@ -18,7 +18,9 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.table.FilteredTableColumn;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 
@@ -32,13 +34,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.dialog.Dialogs.exceptionDialog;
+import static is.codion.swing.framework.server.monitor.ClientUserMonitor.UserHistoryColumns;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
@@ -123,7 +132,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 										.build())
 						.build();
 
-		FilteredTable<?, ?> userHistoryTable = FilteredTable.builder(model.userHistoryTableModel())
+		FilteredTable<?, ?> userHistoryTable = FilteredTable.builder(model.userHistoryTableModel(), createUserHistoryColumns())
 						.popupMenuControls(table -> Controls.builder()
 										.controls(Controls.builder()
 														.name("Columns")
@@ -137,6 +146,31 @@ public final class ClientUserMonitorPanel extends JPanel {
 		return borderLayoutPanel()
 						.centerComponent(new JScrollPane(userHistoryTable))
 						.southComponent(configBase)
+						.build();
+	}
+
+	private static List<FilteredTableColumn<UserHistoryColumns.Id>> createUserHistoryColumns() {
+		return asList(
+						createColumn(UserHistoryColumns.Id.USERNAME_COLUMN, "Username"),
+						createColumn(UserHistoryColumns.Id.CLIENT_TYPE_COLUMN, "Client type"),
+						createColumn(UserHistoryColumns.Id.CLIENT_VERSION_COLUMN, "Client version"),
+						createColumn(UserHistoryColumns.Id.FRAMEWORK_VERSION_COLUMN, "Framework version"),
+						createColumn(UserHistoryColumns.Id.CLIENT_HOST_COLUMN, "Host"),
+						createColumn(UserHistoryColumns.Id.LAST_SEEN_COLUMN, "Last seen", new LastSeenRenderer()),
+						createColumn(UserHistoryColumns.Id.CONNECTION_COUNT_COLUMN, "Connections"));
+	}
+
+	private static FilteredTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
+																																				 String headerValue) {
+		return createColumn(identifier, headerValue, null);
+	}
+
+	private static FilteredTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
+																																				 String headerValue,
+																																				 TableCellRenderer cellRenderer) {
+		return FilteredTableColumn.builder(identifier)
+						.headerValue(headerValue)
+						.cellRenderer(cellRenderer)
 						.build();
 	}
 
@@ -157,5 +191,22 @@ public final class ClientUserMonitorPanel extends JPanel {
 		exceptionDialog()
 						.owner(this)
 						.show(exception);
+	}
+
+	private static final class LastSeenRenderer extends DefaultTableCellRenderer {
+
+		private final DateTimeFormatter formatter = LocaleDateTimePattern.builder()
+						.delimiterDash().yearFourDigits().hoursMinutesSeconds()
+						.build().createFormatter();
+
+		@Override
+		protected void setValue(Object value) {
+			if (value instanceof Temporal) {
+				super.setValue(formatter.format((Temporal) value));
+			}
+			else {
+				super.setValue(value);
+			}
+		}
 	}
 }

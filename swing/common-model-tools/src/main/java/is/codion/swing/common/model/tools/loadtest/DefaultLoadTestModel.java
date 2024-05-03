@@ -26,9 +26,9 @@ import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
+import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
+import is.codion.swing.common.model.tools.loadtest.LoadTestModel.ApplicationRow.ColumnId;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -40,7 +40,6 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +50,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -65,7 +66,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	private final LoadTest<T> loadTest;
 
-	private final FilteredTableModel<ApplicationRow, Integer> applicationTableModel;
+	private final FilteredTableModel<ApplicationRow, ColumnId> applicationTableModel;
 	private final Counter counter = new Counter();
 
 	private final State collectChartData = State.state();
@@ -101,7 +102,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	DefaultLoadTestModel(LoadTest<T> loadTest) {
 		this.loadTest = requireNonNull(loadTest);
-		applicationTableModel = FilteredTableModel.builder(DefaultLoadTestModel::createApplicationTableModelColumns, new ApplicationColumnValues())
+		applicationTableModel = FilteredTableModel.builder(new ApplicationColumns())
 						.items(new ApplicationItems())
 						.build();
 		chartUpdateSchedulerEnabled = State.and(loadTest.paused().not(), collectChartData);
@@ -129,7 +130,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	@Override
-	public FilteredTableModel<ApplicationRow, Integer> applicationTableModel() {
+	public FilteredTableModel<ApplicationRow, ColumnId> applicationTableModel() {
 		return applicationTableModel;
 	}
 
@@ -331,43 +332,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 				series.add(time, counter.scenarioFailureRate((String) series.getKey()));
 			}
 		}
-	}
-
-	private static List<FilteredTableColumn<Integer>> createApplicationTableModelColumns() {
-		return Arrays.asList(
-						FilteredTableColumn.builder(ApplicationRow.NAME_INDEX)
-										.headerValue("Name")
-										.columnClass(String.class)
-										.build(),
-						FilteredTableColumn.builder(ApplicationRow.USERNAME_INDEX)
-										.headerValue("User")
-										.columnClass(String.class)
-										.build(),
-						FilteredTableColumn.builder(ApplicationRow.SCENARIO_INDEX)
-										.headerValue("Scenario")
-										.columnClass(String.class)
-										.build(),
-						FilteredTableColumn.builder(ApplicationRow.SUCCESSFUL_INDEX)
-										.headerValue("Success")
-										.columnClass(Boolean.class)
-										.build(),
-						FilteredTableColumn.builder(ApplicationRow.DURATION_INDEX)
-										.headerValue("Duration (μs)")
-										.columnClass(Integer.class)
-										.build(),
-						FilteredTableColumn.builder(ApplicationRow.EXCEPTION_INDEX)
-										.headerValue("Exception")
-										.columnClass(Exception.class)
-										.build(),
-						FilteredTableColumn.builder(ApplicationRow.MESSAGE_INDEX)
-										.headerValue("Message")
-										.columnClass(String.class)
-										.build(),
-						FilteredTableColumn.builder(ApplicationRow.CREATED_INDEX)
-										.headerValue("Created")
-										.columnClass(LocalDateTime.class)
-										.build()
-		);
 	}
 
 	private final class Counter {
@@ -583,32 +547,63 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 	}
 
-	private static final class ApplicationColumnValues implements ColumnValues<ApplicationRow, Integer> {
+	public static final class ApplicationColumns implements Columns<ApplicationRow, ColumnId> {
+
+		private static final List<ColumnId> IDENTIFIERS = unmodifiableList(asList(ColumnId.values()));
 
 		@Override
-		public Object value(ApplicationRow application, Integer columnIdentifier) {
+		public List<ColumnId> identifiers() {
+			return IDENTIFIERS;
+		}
+
+		@Override
+		public Class<?> columnClass(ColumnId identifier) {
+			switch (identifier) {
+				case NAME:
+					return String.class;
+				case USERNAME:
+					return String.class;
+				case SCENARIO:
+					return String.class;
+				case SUCCESSFUL:
+					return Boolean.class;
+				case DURATION:
+					return Integer.class;
+				case EXCEPTION:
+					return String.class;
+				case MESSAGE:
+					return String.class;
+				case CREATED:
+					return LocalDateTime.class;
+				default:
+					throw new IllegalArgumentException("Unknown column: " + identifier);
+			}
+		}
+
+		@Override
+		public Object value(ApplicationRow application, ColumnId identifier) {
 			List<Result> results = application.results();
 			Result result = results.isEmpty() ? null : results.get(results.size() - 1);
 			Throwable exception = result == null ? null : result.exception().orElse(null);
-			switch (columnIdentifier) {
-				case ApplicationRow.NAME_INDEX:
+			switch (identifier) {
+				case NAME:
 					return application.name();
-				case ApplicationRow.USERNAME_INDEX:
+				case USERNAME:
 					return application.username();
-				case ApplicationRow.SCENARIO_INDEX:
+				case SCENARIO:
 					return result == null ? null : result.scenario();
-				case ApplicationRow.SUCCESSFUL_INDEX:
+				case SUCCESSFUL:
 					return result == null ? null : result.successful();
-				case ApplicationRow.DURATION_INDEX:
+				case DURATION:
 					return result == null ? null : result.duration();
-				case ApplicationRow.EXCEPTION_INDEX:
+				case EXCEPTION:
 					return exception;
-				case ApplicationRow.MESSAGE_INDEX:
+				case MESSAGE:
 					return exception == null ? null : exception.getMessage();
-				case ApplicationRow.CREATED_INDEX:
+				case CREATED:
 					return application.created();
 				default:
-					throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
+					throw new IllegalArgumentException("Unknown column: " + identifier);
 			}
 		}
 	}

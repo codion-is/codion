@@ -18,34 +18,131 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
+import is.codion.common.Separators;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
+import is.codion.swing.common.ui.component.table.DefaultFilteredTableSearchModel.DefaultRowColumn;
+import is.codion.swing.common.ui.component.table.FilteredTableSearchModel.RowColumn;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SortOrder;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilteredTableTest {
 
+	private static final TestRow A = new TestRow("a");
+	private static final TestRow B = new TestRow("b");
+	private static final TestRow C = new TestRow("c");
+	private static final TestRow D = new TestRow("d");
+	private static final TestRow E = new TestRow("e");
+	private static final TestRow F = new TestRow("f");
+	private static final TestRow G = new TestRow("g");
+	private static final TestRow NULL = new TestRow(null);
+
+	private static final List<TestRow> ITEMS = unmodifiableList(asList(A, B, C, D, E));
+
+	private static final class TestRow {
+		private final String value;
+
+		private TestRow(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return value;
+		}
+	}
+
+	private static FilteredTable<TestRow, Integer> createTestTable() {
+		return createTestTable(null);
+	}
+
+	private static FilteredTable<TestRow, Integer> createTestTable(Comparator<String> customComparator) {
+		return FilteredTable.builder(createTestModel(customComparator), createColumns()).build();
+	}
+
+	private static FilteredTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
+		return FilteredTableModel.<TestRow, Integer>builder(new FilteredTableModel.Columns<TestRow, Integer>() {
+							@Override
+							public List<Integer> identifiers() {
+								return singletonList(0);
+							}
+
+							@Override
+							public Class<?> columnClass(Integer integer) {
+								return String.class;
+							}
+
+							@Override
+							public Object value(TestRow row, Integer integer) {
+								if (integer == 0) {
+									return row.value;
+								}
+
+								throw new IllegalArgumentException();
+							}
+
+							@Override
+							public Comparator<?> comparator(Integer integer) {
+								if (customComparator != null) {
+									return customComparator;
+								}
+
+								return FilteredTableModel.Columns.super.comparator(integer);
+							}
+						})
+						.items(() -> ITEMS)
+						.build();
+	}
+
+	private static List<FilteredTableColumn<Integer>> createColumns() {
+		return singletonList(FilteredTableColumn.builder(0).build());
+	}
+
 	@Test
 	void builderNullTableModel() {
-		assertThrows(Exception.class, () -> FilteredTable.builder(null));
+		assertThrows(Exception.class, () -> FilteredTable.builder(null, emptyList()));
+	}
+
+	@Test
+	void builderNullColumns() {
+		assertThrows(Exception.class, () -> FilteredTable.builder(createTestModel(null), null));
 	}
 
 	@Test
 	void searchField() {
-		FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
-						.columnClass(String.class)
-						.build();
+		FilteredTableModel.Columns<List<String>, Integer> columns = new FilteredTableModel.Columns<List<String>, Integer>() {
+			@Override
+			public List<Integer> identifiers() {
+				return singletonList(0);
+			}
+
+			@Override
+			public Class<?> columnClass(Integer integer) {
+				return String.class;
+			}
+
+			@Override
+			public Object value(List<String> row, Integer integer) {
+				return row.get(integer);
+			}
+		};
 
 		FilteredTableModel<List<String>, Integer> tableModel =
-						FilteredTableModel.<List<String>, Integer>builder(() -> singletonList(column), List::get)
+						FilteredTableModel.<List<String>, Integer>builder(columns)
 										.items(() -> asList(
 														singletonList("darri"),
 														singletonList("dac"),
@@ -53,7 +150,8 @@ public class FilteredTableTest {
 														singletonList("dlabo")))
 										.build();
 
-		FilteredTable<List<String>, Integer> filteredTable = FilteredTable.builder(tableModel).build();
+		FilteredTable<List<String>, Integer> filteredTable = FilteredTable.builder(tableModel,
+						singletonList(FilteredTableColumn.filteredTableColumn(0))).build();
 		tableModel.refresh();
 
 		new JScrollPane(filteredTable);
@@ -84,5 +182,296 @@ public class FilteredTableTest {
 		assertTrue(tableModel.selectionModel().isSelectionEmpty());
 
 		searchField.setText("");
+	}
+
+	@Test
+	void searchModel() {
+		final class Row implements Comparable<Row> {
+
+			private final int id;
+			private final String value;
+
+			Row(int id, String value) {
+				this.id = id;
+				this.value = value;
+			}
+
+			@Override
+			public int compareTo(Row o) {
+				return value.compareTo(o.value);
+			}
+		}
+
+		FilteredTableColumn<Integer> columnId = FilteredTableColumn.builder(0).build();
+		FilteredTableColumn<Integer> columnValue = FilteredTableColumn.builder(1).build();
+
+		List<Row> items = asList(
+						new Row(0, "a"),
+						new Row(1, "b"),
+						new Row(2, "c"),
+						new Row(3, "d"),
+						new Row(4, "e")
+		);
+
+		FilteredTableModel<Row, Integer> testModel =
+						FilteredTableModel.<Row, Integer>builder(new FilteredTableModel.Columns<Row, Integer>() {
+							@Override
+							public List<Integer> identifiers() {
+								return asList(0, 1);
+							}
+
+							@Override
+							public Class<?> columnClass(Integer identifier) {
+								return String.class;
+							}
+
+							@Override
+							public Object value(Row row, Integer identifier) {
+								if (identifier == 0) {
+									return row.id;
+								}
+
+								return row.value;
+							}
+						}).items(() -> items).build();
+
+		FilteredTable<Row, Integer> table = FilteredTable.builder(testModel, asList(columnId, columnValue)).build();
+		testModel.refresh();
+
+		FilteredTableSearchModel searchModel = table.searchModel();
+		searchModel.searchString().set("b");
+		RowColumn rowColumn = searchModel.nextResult().orElse(null);
+		assertEquals(new DefaultRowColumn(1, 1), rowColumn);
+		searchModel.searchString().set("e");
+		rowColumn = searchModel.nextResult().orElse(null);
+		assertEquals(new DefaultRowColumn(4, 1), rowColumn);
+		searchModel.searchString().set("c");
+		rowColumn = searchModel.previousResult().orElse(null);
+		assertEquals(new DefaultRowColumn(2, 1), rowColumn);
+		searchModel.searchString().set("x");
+		rowColumn = searchModel.nextResult().orElse(null);
+		assertNull(rowColumn);
+
+		table.sortModel().setSortOrder(1, SortOrder.DESCENDING);
+
+		searchModel.searchString().set("b");
+		rowColumn = searchModel.nextResult().orElse(null);
+		assertEquals(new DefaultRowColumn(3, 1), rowColumn);
+		searchModel.searchString().set("e");
+		rowColumn = searchModel.previousResult().orElse(null);
+		assertEquals(new DefaultRowColumn(0, 1), rowColumn);
+
+		searchModel.regularExpression().set(true);
+		searchModel.searchString().set("(?i)B");
+		rowColumn = searchModel.nextResult().orElse(null);
+		assertEquals(new DefaultRowColumn(3, 1), rowColumn);
+
+		Predicate<String> predicate = item -> item.equals("b") || item.equals("e");
+
+		searchModel.searchPredicate().set(predicate);
+		rowColumn = searchModel.selectPreviousResult().orElse(null);
+		assertEquals(new DefaultRowColumn(3, 1), rowColumn);
+		rowColumn = searchModel.selectPreviousResult().orElse(null);
+		assertEquals(new DefaultRowColumn(0, 1), rowColumn);
+
+		assertEquals(asList(
+						new DefaultRowColumn(0, 1),
+						new DefaultRowColumn(3, 1)
+		), searchModel.searchResults());
+
+		table.sortModel().setSortOrder(1, SortOrder.ASCENDING);
+		table.columnModel().moveColumn(1, 0);
+
+		testModel.refresh();
+		searchModel.searchString().set("b");
+		rowColumn = searchModel.nextResult().orElse(null);
+		assertEquals(new DefaultRowColumn(1, 0), rowColumn);
+		searchModel.searchString().set("e");
+		rowColumn = searchModel.nextResult().orElse(null);
+		assertEquals(new DefaultRowColumn(4, 0), rowColumn);
+		searchModel.searchString().set("c");
+		rowColumn = searchModel.previousResult().orElse(null);
+		assertEquals(new DefaultRowColumn(2, 0), rowColumn);
+		searchModel.searchString().set("x");
+		rowColumn = searchModel.nextResult().orElse(null);
+		assertNull(rowColumn);
+
+		table.sortModel().setSortOrder(0, SortOrder.DESCENDING);
+
+		searchModel.searchString().set("b");
+		rowColumn = searchModel.nextResult().orElse(null);
+		assertEquals(new DefaultRowColumn(3, 0), rowColumn);
+		searchModel.searchString().set("e");
+		rowColumn = searchModel.previousResult().orElse(null);
+		assertEquals(new DefaultRowColumn(0, 0), rowColumn);
+
+		searchModel.regularExpression().set(true);
+		searchModel.searchString().set("(?i)B");
+		rowColumn = searchModel.nextResult().orElse(null);
+		assertEquals(new DefaultRowColumn(3, 0), rowColumn);
+
+		predicate = item -> item.equals("b") || item.equals("e");
+
+		searchModel.searchPredicate().set(predicate);
+		rowColumn = searchModel.selectPreviousResult().orElse(null);
+		assertEquals(new DefaultRowColumn(3, 0), rowColumn);
+		rowColumn = searchModel.selectPreviousResult().orElse(null);
+		assertEquals(new DefaultRowColumn(0, 0), rowColumn);
+
+		assertEquals(2, testModel.selectionModel().selectionCount());
+
+		searchModel.selectPreviousResult();
+		searchModel.selectNextResult();
+		searchModel.selectNextResult();
+		searchModel.selectNextResult();
+
+		rowColumn = searchModel.selectPreviousResult().orElse(null);
+		rowColumn = searchModel.selectNextResult().orElse(null);
+		rowColumn = searchModel.selectNextResult().orElse(null);
+
+		assertEquals(asList(
+						new DefaultRowColumn(0, 0),
+						new DefaultRowColumn(3, 0)
+		), searchModel.searchResults());
+	}
+
+	@Test
+	void sorting() {
+		FilteredTable<TestRow, Integer> table = createTestTable();
+		FilteredTableModel<TestRow, Integer> tableModel = table.getModel();
+		AtomicInteger actionsPerformed = new AtomicInteger();
+		Consumer<Integer> consumer = columnIdentifier -> actionsPerformed.incrementAndGet();
+		table.sortModel().sortingChangedEvent().addConsumer(consumer);
+
+		tableModel.refresh();
+		FilteredTableSortModel<TestRow, Integer> sortModel = table.sortModel();
+		sortModel.setSortOrder(0, SortOrder.DESCENDING);
+		assertEquals(SortOrder.DESCENDING, sortModel.sortOrder(0));
+		assertEquals(E, tableModel.itemAt(0));
+		assertEquals(1, actionsPerformed.get());
+		sortModel.setSortOrder(0, SortOrder.ASCENDING);
+		assertEquals(SortOrder.ASCENDING, sortModel.sortOrder(0));
+		assertEquals(A, tableModel.itemAt(0));
+		assertEquals(0, sortModel.columnSortOrder().get(0).columnIdentifier());
+		assertEquals(2, actionsPerformed.get());
+
+		sortModel.setSortOrder(0, SortOrder.DESCENDING);
+		tableModel.refresh();
+		assertEquals(A, tableModel.itemAt(4));
+		assertEquals(E, tableModel.itemAt(0));
+		sortModel.setSortOrder(0, SortOrder.ASCENDING);
+
+		List<TestRow> items = new ArrayList<>();
+		items.add(NULL);
+		tableModel.addItemsAt(0, items);
+		sortModel.setSortOrder(0, SortOrder.ASCENDING);
+		assertEquals(0, tableModel.indexOf(NULL));
+		sortModel.setSortOrder(0, SortOrder.DESCENDING);
+		assertEquals(tableModel.getRowCount() - 1, tableModel.indexOf(NULL));
+
+		tableModel.refresh();
+		items.add(NULL);
+		tableModel.addItemsAt(0, items);
+		sortModel.setSortOrder(0, SortOrder.ASCENDING);
+		assertEquals(0, tableModel.indexOf(NULL));
+		sortModel.setSortOrder(0, SortOrder.DESCENDING);
+		assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(NULL));
+		sortModel.setSortOrder(0, SortOrder.UNSORTED);
+		table.sortModel().sortingChangedEvent().removeConsumer(consumer);
+	}
+
+	@Test
+	void customSorting() {
+		FilteredTable<TestRow, Integer> table = createTestTable(Comparator.reverseOrder());
+		FilteredTableModel<TestRow, Integer> tableModel = table.getModel();
+		tableModel.refresh();
+		FilteredTableSortModel<TestRow, Integer> sortModel = table.sortModel();
+		sortModel.setSortOrder(0, SortOrder.ASCENDING);
+		assertEquals(E, tableModel.itemAt(0));
+		sortModel.setSortOrder(0, SortOrder.DESCENDING);
+		assertEquals(A, tableModel.itemAt(0));
+	}
+
+	@Test
+	void selectionAndSorting() {
+		FilteredTable<TestRow, Integer> table = createTestTable();
+		FilteredTableModel<TestRow, Integer> tableModel = table.getModel();
+		tableModel.refresh();
+		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
+
+		//test selection and filtering together
+		FilteredTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
+		tableModel.selectionModel().setSelectedIndex(3);
+		assertEquals(3, selectionModel.getSelectedIndex());
+
+		tableModel.filterModel().conditionModel(0).setEqualValue("d");
+		tableModel.filterModel().conditionModel(0).enabled().set(false);
+
+		selectionModel.setSelectedIndexes(singletonList(3));
+		assertEquals(3, selectionModel.getMinSelectionIndex());
+		assertEquals(ITEMS.get(2), selectionModel.getSelectedItem());
+
+		table.sortModel().setSortOrder(0, SortOrder.ASCENDING);
+		assertEquals(ITEMS.get(2), selectionModel.getSelectedItem());
+		assertEquals(2, selectionModel.getMinSelectionIndex());
+
+		tableModel.selectionModel().setSelectedIndexes(singletonList(0));
+		assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
+		table.sortModel().setSortOrder(0, SortOrder.DESCENDING);
+		assertEquals(4, selectionModel.getMinSelectionIndex());
+
+		assertEquals(singletonList(4), selectionModel.getSelectedIndexes());
+		assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
+		assertEquals(4, selectionModel.getMinSelectionIndex());
+		assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
+	}
+
+	@Test
+	void columnModel() {
+		FilteredTableColumn<Integer> column = createTestTable().columnModel().getColumn(0);
+		assertEquals(0, column.getIdentifier());
+	}
+
+	@Test
+	void export() {
+		FilteredTable<TestRow, Integer> table = createTestTable();
+		table.getModel().refresh();
+
+		String expected = "0" + Separators.LINE_SEPARATOR +
+						"a" + Separators.LINE_SEPARATOR +
+						"b" + Separators.LINE_SEPARATOR +
+						"c" + Separators.LINE_SEPARATOR +
+						"d" + Separators.LINE_SEPARATOR +
+						"e";
+		assertEquals(expected, table.export()
+						.delimiter('\t')
+						.get());
+
+		table.getModel().selectionModel().setSelectedIndexes(asList(0, 1, 3));
+
+		String selected = "a" + Separators.LINE_SEPARATOR +
+						"b" + Separators.LINE_SEPARATOR +
+						"d";
+		assertEquals(selected, table.export()
+						.delimiter('\t')
+						.header(false)
+						.selected(true)
+						.get());
+	}
+
+	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
+																							 FilteredTableModel<TestRow, Integer> model) {
+		for (TestRow row : rows) {
+			if (includeFiltered) {
+				if (!model.containsItem(row)) {
+					return false;
+				}
+			}
+			else if (!model.visible(row)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

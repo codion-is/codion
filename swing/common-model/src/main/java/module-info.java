@@ -22,11 +22,7 @@
  * {@link is.codion.swing.common.model.component.combobox.FilteredComboBoxModel}<br>
  * {@link is.codion.swing.common.model.component.combobox.ItemComboBoxModel}<br>
  * {@link is.codion.swing.common.model.component.table.FilteredTableModel}<br>
- * {@link is.codion.swing.common.model.component.table.FilteredTableColumn}<br>
- * {@link is.codion.swing.common.model.component.table.FilteredTableColumnModel}<br>
- * {@link is.codion.swing.common.model.component.table.FilteredTableSearchModel}<br>
  * {@link is.codion.swing.common.model.component.table.FilteredTableSelectionModel}<br>
- * {@link is.codion.swing.common.model.component.table.FilteredTableSortModel}<br>
  * {@link is.codion.swing.common.model.worker.ProgressWorker}<br>
  */
 module is.codion.swing.common.model {

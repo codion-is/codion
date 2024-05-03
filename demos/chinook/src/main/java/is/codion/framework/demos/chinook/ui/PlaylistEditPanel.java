@@ -38,14 +38,14 @@ final class PlaylistEditPanel extends EntityEditPanel {
 	@Override
 	protected void initializeUI() {
 		initialFocusAttribute().set(Playlist.NAME);
-		createTextField(Playlist.NAME)
-						.transferFocusOnEnter(false)
-						.columns(20);
 
 		setLayout(borderLayout());
 		add(borderLayoutPanel()
 						.westComponent(createLabel(Playlist.NAME).build())
-						.centerComponent(component(Playlist.NAME).get())
+						.centerComponent(createTextField(Playlist.NAME)
+										.transferFocusOnEnter(false)
+										.columns(20)
+										.build())
 						.border(new EmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
 						.build(), BorderLayout.CENTER);
 	}

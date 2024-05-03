@@ -18,8 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Configuration;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.value.ValueSetObserver;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -37,14 +35,6 @@ import java.util.Collection;
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
 public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
-
-	/**
-	 * Specifies whether the client should save and apply user preferences<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
-	 */
-	PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
-					Configuration.booleanValue("is.codion.framework.model.EntityModel.useClientPreferences", true);
 
 	/**
 	 * @return the type of the entity this entity model is based on
@@ -188,11 +178,4 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 	 * @throws IllegalArgumentException in case this model does not contain the given detail model
 	 */
 	<L extends DetailModelLink<M, E, T>> L detailModelLink(M detailModel);
-
-	/**
-	 * Saves any user preferences for this model, its table model and each detail model.
-	 * Note that if {@link EntityModel#USE_CLIENT_PREFERENCES} is set to 'false', calling this method has no effect.
-	 * Remember to call super.savePreferences() when overriding.
-	 */
-	void savePreferences();
 }

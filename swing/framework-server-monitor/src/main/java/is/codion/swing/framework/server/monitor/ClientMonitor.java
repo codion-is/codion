@@ -20,16 +20,17 @@ package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.server.EntityServerAdmin;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
 
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -37,20 +38,10 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ClientMonitor {
 
-	private static final int CREATION_TIME = 8;
-	private static final int TIMEZONE = 7;
-	private static final int LOCALE = 6;
-	private static final int CLIENT_ID = 5;
-	private static final int CODION_VERSION = 4;
-	private static final int CLIENT_VERSION = 3;
-	private static final int CLIENT_TYPE = 2;
-	private static final int CLIENT_HOST = 1;
-	private static final int USER = 0;
-
 	private final EntityServerAdmin server;
 
-	private final FilteredTableModel<RemoteClient, Integer> clientInstanceTableModel =
-					FilteredTableModel.builder(new RemoteClientColumnFactory(), new RemoteClientColumnValues())
+	private final FilteredTableModel<RemoteClient, RemoteClientColumns.Id> clientInstanceTableModel =
+					FilteredTableModel.builder(new RemoteClientColumns())
 									.items(new RemoteClientItems())
 									.build();
 
@@ -73,7 +64,7 @@ public final class ClientMonitor {
 	/**
 	 * @return the TableModel for displaying the client instances
 	 */
-	public FilteredTableModel<RemoteClient, Integer> clientInstanceTableModel() {
+	public FilteredTableModel<RemoteClient, RemoteClientColumns.Id> clientInstanceTableModel() {
 		return clientInstanceTableModel;
 	}
 
@@ -94,56 +85,39 @@ public final class ClientMonitor {
 		}
 	}
 
-	private static final class RemoteClientColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
+	public static final class RemoteClientColumns implements Columns<RemoteClient, RemoteClientColumns.Id> {
 
-		@Override
-		public List<FilteredTableColumn<Integer>> createColumns() {
-			return Arrays.asList(
-							FilteredTableColumn.builder(USER)
-											.headerValue("User")
-											.columnClass(String.class)
-											.build(),
-							FilteredTableColumn.builder(CLIENT_HOST)
-											.headerValue("Host")
-											.columnClass(String.class)
-											.build(),
-							FilteredTableColumn.builder(CLIENT_TYPE)
-											.headerValue("Type")
-											.columnClass(String.class)
-											.build(),
-							FilteredTableColumn.builder(CLIENT_VERSION)
-											.headerValue("Version")
-											.columnClass(String.class)
-											.build(),
-							FilteredTableColumn.builder(CODION_VERSION)
-											.headerValue("Framework version")
-											.columnClass(String.class)
-											.build(),
-							FilteredTableColumn.builder(CLIENT_ID)
-											.headerValue("Id")
-											.columnClass(String.class)
-											.build(),
-							FilteredTableColumn.builder(LOCALE)
-											.headerValue("Locale")
-											.columnClass(String.class)
-											.build(),
-							FilteredTableColumn.builder(TIMEZONE)
-											.headerValue("Timezone")
-											.columnClass(String.class)
-											.build(),
-							FilteredTableColumn.builder(CREATION_TIME)
-											.headerValue("Created")
-											.columnClass(LocalDateTime.class)
-											.build()
-			);
+		public enum Id {
+			USER,
+			CLIENT_HOST,
+			CLIENT_TYPE,
+			CLIENT_VERSION,
+			CODION_VERSION,
+			CLIENT_ID,
+			LOCALE,
+			TIMEZONE,
+			CREATION_TIME
 		}
-	}
 
-	private static final class RemoteClientColumnValues implements FilteredTableModel.ColumnValues<RemoteClient, Integer> {
+		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
 
 		@Override
-		public Object value(RemoteClient row, Integer columnIdentifier) {
-			switch (columnIdentifier) {
+		public List<Id> identifiers() {
+			return IDENTIFIERS;
+		}
+
+		@Override
+		public Class<?> columnClass(Id identifier) {
+			if (identifier.equals(Id.CREATION_TIME)) {
+				return LocalDateTime.class;
+			}
+
+			return String.class;
+		}
+
+		@Override
+		public Object value(RemoteClient row, Id identifier) {
+			switch (identifier) {
 				case USER:
 					return row.user().username();
 				case CLIENT_HOST:

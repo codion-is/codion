@@ -18,14 +18,11 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.Separators;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.table.TableConditionModel;
-import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;
 
@@ -33,10 +30,10 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -50,41 +47,42 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
-import static is.codion.common.model.table.TableSummaryModel.tableSummaryModel;
-import static java.lang.String.join;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
 
+	/**
+	 * A Comparator for comparing {@link Comparable} instances.
+	 */
+	static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
+
+	/**
+	 * A Comparator for comparing Objects according to their toString() value.
+	 */
+	static final Comparator<?> STRING_COMPARATOR = Comparator.comparing(Object::toString);
+
 	private final Event<?> dataChangedEvent = Event.event();
 	private final Event<?> clearedEvent = Event.event();
-	private final ColumnValues<R, C> columnValues;
+	private final Columns<R, C> columns;
 	private final List<R> visibleItems = new ArrayList<>();
 	private final List<R> filteredItems = new ArrayList<>();
 	private final FilteredTableSelectionModel<R> selectionModel;
-	private final FilteredTableColumnModel<C> columnModel;
-	private final FilteredTableSortModel<R, C> sortModel;
-	private final FilteredTableSearchModel searchModel;
 	private final TableConditionModel<C> filterModel;
-	private final TableSummaryModel<C> summaryModel;
 	private final CombinedIncludeCondition combinedIncludeCondition;
 	private final Predicate<R> validator;
 	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
+	private final Value<Comparator<R>> comparator = Value.<Comparator<R>>nullable()
+					.notify(Value.Notify.WHEN_SET)
+					.build();
 
 	private DefaultFilteredTableModel(DefaultBuilder<R, C> builder) {
-		this.columnModel = new DefaultFilteredTableColumnModel<>(requireNonNull(builder.columnFactory).createColumns());
-		this.searchModel = new DefaultFilteredTableSearchModel<>(this);
-		this.columnValues = requireNonNull(builder.columnValues);
-		this.sortModel = new DefaultFilteredTableSortModel<>(columnModel, columnValues);
+		this.columns = requireNonNull(builder.columns);
 		this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
 		this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
-		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
-						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
 		this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
 		this.refresher = new DefaultRefresher(builder.items == null ? this::items : builder.items);
 		this.refresher.async().set(builder.asyncRefresh);
@@ -124,7 +122,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 	@Override
 	public int getColumnCount() {
-		return columnModel.getColumnCount();
+		return columns.identifiers().size();
 	}
 
 	@Override
@@ -174,23 +172,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	}
 
 	@Override
-	public FilteredTableColumnModel<C> columnModel() {
-		return columnModel;
-	}
-
-	@Override
 	public FilteredTableSelectionModel<R> selectionModel() {
 		return selectionModel;
-	}
-
-	@Override
-	public FilteredTableSortModel<R, C> sortModel() {
-		return sortModel;
-	}
-
-	@Override
-	public FilteredTableSearchModel searchModel() {
-		return searchModel;
 	}
 
 	@Override
@@ -199,20 +182,15 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	}
 
 	@Override
-	public TableSummaryModel<C> summaryModel() {
-		return summaryModel;
-	}
-
-	@Override
 	public <T> Collection<T> values(C columnIdentifier) {
 		return (Collection<T>) columnValues(IntStream.range(0, visibleCount()).boxed(),
-						columnModel.column(columnIdentifier).getModelIndex());
+						columns.identifiers().indexOf(columnIdentifier));
 	}
 
 	@Override
 	public <T> Collection<T> selectedValues(C columnIdentifier) {
 		return (Collection<T>) columnValues(selectionModel().getSelectedIndexes().stream(),
-						columnModel.column(columnIdentifier).getModelIndex());
+						columns.identifiers().indexOf(columnIdentifier));
 	}
 
 	@Override
@@ -231,10 +209,15 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	}
 
 	@Override
+	public Value<Comparator<R>> comparator() {
+		return comparator;
+	}
+
+	@Override
 	public void sortItems() {
-		if (sortModel.sorted()) {
+		if (comparator.isNotNull()) {
 			List<R> selectedItems = selectionModel.getSelectedItems();
-			visibleItems.sort(sortModel.comparator());
+			visibleItems.sort(comparator.get());
 			fireTableRowsUpdated(0, visibleItems.size());
 			selectionModel.setSelectedItems(selectedItems);
 		}
@@ -252,7 +235,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 				filteredItems.add(item);
 			}
 		}
-		visibleItems.sort(sortModel.comparator());
+		if (comparator.isNotNull()) {
+			visibleItems.sort(comparator.get());
+		}
 		fireTableDataChanged();
 		selectionModel.setSelectedItems(selectedItems);
 	}
@@ -279,8 +264,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 	@Override
 	public void addItemsAtSorted(int index, Collection<R> items) {
-		if (addItemsAtInternal(index, items) && sortModel.sorted()) {
-			visibleItems.sort(sortModel.comparator());
+		if (addItemsAtInternal(index, items) && comparator.isNotNull()) {
+			visibleItems.sort(comparator.get());
 			fireTableDataChanged();
 		}
 	}
@@ -297,8 +282,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 	@Override
 	public void addItemSorted(R item) {
-		if (addItemInternal(item) && sortModel.sorted()) {
-			visibleItems.sort(sortModel.comparator());
+		if (addItemInternal(item) && comparator.isNotNull()) {
+			visibleItems.sort(comparator.get());
 			fireTableDataChanged();
 		}
 	}
@@ -352,27 +337,27 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 	@Override
 	public Class<?> getColumnClass(C columnIdentifier) {
-		return columnModel.column(columnIdentifier).columnClass();
+		return columns.columnClass(columnIdentifier);
 	}
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		return getColumnClass(columnModel().columnIdentifier(columnIndex));
+		return columns.columnClass(columns.identifier(columnIndex));
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return columnValues.value(itemAt(rowIndex), columnModel().columnIdentifier(columnIndex));
+		return columns.value(itemAt(rowIndex), columns.identifier(columnIndex));
+	}
+
+	@Override
+	public Columns<R, C> columns() {
+		return columns;
 	}
 
 	@Override
 	public String getStringAt(int rowIndex, C columnIdentifier) {
-		return columnValues.string(itemAt(rowIndex), columnIdentifier);
-	}
-
-	@Override
-	public Export export() {
-		return new DefaultExport();
+		return columns.string(itemAt(rowIndex), columnIdentifier);
 	}
 
 	@Override
@@ -413,7 +398,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		});
 		addTableModelListener(removeSelectionListener);
 		filterModel.conditionChangedEvent().addListener(this::filterItems);
-		sortModel.sortingChangedEvent().addListener(this::sortItems);
+		comparator.addListener(this::sortItems);
 	}
 
 	private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
@@ -490,8 +475,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	}
 
 	private Collection<ColumnConditionModel<C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
-		return columnModel.columns().stream()
-						.map(FilteredTableColumn::getIdentifier)
+		return columns.identifiers().stream()
 						.map(filterModelFactory::createConditionModel)
 						.filter(Optional::isPresent)
 						.map(Optional::get)
@@ -556,19 +540,6 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 	}
 
-	private final class DefaultSummaryValuesFactory implements SummaryValues.Factory<C> {
-
-		@Override
-		public <T extends Number> Optional<SummaryValues<T>> createSummaryValues(C columnIdentifier, Format format) {
-			Class<?> columnClass = getColumnClass(columnIdentifier);
-			if (Number.class.isAssignableFrom(columnClass)) {
-				return Optional.of(new DefaultSummaryValues<>(columnIdentifier, DefaultFilteredTableModel.this, format));
-			}
-
-			return Optional.empty();
-		}
-	}
-
 	private final class CombinedIncludeCondition implements Predicate<R> {
 
 		private final List<? extends ColumnConditionModel<? extends C, ?>> columnFilters;
@@ -588,17 +559,17 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 			return columnFilters.stream()
 							.filter(conditionModel -> conditionModel.enabled().get())
-							.allMatch(conditionModel -> accepts(item, conditionModel, columnValues));
+							.allMatch(conditionModel -> accepts(item, conditionModel, columns));
 		}
 
-		private boolean accepts(R item, ColumnConditionModel<? extends C, ?> conditionModel, ColumnValues<R, C> columnValues) {
+		private boolean accepts(R item, ColumnConditionModel<? extends C, ?> conditionModel, Columns<R, C> columns) {
 			if (conditionModel.columnClass().equals(String.class)) {
-				String stringValue = columnValues.string(item, conditionModel.columnIdentifier());
+				String stringValue = columns.string(item, conditionModel.columnIdentifier());
 
 				return ((ColumnConditionModel<?, String>) conditionModel).accepts(stringValue.isEmpty() ? null : stringValue);
 			}
 
-			return conditionModel.accepts(columnValues.comparable(item, conditionModel.columnIdentifier()));
+			return conditionModel.accepts(columns.comparable(item, conditionModel.columnIdentifier()));
 		}
 	}
 
@@ -612,79 +583,26 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 	}
 
-	/**
-	 * A default SummaryValues implementation
-	 */
-	static final class DefaultSummaryValues<T extends Number, C> implements SummaryValues<T> {
-
-		private final C columnIdentifier;
-		private final FilteredTableModel<?, C> tableModel;
-		private final Format format;
-		private final Event<?> changeEvent = Event.event();
-
-		/**
-		 * @param columnIdentifier the identifier of the column which values are provided
-		 * @param tableModel the table model
-		 * @param format the format to use for presenting the summary value
-		 */
-		DefaultSummaryValues(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
-			this.columnIdentifier = requireNonNull(columnIdentifier);
-			this.tableModel = requireNonNull(tableModel);
-			this.format = requireNonNull(format);
-			this.tableModel.dataChangedEvent().addListener(changeEvent);
-			this.tableModel.selectionModel().selectionEvent().addListener(changeEvent);
-		}
-
-		@Override
-		public String format(Object value) {
-			return format.format(value);
-		}
-
-		@Override
-		public EventObserver<?> changeEvent() {
-			return changeEvent.observer();
-		}
-
-		@Override
-		public Collection<T> values() {
-			return subset() ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier);
-		}
-
-		@Override
-		public boolean subset() {
-			FilteredTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
-
-			return tableSelectionModel.selectionNotEmpty().get() &&
-							tableSelectionModel.selectionCount() != tableModel.visibleCount();
-		}
-	}
-
 	static final class DefaultBuilder<R, C> implements Builder<R, C> {
 
-		private final ColumnFactory<C> columnFactory;
-		private final ColumnValues<R, C> columnValues;
+		private final Columns<R, C> columns;
 
 		private Supplier<Collection<R>> items;
 		private Predicate<R> validator = new ValidPredicate<>();
 		private ColumnConditionModel.Factory<C> filterModelFactory;
-		private SummaryValues.Factory<C> summaryValuesFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
-		DefaultBuilder(ColumnFactory<C> columnFactory, ColumnValues<R, C> columnValues) {
-			this.columnFactory = requireNonNull(columnFactory);
-			this.columnValues = requireNonNull(columnValues);
+		DefaultBuilder(Columns<R, C> columns) {
+			if (requireNonNull(columns).identifiers().isEmpty()) {
+				throw new IllegalArgumentException("No columns specified");
+			}
+			this.columns = requireNonNull(columns);
 		}
 
 		@Override
 		public Builder<R, C> filterModelFactory(ColumnConditionModel.Factory<C> filterModelFactory) {
 			this.filterModelFactory = requireNonNull(filterModelFactory);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory) {
-			this.summaryValuesFactory = requireNonNull(summaryValuesFactory);
 			return this;
 		}
 
@@ -723,73 +641,6 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 			public boolean test(R r) {
 				return true;
 			}
-		}
-	}
-
-	private final class DefaultExport implements Export {
-
-		private char delimiter = '\t';
-		private boolean header = true;
-		private boolean hidden = false;
-		private boolean selected = false;
-
-		@Override
-		public Export delimiter(char delimiter) {
-			this.delimiter = delimiter;
-			return this;
-		}
-
-		@Override
-		public Export header(boolean header) {
-			this.header = header;
-			return this;
-		}
-
-		@Override
-		public Export hidden(boolean hidden) {
-			this.hidden = hidden;
-			return this;
-		}
-
-		@Override
-		public Export selected(boolean selected) {
-			this.selected = selected;
-			return this;
-		}
-
-		@Override
-		public String get() {
-			List<Integer> rows = selected ?
-							selectionModel.getSelectedIndexes() :
-							IntStream.range(0, getRowCount())
-											.boxed()
-											.collect(toList());
-
-			List<FilteredTableColumn<C>> columns = new ArrayList<>(columnModel().visible());
-			if (hidden) {
-				columns.addAll(columnModel().hidden());
-			}
-
-			List<List<String>> lines = new ArrayList<>();
-			if (header) {
-				lines.add(columns.stream()
-								.map(column -> String.valueOf(column.getHeaderValue()))
-								.collect(toList()));
-			}
-			lines.addAll(rows.stream()
-							.map(row -> stringValues(row, columns))
-							.collect(toList()));
-
-			return new StringBuilder()
-							.append(lines.stream().map(line -> join(String.valueOf(delimiter), line))
-											.collect(joining(Separators.LINE_SEPARATOR)))
-							.toString();
-		}
-
-		private List<String> stringValues(int row, List<FilteredTableColumn<C>> columns) {
-			return columns.stream()
-							.map(column -> getStringAt(row, column.getIdentifier()))
-							.collect(toList());
 		}
 	}
 }

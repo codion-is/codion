@@ -22,10 +22,12 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.table.FilteredTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 import is.codion.swing.framework.server.monitor.ClientMonitor;
+import is.codion.swing.framework.server.monitor.ClientMonitor.RemoteClientColumns.Id;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -35,11 +37,14 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
+import java.util.List;
 
 import static is.codion.swing.common.ui.Utilities.linkBoundedRangeModels;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.framework.server.monitor.ClientMonitor.RemoteClientColumns.Id.*;
+import static java.util.Arrays.asList;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
@@ -49,7 +54,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 public final class ClientMonitorPanel extends JPanel {
 
 	private final ClientMonitor model;
-	private final FilteredTable<RemoteClient, Integer> clientInstanceTable;
+	private final FilteredTable<RemoteClient, Id> clientInstanceTable;
 	private final JScrollPane filterScrollPane;
 	private final JScrollPane clientInstanceScroller;
 	private final State advancedFilterState = State.builder()
@@ -62,7 +67,7 @@ public final class ClientMonitorPanel extends JPanel {
 	 */
 	public ClientMonitorPanel(ClientMonitor model) {
 		this.model = model;
-		clientInstanceTable = FilteredTable.builder(model.clientInstanceTableModel())
+		clientInstanceTable = FilteredTable.builder(model.clientInstanceTableModel(), createColumns())
 						.popupMenu(this::createPopupMenu)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.build();
@@ -127,7 +132,7 @@ public final class ClientMonitorPanel extends JPanel {
 		add(splitPane, BorderLayout.CENTER);
 	}
 
-	private JPopupMenu createPopupMenu(FilteredTable<RemoteClient, Integer> table) {
+	private JPopupMenu createPopupMenu(FilteredTable<RemoteClient, Id> table) {
 		return menu(Controls.builder()
 						.control(Control.builder(this::disconnect)
 										.name("Disconnect")
@@ -161,5 +166,37 @@ public final class ClientMonitorPanel extends JPanel {
 										parentScrollPane.getHorizontalScrollBar().getModel(),
 										scrollPane.getHorizontalScrollBar().getModel()))
 						.build();
+	}
+
+	private static List<FilteredTableColumn<Id>> createColumns() {
+		return asList(
+						FilteredTableColumn.builder(USER)
+										.headerValue("User")
+										.build(),
+						FilteredTableColumn.builder(CLIENT_HOST)
+										.headerValue("Host")
+										.build(),
+						FilteredTableColumn.builder(CLIENT_TYPE)
+										.headerValue("Type")
+										.build(),
+						FilteredTableColumn.builder(CLIENT_VERSION)
+										.headerValue("Version")
+										.build(),
+						FilteredTableColumn.builder(CODION_VERSION)
+										.headerValue("Framework version")
+										.build(),
+						FilteredTableColumn.builder(CLIENT_ID)
+										.headerValue("Id")
+										.build(),
+						FilteredTableColumn.builder(LOCALE)
+										.headerValue("Locale")
+										.build(),
+						FilteredTableColumn.builder(TIMEZONE)
+										.headerValue("Timezone")
+										.build(),
+						FilteredTableColumn.builder(CREATION_TIME)
+										.headerValue("Created")
+										.build()
+		);
 	}
 }

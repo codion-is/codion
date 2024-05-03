@@ -27,6 +27,7 @@ Codion Change Log
 - LookAndFeelProvider.addLookAndFeelProvider() renamed addLookAndFeel().
 - FilteredTableCellRenderer.Builder.columnShadingEnabled() renamed columnShading().
 - FilteredTableModel.Builder.itemValidator() renamed validator(), related renaming.
+- Major surgery, FilteredTableModel.sortModel(), searchModel(), summaryModel() and columnModel() moved to FilteredTable, related refactoring.
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
 - ProgressDialog bug fixed, no longer adds an empty south panel when no controls are specified.

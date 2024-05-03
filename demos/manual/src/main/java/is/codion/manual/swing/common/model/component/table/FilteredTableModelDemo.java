@@ -18,28 +18,26 @@
  */
 package is.codion.manual.swing.common.model.component.table;
 
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnFactory;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
-import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
-import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
+import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
 import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 
-import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.INTEGER_COLUMN_INDEX;
-import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.STRING_COLUMN_INDEX;
+import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.INTEGER_COLUMN;
+import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.STRING_COLUMN;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 
 public final class FilteredTableModelDemo {
 	// tag::filteredTableModel[]
 	// Define a class representing the table rows
 	public static final class TableRow {
 
-		public static final int STRING_COLUMN_INDEX = 0;
-		public static final int INTEGER_COLUMN_INDEX = 1;
+		public static final int STRING_COLUMN = 0;
+		public static final int INTEGER_COLUMN = 1;
 
 		private final String stringValue;
 
@@ -60,26 +58,38 @@ public final class FilteredTableModelDemo {
 	}
 
 	public static FilteredTableModel<TableRow, Integer> createFilteredTableModel() {
-		// Implement a factory for the table columns
-		ColumnFactory<Integer> columnFactory = () -> asList(
-						FilteredTableColumn.builder(STRING_COLUMN_INDEX)
-										.headerValue("String")
-										.columnClass(String.class)
-										.build(),
-						FilteredTableColumn.builder(INTEGER_COLUMN_INDEX)
-										.headerValue("Integer")
-										.columnClass(Integer.class)
-										.build());
+		List<Integer> columnIdentifiers =
+						unmodifiableList(asList(STRING_COLUMN, INTEGER_COLUMN));
 
-		// Implement a ColumnValues, providing the table column values
-		ColumnValues<TableRow, Integer> columnValues = (row, columnIdentifier) -> {
-			switch (columnIdentifier) {
-				case STRING_COLUMN_INDEX:
-					return row.stringValue();
-				case INTEGER_COLUMN_INDEX:
-					return row.integerValue();
-				default:
-					throw new IllegalArgumentException();
+		// Implement Columns, providing the table column configuration
+		Columns<TableRow, Integer> columns = new Columns<TableRow, Integer>() {
+
+			@Override
+			public List<Integer> identifiers() {
+				return columnIdentifiers;
+			}
+
+			@Override
+			public Class<?> columnClass(Integer identifier) {
+				switch (identifier) {
+					case STRING_COLUMN:
+						return String.class;
+					case INTEGER_COLUMN:
+						return Integer.class;
+					default:
+						throw new IllegalArgumentException();
+				}
+			}
+			@Override
+			public Object value(TableRow row, Integer identifier) {
+				switch (identifier) {
+					case STRING_COLUMN:
+						return row.stringValue();
+					case INTEGER_COLUMN:
+						return row.integerValue();
+					default:
+						throw new IllegalArgumentException();
+				}
 			}
 		};
 
@@ -91,7 +101,7 @@ public final class FilteredTableModelDemo {
 
 		// Create the table model
 		FilteredTableModel<TableRow, Integer> tableModel =
-						FilteredTableModel.builder(columnFactory, columnValues)
+						FilteredTableModel.builder(columns)
 										.items(items)
 										// if true then the item supplier is called in a
 										// background thread when the model is refreshed
@@ -108,13 +118,6 @@ public final class FilteredTableModelDemo {
 		// With async refresh enabled
 		// tableModel.refreshThen(items ->
 		//        selectionModel.setSelectedIndex(0));
-
-		// Search for the value "43" in the table
-		FilteredTableSearchModel searchModel = tableModel.searchModel();
-		searchModel.searchPredicate().set(value -> value.equals("43"));
-
-		RowColumn searchResult = searchModel.currentResult().get();
-		System.out.println(searchResult); // row: 1, column: 1
 
 		return tableModel;
 	}

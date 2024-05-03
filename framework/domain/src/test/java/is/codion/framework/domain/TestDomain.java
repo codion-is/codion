@@ -517,9 +517,9 @@ public final class TestDomain extends DefaultDomain {
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public String get(DerivedAttribute.SourceValues sourceValues) {
-			String name = sourceValues.get(Employee.NAME);
-			Entity department = sourceValues.get(Employee.DEPARTMENT_FK);
+		public String get(DerivedAttribute.SourceValues values) {
+			String name = values.get(Employee.NAME);
+			Entity department = values.get(Employee.DEPARTMENT_FK);
 			if (name == null || department == null) {
 				return null;
 			}

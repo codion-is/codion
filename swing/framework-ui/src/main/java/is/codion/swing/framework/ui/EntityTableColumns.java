@@ -16,46 +16,35 @@
  *
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.framework.model;
+package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnFactory;
+import is.codion.swing.common.ui.component.table.FilteredTableColumn;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Provides table columns based on an entity definition.
  */
-public class SwingEntityColumnFactory implements ColumnFactory<Attribute<?>> {
+public final class EntityTableColumns {
 
-	private final EntityDefinition entityDefinition;
+	private EntityTableColumns() {}
 
 	/**
-	 * Instantiates a new SwingEntityColumnFactory
+	 * Creates columns based on the given entity definition.
+	 * All attributes except hidden ones are included.
 	 * @param entityDefinition the entity definition
+	 * @return the columns
 	 */
-	public SwingEntityColumnFactory(EntityDefinition entityDefinition) {
-		this.entityDefinition = requireNonNull(entityDefinition);
-	}
-
-	@Override
-	public final List<FilteredTableColumn<Attribute<?>>> createColumns() {
+	public static List<FilteredTableColumn<Attribute<?>>> entityTableColumns(EntityDefinition entityDefinition) {
 		AtomicInteger index = new AtomicInteger();
 		return entityDefinition.attributes().definitions().stream()
 						.filter(attributeDefinition -> !attributeDefinition.hidden())
 						.map(attributeDefinition -> createColumn(attributeDefinition, index.getAndIncrement()))
-						.filter(Optional::isPresent)
-						.map(Optional::get)
 						.collect(Collectors.toList());
 	}
 
@@ -65,27 +54,12 @@ public class SwingEntityColumnFactory implements ColumnFactory<Attribute<?>> {
 	 * @param modelIndex the column model index
 	 * @return the column or an empty Optional in case no column should be created for the given attribute
 	 */
-	protected Optional<FilteredTableColumn<Attribute<?>>> createColumn(AttributeDefinition<?> attributeDefinition, int modelIndex) {
+	private static FilteredTableColumn<Attribute<?>> createColumn(AttributeDefinition<?> attributeDefinition, int modelIndex) {
 		FilteredTableColumn.Builder<? extends Attribute<?>> columnBuilder =
 						FilteredTableColumn.builder(attributeDefinition.attribute(), modelIndex)
 										.headerValue(attributeDefinition.caption())
-										.columnClass(attributeDefinition.attribute().type().valueClass())
-										.toolTipText(attributeDefinition.description())
-										.comparator(attributeComparator(attributeDefinition.attribute()));
+										.toolTipText(attributeDefinition.description());
 
-		return Optional.of((FilteredTableColumn<Attribute<?>>) columnBuilder.build());
-	}
-
-	/**
-	 * Returns a comparator for the given attribute.
-	 * @param attribute the attribute
-	 * @return the comparator
-	 */
-	protected final Comparator<?> attributeComparator(Attribute<?> attribute) {
-		if (attribute instanceof ForeignKey) {
-			return entityDefinition.foreignKeys().referencedBy((ForeignKey) attribute).comparator();
-		}
-
-		return entityDefinition.attributes().definition(attribute).comparator();
+		return (FilteredTableColumn<Attribute<?>>) columnBuilder.build();
 	}
 }

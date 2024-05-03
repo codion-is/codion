@@ -19,10 +19,10 @@
 package is.codion.framework.demos.manual.keybinding;
 
 import is.codion.common.item.Item;
+import is.codion.framework.demos.manual.keybinding.KeyBindingModel.KeyBindingColumns.Id;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValues;
+import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.ActionMap;
@@ -50,18 +50,13 @@ final class KeyBindingModel {
 	private static final String PRESSED = "pressed ";
 	private static final String RELEASED = "released ";
 
-	private static final int ACTION_COLUMN_INDEX = 0;
-	private static final int WHEN_FOCUSED_COLUMN_INDEX = 1;
-	private static final int WHEN_IN_FOCUSED_WINDOW_COLUMN_INDEX = 2;
-	private static final int WHEN_ANCESTOR_COLUMN_INDEX = 3;
-
-	private final FilteredTableModel<KeyBinding, Integer> tableModel;
+	private final FilteredTableModel<KeyBinding, Id> tableModel;
 	private final FilteredComboBoxModel<String> componentComboBoxModel;
 
 	KeyBindingModel(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
 		this.componentComboBoxModel = createComponentComboBoxModel(lookAndFeelComboBoxModel);
 		this.componentComboBoxModel.refresh();
-		this.tableModel = FilteredTableModel.builder(new KeyBindingColumnFactory(), new KeyBindingValues())
+		this.tableModel = FilteredTableModel.builder(new KeyBindingColumns())
 						.items(new KeyBindingItems())
 						.build();
 		bindEvents(lookAndFeelComboBoxModel);
@@ -71,7 +66,7 @@ final class KeyBindingModel {
 		return componentComboBoxModel;
 	}
 
-	FilteredTableModel<KeyBinding, Integer> tableModel() {
+	FilteredTableModel<KeyBinding, Id> tableModel() {
 		return tableModel;
 	}
 
@@ -87,30 +82,6 @@ final class KeyBindingModel {
 		}
 
 		return PACKAGE + componentName;
-	}
-
-	private static final class KeyBindingColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
-		@Override
-		public List<FilteredTableColumn<Integer>> createColumns() {
-			FilteredTableColumn<Integer> action = FilteredTableColumn.builder(ACTION_COLUMN_INDEX)
-							.headerValue("Action")
-							.columnClass(String.class)
-							.build();
-			FilteredTableColumn<Integer> whenFocused = FilteredTableColumn.builder(WHEN_FOCUSED_COLUMN_INDEX)
-							.headerValue("When Focused")
-							.columnClass(String.class)
-							.build();
-			FilteredTableColumn<Integer> whenInFocusedWindow = FilteredTableColumn.builder(WHEN_IN_FOCUSED_WINDOW_COLUMN_INDEX)
-							.headerValue("When in Focused Window")
-							.columnClass(String.class)
-							.build();
-			FilteredTableColumn<Integer> whenAncestor = FilteredTableColumn.builder(WHEN_ANCESTOR_COLUMN_INDEX)
-							.headerValue("When Ancestor")
-							.columnClass(String.class)
-							.build();
-
-			return asList(action, whenFocused, whenInFocusedWindow, whenAncestor);
-		}
 	}
 
 	static final class KeyBinding {
@@ -187,21 +158,40 @@ final class KeyBindingModel {
 		}
 	}
 
-	private static final class KeyBindingValues implements ColumnValues<KeyBinding, Integer> {
+	public static final class KeyBindingColumns implements Columns<KeyBinding, Id> {
+
+		public enum Id {
+			ACTION_COLUMN,
+			WHEN_FOCUSED_COLUMN,
+			WHEN_IN_FOCUSED_WINDOW_COLUMN,
+			WHEN_ANCESTOR_COLUMN
+		}
+
+		private static final List<Id> IDENTIFIERS = Arrays.asList(Id.values());
 
 		@Override
-		public Object value(KeyBinding keyBinding, Integer columnIdentifier) {
-			switch (columnIdentifier) {
-				case ACTION_COLUMN_INDEX:
+		public List<Id> identifiers() {
+			return IDENTIFIERS;
+		}
+
+		@Override
+		public Class<?> columnClass(Id identifier) {
+			return String.class;
+		}
+
+		@Override
+		public Object value(KeyBinding keyBinding, Id identifier) {
+			switch (identifier) {
+				case ACTION_COLUMN:
 					return keyBinding.action;
-				case WHEN_FOCUSED_COLUMN_INDEX:
+				case WHEN_FOCUSED_COLUMN:
 					return keyBinding.whenFocused;
-				case WHEN_IN_FOCUSED_WINDOW_COLUMN_INDEX:
+				case WHEN_IN_FOCUSED_WINDOW_COLUMN:
 					return keyBinding.whenInFocusedWindow;
-				case WHEN_ANCESTOR_COLUMN_INDEX:
+				case WHEN_ANCESTOR_COLUMN:
 					return keyBinding.whenAncestor;
 				default:
-					throw new IllegalArgumentException("Unknown identifier: " + columnIdentifier);
+					throw new IllegalArgumentException("Unknown identifier: " + identifier);
 			}
 		}
 	}

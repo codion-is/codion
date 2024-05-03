@@ -19,10 +19,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
-import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -120,10 +117,9 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 		@Override
 		public Selector apply(EntitySearchModel searchModel) {
 			TableSelector selector = EntitySearchField.tableSelector(searchModel);
-			FilteredTableModel<Entity, Attribute<?>> tableModel = selector.table().getModel();
-			tableModel.columnModel().setVisibleColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
-			tableModel.sortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
-			tableModel.sortModel().addSortOrder(Customer.FIRSTNAME, ASCENDING);
+			selector.table().columnModel().setVisibleColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
+			selector.table().sortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
+			selector.table().sortModel().addSortOrder(Customer.FIRSTNAME, ASCENDING);
 			selector.preferredSize(new Dimension(500, 300));
 
 			return selector;

@@ -93,7 +93,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		setForeground(settings.foregroundColor(cellColors.foregroundColor(row, columnIdentifier, value, isSelected)));
 		setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShading, isSelected,
 						cellColors.backgroundColor(row, columnIdentifier, value, isSelected)));
-		setBorder(hasFocus || isSearchResult(tableModel, row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
+		setBorder(hasFocus || isSearchResult(((FilteredTable<?, ?>) table).searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 		if (toolTipData) {
 			setToolTipText(value == null ? "" : value.toString());
 		}
@@ -116,8 +116,8 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		return settings;
 	}
 
-	private static boolean isSearchResult(FilteredTableModel<?, ?> tableModel, int row, int column) {
-		return tableModel.searchModel().currentResult().get().equals(row, column);
+	private static boolean isSearchResult(FilteredTableSearchModel searchModel, int row, int column) {
+		return searchModel.currentResult().get().equals(row, column);
 	}
 
 	/**
@@ -182,7 +182,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 			setForeground(settings.foregroundColor(cellColors.foregroundColor(row, columnIdentifier, value, isSelected)));
 			setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShading, isSelected,
 							cellColors.backgroundColor(row, columnIdentifier, value, isSelected)));
-			setBorder(hasFocus || isSearchResult(tableModel, row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
+			setBorder(hasFocus || isSearchResult(((FilteredTable<?, ?>) table).searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 
 			return this;
 		}

@@ -173,11 +173,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 		return existingEntityModified(entityModels);
 	}
 
-	@Override
-	public void savePreferences() {
-		entityModels().forEach(EntityModel::savePreferences);
-	}
-
 	private static boolean existingEntityModified(Collection<? extends EntityModel<?, ?, ?>> models) {
 		for (EntityModel<?, ?, ?> model : models) {
 			EntityEditModel editModel = model.editModel();

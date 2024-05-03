@@ -29,6 +29,7 @@
  */
 module is.codion.swing.framework.ui {
 	requires org.slf4j;
+	requires org.json;
 	requires transitive org.kordamp.ikonli.core;
 	requires org.kordamp.ikonli.swing;
 	requires transitive is.codion.framework.i18n;

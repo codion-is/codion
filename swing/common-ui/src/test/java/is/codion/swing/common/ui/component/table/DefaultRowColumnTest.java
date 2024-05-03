@@ -16,9 +16,9 @@
  *
  * Copyright (c) 2018 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
+import is.codion.swing.common.ui.component.table.FilteredTableSearchModel.RowColumn;
 
 import org.junit.jupiter.api.Test;
 

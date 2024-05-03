@@ -20,15 +20,16 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.common.state.State;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
-import is.codion.framework.demos.world.model.LookupTableModel;
-import is.codion.framework.demos.world.model.LookupTableModel.ExportFormat;
+import is.codion.framework.demos.world.domain.api.WorldObjectMapperFactory;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -47,20 +48,44 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
-import static is.codion.framework.demos.world.model.LookupTableModel.ExportFormat.CSV;
-import static is.codion.framework.demos.world.model.LookupTableModel.ExportFormat.JSON;
+import static is.codion.framework.demos.world.ui.LookupTablePanel.ExportFormat.CSV;
+import static is.codion.framework.demos.world.ui.LookupTablePanel.ExportFormat.JSON;
 import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 
 final class LookupTablePanel extends EntityTablePanel {
 
 	private static final Dimension DEFAULT_MAP_SIZE = new Dimension(400, 400);
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
+
+	enum ExportFormat {
+		CSV {
+			@Override
+			public String defaultFileName() {
+				return "export.csv";
+			}
+		},
+		JSON {
+			@Override
+			public String defaultFileName() {
+				return "export.json";
+			}
+		};
+
+		public abstract String defaultFileName();
+	}
+
+	private final EntityObjectMapper objectMapper;
 
 	private final State columnSelectionPanelVisible = State.state(true);
 	private final State mapDialogVisible = State.builder()
@@ -78,9 +103,11 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	private JDialog mapKitDialog;
 
-	LookupTablePanel(LookupTableModel lookupModel) {
+	LookupTablePanel(SwingEntityTableModel lookupModel) {
 		super(lookupModel, config -> config.showRefreshProgressBar(true));
 		columnSelectionPanelVisible.addConsumer(this::setColumnSelectionPanelVisible);
+		objectMapper = new WorldObjectMapperFactory().entityObjectMapper(lookupModel.entities());
+		objectMapper.setIncludeNullValues(false);
 		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		conditionPanelVisible().set(true);
 		configurePopupMenuAndToolBar();
@@ -183,8 +210,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		File fileToSave = Dialogs.fileSelectionDialog()
 						.owner(this)
 						.selectFileToSave(format.defaultFileName());
-		LookupTableModel lookupTableModel = tableModel();
-		Dialogs.progressWorkerDialog(() -> lookupTableModel.export(fileToSave, format))
+		Dialogs.progressWorkerDialog(() -> export(fileToSave, format))
 						.owner(this)
 						.title("Exporting data")
 						.onResult("Export successful")
@@ -192,13 +218,48 @@ final class LookupTablePanel extends EntityTablePanel {
 						.execute();
 	}
 
+	private void export(File file, ExportFormat format) throws IOException {
+		requireNonNull(file);
+		requireNonNull(format);
+		switch (format) {
+			case CSV:
+				exportCSV(file);
+				break;
+			case JSON:
+				exportJSON(file);
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown export format: " + format);
+		}
+	}
+
+	private void exportCSV(File file) throws IOException {
+		Files.write(file.toPath(), singletonList(table().export()
+						.delimiter(',')
+						.selected(true)
+						.get()));
+	}
+
+	private void exportJSON(File file) throws IOException {
+		Collection<Entity> entities = tableModel().selectionModel().isSelectionEmpty() ?
+						tableModel().items() :
+						tableModel().selectionModel().getSelectedItems();
+		Files.write(file.toPath(), objectMapper.serializeEntities(entities).getBytes(UTF_8));
+	}
+
 	private void importJSON() throws IOException {
-		File file = Dialogs.fileSelectionDialog()
+		importJSON(Dialogs.fileSelectionDialog()
 						.owner(this)
 						.fileFilter(new FileNameExtensionFilter("JSON", "json"))
-						.selectFile();
-		LookupTableModel tableModel = tableModel();
-		tableModel.importJSON(file);
+						.selectFile());
+	}
+
+	public void importJSON(File file) throws IOException {
+		List<Entity> entities = objectMapper.deserializeEntities(
+						String.join("\n", Files.readAllLines(file.toPath())));
+		tableModel().clear();
+		tableModel().conditionModel().clear();
+		tableModel().addItemsAtSorted(0, entities);
 	}
 
 	private JToolBar createColumnSelectionToolBar() {

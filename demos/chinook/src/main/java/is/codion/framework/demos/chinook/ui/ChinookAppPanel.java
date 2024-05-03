@@ -67,10 +67,10 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme";
 	private static final String LANGUAGE_PREFERENCES_KEY = ChinookAppPanel.class.getSimpleName() + ".language";
-	private static final Locale LOCALE_IS = new Locale("is", "IS");
-	private static final Locale LOCALE_EN = new Locale("en", "EN");
 	private static final String LANGUAGE_IS = "is";
 	private static final String LANGUAGE_EN = "en";
+	private static final Locale LOCALE_IS = new Locale(LANGUAGE_IS, "IS");
+	private static final Locale LOCALE_EN = new Locale(LANGUAGE_EN, "EN");
 
 	private static final String SELECT_LANGUAGE = "select_language";
 
@@ -79,7 +79,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 	public ChinookAppPanel(ChinookAppModel applicationModel) {
 		super(applicationModel);
-		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS);
 	}
 
 	@Override
@@ -178,8 +177,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	public static void main(String[] args) throws CancelException {
 		String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
 		Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
-		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeel);
+		Arrays.stream(FlatAllIJThemes.INFOS).forEach(LookAndFeelProvider::addLookAndFeel);
+		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS);
 		Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
 		EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);

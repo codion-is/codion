@@ -19,8 +19,10 @@
 package is.codion.framework.demos.manual.keybinding;
 
 import is.codion.framework.demos.manual.keybinding.KeyBindingModel.KeyBinding;
+import is.codion.framework.demos.manual.keybinding.KeyBindingModel.KeyBindingColumns.Id;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.table.FilteredTableColumn;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
@@ -34,12 +36,15 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.util.Arrays;
+import java.util.List;
 
+import static is.codion.framework.demos.manual.keybinding.KeyBindingModel.KeyBindingColumns.Id.*;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static java.util.Arrays.asList;
 
 /**
  * A utility for displaying component action/input maps for installed look and feels.<br>
@@ -51,13 +56,13 @@ public final class KeyBindingPanel extends JPanel {
 
 	private final LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(true);
 	private final KeyBindingModel keyBindingModel;
-	private final FilteredTable<KeyBinding, Integer> table;
+	private final FilteredTable<KeyBinding, Id> table;
 	private final JComboBox<String> componentComboBox;
 
 	public KeyBindingPanel() {
 		super(borderLayout());
 		this.keyBindingModel = new KeyBindingModel(lookAndFeelComboBox.getModel());
-		this.table = FilteredTable.builder(keyBindingModel.tableModel()).build();
+		this.table = FilteredTable.builder(keyBindingModel.tableModel(), createColumns()).build();
 		this.componentComboBox = comboBox(keyBindingModel.componentComboBoxModel())
 						.preferredHeight(preferredTextFieldHeight())
 						.preferredWidth(200)
@@ -77,6 +82,23 @@ public final class KeyBindingPanel extends JPanel {
 						.build(), BorderLayout.NORTH);
 		add(new JScrollPane(table), BorderLayout.CENTER);
 		add(table.searchField(), BorderLayout.SOUTH);
+	}
+
+	private static List<FilteredTableColumn<Id>> createColumns() {
+		FilteredTableColumn<Id> action = FilteredTableColumn.builder(ACTION_COLUMN)
+						.headerValue("Action")
+						.build();
+		FilteredTableColumn<Id> whenFocused = FilteredTableColumn.builder(WHEN_FOCUSED_COLUMN)
+						.headerValue("When Focused")
+						.build();
+		FilteredTableColumn<Id> whenInFocusedWindow = FilteredTableColumn.builder(WHEN_IN_FOCUSED_WINDOW_COLUMN)
+						.headerValue("When in Focused Window")
+						.build();
+		FilteredTableColumn<Id> whenAncestor = FilteredTableColumn.builder(WHEN_ANCESTOR_COLUMN)
+						.headerValue("When Ancestor")
+						.build();
+
+		return asList(action, whenFocused, whenInFocusedWindow, whenAncestor);
 	}
 
 	public static void main(String[] args) {

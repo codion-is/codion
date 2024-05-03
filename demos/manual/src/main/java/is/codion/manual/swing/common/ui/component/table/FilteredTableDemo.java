@@ -21,11 +21,17 @@ package is.codion.manual.swing.common.ui.component.table;
 import is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.table.FilteredTableColumn;
+import is.codion.swing.common.ui.component.table.FilteredTableSearchModel;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JTable;
+import java.util.List;
 
+import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.INTEGER_COLUMN;
+import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.STRING_COLUMN;
 import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.createFilteredTableModel;
+import static java.util.Arrays.asList;
 
 final class FilteredTableDemo {
 
@@ -34,12 +40,27 @@ final class FilteredTableDemo {
 		// See FilteredTableModel example
 		FilteredTableModel<TableRow, Integer> tableModel = createFilteredTableModel();
 
-		FilteredTable<TableRow, Integer> filteredTable = FilteredTable.builder(tableModel)
+		List<FilteredTableColumn<Integer>> columns = asList(
+						FilteredTableColumn.builder(STRING_COLUMN)
+										.headerValue("String")
+										.build(),
+						FilteredTableColumn.builder(INTEGER_COLUMN)
+										.headerValue("Integer")
+										.build());
+
+		FilteredTable<TableRow, Integer> filteredTable = FilteredTable.builder(tableModel, columns)
 						.doubleClickAction(Control.control(() ->
 										tableModel.selectionModel().selectedItem()
 														.ifPresent(System.out::println)))
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.build();
+
+		// Search for the value "43" in the table
+		FilteredTableSearchModel searchModel = filteredTable.searchModel();
+		searchModel.searchPredicate().set(value -> value.equals("43"));
+
+		FilteredTableSearchModel.RowColumn searchResult = searchModel.currentResult().get();
+		System.out.println(searchResult); // row: 1, column: 1
 		// end::filteredTable[]
 	}
 }

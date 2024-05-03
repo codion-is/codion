@@ -52,12 +52,11 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 	private static SwingEntityModel createPlaylistModel(EntityConnectionProvider connectionProvider) {
 		SwingEntityModel playlistModel = new SwingEntityModel(new PlaylistTableModel(connectionProvider));
 		SwingEntityModel playlistTrackModel = new SwingEntityModel(new PlaylistTrackEditModel(connectionProvider));
-		playlistTrackModel.tableModel().columnModel()
-						.setVisibleColumns(PlaylistTrack.TRACK_FK, PlaylistTrack.ARTIST, PlaylistTrack.ALBUM);
 
-		ForeignKeyDetailModelLink<?, ?, ?> detailModelLink = playlistModel.addDetailModel(playlistTrackModel);
-		detailModelLink.clearForeignKeyOnEmptySelection().set(true);
-		detailModelLink.active().set(true);
+		ForeignKeyDetailModelLink<?, ?, ?> playlistTrackLink =
+						playlistModel.addDetailModel(playlistTrackModel);
+		playlistTrackLink.clearForeignKeyOnEmptySelection().set(true);
+		playlistTrackLink.active().set(true);
 
 		playlistModel.tableModel().refresh();
 

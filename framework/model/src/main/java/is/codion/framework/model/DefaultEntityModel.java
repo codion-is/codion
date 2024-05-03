@@ -229,14 +229,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 						.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + this));
 	}
 
-	@Override
-	public void savePreferences() {
-		if (containsTableModel()) {
-			tableModel().savePreferences();
-		}
-		detailModels().forEach(EntityModel::savePreferences);
-	}
-
 	private void onMasterSelectionChanged() {
 		if (!activeDetailModels().empty()) {
 			List<Entity> activeEntities = activeEntities();

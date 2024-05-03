@@ -1,0 +1,237 @@
+/*
+ * This file is part of Codion.
+ *
+ * Codion is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Codion is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
+ */
+package is.codion.swing.framework.ui;
+
+import is.codion.common.model.UserPreferences;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
+import is.codion.common.user.User;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.swing.common.ui.component.table.FilteredTableColumn;
+import is.codion.swing.common.ui.component.table.FilteredTableColumnModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.TestDomain.Detail;
+import is.codion.swing.framework.ui.TestDomain.Employee;
+
+import org.junit.jupiter.api.Test;
+
+import javax.swing.SortOrder;
+import javax.swing.table.TableColumn;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EntityTablePanelTest {
+
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.user(UNIT_TEST_USER)
+					.domain(new TestDomain())
+					.build();
+
+	@Test
+	void queryHiddenColumns() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		tableModel.refresh();
+		tableModel.items().forEach(employee -> {
+			assertTrue(employee.contains(Employee.ID));
+			assertTrue(employee.contains(Employee.NAME));
+			assertTrue(employee.contains(Employee.COMMISSION));
+			assertTrue(employee.contains(Employee.DEPARTMENT));
+			assertTrue(employee.contains(Employee.HIREDATE));
+			assertTrue(employee.contains(Employee.JOB));
+		});
+		tablePanel.table().columnModel().setVisibleColumns(Employee.ID, Employee.NAME, Employee.COMMISSION);
+		tablePanel.queryHiddenColumns().set(false);
+		tableModel.refresh();
+		tableModel.items().forEach(employee -> {
+			assertTrue(employee.contains(Employee.ID));
+			assertTrue(employee.contains(Employee.NAME));
+			assertTrue(employee.contains(Employee.COMMISSION));
+			assertFalse(employee.contains(Employee.DEPARTMENT_FK));
+			assertFalse(employee.contains(Employee.HIREDATE));
+			assertFalse(employee.contains(Employee.JOB));
+		});
+	}
+
+	@Test
+	void getColumnIndex() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		assertEquals(0, tablePanel.table().columnModel().getColumnIndex(Detail.INT));
+		assertEquals(1, tablePanel.table().columnModel().getColumnIndex(Detail.DOUBLE));
+		assertEquals(2, tablePanel.table().columnModel().getColumnIndex(Detail.BIG_DECIMAL));
+		assertEquals(3, tablePanel.table().columnModel().getColumnIndex(Detail.STRING));
+		assertEquals(4, tablePanel.table().columnModel().getColumnIndex(Detail.DATE));
+		assertEquals(5, tablePanel.table().columnModel().getColumnIndex(Detail.TIME));
+		assertEquals(6, tablePanel.table().columnModel().getColumnIndex(Detail.TIMESTAMP));
+		assertEquals(7, tablePanel.table().columnModel().getColumnIndex(Detail.OFFSET));
+		assertEquals(8, tablePanel.table().columnModel().getColumnIndex(Detail.BOOLEAN));
+		assertEquals(9, tablePanel.table().columnModel().getColumnIndex(Detail.BOOLEAN_NULLABLE));
+		assertEquals(10, tablePanel.table().columnModel().getColumnIndex(Detail.MASTER_FK));
+		assertEquals(11, tablePanel.table().columnModel().getColumnIndex(Detail.DETAIL_FK));
+		assertEquals(12, tablePanel.table().columnModel().getColumnIndex(Detail.MASTER_NAME));
+		assertEquals(13, tablePanel.table().columnModel().getColumnIndex(Detail.MASTER_CODE));
+		assertEquals(14, tablePanel.table().columnModel().getColumnIndex(Detail.INT_VALUE_LIST));
+		assertEquals(15, tablePanel.table().columnModel().getColumnIndex(Detail.INT_DERIVED));
+	}
+
+	@Test
+	void columnModel() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		FilteredTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(Detail.STRING);
+		assertEquals(Detail.STRING, column.getIdentifier());
+	}
+
+	@Test
+	void indexOf() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		tableModel.refresh();
+		tablePanel.table().sortModel().setSortOrder(Employee.NAME, SortOrder.ASCENDING);
+		assertEquals(SortOrder.ASCENDING, tablePanel.table().sortModel().sortOrder(Employee.NAME));
+
+		Entity.Key pk1 = CONNECTION_PROVIDER.entities().primaryKey(Employee.TYPE, 10);//ADAMS
+		assertEquals(0, tableModel.indexOf(pk1));
+
+		Entity.Key pk2 = CONNECTION_PROVIDER.entities().primaryKey(Employee.TYPE, -66);
+		assertEquals(-1, tableModel.indexOf(pk2));
+	}
+
+	@Test
+	void preferences() throws Exception {
+		List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
+		SwingEntityTableModel testModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER) {
+			@Override
+			protected Collection<Entity> refreshItems() {
+				return testEntities;
+			}
+		};
+		EntityTablePanel tablePanel = new EntityTablePanel(testModel);
+		tablePanel.clearPreferences();
+		FilteredTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
+		assertTrue(columnModel.visible(Detail.STRING).get());
+
+		columnModel.visible(Detail.STRING).set(false);
+		columnModel.moveColumn(1, 0);//double to 0, int to 1
+		TableColumn column = columnModel.getColumn(3);
+		column.setWidth(150);//timestamp
+		column = columnModel.getColumn(5);
+		column.setWidth(170);//entity_ref
+		ColumnConditionModel<Attribute<String>, String> conditionModel =
+						testModel.conditionModel().attributeModel(Detail.STRING);
+		conditionModel.autoEnable().set(false);
+		conditionModel.automaticWildcard().set(AutomaticWildcard.PREFIX);
+		conditionModel.caseSensitive().set(false);
+
+		tablePanel.savePreferences();
+
+		tablePanel = new EntityTablePanel(testModel);
+		columnModel = tablePanel.table().columnModel();
+
+		assertFalse(columnModel.visible(Detail.STRING).get());
+		assertEquals(0, columnModel.getColumnIndex(Detail.DOUBLE));
+		assertEquals(1, columnModel.getColumnIndex(Detail.INT));
+		column = columnModel.getColumn(3);
+		assertEquals(150, column.getPreferredWidth());
+
+		column = columnModel.getColumn(5);
+		assertEquals(170, column.getPreferredWidth());
+		conditionModel = testModel.conditionModel().attributeModel(Detail.STRING);
+		assertFalse(conditionModel.autoEnable().get());
+		assertEquals(conditionModel.automaticWildcard().get(), AutomaticWildcard.PREFIX);
+		assertFalse(conditionModel.caseSensitive().get());
+
+		tablePanel.clearPreferences();
+		UserPreferences.flushUserPreferences();
+	}
+
+	@Test
+	void orderQueryBySortOrder() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		OrderBy orderBy = tableModel.orderBy().get();
+		//default order by for entity
+		assertEquals(2, orderBy.orderByColumns().size());
+		assertTrue(orderBy.orderByColumns().get(0).ascending());
+		assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
+		assertTrue(orderBy.orderByColumns().get(1).ascending());
+		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
+
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		tablePanel.table().sortModel().setSortOrder(Employee.NAME, SortOrder.ASCENDING);
+
+		orderBy = tableModel.orderBy().get();
+		//still default order by for entity
+		assertEquals(2, orderBy.orderByColumns().size());
+		assertTrue(orderBy.orderByColumns().get(0).ascending());
+		assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
+		assertTrue(orderBy.orderByColumns().get(1).ascending());
+		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
+
+		tablePanel.orderQueryBySortOrder().set(true);
+		orderBy = tableModel.orderBy().get();
+		assertEquals(1, orderBy.orderByColumns().size());
+		assertTrue(orderBy.orderByColumns().get(0).ascending());
+		assertEquals(Employee.NAME, orderBy.orderByColumns().get(0).column());
+
+		tablePanel.table().sortModel().setSortOrder(Employee.HIREDATE, SortOrder.DESCENDING);
+		tablePanel.table().sortModel().addSortOrder(Employee.NAME, SortOrder.ASCENDING);
+
+		orderBy = tableModel.orderBy().get();
+		assertEquals(2, orderBy.orderByColumns().size());
+		assertFalse(orderBy.orderByColumns().get(0).ascending());
+		assertEquals(Employee.HIREDATE, orderBy.orderByColumns().get(0).column());
+		assertTrue(orderBy.orderByColumns().get(1).ascending());
+		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
+
+		tablePanel.table().sortModel().clear();
+		orderBy = tableModel.orderBy().get();
+		//back to default order by for entity
+		assertEquals(2, orderBy.orderByColumns().size());
+		assertTrue(orderBy.orderByColumns().get(0).ascending());
+		assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
+		assertTrue(orderBy.orderByColumns().get(1).ascending());
+		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
+	}
+
+	private static List<Entity> initTestEntities(Entities entities) {
+		List<Entity> testEntities = new ArrayList<>(5);
+		String[] stringValues = new String[] {"a", "b", "c", "d", "e"};
+		for (int i = 0; i < 5; i++) {
+			testEntities.add(entities.builder(Detail.TYPE)
+							.with(Detail.ID, (long) i + 1)
+							.with(Detail.INT, i + 1)
+							.with(Detail.STRING, stringValues[i])
+							.build());
+		}
+
+		return testEntities;
+	}
+}
