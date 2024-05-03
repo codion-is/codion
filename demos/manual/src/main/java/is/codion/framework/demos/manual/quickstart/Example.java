@@ -26,7 +26,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -56,7 +56,7 @@ public final class Example {
 
 	// tag::store[]
 	// tag::storeDomain[]
-	public static class Store extends DefaultDomain {
+	public static class Store extends DomainModel {
 
 		public static final DomainType DOMAIN = domainType(Store.class);
 

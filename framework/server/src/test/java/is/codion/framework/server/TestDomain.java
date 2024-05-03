@@ -23,7 +23,7 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.AbstractReport;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -37,7 +37,7 @@ import java.time.LocalDate;
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
 
-public final class TestDomain extends DefaultDomain {
+public final class TestDomain extends DomainModel {
 
 	public static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

@@ -25,7 +25,7 @@ import is.codion.common.db.report.AbstractReport;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -51,7 +51,7 @@ import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static java.util.Arrays.asList;
 
-public final class TestDomain extends DefaultDomain {
+public final class TestDomain extends DomainModel {
 
 	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

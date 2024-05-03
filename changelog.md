@@ -42,6 +42,8 @@ Codion Change Log
 - LookAndFeelProvider.CROSS_PLATFORM and SYSTEM configuration values added.
 ### is.codion.swing.common.model
 - FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
+### is.codion.framework.domain
+- DefaultDomain renamed DomainModel.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.report() exception handling improved, now throws DatabaseException in case of an SQLException.
 - DefaultLocalEntityConnection exception handling refactored in order to guarantee rollbacks in case of RuntimeExceptions.

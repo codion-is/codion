@@ -28,7 +28,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.sql.Connection;
 
-public final class TestDomainExtended extends DefaultDomain {
+public final class TestDomainExtended extends DomainModel {
 
 	public static final DomainType DOMAIN = DomainType.domainType(TestDomainExtended.class);
 
@@ -85,7 +85,7 @@ public final class TestDomainExtended extends DefaultDomain {
 		});
 	}
 
-	public static final class TestDomainSecondExtension extends DefaultDomain {
+	public static final class TestDomainSecondExtension extends DomainModel {
 
 		public static final DomainType DOMAIN = DomainType.domainType(TestDomainSecondExtension.class);
 
@@ -106,7 +106,7 @@ public final class TestDomainExtended extends DefaultDomain {
 		}
 	}
 
-	public static final class TestDomainThirdExtension extends DefaultDomain {
+	public static final class TestDomainThirdExtension extends DomainModel {
 
 		public static final DomainType DOMAIN = DomainType.domainType(TestDomainThirdExtension.class);
 

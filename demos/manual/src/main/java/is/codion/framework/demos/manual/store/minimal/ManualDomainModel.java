@@ -20,8 +20,8 @@ package is.codion.framework.demos.manual.store.minimal;
 
 import is.codion.framework.demos.manual.store.minimal.ManualDomainModel.Store.City;
 import is.codion.framework.demos.manual.store.minimal.ManualDomainModel.Store.Customer;
-import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -60,7 +60,7 @@ class ManualDomainModel {
 
 	// end::storeApi[]
 	// tag::storeImpl[]
-	public static class StoreImpl extends DefaultDomain {
+	public static class StoreImpl extends DomainModel {
 
 		public StoreImpl() {
 			super(Store.DOMAIN); //<1>

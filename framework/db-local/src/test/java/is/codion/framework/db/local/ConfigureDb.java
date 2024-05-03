@@ -21,7 +21,7 @@ package is.codion.framework.db.local;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 
 import java.sql.SQLException;
 
-final class ConfigureDb extends DefaultDomain {
+final class ConfigureDb extends DomainModel {
 
 	private static final DomainType DOMAIN = DomainType.domainType(ConfigureDb.class);
 

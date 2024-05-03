@@ -18,10 +18,10 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 
-public final class TestDomain extends DefaultDomain {
+public final class TestDomain extends DomainModel {
 
 	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

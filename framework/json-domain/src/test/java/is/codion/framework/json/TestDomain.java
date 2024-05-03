@@ -18,7 +18,7 @@
  */
 package is.codion.framework.json;
 
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -37,7 +37,7 @@ import java.time.OffsetDateTime;
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
 
-public final class TestDomain extends DefaultDomain {
+public final class TestDomain extends DomainModel {
 
 	public static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

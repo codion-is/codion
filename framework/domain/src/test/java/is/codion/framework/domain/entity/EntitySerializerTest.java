@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.CompositeMaster;
@@ -186,7 +186,7 @@ public final class EntitySerializerTest {
 		Column<String> EXTRA = TYPE.stringColumn("extra");
 	}
 
-	private static final class SerialDomain extends DefaultDomain {
+	private static final class SerialDomain extends DomainModel {
 
 		private SerialDomain(EntityDefinition definition) {
 			super(DOMAIN);

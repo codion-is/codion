@@ -121,7 +121,7 @@ include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[t
 ----
 ====
 
-To create a domain model we extend the *DefaultDomain* class and define a *DomainType* constant to identify the domain model.
+To create a domain model we extend the *DomainModel* class and define a *DomainType* constant to identify the domain model.
 
 In the constructor we call methods adding entity definitions to this domain model.
 

@@ -23,7 +23,7 @@ import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.item.Item;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.world.domain.api.World;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
@@ -40,7 +40,7 @@ import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
 
-public final class WorldImpl extends DefaultDomain {
+public final class WorldImpl extends DomainModel {
 
 	// tag::items[]
 	private static final List<Item<String>> CONTINENT_ITEMS = asList(

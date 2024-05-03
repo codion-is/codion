@@ -23,7 +23,7 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.AbstractReport;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -39,7 +39,7 @@ import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
-public final class TestDomain extends DefaultDomain {
+public final class TestDomain extends DomainModel {
 
 	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

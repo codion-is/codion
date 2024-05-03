@@ -28,8 +28,8 @@ import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -119,7 +119,7 @@ public final class ChinookAuthenticator implements Authenticator {
 		return localEntityConnection(database, domain, connectionPool.connection(authenticationUser));
 	}
 
-	private static final class Authentication extends DefaultDomain {
+	private static final class Authentication extends DomainModel {
 
 		private static final DomainType DOMAIN = domainType(Authentication.class);
 

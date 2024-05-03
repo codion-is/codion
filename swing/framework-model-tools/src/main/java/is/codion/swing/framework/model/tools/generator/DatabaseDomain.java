@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model.tools.generator;
 
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -44,7 +44,7 @@ import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-final class DatabaseDomain extends DefaultDomain {
+final class DatabaseDomain extends DomainModel {
 
 	private static final int MAXIMUM_COLUMN_SIZE = 2_147_483_647;
 

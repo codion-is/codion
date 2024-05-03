@@ -36,7 +36,7 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.condition.Condition;
@@ -345,7 +345,7 @@ public class EntityServerTest {
 						.build();
 	}
 
-	public static class EmptyDomain extends DefaultDomain {
+	public static class EmptyDomain extends DomainModel {
 		private EmptyDomain() {
 			super(DomainType.domainType(EmptyDomain.class));
 		}

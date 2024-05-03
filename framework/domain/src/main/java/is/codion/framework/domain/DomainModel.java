@@ -46,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  * @see #add(ProcedureType, DatabaseProcedure)
  * @see #add(FunctionType, DatabaseFunction)
  */
-public abstract class DefaultDomain implements Domain {
+public abstract class DomainModel implements Domain {
 
 	private final DomainType domainType;
 	private final DomainEntities entities;
@@ -55,10 +55,10 @@ public abstract class DefaultDomain implements Domain {
 	private final DomainFunctions functions = new DomainFunctions();
 
 	/**
-	 * Instantiates a new DefaultDomain identified by the given {@link DomainType}.
+	 * Instantiates a new DomainModel identified by the given {@link DomainType}.
 	 * @param domainType the Domain model type to associate with this domain model
 	 */
-	protected DefaultDomain(DomainType domainType) {
+	protected DomainModel(DomainType domainType) {
 		this.domainType = requireNonNull(domainType, "domainType");
 		this.entities = new DomainEntities(domainType);
 	}

@@ -19,7 +19,7 @@
 package is.codion.framework.model.test;
 
 import is.codion.common.item.Item;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -37,7 +37,7 @@ import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 
-public final class TestDomain extends DefaultDomain {
+public final class TestDomain extends DomainModel {
 
 	public static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

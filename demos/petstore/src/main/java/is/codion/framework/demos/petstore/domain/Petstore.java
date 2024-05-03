@@ -18,7 +18,7 @@
  */
 package is.codion.framework.demos.petstore.domain;
 
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -32,7 +32,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 
-public final class Petstore extends DefaultDomain {
+public final class Petstore extends DomainModel {
 
 	public static final DomainType DOMAIN = domainType(Petstore.class);
 

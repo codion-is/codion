@@ -41,7 +41,7 @@ import static is.codion.framework.domain.entity.KeyGenerator.queried;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 
-public final class TestDomain extends DefaultDomain {
+public final class TestDomain extends DomainModel {
 
 	public static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

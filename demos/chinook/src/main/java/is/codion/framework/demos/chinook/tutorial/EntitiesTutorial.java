@@ -25,7 +25,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -54,7 +54,7 @@ import static java.util.Arrays.asList;
 public final class EntitiesTutorial {
 
 	// The domain class, containing the domain model definition
-	public static final class Chinook extends DefaultDomain {
+	public static final class Chinook extends DomainModel {
 
 		// DomainType for identifying this domain model
 		static final DomainType DOMAIN = domainType(Chinook.class);

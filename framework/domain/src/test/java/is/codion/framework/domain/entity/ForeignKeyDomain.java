@@ -18,12 +18,12 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-class ForeignKeyDomain extends DefaultDomain {
+class ForeignKeyDomain extends DomainModel {
 
 	static final DomainType DOMAIN = DomainType.domainType("fkDomain");
 

@@ -23,7 +23,7 @@ import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringFactory;
@@ -59,7 +59,7 @@ import static java.util.Collections.singletonList;
  */
 public final class ClientTutorial {
 
-	public static final class Chinook extends DefaultDomain {
+	public static final class Chinook extends DomainModel {
 
 		static final DomainType DOMAIN = domainType(Chinook.class);
 

@@ -20,7 +20,7 @@ package is.codion.framework.demos.employees.domain;
 
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -44,7 +44,7 @@ import static java.util.Arrays.asList;
 
 // tag::departmentConstants[]
 // This class contains the specification for the Employees application domain model
-public final class Employees extends DefaultDomain {
+public final class Employees extends DomainModel {
 
 	// The domain type identifying this domain model
 	public static final DomainType DOMAIN = domainType(Employees.class);

@@ -18,7 +18,7 @@
  */
 package is.codion.framework.demos.manual.store.minimal.domain;
 
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -35,8 +35,8 @@ import java.util.function.Function;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 
-// Extend the DefaultDomain class.
-public class Store extends DefaultDomain {
+// Extend the DomainModel class.
+public class Store extends DomainModel {
 
 	// Create a DomainType constant identifying the domain model.
 	public static final DomainType DOMAIN = domainType(Store.class);

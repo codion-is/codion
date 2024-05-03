@@ -18,7 +18,7 @@
  */
 package is.codion.plugin.jasperreports;
 
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -32,7 +32,7 @@ import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 import static is.codion.plugin.jasperreports.JasperReports.fileReport;
 import static java.util.Arrays.asList;
 
-public final class TestDomain extends DefaultDomain {
+public final class TestDomain extends DomainModel {
 
 	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

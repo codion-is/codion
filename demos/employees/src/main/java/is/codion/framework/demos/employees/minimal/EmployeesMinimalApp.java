@@ -21,7 +21,7 @@ package is.codion.framework.demos.employees.minimal;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -86,7 +86,7 @@ public final class EmployeesMinimalApp {
 	/**
 	 * This class initializes the domain model based on the EMPLOYEES schema
 	 */
-	private static final class Employees extends DefaultDomain {
+	private static final class Employees extends DomainModel {
 
 		public Employees() {
 			super(DOMAIN);

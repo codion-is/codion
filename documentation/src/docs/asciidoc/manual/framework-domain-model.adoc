@@ -12,7 +12,7 @@ A Codion domain model is based around the {url-javadoc}{framework-domain}/is/cod
 == Domain core classes
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain]*::
-Specifies a domain model, containing entity definitions, procedures, functions and reports. A Codion domain model is implemented by extending the *{url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain]* class and populating it with entity definitions.
+Specifies a domain model, containing entity definitions, procedures, functions and reports. A Codion domain model is implemented by extending the *{url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel]* class and populating it with entity definitions.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/DomainType.html[DomainType]*::
 A unique identifier for a domain model and a factory for *EntityType* instances associated with that domain model.
@@ -89,7 +89,7 @@ Typically the underlying table name is used as the *EntityType* name, but you ca
 The underlying column name is typically used as the *Column* name, but as with the *EntityType* you can use whatever value you want and specify the column name via the *columnName()* method when creating the associated *ColumnDefinition*.
 
 == Domain implementation
-The domain model is implemented by extending the {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain] class and populating it with *EntityDefinitions* based on the domain tables. An *EntityDefinition* is comprised of *AttributeDefinitions* based on the *Attributes* associated with the entity.
+The domain model is implemented by extending the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class and populating it with *EntityDefinitions* based on the domain tables. An *EntityDefinition* is comprised of *AttributeDefinitions* based on the *Attributes* associated with the entity.
 
 The *EntityType* and *Attribute* constants provide *define()* methods returning builders which allow for further configuration (such as nullability and maximum length for values and the caption and primary key generator for the entity definition)..
 
@@ -346,7 +346,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 == Domain
 
-Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html#define{opar}is.codion.framework.domain.entity.attribute.AttributeDefinition.Builder\...{cpar}[EntityType.define()] and adding it to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html#add{opar}is.codion.framework.domain.entity.EntityDefinition{cpar}[add(EntityDefinition)] or {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html#add{opar}is.codion.framework.domain.entity.EntityDefinition.Builder{cpar}[add(EntityDefinition.Builder)] methods in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain] class.
+Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html#define{opar}is.codion.framework.domain.entity.attribute.AttributeDefinition.Builder\...{cpar}[EntityType.define()] and adding it to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html#add{opar}is.codion.framework.domain.entity.EntityDefinition{cpar}[add(EntityDefinition)] or {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html#add{opar}is.codion.framework.domain.entity.EntityDefinition.Builder{cpar}[add(EntityDefinition.Builder)] methods in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class.
 The framework assumes the *entityType* name is the underlying table name, but the *tableName* can be specified via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#tableName{opar}java.lang.String{cpar}[EntityDefinition.Builder.tableName(String)] method.
 
 [source,java,indent=0]

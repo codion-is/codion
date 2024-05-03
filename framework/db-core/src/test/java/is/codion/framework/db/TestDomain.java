@@ -18,7 +18,7 @@
  */
 package is.codion.framework.db;
 
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -30,7 +30,7 @@ import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 
-public final class TestDomain extends DefaultDomain {
+public final class TestDomain extends DomainModel {
 
 	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

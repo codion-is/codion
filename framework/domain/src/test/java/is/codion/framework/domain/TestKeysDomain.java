@@ -22,7 +22,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-public final class TestKeysDomain extends DefaultDomain {
+public final class TestKeysDomain extends DomainModel {
 
 	private static final DomainType DOMAIN = DomainType.domainType(TestKeysDomain.class);
 

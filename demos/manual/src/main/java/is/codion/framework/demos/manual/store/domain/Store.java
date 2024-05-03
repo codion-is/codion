@@ -20,7 +20,7 @@ package is.codion.framework.demos.manual.store.domain;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.report.ReportType;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -43,7 +43,7 @@ import java.util.function.Function;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 
-public final class Store extends DefaultDomain {
+public final class Store extends DomainModel {
 
 	public static final DomainType DOMAIN = domainType(Store.class);
 

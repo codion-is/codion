@@ -27,7 +27,7 @@ import is.codion.framework.demos.petclinic.domain.api.Specialty;
 import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
@@ -38,7 +38,7 @@ import java.sql.Statement;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 
-public final class PetclinicImpl extends DefaultDomain {
+public final class PetclinicImpl extends DomainModel {
 
 	public PetclinicImpl() {
 		super(Petclinic.DOMAIN);

@@ -26,7 +26,7 @@ import is.codion.common.version.Version;
 import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -95,7 +95,7 @@ public final class NotesDemo {
 	}
 
 	// The domain model implementation
-	private static class Notes extends DefaultDomain {
+	private static class Notes extends DomainModel {
 
 		private Notes() {
 			super(DOMAIN);

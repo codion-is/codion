@@ -19,7 +19,7 @@
 package is.codion.framework.demos.schemabrowser.domain;
 
 import is.codion.common.db.database.DatabaseFactory;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -36,7 +36,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.ResourceBundle.getBundle;
 
-public final class SchemaBrowser extends DefaultDomain {
+public final class SchemaBrowser extends DomainModel {
 
 	public static final DomainType DOMAIN = domainType(SchemaBrowser.class);
 

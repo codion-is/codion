@@ -160,7 +160,7 @@ For persistance see <<Database access, Database access>> below.
 
 In the below example, we define a domain model with two entities, `Customer` and `Address` with a master/detail retionship, using the following steps:
 
-. Extend the `DefaultDomain` class and create a `DomainType` constant identifying the domain model.
+. Extend the `DomainModel` class and create a `DomainType` constant identifying the domain model.
 . Create a namespace interface for each `Entity` and use the `DomainType` to create `EntityType` constants.
 . Use the `EntityType` constant to create `Column` constants for each column and a `ForeignKey` constant for the foreign key relationship.
 
@@ -173,8 +173,8 @@ NOTE:: The constants defined in the above steps represent the domain API and are
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 
-// Extend the DefaultDomain class.
-public class Store extends DefaultDomain {
+// Extend the DomainModel class.
+public class Store extends DomainModel {
 
   // Create a DomainType constant identifying the domain model.
   public static final DomainType DOMAIN = domainType(Store.class);

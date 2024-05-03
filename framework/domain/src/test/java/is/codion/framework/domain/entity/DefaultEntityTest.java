@@ -19,7 +19,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Serializer;
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.CompositeDetail;
@@ -1018,7 +1018,7 @@ public class DefaultEntityTest {
 		EntityType type = domainType.entityType("derived");
 		Attribute<String> stringAttribute = type.stringAttribute("string");
 		Attribute<String> derivedAttribute = type.stringAttribute("derived");
-		class DerivedDomain extends DefaultDomain {
+		class DerivedDomain extends DomainModel {
 			DerivedDomain() {
 				super(domainType);
 				add(type.define(

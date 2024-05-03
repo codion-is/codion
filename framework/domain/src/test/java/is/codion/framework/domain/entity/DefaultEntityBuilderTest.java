@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.Department;
@@ -71,7 +71,7 @@ public final class DefaultEntityBuilderTest {
 		Column<Integer> value = entityType.integerColumn("value");
 		Attribute<Integer> derivedValue = entityType.integerAttribute("derivedValue");
 
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(domainType);
 				add(entityType.define(

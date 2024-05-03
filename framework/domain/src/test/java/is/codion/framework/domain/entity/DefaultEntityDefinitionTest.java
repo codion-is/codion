@@ -19,8 +19,8 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Serializer;
-import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.CompositeDetail;
@@ -56,7 +56,7 @@ public class DefaultEntityDefinitionTest {
 		Column<String> name = entityType.stringColumn("name");
 		Function<Entity, String> stringFactory = StringFactory.builder().value(name).build();
 		Comparator<Entity> comparator = (o1, o2) -> 0;
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(
@@ -146,7 +146,7 @@ public class DefaultEntityDefinitionTest {
 
 	@Test
 	void entityWithoutAttributes() {
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				EntityType entityType = DOMAIN_TYPE.entityType("entityWithoutAttributes");
@@ -159,7 +159,7 @@ public class DefaultEntityDefinitionTest {
 
 	@Test
 	void duplicateAttributes() {
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				EntityType entityType = DOMAIN_TYPE.entityType("duplicateAttributes");
@@ -178,7 +178,7 @@ public class DefaultEntityDefinitionTest {
 		Column<Integer> name = entityType.integerColumn("name");
 		Column<String> info = entityType.stringColumn("info");
 		Attribute<String> derived = entityType.stringAttribute("derived");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(
@@ -203,7 +203,7 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void testGroupByColumns() {
 		EntityType entityType = DOMAIN_TYPE.entityType("testGroupByColumns");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(
@@ -230,7 +230,7 @@ public class DefaultEntityDefinitionTest {
 	void testSetHavingClause() {
 		final String havingClause = "p1 > 1";
 		EntityType entityType = DOMAIN_TYPE.entityType("testSetHavingClause");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("p0").define().primaryKey())
@@ -259,7 +259,7 @@ public class DefaultEntityDefinitionTest {
 		EntityType entityType = DOMAIN_TYPE.entityType("testForeignPrimaryKey");
 		Column<Integer> integerColumn = entityType.integerColumn("column");
 		ForeignKey foreignKey = entityType.foreignKey("fkColumn", integerColumn, parent.integerColumn("test"));
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				setStrictForeignKeys(false);
@@ -277,7 +277,7 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void testAttributeConflict() {
 		EntityType entityType = DOMAIN_TYPE.entityType("testAttributeConflict");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				Column<Integer> integerColumn = entityType.integerColumn("col");
@@ -297,7 +297,7 @@ public class DefaultEntityDefinitionTest {
 		Column<Integer> column1 = entityType.integerColumn("1");
 		Column<Integer> column2 = entityType.integerColumn("2");
 		Attribute<Integer> der = entityType.integerAttribute("der");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(
@@ -319,7 +319,7 @@ public class DefaultEntityDefinitionTest {
 		final String colorBlue = "blue";
 		final String colorYellow = "blue";
 		EntityType entityType = DOMAIN_TYPE.entityType("getColor");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
@@ -339,7 +339,7 @@ public class DefaultEntityDefinitionTest {
 	void testDefaultStringProvider() {
 		EntityType entityType = DOMAIN_TYPE.entityType("testDefaultStringProvider");
 		Column<Integer> attribute = entityType.integerColumn("attribute");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(attribute.define().primaryKey()));
@@ -355,7 +355,7 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void nullStringFactory() {
 		EntityType entityType = DOMAIN_TYPE.entityType("nullStringFactory");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
@@ -368,7 +368,7 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void stringFactory() {
 		EntityType entityType = DOMAIN_TYPE.entityType("stringFactory");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
@@ -384,7 +384,7 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void defaultKeyGenerator() {
 		EntityType entityType = DOMAIN_TYPE.entityType("defaultKeyGenerator");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey()));
@@ -401,7 +401,7 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void nullKeyGenerator() {
 		EntityType entityType = DOMAIN_TYPE.entityType("nullKeyGenerator");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
@@ -414,7 +414,7 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void keyGenerator() {
 		EntityType entityType = DOMAIN_TYPE.entityType("keyGenerator");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
@@ -444,7 +444,7 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void keyGeneratorWithoutPrimaryKey() {
 		EntityType entityType = DOMAIN_TYPE.entityType("keyGeneratorWithoutPrimaryKey");
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().column())
@@ -457,7 +457,7 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void i18n() throws IOException, ClassNotFoundException {
 		EntityType entityType = DOMAIN_TYPE.entityType("i18n", DefaultEntityDefinitionTest.class.getName());
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
@@ -482,7 +482,7 @@ public class DefaultEntityDefinitionTest {
 		EntityType entityType1 = DOMAIN_TYPE.entityType("mismatch1");
 		EntityType entityType2 = DOMAIN_TYPE.entityType("mismatch2");
 
-		class TestDomain extends DefaultDomain {
+		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType1.define(entityType2.integerColumn("attribute").define().primaryKey()));
@@ -490,7 +490,7 @@ public class DefaultEntityDefinitionTest {
 		}
 		assertThrows(IllegalArgumentException.class, () -> new TestDomain());
 
-		class TestDomain2 extends DefaultDomain {
+		class TestDomain2 extends DomainModel {
 			public TestDomain2() {
 				super(DOMAIN_TYPE);
 				add(entityType1.define(
