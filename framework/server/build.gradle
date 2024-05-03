@@ -24,6 +24,7 @@ dependencies {
     testRuntimeOnly project(":codion-dbms-h2")
     testRuntimeOnly(libs.h2)
 
+    serverRuntime project(":codion-framework-i18n")
     serverRuntime project(":codion-framework-server")
     serverRuntime project(":codion-framework-servlet")
     serverRuntime project(":codion-plugin-jasperreports")
