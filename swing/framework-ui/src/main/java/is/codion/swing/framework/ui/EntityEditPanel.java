@@ -40,7 +40,6 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.slf4j.Logger;
@@ -68,7 +67,6 @@ import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.*;
-import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_I;
@@ -176,29 +174,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	/**
 	 * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
 	 * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
-	 * @param entityComponents the entity components instance to use when creating components
-	 */
-	public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents) {
-		this(editModel, entityComponents, NO_CONFIGURATION);
-	}
-
-	/**
-	 * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
-	 * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
 	 * @param config provides access to the panel configuration
 	 */
 	public EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> config) {
-		this(editModel, entityComponents(editModel.entityDefinition()), config);
-	}
-
-	/**
-	 * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
-	 * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
-	 * @param entityComponents the entity components instance to use when creating components
-	 * @param config provides access to the panel configuration
-	 */
-	public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, Consumer<Config> config) {
-		super(editModel, entityComponents);
+		super(editModel);
 		this.configuration = configure(config);
 		this.controlsConfiguration = createControlsConfiguration();
 		this.active = State.state(!configuration.focusActivation);

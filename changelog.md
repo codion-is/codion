@@ -87,6 +87,7 @@ Codion Change Log
 - EntityPanel control configuration refactored, now consistent with EntityEditPanel and EntityTablePanel.
 - EntityPanel, TabbedDetailLayout, now possible to configure the available panel states.
 - EntityComponents now final, constructor private, factory method added.
+- EntityComponents parameter removed from EntityEditComponentPanel constructor.
 
 ## 0.17.43
 ### is.codion.common.core

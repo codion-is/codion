@@ -168,18 +168,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param editModel the edit model
 	 */
 	protected EntityEditComponentPanel(SwingEntityEditModel editModel) {
-		this(editModel, entityComponents(requireNonNull(editModel, "editModel").entityDefinition()));
-	}
-
-	/**
-	 * Instantiates a new EntityEditComponentPanel
-	 * @param editModel the edit model
-	 * @param entityComponents the entity components to use when creating components
-	 * @throws IllegalArgumentException in case the edit model and entity components entityTypes don't match
-	 */
-	protected EntityEditComponentPanel(SwingEntityEditModel editModel, EntityComponents entityComponents) {
 		this.editModel = requireNonNull(editModel, "editModel");
-		this.entityComponents = requireNonNull(entityComponents, "entityComponents");
+		this.entityComponents = entityComponents(editModel.entityDefinition());
 		if (!editModel.entityType().equals(entityComponents.entityDefinition().entityType())) {
 			throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.entityType() +
 							", entityComponents: " + entityComponents.entityDefinition().entityType());
