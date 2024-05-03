@@ -62,7 +62,7 @@ public interface Entity extends Comparable<Entity> {
 	EntityDefinition definition();
 
 	/**
-	 * Sets the value of the given attribute, returning the old value if any
+	 * Sets the value of the given attribute, returning the previous value if any
 	 * @param attribute the attribute
 	 * @param value the value
 	 * @param <T> the value type

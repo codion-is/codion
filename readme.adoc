@@ -119,7 +119,7 @@ Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object 
 
 === Entities
 
-The Codion framework is based around the `Entity` class which represents a row in a table or query. An `Entity` maps `Attributes` to their respective values and keeps track of values that have been modified since they were first set.
+The Codion framework is based around the `Entity` class which represents a row in a table or query. An `Entity` maps `Attributes` to their respective values and keeps track of values that have been modified since they were first set. `Entity` instances are basically data transfer objects and are *not* managed by the framework. For persistance see <<Persistance>> below.
 
 [source,java]
 ----
@@ -143,16 +143,14 @@ Boolean active = customer.get(Customer.ACTIVE);
 // modify values
 customer.put(Customer.LAST_NAME, "Carter");
 
-System.out.println(customer.modified()); //true
-System.out.println(customer.original(Customer.LAST_NAME)); //"Doe"
+System.out.println(customer.modified()); // true
+System.out.println(customer.original(Customer.LAST_NAME)); // "Doe"
 
 // revert changes
-customer.put(Customer.LAST_NAME, "Doe");
+customer.revert();
 
 System.out.println(customer.modified()); //false
 ----
-
-For persistance see <<Database access, Database access>> below.
 
 === Defining entities
 
@@ -464,7 +462,7 @@ public class StoreDemo {
 
 image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
 
-== Database access
+== Persistance
 
 [cols="2,4,2"]
 |===
