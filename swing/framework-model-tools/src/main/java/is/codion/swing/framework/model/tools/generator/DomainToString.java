@@ -25,6 +25,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -120,7 +121,7 @@ final class DomainToString {
 		}
 	}
 
-	private static List<String> attributeStrings(List<AttributeDefinition<?>> attributeDefinitions, String interfaceName,
+	private static List<String> attributeStrings(Collection<AttributeDefinition<?>> attributeDefinitions, String interfaceName,
 																							 EntityDefinition definition) {
 		List<String> strings = new ArrayList<>();
 		attributeDefinitions.forEach(attributeDefinition -> {

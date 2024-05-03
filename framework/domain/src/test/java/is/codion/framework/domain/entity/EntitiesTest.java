@@ -262,7 +262,7 @@ public final class EntitiesTest {
 		assertTrue(attributes.contains(name));
 		assertFalse(attributes.contains(active));
 
-		List<AttributeDefinition<?>> allAttributes = definition.attributes().definitions();
+		Collection<AttributeDefinition<?>> allAttributes = definition.attributes().definitions();
 		assertTrue(allAttributes.contains(id));
 		assertTrue(allAttributes.contains(location));
 		assertTrue(allAttributes.contains(name));

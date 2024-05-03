@@ -149,7 +149,7 @@ public interface Entity extends Comparable<Entity> {
 
 	/**
 	 * Returns true if a null value is mapped to the given attribute or if no mapping is found.
-	 * In case of foreign keys the value of the underlying reference attribute(s) is checked.
+	 * In case of foreign keys the value of the underlying reference column(s) is checked.
 	 * @param attribute the attribute
 	 * @return true if the value mapped to the given attribute is null or no value is mapped
 	 */
@@ -157,7 +157,7 @@ public interface Entity extends Comparable<Entity> {
 
 	/**
 	 * Returns true if this Entity contains a non-null value mapped to the given attribute.
-	 * In case of foreign keys the value of the underlying reference attribute(s) is checked.
+	 * In case of foreign keys the value of the underlying reference column(s) is checked.
 	 * @param attribute the attribute
 	 * @return true if a non-null value is mapped to the given attribute
 	 */

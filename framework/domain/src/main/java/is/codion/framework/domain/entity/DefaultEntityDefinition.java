@@ -412,7 +412,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
-		public List<AttributeDefinition<?>> definitions() {
+		public Collection<AttributeDefinition<?>> definitions() {
 			return entityAttributes.attributeDefinitions;
 		}
 
@@ -475,7 +475,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
-		public List<ColumnDefinition<?>> definitions() {
+		public Collection<ColumnDefinition<?>> definitions() {
 			return entityAttributes.columnDefinitions;
 		}
 

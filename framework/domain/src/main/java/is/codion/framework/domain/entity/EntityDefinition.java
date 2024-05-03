@@ -121,7 +121,7 @@ public interface EntityDefinition {
 	Optional<SelectQuery> selectQuery();
 
 	/**
-	 * @return the object responsible for providing toString values for this entity type
+	 * @return the function responsible for providing toString values for this entity type
 	 */
 	Function<Entity, String> stringFactory();
 
@@ -367,9 +367,9 @@ public interface EntityDefinition {
 		Collection<Attribute<?>> get();
 
 		/**
-		 * @return an unmodifiable list view of the attribute definitions
+		 * @return an unmodifiable view of the attribute definitions
 		 */
-		List<AttributeDefinition<?>> definitions();
+		Collection<AttributeDefinition<?>> definitions();
 
 		/**
 		 * Returns the attributes which values are derived from the value of the given attribute,
@@ -428,9 +428,9 @@ public interface EntityDefinition {
 		Collection<Column<?>> get();
 
 		/**
-		 * @return a list containing the column definitions for this entity type
+		 * @return all the column definitions for this entity type
 		 */
-		List<ColumnDefinition<?>> definitions();
+		Collection<ColumnDefinition<?>> definitions();
 
 		/**
 		 * Returns the columns to search by when searching for entities of this type by a string value
