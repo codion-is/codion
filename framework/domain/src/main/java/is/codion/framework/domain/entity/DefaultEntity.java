@@ -325,12 +325,12 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public boolean valuesEqual(Entity entity) {
-		return valuesEqual(entity, definition.attributes().get());
+	public boolean equalValues(Entity entity) {
+		return equalValues(entity, definition.attributes().get());
 	}
 
 	@Override
-	public final boolean valuesEqual(Entity entity, Collection<? extends Attribute<?>> attributes) {
+	public final boolean equalValues(Entity entity, Collection<? extends Attribute<?>> attributes) {
 		if (!definition.entityType().equals(requireNonNull(entity).entityType())) {
 			throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.entityType());
 		}

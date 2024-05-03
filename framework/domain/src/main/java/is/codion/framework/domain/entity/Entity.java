@@ -24,7 +24,6 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -221,22 +220,22 @@ public interface Entity extends Comparable<Entity> {
 
 	/**
 	 * Compares the values of all attributes in the given entity to the values in this entity instance.
-	 * Returns true if these two entities contain values for the same attributes and all the values are equal.
+	 * Returns true if all attribute values available in the this entity are available and equal in the comparison entity
 	 * @param entity the entity to compare to
 	 * @return true if all values in this entity instance are present and equal to the values in the given entity
 	 * @throws IllegalArgumentException in case the entity is not of the same type
 	 */
-	boolean valuesEqual(Entity entity);
+	boolean equalValues(Entity entity);
 
 	/**
 	 * Compares the values of the given attributes in the given entity to the values in this entity instance.
-	 * Returns true if these two entities contain values for the same attributes and all the values are equal.
+	 * Returns true if these two entities contain values for the given attributes and all the values are equal.
 	 * @param entity the entity to compare to
 	 * @param attributes the attributes to compare
 	 * @return true if all the given values in this entity instance are present and equal to the values in the given entity
 	 * @throws IllegalArgumentException in case the entity is not of the same type
 	 */
-	boolean valuesEqual(Entity entity, Collection<? extends Attribute<?>> attributes);
+	boolean equalValues(Entity entity, Collection<? extends Attribute<?>> attributes);
 
 	/**
 	 * After a call to this method this Entity contains the same values and original values as the source entity.
@@ -515,46 +514,6 @@ public interface Entity extends Comparable<Entity> {
 						.filter(entity -> values.entrySet().stream()
 										.allMatch(entry -> Objects.equals(entity.get(entry.getKey()), entry.getValue())))
 						.collect(toList());
-	}
-
-	/**
-	 * Returns true if all attribute values available in the first entity are available and equal in the second entity.
-	 * @param entityOne the first entity
-	 * @param entityTwo the second entity
-	 * @return true if the values of the second entity are equal to all values in the first entity
-	 */
-	static boolean valuesEqual(Entity entityOne, Entity entityTwo) {
-		if (requireNonNull(entityOne).entrySet().size() != requireNonNull(entityTwo).entrySet().size()) {
-			return false;
-		}
-
-		return valuesEqual(entityOne, entityTwo, entityOne.entrySet().stream()
-						.map(Map.Entry::getKey)
-						.toArray(Attribute[]::new));
-	}
-
-	/**
-	 * Returns true if the values of the given attributes are equal in the given entities.
-	 * @param entityOne the first entity
-	 * @param entityTwo the second entity
-	 * @param attributes the attributes which values to compare
-	 * @return true if the values of the given attributes are equal in the given entities
-	 */
-	static boolean valuesEqual(Entity entityOne, Entity entityTwo, Attribute<?>... attributes) {
-		if (!requireNonNull(entityOne).entityType().equals(requireNonNull(entityTwo).entityType())) {
-			throw new IllegalArgumentException("Type mismatch: " + entityOne.entityType() + " - " + entityTwo.entityType());
-		}
-		if (requireNonNull(attributes).length == 0) {
-			throw new IllegalArgumentException("No attributes provided for equality check");
-		}
-
-		return Arrays.stream(attributes).allMatch(attribute -> {
-			if (attribute.type().isByteArray()) {
-				return Arrays.equals((byte[]) entityOne.get(attribute), (byte[]) entityTwo.get(attribute));
-			}
-
-			return Objects.equals(entityOne.get(attribute), entityTwo.get(attribute));
-		});
 	}
 
 	/**

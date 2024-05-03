@@ -59,23 +59,19 @@ public final class EntityTest {
 						.with(Department.LOCATION, "loc")
 						.build();
 
-		assertFalse(Entity.valuesEqual(department1, department2,
-						Department.ID, Department.NAME, Department.LOCATION));
-		assertTrue(Entity.valuesEqual(department1, department2,
-						Department.NAME, Department.LOCATION));
+		assertFalse(department1.equalValues(department2, asList(Department.ID, Department.NAME, Department.LOCATION)));
+		assertTrue(department1.equalValues(department2, asList(Department.NAME, Department.LOCATION)));
 		department2.remove(Department.LOCATION);
-		assertFalse(Entity.valuesEqual(department1, department2,
-						Department.NAME, Department.LOCATION));
+		assertFalse(department1.equalValues(department2, asList(Department.NAME, Department.LOCATION)));
 		department1.remove(Department.LOCATION);
-		assertTrue(Entity.valuesEqual(department1, department2,
-						Department.NAME, Department.LOCATION));
+		assertTrue(department1.equalValues(department2, asList(Department.NAME, Department.LOCATION)));
 
 		Entity employee = entities.builder(Employee.TYPE)
 						.with(Employee.ID, 1)
 						.with(Employee.NAME, "name")
 						.build();
 
-		assertThrows(IllegalArgumentException.class, () -> Entity.valuesEqual(department1, employee));
+		assertThrows(IllegalArgumentException.class, () -> department1.equalValues(employee));
 	}
 
 	@Test

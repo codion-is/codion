@@ -484,9 +484,9 @@ public final class EntitiesTest {
 		Entity dept1Copy = copies.next();
 		Entity dept2Copy = copies.next();
 		assertNotSame(dept1Copy, dept1);
-		assertTrue(dept1Copy.valuesEqual(dept1));
+		assertTrue(dept1Copy.equalValues(dept1));
 		assertNotSame(dept2Copy, dept2);
-		assertTrue(dept2Copy.valuesEqual(dept2));
+		assertTrue(dept2Copy.equalValues(dept2));
 
 		Entity emp1 = entities.builder(TestDomain.Employee.TYPE)
 						.with(TestDomain.Employee.DEPARTMENT_FK, dept1)
@@ -495,12 +495,12 @@ public final class EntitiesTest {
 						.build();
 
 		Entity copy = emp1.copy();
-		assertTrue(emp1.valuesEqual(copy));
+		assertTrue(emp1.equalValues(copy));
 		assertSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
 		assertFalse(emp1.modified());
 
 		copy = emp1.deepCopy();
-		assertTrue(emp1.valuesEqual(copy));
+		assertTrue(emp1.equalValues(copy));
 		assertNotSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
 		assertFalse(emp1.modified());
 	}

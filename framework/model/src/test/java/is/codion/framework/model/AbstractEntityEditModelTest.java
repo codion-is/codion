@@ -240,7 +240,7 @@ public final class AbstractEntityEditModelTest {
 		assertFalse(primaryKeyNullState.get());
 		assertTrue(entityExistsState.get());
 
-		assertTrue(employeeEditModel.entity().valuesEqual(employee), "Active entity is not equal to the entity just set");
+		assertTrue(employeeEditModel.entity().equalValues(employee), "Active entity is not equal to the entity just set");
 		assertTrue(employeeEditModel.exists().get(), "Active entity exists after an entity is set");
 		assertFalse(employeeEditModel.modified().get());
 		employeeEditModel.defaults();

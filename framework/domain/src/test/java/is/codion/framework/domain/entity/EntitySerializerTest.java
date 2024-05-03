@@ -100,13 +100,13 @@ public final class EntitySerializerTest {
 		DefaultEntity deserializedEntity = (DefaultEntity) ENTITIES.entity(Employee.TYPE);
 		serializeDeserialize(serializer, serializer, entity, deserializedEntity);
 		assertTrue(deserializedEntity.modified(Employee.NAME));
-		assertTrue(Entity.valuesEqual(entity, deserializedEntity));
-		assertTrue(Entity.valuesEqual(entity.entity(Employee.DEPARTMENT_FK), deserializedEntity.entity(Employee.DEPARTMENT_FK)));
+		assertTrue(entity.equalValues(deserializedEntity));
+		assertTrue(entity.entity(Employee.DEPARTMENT_FK).equalValues(deserializedEntity.entity(Employee.DEPARTMENT_FK)));
 		assertFalse(deserializedEntity.get(Employee.DEPARTMENT_FK).mutable());
 		Entity manager = entity.entity(Employee.MANAGER_FK);
 		Entity deserializedManager = deserializedEntity.entity(Employee.MANAGER_FK);
-		assertTrue(Entity.valuesEqual(manager, deserializedManager));
-		assertTrue(Entity.valuesEqual(manager.entity(Employee.DEPARTMENT_FK), deserializedManager.entity(Employee.DEPARTMENT_FK)));
+		assertTrue(manager.equalValues(deserializedManager));
+		assertTrue(manager.entity(Employee.DEPARTMENT_FK).equalValues(deserializedManager.entity(Employee.DEPARTMENT_FK)));
 
 		DefaultKey key = createTestKey();
 		DefaultKey deserializedKey = (DefaultKey) ENTITIES.keyBuilder(CompositeMaster.TYPE).build();
