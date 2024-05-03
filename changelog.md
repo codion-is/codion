@@ -83,6 +83,7 @@ Codion Change Log
 - EntityTablePanel.StatusPanel.configureLimit() bug fixed, dialog now centered on table.
 - EntityTablePanel.editPanel() added.
 - EntityPanel control configuration refactored, now consistent with EntityEditPanel and EntityTablePanel.
+- EntityPanel, TabbedDetailLayout, now possible to configure the available panel states.
 
 ## 0.17.43
 ### is.codion.common.core

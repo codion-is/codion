@@ -58,9 +58,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -209,11 +211,6 @@ public class EntityPanel extends JPanel {
 
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
-	/**
-	 * Specifies the mapping between {@link PanelState} instances: From HIDDEN to EMBEDDED to WINDOW back to HIDDEN
-	 */
-	static final Function<PanelState, PanelState> PANEL_STATE_MAPPER = new PanelStateMapper();
-
 	private final SwingEntityModel entityModel;
 	private final List<EntityPanel> detailPanels = new ArrayList<>();
 	private final EntityEditPanel editPanel;
@@ -224,11 +221,13 @@ public class EntityPanel extends JPanel {
 	private final DetailController detailController;
 	private final Event<EntityPanel> activateEvent = Event.event();
 	private final Value<PanelState> editPanelState;
+	private final Function<PanelState, PanelState> editPanelStateMapper;
 
 	private final Config configuration;
 	private final Map<EntityPanelControl, Value<Control>> controls;
 	private final Controls.Config<EntityPanelControl> controlsConfiguration;
 
+	private PanelState currentEditPanelState;
 	private EntityPanel parentPanel;
 	private EntityPanel previousSiblingPanel;
 	private EntityPanel nextSiblingPanel;
@@ -322,10 +321,12 @@ public class EntityPanel extends JPanel {
 		this.controlsConfiguration = createControlsConfiguration();
 		this.detailLayout = configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
-		this.editPanelState = Value.nonNull(EMBEDDED)
-						.initialValue(this.configuration.editPanelState)
-						.listener(this::updateEditPanelState)
+		this.editPanelStateMapper = new PanelStateMapper(configuration.editPanelStates);
+		this.editPanelState = Value.nonNull(configuration.editPanelState)
+						.initialValue(configuration.editPanelState)
+						.consumer(this::updateEditPanelState)
 						.build();
+		this.currentEditPanelState = configuration.editPanelState;
 	}
 
 	@Override
@@ -769,7 +770,7 @@ public class EntityPanel extends JPanel {
 			}
 		}
 		if (containsEditPanel()) {
-			updateEditPanelState();
+			updateEditPanelState(configuration.editPanelState);
 		}
 
 		return mainPanel;
@@ -1069,40 +1070,45 @@ public class EntityPanel extends JPanel {
 
 	private void requestEditPanelFocus() {
 		if (editPanelState.isEqualTo(HIDDEN)) {
-			editPanelState.set(EMBEDDED);
+			editPanelState.map(editPanelStateMapper);
 		}
 		editPanel().requestInitialFocus();
 	}
 
 	private void selectInputComponent() {
 		if (editPanelState.isEqualTo(HIDDEN)) {
-			editPanelState.set(EMBEDDED);
+			editPanelState.map(editPanelStateMapper);
 		}
 		editPanel().selectInputComponent();
 	}
 
-	private void updateEditPanelState() {
-		switch (editPanelState.get()) {
+	private void updateEditPanelState(PanelState newState) {
+		switch (newState) {
 			case WINDOW:
 				showEditWindow();
 				break;
 			case EMBEDDED:
-				hideEditWindow();
+				if (currentEditPanelState == WINDOW) {
+					hideEditWindow();
+				}
 				mainPanel.add(editControlPanel, BorderLayout.NORTH);
 				break;
 			case HIDDEN:
-				hideEditWindow();
+				if (currentEditPanelState == WINDOW) {
+					hideEditWindow();
+				}
 				mainPanel.remove(editControlPanel);
 				break;
 			default:
 				throw new IllegalStateException("Unkown panel state: " + editPanelState.get());
 		}
+		currentEditPanelState = newState;
 		revalidate();
 		requestInitialFocus();
 	}
 
 	private void toggleEditPanelState() {
-		editPanelState.map(PANEL_STATE_MAPPER);
+		editPanelState.map(editPanelStateMapper);
 	}
 
 	private void showEditWindow() {
@@ -1190,7 +1196,7 @@ public class EntityPanel extends JPanel {
 		@Override
 		public void execute() {
 			if (containsEditPanel() && editPanelState.isEqualTo(HIDDEN)) {
-				editPanelState.set(WINDOW);
+				editPanelState.map(editPanelStateMapper);
 			}
 			Window editPanelWindow = parentWindow(editControlPanel);
 			if (editPanelWindow != null) {
@@ -1318,6 +1324,7 @@ public class EntityPanel extends JPanel {
 
 		private final EntityPanel entityPanel;
 		private final KeyboardShortcuts<EntityPanelControl> shortcuts;
+		private final Set<PanelState> editPanelStates;
 
 		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
 		private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
@@ -1336,12 +1343,14 @@ public class EntityPanel extends JPanel {
 		private Config(EntityPanel entityPanel) {
 			this.entityPanel = entityPanel;
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
+			this.editPanelStates = new LinkedHashSet<>(asList(HIDDEN, EMBEDDED, WINDOW));
 			this.caption = entityPanel.model().entityDefinition().caption();
 		}
 
 		private Config(Config config) {
 			this.entityPanel = config.entityPanel;
 			this.shortcuts = config.shortcuts.copy();
+			this.editPanelStates = new LinkedHashSet<>(config.editPanelStates);
 			this.detailLayout = config.detailLayout;
 			this.toolbarControls = config.toolbarControls;
 			this.includeToggleEditPanelControl = config.includeToggleEditPanelControl;
@@ -1497,7 +1506,29 @@ public class EntityPanel extends JPanel {
 		 * @return this Config instance
 		 */
 		public Config editPanelState(PanelState editPanelState) {
-			this.editPanelState = requireNonNull(editPanelState);
+			if (!editPanelStates.contains(requireNonNull(editPanelState))) {
+				throw new IllegalArgumentException("Invalid editPanelState: " + editPanelState);
+			}
+			this.editPanelState = editPanelState;
+			return this;
+		}
+
+		/**
+		 * Sets the allowed edit panel states
+		 * @param editPanelStates the allowed states
+		 * @return this Config instance
+		 * @throws IllegalArgumentException in case no {@code editPanelStates} are specified
+		 */
+		public Config editPanelStates(PanelState... editPanelStates) {
+			if (requireNonNull(editPanelStates).length == 0) {
+				throw new IllegalArgumentException("No edit panel states specified");
+			}
+			List<PanelState> states = asList(editPanelStates);
+			if (!states.contains(editPanelState)) {
+				throw new IllegalArgumentException("editPanelState has already been set to: " + editPanelState);
+			}
+			this.editPanelStates.clear();
+			this.editPanelStates.addAll(states);
 			return this;
 		}
 
@@ -1729,20 +1760,25 @@ public class EntityPanel extends JPanel {
 		}
 	}
 
-	private static final class PanelStateMapper implements Function<PanelState, PanelState> {
+	static final class PanelStateMapper implements Function<PanelState, PanelState> {
+
+		private final List<PanelState> states;
+
+		PanelStateMapper(Set<PanelState> states) {
+			this.states = new ArrayList<>(states);
+		}
 
 		@Override
 		public PanelState apply(PanelState state) {
-			switch (state) {
-				case HIDDEN:
-					return EMBEDDED;
-				case EMBEDDED:
-					return WINDOW;
-				case WINDOW:
-					return HIDDEN;
-				default:
-					throw new IllegalArgumentException("Unknown panel state: " + state);
+			int index = states.indexOf(state);
+			if (index < 0) {
+				throw new IllegalArgumentException("Invalid PanelState: " + state);
 			}
+			if (index == states.size() - 1) {
+				return states.get(0);
+			}
+
+			return states.get(index + 1);
 		}
 	}
 }

@@ -36,6 +36,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.DetailController;
 import is.codion.swing.framework.ui.EntityPanel.DetailLayout;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
+import is.codion.swing.framework.ui.EntityPanel.PanelStateMapper;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -55,8 +56,12 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
@@ -70,6 +75,7 @@ import static is.codion.swing.framework.ui.TabbedDetailLayout.TabbedDetailLayout
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -172,7 +178,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		this.panelState = builder.panelState;
 		this.includeControls = builder.includeControls;
 		this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
-		this.detailController = new TabbedDetailController();
+		this.detailController = new TabbedDetailController(builder.panelStates, builder.panelState);
 		this.keyboardShortcuts = builder.keyboardShortcuts;
 	}
 
@@ -222,6 +228,12 @@ public final class TabbedDetailLayout implements DetailLayout {
 		 * @return this builder instance
 		 */
 		Builder panelState(PanelState panelState);
+
+		/**
+		 * @param panelStates the allowed detail panel states
+		 * @return this builder instance
+		 */
+		Builder panelStates(PanelState... panelStates);
 
 		/**
 		 * @param windowType the window type to use
@@ -295,12 +307,12 @@ public final class TabbedDetailLayout implements DetailLayout {
 	}
 
 	private void initializePanelState() {
-		Value<PanelState> detailPanelStateValue = detailController.panelState(selectedDetailPanel());
-		if (detailPanelStateValue.isNotEqualTo(panelState)) {
-			detailPanelStateValue.set(panelState);
+		Value<PanelState> panelStateValue = detailController.panelState(selectedDetailPanel());
+		if (panelStateValue.isNotEqualTo(panelState)) {
+			panelStateValue.set(panelState);
 		}
 		else {
-			detailController.updateDetailState();
+			detailController.updateDetailState(panelStateValue.get());
 		}
 	}
 
@@ -362,7 +374,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		@Override
 		public void execute() {
 			if (detailController.panelState.isEqualTo(HIDDEN)) {
-				detailController.panelState.set(EMBEDDED);
+				detailController.panelState.set(detailController.panelStateMapper.apply(HIDDEN));
 			}
 			detailPanel.activate();
 		}
@@ -441,10 +453,12 @@ public final class TabbedDetailLayout implements DetailLayout {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			EntityPanel selectedDetailPanel = selectedDetailPanel();
-			if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+			if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1 &&
+							detailController.panelStates.containsAll(asList(WINDOW, EMBEDDED))) {
 				detailController.panelState(selectedDetailPanel).map(state -> state == WINDOW ? EMBEDDED : WINDOW);
 			}
-			else if (e.getButton() == MouseEvent.BUTTON2) {
+			else if (e.getButton() == MouseEvent.BUTTON2 &&
+							detailController.panelStates.containsAll(asList(HIDDEN, EMBEDDED))) {
 				detailController.panelState(selectedDetailPanel).map(state -> state == EMBEDDED ? HIDDEN : EMBEDDED);
 			}
 		}
@@ -452,12 +466,20 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private final class TabbedDetailController implements DetailController {
 
-		/**
-		 * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
-		 */
-		private final Value<PanelState> panelState = Value.nonNull(EMBEDDED)
-						.listener(this::updateDetailState)
+		private final Set<PanelState> panelStates;
+		private final Function<PanelState, PanelState> panelStateMapper;
+		private final Value<PanelState> panelState;
+
+		private PanelState currentState;
+
+		private TabbedDetailController(Set<PanelState> panelStates, PanelState panelState) {
+			this.panelStates = panelStates;
+			this.panelStateMapper = new PanelStateMapper(panelStates);
+			this.panelState = Value.nonNull(panelState)
+						.consumer(this::updateDetailState)
 						.build();
+			this.currentState = panelState;
+		}
 
 		@Override
 		public void activated(EntityPanel detailPanel) {
@@ -481,7 +503,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			return panelState;
 		}
 
-		private void updateDetailState() {
+		private void updateDetailState(PanelState newPanelState) {
 			EntityPanel selectedDetailPanel = selectedDetailPanel();
 			if (panelState.isNotEqualTo(HIDDEN)) {
 				selectedDetailPanel.initialize();
@@ -490,7 +512,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			if (entityPanel.model().containsDetailModel(selectedDetailModel)) {
 				entityPanel.model().detailModelLink(selectedDetailModel).active().set(panelState.isNotEqualTo(HIDDEN));
 			}
-			if (previousPanelState() == WINDOW) {
+			if (currentState == WINDOW) {
 				disposeDetailWindow();
 			}
 			if (panelState.isEqualTo(EMBEDDED)) {
@@ -502,19 +524,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 			else {
 				displayDetailWindow();
 			}
+			currentState = newPanelState;
 
 			entityPanel.revalidate();
-		}
-
-		private PanelState previousPanelState() {
-			if (panelWindow != null) {
-				return WINDOW;
-			}
-			else if (tabbedPane.isShowing()) {
-				return EMBEDDED;
-			}
-
-			return HIDDEN;
 		}
 
 		private void activateDetailModelLink(SwingEntityModel detailModel) {
@@ -528,7 +540,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private void toggleDetailState() {
-			panelState.map(EntityPanel.PANEL_STATE_MAPPER);
+			panelState.map(panelStateMapper);
 		}
 
 		private void displayDetailWindow() {
@@ -588,7 +600,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 							.build();
 		}
 
-		private JPanel createEmptyBorderBasePanel(JComponent component) {
+		private static JPanel createEmptyBorderBasePanel(JComponent component) {
 			int gap = Layouts.GAP.get();
 			return Components.borderLayoutPanel()
 							.centerComponent(component)
@@ -602,6 +614,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private final KeyboardShortcuts<TabbedDetailLayoutControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private final EntityPanel entityPanel;
+		private final Set<PanelState> panelStates =
+						new LinkedHashSet<>(asList(HIDDEN, EMBEDDED, WINDOW));
 
 		private PanelState panelState = EMBEDDED;
 		private WindowType windowType;
@@ -615,7 +629,24 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 		@Override
 		public Builder panelState(PanelState panelState) {
-			this.panelState = requireNonNull(panelState);
+			if (!panelStates.contains(requireNonNull(panelState))) {
+				throw new IllegalArgumentException("Invalid PanelState: " + panelState);
+			}
+			this.panelState = panelState;
+			return this;
+		}
+
+		@Override
+		public Builder panelStates(PanelState... panelStates) {
+			if (requireNonNull(panelStates).length == 0) {
+				throw new IllegalArgumentException("No detail panel states specified");
+			}
+			List<PanelState> states = asList(panelStates);
+			if (!states.contains(panelState)) {
+				throw new IllegalArgumentException("PanelState has already been set to: " + panelState);
+			}
+			this.panelStates.clear();
+			this.panelStates.addAll(states);
 			return this;
 		}
 
