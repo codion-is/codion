@@ -98,7 +98,7 @@ public final class DefaultEntityBuilderTest {
 						.with(derivedValue, -42));
 
 		Entity entity = entities.builder(entityType)
-						.withDefaultValues()
+						.withDefaults()
 						.build();
 		assertFalse(entity.contains(id));
 		assertEquals("DefName", entity.get(name));

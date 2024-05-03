@@ -338,7 +338,7 @@ public interface Entity extends Comparable<Entity> {
 		 * @see AttributeDefinition#defaultValue()
 		 * @see AttributeDefinition#hasDefaultValue()
 		 */
-		Builder withDefaultValues();
+		Builder withDefaults();
 
 		/**
 		 * Builds the Entity instance

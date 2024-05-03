@@ -62,7 +62,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	}
 
 	@Override
-	public Entity.Builder withDefaultValues() {
+	public Entity.Builder withDefaults() {
 		definition.attributes().definitions().stream()
 						.filter(AttributeDefinition::hasDefaultValue)
 						.forEach(attributeDefinition -> builderValues.put(attributeDefinition.attribute(), attributeDefinition.defaultValue()));

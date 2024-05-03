@@ -45,6 +45,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
+- Entity.Builder.withDefaultValues() renamed withDefaults().
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.report() exception handling improved, now throws DatabaseException in case of an SQLException.
 - DefaultLocalEntityConnection exception handling refactored in order to guarantee rollbacks in case of RuntimeExceptions.
