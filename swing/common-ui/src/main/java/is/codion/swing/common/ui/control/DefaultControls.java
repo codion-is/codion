@@ -126,6 +126,11 @@ final class DefaultControls extends AbstractControl implements Controls {
 	@Override
 	public void actionPerformed(ActionEvent e) {/*Not required*/}
 
+	@Override
+	public <C extends Control, B extends Control.Builder<C, B>> Control.Builder<C, B> copy() {
+		throw new UnsupportedOperationException();
+	}
+
 	static final class DefaultSeparator implements Action {
 
 		private static final String CONTROLS_SEPARATOR = "Separator";

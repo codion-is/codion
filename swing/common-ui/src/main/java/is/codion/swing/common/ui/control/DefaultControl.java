@@ -46,4 +46,10 @@ final class DefaultControl extends AbstractControl {
 			onException.accept(exception);
 		}
 	}
+
+	@Override
+	public <C extends Control, B extends Builder<C, B>> Builder<C, B> copy() {
+		return (Builder<C, B>) createBuilder(command, null)
+						.onException(onException);
+	}
 }

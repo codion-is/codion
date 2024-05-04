@@ -53,6 +53,11 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 	public void actionPerformed(ActionEvent e) {/*Not required*/}
 
 	@Override
+	public <C extends Control, B extends Builder<C, B>> Builder<C, B> copy() {
+		return (Builder<C, B>) copy(value);
+	}
+
+	@Override
 	public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copy(Value<Boolean> value) {
 		B builder = (B) new ToggleControlBuilder<>(value)
 						.enabled(enabledObserver)

@@ -40,6 +40,7 @@ Codion Change Log
 - FilteredTableCellRenderer.CollColorProvider renamed CellColors.
 - FilteredTableCellRenderer.Builder.displayValueProvider() renamed values().
 - LookAndFeelProvider.CROSS_PLATFORM and SYSTEM configuration values added.
+- Control.copy() added, copying the control with the underlying command.
 ### is.codion.swing.common.model
 - FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.framework.domain

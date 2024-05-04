@@ -208,7 +208,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		return copy(event::accept);
 	}
 
-	private <B extends Builder<Control, B>> Builder<Control, B> createBuilder(Command command, ActionCommand actionCommand) {
+	<B extends Builder<Control, B>> Builder<Control, B> createBuilder(Command command, ActionCommand actionCommand) {
 		B builder = (B) (command == null ? new ControlBuilder<Control, B>(actionCommand) : new ControlBuilder<Control, B>(command));
 		builder.enabled(enabledObserver)
 						.description(getDescription())

@@ -156,6 +156,13 @@ public interface Control extends Action {
 	void setEnabled(boolean enabled);
 
 	/**
+	 * Returns a {@link Control.Builder} instance, based on a copy of this control, using the same command.
+	 * @param <B> the builder type
+	 * @return a new builder
+	 */
+	<C extends Control, B extends Builder<C, B>> Builder<C, B> copy();
+
+	/**
 	 * Returns a {@link Control.Builder} instance, based on a copy of this control, using the given command.
 	 * @param command the command for the resulting control
 	 * @param <B> the builder type
