@@ -21,7 +21,7 @@
  * <br>
  * {@link is.codion.common.model.UserPreferences}<br>
  * {@link is.codion.common.model.CancelException}<br>
- * {@link is.codion.common.model.FilteredModel}<br>
+ * {@link is.codion.common.model.FilterModel}<br>
  * {@link is.codion.common.model.loadtest.LoadTest}<br>
  * {@link is.codion.common.model.table.ColumnConditionModel}<br>
  * {@link is.codion.common.model.table.ColumnSummaryModel}<br>

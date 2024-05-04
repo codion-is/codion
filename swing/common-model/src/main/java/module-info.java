@@ -19,7 +19,7 @@
 /**
  * Common Swing model classes, such as:<br>
  * <br>
- * {@link is.codion.swing.common.model.component.combobox.FilteredComboBoxModel}<br>
+ * {@link is.codion.swing.common.model.component.combobox.FilterComboBoxModel}<br>
  * {@link is.codion.swing.common.model.component.combobox.ItemComboBoxModel}<br>
  * {@link is.codion.swing.common.model.component.table.FilterTableModel}<br>
  * {@link is.codion.swing.common.model.component.table.FilterTableSelectionModel}<br>
