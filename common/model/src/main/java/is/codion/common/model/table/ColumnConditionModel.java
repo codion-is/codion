@@ -50,7 +50,7 @@ public interface ColumnConditionModel<C, T> {
 	 * Default value: {@link AutomaticWildcard#POSTFIX}
 	 */
 	PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD =
-					Configuration.enumValue("is.codion.common.model.table.ColumnConditionModel.automaticWildard",
+					Configuration.enumValue(ColumnConditionModel.class.getName() + ".automaticWildard",
 									AutomaticWildcard.class, AutomaticWildcard.POSTFIX);
 
 	/**
@@ -59,7 +59,7 @@ public interface ColumnConditionModel<C, T> {
 	 * Default value: false
 	 */
 	PropertyValue<Boolean> CASE_SENSITIVE =
-					Configuration.booleanValue("is.codion.common.model.table.ColumnConditionModel.caseSensitive", false);
+					Configuration.booleanValue(ColumnConditionModel.class.getName() + ".caseSensitive", false);
 
 	/**
 	 * The possible automatic wildcard types

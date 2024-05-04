@@ -45,7 +45,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 * Default value: 0
 	 */
 	PropertyValue<Integer> TABLE_CELL_LEFT_PADDING =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableCellLeftPadding", 0);
+					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".tableCellLeftPadding", 0);
 
 	/**
 	 * The default right padding for table cells.<br>
@@ -53,7 +53,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 * Default value: 5
 	 */
 	PropertyValue<Integer> TABLE_CELL_RIGHT_PADDING =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableCellRightPadding", 5);
+					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".tableCellRightPadding", 5);
 
 	/**
 	 * The default horizontal alignment for numerical columns.<br>
@@ -61,7 +61,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 * Default value: {@link SwingConstants#RIGHT}
 	 */
 	PropertyValue<Integer> NUMERICAL_HORIZONTAL_ALIGNMENT =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableNumericalHorizontalAlignment", SwingConstants.RIGHT);
+					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".tableNumericalHorizontalAlignment", SwingConstants.RIGHT);
 
 	/**
 	 * The default horizontal alignment for temporal columns.<br>
@@ -69,7 +69,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 * Default value: {@link SwingConstants#RIGHT}
 	 */
 	PropertyValue<Integer> TEMPORAL_HORIZONTAL_ALIGNMENT =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableTemporalHorizontalAlignment", SwingConstants.RIGHT);
+					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".tableTemporalHorizontalAlignment", SwingConstants.RIGHT);
 
 	/**
 	 * The default horizontal alignment for boolean columns.<br>
@@ -77,7 +77,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 * Default value: {@link SwingConstants#CENTER}
 	 */
 	PropertyValue<Integer> BOOLEAN_HORIZONTAL_ALIGNMENT =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableBooleanHorizontalAlignment", SwingConstants.CENTER);
+					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".tableBooleanHorizontalAlignment", SwingConstants.CENTER);
 
 	/**
 	 * The default horizontal alignment.<br>
@@ -85,7 +85,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 * Default value: {@link SwingConstants#LEADING}
 	 */
 	PropertyValue<Integer> HORIZONTAL_ALIGNMENT =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableHorizontalAlignment", SwingConstants.LEADING);
+					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".tableHorizontalAlignment", SwingConstants.LEADING);
 
 	/**
 	 * Specifies whether alternate row coloring is enabled by default.<br>
@@ -93,7 +93,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 * Default value: true
 	 */
 	PropertyValue<Boolean> ALTERNATE_ROW_COLORING =
-					Configuration.booleanValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.alternateRowColoring", true);
+					Configuration.booleanValue(FilterTableCellRenderer.class.getName() + ".alternateRowColoring", true);
 
 	/**
 	 * @return true if column shading is enabled

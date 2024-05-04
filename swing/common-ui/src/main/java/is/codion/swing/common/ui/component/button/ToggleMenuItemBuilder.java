@@ -54,7 +54,7 @@ public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenu
 	 * Default value: {@link PersistMenu#ALWAYS}
 	 */
 	PropertyValue<PersistMenu> PERSIST_MENU =
-					Configuration.enumValue("is.codion.swing.common.ui.component.button.ToggleMenuItemBuilder.persistMenu",
+					Configuration.enumValue(ToggleMenuItemBuilder.class.getName() + ".ToggleMenuItemBuilder.persistMenu",
 									PersistMenu.class, PersistMenu.ALWAYS);
 
 	/**

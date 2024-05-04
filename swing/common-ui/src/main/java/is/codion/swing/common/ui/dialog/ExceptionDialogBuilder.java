@@ -40,7 +40,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 	 * Default value: true
 	 */
 	PropertyValue<Boolean> SYSTEM_PROPERTIES =
-					Configuration.booleanValue("is.codion.swing.common.ui.dialog.ExceptionDialogBuilder.systemProperties", true);
+					Configuration.booleanValue(ExceptionDialogBuilder.class.getName() + ".systemProperties", true);
 
 	/**
 	 * Specifies a list of exception types, which are considered wrapping exceptions, that is, exceptions that wrap a root cause.<br>
@@ -49,7 +49,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 	 * Value type: String list<br>
 	 * Default value: RemoteException, RuntimeException, InvocationTargetException, ExceptionInInitializerError, UndeclaredThrowableException
 	 */
-	PropertyValue<List<Class<? extends Throwable>>> WRAPPER_EXCEPTIONS = Configuration.listValue("is.codion.swing.common.ui.dialog.ExceptionDialogBuilder.wrapperExceptions",
+	PropertyValue<List<Class<? extends Throwable>>> WRAPPER_EXCEPTIONS = Configuration.listValue(ExceptionDialogBuilder.class.getName() + ".wrapperExceptions",
 					exceptionClassName -> {
 						try {
 							return (Class<? extends Throwable>) Class.forName(exceptionClassName);

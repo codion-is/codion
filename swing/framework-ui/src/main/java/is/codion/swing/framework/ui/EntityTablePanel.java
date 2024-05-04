@@ -169,21 +169,6 @@ public class EntityTablePanel extends JPanel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
-	/**
-	 * Specifies whether the values of hidden columns are included in the underlying query<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
-	 */
-	public static final PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.queryHiddenColumns", true);
-
-	/**
-	 * Specifies whether the table model sort order is used as a basis for the query order by clause.
-	 * Note that this only applies to column attributes.
-	 * Value type: Boolean<br>
-	 * Default value: false
-	 */
-	public static final PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.orderQueryBySortOrder", false);
-
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityTablePanel.class, getBundle(EntityTablePanel.class.getName()));
 	private static final MessageBundle EDIT_PANEL_MESSAGES =
@@ -443,8 +428,8 @@ public class EntityTablePanel extends JPanel {
 	private final State filterPanelVisibleState = State.state(Config.FILTER_PANEL_VISIBLE.get());
 	private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.get());
 
-	private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.get());
-	private final State queryHiddenColumns = State.state(QUERY_HIDDEN_COLUMNS.get());
+	private final State orderQueryBySortOrder = State.state(Config.ORDER_QUERY_BY_SORT_ORDER.get());
+	private final State queryHiddenColumns = State.state(Config.QUERY_HIDDEN_COLUMNS.get());
 
 	private final FilterTable<Entity, Attribute<?>> table;
 	private final EntityEditPanel editPanel;
@@ -764,10 +749,10 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Saves user preferences
 	 * @see #userPreferencesKey()
-	 * @see EntityPanel#USE_CLIENT_PREFERENCES
+	 * @see EntityPanel.Config#USE_CLIENT_PREFERENCES
 	 */
 	public final void savePreferences() {
-		if (EntityPanel.USE_CLIENT_PREFERENCES.get()) {
+		if (EntityPanel.Config.USE_CLIENT_PREFERENCES.get()) {
 			try {
 				UserPreferences.setUserPreference(userPreferencesKey() + COLUMN_PREFERENCES,
 								ColumnPreferences.toString(createColumnPreferences()));
@@ -1861,7 +1846,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void applyPreferences() {
-		if (EntityPanel.USE_CLIENT_PREFERENCES.get()) {
+		if (EntityPanel.Config.USE_CLIENT_PREFERENCES.get()) {
 			String columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + COLUMN_PREFERENCES, "");
 			if (columnPreferencesString.isEmpty()) {//todo remove: see if a legacy one without "-columns" postfix exists
 				columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
@@ -2087,13 +2072,28 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public static final class Config {
 
+	/**
+	 * Specifies whether the values of hidden columns are included in the underlying query<br>
+	 * Value type: Boolean<br>
+	 * Default value: true
+	 */
+	public static final PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue(EntityTablePanel.class.getName() + ".queryHiddenColumns", true);
+
+	/**
+	 * Specifies whether the table model sort order is used as a basis for the query order by clause.
+	 * Note that this only applies to column attributes.
+	 * Value type: Boolean<br>
+	 * Default value: false
+	 */
+	public static final PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue(EntityTablePanel.class.getName() + ".orderQueryBySortOrder", false);
+
 		/**
 		 * Specifies whether table condition panels should be visible or not by default<br>
 		 * Value type: Boolean<br>
 		 * Default value: false
 		 */
 		public static final PropertyValue<Boolean> CONDITION_PANEL_VISIBLE =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.conditionPanelVisible", false);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".conditionPanelVisible", false);
 
 		/**
 		 * Specifies whether table filter panels should be visible or not by default<br>
@@ -2101,7 +2101,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: false
 		 */
 		public static final PropertyValue<Boolean> FILTER_PANEL_VISIBLE =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.filterPanelVisible", false);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".filterPanelVisible", false);
 
 		/**
 		 * Specifies whether table summary panel should be visible or not by default<br>
@@ -2109,7 +2109,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: false
 		 */
 		public static final PropertyValue<Boolean> SUMMARY_PANEL_VISIBLE =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.summaryPanelVisible", false);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".summaryPanelVisible", false);
 
 		/**
 		 * Specifies whether to include the default popup menu on entity tables<br>
@@ -2117,7 +2117,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_POPUP_MENU =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includePopupMenu", true);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includePopupMenu", true);
 
 		/**
 		 * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
@@ -2125,7 +2125,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu", true);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeEntityMenu", true);
 
 		/**
 		 * Specifies whether to include a 'Clear' control in the popup menu.<br>
@@ -2133,7 +2133,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: false
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CLEAR_CONTROL =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeClearControl", false);
 
 		/**
 		 * Specifies whether to include a condition panel.<br>
@@ -2141,7 +2141,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CONDITION_PANEL =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeConditionPanel", true);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeConditionPanel", true);
 
 		/**
 		 * Specifies whether to include a filter panel.<br>
@@ -2149,7 +2149,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_FILTER_PANEL =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", false);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeFilterPanel", false);
 
 		/**
 		 * Specifies whether to include a summary panel.<br>
@@ -2157,7 +2157,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_SUMMARY_PANEL =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeSummaryPanel", true);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeSummaryPanel", true);
 
 		/**
 		 * Specifies whether to include a popup menu for configuring the table model limit.<br>
@@ -2165,7 +2165,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: false
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_LIMIT_MENU =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeLimitMenu", false);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeLimitMenu", false);
 
 		/**
 		 * Specifies whether to show an indeterminate progress bar while the model is refreshing.<br>
@@ -2173,7 +2173,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: false
 		 */
 		public static final PropertyValue<Boolean> SHOW_REFRESH_PROGRESS_BAR =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.showRefreshProgressBar", false);
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".showRefreshProgressBar", false);
 
 		/**
 		 * Specifies whether the refresh button should always be visible or only when the condition panel is visible<br>
@@ -2181,7 +2181,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
 		 */
 		public static final PropertyValue<RefreshButtonVisible> REFRESH_BUTTON_VISIBLE =
-						Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.refreshButtonVisible",
+						Configuration.enumValue(EntityTablePanel.class.getName() + ".refreshButtonVisible",
 										RefreshButtonVisible.class, RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
 		/**
@@ -2190,7 +2190,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: {@link ColumnSelection#DIALOG}
 		 */
 		public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
-						Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
+						Configuration.enumValue(EntityTablePanel.class.getName() + ".columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
 
 		/**
 		 * Specifies how the edit an attribute action is presented to the user.<br>
@@ -2198,7 +2198,7 @@ public class EntityTablePanel extends JPanel {
 		 * Default value: {@link EditAttributeSelection#MENU}
 		 */
 		public static final PropertyValue<EditAttributeSelection> EDIT_ATTRIBUTE_SELECTION =
-						Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.editAttributeSelection", EditAttributeSelection.class, EditAttributeSelection.MENU);
+						Configuration.enumValue(EntityTablePanel.class.getName() + ".editAttributeSelection", EditAttributeSelection.class, EditAttributeSelection.MENU);
 
 		/**
 		 * The default keyboard shortcut keyStrokes.

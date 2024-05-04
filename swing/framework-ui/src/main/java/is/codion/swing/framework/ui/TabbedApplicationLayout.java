@@ -45,7 +45,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 	 * Default value: {@link SwingConstants#TOP}
 	 */
 	public static final PropertyValue<Integer> TAB_PLACEMENT =
-					Configuration.integerValue("is.codion.swing.framework.ui.TabbedApplicationLayout.tabPlacement", SwingConstants.TOP);
+					Configuration.integerValue(TabbedApplicationLayout.class.getName() + ".tabPlacement", SwingConstants.TOP);
 
 	private final EntityApplicationPanel<?> applicationPanel;
 

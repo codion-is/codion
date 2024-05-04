@@ -687,7 +687,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * Default value: false
 		 */
 		public static final PropertyValue<Boolean> USE_SAVE_CAPTION =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useSaveCaption", false);
+						Configuration.booleanValue(EntityEditPanel.class.getName() + ".useSaveCaption", false);
 
 		/**
 		 * Specifies whether to include a {@link EntityPopupMenu} on this edit panel, triggered with CTRL-ALT-V by default.<br>
@@ -695,7 +695,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.includeEntityMenu", true);
+						Configuration.booleanValue(EntityEditPanel.class.getName() + ".includeEntityMenu", true);
 
 		/**
 		 * Specifies whether edit panels should be activated when the panel (or its parent EntityPanel) receives focus<br>
@@ -703,7 +703,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useFocusActivation", true);
+						Configuration.booleanValue(EntityEditPanel.class.getName() + ".useFocusActivation", true);
 
 		/**
 		 * The default keyboard shortcut keyStrokes.

@@ -55,7 +55,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 	 * Default value: true
 	 */
 	public static final PropertyValue<Boolean> ENABLE_ON_SELECTION =
-					Configuration.booleanValue("is.codion.swing.common.ui.dialog.LookAndFeelComboBox.enableOnSelection", true);
+					Configuration.booleanValue(LookAndFeelComboBox.class.getName() + ".enableOnSelection", true);
 
 	private final LookAndFeelProvider originalLookAndFeel;
 

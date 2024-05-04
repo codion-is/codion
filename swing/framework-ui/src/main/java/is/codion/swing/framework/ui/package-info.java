@@ -18,9 +18,6 @@
  */
 /**
  * Package configuration values:<br>
- * {@link is.codion.swing.framework.ui.EntityPanel#USE_CLIENT_PREFERENCES}<br>
- * {@link is.codion.swing.framework.ui.EntityTablePanel#QUERY_HIDDEN_COLUMNS}<br>
- * {@link is.codion.swing.framework.ui.EntityTablePanel#ORDER_QUERY_BY_SORT_ORDER}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#HELP_URL}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}<br>
@@ -38,6 +35,9 @@
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#CONTROL_PANEL_CONSTRAINTS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#CONTROL_TOOLBAR_CONSTRAINTS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#WINDOW_TYPE}<br>
+ * {@link is.codion.swing.framework.ui.EntityPanel.Config#USE_CLIENT_PREFERENCES}<br>
+ * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#QUERY_HIDDEN_COLUMNS}<br>
+ * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#ORDER_QUERY_BY_SORT_ORDER}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#CONDITION_PANEL_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#FILTER_PANEL_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#SUMMARY_PANEL_VISIBLE}<br>

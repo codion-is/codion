@@ -41,7 +41,7 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
 	 * Default value: {@link SwingConstants#LEADING}
 	 */
 	PropertyValue<Integer> HORIZONTAL_ALIGNMENT =
-					Configuration.integerValue("is.codion.swing.common.ui.component.LabelBuilder.horizontalAlignment", SwingConstants.LEADING);
+					Configuration.integerValue(LabelBuilder.class.getName() + ".horizontalAlignment", SwingConstants.LEADING);
 
 	/**
 	 * @param horizontalAlignment the horizontal text alignment

@@ -40,7 +40,7 @@ public final class Layouts {
 	 * @see #gridLayout(int, int)
 	 * @see #flexibleGridLayout(int, int)
 	 */
-	public static final Value<Integer> GAP = Configuration.integerValue("is.codion.swing.common.ui.layout.Layouts.gap", DEFAULT_GAP);
+	public static final Value<Integer> GAP = Configuration.integerValue(Layouts.class.getName() + ".gap", DEFAULT_GAP);
 
 	private Layouts() {}
 

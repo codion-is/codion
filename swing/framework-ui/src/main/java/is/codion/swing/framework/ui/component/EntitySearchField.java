@@ -151,7 +151,7 @@ public final class EntitySearchField extends HintTextField {
 	 * Default value: {@link SearchIndicator#WAIT_CURSOR}
 	 */
 	public static final PropertyValue<SearchIndicator> SEARCH_INDICATOR =
-					Configuration.enumValue("is.codion.swing.framework.ui.component.EntitySearchField.searchIndicator", SearchIndicator.class, WAIT_CURSOR);
+					Configuration.enumValue(EntitySearchField.class.getName() + ".searchIndicator", SearchIndicator.class, WAIT_CURSOR);
 
 	/**
 	 * The ways which a search field can indicate that a search is in progress.

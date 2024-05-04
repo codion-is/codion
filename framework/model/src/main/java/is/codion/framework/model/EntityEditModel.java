@@ -52,7 +52,7 @@ public interface EntityEditModel {
 	 * Value type: Boolean<br>
 	 * Default value: true
 	 */
-	PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = Configuration.booleanValue("is.codion.framework.model.EntityEditModel.persistForeignKeys", true);
+	PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = Configuration.booleanValue(EntityEditModel.class.getName() + ".persistForeignKeys", true);
 
 	/**
 	 * Indicates whether the application should ask for confirmation when exiting if some data is unsaved<br>
@@ -60,7 +60,7 @@ public interface EntityEditModel {
 	 * Value type: Boolean<br>
 	 * Default value: false
 	 */
-	PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("is.codion.framework.model.EntityEditModel.warnAboutUnsavedData", false);
+	PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue(EntityEditModel.class.getName() + ".warnAboutUnsavedData", false);
 
 	/**
 	 * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}<br>
@@ -69,7 +69,7 @@ public interface EntityEditModel {
 	 * @see #postEditEvents()
 	 * @see EntityTableModel#HANDLE_EDIT_EVENTS
 	 */
-	PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("is.codion.framework.model.EntityEditModel.postEditEvents", true);
+	PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue(EntityEditModel.class.getName() + ".postEditEvents", true);
 
 	/**
 	 * @return the type of the entity this edit model is based on

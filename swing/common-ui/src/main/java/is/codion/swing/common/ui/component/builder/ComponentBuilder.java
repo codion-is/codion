@@ -67,7 +67,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * Default value: false
 	 */
 	PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER =
-					Configuration.booleanValue("is.codion.swing.common.ui.component.ComponentBuilder.transferFocusOnEnter", false);
+					Configuration.booleanValue(ComponentBuilder.class.getName() + ".transferFocusOnEnter", false);
 
 	/**
 	 * @param label the label for the component

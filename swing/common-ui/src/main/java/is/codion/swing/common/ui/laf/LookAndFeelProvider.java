@@ -45,14 +45,14 @@ public interface LookAndFeelProvider {
 	 * Value type: Boolean<br>
 	 * Default value: true
 	 */
-	PropertyValue<Boolean> CROSS_PLATFORM = Configuration.booleanValue("is.codion.swing.common.ui.laf.LookAndFeelProvider.crossPlatform", true);
+	PropertyValue<Boolean> CROSS_PLATFORM = Configuration.booleanValue(LookAndFeelProvider.class.getName() + ".crossPlatform", true);
 
 	/**
 	 * Specifies whether the cross platform Look and Feel should be available for selection.<br>
 	 * Value type: Boolean<br>
 	 * Default value: true
 	 */
-	PropertyValue<Boolean> SYSTEM = Configuration.booleanValue("is.codion.swing.common.ui.laf.LookAndFeelProvider.system", true);
+	PropertyValue<Boolean> SYSTEM = Configuration.booleanValue(LookAndFeelProvider.class.getName() + ".system", true);
 
 	/**
 	 * @return the look and feel info

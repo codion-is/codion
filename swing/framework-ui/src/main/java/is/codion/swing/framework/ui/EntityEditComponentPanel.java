@@ -121,7 +121,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @see #MODIFIED_INDICATOR_UNDERLINE_STYLE
 	 */
 	public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
-					Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditComponentPanel.modifiedIndicator", true);
+					Configuration.booleanValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicator", true);
 
 	/**
 	 * The type of underline to use to indicate a modified value<br>
@@ -131,7 +131,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @see #MODIFIED_INDICATOR
 	 */
 	public static final PropertyValue<Integer> MODIFIED_INDICATOR_UNDERLINE_STYLE =
-					Configuration.integerValue("is.codion.swing.framework.ui.EntityEditComponentPanel.modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
+					Configuration.integerValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
 
 	/**
 	 * Specifies the default number of text field columns<br>
@@ -139,7 +139,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * Default value: 12
 	 */
 	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
-					Configuration.integerValue("is.codion.swing.framework.ui.EntityEditComponentPanel.defaultTextFieldColumns", 12);
+					Configuration.integerValue(EntityEditComponentPanel.class.getName() + ".defaultTextFieldColumns", 12);
 
 	static {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager()

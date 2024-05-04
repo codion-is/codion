@@ -105,7 +105,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	 * Default value: true
 	 */
 	public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
-					Configuration.booleanValue("is.codion.swing.framework.ui.TabbedPanelLayout.includeControls", true);
+					Configuration.booleanValue(TabbedDetailLayout.class.getName() + ".includeControls", true);
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(TabbedDetailLayout.class, getBundle(TabbedDetailLayout.class.getName()));

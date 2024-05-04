@@ -112,14 +112,6 @@ import static javax.swing.SwingConstants.VERTICAL;
  */
 public class EntityPanel extends JPanel {
 
-	/**
-	 * Specifies whether the client should save and apply user preferences<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
-	 */
-	public static final PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
-					Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useClientPreferences", true);
-
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityPanel.class, getBundle(EntityPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
@@ -1237,12 +1229,20 @@ public class EntityPanel extends JPanel {
 	public static final class Config {
 
 		/**
+		 * Specifies whether the client should save and apply user preferences<br>
+		 * Value type: Boolean<br>
+		 * Default value: true
+		 */
+		public static final PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
+						Configuration.booleanValue(EntityPanel.class.getName() + ".useClientPreferences", true);
+
+		/**
 		 * Indicates whether keyboard navigation will be enabled<br>
 		 * Value type: Boolean<br>
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
+						Configuration.booleanValue(EntityPanel.class.getName() + ".useKeyboardNavigation", true);
 
 		/**
 		 * Indicates whether entity edit panel dialogs should be closed on escape<br>
@@ -1250,7 +1250,7 @@ public class EntityPanel extends JPanel {
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
+						Configuration.booleanValue(EntityPanel.class.getName() + ".disposeEditDialogOnEscape", true);
 
 		/**
 		 * Specifies whether a control for toggling the edit panel is available to the user<br>
@@ -1258,7 +1258,7 @@ public class EntityPanel extends JPanel {
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_TOGGLE_EDIT_PANEL_CONTROL =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeToggleEditPanelControl", true);
+						Configuration.booleanValue(EntityPanel.class.getName() + ".includeToggleEditPanelControl", true);
 
 		/**
 		 * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel<br>
@@ -1266,7 +1266,7 @@ public class EntityPanel extends JPanel {
 		 * Default value: false
 		 */
 		public static final PropertyValue<Boolean> TOOLBAR_CONTROLS =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarControls", false);
+						Configuration.booleanValue(EntityPanel.class.getName() + ".toolbarControls", false);
 
 		/**
 		 * Specifies how detail and edit panels should be displayed.<br>
@@ -1274,7 +1274,7 @@ public class EntityPanel extends JPanel {
 		 * Default value: {@link WindowType#DIALOG}
 		 */
 		public static final PropertyValue<WindowType> WINDOW_TYPE =
-						Configuration.enumValue("is.codion.swing.framework.ui.EntityPanel.windowType", WindowType.class, DIALOG);
+						Configuration.enumValue(EntityPanel.class.getName() + ".windowType", WindowType.class, DIALOG);
 
 		/**
 		 * Specifies where the control panel should be placed in a BorderLayout<br>
@@ -1283,7 +1283,7 @@ public class EntityPanel extends JPanel {
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_PANEL_CONSTRAINTS =
-						Configuration.stringValue("is.codion.swing.framework.ui.EntityPanel.controlPanelConstraints", BorderLayout.EAST);
+						Configuration.stringValue(EntityPanel.class.getName() + ".controlPanelConstraints", BorderLayout.EAST);
 
 		/**
 		 * Specifies where the control toolbar should be placed in a BorderLayout<br>
@@ -1292,7 +1292,7 @@ public class EntityPanel extends JPanel {
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_TOOLBAR_CONSTRAINTS =
-						Configuration.stringValue("is.codion.swing.framework.ui.EntityPanel.controlToolbarConstraints", BorderLayout.WEST);
+						Configuration.stringValue(EntityPanel.class.getName() + ".controlToolbarConstraints", BorderLayout.WEST);
 
 		/**
 		 * Specifies whether entity panels should include controls by default<br>
@@ -1300,7 +1300,7 @@ public class EntityPanel extends JPanel {
 		 * Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeControls", true);
+						Configuration.booleanValue(EntityPanel.class.getName() + ".includeControls", true);
 
 		/**
 		 * The default keyboard shortcut keyStrokes.
@@ -1354,7 +1354,7 @@ public class EntityPanel extends JPanel {
 		/**
 		 * @return the entity panel
 		 */
-		public EntityPanel entityPanel () {
+		public EntityPanel entityPanel() {
 			return entityPanel;
 		}
 

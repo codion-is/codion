@@ -62,7 +62,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	 * Value type: String<br>
 	 * Default value: -
 	 */
-	public static final PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue("is.codion.common.model.combobox.nullCaption", "-");
+	public static final PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue(FilteredComboBoxModel.class.getName() + ".nullCaption", "-");
 
 	private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultValidator<>();
 	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();

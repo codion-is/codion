@@ -44,7 +44,7 @@ public interface FilteredModel<T> {
 	 * Default value: true
 	 * @see Refresher#async()
 	 */
-	PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", true);
+	PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue(FilteredModel.class.getName() + ".asyncRefresh", true);
 
 	/**
 	 * Filters this model according to the condition specified by {@link #includeCondition()}.

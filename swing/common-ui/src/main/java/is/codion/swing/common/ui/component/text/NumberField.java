@@ -52,7 +52,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * Default value: true
 	 */
 	public static final PropertyValue<Boolean> CONVERT_GROUPING_TO_DECIMAL_SEPARATOR =
-					Configuration.booleanValue("is.codion.swing.common.ui.component.text.NumberField.convertGroupingToDecimalSeparator", true);
+					Configuration.booleanValue(NumberField.class.getName() + ".convertGroupingToDecimalSeparator", true);
 
 	private NumberField(NumberDocument<T> document) {
 		super(document);

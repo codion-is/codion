@@ -121,7 +121,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * Default value: {@link JTable#AUTO_RESIZE_OFF}
 	 */
 	public static final PropertyValue<Integer> AUTO_RESIZE_MODE =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTable.autoResizeMode", AUTO_RESIZE_OFF);
+					Configuration.integerValue(FilterTable.class.getName() + ".autoResizeMode", AUTO_RESIZE_OFF);
 
 	/**
 	 * Specifies whether columns can be rearranged in tables<br>
@@ -129,7 +129,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * Default value: true
 	 */
 	public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
-					Configuration.booleanValue("is.codion.swing.common.ui.component.table.FilterTable.allowColumnReordering", true);
+					Configuration.booleanValue(FilterTable.class.getName() + ".allowColumnReordering", true);
 
 	/**
 	 * The default keyboard shortcut keyStrokes.

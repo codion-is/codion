@@ -134,7 +134,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * Value type: String<br>
 	 * Default value: https://codion.is/doc/{version}/help/client.html
 	 */
-	public static final PropertyValue<String> HELP_URL = Configuration.stringValue("is.codion.swing.framework.ui.EntityApplicationPanel.helpUrl",
+	public static final PropertyValue<String> HELP_URL = Configuration.stringValue(EntityApplicationPanel.class.getName() + ".helpUrl",
 					"https://codion.is/doc/" + Version.versionString() + "/help/client.html");
 
 	/**
@@ -142,14 +142,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * Value type: Boolean<br>
 	 * Default value: false
 	 */
-	public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue("is.codion.swing.framework.ui.EntityApplicationPanel.confirmExit", false);
+	public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".confirmExit", false);
 
 	/**
 	 * Specifies whether a startup dialog should be shown<br>
 	 * Value type: Boolean<br>
 	 * Default value: true
 	 */
-	public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("is.codion.swing.framework.ui.EntityApplicationPanel.showStartupDialog", true);
+	public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".showStartupDialog", true);
 
 	/**
 	 * Specifies whether EntityPanels displayed via {@link EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)}
@@ -160,7 +160,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)
 	 * @see EntityApplicationPanel#displayEntityPanelFrame(EntityPanel)
 	 */
-	public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = Configuration.booleanValue("is.codion.swing.framework.ui.EntityApplicationPanel.cacheEntityPanels", false);
+	public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".cacheEntityPanels", false);
 
 	private static final int DEFAULT_LOGO_SIZE = 68;
 

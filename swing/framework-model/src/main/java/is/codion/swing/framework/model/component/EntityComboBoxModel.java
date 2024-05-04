@@ -65,7 +65,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 	 * @see #handleEditEvents()
 	 * @see is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS
 	 */
-	public static final PropertyValue<Boolean> HANDLE_EDIT_EVENTS = Configuration.booleanValue("is.codion.framework.model.EntityComboBoxModel.handleEditEvents", true);
+	public static final PropertyValue<Boolean> HANDLE_EDIT_EVENTS = Configuration.booleanValue(EntityComboBoxModel.class.getName() + ".handleEditEvents", true);
 
 	private final EntityType entityType;
 	private final EntityConnectionProvider connectionProvider;
