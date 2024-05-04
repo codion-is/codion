@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
@@ -190,7 +190,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	}
 
 	private ItemComboBoxModel<T> initializeItemComboBoxModel() {
-		Item<T> nullItem = Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+		Item<T> nullItem = Item.item(null, FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 		if (comboBoxModel == null) {
 			List<Item<T>> modelItems = new ArrayList<>(items);
 			if (nullable && !modelItems.contains(nullItem)) {

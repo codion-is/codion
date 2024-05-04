@@ -20,11 +20,11 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
-import is.codion.common.model.FilteredModel;
+import is.codion.common.model.FilterModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;
+import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
@@ -483,7 +483,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 						.collect(Collectors.toList());
 	}
 
-	private final class DefaultRefresher extends AbstractFilteredModelRefresher<R> {
+	private final class DefaultRefresher extends AbstractFilterModelRefresher<R> {
 
 		private final Value<RefreshStrategy> refreshStrategy = Value.nonNull(RefreshStrategy.CLEAR).build();
 
@@ -591,7 +591,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Predicate<R> validator = new ValidPredicate<>();
 		private ColumnConditionModel.Factory<C> filterModelFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
-		private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
+		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.get();
 
 		DefaultBuilder(Columns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {

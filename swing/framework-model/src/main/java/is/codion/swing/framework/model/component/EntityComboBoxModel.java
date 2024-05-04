@@ -34,7 +34,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.EntityEditEvents;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,7 +56,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
  */
-public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
+public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 	/**
 	 * Specifies whether entity combo box models handle entity edit events, by replacing updated entities and removing deleted ones<br>
@@ -348,7 +348,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 	private EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
 		entities.definition(entityType).foreignKeys().definition(foreignKey);
 		EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider);
-		foreignKeyModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+		foreignKeyModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 		foreignKeyModel.refresh();
 		linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
 

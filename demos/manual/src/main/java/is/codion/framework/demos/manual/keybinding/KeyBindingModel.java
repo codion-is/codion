@@ -20,7 +20,7 @@ package is.codion.framework.demos.manual.keybinding;
 
 import is.codion.common.item.Item;
 import is.codion.framework.demos.manual.keybinding.KeyBindingModel.KeyBindingColumns.Id;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
@@ -51,9 +51,9 @@ final class KeyBindingModel {
 	private static final String RELEASED = "released ";
 
 	private final FilterTableModel<KeyBinding, Id> tableModel;
-	private final FilteredComboBoxModel<String> componentComboBoxModel;
+	private final FilterComboBoxModel<String> componentComboBoxModel;
 
-	KeyBindingModel(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
+	KeyBindingModel(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
 		this.componentComboBoxModel = createComponentComboBoxModel(lookAndFeelComboBoxModel);
 		this.componentComboBoxModel.refresh();
 		this.tableModel = FilterTableModel.builder(new KeyBindingColumns())
@@ -62,7 +62,7 @@ final class KeyBindingModel {
 		bindEvents(lookAndFeelComboBoxModel);
 	}
 
-	FilteredComboBoxModel<String> componentComboBoxModel() {
+	FilterComboBoxModel<String> componentComboBoxModel() {
 		return componentComboBoxModel;
 	}
 
@@ -70,7 +70,7 @@ final class KeyBindingModel {
 		return tableModel;
 	}
 
-	private void bindEvents(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
+	private void bindEvents(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
 		componentComboBoxModel.refresher().refreshEvent().addListener(tableModel::refresh);
 		componentComboBoxModel.selectionEvent().addListener(tableModel::refresh);
 		lookAndFeelComboBoxModel.selectionEvent().addListener(componentComboBoxModel::refresh);
@@ -196,9 +196,9 @@ final class KeyBindingModel {
 		}
 	}
 
-	private static FilteredComboBoxModel<String> createComponentComboBoxModel(
-					FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-		FilteredComboBoxModel<String> comboBoxModel = new FilteredComboBoxModel<>();
+	private static FilterComboBoxModel<String> createComponentComboBoxModel(
+					FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
+		FilterComboBoxModel<String> comboBoxModel = new FilterComboBoxModel<>();
 		comboBoxModel.refresher().items().set(new ComponentItems(lookAndFeelComboBoxModel));
 
 		return comboBoxModel;
@@ -206,9 +206,9 @@ final class KeyBindingModel {
 
 	private static final class ComponentItems implements Supplier<Collection<String>> {
 
-		private final FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel;
+		private final FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel;
 
-		private ComponentItems(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
+		private ComponentItems(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
 			this.lookAndFeelComboBoxModel = lookAndFeelComboBoxModel;
 		}
 

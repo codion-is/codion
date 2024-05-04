@@ -18,6 +18,7 @@ Codion Change Log
 - ColumnSummaryModel.SummaryValues removed, related refactoring.
 - ColumnSummaryModel.SummaryValueProvider renamed SummaryValues, related renaming.
 - FilteredModel.Refresher.itemSupplier() renamed items(), related renaming.
+- FilteredModel renamed FilterModel.
 ### is.codion.swing.common.model
 - FilteredComboBoxModel.ItemFinder.createPredicate() renamed predicate().
 - FilteredComboBoxModel.sortVisibleItems() renamed sortItems(), now public.
@@ -29,6 +30,7 @@ Codion Change Log
 - FilteredTableModel.Builder.itemValidator() renamed validator(), related renaming.
 - Major surgery, FilteredTableModel.sortModel(), searchModel(), summaryModel() and columnModel() moved to FilteredTable, related refactoring.
 - FilteredTableModel renamed FilterTableModel, related renaming.
+- FilteredComboBoxModel renamed FilterComboBoxModel.
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
 - ProgressDialog bug fixed, no longer adds an empty south panel when no controls are specified.

@@ -30,7 +30,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Collection;
@@ -47,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class SwingEntityEditModel extends AbstractEntityEditModel {
 
-	private final Map<Attribute<?>, FilteredComboBoxModel<?>> comboBoxModels = new HashMap<>();
+	private final Map<Attribute<?>, FilterComboBoxModel<?>> comboBoxModels = new HashMap<>();
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
@@ -84,7 +84,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 */
 	public final void refreshForeignKeyComboBoxModels() {
 		synchronized (comboBoxModels) {
-			for (FilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
+			for (FilterComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
 				if (comboBoxModel instanceof EntityComboBoxModel) {
 					comboBoxModel.refresh();
 				}
@@ -97,7 +97,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 */
 	public final void refreshComboBoxModels() {
 		synchronized (comboBoxModels) {
-			for (FilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
+			for (FilterComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
 				comboBoxModel.refresh();
 			}
 		}
@@ -108,7 +108,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 */
 	public final void clearComboBoxModels() {
 		synchronized (comboBoxModels) {
-			for (FilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
+			for (FilterComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
 				comboBoxModel.clear();
 			}
 		}
@@ -137,17 +137,17 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	}
 
 	/**
-	 * Returns the {@link FilteredComboBoxModel} for the given column. If one does not exist one is created.
+	 * Returns the {@link FilterComboBoxModel} for the given column. If one does not exist one is created.
 	 * @param column the column
 	 * @param <T> the value type
-	 * @return a {@link FilteredComboBoxModel} for the given column
+	 * @return a {@link FilterComboBoxModel} for the given column
 	 * @see #createComboBoxModel(Column)
 	 */
-	public final <T> FilteredComboBoxModel<T> comboBoxModel(Column<T> column) {
+	public final <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column) {
 		entityDefinition().columns().definition(column);
 		synchronized (comboBoxModels) {
 			// can't use computeIfAbsent here, see foreignKeyComboBoxModel() comment
-			FilteredComboBoxModel<T> comboBoxModel = (FilteredComboBoxModel<T>) comboBoxModels.get(column);
+			FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) comboBoxModels.get(column);
 			if (comboBoxModel == null) {
 				comboBoxModel = createComboBoxModel(column);
 				comboBoxModels.put(column, comboBoxModel);
@@ -167,7 +167,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 * If the foreign key has select attributes defined, those are set in the combo box model.
 	 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
 	 * @return a {@link EntityComboBoxModel} for the given foreign key
-	 * @see FilteredComboBoxModel#COMBO_BOX_NULL_CAPTION
+	 * @see FilterComboBoxModel#COMBO_BOX_NULL_CAPTION
 	 * @see AttributeDefinition#nullable()
 	 * @see EntityComboBoxModel#attributes()
 	 * @see ForeignKeyDefinition#attributes()
@@ -177,7 +177,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider());
 		comboBoxModel.attributes().set(foreignKeyDefinition.attributes());
 		if (nullable(foreignKey)) {
-			comboBoxModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+			comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 		}
 
 		return comboBoxModel;
@@ -185,20 +185,20 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	/**
 	 * Creates a combo box model containing the current values of the given column.
-	 * This default implementation returns a sorted {@link FilteredComboBoxModel} with the default nullValueItem
+	 * This default implementation returns a sorted {@link FilterComboBoxModel} with the default nullValueItem
 	 * if the underlying column is nullable
 	 * @param column the column
 	 * @param <T> the value type
 	 * @return a combo box model based on the given column
 	 */
-	public <T> FilteredComboBoxModel<T> createComboBoxModel(Column<T> column) {
+	public <T> FilterComboBoxModel<T> createComboBoxModel(Column<T> column) {
 		requireNonNull(column, "column");
-		FilteredComboBoxModel<T> comboBoxModel = createColumnComboBoxModel(column);
+		FilterComboBoxModel<T> comboBoxModel = createColumnComboBoxModel(column);
 		if (nullable(column)) {
 			comboBoxModel.includeNull().set(true);
 			if (column.type().valueClass().isInterface()) {
 				comboBoxModel.nullItem().set(ProxyBuilder.builder(column.type().valueClass())
-								.method("toString", parameters -> FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get())
+								.method("toString", parameters -> FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get())
 								.build());
 			}
 		}
@@ -254,8 +254,8 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		});
 	}
 
-	private <T> FilteredComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
-		FilteredComboBoxModel<T> comboBoxModel = new FilteredComboBoxModel<>();
+	private <T> FilterComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
+		FilterComboBoxModel<T> comboBoxModel = new FilterComboBoxModel<>();
 		comboBoxModel.refresher().items().set(column.type().isEnum() ?
 						new EnumAttributeItems<>(column) :
 						new ColumnItems<>(connectionProvider(), column));

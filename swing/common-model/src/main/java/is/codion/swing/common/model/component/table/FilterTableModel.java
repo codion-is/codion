@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.EventObserver;
-import is.codion.common.model.FilteredModel;
+import is.codion.common.model.FilterModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.value.Value;
@@ -41,7 +41,7 @@ import static is.codion.swing.common.model.component.table.DefaultFilterTableMod
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  * @see #builder(Columns)
  */
-public interface FilterTableModel<R, C> extends TableModel, FilteredModel<R> {
+public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 
 	/**
 	 * Specifies how the data in a table model is refreshed.

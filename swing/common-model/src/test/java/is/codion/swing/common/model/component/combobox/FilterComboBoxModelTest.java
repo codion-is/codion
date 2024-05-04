@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel.ItemFinder;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +37,9 @@ import java.util.function.Predicate;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FilteredComboBoxModelTest {
+public class FilterComboBoxModelTest {
 
-	private FilteredComboBoxModel<String> testModel;
+	private FilterComboBoxModel<String> testModel;
 
 	private static final String NULL = "nullitem";
 	private static final String ANNA = "anna";
@@ -251,7 +251,7 @@ public class FilteredComboBoxModelTest {
 
 	@Test
 	void nullItem() {
-		FilteredComboBoxModel<String> model = new FilteredComboBoxModel<>();
+		FilterComboBoxModel<String> model = new FilterComboBoxModel<>();
 		assertFalse(model.containsItem(null));
 		model.includeNull().set(true);
 		assertTrue(model.containsItem(null));
@@ -316,7 +316,7 @@ public class FilteredComboBoxModelTest {
 		}
 		List<Data> items = asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
 
-		FilteredComboBoxModel<Data> model = new FilteredComboBoxModel<>();
+		FilterComboBoxModel<Data> model = new FilterComboBoxModel<>();
 		model.setItems(items);
 		model.setSelectedItem(items.get(1));
 		assertEquals("2", model.selectedValue().data);
@@ -329,7 +329,7 @@ public class FilteredComboBoxModelTest {
 
 	@Test
 	void includeNull() {
-		FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
+		FilterComboBoxModel<Integer> model = new FilterComboBoxModel<>();
 		model.setItems(asList(1, 2, 3, 4, 5));
 		model.includeNull().set(true);
 		model.includeNull().set(true);
@@ -339,7 +339,7 @@ public class FilteredComboBoxModelTest {
 
 	@Test
 	void validator() {
-		FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
+		FilterComboBoxModel<Integer> model = new FilterComboBoxModel<>();
 		model.validator().set(item -> item > 0);
 		assertThrows(IllegalArgumentException.class, () -> model.setItems(asList(1, 2, 3, 4, 5, 0)));
 		assertThrows(NullPointerException.class, () -> model.setItems(null));
@@ -348,7 +348,7 @@ public class FilteredComboBoxModelTest {
 	@Test
 	void items() {
 		List<Integer> values = asList(0, 1, 2);
-		FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
+		FilterComboBoxModel<Integer> model = new FilterComboBoxModel<>();
 		model.refresher().items().set(() -> values);
 		model.refresher().refresh();
 		assertEquals(values, model.items());
@@ -356,7 +356,7 @@ public class FilteredComboBoxModelTest {
 
 	@Test
 	void validSelectionPredicate() {
-		FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
+		FilterComboBoxModel<Integer> model = new FilterComboBoxModel<>();
 		model.setItems(asList(0, 1, 2));
 		model.setSelectedItem(0);
 		assertThrows(IllegalArgumentException.class, () -> model.validSelectionPredicate().set(item -> item > 0));
@@ -368,7 +368,7 @@ public class FilteredComboBoxModelTest {
 
 	@BeforeEach
 	void setUp() {
-		testModel = new FilteredComboBoxModel<>();
+		testModel = new FilterComboBoxModel<>();
 		testModel.includeNull().set(true);
 		testModel.nullItem().set(NULL);
 		List<String> names = new ArrayList<>();

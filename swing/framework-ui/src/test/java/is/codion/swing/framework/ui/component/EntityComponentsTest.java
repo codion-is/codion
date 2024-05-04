@@ -25,7 +25,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -210,7 +210,7 @@ public final class EntityComponentsTest {
 	@Test
 	void enumComboBox() {
 		JComboBox<?> comboBox = (JComboBox<?>) entityComponents.component(Detail.ENUM_TYPE).build();
-		FilteredComboBoxModel<EnumType> comboBoxModel = (FilteredComboBoxModel<EnumType>) comboBox.getModel();
+		FilterComboBoxModel<EnumType> comboBoxModel = (FilterComboBoxModel<EnumType>) comboBox.getModel();
 		comboBoxModel.refresh();
 		assertEquals(4, comboBoxModel.getSize());
 		for (EnumType enumType : EnumType.values()) {

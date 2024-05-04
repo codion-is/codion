@@ -33,7 +33,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -750,7 +750,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a combo box builder
 	 */
 	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Column<T> column) {
-		FilteredComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(column);
+		FilterComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(column);
 		comboBoxModel.refresher().refreshFailedEvent().addConsumer(this::onException);
 
 		return (ComboBoxBuilder<T, C, B>) setComponentBuilder(column, entityComponents.comboBox(column, comboBoxModel)
@@ -1027,8 +1027,8 @@ public class EntityEditComponentPanel extends JPanel {
 
 	private static void refreshIfCleared(JComboBox<?> comboBox) {
 		ComboBoxModel<?> model = comboBox.getModel();
-		if (model instanceof FilteredComboBoxModel) {
-			FilteredComboBoxModel<?> comboBoxModel = (FilteredComboBoxModel<?>) model;
+		if (model instanceof FilterComboBoxModel) {
+			FilterComboBoxModel<?> comboBoxModel = (FilterComboBoxModel<?>) model;
 			if (comboBoxModel.cleared()) {
 				comboBoxModel.refresh();
 			}

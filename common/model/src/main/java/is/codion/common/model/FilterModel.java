@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  * Specifies a data model that can be filtered to hide some or all of the items it contains.
  * @param <T> the type of data in the model.
  */
-public interface FilteredModel<T> {
+public interface FilterModel<T> {
 
 	/**
 	 * Specifies whether data models should refresh data asynchronously or on the EDT.<br>
@@ -44,7 +44,7 @@ public interface FilteredModel<T> {
 	 * Default value: true
 	 * @see Refresher#async()
 	 */
-	PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue(FilteredModel.class.getName() + ".asyncRefresh", true);
+	PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);
 
 	/**
 	 * Filters this model according to the condition specified by {@link #includeCondition()}.
@@ -120,7 +120,7 @@ public interface FilteredModel<T> {
 	void refresh();
 
 	/**
-	 * Refreshes the data in this filtered model using its {@link Refresher}.
+	 * Refreshes the data in this filter model using its {@link Refresher}.
 	 * Note that this method only throws exceptions when run synchronously off the user interface thread.
 	 * Use {@link Refresher#refreshFailedEvent()} to listen for exceptions that happen during asynchronous refresh.
 	 * @param afterRefresh called after a successful refresh, may be null
@@ -132,7 +132,7 @@ public interface FilteredModel<T> {
 	void refreshThen(Consumer<Collection<T>> afterRefresh);
 
 	/**
-	 * Handles refreshing data for a {@link FilteredModel}.
+	 * Handles refreshing data for a {@link FilterModel}.
 	 * @param <T> the row type
 	 */
 	interface Refresher<T> {
@@ -153,7 +153,7 @@ public interface FilteredModel<T> {
 		Value<Supplier<Collection<T>>> items();
 
 		/**
-		 * Refreshes the items in the associated filtered model.
+		 * Refreshes the items in the associated filter model.
 		 * Note that this method only throws exceptions when run synchronously.
 		 * @throws RuntimeException in case of an exception when running synchronously.
 		 * @see #refreshFailedEvent()

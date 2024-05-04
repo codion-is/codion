@@ -25,7 +25,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
@@ -662,8 +662,8 @@ public final class EntityComponents {
 		ListBuilder.SelectedItem<T> selectedItem(Attribute<T> attribute);
 	}
 
-	private static <T> FilteredComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
-		FilteredComboBoxModel<T> comboBoxModel = new FilteredComboBoxModel<>();
+	private static <T> FilterComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
+		FilterComboBoxModel<T> comboBoxModel = new FilterComboBoxModel<>();
 		Collection<T> enumConstants = asList(attribute.type().valueClass().getEnumConstants());
 		comboBoxModel.refresher().items().set(() -> enumConstants);
 		comboBoxModel.includeNull().set(nullable);

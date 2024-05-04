@@ -22,13 +22,13 @@ import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
-import is.codion.common.model.FilteredModel;
+import is.codion.common.model.FilterModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;
+import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataEvent;
@@ -51,18 +51,18 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A default combo box model implementation based on {@link FilteredModel}.
+ * A default combo box model implementation based on {@link FilterModel}.
  * @param <T> the type of values in this combo box model
  * @see #includeCondition()
  */
-public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel<T> {
+public class FilterComboBoxModel<T> implements FilterModel<T>, ComboBoxModel<T> {
 
 	/**
 	 * Specifies the caption used by default to represent null in combo box models.
 	 * Value type: String<br>
 	 * Default value: -
 	 */
-	public static final PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue(FilteredComboBoxModel.class.getName() + ".nullCaption", "-");
+	public static final PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
 
 	private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultValidator<>();
 	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
@@ -99,7 +99,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	 * The model items are sorted automatically with a default collation based comparator.
 	 * To prevent sorting set the comparator to null via {@link #comparator()} before adding items.
 	 */
-	public FilteredComboBoxModel() {
+	public FilterComboBoxModel() {
 		this.refresher = new DefaultRefresher(new DefaultItems());
 		includeCondition.addListener(this::filterItems);
 		validator.addValidator(validator -> items().stream()
@@ -119,7 +119,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 				visibleItems.remove(null);
 			}
 		});
-		nullItem.addValidator(FilteredComboBoxModel.this::validate);
+		nullItem.addValidator(FilterComboBoxModel.this::validate);
 	}
 
 	@Override
@@ -568,7 +568,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 		}
 	}
 
-	private final class DefaultRefresher extends AbstractFilteredModelRefresher<T> {
+	private final class DefaultRefresher extends AbstractFilterModelRefresher<T> {
 
 		private DefaultRefresher(Supplier<Collection<T>> items) {
 			super(items);

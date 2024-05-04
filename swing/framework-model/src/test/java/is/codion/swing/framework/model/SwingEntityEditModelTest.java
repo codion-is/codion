@@ -29,7 +29,7 @@ import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 import is.codion.framework.model.test.TestDomain.EnumEntity;
 import is.codion.framework.model.test.TestDomain.EnumEntity.EnumType;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +57,7 @@ public class SwingEntityEditModelTest {
 
 	@Test
 	void comboBoxModel() {
-		FilteredComboBoxModel<String> model = employeeEditModel.comboBoxModel(Employee.JOB);
+		FilterComboBoxModel<String> model = employeeEditModel.comboBoxModel(Employee.JOB);
 		model.includeNull().set(true);
 		model.nullItem().set("null");
 		assertNotNull(model);
@@ -126,7 +126,7 @@ public class SwingEntityEditModelTest {
 	@Test
 	void enumComboBoxModel() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(EnumEntity.TYPE, CONNECTION_PROVIDER);
-		FilteredComboBoxModel<EnumType> comboBoxModel = editModel.comboBoxModel(EnumEntity.ENUM_TYPE);
+		FilterComboBoxModel<EnumType> comboBoxModel = editModel.comboBoxModel(EnumEntity.ENUM_TYPE);
 		comboBoxModel.refresh();
 		assertEquals(4, comboBoxModel.getSize());
 		for (EnumType enumType : EnumType.values()) {

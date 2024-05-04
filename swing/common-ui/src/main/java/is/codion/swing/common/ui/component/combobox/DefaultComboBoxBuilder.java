@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -59,8 +59,8 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 		super(linkedValue);
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		preferredHeight(preferredTextFieldHeight());
-		if (comboBoxModel instanceof FilteredComboBoxModel) {
-			popupMenuControl(comboBox -> Control.builder(new RefreshCommand((FilteredComboBoxModel<?>) comboBoxModel))
+		if (comboBoxModel instanceof FilterComboBoxModel) {
+			popupMenuControl(comboBox -> Control.builder(new RefreshCommand((FilterComboBoxModel<?>) comboBoxModel))
 							.name(Messages.refresh())
 							.build());
 		}
@@ -141,8 +141,8 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 		if (!editable && editor == null) {
 			Completion.enable(comboBox, completionMode);
 		}
-		if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
-			((FilteredComboBoxModel<T>) comboBoxModel).selectionEvent().addConsumer(new MoveCaretToStart<>(comboBox));
+		if (comboBoxModel instanceof FilterComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
+			((FilterComboBoxModel<T>) comboBoxModel).selectionEvent().addConsumer(new MoveCaretToStart<>(comboBox));
 		}
 		if (renderer != null) {
 			comboBox.setRenderer(renderer);
@@ -198,9 +198,9 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 
 	private static final class RefreshCommand implements Control.Command {
 
-		private final FilteredComboBoxModel<?> comboBoxModel;
+		private final FilterComboBoxModel<?> comboBoxModel;
 
-		private RefreshCommand(FilteredComboBoxModel<?> comboBoxModel) {
+		private RefreshCommand(FilterComboBoxModel<?> comboBoxModel) {
 			this.comboBoxModel = comboBoxModel;
 		}
 
