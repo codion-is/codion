@@ -42,18 +42,18 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnModel<C> {
+final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C> {
 
 	private final DefaultTableColumnModel tableColumnModel = new DefaultTableColumnModel();
 	private final Event<C> columnHiddenEvent = Event.event();
 	private final Event<C> columnShownEvent = Event.event();
-	private final Map<C, FilteredTableColumn<C>> columns = new LinkedHashMap<>();
+	private final Map<C, FilterTableColumn<C>> columns = new LinkedHashMap<>();
 	private final Map<Integer, C> columnIdentifiers = new HashMap<>();
 	private final Map<C, HiddenColumn> hiddenColumns = new LinkedHashMap<>();
 	private final Map<C, State> visibleStates = new HashMap<>();
 	private final State locked = State.state();
 
-	DefaultFilteredTableColumnModel(List<FilteredTableColumn<C>> tableColumns) {
+	DefaultFilterTableColumnModel(List<FilterTableColumn<C>> tableColumns) {
 		if (requireNonNull(tableColumns, "columns").isEmpty()) {
 			throw new IllegalArgumentException("One or more columns must be specified");
 		}
@@ -61,7 +61,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 	}
 
 	@Override
-	public Collection<FilteredTableColumn<C>> columns() {
+	public Collection<FilterTableColumn<C>> columns() {
 		return unmodifiableCollection(columns.values());
 	}
 
@@ -84,7 +84,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 			visibleStates.get(identifier).set(true);
 			moveColumn(getColumnIndex(identifier), columnIndex++);
 		}
-		for (FilteredTableColumn<C> column : columns()) {
+		for (FilterTableColumn<C> column : columns()) {
 			if (!columnIdentifiers.contains(column.getIdentifier())) {
 				visibleStates.get(column.getIdentifier()).set(false);
 			}
@@ -92,26 +92,26 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 	}
 
 	@Override
-	public List<FilteredTableColumn<C>> visible() {
-		List<FilteredTableColumn<C>> tableColumns = new ArrayList<>(tableColumnModel.getColumnCount());
+	public List<FilterTableColumn<C>> visible() {
+		List<FilterTableColumn<C>> tableColumns = new ArrayList<>(tableColumnModel.getColumnCount());
 		Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
 		while (columnEnumeration.hasMoreElements()) {
-			tableColumns.add((FilteredTableColumn<C>) columnEnumeration.nextElement());
+			tableColumns.add((FilterTableColumn<C>) columnEnumeration.nextElement());
 		}
 
 		return unmodifiableList(tableColumns);
 	}
 
 	@Override
-	public Collection<FilteredTableColumn<C>> hidden() {
+	public Collection<FilterTableColumn<C>> hidden() {
 		return unmodifiableCollection(hiddenColumns.values().stream()
 						.map(hiddenColumn -> hiddenColumn.column)
 						.collect(Collectors.toList()));
 	}
 
 	@Override
-	public FilteredTableColumn<C> column(C columnIdentifier) {
-		FilteredTableColumn<C> column = columns.get(requireNonNull(columnIdentifier));
+	public FilterTableColumn<C> column(C columnIdentifier) {
+		FilterTableColumn<C> column = columns.get(requireNonNull(columnIdentifier));
 		if (column != null) {
 			return column;
 		}
@@ -182,8 +182,8 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 	}
 
 	@Override
-	public FilteredTableColumn<C> getColumn(int columnIndex) {
-		return (FilteredTableColumn<C>) tableColumnModel.getColumn(columnIndex);
+	public FilterTableColumn<C> getColumn(int columnIndex) {
+		return (FilterTableColumn<C>) tableColumnModel.getColumn(columnIndex);
 	}
 
 	@Override
@@ -253,7 +253,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 		return columnShownEvent.observer();
 	}
 
-	private void initializeColumn(FilteredTableColumn<C> column) {
+	private void initializeColumn(FilterTableColumn<C> column) {
 		C identifier = column.getIdentifier();
 		columns.put(identifier, column);
 		columnIdentifiers.put(column.getModelIndex(), identifier);
@@ -314,17 +314,17 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 
 	private final class HiddenColumn {
 
-		private final FilteredTableColumn<C> column;
-		private final Set<FilteredTableColumn<C>> columnsToTheRight;
+		private final FilterTableColumn<C> column;
+		private final Set<FilterTableColumn<C>> columnsToTheRight;
 
-		private HiddenColumn(FilteredTableColumn<C> column) {
+		private HiddenColumn(FilterTableColumn<C> column) {
 			this.column = column;
 			this.columnsToTheRight = columnsToTheRightOf(column);
 		}
 
-		private Set<FilteredTableColumn<C>> columnsToTheRightOf(FilteredTableColumn<C> column) {
+		private Set<FilterTableColumn<C>> columnsToTheRightOf(FilterTableColumn<C> column) {
 			return IntStream.range(tableColumnModel.getColumnIndex(column.getIdentifier()) + 1, tableColumnModel.getColumnCount())
-							.mapToObj(columnIndex -> (FilteredTableColumn<C>) tableColumnModel.getColumn(columnIndex))
+							.mapToObj(columnIndex -> (FilterTableColumn<C>) tableColumnModel.getColumn(columnIndex))
 							.collect(Collectors.toSet());
 		}
 

@@ -20,11 +20,12 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Builder;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Builder;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 /**
- * Provides {@link is.codion.swing.common.ui.component.table.FilteredTableCellRenderer}
+ * Provides {@link FilterTableCellRenderer}
  * implementations for EntityTablePanels via {@link #builder(SwingEntityTableModel, Attribute)}.
  */
 public interface EntityTableCellRenderer {

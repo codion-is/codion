@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -31,11 +31,11 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultFilteredTableSortModelTest {
+public class DefaultFilterTableSortModelTest {
 
 	@Test
 	void test() {
-		DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<>(new FilteredTableModel.Columns<Row, Integer>() {
+		DefaultFilterTableSortModel<Row, Integer> model = new DefaultFilterTableSortModel<>(new FilterTableModel.Columns<Row, Integer>() {
 
 			@Override
 			public List<Integer> identifiers() {
@@ -125,8 +125,8 @@ public class DefaultFilteredTableSortModelTest {
 
 	@Test
 	void nonComparableColumnClass() {
-		FilteredTableColumn<Integer> firstColumn = FilteredTableColumn.builder(0).build();
-		DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<>(new FilteredTableModel.Columns<ArrayList, Integer>() {
+		FilterTableColumn<Integer> firstColumn = FilterTableColumn.builder(0).build();
+		DefaultFilterTableSortModel<ArrayList, Integer> model = new DefaultFilterTableSortModel<>(new FilterTableModel.Columns<ArrayList, Integer>() {
 			@Override
 			public List<Integer> identifiers() {
 				return Collections.singletonList(0);

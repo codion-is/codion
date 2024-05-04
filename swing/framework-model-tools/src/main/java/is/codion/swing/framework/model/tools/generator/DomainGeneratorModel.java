@@ -23,8 +23,8 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.swing.framework.model.tools.metadata.MetaDataModel;
 import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
@@ -48,8 +48,8 @@ import static java.util.stream.Collectors.toList;
 public final class DomainGeneratorModel {
 
 	private final MetaDataModel metaDataModel;
-	private final FilteredTableModel<MetaDataSchema, SchemaColumns.Id> schemaTableModel;
-	private final FilteredTableModel<DefinitionRow, DefinitionColumns.Id> definitionTableModel;
+	private final FilterTableModel<MetaDataSchema, SchemaColumns.Id> schemaTableModel;
+	private final FilterTableModel<DefinitionRow, DefinitionColumns.Id> definitionTableModel;
 	private final Connection connection;
 	private final Value<String> domainSourceValue = Value.value();
 
@@ -57,10 +57,10 @@ public final class DomainGeneratorModel {
 		this.connection = requireNonNull(database, "database").createConnection(user);
 		try {
 			this.metaDataModel = new MetaDataModel(connection.getMetaData());
-			this.schemaTableModel = FilteredTableModel.builder(new SchemaColumns())
+			this.schemaTableModel = FilterTableModel.builder(new SchemaColumns())
 							.items(metaDataModel::schemas)
 							.build();
-			this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumns())
+			this.definitionTableModel = FilterTableModel.builder(new DefinitionColumns())
 							.items(new DefinitionItems())
 							.build();
 			this.schemaTableModel.refresh();
@@ -71,11 +71,11 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	public FilteredTableModel<MetaDataSchema, SchemaColumns.Id> schemaModel() {
+	public FilterTableModel<MetaDataSchema, SchemaColumns.Id> schemaModel() {
 		return schemaTableModel;
 	}
 
-	public FilteredTableModel<DefinitionRow, DefinitionColumns.Id> definitionModel() {
+	public FilterTableModel<DefinitionRow, DefinitionColumns.Id> definitionModel() {
 		return definitionTableModel;
 	}
 

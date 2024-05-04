@@ -36,7 +36,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionModel implements FilteredTableSelectionModel<R> {
+final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionModel implements FilterTableSelectionModel<R> {
 
 	private final Event<?> selectionChangingEvent = Event.event();
 	private final Event<?> selectionEvent = Event.event();
@@ -57,9 +57,9 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 	/**
 	 * The table model
 	 */
-	private final FilteredTableModel<R, ?> tableModel;
+	private final FilterTableModel<R, ?> tableModel;
 
-	DefaultFilteredTableSelectionModel(FilteredTableModel<R, ?> tableModel) {
+	DefaultFilterTableSelectionModel(FilterTableModel<R, ?> tableModel) {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
 		bindEvents();
 	}

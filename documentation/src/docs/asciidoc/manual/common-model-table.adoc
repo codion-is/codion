@@ -2,43 +2,43 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-== FilteredTableModel
+== FilterTableModel
 
-[plantuml, filtered-table-model-diagram, svg, align=center]
+[plantuml, filter-table-model-diagram, svg, align=center]
 -------------------------------------------
 
-interface FilteredTableModel {
+interface FilterTableModel {
     +TableConditionModel filterModel()
     +TableSummaryModel summaryModel()
-    +FilteredTableColumnModel columnModel()
-    +FilteredTableSelectionModel selectionModel()
-    +FilteredTableSortModel sortModel()
-    +FilteredTableSearchModel searchModel()
+    +FilterTableColumnModel columnModel()
+    +FilterTableSelectionModel selectionModel()
+    +FilterTableSortModel sortModel()
+    +FilterTableSearchModel searchModel()
 }
 
 interface TableConditionModel {}
 
 interface TableSummaryModel {}
 
-interface FilteredTableColumnModel {}
+interface FilterTableColumnModel {}
 
-interface FilteredTableSelectionModel {}
+interface FilterTableSelectionModel {}
 
-interface FilteredTableSortModel {}
+interface FilterTableSortModel {}
 
-interface FilteredTableSearchModel {}
+interface FilterTableSearchModel {}
 
-FilteredTableModel --o TableConditionModel
-FilteredTableModel --o TableSummaryModel
-FilteredTableModel --o FilteredTableColumnModel
-FilteredTableModel --o FilteredTableSelectionModel
-FilteredTableModel --o FilteredTableSortModel
-FilteredTableModel --o FilteredTableSearchModel
+FilterTableModel --o TableConditionModel
+FilterTableModel --o TableSummaryModel
+FilterTableModel --o FilterTableColumnModel
+FilterTableModel --o FilterTableSelectionModel
+FilterTableModel --o FilterTableSortModel
+FilterTableModel --o FilterTableSearchModel
 -------------------------------------------
 
-The {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/FilteredTableModel.html[FilteredTableModel] is a table model central to the framework.
+The {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/FilterTableModel.html[FilterTableModel] is a table model central to the framework.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilteredTableModelDemo.java[tags=filteredTableModel]
+include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilterTableModelDemo.java[tags=filterTableModel]
 ----

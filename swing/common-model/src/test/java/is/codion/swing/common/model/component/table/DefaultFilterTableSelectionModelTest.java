@@ -27,14 +27,14 @@ import static java.util.Arrays.asList;
 import static javax.swing.ListSelectionModel.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultFilteredTableSelectionModelTest {
+public class DefaultFilterTableSelectionModelTest {
 
-	private final FilteredTableSelectionModel<String> testModel;
+	private final FilterTableSelectionModel<String> testModel;
 
-	public DefaultFilteredTableSelectionModelTest() {
+	public DefaultFilterTableSelectionModelTest() {
 		List<String> data = asList("A", "B", "C");
-		FilteredTableModel<String, Integer> tableModel =
-						FilteredTableModel.<String, Integer>builder(new FilteredTableModel.Columns<String, Integer>() {
+		FilterTableModel<String, Integer> tableModel =
+						FilterTableModel.<String, Integer>builder(new FilterTableModel.Columns<String, Integer>() {
 											@Override
 											public List<Integer> identifiers() {
 												return asList(0, 1, 2);

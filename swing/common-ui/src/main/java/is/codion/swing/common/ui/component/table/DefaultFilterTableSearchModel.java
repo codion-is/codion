@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -37,12 +37,12 @@ import java.util.regex.PatternSyntaxException;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchModel {
+final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 	private static final RowColumn NULL_COORDINATE = new DefaultRowColumn(-1, -1);
 
-	private final FilteredTableModel<?, C> tableModel;
-	private final FilteredTableColumnModel<C> columnModel;
+	private final FilterTableModel<?, C> tableModel;
+	private final FilterTableColumnModel<C> columnModel;
 	private final State caseSensitive = State.builder()
 					.listener(this::performSearch)
 					.build();
@@ -60,7 +60,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 
 	private int searchResultIndex = -1;
 
-	DefaultFilteredTableSearchModel(FilteredTableModel<?, C> tableModel, FilteredTableColumnModel<C> columnModel) {
+	DefaultFilterTableSearchModel(FilterTableModel<?, C> tableModel, FilterTableColumnModel<C> columnModel) {
 		this.tableModel = requireNonNull(tableModel);
 		this.columnModel = requireNonNull(columnModel);
 		bindEvents();
@@ -274,7 +274,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 				return true;
 			}
 
-			return obj instanceof DefaultFilteredTableSearchModel.DefaultRowColumn &&
+			return obj instanceof DefaultFilterTableSearchModel.DefaultRowColumn &&
 							((DefaultRowColumn) obj).row() == row() &&
 							((DefaultRowColumn) obj).column() == column();
 		}

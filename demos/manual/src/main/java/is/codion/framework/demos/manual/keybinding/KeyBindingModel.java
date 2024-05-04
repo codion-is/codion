@@ -21,8 +21,8 @@ package is.codion.framework.demos.manual.keybinding;
 import is.codion.common.item.Item;
 import is.codion.framework.demos.manual.keybinding.KeyBindingModel.KeyBindingColumns.Id;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.ActionMap;
@@ -50,13 +50,13 @@ final class KeyBindingModel {
 	private static final String PRESSED = "pressed ";
 	private static final String RELEASED = "released ";
 
-	private final FilteredTableModel<KeyBinding, Id> tableModel;
+	private final FilterTableModel<KeyBinding, Id> tableModel;
 	private final FilteredComboBoxModel<String> componentComboBoxModel;
 
 	KeyBindingModel(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
 		this.componentComboBoxModel = createComponentComboBoxModel(lookAndFeelComboBoxModel);
 		this.componentComboBoxModel.refresh();
-		this.tableModel = FilteredTableModel.builder(new KeyBindingColumns())
+		this.tableModel = FilterTableModel.builder(new KeyBindingColumns())
 						.items(new KeyBindingItems())
 						.build();
 		bindEvents(lookAndFeelComboBoxModel);
@@ -66,7 +66,7 @@ final class KeyBindingModel {
 		return componentComboBoxModel;
 	}
 
-	FilteredTableModel<KeyBinding, Id> tableModel() {
+	FilterTableModel<KeyBinding, Id> tableModel() {
 		return tableModel;
 	}
 

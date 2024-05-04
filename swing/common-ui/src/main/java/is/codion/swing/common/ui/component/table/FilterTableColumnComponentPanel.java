@@ -45,20 +45,20 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A panel that synchronizes child component sizes and positions to table columns.
- * For instances use the {@link #filteredTableColumnComponentPanel(FilteredTableColumnModel, Map)} factory method.
+ * For instances use the {@link #filterTableColumnComponentPanel(FilterTableColumnModel, Map)} factory method.
  * @param <T> the component type
- * @see #filteredTableColumnComponentPanel(FilteredTableColumnModel, Map)
+ * @see #filterTableColumnComponentPanel(FilterTableColumnModel, Map)
  */
-public final class FilteredTableColumnComponentPanel<C, T extends JComponent> extends JPanel {
+public final class FilterTableColumnComponentPanel<C, T extends JComponent> extends JPanel {
 
-	private final FilteredTableColumnModel<C> columnModel;
-	private final Collection<FilteredTableColumn<C>> columns;
+	private final FilterTableColumnModel<C> columnModel;
+	private final Collection<FilterTableColumn<C>> columns;
 	private final Box.Filler scrollBarFiller;
 	private final JPanel basePanel;
 	private final Map<C, T> components;
 	private final Map<C, JPanel> nullComponents = new HashMap<>(0);
 
-	private FilteredTableColumnComponentPanel(FilteredTableColumnModel<C> columnModel, Map<C, T> components) {
+	private FilterTableColumnComponentPanel(FilterTableColumnModel<C> columnModel, Map<C, T> components) {
 		this.columnModel = requireNonNull(columnModel);
 		this.columns = columnModel.columns();
 		requireNonNull(components).forEach((columnIdentifier, component) -> {
@@ -98,16 +98,16 @@ public final class FilteredTableColumnComponentPanel<C, T extends JComponent> ex
 	}
 
 	/**
-	 * Instantiates a new {@link FilteredTableColumnComponentPanel}.
+	 * Instantiates a new {@link FilterTableColumnComponentPanel}.
 	 * @param columnModel the column model
 	 * @param columnComponents the column components mapped to their respective column
 	 * @param <C> the column identifier type
 	 * @param <T> the component type
-	 * @return a new {@link FilteredTableColumnComponentPanel}
+	 * @return a new {@link FilterTableColumnComponentPanel}
 	 */
-	public static <C, T extends JComponent> FilteredTableColumnComponentPanel<C, T> filteredTableColumnComponentPanel(FilteredTableColumnModel<C> columnModel,
-																																																										Map<C, T> columnComponents) {
-		return new FilteredTableColumnComponentPanel<>(columnModel, columnComponents);
+	public static <C, T extends JComponent> FilterTableColumnComponentPanel<C, T> filterTableColumnComponentPanel(FilterTableColumnModel<C> columnModel,
+																																																								Map<C, T> columnComponents) {
+		return new FilterTableColumnComponentPanel<>(columnModel, columnComponents);
 	}
 
 	private void resetPanel() {
@@ -129,7 +129,7 @@ public final class FilteredTableColumnComponentPanel<C, T extends JComponent> ex
 
 	private Component childFocusOwner() {
 		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-		if (Utilities.parentOfType(FilteredTableColumnComponentPanel.class, focusOwner) == this) {
+		if (Utilities.parentOfType(FilterTableColumnComponentPanel.class, focusOwner) == this) {
 			return focusOwner;
 		}
 
@@ -138,7 +138,7 @@ public final class FilteredTableColumnComponentPanel<C, T extends JComponent> ex
 
 	private void bindColumnAndComponentSizes() {
 		columnModel.addColumnModelListener(new SyncColumnModelListener());
-		for (FilteredTableColumn<C> column : columns) {
+		for (FilterTableColumn<C> column : columns) {
 			JComponent component = columnComponent(column);
 			component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
 			column.addPropertyChangeListener(new SyncListener(component, column));
@@ -146,12 +146,12 @@ public final class FilteredTableColumnComponentPanel<C, T extends JComponent> ex
 	}
 
 	private void syncPanelWidths() {
-		for (FilteredTableColumn<C> column : columns) {
+		for (FilterTableColumn<C> column : columns) {
 			syncPanelWidth(columnComponent(column), column);
 		}
 	}
 
-	private JComponent columnComponent(FilteredTableColumn<C> column) {
+	private JComponent columnComponent(FilterTableColumn<C> column) {
 		return components.getOrDefault(column.getIdentifier(),
 						(T) nullComponents.computeIfAbsent(column.getIdentifier(), c -> new JPanel()));
 	}

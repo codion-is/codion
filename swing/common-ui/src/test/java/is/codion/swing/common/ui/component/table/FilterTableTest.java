@@ -19,10 +19,10 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Separators;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
-import is.codion.swing.common.ui.component.table.DefaultFilteredTableSearchModel.DefaultRowColumn;
-import is.codion.swing.common.ui.component.table.FilteredTableSearchModel.RowColumn;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
+import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
+import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +40,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FilteredTableTest {
+public class FilterTableTest {
 
 	private static final TestRow A = new TestRow("a");
 	private static final TestRow B = new TestRow("b");
@@ -66,16 +66,16 @@ public class FilteredTableTest {
 		}
 	}
 
-	private static FilteredTable<TestRow, Integer> createTestTable() {
+	private static FilterTable<TestRow, Integer> createTestTable() {
 		return createTestTable(null);
 	}
 
-	private static FilteredTable<TestRow, Integer> createTestTable(Comparator<String> customComparator) {
-		return FilteredTable.builder(createTestModel(customComparator), createColumns()).build();
+	private static FilterTable<TestRow, Integer> createTestTable(Comparator<String> customComparator) {
+		return FilterTable.builder(createTestModel(customComparator), createColumns()).build();
 	}
 
-	private static FilteredTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
-		return FilteredTableModel.<TestRow, Integer>builder(new FilteredTableModel.Columns<TestRow, Integer>() {
+	private static FilterTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
+		return FilterTableModel.<TestRow, Integer>builder(new FilterTableModel.Columns<TestRow, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return singletonList(0);
@@ -101,30 +101,30 @@ public class FilteredTableTest {
 									return customComparator;
 								}
 
-								return FilteredTableModel.Columns.super.comparator(integer);
+								return FilterTableModel.Columns.super.comparator(integer);
 							}
 						})
 						.items(() -> ITEMS)
 						.build();
 	}
 
-	private static List<FilteredTableColumn<Integer>> createColumns() {
-		return singletonList(FilteredTableColumn.builder(0).build());
+	private static List<FilterTableColumn<Integer>> createColumns() {
+		return singletonList(FilterTableColumn.builder(0).build());
 	}
 
 	@Test
 	void builderNullTableModel() {
-		assertThrows(Exception.class, () -> FilteredTable.builder(null, emptyList()));
+		assertThrows(Exception.class, () -> FilterTable.builder(null, emptyList()));
 	}
 
 	@Test
 	void builderNullColumns() {
-		assertThrows(Exception.class, () -> FilteredTable.builder(createTestModel(null), null));
+		assertThrows(Exception.class, () -> FilterTable.builder(createTestModel(null), null));
 	}
 
 	@Test
 	void searchField() {
-		FilteredTableModel.Columns<List<String>, Integer> columns = new FilteredTableModel.Columns<List<String>, Integer>() {
+		FilterTableModel.Columns<List<String>, Integer> columns = new FilterTableModel.Columns<List<String>, Integer>() {
 			@Override
 			public List<Integer> identifiers() {
 				return singletonList(0);
@@ -141,8 +141,8 @@ public class FilteredTableTest {
 			}
 		};
 
-		FilteredTableModel<List<String>, Integer> tableModel =
-						FilteredTableModel.<List<String>, Integer>builder(columns)
+		FilterTableModel<List<String>, Integer> tableModel =
+						FilterTableModel.<List<String>, Integer>builder(columns)
 										.items(() -> asList(
 														singletonList("darri"),
 														singletonList("dac"),
@@ -150,13 +150,13 @@ public class FilteredTableTest {
 														singletonList("dlabo")))
 										.build();
 
-		FilteredTable<List<String>, Integer> filteredTable = FilteredTable.builder(tableModel,
-						singletonList(FilteredTableColumn.filteredTableColumn(0))).build();
+		FilterTable<List<String>, Integer> filterTable = FilterTable.builder(tableModel,
+						singletonList(FilterTableColumn.filterTableColumn(0))).build();
 		tableModel.refresh();
 
-		new JScrollPane(filteredTable);
+		new JScrollPane(filterTable);
 
-		JTextField searchField = filteredTable.searchField();
+		JTextField searchField = filterTable.searchField();
 
 		searchField.setText("d");
 		assertEquals(0, tableModel.selectionModel().getSelectedIndex());
@@ -202,8 +202,8 @@ public class FilteredTableTest {
 			}
 		}
 
-		FilteredTableColumn<Integer> columnId = FilteredTableColumn.builder(0).build();
-		FilteredTableColumn<Integer> columnValue = FilteredTableColumn.builder(1).build();
+		FilterTableColumn<Integer> columnId = FilterTableColumn.builder(0).build();
+		FilterTableColumn<Integer> columnValue = FilterTableColumn.builder(1).build();
 
 		List<Row> items = asList(
 						new Row(0, "a"),
@@ -213,8 +213,8 @@ public class FilteredTableTest {
 						new Row(4, "e")
 		);
 
-		FilteredTableModel<Row, Integer> testModel =
-						FilteredTableModel.<Row, Integer>builder(new FilteredTableModel.Columns<Row, Integer>() {
+		FilterTableModel<Row, Integer> testModel =
+						FilterTableModel.<Row, Integer>builder(new FilterTableModel.Columns<Row, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return asList(0, 1);
@@ -235,10 +235,10 @@ public class FilteredTableTest {
 							}
 						}).items(() -> items).build();
 
-		FilteredTable<Row, Integer> table = FilteredTable.builder(testModel, asList(columnId, columnValue)).build();
+		FilterTable<Row, Integer> table = FilterTable.builder(testModel, asList(columnId, columnValue)).build();
 		testModel.refresh();
 
-		FilteredTableSearchModel searchModel = table.searchModel();
+		FilterTableSearchModel searchModel = table.searchModel();
 		searchModel.searchString().set("b");
 		RowColumn rowColumn = searchModel.nextResult().orElse(null);
 		assertEquals(new DefaultRowColumn(1, 1), rowColumn);
@@ -337,14 +337,14 @@ public class FilteredTableTest {
 
 	@Test
 	void sorting() {
-		FilteredTable<TestRow, Integer> table = createTestTable();
-		FilteredTableModel<TestRow, Integer> tableModel = table.getModel();
+		FilterTable<TestRow, Integer> table = createTestTable();
+		FilterTableModel<TestRow, Integer> tableModel = table.getModel();
 		AtomicInteger actionsPerformed = new AtomicInteger();
 		Consumer<Integer> consumer = columnIdentifier -> actionsPerformed.incrementAndGet();
 		table.sortModel().sortingChangedEvent().addConsumer(consumer);
 
 		tableModel.refresh();
-		FilteredTableSortModel<TestRow, Integer> sortModel = table.sortModel();
+		FilterTableSortModel<TestRow, Integer> sortModel = table.sortModel();
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
 		assertEquals(SortOrder.DESCENDING, sortModel.sortOrder(0));
 		assertEquals(E, tableModel.itemAt(0));
@@ -382,10 +382,10 @@ public class FilteredTableTest {
 
 	@Test
 	void customSorting() {
-		FilteredTable<TestRow, Integer> table = createTestTable(Comparator.reverseOrder());
-		FilteredTableModel<TestRow, Integer> tableModel = table.getModel();
+		FilterTable<TestRow, Integer> table = createTestTable(Comparator.reverseOrder());
+		FilterTableModel<TestRow, Integer> tableModel = table.getModel();
 		tableModel.refresh();
-		FilteredTableSortModel<TestRow, Integer> sortModel = table.sortModel();
+		FilterTableSortModel<TestRow, Integer> sortModel = table.sortModel();
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
 		assertEquals(E, tableModel.itemAt(0));
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
@@ -394,13 +394,13 @@ public class FilteredTableTest {
 
 	@Test
 	void selectionAndSorting() {
-		FilteredTable<TestRow, Integer> table = createTestTable();
-		FilteredTableModel<TestRow, Integer> tableModel = table.getModel();
+		FilterTable<TestRow, Integer> table = createTestTable();
+		FilterTableModel<TestRow, Integer> tableModel = table.getModel();
 		tableModel.refresh();
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
 		//test selection and filtering together
-		FilteredTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
+		FilterTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
 		tableModel.selectionModel().setSelectedIndex(3);
 		assertEquals(3, selectionModel.getSelectedIndex());
 
@@ -428,13 +428,13 @@ public class FilteredTableTest {
 
 	@Test
 	void columnModel() {
-		FilteredTableColumn<Integer> column = createTestTable().columnModel().getColumn(0);
+		FilterTableColumn<Integer> column = createTestTable().columnModel().getColumn(0);
 		assertEquals(0, column.getIdentifier());
 	}
 
 	@Test
 	void export() {
-		FilteredTable<TestRow, Integer> table = createTestTable();
+		FilterTable<TestRow, Integer> table = createTestTable();
 		table.getModel().refresh();
 
 		String expected = "0" + Separators.LINE_SEPARATOR +
@@ -460,7 +460,7 @@ public class FilteredTableTest {
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
-																							 FilteredTableModel<TestRow, Integer> model) {
+																							 FilterTableModel<TestRow, Integer> model) {
 		for (TestRow row : rows) {
 			if (includeFiltered) {
 				if (!model.containsItem(row)) {

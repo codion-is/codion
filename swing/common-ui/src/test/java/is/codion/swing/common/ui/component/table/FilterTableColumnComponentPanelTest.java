@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -27,17 +27,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.swing.common.ui.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FilteredTableColumnComponentPanelTest {
+public class FilterTableColumnComponentPanelTest {
 
-	private final FilteredTableColumn<Integer> column0 = filteredTableColumn(0);
-	private final FilteredTableColumn<Integer> column1 = filteredTableColumn(1);
-	private final FilteredTableColumn<Integer> column2 = filteredTableColumn(2);
+	private final FilterTableColumn<Integer> column0 = FilterTableColumn.filterTableColumn(0);
+	private final FilterTableColumn<Integer> column1 = FilterTableColumn.filterTableColumn(1);
+	private final FilterTableColumn<Integer> column2 = FilterTableColumn.filterTableColumn(2);
 
-	private final FilteredTableModel.Columns<Object, Integer> columns = new FilteredTableModel.Columns<>() {
+	private final FilterTableModel.Columns<Object, Integer> columns = new FilterTableModel.Columns<>() {
 		@Override
 		public List<Integer> identifiers() {
 			return List.of(0, 1, 2);
@@ -56,29 +55,29 @@ public class FilteredTableColumnComponentPanelTest {
 
 	@Test
 	void wrongColumn() {
-		FilteredTableModel<Object, Integer> tableModel =
-						FilteredTableModel.builder(columns).build();
-		FilteredTable<Object, Integer> table =
-						FilteredTable.builder(tableModel, asList(column0, column1, column2))
+		FilterTableModel<Object, Integer> tableModel =
+						FilterTableModel.builder(columns).build();
+		FilterTable<Object, Integer> table =
+						FilterTable.builder(tableModel, asList(column0, column1, column2))
 										.build();
-		FilteredTableColumnModel<Integer> columnModel = table.columnModel();
+		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 		Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
 		columnComponents.put(3, new JPanel());
-		assertThrows(IllegalArgumentException.class, () -> FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, columnComponents));
+		assertThrows(IllegalArgumentException.class, () -> FilterTableColumnComponentPanel.filterTableColumnComponentPanel(columnModel, columnComponents));
 	}
 
 	@Test
 	void setColumnVisible() {
-		FilteredTableModel<Object, Integer> tableModel =
-						FilteredTableModel.builder(columns).build();
-		FilteredTable<Object, Integer> table =
-						FilteredTable.builder(tableModel, asList(column0, column1, column2))
+		FilterTableModel<Object, Integer> tableModel =
+						FilterTableModel.builder(columns).build();
+		FilterTable<Object, Integer> table =
+						FilterTable.builder(tableModel, asList(column0, column1, column2))
 										.build();
-		FilteredTableColumnModel<Integer> columnModel = table.columnModel();
+		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 
 		columnModel.visible(1).set(false);
 
-		FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+		FilterTableColumnComponentPanel<Integer, JPanel> panel = FilterTableColumnComponentPanel.filterTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
 		assertTrue(panel.components().containsKey(1));
 
 		assertNull(panel.components().get(1).getParent());
@@ -92,14 +91,14 @@ public class FilteredTableColumnComponentPanelTest {
 
 	@Test
 	void width() {
-		FilteredTableModel<Object, Integer> tableModel =
-						FilteredTableModel.builder(columns).build();
-		FilteredTable<Object, Integer> table =
-						FilteredTable.builder(tableModel, asList(column0, column1, column2))
+		FilterTableModel<Object, Integer> tableModel =
+						FilterTableModel.builder(columns).build();
+		FilterTable<Object, Integer> table =
+						FilterTable.builder(tableModel, asList(column0, column1, column2))
 										.build();
-		FilteredTableColumnModel<Integer> columnModel = table.columnModel();
+		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 
-		FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+		FilterTableColumnComponentPanel<Integer, JPanel> panel = FilterTableColumnComponentPanel.filterTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
 		column0.setWidth(100);
 		assertEquals(100, panel.components().get(0).getPreferredSize().width);
 		column1.setWidth(90);
@@ -108,7 +107,7 @@ public class FilteredTableColumnComponentPanelTest {
 		assertEquals(80, panel.components().get(2).getPreferredSize().width);
 	}
 
-	private static Map<Integer, JPanel> createColumnComponents(FilteredTableColumnModel<Integer> columnModel) {
+	private static Map<Integer, JPanel> createColumnComponents(FilterTableColumnModel<Integer> columnModel) {
 		Map<Integer, JPanel> columnComponents = new HashMap<>();
 		columnModel.columns().forEach(column -> columnComponents.put(column.getIdentifier(), new JPanel()));
 

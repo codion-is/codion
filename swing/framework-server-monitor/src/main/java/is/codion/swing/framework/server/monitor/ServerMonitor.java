@@ -33,8 +33,8 @@ import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
 import is.codion.framework.server.EntityServerAdmin.DomainOperation;
 import is.codion.framework.server.EntityServerAdmin.DomainReport;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -91,16 +91,16 @@ public final class ServerMonitor {
 
 	private final Value<Integer> connectionCountValue = Value.nullable(0).build();
 	private final Value<String> memoryUsageValue = Value.nullable("").build();
-	private final FilteredTableModel<DomainEntityDefinition, DomainColumns.Id> domainTableModel =
-					FilteredTableModel.builder(new DomainColumns())
+	private final FilterTableModel<DomainEntityDefinition, DomainColumns.Id> domainTableModel =
+					FilterTableModel.builder(new DomainColumns())
 									.items(new DomainTableItems())
 									.build();
-	private final FilteredTableModel<DomainReport, ReportColumns.Id> reportTableModel =
-					FilteredTableModel.builder(new ReportColumns())
+	private final FilterTableModel<DomainReport, ReportColumns.Id> reportTableModel =
+					FilterTableModel.builder(new ReportColumns())
 									.items(new ReportTableItems())
 									.build();
-	private final FilteredTableModel<DomainOperation, OperationColumns.Id> operationTableModel =
-					FilteredTableModel.builder(new OperationColumns())
+	private final FilterTableModel<DomainOperation, OperationColumns.Id> operationTableModel =
+					FilterTableModel.builder(new OperationColumns())
 									.items(new OperationTableItems())
 									.build();
 	private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
@@ -351,21 +351,21 @@ public final class ServerMonitor {
 	/**
 	 * @return the table model for viewing the domain models
 	 */
-	public FilteredTableModel<DomainEntityDefinition, DomainColumns.Id> domainTableModel() {
+	public FilterTableModel<DomainEntityDefinition, DomainColumns.Id> domainTableModel() {
 		return domainTableModel;
 	}
 
 	/**
 	 * @return the table model for viewing reports
 	 */
-	public FilteredTableModel<DomainReport, ReportColumns.Id> reportTableModel() {
+	public FilterTableModel<DomainReport, ReportColumns.Id> reportTableModel() {
 		return reportTableModel;
 	}
 
 	/**
 	 * @return the table model for viewing operations
 	 */
-	public FilteredTableModel<DomainOperation, OperationColumns.Id> operationTableModel() {
+	public FilterTableModel<DomainOperation, OperationColumns.Id> operationTableModel() {
 		return operationTableModel;
 	}
 

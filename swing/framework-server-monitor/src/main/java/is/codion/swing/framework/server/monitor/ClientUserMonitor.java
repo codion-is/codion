@@ -24,8 +24,8 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.model.component.table.FilteredTableModel.RefreshStrategy.MERGE;
+import static is.codion.swing.common.model.component.table.FilterTableModel.RefreshStrategy.MERGE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -56,8 +56,8 @@ public final class ClientUserMonitor {
 	private final EntityServerAdmin server;
 	private final Value<Integer> idleConnectionTimeoutValue;
 	private final ClientMonitor clientMonitor;
-	private final FilteredTableModel<UserInfo, UserHistoryColumns.Id> userHistoryTableModel =
-					FilteredTableModel.builder(new UserHistoryColumns())
+	private final FilterTableModel<UserInfo, UserHistoryColumns.Id> userHistoryTableModel =
+					FilterTableModel.builder(new UserHistoryColumns())
 									.items(new UserHistoryItems())
 									.refreshStrategy(MERGE)
 									.build();
@@ -95,7 +95,7 @@ public final class ClientUserMonitor {
 	/**
 	 * @return a TableModel for displaying the user connection history
 	 */
-	public FilteredTableModel<?, UserHistoryColumns.Id> userHistoryTableModel() {
+	public FilterTableModel<?, UserHistoryColumns.Id> userHistoryTableModel() {
 		return userHistoryTableModel;
 	}
 

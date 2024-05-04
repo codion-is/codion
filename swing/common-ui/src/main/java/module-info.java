@@ -24,11 +24,11 @@
  * {@link is.codion.swing.common.ui.component.builder.AbstractComponentBuilder}<br>
  * {@link is.codion.swing.common.ui.component.value.ComponentValue}<br>
  * {@link is.codion.swing.common.ui.component.value.AbstractComponentValue}<br>
- * {@link is.codion.swing.common.ui.component.table.FilteredTable}<br>
- * {@link is.codion.swing.common.ui.component.table.FilteredTableColumn}<br>
- * {@link is.codion.swing.common.ui.component.table.FilteredTableColumnModel}<br>
- * {@link is.codion.swing.common.ui.component.table.FilteredTableSearchModel}<br>
- * {@link is.codion.swing.common.ui.component.table.FilteredTableSortModel}<br>
+ * {@link is.codion.swing.common.ui.component.table.FilterTable}<br>
+ * {@link is.codion.swing.common.ui.component.table.FilterTableColumn}<br>
+ * {@link is.codion.swing.common.ui.component.table.FilterTableColumnModel}<br>
+ * {@link is.codion.swing.common.ui.component.table.FilterTableSearchModel}<br>
+ * {@link is.codion.swing.common.ui.component.table.FilterTableSortModel}<br>
  * {@link is.codion.swing.common.ui.dialog.Dialogs}<br>
  * {@link is.codion.swing.common.ui.key.KeyEvents}<br>
  * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider}<br>

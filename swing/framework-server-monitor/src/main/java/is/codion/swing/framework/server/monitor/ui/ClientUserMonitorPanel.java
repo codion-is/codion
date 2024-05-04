@@ -19,8 +19,8 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.swing.common.ui.component.table.FilteredTable;
-import is.codion.swing.common.ui.component.table.FilteredTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 
@@ -132,7 +132,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 										.build())
 						.build();
 
-		FilteredTable<?, ?> userHistoryTable = FilteredTable.builder(model.userHistoryTableModel(), createUserHistoryColumns())
+		FilterTable<?, ?> userHistoryTable = FilterTable.builder(model.userHistoryTableModel(), createUserHistoryColumns())
 						.popupMenuControls(table -> Controls.builder()
 										.controls(Controls.builder()
 														.name("Columns")
@@ -149,7 +149,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.build();
 	}
 
-	private static List<FilteredTableColumn<UserHistoryColumns.Id>> createUserHistoryColumns() {
+	private static List<FilterTableColumn<UserHistoryColumns.Id>> createUserHistoryColumns() {
 		return asList(
 						createColumn(UserHistoryColumns.Id.USERNAME_COLUMN, "Username"),
 						createColumn(UserHistoryColumns.Id.CLIENT_TYPE_COLUMN, "Client type"),
@@ -160,15 +160,15 @@ public final class ClientUserMonitorPanel extends JPanel {
 						createColumn(UserHistoryColumns.Id.CONNECTION_COUNT_COLUMN, "Connections"));
 	}
 
-	private static FilteredTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
-																																				 String headerValue) {
+	private static FilterTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
+																																			 String headerValue) {
 		return createColumn(identifier, headerValue, null);
 	}
 
-	private static FilteredTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
-																																				 String headerValue,
-																																				 TableCellRenderer cellRenderer) {
-		return FilteredTableColumn.builder(identifier)
+	private static FilterTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
+																																			 String headerValue,
+																																			 TableCellRenderer cellRenderer) {
+		return FilterTableColumn.builder(identifier)
 						.headerValue(headerValue)
 						.cellRenderer(cellRenderer)
 						.build();

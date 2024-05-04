@@ -21,7 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.swing.common.ui.component.table.FilteredTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,7 +40,7 @@ public final class EntityTableColumns {
 	 * @param entityDefinition the entity definition
 	 * @return the columns
 	 */
-	public static List<FilteredTableColumn<Attribute<?>>> entityTableColumns(EntityDefinition entityDefinition) {
+	public static List<FilterTableColumn<Attribute<?>>> entityTableColumns(EntityDefinition entityDefinition) {
 		AtomicInteger index = new AtomicInteger();
 		return entityDefinition.attributes().definitions().stream()
 						.filter(attributeDefinition -> !attributeDefinition.hidden())
@@ -54,12 +54,12 @@ public final class EntityTableColumns {
 	 * @param modelIndex the column model index
 	 * @return the column or an empty Optional in case no column should be created for the given attribute
 	 */
-	private static FilteredTableColumn<Attribute<?>> createColumn(AttributeDefinition<?> attributeDefinition, int modelIndex) {
-		FilteredTableColumn.Builder<? extends Attribute<?>> columnBuilder =
-						FilteredTableColumn.builder(attributeDefinition.attribute(), modelIndex)
+	private static FilterTableColumn<Attribute<?>> createColumn(AttributeDefinition<?> attributeDefinition, int modelIndex) {
+		FilterTableColumn.Builder<? extends Attribute<?>> columnBuilder =
+						FilterTableColumn.builder(attributeDefinition.attribute(), modelIndex)
 										.headerValue(attributeDefinition.caption())
 										.toolTipText(attributeDefinition.description());
 
-		return (FilteredTableColumn<Attribute<?>>) columnBuilder.build();
+		return (FilterTableColumn<Attribute<?>>) columnBuilder.build();
 	}
 }

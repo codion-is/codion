@@ -28,10 +28,10 @@ import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel.ApplicationRow;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel.ApplicationRow.ColumnId;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.table.FilteredTable;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRendererFactory;
-import is.codion.swing.common.ui.component.table.FilteredTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilterTableCellRendererFactory;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -101,7 +101,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private final JPanel scenarioBase = gridLayoutPanel(0, 1).build();
 
 	static {
-		FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
+		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		Arrays.stream(FlatAllIJThemes.INFOS)
 						.forEach(LookAndFeelProvider::addLookAndFeel);
 		findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName()))
@@ -379,8 +379,8 @@ public final class LoadTestPanel<T> extends JPanel {
 		return numberOfApplicationsChartPanel;
 	}
 
-	private FilteredTable<ApplicationRow, ColumnId> createApplicationsTable() {
-		return FilteredTable.builder(model().applicationTableModel(), createApplicationTableModelColumns())
+	private FilterTable<ApplicationRow, ColumnId> createApplicationsTable() {
+		return FilterTable.builder(model().applicationTableModel(), createApplicationTableModelColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClickAction(Control.control(this::viewException))
 						.scrollToSelectedItem(false)
@@ -402,30 +402,30 @@ public final class LoadTestPanel<T> extends JPanel {
 						.build();
 	}
 
-	private static List<FilteredTableColumn<ColumnId>> createApplicationTableModelColumns() {
+	private static List<FilterTableColumn<ColumnId>> createApplicationTableModelColumns() {
 		return Arrays.asList(
-						FilteredTableColumn.builder(ColumnId.NAME)
+						FilterTableColumn.builder(ColumnId.NAME)
 										.headerValue("Name")
 										.build(),
-						FilteredTableColumn.builder(ColumnId.USERNAME)
+						FilterTableColumn.builder(ColumnId.USERNAME)
 										.headerValue("User")
 										.build(),
-						FilteredTableColumn.builder(ColumnId.SCENARIO)
+						FilterTableColumn.builder(ColumnId.SCENARIO)
 										.headerValue("Scenario")
 										.build(),
-						FilteredTableColumn.builder(ColumnId.SUCCESSFUL)
+						FilterTableColumn.builder(ColumnId.SUCCESSFUL)
 										.headerValue("Success")
 										.build(),
-						FilteredTableColumn.builder(ColumnId.DURATION)
+						FilterTableColumn.builder(ColumnId.DURATION)
 										.headerValue("Duration (μs)")
 										.build(),
-						FilteredTableColumn.builder(ColumnId.EXCEPTION)
+						FilterTableColumn.builder(ColumnId.EXCEPTION)
 										.headerValue("Exception")
 										.build(),
-						FilteredTableColumn.builder(ColumnId.MESSAGE)
+						FilterTableColumn.builder(ColumnId.MESSAGE)
 										.headerValue("Message")
 										.build(),
-						FilteredTableColumn.builder(ColumnId.CREATED)
+						FilterTableColumn.builder(ColumnId.CREATED)
 										.headerValue("Created")
 										.build()
 		);
@@ -523,12 +523,12 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private final class ApplicationTableCellRendererFactory implements
-					FilteredTableCellRendererFactory<ColumnId> {
+					FilterTableCellRendererFactory<ColumnId> {
 
 		@Override
-		public TableCellRenderer tableCellRenderer(FilteredTableColumn<ColumnId> column) {
-			FilteredTableCellRenderer.Builder<ApplicationRow, ColumnId> builder =
-							FilteredTableCellRenderer.builder(model().applicationTableModel(), column.getIdentifier(), Integer.class);
+		public TableCellRenderer tableCellRenderer(FilterTableColumn<ColumnId> column) {
+			FilterTableCellRenderer.Builder<ApplicationRow, ColumnId> builder =
+							FilterTableCellRenderer.builder(model().applicationTableModel(), column.getIdentifier(), Integer.class);
 			if (column.getIdentifier().equals(ColumnId.DURATION)) {
 				builder.values(duration -> duration == null ? null : DURATION_FORMAT.format(duration));
 			}

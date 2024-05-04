@@ -21,8 +21,8 @@
  * <br>
  * {@link is.codion.swing.common.model.component.combobox.FilteredComboBoxModel}<br>
  * {@link is.codion.swing.common.model.component.combobox.ItemComboBoxModel}<br>
- * {@link is.codion.swing.common.model.component.table.FilteredTableModel}<br>
- * {@link is.codion.swing.common.model.component.table.FilteredTableSelectionModel}<br>
+ * {@link is.codion.swing.common.model.component.table.FilterTableModel}<br>
+ * {@link is.codion.swing.common.model.component.table.FilterTableSelectionModel}<br>
  * {@link is.codion.swing.common.model.worker.ProgressWorker}<br>
  */
 module is.codion.swing.common.model {

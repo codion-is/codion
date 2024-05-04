@@ -18,21 +18,21 @@
  */
 package is.codion.manual.swing.common.model.component.table;
 
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
-import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.INTEGER_COLUMN;
-import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.STRING_COLUMN;
+import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.TableRow.INTEGER_COLUMN;
+import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.TableRow.STRING_COLUMN;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 
-public final class FilteredTableModelDemo {
-	// tag::filteredTableModel[]
+public final class FilterTableModelDemo {
+	// tag::filterTableModel[]
 	// Define a class representing the table rows
 	public static final class TableRow {
 
@@ -57,7 +57,7 @@ public final class FilteredTableModelDemo {
 		}
 	}
 
-	public static FilteredTableModel<TableRow, Integer> createFilteredTableModel() {
+	public static FilterTableModel<TableRow, Integer> createFilterTableModel() {
 		List<Integer> columnIdentifiers =
 						unmodifiableList(asList(STRING_COLUMN, INTEGER_COLUMN));
 
@@ -100,8 +100,8 @@ public final class FilteredTableModelDemo {
 						new TableRow("Another string", 43));
 
 		// Create the table model
-		FilteredTableModel<TableRow, Integer> tableModel =
-						FilteredTableModel.builder(columns)
+		FilterTableModel<TableRow, Integer> tableModel =
+						FilterTableModel.builder(columns)
 										.items(items)
 										// if true then the item supplier is called in a
 										// background thread when the model is refreshed
@@ -112,7 +112,7 @@ public final class FilteredTableModelDemo {
 		tableModel.refresh();
 
 		// Select the first row
-		FilteredTableSelectionModel<TableRow> selectionModel = tableModel.selectionModel();
+		FilterTableSelectionModel<TableRow> selectionModel = tableModel.selectionModel();
 		selectionModel.setSelectedIndex(0);
 
 		// With async refresh enabled
@@ -121,5 +121,5 @@ public final class FilteredTableModelDemo {
 
 		return tableModel;
 	}
-	// end::filteredTableModel[]
+	// end::filterTableModel[]
 }

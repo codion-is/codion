@@ -28,6 +28,7 @@ Codion Change Log
 - FilteredTableCellRenderer.Builder.columnShadingEnabled() renamed columnShading().
 - FilteredTableModel.Builder.itemValidator() renamed validator(), related renaming.
 - Major surgery, FilteredTableModel.sortModel(), searchModel(), summaryModel() and columnModel() moved to FilteredTable, related refactoring.
+- FilteredTableModel renamed FilterTableModel, related renaming.
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
 - ProgressDialog bug fixed, no longer adds an empty south panel when no controls are specified.
@@ -43,6 +44,7 @@ Codion Change Log
 - Control.copy() added, copying the control with the underlying command.
 - EntityPanel.Config.editPanelState() and editPanelStates() renamed initialEditState() and enabledEditStates() respectively.
 - TabbedDetailLayout.Builder.panelState() and panelStates() renamed initialDetailState() and enabledDetailStates() respectively.
+- FilteredTable renamed FilterTable, related renaming.
 ### is.codion.swing.common.model
 - FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.framework.domain

@@ -29,7 +29,7 @@ import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityTableConditionModel;
-import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
+import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
 import is.codion.swing.common.ui.component.text.TemporalField;
 
 import java.time.LocalDate;
@@ -46,7 +46,7 @@ public final class DesignAndStyle {
 	public static void main(String[] args) {
 		LocalEntityConnectionProvider connectionProvider = null;
 		Entity entity = null;
-		FilteredTableSelectionModel<List<String>> selectionModel = null;
+		FilterTableSelectionModel<List<String>> selectionModel = null;
 
 		//tag::factories[]
 		Event<String> event = event(); // Event.event()

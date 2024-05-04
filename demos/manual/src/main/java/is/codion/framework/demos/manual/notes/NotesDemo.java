@@ -34,8 +34,8 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilteredTableColumnModel;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -198,7 +198,7 @@ public final class NotesDemo {
 			// Configure the table and columns
 			table().sortModel().setSortOrder(Note.CREATED, SortOrder.DESCENDING);
 			table().setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-			FilteredTableColumnModel<Attribute<?>> columnModel = table().columnModel();
+			FilterTableColumnModel<Attribute<?>> columnModel = table().columnModel();
 			columnModel.column(Note.NOTE).setPreferredWidth(280);
 			columnModel.column(Note.CREATED).setPreferredWidth(130);
 			columnModel.column(Note.UPDATED).setPreferredWidth(130);
@@ -294,7 +294,7 @@ public final class NotesDemo {
 
 	private static void startApplication() throws Exception {
 		// Change the default horizontal alignment for temporal table columns
-		FilteredTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
+		FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		// Make all the IntelliJ themes from Flat Look and Feel available (View -> Select Look & Feel)
 		Arrays.stream(FlatAllIJThemes.INFOS)
 						.forEach(LookAndFeelProvider::addLookAndFeel);

@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
-import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 
 import javax.swing.SortOrder;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortModel<R, C> {
+final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R, C> {
 
 	private final Columns<R, C> columns;
 	private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
@@ -43,7 +43,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 	private final Set<C> columnSortingDisabled = new HashSet<>();
 	private final RowComparator comparator = new RowComparator();
 
-	DefaultFilteredTableSortModel(Columns<R, C> columns) {
+	DefaultFilterTableSortModel(Columns<R, C> columns) {
 		this.columns = columns;
 	}
 

@@ -27,11 +27,11 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Handles the column sorting states for a {@link FilteredTable}.
+ * Handles the column sorting states for a {@link FilterTable}.
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifiers in the table model
  */
-public interface FilteredTableSortModel<R, C> {
+public interface FilterTableSortModel<R, C> {
 
 	/**
 	 * @return a {@link Comparator} based on this sort model

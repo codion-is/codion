@@ -32,22 +32,22 @@ import java.util.List;
  * {@link #addColumn(TableColumn)} and {@link #removeColumn(TableColumn)} both throw {@link UnsupportedOperationException}.
  * @param <C> the type of column identifier
  */
-public interface FilteredTableColumnModel<C> extends TableColumnModel {
+public interface FilterTableColumnModel<C> extends TableColumnModel {
 
 	/**
 	 * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
 	 */
-	Collection<FilteredTableColumn<C>> columns();
+	Collection<FilterTableColumn<C>> columns();
 
 	/**
 	 * @return an unmodifiable view of the currently visible columns
 	 */
-	List<FilteredTableColumn<C>> visible();
+	List<FilterTableColumn<C>> visible();
 
 	/**
 	 * @return an unmodifiable view of currently hidden columns, in no particular order
 	 */
-	Collection<FilteredTableColumn<C>> hidden();
+	Collection<FilterTableColumn<C>> hidden();
 
 	/**
 	 * Returns a {@link State} instance controlling whether this model is locked or not.
@@ -76,10 +76,10 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
 	 * @return the TableColumn with the given identifier
 	 * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
 	 */
-	FilteredTableColumn<C> column(C columnIdentifier);
+	FilterTableColumn<C> column(C columnIdentifier);
 
 	@Override
-	FilteredTableColumn<C> getColumn(int columnIndex);
+	FilterTableColumn<C> getColumn(int columnIndex);
 
 	/**
 	 * Returns the State for controlling the column visibility

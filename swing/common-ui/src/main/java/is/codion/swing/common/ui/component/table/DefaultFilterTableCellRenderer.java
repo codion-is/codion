@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 
 import javax.swing.JTable;
@@ -31,14 +31,14 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link FilteredTableCellRenderer} implementation.
+ * A default {@link FilterTableCellRenderer} implementation.
  * @param <R> the row type
  * @param <C> the column identifier type
  */
-final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRenderer implements FilteredTableCellRenderer {
+final class DefaultFilterTableCellRenderer<R, C> extends DefaultTableCellRenderer implements FilterTableCellRenderer {
 
 	private final Settings<C> settings;
-	private final FilteredTableModel<R, C> tableModel;
+	private final FilterTableModel<R, C> tableModel;
 	private final C columnIdentifier;
 	private final boolean toolTipData;
 	private final boolean columnShading;
@@ -50,7 +50,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 	 * @param builder the builder
 	 * @param settings the UI settings for the renderer
 	 */
-	DefaultFilteredTableCellRenderer(DefaultFilteredTableCellRendererBuilder<R, C> builder, Settings<C> settings) {
+	DefaultFilterTableCellRenderer(DefaultFilterTableCellRendererBuilder<R, C> builder, Settings<C> settings) {
 		this.tableModel = requireNonNull(builder).tableModel;
 		this.settings = requireNonNull(settings);
 		this.settings.updateColors();
@@ -93,7 +93,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		setForeground(settings.foregroundColor(cellColors.foregroundColor(row, columnIdentifier, value, isSelected)));
 		setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShading, isSelected,
 						cellColors.backgroundColor(row, columnIdentifier, value, isSelected)));
-		setBorder(hasFocus || isSearchResult(((FilteredTable<?, ?>) table).searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
+		setBorder(hasFocus || isSearchResult(((FilterTable<?, ?>) table).searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 		if (toolTipData) {
 			setToolTipText(value == null ? "" : value.toString());
 		}
@@ -116,20 +116,20 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		return settings;
 	}
 
-	private static boolean isSearchResult(FilteredTableSearchModel searchModel, int row, int column) {
+	private static boolean isSearchResult(FilterTableSearchModel searchModel, int row, int column) {
 		return searchModel.currentResult().get().equals(row, column);
 	}
 
 	/**
-	 * A default {@link FilteredTableCellRenderer} implementation for Boolean values
+	 * A default {@link FilterTableCellRenderer} implementation for Boolean values
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
 	public static final class BooleanRenderer<R, C> extends NullableCheckBox
-					implements TableCellRenderer, javax.swing.plaf.UIResource, FilteredTableCellRenderer {
+					implements TableCellRenderer, javax.swing.plaf.UIResource, FilterTableCellRenderer {
 
 		private final Settings<C> settings;
-		private final FilteredTableModel<R, C> tableModel;
+		private final FilterTableModel<R, C> tableModel;
 		private final C columnIdentifier;
 		private final boolean columnShading;
 		private final boolean alternateRowColoring;
@@ -139,7 +139,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		 * @param builder the builder
 		 * @param settings the UI settings for the renderer
 		 */
-		BooleanRenderer(DefaultFilteredTableCellRendererBuilder<R, C> builder, Settings<C> settings) {
+		BooleanRenderer(DefaultFilterTableCellRendererBuilder<R, C> builder, Settings<C> settings) {
 			super(new NullableToggleButtonModel());
 			this.tableModel = requireNonNull(builder).tableModel;
 			this.settings = requireNonNull(settings);
@@ -182,7 +182,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 			setForeground(settings.foregroundColor(cellColors.foregroundColor(row, columnIdentifier, value, isSelected)));
 			setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShading, isSelected,
 							cellColors.backgroundColor(row, columnIdentifier, value, isSelected)));
-			setBorder(hasFocus || isSearchResult(((FilteredTable<?, ?>) table).searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
+			setBorder(hasFocus || isSearchResult(((FilterTable<?, ?>) table).searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 
 			return this;
 		}

@@ -27,9 +27,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * Handles searching through a {@link FilteredTable}
+ * Handles searching through a {@link FilterTable}
  */
-public interface FilteredTableSearchModel {
+public interface FilterTableSearchModel {
 
 	/**
 	 * @return the state controlling whether regular expressions should be used when searching

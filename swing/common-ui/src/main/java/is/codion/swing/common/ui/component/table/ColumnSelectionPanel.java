@@ -57,11 +57,11 @@ final class ColumnSelectionPanel<C> extends JPanel {
 	private static final int COLUMNS_SELECTION_PANEL_HEIGHT = 250;
 	private static final int COLUMN_SCROLL_BAR_UNIT_INCREMENT = 16;
 
-	private final FilteredTableColumnModel<C> columnModel;
-	private final Map<FilteredTableColumn<C>, State> visibleStates;
+	private final FilterTableColumnModel<C> columnModel;
+	private final Map<FilterTableColumn<C>, State> visibleStates;
 	private final List<JCheckBox> checkBoxes;
 
-	ColumnSelectionPanel(FilteredTableColumnModel<C> columnModel) {
+	ColumnSelectionPanel(FilterTableColumnModel<C> columnModel) {
 		super(new BorderLayout());
 		this.columnModel = columnModel;
 		this.visibleStates = createVisibleStates();
@@ -95,10 +95,10 @@ final class ColumnSelectionPanel<C> extends JPanel {
 		});
 	}
 
-	private Map<FilteredTableColumn<C>, State> createVisibleStates() {
-		Map<FilteredTableColumn<C>, State> states = new LinkedHashMap<>();
+	private Map<FilterTableColumn<C>, State> createVisibleStates() {
+		Map<FilterTableColumn<C>, State> states = new LinkedHashMap<>();
 		columnModel.columns().stream()
-						.sorted(new FilteredTable.ColumnComparator())
+						.sorted(new FilterTable.ColumnComparator())
 						.forEach(column -> states.put(column, State.state(columnModel.visible(column.getIdentifier()).get())));
 
 		return states;

@@ -46,7 +46,7 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
-import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.HintTextField;
 import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
@@ -733,14 +733,14 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	/**
-	 * A {@link Selector} based on a {@link FilteredTable}.
+	 * A {@link Selector} based on a {@link FilterTable}.
 	 */
 	public interface TableSelector extends Selector {
 
 		/**
 		 * @return the table used for selecting entities
 		 */
-		FilteredTable<Entity, Attribute<?>> table();
+		FilterTable<Entity, Attribute<?>> table();
 	}
 
 	/**
@@ -753,7 +753,7 @@ public final class EntitySearchField extends HintTextField {
 
 	/**
 	 * @param searchModel the search model
-	 * @return a {@link Selector} based on a {@link FilteredTable}.
+	 * @return a {@link Selector} based on a {@link FilterTable}.
 	 */
 	public static TableSelector tableSelector(EntitySearchModel searchModel) {
 		return new DefaultTableSelector(searchModel);
@@ -844,7 +844,7 @@ public final class EntitySearchField extends HintTextField {
 	private static final class DefaultTableSelector implements TableSelector {
 
 		private final EntitySearchModel searchModel;
-		private final FilteredTable<Entity, Attribute<?>> table;
+		private final FilterTable<Entity, Attribute<?>> table;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
 						.horizontalAlignment(SwingConstants.RIGHT)
@@ -865,9 +865,9 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		/**
-		 * @return the underlying FilteredTable
+		 * @return the underlying FilterTable
 		 */
-		public FilteredTable<Entity, Attribute<?>> table() {
+		public FilterTable<Entity, Attribute<?>> table() {
 			return table;
 		}
 
@@ -892,10 +892,10 @@ public final class EntitySearchField extends HintTextField {
 			selectorPanel.setPreferredSize(preferredSize);
 		}
 
-		private FilteredTable<Entity, Attribute<?>> createTable() {
+		private FilterTable<Entity, Attribute<?>> createTable() {
 			SwingEntityTableModel tableModel = new DefaultTableModel();
 
-			FilteredTable<Entity, Attribute<?>> filteredTable = FilteredTable.builder(tableModel,
+			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder(tableModel,
 											entityTableColumns(tableModel.entityDefinition()))
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 							.cellRendererFactory(new EntityTableCellRendererFactory(tableModel))
@@ -916,10 +916,10 @@ public final class EntitySearchField extends HintTextField {
 											.enable(t.searchField()))
 							.build();
 
-			filteredTable.sortModel().setSortOrder(searchModel.columns().iterator().next(), SortOrder.ASCENDING);
-			filteredTable.getColumnModel().setVisibleColumns(searchModel.columns().toArray(new Attribute[0]));
+			filterTable.sortModel().setSortOrder(searchModel.columns().iterator().next(), SortOrder.ASCENDING);
+			filterTable.getColumnModel().setVisibleColumns(searchModel.columns().toArray(new Attribute[0]));
 
-			return filteredTable;
+			return filterTable;
 		}
 
 		private void requestSearchFieldFocus() {

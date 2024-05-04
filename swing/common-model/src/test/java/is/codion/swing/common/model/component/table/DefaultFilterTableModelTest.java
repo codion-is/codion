@@ -19,8 +19,8 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.state.State;
-import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
-import is.codion.swing.common.model.component.table.FilteredTableModel.RefreshStrategy;
+import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel.RefreshStrategy;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Date: 25.7.2010
  * Time: 13:54:59
  */
-public final class DefaultFilteredTableModelTest {
+public final class DefaultFilterTableModelTest {
 
 	private static final TestRow A = new TestRow("a");
 	private static final TestRow B = new TestRow("b");
@@ -54,7 +54,7 @@ public final class DefaultFilteredTableModelTest {
 	private static final TestRow NULL = new TestRow(null);
 	private static final List<TestRow> ITEMS = unmodifiableList(asList(A, B, C, D, E));
 
-	private FilteredTableModel<TestRow, Integer> tableModel;
+	private FilterTableModel<TestRow, Integer> tableModel;
 
 	private static final class TestRow {
 		private final String value;
@@ -81,8 +81,8 @@ public final class DefaultFilteredTableModelTest {
 		}
 	}
 
-	private static FilteredTableModel<TestRow, Integer> createTestModel() {
-		return FilteredTableModel.<TestRow, Integer>builder(new TestColumns())
+	private static FilterTableModel<TestRow, Integer> createTestModel() {
+		return FilterTableModel.<TestRow, Integer>builder(new TestColumns())
 						.items(() -> ITEMS)
 						.build();
 	}
@@ -133,13 +133,13 @@ public final class DefaultFilteredTableModelTest {
 
 	@Test
 	void nullColumns() {
-		assertThrows(NullPointerException.class, () -> FilteredTableModel.<String, Integer>builder(null));
+		assertThrows(NullPointerException.class, () -> FilterTableModel.<String, Integer>builder(null));
 	}
 
 	@Test
 	void noColumns() {
 		assertThrows(IllegalArgumentException.class, () ->
-						FilteredTableModel.<String, Integer>builder(new Columns<String, Integer>() {
+						FilterTableModel.<String, Integer>builder(new Columns<String, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return emptyList();
@@ -188,8 +188,8 @@ public final class DefaultFilteredTableModelTest {
 	void mergeOnRefresh() {
 		AtomicInteger selectionEvents = new AtomicInteger();
 		List<TestRow> items = new ArrayList<>(ITEMS);
-		FilteredTableModel<TestRow, Integer> testModel =
-						FilteredTableModel.<TestRow, Integer>builder(new TestColumns())
+		FilterTableModel<TestRow, Integer> testModel =
+						FilterTableModel.<TestRow, Integer>builder(new TestColumns())
 										.items(() -> items)
 										.build();
 		testModel.selectionModel().selectionEvent().addListener(selectionEvents::incrementAndGet);
@@ -376,7 +376,7 @@ public final class DefaultFilteredTableModelTest {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
 		Consumer consumer = data -> listener.run();
-		FilteredTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
+		FilterTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
 		selectionModel.selectedIndexEvent().addConsumer(consumer);
 		selectionModel.selectionEvent().addListener(listener);
 		selectionModel.selectedItemEvent().addConsumer(consumer);
@@ -637,7 +637,7 @@ public final class DefaultFilteredTableModelTest {
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
-																							 FilteredTableModel<TestRow, Integer> model) {
+																							 FilterTableModel<TestRow, Integer> model) {
 		for (TestRow row : rows) {
 			if (includeFiltered) {
 				if (!model.containsItem(row)) {

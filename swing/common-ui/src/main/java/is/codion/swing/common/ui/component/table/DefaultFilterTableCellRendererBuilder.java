@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColors;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.CellColors;
 
 import java.time.temporal.Temporal;
 import java.util.function.Function;
@@ -27,13 +27,13 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link FilteredTableCellRenderer.Builder} implementation.
+ * A default {@link FilterTableCellRenderer.Builder} implementation.
  * @param <R> the row type
  * @param <C> the column identifier type
  */
-public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTableCellRenderer.Builder<R, C> {
+public class DefaultFilterTableCellRendererBuilder<R, C> implements FilterTableCellRenderer.Builder<R, C> {
 
-	final FilteredTableModel<R, C> tableModel;
+	final FilterTableModel<R, C> tableModel;
 	final C columnIdentifier;
 
 	private final Class<?> columnClass;
@@ -42,9 +42,9 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
 	int horizontalAlignment;
 	boolean toolTipData;
 	boolean columnShading = true;
-	boolean alternateRowColoring = FilteredTableCellRenderer.ALTERNATE_ROW_COLORING.get();
-	int leftPadding = FilteredTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
-	int rightPadding = FilteredTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
+	boolean alternateRowColoring = FilterTableCellRenderer.ALTERNATE_ROW_COLORING.get();
+	int leftPadding = FilterTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
+	int rightPadding = FilterTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
 	Function<Object, Object> values = new DefaultValues();
 	CellColors<C> cellColors = new DefaultCellColors<>();
 
@@ -54,7 +54,7 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
 	 * @param columnIdentifier the column identifier
 	 * @param columnClass the column class
 	 */
-	protected DefaultFilteredTableCellRendererBuilder(FilteredTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass) {
+	protected DefaultFilterTableCellRendererBuilder(FilterTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass) {
 		this(tableModel, columnIdentifier, columnClass, Boolean.class.equals(requireNonNull(columnClass)));
 	}
 
@@ -65,7 +65,7 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
 	 * @param columnClass the column class
 	 * @param useBooleanRenderer true if the boolean renderer should be used
 	 */
-	protected DefaultFilteredTableCellRendererBuilder(FilteredTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass, boolean useBooleanRenderer) {
+	protected DefaultFilterTableCellRendererBuilder(FilterTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass, boolean useBooleanRenderer) {
 		this.tableModel = requireNonNull(tableModel);
 		this.columnIdentifier = requireNonNull(columnIdentifier);
 		this.columnClass = requireNonNull(columnClass);
@@ -74,82 +74,82 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> horizontalAlignment(int horizontalAlignment) {
+	public final FilterTableCellRenderer.Builder<R, C> horizontalAlignment(int horizontalAlignment) {
 		this.horizontalAlignment = horizontalAlignment;
 		return this;
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> toolTipData(boolean toolTipData) {
+	public final FilterTableCellRenderer.Builder<R, C> toolTipData(boolean toolTipData) {
 		this.toolTipData = toolTipData;
 		return this;
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> columnShading(boolean columnShading) {
+	public final FilterTableCellRenderer.Builder<R, C> columnShading(boolean columnShading) {
 		this.columnShading = columnShading;
 		return this;
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> alternateRowColoring(boolean alternateRowColoring) {
+	public final FilterTableCellRenderer.Builder<R, C> alternateRowColoring(boolean alternateRowColoring) {
 		this.alternateRowColoring = alternateRowColoring;
 		return this;
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> leftPadding(int leftPadding) {
+	public final FilterTableCellRenderer.Builder<R, C> leftPadding(int leftPadding) {
 		this.leftPadding = leftPadding;
 		return this;
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> rightPadding(int rightPadding) {
+	public final FilterTableCellRenderer.Builder<R, C> rightPadding(int rightPadding) {
 		this.rightPadding = rightPadding;
 		return this;
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> values(Function<Object, Object> values) {
+	public final FilterTableCellRenderer.Builder<R, C> values(Function<Object, Object> values) {
 		this.values = requireNonNull(values);
 		return this;
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> cellColors(CellColors<C> cellColors) {
+	public final FilterTableCellRenderer.Builder<R, C> cellColors(CellColors<C> cellColors) {
 		this.cellColors = requireNonNull(cellColors);
 		return this;
 	}
 
 	@Override
-	public final FilteredTableCellRenderer build() {
+	public final FilterTableCellRenderer build() {
 		return useBooleanRenderer ?
-						new DefaultFilteredTableCellRenderer.BooleanRenderer<>(this, settings(leftPadding, rightPadding, alternateRowColoring)) :
-						new DefaultFilteredTableCellRenderer<>(this, settings(leftPadding, rightPadding, alternateRowColoring));
+						new DefaultFilterTableCellRenderer.BooleanRenderer<>(this, settings(leftPadding, rightPadding, alternateRowColoring)) :
+						new DefaultFilterTableCellRenderer<>(this, settings(leftPadding, rightPadding, alternateRowColoring));
 	}
 
 	/**
 	 * @param leftPadding the left padding
 	 * @param rightPadding the right padding
 	 * @param alternateRowColoring true if alternate row coloring is enabled
-	 * @return the {@link FilteredTableCellRenderer.Settings} instance for this renderer
+	 * @return the {@link FilterTableCellRenderer.Settings} instance for this renderer
 	 */
-	protected FilteredTableCellRenderer.Settings<C> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
-		return new FilteredTableCellRenderer.Settings<>(leftPadding, rightPadding, alternateRowColoring);
+	protected FilterTableCellRenderer.Settings<C> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+		return new FilterTableCellRenderer.Settings<>(leftPadding, rightPadding, alternateRowColoring);
 	}
 
 	private int defaultHorizontalAlignment() {
 		if (useBooleanRenderer) {
-			return FilteredTableCellRenderer.BOOLEAN_HORIZONTAL_ALIGNMENT.get();
+			return FilterTableCellRenderer.BOOLEAN_HORIZONTAL_ALIGNMENT.get();
 		}
 		if (Number.class.isAssignableFrom(columnClass)) {
-			return FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.get();
+			return FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.get();
 		}
 		if (Temporal.class.isAssignableFrom(columnClass)) {
-			return FilteredTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.get();
+			return FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.get();
 		}
 
-		return FilteredTableCellRenderer.HORIZONTAL_ALIGNMENT.get();
+		return FilterTableCellRenderer.HORIZONTAL_ALIGNMENT.get();
 	}
 
 	private static final class DefaultValues implements Function<Object, Object> {

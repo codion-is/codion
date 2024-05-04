@@ -28,8 +28,8 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.component.table.FilteredTableColumn;
-import is.codion.swing.common.ui.component.table.FilteredTableColumnModel;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
@@ -106,7 +106,7 @@ public class EntityTablePanelTest {
 	void columnModel() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		FilteredTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(Detail.STRING);
+		FilterTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(Detail.STRING);
 		assertEquals(Detail.STRING, column.getIdentifier());
 	}
 
@@ -136,7 +136,7 @@ public class EntityTablePanelTest {
 		};
 		EntityTablePanel tablePanel = new EntityTablePanel(testModel);
 		tablePanel.clearPreferences();
-		FilteredTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
+		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
 		assertTrue(columnModel.visible(Detail.STRING).get());
 
 		columnModel.visible(Detail.STRING).set(false);

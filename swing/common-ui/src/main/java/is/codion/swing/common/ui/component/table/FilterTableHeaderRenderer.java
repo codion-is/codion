@@ -34,16 +34,16 @@ import java.awt.Graphics;
 
 import static javax.swing.BorderFactory.createCompoundBorder;
 
-final class FilteredTableHeaderRenderer<R, C> implements TableCellRenderer {
+final class FilterTableHeaderRenderer<R, C> implements TableCellRenderer {
 
 	private static final int SORT_ICON_SIZE = 5;
 
-	private final FilteredTable<R, C> filteredTable;
+	private final FilterTable<R, C> filterTable;
 	private final TableCellRenderer wrappedRenderer;
 	private final TableCellRenderer columnCellRenderer;
 
-	FilteredTableHeaderRenderer(FilteredTable<R, C> filteredTable, FilteredTableColumn<C> column) {
-		this.filteredTable = filteredTable;
+	FilterTableHeaderRenderer(FilterTable<R, C> filterTable, FilterTableColumn<C> column) {
+		this.filterTable = filterTable;
 		this.wrappedRenderer = column.getHeaderRenderer();
 		this.columnCellRenderer = column.getCellRenderer();
 	}
@@ -52,14 +52,14 @@ final class FilteredTableHeaderRenderer<R, C> implements TableCellRenderer {
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																								 boolean hasFocus, int row, int column) {
 		Component component = wrappedRenderer == null ?
-						filteredTable.getTableHeader().getDefaultRenderer()
-										.getTableCellRendererComponent(filteredTable, value, isSelected, hasFocus, row, column) :
-						wrappedRenderer.getTableCellRendererComponent(filteredTable, value, isSelected, hasFocus, row, column);
+						filterTable.getTableHeader().getDefaultRenderer()
+										.getTableCellRendererComponent(filterTable, value, isSelected, hasFocus, row, column) :
+						wrappedRenderer.getTableCellRendererComponent(filterTable, value, isSelected, hasFocus, row, column);
 		Font defaultFont = component.getFont();
 		if (component instanceof JLabel) {
 			JLabel label = (JLabel) component;
-			FilteredTableColumn<C> tableColumn = filteredTable.getColumnModel().getColumn(column);
-			ColumnConditionModel<?, ?> filterModel = filteredTable.getModel().filterModel().conditionModels().get(tableColumn.getIdentifier());
+			FilterTableColumn<C> tableColumn = filterTable.getColumnModel().getColumn(column);
+			ColumnConditionModel<?, ?> filterModel = filterTable.getModel().filterModel().conditionModels().get(tableColumn.getIdentifier());
 			label.setFont((filterModel != null && filterModel.enabled().get()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
 			label.setIcon(sortArrowIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
 			label.setIconTextGap(0);
@@ -69,8 +69,8 @@ final class FilteredTableHeaderRenderer<R, C> implements TableCellRenderer {
 			else if (columnCellRenderer instanceof AbstractButton) {
 				label.setHorizontalAlignment(((AbstractButton) columnCellRenderer).getHorizontalAlignment());
 			}
-			if (columnCellRenderer instanceof DefaultFilteredTableCellRenderer) {
-				Border tableCellBorder = ((DefaultFilteredTableCellRenderer<?, ?>) columnCellRenderer).settings().defaultCellBorder();
+			if (columnCellRenderer instanceof DefaultFilterTableCellRenderer) {
+				Border tableCellBorder = ((DefaultFilterTableCellRenderer<?, ?>) columnCellRenderer).settings().defaultCellBorder();
 				label.setBorder(label.getBorder() == null ? tableCellBorder : createCompoundBorder(label.getBorder(), tableCellBorder));
 			}
 		}
@@ -79,13 +79,13 @@ final class FilteredTableHeaderRenderer<R, C> implements TableCellRenderer {
 	}
 
 	private Icon sortArrowIcon(C columnIdentifier, int iconSizePixels) {
-		SortOrder sortOrder = filteredTable.sortModel().sortOrder(columnIdentifier);
+		SortOrder sortOrder = filterTable.sortModel().sortOrder(columnIdentifier);
 		if (sortOrder == SortOrder.UNSORTED) {
 			return null;
 		}
 
 		return new Arrow(sortOrder == SortOrder.DESCENDING, iconSizePixels,
-						filteredTable.sortModel().sortPriority(columnIdentifier));
+						filterTable.sortModel().sortPriority(columnIdentifier));
 	}
 
 	private static final class Arrow implements Icon {

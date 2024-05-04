@@ -21,8 +21,8 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.table.FilteredTable;
-import is.codion.swing.common.ui.component.table.FilteredTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
@@ -54,7 +54,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 public final class ClientMonitorPanel extends JPanel {
 
 	private final ClientMonitor model;
-	private final FilteredTable<RemoteClient, Id> clientInstanceTable;
+	private final FilterTable<RemoteClient, Id> clientInstanceTable;
 	private final JScrollPane filterScrollPane;
 	private final JScrollPane clientInstanceScroller;
 	private final State advancedFilterState = State.builder()
@@ -67,7 +67,7 @@ public final class ClientMonitorPanel extends JPanel {
 	 */
 	public ClientMonitorPanel(ClientMonitor model) {
 		this.model = model;
-		clientInstanceTable = FilteredTable.builder(model.clientInstanceTableModel(), createColumns())
+		clientInstanceTable = FilterTable.builder(model.clientInstanceTableModel(), createColumns())
 						.popupMenu(this::createPopupMenu)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.build();
@@ -132,7 +132,7 @@ public final class ClientMonitorPanel extends JPanel {
 		add(splitPane, BorderLayout.CENTER);
 	}
 
-	private JPopupMenu createPopupMenu(FilteredTable<RemoteClient, Id> table) {
+	private JPopupMenu createPopupMenu(FilterTable<RemoteClient, Id> table) {
 		return menu(Controls.builder()
 						.control(Control.builder(this::disconnect)
 										.name("Disconnect")
@@ -168,33 +168,33 @@ public final class ClientMonitorPanel extends JPanel {
 						.build();
 	}
 
-	private static List<FilteredTableColumn<Id>> createColumns() {
+	private static List<FilterTableColumn<Id>> createColumns() {
 		return asList(
-						FilteredTableColumn.builder(USER)
+						FilterTableColumn.builder(USER)
 										.headerValue("User")
 										.build(),
-						FilteredTableColumn.builder(CLIENT_HOST)
+						FilterTableColumn.builder(CLIENT_HOST)
 										.headerValue("Host")
 										.build(),
-						FilteredTableColumn.builder(CLIENT_TYPE)
+						FilterTableColumn.builder(CLIENT_TYPE)
 										.headerValue("Type")
 										.build(),
-						FilteredTableColumn.builder(CLIENT_VERSION)
+						FilterTableColumn.builder(CLIENT_VERSION)
 										.headerValue("Version")
 										.build(),
-						FilteredTableColumn.builder(CODION_VERSION)
+						FilterTableColumn.builder(CODION_VERSION)
 										.headerValue("Framework version")
 										.build(),
-						FilteredTableColumn.builder(CLIENT_ID)
+						FilterTableColumn.builder(CLIENT_ID)
 										.headerValue("Id")
 										.build(),
-						FilteredTableColumn.builder(LOCALE)
+						FilterTableColumn.builder(LOCALE)
 										.headerValue("Locale")
 										.build(),
-						FilteredTableColumn.builder(TIMEZONE)
+						FilterTableColumn.builder(TIMEZONE)
 										.headerValue("Timezone")
 										.build(),
-						FilteredTableColumn.builder(CREATION_TIME)
+						FilterTableColumn.builder(CREATION_TIME)
 										.headerValue("Created")
 										.build()
 		);

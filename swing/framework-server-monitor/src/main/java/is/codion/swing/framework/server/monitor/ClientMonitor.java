@@ -20,8 +20,8 @@ package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.server.EntityServerAdmin;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
@@ -40,8 +40,8 @@ public final class ClientMonitor {
 
 	private final EntityServerAdmin server;
 
-	private final FilteredTableModel<RemoteClient, RemoteClientColumns.Id> clientInstanceTableModel =
-					FilteredTableModel.builder(new RemoteClientColumns())
+	private final FilterTableModel<RemoteClient, RemoteClientColumns.Id> clientInstanceTableModel =
+					FilterTableModel.builder(new RemoteClientColumns())
 									.items(new RemoteClientItems())
 									.build();
 
@@ -64,7 +64,7 @@ public final class ClientMonitor {
 	/**
 	 * @return the TableModel for displaying the client instances
 	 */
-	public FilteredTableModel<RemoteClient, RemoteClientColumns.Id> clientInstanceTableModel() {
+	public FilterTableModel<RemoteClient, RemoteClientColumns.Id> clientInstanceTableModel() {
 		return clientInstanceTableModel;
 	}
 

@@ -18,37 +18,37 @@
  */
 package is.codion.manual.swing.common.ui.component.table;
 
-import is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.ui.component.table.FilteredTable;
-import is.codion.swing.common.ui.component.table.FilteredTableColumn;
-import is.codion.swing.common.ui.component.table.FilteredTableSearchModel;
+import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.TableRow;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTableSearchModel;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JTable;
 import java.util.List;
 
-import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.INTEGER_COLUMN;
-import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.STRING_COLUMN;
-import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.createFilteredTableModel;
+import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.TableRow.INTEGER_COLUMN;
+import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.TableRow.STRING_COLUMN;
+import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.createFilterTableModel;
 import static java.util.Arrays.asList;
 
-final class FilteredTableDemo {
+final class FilterTableDemo {
 
 	static void demo() {
-		// tag::filteredTable[]
-		// See FilteredTableModel example
-		FilteredTableModel<TableRow, Integer> tableModel = createFilteredTableModel();
+		// tag::filterTable[]
+		// See FilterTableModel example
+		FilterTableModel<TableRow, Integer> tableModel = createFilterTableModel();
 
-		List<FilteredTableColumn<Integer>> columns = asList(
-						FilteredTableColumn.builder(STRING_COLUMN)
+		List<FilterTableColumn<Integer>> columns = asList(
+						FilterTableColumn.builder(STRING_COLUMN)
 										.headerValue("String")
 										.build(),
-						FilteredTableColumn.builder(INTEGER_COLUMN)
+						FilterTableColumn.builder(INTEGER_COLUMN)
 										.headerValue("Integer")
 										.build());
 
-		FilteredTable<TableRow, Integer> filteredTable = FilteredTable.builder(tableModel, columns)
+		FilterTable<TableRow, Integer> filterTable = FilterTable.builder(tableModel, columns)
 						.doubleClickAction(Control.control(() ->
 										tableModel.selectionModel().selectedItem()
 														.ifPresent(System.out::println)))
@@ -56,11 +56,11 @@ final class FilteredTableDemo {
 						.build();
 
 		// Search for the value "43" in the table
-		FilteredTableSearchModel searchModel = filteredTable.searchModel();
+		FilterTableSearchModel searchModel = filterTable.searchModel();
 		searchModel.searchPredicate().set(value -> value.equals("43"));
 
-		FilteredTableSearchModel.RowColumn searchResult = searchModel.currentResult().get();
+		FilterTableSearchModel.RowColumn searchResult = searchModel.currentResult().get();
 		System.out.println(searchResult); // row: 1, column: 1
-		// end::filteredTable[]
+		// end::filterTable[]
 	}
 }

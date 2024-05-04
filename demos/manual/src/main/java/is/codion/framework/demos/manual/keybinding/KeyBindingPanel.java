@@ -21,8 +21,8 @@ package is.codion.framework.demos.manual.keybinding;
 import is.codion.framework.demos.manual.keybinding.KeyBindingModel.KeyBinding;
 import is.codion.framework.demos.manual.keybinding.KeyBindingModel.KeyBindingColumns.Id;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.table.FilteredTable;
-import is.codion.swing.common.ui.component.table.FilteredTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
@@ -56,13 +56,13 @@ public final class KeyBindingPanel extends JPanel {
 
 	private final LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(true);
 	private final KeyBindingModel keyBindingModel;
-	private final FilteredTable<KeyBinding, Id> table;
+	private final FilterTable<KeyBinding, Id> table;
 	private final JComboBox<String> componentComboBox;
 
 	public KeyBindingPanel() {
 		super(borderLayout());
 		this.keyBindingModel = new KeyBindingModel(lookAndFeelComboBox.getModel());
-		this.table = FilteredTable.builder(keyBindingModel.tableModel(), createColumns()).build();
+		this.table = FilterTable.builder(keyBindingModel.tableModel(), createColumns()).build();
 		this.componentComboBox = comboBox(keyBindingModel.componentComboBoxModel())
 						.preferredHeight(preferredTextFieldHeight())
 						.preferredWidth(200)
@@ -84,17 +84,17 @@ public final class KeyBindingPanel extends JPanel {
 		add(table.searchField(), BorderLayout.SOUTH);
 	}
 
-	private static List<FilteredTableColumn<Id>> createColumns() {
-		FilteredTableColumn<Id> action = FilteredTableColumn.builder(ACTION_COLUMN)
+	private static List<FilterTableColumn<Id>> createColumns() {
+		FilterTableColumn<Id> action = FilterTableColumn.builder(ACTION_COLUMN)
 						.headerValue("Action")
 						.build();
-		FilteredTableColumn<Id> whenFocused = FilteredTableColumn.builder(WHEN_FOCUSED_COLUMN)
+		FilterTableColumn<Id> whenFocused = FilterTableColumn.builder(WHEN_FOCUSED_COLUMN)
 						.headerValue("When Focused")
 						.build();
-		FilteredTableColumn<Id> whenInFocusedWindow = FilteredTableColumn.builder(WHEN_IN_FOCUSED_WINDOW_COLUMN)
+		FilterTableColumn<Id> whenInFocusedWindow = FilterTableColumn.builder(WHEN_IN_FOCUSED_WINDOW_COLUMN)
 						.headerValue("When in Focused Window")
 						.build();
-		FilteredTableColumn<Id> whenAncestor = FilteredTableColumn.builder(WHEN_ANCESTOR_COLUMN)
+		FilterTableColumn<Id> whenAncestor = FilterTableColumn.builder(WHEN_ANCESTOR_COLUMN)
 						.headerValue("When Ancestor")
 						.build();
 

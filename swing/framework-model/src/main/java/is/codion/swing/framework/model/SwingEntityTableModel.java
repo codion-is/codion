@@ -44,8 +44,8 @@ import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -76,9 +76,9 @@ import static java.util.stream.Collectors.*;
 /**
  * A TableModel implementation for displaying and working with entities.
  */
-public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditModel>, FilteredTableModel<Entity, Attribute<?>> {
+public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditModel>, FilterTableModel<Entity, Attribute<?>> {
 
-	private final FilteredTableModel<Entity, Attribute<?>> tableModel;
+	private final FilterTableModel<Entity, Attribute<?>> tableModel;
 	private final SwingEntityEditModel editModel;
 	private final EntityTableConditionModel<Attribute<?>> conditionModel;
 	private final ValueSet<Attribute<?>> attributes = ValueSet.<Attribute<?>>builder()
@@ -568,7 +568,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final FilteredTableSelectionModel<Entity> selectionModel() {
+	public final FilterTableSelectionModel<Entity> selectionModel() {
 		return tableModel.selectionModel();
 	}
 
@@ -905,8 +905,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 	}
 
-	private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition) {
-		return FilteredTableModel.builder(new EntityTableColumns(entityDefinition))
+	private FilterTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition) {
+		return FilterTableModel.builder(new EntityTableColumns(entityDefinition))
 						.filterModelFactory(new EntityFilterModelFactory(entityDefinition))
 						.items(new EntityItems(this))
 						.validator(new EntityItemValidator(entityDefinition.entityType()))

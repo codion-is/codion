@@ -24,16 +24,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultFilteredTableColumnModelTest {
+public class DefaultFilterTableColumnModelTest {
 
 	@Test
 	void testModel() {
-		FilteredTableColumnModel<Integer> testModel = createTestModel();
+		FilterTableColumnModel<Integer> testModel = createTestModel();
 		Collection<Object> hidden = new ArrayList<>();
 		Collection<Object> shown = new ArrayList<>();
 		Consumer<Integer> hideConsumer = hidden::add;
@@ -59,29 +58,29 @@ public class DefaultFilteredTableColumnModelTest {
 
 	@Test
 	void tableColumnNotFound() {
-		FilteredTableColumnModel<Integer> testModel = createTestModel();
+		FilterTableColumnModel<Integer> testModel = createTestModel();
 		assertThrows(IllegalArgumentException.class, () -> testModel.column(42));
 	}
 
 	@Test
 	void constructorNullColumns() {
-		assertThrows(NullPointerException.class, () -> new DefaultFilteredTableColumnModel<>(null));
+		assertThrows(NullPointerException.class, () -> new DefaultFilterTableColumnModel<>(null));
 	}
 
 	@Test
 	void constructorNoColumns() {
-		assertThrows(IllegalArgumentException.class, () -> new DefaultFilteredTableColumnModel<>(new ArrayList<>()));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultFilterTableColumnModel<>(new ArrayList<>()));
 	}
 
 	@Test
 	void setColumns() {
-		FilteredTableColumn<Integer> column0 = filteredTableColumn(0);
-		FilteredTableColumn<Integer> column1 = filteredTableColumn(1);
-		FilteredTableColumn<Integer> column2 = filteredTableColumn(2);
-		FilteredTableColumn<Integer> column3 = filteredTableColumn(3);
+		FilterTableColumn<Integer> column0 = FilterTableColumn.filterTableColumn(0);
+		FilterTableColumn<Integer> column1 = FilterTableColumn.filterTableColumn(1);
+		FilterTableColumn<Integer> column2 = FilterTableColumn.filterTableColumn(2);
+		FilterTableColumn<Integer> column3 = FilterTableColumn.filterTableColumn(3);
 
-		DefaultFilteredTableColumnModel<Integer> columnModel =
-						new DefaultFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
+		DefaultFilterTableColumnModel<Integer> columnModel =
+						new DefaultFilterTableColumnModel<>(asList(column0, column1, column2, column3));
 
 		columnModel.setVisibleColumns(1, 3);
 		assertTrue(columnModel.visible(1).get());
@@ -123,13 +122,13 @@ public class DefaultFilteredTableColumnModelTest {
 
 	@Test
 	void lock() {
-		FilteredTableColumn<Integer> column0 = filteredTableColumn(0);
-		FilteredTableColumn<Integer> column1 = filteredTableColumn(1);
-		FilteredTableColumn<Integer> column2 = filteredTableColumn(2);
-		FilteredTableColumn<Integer> column3 = filteredTableColumn(3);
+		FilterTableColumn<Integer> column0 = FilterTableColumn.filterTableColumn(0);
+		FilterTableColumn<Integer> column1 = FilterTableColumn.filterTableColumn(1);
+		FilterTableColumn<Integer> column2 = FilterTableColumn.filterTableColumn(2);
+		FilterTableColumn<Integer> column3 = FilterTableColumn.filterTableColumn(3);
 
-		FilteredTableColumnModel<Integer> columnModel =
-						new DefaultFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
+		FilterTableColumnModel<Integer> columnModel =
+						new DefaultFilterTableColumnModel<>(asList(column0, column1, column2, column3));
 
 		columnModel.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> columnModel.visible(0).set(false));
@@ -147,12 +146,12 @@ public class DefaultFilteredTableColumnModelTest {
 
 	@Test
 	void visibleColumns() {
-		FilteredTableColumnModel<Integer> testModel = createTestModel();
+		FilterTableColumnModel<Integer> testModel = createTestModel();
 		assertThrows(IllegalArgumentException.class, () -> testModel.setVisibleColumns(0, 1));
 		assertThrows(IllegalArgumentException.class, () -> testModel.visible(1));
 	}
 
-	private static FilteredTableColumnModel<Integer> createTestModel() {
-		return new DefaultFilteredTableColumnModel<>(singletonList(filteredTableColumn(0)));
+	private static FilterTableColumnModel<Integer> createTestModel() {
+		return new DefaultFilterTableColumnModel<>(singletonList(FilterTableColumn.filterTableColumn(0)));
 	}
 }

@@ -20,9 +20,9 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Builder;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRendererFactory;
-import is.codion.swing.common.ui.component.table.FilteredTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Builder;
+import is.codion.swing.common.ui.component.table.FilterTableCellRendererFactory;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.table.TableCellRenderer;
@@ -30,9 +30,9 @@ import javax.swing.table.TableCellRenderer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A {@link FilteredTableCellRendererFactory} implementation.
+ * A {@link FilterTableCellRendererFactory} implementation.
  */
-public class EntityTableCellRendererFactory implements FilteredTableCellRendererFactory<Attribute<?>> {
+public class EntityTableCellRendererFactory implements FilterTableCellRendererFactory<Attribute<?>> {
 
 	private final SwingEntityTableModel tableModel;
 
@@ -44,7 +44,7 @@ public class EntityTableCellRendererFactory implements FilteredTableCellRenderer
 	}
 
 	@Override
-	public TableCellRenderer tableCellRenderer(FilteredTableColumn<Attribute<?>> column) {
+	public TableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
 		return builder(column).build();
 	}
 
@@ -52,7 +52,7 @@ public class EntityTableCellRendererFactory implements FilteredTableCellRenderer
 	 * @param column the column
 	 * @return a builder for a table cell renderer
 	 */
-	protected Builder<Entity, Attribute<?>> builder(FilteredTableColumn<Attribute<?>> column) {
+	protected Builder<Entity, Attribute<?>> builder(FilterTableColumn<Attribute<?>> column) {
 		return EntityTableCellRenderer.builder(tableModel, column.getIdentifier());
 	}
 

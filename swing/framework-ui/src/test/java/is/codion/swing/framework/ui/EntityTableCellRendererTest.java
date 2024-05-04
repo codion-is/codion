@@ -21,7 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
@@ -44,7 +44,7 @@ public class EntityTableCellRendererTest {
 	void test() {
 		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
 		tablePanel.tableModel().refresh();
-		FilteredTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.tableModel(), Employee.NAME).build();
+		FilterTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.tableModel(), Employee.NAME).build();
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, true, 0, 0);

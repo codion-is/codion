@@ -20,18 +20,17 @@ package is.codion.swing.common.ui.component.table;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.swing.common.ui.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Collections.singletonList;
 
 public final class ColumnSelectionPanelTest {
 
 	@Test
 	void test() {
-		FilteredTableColumn<Integer> column = filteredTableColumn(0);
+		FilterTableColumn<Integer> column = FilterTableColumn.filterTableColumn(0);
 		column.setHeaderValue("Testing");
 
-		FilteredTableColumnModel<Integer> columnModel =
-						new DefaultFilteredTableColumnModel<>(singletonList(column));
+		FilterTableColumnModel<Integer> columnModel =
+						new DefaultFilterTableColumnModel<>(singletonList(column));
 
 		new ColumnSelectionPanel<>(columnModel);
 	}

@@ -32,8 +32,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.model.component.table.DefaultFilteredTableModel.COMPARABLE_COMPARATOR;
-import static is.codion.swing.common.model.component.table.DefaultFilteredTableModel.STRING_COMPARATOR;
+import static is.codion.swing.common.model.component.table.DefaultFilterTableModel.COMPARABLE_COMPARATOR;
+import static is.codion.swing.common.model.component.table.DefaultFilterTableModel.STRING_COMPARATOR;
 
 /**
  * Specifies a table model supporting selection as well as filtering
@@ -41,7 +41,7 @@ import static is.codion.swing.common.model.component.table.DefaultFilteredTableM
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  * @see #builder(Columns)
  */
-public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
+public interface FilterTableModel<R, C> extends TableModel, FilteredModel<R> {
 
 	/**
 	 * Specifies how the data in a table model is refreshed.
@@ -51,7 +51,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 		 * Clear the table model before populating it with the refreshed data.
 		 * This causes an empty selection event to be triggered, since the
 		 * selection is cleared when the table model is cleared.
-		 * @see FilteredTableSelectionModel#selectionEvent()
+		 * @see FilterTableSelectionModel#selectionEvent()
 		 */
 		CLEAR,
 		/**
@@ -227,7 +227,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	/**
 	 * @return the selection model used by this table model
 	 */
-	FilteredTableSelectionModel<R> selectionModel();
+	FilterTableSelectionModel<R> selectionModel();
 
 	/**
 	 * @return the filter model used by this table model
@@ -288,11 +288,11 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	 * @throws NullPointerException in case {@code columnValues} is null
 	 */
 	static <R, C> Builder<R, C> builder(Columns<R, C> columns) {
-		return new DefaultFilteredTableModel.DefaultBuilder<>(columns);
+		return new DefaultFilterTableModel.DefaultBuilder<>(columns);
 	}
 
 	/**
-	 * A builder for a {@link FilteredTableModel}.
+	 * A builder for a {@link FilterTableModel}.
 	 * @param <R> the row type
 	 * @param <C> the column identifer type
 	 */
@@ -320,7 +320,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 		/**
 		 * @param refreshStrategy the refresh strategy to use
 		 * @return this builder instance
-		 * @see FilteredTableModel#refresh()
+		 * @see FilterTableModel#refresh()
 		 */
 		Builder<R, C> refreshStrategy(RefreshStrategy refreshStrategy);
 
@@ -331,9 +331,9 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 		Builder<R, C> asyncRefresh(boolean asyncRefresh);
 
 		/**
-		 * @return a new {@link FilteredTableModel} instance.
+		 * @return a new {@link FilterTableModel} instance.
 		 */
-		FilteredTableModel<R, C> build();
+		FilterTableModel<R, C> build();
 	}
 
 	/**

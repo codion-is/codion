@@ -21,10 +21,10 @@ package is.codion.swing.framework.ui;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRendererBuilder;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColors;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Settings;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.ui.component.table.DefaultFilterTableCellRendererBuilder;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.CellColors;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Settings;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.awt.Color;
@@ -33,7 +33,7 @@ import java.util.function.Function;
 import static is.codion.swing.common.ui.Colors.darker;
 import static java.util.Objects.requireNonNull;
 
-final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRendererBuilder<Entity, Attribute<?>> {
+final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendererBuilder<Entity, Attribute<?>> {
 
 	EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
 		this(requireNonNull(tableModel), tableModel.entityDefinition().attributes().definition(attribute));
@@ -69,7 +69,7 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
 		}
 
 		@Override
-		protected Color backgroundColorShaded(FilteredTableModel<?, Attribute<?>> tableModel, int row,
+		protected Color backgroundColorShaded(FilterTableModel<?, Attribute<?>> tableModel, int row,
 																					Attribute<?> columnIdentifier, Color cellBackgroundColor) {
 			boolean conditionEnabled = ((SwingEntityTableModel) tableModel).conditionModel().enabled(columnIdentifier);
 			boolean filterEnabled = tableModel.filterModel().enabled(columnIdentifier);

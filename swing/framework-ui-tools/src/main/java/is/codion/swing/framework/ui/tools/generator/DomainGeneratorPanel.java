@@ -23,8 +23,8 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.table.FilteredTable;
-import is.codion.swing.common.ui.component.table.FilteredTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -82,8 +82,8 @@ public final class DomainGeneratorPanel extends JPanel {
 						.name("Populate")
 						.enabled(model.schemaModel().selectionModel().selectionNotEmpty())
 						.build();
-		FilteredTable<MetaDataSchema, SchemaColumns.Id> schemaTable =
-						FilteredTable.builder(model.schemaModel(), createSchemaColumns())
+		FilterTable<MetaDataSchema, SchemaColumns.Id> schemaTable =
+						FilterTable.builder(model.schemaModel(), createSchemaColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.doubleClickAction(populateSchemaControl)
 										.keyEvent(KeyEvents.builder(VK_ENTER)
@@ -99,10 +99,10 @@ public final class DomainGeneratorPanel extends JPanel {
 										.build();
 		schemaTable.sortModel().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING);
 
-		FilteredTable<DefinitionRow, DefinitionColumns.Id> domainTable =
-						FilteredTable.builder(model.definitionModel(), createDefinitionColumns())
+		FilterTable<DefinitionRow, DefinitionColumns.Id> domainTable =
+						FilterTable.builder(model.definitionModel(), createDefinitionColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-										.popupMenuControl(FilteredTable::createAutoResizeModeControl)
+										.popupMenuControl(FilterTable::createAutoResizeModeControl)
 										.build();
 
 		JSplitPane schemaTableSplitPane = splitPane()
@@ -184,28 +184,28 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 	}
 
-	private static List<FilteredTableColumn<SchemaColumns.Id>> createSchemaColumns() {
-			FilteredTableColumn<SchemaColumns.Id> catalogColumn = FilteredTableColumn.builder(SchemaColumns.Id.CATALOG)
+	private static List<FilterTableColumn<SchemaColumns.Id>> createSchemaColumns() {
+			FilterTableColumn<SchemaColumns.Id> catalogColumn = FilterTableColumn.builder(SchemaColumns.Id.CATALOG)
 							.headerValue("Catalog")
 							.build();
-			FilteredTableColumn<SchemaColumns.Id> schemaColumn = FilteredTableColumn.builder(SchemaColumns.Id.SCHEMA)
+			FilterTableColumn<SchemaColumns.Id> schemaColumn = FilterTableColumn.builder(SchemaColumns.Id.SCHEMA)
 							.headerValue("Schema")
 							.build();
-			FilteredTableColumn<SchemaColumns.Id> populatedColumn = FilteredTableColumn.builder(SchemaColumns.Id.POPULATED)
+			FilterTableColumn<SchemaColumns.Id> populatedColumn = FilterTableColumn.builder(SchemaColumns.Id.POPULATED)
 							.headerValue("Populated")
 							.build();
 
 			return asList(catalogColumn, schemaColumn, populatedColumn);
 	}
 
-	private static List<FilteredTableColumn<DefinitionColumns.Id>> createDefinitionColumns() {
-			FilteredTableColumn<DefinitionColumns.Id> domainColumn = FilteredTableColumn.builder(DefinitionColumns.Id.DOMAIN)
+	private static List<FilterTableColumn<DefinitionColumns.Id>> createDefinitionColumns() {
+			FilterTableColumn<DefinitionColumns.Id> domainColumn = FilterTableColumn.builder(DefinitionColumns.Id.DOMAIN)
 							.headerValue("Domain")
 							.build();
-			FilteredTableColumn<DefinitionColumns.Id> entityTypeColumn = FilteredTableColumn.builder(DefinitionColumns.Id.ENTITY)
+			FilterTableColumn<DefinitionColumns.Id> entityTypeColumn = FilterTableColumn.builder(DefinitionColumns.Id.ENTITY)
 							.headerValue("Entity")
 							.build();
-			FilteredTableColumn<DefinitionColumns.Id> typeColumn = FilteredTableColumn.builder(DefinitionColumns.Id.TABLE_TYPE)
+			FilterTableColumn<DefinitionColumns.Id> typeColumn = FilterTableColumn.builder(DefinitionColumns.Id.TABLE_TYPE)
 							.headerValue("Type")
 							.preferredWidth(120)
 							.build();

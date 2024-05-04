@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.Configuration;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.property.PropertyValue;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -35,9 +35,9 @@ import static is.codion.swing.common.ui.Colors.darker;
 import static javax.swing.BorderFactory.*;
 
 /**
- * Provides TableCellRenderer implementations for FilteredTable via {@link #builder(FilteredTableModel, Object, Class)}.
+ * Provides TableCellRenderer implementations for FilterTable via {@link #builder(FilterTableModel, Object, Class)}.
  */
-public interface FilteredTableCellRenderer extends TableCellRenderer {
+public interface FilterTableCellRenderer extends TableCellRenderer {
 
 	/**
 	 * The default left padding for table cells.<br>
@@ -45,7 +45,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	 * Default value: 0
 	 */
 	PropertyValue<Integer> TABLE_CELL_LEFT_PADDING =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.tableCellLeftPadding", 0);
+					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableCellLeftPadding", 0);
 
 	/**
 	 * The default right padding for table cells.<br>
@@ -53,7 +53,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	 * Default value: 5
 	 */
 	PropertyValue<Integer> TABLE_CELL_RIGHT_PADDING =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.tableCellRightPadding", 5);
+					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableCellRightPadding", 5);
 
 	/**
 	 * The default horizontal alignment for numerical columns.<br>
@@ -61,7 +61,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	 * Default value: {@link SwingConstants#RIGHT}
 	 */
 	PropertyValue<Integer> NUMERICAL_HORIZONTAL_ALIGNMENT =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.tableNumericalHorizontalAlignment", SwingConstants.RIGHT);
+					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableNumericalHorizontalAlignment", SwingConstants.RIGHT);
 
 	/**
 	 * The default horizontal alignment for temporal columns.<br>
@@ -69,7 +69,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	 * Default value: {@link SwingConstants#RIGHT}
 	 */
 	PropertyValue<Integer> TEMPORAL_HORIZONTAL_ALIGNMENT =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.tableTemporalHorizontalAlignment", SwingConstants.RIGHT);
+					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableTemporalHorizontalAlignment", SwingConstants.RIGHT);
 
 	/**
 	 * The default horizontal alignment for boolean columns.<br>
@@ -77,7 +77,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	 * Default value: {@link SwingConstants#CENTER}
 	 */
 	PropertyValue<Integer> BOOLEAN_HORIZONTAL_ALIGNMENT =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.tableBooleanHorizontalAlignment", SwingConstants.CENTER);
+					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableBooleanHorizontalAlignment", SwingConstants.CENTER);
 
 	/**
 	 * The default horizontal alignment.<br>
@@ -85,7 +85,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	 * Default value: {@link SwingConstants#LEADING}
 	 */
 	PropertyValue<Integer> HORIZONTAL_ALIGNMENT =
-					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.tableHorizontalAlignment", SwingConstants.LEADING);
+					Configuration.integerValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.tableHorizontalAlignment", SwingConstants.LEADING);
 
 	/**
 	 * Specifies whether alternate row coloring is enabled by default.<br>
@@ -93,7 +93,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	 * Default value: true
 	 */
 	PropertyValue<Boolean> ALTERNATE_ROW_COLORING =
-					Configuration.booleanValue("is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.alternateRowColoring", true);
+					Configuration.booleanValue("is.codion.swing.common.ui.component.table.FilterTableCellRenderer.alternateRowColoring", true);
 
 	/**
 	 * @return true if column shading is enabled
@@ -111,16 +111,16 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	int horizontalAlignment();
 
 	/**
-	 * Instantiates a new {@link FilteredTableCellRenderer.Builder}.
+	 * Instantiates a new {@link FilterTableCellRenderer.Builder}.
 	 * @param <R> the table row type
 	 * @param <C> the column identifier type
 	 * @param tableModel the table model providing the data to render
 	 * @param columnIdentifier the column identifier
 	 * @param columnClass the column class
-	 * @return a new {@link FilteredTableCellRenderer.Builder} instance
+	 * @return a new {@link FilterTableCellRenderer.Builder} instance
 	 */
-	static <R, C> Builder<R, C> builder(FilteredTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass) {
-		return new DefaultFilteredTableCellRendererBuilder<>(tableModel, columnIdentifier, columnClass);
+	static <R, C> Builder<R, C> builder(FilterTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass) {
+		return new DefaultFilterTableCellRendererBuilder<>(tableModel, columnIdentifier, columnClass);
 	}
 
 	/**
@@ -153,7 +153,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	}
 
 	/**
-	 * Builds a {@link FilteredTableCellRenderer}
+	 * Builds a {@link FilterTableCellRenderer}
 	 */
 	interface Builder<R, C> {
 
@@ -206,13 +206,13 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 		Builder<R, C> cellColors(CellColors<C> cellColors);
 
 		/**
-		 * @return a new {@link FilteredTableCellRenderer} instance based on this builder
+		 * @return a new {@link FilterTableCellRenderer} instance based on this builder
 		 */
-		FilteredTableCellRenderer build();
+		FilterTableCellRenderer build();
 	}
 
 	/**
-	 * Settings for a {@link FilteredTableCellRenderer}
+	 * Settings for a {@link FilterTableCellRenderer}
 	 * @param <C> the column identifier type
 	 */
 	class Settings<C> {
@@ -287,7 +287,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 			focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
 		}
 
-		protected final Color backgroundColor(FilteredTableModel<?, C> tableModel, int row, C columnIdentifier, boolean columnShading,
+		protected final Color backgroundColor(FilterTableModel<?, C> tableModel, int row, C columnIdentifier, boolean columnShading,
 																					boolean selected, Color cellBackgroundColor) {
 			cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
 			if (columnShading) {
@@ -308,7 +308,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 		 * @param cellBackgroundColor the cell specific background color, if any
 		 * @return a shaded background color
 		 */
-		protected Color backgroundColorShaded(FilteredTableModel<?, C> tableModel, int row, C columnIdentifier, Color cellBackgroundColor) {
+		protected Color backgroundColorShaded(FilterTableModel<?, C> tableModel, int row, C columnIdentifier, Color cellBackgroundColor) {
 			ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(columnIdentifier);
 			boolean filterEnabled = filterModel != null && filterModel.enabled().get();
 			if (filterEnabled) {

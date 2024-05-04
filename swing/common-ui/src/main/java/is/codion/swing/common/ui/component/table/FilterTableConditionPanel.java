@@ -41,27 +41,27 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
+import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Contains the filter panels.
  * @param <C> the column identifier type
- * @see #filteredTableConditionPanel(TableConditionModel, FilteredTableColumnModel, ColumnConditionPanel.Factory)
+ * @see #filterTableConditionPanel(TableConditionModel, FilterTableColumnModel, ColumnConditionPanel.Factory)
  */
-public final class FilteredTableConditionPanel<C> extends JPanel {
+public final class FilterTableConditionPanel<C> extends JPanel {
 
 	private final TableConditionModel<C> conditionModel;
-	private final FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
+	private final FilterTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
 	private final State advanced = State.builder()
 					.consumer(this::onAdvancedChanged)
 					.build();
 	private final Event<C> focusGainedEvent = Event.event();
 
-	private FilteredTableConditionPanel(TableConditionModel<C> conditionModel, FilteredTableColumnModel<C> columnModel,
-																			ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+	private FilterTableConditionPanel(TableConditionModel<C> conditionModel, FilterTableColumnModel<C> columnModel,
+																		ColumnConditionPanel.Factory<C> conditionPanelFactory) {
 		this.conditionModel = requireNonNull(conditionModel);
-		this.componentPanel = filteredTableColumnComponentPanel(requireNonNull(columnModel),
+		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel),
 						createConditionPanels(columnModel, requireNonNull(conditionPanelFactory)));
 		setLayout(new BorderLayout());
 		add(componentPanel, BorderLayout.CENTER);
@@ -116,12 +116,12 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 	 * @param conditionModel the condition model
 	 * @param columnModel the column model
 	 * @param conditionPanelFactory the condition panel factory
-	 * @return a new {@link FilteredTableConditionPanel}
+	 * @return a new {@link FilterTableConditionPanel}
 	 */
-	public static <C> FilteredTableConditionPanel<C> filteredTableConditionPanel(TableConditionModel<C> conditionModel,
-																																							 FilteredTableColumnModel<C> columnModel,
-																																							 ColumnConditionPanel.Factory<C> conditionPanelFactory) {
-		return new FilteredTableConditionPanel<>(conditionModel, columnModel, conditionPanelFactory);
+	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(TableConditionModel<C> conditionModel,
+																																					 FilterTableColumnModel<C> columnModel,
+																																					 ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+		return new FilterTableConditionPanel<>(conditionModel, columnModel, conditionPanelFactory);
 	}
 
 	private void clearConditions() {
@@ -134,7 +134,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 		componentPanel.components().forEach((column, panel) -> panel.advanced().set(advancedView));
 	}
 
-	private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(FilteredTableColumnModel<C> columnModel,
+	private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(FilterTableColumnModel<C> columnModel,
 																																	 ColumnConditionPanel.Factory<C> conditionPanelFactory) {
 		return columnModel.columns().stream()
 						.map(column -> conditionModel.conditionModels().get(column.getIdentifier()))
@@ -148,7 +148,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 
 	private Optional<ColumnConditionPanel<C, ?>> createConditionPanel(ColumnConditionPanel.Factory<C> conditionPanelFactory,
 																																		ColumnConditionModel<C, ?> columnConditionModel,
-																																		FilteredTableColumn<C> column) {
+																																		FilterTableColumn<C> column) {
 		return conditionPanelFactory.createConditionPanel(columnConditionModel)
 						.map(conditionPanel -> configureHorizontalAlignment(conditionPanel, column.getCellRenderer()));
 	}

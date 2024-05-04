@@ -43,17 +43,17 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.Delete;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
-import is.codion.swing.common.ui.component.table.FilteredTable;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilteredTableColumn;
-import is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel;
-import is.codion.swing.common.ui.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.ui.component.table.FilteredTableConditionPanel;
+import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel;
+import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
+import is.codion.swing.common.ui.component.table.FilterTableConditionPanel;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -114,8 +114,8 @@ import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
-import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
-import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
+import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
+import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
@@ -150,7 +150,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
  * |                                                    |
  * |                                                    |
  * |                                                    |
- * |                entityTable (FilteredTable)         |
+ * |                entityTable (FilterTable)         |
  * |                                                    |
  * |                                                    |
  * |                                                    |
@@ -446,7 +446,7 @@ public class EntityTablePanel extends JPanel {
 	private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.get());
 	private final State queryHiddenColumns = State.state(QUERY_HIDDEN_COLUMNS.get());
 
-	private final FilteredTable<Entity, Attribute<?>> table;
+	private final FilterTable<Entity, Attribute<?>> table;
 	private final EntityEditPanel editPanel;
 	private final Map<EntityTablePanelControl, Value<Control>> controls;
 	private final Controls.Config<EntityTablePanelControl> popupMenuConfiguration;
@@ -458,10 +458,10 @@ public class EntityTablePanel extends JPanel {
 	private final List<Controls> additionalToolBarControls = new ArrayList<>();
 	private StatusPanel statusPanel;
 	private JScrollPane tableScrollPane;
-	private FilteredTableConditionPanel<Attribute<?>> conditionPanel;
+	private FilterTableConditionPanel<Attribute<?>> conditionPanel;
 	private JScrollPane conditionPanelScrollPane;
 	private JScrollPane filterPanelScrollPane;
-	private FilteredTableColumnComponentPanel<Attribute<?>, JPanel> summaryPanel;
+	private FilterTableColumnComponentPanel<Attribute<?>, JPanel> summaryPanel;
 	private JScrollPane summaryPanelScrollPane;
 	private TablePanel tablePanel;
 
@@ -528,7 +528,7 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * @return the table
 	 */
-	public final FilteredTable<Entity, Attribute<?>> table() {
+	public final FilterTable<Entity, Attribute<?>> table() {
 		if (table == null) {
 			throw new IllegalStateException("The table is not initialized until after configuration has finished");
 		}
@@ -548,7 +548,7 @@ public class EntityTablePanel extends JPanel {
 	 * @return the condition panel
 	 * @throws IllegalStateException in case no condition panel is available
 	 */
-	public final FilteredTableConditionPanel<Attribute<?>> conditionPanel() {
+	public final FilterTableConditionPanel<Attribute<?>> conditionPanel() {
 		if (conditionPanel == null) {
 			conditionPanel = createConditionPanel();
 			if (conditionPanel == null) {
@@ -1505,8 +1505,8 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private FilteredTableConditionPanel<Attribute<?>> createConditionPanel() {
-		return configuration.includeConditionPanel ? filteredTableConditionPanel(tableModel.conditionModel(), table.getColumnModel(), configuration.conditionPanelFactory) : null;
+	private FilterTableConditionPanel<Attribute<?>> createConditionPanel() {
+		return configuration.includeConditionPanel ? filterTableConditionPanel(tableModel.conditionModel(), table.getColumnModel(), configuration.conditionPanelFactory) : null;
 	}
 
 	private void bindTableEvents() {
@@ -1684,7 +1684,7 @@ public class EntityTablePanel extends JPanel {
 						.anyMatch(foreignKeyDefinition -> foreignKeyDefinition.attribute().referencedType().equals(tableModel.entityType()));
 	}
 
-	private void configureColumn(FilteredTableColumn<Attribute<?>> column) {
+	private void configureColumn(FilterTableColumn<Attribute<?>> column) {
 		TableCellEditor tableCellEditor = createTableCellEditor(column.getIdentifier());
 		if (tableCellEditor != null) {
 			column.setCellEditor(tableCellEditor);
@@ -1777,8 +1777,8 @@ public class EntityTablePanel extends JPanel {
 
 	private Map<Attribute<?>, ColumnPreferences> createColumnPreferences() {
 		Map<Attribute<?>, ColumnPreferences> columnPreferencesMap = new HashMap<>();
-		FilteredTableColumnModel<Attribute<?>> columnModel = table.getColumnModel();
-		for (FilteredTableColumn<Attribute<?>> column : columnModel.columns()) {
+		FilterTableColumnModel<Attribute<?>> columnModel = table.getColumnModel();
+		for (FilterTableColumn<Attribute<?>> column : columnModel.columns()) {
 			Attribute<?> attribute = column.getIdentifier();
 			int index = columnModel.visible(attribute).get() ? columnModel.getColumnIndex(attribute) : -1;
 			columnPreferencesMap.put(attribute, columnPreferences(attribute, index, column.getWidth()));
@@ -1812,7 +1812,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Collection<Attribute<?>> selectAttributes() {
-		FilteredTableColumnModel<Attribute<?>> columnModel = table.getColumnModel();
+		FilterTableColumnModel<Attribute<?>> columnModel = table.getColumnModel();
 		if (queryHiddenColumns.get() || columnModel.hidden().isEmpty()) {
 			return emptyList();
 		}
@@ -1879,7 +1879,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void applyColumnPreferences(String preferencesString) {
 		List<Attribute<?>> columnAttributes = table.getColumnModel().columns().stream()
-						.map(FilteredTableColumn::getIdentifier)
+						.map(FilterTableColumn::getIdentifier)
 						.collect(toList());
 		try {
 			ColumnPreferences.apply(this, columnAttributes, preferencesString, (attribute, columnWidth) ->
@@ -1971,9 +1971,9 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private static final void selectConditionPanel(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel,
+	private static final void selectConditionPanel(FilterTableConditionPanel<Attribute<?>> tableConditionPanel,
 																								 JScrollPane conditionPanelScrollPane, State conditionPanelAdvancedState,
-																								 State conditionPanelVisibleState, FilteredTable<Entity, Attribute<?>> table,
+																								 State conditionPanelVisibleState, FilterTable<Entity, Attribute<?>> table,
 																								 String dialogTitle, EntityDefinition entityDefinition) {
 		if (tableConditionPanel != null) {
 			List<Attribute<?>> attributes = tableConditionPanel.conditionPanels().stream()
@@ -2055,10 +2055,10 @@ public class EntityTablePanel extends JPanel {
 			Component component = wrappedRenderer == null ?
 							table.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
 							wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			FilteredTableColumn<Attribute<?>> tableColumn = table().getColumnModel().getColumn(column);
+			FilterTableColumn<Attribute<?>> tableColumn = table().getColumnModel().getColumn(column);
 			TableCellRenderer renderer = tableColumn.getCellRenderer();
-			boolean useBoldFont = renderer instanceof FilteredTableCellRenderer
-							&& ((FilteredTableCellRenderer) renderer).columnShading()
+			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
+							&& ((FilterTableCellRenderer) renderer).columnShading()
 							&& tableModel.conditionModel().enabled(tableColumn.getIdentifier());
 			Font defaultFont = component.getFont();
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
@@ -2069,9 +2069,9 @@ public class EntityTablePanel extends JPanel {
 
 	private static final class DeleteConfirmer implements Confirmer {
 
-		private final FilteredTableSelectionModel<?> selectionModel;
+		private final FilterTableSelectionModel<?> selectionModel;
 
-		private DeleteConfirmer(FilteredTableSelectionModel<?> selectionModel) {
+		private DeleteConfirmer(FilterTableSelectionModel<?> selectionModel) {
 			this.selectionModel = selectionModel;
 		}
 
@@ -2212,7 +2212,7 @@ public class EntityTablePanel extends JPanel {
 		private final ValueSet<Attribute<?>> editable;
 		private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories;
 		private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories;
-		private final FilteredTable.Builder<Entity, Attribute<?>> tableBuilder;
+		private final FilterTable.Builder<Entity, Attribute<?>> tableBuilder;
 
 		private EntityConditionPanelFactory conditionPanelFactory;
 		private boolean includeSouthPanel = true;
@@ -2241,10 +2241,10 @@ public class EntityTablePanel extends JPanel {
 		private Config(EntityTablePanel tablePanel) {
 			this.tablePanel = tablePanel;
 			this.entityDefinition = tablePanel.tableModel.entityDefinition();
-			this.tableBuilder = FilteredTable.builder(tablePanel.tableModel, entityTableColumns(entityDefinition))
+			this.tableBuilder = FilterTable.builder(tablePanel.tableModel, entityTableColumns(entityDefinition))
 							.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
 							.cellRendererFactory(new EntityTableCellRendererFactory(tablePanel.tableModel))
-							.onBuild(filteredTable -> filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
+							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
 			this.conditionPanelFactory = new EntityConditionPanelFactory(entityDefinition);
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
@@ -2297,11 +2297,11 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * Provides access to the builder for the underlying {@link FilteredTable}
+		 * Provides access to the builder for the underlying {@link FilterTable}
 		 * @param tableBuilder the table builder
 		 * @return this Config instance
 		 */
-		public Config configureTable(Consumer<FilteredTable.Builder<Entity, Attribute<?>>> tableBuilder) {
+		public Config configureTable(Consumer<FilterTable.Builder<Entity, Attribute<?>>> tableBuilder) {
 			requireNonNull(tableBuilder).accept(this.tableBuilder);
 			return this;
 		}
@@ -2573,9 +2573,9 @@ public class EntityTablePanel extends JPanel {
 	private static final class EntitySummaryValuesFactory implements ColumnSummaryModel.SummaryValues.Factory<Attribute<?>> {
 
 		private final EntityDefinition entityDefinition;
-		private final FilteredTableModel<?, Attribute<?>> tableModel;
+		private final FilterTableModel<?, Attribute<?>> tableModel;
 
-		private EntitySummaryValuesFactory(EntityDefinition entityDefinition, FilteredTableModel<?, Attribute<?>> tableModel) {
+		private EntitySummaryValuesFactory(EntityDefinition entityDefinition, FilterTableModel<?, Attribute<?>> tableModel) {
 			this.entityDefinition = requireNonNull(entityDefinition);
 			this.tableModel = requireNonNull(tableModel);
 		}
@@ -2584,7 +2584,7 @@ public class EntityTablePanel extends JPanel {
 		public <T extends Number> Optional<ColumnSummaryModel.SummaryValues<T>> createSummaryValues(Attribute<?> attribute, Format format) {
 			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
 			if (attribute.type().isNumerical() && attributeDefinition.items().isEmpty()) {
-				return Optional.of(FilteredTable.summaryValues(attribute, tableModel, format));
+				return Optional.of(FilterTable.summaryValues(attribute, tableModel, format));
 			}
 
 			return Optional.empty();
@@ -2671,20 +2671,20 @@ public class EntityTablePanel extends JPanel {
 			add(tableSouthPanel, BorderLayout.SOUTH);
 		}
 
-		private static boolean containsSummaryModels(FilteredTable<Entity, Attribute<?>> table) {
+		private static boolean containsSummaryModels(FilterTable<Entity, Attribute<?>> table) {
 			return table.getColumnModel().columns().stream()
-							.map(FilteredTableColumn::getIdentifier)
+							.map(FilterTableColumn::getIdentifier)
 							.map(table.summaryModel()::summaryModel)
 							.anyMatch(Optional::isPresent);
 		}
 
-		private FilteredTableColumnComponentPanel<Attribute<?>, JPanel> createSummaryPanel() {
+		private FilterTableColumnComponentPanel<Attribute<?>, JPanel> createSummaryPanel() {
 			Map<Attribute<?>, JPanel> columnSummaryPanels = createColumnSummaryPanels();
 			if (columnSummaryPanels.isEmpty()) {
 				return null;
 			}
 
-			return filteredTableColumnComponentPanel(table.getColumnModel(), columnSummaryPanels);
+			return filterTableColumnComponentPanel(table.getColumnModel(), columnSummaryPanels);
 		}
 
 		private Map<Attribute<?>, JPanel> createColumnSummaryPanels() {
@@ -2693,7 +2693,7 @@ public class EntityTablePanel extends JPanel {
 							table.summaryModel().summaryModel(column.getIdentifier())
 											.ifPresent(columnSummaryModel ->
 															components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel,
-																			((FilteredTableCellRenderer) column.getCellRenderer()).horizontalAlignment()))));
+																			((FilterTableCellRenderer) column.getCellRenderer()).horizontalAlignment()))));
 
 			return components;
 		}

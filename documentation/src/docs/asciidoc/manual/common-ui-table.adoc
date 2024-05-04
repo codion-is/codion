@@ -2,28 +2,28 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-== FilteredTable
+== FilterTable
 
-[plantuml, filtered-table-diagram, svg, align=center]
+[plantuml, filter-table-diagram, svg, align=center]
 -------------------------------------------
 
 class JTable {}
 
-class FilteredTable {
-    +FilteredTableModel getModel()
-    +FilteredTableConditionPanel filterPanel()
+class FilterTable {
+    +FilterTableModel getModel()
+    +FilterTableConditionPanel filterPanel()
     +JTextField searchField()
 }
 
-class FilteredTableConditionPanel {}
+class FilterTableConditionPanel {}
 
-FilteredTable --|> JTable
-FilteredTable --o FilteredTableConditionPanel
+FilterTable --|> JTable
+FilterTable --o FilterTableConditionPanel
 -------------------------------------------
 
-The {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilteredTable.html[FilteredTable] is a *JTable* subclass central to the framework.
+The {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilterTable.html[FilterTable] is a *JTable* subclass central to the framework.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilteredTableDemo.java[tags=filteredTable]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=filterTable]
 ----

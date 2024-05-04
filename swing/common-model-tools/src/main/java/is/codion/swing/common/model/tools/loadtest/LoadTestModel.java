@@ -21,7 +21,7 @@ package is.codion.swing.common.model.tools.loadtest;
 import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.state.State;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel.ApplicationRow.ColumnId;
 
 import org.jfree.data.xy.IntervalXYDataset;
@@ -45,7 +45,7 @@ public interface LoadTestModel<T> {
 	/**
 	 * @return a table model for displaying the active application instances
 	 */
-	FilteredTableModel<ApplicationRow, ColumnId> applicationTableModel();
+	FilterTableModel<ApplicationRow, ColumnId> applicationTableModel();
 
 	/**
 	 * @return the chart data update interval in milliseconds

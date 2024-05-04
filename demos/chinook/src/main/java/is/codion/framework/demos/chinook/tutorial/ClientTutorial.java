@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -209,7 +209,7 @@ public final class ClientTutorial {
 		Arrays.stream(FlatAllIJThemes.INFOS)
 						.forEach(LookAndFeelProvider::addLookAndFeel);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
-		FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)
 						.applicationModelFactory(ApplicationModel::new)
 						.applicationPanelFactory(ApplicationPanel::new)

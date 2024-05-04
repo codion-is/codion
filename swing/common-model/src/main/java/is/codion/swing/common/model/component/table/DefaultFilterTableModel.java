@@ -51,7 +51,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
+final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements FilterTableModel<R, C> {
 
 	/**
 	 * A Comparator for comparing {@link Comparable} instances.
@@ -68,7 +68,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	private final Columns<R, C> columns;
 	private final List<R> visibleItems = new ArrayList<>();
 	private final List<R> filteredItems = new ArrayList<>();
-	private final FilteredTableSelectionModel<R> selectionModel;
+	private final FilterTableSelectionModel<R> selectionModel;
 	private final TableConditionModel<C> filterModel;
 	private final CombinedIncludeCondition combinedIncludeCondition;
 	private final Predicate<R> validator;
@@ -78,9 +78,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 					.notify(Value.Notify.WHEN_SET)
 					.build();
 
-	private DefaultFilteredTableModel(DefaultBuilder<R, C> builder) {
+	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = requireNonNull(builder.columns);
-		this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
+		this.selectionModel = new DefaultFilterTableSelectionModel<>(this);
 		this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
 		this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
@@ -172,7 +172,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	}
 
 	@Override
-	public FilteredTableSelectionModel<R> selectionModel() {
+	public FilterTableSelectionModel<R> selectionModel() {
 		return selectionModel;
 	}
 
@@ -503,9 +503,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 		private void merge(Collection<R> items) {
 			Set<R> itemSet = new HashSet<>(items);
-			DefaultFilteredTableModel.this.items().stream()
+			DefaultFilterTableModel.this.items().stream()
 							.filter(item -> !itemSet.contains(item))
-							.forEach(DefaultFilteredTableModel.this::removeItem);
+							.forEach(DefaultFilterTableModel.this::removeItem);
 			items.forEach(this::merge);
 		}
 
@@ -548,7 +548,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 		private CombinedIncludeCondition(Collection<? extends ColumnConditionModel<? extends C, ?>> columnFilters) {
 			this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
-			this.includeCondition.addListener(DefaultFilteredTableModel.this::filterItems);
+			this.includeCondition.addListener(DefaultFilterTableModel.this::filterItems);
 		}
 
 		@Override
@@ -631,8 +631,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 
 		@Override
-		public FilteredTableModel<R, C> build() {
-			return new DefaultFilteredTableModel<>(this);
+		public FilterTableModel<R, C> build() {
+			return new DefaultFilterTableModel<>(this);
 		}
 
 		private static final class ValidPredicate<R> implements Predicate<R> {

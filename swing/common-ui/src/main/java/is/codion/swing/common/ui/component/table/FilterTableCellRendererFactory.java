@@ -14,16 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2022 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.table.TableSelectionModel;
-
-import javax.swing.ListSelectionModel;
+import javax.swing.table.TableCellRenderer;
 
 /**
- * A selection model for a {@link FilteredTableModel}.
- * @param <R> the type of rows
+ * A factory for {@link TableCellRenderer} instances.
  */
-public interface FilteredTableSelectionModel<R> extends ListSelectionModel, TableSelectionModel<R> {}
+public interface FilterTableCellRendererFactory<C> {
+
+	/**
+	 * @param column the column
+	 * @return a {@link TableCellRenderer} instance for the given column
+	 */
+	TableCellRenderer tableCellRenderer(FilterTableColumn<C> column);
+}

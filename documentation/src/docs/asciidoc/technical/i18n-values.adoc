@@ -454,12 +454,12 @@ is/codion/swing/common/ui/component/table/ColumnSelectionPanel_is_IS.properties
 |select_none_mnemonic|N|E
 |===
 
-=== is/codion/swing/common/ui/component/table/FilteredTable.java
+=== is/codion/swing/common/ui/component/table/FilterTable.java
 
 [source]
 ----
-is/codion/swing/common/ui/component/table/FilteredTable.properties
-is/codion/swing/common/ui/component/table/FilteredTable_is_IS.properties
+is/codion/swing/common/ui/component/table/FilterTable.properties
+is/codion/swing/common/ui/component/table/FilterTable_is_IS.properties
 ----
 [cols="1,1,1"]
 |===
