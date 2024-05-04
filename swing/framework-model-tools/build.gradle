@@ -7,6 +7,7 @@ dependencies {
     api project(":codion-swing-framework-model")
 
     implementation(libs.slf4j.api)
+    implementation(libs.javapoet)
 
     testImplementation project(":codion-common-rmi")
     testImplementation project(":codion-framework-server")

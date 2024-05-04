@@ -23,6 +23,8 @@
  */
 module is.codion.swing.framework.model.tools {
 	requires org.slf4j;
+	requires java.compiler;
+	requires com.squareup.javapoet;
 	requires transitive is.codion.swing.common.model.tools;
 	requires transitive is.codion.swing.framework.model;
 

@@ -22,8 +22,6 @@ import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
 import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -39,26 +37,10 @@ public final class DomainGeneratorModelTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final String ADDRESS_DEF;
-	private static final String TAG_ITEM_DEF;
-	private static final String PRODUCT_DEF;
-
-	static {
-		try {
-			ADDRESS_DEF = textFileContents(DomainGeneratorModelTest.class, "address.txt").trim();
-			TAG_ITEM_DEF = textFileContents(DomainGeneratorModelTest.class, "tagitem.txt").trim();
-			PRODUCT_DEF = textFileContents(DomainGeneratorModelTest.class, "product.txt").trim();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private DomainGeneratorModel model;
-
-	@BeforeEach
-	void setUp() throws Exception {
-		model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
+	@Test
+	void test() throws Exception {
+		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
+		model.domainPackage().set("is.codion.test.petstore.domain");
 		model.schemaModel().refresh();
 		model.schemaModel().comparator().set(Comparator.comparing(MetaDataSchema::name));
 		model.schemaModel().selectionModel().setSelectedIndex(1);
@@ -66,32 +48,10 @@ public final class DomainGeneratorModelTest {
 		model.definitionModel().comparator().set(Comparator.
 						<DefinitionRow, String>comparing(definitionRow -> definitionRow.definition.entityType().domainType().name())
 						.thenComparing(definitionRow -> definitionRow.definition.entityType().name()));
-	}
-
-	@AfterEach
-	void tearDown() {
+		model.definitionModel().selectionModel().selectAll();
+		String petstore = textFileContents(DomainGeneratorModelTest.class, "Petstore.java") + "\n";
+		assertEquals(petstore, model.domainSource().get());
 		model.close();
-	}
-
-	@Test
-	void address() {
-		model.definitionModel().selectionModel().setSelectedIndex(0);
-		String addressDef = model.domainSource().get().trim();
-		assertEquals(ADDRESS_DEF, addressDef);
-	}
-
-	@Test
-	void product() {
-		model.definitionModel().selectionModel().setSelectedIndex(3);
-		String productDef = model.domainSource().get().trim();
-		assertEquals(PRODUCT_DEF, productDef);
-	}
-
-	@Test
-	void tagItem() {
-		model.definitionModel().selectionModel().setSelectedIndex(6);
-		String tagItemDef = model.domainSource().get().trim();
-		assertEquals(TAG_ITEM_DEF, tagItemDef);
 	}
 
 	private static String textFileContents(Class<?> resourceClass, String resourceName) throws IOException {

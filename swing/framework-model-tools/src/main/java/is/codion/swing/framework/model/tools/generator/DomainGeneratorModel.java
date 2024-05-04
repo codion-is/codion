@@ -34,9 +34,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-import static is.codion.common.Separators.LINE_SEPARATOR;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -51,6 +49,7 @@ public final class DomainGeneratorModel {
 	private final FilterTableModel<MetaDataSchema, SchemaColumns.Id> schemaTableModel;
 	private final FilterTableModel<DefinitionRow, DefinitionColumns.Id> definitionTableModel;
 	private final Connection connection;
+	private final Value<String> domainPackageValue = Value.nonNull("").build();
 	private final Value<String> domainSourceValue = Value.value();
 
 	private DomainGeneratorModel(Database database, User user) throws DatabaseException {
@@ -83,6 +82,10 @@ public final class DomainGeneratorModel {
 		return domainSourceValue.observer();
 	}
 
+	public Value<String> domainPackage() {
+		return domainPackageValue;
+	}
+
 	public void close() {
 		try {
 			connection.close();
@@ -98,6 +101,7 @@ public final class DomainGeneratorModel {
 
 	private void bindEvents() {
 		schemaTableModel.selectionModel().selectionEvent().addListener(definitionTableModel::refresh);
+		domainPackageValue.addListener(this::updateDomainSource);
 		definitionTableModel.selectionModel().selectionEvent().addListener(this::updateDomainSource);
 	}
 
@@ -113,9 +117,8 @@ public final class DomainGeneratorModel {
 	}
 
 	private void updateDomainSource() {
-		domainSourceValue.set(definitionTableModel.selectionModel().getSelectedItems().stream()
-						.map(definitionRow -> DomainToString.toString(definitionRow.definition))
-						.collect(Collectors.joining(LINE_SEPARATOR + LINE_SEPARATOR)));
+		domainSourceValue.set(DomainToString.toString(
+						definitionTableModel.selectionModel().getSelectedItems(), domainPackageValue.get()));
 	}
 
 	private final class DefinitionItems implements Supplier<Collection<DefinitionRow>> {
@@ -127,11 +130,11 @@ public final class DomainGeneratorModel {
 							.collect(toList());
 		}
 
-		private Collection<DefinitionRow> createDefinitionRows(MetaDataSchema schema) {
+		private static Collection<DefinitionRow> createDefinitionRows(MetaDataSchema schema) {
 			DatabaseDomain domain = new DatabaseDomain(schema);
 
 			return domain.entities().definitions().stream()
-							.map(definition -> new DefinitionRow(definition, domain.tableType(definition.entityType())))
+							.map(definition -> new DefinitionRow(definition, domain))
 							.collect(toList());
 		}
 	}

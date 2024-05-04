@@ -39,6 +39,7 @@ import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -53,6 +54,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -99,7 +101,7 @@ public final class DomainGeneratorPanel extends JPanel {
 										.build();
 		schemaTable.sortModel().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING);
 
-		FilterTable<DefinitionRow, DefinitionColumns.Id> domainTable =
+		FilterTable<DefinitionRow, DefinitionColumns.Id> definitionTable =
 						FilterTable.builder(model.definitionModel(), createDefinitionColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.popupMenuControl(FilterTable::createAutoResizeModeControl)
@@ -109,36 +111,68 @@ public final class DomainGeneratorPanel extends JPanel {
 						.orientation(JSplitPane.VERTICAL_SPLIT)
 						.resizeWeight(RESIZE_WEIGHT)
 						.topComponent(new JScrollPane(schemaTable))
-						.bottomComponent(new JScrollPane(domainTable))
+						.bottomComponent(new JScrollPane(definitionTable))
 						.build();
 
-		JTextArea textArea = textArea()
+		JPanel packagePanel = borderLayoutPanel()
+						.westComponent(label("Package").build())
+						.centerComponent(stringField(model.domainPackage())
+										.columns(42)
+										.build())
+						.build();
+
+		JPanel schemaTablePanel = borderLayoutPanel()
+						.northComponent(label()
+										.preferredHeight(packagePanel.getPreferredSize().height)
+										.build())
+						.centerComponent(schemaTableSplitPane)
+						.build();
+
+		JTextArea sourceTextArea = textArea()
 						.rowsColumns(40, 60)
 						.editable(false)
 						.build();
 
-		Font font = textArea.getFont();
-		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
-
-		JPanel textAreaCopyPanel = borderLayoutPanel()
-						.centerComponent(new JScrollPane(textArea))
+		Font font = sourceTextArea.getFont();
+		sourceTextArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
+		JPanel textAreaPanel = borderLayoutPanel()
+						.northComponent(borderLayoutPanel()
+										.eastComponent(packagePanel)
+										.build())
+						.centerComponent(new JScrollPane(sourceTextArea))
 						.southComponent(flowLayoutPanel(FlowLayout.RIGHT)
-										.add(button(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
+										.add(button(Control.builder(() -> Utilities.setClipboard(sourceTextArea.getText()))
 														.name(Messages.copy()))
+														.mnemonic(Messages.copy().charAt(0))
 														.build())
 										.build())
 						.build();
 
 		JSplitPane splitPane = splitPane()
 						.resizeWeight(RESIZE_WEIGHT)
-						.leftComponent(schemaTableSplitPane)
-						.rightComponent(textAreaCopyPanel)
+						.leftComponent(schemaTablePanel)
+						.rightComponent(textAreaPanel)
 						.build();
 
 		setLayout(borderLayout());
 		add(splitPane, BorderLayout.CENTER);
 
-		model.domainSource().addConsumer(textArea::setText);
+		model.domainSource().addConsumer(sourceText -> {
+			sourceTextArea.setText(sourceText);
+			sourceTextArea.setCaretPosition(0);
+		});
+		KeyEvents.builder()
+						.modifiers(InputEvent.ALT_DOWN_MASK)
+						.condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.keyCode(KeyEvent.VK_1)
+						.action(Control.control(schemaTable::requestFocusInWindow))
+						.enable(this)
+						.keyCode(KeyEvent.VK_2)
+						.action(Control.control(definitionTable::requestFocusInWindow))
+						.enable(this)
+						.keyCode(KeyEvent.VK_3)
+						.action(Control.control(sourceTextArea::requestFocusInWindow))
+						.enable(this);
 	}
 
 	public void showFrame() {
@@ -185,32 +219,32 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private static List<FilterTableColumn<SchemaColumns.Id>> createSchemaColumns() {
-			FilterTableColumn<SchemaColumns.Id> catalogColumn = FilterTableColumn.builder(SchemaColumns.Id.CATALOG)
-							.headerValue("Catalog")
-							.build();
-			FilterTableColumn<SchemaColumns.Id> schemaColumn = FilterTableColumn.builder(SchemaColumns.Id.SCHEMA)
-							.headerValue("Schema")
-							.build();
-			FilterTableColumn<SchemaColumns.Id> populatedColumn = FilterTableColumn.builder(SchemaColumns.Id.POPULATED)
-							.headerValue("Populated")
-							.build();
+		FilterTableColumn<SchemaColumns.Id> catalogColumn = FilterTableColumn.builder(SchemaColumns.Id.CATALOG)
+						.headerValue("Catalog")
+						.build();
+		FilterTableColumn<SchemaColumns.Id> schemaColumn = FilterTableColumn.builder(SchemaColumns.Id.SCHEMA)
+						.headerValue("Schema")
+						.build();
+		FilterTableColumn<SchemaColumns.Id> populatedColumn = FilterTableColumn.builder(SchemaColumns.Id.POPULATED)
+						.headerValue("Populated")
+						.build();
 
-			return asList(catalogColumn, schemaColumn, populatedColumn);
+		return asList(catalogColumn, schemaColumn, populatedColumn);
 	}
 
 	private static List<FilterTableColumn<DefinitionColumns.Id>> createDefinitionColumns() {
-			FilterTableColumn<DefinitionColumns.Id> domainColumn = FilterTableColumn.builder(DefinitionColumns.Id.DOMAIN)
-							.headerValue("Domain")
-							.build();
-			FilterTableColumn<DefinitionColumns.Id> entityTypeColumn = FilterTableColumn.builder(DefinitionColumns.Id.ENTITY)
-							.headerValue("Entity")
-							.build();
-			FilterTableColumn<DefinitionColumns.Id> typeColumn = FilterTableColumn.builder(DefinitionColumns.Id.TABLE_TYPE)
-							.headerValue("Type")
-							.preferredWidth(120)
-							.build();
+		FilterTableColumn<DefinitionColumns.Id> domainColumn = FilterTableColumn.builder(DefinitionColumns.Id.DOMAIN)
+						.headerValue("Domain")
+						.build();
+		FilterTableColumn<DefinitionColumns.Id> entityTypeColumn = FilterTableColumn.builder(DefinitionColumns.Id.ENTITY)
+						.headerValue("Entity")
+						.build();
+		FilterTableColumn<DefinitionColumns.Id> typeColumn = FilterTableColumn.builder(DefinitionColumns.Id.TABLE_TYPE)
+						.headerValue("Type")
+						.preferredWidth(120)
+						.build();
 
-			return asList(domainColumn, entityTypeColumn, typeColumn);
+		return asList(domainColumn, entityTypeColumn, typeColumn);
 	}
 
 	/**
