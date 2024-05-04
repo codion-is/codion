@@ -49,7 +49,7 @@ public final class DomainGeneratorModelTest {
 						<DefinitionRow, String>comparing(definitionRow -> definitionRow.definition.entityType().domainType().name())
 						.thenComparing(definitionRow -> definitionRow.definition.entityType().name()));
 		model.definitionModel().selectionModel().selectAll();
-		String petstore = textFileContents(DomainGeneratorModelTest.class, "Petstore.java") + "\n";
+		String petstore = textFileContents(DomainGeneratorModelTest.class, "Petstore.java");
 		assertEquals(petstore, model.domainSource().get());
 		model.close();
 	}

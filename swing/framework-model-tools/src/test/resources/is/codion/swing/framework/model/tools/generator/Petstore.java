@@ -15,14 +15,14 @@ public final class Petstore extends DomainModel {
 
 	public Petstore() {
 		super(DOMAIN);
-		add(address(), category(), item(),
-				product(), sellercontactinfo(), tag(),
-				tagItem());
+		add(address(), category(), contactInfo(),
+				item(), itemTags(), product(),
+				tag(), tagItem());
 	}
 
 	static EntityDefinition address() {
 		return Address.TYPE.define(
-				Address.ADDRESSID.define()
+				Address.ADDRESS_ID.define()
 					.primaryKey(),
 				Address.STREET1.define()
 					.column()
@@ -70,7 +70,7 @@ public final class Petstore extends DomainModel {
 
 	static EntityDefinition category() {
 		return Category.TYPE.define(
-				Category.CATEGORYID.define()
+				Category.CATEGORY_ID.define()
 					.primaryKey(),
 				Category.NAME.define()
 					.column()
@@ -82,23 +82,47 @@ public final class Petstore extends DomainModel {
 					.caption("Description")
 					.nullable(false)
 					.maximumLength(255),
-				Category.IMAGEURL.define()
+				Category.IMAGE_URL.define()
 					.column()
-					.caption("Imageurl")
+					.caption("Image url")
 					.maximumLength(55))
 			.keyGenerator(identity())
 			.caption("Category")
 			.build();
 	}
 
+	static EntityDefinition contactInfo() {
+		return ContactInfo.TYPE.define(
+				ContactInfo.CONTACT_INFO_ID.define()
+					.primaryKey(),
+				ContactInfo.LAST_NAME.define()
+					.column()
+					.caption("Last name")
+					.nullable(false)
+					.maximumLength(24),
+				ContactInfo.FIRST_NAME.define()
+					.column()
+					.caption("First name")
+					.nullable(false)
+					.maximumLength(24),
+				ContactInfo.EMAIL.define()
+					.column()
+					.caption("Email")
+					.nullable(false)
+					.maximumLength(24))
+			.keyGenerator(identity())
+			.caption("Contact info")
+			.build();
+	}
+
 	static EntityDefinition item() {
 		return Item.TYPE.define(
-				Item.ITEMID.define()
+				Item.ITEM_ID.define()
 					.primaryKey(),
-				Item.PRODUCTID.define()
+				Item.PRODUCT_ID.define()
 					.column()
 					.nullable(false),
-				Item.PRODUCTID_FK.define()
+				Item.PRODUCT_ID_FK.define()
 					.foreignKey()
 					.caption("Product"),
 				Item.NAME.define()
@@ -111,48 +135,63 @@ public final class Petstore extends DomainModel {
 					.caption("Description")
 					.nullable(false)
 					.maximumLength(500),
-				Item.IMAGEURL.define()
+				Item.IMAGE_URL.define()
 					.column()
-					.caption("Imageurl")
+					.caption("Image url")
 					.maximumLength(55),
-				Item.IMAGETHUMBURL.define()
+				Item.IMAGE_THUMB_URL.define()
 					.column()
-					.caption("Imagethumburl")
+					.caption("Image thumb url")
 					.maximumLength(55),
 				Item.PRICE.define()
 					.column()
 					.caption("Price")
 					.nullable(false)
 					.maximumFractionDigits(2),
-				Item.ADDRESS_ADDRESSID.define()
+				Item.ADDRESS_ID.define()
 					.column()
 					.nullable(false),
-				Item.ADDRESS_ADDRESSID_FK.define()
+				Item.ADDRESS_ID_FK.define()
 					.foreignKey()
 					.caption("Address"),
-				Item.CONTACTINFO_CONTACTINFOID.define()
+				Item.CONTACT_INFO_ID.define()
 					.column()
 					.nullable(false),
-				Item.CONTACTINFO_CONTACTINFOID_FK.define()
+				Item.CONTACT_INFO_ID_FK.define()
 					.foreignKey()
-					.caption("Sellercontactinfo"),
-				Item.TOTALSCORE.define()
+					.caption("Contact info"),
+				Item.TOTAL_SCORE.define()
 					.column()
-					.caption("Totalscore"),
-				Item.NUMBEROFVOTES.define()
+					.caption("Total score"),
+				Item.NUMBER_OF_VOTES.define()
 					.column()
-					.caption("Numberofvotes"),
+					.caption("Number of votes"),
 				Item.DISABLED.define()
 					.column()
-					.caption("Disabled"))
+					.caption("Disabled")
+					.nullable(false)
+					.columnHasDefaultValue(true))
 			.keyGenerator(identity())
 			.caption("Item")
 			.build();
 	}
 
+	static EntityDefinition itemTags() {
+		return ItemTags.TYPE.define(
+				ItemTags.NAME.define()
+					.column()
+					.caption("Name"),
+				ItemTags.TAG.define()
+					.column()
+					.caption("Tag"))
+			.caption("Item tags")
+			.readOnly(true)
+			.build();
+	}
+
 	static EntityDefinition product() {
 		return Product.TYPE.define(
-				Product.PRODUCTID.define()
+				Product.PRODUCT_ID.define()
 					.primaryKey(),
 				Product.CATEGORYID.define()
 					.column()
@@ -171,9 +210,9 @@ public final class Petstore extends DomainModel {
 					.caption("Description")
 					.nullable(false)
 					.maximumLength(255),
-				Product.IMAGEURL.define()
+				Product.IMAGE_URL.define()
 					.column()
-					.caption("Imageurl")
+					.caption("Image url")
 					.maximumLength(55))
 			.keyGenerator(identity())
 			.caption("Product")
@@ -181,33 +220,9 @@ public final class Petstore extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition sellercontactinfo() {
-		return Sellercontactinfo.TYPE.define(
-				Sellercontactinfo.CONTACTINFOID.define()
-					.primaryKey(),
-				Sellercontactinfo.LASTNAME.define()
-					.column()
-					.caption("Lastname")
-					.nullable(false)
-					.maximumLength(24),
-				Sellercontactinfo.FIRSTNAME.define()
-					.column()
-					.caption("Firstname")
-					.nullable(false)
-					.maximumLength(24),
-				Sellercontactinfo.EMAIL.define()
-					.column()
-					.caption("Email")
-					.nullable(false)
-					.maximumLength(24))
-			.keyGenerator(identity())
-			.caption("Sellercontactinfo")
-			.build();
-	}
-
 	static EntityDefinition tag() {
 		return Tag.TYPE.define(
-				Tag.TAGID.define()
+				Tag.TAG_ID.define()
 					.primaryKey(),
 				Tag.TAG.define()
 					.column()
@@ -221,14 +236,14 @@ public final class Petstore extends DomainModel {
 
 	static EntityDefinition tagItem() {
 		return TagItem.TYPE.define(
-				TagItem.TAGID.define()
+				TagItem.TAG_ID.define()
 					.primaryKey(0),
-				TagItem.TAGID_FK.define()
+				TagItem.TAG_ID_FK.define()
 					.foreignKey()
 					.caption("Tag"),
-				TagItem.ITEMID.define()
+				TagItem.ITEM_ID.define()
 					.primaryKey(1),
-				TagItem.ITEMID_FK.define()
+				TagItem.ITEM_ID_FK.define()
 					.foreignKey()
 					.caption("Item"))
 			.caption("Tag item")
@@ -238,118 +253,90 @@ public final class Petstore extends DomainModel {
 	public interface Address {
 		EntityType TYPE = DOMAIN.entityType("petstore.address");
 
-		Column<Integer> ADDRESSID = TYPE.integerColumn("addressid");
-
+		Column<Integer> ADDRESS_ID = TYPE.integerColumn("address_id");
 		Column<String> STREET1 = TYPE.stringColumn("street1");
-
 		Column<String> STREET2 = TYPE.stringColumn("street2");
-
 		Column<String> CITY = TYPE.stringColumn("city");
-
 		Column<String> STATE = TYPE.stringColumn("state");
-
 		Column<Integer> ZIP = TYPE.integerColumn("zip");
-
 		Column<Double> LATITUDE = TYPE.doubleColumn("latitude");
-
 		Column<Double> LONGITUDE = TYPE.doubleColumn("longitude");
-
 		Column<Object> LOCATION = TYPE.column("location", Object.class);
-
 		Column<byte[]> IMAGE = TYPE.byteArrayColumn("image");
 	}
 
 	public interface Category {
 		EntityType TYPE = DOMAIN.entityType("petstore.category");
 
-		Column<Integer> CATEGORYID = TYPE.integerColumn("categoryid");
-
+		Column<Integer> CATEGORY_ID = TYPE.integerColumn("category_id");
 		Column<String> NAME = TYPE.stringColumn("name");
-
 		Column<String> DESCRIPTION = TYPE.stringColumn("description");
+		Column<String> IMAGE_URL = TYPE.stringColumn("image_url");
+	}
 
-		Column<String> IMAGEURL = TYPE.stringColumn("imageurl");
+	public interface ContactInfo {
+		EntityType TYPE = DOMAIN.entityType("petstore.contact_info");
+
+		Column<Integer> CONTACT_INFO_ID = TYPE.integerColumn("contact_info_id");
+		Column<String> LAST_NAME = TYPE.stringColumn("last_name");
+		Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
+		Column<String> EMAIL = TYPE.stringColumn("email");
 	}
 
 	public interface Item {
 		EntityType TYPE = DOMAIN.entityType("petstore.item");
 
-		Column<Integer> ITEMID = TYPE.integerColumn("itemid");
-
-		Column<Integer> PRODUCTID = TYPE.integerColumn("productid");
-
+		Column<Integer> ITEM_ID = TYPE.integerColumn("item_id");
+		Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
 		Column<String> NAME = TYPE.stringColumn("name");
-
 		Column<String> DESCRIPTION = TYPE.stringColumn("description");
-
-		Column<String> IMAGEURL = TYPE.stringColumn("imageurl");
-
-		Column<String> IMAGETHUMBURL = TYPE.stringColumn("imagethumburl");
-
+		Column<String> IMAGE_URL = TYPE.stringColumn("image_url");
+		Column<String> IMAGE_THUMB_URL = TYPE.stringColumn("image_thumb_url");
 		Column<Double> PRICE = TYPE.doubleColumn("price");
-
-		Column<Integer> ADDRESS_ADDRESSID = TYPE.integerColumn("address_addressid");
-
-		Column<Integer> CONTACTINFO_CONTACTINFOID = TYPE.integerColumn("contactinfo_contactinfoid");
-
-		Column<Integer> TOTALSCORE = TYPE.integerColumn("totalscore");
-
-		Column<Integer> NUMBEROFVOTES = TYPE.integerColumn("numberofvotes");
-
+		Column<Integer> ADDRESS_ID = TYPE.integerColumn("address_id");
+		Column<Integer> CONTACT_INFO_ID = TYPE.integerColumn("contact_info_id");
+		Column<Integer> TOTAL_SCORE = TYPE.integerColumn("total_score");
+		Column<Integer> NUMBER_OF_VOTES = TYPE.integerColumn("number_of_votes");
 		Column<Integer> DISABLED = TYPE.integerColumn("disabled");
 
-		ForeignKey PRODUCTID_FK = TYPE.foreignKey("productid_fk", PRODUCTID, Product.PRODUCTID);
+		ForeignKey PRODUCT_ID_FK = TYPE.foreignKey("product_id_fk", PRODUCT_ID, Product.PRODUCT_ID);
+		ForeignKey ADDRESS_ID_FK = TYPE.foreignKey("address_id_fk", ADDRESS_ID, Address.ADDRESS_ID);
+		ForeignKey CONTACT_INFO_ID_FK = TYPE.foreignKey("contact_info_id_fk", CONTACT_INFO_ID, ContactInfo.CONTACT_INFO_ID);
+	}
 
-		ForeignKey ADDRESS_ADDRESSID_FK = TYPE.foreignKey("address_addressid_fk", ADDRESS_ADDRESSID, Address.ADDRESSID);
+	public interface ItemTags {
+		EntityType TYPE = DOMAIN.entityType("petstore.item_tags");
 
-		ForeignKey CONTACTINFO_CONTACTINFOID_FK = TYPE.foreignKey("contactinfo_contactinfoid_fk", CONTACTINFO_CONTACTINFOID, Sellercontactinfo.CONTACTINFOID);
+		Column<String> NAME = TYPE.stringColumn("name");
+		Column<String> TAG = TYPE.stringColumn("tag");
 	}
 
 	public interface Product {
 		EntityType TYPE = DOMAIN.entityType("petstore.product");
 
-		Column<Integer> PRODUCTID = TYPE.integerColumn("productid");
-
+		Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
 		Column<Integer> CATEGORYID = TYPE.integerColumn("categoryid");
-
 		Column<String> NAME = TYPE.stringColumn("name");
-
 		Column<String> DESCRIPTION = TYPE.stringColumn("description");
+		Column<String> IMAGE_URL = TYPE.stringColumn("image_url");
 
-		Column<String> IMAGEURL = TYPE.stringColumn("imageurl");
-
-		ForeignKey CATEGORYID_FK = TYPE.foreignKey("categoryid_fk", CATEGORYID, Category.CATEGORYID);
-	}
-
-	public interface Sellercontactinfo {
-		EntityType TYPE = DOMAIN.entityType("petstore.sellercontactinfo");
-
-		Column<Integer> CONTACTINFOID = TYPE.integerColumn("contactinfoid");
-
-		Column<String> LASTNAME = TYPE.stringColumn("lastname");
-
-		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
-
-		Column<String> EMAIL = TYPE.stringColumn("email");
+		ForeignKey CATEGORYID_FK = TYPE.foreignKey("categoryid_fk", CATEGORYID, Category.CATEGORY_ID);
 	}
 
 	public interface Tag {
 		EntityType TYPE = DOMAIN.entityType("petstore.tag");
 
-		Column<Integer> TAGID = TYPE.integerColumn("tagid");
-
+		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
 		Column<String> TAG = TYPE.stringColumn("tag");
 	}
 
 	public interface TagItem {
 		EntityType TYPE = DOMAIN.entityType("petstore.tag_item");
 
-		Column<Integer> TAGID = TYPE.integerColumn("tagid");
+		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
+		Column<Integer> ITEM_ID = TYPE.integerColumn("item_id");
 
-		Column<Integer> ITEMID = TYPE.integerColumn("itemid");
-
-		ForeignKey TAGID_FK = TYPE.foreignKey("tagid_fk", TAGID, Tag.TAGID);
-
-		ForeignKey ITEMID_FK = TYPE.foreignKey("itemid_fk", ITEMID, Item.ITEMID);
+		ForeignKey TAG_ID_FK = TYPE.foreignKey("tag_id_fk", TAG_ID, Tag.TAG_ID);
+		ForeignKey ITEM_ID_FK = TYPE.foreignKey("item_id_fk", ITEM_ID, Item.ITEM_ID);
 	}
 }

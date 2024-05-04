@@ -67,6 +67,7 @@ Codion Change Log
 - EntityComboBoxModel.HANDLE_EDIT_EVENTS configuration value added.
 ### is.codion.swing.framework.model.tools
 - DomainGenerator now uses com.squareup.javapoet to generate the source and generates a full domain implementation class.
+- DomainToString now handles views correctly, refactoring.
 ### is.codion.swing.framework.ui
 - EntityEditPanel, control configuration refactored, now consistent with EntityTablePanel.
 - EntityTablePanel.PopupMenuConfig and ToolBarConfig removed, quite unnecessary.

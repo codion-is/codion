@@ -41,6 +41,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static com.squareup.javapoet.MethodSpec.methodBuilder;
@@ -68,7 +70,7 @@ final class DomainToString {
 						.collect(joining(LINE_SEPARATOR + LINE_SEPARATOR));
 	}
 
-	static String toString(Domain domain, Collection<DefinitionRow> definitions, String packageName) {
+	static String toString(Domain domain, Collection<DefinitionRow> definitionRows, String packageName) {
 		String className = interfaceName(domain.type().name(), true);
 		TypeSpec.Builder classBuilder = classBuilder(className)
 						.addModifiers(PUBLIC, FINAL)
@@ -78,41 +80,40 @@ final class DomainToString {
 										.addModifiers(PUBLIC, STATIC, FINAL)
 										.build());
 
-		List<String> definitionMethodNames = new ArrayList<>();
-		definitions.forEach(definitionRow -> {
-			classBuilder.addType(createInterface(definitionRow.definition));
-			MethodSpec definitionMethod = createDefinitionMethod(definitionRow.definition);
-			classBuilder.addMethod(definitionMethod);
-			definitionMethodNames.add(definitionMethod.name);
-		});
+		List<String> definitionMethods = addDefinitionMethods(definitionRows, classBuilder);
 
-		StringBuilder addMethods = new StringBuilder();
-		for (int i = 0; i < definitionMethodNames.size(); i++) {
-			addMethods.append(definitionMethodNames.get(i)).append("()");
-			if (i < definitionMethodNames.size() - 1) {
-				if ((i + 1) % 3 != 0) { // three per line
-					addMethods.append(", ");
-				}
-				else if (i > 0) {
-					addMethods.append(",\n");
-				}
-			}
-		}
-
-		return JavaFile.builder(packageName, classBuilder.addMethod(constructorBuilder()
+		return cleanupSource(JavaFile.builder(packageName, classBuilder.addMethod(constructorBuilder()
 														.addModifiers(PUBLIC)
 														.addStatement("super(DOMAIN)")
 														.addStatement(new StringBuilder()
-																		.append("add(")
-																		.append(addMethods)
-																		.append(")").toString())
+																		.append("add(").append(createAddParameters(definitionMethods)).append(")")
+																		.toString())
 														.build())
 										.build())
 						.addStaticImport(DomainType.class, "domainType")
 						.addStaticImport(KeyGenerator.class, "identity")
 						.skipJavaLangImports(true)
 						.indent(INDENT)
-						.build().toString();
+						.build()
+						.toString());
+	}
+
+	private static List<String> addDefinitionMethods(Collection<DefinitionRow> definitionRows,
+																									 TypeSpec.Builder classBuilder) {
+		List<String> definitionMethods = new ArrayList<>();
+		definitionRows.forEach(definitionRow ->
+						addDefinition(definitionRow, classBuilder, definitionMethods::add));
+
+		return definitionMethods;
+	}
+
+	private static void addDefinition(DefinitionRow definitionRow,
+																		TypeSpec.Builder classBuilder,
+																		Consumer<String> onMethod) {
+		classBuilder.addType(createInterface(definitionRow.definition));
+		MethodSpec definitionMethod = createDefinitionMethod(definitionRow.definition);
+		classBuilder.addMethod(definitionMethod);
+		onMethod.accept(definitionMethod.name);
 	}
 
 	private static TypeSpec createInterface(EntityDefinition definition) {
@@ -123,16 +124,12 @@ final class DomainToString {
 										.initializer("DOMAIN.entityType($S)", definition.tableName().toLowerCase())
 										.build())
 						.addModifiers(PUBLIC);
-		List<AttributeDefinition<?>> columnDefinitions = definition.attributes().definitions().stream()
+		definition.attributes().definitions().stream()
 						.filter(ColumnDefinition.class::isInstance)
-						.collect(toList());
-		columnDefinitions.forEach(columnDefinition -> appendAttribute(interfaceBuilder, columnDefinition));
-		List<AttributeDefinition<?>> foreignKeyDefinitions = definition.attributes().definitions().stream()
+						.forEach(columnDefinition -> appendAttribute(interfaceBuilder, columnDefinition));
+		definition.attributes().definitions().stream()
 						.filter(ForeignKeyDefinition.class::isInstance)
-						.collect(toList());
-		if (!foreignKeyDefinitions.isEmpty()) {
-			foreignKeyDefinitions.forEach(foreignKeyDefinition -> appendAttribute(interfaceBuilder, foreignKeyDefinition));
-		}
+						.forEach(foreignKeyDefinition -> appendAttribute(interfaceBuilder, foreignKeyDefinition));
 
 		return interfaceBuilder.build();
 	}
@@ -142,7 +139,7 @@ final class DomainToString {
 		StringBuilder builder = new StringBuilder()
 						.append("return ").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR)
 						.append(String.join("," + LINE_SEPARATOR,
-										attributeStrings(definition.attributes().definitions(), interfaceName, definition)))
+										createAttributes(definition.attributes().definitions(), definition, interfaceName)))
 						.append(")");
 		if (definition.primaryKey().generated()) {
 			builder.append(LINE_SEPARATOR).append(INDENT).append(".keyGenerator(identity())");
@@ -165,82 +162,110 @@ final class DomainToString {
 						.build();
 	}
 
-	private static void appendAttribute(TypeSpec.Builder interfaceBuilder,
-																			AttributeDefinition<?> attributeDefinition) {
-		String valueClassName = attributeDefinition.attribute().type().valueClass().getSimpleName();
+	private static StringBuilder createAddParameters(List<String> definitionMethodNames) {
+		StringBuilder definitionMethods = new StringBuilder();
+		for (int i = 0; i < definitionMethodNames.size(); i++) {
+			definitionMethods.append(definitionMethodNames.get(i)).append("()");
+			if (i < definitionMethodNames.size() - 1) {
+				if ((i + 1) % 3 != 0) { // three per line
+					definitionMethods.append(", ");
+				}
+				else if (i > 0) {
+					definitionMethods.append(",\n");
+				}
+			}
+		}
+		return definitionMethods;
+	}
+
+	private static List<String> createAttributes(Collection<AttributeDefinition<?>> attributeDefinitions,
+																							 EntityDefinition definition, String interfaceName) {
+		return attributeDefinitions.stream()
+						.map(attributeDefinition -> createAttribute(attributeDefinition, definition, interfaceName))
+						.collect(toList());
+	}
+
+	private static String createAttribute(AttributeDefinition<?> attributeDefinition,
+																				EntityDefinition definition, String interfaceName) {
 		if (attributeDefinition instanceof ColumnDefinition) {
 			ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
-			FieldSpec.Builder fieldBuilder = FieldSpec.builder(ParameterizedTypeName.get(Column.class,
+
+			return columnDefinition(interfaceName, columnDefinition,
+							definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()),
+							definition.primaryKey().columns().size() > 1, definition.readOnly());
+		}
+
+		return foreignKeyDefinition(interfaceName, (ForeignKeyDefinition) attributeDefinition);
+	}
+
+	private static void appendAttribute(TypeSpec.Builder interfaceBuilder,
+																			AttributeDefinition<?> attributeDefinition) {
+		if (attributeDefinition instanceof ColumnDefinition) {
+			ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
+			FieldSpec.Builder columnBuilder = FieldSpec.builder(ParameterizedTypeName.get(Column.class,
 															columnDefinition.attribute().type().valueClass()),
 											columnDefinition.name().toUpperCase())
 							.addModifiers(PUBLIC, STATIC, FINAL);
-			if ("Object".equals(valueClassName)) {
-				//special handling for mapping unknown column data types to Object columns
-				fieldBuilder.initializer("TYPE.column($S, $L)", columnDefinition.name().toLowerCase(), "Object.class");
-			}
-			else {
-				fieldBuilder.initializer("TYPE.$LColumn($S)",
-								attributeTypePrefix(valueClassName), columnDefinition.name().toLowerCase());
-			}
-			interfaceBuilder.addField(fieldBuilder.build());
+			addInitializer(columnBuilder, columnDefinition);
+			interfaceBuilder.addField(columnBuilder.build());
 		}
 		else if (attributeDefinition instanceof ForeignKeyDefinition) {
 			ForeignKeyDefinition foreignKeyDefinition = (ForeignKeyDefinition) attributeDefinition;
-			String references = foreignKeyDefinition.references().stream()
-							.map(reference -> new StringBuilder()
-											.append(reference.column().name().toUpperCase()).append(", ")
-											.append(interfaceName(reference.foreign().entityType().name(), true))
-											.append(".").append(reference.foreign().name().toUpperCase()).toString())
-							.collect(joining(", "));
 			//todo wrap references if more than four
-			interfaceBuilder.addField(FieldSpec.builder(ForeignKey.class, attributeDefinition.attribute().name().toUpperCase())
+			interfaceBuilder.addField(FieldSpec.builder(ForeignKey.class,
+											attributeDefinition.attribute().name().toUpperCase())
 							.addModifiers(PUBLIC, STATIC, FINAL)
 							.initializer("TYPE.foreignKey($S, $L)",
-											attributeDefinition.attribute().name().toLowerCase(), references)
+											attributeDefinition.attribute().name().toLowerCase(),
+											createReferences(foreignKeyDefinition))
 							.build());
 		}
 	}
 
-	private static List<String> attributeStrings(Collection<AttributeDefinition<?>> attributeDefinitions, String interfaceName,
-																							 EntityDefinition definition) {
-		List<String> strings = new ArrayList<>();
-		attributeDefinitions.forEach(attributeDefinition -> {
-			if (attributeDefinition instanceof ColumnDefinition) {
-				ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
-				strings.add(columnDefinition(interfaceName, columnDefinition,
-								definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()), definition.primaryKey().columns().size() > 1));
-			}
-			else if (attributeDefinition instanceof ForeignKeyDefinition) {
-				strings.add(foreignKeyDefinition(interfaceName, (ForeignKeyDefinition) attributeDefinition));
-			}
-		});
+	private static void addInitializer(FieldSpec.Builder columnBuilder,
+																		 ColumnDefinition<?> columnDefinition) {
+		if (Object.class.equals(columnDefinition.attribute().type().valueClass())) {
+			//special handling for mapping unknown column data types to Object columns
+			columnBuilder.initializer("TYPE.column($S, $L)",
+							columnDefinition.name().toLowerCase(), "Object.class");
+		}
+		else {
+			columnBuilder.initializer("TYPE.$LColumn($S)",
+							attributeTypePrefix(columnDefinition.attribute().type().valueClass().getSimpleName()),
+							columnDefinition.name().toLowerCase());
+		}
+	}
 
-		return strings;
+	private static String createReferences(ForeignKeyDefinition foreignKeyDefinition) {
+		return foreignKeyDefinition.references().stream()
+						.map(reference -> new StringBuilder()
+										.append(reference.column().name().toUpperCase()).append(", ")
+										.append(interfaceName(reference.foreign().entityType().name(), true))
+										.append(".").append(reference.foreign().name().toUpperCase())
+										.toString())
+						.collect(joining(", "));
 	}
 
 	private static String foreignKeyDefinition(String interfaceName, ForeignKeyDefinition definition) {
-		StringBuilder builder = new StringBuilder();
-		String foreignKey = definition.attribute().name().toUpperCase();
-		builder.append(DOUBLE_INDENT).append(interfaceName).append(".").append(foreignKey).append(".define()")
+		String foreignKeyName = definition.attribute().name().toUpperCase();
+
+		return new StringBuilder().append(DOUBLE_INDENT).append(interfaceName)
+						.append(".").append(foreignKeyName).append(".define()")
 						.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
 						.append(".foreignKey()")
 						.append(LINE_SEPARATOR)
-						.append(TRIPLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")");
-
-		return builder.toString();
+						.append(TRIPLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")")
+						.toString();
 	}
 
 	private static String columnDefinition(String interfaceName, ColumnDefinition<?> column,
-																				 boolean isForeignKey, boolean compositePrimaryKey) {
+																				 boolean foreignKeyColumn, boolean compositePrimaryKey, boolean readOnly) {
 		StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
 						.append(interfaceName).append(".").append(column.name().toUpperCase()).append(".define()")
 						.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
 						.append(".").append(definitionType(column, compositePrimaryKey));
-		if (!isForeignKey && !column.primaryKey()) {
+		if (!foreignKeyColumn && !column.primaryKey()) {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
-		}
-		if (column.columnHasDefaultValue()) {
-			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".columnHasDefaultValue(true)");
 		}
 		if (!column.nullable() && !column.primaryKey()) {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
@@ -248,13 +273,18 @@ final class DomainToString {
 		if (column.lazy()) {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".lazy(true)");
 		}
-		if (column.attribute().type().isString() && column.maximumLength() != -1) {
-			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
-							.append(column.maximumLength()).append(")");
-		}
-		if (column.attribute().type().isDecimal() && column.maximumFractionDigits() >= 1) {
-			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumFractionDigits(")
-							.append(column.maximumFractionDigits()).append(")");
+		if (!readOnly) {
+			if (column.columnHasDefaultValue()) {
+				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".columnHasDefaultValue(true)");
+			}
+			if (column.attribute().type().isString() && column.maximumLength() != -1) {
+				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
+								.append(column.maximumLength()).append(")");
+			}
+			if (column.attribute().type().isDecimal() && column.maximumFractionDigits() >= 1) {
+				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumFractionDigits(")
+								.append(column.maximumFractionDigits()).append(")");
+			}
 		}
 		if (!nullOrEmpty(column.description())) {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".description(")
@@ -291,6 +321,37 @@ final class DomainToString {
 		}
 
 		return name;
+	}
+
+	private static String cleanupSource(String sourceString) {
+		String[] lines = sourceString.split("\n");
+		for (int i = 1; i < lines.length - 1; i++) {
+			String line = lines[i];
+			if (line != null && line.trim().isEmpty() && betweenColumnsOrForeignKeys(lines, i)) {
+				lines[i] = null;
+			}
+		}
+
+		return Arrays.stream(lines)
+						.filter(Objects::nonNull)
+						.collect(joining("\n"));
+	}
+
+	private static boolean betweenColumnsOrForeignKeys(String[] lines, int lineIndex) {
+		return betweenLinesStartingWith(lines, lineIndex, "Column")
+						|| betweenLinesStartingWith(lines, lineIndex, "ForeignKey");
+	}
+
+	private static boolean betweenLinesStartingWith(String[] lines, int lineIndex, String prefix) {
+		String previousLine = lines[lineIndex - 1];
+		String nextLine = lines[lineIndex + 1];
+
+		return lineStartsWith(previousLine, prefix)
+						&& lineStartsWith(nextLine, prefix);
+	}
+
+	private static boolean lineStartsWith(String line, String prefix) {
+		return line != null && line.trim().startsWith(prefix);
 	}
 
 	static String underscoreToCamelCase(String text) {
