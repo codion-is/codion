@@ -32,7 +32,6 @@ import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
@@ -58,6 +57,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.radioButton;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.framework.ui.EntityPanel.PanelState.HIDDEN;
 import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.DELETE;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.util.ResourceBundle.getBundle;
@@ -105,7 +105,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 										.editPanel(GenreEditPanel.class)
 										.detailPanel(trackPanelBuilder)
 										.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-														.panelState(PanelState.HIDDEN)
+														.initialDetailState(HIDDEN)
 														.build());
 
 		SwingEntityModel.Builder mediaTypeModelBuilder =
@@ -117,7 +117,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 										.editPanel(MediaTypeEditPanel.class)
 										.detailPanel(trackPanelBuilder)
 										.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-														.panelState(PanelState.HIDDEN)
+														.initialDetailState(HIDDEN)
 														.build());
 
 		EntityPanel.Builder artistPanelBuilder =
@@ -137,7 +137,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 										.tablePanel(EmployeeTablePanel.class)
 										.detailPanel(customerPanelBuilder)
 										.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-														.panelState(PanelState.HIDDEN)
+														.initialDetailState(HIDDEN)
 														.build())
 										.preferredSize(new Dimension(1000, 500));
 

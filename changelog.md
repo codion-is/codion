@@ -41,6 +41,8 @@ Codion Change Log
 - FilteredTableCellRenderer.Builder.displayValueProvider() renamed values().
 - LookAndFeelProvider.CROSS_PLATFORM and SYSTEM configuration values added.
 - Control.copy() added, copying the control with the underlying command.
+- EntityPanel.Config.editPanelState() and editPanelStates() renamed initialEditState() and enabledEditStates() respectively.
+- TabbedDetailLayout.Builder.panelState() and panelStates() renamed initialDetailState() and enabledDetailStates() respectively.
 ### is.codion.swing.common.model
 - FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.framework.domain

@@ -23,7 +23,6 @@ import is.codion.framework.demos.petstore.model.PetstoreAppModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
 
 import java.util.Arrays;
@@ -32,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.swing.framework.ui.EntityPanel.PanelState.HIDDEN;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
@@ -61,7 +61,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 		EntityPanel itemPanel = new EntityPanel(itemModel,
 						new ItemEditPanel(itemModel.editModel()),
 						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-										.panelState(PanelState.HIDDEN)
+										.initialDetailState(HIDDEN)
 										.build()));
 		EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
 						new TagItemEditPanel(tagItemModel.editModel()));
@@ -93,14 +93,14 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 														.detailPanel(EntityPanel.builder(TagItem.TYPE)
 																		.editPanel(TagItemEditPanel.class))
 														.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-																		.panelState(PanelState.HIDDEN)
+																		.initialDetailState(HIDDEN)
 																		.build())),
 						EntityPanel.builder(tagModelBuilder)
 										.editPanel(TagEditPanel.class)
 										.detailPanel(EntityPanel.builder(TagItem.TYPE)
 														.editPanel(TagItemEditPanel.class))
 										.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-														.panelState(PanelState.HIDDEN)
+														.initialDetailState(HIDDEN)
 														.build()));
 	}
 

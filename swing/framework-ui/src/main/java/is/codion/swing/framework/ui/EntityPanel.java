@@ -79,6 +79,8 @@ import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.EntityPanelControl.REFRESH;
 import static is.codion.swing.framework.ui.EntityPanel.EntityPanelControl.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
+import static is.codion.swing.framework.ui.EntityPanel.WindowType.DIALOG;
+import static is.codion.swing.framework.ui.EntityPanel.WindowType.FRAME;
 import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -126,7 +128,7 @@ public class EntityPanel extends JPanel {
 	 * The possible states of a detail or edit panel.
 	 */
 	public enum PanelState {
-		WINDOW, EMBEDDED, HIDDEN
+		EMBEDDED, WINDOW, HIDDEN
 	}
 
 	/**
@@ -227,10 +229,10 @@ public class EntityPanel extends JPanel {
 	private final Map<EntityPanelControl, Value<Control>> controls;
 	private final Controls.Config<EntityPanelControl> controlsConfiguration;
 
-	private PanelState currentEditPanelState;
 	private EntityPanel parentPanel;
 	private EntityPanel previousSiblingPanel;
 	private EntityPanel nextSiblingPanel;
+	private Window editWindow;
 
 	private boolean initialized = false;
 
@@ -321,12 +323,10 @@ public class EntityPanel extends JPanel {
 		this.controlsConfiguration = createControlsConfiguration();
 		this.detailLayout = configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
-		this.editPanelStateMapper = new PanelStateMapper(configuration.editPanelStates);
-		this.editPanelState = Value.nonNull(configuration.editPanelState)
-						.initialValue(configuration.editPanelState)
-						.consumer(this::updateEditPanelState)
+		this.editPanelStateMapper = panelStateMapper(configuration.enabledEditStates);
+		this.editPanelState = Value.nonNull(configuration.initialEditState)
+						.consumer(this::updateEditState)
 						.build();
-		this.currentEditPanelState = configuration.editPanelState;
 	}
 
 	@Override
@@ -770,7 +770,7 @@ public class EntityPanel extends JPanel {
 			}
 		}
 		if (containsEditPanel()) {
-			updateEditPanelState(configuration.editPanelState);
+			updateEditState(configuration.initialEditState);
 		}
 
 		return mainPanel;
@@ -1082,61 +1082,45 @@ public class EntityPanel extends JPanel {
 		editPanel().selectInputComponent();
 	}
 
-	private void updateEditPanelState(PanelState newState) {
+	private void updateEditState(PanelState newState) {
 		switch (newState) {
-			case WINDOW:
-				showEditWindow();
-				break;
-			case EMBEDDED:
-				if (currentEditPanelState == WINDOW) {
-					hideEditWindow();
-				}
-				mainPanel.add(editControlPanel, BorderLayout.NORTH);
-				break;
 			case HIDDEN:
-				if (currentEditPanelState == WINDOW) {
-					hideEditWindow();
-				}
+				disposeEditWindow();
 				mainPanel.remove(editControlPanel);
 				break;
-			default:
-				throw new IllegalStateException("Unkown panel state: " + editPanelState.get());
+			case EMBEDDED:
+				disposeEditWindow();
+				mainPanel.add(editControlPanel, BorderLayout.NORTH);
+				break;
+			case WINDOW:
+				displayEditWindow();
+				break;
 		}
-		currentEditPanelState = newState;
 		revalidate();
 		requestInitialFocus();
 	}
 
-	private void toggleEditPanelState() {
-		editPanelState.map(editPanelStateMapper);
-	}
-
-	private void showEditWindow() {
-		JPanel basePanel = borderLayoutPanel()
-						.border(createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
-						.centerComponent(editControlPanel)
-						.build();
-		if (configuration.windowType == WindowType.FRAME) {
-			showEditFrame(basePanel);
+	private void displayEditWindow() {
+		if (configuration.windowType == FRAME) {
+			displayEditFrame(editControlPanel);
 		}
-		else {
-			showEditDialog(basePanel);
+		else if (configuration.windowType == DIALOG) {
+			displayEditDialog(editControlPanel);
 		}
 	}
 
-	private void showEditFrame(JPanel basePanel) {
-		Windows.frame(basePanel)
+	private void displayEditFrame(JPanel editControlPanel) {
+		editWindow = Windows.frame(editControlPanel)
 						.locationRelativeTo(tablePanel == null ? this : tablePanel)
 						.title(configuration.caption)
 						.icon(configuration.icon)
 						.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 						.onClosed(windowEvent -> editPanelState.set(HIDDEN))
-						.build()
-						.setVisible(true);
+						.show();
 	}
 
-	private void showEditDialog(JPanel basePanel) {
-		Dialogs.componentDialog(basePanel)
+	private void displayEditDialog(JPanel editControlPanel) {
+		editWindow = Dialogs.componentDialog(editControlPanel)
 						.owner(this)
 						.locationRelativeTo(tablePanel == null ? this : tablePanel)
 						.title(configuration.caption)
@@ -1144,15 +1128,17 @@ public class EntityPanel extends JPanel {
 						.modal(false)
 						.disposeOnEscape(configuration.disposeEditDialogOnEscape)
 						.onClosed(windowEvent -> editPanelState.set(HIDDEN))
-						.build()
-						.setVisible(true);
+						.show();
 	}
 
-	private void hideEditWindow() {
-		Window editPanelWindow = parentWindow(editControlPanel);
-		if (editPanelWindow != null) {
-			editPanelWindow.dispose();
+	private void disposeEditWindow() {
+		if (editWindow != null) {
+			editWindow.dispose();
 		}
+	}
+
+	private void toggleEditPanelState() {
+		editPanelState.map(editPanelStateMapper);
 	}
 
 	private Config configure(Consumer<Config> configuration) {
@@ -1288,7 +1274,7 @@ public class EntityPanel extends JPanel {
 		 * Default value: {@link WindowType#DIALOG}
 		 */
 		public static final PropertyValue<WindowType> WINDOW_TYPE =
-						Configuration.enumValue("is.codion.swing.framework.ui.EntityPanel.windowType", WindowType.class, WindowType.DIALOG);
+						Configuration.enumValue("is.codion.swing.framework.ui.EntityPanel.windowType", WindowType.class, DIALOG);
 
 		/**
 		 * Specifies where the control panel should be placed in a BorderLayout<br>
@@ -1324,7 +1310,7 @@ public class EntityPanel extends JPanel {
 
 		private final EntityPanel entityPanel;
 		private final KeyboardShortcuts<EntityPanelControl> shortcuts;
-		private final Set<PanelState> editPanelStates;
+		private final Set<PanelState> enabledEditStates;
 
 		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
 		private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
@@ -1335,7 +1321,7 @@ public class EntityPanel extends JPanel {
 		private boolean includeControls = INCLUDE_CONTROLS.get();
 		private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
 		private WindowType windowType = WINDOW_TYPE.get();
-		private PanelState editPanelState = EMBEDDED;
+		private PanelState initialEditState = EMBEDDED;
 		private String caption;
 		private String description;
 		private ImageIcon icon;
@@ -1343,21 +1329,21 @@ public class EntityPanel extends JPanel {
 		private Config(EntityPanel entityPanel) {
 			this.entityPanel = entityPanel;
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
-			this.editPanelStates = new LinkedHashSet<>(asList(HIDDEN, EMBEDDED, WINDOW));
+			this.enabledEditStates = new LinkedHashSet<>(asList(PanelState.values()));
 			this.caption = entityPanel.model().entityDefinition().caption();
 		}
 
 		private Config(Config config) {
 			this.entityPanel = config.entityPanel;
 			this.shortcuts = config.shortcuts.copy();
-			this.editPanelStates = new LinkedHashSet<>(config.editPanelStates);
+			this.enabledEditStates = new LinkedHashSet<>(config.enabledEditStates);
 			this.detailLayout = config.detailLayout;
 			this.toolbarControls = config.toolbarControls;
 			this.includeToggleEditPanelControl = config.includeToggleEditPanelControl;
 			this.controlComponentConstraints = config.controlComponentConstraints;
 			this.includeControls = config.includeControls;
 			this.useKeyboardNavigation = config.useKeyboardNavigation;
-			this.editPanelState = config.editPanelState;
+			this.initialEditState = config.initialEditState;
 			this.caption = config.caption;
 			this.description = config.description;
 			this.icon = config.icon;
@@ -1502,33 +1488,42 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
-		 * @param editPanelState the initial edit panel state
+		 * Default {@link PanelState#EMBEDDED}
+		 * @param initialState the initial edit panel state
 		 * @return this Config instance
+		 * @throws IllegalArgumentException in case the given state is {@link PanelState#WINDOW}
+		 * @throws IllegalArgumentException in case the given state is not enabled
+		 * @see #enabledEditStates(PanelState...)
 		 */
-		public Config editPanelState(PanelState editPanelState) {
-			if (!editPanelStates.contains(requireNonNull(editPanelState))) {
-				throw new IllegalArgumentException("Invalid editPanelState: " + editPanelState);
+		public Config initialEditState(PanelState initialState) {
+			if (requireNonNull(initialState) == WINDOW) {
+				throw new IllegalArgumentException(WINDOW + " is not a supported initial state");
 			}
-			this.editPanelState = editPanelState;
+			if (!enabledEditStates.contains(requireNonNull(initialState))) {
+				throw new IllegalArgumentException("Edit panel state: " + initialState + " is not enabled");
+			}
+			this.initialEditState = initialState;
 			return this;
 		}
 
 		/**
-		 * Sets the allowed edit panel states
-		 * @param editPanelStates the allowed states
+		 * Sets the enabled edit panel states.
+		 * @param editStates the enabled states
 		 * @return this Config instance
-		 * @throws IllegalArgumentException in case no {@code editPanelStates} are specified
+		 * @throws IllegalArgumentException in case the given states do not include the initial state
+		 * @throws IllegalArgumentException in case no {@code editStates} are specified
+		 * @see #initialEditState(PanelState)
 		 */
-		public Config editPanelStates(PanelState... editPanelStates) {
-			if (requireNonNull(editPanelStates).length == 0) {
+		public Config enabledEditStates(PanelState... editStates) {
+			if (requireNonNull(editStates).length == 0) {
 				throw new IllegalArgumentException("No edit panel states specified");
 			}
-			List<PanelState> states = asList(editPanelStates);
-			if (!states.contains(editPanelState)) {
-				throw new IllegalArgumentException("editPanelState has already been set to: " + editPanelState);
+			List<PanelState> states = asList(editStates);
+			if (!states.contains(initialEditState)) {
+				throw new IllegalArgumentException("Initial edit state has already been set to: " + initialEditState);
 			}
-			this.editPanelStates.clear();
-			this.editPanelStates.addAll(states);
+			this.enabledEditStates.clear();
+			this.enabledEditStates.addAll(asList(editStates));
 			return this;
 		}
 
@@ -1760,11 +1755,15 @@ public class EntityPanel extends JPanel {
 		}
 	}
 
-	static final class PanelStateMapper implements Function<PanelState, PanelState> {
+	static Function<PanelState, PanelState> panelStateMapper(Set<PanelState> states) {
+		return new PanelStateMapper(states);
+	}
+
+	private static final class PanelStateMapper implements Function<PanelState, PanelState> {
 
 		private final List<PanelState> states;
 
-		PanelStateMapper(Set<PanelState> states) {
+		private PanelStateMapper(Set<PanelState> states) {
 			this.states = new ArrayList<>(states);
 		}
 

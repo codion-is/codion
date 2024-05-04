@@ -36,7 +36,6 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.DetailController;
 import is.codion.swing.framework.ui.EntityPanel.DetailLayout;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
-import is.codion.swing.framework.ui.EntityPanel.PanelStateMapper;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -71,6 +70,7 @@ import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.GAP;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
+import static is.codion.swing.framework.ui.EntityPanel.panelStateMapper;
 import static is.codion.swing.framework.ui.TabbedDetailLayout.TabbedDetailLayoutControl.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
@@ -170,15 +170,13 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private JTabbedPane tabbedPane;
 	private JSplitPane splitPane;
 	private Window panelWindow;
-	private PanelState panelState = EMBEDDED;
 
 	private TabbedDetailLayout(DefaultBuilder builder) {
 		this.entityPanel = builder.entityPanel;
 		this.windowType = builder.windowType;
-		this.panelState = builder.panelState;
 		this.includeControls = builder.includeControls;
 		this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
-		this.detailController = new TabbedDetailController(builder.panelStates, builder.panelState);
+		this.detailController = new TabbedDetailController(builder.enabledDetailStates, builder.initialState);
 		this.keyboardShortcuts = builder.keyboardShortcuts;
 	}
 
@@ -200,7 +198,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		splitPane = createSplitPane(entityPanel.mainPanel());
 		tabbedPane = createTabbedPane(entityPanel.detailPanels());
 		setupControls(entityPanel);
-		initializePanelState();
+		detailController.initialize();
 
 		return Optional.of(splitPane);
 	}
@@ -224,16 +222,24 @@ public final class TabbedDetailLayout implements DetailLayout {
 	public interface Builder {
 
 		/**
-		 * @param panelState the initial detail panel state
+		 * Default {@link PanelState#EMBEDDED}
+		 * @param initialState the initial detail panel state
 		 * @return this builder instance
+		 * @throws IllegalArgumentException in case the given state is {@link PanelState#WINDOW}
+		 * @throws IllegalArgumentException in case the given state is not enabled
+		 * @see #enabledDetailStates(PanelState...)
 		 */
-		Builder panelState(PanelState panelState);
+		Builder initialDetailState(PanelState initialState);
 
 		/**
-		 * @param panelStates the allowed detail panel states
+		 * Sets the enabled detail panel states, with the first being the initial one.
+		 * Note that {@link PanelState#WINDOW} is not supported as the initial state.
+		 * @param panelStates the enabled detail panel states
 		 * @return this builder instance
+		 * @throws IllegalArgumentException in case the given states do not include the initial state
+		 * @throws IllegalArgumentException in case no {@code panelStates} are specified
 		 */
-		Builder panelStates(PanelState... panelStates);
+		Builder enabledDetailStates(PanelState... panelStates);
 
 		/**
 		 * @param windowType the window type to use
@@ -303,16 +309,6 @@ public final class TabbedDetailLayout implements DetailLayout {
 															.build())
 											.toArray(Control[]::new))
 							.build());
-		}
-	}
-
-	private void initializePanelState() {
-		Value<PanelState> panelStateValue = detailController.panelState(selectedDetailPanel());
-		if (panelStateValue.isNotEqualTo(panelState)) {
-			panelStateValue.set(panelState);
-		}
-		else {
-			detailController.updateDetailState(panelStateValue.get());
 		}
 	}
 
@@ -470,15 +466,12 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private final Function<PanelState, PanelState> panelStateMapper;
 		private final Value<PanelState> panelState;
 
-		private PanelState currentState;
-
-		private TabbedDetailController(Set<PanelState> panelStates, PanelState panelState) {
+		private TabbedDetailController(Set<PanelState> panelStates, PanelState initialState) {
 			this.panelStates = panelStates;
-			this.panelStateMapper = new PanelStateMapper(panelStates);
-			this.panelState = Value.nonNull(panelState)
-						.consumer(this::updateDetailState)
-						.build();
-			this.currentState = panelState;
+			this.panelStateMapper = panelStateMapper(panelStates);
+			this.panelState = Value.nonNull(initialState)
+							.consumer(this::updateDetailState)
+							.build();
 		}
 
 		@Override
@@ -503,29 +496,21 @@ public final class TabbedDetailLayout implements DetailLayout {
 			return panelState;
 		}
 
-		private void updateDetailState(PanelState newPanelState) {
-			EntityPanel selectedDetailPanel = selectedDetailPanel();
-			if (panelState.isNotEqualTo(HIDDEN)) {
-				selectedDetailPanel.initialize();
+		private void updateDetailState(PanelState newState) {
+			activateDetailModelLink(selectedDetailPanel().initialize().model());
+			switch (newState) {
+				case HIDDEN:
+					disposeDetailWindow();
+					splitPane.setRightComponent(null);
+					break;
+				case EMBEDDED:
+					disposeDetailWindow();
+					splitPane.setRightComponent(tabbedPane);
+					break;
+				case WINDOW:
+					displayDetailWindow();
+					break;
 			}
-			SwingEntityModel selectedDetailModel = selectedDetailPanel.model();
-			if (entityPanel.model().containsDetailModel(selectedDetailModel)) {
-				entityPanel.model().detailModelLink(selectedDetailModel).active().set(panelState.isNotEqualTo(HIDDEN));
-			}
-			if (currentState == WINDOW) {
-				disposeDetailWindow();
-			}
-			if (panelState.isEqualTo(EMBEDDED)) {
-				splitPane.setRightComponent(tabbedPane);
-			}
-			else if (panelState.isEqualTo(HIDDEN)) {
-				splitPane.setRightComponent(null);
-			}
-			else {
-				displayDetailWindow();
-			}
-			currentState = newPanelState;
-
 			entityPanel.revalidate();
 		}
 
@@ -537,6 +522,10 @@ public final class TabbedDetailLayout implements DetailLayout {
 								.forEach(activeDetailModel -> model.detailModelLink(activeDetailModel).active().set(false));
 				model.detailModelLink(detailModel).active().set(true);
 			}
+		}
+
+		private void initialize() {
+			updateDetailState(panelState.get());
 		}
 
 		private void toggleDetailState() {
@@ -614,10 +603,10 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private final KeyboardShortcuts<TabbedDetailLayoutControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private final EntityPanel entityPanel;
-		private final Set<PanelState> panelStates =
-						new LinkedHashSet<>(asList(HIDDEN, EMBEDDED, WINDOW));
+		private final Set<PanelState> enabledDetailStates =
+						new LinkedHashSet<>(asList(PanelState.values()));
 
-		private PanelState panelState = EMBEDDED;
+		private PanelState initialState = EMBEDDED;
 		private WindowType windowType;
 		private double splitPaneResizeWeight = DEFAULT_SPLIT_PANE_RESIZE_WEIGHT;
 		private boolean includeControls = INCLUDE_CONTROLS.get();
@@ -628,25 +617,28 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public Builder panelState(PanelState panelState) {
-			if (!panelStates.contains(requireNonNull(panelState))) {
-				throw new IllegalArgumentException("Invalid PanelState: " + panelState);
+		public Builder initialDetailState(PanelState initialState) {
+			if (requireNonNull(initialState) == WINDOW) {
+				throw new IllegalArgumentException(WINDOW + " is not a supported initial state");
 			}
-			this.panelState = panelState;
+			if (!enabledDetailStates.contains(initialState)) {
+				throw new IllegalArgumentException("Detail state: " + initialState + " is not enabled");
+			}
+			this.initialState = initialState;
 			return this;
 		}
 
 		@Override
-		public Builder panelStates(PanelState... panelStates) {
+		public Builder enabledDetailStates(PanelState... panelStates) {
 			if (requireNonNull(panelStates).length == 0) {
 				throw new IllegalArgumentException("No detail panel states specified");
 			}
 			List<PanelState> states = asList(panelStates);
-			if (!states.contains(panelState)) {
-				throw new IllegalArgumentException("PanelState has already been set to: " + panelState);
+			if (!states.contains(initialState)) {
+				throw new IllegalArgumentException("Detail state has already been set to: " + initialState);
 			}
-			this.panelStates.clear();
-			this.panelStates.addAll(states);
+			this.enabledDetailStates.clear();
+			this.enabledDetailStates.addAll(states);
 			return this;
 		}
 
