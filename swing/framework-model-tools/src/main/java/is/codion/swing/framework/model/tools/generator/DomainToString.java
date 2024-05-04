@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.model.tools.generator;
 
-import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -30,6 +29,7 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -39,7 +39,6 @@ import com.squareup.javapoet.TypeSpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -50,8 +49,10 @@ import static com.squareup.javapoet.TypeSpec.classBuilder;
 import static com.squareup.javapoet.TypeSpec.interfaceBuilder;
 import static is.codion.common.Separators.LINE_SEPARATOR;
 import static is.codion.common.Text.nullOrEmpty;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static javax.lang.model.element.Modifier.*;
 
 final class DomainToString {
@@ -62,56 +63,136 @@ final class DomainToString {
 
 	private DomainToString() {}
 
-	static String toString(List<DefinitionRow> rows, String packageName) {
-		return rows.stream()
-						.collect(groupingBy(DefinitionRow::domain, LinkedHashMap::new, toList()))
-						.entrySet().stream()
-						.map(entry -> toString(entry.getKey(), entry.getValue(), packageName))
+	static String apiString(List<DatabaseDomain> domains, String packageName) {
+		return domains.stream()
+						.map(domain -> toApiString(domain.type().name(), sortDefinitions(domain), packageName))
 						.collect(joining(LINE_SEPARATOR + LINE_SEPARATOR));
 	}
 
-	static String toString(Domain domain, Collection<DefinitionRow> definitionRows, String packageName) {
-		String className = interfaceName(domain.type().name(), true);
-		TypeSpec.Builder classBuilder = classBuilder(className)
-						.addModifiers(PUBLIC, FINAL)
-						.superclass(DomainModel.class)
+	static String implementationString(Collection<DatabaseDomain> domains, String packageName) {
+		return domains.stream()
+						.map(domain -> toImplementationString(domain.type().name(), sortDefinitions(domain), packageName))
+						.collect(joining(LINE_SEPARATOR + LINE_SEPARATOR));
+	}
+
+	static String combinedString(Collection<DatabaseDomain> domains, String packageName) {
+		return domains.stream()
+						.map(domain -> toCombinedString(domain.type().name(), sortDefinitions(domain), packageName))
+						.collect(joining(LINE_SEPARATOR + LINE_SEPARATOR));
+	}
+
+	private static List<EntityDefinition> sortDefinitions(DatabaseDomain domain) {
+		return domain.entities().definitions().stream()
+						.sorted(comparing(EntityDefinition::tableName))
+						.collect(toList());
+	}
+
+	private static String toApiString(String domainName, List<EntityDefinition> definitions, String packageName) {
+		String className = interfaceName(domainName, true);
+		TypeSpec.Builder classBuilder = interfaceBuilder(className)
+						.addModifiers(PUBLIC)
 						.addField(FieldSpec.builder(DomainType.class, "DOMAIN")
-										.initializer("domainType($L)", className + ".class")
 										.addModifiers(PUBLIC, STATIC, FINAL)
+										.initializer("domainType($L)", className + ".class")
 										.build());
 
-		List<String> definitionMethods = addDefinitionMethods(definitionRows, classBuilder);
+		definitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
 
-		return cleanupSource(JavaFile.builder(packageName, classBuilder.addMethod(constructorBuilder()
-														.addModifiers(PUBLIC)
-														.addStatement("super(DOMAIN)")
-														.addStatement(new StringBuilder()
-																		.append("add(").append(createAddParameters(definitionMethods)).append(")")
-																		.toString())
-														.build())
-										.build())
+		return removeInterfaceLineBreaks(JavaFile.builder(packageName.isEmpty() ? "" : packageName, classBuilder.build())
 						.addStaticImport(DomainType.class, "domainType")
-						.addStaticImport(KeyGenerator.class, "identity")
 						.skipJavaLangImports(true)
 						.indent(INDENT)
 						.build()
 						.toString());
 	}
 
-	private static List<String> addDefinitionMethods(Collection<DefinitionRow> definitionRows,
+	private static String toImplementationString(String domainName, List<EntityDefinition> definitions,
+																							 String packageName) {
+		String className = interfaceName(domainName, true);
+		TypeSpec.Builder classBuilder = classBuilder(className + "Impl")
+						.addModifiers(PUBLIC, FINAL)
+						.superclass(DomainModel.class);
+
+		List<String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
+
+		String implementationPackage = packageName.isEmpty() ? "" : packageName + ".impl";
+
+		JavaFile.Builder fileBuilder = JavaFile.builder(implementationPackage,
+										classBuilder.addMethod(constructorBuilder()
+																		.addModifiers(PUBLIC)
+																		.addStatement("super(DOMAIN)")
+																		.addStatement(new StringBuilder()
+																						.append("add(").append(createAddParameters(definitionMethods)).append(")")
+																						.toString())
+																		.build())
+														.build())
+						.addStaticImport(KeyGenerator.class, "identity")
+						.skipJavaLangImports(true)
+						.indent(INDENT);
+		if (!implementationPackage.isEmpty()) {
+			fileBuilder.addStaticImport(ClassName.bestGuess(packageName + "." + className), "DOMAIN");
+		}
+
+		String sourceString = fileBuilder.build().toString();
+		if (!packageName.isEmpty()) {
+			sourceString = addInterfaceImports(sourceString, definitions, packageName + "." + className);
+		}
+
+		return sourceString;
+	}
+
+	private static String toCombinedString(String domainName, List<EntityDefinition> definitions,
+																				 String packageName) {
+		String className = interfaceName(domainName, true);
+		TypeSpec.Builder classBuilder = classBuilder(className)
+						.addModifiers(PUBLIC, FINAL)
+						.addField(FieldSpec.builder(DomainType.class, "DOMAIN")
+										.addModifiers(PUBLIC, STATIC, FINAL)
+										.initializer("domainType($L)", className + ".class")
+										.build())
+						.superclass(DomainModel.class);
+
+		List<String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
+		definitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
+
+		JavaFile.Builder fileBuilder = JavaFile.builder(packageName,
+										classBuilder.addMethod(constructorBuilder()
+																		.addModifiers(PUBLIC)
+																		.addStatement("super(DOMAIN)")
+																		.addStatement(new StringBuilder()
+																						.append("add(").append(createAddParameters(definitionMethods)).append(")")
+																						.toString())
+																		.build())
+														.build())
+						.addStaticImport(DomainType.class, "domainType")
+						.addStaticImport(KeyGenerator.class, "identity")
+						.skipJavaLangImports(true)
+						.indent(INDENT);
+		if (!packageName.isEmpty()) {
+			fileBuilder.addStaticImport(ClassName.bestGuess(packageName + "." + className), "DOMAIN");
+		}
+
+		String sourceString = fileBuilder.build().toString();
+		if (!packageName.isEmpty()) {
+			sourceString = addInterfaceImports(sourceString, definitions, packageName + "." + className);
+		}
+
+		return removeInterfaceLineBreaks(sourceString);
+	}
+
+	private static List<String> addDefinitionMethods(Collection<EntityDefinition> definitions,
 																									 TypeSpec.Builder classBuilder) {
 		List<String> definitionMethods = new ArrayList<>();
-		definitionRows.forEach(definitionRow ->
-						addDefinition(definitionRow, classBuilder, definitionMethods::add));
+		definitions.forEach(definition ->
+						addDefinition(definition, classBuilder, definitionMethods::add));
 
 		return definitionMethods;
 	}
 
-	private static void addDefinition(DefinitionRow definitionRow,
+	private static void addDefinition(EntityDefinition definition,
 																		TypeSpec.Builder classBuilder,
 																		Consumer<String> onMethod) {
-		classBuilder.addType(createInterface(definitionRow.definition));
-		MethodSpec definitionMethod = createDefinitionMethod(definitionRow.definition);
+		MethodSpec definitionMethod = createDefinitionMethod(definition);
 		classBuilder.addMethod(definitionMethod);
 		onMethod.accept(definitionMethod.name);
 	}
@@ -119,6 +200,7 @@ final class DomainToString {
 	private static TypeSpec createInterface(EntityDefinition definition) {
 		String interfaceName = interfaceName(definition.tableName(), true);
 		TypeSpec.Builder interfaceBuilder = interfaceBuilder(interfaceName)
+						.addModifiers(PUBLIC, STATIC)
 						.addField(FieldSpec.builder(EntityType.class, "TYPE")
 										.addModifiers(PUBLIC, STATIC, FINAL)
 										.initializer("DOMAIN.entityType($S)", definition.tableName().toLowerCase())
@@ -323,7 +405,7 @@ final class DomainToString {
 		return name;
 	}
 
-	private static String cleanupSource(String sourceString) {
+	private static String removeInterfaceLineBreaks(String sourceString) {
 		String[] lines = sourceString.split("\n");
 		for (int i = 1; i < lines.length - 1; i++) {
 			String line = lines[i];
@@ -335,6 +417,25 @@ final class DomainToString {
 		return Arrays.stream(lines)
 						.filter(Objects::nonNull)
 						.collect(joining("\n"));
+	}
+
+	private static String addInterfaceImports(String sourceString,
+																						Collection<EntityDefinition> definitions,
+																						String parentInterface) {
+		List<String> interfaceNames = definitions.stream()
+						.map(DomainToString::createInterface)
+						.map(interfaceSpec -> interfaceSpec.name)
+						.sorted()
+						.collect(toList());
+		List<String> lines = new ArrayList<>();
+		for (String line : sourceString.split("\n")) {
+			lines.add(line);
+			if (line.endsWith("EntityDefinition;")) {
+				interfaceNames.forEach(name -> lines.add("import " + parentInterface + "." + name + ";"));
+			}
+		}
+
+		return String.join("\n", lines);
 	}
 
 	private static boolean betweenColumnsOrForeignKeys(String[] lines, int lineIndex) {

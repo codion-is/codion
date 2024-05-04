@@ -18,22 +18,15 @@
  */
 package is.codion.swing.framework.model.tools.generator;
 
-import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.EntityDefinition;
 
 public final class DefinitionRow {
 
 	final String tableType;
 	final EntityDefinition definition;
-	final DatabaseDomain domain;
 
-	DefinitionRow(EntityDefinition definition, DatabaseDomain domain) {
+	DefinitionRow(EntityDefinition definition, String tableType) {
 		this.definition = definition;
-		this.domain = domain;
-		this.tableType = domain.tableType(definition.entityType());
-	}
-
-	Domain domain() {
-		return domain;
+		this.tableType = tableType;
 	}
 }

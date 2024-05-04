@@ -26,14 +26,16 @@ import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.swing.framework.model.tools.metadata.MetaDataModel;
-import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
@@ -45,19 +47,24 @@ import static java.util.stream.Collectors.toList;
  */
 public final class DomainGeneratorModel {
 
+	private static final Pattern PACKAGE_PATTERN =
+					Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$");
+
 	private final MetaDataModel metaDataModel;
-	private final FilterTableModel<MetaDataSchema, SchemaColumns.Id> schemaTableModel;
+	private final FilterTableModel<SchemaRow, SchemaColumns.Id> schemaTableModel;
 	private final FilterTableModel<DefinitionRow, DefinitionColumns.Id> definitionTableModel;
 	private final Connection connection;
 	private final Value<String> domainPackageValue = Value.nonNull("").build();
-	private final Value<String> domainSourceValue = Value.value();
+	private final Value<String> domainImplValue = Value.value();
+	private final Value<String> domainApiValue = Value.value();
+	private final Value<String> domainCombinedValue = Value.value();
 
 	private DomainGeneratorModel(Database database, User user) throws DatabaseException {
 		this.connection = requireNonNull(database, "database").createConnection(user);
 		try {
 			this.metaDataModel = new MetaDataModel(connection.getMetaData());
 			this.schemaTableModel = FilterTableModel.builder(new SchemaColumns())
-							.items(metaDataModel::schemas)
+							.items(new SchemaItems())
 							.build();
 			this.definitionTableModel = FilterTableModel.builder(new DefinitionColumns())
 							.items(new DefinitionItems())
@@ -70,7 +77,7 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	public FilterTableModel<MetaDataSchema, SchemaColumns.Id> schemaModel() {
+	public FilterTableModel<SchemaRow, SchemaColumns.Id> schemaModel() {
 		return schemaTableModel;
 	}
 
@@ -78,8 +85,16 @@ public final class DomainGeneratorModel {
 		return definitionTableModel;
 	}
 
-	public ValueObserver<String> domainSource() {
-		return domainSourceValue.observer();
+	public ValueObserver<String> domainImpl() {
+		return domainImplValue.observer();
+	}
+
+	public ValueObserver<String> domainApi() {
+		return domainApiValue.observer();
+	}
+
+	public ValueObserver<String> domainCombined() {
+		return domainCombinedValue.observer();
 	}
 
 	public Value<String> domainPackage() {
@@ -94,15 +109,20 @@ public final class DomainGeneratorModel {
 	}
 
 	public void populateSelected(Consumer<String> schemaNotifier) {
-		schemaTableModel.selectionModel().getSelectedItems().forEach(schema ->
-						metaDataModel.populateSchema(schema.name(), schemaNotifier));
+		schemaTableModel.selectionModel().getSelectedItems().forEach(schema -> {
+			metaDataModel.populateSchema(schema.name(), schemaNotifier);
+			schema.setDomain(new DatabaseDomain(schema.metadata));
+			int index = schemaTableModel.indexOf(schema);
+			schemaTableModel.fireTableRowsUpdated(index, index);
+		});
 		definitionTableModel.refresh();
+		updateDomainSource();
 	}
 
 	private void bindEvents() {
 		schemaTableModel.selectionModel().selectionEvent().addListener(definitionTableModel::refresh);
+		schemaTableModel.selectionModel().selectionEvent().addListener(this::updateDomainSource);
 		domainPackageValue.addListener(this::updateDomainSource);
-		definitionTableModel.selectionModel().selectionEvent().addListener(this::updateDomainSource);
 	}
 
 	/**
@@ -117,8 +137,33 @@ public final class DomainGeneratorModel {
 	}
 
 	private void updateDomainSource() {
-		domainSourceValue.set(DomainToString.toString(
-						definitionTableModel.selectionModel().getSelectedItems(), domainPackageValue.get()));
+		String packageName = domainPackageValue.get();
+		if (!PACKAGE_PATTERN.matcher(packageName).matches()) {
+			packageName = "";
+		}
+		domainApiValue.set(DomainToString.apiString(selectedDomains(), packageName));
+		domainImplValue.set(DomainToString.implementationString(selectedDomains(), packageName));
+		domainCombinedValue.set(DomainToString.combinedString(selectedDomains(), packageName));
+	}
+
+	private List<DatabaseDomain> selectedDomains() {
+		return schemaTableModel.selectionModel().getSelectedItems().stream()
+						.map(SchemaRow::domain)
+						.filter(Optional::isPresent)
+						.map(Optional::get)
+						.collect(toList());
+	}
+
+	private final class SchemaItems implements Supplier<Collection<SchemaRow>> {
+
+		@Override
+		public Collection<SchemaRow> get() {
+			return metaDataModel.schemas()
+							.stream()
+							.map(metaDataSchema ->
+											new SchemaRow(metaDataSchema, metaDataSchema.catalog(), metaDataSchema.name(), false))
+							.collect(Collectors.toList());
+		}
 	}
 
 	private final class DefinitionItems implements Supplier<Collection<DefinitionRow>> {
@@ -126,20 +171,16 @@ public final class DomainGeneratorModel {
 		@Override
 		public Collection<DefinitionRow> get() {
 			return schemaTableModel.selectionModel().getSelectedItems().stream()
-							.flatMap(schema -> createDefinitionRows(schema).stream())
-							.collect(toList());
-		}
-
-		private static Collection<DefinitionRow> createDefinitionRows(MetaDataSchema schema) {
-			DatabaseDomain domain = new DatabaseDomain(schema);
-
-			return domain.entities().definitions().stream()
-							.map(definition -> new DefinitionRow(definition, domain))
+							.map(SchemaRow::domain)
+							.filter(Optional::isPresent)
+							.map(Optional::get)
+							.flatMap(domain -> domain.entities().definitions().stream()
+											.map(definition -> new DefinitionRow(definition, domain.tableType(definition.entityType()))))
 							.collect(toList());
 		}
 	}
 
-	public static final class SchemaColumns implements Columns<MetaDataSchema, SchemaColumns.Id> {
+	public static final class SchemaColumns implements Columns<SchemaRow, SchemaColumns.Id> {
 
 		public enum Id {
 			CATALOG,
@@ -164,7 +205,7 @@ public final class DomainGeneratorModel {
 		}
 
 		@Override
-		public Object value(MetaDataSchema row, Id identifier) {
+		public Object value(SchemaRow row, Id identifier) {
 			switch (identifier) {
 				case CATALOG:
 					return row.catalog();

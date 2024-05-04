@@ -68,6 +68,7 @@ Codion Change Log
 ### is.codion.swing.framework.model.tools
 - DomainGenerator now uses com.squareup.javapoet to generate the source and generates a full domain implementation class.
 - DomainToString now handles views correctly, refactoring.
+- DomainToString now splits source up into api and implementation.
 ### is.codion.swing.framework.ui
 - EntityEditPanel, control configuration refactored, now consistent with EntityTablePanel.
 - EntityTablePanel.PopupMenuConfig and ToolBarConfig removed, quite unnecessary.
