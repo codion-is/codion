@@ -9,6 +9,14 @@
 
 class JTable {}
 
+interface TableSummaryModel {}
+
+interface FilterTableColumnModel {}
+
+interface FilterTableSortModel {}
+
+interface FilterTableSearchModel {}
+
 class FilterTable {
     +FilterTableModel getModel()
     +FilterTableConditionPanel filterPanel()
@@ -19,6 +27,11 @@ class FilterTableConditionPanel {}
 
 FilterTable --|> JTable
 FilterTable --o FilterTableConditionPanel
+FilterTable --o TableSummaryModel
+FilterTable --o FilterTableColumnModel
+FilterTable --o FilterTableSortModel
+FilterTable --o FilterTableSearchModel
+
 -------------------------------------------
 
 The {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilterTable.html[FilterTable] is a *JTable* subclass central to the framework.

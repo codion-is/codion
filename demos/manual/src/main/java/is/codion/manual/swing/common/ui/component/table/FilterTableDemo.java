@@ -18,7 +18,8 @@
  */
 package is.codion.manual.swing.common.ui.component.table;
 
-import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.TableRow;
+import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Column;
+import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Row;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
@@ -28,8 +29,6 @@ import is.codion.swing.common.ui.control.Control;
 import javax.swing.JTable;
 import java.util.List;
 
-import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.TableRow.INTEGER_COLUMN;
-import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.TableRow.STRING_COLUMN;
 import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.createFilterTableModel;
 import static java.util.Arrays.asList;
 
@@ -38,17 +37,17 @@ final class FilterTableDemo {
 	static void demo() {
 		// tag::filterTable[]
 		// See FilterTableModel example
-		FilterTableModel<TableRow, Integer> tableModel = createFilterTableModel();
+		FilterTableModel<Row, Column> tableModel = createFilterTableModel();
 
-		List<FilterTableColumn<Integer>> columns = asList(
-						FilterTableColumn.builder(STRING_COLUMN)
+		List<FilterTableColumn<Column>> columns = asList(
+						FilterTableColumn.builder(Column.STRING)
 										.headerValue("String")
 										.build(),
-						FilterTableColumn.builder(INTEGER_COLUMN)
+						FilterTableColumn.builder(Column.INTEGER)
 										.headerValue("Integer")
 										.build());
 
-		FilterTable<TableRow, Integer> filterTable = FilterTable.builder(tableModel, columns)
+		FilterTable<Row, Column> filterTable = FilterTable.builder(tableModel, columns)
 						.doubleClickAction(Control.control(() ->
 										tableModel.selectionModel().selectedItem()
 														.ifPresent(System.out::println)))

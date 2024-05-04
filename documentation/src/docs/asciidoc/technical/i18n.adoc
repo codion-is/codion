@@ -9,7 +9,7 @@ The default i18n strings can be overridden by implementing {url-javadoc}{common-
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/ChinookResources.java[lines=19..-1]
+include::{dir-source}/is/codion/framework/demos/chinook/domain/impl/ChinookResources.java[lines=19..-1]
 ----
 
 [source]
@@ -19,7 +19,7 @@ module is.codion.framework.demos.chinook {
 	...
 
 	provides is.codion.common.resource.Resources
-            with is.codion.framework.demos.chinook.model.ChinookResources;
+            with is.codion.framework.demos.chinook.domain.impl.ChinookResources;
 }
 ----
 

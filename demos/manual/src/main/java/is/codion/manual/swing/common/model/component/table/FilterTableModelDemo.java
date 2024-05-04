@@ -26,24 +26,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.TableRow.INTEGER_COLUMN;
-import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.TableRow.STRING_COLUMN;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 
 public final class FilterTableModelDemo {
 	// tag::filterTableModel[]
-	// Define a class representing the table rows
-	public static final class TableRow {
+	// Define a enum denoting the columns
+	public enum Column {
+		INTEGER,
+		STRING
+	}
 
-		public static final int STRING_COLUMN = 0;
-		public static final int INTEGER_COLUMN = 1;
+	// Define a class representing the table rows
+	public static final class Row {
 
 		private final String stringValue;
-
 		private final Integer integerValue;
 
-		TableRow(String stringValue, Integer integerValue) {
+		Row(String stringValue, Integer integerValue) {
 			this.stringValue = stringValue;
 			this.integerValue = integerValue;
 		}
@@ -57,35 +57,35 @@ public final class FilterTableModelDemo {
 		}
 	}
 
-	public static FilterTableModel<TableRow, Integer> createFilterTableModel() {
-		List<Integer> columnIdentifiers =
-						unmodifiableList(asList(STRING_COLUMN, INTEGER_COLUMN));
+	public static FilterTableModel<Row, Column> createFilterTableModel() {
+		List<Column> columnIdentifiers =
+						unmodifiableList(asList(Column.values()));
 
 		// Implement Columns, providing the table column configuration
-		Columns<TableRow, Integer> columns = new Columns<TableRow, Integer>() {
+		Columns<Row, Column> columns = new Columns<Row, Column>() {
 
 			@Override
-			public List<Integer> identifiers() {
+			public List<Column> identifiers() {
 				return columnIdentifiers;
 			}
 
 			@Override
-			public Class<?> columnClass(Integer identifier) {
+			public Class<?> columnClass(Column identifier) {
 				switch (identifier) {
-					case STRING_COLUMN:
+					case STRING:
 						return String.class;
-					case INTEGER_COLUMN:
+					case INTEGER:
 						return Integer.class;
 					default:
 						throw new IllegalArgumentException();
 				}
 			}
 			@Override
-			public Object value(TableRow row, Integer identifier) {
+			public Object value(Row row, Column identifier) {
 				switch (identifier) {
-					case STRING_COLUMN:
+					case STRING:
 						return row.stringValue();
-					case INTEGER_COLUMN:
+					case INTEGER:
 						return row.integerValue();
 					default:
 						throw new IllegalArgumentException();
@@ -95,12 +95,12 @@ public final class FilterTableModelDemo {
 
 		// Implement a item supplier responsible for supplying the table row items,
 		// without one the table can be populated by adding items manually
-		Supplier<Collection<TableRow>> items = () -> asList(
-						new TableRow("A string", 42),
-						new TableRow("Another string", 43));
+		Supplier<Collection<Row>> items = () -> asList(
+						new Row("A string", 42),
+						new Row("Another string", 43));
 
 		// Create the table model
-		FilterTableModel<TableRow, Integer> tableModel =
+		FilterTableModel<Row, Column> tableModel =
 						FilterTableModel.builder(columns)
 										.items(items)
 										// if true then the item supplier is called in a
@@ -112,7 +112,7 @@ public final class FilterTableModelDemo {
 		tableModel.refresh();
 
 		// Select the first row
-		FilterTableSelectionModel<TableRow> selectionModel = tableModel.selectionModel();
+		FilterTableSelectionModel<Row> selectionModel = tableModel.selectionModel();
 		selectionModel.setSelectedIndex(0);
 
 		// With async refresh enabled
