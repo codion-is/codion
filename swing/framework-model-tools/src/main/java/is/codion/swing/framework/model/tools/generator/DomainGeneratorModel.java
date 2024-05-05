@@ -23,6 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
@@ -66,13 +67,13 @@ public final class DomainGeneratorModel {
 	private final Connection connection;
 	private final Value<String> domainPackageValue = Value.nonNull(DEFAULT_DOMAIN_PACKAGE.get()).build();
 	private final Value<String> domainImplValue = Value.<String>nullable()
-					.notify(Value.Notify.WHEN_SET)
+					.notify(Notify.WHEN_SET)
 					.build();
 	private final Value<String> domainApiValue = Value.<String>nullable()
-					.notify(Value.Notify.WHEN_SET)
+					.notify(Notify.WHEN_SET)
 					.build();
 	private final Value<String> domainCombinedValue = Value.<String>nullable()
-					.notify(Value.Notify.WHEN_SET)
+					.notify(Notify.WHEN_SET)
 					.build();
 	private final Value<String> apiSearchValue = Value.value();
 	private final Value<String> implSearchValue = Value.value();

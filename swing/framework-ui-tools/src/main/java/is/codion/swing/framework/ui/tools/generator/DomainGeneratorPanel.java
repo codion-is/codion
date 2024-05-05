@@ -24,6 +24,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -35,6 +36,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.tools.generator.DefinitionRow;
 import is.codion.swing.framework.model.tools.generator.DomainGeneratorModel;
 import is.codion.swing.framework.model.tools.generator.DomainGeneratorModel.DefinitionColumns;
@@ -43,10 +45,10 @@ import is.codion.swing.framework.model.tools.generator.SchemaRow;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -67,6 +69,7 @@ import java.util.function.Consumer;
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.SearchHighlighter.searchHighlighter;
+import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
@@ -74,6 +77,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createTitledBorder;
 
 public final class DomainGeneratorPanel extends JPanel {
 
@@ -89,11 +93,13 @@ public final class DomainGeneratorPanel extends JPanel {
 	private static final double RESIZE_WEIGHT = 0.2;
 
 	private final DomainGeneratorModel model;
+	private final FilterTable<SchemaRow, SchemaColumns.Id> schemaTable;
+	private final FilterTable<DefinitionRow, DefinitionColumns.Id> definitionTable;
 	private final JTextArea apiTextArea;
-	private final SearchHighlighter apiHighlighter;
 	private final JTextArea implementationTextArea;
-	private final SearchHighlighter implementationHighlighter;
 	private final JTextArea combinedTextArea;
+	private final SearchHighlighter apiHighlighter;
+	private final SearchHighlighter implementationHighlighter;
 	private final SearchHighlighter combinedHighlighter;
 
 	/**
@@ -102,118 +108,39 @@ public final class DomainGeneratorPanel extends JPanel {
 	 */
 	DomainGeneratorPanel(DomainGeneratorModel model) {
 		this.model = requireNonNull(model);
-		Font font = UIManager.getFont("TextArea.font");
-		Font monospace = new Font(Font.MONOSPACED, font.getStyle(), font.getSize());
-		apiTextArea = textArea()
-						.link(model.domainApi())
-						.rowsColumns(40, 60)
-						.editable(false)
-						.font(monospace)
-						.build();
+		schemaTable = createSchemaTable();
+		definitionTable = createDefinitionTable();
+		apiTextArea = createSourceTextArea(model.domainApi());
+		implementationTextArea = createSourceTextArea(model.domainImpl());
+		combinedTextArea = createSourceTextArea(model.domainCombined());
 		apiHighlighter = searchHighlighter(apiTextArea);
-		implementationTextArea = textArea()
-						.link(model.domainImpl())
-						.rowsColumns(40, 60)
-						.editable(false)
-						.font(monospace)
-						.build();
 		implementationHighlighter = searchHighlighter(implementationTextArea);
-		combinedTextArea = textArea()
-						.link(model.domainCombined())
-						.rowsColumns(40, 60)
-						.editable(false)
-						.font(monospace)
-						.build();
 		combinedHighlighter = searchHighlighter(combinedTextArea);
-		Control populateSchemaControl = Control.builder(this::populateSchema)
-						.name("Populate")
-						.enabled(model.schemaModel().selectionModel().selectionNotEmpty())
-						.build();
-		FilterTable<SchemaRow, SchemaColumns.Id> schemaTable =
-						FilterTable.builder(model.schemaModel(), createSchemaColumns())
-										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-										.doubleClickAction(populateSchemaControl)
-										.selectionMode(ListSelectionModel.SINGLE_SELECTION)
-										.keyEvent(KeyEvents.builder(VK_ENTER)
-														.modifiers(InputEvent.CTRL_DOWN_MASK)
-														.action(populateSchemaControl))
-										.popupMenuControls(table -> Controls.builder()
-														.control(populateSchemaControl)
-														.controls(Controls.builder()
-																		.name("Columns")
-																		.control(table.createToggleColumnsControls())
-																		.controls(table.createAutoResizeModeControl()))
-														.build())
-										.build();
-		schemaTable.sortModel().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING);
+		initializeUI();
+		bindEvents();
+		setupKeyEvents();
+	}
 
-		FilterTable<DefinitionRow, DefinitionColumns.Id> definitionTable =
-						FilterTable.builder(model.definitionModel(), createDefinitionColumns())
-										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-										.popupMenuControl(FilterTable::createAutoResizeModeControl)
-										.build();
-		definitionTable.sortModel().setSortOrder(DefinitionColumns.Id.ENTITY, SortOrder.ASCENDING);
-
-		JSplitPane schemaTableSplitPane = splitPane()
-						.orientation(JSplitPane.VERTICAL_SPLIT)
-						.resizeWeight(RESIZE_WEIGHT)
-						.topComponent(new JScrollPane(schemaTable))
-						.bottomComponent(new JScrollPane(definitionTable))
-						.build();
-
-		JLabel packageLabel = label("Package")
-						.displayedMnemonic('P')
-						.build();
-		JPanel packagePanel = borderLayoutPanel()
-						.westComponent(packageLabel)
-						.centerComponent(stringField(model.domainPackage())
-										.columns(42)
-										.build(packageLabel::setLabelFor))
-						.build();
-
+	private void initializeUI() {
+		JPanel packagePanel = createPackagePanel(model);
 		JPanel schemaTablePanel = borderLayoutPanel()
 						.northComponent(label()
 										.preferredHeight(packagePanel.getPreferredSize().height)
 										.build())
-						.centerComponent(schemaTableSplitPane)
-						.build();
-
-		JSplitPane apiImplPanel = splitPane()
-						.orientation(JSplitPane.VERTICAL_SPLIT)
-						.resizeWeight(0.5)
-						.topComponent(borderLayoutPanel()
-										.centerComponent(new JScrollPane(apiTextArea))
-										.southComponent(borderLayoutPanel()
-														.centerComponent(apiHighlighter.createSearchField())
-														.eastComponent(button(createCopyControl(apiTextArea))
-																		.build())
-														.build())
+						.centerComponent(splitPane()
+										.orientation(JSplitPane.VERTICAL_SPLIT)
+										.resizeWeight(RESIZE_WEIGHT)
+										.topComponent(createScrollablePanel(schemaTable, "Schemas (ALT-1)"))
+										.bottomComponent(createScrollablePanel(definitionTable, "Entities (ALT-2)"))
 										.build())
-						.bottomComponent(borderLayoutPanel()
-										.centerComponent(new JScrollPane(implementationTextArea))
-										.southComponent(borderLayoutPanel()
-														.centerComponent(implementationHighlighter.createSearchField())
-														.eastComponent(button(createCopyControl(implementationTextArea))
-																		.build())
-														.build())
-										.build())
-						.continuousLayout(true)
-						.oneTouchExpandable(true)
 						.build();
 
 		JPanel sourcePanel = borderLayoutPanel()
 						.centerComponent(tabbedPane()
-										.tabBuilder("API/Impl", apiImplPanel)
+										.tabBuilder("API/Impl", createApiImplPanel())
 										.mnemonic('A')
 										.add()
-										.tabBuilder("Combined", borderLayoutPanel()
-														.centerComponent(new JScrollPane(combinedTextArea))
-														.southComponent(borderLayoutPanel()
-																		.centerComponent(combinedHighlighter.createSearchField())
-																		.eastComponent(button(createCopyControl(combinedTextArea))
-																						.build())
-																		.build())
-														.build())
+										.tabBuilder("Combined", createCombinedPanel())
 										.mnemonic('C')
 										.add()
 										.build())
@@ -232,14 +159,112 @@ public final class DomainGeneratorPanel extends JPanel {
 
 		setLayout(borderLayout());
 		add(splitPane, BorderLayout.CENTER);
+	}
 
-		bindEvents(schemaTable, definitionTable);
+	private FilterTable<SchemaRow, SchemaColumns.Id> createSchemaTable() {
+		Control populateSchemaControl = Control.builder(this::populateSchema)
+						.name("Populate")
+						.enabled(model.schemaModel().selectionModel().selectionNotEmpty())
+						.build();
+
+		return FilterTable.builder(model.schemaModel(), createSchemaColumns())
+						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+						.doubleClickAction(populateSchemaControl)
+						.selectionMode(ListSelectionModel.SINGLE_SELECTION)
+						.keyEvent(KeyEvents.builder(VK_ENTER)
+										.modifiers(InputEvent.CTRL_DOWN_MASK)
+										.action(populateSchemaControl))
+						.popupMenuControls(table -> Controls.builder()
+										.control(populateSchemaControl)
+										.controls(Controls.builder()
+														.name("Columns")
+														.control(table.createToggleColumnsControls())
+														.controls(table.createAutoResizeModeControl()))
+										.build())
+						.onBuild(table -> table.sortModel().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING))
+						.build();
+	}
+
+	private FilterTable<DefinitionRow, DefinitionColumns.Id> createDefinitionTable() {
+		return FilterTable.builder(model.definitionModel(), createDefinitionColumns())
+						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+						.popupMenuControl(FilterTable::createAutoResizeModeControl)
+						.onBuild(table -> table.sortModel().setSortOrder(DefinitionColumns.Id.ENTITY, SortOrder.ASCENDING))
+						.build();
+	}
+
+	private JSplitPane createApiImplPanel() {
+		return splitPane()
+						.orientation(JSplitPane.VERTICAL_SPLIT)
+						.resizeWeight(0.5)
+						.topComponent(borderLayoutPanel()
+										.centerComponent(createScrollablePanel(apiTextArea, "API (ALT-3)"))
+										.southComponent(createSearchCopyPanel(apiTextArea))
+										.build())
+						.bottomComponent(borderLayoutPanel()
+										.centerComponent(createScrollablePanel(implementationTextArea, "Implementation (ALT-4)"))
+										.southComponent(createSearchCopyPanel(implementationTextArea))
+										.build())
+						.continuousLayout(true)
+						.oneTouchExpandable(true)
+						.build();
+	}
+
+	private JPanel createCombinedPanel() {
+		return borderLayoutPanel()
+						.centerComponent(createScrollablePanel(combinedTextArea, "Combined (ALT-5)"))
+						.southComponent(createSearchCopyPanel(combinedTextArea))
+						.build();
+	}
+
+	private static JPanel createSearchCopyPanel(JTextArea textArea) {
+		return borderLayoutPanel()
+						.eastComponent(button(createCopyControl(textArea))
+										.build())
+						.build();
 	}
 
 	private static Control createCopyControl(JTextArea textArea) {
 		return Control.builder(() -> Utilities.setClipboard(textArea.getText()))
 						.name(Messages.copy())
 						.mnemonic(Messages.copy().charAt(0))
+						.build();
+	}
+
+	private static JTextArea createSourceTextArea(ValueObserver<String> sourceValue) {
+		return textArea()
+						.link(sourceValue)
+						.rowsColumns(40, 60)
+						.editable(false)
+						.font(monospaceFont())
+						.build();
+	}
+
+	private static Font monospaceFont() {
+		Font font = UIManager.getFont("TextArea.font");
+
+		return new Font(Font.MONOSPACED, font.getStyle(), font.getSize());
+	}
+
+	private static JPanel createPackagePanel(DomainGeneratorModel model) {
+		JLabel packageLabel = label("Package")
+						.displayedMnemonic('P')
+						.build();
+
+		return borderLayoutPanel()
+						.westComponent(packageLabel)
+						.centerComponent(stringField(model.domainPackage())
+										.columns(42)
+										.build(packageLabel::setLabelFor))
+						.build();
+	}
+
+	private static JPanel createScrollablePanel(JComponent component, String title) {
+		return borderLayoutPanel()
+						.centerComponent(scrollPane(component).build())
+						.border(BorderFactory.createCompoundBorder(createTitledBorder(title),
+										BorderFactory.createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(),
+														Layouts.GAP.get(), Layouts.GAP.get())))
 						.build();
 	}
 
@@ -286,56 +311,63 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 	}
 
-	private void bindEvents(FilterTable<SchemaRow, SchemaColumns.Id> schemaTable,
-													FilterTable<DefinitionRow, DefinitionColumns.Id> definitionTable) {
+	private void bindEvents() {
 		model.domainApi().addListener(() -> apiTextArea.setCaretPosition(0));
 		model.domainImpl().addListener(() -> implementationTextArea.setCaretPosition(0));
 		model.domainCombined().addListener(() -> combinedTextArea.setCaretPosition(0));
 		model.apiSearchValue().addConsumer(apiHighlighter.searchString()::set);
 		model.implSearchValue().addConsumer(implementationHighlighter.searchString()::set);
 		model.implSearchValue().addConsumer(combinedHighlighter.searchString()::set);
+	}
+
+	private void setupKeyEvents() {
 		KeyEvents.builder()
 						.modifiers(InputEvent.ALT_DOWN_MASK)
 						.condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 						.keyCode(KeyEvent.VK_1)
-						.action(Control.control(schemaTable::requestFocusInWindow))
+						.action(control(schemaTable::requestFocusInWindow))
 						.enable(this)
 						.keyCode(KeyEvent.VK_2)
-						.action(Control.control(definitionTable::requestFocusInWindow))
+						.action(control(definitionTable::requestFocusInWindow))
 						.enable(this)
 						.keyCode(KeyEvent.VK_3)
-						.action(Control.control(apiTextArea::requestFocusInWindow))
+						.action(control(apiTextArea::requestFocusInWindow))
 						.enable(this)
 						.keyCode(KeyEvent.VK_4)
-						.action(Control.control(implementationTextArea::requestFocusInWindow))
+						.action(control(implementationTextArea::requestFocusInWindow))
 						.enable(this)
 						.keyCode(KeyEvent.VK_5)
-						.action(Control.control(combinedTextArea::requestFocusInWindow))
+						.action(control(combinedTextArea::requestFocusInWindow))
 						.enable(this);
 	}
 
 	private static List<FilterTableColumn<SchemaColumns.Id>> createSchemaColumns() {
-		FilterTableColumn<SchemaColumns.Id> catalogColumn = FilterTableColumn.builder(SchemaColumns.Id.CATALOG)
-						.headerValue("Catalog")
-						.build();
-		FilterTableColumn<SchemaColumns.Id> schemaColumn = FilterTableColumn.builder(SchemaColumns.Id.SCHEMA)
-						.headerValue("Schema")
-						.build();
-		FilterTableColumn<SchemaColumns.Id> populatedColumn = FilterTableColumn.builder(SchemaColumns.Id.POPULATED)
-						.headerValue("Populated")
-						.build();
+		FilterTableColumn<SchemaColumns.Id> catalogColumn =
+						FilterTableColumn.builder(SchemaColumns.Id.CATALOG)
+										.headerValue("Catalog")
+										.build();
+		FilterTableColumn<SchemaColumns.Id> schemaColumn =
+						FilterTableColumn.builder(SchemaColumns.Id.SCHEMA)
+										.headerValue("Schema")
+										.build();
+		FilterTableColumn<SchemaColumns.Id> populatedColumn =
+						FilterTableColumn.builder(SchemaColumns.Id.POPULATED)
+										.headerValue("Populated")
+										.build();
 
 		return asList(catalogColumn, schemaColumn, populatedColumn);
 	}
 
 	private static List<FilterTableColumn<DefinitionColumns.Id>> createDefinitionColumns() {
-		FilterTableColumn<DefinitionColumns.Id> entityTypeColumn = FilterTableColumn.builder(DefinitionColumns.Id.ENTITY)
-						.headerValue("Entity")
-						.build();
-		FilterTableColumn<DefinitionColumns.Id> typeColumn = FilterTableColumn.builder(DefinitionColumns.Id.TABLE_TYPE)
-						.headerValue("Type")
-						.preferredWidth(120)
-						.build();
+		FilterTableColumn<DefinitionColumns.Id> entityTypeColumn =
+						FilterTableColumn.builder(DefinitionColumns.Id.ENTITY)
+										.headerValue("Entity")
+										.build();
+		FilterTableColumn<DefinitionColumns.Id> typeColumn =
+						FilterTableColumn.builder(DefinitionColumns.Id.TABLE_TYPE)
+										.headerValue("Type")
+										.preferredWidth(120)
+										.build();
 
 		return asList(entityTypeColumn, typeColumn);
 	}
