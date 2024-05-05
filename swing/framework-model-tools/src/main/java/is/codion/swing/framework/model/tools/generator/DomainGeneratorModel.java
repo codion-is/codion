@@ -37,6 +37,8 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static is.codion.swing.framework.model.tools.generator.DomainToString.apiSearchString;
+import static is.codion.swing.framework.model.tools.generator.DomainToString.implSearchString;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -55,9 +57,17 @@ public final class DomainGeneratorModel {
 	private final FilterTableModel<DefinitionRow, DefinitionColumns.Id> definitionTableModel;
 	private final Connection connection;
 	private final Value<String> domainPackageValue = Value.nonNull("").build();
-	private final Value<String> domainImplValue = Value.value();
-	private final Value<String> domainApiValue = Value.value();
-	private final Value<String> domainCombinedValue = Value.value();
+	private final Value<String> domainImplValue = Value.<String>nullable()
+					.notify(Value.Notify.WHEN_SET)
+					.build();
+	private final Value<String> domainApiValue = Value.<String>nullable()
+					.notify(Value.Notify.WHEN_SET)
+					.build();
+	private final Value<String> domainCombinedValue = Value.<String>nullable()
+					.notify(Value.Notify.WHEN_SET)
+					.build();
+	private final Value<String> apiSearchValue = Value.value();
+	private final Value<String> implSearchValue = Value.value();
 
 	private DomainGeneratorModel(Database database, User user) throws DatabaseException {
 		this.connection = requireNonNull(database, "database").createConnection(user);
@@ -101,6 +111,14 @@ public final class DomainGeneratorModel {
 		return domainPackageValue;
 	}
 
+	public Value<String> apiSearchValue() {
+		return apiSearchValue;
+	}
+
+	public Value<String> implSearchValue() {
+		return implSearchValue;
+	}
+
 	public void close() {
 		try {
 			connection.close();
@@ -123,6 +141,12 @@ public final class DomainGeneratorModel {
 		schemaTableModel.selectionModel().selectionEvent().addListener(definitionTableModel::refresh);
 		schemaTableModel.selectionModel().selectionEvent().addListener(this::updateDomainSource);
 		domainPackageValue.addListener(this::updateDomainSource);
+		definitionModel().selectionModel().selectedItemEvent().addConsumer(this::search);
+	}
+
+	private void search(DefinitionRow definitionRow) {
+		apiSearchValue.set(definitionRow == null ? null : apiSearchString(definitionRow.definition));
+		implSearchValue.set(definitionRow == null ? null : implSearchString(definitionRow.definition));
 	}
 
 	/**

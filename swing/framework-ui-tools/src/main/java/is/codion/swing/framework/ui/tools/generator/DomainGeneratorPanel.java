@@ -26,6 +26,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
+import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -53,7 +54,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -62,6 +62,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.text.SearchHighlighter.searchHighlighter;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
@@ -75,6 +76,12 @@ public final class DomainGeneratorPanel extends JPanel {
 	private static final double RESIZE_WEIGHT = 0.2;
 
 	private final DomainGeneratorModel model;
+	private final JTextArea apiTextArea;
+	private final SearchHighlighter apiHighlighter;
+	private final JTextArea implementationTextArea;
+	private final SearchHighlighter implementationHighlighter;
+	private final JTextArea combinedTextArea;
+	private final SearchHighlighter combinedHighlighter;
 
 	/**
 	 * Instantiates a new DomainGeneratorPanel.
@@ -82,6 +89,29 @@ public final class DomainGeneratorPanel extends JPanel {
 	 */
 	DomainGeneratorPanel(DomainGeneratorModel model) {
 		this.model = requireNonNull(model);
+		Font font = UIManager.getFont("TextArea.font");
+		Font monospace = new Font(Font.MONOSPACED, font.getStyle(), font.getSize());
+		apiTextArea = textArea()
+						.link(model.domainApi())
+						.rowsColumns(40, 60)
+						.editable(false)
+						.font(monospace)
+						.build();
+		apiHighlighter = searchHighlighter(apiTextArea);
+		implementationTextArea = textArea()
+						.link(model.domainImpl())
+						.rowsColumns(40, 60)
+						.editable(false)
+						.font(monospace)
+						.build();
+		implementationHighlighter = searchHighlighter(implementationTextArea);
+		combinedTextArea = textArea()
+						.link(model.domainCombined())
+						.rowsColumns(40, 60)
+						.editable(false)
+						.font(monospace)
+						.build();
+		combinedHighlighter = searchHighlighter(combinedTextArea);
 		Control populateSchemaControl = Control.builder(this::populateSchema)
 						.name("Populate")
 						.enabled(model.schemaModel().selectionModel().selectionNotEmpty())
@@ -108,6 +138,8 @@ public final class DomainGeneratorPanel extends JPanel {
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.popupMenuControl(FilterTable::createAutoResizeModeControl)
 										.build();
+		definitionTable.sortModel().setSortOrder(DefinitionColumns.Id.DOMAIN, SortOrder.ASCENDING);
+		definitionTable.sortModel().addSortOrder(DefinitionColumns.Id.ENTITY, SortOrder.ASCENDING);
 
 		JSplitPane schemaTableSplitPane = splitPane()
 						.orientation(JSplitPane.VERTICAL_SPLIT)
@@ -133,38 +165,22 @@ public final class DomainGeneratorPanel extends JPanel {
 						.centerComponent(schemaTableSplitPane)
 						.build();
 
-		Font font = UIManager.getFont("TextArea.font");
-		Font monospace = new Font(Font.MONOSPACED, font.getStyle(), font.getSize());
-		JTextArea apiTextArea = textArea()
-						.rowsColumns(40, 60)
-						.editable(false)
-						.font(monospace)
-						.build();
-		JTextArea implementationTextArea = textArea()
-						.rowsColumns(40, 60)
-						.editable(false)
-						.font(monospace)
-						.build();
-		JTextArea combinedTextArea = textArea()
-						.rowsColumns(40, 60)
-						.editable(false)
-						.font(monospace)
-						.build();
-
 		JSplitPane apiImplPanel = splitPane()
 						.orientation(JSplitPane.VERTICAL_SPLIT)
 						.resizeWeight(0.5)
 						.topComponent(borderLayoutPanel()
 										.centerComponent(new JScrollPane(apiTextArea))
-										.southComponent(flowLayoutPanel(FlowLayout.RIGHT)
-														.add(button(createCopyControl(apiTextArea))
+										.southComponent(borderLayoutPanel()
+														.centerComponent(apiHighlighter.createSearchField())
+														.eastComponent(button(createCopyControl(apiTextArea))
 																		.build())
 														.build())
 										.build())
 						.bottomComponent(borderLayoutPanel()
 										.centerComponent(new JScrollPane(implementationTextArea))
-										.southComponent(flowLayoutPanel(FlowLayout.RIGHT)
-														.add(button(createCopyControl(implementationTextArea))
+										.southComponent(borderLayoutPanel()
+														.centerComponent(implementationHighlighter.createSearchField())
+														.eastComponent(button(createCopyControl(implementationTextArea))
 																		.build())
 														.build())
 										.build())
@@ -179,8 +195,9 @@ public final class DomainGeneratorPanel extends JPanel {
 										.add()
 										.tabBuilder("Combined", borderLayoutPanel()
 														.centerComponent(new JScrollPane(combinedTextArea))
-														.southComponent(flowLayoutPanel(FlowLayout.RIGHT)
-																		.add(button(createCopyControl(combinedTextArea))
+														.southComponent(borderLayoutPanel()
+																		.centerComponent(combinedHighlighter.createSearchField())
+																		.eastComponent(button(createCopyControl(combinedTextArea))
 																						.build())
 																		.build())
 														.build())
@@ -203,36 +220,7 @@ public final class DomainGeneratorPanel extends JPanel {
 		setLayout(borderLayout());
 		add(splitPane, BorderLayout.CENTER);
 
-		model.domainApi().addConsumer(sourceText -> {
-			apiTextArea.setText(sourceText);
-			apiTextArea.setCaretPosition(0);
-		});
-		model.domainImpl().addConsumer(sourceText -> {
-			implementationTextArea.setText(sourceText);
-			implementationTextArea.setCaretPosition(0);
-		});
-		model.domainCombined().addConsumer(sourceText -> {
-			combinedTextArea.setText(sourceText);
-			combinedTextArea.setCaretPosition(0);
-		});
-		KeyEvents.builder()
-						.modifiers(InputEvent.ALT_DOWN_MASK)
-						.condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-						.keyCode(KeyEvent.VK_1)
-						.action(Control.control(schemaTable::requestFocusInWindow))
-						.enable(this)
-						.keyCode(KeyEvent.VK_2)
-						.action(Control.control(definitionTable::requestFocusInWindow))
-						.enable(this)
-						.keyCode(KeyEvent.VK_3)
-						.action(Control.control(apiTextArea::requestFocusInWindow))
-						.enable(this)
-						.keyCode(KeyEvent.VK_4)
-						.action(Control.control(implementationTextArea::requestFocusInWindow))
-						.enable(this)
-						.keyCode(KeyEvent.VK_5)
-						.action(Control.control(combinedTextArea::requestFocusInWindow))
-						.enable(this);
+		bindEvents(schemaTable, definitionTable);
 	}
 
 	private static Control createCopyControl(JTextArea textArea) {
@@ -283,6 +271,34 @@ public final class DomainGeneratorPanel extends JPanel {
 														.userPreferencePropertyName(DomainGeneratorPanel.class.getName())
 														.createControl()))
 						.build();
+	}
+
+	private void bindEvents(FilterTable<SchemaRow, SchemaColumns.Id> schemaTable,
+													FilterTable<DefinitionRow, DefinitionColumns.Id> definitionTable) {
+		model.domainApi().addListener(() -> apiTextArea.setCaretPosition(0));
+		model.domainImpl().addListener(() -> implementationTextArea.setCaretPosition(0));
+		model.domainCombined().addListener(() -> combinedTextArea.setCaretPosition(0));
+		model.apiSearchValue().addConsumer(apiHighlighter.searchString()::set);
+		model.implSearchValue().addConsumer(implementationHighlighter.searchString()::set);
+		model.implSearchValue().addConsumer(combinedHighlighter.searchString()::set);
+		KeyEvents.builder()
+						.modifiers(InputEvent.ALT_DOWN_MASK)
+						.condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.keyCode(KeyEvent.VK_1)
+						.action(Control.control(schemaTable::requestFocusInWindow))
+						.enable(this)
+						.keyCode(KeyEvent.VK_2)
+						.action(Control.control(definitionTable::requestFocusInWindow))
+						.enable(this)
+						.keyCode(KeyEvent.VK_3)
+						.action(Control.control(apiTextArea::requestFocusInWindow))
+						.enable(this)
+						.keyCode(KeyEvent.VK_4)
+						.action(Control.control(implementationTextArea::requestFocusInWindow))
+						.enable(this)
+						.keyCode(KeyEvent.VK_5)
+						.action(Control.control(combinedTextArea::requestFocusInWindow))
+						.enable(this);
 	}
 
 	private static List<FilterTableColumn<SchemaColumns.Id>> createSchemaColumns() {

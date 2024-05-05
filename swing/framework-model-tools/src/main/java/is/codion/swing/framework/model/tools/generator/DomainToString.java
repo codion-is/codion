@@ -455,6 +455,14 @@ final class DomainToString {
 		return line != null && line.trim().startsWith(prefix);
 	}
 
+	static String apiSearchString(EntityDefinition definition) {
+		return "interface " + interfaceName(definition.tableName(), true) + " ";
+	}
+
+	static String implSearchString(EntityDefinition definition) {
+		return "EntityDefinition " + interfaceName(definition.tableName(), false) + "()";
+	}
+
 	static String underscoreToCamelCase(String text) {
 		if (!requireNonNull(text, "text").contains("_")) {
 			return text;
