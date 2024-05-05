@@ -20,6 +20,7 @@ package is.codion.swing.framework.model.tools.generator;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -37,6 +38,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static is.codion.common.Configuration.stringValue;
 import static is.codion.swing.framework.model.tools.generator.DomainToString.apiSearchString;
 import static is.codion.swing.framework.model.tools.generator.DomainToString.implSearchString;
 import static java.util.Arrays.asList;
@@ -49,6 +51,12 @@ import static java.util.stream.Collectors.toList;
  */
 public final class DomainGeneratorModel {
 
+	/**
+	 * The default package.
+	 */
+	public static final PropertyValue<String> DEFAULT_DOMAIN_PACKAGE =
+					stringValue("codion.domain.generator.defaultDomainPackage", "");
+
 	private static final Pattern PACKAGE_PATTERN =
 					Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$");
 
@@ -56,7 +64,7 @@ public final class DomainGeneratorModel {
 	private final FilterTableModel<SchemaRow, SchemaColumns.Id> schemaTableModel;
 	private final FilterTableModel<DefinitionRow, DefinitionColumns.Id> definitionTableModel;
 	private final Connection connection;
-	private final Value<String> domainPackageValue = Value.nonNull("").build();
+	private final Value<String> domainPackageValue = Value.nonNull(DEFAULT_DOMAIN_PACKAGE.get()).build();
 	private final Value<String> domainImplValue = Value.<String>nullable()
 					.notify(Value.Notify.WHEN_SET)
 					.build();
