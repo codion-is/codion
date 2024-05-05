@@ -81,7 +81,10 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * The default username.
 	 */
 	public static final PropertyValue<String> DEFAULT_USERNAME =
-					stringValue("codion.domain.generator.defaultUsername", "");
+					stringValue("codion.domain.generator.defaultUsername");
+
+	private static final String DEFAULT_FLAT_LOOK_AND_FEEL =
+					"com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme";
 
 	private static final double RESIZE_WEIGHT = 0.2;
 
@@ -348,8 +351,10 @@ public final class DomainGeneratorPanel extends JPanel {
 	public static void main(String[] arguments) {
 		Arrays.stream(FlatAllIJThemes.INFOS)
 						.forEach(LookAndFeelProvider::addLookAndFeel);
-		findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName()))
-						.ifPresent(LookAndFeelProvider::enable);
+		LookAndFeelProvider.SYSTEM.set(false);
+		LookAndFeelProvider.CROSS_PLATFORM.set(false);
+		findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName(),
+						DEFAULT_FLAT_LOOK_AND_FEEL)).ifPresent(LookAndFeelProvider::enable);
 		try {
 			SwingUtilities.invokeLater(DomainGeneratorPanel::start);
 		}
@@ -368,7 +373,9 @@ public final class DomainGeneratorPanel extends JPanel {
 			new DomainGeneratorPanel(DomainGeneratorModel.domainGeneratorModel(database,
 							Dialogs.loginDialog()
 											.icon(Logos.logoTransparent())
-											.defaultUser(User.user(DEFAULT_USERNAME.get()))
+											.defaultUser(DEFAULT_USERNAME.optional()
+															.map(User::user)
+															.orElse(null))
 											.validator(user -> database.createConnection(user).close())
 											.show()))
 							.showFrame();

@@ -51,6 +51,7 @@ Codion Change Log
 - SearchHighlighter.nextSearchPosition() and previousSearchPosition() now public.
 - SearchHighlighter default colors now based on the selection color of the component.
 - ComponentBuilder.onBuildValue() added, related refactoring.
+- LookAndFeelProvider.defaultLookAndFeelName() overloaded with a defaultLookAndFeel parameter.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.

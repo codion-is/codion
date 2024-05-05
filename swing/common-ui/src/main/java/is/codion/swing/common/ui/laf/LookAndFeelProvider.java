@@ -139,7 +139,17 @@ public interface LookAndFeelProvider {
 	 * @return the look and feel specified by user preference or the default system look and feel
 	 */
 	static String defaultLookAndFeelName(String userPreferencePropertyName) {
-		return UserPreferences.getUserPreference(userPreferencePropertyName, Utilities.systemLookAndFeelClassName());
+		return defaultLookAndFeelName(userPreferencePropertyName, Utilities.systemLookAndFeelClassName());
+	}
+
+	/**
+	 * Returns the look and feel specified by the given user preference or the system look and feel if no preference value is found.
+	 * @param userPreferencePropertyName the name of the user preference look and feel property
+	 * @param defaultLookAndFeel the default look and feel to use if none is found in user preferences
+	 * @return the look and feel specified by user preference or the default system look and feel
+	 */
+	static String defaultLookAndFeelName(String userPreferencePropertyName, String defaultLookAndFeel) {
+		return UserPreferences.getUserPreference(userPreferencePropertyName, defaultLookAndFeel);
 	}
 
 	/**
