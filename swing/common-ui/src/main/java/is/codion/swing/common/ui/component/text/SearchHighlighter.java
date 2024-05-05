@@ -31,15 +31,19 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.Highlighter;
+import javax.swing.text.Highlighter.HighlightPainter;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
@@ -66,11 +70,13 @@ public final class SearchHighlighter {
 	private final Value<Integer> currentSearchTextPositionIndex = Value.value();
 	private final Value<Integer> selectedSearchTextPosition = Value.value();
 
-	private Highlighter.HighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
-	private Highlighter.HighlightPainter highlightSelectedPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.GREEN);
+	private HighlightPainter highlightPainter;
+	private HighlightPainter highlightSelectedPainter;
 
 	private SearchHighlighter(JTextComponent textComponent) {
 		this.textComponent = requireNonNull(textComponent);
+		highlightPainter = new DefaultHighlightPainter(darker(textComponent.getSelectionColor()));
+		highlightSelectedPainter = new DefaultHighlightPainter(textComponent.getSelectionColor());
 		textComponent.setHighlighter(highlighter);
 		bindEvents(textComponent);
 	}
@@ -93,7 +99,7 @@ public final class SearchHighlighter {
 	 * @param color the color to use when highlighting search results.
 	 */
 	public void highlightColor(Color color) {
-		highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(requireNonNull(color));
+		highlightPainter = new DefaultHighlightPainter(requireNonNull(color));
 		searchAndHighlightResults();
 	}
 
@@ -101,7 +107,7 @@ public final class SearchHighlighter {
 	 * @param color the color to use when highlighting the selected search result.
 	 */
 	public void highlightSelectedColor(Color color) {
-		highlightSelectedPainter = new DefaultHighlighter.DefaultHighlightPainter(requireNonNull(color));
+		highlightSelectedPainter = new DefaultHighlightPainter(requireNonNull(color));
 		searchAndHighlightResults();
 	}
 
@@ -225,7 +231,10 @@ public final class SearchHighlighter {
 		selectedSearchTextPosition.addConsumer(selectedSearchPosition -> {
 			if (selectedSearchPosition != null) {
 				try {
-					textComponent.scrollRectToVisible(textComponent.modelToView(selectedSearchPosition));
+					Rectangle rect = textComponent.modelToView(selectedSearchPosition);
+					if (rect != null) {
+						textComponent.scrollRectToVisible(rect);
+					}
 				}
 				catch (BadLocationException e) {
 					throw new RuntimeException(e);

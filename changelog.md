@@ -48,6 +48,7 @@ Codion Change Log
 - TabbedDetailLayout.Builder.panelState() and panelStates() renamed initialDetailState() and enabledDetailStates() respectively.
 - FilteredTable renamed FilterTable, related renaming.
 - SearchHighlighter.nextSearchPosition() and previousSearchPosition() now public.
+- SearchHighlighter default colors now based on the selection color of the component.
 ### is.codion.swing.common.model
 - FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.framework.domain
