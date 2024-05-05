@@ -241,7 +241,7 @@ public interface Database extends ConnectionFactory {
 	 * @param poolUser the user for which to create a connection pool
 	 * @throws DatabaseException in case of a database exception
 	 */
-	void createConnectionPool(ConnectionPoolFactory connectionPoolFactory, User poolUser) throws DatabaseException;
+	ConnectionPoolWrapper createConnectionPool(ConnectionPoolFactory connectionPoolFactory, User poolUser) throws DatabaseException;
 
 	/**
 	 * @param username the username

@@ -122,14 +122,17 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
-	public final void createConnectionPool(ConnectionPoolFactory connectionPoolFactory,
+	public final ConnectionPoolWrapper createConnectionPool(ConnectionPoolFactory connectionPoolFactory,
 																				 User poolUser) throws DatabaseException {
 		requireNonNull(connectionPoolFactory, "connectionPoolFactory");
 		requireNonNull(poolUser, "poolUser");
 		if (connectionPools.containsKey(poolUser.username().toLowerCase())) {
 			throw new IllegalStateException("Connection pool for user " + poolUser.username() + " has already been created");
 		}
-		connectionPools.put(poolUser.username().toLowerCase(), connectionPoolFactory.createConnectionPool(this, poolUser));
+		ConnectionPoolWrapper connectionPool = connectionPoolFactory.createConnectionPool(this, poolUser);
+		connectionPools.put(poolUser.username().toLowerCase(), connectionPool);
+
+		return connectionPool;
 	}
 
 	@Override
