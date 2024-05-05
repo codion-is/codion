@@ -974,6 +974,7 @@ public final class FilterTable<R, C> extends JTable {
 		/**
 		 * @param selectionMode the table selection mode
 		 * @return this builder instance
+		 * @see JTable#setSelectionMode(int)
 		 */
 		Builder<R, C> selectionMode(int selectionMode);
 

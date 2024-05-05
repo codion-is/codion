@@ -32,7 +32,7 @@ public final class SchemaRow {
 	final String schema;
 
 	boolean populated;
-	DatabaseDomain domain;
+	DatabaseDomain domainModel;
 	final Collection<EntityDefinition> entityDefinitions = new ArrayList<>();
 
 	SchemaRow(MetaDataSchema metadata, String catalog, String schema, boolean populated) {
@@ -55,11 +55,11 @@ public final class SchemaRow {
 	}
 
 	Optional<DatabaseDomain> domain() {
-		return Optional.ofNullable(domain);
+		return Optional.ofNullable(domainModel);
 	}
 
 	void setDomain(DatabaseDomain domain) {
-		this.domain = domain;
+		this.domainModel = domain;
 		this.entityDefinitions.clear();
 		this.entityDefinitions.addAll(domain.entities().definitions());
 		this.populated = true;

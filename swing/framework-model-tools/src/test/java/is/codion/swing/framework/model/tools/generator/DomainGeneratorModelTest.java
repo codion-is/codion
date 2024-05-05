@@ -26,10 +26,11 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Comparator;
+import java.util.List;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class DomainGeneratorModelTest {
@@ -40,21 +41,48 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void test() throws Exception {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
-		model.domainPackage().set("is.codion.petstore.domain");
 		model.schemaModel().refresh();
 		model.schemaModel().comparator().set(comparing(SchemaRow::name));
-		model.schemaModel().selectionModel().setSelectedIndex(1);
-		model.populateSelected(schema -> {});
-		model.definitionModel().comparator().set(Comparator.
-						<DefinitionRow, String>comparing(definitionRow -> definitionRow.definition.entityType().domainType().name())
-						.thenComparing(definitionRow -> definitionRow.definition.entityType().name()));
-		model.definitionModel().selectionModel().selectAll();
+
+		List<SchemaRow> schema = model.schemaModel().items().stream()
+						.filter(item -> item.schema.equals("CHINOOK"))
+						.collect(toList());
+		model.schemaModel().selectionModel().setSelectedIndex(model.schemaModel().indexOf(schema.get(0)));
+		model.populateSelected(s -> {});
+		model.domainPackage().set("is.codion.chinook.domain");
+		String chinookApi = textFileContents(DomainGeneratorModelTest.class, "ChinookAPI.java");
+		assertEquals(chinookApi, model.domainApi().get());
+		String chinookImpl = textFileContents(DomainGeneratorModelTest.class, "ChinookImpl.java");
+		assertEquals(chinookImpl, model.domainImpl().get());
+		String chinookCombined = textFileContents(DomainGeneratorModelTest.class, "Chinook.java");
+		assertEquals(chinookCombined, model.domainCombined().get());
+
+		schema = model.schemaModel().items().stream()
+						.filter(item -> item.schema.equals("PETSTORE"))
+						.collect(toList());
+		model.schemaModel().selectionModel().setSelectedIndex(model.schemaModel().indexOf(schema.get(0)));
+		model.populateSelected(s -> {});
+		model.domainPackage().set("is.codion.petstore.domain");
 		String petstoreApi = textFileContents(DomainGeneratorModelTest.class, "PetstoreAPI.java");
 		assertEquals(petstoreApi, model.domainApi().get());
 		String petstoreImpl = textFileContents(DomainGeneratorModelTest.class, "PetstoreImpl.java");
 		assertEquals(petstoreImpl, model.domainImpl().get());
 		String petstoreCombined = textFileContents(DomainGeneratorModelTest.class, "Petstore.java");
 		assertEquals(petstoreCombined, model.domainCombined().get());
+
+		schema = model.schemaModel().items().stream()
+						.filter(item -> item.schema.equals("WORLD"))
+						.collect(toList());
+		model.schemaModel().selectionModel().setSelectedIndex(model.schemaModel().indexOf(schema.get(0)));
+		model.populateSelected(s -> {});
+		model.domainPackage().set("is.codion.world.domain");
+		String worldApi = textFileContents(DomainGeneratorModelTest.class, "WorldAPI.java");
+		assertEquals(worldApi, model.domainApi().get());
+		String worldImpl = textFileContents(DomainGeneratorModelTest.class, "WorldImpl.java");
+		assertEquals(worldImpl, model.domainImpl().get());
+		String worldCombined = textFileContents(DomainGeneratorModelTest.class, "World.java");
+		assertEquals(worldCombined, model.domainCombined().get());
+
 		model.close();
 	}
 

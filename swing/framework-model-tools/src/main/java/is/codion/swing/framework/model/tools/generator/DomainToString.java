@@ -60,6 +60,7 @@ final class DomainToString {
 	private static final String INDENT = "\t";
 	private static final String DOUBLE_INDENT = INDENT + INDENT;
 	private static final String TRIPLE_INDENT = DOUBLE_INDENT + INDENT;
+	private static final String DOMAIN = "DOMAIN";
 
 	private DomainToString() {}
 
@@ -91,7 +92,7 @@ final class DomainToString {
 		String className = interfaceName(domainName, true);
 		TypeSpec.Builder classBuilder = interfaceBuilder(className)
 						.addModifiers(PUBLIC)
-						.addField(FieldSpec.builder(DomainType.class, "DOMAIN")
+						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
 										.addModifiers(PUBLIC, STATIC, FINAL)
 										.initializer("domainType($L)", className + ".class")
 										.build());
@@ -130,7 +131,7 @@ final class DomainToString {
 						.skipJavaLangImports(true)
 						.indent(INDENT);
 		if (!implementationPackage.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(packageName + "." + className), "DOMAIN");
+			fileBuilder.addStaticImport(ClassName.bestGuess(packageName + "." + className), DOMAIN);
 		}
 
 		String sourceString = fileBuilder.build().toString();
@@ -146,7 +147,7 @@ final class DomainToString {
 		String className = interfaceName(domainName, true);
 		TypeSpec.Builder classBuilder = classBuilder(className)
 						.addModifiers(PUBLIC, FINAL)
-						.addField(FieldSpec.builder(DomainType.class, "DOMAIN")
+						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
 										.addModifiers(PUBLIC, STATIC, FINAL)
 										.initializer("domainType($L)", className + ".class")
 										.build())
@@ -169,7 +170,7 @@ final class DomainToString {
 						.skipJavaLangImports(true)
 						.indent(INDENT);
 		if (!packageName.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(packageName + "." + className), "DOMAIN");
+			fileBuilder.addStaticImport(ClassName.bestGuess(packageName + "." + className), DOMAIN);
 		}
 
 		String sourceString = fileBuilder.build().toString();

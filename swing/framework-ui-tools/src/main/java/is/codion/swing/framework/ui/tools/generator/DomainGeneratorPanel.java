@@ -48,6 +48,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -120,6 +121,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						FilterTable.builder(model.schemaModel(), createSchemaColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.doubleClickAction(populateSchemaControl)
+										.selectionMode(ListSelectionModel.SINGLE_SELECTION)
 										.keyEvent(KeyEvents.builder(VK_ENTER)
 														.modifiers(InputEvent.CTRL_DOWN_MASK)
 														.action(populateSchemaControl))
