@@ -26,7 +26,7 @@ import java.util.Iterator;
  * Use try with resources or remember to call {@link #close()} in order to close underlying resources.
  * @param <T> the type to fetch from the result set
  */
-public interface ResultIterator<T> extends AutoCloseable {
+public interface ResultIterator<T> extends AutoCloseable, Iterable<T> {
 
 	/**
 	 * Returns true if a row is available in the underlying result set.
