@@ -254,7 +254,6 @@ public final class DomainGeneratorModel {
 	public static final class DefinitionColumns implements Columns<DefinitionRow, DefinitionColumns.Id> {
 
 		public enum Id {
-			DOMAIN,
 			ENTITY,
 			TABLE_TYPE
 		}
@@ -274,8 +273,6 @@ public final class DomainGeneratorModel {
 		@Override
 		public Object value(DefinitionRow row, Id identifier) {
 			switch (identifier) {
-				case DOMAIN:
-					return row.definition.entityType().domainType().name();
 				case ENTITY:
 					return row.definition.entityType().name();
 				case TABLE_TYPE:

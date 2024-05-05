@@ -152,8 +152,7 @@ public final class DomainGeneratorPanel extends JPanel {
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.popupMenuControl(FilterTable::createAutoResizeModeControl)
 										.build();
-		definitionTable.sortModel().setSortOrder(DefinitionColumns.Id.DOMAIN, SortOrder.ASCENDING);
-		definitionTable.sortModel().addSortOrder(DefinitionColumns.Id.ENTITY, SortOrder.ASCENDING);
+		definitionTable.sortModel().setSortOrder(DefinitionColumns.Id.ENTITY, SortOrder.ASCENDING);
 
 		JSplitPane schemaTableSplitPane = splitPane()
 						.orientation(JSplitPane.VERTICAL_SPLIT)
@@ -330,9 +329,6 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private static List<FilterTableColumn<DefinitionColumns.Id>> createDefinitionColumns() {
-		FilterTableColumn<DefinitionColumns.Id> domainColumn = FilterTableColumn.builder(DefinitionColumns.Id.DOMAIN)
-						.headerValue("Domain")
-						.build();
 		FilterTableColumn<DefinitionColumns.Id> entityTypeColumn = FilterTableColumn.builder(DefinitionColumns.Id.ENTITY)
 						.headerValue("Entity")
 						.build();
@@ -341,7 +337,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.preferredWidth(120)
 						.build();
 
-		return asList(domainColumn, entityTypeColumn, typeColumn);
+		return asList(entityTypeColumn, typeColumn);
 	}
 
 	/**
