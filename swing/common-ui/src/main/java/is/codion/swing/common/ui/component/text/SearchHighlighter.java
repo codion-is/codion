@@ -136,7 +136,7 @@ public final class SearchHighlighter {
 	/**
 	 * Moves to the next search position, if available, with wrap-around.
 	 */
-	void nextSearchPosition() {
+	public void nextSearchPosition() {
 		if (!searchTextPositions.isEmpty()) {
 			deselectCurrentSearchPosition();
 			if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.isEqualTo(searchTextPositions.size() - 1)) {
@@ -152,7 +152,7 @@ public final class SearchHighlighter {
 	/**
 	 * Moves to the previous search position, if available, with wrap-around.
 	 */
-	void previousSearchPosition() {
+	public void previousSearchPosition() {
 		if (!searchTextPositions.isEmpty()) {
 			deselectCurrentSearchPosition();
 			if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.isEqualTo(0)) {

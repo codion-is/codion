@@ -47,6 +47,7 @@ Codion Change Log
 - EntityPanel.Config.editPanelState() and editPanelStates() renamed initialEditState() and enabledEditStates() respectively.
 - TabbedDetailLayout.Builder.panelState() and panelStates() renamed initialDetailState() and enabledDetailStates() respectively.
 - FilteredTable renamed FilterTable, related renaming.
+- SearchHighlighter.nextSearchPosition() and previousSearchPosition() now public.
 ### is.codion.swing.common.model
 - FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.framework.domain
