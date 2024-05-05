@@ -31,6 +31,7 @@ Codion Change Log
 - Major surgery, FilteredTableModel.sortModel(), searchModel(), summaryModel() and columnModel() moved to FilteredTable, related refactoring.
 - FilteredTableModel renamed FilterTableModel, related renaming.
 - FilteredComboBoxModel renamed FilterComboBoxModel.
+- FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
 - ProgressDialog bug fixed, no longer adds an empty south panel when no controls are specified.
@@ -50,8 +51,6 @@ Codion Change Log
 - SearchHighlighter.nextSearchPosition() and previousSearchPosition() now public.
 - SearchHighlighter default colors now based on the selection color of the component.
 - ComponentBuilder.onBuildValue() added, related refactoring.
-### is.codion.swing.common.model
-- FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
