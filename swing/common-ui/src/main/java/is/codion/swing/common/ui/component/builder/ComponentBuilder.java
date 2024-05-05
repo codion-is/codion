@@ -374,6 +374,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B onBuild(Consumer<C> onBuild);
 
 	/**
+	 * @param onBuild called when the component value has been built, not called on subsequent calls until {@link #clear()} has been called.
+	 * @return this builder instance
+	 */
+	B onBuildValue(Consumer<ComponentValue<T, C>> onBuildValue);
+
+	/**
 	 * Builds and returns the component, note that subsequent calls return the same component until {@link #clear()} has been called.
 	 * @return the component
 	 */

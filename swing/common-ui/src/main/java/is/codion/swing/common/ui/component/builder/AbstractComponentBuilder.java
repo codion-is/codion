@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.builder;
 
-import is.codion.common.event.Event;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -64,7 +63,8 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>>
 				implements ComponentBuilder<T, C, B> {
 
-	private final Event<C> buildEvent = Event.event();
+	private final List<Consumer<C>> buildConsumers = new ArrayList<>(1);
+	private final List<Consumer<ComponentValue<T, C>>> buildValueConsumers = new ArrayList<>(1);
 	private final List<Value<T>> linkedValues = new ArrayList<>(1);
 	private final List<ValueObserver<T>> linkedValueObservers = new ArrayList<>(1);
 	private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
@@ -392,7 +392,13 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	@Override
 	public final B onBuild(Consumer<C> onBuild) {
-		buildEvent.addConsumer(requireNonNull(onBuild));
+		buildConsumers.add(requireNonNull(onBuild));
+		return self();
+	}
+
+	@Override
+	public final B onBuildValue(Consumer<ComponentValue<T, C>> onBuildValue) {
+		buildValueConsumers.add(requireNonNull(onBuildValue));
 		return self();
 	}
 
@@ -471,8 +477,10 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		componentListeners.forEach(componentListener -> component.addComponentListener(componentListener));
 		propertyChangeListeners.forEach(listener -> component.addPropertyChangeListener(listener));
 		propertyChangeListenerMap.forEach((propertyName, listener) -> component.addPropertyChangeListener(propertyName, listener));
-
-		buildEvent.accept(component);
+		buildConsumers.forEach(consumer -> consumer.accept(component));
+		if (!buildValueConsumers.isEmpty()) {
+			buildValueConsumers.forEach(consumer -> consumer.accept(buildValue()));
+		}
 		if (onBuild != null) {
 			onBuild.accept(component);
 		}

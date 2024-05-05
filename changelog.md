@@ -49,6 +49,7 @@ Codion Change Log
 - FilteredTable renamed FilterTable, related renaming.
 - SearchHighlighter.nextSearchPosition() and previousSearchPosition() now public.
 - SearchHighlighter default colors now based on the selection color of the component.
+- ComponentBuilder.onBuildValue() added, related refactoring.
 ### is.codion.swing.common.model
 - FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
 ### is.codion.framework.domain
