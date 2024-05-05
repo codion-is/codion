@@ -63,6 +63,7 @@ public final class InsertDeleteAlbum implements Performer<EntityConnectionProvid
 							.with(Track.UNITPRICE, UNIT_PRICE)
 							.with(Track.GENRE_FK, genres.get(RANDOM.nextInt(genres.size())))
 							.with(Track.MEDIATYPE_FK, mediaTypes.get(RANDOM.nextInt(mediaTypes.size())))
+							.with(Track.RATING, 5)
 							.build();
 			tracks.add(track);
 		}
