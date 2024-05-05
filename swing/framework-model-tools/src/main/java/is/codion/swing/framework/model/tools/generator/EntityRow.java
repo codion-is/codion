@@ -20,12 +20,12 @@ package is.codion.swing.framework.model.tools.generator;
 
 import is.codion.framework.domain.entity.EntityDefinition;
 
-public final class DefinitionRow {
+public final class EntityRow {
 
 	final String tableType;
 	final EntityDefinition definition;
 
-	DefinitionRow(EntityDefinition definition, String tableType) {
+	EntityRow(EntityDefinition definition, String tableType) {
 		this.definition = definition;
 		this.tableType = tableType;
 	}

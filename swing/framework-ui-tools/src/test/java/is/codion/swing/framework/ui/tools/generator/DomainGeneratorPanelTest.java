@@ -38,6 +38,6 @@ public class DomainGeneratorPanelTest {
 		model.schemaModel().sortItems();
 		model.schemaModel().selectionModel().setSelectedIndex(1);
 		model.populateSelected(schema -> {});
-		model.definitionModel().selectionModel().setSelectedIndex(0);
+		model.entityModel().selectionModel().setSelectedIndex(0);
 	}
 }

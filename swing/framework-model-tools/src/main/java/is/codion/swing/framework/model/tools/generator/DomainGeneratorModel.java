@@ -23,6 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
@@ -61,18 +62,24 @@ public final class DomainGeneratorModel {
 					Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$");
 
 	private final MetaDataModel metaDataModel;
-	private final FilterTableModel<SchemaRow, SchemaColumns.Id> schemaTableModel;
-	private final FilterTableModel<DefinitionRow, DefinitionColumns.Id> definitionTableModel;
+	private final FilterTableModel<SchemaRow, SchemaColumns.Id> schemaTableModel =
+					FilterTableModel.builder(new SchemaColumns())
+									.items(new SchemaItems())
+									.build();
+	private final FilterTableModel<EntityRow, EntityColumns.Id> entityTableModel =
+					FilterTableModel.builder(new EntityColumns())
+									.items(new EntityItems())
+									.build();
 	private final Connection connection;
 	private final Value<String> domainPackageValue = Value.nonNull(DEFAULT_DOMAIN_PACKAGE.get()).build();
 	private final Value<String> domainImplValue = Value.<String>nullable()
-					.notify(Value.Notify.WHEN_SET)
+					.notify(Notify.WHEN_SET)
 					.build();
 	private final Value<String> domainApiValue = Value.<String>nullable()
-					.notify(Value.Notify.WHEN_SET)
+					.notify(Notify.WHEN_SET)
 					.build();
 	private final Value<String> domainCombinedValue = Value.<String>nullable()
-					.notify(Value.Notify.WHEN_SET)
+					.notify(Notify.WHEN_SET)
 					.build();
 	private final Value<String> apiSearchValue = Value.value();
 	private final Value<String> implSearchValue = Value.value();
@@ -81,12 +88,6 @@ public final class DomainGeneratorModel {
 		this.connection = requireNonNull(database, "database").createConnection(user);
 		try {
 			this.metaDataModel = new MetaDataModel(connection.getMetaData());
-			this.schemaTableModel = FilterTableModel.builder(new SchemaColumns())
-							.items(new SchemaItems())
-							.build();
-			this.definitionTableModel = FilterTableModel.builder(new DefinitionColumns())
-							.items(new DefinitionItems())
-							.build();
 			this.schemaTableModel.refresh();
 			bindEvents();
 		}
@@ -99,8 +100,8 @@ public final class DomainGeneratorModel {
 		return schemaTableModel;
 	}
 
-	public FilterTableModel<DefinitionRow, DefinitionColumns.Id> definitionModel() {
-		return definitionTableModel;
+	public FilterTableModel<EntityRow, EntityColumns.Id> entityModel() {
+		return entityTableModel;
 	}
 
 	public ValueObserver<String> domainImpl() {
@@ -141,20 +142,20 @@ public final class DomainGeneratorModel {
 			int index = schemaTableModel.indexOf(schema);
 			schemaTableModel.fireTableRowsUpdated(index, index);
 		});
-		definitionTableModel.refresh();
+		entityTableModel.refresh();
 		updateDomainSource();
 	}
 
 	private void bindEvents() {
-		schemaTableModel.selectionModel().selectionEvent().addListener(definitionTableModel::refresh);
+		schemaTableModel.selectionModel().selectionEvent().addListener(entityTableModel::refresh);
 		schemaTableModel.selectionModel().selectionEvent().addListener(this::updateDomainSource);
 		domainPackageValue.addListener(this::updateDomainSource);
-		definitionModel().selectionModel().selectedItemEvent().addConsumer(this::search);
+		entityModel().selectionModel().selectedItemEvent().addConsumer(this::search);
 	}
 
-	private void search(DefinitionRow definitionRow) {
-		apiSearchValue.set(definitionRow == null ? null : apiSearchString(definitionRow.definition));
-		implSearchValue.set(definitionRow == null ? null : implSearchString(definitionRow.definition));
+	private void search(EntityRow entityRow) {
+		apiSearchValue.set(entityRow == null ? null : apiSearchString(entityRow.definition));
+		implSearchValue.set(entityRow == null ? null : implSearchString(entityRow.definition));
 	}
 
 	/**
@@ -198,16 +199,16 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	private final class DefinitionItems implements Supplier<Collection<DefinitionRow>> {
+	private final class EntityItems implements Supplier<Collection<EntityRow>> {
 
 		@Override
-		public Collection<DefinitionRow> get() {
+		public Collection<EntityRow> get() {
 			return schemaTableModel.selectionModel().getSelectedItems().stream()
 							.map(SchemaRow::domain)
 							.filter(Optional::isPresent)
 							.map(Optional::get)
 							.flatMap(domain -> domain.entities().definitions().stream()
-											.map(definition -> new DefinitionRow(definition, domain.tableType(definition.entityType()))))
+											.map(definition -> new EntityRow(definition, domain.tableType(definition.entityType()))))
 							.collect(toList());
 		}
 	}
@@ -251,7 +252,7 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	public static final class DefinitionColumns implements Columns<DefinitionRow, DefinitionColumns.Id> {
+	public static final class EntityColumns implements Columns<EntityRow, EntityColumns.Id> {
 
 		public enum Id {
 			ENTITY,
@@ -271,7 +272,7 @@ public final class DomainGeneratorModel {
 		}
 
 		@Override
-		public Object value(DefinitionRow row, Id identifier) {
+		public Object value(EntityRow row, Id identifier) {
 			switch (identifier) {
 				case ENTITY:
 					return row.definition.entityType().name();
