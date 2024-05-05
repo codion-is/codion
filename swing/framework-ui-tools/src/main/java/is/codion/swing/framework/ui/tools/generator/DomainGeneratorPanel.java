@@ -22,6 +22,8 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.property.PropertyValue;
+import is.codion.common.user.User;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -62,6 +64,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static is.codion.common.Configuration.stringValue;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.SearchHighlighter.searchHighlighter;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
@@ -73,6 +76,12 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 public final class DomainGeneratorPanel extends JPanel {
+
+	/**
+	 * The default username.
+	 */
+	public static final PropertyValue<String> DEFAULT_USERNAME =
+					stringValue("codion.domain.generator.defaultUsername", "");
 
 	private static final double RESIZE_WEIGHT = 0.2;
 
@@ -359,6 +368,7 @@ public final class DomainGeneratorPanel extends JPanel {
 			new DomainGeneratorPanel(DomainGeneratorModel.domainGeneratorModel(database,
 							Dialogs.loginDialog()
 											.icon(Logos.logoTransparent())
+											.defaultUser(User.user(DEFAULT_USERNAME.get()))
 											.validator(user -> database.createConnection(user).close())
 											.show()))
 							.showFrame();
