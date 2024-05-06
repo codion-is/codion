@@ -751,7 +751,7 @@ public class EntityTablePanel extends JPanel {
 	 * @see #userPreferencesKey()
 	 * @see EntityPanel.Config#USE_CLIENT_PREFERENCES
 	 */
-	public final void savePreferences() {
+	public void savePreferences() {
 		if (EntityPanel.Config.USE_CLIENT_PREFERENCES.get()) {
 			try {
 				UserPreferences.setUserPreference(userPreferencesKey() + COLUMN_PREFERENCES,

@@ -108,6 +108,7 @@ Codion Change Log
 - EntityPanel, TabbedDetailLayout, now possible to configure the available panel states.
 - EntityComponents now final, constructor private, factory method added.
 - EntityComponents parameter removed from EntityEditComponentPanel constructor.
+- EntityTablePanel.savePreferences() no longer final.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 
