@@ -54,6 +54,7 @@ Codion Change Log
 - SearchHighlighter default colors now based on the selection color of the component.
 - ComponentBuilder.onBuildValue() added, related refactoring.
 - LookAndFeelProvider.defaultLookAndFeelName() overloaded with a defaultLookAndFeel parameter.
+- FilterTable.copyToClipBoard() bug fixed, always exported the whole table instead of the selected rows.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.

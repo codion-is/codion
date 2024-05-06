@@ -486,10 +486,12 @@ public final class FilterTable<R, C> extends JTable {
 
 	/**
 	 * Copies the table data as a TAB delimited string, with header, to the clipboard.
+	 * If the selection is empty, all rows are included, otherwise only selected ones.
 	 */
 	public void copyToClipboard() {
 		Utilities.setClipboard(export()
 						.delimiter('\t')
+						.selected(!selectionModel.isSelectionEmpty())
 						.get());
 	}
 
