@@ -82,9 +82,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 	boolean containsTableModel();
 
 	/**
-	 * @return the active detail models, that is, those that should respond to master model events
+	 * @return detail models with an active link to this model, that is, those that should respond to master model events
+	 * @see DetailModelLink#active()
 	 */
-	ValueSetObserver<M> activeDetailModels();
+	ValueSetObserver<M> linkedDetailModels();
 
 	/**
 	 * Adds the given detail model to this model, a side effect if the detail model contains

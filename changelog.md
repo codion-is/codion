@@ -69,6 +69,7 @@ Codion Change Log
 - EntityEditEvents.notifyInserted(), notifyUpdated() and notifyDelete() renamed inserted(), updated() and deleted() respectively.
 - EntityEditEvents, consumers now called listeners.
 - EntityTableModel.HANDLE_EDIT_EVENTS configuration value added.
+- EntityModel.activeDetailModels() renamed linkedDetailModels().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.UpdateListener now replaces updated entities.
 - SwingEntityTableModel.replaceEntitiesByKey() now uses a key index map when looking up entities to replace, orders of magnitude faster.
@@ -111,6 +112,7 @@ Codion Change Log
 - EntityComponents parameter removed from EntityEditComponentPanel constructor.
 - EntityTablePanel.savePreferences() no longer final.
 - EntityTablePanel.selectConditionPanel() bug fixed, now sets locationRelativeTo() the table parent, otherwise the scrolling state seems to interfere with the dialog location calculation.
+- EntityPanel.activeDetailPanels() renamed linkedDetailPanels().
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 

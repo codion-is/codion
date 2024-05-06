@@ -80,16 +80,16 @@ public final class EntityPanelTest {
 		deptPanel.addDetailPanel(empPanel);
 		assertThrows(IllegalArgumentException.class, () -> deptPanel.addDetailPanel(empPanel));
 		assertNotNull(deptPanel.detailPanel(Employee.TYPE));
-		assertEquals(0, deptPanel.activeDetailPanels().size());
+		assertEquals(0, deptPanel.linkedDetailPanels().size());
 
 		assertSame(deptPanel, empPanel.parentPanel().orElseThrow(IllegalStateException::new));
 
 		// activates the detail panel
 		deptPanel.initialize();
 		assertThrows(IllegalStateException.class, () -> deptPanel.addDetailPanels(empPanel));
-		assertEquals(1, deptPanel.activeDetailPanels().size());
+		assertEquals(1, deptPanel.linkedDetailPanels().size());
 
 		deptModel.detailModelLink(empModel).active().set(false);
-		assertEquals(0, deptPanel.activeDetailPanels().size());
+		assertEquals(0, deptPanel.linkedDetailPanels().size());
 	}
 }

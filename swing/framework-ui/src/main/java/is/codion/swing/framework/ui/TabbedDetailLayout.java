@@ -517,9 +517,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private void activateDetailModelLink(SwingEntityModel detailModel) {
 			SwingEntityModel model = entityPanel.model();
 			if (model.containsDetailModel(detailModel)) {
-				model.activeDetailModels().get().stream()
-								.filter(activeDetailModel -> activeDetailModel != detailModel)
-								.forEach(activeDetailModel -> model.detailModelLink(activeDetailModel).active().set(false));
+				model.linkedDetailModels().get().stream()
+								.filter(linkedDetailModel -> linkedDetailModel != detailModel)
+								.forEach(linkedDetailModel -> model.detailModelLink(linkedDetailModel).active().set(false));
 				model.detailModelLink(detailModel).active().set(true);
 			}
 		}

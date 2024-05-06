@@ -52,7 +52,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	private final E editModel;
 	private final T tableModel;
 	private final Map<M, DetailModelLink<M, E, T>> detailModels = new HashMap<>();
-	private final ValueSet<M> activeDetailModels = ValueSet.valueSet();
+	private final ValueSet<M> linkedDetailModels = ValueSet.valueSet();
 
 	/**
 	 * Instantiates a new DefaultEntityModel, without a table model
@@ -207,8 +207,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	}
 
 	@Override
-	public final ValueSetObserver<M> activeDetailModels() {
-		return activeDetailModels.observer();
+	public final ValueSetObserver<M> linkedDetailModels() {
+		return linkedDetailModels.observer();
 	}
 
 	@Override
@@ -230,9 +230,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	}
 
 	private void onMasterSelectionChanged() {
-		if (!activeDetailModels().empty()) {
+		if (!linkedDetailModels().empty()) {
 			List<Entity> activeEntities = activeEntities();
-			for (M detailModel : activeDetailModels()) {
+			for (M detailModel : linkedDetailModels()) {
 				detailModels.get(detailModel).onSelection(activeEntities);
 			}
 		}
@@ -283,7 +283,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
 		@Override
 		public void accept(Boolean active) {
-			activeDetailModels.set(detailModels.values().stream()
+			linkedDetailModels.set(detailModels.values().stream()
 							.filter(link -> link.active().get())
 							.map(DetailModelLink::detailModel)
 							.collect(Collectors.toList()));
