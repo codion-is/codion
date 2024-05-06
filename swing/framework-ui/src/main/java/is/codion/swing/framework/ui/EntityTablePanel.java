@@ -1977,6 +1977,7 @@ public class EntityTablePanel extends JPanel {
 								.collect(toList());
 				Dialogs.selectionDialog(sortedDefinitions)
 								.owner(table)
+								.locationRelativeTo(table.getParent())
 								.title(dialogTitle)
 								.selectSingle()
 								.flatMap(attributeDefinition -> tableConditionPanel.conditionPanel(attributeDefinition.attribute()))

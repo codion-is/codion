@@ -110,6 +110,7 @@ Codion Change Log
 - EntityComponents now final, constructor private, factory method added.
 - EntityComponents parameter removed from EntityEditComponentPanel constructor.
 - EntityTablePanel.savePreferences() no longer final.
+- EntityTablePanel.selectConditionPanel() bug fixed, now sets locationRelativeTo() the table parent, otherwise the scrolling state seems to interfere with the dialog location calculation.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 
