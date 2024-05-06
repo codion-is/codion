@@ -70,6 +70,8 @@ Codion Change Log
 - EntityEditEvents, consumers now called listeners.
 - EntityTableModel.HANDLE_EDIT_EVENTS configuration value added.
 - EntityModel.activeDetailModels() renamed linkedDetailModels().
+### is.codion.framework.servlet
+- EntityService refactored.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.UpdateListener now replaces updated entities.
 - SwingEntityTableModel.replaceEntitiesByKey() now uses a key index map when looking up entities to replace, orders of magnitude faster.

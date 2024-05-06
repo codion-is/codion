@@ -91,7 +91,7 @@ public class EntityServiceTest {
 	public static void setUp() throws Exception {
 		EntityServerConfiguration configuration = configure();
 		HOSTNAME = Clients.SERVER_HOSTNAME.get();
-		SERVER_BASEURL = "http://" + HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/ser/";
+		SERVER_BASEURL = "http://" + HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/serial/";
 		SERVER_JSON_BASEURL = "http://" + HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/json/";
 		server = EntityServer.startServer(configuration);
 	}

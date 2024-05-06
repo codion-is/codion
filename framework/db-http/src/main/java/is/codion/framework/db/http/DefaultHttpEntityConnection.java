@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	DefaultHttpEntityConnection(DefaultBuilder builder) {
-		super(builder, "/entities/ser/");
+		super(builder, "/entities/serial/");
 	}
 
 	@Override

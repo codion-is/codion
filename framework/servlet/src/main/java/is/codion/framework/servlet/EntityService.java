@@ -19,7 +19,6 @@
 package is.codion.framework.servlet;
 
 import is.codion.common.Configuration;
-import is.codion.common.Serializer;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
@@ -55,7 +54,6 @@ import io.javalin.community.ssl.SslPlugin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
-import io.javalin.http.Handler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.eclipse.jetty.http.HttpStatus;
@@ -77,6 +75,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import static is.codion.common.Serializer.serialize;
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REFERENCE;
 import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERENCE;
@@ -128,7 +127,8 @@ public final class EntityService implements AuxiliaryServer {
 	 * Value type: String<br>
 	 * Default value: null
 	 */
-	public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("codion.server.http.keyStorePassword");
+	public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD =
+					Configuration.stringValue("codion.server.http.keyStorePassword");
 
 	static final String DOMAIN_TYPE_NAME = "domainTypeName";
 	static final String CLIENT_TYPE_ID = "clientTypeId";
@@ -139,24 +139,47 @@ public final class EntityService implements AuxiliaryServer {
 	private static final String X_FORWARDED_FOR = "X-Forwarded-For";
 	private static final int BASIC_PREFIX_LENGTH = BASIC_PREFIX.length();
 
-	private static final String URL_JAVA_SERIALIZATION = "entities/ser/";
-	private static final String URL_JSON_SERIALIZATION = "entities/json/";
+	private static final String URL_SERIAL = "entities/serial/";
+	private static final String URL_JSON = "entities/json/";
+
+	private final EntitiesHandler entities = new EntitiesHandler();
+	private final CloseHandler close = new CloseHandler();
+	private final StartTransactionHandler startTransaction = new StartTransactionHandler();
+	private final CommitTransactionHandler commitTransaction = new CommitTransactionHandler();
+	private final RollbackTransactionHandler rollbackTransaction = new RollbackTransactionHandler();
+	private final IsTransactionOpenHandler isTransactionOpen = new IsTransactionOpenHandler();
+	private final IsQueryCacheEnabledHandler isQueryCacheEnabled = new IsQueryCacheEnabledHandler();
+	private final SetQueryCacheEnabledHandler setQueryCacheEnabled = new SetQueryCacheEnabledHandler();
+	private final SelectHandler select = new SelectHandler();
+	private final SelectByKeyHandler selectByKey = new SelectByKeyHandler();
+	private final InsertHandler insert = new InsertHandler();
+	private final InsertSelectHandler insertSelect = new InsertSelectHandler();
+	private final UpdateHandler update = new UpdateHandler();
+	private final UpdateSelectHandler updateSelect = new UpdateSelectHandler();
+	private final UpdateByConditionHandler updateByCondition = new UpdateByConditionHandler();
+	private final DeleteHandler delete = new DeleteHandler();
+	private final DeleteByKeyHandler deleteByKey = new DeleteByKeyHandler();
+	private final ValuesHandler values = new ValuesHandler();
+	private final CountHandler count = new CountHandler();
+	private final DependenciesHandler dependencies = new DependenciesHandler();
+	private final ProcedureHandler procedure = new ProcedureHandler();
+	private final FunctionHandler function = new FunctionHandler();
+	private final ReportHandler report = new ReportHandler();
 
 	private final Server<RemoteEntityConnection, ? extends ServerAdmin> server;
+	private final Javalin javalin;
 	private final int port;
 	private final int securePort;
 	private final boolean sslEnabled;
 
 	private final Map<DomainType, ObjectMapper> domainObjectMappers = new ConcurrentHashMap<>();
 
-	private Javalin javalin;
-
 	static {
 		resolveClasspathKeyStore();
 	}
 
 	/**
-	 * Instantiates a new EntityServletServer, the port specified by {@link #HTTP_SERVER_PORT}.
+	 * Instantiates a new EntityService, the port specified by {@link #HTTP_SERVER_PORT}.
 	 * @param server the parent server
 	 */
 	EntityService(Server<RemoteEntityConnection, ? extends ServerAdmin> server) {
@@ -164,7 +187,7 @@ public final class EntityService implements AuxiliaryServer {
 	}
 
 	/**
-	 * Instantiates a new EntityServletServer.
+	 * Instantiates a new EntityService.
 	 * @param server the parent server
 	 * @param port the server port
 	 * @param securePort the server secure port (https)
@@ -175,11 +198,12 @@ public final class EntityService implements AuxiliaryServer {
 		this.port = port;
 		this.securePort = securePort;
 		this.sslEnabled = sslEnabled;
+		this.javalin = Javalin.create(new JavalinConfigurer());
 	}
 
 	@Override
 	public void startServer() {
-		javalin = Javalin.create(new JavalinConfigurer()).start(sslEnabled ? securePort : port);
+		javalin.start(sslEnabled ? securePort : port);
 		setupHandlers();
 	}
 
@@ -199,70 +223,64 @@ public final class EntityService implements AuxiliaryServer {
 	}
 
 	private void setupHandlers() {
-		EntitiesHandler entitiesHandler = new EntitiesHandler();
-		javalin.post(URL_JAVA_SERIALIZATION + "entities", entitiesHandler);
-		javalin.post(URL_JSON_SERIALIZATION + "entities", entitiesHandler);
-		CloseHandler closeHandler = new CloseHandler();
-		javalin.post(URL_JAVA_SERIALIZATION + "close", closeHandler);
-		javalin.post(URL_JSON_SERIALIZATION + "close", closeHandler);
-		javalin.post(URL_JAVA_SERIALIZATION + "isTransactionOpen", new IsTransactionOpenHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "isTransactionOpen", new IsTransactionOpenJsonHandler());
-		StartTransactionHandler startTransactionHandler = new StartTransactionHandler();
-		javalin.post(URL_JAVA_SERIALIZATION + "startTransaction", startTransactionHandler);
-		javalin.post(URL_JSON_SERIALIZATION + "startTransaction", startTransactionHandler);
-		RollbackTransactionHandler rollbackTransactionHandler = new RollbackTransactionHandler();
-		javalin.post(URL_JAVA_SERIALIZATION + "rollbackTransaction", rollbackTransactionHandler);
-		javalin.post(URL_JSON_SERIALIZATION + "rollbackTransaction", rollbackTransactionHandler);
-		CommitTransactionHandler commitTransactionHandler = new CommitTransactionHandler();
-		javalin.post(URL_JAVA_SERIALIZATION + "commitTransaction", commitTransactionHandler);
-		javalin.post(URL_JSON_SERIALIZATION + "commitTransaction", commitTransactionHandler);
-		javalin.post(URL_JAVA_SERIALIZATION + "isQueryCacheEnabled", new IsQueryCacheEnabledHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "isQueryCacheEnabled", new IsQueryCacheEnabledJsonHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "setQueryCacheEnabled", new SetQueryCacheEnabledHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "setQueryCacheEnabled", new SetQueryCacheEnabledJsonHandler());
-		ProcedureHandler procedureHandler = new ProcedureHandler();
-		javalin.post(URL_JAVA_SERIALIZATION + "procedure", procedureHandler);
-		javalin.post(URL_JSON_SERIALIZATION + "procedure", procedureHandler);
-		FunctionHandler functionHandler = new FunctionHandler();
-		javalin.post(URL_JAVA_SERIALIZATION + "function", functionHandler);
-		javalin.post(URL_JSON_SERIALIZATION + "function", functionHandler);
-		ReportHandler reportHandler = new ReportHandler();
-		javalin.post(URL_JAVA_SERIALIZATION + "report", reportHandler);
-		javalin.post(URL_JSON_SERIALIZATION + "report", reportHandler);
-		javalin.post(URL_JAVA_SERIALIZATION + "dependencies", new DependenciesHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "dependencies", new DependenciesJsonHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "count", new CountHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "count", new CountJsonHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "values", new ValuesHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "values", new ValuesJsonHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "selectByKey", new SelectByKeyHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "selectByKey", new SelectByKeyJsonHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "select", new SelectHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "select", new SelectJsonHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "insert", new InsertHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "insertSelect", new InsertSelectHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "insert", new InsertJsonHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "insertSelect", new InsertSelectJsonHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "update", new UpdateHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "updateSelect", new UpdateSelectHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "update", new UpdateJsonHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "updateSelect", new UpdateSelectJsonHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "updateByCondition", new UpdateByConditionHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "updateByCondition", new UpdateByConditionJsonHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "delete", new DeleteHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "delete", new DeleteJsonHandler());
-		javalin.post(URL_JAVA_SERIALIZATION + "deleteByKey", new DeleteByKeyHandler());
-		javalin.post(URL_JSON_SERIALIZATION + "deleteByKey", new DeleteByKeyJsonHandler());
+		// Note: some services only implement java serialization
+		// (report f.ex) so these are not just some glaring mistakes
+		// below, where a ::serial call is associated with the json url
+		javalin.post(URL_SERIAL + "entities", entities::serial);
+		javalin.post(URL_JSON + "entities", entities::serial);
+		javalin.post(URL_SERIAL + "close", close::serial);
+		javalin.post(URL_JSON + "close", close::serial);
+		javalin.post(URL_SERIAL + "isTransactionOpen", isTransactionOpen::serial);
+		javalin.post(URL_JSON + "isTransactionOpen", isTransactionOpen::json);
+		javalin.post(URL_SERIAL + "startTransaction", startTransaction::serial);
+		javalin.post(URL_JSON + "startTransaction", startTransaction::serial);
+		javalin.post(URL_SERIAL + "rollbackTransaction", rollbackTransaction::serial);
+		javalin.post(URL_JSON + "rollbackTransaction", rollbackTransaction::serial);
+		javalin.post(URL_SERIAL + "commitTransaction", commitTransaction::serial);
+		javalin.post(URL_JSON + "commitTransaction", commitTransaction::serial);
+		javalin.post(URL_SERIAL + "isQueryCacheEnabled", isQueryCacheEnabled::serial);
+		javalin.post(URL_JSON + "isQueryCacheEnabled", isQueryCacheEnabled::json);
+		javalin.post(URL_SERIAL + "setQueryCacheEnabled", setQueryCacheEnabled::serial);
+		javalin.post(URL_JSON + "setQueryCacheEnabled", setQueryCacheEnabled::json);
+		javalin.post(URL_SERIAL + "procedure", procedure::serial);
+		javalin.post(URL_JSON + "procedure", procedure::serial);
+		javalin.post(URL_SERIAL + "function", function::serial);
+		javalin.post(URL_JSON + "function", function::serial);
+		javalin.post(URL_SERIAL + "report", report::serial);
+		javalin.post(URL_JSON + "report", report::serial);
+		javalin.post(URL_SERIAL + "dependencies", dependencies::serial);
+		javalin.post(URL_JSON + "dependencies", dependencies::json);
+		javalin.post(URL_SERIAL + "count", count::serial);
+		javalin.post(URL_JSON + "count", count::json);
+		javalin.post(URL_SERIAL + "values", values::serial);
+		javalin.post(URL_JSON + "values", values::json);
+		javalin.post(URL_SERIAL + "selectByKey", selectByKey::serial);
+		javalin.post(URL_JSON + "selectByKey", selectByKey::json);
+		javalin.post(URL_SERIAL + "select", select::serial);
+		javalin.post(URL_JSON + "select", select::json);
+		javalin.post(URL_SERIAL + "insert", insert::serial);
+		javalin.post(URL_SERIAL + "insertSelect", insertSelect::serial);
+		javalin.post(URL_JSON + "insert", insert::json);
+		javalin.post(URL_JSON + "insertSelect", insertSelect::json);
+		javalin.post(URL_SERIAL + "update", update::serial);
+		javalin.post(URL_SERIAL + "updateSelect", updateSelect::serial);
+		javalin.post(URL_JSON + "update", update::json);
+		javalin.post(URL_JSON + "updateSelect", updateSelect::json);
+		javalin.post(URL_SERIAL + "updateByCondition", updateByCondition::serial);
+		javalin.post(URL_JSON + "updateByCondition", updateByCondition::json);
+		javalin.post(URL_SERIAL + "delete", delete::serial);
+		javalin.post(URL_JSON + "delete", delete::json);
+		javalin.post(URL_SERIAL + "deleteByKey", deleteByKey::serial);
+		javalin.post(URL_JSON + "deleteByKey", deleteByKey::json);
 	}
 
-	private final class EntitiesHandler implements Handler {
+	private final class EntitiesHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				context.status(HttpStatus.OK_200)
-								.result(Serializer.serialize(connection.entities()));
+								.result(serialize(connection.entities()));
 			}
 			catch (Exception e) {
 				handleException(context, e);
@@ -270,10 +288,9 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class CloseHandler implements Handler {
+	private final class CloseHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				authenticate(context).close();
 				context.req().getSession().invalidate();
@@ -285,25 +302,21 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class IsTransactionOpenHandler implements Handler {
-		@Override
-		public void handle(Context context) {
+	private final class IsTransactionOpenHandler {
+
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(connection.transactionOpen()));
+								.result(serialize(connection.transactionOpen()));
 			}
 			catch (Exception e) {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class IsTransactionOpenJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -317,10 +330,9 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class StartTransactionHandler implements Handler {
+	private final class StartTransactionHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				connection.startTransaction();
@@ -332,10 +344,9 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class RollbackTransactionHandler implements Handler {
+	private final class RollbackTransactionHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				connection.rollbackTransaction();
@@ -347,10 +358,9 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class CommitTransactionHandler implements Handler {
+	private final class CommitTransactionHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				connection.commitTransaction();
@@ -362,26 +372,21 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class IsQueryCacheEnabledHandler implements Handler {
+	private final class IsQueryCacheEnabledHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(connection.isQueryCacheEnabled()));
+								.result(serialize(connection.isQueryCacheEnabled()));
 			}
 			catch (Exception e) {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class IsQueryCacheEnabledJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -395,10 +400,9 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class SetQueryCacheEnabledHandler implements Handler {
+	private final class SetQueryCacheEnabledHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				connection.setQueryCacheEnabled(deserialize(context.req()));
@@ -408,12 +412,8 @@ public final class EntityService implements AuxiliaryServer {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class SetQueryCacheEnabledJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -426,10 +426,9 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class ProcedureHandler implements Handler {
+	private final class ProcedureHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req());
@@ -443,10 +442,9 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class FunctionHandler implements Handler {
+	private final class FunctionHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req());
@@ -455,7 +453,7 @@ public final class EntityService implements AuxiliaryServer {
 				Object argument = parameters.size() > 1 ? parameters.get(1) : null;
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(connection.execute(functionType, argument)));
+								.result(serialize(connection.execute(functionType, argument)));
 			}
 			catch (Exception e) {
 				handleException(context, e);
@@ -463,17 +461,16 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class ReportHandler implements Handler {
+	private final class ReportHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req());
 				ReportType<?, ?, Object> reportType = (ReportType<?, ?, Object>) parameters.get(0);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(connection.report(reportType, parameters.get(1))));
+								.result(serialize(connection.report(reportType, parameters.get(1))));
 			}
 			catch (Exception e) {
 				handleException(context, e);
@@ -481,26 +478,21 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class DependenciesHandler implements Handler {
+	private final class DependenciesHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(connection.dependencies(deserialize(context.req()))));
+								.result(serialize(connection.dependencies(deserialize(context.req()))));
 			}
 			catch (Exception e) {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class DependenciesJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -516,27 +508,22 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class CountHandler implements Handler {
+	private final class CountHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				int rowCount = connection.count(deserialize(context.req()));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(rowCount));
+								.result(serialize(rowCount));
 			}
 			catch (Exception e) {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class CountJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -551,28 +538,23 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class ValuesHandler implements Handler {
+	private final class ValuesHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req());
 				List<?> values = connection.select((Column<?>) parameters.get(0), (Select) parameters.get(1));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(values));
+								.result(serialize(values));
 			}
 			catch (Exception e) {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class ValuesJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				Entities entities = connection.entities();
@@ -596,28 +578,23 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class SelectByKeyHandler implements Handler {
+	private final class SelectByKeyHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				List<Entity.Key> keys = deserialize(context.req());
 				Collection<Entity> selected = connection.select(keys);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(selected));
+								.result(serialize(selected));
 			}
 			catch (Exception e) {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class SelectByKeyJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -633,28 +610,23 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class SelectHandler implements Handler {
+	private final class SelectHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				Select select = deserialize(context.req());
 				List<Entity> selected = connection.select(select);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(selected));
+								.result(serialize(selected));
 			}
 			catch (Exception e) {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class SelectJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -670,44 +642,22 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class InsertHandler implements Handler {
+	private final class InsertHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				Collection<Entity.Key> keys = connection.insert((Collection<Entity>) deserialize(context.req()));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(keys));
+								.result(serialize(keys));
 			}
 			catch (Exception e) {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class InsertSelectHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
-			try {
-				RemoteEntityConnection connection = authenticate(context);
-				Collection<Entity> entities = connection.insertSelect((Collection<Entity>) deserialize(context.req()));
-				context.status(HttpStatus.OK_200)
-								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(entities));
-			}
-			catch (Exception e) {
-				handleException(context, e);
-			}
-		}
-	}
-
-	private final class InsertJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -723,10 +673,22 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class InsertSelectJsonHandler implements Handler {
+	private final class InsertSelectHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
+			try {
+				RemoteEntityConnection connection = authenticate(context);
+				Collection<Entity> entities = connection.insertSelect((Collection<Entity>) deserialize(context.req()));
+				context.status(HttpStatus.OK_200)
+								.contentType(ContentType.APPLICATION_OCTET_STREAM)
+								.result(serialize(entities));
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
+
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -742,10 +704,9 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class UpdateHandler implements Handler {
+	private final class UpdateHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				connection.update((List<Entity>) deserialize(context.req()));
@@ -755,29 +716,8 @@ public final class EntityService implements AuxiliaryServer {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class UpdateSelectHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
-			try {
-				RemoteEntityConnection connection = authenticate(context);
-				Collection<Entity> updated = connection.updateSelect((List<Entity>) deserialize(context.req()));
-				context.status(HttpStatus.OK_200)
-								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(updated));
-			}
-			catch (Exception e) {
-				handleException(context, e);
-			}
-		}
-	}
-
-	private final class UpdateJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -791,10 +731,22 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class UpdateSelectJsonHandler implements Handler {
+	private final class UpdateSelectHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
+			try {
+				RemoteEntityConnection connection = authenticate(context);
+				Collection<Entity> updated = connection.updateSelect((List<Entity>) deserialize(context.req()));
+				context.status(HttpStatus.OK_200)
+								.contentType(ContentType.APPLICATION_OCTET_STREAM)
+								.result(serialize(updated));
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
+
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -810,27 +762,22 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class UpdateByConditionHandler implements Handler {
+	private final class UpdateByConditionHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				int updateCount = connection.update((Update) deserialize(context.req()));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(updateCount));
+								.result(serialize(updateCount));
 			}
 			catch (Exception e) {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class UpdateByConditionJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -846,28 +793,23 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class DeleteHandler implements Handler {
+	private final class DeleteHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				Condition condition = deserialize(context.req());
 				int deleteCount = connection.delete(condition);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(Serializer.serialize(deleteCount));
+								.result(serialize(deleteCount));
 			}
 			catch (Exception e) {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class DeleteJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -883,10 +825,9 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class DeleteByKeyHandler implements Handler {
+	private final class DeleteByKeyHandler {
 
-		@Override
-		public void handle(Context context) {
+		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				List<Entity.Key> keys = deserialize(context.req());
@@ -897,12 +838,8 @@ public final class EntityService implements AuxiliaryServer {
 				handleException(context, e);
 			}
 		}
-	}
 
-	private final class DeleteByKeyJsonHandler implements Handler {
-
-		@Override
-		public void handle(Context context) {
+		private void json(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
@@ -1034,12 +971,12 @@ public final class EntityService implements AuxiliaryServer {
 
 	private static byte[] exceptionResult(Exception exception) {
 		try {
-			return Serializer.serialize(exception);
+			return serialize(exception);
 		}
 		catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 			try {
-				return Serializer.serialize(e);
+				return serialize(e);
 			}
 			catch (IOException io) {
 				LOG.error(e.getMessage(), io);
