@@ -113,6 +113,7 @@ Codion Change Log
 - EntityTablePanel.savePreferences() no longer final.
 - EntityTablePanel.selectConditionPanel() bug fixed, now sets locationRelativeTo() the table parent, otherwise the scrolling state seems to interfere with the dialog location calculation.
 - EntityPanel.activeDetailPanels() renamed linkedDetailPanels().
+- EntityPanel, can now navigate to hidden detail panels, TabbedDetailLayout shows a hidden detail panel when activated. 
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 

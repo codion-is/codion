@@ -483,9 +483,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			tabbedPane.setFocusable(true);
 			tabbedPane.setSelectedComponent(detailPanel);
 			tabbedPane.setFocusable(false);
-			if (splitPane.getDividerLocation() == splitPane.getMaximumDividerLocation()) {
-				splitPane.resetToPreferredSizes();
-			}
+			showDetailPanel();
 			activateDetailModelLink(detailPanel.model());
 		}
 
@@ -494,6 +492,15 @@ public final class TabbedDetailLayout implements DetailLayout {
 			requireNonNull(detailPanel);
 
 			return panelState;
+		}
+
+		private void showDetailPanel() {
+			if (splitPane.getDividerLocation() == splitPane.getMaximumDividerLocation()) {
+				splitPane.resetToPreferredSizes();
+			}
+			if (detailController.panelState.isEqualTo(HIDDEN)) {
+				panelState.set(panelStateMapper.apply(HIDDEN));
+			}
 		}
 
 		private void updateDetailState(PanelState newState) {

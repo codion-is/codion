@@ -1212,16 +1212,13 @@ public class EntityPanel extends JPanel {
 					}
 					break;
 				case DOWN:
-					activeDetailPanel()
-									.ifPresent(EntityPanel::activate);
+					if (!detailPanels.isEmpty()) {
+						detailPanels.get(0).activate();
+					}
 					break;
 				default:
 					throw new IllegalArgumentException("Unknown direction: " + direction);
 			}
-		}
-
-		private Optional<EntityPanel> activeDetailPanel() {
-			return activeDetailPanels().stream().findFirst();
 		}
 	}
 
