@@ -74,6 +74,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -85,7 +86,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -2073,20 +2073,20 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public static final class Config {
 
-	/**
-	 * Specifies whether the values of hidden columns are included in the underlying query<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
-	 */
-	public static final PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue(EntityTablePanel.class.getName() + ".queryHiddenColumns", true);
+		/**
+		 * Specifies whether the values of hidden columns are included in the underlying query<br>
+		 * Value type: Boolean<br>
+		 * Default value: true
+		 */
+		public static final PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue(EntityTablePanel.class.getName() + ".queryHiddenColumns", true);
 
-	/**
-	 * Specifies whether the table model sort order is used as a basis for the query order by clause.
-	 * Note that this only applies to column attributes.
-	 * Value type: Boolean<br>
-	 * Default value: false
-	 */
-	public static final PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue(EntityTablePanel.class.getName() + ".orderQueryBySortOrder", false);
+		/**
+		 * Specifies whether the table model sort order is used as a basis for the query order by clause.
+		 * Note that this only applies to column attributes.
+		 * Value type: Boolean<br>
+		 * Default value: false
+		 */
+		public static final PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue(EntityTablePanel.class.getName() + ".orderQueryBySortOrder", false);
 
 		/**
 		 * Specifies whether table condition panels should be visible or not by default<br>
@@ -2746,42 +2746,40 @@ public class EntityTablePanel extends JPanel {
 
 	private final class StatusPanel extends JPanel {
 
-		private static final String STATUS = "status";
-		private static final String REFRESHING = "refreshing";
-
-		private final Value<String> statusMessage = Value.nonNull("").build();
+		private final Value<String> statusMessage = Value.nonNull("")
+						.initialValue(configuration.statusMessage.apply(tableModel))
+						.build();
+		private final JLabel label = createStatusLabel();
+		private final JPanel progressPanel = createProgressPanel();
 
 		private StatusPanel() {
-			super(new CardLayout());
-			add(Components.label(statusMessage)
-							.horizontalAlignment(SwingConstants.CENTER)
-							.build(), STATUS);
-			add(createRefreshingProgressPanel(), REFRESHING);
-			CardLayout layout = (CardLayout) getLayout();
-			tableModel.refresher().observer().addConsumer(isRefreshing -> {
-				if (configuration.showRefreshProgressBar) {
-					layout.show(this, isRefreshing ? REFRESHING : STATUS);
-				}
-			});
-			if (configuration.includeLimitMenu) {
-				setComponentPopupMenu(createPopupMenu());
-			}
+			super(new BorderLayout());
+			add(label, BorderLayout.CENTER);
+			tableModel.refresher().observer().addConsumer(new ConfigurePanel());
 			tableModel.selectionModel().addListSelectionListener(e -> updateStatusMessage());
 			tableModel.dataChangedEvent().addListener(this::updateStatusMessage);
-			updateStatusMessage();
+			if (configuration.includeLimitMenu) {
+				setComponentPopupMenu(createLimitMenu());
+			}
 		}
 
-		private static JPanel createRefreshingProgressPanel() {
+		private JLabel createStatusLabel() {
+			return Components.label(statusMessage)
+							.horizontalAlignment(SwingConstants.CENTER)
+							.build();
+		}
+
+		private static JPanel createProgressPanel() {
 			return Components.panel(new GridBagLayout())
 							.add(Components.progressBar()
 											.indeterminate(true)
-											.string(MESSAGES.getString(REFRESHING))
+											.string(MESSAGES.getString("refreshing"))
 											.stringPainted(true)
 											.build(), createHorizontalFillConstraints())
 							.build();
 		}
 
-		private JPopupMenu createPopupMenu() {
+		private JPopupMenu createLimitMenu() {
 			JPopupMenu popupMenu = new JPopupMenu();
 			popupMenu.add(Control.builder(this::configureLimit)
 							.name(MESSAGES.getString("row_limit"))
@@ -2806,6 +2804,19 @@ public class EntityTablePanel extends JPanel {
 
 		private void updateStatusMessage() {
 			statusMessage.set(configuration.statusMessage.apply(tableModel));
+		}
+
+		private final class ConfigurePanel implements Consumer<Boolean> {
+
+			@Override
+			public void accept(Boolean isRefreshing) {
+				if (configuration.showRefreshProgressBar) {
+					removeAll();
+					add(isRefreshing ? progressPanel : label, BorderLayout.CENTER);
+					revalidate();
+					repaint();
+				}
+			}
 		}
 
 		private final class LimitValidator implements Predicate<Integer> {

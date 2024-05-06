@@ -72,7 +72,7 @@ public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressB
 	 * @return a new indeterminate {@link ProgressBarBuilder} instance
 	 */
 	static ProgressBarBuilder builder() {
-		return new DefaultProgressBarBuilder(null);
+		return builder(null);
 	}
 
 	/**
