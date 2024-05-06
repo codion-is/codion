@@ -126,7 +126,7 @@ public final class EntityObjectMapperTest {
 		Entity.Key deptKey1 = entities.primaryKey(Department.TYPE, 1);
 		Entity.Key deptKey2 = entities.primaryKey(Department.TYPE, 2);
 
-		String jsonString = mapper.serializeKeys(asList(deptKey1, deptKey2));
+		String jsonString = mapper.writeValueAsString(asList(deptKey1, deptKey2));
 
 		List<Entity.Key> keys = mapper.deserializeKeys(jsonString);
 		assertEquals(Department.TYPE, keys.get(0).entityType());

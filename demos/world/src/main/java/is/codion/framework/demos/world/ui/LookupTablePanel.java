@@ -244,7 +244,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		Collection<Entity> entities = tableModel().selectionModel().isSelectionEmpty() ?
 						tableModel().items() :
 						tableModel().selectionModel().getSelectedItems();
-		Files.write(file.toPath(), objectMapper.serializeEntities(entities).getBytes(UTF_8));
+		Files.write(file.toPath(), objectMapper.writeValueAsString(entities).getBytes(UTF_8));
 	}
 
 	private void importJSON() throws IOException {
