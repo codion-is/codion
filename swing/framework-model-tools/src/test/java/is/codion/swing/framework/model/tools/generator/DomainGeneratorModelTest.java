@@ -39,7 +39,29 @@ public final class DomainGeneratorModelTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	@Test
-	void test() throws Exception {
+	void petclinic() throws Exception {
+		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
+		model.schemaModel().refresh();
+		model.schemaModel().comparator().set(comparing(SchemaRow::name));
+
+		List<SchemaRow> schema = model.schemaModel().items().stream()
+						.filter(item -> item.schema.equals("PETSTORE"))
+						.collect(toList());
+		model.schemaModel().selectionModel().setSelectedIndex(model.schemaModel().indexOf(schema.get(0)));
+		model.populateSelected(s -> {});
+		model.domainPackage().set("is.codion.petstore.domain");
+		String petstoreApi = textFileContents(DomainGeneratorModelTest.class, "PetstoreAPI.java");
+		assertEquals(petstoreApi, model.domainApi().get());
+		String petstoreImpl = textFileContents(DomainGeneratorModelTest.class, "PetstoreImpl.java");
+		assertEquals(petstoreImpl, model.domainImpl().get());
+		String petstoreCombined = textFileContents(DomainGeneratorModelTest.class, "Petstore.java");
+		assertEquals(petstoreCombined, model.domainCombined().get());
+
+		model.close();
+	}
+
+	@Test
+	void chinook() throws Exception {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().refresh();
 		model.schemaModel().comparator().set(comparing(SchemaRow::name));
@@ -57,20 +79,16 @@ public final class DomainGeneratorModelTest {
 		String chinookCombined = textFileContents(DomainGeneratorModelTest.class, "Chinook.java");
 		assertEquals(chinookCombined, model.domainCombined().get());
 
-		schema = model.schemaModel().items().stream()
-						.filter(item -> item.schema.equals("PETSTORE"))
-						.collect(toList());
-		model.schemaModel().selectionModel().setSelectedIndex(model.schemaModel().indexOf(schema.get(0)));
-		model.populateSelected(s -> {});
-		model.domainPackage().set("is.codion.petstore.domain");
-		String petstoreApi = textFileContents(DomainGeneratorModelTest.class, "PetstoreAPI.java");
-		assertEquals(petstoreApi, model.domainApi().get());
-		String petstoreImpl = textFileContents(DomainGeneratorModelTest.class, "PetstoreImpl.java");
-		assertEquals(petstoreImpl, model.domainImpl().get());
-		String petstoreCombined = textFileContents(DomainGeneratorModelTest.class, "Petstore.java");
-		assertEquals(petstoreCombined, model.domainCombined().get());
+		model.close();
+	}
 
-		schema = model.schemaModel().items().stream()
+	@Test
+	void world() throws Exception {
+		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
+		model.schemaModel().refresh();
+		model.schemaModel().comparator().set(comparing(SchemaRow::name));
+
+		List<SchemaRow> schema = model.schemaModel().items().stream()
 						.filter(item -> item.schema.equals("WORLD"))
 						.collect(toList());
 		model.schemaModel().selectionModel().setSelectedIndex(model.schemaModel().indexOf(schema.get(0)));

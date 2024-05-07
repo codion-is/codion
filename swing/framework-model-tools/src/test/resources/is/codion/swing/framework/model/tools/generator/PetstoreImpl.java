@@ -18,7 +18,7 @@ public final class PetstoreImpl extends DomainModel {
 	public PetstoreImpl() {
 		super(DOMAIN);
 		add(address(), category(), contactInfo(),
-				item(), itemTags(), product(),
+				product(), item(), itemTags(),
 				tag(), tagItem());
 	}
 
@@ -117,6 +117,37 @@ public final class PetstoreImpl extends DomainModel {
 			.build();
 	}
 
+	static EntityDefinition product() {
+		return Product.TYPE.define(
+				Product.PRODUCT_ID.define()
+					.primaryKey(),
+				Product.CATEGORYID.define()
+					.column()
+					.nullable(false),
+				Product.CATEGORYID_FK.define()
+					.foreignKey()
+					.caption("Category"),
+				Product.NAME.define()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(25)
+					.description("The product name"),
+				Product.DESCRIPTION.define()
+					.column()
+					.caption("Description")
+					.nullable(false)
+					.maximumLength(255),
+				Product.IMAGE_URL.define()
+					.column()
+					.caption("Image url")
+					.maximumLength(55))
+			.keyGenerator(identity())
+			.caption("Product")
+			.description("The available products")
+			.build();
+	}
+
 	static EntityDefinition item() {
 		return Item.TYPE.define(
 				Item.ITEM_ID.define()
@@ -188,37 +219,6 @@ public final class PetstoreImpl extends DomainModel {
 					.caption("Tag"))
 			.caption("Item tags")
 			.readOnly(true)
-			.build();
-	}
-
-	static EntityDefinition product() {
-		return Product.TYPE.define(
-				Product.PRODUCT_ID.define()
-					.primaryKey(),
-				Product.CATEGORYID.define()
-					.column()
-					.nullable(false),
-				Product.CATEGORYID_FK.define()
-					.foreignKey()
-					.caption("Category"),
-				Product.NAME.define()
-					.column()
-					.caption("Name")
-					.nullable(false)
-					.maximumLength(25)
-					.description("The product name"),
-				Product.DESCRIPTION.define()
-					.column()
-					.caption("Description")
-					.nullable(false)
-					.maximumLength(255),
-				Product.IMAGE_URL.define()
-					.column()
-					.caption("Image url")
-					.maximumLength(55))
-			.keyGenerator(identity())
-			.caption("Product")
-			.description("The available products")
 			.build();
 	}
 

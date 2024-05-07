@@ -20,6 +20,7 @@ public final class World extends DomainModel {
 
 	public World() {
 		super(DOMAIN);
+		setStrictForeignKeys(false);
 		add(city(), country(), countrylanguage(),
 				countryCityV());
 	}
@@ -35,9 +36,11 @@ public final class World extends DomainModel {
 					.maximumLength(35),
 				City.COUNTRYCODE.define()
 					.column()
-					.caption("Countrycode")
 					.nullable(false)
 					.maximumLength(3),
+				City.COUNTRYCODE_FK.define()
+					.foreignKey()
+					.caption("Country"),
 				City.DISTRICT.define()
 					.column()
 					.caption("District")
@@ -113,8 +116,10 @@ public final class World extends DomainModel {
 					.caption("Headofstate")
 					.maximumLength(60),
 				Country.CAPITAL.define()
-					.column()
-					.caption("Capital"),
+					.column(),
+				Country.CAPITAL_FK.define()
+					.foreignKey()
+					.caption("City"),
 				Country.CODE2.define()
 					.column()
 					.caption("Code2")
@@ -228,6 +233,8 @@ public final class World extends DomainModel {
 		Column<String> DISTRICT = TYPE.stringColumn("district");
 		Column<Integer> POPULATION = TYPE.integerColumn("population");
 		Column<Object> LOCATION = TYPE.column("location", Object.class);
+
+		ForeignKey COUNTRYCODE_FK = TYPE.foreignKey("countrycode_fk", COUNTRYCODE, Country.CODE);
 	}
 
 	public interface Country {
@@ -249,6 +256,8 @@ public final class World extends DomainModel {
 		Column<Integer> CAPITAL = TYPE.integerColumn("capital");
 		Column<String> CODE2 = TYPE.stringColumn("code2");
 		Column<byte[]> FLAG = TYPE.byteArrayColumn("flag");
+
+		ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", CAPITAL, City.ID);
 	}
 
 	public interface Countrylanguage {

@@ -29,10 +29,24 @@ public final class Chinook extends DomainModel {
 
 	public Chinook() {
 		super(DOMAIN);
-		add(album(), artist(), customer(),
-				employee(), genre(), invoice(),
-				invoiceline(), mediatype(), playlist(),
-				playlisttrack(), track(), users());
+		add(artist(), album(), employee(),
+				customer(), genre(), invoice(),
+				mediatype(), track(), invoiceline(),
+				playlist(), playlisttrack(), users());
+	}
+
+	static EntityDefinition artist() {
+		return Artist.TYPE.define(
+				Artist.ARTISTID.define()
+					.primaryKey(),
+				Artist.NAME.define()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(120))
+			.keyGenerator(identity())
+			.caption("Artist")
+			.build();
 	}
 
 	static EntityDefinition album() {
@@ -58,81 +72,6 @@ public final class Chinook extends DomainModel {
 					.caption("Tags"))
 			.keyGenerator(identity())
 			.caption("Album")
-			.build();
-	}
-
-	static EntityDefinition artist() {
-		return Artist.TYPE.define(
-				Artist.ARTISTID.define()
-					.primaryKey(),
-				Artist.NAME.define()
-					.column()
-					.caption("Name")
-					.nullable(false)
-					.maximumLength(120))
-			.keyGenerator(identity())
-			.caption("Artist")
-			.build();
-	}
-
-	static EntityDefinition customer() {
-		return Customer.TYPE.define(
-				Customer.CUSTOMERID.define()
-					.primaryKey(),
-				Customer.FIRSTNAME.define()
-					.column()
-					.caption("Firstname")
-					.nullable(false)
-					.maximumLength(40),
-				Customer.LASTNAME.define()
-					.column()
-					.caption("Lastname")
-					.nullable(false)
-					.maximumLength(20),
-				Customer.COMPANY.define()
-					.column()
-					.caption("Company")
-					.maximumLength(80),
-				Customer.ADDRESS.define()
-					.column()
-					.caption("Address")
-					.maximumLength(70),
-				Customer.CITY.define()
-					.column()
-					.caption("City")
-					.maximumLength(40),
-				Customer.STATE.define()
-					.column()
-					.caption("State")
-					.maximumLength(40),
-				Customer.COUNTRY.define()
-					.column()
-					.caption("Country")
-					.maximumLength(40),
-				Customer.POSTALCODE.define()
-					.column()
-					.caption("Postalcode")
-					.maximumLength(10),
-				Customer.PHONE.define()
-					.column()
-					.caption("Phone")
-					.maximumLength(24),
-				Customer.FAX.define()
-					.column()
-					.caption("Fax")
-					.maximumLength(24),
-				Customer.EMAIL.define()
-					.column()
-					.caption("Email")
-					.nullable(false)
-					.maximumLength(60),
-				Customer.SUPPORTREPID.define()
-					.column(),
-				Customer.SUPPORTREPID_FK.define()
-					.foreignKey()
-					.caption("Employee"))
-			.keyGenerator(identity())
-			.caption("Customer")
 			.build();
 	}
 
@@ -203,6 +142,67 @@ public final class Chinook extends DomainModel {
 			.build();
 	}
 
+	static EntityDefinition customer() {
+		return Customer.TYPE.define(
+				Customer.CUSTOMERID.define()
+					.primaryKey(),
+				Customer.FIRSTNAME.define()
+					.column()
+					.caption("Firstname")
+					.nullable(false)
+					.maximumLength(40),
+				Customer.LASTNAME.define()
+					.column()
+					.caption("Lastname")
+					.nullable(false)
+					.maximumLength(20),
+				Customer.COMPANY.define()
+					.column()
+					.caption("Company")
+					.maximumLength(80),
+				Customer.ADDRESS.define()
+					.column()
+					.caption("Address")
+					.maximumLength(70),
+				Customer.CITY.define()
+					.column()
+					.caption("City")
+					.maximumLength(40),
+				Customer.STATE.define()
+					.column()
+					.caption("State")
+					.maximumLength(40),
+				Customer.COUNTRY.define()
+					.column()
+					.caption("Country")
+					.maximumLength(40),
+				Customer.POSTALCODE.define()
+					.column()
+					.caption("Postalcode")
+					.maximumLength(10),
+				Customer.PHONE.define()
+					.column()
+					.caption("Phone")
+					.maximumLength(24),
+				Customer.FAX.define()
+					.column()
+					.caption("Fax")
+					.maximumLength(24),
+				Customer.EMAIL.define()
+					.column()
+					.caption("Email")
+					.nullable(false)
+					.maximumLength(60),
+				Customer.SUPPORTREPID.define()
+					.column(),
+				Customer.SUPPORTREPID_FK.define()
+					.foreignKey()
+					.caption("Employee"))
+			.keyGenerator(identity())
+			.caption("Customer")
+			.build();
+	}
+
 	static EntityDefinition genre() {
 		return Genre.TYPE.define(
 				Genre.GENREID.define()
@@ -260,35 +260,6 @@ public final class Chinook extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition invoiceline() {
-		return Invoiceline.TYPE.define(
-				Invoiceline.INVOICELINEID.define()
-					.primaryKey(),
-				Invoiceline.INVOICEID.define()
-					.column()
-					.nullable(false),
-				Invoiceline.INVOICEID_FK.define()
-					.foreignKey()
-					.caption("Invoice"),
-				Invoiceline.TRACKID.define()
-					.column()
-					.nullable(false),
-				Invoiceline.TRACKID_FK.define()
-					.foreignKey()
-					.caption("Track"),
-				Invoiceline.UNITPRICE.define()
-					.column()
-					.caption("Unitprice")
-					.nullable(false),
-				Invoiceline.QUANTITY.define()
-					.column()
-					.caption("Quantity")
-					.nullable(false))
-			.keyGenerator(identity())
-			.caption("Invoiceline")
-			.build();
-	}
-
 	static EntityDefinition mediatype() {
 		return Mediatype.TYPE.define(
 				Mediatype.MEDIATYPEID.define()
@@ -300,41 +271,6 @@ public final class Chinook extends DomainModel {
 					.maximumLength(120))
 			.keyGenerator(identity())
 			.caption("Mediatype")
-			.build();
-	}
-
-	static EntityDefinition playlist() {
-		return Playlist.TYPE.define(
-				Playlist.PLAYLISTID.define()
-					.primaryKey(),
-				Playlist.NAME.define()
-					.column()
-					.caption("Name")
-					.nullable(false)
-					.maximumLength(120))
-			.keyGenerator(identity())
-			.caption("Playlist")
-			.build();
-	}
-
-	static EntityDefinition playlisttrack() {
-		return Playlisttrack.TYPE.define(
-				Playlisttrack.PLAYLISTTRACKID.define()
-					.primaryKey(),
-				Playlisttrack.PLAYLISTID.define()
-					.column()
-					.nullable(false),
-				Playlisttrack.PLAYLISTID_FK.define()
-					.foreignKey()
-					.caption("Playlist"),
-				Playlisttrack.TRACKID.define()
-					.column()
-					.nullable(false),
-				Playlisttrack.TRACKID_FK.define()
-					.foreignKey()
-					.caption("Track"))
-			.keyGenerator(identity())
-			.caption("Playlisttrack")
 			.build();
 	}
 
@@ -388,6 +324,70 @@ public final class Chinook extends DomainModel {
 			.build();
 	}
 
+	static EntityDefinition invoiceline() {
+		return Invoiceline.TYPE.define(
+				Invoiceline.INVOICELINEID.define()
+					.primaryKey(),
+				Invoiceline.INVOICEID.define()
+					.column()
+					.nullable(false),
+				Invoiceline.INVOICEID_FK.define()
+					.foreignKey()
+					.caption("Invoice"),
+				Invoiceline.TRACKID.define()
+					.column()
+					.nullable(false),
+				Invoiceline.TRACKID_FK.define()
+					.foreignKey()
+					.caption("Track"),
+				Invoiceline.UNITPRICE.define()
+					.column()
+					.caption("Unitprice")
+					.nullable(false),
+				Invoiceline.QUANTITY.define()
+					.column()
+					.caption("Quantity")
+					.nullable(false))
+			.keyGenerator(identity())
+			.caption("Invoiceline")
+			.build();
+	}
+
+	static EntityDefinition playlist() {
+		return Playlist.TYPE.define(
+				Playlist.PLAYLISTID.define()
+					.primaryKey(),
+				Playlist.NAME.define()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(120))
+			.keyGenerator(identity())
+			.caption("Playlist")
+			.build();
+	}
+
+	static EntityDefinition playlisttrack() {
+		return Playlisttrack.TYPE.define(
+				Playlisttrack.PLAYLISTTRACKID.define()
+					.primaryKey(),
+				Playlisttrack.PLAYLISTID.define()
+					.column()
+					.nullable(false),
+				Playlisttrack.PLAYLISTID_FK.define()
+					.foreignKey()
+					.caption("Playlist"),
+				Playlisttrack.TRACKID.define()
+					.column()
+					.nullable(false),
+				Playlisttrack.TRACKID_FK.define()
+					.foreignKey()
+					.caption("Track"))
+			.keyGenerator(identity())
+			.caption("Playlisttrack")
+			.build();
+	}
+
 	static EntityDefinition users() {
 		return Users.TYPE.define(
 				Users.USERID.define()
@@ -406,6 +406,13 @@ public final class Chinook extends DomainModel {
 			.build();
 	}
 
+	public interface Artist {
+		EntityType TYPE = DOMAIN.entityType("chinook.artist");
+
+		Column<Long> ARTISTID = TYPE.longColumn("artistid");
+		Column<String> NAME = TYPE.stringColumn("name");
+	}
+
 	public interface Album {
 		EntityType TYPE = DOMAIN.entityType("chinook.album");
 
@@ -416,33 +423,6 @@ public final class Chinook extends DomainModel {
 		Column<Object> TAGS = TYPE.column("tags", Object.class);
 
 		ForeignKey ARTISTID_FK = TYPE.foreignKey("artistid_fk", ARTISTID, Artist.ARTISTID);
-	}
-
-	public interface Artist {
-		EntityType TYPE = DOMAIN.entityType("chinook.artist");
-
-		Column<Long> ARTISTID = TYPE.longColumn("artistid");
-		Column<String> NAME = TYPE.stringColumn("name");
-	}
-
-	public interface Customer {
-		EntityType TYPE = DOMAIN.entityType("chinook.customer");
-
-		Column<Long> CUSTOMERID = TYPE.longColumn("customerid");
-		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
-		Column<String> LASTNAME = TYPE.stringColumn("lastname");
-		Column<String> COMPANY = TYPE.stringColumn("company");
-		Column<String> ADDRESS = TYPE.stringColumn("address");
-		Column<String> CITY = TYPE.stringColumn("city");
-		Column<String> STATE = TYPE.stringColumn("state");
-		Column<String> COUNTRY = TYPE.stringColumn("country");
-		Column<String> POSTALCODE = TYPE.stringColumn("postalcode");
-		Column<String> PHONE = TYPE.stringColumn("phone");
-		Column<String> FAX = TYPE.stringColumn("fax");
-		Column<String> EMAIL = TYPE.stringColumn("email");
-		Column<Long> SUPPORTREPID = TYPE.longColumn("supportrepid");
-
-		ForeignKey SUPPORTREPID_FK = TYPE.foreignKey("supportrepid_fk", SUPPORTREPID, Employee.EMPLOYEEID);
 	}
 
 	public interface Employee {
@@ -465,6 +445,26 @@ public final class Chinook extends DomainModel {
 		Column<String> EMAIL = TYPE.stringColumn("email");
 
 		ForeignKey REPORTSTO_FK = TYPE.foreignKey("reportsto_fk", REPORTSTO, Employee.EMPLOYEEID);
+	}
+
+	public interface Customer {
+		EntityType TYPE = DOMAIN.entityType("chinook.customer");
+
+		Column<Long> CUSTOMERID = TYPE.longColumn("customerid");
+		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
+		Column<String> LASTNAME = TYPE.stringColumn("lastname");
+		Column<String> COMPANY = TYPE.stringColumn("company");
+		Column<String> ADDRESS = TYPE.stringColumn("address");
+		Column<String> CITY = TYPE.stringColumn("city");
+		Column<String> STATE = TYPE.stringColumn("state");
+		Column<String> COUNTRY = TYPE.stringColumn("country");
+		Column<String> POSTALCODE = TYPE.stringColumn("postalcode");
+		Column<String> PHONE = TYPE.stringColumn("phone");
+		Column<String> FAX = TYPE.stringColumn("fax");
+		Column<String> EMAIL = TYPE.stringColumn("email");
+		Column<Long> SUPPORTREPID = TYPE.longColumn("supportrepid");
+
+		ForeignKey SUPPORTREPID_FK = TYPE.foreignKey("supportrepid_fk", SUPPORTREPID, Employee.EMPLOYEEID);
 	}
 
 	public interface Genre {
@@ -490,42 +490,11 @@ public final class Chinook extends DomainModel {
 		ForeignKey CUSTOMERID_FK = TYPE.foreignKey("customerid_fk", CUSTOMERID, Customer.CUSTOMERID);
 	}
 
-	public interface Invoiceline {
-		EntityType TYPE = DOMAIN.entityType("chinook.invoiceline");
-
-		Column<Long> INVOICELINEID = TYPE.longColumn("invoicelineid");
-		Column<Long> INVOICEID = TYPE.longColumn("invoiceid");
-		Column<Long> TRACKID = TYPE.longColumn("trackid");
-		Column<Integer> UNITPRICE = TYPE.integerColumn("unitprice");
-		Column<Integer> QUANTITY = TYPE.integerColumn("quantity");
-
-		ForeignKey INVOICEID_FK = TYPE.foreignKey("invoiceid_fk", INVOICEID, Invoice.INVOICEID);
-		ForeignKey TRACKID_FK = TYPE.foreignKey("trackid_fk", TRACKID, Track.TRACKID);
-	}
-
 	public interface Mediatype {
 		EntityType TYPE = DOMAIN.entityType("chinook.mediatype");
 
 		Column<Long> MEDIATYPEID = TYPE.longColumn("mediatypeid");
 		Column<String> NAME = TYPE.stringColumn("name");
-	}
-
-	public interface Playlist {
-		EntityType TYPE = DOMAIN.entityType("chinook.playlist");
-
-		Column<Long> PLAYLISTID = TYPE.longColumn("playlistid");
-		Column<String> NAME = TYPE.stringColumn("name");
-	}
-
-	public interface Playlisttrack {
-		EntityType TYPE = DOMAIN.entityType("chinook.playlisttrack");
-
-		Column<Long> PLAYLISTTRACKID = TYPE.longColumn("playlisttrackid");
-		Column<Long> PLAYLISTID = TYPE.longColumn("playlistid");
-		Column<Long> TRACKID = TYPE.longColumn("trackid");
-
-		ForeignKey PLAYLISTID_FK = TYPE.foreignKey("playlistid_fk", PLAYLISTID, Playlist.PLAYLISTID);
-		ForeignKey TRACKID_FK = TYPE.foreignKey("trackid_fk", TRACKID, Track.TRACKID);
 	}
 
 	public interface Track {
@@ -545,6 +514,37 @@ public final class Chinook extends DomainModel {
 		ForeignKey ALBUMID_FK = TYPE.foreignKey("albumid_fk", ALBUMID, Album.ALBUMID);
 		ForeignKey MEDIATYPEID_FK = TYPE.foreignKey("mediatypeid_fk", MEDIATYPEID, Mediatype.MEDIATYPEID);
 		ForeignKey GENREID_FK = TYPE.foreignKey("genreid_fk", GENREID, Genre.GENREID);
+	}
+
+	public interface Invoiceline {
+		EntityType TYPE = DOMAIN.entityType("chinook.invoiceline");
+
+		Column<Long> INVOICELINEID = TYPE.longColumn("invoicelineid");
+		Column<Long> INVOICEID = TYPE.longColumn("invoiceid");
+		Column<Long> TRACKID = TYPE.longColumn("trackid");
+		Column<Integer> UNITPRICE = TYPE.integerColumn("unitprice");
+		Column<Integer> QUANTITY = TYPE.integerColumn("quantity");
+
+		ForeignKey INVOICEID_FK = TYPE.foreignKey("invoiceid_fk", INVOICEID, Invoice.INVOICEID);
+		ForeignKey TRACKID_FK = TYPE.foreignKey("trackid_fk", TRACKID, Track.TRACKID);
+	}
+
+	public interface Playlist {
+		EntityType TYPE = DOMAIN.entityType("chinook.playlist");
+
+		Column<Long> PLAYLISTID = TYPE.longColumn("playlistid");
+		Column<String> NAME = TYPE.stringColumn("name");
+	}
+
+	public interface Playlisttrack {
+		EntityType TYPE = DOMAIN.entityType("chinook.playlisttrack");
+
+		Column<Long> PLAYLISTTRACKID = TYPE.longColumn("playlisttrackid");
+		Column<Long> PLAYLISTID = TYPE.longColumn("playlistid");
+		Column<Long> TRACKID = TYPE.longColumn("trackid");
+
+		ForeignKey PLAYLISTID_FK = TYPE.foreignKey("playlistid_fk", PLAYLISTID, Playlist.PLAYLISTID);
+		ForeignKey TRACKID_FK = TYPE.foreignKey("trackid_fk", TRACKID, Track.TRACKID);
 	}
 
 	public interface Users {

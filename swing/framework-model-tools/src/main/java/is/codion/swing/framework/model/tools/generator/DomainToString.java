@@ -39,9 +39,14 @@ import com.squareup.javapoet.TypeSpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static com.squareup.javapoet.MethodSpec.methodBuilder;
@@ -49,10 +54,8 @@ import static com.squareup.javapoet.TypeSpec.classBuilder;
 import static com.squareup.javapoet.TypeSpec.interfaceBuilder;
 import static is.codion.common.Separators.LINE_SEPARATOR;
 import static is.codion.common.Text.nullOrEmpty;
-import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 import static javax.lang.model.element.Modifier.*;
 
 final class DomainToString {
@@ -82,12 +85,6 @@ final class DomainToString {
 						.collect(joining(LINE_SEPARATOR + LINE_SEPARATOR));
 	}
 
-	private static List<EntityDefinition> sortDefinitions(DatabaseDomain domain) {
-		return domain.entities().definitions().stream()
-						.sorted(comparing(EntityDefinition::tableName))
-						.collect(toList());
-	}
-
 	private static String toApiString(String domainName, List<EntityDefinition> definitions, String packageName) {
 		String className = interfaceName(domainName, true);
 		TypeSpec.Builder classBuilder = interfaceBuilder(className)
@@ -114,18 +111,12 @@ final class DomainToString {
 						.addModifiers(PUBLIC, FINAL)
 						.superclass(DomainModel.class);
 
-		List<String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
+		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
 
 		String implementationPackage = packageName.isEmpty() ? "" : packageName + ".impl";
 
 		JavaFile.Builder fileBuilder = JavaFile.builder(implementationPackage,
-										classBuilder.addMethod(constructorBuilder()
-																		.addModifiers(PUBLIC)
-																		.addStatement("super(DOMAIN)")
-																		.addStatement(new StringBuilder()
-																						.append("add(").append(createAddParameters(definitionMethods)).append(")")
-																						.toString())
-																		.build())
+										classBuilder.addMethod(createDomainConstructor(definitionMethods))
 														.build())
 						.addStaticImport(KeyGenerator.class, "identity")
 						.skipJavaLangImports(true)
@@ -153,17 +144,11 @@ final class DomainToString {
 										.build())
 						.superclass(DomainModel.class);
 
-		List<String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
+		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
 		definitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
 
 		JavaFile.Builder fileBuilder = JavaFile.builder(packageName,
-										classBuilder.addMethod(constructorBuilder()
-																		.addModifiers(PUBLIC)
-																		.addStatement("super(DOMAIN)")
-																		.addStatement(new StringBuilder()
-																						.append("add(").append(createAddParameters(definitionMethods)).append(")")
-																						.toString())
-																		.build())
+										classBuilder.addMethod(createDomainConstructor(definitionMethods))
 														.build())
 						.addStaticImport(DomainType.class, "domainType")
 						.addStaticImport(KeyGenerator.class, "identity")
@@ -181,21 +166,38 @@ final class DomainToString {
 		return removeInterfaceLineBreaks(sourceString);
 	}
 
-	private static List<String> addDefinitionMethods(Collection<EntityDefinition> definitions,
-																									 TypeSpec.Builder classBuilder) {
-		List<String> definitionMethods = new ArrayList<>();
+	private static MethodSpec createDomainConstructor(Map<EntityDefinition, String> definitionMethods) {
+		MethodSpec.Builder constructorBuilder = constructorBuilder()
+						.addModifiers(PUBLIC)
+						.addStatement("super(DOMAIN)");
+		StringBuilder addParameters;
+		if (cyclicalDependencies(definitionMethods.keySet())) {
+			constructorBuilder.addStatement("setStrictForeignKeys(false)");
+		}
+		addParameters = createAddParameters(new ArrayList<>(definitionMethods.values()));
+
+		return constructorBuilder
+						.addStatement(new StringBuilder()
+										.append("add(").append(addParameters).append(")")
+										.toString())
+						.build();
+	}
+
+	private static Map<EntityDefinition, String> addDefinitionMethods(Collection<EntityDefinition> definitions,
+																																		TypeSpec.Builder classBuilder) {
+		Map<EntityDefinition, String> definitionMethods = new LinkedHashMap<>();
 		definitions.forEach(definition ->
-						addDefinition(definition, classBuilder, definitionMethods::add));
+						addDefinition(definition, classBuilder, definitionMethods::put));
 
 		return definitionMethods;
 	}
 
 	private static void addDefinition(EntityDefinition definition,
 																		TypeSpec.Builder classBuilder,
-																		Consumer<String> onMethod) {
+																		BiConsumer<EntityDefinition, String> onMethod) {
 		MethodSpec definitionMethod = createDefinitionMethod(definition);
 		classBuilder.addMethod(definitionMethod);
-		onMethod.accept(definitionMethod.name);
+		onMethod.accept(definition, definitionMethod.name);
 	}
 
 	private static TypeSpec createInterface(EntityDefinition definition) {
@@ -462,6 +464,55 @@ final class DomainToString {
 
 	static String implSearchString(EntityDefinition definition) {
 		return "EntityDefinition " + interfaceName(definition.tableName(), false) + "()";
+	}
+
+	private static List<EntityDefinition> sortDefinitions(DatabaseDomain domain) {
+		Map<EntityType, EntityDefinition> definitions = domain.entities().definitions().stream()
+						.collect(toMap(EntityDefinition::entityType, Function.identity()));
+
+		return definitions.values().stream()
+						.sorted((d1, d2) -> {
+							if (dependencies(d1, definitions).contains(d2.entityType())) {
+								return 1;
+							}
+							else if (dependencies(d2, definitions).contains(d1.entityType())) {
+								return -1;
+							}
+
+							return d1.tableName().compareTo(d2.tableName());
+						})
+						.collect(toList());
+	}
+
+	static boolean cyclicalDependencies(Collection<EntityDefinition> definitions) {
+		Map<EntityType, EntityDefinition> definitionMap = definitions.stream()
+						.collect(toMap(EntityDefinition::entityType, Function.identity()));
+		for (EntityDefinition definition : definitions) {
+			Set<EntityType> dependencies = dependencies(definition, new HashSet<>(), definitionMap);
+			if (dependencies.contains(definition.entityType())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static Set<EntityType> dependencies(EntityDefinition definition,
+																							Map<EntityType, EntityDefinition> definitions) {
+		return dependencies(definition, new HashSet<>(), definitions);
+	}
+
+	private static Set<EntityType> dependencies(EntityDefinition definition, Set<EntityType> dependencies,
+																							Map<EntityType, EntityDefinition> definitions) {
+		for (ForeignKey foreignKey : definition.foreignKeys().get()) {
+			if (!foreignKey.referencedType().equals(definition.entityType())
+							&& !dependencies.contains(foreignKey.referencedType())) {
+				dependencies.add(foreignKey.referencedType());
+				dependencies.addAll(dependencies(definitions.get(foreignKey.referencedType()), dependencies, definitions));
+			}
+		}
+
+		return dependencies;
 	}
 
 	static String underscoreToCamelCase(String text) {

@@ -13,6 +13,7 @@ import is.codion.world.domain.World.Countrylanguage;
 public final class WorldImpl extends DomainModel {
 	public WorldImpl() {
 		super(DOMAIN);
+		setStrictForeignKeys(false);
 		add(city(), country(), countrylanguage(),
 				countryCityV());
 	}
@@ -28,9 +29,11 @@ public final class WorldImpl extends DomainModel {
 					.maximumLength(35),
 				City.COUNTRYCODE.define()
 					.column()
-					.caption("Countrycode")
 					.nullable(false)
 					.maximumLength(3),
+				City.COUNTRYCODE_FK.define()
+					.foreignKey()
+					.caption("Country"),
 				City.DISTRICT.define()
 					.column()
 					.caption("District")
@@ -106,8 +109,10 @@ public final class WorldImpl extends DomainModel {
 					.caption("Headofstate")
 					.maximumLength(60),
 				Country.CAPITAL.define()
-					.column()
-					.caption("Capital"),
+					.column(),
+				Country.CAPITAL_FK.define()
+					.foreignKey()
+					.caption("City"),
 				Country.CODE2.define()
 					.column()
 					.caption("Code2")

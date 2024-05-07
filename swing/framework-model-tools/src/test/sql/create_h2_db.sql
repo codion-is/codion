@@ -287,5 +287,15 @@ select country.code countrycode, country.name countryname, country.continent, co
   city.id cityid, city.name cityname, city.district, city.population citypopulation
 from world.country join world.city on city.countrycode = country.code;
 
+alter table world.city
+add constraint city_country_fk
+foreign key (countrycode)
+references world.country(code);
+
+alter table world.country
+add constraint country_capital_fk
+foreign key (capital)
+references world.city(id);
+
 create user scott password 'tiger';
 alter user scott admin true;

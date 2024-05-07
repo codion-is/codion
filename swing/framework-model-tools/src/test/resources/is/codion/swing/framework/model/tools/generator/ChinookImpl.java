@@ -21,10 +21,24 @@ import is.codion.chinook.domain.Chinook.Users;
 public final class ChinookImpl extends DomainModel {
 	public ChinookImpl() {
 		super(DOMAIN);
-		add(album(), artist(), customer(),
-				employee(), genre(), invoice(),
-				invoiceline(), mediatype(), playlist(),
-				playlisttrack(), track(), users());
+		add(artist(), album(), employee(),
+				customer(), genre(), invoice(),
+				mediatype(), track(), invoiceline(),
+				playlist(), playlisttrack(), users());
+	}
+
+	static EntityDefinition artist() {
+		return Artist.TYPE.define(
+				Artist.ARTISTID.define()
+					.primaryKey(),
+				Artist.NAME.define()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(120))
+			.keyGenerator(identity())
+			.caption("Artist")
+			.build();
 	}
 
 	static EntityDefinition album() {
@@ -50,81 +64,6 @@ public final class ChinookImpl extends DomainModel {
 					.caption("Tags"))
 			.keyGenerator(identity())
 			.caption("Album")
-			.build();
-	}
-
-	static EntityDefinition artist() {
-		return Artist.TYPE.define(
-				Artist.ARTISTID.define()
-					.primaryKey(),
-				Artist.NAME.define()
-					.column()
-					.caption("Name")
-					.nullable(false)
-					.maximumLength(120))
-			.keyGenerator(identity())
-			.caption("Artist")
-			.build();
-	}
-
-	static EntityDefinition customer() {
-		return Customer.TYPE.define(
-				Customer.CUSTOMERID.define()
-					.primaryKey(),
-				Customer.FIRSTNAME.define()
-					.column()
-					.caption("Firstname")
-					.nullable(false)
-					.maximumLength(40),
-				Customer.LASTNAME.define()
-					.column()
-					.caption("Lastname")
-					.nullable(false)
-					.maximumLength(20),
-				Customer.COMPANY.define()
-					.column()
-					.caption("Company")
-					.maximumLength(80),
-				Customer.ADDRESS.define()
-					.column()
-					.caption("Address")
-					.maximumLength(70),
-				Customer.CITY.define()
-					.column()
-					.caption("City")
-					.maximumLength(40),
-				Customer.STATE.define()
-					.column()
-					.caption("State")
-					.maximumLength(40),
-				Customer.COUNTRY.define()
-					.column()
-					.caption("Country")
-					.maximumLength(40),
-				Customer.POSTALCODE.define()
-					.column()
-					.caption("Postalcode")
-					.maximumLength(10),
-				Customer.PHONE.define()
-					.column()
-					.caption("Phone")
-					.maximumLength(24),
-				Customer.FAX.define()
-					.column()
-					.caption("Fax")
-					.maximumLength(24),
-				Customer.EMAIL.define()
-					.column()
-					.caption("Email")
-					.nullable(false)
-					.maximumLength(60),
-				Customer.SUPPORTREPID.define()
-					.column(),
-				Customer.SUPPORTREPID_FK.define()
-					.foreignKey()
-					.caption("Employee"))
-			.keyGenerator(identity())
-			.caption("Customer")
 			.build();
 	}
 
@@ -195,6 +134,67 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
+	static EntityDefinition customer() {
+		return Customer.TYPE.define(
+				Customer.CUSTOMERID.define()
+					.primaryKey(),
+				Customer.FIRSTNAME.define()
+					.column()
+					.caption("Firstname")
+					.nullable(false)
+					.maximumLength(40),
+				Customer.LASTNAME.define()
+					.column()
+					.caption("Lastname")
+					.nullable(false)
+					.maximumLength(20),
+				Customer.COMPANY.define()
+					.column()
+					.caption("Company")
+					.maximumLength(80),
+				Customer.ADDRESS.define()
+					.column()
+					.caption("Address")
+					.maximumLength(70),
+				Customer.CITY.define()
+					.column()
+					.caption("City")
+					.maximumLength(40),
+				Customer.STATE.define()
+					.column()
+					.caption("State")
+					.maximumLength(40),
+				Customer.COUNTRY.define()
+					.column()
+					.caption("Country")
+					.maximumLength(40),
+				Customer.POSTALCODE.define()
+					.column()
+					.caption("Postalcode")
+					.maximumLength(10),
+				Customer.PHONE.define()
+					.column()
+					.caption("Phone")
+					.maximumLength(24),
+				Customer.FAX.define()
+					.column()
+					.caption("Fax")
+					.maximumLength(24),
+				Customer.EMAIL.define()
+					.column()
+					.caption("Email")
+					.nullable(false)
+					.maximumLength(60),
+				Customer.SUPPORTREPID.define()
+					.column(),
+				Customer.SUPPORTREPID_FK.define()
+					.foreignKey()
+					.caption("Employee"))
+			.keyGenerator(identity())
+			.caption("Customer")
+			.build();
+	}
+
 	static EntityDefinition genre() {
 		return Genre.TYPE.define(
 				Genre.GENREID.define()
@@ -252,35 +252,6 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition invoiceline() {
-		return Invoiceline.TYPE.define(
-				Invoiceline.INVOICELINEID.define()
-					.primaryKey(),
-				Invoiceline.INVOICEID.define()
-					.column()
-					.nullable(false),
-				Invoiceline.INVOICEID_FK.define()
-					.foreignKey()
-					.caption("Invoice"),
-				Invoiceline.TRACKID.define()
-					.column()
-					.nullable(false),
-				Invoiceline.TRACKID_FK.define()
-					.foreignKey()
-					.caption("Track"),
-				Invoiceline.UNITPRICE.define()
-					.column()
-					.caption("Unitprice")
-					.nullable(false),
-				Invoiceline.QUANTITY.define()
-					.column()
-					.caption("Quantity")
-					.nullable(false))
-			.keyGenerator(identity())
-			.caption("Invoiceline")
-			.build();
-	}
-
 	static EntityDefinition mediatype() {
 		return Mediatype.TYPE.define(
 				Mediatype.MEDIATYPEID.define()
@@ -292,41 +263,6 @@ public final class ChinookImpl extends DomainModel {
 					.maximumLength(120))
 			.keyGenerator(identity())
 			.caption("Mediatype")
-			.build();
-	}
-
-	static EntityDefinition playlist() {
-		return Playlist.TYPE.define(
-				Playlist.PLAYLISTID.define()
-					.primaryKey(),
-				Playlist.NAME.define()
-					.column()
-					.caption("Name")
-					.nullable(false)
-					.maximumLength(120))
-			.keyGenerator(identity())
-			.caption("Playlist")
-			.build();
-	}
-
-	static EntityDefinition playlisttrack() {
-		return Playlisttrack.TYPE.define(
-				Playlisttrack.PLAYLISTTRACKID.define()
-					.primaryKey(),
-				Playlisttrack.PLAYLISTID.define()
-					.column()
-					.nullable(false),
-				Playlisttrack.PLAYLISTID_FK.define()
-					.foreignKey()
-					.caption("Playlist"),
-				Playlisttrack.TRACKID.define()
-					.column()
-					.nullable(false),
-				Playlisttrack.TRACKID_FK.define()
-					.foreignKey()
-					.caption("Track"))
-			.keyGenerator(identity())
-			.caption("Playlisttrack")
 			.build();
 	}
 
@@ -377,6 +313,70 @@ public final class ChinookImpl extends DomainModel {
 					.nullable(false))
 			.keyGenerator(identity())
 			.caption("Track")
+			.build();
+	}
+
+	static EntityDefinition invoiceline() {
+		return Invoiceline.TYPE.define(
+				Invoiceline.INVOICELINEID.define()
+					.primaryKey(),
+				Invoiceline.INVOICEID.define()
+					.column()
+					.nullable(false),
+				Invoiceline.INVOICEID_FK.define()
+					.foreignKey()
+					.caption("Invoice"),
+				Invoiceline.TRACKID.define()
+					.column()
+					.nullable(false),
+				Invoiceline.TRACKID_FK.define()
+					.foreignKey()
+					.caption("Track"),
+				Invoiceline.UNITPRICE.define()
+					.column()
+					.caption("Unitprice")
+					.nullable(false),
+				Invoiceline.QUANTITY.define()
+					.column()
+					.caption("Quantity")
+					.nullable(false))
+			.keyGenerator(identity())
+			.caption("Invoiceline")
+			.build();
+	}
+
+	static EntityDefinition playlist() {
+		return Playlist.TYPE.define(
+				Playlist.PLAYLISTID.define()
+					.primaryKey(),
+				Playlist.NAME.define()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(120))
+			.keyGenerator(identity())
+			.caption("Playlist")
+			.build();
+	}
+
+	static EntityDefinition playlisttrack() {
+		return Playlisttrack.TYPE.define(
+				Playlisttrack.PLAYLISTTRACKID.define()
+					.primaryKey(),
+				Playlisttrack.PLAYLISTID.define()
+					.column()
+					.nullable(false),
+				Playlisttrack.PLAYLISTID_FK.define()
+					.foreignKey()
+					.caption("Playlist"),
+				Playlisttrack.TRACKID.define()
+					.column()
+					.nullable(false),
+				Playlisttrack.TRACKID_FK.define()
+					.foreignKey()
+					.caption("Track"))
+			.keyGenerator(identity())
+			.caption("Playlisttrack")
 			.build();
 	}
 

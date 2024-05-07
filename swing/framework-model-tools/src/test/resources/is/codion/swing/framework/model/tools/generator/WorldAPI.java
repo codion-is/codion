@@ -19,6 +19,8 @@ public interface World {
 		Column<String> DISTRICT = TYPE.stringColumn("district");
 		Column<Integer> POPULATION = TYPE.integerColumn("population");
 		Column<Object> LOCATION = TYPE.column("location", Object.class);
+
+		ForeignKey COUNTRYCODE_FK = TYPE.foreignKey("countrycode_fk", COUNTRYCODE, Country.CODE);
 	}
 
 	interface Country {
@@ -40,6 +42,8 @@ public interface World {
 		Column<Integer> CAPITAL = TYPE.integerColumn("capital");
 		Column<String> CODE2 = TYPE.stringColumn("code2");
 		Column<byte[]> FLAG = TYPE.byteArrayColumn("flag");
+
+		ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", CAPITAL, City.ID);
 	}
 
 	interface Countrylanguage {
