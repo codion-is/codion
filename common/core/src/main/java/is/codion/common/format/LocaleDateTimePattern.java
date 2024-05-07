@@ -28,9 +28,7 @@ import java.util.Optional;
  * <br>
  * Orders the year and month parts according to locale,
  * with two-digit month and day parts and two or four digit year.
- *
  * <pre>
- *
  * LocaleDateTimePattern pattern = LocaleDateTimePattern.builder()
  *     .delimiterDash()
  *     .yearFourDigits()

@@ -190,7 +190,7 @@ public abstract class DomainModel implements Domain {
 	 * @see #addFunctions(Domain)
 	 * @see #addReports(Domain)
 	 */
-	protected final void addAll(Domain domain) {
+	protected final void add(Domain domain) {
 		addEntities(domain);
 		addProcedures(domain);
 		addFunctions(domain);
@@ -224,13 +224,6 @@ public abstract class DomainModel implements Domain {
 		});
 	}
 
-	private void validate(EntityDefinition definition) {
-		if (!domainType.contains(requireNonNull(definition).entityType())) {
-			throw new IllegalArgumentException("Entity type '" +
-							definition.entityType() + "' is not part of domain: " + domainType);
-		}
-	}
-
 	/**
 	 * Adds all the functions from the given domain to this domain.
 	 * @param domain the domain model which functions to add
@@ -253,6 +246,13 @@ public abstract class DomainModel implements Domain {
 				reports.reports.put(reportType, report);
 			}
 		});
+	}
+
+	private void validate(EntityDefinition definition) {
+		if (!domainType.contains(requireNonNull(definition).entityType())) {
+			throw new IllegalArgumentException("Entity type '" +
+							definition.entityType() + "' is not part of domain: " + domainType);
+		}
 	}
 
 	private static final class DomainEntities extends DefaultEntities {

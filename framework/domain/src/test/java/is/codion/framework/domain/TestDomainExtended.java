@@ -95,7 +95,7 @@ public final class TestDomainExtended extends DomainModel {
 
 		public TestDomainSecondExtension() {
 			super(DOMAIN);
-			addAll(new TestDomainExtended());
+			add(new TestDomainExtended());
 			extendedSecond();
 		}
 

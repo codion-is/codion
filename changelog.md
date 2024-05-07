@@ -60,6 +60,7 @@ Codion Change Log
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
 - Entity.Builder.withDefaultValues() renamed withDefaults().
+- DomainModel.addAll() renamed add().
 ### is.codion.framework.json.domain
 - EntityObjectMapper.serializeEntities() and serializeKeys() removed.
 ### is.codion.framework.db.local
