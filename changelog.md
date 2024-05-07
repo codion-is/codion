@@ -16,6 +16,7 @@ Codion Change Log
 - Database.databaseException() renamed exception().
 - Database.createConnectionPool() now returns the pool.
 - ResultIterator now implementes Iterable.
+- Database.COUNT_QUERIES configuration value added.
 ### is codion.common.model
 - ColumnSummaryModel.SummaryValues removed, related refactoring.
 - ColumnSummaryModel.SummaryValueProvider renamed SummaryValues, related renaming.

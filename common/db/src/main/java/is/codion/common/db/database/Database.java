@@ -82,11 +82,11 @@ public interface Database extends ConnectionFactory {
 	PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("codion.db.validityCheckTimeout", 2);
 
 	/**
-	 * Specifies whether database queries should be counted.<br>
+	 * Specifies whether database queries should be counted for collecting statistics.<br>
 	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Default value: false
 	 */
-	PropertyValue<Boolean> COUNT_QUERIES = Configuration.booleanValue("codion.db.countQueries", true);
+	PropertyValue<Boolean> COUNT_QUERIES = Configuration.booleanValue("codion.db.countQueries", false);
 
 	/**
 	 * Specifies whether 'select for update' should be NOWAIT, if supported by the database.<br>
