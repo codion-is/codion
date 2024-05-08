@@ -52,7 +52,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
 	public Entity.Key deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
 		ObjectCodec codec = parser.getCodec();
 		JsonNode node = codec.readTree(parser);
-		EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entityObjectMapper.entities()::definition);
+		EntityDefinition definition = definitions.computeIfAbsent(node.get("type").asText(), entityObjectMapper.entities()::definition);
 		JsonNode values = node.get("values");
 		Entity.Key.Builder builder = entityObjectMapper.entities().keyBuilder(definition.entityType());
 		Iterator<Map.Entry<String, JsonNode>> fields = values.fields();

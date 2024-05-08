@@ -55,7 +55,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
 	@Override
 	public Entity deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
 		JsonNode entityNode = parser.getCodec().readTree(parser);
-		EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entities::definition);
+		EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("type").asText(), entities::definition);
 
 		Entity entity = definition.entity(valueMap(entityNode, definition), originalValueMap(entityNode, definition));
 		JsonNode immutable = entityNode.get("immutable");
@@ -73,7 +73,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
 
 	private Map<Attribute<?>, Object> originalValueMap(JsonNode node, EntityDefinition definition)
 					throws JsonProcessingException {
-		JsonNode originalValues = node.get("originalValues");
+		JsonNode originalValues = node.get("original");
 		if (originalValues != null) {
 			return attributeValueMap(definition, originalValues);
 		}
