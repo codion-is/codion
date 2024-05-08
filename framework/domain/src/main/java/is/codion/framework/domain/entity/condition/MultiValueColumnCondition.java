@@ -76,7 +76,7 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
 	@Override
 	protected String toString(String columnExpression) {
-		boolean notEqual = operator() == Operator.NOT_EQUAL;
+		boolean notIn = operator() == Operator.NOT_IN;
 		String identifier = columnExpression;
 		boolean caseInsensitiveString = column().type().isString() && !caseSensitive();
 		if (caseInsensitiveString) {
@@ -84,7 +84,7 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		}
 		String valuePlaceholder = caseInsensitiveString ? "upper(?)" : "?";
 
-		return createInList(identifier, valuePlaceholder, values().size(), notEqual);
+		return createInList(identifier, valuePlaceholder, values().size(), notIn);
 	}
 
 	private static String createInList(String columnIdentifier, String valuePlaceholder, int valueCount, boolean negated) {
@@ -109,8 +109,8 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
 	protected void validateOperator(Operator operator) {
 		switch (operator) {
-			case EQUAL:
-			case NOT_EQUAL:
+			case IN:
+			case NOT_IN:
 				break;
 			default:
 				throw new IllegalArgumentException("Unsupported multi value operator: " + operator);

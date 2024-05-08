@@ -24,6 +24,8 @@ import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 
+import java.util.stream.Stream;
+
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 	public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
@@ -38,8 +40,9 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 	}
 
 	private void configureTrackConditionPanel() {
-		conditionPanel().conditionPanel(PlaylistTrack.TRACK_FK)
-						.map(conditionPanel -> (EntitySearchField) conditionPanel.equalField())
-						.ifPresent(equalField -> equalField.selectorFactory().set(new TrackSelectorFactory()));
+		conditionPanel().conditionPanel(PlaylistTrack.TRACK_FK).ifPresent(conditionPanel ->
+						Stream.of(conditionPanel.equalField(), conditionPanel.inField())
+										.map(EntitySearchField.class::cast)
+										.forEach(field -> field.selectorFactory().set(new TrackSelectorFactory())));
 	}
 }

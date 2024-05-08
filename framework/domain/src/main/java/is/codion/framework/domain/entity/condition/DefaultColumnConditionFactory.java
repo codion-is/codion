@@ -138,12 +138,12 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 
 	@Override
 	public ColumnCondition<T> in(Collection<? extends T> values) {
-		return new MultiValueColumnCondition<>(column, values, EQUAL);
+		return new MultiValueColumnCondition<>(column, values, IN);
 	}
 
 	@Override
 	public ColumnCondition<T> notIn(Collection<? extends T> values) {
-		return new MultiValueColumnCondition<>(column, values, NOT_EQUAL);
+		return new MultiValueColumnCondition<>(column, values, NOT_IN);
 	}
 
 	@Override
@@ -158,12 +158,12 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 
 	@Override
 	public ColumnCondition<String> inIgnoreCase(Collection<String> values) {
-		return new MultiValueColumnCondition<>((Column<String>) column, values, EQUAL, false);
+		return new MultiValueColumnCondition<>((Column<String>) column, values, IN, false);
 	}
 
 	@Override
 	public ColumnCondition<String> notInIgnoreCase(Collection<String> values) {
-		return new MultiValueColumnCondition<>((Column<String>) column, values, NOT_EQUAL, false);
+		return new MultiValueColumnCondition<>((Column<String>) column, values, NOT_IN, false);
 	}
 
 	@Override

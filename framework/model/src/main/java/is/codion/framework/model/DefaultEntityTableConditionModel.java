@@ -78,7 +78,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 	}
 
 	@Override
-	public <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values) {
+	public <T> boolean setInConditionValues(Attribute<T> attribute, Collection<T> values) {
 		requireNonNull(attribute);
 		requireNonNull(values);
 		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
@@ -86,8 +86,8 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 		ColumnConditionModel<Attribute<T>, T> columnConditionModel =
 						(ColumnConditionModel<Attribute<T>, T>) conditionModel.conditionModels().get(attribute);
 		if (columnConditionModel != null) {
-			columnConditionModel.operator().set(Operator.EQUAL);
-			columnConditionModel.setEqualValues(values);
+			columnConditionModel.operator().set(Operator.IN);
+			columnConditionModel.setInValues(values);
 			columnConditionModel.enabled().set(!values.isEmpty());
 		}
 		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
@@ -198,12 +198,17 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
 	private static Condition foreignKeyCondition(ColumnConditionModel<?, Entity> conditionModel) {
 		ForeignKey foreignKey = (ForeignKey) conditionModel.columnIdentifier();
-		Collection<Entity> values = conditionModel.equalValues().get();
+		Entity equalValue = conditionModel.equalValue().get();
+		Collection<Entity> inValues = conditionModel.inValues().get();
 		switch (conditionModel.operator().get()) {
 			case EQUAL:
-				return values.isEmpty() ? foreignKey.isNull() : foreignKey.in(values);
+				return equalValue == null ? foreignKey.isNull() : foreignKey.equalTo(equalValue);
+			case IN:
+				return inValues.isEmpty() ? foreignKey.isNull() : foreignKey.in(inValues);
 			case NOT_EQUAL:
-				return values.isEmpty() ? foreignKey.isNotNull() : foreignKey.notIn(values);
+				return equalValue == null ? foreignKey.isNotNull() : foreignKey.notEqualTo(equalValue);
+			case NOT_IN:
+				return inValues.isEmpty() ? foreignKey.isNotNull() : foreignKey.notIn(inValues);
 			default:
 				throw new IllegalArgumentException("Unsupported operator: " + conditionModel.operator().get() + " for foreign key condition");
 		}
@@ -232,6 +237,10 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 				return column.notBetweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
 			case NOT_BETWEEN:
 				return column.notBetween(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+			case IN:
+				return inCondition(conditionModel, column);
+			case NOT_IN:
+				return notInCondition(conditionModel, column);
 			default:
 				throw new IllegalArgumentException("Unknown operator: " + conditionModel.operator().get());
 		}
@@ -239,34 +248,34 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
 	private static <T> ColumnCondition<T> equalCondition(ColumnConditionModel<?, T> conditionModel,
 																											 Column<T> column) {
-		Collection<T> equalToValues = conditionModel.getEqualValues();
-		if (equalToValues.isEmpty()) {
+		T equalValue = conditionModel.getEqualValue();
+		if (equalValue == null) {
 			return column.isNull();
 		}
-		if (column.type().isString() && equalToValues.size() == 1) {
-			return singleStringEqualCondition(conditionModel, column, (String) equalToValues.iterator().next());
+		if (column.type().isString()) {
+			return singleStringEqualCondition(conditionModel, column, (String) equalValue);
 		}
-		if (column.type().isCharacter() && equalToValues.size() == 1) {
-			return singleCharacterEqualCondition(conditionModel, column, (Character) equalToValues.iterator().next());
+		if (column.type().isCharacter()) {
+			return singleCharacterEqualCondition(conditionModel, column, (Character) equalValue);
 		}
 
-		return column.in(equalToValues);
+		return column.equalTo(equalValue);
 	}
 
 	private static <T> ColumnCondition<T> notEqualCondition(ColumnConditionModel<?, T> conditionModel,
 																													Column<T> column) {
-		Collection<T> equalToValues = conditionModel.getEqualValues();
-		if (equalToValues.isEmpty()) {
+		T equalValue = conditionModel.getEqualValue();
+		if (equalValue == null) {
 			return column.isNotNull();
 		}
-		if (column.type().isString() && equalToValues.size() == 1) {
-			return singleStringNotEqualCondition(conditionModel, column, (String) equalToValues.iterator().next());
+		if (column.type().isString()) {
+			return singleStringNotEqualCondition(conditionModel, column, (String) equalValue);
 		}
-		if (column.type().isCharacter() && equalToValues.size() == 1) {
-			return singleCharacterNotEqualCondition(conditionModel, column, (Character) equalToValues.iterator().next());
+		if (column.type().isCharacter()) {
+			return singleCharacterNotEqualCondition(conditionModel, column, (Character) equalValue);
 		}
 
-		return column.notIn(equalToValues);
+		return column.notEqualTo(equalValue);
 	}
 
 	private static <T> ColumnCondition<T> singleStringEqualCondition(ColumnConditionModel<?, T> conditionModel,
@@ -297,6 +306,32 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 	private static <T> ColumnCondition<T> singleCharacterNotEqualCondition(ColumnConditionModel<?, T> conditionModel,
 																																				 Column<T> column, Character value) {
 		return conditionModel.caseSensitive().get() ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
+	}
+
+	private static <T> ColumnCondition<T> inCondition(ColumnConditionModel<?, T> conditionModel, Column<T> column) {
+		if (column.type().isString()) {
+			Column<String> stringColumn = (Column<String>) column;
+			Collection<String> inValues = (Collection<String>) conditionModel.getInValues();
+
+			return (ColumnCondition<T>) (conditionModel.caseSensitive().get() ?
+							stringColumn.in(inValues) :
+							stringColumn.inIgnoreCase(inValues));
+		}
+
+		return column.in(conditionModel.getInValues());
+	}
+
+	private static <T> ColumnCondition<T> notInCondition(ColumnConditionModel<?, T> conditionModel, Column<T> column) {
+		if (column.type().isString()) {
+			Column<String> stringColumn = (Column<String>) column;
+			Collection<String> inValues = (Collection<String>) conditionModel.getInValues();
+
+			return (ColumnCondition<T>) (conditionModel.caseSensitive().get() ?
+							stringColumn.notIn(inValues) :
+							stringColumn.notInIgnoreCase(inValues));
+		}
+
+		return column.notIn(conditionModel.getInValues());
 	}
 
 	private static boolean containsWildcards(String value) {

@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract base class for {@link ForeignKey} based {@link ColumnConditionModel}s.
@@ -41,8 +42,8 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
 	private final ColumnConditionModel<ForeignKey, Entity> conditionModel;
 
 	protected AbstractForeignKeyConditionModel(ForeignKey foreignKey) {
-		conditionModel = ColumnConditionModel.builder(foreignKey, Entity.class)
-						.operators(asList(Operator.EQUAL, Operator.NOT_EQUAL))
+		conditionModel = ColumnConditionModel.builder(requireNonNull(foreignKey), Entity.class)
+						.operators(asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN))
 						.build();
 	}
 
@@ -87,13 +88,13 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
 	}
 
 	@Override
-	public final void setEqualValues(Collection<Entity> values) {
-		conditionModel.setEqualValues(values);
+	public final void setInValues(Collection<Entity> values) {
+		conditionModel.setInValues(values);
 	}
 
 	@Override
-	public final Collection<Entity> getEqualValues() {
-		return conditionModel.getEqualValues();
+	public final Collection<Entity> getInValues() {
+		return conditionModel.getInValues();
 	}
 
 	@Override
@@ -157,8 +158,13 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
 	}
 
 	@Override
-	public final ValueSet<Entity> equalValues() {
-		return conditionModel.equalValues();
+	public Value<Entity> equalValue() {
+		return conditionModel.equalValue();
+	}
+
+	@Override
+	public final ValueSet<Entity> inValues() {
+		return conditionModel.inValues();
 	}
 
 	@Override
@@ -175,4 +181,9 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
 	public final EventObserver<?> conditionChangedEvent() {
 		return conditionModel.conditionChangedEvent();
 	}
+
+	/**
+	 * @return the search model controlling the in values
+	 */
+	public abstract EntitySearchModel inSearchModel();
 }

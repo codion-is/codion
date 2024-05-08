@@ -23,16 +23,18 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.EntitySearchConditionModel;
+import is.codion.framework.model.AbstractForeignKeyConditionModel;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.BoundFieldFactory;
 import is.codion.swing.common.ui.component.text.TextComponents;
-import is.codion.swing.framework.model.EntityComboBoxConditionModel;
+import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
+import is.codion.swing.framework.ui.component.EntitySearchField;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -47,6 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static is.codion.swing.common.ui.component.Components.listBox;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
@@ -114,7 +117,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 
 		@Override
 		public JComponent createEqualField() {
-			return Sizes.setPreferredHeight(createForeignKeyField(), TextComponents.preferredTextFieldHeight());
+			return Sizes.setPreferredHeight(createEqualForeignKeyField(), TextComponents.preferredTextFieldHeight());
 		}
 
 		@Override
@@ -127,14 +130,19 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 			return Optional.empty();
 		}
 
-		private JComponent createForeignKeyField() {
-			if (model instanceof EntitySearchConditionModel) {
-				EntitySearchModel searchModel = ((EntitySearchConditionModel) model).searchModel();
+		@Override
+		public JComponent createInField() {
+			return Sizes.setPreferredHeight(createInForeignKeyField(), TextComponents.preferredTextFieldHeight());
+		}
+
+		private JComponent createEqualForeignKeyField() {
+			if (model instanceof ForeignKeyConditionModel) {
+				EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).equalSearchModel();
 
 				return entityComponents.foreignKeySearchField(model.columnIdentifier(), searchModel).build();
 			}
-			if (model instanceof EntityComboBoxConditionModel) {
-				EntityComboBoxModel comboBoxModel = ((EntityComboBoxConditionModel) model).comboBoxModel();
+			if (model instanceof SwingForeignKeyConditionModel) {
+				EntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) model).equalComboBoxModel();
 
 				return entityComponents.foreignKeyComboBox(model.columnIdentifier(), comboBoxModel)
 								.completionMode(Completion.Mode.MAXIMUM_MATCH)
@@ -143,6 +151,28 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 			}
 
 			throw new IllegalArgumentException("Unknown foreign key condition model type: " + model);
+		}
+
+		private JComponent createInForeignKeyField() {
+			if (model instanceof AbstractForeignKeyConditionModel) {
+				EntitySearchModel searchModel = ((AbstractForeignKeyConditionModel) model).inSearchModel();
+
+				return configureSearchField(searchModel, entityComponents
+								.foreignKeySearchField(model.columnIdentifier(), searchModel).build());
+			}
+
+			throw new IllegalArgumentException("Unknown foreign key condition model type: " + model);
+		}
+
+		private static EntitySearchField configureSearchField(EntitySearchModel searchModel, EntitySearchField searchField) {
+			boolean searchable = !searchModel.connectionProvider().entities()
+							.definition(searchModel.entityType()).columns().searchable().isEmpty();
+			if (!searchable) {
+				searchField.setEditable(false);
+				searchField.hint().set("");
+			}
+
+			return searchField;
 		}
 	}
 
@@ -173,7 +203,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 		@Override
 		public JComponent createEqualField() {
 			return inputComponents.component(attribute)
-							.link(conditionModel.equalValues().value())
+							.link(conditionModel.equalValue())
 							.onBuild(AttributeBoundFieldFactory::configureComponent)
 							.build();
 		}
@@ -200,6 +230,15 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 							.link(conditionModel.lowerBoundValue())
 							.onBuild(AttributeBoundFieldFactory::configureComponent)
 							.build());
+		}
+
+		@Override
+		public JComponent createInField() {
+			return listBox(inputComponents.component(attribute)
+							.link(conditionModel.equalValue())
+							.onBuild(AttributeBoundFieldFactory::configureComponent)
+							.buildValue(), conditionModel.inValues())
+							.build();
 		}
 
 		private static JComponent configureComponent(JComponent component) {

@@ -29,14 +29,14 @@ import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
 
 import java.text.Format;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+import static is.codion.common.Operator.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -48,13 +48,18 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private final Runnable autoEnableListener = new AutoEnableListener();
 	private final Event<?> conditionChangedEvent = Event.event();
 	private final State locked = State.state();
-	private final ValueSet<T> equalValues = ValueSet.<T>builder()
+	private final ValueSet<T> inValues = ValueSet.<T>builder()
 					.notify(Notify.WHEN_SET)
 					.validator(value -> checkLock())
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
-	private final Value<T> equalValue = equalValues.value();
+	private final Value<T> equalValue = Value.<T>nullable()
+					.notify(Notify.WHEN_SET)
+					.validator(value -> checkLock())
+					.listener(autoEnableListener)
+					.listener(conditionChangedEvent)
+					.build();
 	private final Value<T> upperBoundValue = Value.<T>nullable()
 					.notify(Notify.WHEN_SET)
 					.validator(value -> checkLock())
@@ -149,13 +154,13 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	@Override
-	public void setEqualValues(Collection<T> values) {
-		equalValues.set(requireNonNull(values));
+	public void setInValues(Collection<T> values) {
+		inValues.set(requireNonNull(values));
 	}
 
 	@Override
-	public Collection<T> getEqualValues() {
-		return equalValues.get().stream()
+	public Collection<T> getInValues() {
+		return inValues.get().stream()
 						.map(this::addAutomaticWildcard)
 						.collect(toList());
 	}
@@ -213,9 +218,10 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	@Override
 	public void clear() {
 		enabled.set(false);
-		setEqualValues(emptyList());
+		setEqualValue(null);
 		setUpperBound(null);
 		setLowerBound(null);
+		setInValues(emptyList());
 		operator.set(Operator.EQUAL);
 	}
 
@@ -225,8 +231,13 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	@Override
-	public ValueSet<T> equalValues() {
-		return equalValues;
+	public Value<T> equalValue() {
+		return equalValue;
+	}
+
+	@Override
+	public ValueSet<T> inValues() {
+		return inValues;
 	}
 
 	@Override
@@ -269,6 +280,10 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 				return isNotBetweenExclusive(comparable);
 			case NOT_BETWEEN:
 				return isNotBetween(comparable);
+			case IN:
+				return isIn(comparable);
+			case NOT_IN:
+				return isNotIn(comparable);
 			default:
 				throw new IllegalArgumentException("Unknown operator: " + operator.get());
 		}
@@ -454,6 +469,14 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		return lowerCompareResult <= 0 || upperCompareResult >= 0;
 	}
 
+	private boolean isIn(Comparable<T> comparable) {
+		return getInValues().contains(comparable);
+	}
+
+	private boolean isNotIn(Comparable<T> comparable) {
+		return !isIn(comparable);
+	}
+
 	private T addAutomaticWildcard(T bound) {
 		if (!(bound instanceof String)) {
 			return bound;
@@ -545,7 +568,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 				switch (operator.get()) {
 					case EQUAL:
 					case NOT_EQUAL:
-						enabled.set(equalValues.notEmpty());
+						enabled.set(equalValue.isNotNull());
 						break;
 					case LESS_THAN:
 					case LESS_THAN_OR_EQUAL:
@@ -561,6 +584,10 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 					case NOT_BETWEEN_EXCLUSIVE:
 						enabled.set(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
 						break;
+					case IN:
+					case NOT_IN:
+						enabled.set(inValues.notEmpty());
+						break;
 					default:
 						throw new IllegalStateException("Unknown operator: " + operator.get());
 				}
@@ -570,10 +597,25 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	static final class DefaultBuilder<C, T> implements Builder<C, T> {
 
+		private static final List<Operator> DEFAULT_OPERATORS = asList(
+						EQUAL,
+						NOT_EQUAL,
+						LESS_THAN,
+						LESS_THAN_OR_EQUAL,
+						GREATER_THAN,
+						GREATER_THAN_OR_EQUAL,
+						BETWEEN_EXCLUSIVE,
+						BETWEEN,
+						NOT_BETWEEN_EXCLUSIVE,
+						NOT_BETWEEN,
+						IN,
+						NOT_IN
+		);
+
 		private final C columnIdentifier;
 		private final Class<T> columnClass;
 
-		private List<Operator> operators = Arrays.asList(Operator.values());
+		private List<Operator> operators;
 		private char wildcard = Text.WILDCARD_CHARACTER.get();
 		private Format format;
 		private String dateTimePattern = LocaleDateTimePattern.builder()
@@ -589,6 +631,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		DefaultBuilder(C columnIdentifier, Class<T> columnClass) {
 			this.columnIdentifier = requireNonNull(columnIdentifier);
 			this.columnClass = requireNonNull(columnClass);
+			this.operators = columnClass.equals(Boolean.class) ? singletonList(Operator.EQUAL) : DEFAULT_OPERATORS;
 		}
 
 		@Override

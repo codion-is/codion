@@ -35,7 +35,9 @@ public enum Operator {
 	BETWEEN_EXCLUSIVE,
 	BETWEEN,
 	NOT_BETWEEN_EXCLUSIVE,
-	NOT_BETWEEN;
+	NOT_BETWEEN,
+	IN,
+	NOT_IN;
 
 	private final String description;
 

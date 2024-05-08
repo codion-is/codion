@@ -85,7 +85,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
 		assertEquals(0, employeeTableModel.getRowCount());
 		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
-		employeeTableModel.conditionModel().setEqualConditionValues(Employee.DEPARTMENT_FK, singletonList(accounting));
+		employeeTableModel.conditionModel().setInConditionValues(Employee.DEPARTMENT_FK, singletonList(accounting));
 		employeeTableModel.refresh();
 		assertEquals(7, employeeTableModel.getRowCount());
 	}

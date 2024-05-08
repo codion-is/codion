@@ -52,7 +52,7 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
 	 * @param <T> the value type
 	 * @return true if the search state changed as a result of this method call, false otherwise
 	 */
-	<T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values);
+	<T> boolean setInConditionValues(Attribute<T> attribute, Collection<T> values);
 
 	/**
 	 * Returns a WHERE condition based on enabled condition models which are based on non-aggregate function columns.

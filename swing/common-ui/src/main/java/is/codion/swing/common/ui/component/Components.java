@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
@@ -37,6 +38,7 @@ import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.list.ListBuilder;
+import is.codion.swing.common.ui.component.listbox.ListBoxBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.progressbar.ProgressBarBuilder;
@@ -56,6 +58,7 @@ import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -83,6 +86,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.List;
+import java.util.Set;
 
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
 import static is.codion.swing.common.ui.layout.Layouts.*;
@@ -344,6 +348,22 @@ public final class Components {
 	public static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel,
 																																																									Value<T> linkedValue) {
 		return ComboBoxBuilder.builder(comboBoxModel, linkedValue);
+	}
+
+	/**
+	 * Creates a {@link JComboBox} based {@link ComponentValue} instance, represented by the items
+	 * in the combo box (as opposed to the selected item). The provided {@code itemValue} supplies
+	 * new items to add to the combo box.<br>
+	 * {@link java.awt.event.KeyEvent#VK_INSERT} adds the current value whereas
+	 * {@link java.awt.event.KeyEvent#VK_DELETE} deletes the selected item from the list.
+	 * @param itemValue the component value providing the items to add
+	 * @param linkedValue the value to link
+	 * @param <T> the value type
+	 * @return a new {@link ComponentValue}
+	 */
+	public static <T> ComponentBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>> listBox(
+					ComponentValue<T, ? extends JComponent> itemValue, ValueSet<T> linkedValue) {
+		return ListBoxBuilder.listBox(itemValue, linkedValue);
 	}
 
 	/**

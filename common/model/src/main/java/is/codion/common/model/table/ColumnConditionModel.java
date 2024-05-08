@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
 /**
@@ -152,12 +151,12 @@ public interface ColumnConditionModel<C, T> {
 	/**
 	 * @param values the values to set, an empty Collection for none
 	 */
-	void setEqualValues(Collection<T> values);
+	void setInValues(Collection<T> values);
 
 	/**
-	 * @return the equal values, never null
+	 * @return the in values, never null
 	 */
-	Collection<T> getEqualValues();
+	Collection<T> getInValues();
 
 	/**
 	 * @param upper the new upper bound
@@ -201,9 +200,14 @@ public interface ColumnConditionModel<C, T> {
 	void clear();
 
 	/**
-	 * @return a ValueSet based on the equals values of this condition model
+	 * @return a Value based on the equal value of this condition model
 	 */
-	ValueSet<T> equalValues();
+	Value<T> equalValue();
+
+	/**
+	 * @return a ValueSet based on the in values of this condition model
+	 */
+	ValueSet<T> inValues();
 
 	/**
 	 * @return a Value based on the upper bound value of this condition model
@@ -309,36 +313,5 @@ public interface ColumnConditionModel<C, T> {
 		 * @return a new {@link ColumnConditionModel} instance based on this builder
 		 */
 		ColumnConditionModel<C, T> build();
-	}
-
-	/**
-	 * @param operator the operator
-	 * @return a caption for the given operator
-	 */
-	static String caption(Operator operator) {
-		switch (requireNonNull(operator)) {
-			case EQUAL:
-				return "α =";
-			case NOT_EQUAL:
-				return "α ≠";
-			case LESS_THAN:
-				return "α <";
-			case LESS_THAN_OR_EQUAL:
-				return "α ≤";
-			case GREATER_THAN:
-				return "α >";
-			case GREATER_THAN_OR_EQUAL:
-				return "α ≥";
-			case BETWEEN_EXCLUSIVE:
-				return "< α <";
-			case BETWEEN:
-				return "≤ α ≤";
-			case NOT_BETWEEN_EXCLUSIVE:
-				return "≥ α ≥";
-			case NOT_BETWEEN:
-				return "> α >";
-			default:
-				throw new IllegalArgumentException("Unknown operator: " + operator);
-		}
 	}
 }

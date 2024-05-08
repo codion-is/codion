@@ -974,13 +974,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 				return Optional.empty();
 			}
 			if (useStringCondition(attribute, attributeDefinition)) {
-				return Optional.of(ColumnConditionModel.builder(attribute, String.class)
-								.operators(operators(String.class))
-								.build());
+				return Optional.of(ColumnConditionModel.builder(attribute, String.class).build());
 			}
 
 			return Optional.of(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
-							.operators(operators(attribute.type().valueClass()))
 							.format(attributeDefinition.format())
 							.dateTimePattern(attributeDefinition.dateTimePattern())
 							.build());

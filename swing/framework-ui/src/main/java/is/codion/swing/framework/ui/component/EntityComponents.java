@@ -220,7 +220,7 @@ public final class EntityComponents {
 	 * @return a foreign key JComboBox builder
 	 */
 	public EntityComboBox.Builder foreignKeyComboBox(ForeignKey foreignKey,
-																												 EntityComboBoxModel comboBoxModel) {
+																									 EntityComboBoxModel comboBoxModel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntityComboBox.builder(comboBoxModel)
@@ -235,8 +235,8 @@ public final class EntityComponents {
 	 * @return a foreign key combo box panel builder
 	 */
 	public EntityComboBoxPanel.Builder foreignKeyComboBoxPanel(ForeignKey foreignKey,
-																																	 EntityComboBoxModel comboBoxModel,
-																																	 Supplier<EntityEditPanel> editPanel) {
+																														 EntityComboBoxModel comboBoxModel,
+																														 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntityComboBoxPanel.builder(comboBoxModel, editPanel)
@@ -263,7 +263,7 @@ public final class EntityComponents {
 	 * @return a foreign key search field panel builder
 	 */
 	public EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
-																																				 EntitySearchModel searchModel) {
+																																	 EntitySearchModel searchModel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntitySearchFieldPanel.builder(searchModel)
@@ -279,8 +279,8 @@ public final class EntityComponents {
 	 * @return a foreign key search field panel builder
 	 */
 	public EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
-																																				 EntitySearchModel searchModel,
-																																				 Supplier<EntityEditPanel> editPanel) {
+																																	 EntitySearchModel searchModel,
+																																	 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntitySearchFieldPanel.builder(searchModel, editPanel)
@@ -344,7 +344,7 @@ public final class EntityComponents {
 	 * @return a JComboBox builder
 	 */
 	public <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
-																																																								 ComboBoxModel<T> comboBoxModel) {
+																																																					 ComboBoxModel<T> comboBoxModel) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return (ComboBoxBuilder<T, C, B>) Components.comboBox(comboBoxModel)

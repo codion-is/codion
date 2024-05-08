@@ -23,16 +23,20 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.List;
 
-import static is.codion.swing.framework.model.EntityComboBoxConditionModel.entityComboBoxConditionModel;
+import static is.codion.swing.framework.model.SwingForeignKeyConditionModel.swingForeignKeyConditionModel;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityComboBoxConditionModelTest {
@@ -47,27 +51,49 @@ public class EntityComboBoxConditionModelTest {
 
 	@Test
 	void searchEntitiesComboBoxModel() throws DatabaseException {
-		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
-		EntityComboBoxConditionModel conditionModel = entityComboBoxConditionModel(Employee.DEPARTMENT_FK, comboBoxModel);
+		SwingForeignKeyConditionModel conditionModel = swingForeignKeyConditionModel(Employee.DEPARTMENT_FK,
+						foreignKey -> {
+							EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(foreignKey.referencedType(), CONNECTION_PROVIDER);
+							comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+
+							return comboBoxModel;
+			},
+						foreignKey -> EntitySearchModel.builder(foreignKey.referencedType(), CONNECTION_PROVIDER).build());
+		EntityComboBoxModel equalComboBoxModel = conditionModel.equalComboBoxModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
-		comboBoxModel.setSelectedItem(sales);
-		Collection<Entity> searchEntities = conditionModel.getEqualValues();
-		assertEquals(1, searchEntities.size());
-		assertTrue(searchEntities.contains(sales));
-		comboBoxModel.refresh();
-		assertEquals(sales, comboBoxModel.selectedValue());
-		searchEntities = conditionModel.getEqualValues();
-		assertEquals(1, searchEntities.size());
-		assertTrue(searchEntities.contains(sales));
+		equalComboBoxModel.setSelectedItem(sales);
+		Entity searchEntity = conditionModel.getEqualValue();
+		assertSame(sales, searchEntity);
+		equalComboBoxModel.refresh();
+		assertEquals(sales, equalComboBoxModel.selectedValue());
 
 		conditionModel.setEqualValue(null);
-		assertNull(comboBoxModel.getSelectedItem());
+		assertTrue(equalComboBoxModel.nullSelected());
 		conditionModel.setEqualValue(sales);
-		assertEquals(comboBoxModel.getSelectedItem(), sales);
+		assertEquals(equalComboBoxModel.getSelectedItem(), sales);
 
-		comboBoxModel.setSelectedItem(null);
+		equalComboBoxModel.setSelectedItem(null);
+	}
 
-		searchEntities = conditionModel.getEqualValues();
-		assertTrue(searchEntities.isEmpty());
+	@Test
+	void inSearchModel() throws DatabaseException {
+		SwingForeignKeyConditionModel conditionModel = swingForeignKeyConditionModel(Employee.DEPARTMENT_FK,
+						foreignKey -> new EntityComboBoxModel(foreignKey.referencedType(), CONNECTION_PROVIDER),
+						foreignKey -> EntitySearchModel.builder(foreignKey.referencedType(), CONNECTION_PROVIDER).build());
+		EntitySearchModel inSearchModel = conditionModel.inSearchModel();
+		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
+		inSearchModel.entity().set(sales);
+		Collection<Entity> searchEntities = conditionModel.getInValues();
+		assertEquals(1, searchEntities.size());
+		assertTrue(searchEntities.contains(sales));
+		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		List<Entity> salesAccounting = asList(sales, accounting);
+		inSearchModel.entities().set(salesAccounting);
+		assertTrue(conditionModel.getInValues().contains(sales));
+		assertTrue(conditionModel.getInValues().contains(accounting));
+		searchEntities = conditionModel.getInValues();
+		assertEquals(2, searchEntities.size());
+		assertTrue(searchEntities.contains(sales));
+		assertTrue(searchEntities.contains(accounting));
 	}
 }

@@ -27,8 +27,10 @@ import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -58,8 +60,9 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
@@ -72,6 +75,7 @@ import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.SwingConstants.CENTER;
 
 /**
@@ -132,6 +136,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	private final JComponent equalField;
 	private final JComponent upperBoundField;
 	private final JComponent lowerBoundField;
+	private final JComponent inField;
 	private final JPanel controlPanel = new JPanel(new BorderLayout());
 	private final JPanel inputPanel = new JPanel(new BorderLayout());
 	private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
@@ -150,6 +155,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 		this.equalField = boundFieldFactory.createEqualField();
 		this.upperBoundField = boundFieldFactory.createUpperBoundField().orElse(null);
 		this.lowerBoundField = boundFieldFactory.createLowerBoundField().orElse(null);
+		this.inField = boundFieldFactory.createInField();
 		this.operatorCombo = createOperatorComboBox(conditionModel.operators());
 		this.toggleEnabledButton = radioButton(conditionModel.enabled())
 						.horizontalAlignment(CENTER)
@@ -198,6 +204,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 			case LESS_THAN_OR_EQUAL:
 				upperBoundField.requestFocusInWindow();
 				break;
+			case IN:
+			case NOT_IN:
+				inField.requestFocusInWindow();
+				break;
 			default:
 				throw new IllegalArgumentException("Unknown operator: " + conditionModel.operator().get());
 		}
@@ -236,6 +246,13 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	 */
 	public JComponent lowerBoundField() {
 		return lowerBoundField;
+	}
+
+	/**
+	 * @return the JComponent used to specify the in values
+	 */
+	public JComponent inField() {
+		return inField;
 	}
 
 	/**
@@ -318,6 +335,12 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
 		Optional<JComponent> createLowerBoundField();
+
+		/**
+		 * @return the in value field
+		 * @throws IllegalArgumentException in case the bound type is not supported
+		 */
+		JComponent createInField();
 	}
 
 	private static final class DefaultBoundFieldFactory implements BoundFieldFactory {
@@ -338,8 +361,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 			return SUPPORTED_TYPES.contains(requireNonNull(columnClass));
 		}
 
+		@Override
 		public JComponent createEqualField() {
-			return createField(columnConditionModel.equalValues().value());
+			return ((ComponentBuilder<Object, ? extends JComponent, ?>) createField())
+							.link((Value<Object>) columnConditionModel.equalValue()).build();
 		}
 
 		@Override
@@ -348,7 +373,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 				return Optional.empty();//no upper bound field required for boolean values
 			}
 
-			return Optional.of(createField(columnConditionModel.upperBoundValue()));
+			return Optional.of(((ComponentBuilder<Object, ? extends JComponent, ?>) createField())
+							.link((Value<Object>) columnConditionModel.upperBoundValue())
+							.build());
 		}
 
 		@Override
@@ -357,65 +384,62 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 				return Optional.empty();//no lower bound field required for boolean values
 			}
 
-			return Optional.of(createField(columnConditionModel.lowerBoundValue()));
+			return Optional.of(((ComponentBuilder<Object, ? extends JComponent, ?>) createField())
+							.link((Value<Object>) columnConditionModel.lowerBoundValue())
+							.build());
 		}
 
-		private JComponent createField(Value<?> linkedValue) {
+		@Override
+		public JComponent createInField() {
+			return listBox(createField().buildValue(),
+							(ValueSet<Object>) columnConditionModel.inValues())
+							.build();
+		}
+
+		private <T> ComponentBuilder<T, ? extends JComponent, ?> createField() {
 			Class<?> columnClass = columnConditionModel.columnClass();
 			if (columnClass.equals(Boolean.class)) {
-				return checkBox((Value<Boolean>) linkedValue)
+				return (ComponentBuilder<T, ? extends JComponent, ?>) checkBox()
 								.nullable(true)
-								.horizontalAlignment(CENTER)
-								.build();
+								.horizontalAlignment(CENTER);
 			}
 			if (columnClass.equals(Short.class)) {
-				return shortField((Value<Short>) linkedValue)
-								.format(columnConditionModel.format())
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) shortField()
+								.format(columnConditionModel.format());
 			}
 			if (columnClass.equals(Integer.class)) {
-				return integerField((Value<Integer>) linkedValue)
-								.format(columnConditionModel.format())
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) integerField()
+								.format(columnConditionModel.format());
 			}
 			else if (columnClass.equals(Double.class)) {
-				return doubleField((Value<Double>) linkedValue)
-								.format(columnConditionModel.format())
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) doubleField()
+								.format(columnConditionModel.format());
 			}
 			else if (columnClass.equals(BigDecimal.class)) {
-				return bigDecimalField((Value<BigDecimal>) linkedValue)
-								.format(columnConditionModel.format())
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) bigDecimalField()
+								.format(columnConditionModel.format());
 			}
 			else if (columnClass.equals(Long.class)) {
-				return longField((Value<Long>) linkedValue)
-								.format(columnConditionModel.format())
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) longField()
+								.format(columnConditionModel.format());
 			}
 			else if (columnClass.equals(LocalTime.class)) {
-				return localTimeField(columnConditionModel.dateTimePattern(), (Value<LocalTime>) linkedValue)
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) localTimeField(columnConditionModel.dateTimePattern());
 			}
 			else if (columnClass.equals(LocalDate.class)) {
-				return localDateField(columnConditionModel.dateTimePattern(), (Value<LocalDate>) linkedValue)
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) localDateField(columnConditionModel.dateTimePattern());
 			}
 			else if (columnClass.equals(LocalDateTime.class)) {
-				return localDateTimeField(columnConditionModel.dateTimePattern(), (Value<LocalDateTime>) linkedValue)
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) localDateTimeField(columnConditionModel.dateTimePattern());
 			}
 			else if (columnClass.equals(OffsetDateTime.class)) {
-				return offsetDateTimeField(columnConditionModel.dateTimePattern(), (Value<OffsetDateTime>) linkedValue)
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) offsetDateTimeField(columnConditionModel.dateTimePattern());
 			}
 			else if (columnClass.equals(String.class)) {
-				return stringField((Value<String>) linkedValue)
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) stringField();
 			}
 			else if (columnClass.equals(Character.class)) {
-				return characterField((Value<Character>) linkedValue)
-								.build();
+				return (ComponentBuilder<T, ? extends JComponent, ?>) characterField();
 			}
 
 			throw new IllegalArgumentException("Unsupported type: " + columnClass);
@@ -454,6 +478,12 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 			previousOperatorKeyEvent.enable(lowerBoundField);
 			nextOperatorKeyEvent.enable(lowerBoundField);
 		}
+		if (inField != null) {
+			inField.addFocusListener(focusGainedListener);
+			enableOnEnterKeyEvent.enable(inField);
+			previousOperatorKeyEvent.enable(inField);
+			nextOperatorKeyEvent.enable(inField);
+		}
 		toggleEnabledButton.addFocusListener(focusGainedListener);
 		enableOnEnterKeyEvent.enable(toggleEnabledButton);
 	}
@@ -477,6 +507,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 			case NOT_BETWEEN_EXCLUSIVE:
 			case NOT_BETWEEN:
 				rangePanel();
+				break;
+			case IN:
+			case NOT_IN:
+				singleValuePanel(inField);
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown operator: " + conditionModel.operator().get());
@@ -528,13 +562,14 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
 	private JComboBox<Item<Operator>> createOperatorComboBox(List<Operator> operators) {
 		ItemComboBoxModel<Operator> operatorComboBoxModel = ItemComboBoxModel.itemComboBoxModel(operators.stream()
-						.map(operator -> Item.item(operator, ColumnConditionModel.caption(operator)))
-						.collect(Collectors.toList()));
+						.map(operator -> Item.item(operator, caption(operator)))
+						.collect(toList()));
 		operatorComboBoxModel.setSelectedItem(operators.get(0));
 		return itemComboBox(operatorComboBoxModel, conditionModel.operator())
 						.completionMode(Completion.Mode.NONE)
 						.renderer(new OperatorComboBoxRenderer())
 						.maximumRowCount(operators.size())
+						.mouseWheelScrollingWithWrapAround(true)
 						.toolTipText(operatorComboBoxModel.selectedValue().get().description())
 						.onBuild(comboBox -> operatorComboBoxModel.selectionEvent().addConsumer(selectedOperator ->
 										comboBox.setToolTipText(selectedOperator.get().description())))
@@ -548,6 +583,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 		if (index < itemComboBoxModel.visibleCount() - 1) {
 			itemComboBoxModel.setSelectedItem(visibleItems.get(index + 1));
 		}
+		else {
+			itemComboBoxModel.setSelectedItem(visibleItems.get(0));
+		}
 	}
 
 	private void toggleEnabled() {
@@ -560,6 +598,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 		int index = visibleItems.indexOf(itemComboBoxModel.getSelectedItem());
 		if (index > 0) {
 			itemComboBoxModel.setSelectedItem(visibleItems.get(index - 1));
+		}
+		else {
+			itemComboBoxModel.setSelectedItem(visibleItems.get(visibleItems.size() - 1));
 		}
 	}
 
@@ -615,7 +656,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	private boolean boundFieldHasFocus() {
 		return boundFieldHasFocus(equalField) ||
 						boundFieldHasFocus(lowerBoundField) ||
-						boundFieldHasFocus(upperBoundField);
+						boundFieldHasFocus(upperBoundField) ||
+						boundFieldHasFocus(inField);
 	}
 
 	private void addStringConfigurationPopupMenu() {
@@ -627,13 +669,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 				controlsBuilder.controls(createAutomaticWildcardControls());
 			}
 			JPopupMenu popupMenu = menu(controlsBuilder).createPopupMenu();
-			equalField.setComponentPopupMenu(popupMenu);
-			if (lowerBoundField != null) {
-				lowerBoundField.setComponentPopupMenu(popupMenu);
-			}
-			if (upperBoundField != null) {
-				upperBoundField.setComponentPopupMenu(popupMenu);
-			}
+			Stream.of(equalField, lowerBoundField, upperBoundField, inField)
+							.filter(Objects::nonNull)
+							.forEach(field -> field.setComponentPopupMenu(popupMenu));
 		}
 	}
 
@@ -698,6 +736,37 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 		}
 
 		return false;
+	}
+
+	private static String caption(Operator operator) {
+		switch (requireNonNull(operator)) {
+			case EQUAL:
+				return "α =";
+			case NOT_EQUAL:
+				return "α ≠";
+			case LESS_THAN:
+				return "α <";
+			case LESS_THAN_OR_EQUAL:
+				return "α ≤";
+			case GREATER_THAN:
+				return "α >";
+			case GREATER_THAN_OR_EQUAL:
+				return "α ≥";
+			case BETWEEN_EXCLUSIVE:
+				return "< α <";
+			case BETWEEN:
+				return "≤ α ≤";
+			case NOT_BETWEEN_EXCLUSIVE:
+				return "≥ α ≥";
+			case NOT_BETWEEN:
+				return "> α >";
+			case IN:
+				return "α ∈";
+			case NOT_IN:
+				return "α ∉";
+			default:
+				throw new IllegalArgumentException("Unknown operator: " + operator);
+		}
 	}
 
 	private final class FocusGainedListener extends FocusAdapter {

@@ -12,6 +12,7 @@ Codion Change Log
 - Value.mapNull() removed, no longer used.
 - Messages renamed Resources. DefaultMessageBundle now throws correct exception in case of a missing resource.
 - Resources.get() renamed getString(), consistent with ResourceBundle.
+- Operator.IN and NOT_IN added.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 - Database.createConnectionPool() now returns the pool.
@@ -22,6 +23,7 @@ Codion Change Log
 - ColumnSummaryModel.SummaryValueProvider renamed SummaryValues, related renaming.
 - FilteredModel.Refresher.itemSupplier() renamed items(), related renaming.
 - FilteredModel renamed FilterModel.
+- ColumnConditionModel.equalValues() replaced with equalValue() and inValues().
 ### is.codion.swing.common.model
 - FilteredComboBoxModel.ItemFinder.createPredicate() renamed predicate().
 - FilteredComboBoxModel.sortVisibleItems() renamed sortItems(), now public.
@@ -56,6 +58,8 @@ Codion Change Log
 - ComponentBuilder.onBuildValue() added, related refactoring.
 - LookAndFeelProvider.defaultLookAndFeelName() overloaded with a defaultLookAndFeel parameter.
 - FilterTable.copyToClipBoard() bug fixed, always exported the whole table instead of the selected rows.
+- ColumnConditionPanel now supports the IN operator.
+- ListBoxBuilder added.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
@@ -64,6 +68,7 @@ Codion Change Log
 - AbstractQueriedKeyGenerator, IdentityKeyGenerator now remove any previous value from the entity before setting the key value, removing original value related memory churn.
 ### is.codion.framework.json.domain
 - EntityObjectMapper.serializeEntities() and serializeKeys() removed.
+- ColumnConditionSerializer bug fixed, did not deserialize case insensitive IN conditions correctly.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.report() exception handling improved, now throws DatabaseException in case of an SQLException.
 - DefaultLocalEntityConnection exception handling refactored in order to guarantee rollbacks in case of RuntimeExceptions.
@@ -73,12 +78,14 @@ Codion Change Log
 - EntityEditEvents, consumers now called listeners.
 - EntityTableModel.HANDLE_EDIT_EVENTS configuration value added.
 - EntityModel.activeDetailModels() renamed linkedDetailModels().
+- EntitySearchConditionModel replaced with ForeignKeyConditionModel.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.UpdateListener now replaces updated entities.
 - SwingEntityTableModel.replaceEntitiesByKey() now uses a key index map when looking up entities to replace, orders of magnitude faster.
 - EntityComboBoxModel.HANDLE_EDIT_EVENTS configuration value added.
+- EntityComboBoxConditionModel replaced with SwingForeignKeyConditionModel.
 ### is.codion.swing.framework.model.tools
 - DomainGenerator now uses com.squareup.javapoet to generate the source and generates a full domain implementation class.
 - DomainToString now handles views correctly, refactoring.

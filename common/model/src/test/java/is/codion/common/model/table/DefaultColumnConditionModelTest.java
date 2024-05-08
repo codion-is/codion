@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -36,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultColumnConditionModelTest {
 
 	final AtomicInteger equalToCounter = new AtomicInteger();
+	final AtomicInteger inCounter = new AtomicInteger();
 	final AtomicInteger upperBoundCounter = new AtomicInteger();
 	final AtomicInteger lowerBoundCounter = new AtomicInteger();
 	final AtomicInteger conditionChangedCounter = new AtomicInteger();
@@ -43,6 +45,7 @@ public class DefaultColumnConditionModelTest {
 	final AtomicInteger enabledCounter = new AtomicInteger();
 
 	final Consumer<String> equalToConsumer = value -> equalToCounter.incrementAndGet();
+	final Consumer<Set<String>> inConsumer = value -> inCounter.incrementAndGet();
 	final Consumer<String> upperBoundConsumer = value -> upperBoundCounter.incrementAndGet();
 	final Consumer<String> lowerBoundConsumer = value -> lowerBoundCounter.incrementAndGet();
 	final Runnable conditionChangedListener = conditionChangedCounter::incrementAndGet;
@@ -56,7 +59,8 @@ public class DefaultColumnConditionModelTest {
 		model.automaticWildcard().set(AutomaticWildcard.NONE);
 
 		model.autoEnable().set(false);
-		model.equalValues().value().addConsumer(equalToConsumer);
+		model.equalValue().addConsumer(equalToConsumer);
+		model.inValues().addConsumer(inConsumer);
 		model.upperBoundValue().addConsumer(upperBoundConsumer);
 		model.lowerBoundValue().addConsumer(lowerBoundConsumer);
 		model.conditionChangedEvent().addListener(conditionChangedListener);
@@ -76,24 +80,25 @@ public class DefaultColumnConditionModelTest {
 		assertEquals("test", model.getEqualValue());
 
 		model.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
-		assertEquals("%test%", model.getEqualValues().iterator().next());
+		assertEquals("%test%", model.getEqualValue());
 		assertEquals("%test%", model.getEqualValue());
 
 		model.automaticWildcard().set(AutomaticWildcard.PREFIX);
-		assertEquals("%test", model.getEqualValues().iterator().next());
+		assertEquals("%test", model.getEqualValue());
 		assertEquals("%test", model.getEqualValue());
 
 		model.automaticWildcard().set(AutomaticWildcard.POSTFIX);
-		assertEquals("test%", model.getEqualValues().iterator().next());
+		assertEquals("test%", model.getEqualValue());
 		assertEquals("test%", model.getEqualValue());
 
 		model.automaticWildcard().set(AutomaticWildcard.NONE);
-		assertEquals("test", model.getEqualValues().iterator().next());
+		assertEquals("test", model.getEqualValue());
 		assertEquals("test", model.getEqualValue());
 
 		model.clear();
 
-		model.equalValues().value().removeConsumer(equalToConsumer);
+		model.equalValue().removeConsumer(equalToConsumer);
+		model.inValues().removeConsumer(inConsumer);
 		model.upperBoundValue().removeConsumer(upperBoundConsumer);
 		model.lowerBoundValue().removeConsumer(lowerBoundConsumer);
 		model.conditionChangedEvent().removeListener(conditionChangedListener);
@@ -181,10 +186,10 @@ public class DefaultColumnConditionModelTest {
 	}
 
 	@Test
-	void setEqualValuesLocked() {
+	void setInValuesLocked() {
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
 		model.locked().set(true);
-		assertThrows(IllegalStateException.class, () -> model.setEqualValues(Collections.singletonList("test")));
+		assertThrows(IllegalStateException.class, () -> model.setInValues(Collections.singletonList("test")));
 	}
 
 	@Test
@@ -209,10 +214,10 @@ public class DefaultColumnConditionModelTest {
 		conditionModel.automaticWildcard().set(AutomaticWildcard.NONE);
 
 		Collection<String> strings = asList("abc", "def");
-		conditionModel.setEqualValues(strings);
-		assertThrows(NullPointerException.class, () -> conditionModel.setEqualValues(null));
+		conditionModel.setInValues(strings);
+		assertThrows(NullPointerException.class, () -> conditionModel.setInValues(null));
 
-		assertTrue(conditionModel.getEqualValues().containsAll(strings));
+		assertTrue(conditionModel.getInValues().containsAll(strings));
 	}
 
 	@Test
@@ -467,6 +472,18 @@ public class DefaultColumnConditionModelTest {
 		assertTrue(conditionModel.accepts(5));
 		assertTrue(conditionModel.accepts(6));
 		assertTrue(conditionModel.accepts(7));
+
+		conditionModel.operator().set(Operator.IN);
+		conditionModel.inValues().set(asList(1, 2, 3));
+		assertTrue(conditionModel.accepts(1));
+		assertTrue(conditionModel.accepts(2));
+		assertTrue(conditionModel.accepts(3));
+		assertFalse(conditionModel.accepts(4));
+		conditionModel.operator().set(Operator.NOT_IN);
+		assertFalse(conditionModel.accepts(1));
+		assertFalse(conditionModel.accepts(2));
+		assertFalse(conditionModel.accepts(3));
+		assertTrue(conditionModel.accepts(4));
 	}
 
 	@Test

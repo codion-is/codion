@@ -77,6 +77,10 @@ final class ColumnConditionDeserializer implements Serializable {
 				return column.notBetweenExclusive(values.get(0), values.get(1));
 			case NOT_BETWEEN:
 				return column.notBetween(values.get(0), values.get(1));
+			case IN:
+				return inCondition(values, column, caseSensitive);
+			case NOT_IN:
+				return notInCondition(values, column, caseSensitive);
 			default:
 				throw new IllegalArgumentException("Unknown operator: " + Operator.valueOf(conditionNode.get("operator").asText()));
 		}
@@ -136,5 +140,31 @@ final class ColumnConditionDeserializer implements Serializable {
 		}
 
 		return (ColumnCondition<T>) column.notInIgnoreCase((Collection<String>) values);
+	}
+
+	private static <T> ColumnCondition<T> inCondition(Collection<T> values, Column<T> column, boolean caseSensitive) {
+		if (column.type().isString()) {
+			Column<String> stringColumn = (Column<String>) column;
+			Collection<String> inValues = (Collection<String>) values;
+
+			return (ColumnCondition<T>) (caseSensitive ?
+										stringColumn.in(inValues) :
+										stringColumn.inIgnoreCase(inValues));
+		}
+
+		return column.in(values);
+	}
+
+	private static <T> ColumnCondition<T> notInCondition(Collection<T> values, Column<T> column, boolean caseSensitive) {
+		if (column.type().isString()) {
+			Column<String> stringColumn = (Column<String>) column;
+			Collection<String> inValues = (Collection<String>) values;
+
+			return (ColumnCondition<T>) (caseSensitive ?
+										stringColumn.notIn(inValues) :
+										stringColumn.notInIgnoreCase(inValues));
+		}
+
+		return column.notIn(values);
 	}
 }

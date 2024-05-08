@@ -1549,7 +1549,8 @@ public class EntityTablePanel extends JPanel {
 						.map(conditionPanel::conditionPanel)
 						.filter(Optional::isPresent)
 						.map(Optional::get)
-						.flatMap(panel -> Stream.of(panel.operatorComboBox(), panel.equalField(), panel.lowerBoundField(), panel.upperBoundField()))
+						.flatMap(panel -> Stream.of(panel.operatorComboBox(), panel.equalField(),
+										panel.lowerBoundField(), panel.upperBoundField(), panel.inField()))
 						.forEach(this::enableConditionPanelRefreshOnEnter);
 	}
 

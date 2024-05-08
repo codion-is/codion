@@ -28,7 +28,7 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Optional;
 
-import static is.codion.swing.framework.model.EntityComboBoxConditionModel.entityComboBoxConditionModel;
+import static is.codion.swing.framework.model.SwingForeignKeyConditionModel.swingForeignKeyConditionModel;
 
 /**
  * A Swing {@link ColumnConditionModel.Factory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
@@ -48,7 +48,8 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			if (definition(foreignKey.referencedType()).smallDataset()) {
-				return Optional.of(entityComboBoxConditionModel(foreignKey, createComboBoxModel(foreignKey)));
+				return Optional.of(swingForeignKeyConditionModel(foreignKey,
+								this::createEqualComboBoxModel, this::createInSearchModel));
 			}
 		}
 
@@ -56,11 +57,10 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
 	}
 
 	/**
-	 * Creates a combo box model based on the given foreign key
 	 * @param foreignKey the foreign key
-	 * @return a combo box model based on the given foreign key
+	 * @return a combo box model to use for the equal value
 	 */
-	protected EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
+	protected EntityComboBoxModel createEqualComboBoxModel(ForeignKey foreignKey) {
 		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider());
 		comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 

@@ -39,6 +39,8 @@ public final class MultiValueColumnConditionTest {
 
 	@Test
 	void test() {
+		assertThrows(IllegalArgumentException.class, () -> new MultiValueColumnCondition<>(Employee.ID, singletonList(1), Operator.EQUAL));
+		assertThrows(IllegalArgumentException.class, () -> new MultiValueColumnCondition<>(Employee.ID, singletonList(1), Operator.NOT_EQUAL));
 		assertThrows(IllegalArgumentException.class, () -> new MultiValueColumnCondition<>(Employee.ID, singletonList(1), Operator.GREATER_THAN));
 		assertThrows(IllegalArgumentException.class, () -> new MultiValueColumnCondition<>(Employee.ID, singletonList(1), Operator.GREATER_THAN_OR_EQUAL));
 		assertThrows(IllegalArgumentException.class, () -> new MultiValueColumnCondition<>(Employee.ID, singletonList(1), Operator.LESS_THAN));
@@ -47,7 +49,7 @@ public final class MultiValueColumnConditionTest {
 		assertThrows(IllegalArgumentException.class, () -> new MultiValueColumnCondition<>(Employee.ID, singletonList(1), Operator.BETWEEN_EXCLUSIVE));
 		assertThrows(IllegalArgumentException.class, () -> new MultiValueColumnCondition<>(Employee.ID, singletonList(1), Operator.NOT_BETWEEN));
 		assertThrows(IllegalArgumentException.class, () -> new MultiValueColumnCondition<>(Employee.ID, singletonList(1), Operator.NOT_BETWEEN_EXCLUSIVE));
-		assertThrows(NullPointerException.class, () -> new MultiValueColumnCondition<>(Employee.ID, singletonList(null), Operator.EQUAL));
+		assertThrows(NullPointerException.class, () -> new MultiValueColumnCondition<>(Employee.ID, singletonList(null), Operator.IN));
 	}
 
 	@Test
@@ -56,14 +58,14 @@ public final class MultiValueColumnConditionTest {
 
 		List<Integer> ids = new ArrayList<>();
 		IntStream.range(0, 95).forEach(ids::add);
-		MultiValueColumnCondition<Integer> condition = new MultiValueColumnCondition<>(Employee.ID, ids, Operator.EQUAL);
+		MultiValueColumnCondition<Integer> condition = new MultiValueColumnCondition<>(Employee.ID, ids, Operator.IN);
 		String conditionString = condition.toString(definition);
 		assertTrue(conditionString.startsWith("empno IN (?"));
 		assertTrue(conditionString.endsWith("?, ?)"));
 
 		ids.clear();
 		IntStream.range(0, 105).forEach(ids::add);
-		condition = new MultiValueColumnCondition<>(Employee.ID, ids, Operator.EQUAL);
+		condition = new MultiValueColumnCondition<>(Employee.ID, ids, Operator.IN);
 		conditionString = condition.toString(definition);
 		assertTrue(conditionString.startsWith("(empno IN (?"));
 		assertTrue(conditionString.endsWith("?, ?))"));

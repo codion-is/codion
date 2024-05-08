@@ -400,4 +400,16 @@ public final class EntityObjectMapperTest {
 
 		assertEquals(select, readCondition);
 	}
+
+	@Test
+	void inCondition() throws JsonProcessingException {
+		Condition select = and(
+						Employee.COMMISSION.in(100d, 200d),
+						Employee.JOB.notInIgnoreCase("test"));
+
+		String jsonString = mapper.writeValueAsString(select);
+		Condition readCondition = mapper.readValue(jsonString, Condition.class);
+
+		assertEquals(select, readCondition);
+	}
 }
