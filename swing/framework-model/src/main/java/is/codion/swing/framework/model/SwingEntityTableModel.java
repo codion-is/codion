@@ -19,7 +19,6 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
@@ -51,7 +50,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -992,14 +990,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 			return attribute.type().isEntity() || // entities
 							!attributeDefinition.items().isEmpty() || // items
 							!Comparable.class.isAssignableFrom(attribute.type().valueClass()); // non-comparables
-		}
-
-		private static List<Operator> operators(Class<?> columnClass) {
-			if (columnClass.equals(Boolean.class)) {
-				return singletonList(Operator.EQUAL);
-			}
-
-			return Arrays.asList(Operator.values());
 		}
 	}
 
