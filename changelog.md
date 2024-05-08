@@ -61,6 +61,7 @@ Codion Change Log
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
 - Entity.Builder.withDefaultValues() renamed withDefaults().
 - DomainModel.addAll() renamed add().
+- AbstractQueriedKeyGenerator, IdentityKeyGenerator now remove any previous value from the entity before setting the key value, removing original value related memory churn.
 ### is.codion.framework.json.domain
 - EntityObjectMapper.serializeEntities() and serializeKeys() removed.
 ### is.codion.framework.db.local

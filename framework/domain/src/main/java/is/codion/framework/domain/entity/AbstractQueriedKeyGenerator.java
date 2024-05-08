@@ -49,8 +49,9 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 			if (!resultSet.next()) {
 				throw new SQLException("No rows returned when querying for a key value", SQL_STATE_NO_DATA);
 			}
-			ColumnDefinition<Object> primaryKeyColumn = (ColumnDefinition<Object>) entity.definition().primaryKey().definitions().get(0);
-			entity.put(primaryKeyColumn.attribute(), primaryKeyColumn.get(resultSet, 1));
+			ColumnDefinition<Object> column = (ColumnDefinition<Object>) entity.definition().primaryKey().definitions().get(0);
+			entity.remove(column.attribute());
+			entity.put(column.attribute(), column.get(resultSet, 1));
 		}
 		catch (SQLException e) {
 			exception = e;
