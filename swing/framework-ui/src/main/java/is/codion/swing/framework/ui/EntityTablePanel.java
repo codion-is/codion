@@ -307,10 +307,11 @@ public class EntityTablePanel extends JPanel {
 		 */
 		CLEAR,
 		/**
-		 * A {@link Control} for refreshing the table data.
+		 * A {@link Control} for refreshing the table data.<br>
+		 * Default key stroke: ALT-R
 		 * @see SwingEntityTableModel#refresh()
 		 */
-		REFRESH,
+		REFRESH(keyStroke(VK_R, ALT_DOWN_MASK)),
 		/**
 		 * A {@link ToggleControl} for showing/hiding the summary panel.
 		 */
@@ -816,6 +817,12 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	protected void setupKeyboardActions() {
+		configuration.shortcuts.keyStroke(REFRESH).optional().ifPresent(keyStroke ->
+						control(REFRESH).optional().ifPresent(control ->
+										KeyEvents.builder(keyStroke)
+														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+														.action(control)
+														.enable(this)));
 		configuration.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).optional().ifPresent(keyStroke ->
 						control(REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)

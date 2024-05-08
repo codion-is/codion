@@ -120,6 +120,7 @@ Codion Change Log
 - EntityPanel.activeDetailPanels() renamed linkedDetailPanels().
 - EntityPanel, can now navigate to hidden detail panels, TabbedDetailLayout shows a hidden detail panel when activated.
 - EntityTablePanel.StatusPanel refactored to not use CardLayout, otherwise the progress bar keeps updating even when invisible.
+- EntityTablePanel, refresh keystroke Alt-R added.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 
