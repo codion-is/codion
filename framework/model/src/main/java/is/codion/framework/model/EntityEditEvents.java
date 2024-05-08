@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-import static is.codion.framework.domain.entity.Entity.mapToType;
+import static is.codion.framework.domain.entity.Entity.groupByType;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
@@ -163,7 +163,7 @@ public final class EntityEditEvents {
 		}
 
 		private void notifyInserted(Collection<Entity> inserted) {
-			mapToType(inserted).forEach(this::notifyInserted);
+			groupByType(inserted).forEach(this::notifyInserted);
 		}
 
 		private void notifyInserted(EntityType entityType, Collection<Entity> inserted) {
@@ -189,7 +189,7 @@ public final class EntityEditEvents {
 		}
 
 		private void notifyDeleted(Collection<Entity> deleted) {
-			mapToType(deleted).forEach(this::notifyDeleted);
+			groupByType(deleted).forEach(this::notifyDeleted);
 		}
 
 		private void notifyDeleted(EntityType entityType, Collection<Entity> deleted) {

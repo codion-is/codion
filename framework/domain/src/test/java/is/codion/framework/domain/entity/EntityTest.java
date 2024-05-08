@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -163,39 +162,13 @@ public final class EntityTest {
 	}
 
 	@Test
-	void mapKeysToType() {
+	void groupKeysByType() {
 		Entity.Key dept = entities.primaryKey(Department.TYPE, 1);
 		Entity.Key emp = entities.primaryKey(Employee.TYPE, 3);
 
-		LinkedHashMap<EntityType, List<Entity.Key>> mapped = Entity.mapKeysToType(asList(dept, emp));
+		LinkedHashMap<EntityType, List<Entity.Key>> mapped = Entity.groupKeysByType(asList(dept, emp));
 		assertEquals(dept, mapped.get(Department.TYPE).get(0));
 		assertEquals(emp, mapped.get(Employee.TYPE).get(0));
-	}
-
-	@Test
-	void valuesAsString() {
-		Entity dept1 = entities.builder(Department.TYPE)
-						.with(Department.ID, 1)
-						.with(Department.NAME, "name1")
-						.with(Department.LOCATION, "loc1")
-						.build();
-		Entity dept2 = entities.builder(Department.TYPE)
-						.with(Department.ID, 2)
-						.with(Department.NAME, "name2")
-						.with(Department.LOCATION, "loc2")
-						.build();
-
-		List<Attribute<?>> attributes = entities.definition(Department.TYPE)
-						.columns().definitions().stream().map(AttributeDefinition::attribute).collect(Collectors.toList());
-
-		List<List<String>> strings =
-						Entity.valuesAsString(attributes, asList(dept1, dept2));
-		assertEquals("1", strings.get(0).get(0));
-		assertEquals("name1", strings.get(0).get(1));
-		assertEquals("loc1", strings.get(0).get(2));
-		assertEquals("2", strings.get(1).get(0));
-		assertEquals("name2", strings.get(1).get(1));
-		assertEquals("loc2", strings.get(1).get(2));
 	}
 
 	@Test
@@ -227,7 +200,7 @@ public final class EntityTest {
 						.build();
 		entityList.add(entityFive);
 
-		Map<Integer, List<Entity>> map = Entity.mapToValue(Department.ID, entityList);
+		Map<Integer, List<Entity>> map = Entity.groupByValue(Department.ID, entityList);
 		Collection<Entity> ones = map.get(1);
 		assertTrue(ones.contains(entityOne));
 		assertTrue(ones.contains(entityTwo));
@@ -241,14 +214,14 @@ public final class EntityTest {
 	}
 
 	@Test
-	void mapToType() {
+	void groupByType() {
 		Entity one = entities.entity(Employee.TYPE);
 		Entity two = entities.entity(Department.TYPE);
 		Entity three = entities.entity(Detail.TYPE);
 		Entity four = entities.entity(Employee.TYPE);
 
 		Collection<Entity> entities = asList(one, two, three, four);
-		Map<EntityType, List<Entity>> map = Entity.mapToType(entities);
+		Map<EntityType, List<Entity>> map = Entity.groupByType(entities);
 
 		Collection<Entity> mapped = map.get(Employee.TYPE);
 		assertTrue(mapped.contains(one));

@@ -334,7 +334,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		if (requireNonNull(keys, "keys").isEmpty()) {
 			return;
 		}
-		Map<EntityType, List<Key>> keysByEntityType = mapKeysToType(keys);
+		Map<EntityType, List<Key>> keysByEntityType = groupKeysByType(keys);
 		throwIfReadOnly(keysByEntityType.keySet());
 
 		List<?> statementValues = null;
@@ -408,7 +408,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		synchronized (connection) {
 			try {
 				List<Entity> result = new ArrayList<>();
-				for (List<Key> entityTypeKeys : mapKeysToType(keys).values()) {
+				for (List<Key> entityTypeKeys : groupKeysByType(keys).values()) {
 					result.addAll(query(where(keys(entityTypeKeys)).build()));
 				}
 				commitIfTransactionIsNotOpen();
@@ -729,7 +729,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 					statementValues.clear();
 				}
 				if (insertedEntities != null) {
-					for (List<Key> entityTypeKeys : mapKeysToType(insertedKeys).values()) {
+					for (List<Key> entityTypeKeys : groupKeysByType(insertedKeys).values()) {
 						insertedEntities.addAll(query(where(keys(entityTypeKeys)).build(), 0));//bypass caching
 					}
 				}
@@ -750,7 +750,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	private void update(Collection<Entity> entities, List<Entity> updatedEntities) throws DatabaseException {
-		Map<EntityType, List<Entity>> entitiesByEntityType = mapToType(entities);
+		Map<EntityType, List<Entity>> entitiesByEntityType = groupByType(entities);
 		throwIfReadOnly(entitiesByEntityType.keySet());
 
 		List<Object> statementValues = new ArrayList<>();

@@ -66,6 +66,8 @@ Codion Change Log
 - Entity.Builder.withDefaultValues() renamed withDefaults().
 - DomainModel.addAll() renamed add().
 - AbstractQueriedKeyGenerator, IdentityKeyGenerator now remove any previous value from the entity before setting the key value, removing original value related memory churn.
+- Entity.valuesAsString() removed.
+- Entity.mapToValue(), mapToType() and mapKeysToType() renamed groupByValue(), groupByType() and groupKeysByType() respectively.
 ### is.codion.framework.json.domain
 - EntityObjectMapper.serializeEntities() and serializeKeys() removed.
 - ColumnConditionSerializer bug fixed, did not deserialize case insensitive IN conditions correctly.

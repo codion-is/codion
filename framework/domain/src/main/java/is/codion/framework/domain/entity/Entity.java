@@ -460,7 +460,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @param entities the entities to map by attribute value
 	 * @return a Map of entities mapped to attribute value
 	 */
-	static <T> LinkedHashMap<T, List<Entity>> mapToValue(Attribute<T> attribute, Collection<Entity> entities) {
+	static <T> LinkedHashMap<T, List<Entity>> groupByValue(Attribute<T> attribute, Collection<Entity> entities) {
 		return requireNonNull(entities).stream()
 						.collect(groupingBy(entity -> entity.get(attribute), LinkedHashMap::new, toList()));
 	}
@@ -471,7 +471,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @param entities the entities to map by entityType
 	 * @return a Map of entities mapped to entityType
 	 */
-	static LinkedHashMap<EntityType, List<Entity>> mapToType(Collection<Entity> entities) {
+	static LinkedHashMap<EntityType, List<Entity>> groupByType(Collection<Entity> entities) {
 		return requireNonNull(entities).stream()
 						.collect(groupingBy(Entity::entityType, LinkedHashMap::new, toList()));
 	}
@@ -482,24 +482,9 @@ public interface Entity extends Comparable<Entity> {
 	 * @param keys the entity keys to map by entityType
 	 * @return a Map of entity keys mapped to entityType
 	 */
-	static LinkedHashMap<EntityType, List<Key>> mapKeysToType(Collection<Key> keys) {
+	static LinkedHashMap<EntityType, List<Key>> groupKeysByType(Collection<Key> keys) {
 		return requireNonNull(keys).stream()
 						.collect(groupingBy(Key::entityType, LinkedHashMap::new, toList()));
-	}
-
-	/**
-	 * Creates a two-dimensional list containing the values of the given attributes for the given entities in string format.
-	 * @param attributes the attributes
-	 * @param entities the entities
-	 * @return the values of the given attributes from the given entities in a two-dimensional list
-	 */
-	static List<List<String>> valuesAsString(List<Attribute<?>> attributes, List<Entity> entities) {
-		requireNonNull(attributes);
-		return requireNonNull(entities).stream()
-						.map(entity -> attributes.stream()
-										.map(entity::string)
-										.collect(toList()))
-						.collect(toList());
 	}
 
 	/**
