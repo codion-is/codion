@@ -133,6 +133,7 @@ Codion Change Log
 - EntityTablePanel, refresh keystroke Alt-R added.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
+- DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.
 
 ## 0.17.43
 ### is.codion.common.core

@@ -18,6 +18,6 @@
  */
 /**
  * Package configuration values:<br>
- * {@link is.codion.swing.framework.ui.tools.generator.DomainGeneratorPanel#DEFAULT_USERNAME}
+ * {@link is.codion.swing.framework.ui.tools.generator.DomainGeneratorPanel#DEFAULT_USER}
  */
 package is.codion.swing.framework.ui.tools.generator;

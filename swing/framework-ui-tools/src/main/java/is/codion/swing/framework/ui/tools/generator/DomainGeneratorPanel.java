@@ -84,10 +84,10 @@ import static javax.swing.BorderFactory.createTitledBorder;
 public final class DomainGeneratorPanel extends JPanel {
 
 	/**
-	 * The default username.
+	 * The default user on the form username:password or just username.
 	 */
-	public static final PropertyValue<String> DEFAULT_USERNAME =
-					stringValue("codion.domain.generator.defaultUsername");
+	public static final PropertyValue<String> DEFAULT_USER =
+					stringValue("codion.domain.generator.defaultUser");
 
 	private static final String DEFAULT_FLAT_LOOK_AND_FEEL =
 					"com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme";
@@ -415,8 +415,8 @@ public final class DomainGeneratorPanel extends JPanel {
 			new DomainGeneratorPanel(DomainGeneratorModel.domainGeneratorModel(database,
 							Dialogs.loginDialog()
 											.icon(Logos.logoTransparent())
-											.defaultUser(DEFAULT_USERNAME.optional()
-															.map(User::user)
+											.defaultUser(DEFAULT_USER.optional()
+															.map(User::parse)
 															.orElse(null))
 											.validator(user -> database.createConnection(user).close())
 											.show()))
