@@ -50,7 +50,7 @@ final class RatingCellRendererFactory extends EntityTableCellRendererFactory {
 	protected Builder<Entity, Attribute<?>> builder(FilterTableColumn<Attribute<?>> column) {
 		Builder<Entity, Attribute<?>> builder = super.builder(column);
 		if (column.getIdentifier().equals(ratingColumn)) {
-			builder.values(rating -> RATINGS.get((Integer) rating))
+			builder.string(rating -> RATINGS.get((Integer) rating))
 							.toolTipData(true);
 		}
 

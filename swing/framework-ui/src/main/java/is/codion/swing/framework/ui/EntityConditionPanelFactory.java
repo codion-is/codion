@@ -22,6 +22,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractForeignKeyConditionModel;
 import is.codion.framework.model.EntitySearchModel;
@@ -48,6 +49,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static is.codion.swing.common.ui.component.Components.listBox;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
@@ -238,8 +240,23 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 							.link(conditionModel.equalValue())
 							.onBuild(AttributeBoundFieldFactory::configureComponent)
 							.buildValue(), conditionModel.inValues())
+							.string(new StringValue(inputComponents.entityDefinition().attributes().definition(attribute)))
 							.build();
 		}
+
+	private static final class StringValue implements Function<Object, String> {
+
+		private final AttributeDefinition<Object> definition;
+
+		private StringValue(AttributeDefinition<?> attributeDefinition) {
+			this.definition = (AttributeDefinition<Object>) attributeDefinition;
+		}
+
+		@Override
+		public String apply(Object value) {
+			return definition.string(value);
+		}
+	}
 
 		private static JComponent configureComponent(JComponent component) {
 			if (component instanceof JTextField) {

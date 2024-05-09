@@ -61,6 +61,8 @@ Codion Change Log
 - FilterTable.copyToClipBoard() bug fixed, always exported the whole table instead of the selected rows.
 - ColumnConditionPanel now supports the IN operator.
 - ListBoxBuilder added.
+- ListBoxBuilder.string() added, providing the string values to render in the list.
+- FilterTableCellRenderer.Builder.values() renamed string().
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
@@ -132,6 +134,7 @@ Codion Change Log
 - EntityPanel, can now navigate to hidden detail panels, TabbedDetailLayout shows a hidden detail panel when activated.
 - EntityTablePanel.StatusPanel refactored to not use CardLayout, otherwise the progress bar keeps updating even when invisible.
 - EntityTablePanel, refresh keystroke Alt-R added.
+- EntityConditionPanelFactory now sets the string provider for the in values list box.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.

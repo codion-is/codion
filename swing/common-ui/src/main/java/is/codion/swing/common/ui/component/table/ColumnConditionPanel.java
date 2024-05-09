@@ -130,6 +130,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 		}
 	}
 
+	private static final String UNKNOWN_OPERATOR = "Unknown operator: ";
+
 	private final ColumnConditionModel<? extends C, T> conditionModel;
 	private final JToggleButton toggleEnabledButton;
 	private final JComboBox<Item<Operator>> operatorCombo;
@@ -209,7 +211,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 				inField.requestFocusInWindow();
 				break;
 			default:
-				throw new IllegalArgumentException("Unknown operator: " + conditionModel.operator().get());
+				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel.operator().get());
 		}
 	}
 
@@ -513,7 +515,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 				singleValuePanel(inField);
 				break;
 			default:
-				throw new IllegalArgumentException("Unknown operator: " + conditionModel.operator().get());
+				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel.operator().get());
 		}
 		revalidate();
 		repaint();
@@ -765,7 +767,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 			case NOT_IN:
 				return "α ∉";
 			default:
-				throw new IllegalArgumentException("Unknown operator: " + operator);
+				throw new IllegalArgumentException(UNKNOWN_OPERATOR + operator);
 		}
 	}
 

@@ -194,10 +194,10 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		Builder<R, C> rightPadding(int rightPadding);
 
 		/**
-		 * @param values provides the value to display in the cell, formatted or otherwise
+		 * @param string provides a String to display for a given cell value, formatted or otherwise
 		 * @return this builder instance
 		 */
-		Builder<R, C> values(Function<Object, Object> values);
+		Builder<R, C> string(Function<Object, String> string);
 
 		/**
 		 * @param cellColors provides cell/row background and foreground color

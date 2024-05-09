@@ -43,7 +43,7 @@ final class DefaultFilterTableCellRenderer<R, C> extends DefaultTableCellRendere
 	private final boolean toolTipData;
 	private final boolean columnShading;
 	private final boolean alternateRowColoring;
-	private final Function<Object, Object> values;
+	private final Function<Object, String> string;
 	private final CellColors<C> cellColors;
 
 	/**
@@ -58,7 +58,7 @@ final class DefaultFilterTableCellRenderer<R, C> extends DefaultTableCellRendere
 		this.toolTipData = builder.toolTipData;
 		this.columnShading = builder.columnShading;
 		this.alternateRowColoring = builder.alternateRowColoring;
-		this.values = builder.values;
+		this.string = builder.string;
 		this.cellColors = builder.cellColors;
 		setHorizontalAlignment(builder.horizontalAlignment);
 	}
@@ -106,7 +106,7 @@ final class DefaultFilterTableCellRenderer<R, C> extends DefaultTableCellRendere
 	 */
 	@Override
 	protected void setValue(Object value) {
-		super.setValue(values.apply(value));
+		super.setValue(string.apply(value));
 	}
 
 	/**

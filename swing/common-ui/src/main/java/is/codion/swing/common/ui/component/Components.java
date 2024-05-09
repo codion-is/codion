@@ -86,7 +86,6 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.List;
-import java.util.Set;
 
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
 import static is.codion.swing.common.ui.layout.Layouts.*;
@@ -361,8 +360,8 @@ public final class Components {
 	 * @param <T> the value type
 	 * @return a new {@link ComponentValue}
 	 */
-	public static <T> ComponentBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>> listBox(
-					ComponentValue<T, ? extends JComponent> itemValue, ValueSet<T> linkedValue) {
+	public static <T> ListBoxBuilder<T> listBox(ComponentValue<T, ? extends JComponent> itemValue,
+																							ValueSet<T> linkedValue) {
 		return ListBoxBuilder.listBox(itemValue, linkedValue);
 	}
 

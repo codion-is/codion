@@ -43,7 +43,7 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		super(requireNonNull(tableModel), requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().type().valueClass(),
 						attributeDefinition.attribute().type().isBoolean() && attributeDefinition.items().isEmpty());
 		tableModel.entityDefinition().attributes().definition(attributeDefinition.attribute());
-		values(new EntityValues(attributeDefinition));
+		string(new DefaultString(attributeDefinition));
 		cellColors(new EntityCellColors(tableModel));
 	}
 
@@ -92,17 +92,17 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		}
 	}
 
-	private static final class EntityValues implements Function<Object, Object> {
+	private static final class DefaultString implements Function<Object, String> {
 
-		private final AttributeDefinition<Object> objectAttributeDefinition;
+		private final AttributeDefinition<Object> definition;
 
-		private EntityValues(AttributeDefinition<?> attributeDefinition) {
-			this.objectAttributeDefinition = (AttributeDefinition<Object>) attributeDefinition;
+		private DefaultString(AttributeDefinition<?> attributeDefinition) {
+			this.definition = (AttributeDefinition<Object>) attributeDefinition;
 		}
 
 		@Override
-		public Object apply(Object value) {
-			return objectAttributeDefinition.string(value);
+		public String apply(Object value) {
+			return definition.string(value);
 		}
 	}
 

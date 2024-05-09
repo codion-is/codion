@@ -36,10 +36,12 @@ import java.awt.event.ActionListener;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptySet;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
 import static javax.swing.SwingConstants.CENTER;
 
@@ -49,10 +51,17 @@ final class DefaultListBoxBuilder<T>
 
 	private final ComponentValue<T,? extends JComponent> itemValue;
 	private final ValueSet<T> linkedValue;
+	private Function<Object, String> string = new DefaultString();
 
 	DefaultListBoxBuilder(ComponentValue<T, ? extends JComponent> itemValue, ValueSet<T> linkedValue) {
 		this.itemValue = itemValue;
 		this.linkedValue = linkedValue;
+	}
+
+	@Override
+	public ListBoxBuilder<T> string(Function<Object, String> string) {
+		this.string = requireNonNull(string);
+		return this;
 	}
 
 	@Override
@@ -61,7 +70,7 @@ final class DefaultListBoxBuilder<T>
 		ListComboBox<T> comboBox = new ListComboBox<>(comboBoxModel, itemValue, linkedValue);
 		comboBox.setEditor(new Editor<>(itemValue));
 		comboBox.setEditable(true);
-		comboBox.setRenderer(new Renderer<>(horizontalAlignment(itemValue.component())));
+		comboBox.setRenderer(new Renderer<>(horizontalAlignment(itemValue.component()), string));
 
 		return comboBox;
 	}
@@ -121,16 +130,19 @@ final class DefaultListBoxBuilder<T>
 
 	private static final class Renderer<T> implements ListCellRenderer<T> {
 
+		private final Function<Object, String> string;
+
 		private final DefaultListCellRenderer listCellRenderer = new DefaultListCellRenderer();
 
-		private Renderer(int horizontalAlignment) {
+		private Renderer(int horizontalAlignment, Function<Object, String> string) {
+			this.string = string;
 			listCellRenderer.setHorizontalAlignment(horizontalAlignment);
 		}
 
 		@Override
 		public Component getListCellRendererComponent(JList<? extends T> list, T value,
 																									int index, boolean isSelected, boolean cellHasFocus) {
-			return listCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			return listCellRenderer.getListCellRendererComponent(list, string.apply(value), index, isSelected, cellHasFocus);
 		}
 	}
 
@@ -160,6 +172,13 @@ final class DefaultListBoxBuilder<T>
 			FilterComboBoxModel<T> comboBoxModel = comboBox.getModel();
 			comboBoxModel.clear();
 			value.forEach(comboBoxModel::add);
+		}
+	}
+
+	private static final class DefaultString implements Function<Object, String> {
+		@Override
+		public String apply(Object value) {
+			return value == null ? "" : value.toString();
 		}
 	}
 }

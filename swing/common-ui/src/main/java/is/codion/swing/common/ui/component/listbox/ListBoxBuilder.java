@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Creates a {@link JComboBox} based {@link ComponentValue} instance, represented by the items
@@ -32,6 +33,12 @@ import java.util.Set;
  * @param <T> the value type
  */
 public interface ListBoxBuilder<T> extends ComponentBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>> {
+
+	/**
+	 * @param string provides a String to display in the list for a given value, formatted or otherwise
+	 * @return this builder instance
+	 */
+	ListBoxBuilder<T> string(Function<Object, String> string);
 
 	/**
 	 * Creates a {@link JComboBox} based {@link ComponentValue} instance, represented by the items
@@ -44,8 +51,8 @@ public interface ListBoxBuilder<T> extends ComponentBuilder<Set<T>, JComboBox<T>
 	 * @param <T> the value type
 	 * @return a new {@link ComponentValue}
 	 */
-	static <T> ComponentBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>> listBox(ComponentValue<T, ? extends JComponent> itemValue,
-																																							 ValueSet<T> linkedValue) {
+	static <T> ListBoxBuilder<T> listBox(ComponentValue<T, ? extends JComponent> itemValue,
+																			 ValueSet<T> linkedValue) {
 		return new DefaultListBoxBuilder<>(itemValue, linkedValue);
 	}
 }

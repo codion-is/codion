@@ -44,7 +44,7 @@ public class EntityTableCellRendererFactory implements FilterTableCellRendererFa
 	}
 
 	@Override
-	public TableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
+	public final TableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
 		return builder(column).build();
 	}
 

@@ -45,7 +45,7 @@ public class DefaultFilterTableCellRendererBuilder<R, C> implements FilterTableC
 	boolean alternateRowColoring = FilterTableCellRenderer.ALTERNATE_ROW_COLORING.get();
 	int leftPadding = FilterTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
 	int rightPadding = FilterTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
-	Function<Object, Object> values = new DefaultValues();
+	Function<Object, String> string = new DefaultString();
 	CellColors<C> cellColors = new DefaultCellColors<>();
 
 	/**
@@ -110,8 +110,8 @@ public class DefaultFilterTableCellRendererBuilder<R, C> implements FilterTableC
 	}
 
 	@Override
-	public final FilterTableCellRenderer.Builder<R, C> values(Function<Object, Object> values) {
-		this.values = requireNonNull(values);
+	public final FilterTableCellRenderer.Builder<R, C> string(Function<Object, String> string) {
+		this.string = requireNonNull(string);
 		return this;
 	}
 
@@ -152,9 +152,9 @@ public class DefaultFilterTableCellRendererBuilder<R, C> implements FilterTableC
 		return FilterTableCellRenderer.HORIZONTAL_ALIGNMENT.get();
 	}
 
-	private static final class DefaultValues implements Function<Object, Object> {
+	private static final class DefaultString implements Function<Object, String> {
 		@Override
-		public Object apply(Object value) {
+		public String apply(Object value) {
 			return value == null ? "" : value.toString();
 		}
 	}
