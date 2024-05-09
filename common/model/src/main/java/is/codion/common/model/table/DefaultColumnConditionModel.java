@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static is.codion.common.Operator.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -597,20 +596,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	static final class DefaultBuilder<C, T> implements Builder<C, T> {
 
-		private static final List<Operator> DEFAULT_OPERATORS = asList(
-						EQUAL,
-						NOT_EQUAL,
-						LESS_THAN,
-						LESS_THAN_OR_EQUAL,
-						GREATER_THAN,
-						GREATER_THAN_OR_EQUAL,
-						BETWEEN_EXCLUSIVE,
-						BETWEEN,
-						NOT_BETWEEN_EXCLUSIVE,
-						NOT_BETWEEN,
-						IN,
-						NOT_IN
-		);
+		private static final List<Operator> DEFAULT_OPERATORS = asList(Operator.values());
 
 		private final C columnIdentifier;
 		private final Class<T> columnClass;

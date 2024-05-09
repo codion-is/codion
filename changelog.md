@@ -13,6 +13,7 @@ Codion Change Log
 - Messages renamed Resources. DefaultMessageBundle now throws correct exception in case of a missing resource.
 - Resources.get() renamed getString(), consistent with ResourceBundle.
 - Operator.IN and NOT_IN added.
+- Operator, reordered to group single value operators.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 - Database.createConnectionPool() now returns the pool.

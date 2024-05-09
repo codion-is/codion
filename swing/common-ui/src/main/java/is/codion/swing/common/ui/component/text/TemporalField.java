@@ -411,8 +411,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 		private DefaultBuilder(Class<T> temporalClass, String dateTimePattern, Value<T> linkedValue) {
 			super(temporalClass, linkedValue);
-			this.temporalClass = temporalClass;
-			this.dateTimePattern = requireNonNull(dateTimePattern);
+			this.temporalClass = requireNonNull(temporalClass, "temporalClass");
+			this.dateTimePattern = requireNonNull(dateTimePattern, "dateTimePattern");
 			this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern).withZone(ZoneId.systemDefault());
 			this.mask = createMask(dateTimePattern);
 			this.dateTimeParser = createDateTimeParser(temporalClass);

@@ -32,12 +32,12 @@ public enum Operator {
 	LESS_THAN_OR_EQUAL,
 	GREATER_THAN,
 	GREATER_THAN_OR_EQUAL,
+	IN,
+	NOT_IN,
 	BETWEEN_EXCLUSIVE,
 	BETWEEN,
 	NOT_BETWEEN_EXCLUSIVE,
-	NOT_BETWEEN,
-	IN,
-	NOT_IN;
+	NOT_BETWEEN;
 
 	private final String description;
 
