@@ -65,6 +65,7 @@ Codion Change Log
 - FilterTableCellRenderer.Builder.values() renamed string().
 - AbstractColumnConditionPanel and AbstractFilterTableConditionPanel added, related refactoring.
 - AbstractColumnConditionPanel, AbstractFilterTableConditionPanel.focusGainedEvent() removed.
+- AbstractColumnConditionPanel and AbstractFilterTableConditionPanel replaced with interfaces FilterTable.ColumnConditionPanel and FilterTable.TableConditionPanel, related refactoring.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.

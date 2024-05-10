@@ -30,6 +30,7 @@ import is.codion.swing.framework.server.monitor.ClientMonitor;
 import is.codion.swing.framework.server.monitor.ClientMonitor.RemoteClientColumns.Id;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -158,8 +159,8 @@ public final class ClientMonitorPanel extends JPanel {
 		revalidate();
 	}
 
-	private static JScrollPane createLinkedScrollPane(JScrollPane parentScrollPane, JPanel panelToScroll) {
-		return Components.scrollPane(panelToScroll)
+	private static JScrollPane createLinkedScrollPane(JScrollPane parentScrollPane, JComponent componentToScroll) {
+		return Components.scrollPane(componentToScroll)
 						.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
 						.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
 						.onBuild(scrollPane -> linkBoundedRangeModels(

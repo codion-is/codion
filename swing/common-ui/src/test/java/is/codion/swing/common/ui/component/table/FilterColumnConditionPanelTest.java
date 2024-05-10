@@ -22,21 +22,21 @@ import is.codion.common.model.table.ColumnConditionModel;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
+import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.columnConditionPanel;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ColumnConditionPanelTest {
+public class FilterColumnConditionPanelTest {
 
 	@Test
 	void test() {
 		final String key = "key";
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder(key, String.class).build();
-		ColumnConditionPanel<?, String> panel = columnConditionPanel(model);
+		FilterColumnConditionPanel<?, String> panel = columnConditionPanel(model);
 		assertEquals(model, panel.conditionModel());
 		assertNotNull(panel.equalField());
 		assertNotNull(panel.upperBoundField());
 		assertNotNull(panel.lowerBoundField());
-		assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<String, String>columnConditionPanel(null, null));
+		assertThrows(NullPointerException.class, () -> FilterColumnConditionPanel.<String, String>columnConditionPanel(null, null));
 	}
 
 	@Test

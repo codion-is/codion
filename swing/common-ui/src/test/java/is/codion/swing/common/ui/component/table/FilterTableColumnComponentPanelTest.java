@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,7 +64,7 @@ public class FilterTableColumnComponentPanelTest {
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 		Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
 		columnComponents.put(3, new JPanel());
-		assertThrows(IllegalArgumentException.class, () -> FilterTableColumnComponentPanel.filterTableColumnComponentPanel(columnModel, columnComponents));
+		assertThrows(IllegalArgumentException.class, () -> filterTableColumnComponentPanel(columnModel, columnComponents));
 	}
 
 	@Test
@@ -77,7 +78,7 @@ public class FilterTableColumnComponentPanelTest {
 
 		columnModel.visible(1).set(false);
 
-		FilterTableColumnComponentPanel<Integer, JPanel> panel = FilterTableColumnComponentPanel.filterTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+		FilterTableColumnComponentPanel<Integer> panel = filterTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
 		assertTrue(panel.components().containsKey(1));
 
 		assertNull(panel.components().get(1).getParent());
@@ -98,7 +99,7 @@ public class FilterTableColumnComponentPanelTest {
 										.build();
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 
-		FilterTableColumnComponentPanel<Integer, JPanel> panel = FilterTableColumnComponentPanel.filterTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+		FilterTableColumnComponentPanel<Integer> panel = filterTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
 		column0.setWidth(100);
 		assertEquals(100, panel.components().get(0).getPreferredSize().width);
 		column1.setWidth(90);

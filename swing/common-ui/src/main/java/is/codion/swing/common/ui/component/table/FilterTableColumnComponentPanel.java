@@ -49,16 +49,16 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the component type
  * @see #filterTableColumnComponentPanel(FilterTableColumnModel, Map)
  */
-public final class FilterTableColumnComponentPanel<C, T extends JComponent> extends JPanel {
+public final class FilterTableColumnComponentPanel<C> extends JPanel {
 
 	private final FilterTableColumnModel<C> columnModel;
 	private final Collection<FilterTableColumn<C>> columns;
 	private final Box.Filler scrollBarFiller;
 	private final JPanel basePanel;
-	private final Map<C, T> components;
+	private final Map<C, JComponent> components;
 	private final Map<C, JPanel> nullComponents = new HashMap<>(0);
 
-	private FilterTableColumnComponentPanel(FilterTableColumnModel<C> columnModel, Map<C, T> components) {
+	private FilterTableColumnComponentPanel(FilterTableColumnModel<C> columnModel, Map<C, ? extends JComponent> components) {
 		this.columnModel = requireNonNull(columnModel);
 		this.columns = columnModel.columns();
 		requireNonNull(components).forEach((columnIdentifier, component) -> {
@@ -93,7 +93,7 @@ public final class FilterTableColumnComponentPanel<C, T extends JComponent> exte
 	/**
 	 * @return the column components mapped their respective column identifiers
 	 */
-	public Map<C, T> components() {
+	public Map<C, JComponent> components() {
 		return components;
 	}
 
@@ -105,8 +105,8 @@ public final class FilterTableColumnComponentPanel<C, T extends JComponent> exte
 	 * @param <T> the component type
 	 * @return a new {@link FilterTableColumnComponentPanel}
 	 */
-	public static <C, T extends JComponent> FilterTableColumnComponentPanel<C, T> filterTableColumnComponentPanel(FilterTableColumnModel<C> columnModel,
-																																																								Map<C, T> columnComponents) {
+	public static <C> FilterTableColumnComponentPanel<C> filterTableColumnComponentPanel(FilterTableColumnModel<C> columnModel,
+																																																								Map<C, ? extends JComponent> columnComponents) {
 		return new FilterTableColumnComponentPanel<>(columnModel, columnComponents);
 	}
 
@@ -153,7 +153,7 @@ public final class FilterTableColumnComponentPanel<C, T extends JComponent> exte
 
 	private JComponent columnComponent(FilterTableColumn<C> column) {
 		return components.getOrDefault(column.getIdentifier(),
-						(T) nullComponents.computeIfAbsent(column.getIdentifier(), c -> new JPanel()));
+						nullComponents.computeIfAbsent(column.getIdentifier(), c -> new JPanel()));
 	}
 
 	private static void syncPanelWidth(JComponent component, TableColumn column) {

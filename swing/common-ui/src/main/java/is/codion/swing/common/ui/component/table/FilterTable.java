@@ -39,7 +39,7 @@ import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.FieldFactory;
+import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -87,7 +87,6 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTable.FilterTableControl.*;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
@@ -239,7 +238,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
 
-	private AbstractFilterTableConditionPanel<? extends C> filterPanel;
+	private FilterTableConditionPanel<? extends C> filterPanel;
 	private JTextField searchField;
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
@@ -331,7 +330,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return the filter panel
 	 */
-	public AbstractFilterTableConditionPanel<? extends C> filterPanel() {
+	public FilterTableConditionPanel<? extends C> filterPanel() {
 		if (filterPanel == null) {
 			filterPanel = filterTableConditionPanel(tableModel.filterModel(), createColumnFilterPanels(), columnModel());
 		}
@@ -836,7 +835,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 
-	private List<AbstractColumnConditionPanel<? extends C, ?>> createColumnFilterPanels() {
+	private List<ColumnConditionPanel<? extends C, ?>> createColumnFilterPanels() {
 		List<ColumnConditionModel<? extends C, ?>> collect = tableModel.filterModel()
 						.conditionModels()
 						.values()
@@ -844,9 +843,9 @@ public final class FilterTable<R, C> extends JTable {
 						.filter(conditionModel -> columnModel().containsColumn(conditionModel.columnIdentifier()))
 						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.columnClass()))
 						.collect(toList());
-		List<AbstractColumnConditionPanel<? extends C, ?>> conditionPanels = new ArrayList<>();
+		List<ColumnConditionPanel<? extends C, ?>> conditionPanels = new ArrayList<>();
 		for (ColumnConditionModel<? extends C, ?> conditionModel : collect) {
-			AbstractColumnConditionPanel<? extends C, ?> conditionPanel = columnConditionPanel(conditionModel, filterFieldFactory);
+			ColumnConditionPanel<? extends C, ?> conditionPanel = FilterColumnConditionPanel.columnConditionPanel(conditionModel, filterFieldFactory);
 			configureComponents(conditionPanel, columnModel().column(conditionPanel.conditionModel().columnIdentifier()).getCellRenderer());
 			conditionPanels.add(conditionPanel);
 		}
@@ -854,17 +853,17 @@ public final class FilterTable<R, C> extends JTable {
 		return conditionPanels;
 	}
 
-	private AbstractColumnConditionPanel<? extends C, ?> configureComponents(AbstractColumnConditionPanel<? extends C, ?> columnConditionPanel,
-																																					 TableCellRenderer cellRenderer) {
+	private ColumnConditionPanel<? extends C, ?> configureComponents(ColumnConditionPanel<? extends C, ?> conditionPanel,
+																																	 TableCellRenderer cellRenderer) {
 		if (cellRenderer instanceof DefaultTableCellRenderer) {
 			int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
-			columnConditionPanel.components().stream()
+			conditionPanel.components().stream()
 							.filter(JTextField.class::isInstance)
 							.map(JTextField.class::cast)
 							.forEach(textField -> textField.setHorizontalAlignment(horizontalAlignment));
 		}
 
-		return columnConditionPanel;
+		return conditionPanel;
 	}
 
 	private static void addIfComponent(Collection<JComponent> components, Object object) {

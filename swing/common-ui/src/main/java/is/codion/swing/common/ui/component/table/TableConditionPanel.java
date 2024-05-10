@@ -22,49 +22,28 @@ import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.control.Controls;
 
-import javax.swing.JPanel;
 import java.util.Collection;
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 /**
- * A UI component presenting one or more {@link AbstractColumnConditionPanel}s.
+ * A UI component based on a {@link TableConditionModel}.
  * @param <C> the type used to identify the table columns
  */
-public abstract class AbstractFilterTableConditionPanel<C> extends JPanel {
-
-	private final TableConditionModel<C> conditionModel;
-	private final List<? extends AbstractColumnConditionPanel<C, ?>> conditionPanels;
-
-	/**
-	 * @param conditionModel the condition model
-	 * @param conditionPanels the condition panels
-	 */
-	protected AbstractFilterTableConditionPanel(TableConditionModel<? extends C> conditionModel,
-																							List<? extends AbstractColumnConditionPanel<? extends C, ?>> conditionPanels) {
-		this.conditionModel = (TableConditionModel<C>) requireNonNull(conditionModel);
-		this.conditionPanels = (List<? extends AbstractColumnConditionPanel<C, ?>>) requireNonNull(conditionPanels);
-	}
+public interface TableConditionPanel<C> {
 
 	/**
 	 * @return the underlying condition model
 	 */
-	public final TableConditionModel<C> conditionModel() {
-		return conditionModel;
-	}
+	TableConditionModel<C> conditionModel();
 
 	/**
 	 * @return an unmodifiable view of the condition panels
 	 */
-	public final Collection<? extends AbstractColumnConditionPanel<C, ?>> conditionPanels() {
-		return conditionPanels;
-	}
+	Collection<? extends ColumnConditionPanel<C, ?>> conditionPanels();
 
 	/**
 	 * @return the state controlling the advanced view status of this condition panel
 	 */
-	public abstract State advanced();
+	State advanced();
 
 	/**
 	 * @param <T> the column value type
@@ -72,15 +51,10 @@ public abstract class AbstractFilterTableConditionPanel<C> extends JPanel {
 	 * @return the condition panel associated with the given column
 	 * @throws IllegalArgumentException in case the column has no condition panel
 	 */
-	public final <T extends AbstractColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier) {
-		return (T) conditionPanels.stream()
-						.filter(conditionPanel -> conditionPanel.conditionModel().columnIdentifier().equals(columnIdentifier))
-						.findFirst()
-						.orElseThrow(() -> new IllegalArgumentException("No condition panel found for column identifier " + columnIdentifier));
-	}
+	<T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier);
 
 	/**
 	 * @return the controls provided by this condition panel, for example toggling the advanced mode and clearing the condition
 	 */
-	public abstract Controls controls();
+	Controls controls();
 }

@@ -26,9 +26,12 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Map;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Objects.requireNonNull;
@@ -39,21 +42,44 @@ import static java.util.stream.Collectors.toMap;
  * @param <C> the column identifier type
  * @see #filterTableConditionPanel(TableConditionModel, List, FilterTableColumnModel)
  */
-public final class FilterTableConditionPanel<C> extends AbstractFilterTableConditionPanel<C> {
+public final class FilterTableConditionPanel<C> extends JPanel implements TableConditionPanel<C> {
 
-	private final FilterTableColumnComponentPanel<C, AbstractColumnConditionPanel<? extends C, ?>> componentPanel;
+	private final TableConditionModel<C> conditionModel;
+	private final List<? extends ColumnConditionPanel<? extends C, ?>> conditionPanels;
+	private final FilterTableColumnComponentPanel<C> componentPanel;
 	private final State advanced = State.builder()
 					.consumer(this::onAdvancedChanged)
 					.build();
 
-	private FilterTableConditionPanel(TableConditionModel<? extends C> tableConditionModel,
-																		List<AbstractColumnConditionPanel<? extends C, ?>> conditionPanels,
+	private FilterTableConditionPanel(TableConditionModel<? extends C> conditionModel,
+																		List<ColumnConditionPanel<? extends C, ?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel) {
-		super(tableConditionModel, conditionPanels);
-		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel), conditionPanels.stream()
-						.collect(toMap(conditionPanel -> conditionPanel.conditionModel().columnIdentifier(), Function.identity())));
+		this.conditionModel = (TableConditionModel<C>) requireNonNull(conditionModel);
+		this.conditionPanels = requireNonNull(conditionPanels);
+		Map<C, JComponent> collect = conditionPanels.stream()
+						.collect(toMap(panel -> panel.conditionModel()
+										.columnIdentifier(), JComponent.class::cast));
+		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel), collect);
 		setLayout(new BorderLayout());
 		add(componentPanel, BorderLayout.CENTER);
+	}
+
+	@Override
+	public TableConditionModel<C> conditionModel() {
+		return conditionModel;
+	}
+
+	@Override
+	public Collection<? extends ColumnConditionPanel<C, ?>> conditionPanels() {
+		return List.of();
+	}
+
+	@Override
+	public <T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier) {
+		return (T) conditionPanels.stream()
+						.filter(panel -> panel.conditionModel().columnIdentifier().equals(columnIdentifier))
+						.findFirst()
+						.orElseThrow(() -> new IllegalArgumentException("No condition panel found for column identifier " + columnIdentifier));
 	}
 
 	@Override
@@ -79,18 +105,18 @@ public final class FilterTableConditionPanel<C> extends AbstractFilterTableCondi
 	 * @return a new {@link FilterTableConditionPanel}
 	 */
 	public static <C> FilterTableConditionPanel<? extends C> filterTableConditionPanel(TableConditionModel<C> conditionModel,
-																																										 List<AbstractColumnConditionPanel<? extends C, ?>> conditionPanels,
+																																										 List<ColumnConditionPanel<? extends C, ?>> conditionPanels,
 																																										 FilterTableColumnModel<C> columnModel) {
 		return new FilterTableConditionPanel<>(conditionModel, conditionPanels, columnModel);
 	}
 
 	private void clearConditions() {
-		componentPanel.components().values().stream()
-						.map(AbstractColumnConditionPanel::conditionModel)
+		conditionPanels.stream()
+						.map(ColumnConditionPanel::conditionModel)
 						.forEach(ColumnConditionModel::clear);
 	}
 
 	private void onAdvancedChanged(boolean advancedView) {
-		componentPanel.components().forEach((column, panel) -> panel.advanced().set(advancedView));
+		conditionPanels.forEach(panel -> panel.advanced().set(advancedView));
 	}
 }
