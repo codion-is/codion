@@ -835,7 +835,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 
-	private List<ColumnConditionPanel<? extends C, ?>> createColumnFilterPanels() {
+	private Collection<ColumnConditionPanel<? extends C, ?>> createColumnFilterPanels() {
 		List<ColumnConditionModel<? extends C, ?>> collect = tableModel.filterModel()
 						.conditionModels()
 						.values()

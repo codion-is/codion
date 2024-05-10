@@ -69,6 +69,7 @@ Codion Change Log
 - AbstractColumnConditionPanel, AbstractFilterTableConditionPanel.focusGainedEvent() removed.
 - AbstractColumnConditionPanel and AbstractFilterTableConditionPanel replaced with interfaces FilterTable.ColumnConditionPanel and FilterTable.TableConditionPanel, related refactoring.
 - TableConditionPanel.conditionPanel() now returns Optional.
+- FilterTableConditionPanel.conditionPanels() bug fixed, now actually returns the panels.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.

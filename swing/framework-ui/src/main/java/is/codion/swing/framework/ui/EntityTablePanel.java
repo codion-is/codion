@@ -1524,7 +1524,7 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private List<ColumnConditionPanel<? extends Attribute<?>, ?>> createConditionPanels() {
+	private Collection<ColumnConditionPanel<? extends Attribute<?>, ?>> createConditionPanels() {
 		return tableModel.conditionModel().conditionModels().values().stream()
 						.filter(conditionModel -> table.columnModel().containsColumn(conditionModel.columnIdentifier()))
 						.filter(conditionModel -> configuration.conditionFieldFactory.supportsType(conditionModel.columnClass()))

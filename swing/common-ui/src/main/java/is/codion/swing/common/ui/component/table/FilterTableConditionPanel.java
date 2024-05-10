@@ -29,12 +29,14 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 
@@ -46,17 +48,17 @@ import static java.util.stream.Collectors.toMap;
 public final class FilterTableConditionPanel<C> extends JPanel implements TableConditionPanel<C> {
 
 	private final TableConditionModel<C> conditionModel;
-	private final List<? extends ColumnConditionPanel<? extends C, ?>> conditionPanels;
+	private final Collection<? extends ColumnConditionPanel<? extends C, ?>> conditionPanels;
 	private final FilterTableColumnComponentPanel<C> componentPanel;
 	private final State advanced = State.builder()
 					.consumer(this::onAdvancedChanged)
 					.build();
 
 	private FilterTableConditionPanel(TableConditionModel<? extends C> conditionModel,
-																		List<ColumnConditionPanel<? extends C, ?>> conditionPanels,
+																		Collection<ColumnConditionPanel<? extends C, ?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel) {
 		this.conditionModel = (TableConditionModel<C>) requireNonNull(conditionModel);
-		this.conditionPanels = requireNonNull(conditionPanels);
+		this.conditionPanels = unmodifiableList(new ArrayList<>(requireNonNull(conditionPanels)));
 		Map<C, JComponent> collect = conditionPanels.stream()
 						.collect(toMap(panel -> panel.conditionModel()
 										.columnIdentifier(), JComponent.class::cast));
@@ -72,7 +74,7 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 
 	@Override
 	public Collection<? extends ColumnConditionPanel<C, ?>> conditionPanels() {
-		return List.of();
+		return (Collection<? extends ColumnConditionPanel<C, ?>>) conditionPanels;
 	}
 
 	@Override
@@ -105,7 +107,7 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	 * @return a new {@link FilterTableConditionPanel}
 	 */
 	public static <C> FilterTableConditionPanel<? extends C> filterTableConditionPanel(TableConditionModel<C> conditionModel,
-																																										 List<ColumnConditionPanel<? extends C, ?>> conditionPanels,
+																																										 Collection<ColumnConditionPanel<? extends C, ?>> conditionPanels,
 																																										 FilterTableColumnModel<C> columnModel) {
 		return new FilterTableConditionPanel<>(conditionModel, conditionPanels, columnModel);
 	}
