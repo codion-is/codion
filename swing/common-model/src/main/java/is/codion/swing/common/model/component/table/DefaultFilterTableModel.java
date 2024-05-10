@@ -37,7 +37,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -474,12 +473,10 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		return combinedIncludeCondition.test(item);
 	}
 
-	private Collection<ColumnConditionModel<C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
+	private Collection<ColumnConditionModel<? extends C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
 		return columns.identifiers().stream()
+						.filter(filterModelFactory::supports)
 						.map(filterModelFactory::createConditionModel)
-						.filter(Optional::isPresent)
-						.map(Optional::get)
-						.map(conditionModel -> (ColumnConditionModel<C, ?>) conditionModel)
 						.collect(Collectors.toList());
 	}
 
@@ -530,13 +527,17 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final class DefaultFilterModelFactory implements ColumnConditionModel.Factory<C> {
 
 		@Override
-		public Optional<ColumnConditionModel<? extends C, ?>> createConditionModel(C columnIdentifier) {
-			Class<?> columnClass = getColumnClass(columnIdentifier);
-			if (Comparable.class.isAssignableFrom(columnClass)) {
-				return Optional.of(ColumnConditionModel.builder(columnIdentifier, columnClass).build());
+		public boolean supports(C columnIdentifier) {
+			return Comparable.class.isAssignableFrom(getColumnClass(columnIdentifier));
+		}
+
+		@Override
+		public ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier) {
+			if (!supports(columnIdentifier)) {
+				throw new IllegalArgumentException("Unsupported column: " + columnIdentifier);
 			}
 
-			return Optional.empty();
+			return ColumnConditionModel.builder(columnIdentifier, getColumnClass(columnIdentifier)).build();
 		}
 	}
 

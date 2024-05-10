@@ -39,6 +39,7 @@ import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -56,6 +57,7 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -230,14 +232,14 @@ public final class FilterTable<R, C> extends JTable {
 	private final FilterTableSortModel<R, C> sortModel;
 	private final TableSummaryModel<C> summaryModel;
 
-	private final ColumnConditionPanel.Factory<C> filterPanelFactory;
+	private final FieldFactory<C> filterFieldFactory;
 	private final Event<MouseEvent> doubleClickEvent = Event.event();
 	private final Value<Action> doubleClickAction;
 	private final State sortingEnabled;
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
 
-	private FilterTableConditionPanel<C> filterPanel;
+	private AbstractFilterTableConditionPanel<? extends C> filterPanel;
 	private JTextField searchField;
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
@@ -248,7 +250,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.searchModel = new DefaultFilterTableSearchModel<>(tableModel, columnModel());
 		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
 						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
-		this.filterPanelFactory = builder.filterPanelFactory;
+		this.filterFieldFactory = builder.filterFieldFactory;
 		this.centerOnScroll = Value.nonNull(CenterOnScroll.NEITHER)
 						.initialValue(builder.centerOnScroll)
 						.build();
@@ -329,9 +331,9 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return the filter panel
 	 */
-	public FilterTableConditionPanel<C> filterPanel() {
+	public AbstractFilterTableConditionPanel<? extends C> filterPanel() {
 		if (filterPanel == null) {
-			filterPanel = filterTableConditionPanel(tableModel.filterModel(), columnModel(), filterPanelFactory);
+			filterPanel = filterTableConditionPanel(tableModel.filterModel(), createColumnFilterPanels(), columnModel());
 		}
 
 		return filterPanel;
@@ -833,6 +835,38 @@ public final class FilterTable<R, C> extends JTable {
 		return components.stream();
 	}
 
+
+	private List<AbstractColumnConditionPanel<? extends C, ?>> createColumnFilterPanels() {
+		List<ColumnConditionModel<? extends C, ?>> collect = tableModel.filterModel()
+						.conditionModels()
+						.values()
+						.stream()
+						.filter(conditionModel -> columnModel().containsColumn(conditionModel.columnIdentifier()))
+						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.columnClass()))
+						.collect(toList());
+		List<AbstractColumnConditionPanel<? extends C, ?>> conditionPanels = new ArrayList<>();
+		for (ColumnConditionModel<? extends C, ?> conditionModel : collect) {
+			AbstractColumnConditionPanel<? extends C, ?> conditionPanel = columnConditionPanel(conditionModel, filterFieldFactory);
+			configureComponents(conditionPanel, columnModel().column(conditionPanel.conditionModel().columnIdentifier()).getCellRenderer());
+			conditionPanels.add(conditionPanel);
+		}
+
+		return conditionPanels;
+	}
+
+	private AbstractColumnConditionPanel<? extends C, ?> configureComponents(AbstractColumnConditionPanel<? extends C, ?> columnConditionPanel,
+																																					 TableCellRenderer cellRenderer) {
+		if (cellRenderer instanceof DefaultTableCellRenderer) {
+			int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
+			columnConditionPanel.components().stream()
+							.filter(JTextField.class::isInstance)
+							.map(JTextField.class::cast)
+							.forEach(textField -> textField.setHorizontalAlignment(horizontalAlignment));
+		}
+
+		return columnConditionPanel;
+	}
+
 	private static void addIfComponent(Collection<JComponent> components, Object object) {
 		if (object instanceof JComponent) {
 			components.add((JComponent) object);
@@ -931,10 +965,11 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory);
 
 		/**
-		 * @param filterPanelFactory the column filter panel factory
+		 * @param filterFieldFactory the column filter field factory
 		 * @return this builder instance
+		 * @see FilterTable#filterPanel()
 		 */
-		Builder<R, C> filterPanelFactory(ColumnConditionPanel.Factory<C> filterPanelFactory);
+		Builder<R, C> filterFieldFactory(FieldFactory<C> filterFieldFactory);
 
 		/**
 		 * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer set.
@@ -1049,7 +1084,7 @@ public final class FilterTable<R, C> extends JTable {
 		private final KeyboardShortcuts<FilterTableControl> shortcuts = DEFAULT_KEYBOARD_SHORTCUTS.copy();
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
-		private ColumnConditionPanel.Factory<C> filterPanelFactory;
+		private FieldFactory<C> filterFieldFactory = new DefaultFieldFactory<>();
 		private FilterTableCellRendererFactory<C> cellRendererFactory;
 		private boolean autoStartsEdit = false;
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
@@ -1064,7 +1099,6 @@ public final class FilterTable<R, C> extends JTable {
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = requireNonNull(tableModel);
 			this.columns = new ArrayList<>(requireNonNull(columns));
-			this.filterPanelFactory = new DefaultFilterPanelFactory<>();
 			this.cellRendererFactory = new DefaultFilterTableCellRendererFactory<>(tableModel);
 		}
 
@@ -1075,8 +1109,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> filterPanelFactory(ColumnConditionPanel.Factory<C> filterPanelFactory) {
-			this.filterPanelFactory = requireNonNull(filterPanelFactory);
+		public Builder<R, C> filterFieldFactory(FieldFactory<C> filterFieldFactory) {
+			this.filterFieldFactory = requireNonNull(filterFieldFactory);
 			return this;
 		}
 
@@ -1358,14 +1392,6 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public int compare(TableColumn col1, TableColumn col2) {
 			return collator.compare(String.valueOf(col1.getHeaderValue()), String.valueOf(col2.getHeaderValue()));
-		}
-	}
-
-	private static final class DefaultFilterPanelFactory<C> implements ColumnConditionPanel.Factory<C> {
-
-		@Override
-		public <T> Optional<ColumnConditionPanel<C, T>> createConditionPanel(ColumnConditionModel<C, T> filterModel) {
-			return columnConditionPanel(filterModel);
 		}
 	}
 

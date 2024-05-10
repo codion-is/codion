@@ -30,10 +30,10 @@ import static java.util.function.Function.identity;
 
 final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
-	private final Map<C, ColumnConditionModel<C, ?>> conditionModels;
+	private final Map<C, ColumnConditionModel<? extends C, ?>> conditionModels;
 	private final Event<?> changeEvent = Event.event();
 
-	DefaultTableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
+	DefaultTableConditionModel(Collection<ColumnConditionModel<? extends C, ?>> conditionModels) {
 		this.conditionModels = initializeColumnConditionModels(conditionModels);
 		this.conditionModels.values().forEach(conditionModel ->
 						conditionModel.conditionChangedEvent().addListener(changeEvent));
@@ -56,7 +56,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public Map<C, ColumnConditionModel<C, ?>> conditionModels() {
+	public Map<C, ColumnConditionModel<? extends C, ?>> conditionModels() {
 		return conditionModels;
 	}
 
@@ -75,7 +75,8 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 		return changeEvent.observer();
 	}
 
-	private Map<C, ColumnConditionModel<C, ?>> initializeColumnConditionModels(Collection<ColumnConditionModel<C, ?>> conditionModels) {
+	private Map<C, ColumnConditionModel<? extends C, ?>> initializeColumnConditionModels(
+					Collection<ColumnConditionModel<? extends C, ?>> conditionModels) {
 		return unmodifiableMap(conditionModels.stream()
 						.collect(Collectors.toMap(ColumnConditionModel::columnIdentifier, identity())));
 	}

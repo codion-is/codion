@@ -31,8 +31,8 @@ public class ColumnConditionPanelTest {
 	void test() {
 		final String key = "key";
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder(key, String.class).build();
-		ColumnConditionPanel<String, String> panel = columnConditionPanel(model).orElse(null);
-		assertEquals(model, panel.model());
+		ColumnConditionPanel<?, String> panel = columnConditionPanel(model);
+		assertEquals(model, panel.conditionModel());
 		assertNotNull(panel.equalField());
 		assertNotNull(panel.upperBoundField());
 		assertNotNull(panel.lowerBoundField());

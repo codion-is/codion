@@ -51,13 +51,13 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default EntityTableConditionModel implementation
  */
-final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements EntityTableConditionModel<C> {
+final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
 
 	private static final Supplier<Condition> NULL_CONDITION_SUPPLIER = () -> null;
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
-	private final TableConditionModel<C> conditionModel;
+	private final TableConditionModel<Attribute<?>> conditionModel;
 	private final Event<?> conditionChangedEvent = Event.event();
 	private final Value<Supplier<Condition>> additionalWhere = Value.nonNull(NULL_CONDITION_SUPPLIER).build();
 	private final Value<Supplier<Condition>> additionalHaving = Value.nonNull(NULL_CONDITION_SUPPLIER).build();
@@ -65,7 +65,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 	private final AggregatePredicate aggregatePredicate = new AggregatePredicate();
 
 	DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-																	 ColumnConditionModel.Factory<C> conditionModelFactory) {
+																	 ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
 		this.entityDefinition = connectionProvider.entities().definition(requireNonNull(entityType, "entityType"));
 		this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
 		this.conditionModel = tableConditionModel(createConditionModels(entityType, conditionModelFactory));
@@ -75,6 +75,11 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 	@Override
 	public EntityType entityType() {
 		return entityDefinition.entityType();
+	}
+
+	@Override
+	public EntityConnectionProvider connectionProvider() {
+		return connectionProvider;
 	}
 
 	@Override
@@ -120,18 +125,18 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 	}
 
 	@Override
-	public Map<C, ColumnConditionModel<C, ?>> conditionModels() {
+	public Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels() {
 		return conditionModel.conditionModels();
 	}
 
 	@Override
-	public <T> ColumnConditionModel<? extends C, T> conditionModel(C columnIdentifier) {
+	public <T> ColumnConditionModel<? extends Attribute<?>, T> conditionModel(Attribute<?> columnIdentifier) {
 		return conditionModel.conditionModel(columnIdentifier);
 	}
 
 	@Override
 	public <A extends Attribute<T>, T> ColumnConditionModel<A, T> attributeModel(A columnIdentifier) {
-		return (ColumnConditionModel<A, T>) conditionModel((C) columnIdentifier);
+		return (ColumnConditionModel<A, T>) conditionModel(columnIdentifier);
 	}
 
 	@Override
@@ -140,7 +145,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 	}
 
 	@Override
-	public boolean enabled(C columnIdentifier) {
+	public boolean enabled(Attribute<?> columnIdentifier) {
 		return conditionModel.enabled(columnIdentifier);
 	}
 
@@ -174,17 +179,17 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 		additionalHaving.addListener(conditionChangedEvent);
 	}
 
-	private Collection<ColumnConditionModel<C, ?>> createConditionModels(EntityType entityType,
-																																			 ColumnConditionModel.Factory<C> conditionModelFactory) {
-		Collection<ColumnConditionModel<? extends C, ?>> models = new ArrayList<>();
+	private Collection<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModels(EntityType entityType,
+																																			 ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+		Collection<ColumnConditionModel<Attribute<?>, ?>> models = new ArrayList<>();
 		EntityDefinition definition = connectionProvider.entities().definition(entityType);
 		definition.columns().definitions().forEach(columnDefinition ->
-						conditionModelFactory.createConditionModel((C) columnDefinition.attribute()).ifPresent(models::add));
+						models.add((ColumnConditionModel<Attribute<?>, ?>) conditionModelFactory.createConditionModel(columnDefinition.attribute())));
 		definition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
-						conditionModelFactory.createConditionModel((C) foreignKeyDefinition.attribute()).ifPresent(models::add));
+						models.add((ColumnConditionModel<Attribute<?>, ?>) conditionModelFactory.createConditionModel(foreignKeyDefinition.attribute())));
 
 		return models.stream()
-						.map(model -> (ColumnConditionModel<C, ?>) model)
+						.map(model -> (ColumnConditionModel<Attribute<?>, ?>) model)
 						.collect(Collectors.toList());
 	}
 

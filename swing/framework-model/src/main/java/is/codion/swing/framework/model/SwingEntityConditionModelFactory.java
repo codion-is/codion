@@ -26,8 +26,6 @@ import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
-import java.util.Optional;
-
 import static is.codion.swing.framework.model.SwingForeignKeyConditionModel.swingForeignKeyConditionModel;
 
 /**
@@ -44,12 +42,12 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
 	}
 
 	@Override
-	public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+	public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			if (definition(foreignKey.referencedType()).smallDataset()) {
-				return Optional.of(swingForeignKeyConditionModel(foreignKey,
-								this::createEqualComboBoxModel, this::createInSearchModel));
+				return swingForeignKeyConditionModel(foreignKey,
+								this::createEqualComboBoxModel, this::createInSearchModel);
 			}
 		}
 

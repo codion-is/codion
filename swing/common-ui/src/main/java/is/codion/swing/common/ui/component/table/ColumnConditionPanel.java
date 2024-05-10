@@ -27,10 +27,8 @@ import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -53,12 +51,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -81,13 +75,13 @@ import static javax.swing.SwingConstants.CENTER;
 /**
  * A UI implementation for {@link ColumnConditionModel}.
  * For instances use the {@link #columnConditionPanel(ColumnConditionModel)} or
- * {@link #columnConditionPanel(ColumnConditionModel, BoundFieldFactory)} factory methods.
+ * {@link #columnConditionPanel(ColumnConditionModel, FieldFactory)} factory methods.
  * @param <C> the type of objects used to identify columns
  * @param <T> the column value type
  * @see #columnConditionPanel(ColumnConditionModel)
- * @see #columnConditionPanel(ColumnConditionModel, BoundFieldFactory)
+ * @see #columnConditionPanel(ColumnConditionModel, FieldFactory)
  */
-public final class ColumnConditionPanel<C, T> extends JPanel {
+public final class ColumnConditionPanel<C, T> extends AbstractColumnConditionPanel<C, T> {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(ColumnConditionPanel.class, getBundle(ColumnConditionPanel.class.getName()));
@@ -132,7 +126,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
 	private static final String UNKNOWN_OPERATOR = "Unknown operator: ";
 
-	private final ColumnConditionModel<? extends C, T> conditionModel;
 	private final JToggleButton toggleEnabledButton;
 	private final JComboBox<Item<Operator>> operatorCombo;
 	private final JComponent equalField;
@@ -148,16 +141,16 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 					.consumer(this::onAdvancedChanged)
 					.build();
 
-	private ColumnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel, BoundFieldFactory boundFieldFactory) {
-		requireNonNull(conditionModel, "conditionModel");
-		requireNonNull(boundFieldFactory, "boundFieldFactory");
-		this.conditionModel = conditionModel;
+	private ColumnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel,
+															 FieldFactory<C> fieldFactory) {
+		super(conditionModel);
+		requireNonNull(fieldFactory, "fieldFactory");
 		boolean modelLocked = conditionModel.locked().get();
 		conditionModel.locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
-		this.equalField = boundFieldFactory.createEqualField();
-		this.upperBoundField = boundFieldFactory.createUpperBoundField().orElse(null);
-		this.lowerBoundField = boundFieldFactory.createLowerBoundField().orElse(null);
-		this.inField = boundFieldFactory.createInField();
+		this.equalField = fieldFactory.createEqualField(conditionModel);
+		this.upperBoundField = fieldFactory.createUpperBoundField(conditionModel).orElse(null);
+		this.lowerBoundField = fieldFactory.createLowerBoundField(conditionModel).orElse(null);
+		this.inField = fieldFactory.createInField(conditionModel);
 		this.operatorCombo = createOperatorComboBox(conditionModel.operators());
 		this.toggleEnabledButton = radioButton(conditionModel.enabled())
 						.horizontalAlignment(CENTER)
@@ -175,21 +168,19 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	public void updateUI() {
 		super.updateUI();
 		Utilities.updateUI(toggleEnabledButton, operatorCombo, equalField,
-						lowerBoundField, upperBoundField, controlPanel, inputPanel, rangePanel);
+						lowerBoundField, upperBoundField, inField, controlPanel, inputPanel, rangePanel);
 	}
 
-	/**
-	 * @return the condition model this panel uses
-	 */
-	public ColumnConditionModel<C, T> model() {
-		return (ColumnConditionModel<C, T>) conditionModel;
+	@Override
+	public Collection<JComponent> components() {
+		return Stream.of(toggleEnabledButton, operatorCombo, equalField, lowerBoundField, upperBoundField, inField)
+						.filter(Objects::nonNull)
+						.collect(toList());
 	}
 
-	/**
-	 * Requests keyboard focus for this panels input field
-	 */
+	@Override
 	public void requestInputFocus() {
-		switch (conditionModel.operator().get()) {
+		switch (conditionModel().operator().get()) {
 			case EQUAL:
 			case NOT_EQUAL:
 				equalField.requestFocusInWindow();
@@ -211,7 +202,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 				inField.requestFocusInWindow();
 				break;
 			default:
-				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel.operator().get());
+				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel().operator().get());
 		}
 	}
 
@@ -271,48 +262,32 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	 * @param <T> the column value type
 	 * @return a new {@link ColumnConditionPanel} instance or an empty Optional in case the column type is not supported
 	 */
-	public static <C, T> Optional<ColumnConditionPanel<C, T>> columnConditionPanel(ColumnConditionModel<C, T> conditionModel) {
-		return columnConditionPanel(conditionModel, new DefaultBoundFieldFactory(conditionModel));
+	public static <C, T> ColumnConditionPanel<? extends C, T> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel) {
+		return columnConditionPanel(conditionModel, new DefaultFieldFactory<>());
 	}
 
 	/**
 	 * Instantiates a new {@link ColumnConditionPanel}.
 	 * @param conditionModel the condition model to base this panel on
-	 * @param boundFieldFactory the input field factory
+	 * @param fieldFactory the input field factory
 	 * @param <C> the type of objects used to identify columns
 	 * @param <T> the column value type
 	 * @return a new {@link ColumnConditionPanel} instance or an empty Optional in case the column type is not supported by the given bound field factory
+	 * @throws IllegalArgumentException in case the given field factory does not support the column value type
 	 */
-	public static <C, T> Optional<ColumnConditionPanel<C, T>> columnConditionPanel(ColumnConditionModel<C, T> conditionModel,
-																																								 BoundFieldFactory boundFieldFactory) {
-		requireNonNull(conditionModel);
-		requireNonNull(boundFieldFactory);
-		if (boundFieldFactory.supportsType(conditionModel.columnClass())) {
-			return Optional.of(new ColumnConditionPanel<>(conditionModel, boundFieldFactory));
+	public static <C, T> ColumnConditionPanel<? extends C, T> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel,
+																																								 FieldFactory<C> fieldFactory) {
+		if (requireNonNull(fieldFactory).supportsType(requireNonNull(conditionModel).columnClass())) {
+			return new ColumnConditionPanel<>(conditionModel, fieldFactory);
 		}
 
-		return Optional.empty();
-	}
-
-	/**
-	 * Responsible for creating {@link ColumnConditionPanel}s
-	 * @param <C> the column identifier type
-	 */
-	public interface Factory<C> {
-
-		/**
-		 * Creates a ColumnConditionPanel for the given column, returns an empty Optional if none is available
-		 * @param <T> the column value type
-		 * @param conditionModel the column condition model
-		 * @return a ColumnConditionPanel or an empty Optional if none is available for the given column
-		 */
-		<T> Optional<ColumnConditionPanel<C, T>> createConditionPanel(ColumnConditionModel<C, T> conditionModel);
+		throw new IllegalArgumentException("Field factory does not support the column value type");
 	}
 
 	/**
 	 * Provides equal, upper and lower bound input fields for a ColumnConditionPanel
 	 */
-	public interface BoundFieldFactory {
+	public interface FieldFactory<C> {
 
 		/**
 		 * @param columnClass the column class
@@ -321,138 +296,39 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 		boolean supportsType(Class<?> columnClass);
 
 		/**
+		 * Creates the field representing the equal value, linked to {@link ColumnConditionModel#equalValue()}
 		 * @return the equal value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		JComponent createEqualField();
+		JComponent createEqualField(ColumnConditionModel<? extends C, ?> conditionModel);
 
 		/**
+		 * Creates the field representing the upper bound value, linked to {@link ColumnConditionModel#upperBoundValue()}
 		 * @return an upper bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		Optional<JComponent> createUpperBoundField();
+		Optional<JComponent> createUpperBoundField(ColumnConditionModel<? extends C, ?> conditionModel);
 
 		/**
+		 * Creates the field representing the lower bound value, linked to {@link ColumnConditionModel#lowerBoundValue()}
 		 * @return a lower bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		Optional<JComponent> createLowerBoundField();
+		Optional<JComponent> createLowerBoundField(ColumnConditionModel<? extends C, ?> conditionModel);
 
 		/**
+		 * Creates the field representing the in values, linked to {@link ColumnConditionModel#inValues()}
 		 * @return the in value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		JComponent createInField();
-	}
-
-	private static final class DefaultBoundFieldFactory implements BoundFieldFactory {
-
-		private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
-						Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
-						BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
-						LocalDateTime.class, OffsetDateTime.class);
-
-		private final ColumnConditionModel<?, ?> columnConditionModel;
-
-		private DefaultBoundFieldFactory(ColumnConditionModel<?, ?> columnConditionModel) {
-			this.columnConditionModel = requireNonNull(columnConditionModel, "columnConditionModel");
-		}
-
-		@Override
-		public boolean supportsType(Class<?> columnClass) {
-			return SUPPORTED_TYPES.contains(requireNonNull(columnClass));
-		}
-
-		@Override
-		public JComponent createEqualField() {
-			return ((ComponentBuilder<Object, ? extends JComponent, ?>) createField())
-							.link((Value<Object>) columnConditionModel.equalValue()).build();
-		}
-
-		@Override
-		public Optional<JComponent> createUpperBoundField() {
-			if (columnConditionModel.columnClass().equals(Boolean.class)) {
-				return Optional.empty();//no upper bound field required for boolean values
-			}
-
-			return Optional.of(((ComponentBuilder<Object, ? extends JComponent, ?>) createField())
-							.link((Value<Object>) columnConditionModel.upperBoundValue())
-							.build());
-		}
-
-		@Override
-		public Optional<JComponent> createLowerBoundField() {
-			if (columnConditionModel.columnClass().equals(Boolean.class)) {
-				return Optional.empty();//no lower bound field required for boolean values
-			}
-
-			return Optional.of(((ComponentBuilder<Object, ? extends JComponent, ?>) createField())
-							.link((Value<Object>) columnConditionModel.lowerBoundValue())
-							.build());
-		}
-
-		@Override
-		public JComponent createInField() {
-			return listBox(createField().buildValue(),
-							(ValueSet<Object>) columnConditionModel.inValues())
-							.build();
-		}
-
-		private <T> ComponentBuilder<T, ? extends JComponent, ?> createField() {
-			Class<?> columnClass = columnConditionModel.columnClass();
-			if (columnClass.equals(Boolean.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) checkBox()
-								.nullable(true)
-								.horizontalAlignment(CENTER);
-			}
-			if (columnClass.equals(Short.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) shortField()
-								.format(columnConditionModel.format());
-			}
-			if (columnClass.equals(Integer.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) integerField()
-								.format(columnConditionModel.format());
-			}
-			else if (columnClass.equals(Double.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) doubleField()
-								.format(columnConditionModel.format());
-			}
-			else if (columnClass.equals(BigDecimal.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) bigDecimalField()
-								.format(columnConditionModel.format());
-			}
-			else if (columnClass.equals(Long.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) longField()
-								.format(columnConditionModel.format());
-			}
-			else if (columnClass.equals(LocalTime.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) localTimeField(columnConditionModel.dateTimePattern());
-			}
-			else if (columnClass.equals(LocalDate.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) localDateField(columnConditionModel.dateTimePattern());
-			}
-			else if (columnClass.equals(LocalDateTime.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) localDateTimeField(columnConditionModel.dateTimePattern());
-			}
-			else if (columnClass.equals(OffsetDateTime.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) offsetDateTimeField(columnConditionModel.dateTimePattern());
-			}
-			else if (columnClass.equals(String.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) stringField();
-			}
-			else if (columnClass.equals(Character.class)) {
-				return (ComponentBuilder<T, ? extends JComponent, ?>) characterField();
-			}
-
-			throw new IllegalArgumentException("Unsupported type: " + columnClass);
-		}
+		JComponent createInField(ColumnConditionModel<? extends C, ?> conditionModel);
 	}
 
 	/**
 	 * Binds events to relevant GUI actions
 	 */
 	private void bindEvents() {
-		conditionModel.operator().addConsumer(this::onOperatorChanged);
+		conditionModel().operator().addConsumer(this::onOperatorChanged);
 		FocusGainedListener focusGainedListener = new FocusGainedListener();
 		operatorCombo.addFocusListener(focusGainedListener);
 		KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_ENABLED).get())
@@ -515,7 +391,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 				singleValuePanel(inField);
 				break;
 			default:
-				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel.operator().get());
+				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel().operator().get());
 		}
 		revalidate();
 		repaint();
@@ -567,7 +443,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 						.map(operator -> Item.item(operator, caption(operator)))
 						.collect(toList()));
 		operatorComboBoxModel.setSelectedItem(operators.get(0));
-		return itemComboBox(operatorComboBoxModel, conditionModel.operator())
+		return itemComboBox(operatorComboBoxModel, conditionModel().operator())
 						.completionMode(Completion.Mode.NONE)
 						.renderer(new OperatorComboBoxRenderer())
 						.maximumRowCount(operators.size())
@@ -591,7 +467,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	}
 
 	private void toggleEnabled() {
-		conditionModel.enabled().set(!conditionModel.enabled().get());
+		conditionModel().enabled().set(!conditionModel().enabled().get());
 	}
 
 	private void selectPreviousOperator() {
@@ -607,11 +483,11 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	}
 
 	private void initializeUI() {
-		linkToEnabledState(conditionModel.locked().not(),
+		linkToEnabledState(conditionModel().locked().not(),
 						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
 		setLayout(new BorderLayout());
 		controlPanel.add(operatorCombo, BorderLayout.CENTER);
-		onOperatorChanged(conditionModel.operator().get());
+		onOperatorChanged(conditionModel().operator().get());
 		onAdvancedChanged(advanced.get());
 		addStringConfigurationPopupMenu();
 	}
@@ -665,9 +541,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	private void addStringConfigurationPopupMenu() {
 		if (isStringOrCharacter()) {
 			Controls.Builder controlsBuilder = Controls.builder();
-			controlsBuilder.control(ToggleControl.builder(conditionModel.caseSensitive())
+			controlsBuilder.control(ToggleControl.builder(conditionModel().caseSensitive())
 							.name(MESSAGES.getString("case_sensitive")));
-			if (conditionModel.columnClass().equals(String.class)) {
+			if (conditionModel().columnClass().equals(String.class)) {
 				controlsBuilder.controls(createAutomaticWildcardControls());
 			}
 			JPopupMenu popupMenu = menu(controlsBuilder).createPopupMenu();
@@ -678,11 +554,11 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	}
 
 	private boolean isStringOrCharacter() {
-		return conditionModel.columnClass().equals(String.class) || conditionModel.columnClass().equals(Character.class);
+		return conditionModel().columnClass().equals(String.class) || conditionModel().columnClass().equals(Character.class);
 	}
 
 	private Controls createAutomaticWildcardControls() {
-		Value<AutomaticWildcard> automaticWildcardValue = conditionModel.automaticWildcard();
+		Value<AutomaticWildcard> automaticWildcardValue = conditionModel().automaticWildcard();
 		AutomaticWildcard automaticWildcard = automaticWildcardValue.get();
 
 		State automaticWildcardNoneState = State.state(automaticWildcard.equals(AutomaticWildcard.NONE));
@@ -776,7 +652,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 		@Override
 		public void focusGained(FocusEvent e) {
 			if (!e.isTemporary()) {
-				focusGainedEvent.accept(conditionModel.columnIdentifier());
+				focusGainedEvent.accept(conditionModel().columnIdentifier());
 			}
 		}
 	}

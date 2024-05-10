@@ -63,6 +63,7 @@ Codion Change Log
 - ListBoxBuilder added.
 - ListBoxBuilder.string() added, providing the string values to render in the list.
 - FilterTableCellRenderer.Builder.values() renamed string().
+- AbstractColumnConditionPanel and AbstractFilterTableConditionPanel added, related refactoring.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
@@ -84,6 +85,7 @@ Codion Change Log
 - EntityTableModel.HANDLE_EDIT_EVENTS configuration value added.
 - EntityModel.activeDetailModels() renamed linkedDetailModels().
 - EntitySearchConditionModel replaced with ForeignKeyConditionModel.
+- EntityTableConditionModel type parameter removed, connectionProvider() added.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model
@@ -91,6 +93,7 @@ Codion Change Log
 - SwingEntityTableModel.replaceEntitiesByKey() now uses a key index map when looking up entities to replace, orders of magnitude faster.
 - EntityComboBoxModel.HANDLE_EDIT_EVENTS configuration value added.
 - EntityComboBoxConditionModel replaced with SwingForeignKeyConditionModel.
+- SwingEntityTableModel EntityConditionModelFactory parameter replaced with EntityTableConditionModel.
 ### is.codion.swing.framework.model.tools
 - DomainGenerator now uses com.squareup.javapoet to generate the source and generates a full domain implementation class.
 - DomainToString now handles views correctly, refactoring.

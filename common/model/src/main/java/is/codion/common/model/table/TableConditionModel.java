@@ -34,7 +34,7 @@ public interface TableConditionModel<C> {
 	/**
 	 * @return an unmodifiable map containing the condition models available in this table condition model, mapped to their respective column identifiers
 	 */
-	Map<C, ColumnConditionModel<C, ?>> conditionModels();
+	Map<C, ColumnConditionModel<? extends C, ?>> conditionModels();
 
 	/**
 	 * The condition model associated with {@code columnIdentifier}
@@ -73,7 +73,7 @@ public interface TableConditionModel<C> {
 	 * @param <C> the column identifier type
 	 * @return a new {@link TableConditionModel}
 	 */
-	static <C> TableConditionModel<C> tableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
+	static <C> TableConditionModel<C> tableConditionModel(Collection<ColumnConditionModel<? extends C, ?>> conditionModels) {
 		return new DefaultTableConditionModel<>(requireNonNull(conditionModels));
 	}
 }

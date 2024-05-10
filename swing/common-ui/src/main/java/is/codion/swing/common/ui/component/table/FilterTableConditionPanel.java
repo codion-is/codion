@@ -28,73 +28,45 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 /**
- * Contains the filter panels.
+ * A default filter table condition panel.
  * @param <C> the column identifier type
- * @see #filterTableConditionPanel(TableConditionModel, FilterTableColumnModel, ColumnConditionPanel.Factory)
+ * @see #filterTableConditionPanel(TableConditionModel, List, FilterTableColumnModel)
  */
-public final class FilterTableConditionPanel<C> extends JPanel {
+public final class FilterTableConditionPanel<C> extends AbstractFilterTableConditionPanel<C> {
 
-	private final TableConditionModel<C> conditionModel;
-	private final FilterTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
+	private final FilterTableColumnComponentPanel<C, AbstractColumnConditionPanel<? extends C, ?>> componentPanel;
 	private final State advanced = State.builder()
 					.consumer(this::onAdvancedChanged)
 					.build();
 	private final Event<C> focusGainedEvent = Event.event();
 
-	private FilterTableConditionPanel(TableConditionModel<C> conditionModel, FilterTableColumnModel<C> columnModel,
-																		ColumnConditionPanel.Factory<C> conditionPanelFactory) {
-		this.conditionModel = requireNonNull(conditionModel);
-		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel),
-						createConditionPanels(columnModel, requireNonNull(conditionPanelFactory)));
+	private FilterTableConditionPanel(TableConditionModel<? extends C> tableConditionModel,
+																		List<AbstractColumnConditionPanel<? extends C, ?>> conditionPanels,
+																		FilterTableColumnModel<C> columnModel) {
+		super(tableConditionModel, conditionPanels);
+		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel), conditionPanels.stream()
+						.collect(toMap(conditionPanel -> conditionPanel.conditionModel().columnIdentifier(), Function.identity())));
 		setLayout(new BorderLayout());
 		add(componentPanel, BorderLayout.CENTER);
 		componentPanel.components().values().forEach(panel ->
 						panel.focusGainedEvent().addConsumer(focusGainedEvent));
 	}
 
-	/**
-	 * @return an unmodifiable view of the condition panels
-	 */
-	public Collection<ColumnConditionPanel<C, ?>> conditionPanels() {
-		return componentPanel.components().values();
-	}
-
-	/**
-	 * @return the state controlling the advanced view status of this condition panel
-	 */
+	@Override
 	public State advanced() {
 		return advanced;
 	}
 
-	/**
-	 * @param <T> the column value type
-	 * @param columnIdentifier the column identifier
-	 * @return the condition panel associated with the given column or an empty Optional in case of no condition panel
-	 */
-	public <T> Optional<ColumnConditionPanel<C, T>> conditionPanel(C columnIdentifier) {
-		return Optional.ofNullable((ColumnConditionPanel<C, T>) componentPanel.components().get(requireNonNull(columnIdentifier)));
-	}
-
-	/**
-	 * @return the controls provided by this condition panel, for toggling the advanced mode and clearing the condition
-	 */
+	@Override
 	public Controls controls() {
 		return Controls.builder()
 						.control(ToggleControl.builder(advanced)
@@ -104,9 +76,7 @@ public final class FilterTableConditionPanel<C> extends JPanel {
 						.build();
 	}
 
-	/**
-	 * @return an observer notified when a condition panel receives focus
-	 */
+	@Override
 	public EventObserver<C> focusGainedEvent() {
 		return focusGainedEvent.observer();
 	}
@@ -114,55 +84,23 @@ public final class FilterTableConditionPanel<C> extends JPanel {
 	/**
 	 * @param <C> the column identifier type
 	 * @param conditionModel the condition model
+	 * @param conditionPanels the condition panels
 	 * @param columnModel the column model
-	 * @param conditionPanelFactory the condition panel factory
 	 * @return a new {@link FilterTableConditionPanel}
 	 */
-	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(TableConditionModel<C> conditionModel,
-																																					 FilterTableColumnModel<C> columnModel,
-																																					 ColumnConditionPanel.Factory<C> conditionPanelFactory) {
-		return new FilterTableConditionPanel<>(conditionModel, columnModel, conditionPanelFactory);
+	public static <C> FilterTableConditionPanel<? extends C> filterTableConditionPanel(TableConditionModel<C> conditionModel,
+																																										 List<AbstractColumnConditionPanel<? extends C, ?>> conditionPanels,
+																																										 FilterTableColumnModel<C> columnModel) {
+		return new FilterTableConditionPanel<>(conditionModel, conditionPanels, columnModel);
 	}
 
 	private void clearConditions() {
 		componentPanel.components().values().stream()
-						.map(ColumnConditionPanel::model)
+						.map(AbstractColumnConditionPanel::conditionModel)
 						.forEach(ColumnConditionModel::clear);
 	}
 
 	private void onAdvancedChanged(boolean advancedView) {
 		componentPanel.components().forEach((column, panel) -> panel.advanced().set(advancedView));
-	}
-
-	private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(FilterTableColumnModel<C> columnModel,
-																																	 ColumnConditionPanel.Factory<C> conditionPanelFactory) {
-		return columnModel.columns().stream()
-						.map(column -> conditionModel.conditionModels().get(column.getIdentifier()))
-						.filter(Objects::nonNull)
-						.map(columnConditionModel -> createConditionPanel(conditionPanelFactory, columnConditionModel,
-										columnModel.column(columnConditionModel.columnIdentifier())))
-						.filter(Optional::isPresent)
-						.map(Optional::get)
-						.collect(Collectors.toMap(conditionPanel -> conditionPanel.model().columnIdentifier(), Function.identity()));
-	}
-
-	private Optional<ColumnConditionPanel<C, ?>> createConditionPanel(ColumnConditionPanel.Factory<C> conditionPanelFactory,
-																																		ColumnConditionModel<C, ?> columnConditionModel,
-																																		FilterTableColumn<C> column) {
-		return conditionPanelFactory.createConditionPanel(columnConditionModel)
-						.map(conditionPanel -> configureHorizontalAlignment(conditionPanel, column.getCellRenderer()));
-	}
-
-	private ColumnConditionPanel<C, ?> configureHorizontalAlignment(ColumnConditionPanel<C, ?> columnConditionPanel,
-																																	TableCellRenderer cellRenderer) {
-		if (cellRenderer instanceof DefaultTableCellRenderer) {
-			int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
-			Stream.of(columnConditionPanel.equalField(), columnConditionPanel.lowerBoundField(), columnConditionPanel.upperBoundField())
-							.filter(JTextField.class::isInstance)
-							.map(JTextField.class::cast)
-							.forEach(textField -> textField.setHorizontalAlignment(horizontalAlignment));
-		}
-
-		return columnConditionPanel;
 	}
 }

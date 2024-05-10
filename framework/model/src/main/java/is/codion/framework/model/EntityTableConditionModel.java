@@ -37,12 +37,17 @@ import java.util.function.Supplier;
  * Factory for {@link EntityTableConditionModel} instances via
  * {@link EntityTableConditionModel#entityTableConditionModel(EntityType, EntityConnectionProvider, ColumnConditionModel.Factory)}
  */
-public interface EntityTableConditionModel<C extends Attribute<?>> extends TableConditionModel<C> {
+public interface EntityTableConditionModel extends TableConditionModel<Attribute<?>> {
 
 	/**
 	 * @return the type of the entity this table condition model is based on
 	 */
 	EntityType entityType();
+
+	/**
+	 * @return the connection provider
+	 */
+	EntityConnectionProvider connectionProvider();
 
 	/**
 	 * Sets the search condition values of the condition model associated with {@code attribute}.
@@ -98,7 +103,7 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
 	 * @param connectionProvider a EntityConnectionProvider instance
 	 * @return a new {@link EntityTableConditionModel} instance
 	 */
-	static EntityTableConditionModel<Attribute<?>> entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+	static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		return entityTableConditionModel(entityType, connectionProvider, new EntityConditionModelFactory(connectionProvider));
 	}
 
@@ -109,8 +114,8 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
 	 * @param conditionModelFactory provides the column condition models for this table condition model
 	 * @return a new {@link EntityTableConditionModel} instance
 	 */
-	static EntityTableConditionModel<Attribute<?>> entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+	static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
 																																					 ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
-		return new DefaultEntityTableConditionModel<>(entityType, connectionProvider, conditionModelFactory);
+		return new DefaultEntityTableConditionModel(entityType, connectionProvider, conditionModelFactory);
 	}
 }

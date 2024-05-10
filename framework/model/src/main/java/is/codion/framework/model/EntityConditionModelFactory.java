@@ -23,11 +23,11 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-
-import java.util.Optional;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import static is.codion.framework.model.ForeignKeyConditionModel.foreignKeyConditionModel;
 import static java.util.Objects.requireNonNull;
@@ -48,19 +48,39 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 	}
 
 	@Override
-	public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+	public boolean supports(Attribute<?> columnIdentifier) {
+		AttributeDefinition<?> definition = connectionProvider.entities()
+						.definition(columnIdentifier.entityType())
+						.attributes().definition(columnIdentifier);
+		if (definition.hidden()) {
+			return false;
+		}
+		if (definition instanceof ForeignKeyDefinition) {
+			return true;
+		}
+		if (definition instanceof ColumnDefinition<?>) {
+			ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) definition;
+
+			return columnDefinition.selectable();
+		}
+
+		return false;
+	}
+
+	@Override
+	public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
-			return Optional.of(foreignKeyConditionModel(foreignKey,
-							this::createEqualSearchModel, this::createInSearchModel));
+			return foreignKeyConditionModel(foreignKey,
+							this::createEqualSearchModel, this::createInSearchModel);
 		}
 
 		ColumnDefinition<?> column = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
 
-		return Optional.of(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+		return ColumnConditionModel.builder(attribute, attribute.type().valueClass())
 						.format(column.format())
 						.dateTimePattern(column.dateTimePattern())
-						.build());
+						.build();
 	}
 
 	/**

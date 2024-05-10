@@ -195,7 +195,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	void isConditionEnabled() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider()) {
 			@Override
-			protected boolean conditionEnabled(EntityTableConditionModel<Attribute<?>> conditionModel) {
+			protected boolean conditionEnabled(EntityTableConditionModel conditionModel) {
 				return conditionModel.enabled(Employee.MGR_FK);
 			}
 		};

@@ -39,7 +39,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
@@ -78,7 +77,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 	private final FilterTableModel<Entity, Attribute<?>> tableModel;
 	private final SwingEntityEditModel editModel;
-	private final EntityTableConditionModel<Attribute<?>> conditionModel;
+	private final EntityTableConditionModel conditionModel;
 	private final ValueSet<Attribute<?>> attributes = ValueSet.<Attribute<?>>builder()
 					.validator(new AttributeValidator())
 					.build();
@@ -112,13 +111,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
-	 * @param entityType the entityType
-	 * @param connectionProvider the connection provider
-	 * @param conditionModelFactory the table condition model factory
+	 * @param conditionModel the table condition model
 	 */
-	public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-															 EntityConditionModelFactory conditionModelFactory) {
-		this(new SwingEntityEditModel(entityType, connectionProvider), conditionModelFactory);
+	public SwingEntityTableModel(EntityTableConditionModel conditionModel) {
+		this(new SwingEntityEditModel(requireNonNull(conditionModel).entityType(), conditionModel.connectionProvider()), conditionModel);
 	}
 
 	/**
@@ -126,19 +122,23 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	 * @param editModel the edit model
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
-		this(editModel, new SwingEntityConditionModelFactory(requireNonNull(editModel).connectionProvider()));
+		this(editModel, entityTableConditionModel(editModel.entityType(), editModel.connectionProvider()));
 	}
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param editModel the edit model
-	 * @param conditionModelFactory the table condition model factory
+	 * @param conditionModel the table condition model
+	 * @throws IllegalArgumentException in case the edit model and condition model entity type is not the same
 	 */
-	public SwingEntityTableModel(SwingEntityEditModel editModel,
-															 EntityConditionModelFactory conditionModelFactory) {
+	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel conditionModel) {
 		this.editModel = requireNonNull(editModel);
+		this.conditionModel = requireNonNull(conditionModel);
+		if (!editModel.entityType().equals(conditionModel.entityType())) {
+			throw new IllegalArgumentException("Entity type mismatch, edit model: " + editModel.entities()
+							+ ", condition model: " + conditionModel.entityType());
+		}
 		this.tableModel = createTableModel(editModel.entityDefinition());
-		this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
 		this.orderBy = createOrderBy();
 		this.refreshCondition = createSelect(conditionModel);
 		bindEvents();
@@ -201,7 +201,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final EntityTableConditionModel<Attribute<?>> conditionModel() {
+	public final EntityTableConditionModel conditionModel() {
 		return conditionModel;
 	}
 
@@ -672,7 +672,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	 * @return true if enough conditions are enabled for a safe refresh
 	 * @see #conditionRequired()
 	 */
-	protected boolean conditionEnabled(EntityTableConditionModel<Attribute<?>> conditionModel) {
+	protected boolean conditionEnabled(EntityTableConditionModel conditionModel) {
 		return conditionModel.enabled();
 	}
 
@@ -815,7 +815,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		return keyIndexes;
 	}
 
-	private Select createSelect(EntityTableConditionModel<Attribute<?>> conditionModel) {
+	private Select createSelect(EntityTableConditionModel conditionModel) {
 		return Select.where(conditionModel.where(Conjunction.AND))
 						.having(conditionModel.having(Conjunction.AND))
 						.attributes(attributes().get())
@@ -968,19 +968,26 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 
 		@Override
-		public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
-			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-			if (attributeDefinition.hidden()) {
-				return Optional.empty();
-			}
-			if (useStringCondition(attribute, attributeDefinition)) {
-				return Optional.of(ColumnConditionModel.builder(attribute, String.class).build());
+		public boolean supports(Attribute<?> columnIdentifier) {
+			AttributeDefinition<?> definition = entityDefinition.attributes().definition(columnIdentifier);
+			if (definition.hidden()) {
+				return false;
 			}
 
-			return Optional.of(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+			return !(columnIdentifier instanceof ForeignKey);
+		}
+
+		@Override
+		public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
+			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
+			if (useStringCondition(attribute, attributeDefinition)) {
+				return ColumnConditionModel.builder(attribute, String.class).build();
+			}
+
+			return ColumnConditionModel.builder(attribute, attribute.type().valueClass())
 							.format(attributeDefinition.format())
 							.dateTimePattern(attributeDefinition.dateTimePattern())
-							.build());
+							.build();
 		}
 
 		private static boolean useStringCondition(Attribute<?> attribute, AttributeDefinition<?> attributeDefinition) {
