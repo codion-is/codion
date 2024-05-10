@@ -257,7 +257,7 @@ public interface ColumnConditionModel<C, T> {
 		 * @param columnIdentifier the column identifier
 		 * @return true if this condition model factory supports the given column
 		 */
-		default boolean supports(C columnIdentifier) {
+		default boolean includes(C columnIdentifier) {
 			return true;
 		}
 
@@ -266,7 +266,7 @@ public interface ColumnConditionModel<C, T> {
 		 * @param columnIdentifier the identifier of the column for which to create a {@link ColumnConditionModel}
 		 * @return a {@link ColumnConditionModel} for the given column
 		 * not be allowed for this column
-		 * @throws IllegalArgumentException in case {@link #supports(Object)} returns false for the given column
+		 * @throws IllegalArgumentException in case {@link #includes(Object)} returns false for the given column
 		 */
 		ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier);
 	}

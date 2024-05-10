@@ -968,7 +968,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 
 		@Override
-		public boolean supports(Attribute<?> columnIdentifier) {
+		public boolean includes(Attribute<?> columnIdentifier) {
 			AttributeDefinition<?> definition = entityDefinition.attributes().definition(columnIdentifier);
 			if (definition.hidden()) {
 				return false;

@@ -475,7 +475,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private Collection<ColumnConditionModel<? extends C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
 		return columns.identifiers().stream()
-						.filter(filterModelFactory::supports)
+						.filter(filterModelFactory::includes)
 						.map(filterModelFactory::createConditionModel)
 						.collect(Collectors.toList());
 	}
@@ -527,14 +527,14 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final class DefaultFilterModelFactory implements ColumnConditionModel.Factory<C> {
 
 		@Override
-		public boolean supports(C columnIdentifier) {
+		public boolean includes(C columnIdentifier) {
 			return Comparable.class.isAssignableFrom(getColumnClass(columnIdentifier));
 		}
 
 		@Override
 		public ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier) {
-			if (!supports(columnIdentifier)) {
-				throw new IllegalArgumentException("Unsupported column: " + columnIdentifier);
+			if (!includes(columnIdentifier)) {
+				throw new IllegalArgumentException("Filter model for column: " + columnIdentifier + " is not included");
 			}
 
 			return ColumnConditionModel.builder(columnIdentifier, getColumnClass(columnIdentifier)).build();

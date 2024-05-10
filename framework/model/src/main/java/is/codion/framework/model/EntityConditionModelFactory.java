@@ -48,7 +48,7 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 	}
 
 	@Override
-	public boolean supports(Attribute<?> columnIdentifier) {
+	public boolean includes(Attribute<?> columnIdentifier) {
 		AttributeDefinition<?> definition = connectionProvider.entities()
 						.definition(columnIdentifier.entityType())
 						.attributes().definition(columnIdentifier);
