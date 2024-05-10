@@ -64,6 +64,7 @@ Codion Change Log
 - ListBoxBuilder.string() added, providing the string values to render in the list.
 - FilterTableCellRenderer.Builder.values() renamed string().
 - AbstractColumnConditionPanel and AbstractFilterTableConditionPanel added, related refactoring.
+- AbstractColumnConditionPanel, AbstractFilterTableConditionPanel.focusGainedEvent() removed.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.

@@ -99,6 +99,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -1572,7 +1574,8 @@ public class EntityTablePanel extends JPanel {
 		tableModel.editModel().insertUpdateOrDeleteEvent().addListener(table::repaint);
 		if (conditionPanel != null) {
 			enableConditionPanelRefreshOnEnter();
-			conditionPanel.focusGainedEvent().addConsumer(table::scrollToColumn);
+			conditionPanel.conditionPanels().forEach(panel -> panel.components().forEach(component ->
+							component.addFocusListener(new ScrollToColumn(panel.conditionModel().columnIdentifier()))));
 			conditionPanel.advanced().addConsumer(advanced -> {
 				if (conditionPanelVisibleState.get()) {
 					revalidate();
@@ -1580,7 +1583,8 @@ public class EntityTablePanel extends JPanel {
 			});
 		}
 		if (configuration.includeFilterPanel) {
-			table.filterPanel().focusGainedEvent().addConsumer(table::scrollToColumn);
+			table.filterPanel().conditionPanels().forEach(panel -> panel.components().forEach(component ->
+							component.addFocusListener(new ScrollToColumn(panel.conditionModel().columnIdentifier()))));
 			table.filterPanel().advanced().addConsumer(advanced -> {
 				if (filterPanelVisibleState.get()) {
 					revalidate();
@@ -2077,6 +2081,20 @@ public class EntityTablePanel extends JPanel {
 						table.getCellRect(table.getSelectedRow(), table.getSelectedColumn(), true).y;
 
 		return new Point(x, y + table.getRowHeight() / 2);
+	}
+
+	private final class ScrollToColumn extends FocusAdapter {
+
+		private final Attribute<?> attribute;
+
+		private ScrollToColumn(Attribute<?> attribute) {
+			this.attribute = attribute;
+		}
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			table.scrollToColumn(attribute);
+		}
 	}
 
 	private final class HeaderRenderer implements TableCellRenderer {

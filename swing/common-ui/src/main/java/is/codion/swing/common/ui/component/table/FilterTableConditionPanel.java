@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
@@ -47,7 +45,6 @@ public final class FilterTableConditionPanel<C> extends AbstractFilterTableCondi
 	private final State advanced = State.builder()
 					.consumer(this::onAdvancedChanged)
 					.build();
-	private final Event<C> focusGainedEvent = Event.event();
 
 	private FilterTableConditionPanel(TableConditionModel<? extends C> tableConditionModel,
 																		List<AbstractColumnConditionPanel<? extends C, ?>> conditionPanels,
@@ -57,8 +54,6 @@ public final class FilterTableConditionPanel<C> extends AbstractFilterTableCondi
 						.collect(toMap(conditionPanel -> conditionPanel.conditionModel().columnIdentifier(), Function.identity())));
 		setLayout(new BorderLayout());
 		add(componentPanel, BorderLayout.CENTER);
-		componentPanel.components().values().forEach(panel ->
-						panel.focusGainedEvent().addConsumer(focusGainedEvent));
 	}
 
 	@Override
@@ -74,11 +69,6 @@ public final class FilterTableConditionPanel<C> extends AbstractFilterTableCondi
 						.control(Control.builder(this::clearConditions)
 										.name(Messages.clear()))
 						.build();
-	}
-
-	@Override
-	public EventObserver<C> focusGainedEvent() {
-		return focusGainedEvent.observer();
 	}
 
 	/**

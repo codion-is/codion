@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.control.Controls;
@@ -84,9 +83,4 @@ public abstract class AbstractFilterTableConditionPanel<C> extends JPanel {
 	 * @return the controls provided by this condition panel, for example toggling the advanced mode and clearing the condition
 	 */
 	public abstract Controls controls();
-
-	/**
-	 * @return an observer notified when a condition panel receives focus
-	 */
-	public abstract EventObserver<C> focusGainedEvent();
 }

@@ -19,8 +19,6 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Operator;
-import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
@@ -49,8 +47,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -135,8 +131,6 @@ public final class ColumnConditionPanel<C, T> extends AbstractColumnConditionPan
 	private final JPanel controlPanel = new JPanel(new BorderLayout());
 	private final JPanel inputPanel = new JPanel(new BorderLayout());
 	private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
-
-	private final Event<C> focusGainedEvent = Event.event();
 	private final State advanced = State.builder()
 					.consumer(this::onAdvancedChanged)
 					.build();
@@ -249,13 +243,6 @@ public final class ColumnConditionPanel<C, T> extends AbstractColumnConditionPan
 	}
 
 	/**
-	 * @return an observer notified when this condition panels input fields receive focus
-	 */
-	public EventObserver<C> focusGainedEvent() {
-		return focusGainedEvent.observer();
-	}
-
-	/**
 	 * Instantiates a new {@link ColumnConditionPanel}, with a default bound field factory.
 	 * @param conditionModel the condition model to base this panel on
 	 * @param <C> the type of objects used to identify columns
@@ -329,8 +316,6 @@ public final class ColumnConditionPanel<C, T> extends AbstractColumnConditionPan
 	 */
 	private void bindEvents() {
 		conditionModel().operator().addConsumer(this::onOperatorChanged);
-		FocusGainedListener focusGainedListener = new FocusGainedListener();
-		operatorCombo.addFocusListener(focusGainedListener);
 		KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_ENABLED).get())
 						.action(Control.control(this::toggleEnabled));
 		KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_OPERATOR).get())
@@ -338,31 +323,22 @@ public final class ColumnConditionPanel<C, T> extends AbstractColumnConditionPan
 		KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NEXT_OPERATOR).get())
 						.action(Control.control(this::selectNextOperator));
 		enableOnEnterKeyEvent.enable(operatorCombo);
-		if (equalField != null) {
-			equalField.addFocusListener(focusGainedListener);
-			enableOnEnterKeyEvent.enable(equalField);
-			previousOperatorKeyEvent.enable(equalField);
-			nextOperatorKeyEvent.enable(equalField);
-		}
+		enableOnEnterKeyEvent.enable(equalField);
+		previousOperatorKeyEvent.enable(equalField);
+		nextOperatorKeyEvent.enable(equalField);
 		if (upperBoundField != null) {
-			upperBoundField.addFocusListener(focusGainedListener);
 			enableOnEnterKeyEvent.enable(upperBoundField);
 			previousOperatorKeyEvent.enable(upperBoundField);
 			nextOperatorKeyEvent.enable(upperBoundField);
 		}
 		if (lowerBoundField != null) {
-			lowerBoundField.addFocusListener(focusGainedListener);
 			enableOnEnterKeyEvent.enable(lowerBoundField);
 			previousOperatorKeyEvent.enable(lowerBoundField);
 			nextOperatorKeyEvent.enable(lowerBoundField);
 		}
-		if (inField != null) {
-			inField.addFocusListener(focusGainedListener);
-			enableOnEnterKeyEvent.enable(inField);
-			previousOperatorKeyEvent.enable(inField);
-			nextOperatorKeyEvent.enable(inField);
-		}
-		toggleEnabledButton.addFocusListener(focusGainedListener);
+		enableOnEnterKeyEvent.enable(inField);
+		previousOperatorKeyEvent.enable(inField);
+		nextOperatorKeyEvent.enable(inField);
 		enableOnEnterKeyEvent.enable(toggleEnabledButton);
 	}
 
@@ -644,16 +620,6 @@ public final class ColumnConditionPanel<C, T> extends AbstractColumnConditionPan
 				return "α ∉";
 			default:
 				throw new IllegalArgumentException(UNKNOWN_OPERATOR + operator);
-		}
-	}
-
-	private final class FocusGainedListener extends FocusAdapter {
-
-		@Override
-		public void focusGained(FocusEvent e) {
-			if (!e.isTemporary()) {
-				focusGainedEvent.accept(conditionModel().columnIdentifier());
-			}
 		}
 	}
 

@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 
@@ -65,9 +64,4 @@ public abstract class AbstractColumnConditionPanel<C, T> extends JPanel {
 	 * @return the state controlling the advanced view status of this condition panel
 	 */
 	public abstract State advanced();
-
-	/**
-	 * @return an observer notified when this condition panels input fields receive focus
-	 */
-	public abstract EventObserver<C> focusGainedEvent();
 }
