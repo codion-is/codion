@@ -43,6 +43,9 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
 
 	@Override
 	public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
+		if (!includes(attribute)) {
+			throw new IllegalArgumentException("Condition model for attribute: " + attribute + " is not included");
+		}
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			if (definition(foreignKey.referencedType()).smallDataset()) {

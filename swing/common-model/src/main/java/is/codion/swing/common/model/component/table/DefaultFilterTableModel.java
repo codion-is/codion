@@ -336,7 +336,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public Class<?> getColumnClass(C columnIdentifier) {
-		return columns.columnClass(columnIdentifier);
+		return columns.columnClass(requireNonNull(columnIdentifier));
 	}
 
 	@Override
@@ -356,7 +356,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public String getStringAt(int rowIndex, C columnIdentifier) {
-		return columns.string(itemAt(rowIndex), columnIdentifier);
+		return columns.string(itemAt(rowIndex), requireNonNull(columnIdentifier));
 	}
 
 	@Override
@@ -533,7 +533,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier) {
-			if (!includes(columnIdentifier)) {
+			if (!includes(requireNonNull(columnIdentifier))) {
 				throw new IllegalArgumentException("Filter model for column: " + columnIdentifier + " is not included");
 			}
 

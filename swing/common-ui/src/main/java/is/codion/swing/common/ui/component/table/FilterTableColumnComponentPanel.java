@@ -46,7 +46,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A panel that synchronizes child component sizes and positions to table columns.
  * For instances use the {@link #filterTableColumnComponentPanel(FilterTableColumnModel, Map)} factory method.
- * @param <T> the component type
+ * @param <C> the type identifying the table columns
  * @see #filterTableColumnComponentPanel(FilterTableColumnModel, Map)
  */
 public final class FilterTableColumnComponentPanel<C> extends JPanel {
@@ -102,11 +102,10 @@ public final class FilterTableColumnComponentPanel<C> extends JPanel {
 	 * @param columnModel the column model
 	 * @param columnComponents the column components mapped to their respective column
 	 * @param <C> the column identifier type
-	 * @param <T> the component type
 	 * @return a new {@link FilterTableColumnComponentPanel}
 	 */
 	public static <C> FilterTableColumnComponentPanel<C> filterTableColumnComponentPanel(FilterTableColumnModel<C> columnModel,
-																																																								Map<C, ? extends JComponent> columnComponents) {
+																																											 Map<C, ? extends JComponent> columnComponents) {
 		return new FilterTableColumnComponentPanel<>(columnModel, columnComponents);
 	}
 

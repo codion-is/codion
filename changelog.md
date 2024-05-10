@@ -89,6 +89,8 @@ Codion Change Log
 - EntityModel.activeDetailModels() renamed linkedDetailModels().
 - EntitySearchConditionModel replaced with ForeignKeyConditionModel.
 - EntityTableConditionModel type parameter removed, connectionProvider() added.
+- DefaultEntityConditionModel.createConditionModels() bug fixed, did not respect Factory.include().
+- EntityConditionModelFactory no longer excludes hidden attributes.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model

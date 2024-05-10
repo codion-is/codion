@@ -183,10 +183,14 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 																																			 ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
 		Collection<ColumnConditionModel<Attribute<?>, ?>> models = new ArrayList<>();
 		EntityDefinition definition = connectionProvider.entities().definition(entityType);
-		definition.columns().definitions().forEach(columnDefinition ->
-						models.add((ColumnConditionModel<Attribute<?>, ?>) conditionModelFactory.createConditionModel(columnDefinition.attribute())));
-		definition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
-						models.add((ColumnConditionModel<Attribute<?>, ?>) conditionModelFactory.createConditionModel(foreignKeyDefinition.attribute())));
+		definition.columns().definitions().stream()
+						.filter(columnDefinition -> conditionModelFactory.includes(columnDefinition.attribute()))
+						.forEach(columnDefinition ->
+										models.add((ColumnConditionModel<Attribute<?>, ?>) conditionModelFactory.createConditionModel(columnDefinition.attribute())));
+		definition.foreignKeys().definitions().stream()
+						.filter(columnDefinition -> conditionModelFactory.includes(columnDefinition.attribute()))
+						.forEach(foreignKeyDefinition ->
+										models.add((ColumnConditionModel<Attribute<?>, ?>) conditionModelFactory.createConditionModel(foreignKeyDefinition.attribute())));
 
 		return models.stream()
 						.map(model -> (ColumnConditionModel<Attribute<?>, ?>) model)

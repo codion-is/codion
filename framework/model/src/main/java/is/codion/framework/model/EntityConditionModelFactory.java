@@ -49,12 +49,10 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 
 	@Override
 	public boolean includes(Attribute<?> columnIdentifier) {
+		requireNonNull(columnIdentifier);
 		AttributeDefinition<?> definition = connectionProvider.entities()
 						.definition(columnIdentifier.entityType())
 						.attributes().definition(columnIdentifier);
-		if (definition.hidden()) {
-			return false;
-		}
 		if (definition instanceof ForeignKeyDefinition) {
 			return true;
 		}
@@ -69,6 +67,9 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 
 	@Override
 	public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
+		if (!includes(attribute)) {
+			throw new IllegalArgumentException("Condition model for attribute: " + attribute + " is not included");
+		}
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			return foreignKeyConditionModel(foreignKey,
