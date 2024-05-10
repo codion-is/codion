@@ -38,7 +38,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C, T> {
 
@@ -159,9 +158,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	@Override
 	public Collection<T> getInValues() {
-		return inValues.get().stream()
-						.map(this::addAutomaticWildcard)
-						.collect(toList());
+		return inValues.get();
 	}
 
 	@Override
