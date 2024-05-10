@@ -29,6 +29,7 @@ import is.codion.common.value.ValueSet;
 import java.text.Format;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
@@ -253,22 +254,11 @@ public interface ColumnConditionModel<C, T> {
 	interface Factory<C> {
 
 		/**
-		 * The default implementation returns true.
-		 * @param columnIdentifier the column identifier
-		 * @return true if this condition model factory supports the given column
-		 */
-		default boolean includes(C columnIdentifier) {
-			return true;
-		}
-
-		/**
 		 * Creates a {@link ColumnConditionModel} for a given column
 		 * @param columnIdentifier the identifier of the column for which to create a {@link ColumnConditionModel}
-		 * @return a {@link ColumnConditionModel} for the given column
-		 * not be allowed for this column
-		 * @throws IllegalArgumentException in case {@link #includes(Object)} returns false for the given column
+		 * @return a {@link ColumnConditionModel} for the given column or an empty optional if none is available
 		 */
-		ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier);
+		Optional<ColumnConditionModel<? extends C, ?>> createConditionModel(C columnIdentifier);
 	}
 
 	/**

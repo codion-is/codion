@@ -423,22 +423,6 @@ is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 |today_mnemonic|T|D
 |===
 
-=== is/codion/swing/common/ui/component/table/ColumnConditionPanel.java
-
-[source]
-----
-is/codion/swing/common/ui/component/table/ColumnConditionPanel.properties
-is/codion/swing/common/ui/component/table/ColumnConditionPanel_is_IS.properties
-----
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|auto_enable|Auto-enable|Virkja sjálfkrafa
-|automatic_wildcard|Automatic wildcard|Sjálfkrafa algildi
-|case_sensitive|Case-sensitive|Hástafanæmni
-|===
-
 === is/codion/swing/common/ui/component/table/ColumnSelectionPanel.java
 
 [source]
@@ -454,6 +438,22 @@ is/codion/swing/common/ui/component/table/ColumnSelectionPanel_is_IS.properties
 |select_all_mnemonic|A|A
 |select_none|None|Engan
 |select_none_mnemonic|N|E
+|===
+
+=== is/codion/swing/common/ui/component/table/FilterColumnConditionPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/table/FilterColumnConditionPanel.properties
+is/codion/swing/common/ui/component/table/FilterColumnConditionPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|auto_enable|Auto-enable|Virkja sjálfkrafa
+|automatic_wildcard|Automatic wildcard|Sjálfkrafa algildi
+|case_sensitive|Case-sensitive|Hástafanæmni
 |===
 
 === is/codion/swing/common/ui/component/table/FilterTable.java

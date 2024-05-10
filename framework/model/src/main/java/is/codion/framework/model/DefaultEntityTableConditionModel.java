@@ -180,17 +180,15 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	private Collection<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModels(EntityType entityType,
-																																			 ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+																																														ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
 		Collection<ColumnConditionModel<Attribute<?>, ?>> models = new ArrayList<>();
 		EntityDefinition definition = connectionProvider.entities().definition(entityType);
-		definition.columns().definitions().stream()
-						.filter(columnDefinition -> conditionModelFactory.includes(columnDefinition.attribute()))
-						.forEach(columnDefinition ->
-										models.add((ColumnConditionModel<Attribute<?>, ?>) conditionModelFactory.createConditionModel(columnDefinition.attribute())));
-		definition.foreignKeys().definitions().stream()
-						.filter(columnDefinition -> conditionModelFactory.includes(columnDefinition.attribute()))
-						.forEach(foreignKeyDefinition ->
-										models.add((ColumnConditionModel<Attribute<?>, ?>) conditionModelFactory.createConditionModel(foreignKeyDefinition.attribute())));
+		definition.columns().definitions().forEach(columnDefinition ->
+						conditionModelFactory.createConditionModel(columnDefinition.attribute())
+										.ifPresent(model -> models.add((ColumnConditionModel<Attribute<?>, ?>) model)));
+		definition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
+						conditionModelFactory.createConditionModel(foreignKeyDefinition.attribute())
+										.ifPresent(model -> models.add((ColumnConditionModel<Attribute<?>, ?>) model)));
 
 		return models.stream()
 						.map(model -> (ColumnConditionModel<Attribute<?>, ?>) model)

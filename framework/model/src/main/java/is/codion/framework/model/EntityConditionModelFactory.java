@@ -29,6 +29,8 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
+import java.util.Optional;
+
 import static is.codion.framework.model.ForeignKeyConditionModel.foreignKeyConditionModel;
 import static java.util.Objects.requireNonNull;
 
@@ -48,11 +50,30 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 	}
 
 	@Override
-	public boolean includes(Attribute<?> columnIdentifier) {
-		requireNonNull(columnIdentifier);
+	public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+		if (!include(attribute)) {
+			return Optional.empty();
+		}
+
+		if (attribute instanceof ForeignKey) {
+			ForeignKey foreignKey = (ForeignKey) attribute;
+			return Optional.of(foreignKeyConditionModel(foreignKey,
+							this::createEqualSearchModel, this::createInSearchModel));
+		}
+
+		ColumnDefinition<?> column = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
+
+		return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+						.format(column.format())
+						.dateTimePattern(column.dateTimePattern())
+						.build());
+	}
+
+	private boolean include(Attribute<?> attribute) {
+		requireNonNull(attribute);
 		AttributeDefinition<?> definition = connectionProvider.entities()
-						.definition(columnIdentifier.entityType())
-						.attributes().definition(columnIdentifier);
+						.definition(attribute.entityType())
+						.attributes().definition(attribute);
 		if (definition instanceof ForeignKeyDefinition) {
 			return true;
 		}
@@ -63,25 +84,6 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 		}
 
 		return false;
-	}
-
-	@Override
-	public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
-		if (!includes(attribute)) {
-			throw new IllegalArgumentException("Condition model for attribute: " + attribute + " is not included");
-		}
-		if (attribute instanceof ForeignKey) {
-			ForeignKey foreignKey = (ForeignKey) attribute;
-			return foreignKeyConditionModel(foreignKey,
-							this::createEqualSearchModel, this::createInSearchModel);
-		}
-
-		ColumnDefinition<?> column = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
-
-		return ColumnConditionModel.builder(attribute, attribute.type().valueClass())
-						.format(column.format())
-						.dateTimePattern(column.dateTimePattern())
-						.build();
 	}
 
 	/**

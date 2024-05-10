@@ -968,26 +968,29 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 
 		@Override
-		public boolean includes(Attribute<?> columnIdentifier) {
-			AttributeDefinition<?> definition = entityDefinition.attributes().definition(columnIdentifier);
+		public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+			if (!include(attribute)) {
+				return Optional.empty();
+			}
+
+			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
+			if (useStringCondition(attribute, attributeDefinition)) {
+				return Optional.ofNullable(ColumnConditionModel.builder(attribute, String.class).build());
+			}
+
+			return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+							.format(attributeDefinition.format())
+							.dateTimePattern(attributeDefinition.dateTimePattern())
+							.build());
+		}
+
+		private boolean include(Attribute<?> attribute) {
+			AttributeDefinition<?> definition = entityDefinition.attributes().definition(attribute);
 			if (definition.hidden()) {
 				return false;
 			}
 
-			return !(columnIdentifier instanceof ForeignKey);
-		}
-
-		@Override
-		public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
-			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-			if (useStringCondition(attribute, attributeDefinition)) {
-				return ColumnConditionModel.builder(attribute, String.class).build();
-			}
-
-			return ColumnConditionModel.builder(attribute, attribute.type().valueClass())
-							.format(attributeDefinition.format())
-							.dateTimePattern(attributeDefinition.dateTimePattern())
-							.build();
+			return !(attribute instanceof ForeignKey);
 		}
 
 		private static boolean useStringCondition(Attribute<?> attribute, AttributeDefinition<?> attributeDefinition) {

@@ -37,11 +37,11 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -475,9 +475,10 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private Collection<ColumnConditionModel<? extends C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
 		return columns.identifiers().stream()
-						.filter(filterModelFactory::includes)
 						.map(filterModelFactory::createConditionModel)
-						.collect(Collectors.toList());
+						.filter(Optional::isPresent)
+						.map(Optional::get)
+						.collect(toList());
 	}
 
 	private final class DefaultRefresher extends AbstractFilterModelRefresher<R> {
@@ -527,17 +528,13 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final class DefaultFilterModelFactory implements ColumnConditionModel.Factory<C> {
 
 		@Override
-		public boolean includes(C columnIdentifier) {
-			return Comparable.class.isAssignableFrom(getColumnClass(columnIdentifier));
-		}
-
-		@Override
-		public ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier) {
-			if (!includes(requireNonNull(columnIdentifier))) {
-				throw new IllegalArgumentException("Filter model for column: " + columnIdentifier + " is not included");
+		public Optional<ColumnConditionModel<? extends C, ?>> createConditionModel(C columnIdentifier) {
+			Class<?> columnClass = getColumnClass(columnIdentifier);
+			if (Comparable.class.isAssignableFrom(columnClass)) {
+				return Optional.of(ColumnConditionModel.builder(columnIdentifier, columnClass).build());
 			}
 
-			return ColumnConditionModel.builder(columnIdentifier, getColumnClass(columnIdentifier)).build();
+			return Optional.empty();
 		}
 	}
 

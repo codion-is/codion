@@ -26,6 +26,7 @@ Codion Change Log
 - FilteredModel renamed FilterModel.
 - ColumnConditionModel.equalValues() replaced with equalValue() and inValues().
 - ColumnConditionModel.Factory.supports() renamed includes().
+- ColumnConditionModel.Factory.includes() removed, createConditionModel() now returns Optional.
 ### is.codion.swing.common.model
 - FilteredComboBoxModel.ItemFinder.createPredicate() renamed predicate().
 - FilteredComboBoxModel.sortVisibleItems() renamed sortItems(), now public.
