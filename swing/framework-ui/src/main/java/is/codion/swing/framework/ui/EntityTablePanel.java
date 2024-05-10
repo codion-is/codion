@@ -2028,7 +2028,8 @@ public class EntityTablePanel extends JPanel {
 							.collect(toList());
 			if (attributes.size() == 1) {
 				displayConditionPanel(conditionPanelScrollPane, conditionPanelAdvancedState, conditionPanelVisibleState);
-				tableConditionPanel.conditionPanel(attributes.get(0)).requestInputFocus();
+				tableConditionPanel.conditionPanel(attributes.get(0))
+								.ifPresent(ColumnConditionPanel::requestInputFocus);
 			}
 			else if (!attributes.isEmpty()) {
 				List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
@@ -2040,10 +2041,10 @@ public class EntityTablePanel extends JPanel {
 								.locationRelativeTo(table.getParent())
 								.title(dialogTitle)
 								.selectSingle()
-								.ifPresent(attributeDefinition -> {
-									ColumnConditionPanel<Attribute<?>, ?> panel = tableConditionPanel.conditionPanel(attributeDefinition.attribute());
+								.flatMap(attributeDefinition -> tableConditionPanel.conditionPanel(attributeDefinition.attribute()))
+								.ifPresent(conditionPanel -> {
 									displayConditionPanel(conditionPanelScrollPane, conditionPanelAdvancedState, conditionPanelVisibleState);
-									panel.requestInputFocus();
+									((ColumnConditionPanel<?, ?>) conditionPanel).requestInputFocus();
 								});
 			}
 		}

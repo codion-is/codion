@@ -23,6 +23,7 @@ import is.codion.common.state.State;
 import is.codion.swing.common.ui.control.Controls;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * A UI component based on a {@link TableConditionModel}.
@@ -48,10 +49,9 @@ public interface TableConditionPanel<C> {
 	/**
 	 * @param <T> the column value type
 	 * @param columnIdentifier the column identifier
-	 * @return the condition panel associated with the given column
-	 * @throws IllegalArgumentException in case the column has no condition panel
+	 * @return the condition panel associated with the given column or an empty Optional in case none exists
 	 */
-	<T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier);
+	<T extends ColumnConditionPanel<C, ?>> Optional<T> conditionPanel(C columnIdentifier);
 
 	/**
 	 * @return the controls provided by this condition panel, for example toggling the advanced mode and clearing the condition

@@ -32,6 +32,7 @@ import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Objects.requireNonNull;
@@ -75,11 +76,10 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	}
 
 	@Override
-	public <T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier) {
-		return (T) conditionPanels.stream()
+	public <T extends ColumnConditionPanel<C, ?>> Optional<T> conditionPanel(C columnIdentifier) {
+		return (Optional<T>) conditionPanels.stream()
 						.filter(panel -> panel.conditionModel().columnIdentifier().equals(columnIdentifier))
-						.findFirst()
-						.orElseThrow(() -> new IllegalArgumentException("No condition panel found for column identifier " + columnIdentifier));
+						.findFirst();
 	}
 
 	@Override
