@@ -57,4 +57,20 @@ public interface TableConditionPanel<C> {
 	 * @return the controls provided by this condition panel, for example toggling the advanced mode and clearing the condition
 	 */
 	Controls controls();
+
+	/**
+	 * @param <C> the type identifying the table columns
+	 */
+	interface Factory<C> {
+
+		/**
+		 * @param conditionModel the condition model
+		 * @param conditionPanels the condition panels
+		 * @param columnModel the column model
+		 * @return a new {@link TableConditionPanel}
+		 */
+		TableConditionPanel<C> create(TableConditionModel<C> conditionModel,
+																	Collection<ColumnConditionPanel<? extends C, ?>> conditionPanels,
+																	FilterTableColumnModel<C> columnModel);
+	}
 }

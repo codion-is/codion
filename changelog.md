@@ -77,6 +77,7 @@ Codion Change Log
 - ColumnConditionPanel.ConditionState and state() added, FilterTableConditionPanel.state() added, related refactoring.
 - FilterTable.Builder.filterState() added.
 - FilterColumnConditionPanel.columnConditionPanel() renamed filterColumnConditionPanel().
+- TableConditionPanel.Factory added.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
@@ -154,6 +155,7 @@ Codion Change Log
 - EntityTablePanel, refresh keystroke Alt-R added.
 - EntityConditionPanelFactory now sets the string provider for the in values list box.
 - EntityTablePanel now removes the condition and filter panels when they are hidden, related refactoring.
+- EntityTablePanel.createConditionPanel() replaced with Config.tableConditionPanelFactory(), conditionPanel no longer initialized lazily.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.
