@@ -76,7 +76,6 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -85,11 +84,9 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
@@ -1474,27 +1471,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private FilterColumnConditionPanel<? extends Attribute<?>, ?> createConditionPanel(ColumnConditionModel<? extends Attribute<?>, ?> conditionModel) {
-		FilterColumnConditionPanel<? extends Attribute<?>, ?> columnConditionPanel =
-						filterColumnConditionPanel(conditionModel, (FieldFactory<Attribute<?>>) configuration.conditionFieldFactory);
-		columnConditionPanel.components().forEach(component ->
-						configureComponent(component, conditionModel.columnIdentifier()));
-
-		return columnConditionPanel;
-	}
-
-	private JComponent configureComponent(JComponent component, Attribute<?> attribute) {
-		if (component instanceof JTextField) {
-			((JTextField) component).setColumns(0);
-			TableCellRenderer cellRenderer = table().columnModel().column(attribute).getCellRenderer();
-			if (cellRenderer instanceof DefaultTableCellRenderer) {
-				((JTextField) component).setHorizontalAlignment(((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment());
-			}
-		}
-		else if (component instanceof JCheckBox) {
-			((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
-		}
-
-		return component;
+		return filterColumnConditionPanel(conditionModel, (FieldFactory<Attribute<?>>) configuration.conditionFieldFactory);
 	}
 
 	private TableConditionPanel<Attribute<?>> createConditionPanel() {
@@ -2243,7 +2220,7 @@ public class EntityTablePanel extends JPanel {
 							.cellRendererFactory(new EntityTableCellRendererFactory(tablePanel.tableModel))
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
-			this.conditionFieldFactory = new EntityFieldFactory(entityComponents(entityDefinition));
+			this.conditionFieldFactory = new EntityFieldFactory(entityComponents(entityDefinition), () -> tablePanel.table.columnModel());
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
 							.map(AttributeDefinition::attribute)

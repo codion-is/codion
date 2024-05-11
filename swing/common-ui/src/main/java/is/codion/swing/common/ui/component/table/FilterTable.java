@@ -88,6 +88,7 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
+import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.filterColumnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTable.FilterTableControl.*;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
@@ -849,7 +850,7 @@ public final class FilterTable<R, C> extends JTable {
 						.collect(toList());
 		List<ColumnConditionPanel<? extends C, ?>> conditionPanels = new ArrayList<>();
 		for (ColumnConditionModel<? extends C, ?> conditionModel : collect) {
-			ColumnConditionPanel<? extends C, ?> conditionPanel = FilterColumnConditionPanel.filterColumnConditionPanel(conditionModel, filterFieldFactory);
+			ColumnConditionPanel<? extends C, ?> conditionPanel = filterColumnConditionPanel(conditionModel, filterFieldFactory);
 			configureComponents(conditionPanel, columnModel().column(conditionPanel.conditionModel().columnIdentifier()).getCellRenderer());
 			conditionPanels.add(conditionPanel);
 		}

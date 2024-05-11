@@ -27,17 +27,21 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractForeignKeyConditionModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
-import is.codion.swing.common.ui.component.text.TextComponents;
+import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,6 +50,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.component.Components.listBox;
 import static java.util.Objects.requireNonNull;
@@ -58,9 +63,11 @@ final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
 					LocalDateTime.class, OffsetDateTime.class, Entity.class);
 
 	private final EntityComponents inputComponents;
+	private final Supplier<FilterTableColumnModel<Attribute<?>>> columnModel;
 
-	EntityFieldFactory(EntityComponents inputComponents) {
+	EntityFieldFactory(EntityComponents inputComponents, Supplier<FilterTableColumnModel<Attribute<?>>> columnModel) {
 		this.inputComponents = requireNonNull(inputComponents);
+		this.columnModel = columnModel;
 	}
 
 	@Override
@@ -71,12 +78,12 @@ final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
 	@Override
 	public JComponent createEqualField(ColumnConditionModel<? extends Attribute<?>, ?> conditionModel) {
 		if (conditionModel.columnIdentifier() instanceof ForeignKey) {
-			return Sizes.setPreferredHeight(createEqualForeignKeyField(conditionModel), TextComponents.preferredTextFieldHeight());
+			return createEqualForeignKeyField(conditionModel);
 		}
 
-		return inputComponents.component((Attribute<Object>) conditionModel.columnIdentifier())
+		return configure(inputComponents.component((Attribute<Object>) conditionModel.columnIdentifier())
 						.link((Value<Object>) conditionModel.equalValue())
-						.build();
+						.build(), conditionModel.columnIdentifier());
 	}
 
 	@Override
@@ -86,9 +93,9 @@ final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
 			return Optional.empty();//no upper bound field required for booleans or entities
 		}
 
-		return Optional.of(inputComponents.component((Attribute<Object>) conditionModel.columnIdentifier())
+		return Optional.of(configure(inputComponents.component((Attribute<Object>) conditionModel.columnIdentifier())
 						.link((Value<Object>) conditionModel.upperBoundValue())
-						.build());
+						.build(), conditionModel.columnIdentifier()));
 	}
 
 	@Override
@@ -98,21 +105,21 @@ final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
 			return Optional.empty();//no lower bound field required for booleans or entities
 		}
 
-		return Optional.of(inputComponents.component((Attribute<Object>) conditionModel.columnIdentifier())
+		return Optional.of(configure(inputComponents.component((Attribute<Object>) conditionModel.columnIdentifier())
 						.link((Value<Object>) conditionModel.lowerBoundValue())
-						.build());
+						.build(), conditionModel.columnIdentifier()));
 	}
 
 	@Override
 	public JComponent createInField(ColumnConditionModel<? extends Attribute<?>, ?> conditionModel) {
 		if (conditionModel.columnIdentifier() instanceof ForeignKey) {
-			return Sizes.setPreferredHeight(createInForeignKeyField(conditionModel), TextComponents.preferredTextFieldHeight());
+			return createInForeignKeyField(conditionModel);
 		}
 
 		return listBox((ComponentValue<Object, JComponent>)
 						inputComponents.component(conditionModel.columnIdentifier())
-										.buildValue(), (ValueSet<Object>) conditionModel.inValues())
-						.build();
+										.onBuild(component -> configure(component, conditionModel.columnIdentifier()))
+										.buildValue(), (ValueSet<Object>) conditionModel.inValues()).build();
 	}
 
 	private JComponent createEqualForeignKeyField(ColumnConditionModel<? extends Attribute<?>, ?> model) {
@@ -142,6 +149,20 @@ final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
 		}
 
 		throw new IllegalArgumentException("Unknown foreign key condition model type: " + model);
+	}
+
+	private JComponent configure(JComponent component, Attribute<?> attribute) {
+		if (component instanceof JTextField) {
+			TableCellRenderer cellRenderer = columnModel.get().column(attribute).getCellRenderer();
+			if (cellRenderer instanceof DefaultTableCellRenderer) {
+				((JTextField) component).setHorizontalAlignment(((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment());
+			}
+		}
+		else if (component instanceof JCheckBox) {
+			((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
+		}
+
+		return component;
 	}
 
 	private static EntitySearchField configureSearchField(EntitySearchModel searchModel, EntitySearchField searchField) {
