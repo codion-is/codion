@@ -104,14 +104,11 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	public Controls controls() {
 		return Controls.builder()
 						.control(ToggleControl.builder(hiddenState)
-										.name(MESSAGES.getString("hidden"))
-										.enabled(hiddenState.not()))
+										.name(MESSAGES.getString("hidden")))
 						.control(ToggleControl.builder(simpleState)
-										.name(MESSAGES.getString("simple"))
-										.enabled(simpleState.not()))
+										.name(MESSAGES.getString("simple")))
 						.control(ToggleControl.builder(advancedState)
-										.name(MESSAGES.getString("advanced"))
-										.enabled(advancedState.not()))
+										.name(MESSAGES.getString("advanced")))
 						.separator()
 						.control(Control.builder(this::clearConditions)
 										.name(Messages.clear()))
@@ -154,6 +151,7 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	}
 
 	private void configureStates() {
+		State.group(hiddenState, simpleState, advancedState);
 		hiddenState.addConsumer(new StateConsumer(ConditionState.HIDDEN));
 		simpleState.addConsumer(new StateConsumer(ConditionState.SIMPLE));
 		advancedState.addConsumer(new StateConsumer(ConditionState.ADVANCED));

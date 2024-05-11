@@ -15,6 +15,7 @@ Codion Change Log
 - Operator.IN and NOT_IN added.
 - Operator, reordered to group single value operators.
 - State.Group no longer uses weak references for member states.
+- State.Group now enables the previously enabled state when the currently enabled state is disabled, instead of leaving all states disabled.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 - Database.createConnectionPool() now returns the pool.

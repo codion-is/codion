@@ -383,6 +383,7 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 	}
 
 	private void configureStates() {
+		State.group(hiddenState, simpleState, advancedState);
 		hiddenState.addConsumer(new StateConsumer(ConditionState.HIDDEN));
 		simpleState.addConsumer(new StateConsumer(ConditionState.SIMPLE));
 		advancedState.addConsumer(new StateConsumer(ConditionState.ADVANCED));

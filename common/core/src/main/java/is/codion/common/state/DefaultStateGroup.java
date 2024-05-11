@@ -19,8 +19,10 @@
 package is.codion.common.state;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -28,10 +30,11 @@ final class DefaultStateGroup implements State.Group {
 
 	private final List<State> members = new ArrayList<>();
 
+	private State previousState;
+	private boolean disablingStates = false;
+
 	DefaultStateGroup(State... states) {
-		for (State state : requireNonNull(states)) {
-			add(state);
-		}
+		this(Arrays.asList(states));
 	}
 
 	DefaultStateGroup(Collection<State> states) {
@@ -51,9 +54,7 @@ final class DefaultStateGroup implements State.Group {
 		}
 		state.addConsumer(value -> {
 			synchronized (members) {
-				if (value) {
-					stateChanged(state);
-				}
+				stateChanged(state);
 			}
 		});
 	}
@@ -63,11 +64,26 @@ final class DefaultStateGroup implements State.Group {
 		requireNonNull(states).forEach(this::add);
 	}
 
-	private void stateChanged(State state) {
-		if (state.get()) {
+	private void stateChanged(State current) {
+		if (current.get()) {
+			previousState = previousState(current);
+			disablingStates = true;
 			members.stream()
-							.filter(s -> s != state)
-							.forEach(s -> s.set(false));
+							.filter(state -> state != current)
+							.forEach(state -> state.set(false));
+			disablingStates = false;
 		}
+		else if (!disablingStates && previousState != null) {
+			previousState.set(true);
+			previousState = current;
+		}
+	}
+
+	private State previousState(State current) {
+		return members.stream()
+						.filter(state -> state != current)
+						.filter(Supplier::get)
+						.findFirst()
+						.orElse(null);
 	}
 }

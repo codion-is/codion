@@ -132,6 +132,47 @@ public class StateTest {
 
 		stateGroup = State.group(Arrays.asList(stateOne, stateTwo));
 		stateGroup.add(Collections.singletonList(stateThree));
+
+		State one = State.state(true);
+		State two = State.state(true);
+		State three = State.state(true);
+
+		State.group(one, two, three);
+		assertFalse(one.get());
+		assertFalse(two.get());
+		assertTrue(three.get());
+
+		// three to one
+		one.set(true);
+		assertTrue(one.get());
+		assertFalse(two.get());
+		assertFalse(three.get());
+
+		//one to three
+		one.set(false);
+		assertFalse(one.get());
+		assertFalse(two.get());
+		assertTrue(three.get());
+
+		three.set(false);
+		assertTrue(one.get());
+		assertFalse(two.get());
+		assertFalse(three.get());
+
+		one.set(false);
+		assertFalse(one.get());
+		assertFalse(two.get());
+		assertTrue(three.get());
+
+		two.set(true);
+		assertFalse(one.get());
+		assertTrue(two.get());
+		assertFalse(three.get());
+
+		two.set(false);
+		assertFalse(one.get());
+		assertFalse(two.get());
+		assertTrue(three.get());
 	}
 
 	@Test
