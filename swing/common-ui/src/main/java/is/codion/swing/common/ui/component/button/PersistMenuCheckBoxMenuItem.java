@@ -33,7 +33,7 @@ final class PersistMenuCheckBoxMenuItem extends JCheckBoxMenuItem {
 
 	@Override
 	protected void processMouseEvent(MouseEvent e) {
-		if (e.getID() == MouseEvent.MOUSE_RELEASED && persistMenu(e.isControlDown(), persistMenu)) {
+		if (isEnabled() && e.getID() == MouseEvent.MOUSE_RELEASED && persistMenu(e.isControlDown(), persistMenu)) {
 			setSelected(!isSelected());
 		}
 		else {
