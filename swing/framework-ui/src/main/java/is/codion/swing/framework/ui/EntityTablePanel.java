@@ -435,6 +435,7 @@ public class EntityTablePanel extends JPanel {
 	private final State queryHiddenColumns = State.state(Config.QUERY_HIDDEN_COLUMNS.get());
 
 	private final FilterTable<Entity, Attribute<?>> table;
+	private final JScrollPane tableScrollPane = new JScrollPane();
 	private final EntityEditPanel editPanel;
 	private final Map<EntityTablePanelControl, Value<Control>> controls;
 	private final Controls.Config<EntityTablePanelControl> popupMenuConfiguration;
@@ -444,8 +445,8 @@ public class EntityTablePanel extends JPanel {
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
 	private final List<Controls> additionalToolBarControls = new ArrayList<>();
+
 	private StatusPanel statusPanel;
-	private JScrollPane tableScrollPane;
 	private TableConditionPanel<Attribute<?>> conditionPanel;
 	private JScrollPane conditionPanelScrollPane;
 	private JScrollPane filterPanelScrollPane;
@@ -535,20 +536,15 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * @param <T> the condition panel type
 	 * @return the condition panel
-	 * @throws IllegalStateException in case no condition panel is available
+	 * @throws IllegalStateException in case a condition panel is not available
+	 * @see Config#includeConditionPanel(boolean)
 	 */
 	public final <T extends TableConditionPanel<Attribute<?>>> T conditionPanel() {
+		if (!configuration.includeConditionPanel) {
+			throw new IllegalStateException("No condition panel is available");
+		}
 		if (conditionPanel == null) {
-			if (configuration.includeConditionPanel) {
-				TableConditionPanel<Attribute<?>> panel = createConditionPanel();
-				if (!(panel instanceof JComponent)) {
-					throw new IllegalStateException("Condition panel must extend JComponent");
-				}
-				conditionPanel = panel;
-			}
-			if (conditionPanel == null) {
-				throw new IllegalStateException("No condition panel is available");
-			}
+			initializeConditionPanel();
 		}
 
 		return (T) conditionPanel;
@@ -1508,6 +1504,48 @@ public class EntityTablePanel extends JPanel {
 		return component;
 	}
 
+	private void initializeConditionPanel() {
+		TableConditionPanel<Attribute<?>> panel = createConditionPanel();
+		if (!(panel instanceof JComponent)) {
+			throw new IllegalStateException("Condition panel must extend JComponent");
+		}
+		conditionPanel = panel;
+		conditionPanelScrollPane = createLinkedScrollPane((JComponent) conditionPanel);
+		conditionPanelStateChanged(conditionPanel.state().get());
+		bindConditionPanelEvents();
+	}
+
+	private void bindConditionPanelEvents() {
+		conditionPanel.state().addConsumer(this::conditionPanelStateChanged);
+		table.filterPanel().state().addConsumer(this::filterPanelStateChanged);
+	}
+
+	private void conditionPanelStateChanged(ConditionState conditionState) {
+		refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
+						|| conditionState != ConditionState.HIDDEN);
+		if (conditionPanelScrollPane != null) {
+			if (conditionState == ConditionState.HIDDEN) {
+				remove(conditionPanelScrollPane);
+			}
+			else {
+				add(conditionPanelScrollPane, BorderLayout.NORTH);
+			}
+		}
+	}
+
+	private void filterPanelStateChanged(ConditionState conditionState) {
+		filterPanelStateChanged(conditionState, tablePanel.tableSouthPanel);
+	}
+
+	private void filterPanelStateChanged(ConditionState conditionState, JPanel parentPanel) {
+		if (conditionState == ConditionState.HIDDEN) {
+			parentPanel.remove(filterPanelScrollPane);
+		}
+		else {
+			parentPanel.add(filterPanelScrollPane, BorderLayout.SOUTH);
+		}
+	}
+
 	private void bindTableEvents() {
 		Runnable setSelectAttributes = () -> tableModel.attributes().set(selectAttributes());
 		table.columnModel().columnShownEvent().addListener(setSelectAttributes);
@@ -1566,7 +1604,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void setupComponents() {
-		tableScrollPane = new JScrollPane(table());
+		tableScrollPane.setViewportView(table());
 		tablePanel = new TablePanel();
 		table.getColumnModel().columns().forEach(this::configureColumn);
 		summaryPanelVisibleState.addValidator(new ComponentAvailableValidator(summaryPanel, "summary"));
@@ -1984,12 +2022,12 @@ public class EntityTablePanel extends JPanel {
 		return constraints;
 	}
 
-	private static JScrollPane createLinkedScrollPane(JScrollPane parentScrollPane, JComponent componentToScroll) {
+	private JScrollPane createLinkedScrollPane(JComponent componentToScroll) {
 		return Components.scrollPane(componentToScroll)
 						.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
 						.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
 						.onBuild(scrollPane -> linkBoundedRangeModels(
-										parentScrollPane.getHorizontalScrollBar().getModel(),
+										tableScrollPane.getHorizontalScrollBar().getModel(),
 										scrollPane.getHorizontalScrollBar().getModel()))
 						.build();
 	}
@@ -2641,30 +2679,27 @@ public class EntityTablePanel extends JPanel {
 
 	private final class TablePanel extends JPanel {
 
+		private final JPanel tableSouthPanel;
+
 		private TablePanel() {
 			super(new BorderLayout());
 			if (configuration.includeConditionPanel) {
 				if (conditionPanel == null) {
-					conditionPanel = createConditionPanel();
-					conditionPanel.state().addConsumer(conditionState ->
-									refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
-													|| conditionState != ConditionState.HIDDEN));
+					initializeConditionPanel();
 				}
-				conditionPanelScrollPane = createLinkedScrollPane(tableScrollPane, (JComponent) conditionPanel);
-				add(conditionPanelScrollPane, BorderLayout.NORTH);
 			}
-			JPanel tableSouthPanel = new JPanel(new BorderLayout());
+			tableSouthPanel = new JPanel(new BorderLayout());
 			if (configuration.includeSummaryPanel && containsSummaryModels(table)) {
 				summaryPanel = createSummaryPanel();
 				if (summaryPanel != null) {
-					summaryPanelScrollPane = createLinkedScrollPane(tableScrollPane, summaryPanel);
+					summaryPanelScrollPane = createLinkedScrollPane(summaryPanel);
 					summaryPanelScrollPane.setVisible(false);
 					tableSouthPanel.add(summaryPanelScrollPane, BorderLayout.NORTH);
 				}
 			}
 			if (configuration.includeFilterPanel) {
-				filterPanelScrollPane = createLinkedScrollPane(tableScrollPane, table.filterPanel());
-				tableSouthPanel.add(filterPanelScrollPane, BorderLayout.CENTER);
+				filterPanelScrollPane = createLinkedScrollPane(table.filterPanel());
+				filterPanelStateChanged(table.filterPanel().state().get(), tableSouthPanel);
 			}
 			add(tableScrollPane, BorderLayout.CENTER);
 			add(tableSouthPanel, BorderLayout.SOUTH);
