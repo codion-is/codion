@@ -504,21 +504,33 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private void updateDetailState(PanelState newState) {
-			activateDetailModelLink(selectedDetailPanel().initialize().model());
+			SwingEntityModel model = selectedDetailPanel().model();
 			switch (newState) {
 				case HIDDEN:
+					deactivateDetailModelLink(model);
 					disposeDetailWindow();
 					splitPane.setRightComponent(null);
 					break;
 				case EMBEDDED:
+					activateDetailModelLink(model);
+					selectedDetailPanel().initialize();
 					disposeDetailWindow();
 					splitPane.setRightComponent(tabbedPane);
 					break;
 				case WINDOW:
+					activateDetailModelLink(model);
+					selectedDetailPanel().initialize();
 					displayDetailWindow();
 					break;
 			}
 			entityPanel.revalidate();
+		}
+
+		private void deactivateDetailModelLink(SwingEntityModel detailModel) {
+			SwingEntityModel model = entityPanel.model();
+			if (model.containsDetailModel(detailModel)) {
+				model.detailModelLink(detailModel).active().set(false);
+			}
 		}
 
 		private void activateDetailModelLink(SwingEntityModel detailModel) {

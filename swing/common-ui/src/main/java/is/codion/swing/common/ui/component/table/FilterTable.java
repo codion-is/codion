@@ -502,13 +502,6 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * @return a {@link Export} instance for exporting the table model data
-	 */
-	public Export export() {
-		return new DefaultExport();
-	}
-
-	/**
 	 * Copies the table data as a TAB delimited string, with header, to the clipboard.
 	 */
 	public void copySelectedToClipboard() {
@@ -516,6 +509,13 @@ public final class FilterTable<R, C> extends JTable {
 						.delimiter('\t')
 						.selected(true)
 						.get());
+	}
+
+	/**
+	 * @return a {@link Export} instance for exporting the table model data
+	 */
+	public Export export() {
+		return new DefaultExport();
 	}
 
 	/**

@@ -157,6 +157,7 @@ Codion Change Log
 - EntityTablePanel now removes the condition and filter panels when they are hidden, related refactoring.
 - EntityTablePanel.createConditionPanel() replaced with Config.tableConditionPanelFactory(), conditionPanel no longer initialized lazily.
 - EntityTablePanel, condition panel field configuration moved to EntityFieldFactory.
+- TabbedDetailLayout, detail model link now deactivated when the detail panel is hidden.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.
