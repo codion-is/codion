@@ -77,23 +77,18 @@ public interface State extends StateObserver, Value<Boolean> {
 
 	/**
 	 * A {@link State.Group} deactivates all other states when a state in the group is activated.
-	 * {@link State.Group} works with WeakReference so adding states does not prevent
-	 * them from being garbage collected.
 	 */
 	interface Group {
 
 		/**
-		 * Adds a state to this {@link State.Group} via a WeakReference,
-		 * so it does not prevent it from being garbage collected.
+		 * Adds a state to this {@link State.Group}.
 		 * Adding an active state deactivates all other states in the group.
 		 * @param state the {@link State} instance to add
 		 */
 		void add(State state);
 
 		/**
-		 * Adds the given states to this {@link State.Group} via a WeakReference,
-		 * so it does not prevent it from being garbage collected.
-		 * Adding an active state deactivates all other states in the group.
+		 * Adds the given states to this {@link State.Group}.
 		 * @param states the {@link State} instances to add
 		 */
 		void add(Collection<State> states);

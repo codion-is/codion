@@ -24,11 +24,11 @@ import is.codion.common.value.ValueObserver;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StateTest {
@@ -130,7 +130,7 @@ public class StateTest {
 		assertFalse(stateTwo.get());
 		assertFalse(stateThree.get());
 
-		stateGroup = State.group(Arrays.asList(stateOne, stateTwo));
+		stateGroup = State.group(asList(stateOne, stateTwo));
 		stateGroup.add(Collections.singletonList(stateThree));
 
 		State one = State.state(true);
@@ -173,6 +173,20 @@ public class StateTest {
 		assertFalse(one.get());
 		assertFalse(two.get());
 		assertTrue(three.get());
+
+		one = State.state();
+		two = State.state();
+
+		State.group(one, two);
+		one.set(true);
+		one.set(false);
+		assertTrue(two.get());
+
+		one = State.state();
+		State.group(one);
+		one.set(true);
+		one.set(false);
+		assertFalse(one.get());
 	}
 
 	@Test
@@ -180,9 +194,9 @@ public class StateTest {
 		State stateOne = State.state();
 		State stateTwo = State.state();
 		State stateThree = State.state();
-		State.Combination orState = State.or(Arrays.asList(stateOne, stateTwo, stateThree));
+		State.Combination orState = State.or(asList(stateOne, stateTwo, stateThree));
 
-		State.Combination andState = State.and(Arrays.asList(stateOne, stateTwo, stateThree));
+		State.Combination andState = State.and(asList(stateOne, stateTwo, stateThree));
 		assertEquals(Conjunction.AND, andState.conjunction());
 		assertEquals("Combination and false, false, false, false", andState.toString());
 

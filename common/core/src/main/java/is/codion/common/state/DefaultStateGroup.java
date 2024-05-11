@@ -49,10 +49,12 @@ final class DefaultStateGroup implements State.Group {
 		synchronized (members) {
 			if (!members.contains(state)) {
 				members.add(state);
-				stateChanged(state);
+				if (state.get()) {
+					stateChanged(state);
+				}
 			}
 		}
-		state.addConsumer(value -> {
+		state.addListener(() -> {
 			synchronized (members) {
 				stateChanged(state);
 			}
@@ -64,19 +66,35 @@ final class DefaultStateGroup implements State.Group {
 		requireNonNull(states).forEach(this::add);
 	}
 
-	private void stateChanged(State current) {
-		if (current.get()) {
-			previousState = previousState(current);
-			disablingStates = true;
-			members.stream()
-							.filter(state -> state != current)
-							.forEach(state -> state.set(false));
-			disablingStates = false;
+	private void stateChanged(State state) {
+		if (state.get()) {
+			disableOthers(state);
 		}
-		else if (!disablingStates && previousState != null) {
+		else if (!disablingStates) {
+			enablePrevious(state);
+		}
+	}
+
+	private void disableOthers(State current) {
+		previousState = previousState(current);
+		disablingStates = true;
+		members.stream()
+						.filter(state -> state != current)
+						.filter(Supplier::get)
+						.forEach(state -> state.set(false));
+		disablingStates = false;
+	}
+
+	private void enablePrevious(State current) {
+		if (previousState != null) {
 			previousState.set(true);
-			previousState = current;
 		}
+		else if (members.size() > 1) {
+			//fallback to the next state
+			int index = members.indexOf(current);
+			members.get(index == members.size() - 1 ? 0 : index + 1).set(true);
+		}
+		previousState = current;
 	}
 
 	private State previousState(State current) {
