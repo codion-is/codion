@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel.Update;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
@@ -525,7 +526,7 @@ public final class EntityDialogs {
 						.build();
 		private final Control cancelControl;
 		private final Control searchControl = Control.builder(this::search)
-						.name(FrameworkMessages.search())
+						.name(FrameworkMessages.searchVerb())
 						.mnemonic(FrameworkMessages.searchMnemonic())
 						.build();
 
@@ -576,7 +577,7 @@ public final class EntityDialogs {
 					okControl.actionPerformed(null);
 				}
 			});
-			tablePanel.conditionPanelVisible().set(true);
+			tablePanel.conditionPanel().state().set(ConditionState.SIMPLE);
 			tablePanel.table().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 			tablePanel.table().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);

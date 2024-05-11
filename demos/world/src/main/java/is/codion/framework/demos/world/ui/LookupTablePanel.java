@@ -25,6 +25,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -109,7 +110,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		objectMapper = new WorldObjectMapperFactory().entityObjectMapper(lookupModel.entities());
 		objectMapper.setIncludeNullValues(false);
 		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		conditionPanelVisible().set(true);
+		conditionPanel().state().set(ConditionState.SIMPLE);
 		configurePopupMenuAndToolBar();
 		bindEvents();
 	}

@@ -61,10 +61,11 @@ public class FrameworkMessagesTest {
 		FrameworkMessages.confirmDelete(42);
 		FrameworkMessages.confirmDelete(1);
 		FrameworkMessages.confirmInsert();
-		FrameworkMessages.show();
 		FrameworkMessages.noSearchResults();
-		FrameworkMessages.search();
-		FrameworkMessages.filter();
+		FrameworkMessages.searchNoun();
+		FrameworkMessages.searchVerb();
+		FrameworkMessages.filterNoun();
+		FrameworkMessages.filterVerb();
 		FrameworkMessages.searchMnemonic();
 		FrameworkMessages.copyTableWithHeader();
 		FrameworkMessages.settings();

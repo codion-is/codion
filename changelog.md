@@ -71,6 +71,8 @@ Codion Change Log
 - TableConditionPanel.conditionPanel() now returns Optional.
 - FilterTableConditionPanel.conditionPanels() bug fixed, now actually returns the panels.
 - PersistMenuCheckBoxMenuItem and PersistMenuRadioButtonMenuItem bug fixed, responded to mouse events when disabled.
+- ColumnConditionPanel.ConditionState and state() added, FilterTableConditionPanel.state() added, related refactoring.
+- FilterTable.Builder.filterState() added.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.

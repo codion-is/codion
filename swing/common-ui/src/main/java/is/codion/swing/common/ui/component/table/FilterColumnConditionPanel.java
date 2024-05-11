@@ -52,6 +52,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -132,9 +133,12 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 	private final JPanel controlPanel = new JPanel(new BorderLayout());
 	private final JPanel inputPanel = new JPanel(new BorderLayout());
 	private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
-	private final State advanced = State.builder()
-					.consumer(this::onAdvancedChanged)
+	private final Value<ConditionState> conditionState = Value.nonNull(ConditionState.HIDDEN)
+					.consumer(this::onStateChanged)
 					.build();
+	private final State hiddenState = State.state(true);
+	private final State simpleState = State.state();
+	private final State advancedState = State.state();
 
 	private FilterColumnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel,
 																		 FieldFactory<C> fieldFactory) {
@@ -156,6 +160,7 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 						.build();
 		conditionModel.locked().set(modelLocked);
 		initializeUI();
+		configureStates();
 		bindEvents();
 	}
 
@@ -206,11 +211,9 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 		}
 	}
 
-	/**
-	 * @return the state controlling the advanced view status of this condition panel
-	 */
-	public State advanced() {
-		return advanced;
+	@Override
+	public Value<ConditionState> state() {
+		return conditionState;
 	}
 
 	/**
@@ -379,13 +382,36 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 		repaint();
 	}
 
-	private void onAdvancedChanged(boolean advancedView) {
-		if (advancedView) {
-			setAdvanced();
+	private void configureStates() {
+		hiddenState.addConsumer(new StateConsumer(ConditionState.HIDDEN));
+		simpleState.addConsumer(new StateConsumer(ConditionState.SIMPLE));
+		advancedState.addConsumer(new StateConsumer(ConditionState.ADVANCED));
+		conditionState.addConsumer(state -> {
+			hiddenState.set(state == ConditionState.HIDDEN);
+			simpleState.set(state == ConditionState.SIMPLE);
+			advancedState.set(state == ConditionState.ADVANCED);
+		});
+	}
+
+	private void onStateChanged(ConditionState conditionState) {
+		switch (conditionState) {
+			case HIDDEN:
+				setHidden();
+				break;
+			case SIMPLE:
+				setSimple();
+				break;
+			case ADVANCED:
+				setAdvanced();
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown panel state: " + conditionState);
 		}
-		else {
-			setSimple();
-		}
+		revalidate();
+	}
+
+	private void setHidden() {
+		removeAll();
 	}
 
 	private void setSimple() {
@@ -470,7 +496,6 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 		setLayout(new BorderLayout());
 		controlPanel.add(operatorCombo, BorderLayout.CENTER);
 		onOperatorChanged(conditionModel().operator().get());
-		onAdvancedChanged(advanced.get());
 		addStringConfigurationPopupMenu();
 	}
 
@@ -479,7 +504,7 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 			boolean requestFocus = boundFieldHasFocus();
 			clearInputPanel(requestFocus);
 			inputPanel.add(boundField, BorderLayout.CENTER);
-			if (!advanced.get()) {
+			if (conditionState.isEqualTo(ConditionState.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (requestFocus) {
@@ -495,7 +520,7 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 			rangePanel.add(lowerBoundField);
 			rangePanel.add(upperBoundField);
 			inputPanel.add(rangePanel, BorderLayout.CENTER);
-			if (!advanced.get()) {
+			if (conditionState.isEqualTo(ConditionState.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (requestFocus) {
@@ -626,6 +651,21 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 				return "α ∉";
 			default:
 				throw new IllegalArgumentException(UNKNOWN_OPERATOR + operator);
+		}
+	}
+
+	private final class StateConsumer implements Consumer<Boolean> {
+		private final ConditionState state;
+
+		private StateConsumer(ConditionState state) {
+			this.state = state;
+		}
+
+		@Override
+		public void accept(Boolean enabled) {
+			if (enabled) {
+				conditionState.set(state);
+			}
 		}
 	}
 

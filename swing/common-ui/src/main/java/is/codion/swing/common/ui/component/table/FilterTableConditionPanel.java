@@ -21,7 +21,10 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.value.Value;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -34,10 +37,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -47,12 +53,18 @@ import static java.util.stream.Collectors.toMap;
  */
 public final class FilterTableConditionPanel<C> extends JPanel implements TableConditionPanel<C> {
 
+	private static final MessageBundle MESSAGES =
+					messageBundle(FilterColumnConditionPanel.class, getBundle(FilterTableConditionPanel.class.getName()));
+
 	private final TableConditionModel<C> conditionModel;
 	private final Collection<? extends ColumnConditionPanel<? extends C, ?>> conditionPanels;
 	private final FilterTableColumnComponentPanel<C> componentPanel;
-	private final State advanced = State.builder()
-					.consumer(this::onAdvancedChanged)
+	private final Value<ConditionState> conditionState = Value.nonNull(ConditionState.HIDDEN)
+					.consumer(this::onStateChanged)
 					.build();
+	private final State hiddenState = State.state(true);
+	private final State simpleState = State.state();
+	private final State advancedState = State.state();
 
 	private FilterTableConditionPanel(TableConditionModel<? extends C> conditionModel,
 																		Collection<ColumnConditionPanel<? extends C, ?>> conditionPanels,
@@ -64,7 +76,7 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 										.columnIdentifier(), JComponent.class::cast));
 		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel), collect);
 		setLayout(new BorderLayout());
-		add(componentPanel, BorderLayout.CENTER);
+		configureStates();
 	}
 
 	@Override
@@ -85,15 +97,23 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	}
 
 	@Override
-	public State advanced() {
-		return advanced;
+	public Value<ConditionState> state() {
+		return conditionState;
 	}
 
 	@Override
 	public Controls controls() {
 		return Controls.builder()
-						.control(ToggleControl.builder(advanced)
-										.name(Messages.advanced()))
+						.control(ToggleControl.builder(hiddenState)
+										.name(MESSAGES.getString("hidden"))
+										.enabled(hiddenState.not()))
+						.control(ToggleControl.builder(simpleState)
+										.name(MESSAGES.getString("simple"))
+										.enabled(simpleState.not()))
+						.control(ToggleControl.builder(advancedState)
+										.name(MESSAGES.getString("advanced"))
+										.enabled(advancedState.not()))
+						.separator()
 						.control(Control.builder(this::clearConditions)
 										.name(Messages.clear()))
 						.build();
@@ -118,7 +138,45 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 						.forEach(ColumnConditionModel::clear);
 	}
 
-	private void onAdvancedChanged(boolean advancedView) {
-		conditionPanels.forEach(panel -> panel.advanced().set(advancedView));
+	private void onStateChanged(ConditionState conditionState) {
+		conditionPanels.forEach(panel -> panel.state().set(conditionState));
+		switch (conditionState) {
+			case HIDDEN:
+				remove(componentPanel);
+				break;
+			case SIMPLE:
+			case ADVANCED:
+				add(componentPanel, BorderLayout.CENTER);
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown panel state: " + conditionState);
+		}
+		revalidate();
+	}
+
+	private void configureStates() {
+		hiddenState.addConsumer(new StateConsumer(ConditionState.HIDDEN));
+		simpleState.addConsumer(new StateConsumer(ConditionState.SIMPLE));
+		advancedState.addConsumer(new StateConsumer(ConditionState.ADVANCED));
+		conditionState.addConsumer(state -> {
+			hiddenState.set(state == ConditionState.HIDDEN);
+			simpleState.set(state == ConditionState.SIMPLE);
+			advancedState.set(state == ConditionState.ADVANCED);
+		});
+	}
+
+	private final class StateConsumer implements Consumer<Boolean> {
+		private final ConditionState state;
+
+		private StateConsumer(ConditionState state) {
+			this.state = state;
+		}
+
+		@Override
+		public void accept(Boolean enabled) {
+			if (enabled) {
+				conditionState.set(state);
+			}
+		}
 	}
 }

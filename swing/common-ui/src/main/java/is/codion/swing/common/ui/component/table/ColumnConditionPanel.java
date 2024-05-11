@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.state.State;
+import is.codion.common.value.Value;
 
 import javax.swing.JComponent;
 import java.util.Collection;
@@ -30,6 +30,15 @@ import java.util.Collection;
  * @param <T> the condition value type
  */
 public interface ColumnConditionPanel<C, T> {
+
+	/**
+	 * The available condition panel states
+	 */
+	enum ConditionState {
+		HIDDEN,
+		SIMPLE,
+		ADVANCED
+	}
 
 	/**
 	 * @return the condition model this panel is based on
@@ -47,7 +56,7 @@ public interface ColumnConditionPanel<C, T> {
 	void requestInputFocus();
 
 	/**
-	 * @return the state controlling the advanced view status of this condition panel
+	 * @return the value controlling the condition panel state
 	 */
-	State advanced();
+	Value<ConditionState> state();
 }

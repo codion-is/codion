@@ -49,6 +49,7 @@ import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -221,7 +222,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Toggles the condition panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-S
-		 * @see #toggleConditionPanel()
+		 * @see TableConditionPanel#toggleState()
 		 */
 		TOGGLE_CONDITION_PANEL(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
@@ -232,7 +233,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Toggles the filter panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-F
-		 * @see #toggleFilterPanel()
+		 * @see TableConditionPanel#toggleState()
 		 */
 		TOGGLE_FILTER_PANEL(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
@@ -332,17 +333,9 @@ public class EntityTablePanel extends JPanel {
 		 */
 		CONDITION_CONTROLS,
 		/**
-		 * A {@link Control} for showing/hiding the condition panel.
-		 */
-		CONDITION_PANEL_VISIBLE,
-		/**
 		 * A {@link Controls} instance containing the filter panel controls.
 		 */
 		FILTER_CONTROLS,
-		/**
-		 * A {@link Control} for showing/hiding the filter panel.
-		 */
-		FILTER_PANEL_VISIBLE,
 		/**
 		 * A {@link Control} for clearing the table selection.
 		 */
@@ -436,8 +429,6 @@ public class EntityTablePanel extends JPanel {
 	private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
-	private final State conditionPanelVisibleState = State.state(Config.CONDITION_PANEL_VISIBLE.get());
-	private final State filterPanelVisibleState = State.state(Config.FILTER_PANEL_VISIBLE.get());
 	private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.get());
 
 	private final State orderQueryBySortOrder = State.state(Config.ORDER_QUERY_BY_SORT_ORDER.get());
@@ -564,20 +555,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * @return the state controlling whether the condition panel is visible
-	 */
-	public final State conditionPanelVisible() {
-		return conditionPanelVisibleState;
-	}
-
-	/**
-	 * @return the state controlling whether the filter panel is visible
-	 */
-	public final State filterPanelVisible() {
-		return filterPanelVisibleState;
-	}
-
-	/**
 	 * @return the state controlling whether the summary panel is visible
 	 */
 	public final State summaryPanelVisible() {
@@ -585,30 +562,12 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Toggles the condition panel through the states hidden, visible and advanced
-	 */
-	public final void toggleConditionPanel() {
-		if (conditionPanelScrollPane != null) {
-			toggleConditionPanel(conditionPanelScrollPane, conditionPanel.advanced(), conditionPanelVisibleState);
-		}
-	}
-
-	/**
-	 * Toggles the filter panel through the states hidden, visible and advanced
-	 */
-	public final void toggleFilterPanel() {
-		if (filterPanelScrollPane != null) {
-			toggleConditionPanel(filterPanelScrollPane, table.filterPanel().advanced(), filterPanelVisibleState);
-		}
-	}
-
-	/**
 	 * Allows the user to select one of the available search condition panels
 	 */
 	public final void selectConditionPanel() {
 		if (configuration.includeConditionPanel) {
-			selectConditionPanel(conditionPanel, conditionPanelScrollPane, conditionPanel.advanced(),
-							conditionPanelVisibleState, table, FrameworkMessages.selectSearchField(), tableModel.entityDefinition());
+			selectConditionPanel(conditionPanel, conditionPanel.state(),
+							table, FrameworkMessages.selectSearchField(), tableModel.entityDefinition());
 		}
 	}
 
@@ -617,8 +576,8 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void selectFilterPanel() {
 		if (configuration.includeFilterPanel) {
-			selectConditionPanel((TableConditionPanel<Attribute<?>>) table.filterPanel(), filterPanelScrollPane, table.filterPanel().advanced(),
-							filterPanelVisibleState, table, FrameworkMessages.selectFilterField(), tableModel.entityDefinition());
+			selectConditionPanel((TableConditionPanel<Attribute<?>>) table.filterPanel(), table.filterPanel().state(),
+							table, FrameworkMessages.selectFilterField(), tableModel.entityDefinition());
 		}
 	}
 
@@ -802,8 +761,6 @@ public class EntityTablePanel extends JPanel {
 				setupStandardControls();
 				addTablePopupMenu();
 				layoutPanel(tablePanel, configuration.includeSouthPanel ? initializeSouthPanel() : null);
-				setConditionPanelVisible(conditionPanelVisibleState.get());
-				setFilterPanelVisible(filterPanelVisibleState.get());
 				setSummaryPanelVisible(summaryPanelVisibleState.get());
 				bindEvents();
 				setupKeyboardActions();
@@ -1348,10 +1305,9 @@ public class EntityTablePanel extends JPanel {
 			return null;
 		}
 		Controls conditionControls = Controls.builder()
-						.name(FrameworkMessages.search())
+						.name(FrameworkMessages.searchNoun())
 						.smallIcon(ICONS.search())
 						.build();
-		control(CONDITION_PANEL_VISIBLE).optional().ifPresent(conditionControls::add);
 		Controls conditionPanelControls = conditionPanel.controls();
 		if (conditionPanelControls.notEmpty()) {
 			conditionControls.addAll(conditionPanelControls);
@@ -1376,15 +1332,22 @@ public class EntityTablePanel extends JPanel {
 		return Control.control(this::selectFilterPanel);
 	}
 
+	private void toggleConditionPanel() {
+		toggleConditionPanel(conditionPanelScrollPane, conditionPanel.state());
+	}
+
+	private void toggleFilterPanel() {
+		toggleConditionPanel(filterPanelScrollPane, table.filterPanel().state());
+	}
+
 	private Controls createFilterControls() {
 		if (!configuration.includeFilterPanel) {
 			return null;
 		}
 		Controls filterControls = Controls.builder()
-						.name(FrameworkMessages.filter())
+						.name(FrameworkMessages.filterNoun())
 						.smallIcon(ICONS.filter())
 						.build();
-		control(FILTER_PANEL_VISIBLE).optional().ifPresent(filterControls::add);
 		Controls filterPanelControls = table.filterPanel().controls();
 		if (filterPanelControls.notEmpty()) {
 			filterControls.addAll(filterPanelControls);
@@ -1441,18 +1404,6 @@ public class EntityTablePanel extends JPanel {
 		Controls columnControls = builder.build();
 
 		return columnControls.empty() ? null : columnControls;
-	}
-
-	private Control createConditionPanelControl() {
-		return ToggleControl.builder(conditionPanelVisibleState)
-						.name(FrameworkMessages.show())
-						.build();
-	}
-
-	private Control createFilterPanelControl() {
-		return ToggleControl.builder(filterPanelVisibleState)
-						.name(FrameworkMessages.show())
-						.build();
 	}
 
 	private Controls createCopyControls() {
@@ -1520,7 +1471,8 @@ public class EntityTablePanel extends JPanel {
 						.action(conditionRefreshControl)
 						.floatable(false)
 						.rollover(false)
-						.visible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS || conditionPanelVisibleState.get())
+						.visible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS ||
+										(conditionPanel != null && conditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)))
 						.build();
 	}
 
@@ -1569,8 +1521,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		conditionPanelVisibleState.addConsumer(this::setConditionPanelVisible);
-		filterPanelVisibleState.addConsumer(this::setFilterPanelVisible);
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
 		tableModel.conditionModel().conditionChangedEvent().addListener(this::onConditionChanged);
 		tableModel.refresher().observer().addConsumer(this::onRefreshingChanged);
@@ -1580,20 +1530,12 @@ public class EntityTablePanel extends JPanel {
 			enableConditionPanelRefreshOnEnter();
 			conditionPanel.conditionPanels().forEach(panel -> panel.components().forEach(component ->
 							component.addFocusListener(new ScrollToColumn(panel.conditionModel().columnIdentifier()))));
-			conditionPanel.advanced().addConsumer(advanced -> {
-				if (conditionPanelVisibleState.get()) {
-					revalidate();
-				}
-			});
+			conditionPanel.state().addListener(this::revalidate);
 		}
 		if (configuration.includeFilterPanel) {
 			table.filterPanel().conditionPanels().forEach(panel -> panel.components().forEach(component ->
 							component.addFocusListener(new ScrollToColumn(panel.conditionModel().columnIdentifier()))));
-			table.filterPanel().advanced().addConsumer(advanced -> {
-				if (filterPanelVisibleState.get()) {
-					revalidate();
-				}
-			});
+			table.filterPanel().state().addListener(this::revalidate);
 		}
 	}
 
@@ -1616,21 +1558,6 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private void setConditionPanelVisible(boolean visible) {
-		if (conditionPanelScrollPane != null) {
-			conditionPanelScrollPane.setVisible(visible);
-			refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS || visible);
-			revalidate();
-		}
-	}
-
-	private void setFilterPanelVisible(boolean visible) {
-		if (filterPanelScrollPane != null) {
-			filterPanelScrollPane.setVisible(visible);
-			revalidate();
-		}
-	}
-
 	private void setSummaryPanelVisible(boolean visible) {
 		if (summaryPanelScrollPane != null) {
 			summaryPanelScrollPane.setVisible(visible);
@@ -1642,8 +1569,6 @@ public class EntityTablePanel extends JPanel {
 		tableScrollPane = new JScrollPane(table());
 		tablePanel = new TablePanel();
 		table.getColumnModel().columns().forEach(this::configureColumn);
-		conditionPanelVisibleState.addValidator(new ComponentAvailableValidator((JComponent) conditionPanel, "condition"));
-		filterPanelVisibleState.addValidator(new ComponentAvailableValidator(table.filterPanel(), "filter"));
 		summaryPanelVisibleState.addValidator(new ComponentAvailableValidator(summaryPanel, "summary"));
 	}
 
@@ -1684,12 +1609,10 @@ public class EntityTablePanel extends JPanel {
 			controlMap.get(TOGGLE_SUMMARY_PANEL).set(createToggleSummaryPanelControl());
 		}
 		if (configuration.includeConditionPanel) {
-			controlMap.get(CONDITION_PANEL_VISIBLE).set(createConditionPanelControl());
 			controlMap.get(TOGGLE_CONDITION_PANEL).set(createToggleConditionPanelControl());
 			controlMap.get(SELECT_CONDITION_PANEL).set(createSelectConditionPanelControl());
 		}
 		if (configuration.includeFilterPanel) {
-			controlMap.get(FILTER_PANEL_VISIBLE).set(createFilterPanelControl());
 			controlMap.get(TOGGLE_FILTER_PANEL).set(createToggleFilterPanelControl());
 			controlMap.get(SELECT_FILTER_PANEL).set(createSelectFilterPanelControl());
 		}
@@ -1778,23 +1701,24 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private void toggleConditionPanel(JScrollPane scrollPane, State advancedState, State visibleState) {
-		if (scrollPane != null && scrollPane.isVisible()) {
-			if (advancedState.get()) {
-				boolean parentOfFocusOwner = parentOfType(JScrollPane.class,
-								getCurrentKeyboardFocusManager().getFocusOwner()) == scrollPane;
-				visibleState.set(false);
-				if (parentOfFocusOwner) {
-					table.requestFocusInWindow();
-				}
+	private void toggleConditionPanel(JScrollPane scrollPane, Value<ConditionState> conditionState) {
+		if (scrollPane != null) {
+			switch (conditionState.get()) {
+				case HIDDEN:
+					conditionState.set(ConditionState.SIMPLE);
+					break;
+				case SIMPLE:
+					conditionState.set(ConditionState.ADVANCED);
+					break;
+				case ADVANCED:
+					boolean parentOfFocusOwner = parentOfType(JScrollPane.class,
+									getCurrentKeyboardFocusManager().getFocusOwner()) == scrollPane;
+					conditionState.set(ConditionState.HIDDEN);
+					if (parentOfFocusOwner) {
+						table.requestFocusInWindow();
+					}
+					break;
 			}
-			else {
-				advancedState.set(true);
-			}
-		}
-		else {
-			advancedState.set(false);
-			visibleState.set(true);
 		}
 	}
 
@@ -2018,44 +1942,33 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private static final void selectConditionPanel(TableConditionPanel<Attribute<?>> tableConditionPanel,
-																								 JScrollPane conditionPanelScrollPane, State conditionPanelAdvancedState,
-																								 State conditionPanelVisibleState, FilterTable<Entity, Attribute<?>> table,
+																								 Value<ConditionState> conditionState,
+																								 FilterTable<Entity, Attribute<?>> table,
 																								 String dialogTitle, EntityDefinition entityDefinition) {
-		if (tableConditionPanel != null) {
-			List<Attribute<?>> attributes = tableConditionPanel.conditionPanels().stream()
-							.map(panel -> panel.conditionModel().columnIdentifier())
-							.filter(attribute -> table.getColumnModel().visible(attribute).get())
-							.collect(toList());
-			if (attributes.size() == 1) {
-				displayConditionPanel(conditionPanelScrollPane, conditionPanelAdvancedState, conditionPanelVisibleState);
-				tableConditionPanel.conditionPanel(attributes.get(0))
-								.ifPresent(ColumnConditionPanel::requestInputFocus);
-			}
-			else if (!attributes.isEmpty()) {
-				List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
-								.map(attribute -> entityDefinition.attributes().definition(attribute))
-								.sorted(AttributeDefinition.definitionComparator())
-								.collect(toList());
-				Dialogs.selectionDialog(sortedDefinitions)
-								.owner(table)
-								.locationRelativeTo(table.getParent())
-								.title(dialogTitle)
-								.selectSingle()
-								.flatMap(attributeDefinition -> tableConditionPanel.conditionPanel(attributeDefinition.attribute()))
-								.ifPresent(conditionPanel -> {
-									displayConditionPanel(conditionPanelScrollPane, conditionPanelAdvancedState, conditionPanelVisibleState);
-									((ColumnConditionPanel<?, ?>) conditionPanel).requestInputFocus();
-								});
-			}
+		List<Attribute<?>> attributes = tableConditionPanel.conditionPanels().stream()
+						.map(panel -> panel.conditionModel().columnIdentifier())
+						.filter(attribute -> table.getColumnModel().visible(attribute).get())
+						.collect(toList());
+		if (attributes.size() == 1) {
+			conditionState.map(panelState -> panelState == ConditionState.HIDDEN ? ConditionState.SIMPLE : panelState);
+			tableConditionPanel.conditionPanel(attributes.get(0))
+							.ifPresent(ColumnConditionPanel::requestInputFocus);
 		}
-	}
-
-	private static void displayConditionPanel(JScrollPane conditionPanelScrollPane,
-																						State conditionPanelAdvancedState,
-																						State conditionPanelVisibleState) {
-		if (conditionPanelScrollPane != null && !conditionPanelScrollPane.isVisible()) {
-			conditionPanelAdvancedState.set(false);
-			conditionPanelVisibleState.set(true);
+		else if (!attributes.isEmpty()) {
+			List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
+							.map(attribute -> entityDefinition.attributes().definition(attribute))
+							.sorted(AttributeDefinition.definitionComparator())
+							.collect(toList());
+			Dialogs.selectionDialog(sortedDefinitions)
+							.owner(table)
+							.locationRelativeTo(table.getParent())
+							.title(dialogTitle)
+							.selectSingle()
+							.flatMap(attributeDefinition -> tableConditionPanel.conditionPanel(attributeDefinition.attribute()))
+							.ifPresent(conditionPanel -> {
+								conditionState.map(panelState -> panelState == ConditionState.HIDDEN ? ConditionState.SIMPLE : panelState);
+								((ColumnConditionPanel<?, ?>) conditionPanel).requestInputFocus();
+							});
 		}
 	}
 
@@ -2067,11 +1980,10 @@ public class EntityTablePanel extends JPanel {
 		return constraints;
 	}
 
-	private static JScrollPane createHiddenLinkedScrollPane(JScrollPane parentScrollPane, JComponent componentToScroll) {
+	private static JScrollPane createLinkedScrollPane(JScrollPane parentScrollPane, JComponent componentToScroll) {
 		return Components.scrollPane(componentToScroll)
 						.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
 						.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
-						.visible(false)
 						.onBuild(scrollPane -> linkBoundedRangeModels(
 										parentScrollPane.getHorizontalScrollBar().getModel(),
 										scrollPane.getHorizontalScrollBar().getModel()))
@@ -2164,20 +2076,22 @@ public class EntityTablePanel extends JPanel {
 		public static final PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue(EntityTablePanel.class.getName() + ".orderQueryBySortOrder", false);
 
 		/**
-		 * Specifies whether table condition panels should be visible or not by default<br>
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * Specifies the default initial table condition panel state<br>
+		 * Value type: {@link ConditionState}<br>
+		 * Default value: {@link ConditionState#HIDDEN}
 		 */
-		public static final PropertyValue<Boolean> CONDITION_PANEL_VISIBLE =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".conditionPanelVisible", false);
+		public static final PropertyValue<ConditionState> CONDITION_STATE =
+						Configuration.enumValue(EntityTablePanel.class.getName() + ".conditionState",
+										ConditionState.class, ConditionState.HIDDEN);
 
 		/**
-		 * Specifies whether table filter panels should be visible or not by default<br>
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * Specifies the default initial table filter panel state<br>
+		 * Value type: {@link ConditionState}<br>
+		 * Default value: {@link ConditionState#HIDDEN}
 		 */
-		public static final PropertyValue<Boolean> FILTER_PANEL_VISIBLE =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".filterPanelVisible", false);
+		public static final PropertyValue<ConditionState> FILTER_STATE =
+						Configuration.enumValue(EntityTablePanel.class.getName() + ".filterState",
+										ConditionState.class, ConditionState.HIDDEN);
 
 		/**
 		 * Specifies whether table summary panel should be visible or not by default<br>
@@ -2728,20 +2642,24 @@ public class EntityTablePanel extends JPanel {
 			if (configuration.includeConditionPanel) {
 				if (conditionPanel == null) {
 					conditionPanel = createConditionPanel();
+					conditionPanel.state().addConsumer(conditionState ->
+									refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
+													|| conditionState != ConditionState.HIDDEN));
 				}
-				conditionPanelScrollPane = createHiddenLinkedScrollPane(tableScrollPane, (JComponent) conditionPanel);
+				conditionPanelScrollPane = createLinkedScrollPane(tableScrollPane, (JComponent) conditionPanel);
 				add(conditionPanelScrollPane, BorderLayout.NORTH);
 			}
 			JPanel tableSouthPanel = new JPanel(new BorderLayout());
 			if (configuration.includeSummaryPanel && containsSummaryModels(table)) {
 				summaryPanel = createSummaryPanel();
 				if (summaryPanel != null) {
-					summaryPanelScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
+					summaryPanelScrollPane = createLinkedScrollPane(tableScrollPane, summaryPanel);
+					summaryPanelScrollPane.setVisible(false);
 					tableSouthPanel.add(summaryPanelScrollPane, BorderLayout.NORTH);
 				}
 			}
 			if (configuration.includeFilterPanel) {
-				filterPanelScrollPane = createHiddenLinkedScrollPane(tableScrollPane, table.filterPanel());
+				filterPanelScrollPane = createLinkedScrollPane(tableScrollPane, table.filterPanel());
 				tableSouthPanel.add(filterPanelScrollPane, BorderLayout.CENTER);
 			}
 			add(tableScrollPane, BorderLayout.CENTER);

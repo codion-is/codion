@@ -26,6 +26,7 @@ import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ConstraintCo
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Schema;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -84,7 +85,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 		Arrays.stream(FlatAllIJThemes.INFOS)
 						.forEach(LookAndFeelProvider::addLookAndFeel);
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		EntityTablePanel.Config.CONDITION_PANEL_VISIBLE.set(true);
+		EntityTablePanel.Config.CONDITION_STATE.set(ConditionState.SIMPLE);
 		EntityApplicationPanel.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
 						.applicationName("Schema Browser")
 						.domainType(SchemaBrowser.DOMAIN)

@@ -39,6 +39,7 @@ import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -256,6 +257,9 @@ public final class FilterTable<R, C> extends JTable {
 		this.doubleClickAction = Value.nullable(builder.doubleClickAction).build();
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.sortingEnabled = State.state(builder.sortingEnabled);
+		if (builder.filterState != ConditionState.HIDDEN) {
+			filterPanel().state().set(builder.filterState);
+		}
 		autoStartsEdit(builder.autoStartsEdit);
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);
@@ -1033,6 +1037,12 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> autoResizeMode(int autoResizeMode);
 
 		/**
+		 * @param filterState the initial filter panel state
+		 * @return this builder instance
+		 */
+		Builder<R, C> filterState(ConditionState filterState);
+
+		/**
 		 * @param shortcuts provides this tables {@link KeyboardShortcuts} instance.
 		 * @return this builder instance
 		 */
@@ -1094,6 +1104,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean columnReorderingAllowed = ALLOW_COLUMN_REORDERING.get();
 		private boolean columnResizingAllowed = true;
 		private int autoResizeMode = AUTO_RESIZE_MODE.get();
+		private ConditionState filterState = ConditionState.HIDDEN;
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = requireNonNull(tableModel);
@@ -1170,6 +1181,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> autoResizeMode(int autoResizeMode) {
 			this.autoResizeMode = autoResizeMode;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> filterState(ConditionState filterState) {
+			this.filterState = requireNonNull(filterState);
 			return this;
 		}
 

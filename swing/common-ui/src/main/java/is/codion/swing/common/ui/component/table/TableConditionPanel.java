@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.table.TableConditionModel;
-import is.codion.common.state.State;
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.control.Controls;
 
 import java.util.Collection;
@@ -42,9 +42,9 @@ public interface TableConditionPanel<C> {
 	Collection<? extends ColumnConditionPanel<C, ?>> conditionPanels();
 
 	/**
-	 * @return the state controlling the advanced view status of this condition panel
+	 * @return the value controlling the condition panel state
 	 */
-	State advanced();
+	Value<ColumnConditionPanel.ConditionState> state();
 
 	/**
 	 * @param <T> the column value type

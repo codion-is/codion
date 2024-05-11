@@ -49,7 +49,6 @@ public final class Messages {
 	private static final String CLEAR = "clear";
 	private static final String CLEAR_MNEMONIC = "clear_mnemonic";
 	private static final String CLEAR_TIP = "clear_tip";
-	private static final String ADVANCED = "advanced";
 	private static final String REFRESH = "refresh";
 	private static final String REFRESH_MNEMONIC = "refresh_mnemonic";
 	private static final String REFRESH_TIP = "refresh_tip";
@@ -173,13 +172,6 @@ public final class Messages {
 	 */
 	public static char clearMnemonic() {
 		return get(CLEAR_MNEMONIC).charAt(0);
-	}
-
-	/**
-	 * @return advanced
-	 */
-	public static String advanced() {
-		return get(ADVANCED);
 	}
 
 	/**

@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.DetailModelLink;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -1670,16 +1671,16 @@ public class EntityPanel extends JPanel {
 		Builder refreshWhenInitialized(boolean refreshWhenInitialized);
 
 		/**
-		 * @param conditionPanelVisible if true then the table condition panel is made visible when the panel is initialized
+		 * @param conditionPanelState the initial condition panel state
 		 * @return this builder instance
 		 */
-		Builder conditionPanelVisible(boolean conditionPanelVisible);
+		Builder conditionState(ConditionState conditionState);
 
 		/**
-		 * @param filterPanelVisible if true then the table filter panel is made visible when the panel is initialized
+		 * @param filterState the initial filter panel state
 		 * @return this builder instance
 		 */
-		Builder filterPanelVisible(boolean filterPanelVisible);
+		Builder filterState(ConditionState filterState);
 
 		/**
 		 * @param detailLayout provides the detail panel layout to use

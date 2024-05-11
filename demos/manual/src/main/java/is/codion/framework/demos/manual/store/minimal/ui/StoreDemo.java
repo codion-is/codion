@@ -24,6 +24,7 @@ import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.minimal.domain.Store;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -111,7 +112,7 @@ public class StoreDemo {
 		customerPanel.addDetailPanel(addressPanel);
 
 		addressPanel.tablePanel()
-						.conditionPanelVisible().set(true);
+						.conditionPanel().state().set(ConditionState.SIMPLE);
 
 		customerModel.tableModel().refresh();
 		customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));

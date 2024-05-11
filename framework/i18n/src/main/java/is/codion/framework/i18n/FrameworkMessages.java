@@ -68,10 +68,11 @@ public final class FrameworkMessages {
 	private static final String CONFIRM_UPDATE = "confirm_update";
 	private static final String CONFIRM_DELETE = "confirm_delete";
 	private static final String CONFIRM_INSERT = "confirm_insert";
-	private static final String SHOW = "show";
 	private static final String NO_SEARCH_RESULTS = "no_search_results";
-	private static final String SEARCH = "search";
-	private static final String FILTER = "filter";
+	private static final String SEARCH_NOUN = "search_noun";
+	private static final String SEARCH_VERB = "search_verb";
+	private static final String filter_NOUN = "filter_noun";
+	private static final String FILTER_VERB = "filter_verb";
 	private static final String SEARCH_MNEMONIC = "search_mnemonic";
 	private static final String COPY_TABLE_WITH_HEADER = "copy_table_with_header";
 
@@ -336,13 +337,6 @@ public final class FrameworkMessages {
 	}
 
 	/**
-	 * @return show
-	 */
-	public static String show() {
-		return get(SHOW);
-	}
-
-	/**
 	 * @return no search results
 	 */
 	public static String noSearchResults() {
@@ -350,17 +344,31 @@ public final class FrameworkMessages {
 	}
 
 	/**
-	 * @return search
+	 * @return search as a verb
 	 */
-	public static String search() {
-		return get(SEARCH);
+	public static String searchVerb() {
+		return get(SEARCH_VERB);
 	}
 
 	/**
-	 * @return filter
+	 * @return search as a noun
 	 */
-	public static String filter() {
-		return get(FILTER);
+	public static String searchNoun() {
+		return get(SEARCH_NOUN);
+	}
+
+	/**
+	 * @return filter as a verb
+	 */
+	public static String filterVerb() {
+		return get(FILTER_VERB);
+	}
+
+	/**
+	 * @return filter as a noun
+	 */
+	public static String filterNoun() {
+		return get(filter_NOUN);
 	}
 
 	/**
