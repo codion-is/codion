@@ -124,7 +124,7 @@ import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
-import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.columnConditionPanel;
+import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.filterColumnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
@@ -222,7 +222,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Toggles the condition panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-S
-		 * @see TableConditionPanel#toggleState()
+		 * @see TableConditionPanel#state()
 		 */
 		TOGGLE_CONDITION_PANEL(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
@@ -233,7 +233,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Toggles the filter panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-F
-		 * @see TableConditionPanel#toggleState()
+		 * @see TableConditionPanel#state()
 		 */
 		TOGGLE_FILTER_PANEL(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
@@ -992,7 +992,7 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * @return the table condition panel
-	 * @see FilterTableConditionPanel#filterTableConditionPanel(TableConditionModel, List, FilterTableColumnModel)
+	 * @see FilterTableConditionPanel#filterTableConditionPanel(TableConditionModel, Collection, FilterTableColumnModel)
 	 */
 	protected TableConditionPanel<Attribute<?>> createConditionPanel() {
 		return (TableConditionPanel<Attribute<?>>) filterTableConditionPanel(
@@ -1486,7 +1486,7 @@ public class EntityTablePanel extends JPanel {
 
 	private FilterColumnConditionPanel<? extends Attribute<?>, ?> createConditionPanel(ColumnConditionModel<? extends Attribute<?>, ?> conditionModel) {
 		FilterColumnConditionPanel<? extends Attribute<?>, ?> columnConditionPanel =
-						columnConditionPanel(conditionModel, (FieldFactory<Attribute<?>>) configuration.conditionFieldFactory);
+						filterColumnConditionPanel(conditionModel, (FieldFactory<Attribute<?>>) configuration.conditionFieldFactory);
 		columnConditionPanel.components().forEach(component ->
 						configureComponent(component, conditionModel.columnIdentifier()));
 
@@ -1711,14 +1711,18 @@ public class EntityTablePanel extends JPanel {
 					conditionState.set(ConditionState.ADVANCED);
 					break;
 				case ADVANCED:
-					boolean parentOfFocusOwner = parentOfType(JScrollPane.class,
-									getCurrentKeyboardFocusManager().getFocusOwner()) == scrollPane;
-					conditionState.set(ConditionState.HIDDEN);
-					if (parentOfFocusOwner) {
-						table.requestFocusInWindow();
-					}
+					setConditionStateAdvance(scrollPane, conditionState);
 					break;
 			}
+		}
+	}
+
+	private void setConditionStateAdvance(JScrollPane scrollPane, Value<ConditionState> conditionState) {
+		boolean parentOfFocusOwner = parentOfType(JScrollPane.class,
+						getCurrentKeyboardFocusManager().getFocusOwner()) == scrollPane;
+		conditionState.set(ConditionState.HIDDEN);
+		if (parentOfFocusOwner) {
+			table.requestFocusInWindow();
 		}
 	}
 

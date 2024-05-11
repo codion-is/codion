@@ -849,7 +849,7 @@ public final class FilterTable<R, C> extends JTable {
 						.collect(toList());
 		List<ColumnConditionPanel<? extends C, ?>> conditionPanels = new ArrayList<>();
 		for (ColumnConditionModel<? extends C, ?> conditionModel : collect) {
-			ColumnConditionPanel<? extends C, ?> conditionPanel = FilterColumnConditionPanel.columnConditionPanel(conditionModel, filterFieldFactory);
+			ColumnConditionPanel<? extends C, ?> conditionPanel = FilterColumnConditionPanel.filterColumnConditionPanel(conditionModel, filterFieldFactory);
 			configureComponents(conditionPanel, columnModel().column(conditionPanel.conditionModel().columnIdentifier()).getCellRenderer());
 			conditionPanels.add(conditionPanel);
 		}

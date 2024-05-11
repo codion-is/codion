@@ -71,12 +71,12 @@ import static javax.swing.SwingConstants.CENTER;
 
 /**
  * A UI implementation for {@link ColumnConditionModel}.
- * For instances use the {@link #columnConditionPanel(ColumnConditionModel)} or
- * {@link #columnConditionPanel(ColumnConditionModel, FieldFactory)} factory methods.
+ * For instances use the {@link #filterColumnConditionPanel(ColumnConditionModel)} or
+ * {@link #filterColumnConditionPanel(ColumnConditionModel, FieldFactory)} factory methods.
  * @param <C> the type of objects used to identify columns
  * @param <T> the column value type
- * @see #columnConditionPanel(ColumnConditionModel)
- * @see #columnConditionPanel(ColumnConditionModel, FieldFactory)
+ * @see #filterColumnConditionPanel(ColumnConditionModel)
+ * @see #filterColumnConditionPanel(ColumnConditionModel, FieldFactory)
  */
 public final class FilterColumnConditionPanel<C, T> extends JPanel implements ColumnConditionPanel<C, T> {
 
@@ -258,8 +258,8 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 	 * @param <T> the column value type
 	 * @return a new {@link FilterColumnConditionPanel} instance or an empty Optional in case the column type is not supported
 	 */
-	public static <C, T> FilterColumnConditionPanel<? extends C, T> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel) {
-		return columnConditionPanel(conditionModel, new DefaultFieldFactory<>());
+	public static <C, T> FilterColumnConditionPanel<? extends C, T> filterColumnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel) {
+		return filterColumnConditionPanel(conditionModel, new DefaultFieldFactory<>());
 	}
 
 	/**
@@ -271,8 +271,8 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 	 * @return a new {@link FilterColumnConditionPanel} instance or an empty Optional in case the column type is not supported by the given bound field factory
 	 * @throws IllegalArgumentException in case the given field factory does not support the column value type
 	 */
-	public static <C, T> FilterColumnConditionPanel<? extends C, T> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel,
-																																											 FieldFactory<C> fieldFactory) {
+	public static <C, T> FilterColumnConditionPanel<? extends C, T> filterColumnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel,
+																																														 FieldFactory<C> fieldFactory) {
 		if (requireNonNull(fieldFactory).supportsType(requireNonNull(conditionModel).columnClass())) {
 			return new FilterColumnConditionPanel<>(conditionModel, fieldFactory);
 		}

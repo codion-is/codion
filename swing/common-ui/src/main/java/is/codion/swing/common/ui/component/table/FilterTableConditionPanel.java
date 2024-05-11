@@ -34,7 +34,6 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -49,7 +48,7 @@ import static java.util.stream.Collectors.toMap;
 /**
  * A default filter table condition panel.
  * @param <C> the column identifier type
- * @see #filterTableConditionPanel(TableConditionModel, List, FilterTableColumnModel)
+ * @see #filterTableConditionPanel(TableConditionModel, Collection, FilterTableColumnModel)
  */
 public final class FilterTableConditionPanel<C> extends JPanel implements TableConditionPanel<C> {
 

@@ -1671,7 +1671,7 @@ public class EntityPanel extends JPanel {
 		Builder refreshWhenInitialized(boolean refreshWhenInitialized);
 
 		/**
-		 * @param conditionPanelState the initial condition panel state
+		 * @param conditionState the initial condition panel state
 		 * @return this builder instance
 		 */
 		Builder conditionState(ConditionState conditionState);

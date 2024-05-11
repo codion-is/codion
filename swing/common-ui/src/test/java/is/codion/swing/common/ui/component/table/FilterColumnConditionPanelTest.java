@@ -22,7 +22,6 @@ import is.codion.common.model.table.ColumnConditionModel;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.columnConditionPanel;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilterColumnConditionPanelTest {
@@ -31,18 +30,18 @@ public class FilterColumnConditionPanelTest {
 	void test() {
 		final String key = "key";
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder(key, String.class).build();
-		FilterColumnConditionPanel<?, String> panel = columnConditionPanel(model);
+		FilterColumnConditionPanel<?, String> panel = FilterColumnConditionPanel.filterColumnConditionPanel(model);
 		assertEquals(model, panel.conditionModel());
 		assertNotNull(panel.equalField());
 		assertNotNull(panel.upperBoundField());
 		assertNotNull(panel.lowerBoundField());
-		assertThrows(NullPointerException.class, () -> FilterColumnConditionPanel.<String, String>columnConditionPanel(null, null));
+		assertThrows(NullPointerException.class, () -> FilterColumnConditionPanel.<String, String>filterColumnConditionPanel(null, null));
 	}
 
 	@Test
 	void lockedModel() {
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("key", String.class).build();
 		model.locked().set(true);
-		columnConditionPanel(model);
+		FilterColumnConditionPanel.filterColumnConditionPanel(model);
 	}
 }
