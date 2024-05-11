@@ -18,7 +18,6 @@
  */
 package is.codion.common.state;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultStateGroup implements State.Group {
 
-	private final List<WeakReference<State>> members = new ArrayList<>();
+	private final List<State> members = new ArrayList<>();
 
 	DefaultStateGroup(State... states) {
 		for (State state : requireNonNull(states)) {
@@ -45,11 +44,10 @@ final class DefaultStateGroup implements State.Group {
 	public void add(State state) {
 		requireNonNull(state);
 		synchronized (members) {
-			if (members.stream().anyMatch(reference -> reference.get() == state)) {
-				return;//no duplicate states
+			if (!members.contains(state)) {
+				members.add(state);
+				stateChanged(state);
 			}
-			members.add(new WeakReference<>(state));
-			stateChanged(state);
 		}
 		state.addConsumer(value -> {
 			synchronized (members) {
@@ -66,10 +64,8 @@ final class DefaultStateGroup implements State.Group {
 	}
 
 	private void stateChanged(State state) {
-		members.removeIf(reference -> reference.get() == null);
 		if (state.get()) {
 			members.stream()
-							.map(WeakReference::get)
 							.filter(s -> s != state)
 							.forEach(s -> s.set(false));
 		}

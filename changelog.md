@@ -14,6 +14,7 @@ Codion Change Log
 - Resources.get() renamed getString(), consistent with ResourceBundle.
 - Operator.IN and NOT_IN added.
 - Operator, reordered to group single value operators.
+- State.Group no longer uses weak references for member states.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 - Database.createConnectionPool() now returns the pool.
