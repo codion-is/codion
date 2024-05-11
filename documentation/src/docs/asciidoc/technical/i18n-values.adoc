@@ -42,7 +42,6 @@ is/codion/common/i18n/Messages_is_IS.properties
 |===
 |key|default|is_IS
 
-|advanced|Advanced|Nákvæm
 |cancel|Cancel|Hætta við
 |cancel_mnemonic|C|H
 |clear|Clear|Hreinsa
@@ -297,20 +296,21 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |exit_tip|Exit the application|Hætta í forritinu
 |file|File|Skrá
 |file_mnemonic|F|K
-|filter|Filter|Sýja
+|filter_noun|Filter|Sýjun
+|filter_verb|Filter|Sýja
 |insert|Add|Vista
 |insert_mnemonic|A|V
 |insert_tip|Add a new record based on the given values|Vista nýja færslu byggða á innslegnum gildum
 |no_search_results|Search did not return any results|Leit skilaði engum niðurstöðum
 |save|Save|Vista
 |save_mnemonic|S|V
-|search|Search|Leita
 |search_mnemonic|S|T
+|search_noun|Search|Leit
+|search_verb|Search|Leita
 |select_filter_field|Select filter field|Veldu sýjunarreit
 |select_input_field|Select input field|Veldu innsláttarreit
 |select_search_field|Select search field|Veldu leitarreit
 |settings|Settings|Stillingar
-|show|Show|Sýna
 |support_tables|Support Tables|Stoðtöflur
 |support_tables_mnemonic|O|O
 |unsaved_data_warning|Unsaved data will be lost, continue?|Óvistuð gögn fundust, viltu halda áfram?
@@ -481,6 +481,22 @@ is/codion/swing/common/ui/component/table/FilterTable_is_IS.properties
 |select|Select|Velja
 |select_columns|Select columns|Velja dálka
 |single_selection_mode|Single selection|Einnar línu val
+|===
+
+=== is/codion/swing/common/ui/component/table/FilterTableConditionPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/table/FilterTableConditionPanel.properties
+is/codion/swing/common/ui/component/table/FilterTableConditionPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|advanced|Advanced|Nákvæm
+|hidden|Hidden|Falin
+|simple|Simple|Einföld
 |===
 
 === is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFilter.java
