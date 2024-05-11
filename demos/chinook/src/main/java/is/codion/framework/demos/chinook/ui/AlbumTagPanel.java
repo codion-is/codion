@@ -35,14 +35,14 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.inputDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.*;
 
 final class AlbumTagPanel extends JPanel {
 
@@ -103,18 +103,18 @@ final class AlbumTagPanel extends JPanel {
 	}
 
 	private void setupKeyEvents() {
-		KeyEvents.builder(KeyEvent.VK_INSERT)
+		KeyEvents.builder(VK_INSERT)
 						.action(addTagControl)
 						.enable(tagsValue.component());
-		KeyEvents.builder(KeyEvent.VK_DELETE)
+		KeyEvents.builder(VK_DELETE)
 						.action(removeTagControl)
 						.enable(tagsValue.component());
-		KeyEvents.builder(KeyEvent.VK_UP)
-						.modifiers(InputEvent.CTRL_DOWN_MASK)
+		KeyEvents.builder(VK_UP)
+						.modifiers(CTRL_DOWN_MASK)
 						.action(moveSelectionUpControl)
 						.enable(tagsValue.component());
-		KeyEvents.builder(KeyEvent.VK_DOWN)
-						.modifiers(InputEvent.CTRL_DOWN_MASK)
+		KeyEvents.builder(VK_DOWN)
+						.modifiers(CTRL_DOWN_MASK)
 						.action(moveSelectionDownControl)
 						.enable(tagsValue.component());
 	}
