@@ -160,6 +160,7 @@ Codion Change Log
 - EntityTablePanel, condition panel field configuration moved to EntityFieldFactory.
 - TabbedDetailLayout, detail model link now deactivated when the detail panel is hidden.
 - EntityTablePanel bug fixed, now overrides updateUI() in order to update hidden components.
+- EntityDialogs, add button caption now Add instead of Insert.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.

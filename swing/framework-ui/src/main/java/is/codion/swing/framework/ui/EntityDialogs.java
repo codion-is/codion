@@ -647,7 +647,7 @@ public final class EntityDialogs {
 											.build())
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
-							.defaultAction(createInsertControl(editPanel,
+							.defaultAction(createAddControl(editPanel,
 											new InsertConsumer(disposeDialog)))
 							.escapeAction(createCancelControl(disposeDialog))
 							.title(FrameworkMessages.add() + " - " + editModel.entities()
@@ -673,14 +673,14 @@ public final class EntityDialogs {
 			}
 		}
 
-		private static Control createInsertControl(EntityEditPanel editPanel,
-																							 Consumer<Collection<Entity>> onInsert) {
+		private static Control createAddControl(EntityEditPanel editPanel,
+																						Consumer<Collection<Entity>> onInsert) {
 			return Control.builder(editPanel.insertCommand()
 											.confirm(false)
 											.onInsert(onInsert)
 											.build())
-							.name(FrameworkMessages.insert())
-							.mnemonic(FrameworkMessages.insertMnemonic())
+							.name(FrameworkMessages.add())
+							.mnemonic(FrameworkMessages.addMnemonic())
 							.onException(new EditPanelExceptionHandler(editPanel))
 							.build();
 		}
