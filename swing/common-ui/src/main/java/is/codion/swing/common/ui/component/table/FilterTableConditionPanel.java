@@ -24,6 +24,7 @@ import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -76,6 +77,12 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel), collect);
 		setLayout(new BorderLayout());
 		configureStates();
+	}
+
+	@Override
+	public void updateUI() {
+		super.updateUI();
+		Utilities.updateUI(componentPanel);
 	}
 
 	@Override

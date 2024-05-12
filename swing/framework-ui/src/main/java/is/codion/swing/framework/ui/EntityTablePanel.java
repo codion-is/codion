@@ -47,6 +47,7 @@ import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
 import is.codion.swing.common.ui.Cursors;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
@@ -514,6 +515,13 @@ public class EntityTablePanel extends JPanel {
 		this.toolBarConfiguration = createToolBarConfiguration();
 		bindTableEvents();
 		applyPreferences();
+	}
+
+	@Override
+	public void updateUI() {
+		super.updateUI();
+		Utilities.updateUI(conditionPanelScrollPane, filterPanelScrollPane);
+		Utilities.updateUI((JComponent) conditionPanel);
 	}
 
 	/**
