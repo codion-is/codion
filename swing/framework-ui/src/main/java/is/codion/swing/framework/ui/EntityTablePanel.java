@@ -1486,13 +1486,13 @@ public class EntityTablePanel extends JPanel {
 		if (!configuration.includeConditionPanel) {
 			return null;
 		}
-		TableConditionPanel<Attribute<?>> conditionPanel = configuration.tableConditionPanelFactory
+		TableConditionPanel<Attribute<?>> tableConditionPanel = configuration.tableConditionPanelFactory
 						.create(tableModel.conditionModel(), createConditionPanels(), table.getColumnModel());
-		if (!(conditionPanel instanceof JComponent)) {
+		if (!(tableConditionPanel instanceof JComponent)) {
 			throw new IllegalStateException("Table condition panel must extend JComponent");
 		}
 
-		return conditionPanel;
+		return tableConditionPanel;
 	}
 
 	private void bindTableEvents() {
@@ -2228,7 +2228,7 @@ public class EntityTablePanel extends JPanel {
 							.cellRendererFactory(new EntityTableCellRendererFactory(tablePanel.tableModel))
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
-			this.conditionFieldFactory = new EntityFieldFactory(entityComponents(entityDefinition), () -> tablePanel.table.columnModel());
+			this.conditionFieldFactory = new EntityFieldFactory(entityComponents(entityDefinition), this::columnModel);
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
 							.map(AttributeDefinition::attribute)
@@ -2546,6 +2546,10 @@ public class EntityTablePanel extends JPanel {
 			return editAttributeSelection == EditAttributeSelection.MENU ?
 							EDIT_ATTRIBUTE_CONTROLS :
 							EDIT_SELECTED_ATTRIBUTE;
+		}
+
+		private FilterTableColumnModel<Attribute<?>> columnModel() {
+			return tablePanel.table.columnModel();
 		}
 
 		private static final class DefaultTableConditionPanelFactory
