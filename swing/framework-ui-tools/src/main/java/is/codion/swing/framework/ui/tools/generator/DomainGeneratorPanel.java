@@ -50,8 +50,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
@@ -63,6 +65,7 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -80,6 +83,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class DomainGeneratorPanel extends JPanel {
 
@@ -100,6 +104,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	private final JTextArea apiTextArea;
 	private final JTextArea implementationTextArea;
 	private final JTextArea combinedTextArea;
+	private final JTabbedPane sourceTabbedPane;
 	private final SearchHighlighter apiHighlighter;
 	private final SearchHighlighter implementationHighlighter;
 	private final SearchHighlighter combinedHighlighter;
@@ -115,6 +120,7 @@ public final class DomainGeneratorPanel extends JPanel {
 		apiTextArea = createSourceTextArea(model.domainApi());
 		implementationTextArea = createSourceTextArea(model.domainImpl());
 		combinedTextArea = createSourceTextArea(model.domainCombined());
+		sourceTabbedPane = createSourceTabbedPane();
 		apiHighlighter = searchHighlighter(apiTextArea);
 		implementationHighlighter = searchHighlighter(implementationTextArea);
 		combinedHighlighter = searchHighlighter(combinedTextArea);
@@ -124,38 +130,26 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private void initializeUI() {
-		JPanel packagePanel = createPackagePanel(model);
-		JPanel schemaTablePanel = borderLayoutPanel()
-						.northComponent(label()
-										.preferredHeight(packagePanel.getPreferredSize().height)
-										.build())
-						.centerComponent(splitPane()
-										.orientation(JSplitPane.VERTICAL_SPLIT)
-										.resizeWeight(RESIZE_WEIGHT)
-										.topComponent(createScrollablePanel(schemaTable, "Schemas (Alt-1)"))
-										.bottomComponent(createScrollablePanel(entityTable, "Entities (Alt-2)"))
-										.build())
-						.build();
-
-		JPanel sourcePanel = borderLayoutPanel()
-						.centerComponent(tabbedPane()
-										.tabBuilder("API/Impl", createApiImplPanel())
-										.mnemonic('A')
-										.add()
-										.tabBuilder("Combined", createCombinedPanel())
-										.mnemonic('C')
-										.add()
+		JPanel schemaSourceDirPanel = borderLayoutPanel()
+						.northComponent(createSourceDirectoryPanel())
+						.centerComponent(borderLayoutPanel()
+										.centerComponent(splitPane()
+														.orientation(JSplitPane.VERTICAL_SPLIT)
+														.resizeWeight(RESIZE_WEIGHT)
+														.topComponent(createScrollablePanel(schemaTable, "Schemas (Alt-1)"))
+														.bottomComponent(createScrollablePanel(entityTable, "Entities (Alt-2)"))
+														.build())
 										.build())
 						.build();
 
 		JPanel sourcePackagePanel = borderLayoutPanel()
-						.northComponent(packagePanel)
-						.centerComponent(sourcePanel)
+						.northComponent(createPackageSavePanel())
+						.centerComponent(sourceTabbedPane)
 						.build();
 
 		JSplitPane splitPane = splitPane()
 						.resizeWeight(RESIZE_WEIGHT)
-						.leftComponent(schemaTablePanel)
+						.leftComponent(schemaSourceDirPanel)
 						.rightComponent(sourcePackagePanel)
 						.build();
 
@@ -242,29 +236,106 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 	}
 
+	private JTabbedPane createSourceTabbedPane() {
+		return tabbedPane()
+						.tabBuilder("API/Impl", createApiImplPanel())
+						.mnemonic('A')
+						.add()
+						.tabBuilder("Combined", createCombinedPanel())
+						.mnemonic('C')
+						.add()
+						.build();
+	}
+
 	private static Font monospaceFont() {
 		Font font = UIManager.getFont("TextArea.font");
 
 		return new Font(Font.MONOSPACED, font.getStyle(), font.getSize());
 	}
 
-	private JPanel createPackagePanel(DomainGeneratorModel model) {
+	private JPanel createPackageSavePanel() {
 		JLabel packageLabel = label("Package")
 						.displayedMnemonic('P')
 						.build();
 
 		return borderLayoutPanel()
-						.centerComponent(stringField(model.domainPackage())
-										.columns(42)
-										.hint("(Alt-P)")
-										.onBuild(field -> KeyEvents.builder(KeyEvent.VK_P)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-														.modifiers(InputEvent.ALT_DOWN_MASK)
-														.action(control(field::requestFocusInWindow))
-														.enable(this))
-										.build(packageLabel::setLabelFor))
-						.border(BorderFactory.createTitledBorder("Package"))
+						.centerComponent(gridLayoutPanel(2, 1)
+										.add(packageLabel)
+										.add(createPackageField(packageLabel))
+										.build())
+						.eastComponent(gridLayoutPanel(2, 1)
+										.add(label(" ").build())
+										.add(button(Control.builder(this::save)
+														.name("Save...")
+														.mnemonic('S')
+														.enabled(model.saveEnabled()))
+														.build())
+										.build())
 						.build();
+	}
+
+	private JPanel createSourceDirectoryPanel() {
+		JLabel sourceDirectoryLabel = label("Source directory")
+						.displayedMnemonic('D')
+						.build();
+		Control selectSourceDirectoryControl = Control.builder(this::selectSourceDirectory)
+						.name("...")
+						.build();
+
+		return borderLayoutPanel()
+						.centerComponent(gridLayoutPanel(2, 1)
+										.add(sourceDirectoryLabel)
+										.add(createSourceDirectoryField(sourceDirectoryLabel, selectSourceDirectoryControl))
+										.build())
+						.eastComponent(gridLayoutPanel(2, 1)
+										.add(label(" ").build())
+										.add(button(selectSourceDirectoryControl).build())
+										.build())
+						.build();
+	}
+
+	private JTextField createPackageField(JLabel packageLabel) {
+		return stringField(model.domainPackage())
+						.hint("(Alt-P)")
+						.onBuild(field -> KeyEvents.builder(KeyEvent.VK_P)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.modifiers(InputEvent.ALT_DOWN_MASK)
+										.action(control(field::requestFocusInWindow))
+										.enable(this))
+						.build(packageLabel::setLabelFor);
+	}
+
+	private JTextField createSourceDirectoryField(JLabel sourceDirectoryLabel,
+																								Control selectSourceDirectoryControl) {
+		return stringField(model.sourceDirectory())
+						.hint("(Alt-D / INSERT)")
+						.editable(false)
+						.keyEvent(KeyEvents.builder(KeyEvent.VK_INSERT)
+										.action(selectSourceDirectoryControl))
+						.onBuild(field -> KeyEvents.builder(KeyEvent.VK_D)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.modifiers(InputEvent.ALT_DOWN_MASK)
+										.action(control(field::requestFocusInWindow))
+										.enable(this))
+						.build(sourceDirectoryLabel::setLabelFor);
+	}
+
+	private void selectSourceDirectory() {
+		model.sourceDirectory().set(Dialogs.fileSelectionDialog()
+						.startDirectory(DomainGeneratorModel.DEFAULT_SOURCE_DIRECTORY.get())
+						.selectDirectory()
+						.getAbsolutePath());
+	}
+
+	private void save() throws IOException {
+		if (sourceTabbedPane.getSelectedIndex() == 0) {
+			model.saveApiImpl();
+		}
+		else {
+			model.saveCombined();
+		}
+
+		showMessageDialog(this, "File(s) saved");
 	}
 
 	private static JPanel createScrollablePanel(JComponent component, String title) {

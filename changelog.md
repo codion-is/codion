@@ -165,6 +165,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.
+- DomainGeneratorPanel, save implemented.
 
 ## 0.17.43
 ### is.codion.common.core

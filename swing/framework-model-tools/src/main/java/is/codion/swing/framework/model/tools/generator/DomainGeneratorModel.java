@@ -21,6 +21,8 @@ package is.codion.swing.framework.model.tools.generator;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
@@ -29,6 +31,10 @@ import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.swing.framework.model.tools.metadata.MetaDataModel;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -40,10 +46,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static is.codion.common.Configuration.stringValue;
-import static is.codion.swing.framework.model.tools.generator.DomainToString.apiSearchString;
-import static is.codion.swing.framework.model.tools.generator.DomainToString.implSearchString;
+import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.swing.framework.model.tools.generator.DomainToString.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -57,6 +65,12 @@ public final class DomainGeneratorModel {
 	 */
 	public static final PropertyValue<String> DEFAULT_DOMAIN_PACKAGE =
 					stringValue("codion.domain.generator.defaultDomainPackage", "");
+
+	/**
+	 * The default source directory.
+	 */
+	public static final PropertyValue<String> DEFAULT_SOURCE_DIRECTORY =
+					stringValue("codion.domain.generator.defaultSourceDirectory", System.getProperty("user.dir"));
 
 	private static final Pattern PACKAGE_PATTERN =
 					Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$");
@@ -72,6 +86,9 @@ public final class DomainGeneratorModel {
 									.build();
 	private final Connection connection;
 	private final Value<String> domainPackageValue = Value.nonNull(DEFAULT_DOMAIN_PACKAGE.get()).build();
+	private final Value<String> sourceDirectoryValue = Value.nonNull(DEFAULT_SOURCE_DIRECTORY.get()).build();
+	private final State domainPackageSpecified = State.state();
+	private final State sourceDirectorySpecified = State.state();
 	private final Value<String> domainImplValue = Value.<String>nullable()
 					.notify(Notify.WHEN_SET)
 					.build();
@@ -120,6 +137,10 @@ public final class DomainGeneratorModel {
 		return domainPackageValue;
 	}
 
+	public Value<String> sourceDirectory() {
+		return sourceDirectoryValue;
+	}
+
 	public Value<String> apiSearchValue() {
 		return apiSearchValue;
 	}
@@ -136,7 +157,7 @@ public final class DomainGeneratorModel {
 	}
 
 	public void populateSelected(Consumer<String> schemaNotifier) {
-		schemaTableModel.selectionModel().getSelectedItems().forEach(schema -> {
+		schemaTableModel.selectionModel().selectedItem().ifPresent(schema -> {
 			metaDataModel.populateSchema(schema.name(), schemaNotifier);
 			schema.setDomain(new DatabaseDomain(schema.metadata));
 			int index = schemaTableModel.indexOf(schema);
@@ -146,10 +167,30 @@ public final class DomainGeneratorModel {
 		updateDomainSource();
 	}
 
+	public void saveApiImpl() throws IOException {
+		if (schemaTableModel.selectionModel().selectionNotEmpty().get()) {
+			SchemaRow schema = schemaTableModel.selectionModel().getSelectedItem();
+			saveApiImpl(savePath(new File(sourceDirectoryValue.get())), schema);
+		}
+	}
+
+	public void saveCombined() throws IOException {
+		if (schemaTableModel.selectionModel().selectionNotEmpty().get()) {
+			SchemaRow schema = schemaTableModel.selectionModel().getSelectedItem();
+			saveCombined(savePath(new File(sourceDirectoryValue.get())), schema);
+		}
+	}
+
+	public StateObserver saveEnabled() {
+		return State.and(domainPackageSpecified, sourceDirectorySpecified);
+	}
+
 	private void bindEvents() {
 		schemaTableModel.selectionModel().selectionEvent().addListener(entityTableModel::refresh);
 		schemaTableModel.selectionModel().selectionEvent().addListener(this::updateDomainSource);
 		domainPackageValue.addListener(this::updateDomainSource);
+		domainPackageValue.addConsumer(pkg -> domainPackageSpecified.set(!nullOrEmpty(pkg)));
+		sourceDirectoryValue.addConsumer(dir -> sourceDirectorySpecified.set(nonNull(dir)));
 		entityModel().selectionModel().selectedItemEvent().addConsumer(this::search);
 	}
 
@@ -185,6 +226,44 @@ public final class DomainGeneratorModel {
 						.filter(Optional::isPresent)
 						.map(Optional::get)
 						.collect(toList());
+	}
+
+	private Path savePath(File directory) throws IOException {
+		Path path = directory.toPath();
+		String domainPackage = domainPackageValue.get();
+		if (domainPackage != null) {
+			for (String pkg : domainPackage.split("\\.")) {
+				path = path.resolve(pkg);
+			}
+		}
+
+		return path;
+	}
+
+	private void saveApiImpl(Path path, SchemaRow schema) throws IOException {
+		String interfaceName = interfaceName(schema.domainModel.type().name(), true);
+		if (path.toFile().mkdirs()) {
+			Path filePath = path.resolve(interfaceName + ".java");
+			Files.write(filePath, singleton(domainApiValue.get()));
+			path = path.resolve("impl");
+			if (path.toFile().mkdirs()) {
+				filePath = path.resolve(interfaceName + "Impl.java");
+				Files.write(filePath, singleton(domainImplValue.get()));
+			}
+		}
+		else {
+			throw new IOException("Could not create directories: " + path);
+		}
+	}
+
+	private void saveCombined(Path path, SchemaRow schema) throws IOException {
+		String interfaceName = interfaceName(schema.domainModel.type().name(), true);
+		if (path.toFile().mkdirs()) {
+			Files.write(path.resolve(interfaceName + ".java"), singleton(domainCombinedValue.get()));
+		}
+		else {
+			throw new IOException("Could not create directories: " + path);
+		}
 	}
 
 	private final class SchemaItems implements Supplier<Collection<SchemaRow>> {

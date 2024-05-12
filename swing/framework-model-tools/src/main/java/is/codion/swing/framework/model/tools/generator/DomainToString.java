@@ -395,7 +395,7 @@ final class DomainToString {
 		return "column()";
 	}
 
-	private static String interfaceName(String tableName, boolean uppercase) {
+	static String interfaceName(String tableName, boolean uppercase) {
 		String name = tableName.toLowerCase();
 		if (name.contains(".")) {
 			name = name.substring(name.lastIndexOf('.') + 1);
