@@ -25,7 +25,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -68,7 +67,7 @@ public class DefaultEntityTableConditionModelTest {
 		EntityTableConditionModel model = new DefaultEntityTableConditionModel(Detail.TYPE,
 						CONNECTION_PROVIDER, new EntityConditionModelFactory(CONNECTION_PROVIDER));
 		//no search columns defined for master entity
-		ColumnConditionModel<? extends Attribute<Entity>, Entity> masterModel =
+		ColumnConditionModel<Attribute<?>, Entity> masterModel =
 						model.attributeModel(Detail.MASTER_FK);
 		assertThrows(IllegalStateException.class, () ->
 						((ForeignKeyConditionModel) masterModel).equalSearchModel().search());
@@ -92,7 +91,7 @@ public class DefaultEntityTableConditionModelTest {
 		boolean searchStateChanged = conditionModel.setInConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
 		assertTrue(searchStateChanged);
 		assertTrue(conditionModel.enabled(Employee.DEPARTMENT_FK));
-		ColumnConditionModel<ForeignKey, Entity> deptModel =
+		ColumnConditionModel<Attribute<?>, Entity> deptModel =
 						conditionModel.attributeModel(Employee.DEPARTMENT_FK);
 		assertTrue(deptModel.getInValues().contains(sales));
 		assertTrue(deptModel.getInValues().contains(accounting));

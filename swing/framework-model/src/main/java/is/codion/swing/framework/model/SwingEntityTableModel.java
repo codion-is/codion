@@ -968,20 +968,25 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 
 		@Override
-		public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+		public Optional<ColumnConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
 			if (!include(attribute)) {
 				return Optional.empty();
 			}
 
 			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
+			ColumnConditionModel<?, ?> model;
 			if (useStringCondition(attribute, attributeDefinition)) {
-				return Optional.ofNullable(ColumnConditionModel.builder(attribute, String.class).build());
+				model = ColumnConditionModel.builder(attribute, String.class).build();
+
+				return Optional.of((ColumnConditionModel<Attribute<?>, ?>) model);
 			}
 
-			return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+			model = ColumnConditionModel.builder(attribute, attribute.type().valueClass())
 							.format(attributeDefinition.format())
 							.dateTimePattern(attributeDefinition.dateTimePattern())
-							.build());
+							.build();
+
+			return Optional.of((ColumnConditionModel<Attribute<?>, ?>) model);
 		}
 
 		private boolean include(Attribute<?> attribute) {

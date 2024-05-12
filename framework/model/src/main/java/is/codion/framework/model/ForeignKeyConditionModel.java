@@ -40,8 +40,8 @@ public final class ForeignKeyConditionModel extends AbstractForeignKeyConditionM
 	private boolean updatingModel = false;
 
 	private ForeignKeyConditionModel(ForeignKey foreignKey,
-																	Function<ForeignKey, EntitySearchModel> equalSearchModel,
-																	Function<ForeignKey, EntitySearchModel> inSearchModel) {
+																	 Function<ForeignKey, EntitySearchModel> equalSearchModel,
+																	 Function<ForeignKey, EntitySearchModel> inSearchModel) {
 		super(foreignKey);
 		this.equalSearchModel = requireNonNull(equalSearchModel).apply(foreignKey);
 		this.inSearchModel = requireNonNull(inSearchModel).apply(foreignKey);

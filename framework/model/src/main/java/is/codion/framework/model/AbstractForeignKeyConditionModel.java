@@ -25,6 +25,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.text.Format;
@@ -37,7 +38,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * An abstract base class for {@link ForeignKey} based {@link ColumnConditionModel}s.
  */
-public abstract class AbstractForeignKeyConditionModel implements ColumnConditionModel<ForeignKey, Entity> {
+public abstract class AbstractForeignKeyConditionModel implements ColumnConditionModel<Attribute<?>, Entity> {
 
 	private final ColumnConditionModel<ForeignKey, Entity> conditionModel;
 

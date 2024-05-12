@@ -88,8 +88,8 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		requireNonNull(values);
 		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
 		Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
-		ColumnConditionModel<Attribute<T>, T> columnConditionModel =
-						(ColumnConditionModel<Attribute<T>, T>) conditionModel.conditionModels().get(attribute);
+		ColumnConditionModel<Attribute<?>, T> columnConditionModel =
+						(ColumnConditionModel<Attribute<?>, T>) conditionModel.conditionModels().get(attribute);
 		if (columnConditionModel != null) {
 			columnConditionModel.operator().set(Operator.IN);
 			columnConditionModel.setInValues(values);
@@ -125,18 +125,18 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
-	public Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels() {
+	public Map<Attribute<?>, ColumnConditionModel<Attribute<?>, ?>> conditionModels() {
 		return conditionModel.conditionModels();
 	}
 
 	@Override
-	public <T> ColumnConditionModel<? extends Attribute<?>, T> conditionModel(Attribute<?> columnIdentifier) {
+	public <T> ColumnConditionModel<Attribute<?>, T> conditionModel(Attribute<?> columnIdentifier) {
 		return conditionModel.conditionModel(columnIdentifier);
 	}
 
 	@Override
-	public <A extends Attribute<T>, T> ColumnConditionModel<A, T> attributeModel(A columnIdentifier) {
-		return (ColumnConditionModel<A, T>) conditionModel(columnIdentifier);
+	public <T> ColumnConditionModel<Attribute<?>, T> attributeModel(Attribute<T> columnIdentifier) {
+		return conditionModel(columnIdentifier);
 	}
 
 	@Override
@@ -179,8 +179,8 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		additionalHaving.addListener(conditionChangedEvent);
 	}
 
-	private Collection<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModels(EntityType entityType,
-																																														ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+	private Collection<ColumnConditionModel<Attribute<?>, ?>> createConditionModels(EntityType entityType,
+																																									ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
 		Collection<ColumnConditionModel<Attribute<?>, ?>> models = new ArrayList<>();
 		EntityDefinition definition = connectionProvider.entities().definition(entityType);
 		definition.columns().definitions().forEach(columnDefinition ->

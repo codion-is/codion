@@ -281,7 +281,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		AtomicInteger counter = new AtomicInteger();
 		Runnable conditionChangedListener = counter::incrementAndGet;
 		empModel.conditionChanged().addListener(conditionChangedListener);
-		ColumnConditionModel<? extends Attribute<Double>, Double> commissionModel =
+		ColumnConditionModel<Attribute<?>, Double> commissionModel =
 						empModel.conditionModel().attributeModel(Employee.COMMISSION);
 		commissionModel.enabled().set(true);
 		assertEquals(1, counter.get());
@@ -298,7 +298,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	public void testSearchState() {
 		TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
 		assertFalse(empModel.conditionChanged().get());
-		ColumnConditionModel<? extends Attribute<String>, String> jobModel =
+		ColumnConditionModel<Attribute<?>, String> jobModel =
 						empModel.conditionModel().attributeModel(Employee.JOB);
 		jobModel.setEqualValue("job");
 		assertTrue(empModel.conditionChanged().get());

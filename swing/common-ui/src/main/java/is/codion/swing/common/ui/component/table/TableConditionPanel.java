@@ -39,7 +39,7 @@ public interface TableConditionPanel<C> {
 	/**
 	 * @return an unmodifiable view of the condition panels
 	 */
-	Collection<? extends ColumnConditionPanel<C, ?>> conditionPanels();
+	Collection<ColumnConditionPanel<C, ?>> conditionPanels();
 
 	/**
 	 * @return the value controlling the condition panel state
@@ -70,7 +70,7 @@ public interface TableConditionPanel<C> {
 		 * @return a new {@link TableConditionPanel}
 		 */
 		TableConditionPanel<C> create(TableConditionModel<C> conditionModel,
-																	Collection<ColumnConditionPanel<? extends C, ?>> conditionPanels,
+																	Collection<ColumnConditionPanel<C, ?>> conditionPanels,
 																	FilterTableColumnModel<C> columnModel);
 	}
 }

@@ -1470,7 +1470,7 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private Collection<ColumnConditionPanel<? extends Attribute<?>, ?>> createConditionPanels() {
+	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels() {
 		return tableModel.conditionModel().conditionModels().values().stream()
 						.filter(conditionModel -> table.columnModel().containsColumn(conditionModel.columnIdentifier()))
 						.filter(conditionModel -> configuration.conditionFieldFactory.supportsType(conditionModel.columnClass()))
@@ -1478,7 +1478,7 @@ public class EntityTablePanel extends JPanel {
 						.collect(toList());
 	}
 
-	private FilterColumnConditionPanel<? extends Attribute<?>, ?> createConditionPanel(ColumnConditionModel<? extends Attribute<?>, ?> conditionModel) {
+	private FilterColumnConditionPanel<Attribute<?>, ?> createConditionPanel(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
 		return filterColumnConditionPanel(conditionModel, (FieldFactory<Attribute<?>>) configuration.conditionFieldFactory);
 	}
 
@@ -2557,9 +2557,9 @@ public class EntityTablePanel extends JPanel {
 
 			@Override
 			public TableConditionPanel<Attribute<?>> create(TableConditionModel<Attribute<?>> conditionModel,
-																											Collection<ColumnConditionPanel<? extends Attribute<?>, ?>> columnConditionPanels,
+																											Collection<ColumnConditionPanel<Attribute<?>, ?>> columnConditionPanels,
 																											FilterTableColumnModel<Attribute<?>> columnModel) {
-				return (TableConditionPanel<Attribute<?>>) filterTableConditionPanel(conditionModel, columnConditionPanels, columnModel);
+				return filterTableConditionPanel(conditionModel, columnConditionPanels, columnModel);
 			}
 		}
 

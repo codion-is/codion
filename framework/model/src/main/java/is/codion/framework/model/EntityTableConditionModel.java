@@ -89,13 +89,12 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 
 	/**
 	 * Returns the {@link ColumnConditionModel} associated with the given attribute.
-	 * @param <A> the attribute type
 	 * @param <T> the column value type
 	 * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
 	 * @return the {@link ColumnConditionModel} associated with {@code attribute}
 	 * @throws IllegalArgumentException in case no condition model exists for the given attribute
 	 */
-	<A extends Attribute<T>, T> ColumnConditionModel<A, T> attributeModel(A attribute);
+	<T> ColumnConditionModel<Attribute<?>, T> attributeModel(Attribute<T> attribute);
 
 	/**
 	 * Creates a new {@link EntityTableConditionModel}

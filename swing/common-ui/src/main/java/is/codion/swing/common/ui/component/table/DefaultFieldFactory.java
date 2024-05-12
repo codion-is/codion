@@ -51,13 +51,13 @@ final class DefaultFieldFactory<C> implements FieldFactory<C> {
 	}
 
 	@Override
-	public JComponent createEqualField(ColumnConditionModel<? extends C, ?> conditionModel) {
+	public JComponent createEqualField(ColumnConditionModel<C, ?> conditionModel) {
 		return createField(conditionModel)
 						.link((Value<Object>) conditionModel.equalValue()).build();
 	}
 
 	@Override
-	public Optional<JComponent> createUpperBoundField(ColumnConditionModel<? extends C, ?> conditionModel) {
+	public Optional<JComponent> createUpperBoundField(ColumnConditionModel<C, ?> conditionModel) {
 		if (conditionModel.columnClass().equals(Boolean.class)) {
 			return Optional.empty();//no upper bound field required for boolean values
 		}
@@ -68,7 +68,7 @@ final class DefaultFieldFactory<C> implements FieldFactory<C> {
 	}
 
 	@Override
-	public Optional<JComponent> createLowerBoundField(ColumnConditionModel<? extends C, ?> conditionModel) {
+	public Optional<JComponent> createLowerBoundField(ColumnConditionModel<C, ?> conditionModel) {
 		if (conditionModel.columnClass().equals(Boolean.class)) {
 			return Optional.empty();//no lower bound field required for boolean values
 		}
@@ -79,7 +79,7 @@ final class DefaultFieldFactory<C> implements FieldFactory<C> {
 	}
 
 	@Override
-	public JComponent createInField(ColumnConditionModel<? extends C, ?> conditionModel) {
+	public JComponent createInField(ColumnConditionModel<C, ?> conditionModel) {
 		return listBox(createField(conditionModel).buildValue(),
 						(ValueSet<Object>) conditionModel.inValues())
 						.build();

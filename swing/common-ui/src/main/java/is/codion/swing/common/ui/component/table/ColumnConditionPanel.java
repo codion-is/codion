@@ -43,7 +43,7 @@ public interface ColumnConditionPanel<C, T> {
 	/**
 	 * @return the condition model this panel is based on
 	 */
-	ColumnConditionModel<? extends C, T> conditionModel();
+	ColumnConditionModel<C, T> conditionModel();
 
 	/**
 	 * @return the components presented by this condition panel

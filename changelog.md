@@ -103,6 +103,7 @@ Codion Change Log
 - EntityTableConditionModel type parameter removed, connectionProvider() added.
 - DefaultEntityConditionModel.createConditionModels() bug fixed, did not respect Factory.include().
 - EntityConditionModelFactory no longer excludes hidden attributes.
+- AbstractForeignKeyConditionModel column identifier type now Attribute<Entity> instead of ForeignKey.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model

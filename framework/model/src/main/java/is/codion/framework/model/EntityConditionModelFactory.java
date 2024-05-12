@@ -50,7 +50,7 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 	}
 
 	@Override
-	public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+	public Optional<ColumnConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
 		if (!include(attribute)) {
 			return Optional.empty();
 		}
@@ -62,11 +62,12 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 		}
 
 		ColumnDefinition<?> column = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
-
-		return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+    ColumnConditionModel<?, ?> model = ColumnConditionModel.builder(attribute, attribute.type().valueClass())
 						.format(column.format())
 						.dateTimePattern(column.dateTimePattern())
-						.build());
+						.build();
+
+		return Optional.of((ColumnConditionModel<Attribute<?>, ?>) model);
 	}
 
 	private boolean include(Attribute<?> attribute) {

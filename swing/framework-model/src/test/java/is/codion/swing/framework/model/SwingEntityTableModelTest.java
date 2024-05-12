@@ -155,7 +155,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void backgroundColor() {
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
-		ColumnConditionModel<Attribute<String>, String> nameConditionModel =
+		ColumnConditionModel<Attribute<?>, String> nameConditionModel =
 						employeeTableModel.conditionModel().attributeModel(Employee.NAME);
 		nameConditionModel.setEqualValue("BLAKE");
 		employeeTableModel.refresh();

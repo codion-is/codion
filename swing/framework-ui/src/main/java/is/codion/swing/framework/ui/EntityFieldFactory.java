@@ -76,7 +76,7 @@ final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
 	}
 
 	@Override
-	public JComponent createEqualField(ColumnConditionModel<? extends Attribute<?>, ?> conditionModel) {
+	public JComponent createEqualField(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
 		if (conditionModel.columnIdentifier() instanceof ForeignKey) {
 			return createEqualForeignKeyField(conditionModel);
 		}
@@ -87,7 +87,7 @@ final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
 	}
 
 	@Override
-	public Optional<JComponent> createUpperBoundField(ColumnConditionModel<? extends Attribute<?>, ?> conditionModel) {
+	public Optional<JComponent> createUpperBoundField(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
 		Class<?> columnClass = conditionModel.columnClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no upper bound field required for booleans or entities
@@ -99,7 +99,7 @@ final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
 	}
 
 	@Override
-	public Optional<JComponent> createLowerBoundField(ColumnConditionModel<? extends Attribute<?>, ?> conditionModel) {
+	public Optional<JComponent> createLowerBoundField(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
 		Class<?> columnClass = conditionModel.columnClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no lower bound field required for booleans or entities
@@ -111,7 +111,7 @@ final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
 	}
 
 	@Override
-	public JComponent createInField(ColumnConditionModel<? extends Attribute<?>, ?> conditionModel) {
+	public JComponent createInField(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
 		if (conditionModel.columnIdentifier() instanceof ForeignKey) {
 			return createInForeignKeyField(conditionModel);
 		}

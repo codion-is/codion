@@ -473,11 +473,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		return combinedIncludeCondition.test(item);
 	}
 
-	private Collection<ColumnConditionModel<? extends C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
+	private Collection<ColumnConditionModel<C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
 		return columns.identifiers().stream()
 						.map(filterModelFactory::createConditionModel)
 						.filter(Optional::isPresent)
 						.map(Optional::get)
+						.map(model -> (ColumnConditionModel<C, ?>) model)
 						.collect(toList());
 	}
 
@@ -528,7 +529,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final class DefaultFilterModelFactory implements ColumnConditionModel.Factory<C> {
 
 		@Override
-		public Optional<ColumnConditionModel<? extends C, ?>> createConditionModel(C columnIdentifier) {
+		public Optional<ColumnConditionModel<C, ?>> createConditionModel(C columnIdentifier) {
 			Class<?> columnClass = getColumnClass(columnIdentifier);
 			if (Comparable.class.isAssignableFrom(columnClass)) {
 				return Optional.of(ColumnConditionModel.builder(columnIdentifier, columnClass).build());
@@ -540,11 +541,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final class CombinedIncludeCondition implements Predicate<R> {
 
-		private final List<? extends ColumnConditionModel<? extends C, ?>> columnFilters;
+		private final List<ColumnConditionModel<C, ?>> columnFilters;
 
 		private final Value<Predicate<R>> includeCondition = Value.value();
 
-		private CombinedIncludeCondition(Collection<? extends ColumnConditionModel<? extends C, ?>> columnFilters) {
+		private CombinedIncludeCondition(Collection<ColumnConditionModel<C, ?>> columnFilters) {
 			this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
 			this.includeCondition.addListener(DefaultFilterTableModel.this::filterItems);
 		}
@@ -560,7 +561,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 							.allMatch(conditionModel -> accepts(item, conditionModel, columns));
 		}
 
-		private boolean accepts(R item, ColumnConditionModel<? extends C, ?> conditionModel, Columns<R, C> columns) {
+		private boolean accepts(R item, ColumnConditionModel<C, ?> conditionModel, Columns<R, C> columns) {
 			if (conditionModel.columnClass().equals(String.class)) {
 				String stringValue = columns.string(item, conditionModel.columnIdentifier());
 

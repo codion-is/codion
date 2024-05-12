@@ -258,7 +258,7 @@ public interface ColumnConditionModel<C, T> {
 		 * @param columnIdentifier the identifier of the column for which to create a {@link ColumnConditionModel}
 		 * @return a {@link ColumnConditionModel} for the given column or an empty optional if none is available
 		 */
-		Optional<ColumnConditionModel<? extends C, ?>> createConditionModel(C columnIdentifier);
+		Optional<ColumnConditionModel<C, ?>> createConditionModel(C columnIdentifier);
 	}
 
 	/**

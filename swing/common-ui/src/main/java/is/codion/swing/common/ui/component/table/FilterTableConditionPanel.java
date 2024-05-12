@@ -57,7 +57,7 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 					messageBundle(FilterColumnConditionPanel.class, getBundle(FilterTableConditionPanel.class.getName()));
 
 	private final TableConditionModel<C> conditionModel;
-	private final Collection<? extends ColumnConditionPanel<? extends C, ?>> conditionPanels;
+	private final Collection<ColumnConditionPanel<C, ?>> conditionPanels;
 	private final FilterTableColumnComponentPanel<C> componentPanel;
 	private final Value<ConditionState> conditionState = Value.nonNull(ConditionState.HIDDEN)
 					.consumer(this::onStateChanged)
@@ -66,10 +66,10 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	private final State simpleState = State.state();
 	private final State advancedState = State.state();
 
-	private FilterTableConditionPanel(TableConditionModel<? extends C> conditionModel,
-																		Collection<ColumnConditionPanel<? extends C, ?>> conditionPanels,
+	private FilterTableConditionPanel(TableConditionModel<C> conditionModel,
+																		Collection<ColumnConditionPanel<C, ?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel) {
-		this.conditionModel = (TableConditionModel<C>) requireNonNull(conditionModel);
+		this.conditionModel = requireNonNull(conditionModel);
 		this.conditionPanels = unmodifiableList(new ArrayList<>(requireNonNull(conditionPanels)));
 		Map<C, JComponent> collect = conditionPanels.stream()
 						.collect(toMap(panel -> panel.conditionModel()
@@ -91,8 +91,8 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	}
 
 	@Override
-	public Collection<? extends ColumnConditionPanel<C, ?>> conditionPanels() {
-		return (Collection<? extends ColumnConditionPanel<C, ?>>) conditionPanels;
+	public Collection<ColumnConditionPanel<C, ?>> conditionPanels() {
+		return conditionPanels;
 	}
 
 	@Override
@@ -129,8 +129,8 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	 * @param columnModel the column model
 	 * @return a new {@link FilterTableConditionPanel}
 	 */
-	public static <C> FilterTableConditionPanel<? extends C> filterTableConditionPanel(TableConditionModel<C> conditionModel,
-																																										 Collection<ColumnConditionPanel<? extends C, ?>> conditionPanels,
+	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(TableConditionModel<C> conditionModel,
+																																										 Collection<ColumnConditionPanel<C, ?>> conditionPanels,
 																																										 FilterTableColumnModel<C> columnModel) {
 		return new FilterTableConditionPanel<>(conditionModel, conditionPanels, columnModel);
 	}
