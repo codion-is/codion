@@ -70,7 +70,5 @@ public class FrameworkMessagesTest {
 		FrameworkMessages.copyTableWithHeader();
 		FrameworkMessages.settings();
 		FrameworkMessages.selectInputField();
-		FrameworkMessages.selectSearchField();
-		FrameworkMessages.selectFilterField();
 	}
 }

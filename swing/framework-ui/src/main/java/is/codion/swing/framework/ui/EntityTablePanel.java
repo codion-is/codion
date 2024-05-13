@@ -133,7 +133,6 @@ import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
 import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.*;
-import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -562,26 +561,6 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final State summaryPanelVisible() {
 		return summaryPanelVisibleState;
-	}
-
-	/**
-	 * Allows the user to select one of the available search condition panels
-	 */
-	public final void selectConditionPanel() {
-		if (configuration.includeConditionPanel) {
-			selectConditionPanel(conditionPanel, conditionPanel.state(),
-							table, FrameworkMessages.selectSearchField(), tableModel.entityDefinition());
-		}
-	}
-
-	/**
-	 * Allows the user to select one of the available filter condition panels
-	 */
-	public final void selectFilterPanel() {
-		if (configuration.includeFilterPanel) {
-			selectConditionPanel((TableConditionPanel<Attribute<?>>) table.filterPanel(), table.filterPanel().state(),
-							table, FrameworkMessages.selectFilterField(), tableModel.entityDefinition());
-		}
 	}
 
 	/**
@@ -1291,7 +1270,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createSelectConditionPanelControl() {
-		return Control.control(this::selectConditionPanel);
+		return Control.control(() -> conditionPanel().selectCondition(this));
 	}
 
 	private Controls createConditionControls() {
@@ -1323,7 +1302,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createSelectFilterPanelControl() {
-		return Control.control(this::selectFilterPanel);
+		return Control.control(() -> table.filterPanel().selectCondition(this));
 	}
 
 	private void toggleConditionPanel() {
@@ -1932,37 +1911,6 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private static final void selectConditionPanel(TableConditionPanel<Attribute<?>> tableConditionPanel,
-																								 Value<ConditionState> conditionState,
-																								 FilterTable<Entity, Attribute<?>> table,
-																								 String dialogTitle, EntityDefinition entityDefinition) {
-		List<Attribute<?>> attributes = tableConditionPanel.conditionPanels().stream()
-						.map(panel -> panel.conditionModel().columnIdentifier())
-						.filter(attribute -> table.getColumnModel().visible(attribute).get())
-						.collect(toList());
-		if (attributes.size() == 1) {
-			conditionState.map(panelState -> panelState == ConditionState.HIDDEN ? ConditionState.SIMPLE : panelState);
-			tableConditionPanel.conditionPanel(attributes.get(0))
-							.ifPresent(ColumnConditionPanel::requestInputFocus);
-		}
-		else if (!attributes.isEmpty()) {
-			List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
-							.map(attribute -> entityDefinition.attributes().definition(attribute))
-							.sorted(AttributeDefinition.definitionComparator())
-							.collect(toList());
-			Dialogs.selectionDialog(sortedDefinitions)
-							.owner(table)
-							.locationRelativeTo(table.getParent())
-							.title(dialogTitle)
-							.selectSingle()
-							.flatMap(attributeDefinition -> tableConditionPanel.conditionPanel(attributeDefinition.attribute()))
-							.ifPresent(conditionPanel -> {
-								conditionState.map(panelState -> panelState == ConditionState.HIDDEN ? ConditionState.SIMPLE : panelState);
-								((ColumnConditionPanel<?, ?>) conditionPanel).requestInputFocus();
-							});
-		}
-	}
-
 	private static GridBagConstraints createHorizontalFillConstraints() {
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -2228,7 +2176,7 @@ public class EntityTablePanel extends JPanel {
 							.cellRendererFactory(new EntityTableCellRendererFactory(tablePanel.tableModel))
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
-			this.conditionFieldFactory = new EntityFieldFactory(entityComponents(entityDefinition), this::columnModel);
+			this.conditionFieldFactory = new EntityConditionFieldFactory(entityDefinition, this::columnModel);
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
 							.map(AttributeDefinition::attribute)

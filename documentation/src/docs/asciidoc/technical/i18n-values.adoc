@@ -307,9 +307,7 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |search_mnemonic|S|T
 |search_noun|Search|Leit
 |search_verb|Search|Leita
-|select_filter_field|Select filter field|Veldu sýjunarreit
 |select_input_field|Select input field|Veldu innsláttarreit
-|select_search_field|Select search field|Veldu leitarreit
 |settings|Settings|Stillingar
 |support_tables|Support Tables|Stoðtöflur
 |support_tables_mnemonic|O|O
@@ -496,6 +494,7 @@ is/codion/swing/common/ui/component/table/FilterTableConditionPanel_is_IS.proper
 
 |advanced|Advanced|Nákvæm
 |hidden|Hidden|Falin
+|select_condition|Select condition|Veldu leitarreit
 |simple|Simple|Einföld
 |===
 

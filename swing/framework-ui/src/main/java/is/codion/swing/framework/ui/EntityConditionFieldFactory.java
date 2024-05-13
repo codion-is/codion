@@ -22,6 +22,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractForeignKeyConditionModel;
@@ -53,9 +54,13 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.component.Components.listBox;
+import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
 
-final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
+/**
+ * A default field factory implementation.
+ */
+public final class EntityConditionFieldFactory implements FieldFactory<Attribute<?>> {
 
 	private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
 					Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
@@ -65,9 +70,14 @@ final class EntityFieldFactory implements FieldFactory<Attribute<?>> {
 	private final EntityComponents inputComponents;
 	private final Supplier<FilterTableColumnModel<Attribute<?>>> columnModel;
 
-	EntityFieldFactory(EntityComponents inputComponents, Supplier<FilterTableColumnModel<Attribute<?>>> columnModel) {
-		this.inputComponents = requireNonNull(inputComponents);
-		this.columnModel = columnModel;
+	/**
+	 * @param entityDefinition the entity definition
+	 * @param columnModel supplies the column model
+	 */
+	public EntityConditionFieldFactory(EntityDefinition entityDefinition,
+																		 Supplier<FilterTableColumnModel<Attribute<?>>> columnModel) {
+		this.inputComponents = entityComponents(entityDefinition);
+		this.columnModel = requireNonNull(columnModel);
 	}
 
 	@Override

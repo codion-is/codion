@@ -201,6 +201,21 @@ public final class NumberField<T extends Number> extends HintTextField {
 	}
 
 	/**
+	 * Default true.
+	 * @param rethrowValidationException true if validation exceptions should be rethrown as opposed to silently preventing invalid input
+	 */
+	public void setRethrowValidationException(boolean rethrowValidationException) {
+		getTypedDocument().getDocumentFilter().setRethrowValidationException(rethrowValidationException);
+	}
+
+	/**
+	 * @return true if validation exceptions are rethrown
+	 */
+	public boolean isRethrowValidationException() {
+		return getTypedDocument().getDocumentFilter().isRethrowValidationException();
+	}
+
+	/**
 	 * @return an observer notified each time the underlying value changes
 	 */
 	public ValueObserver<T> numberValue() {
@@ -289,6 +304,12 @@ public final class NumberField<T extends Number> extends HintTextField {
 		Builder<T> maximumValue(Number maximumValue);
 
 		/**
+		 * @param rethrowValidationException true if validation exceptions should be rethrown as opposed to silently preventing invalid input
+		 * @return this builder instance
+		 */
+		Builder<T> rethrowValidationException(boolean rethrowValidationException);
+
+		/**
 		 * @param groupingSeparator the grouping separator
 		 * @return this builder instance
 		 */
@@ -370,6 +391,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		private Number maximumValue;
 		private Number minimumValue;
+		private boolean rethrowValidationException = true;
 		private char groupingSeparator = 0;
 		private Boolean groupingUsed;
 		private char decimalSeparator = 0;
@@ -402,6 +424,12 @@ public final class NumberField<T extends Number> extends HintTextField {
 		@Override
 		public final Builder<T> maximumValue(Number maximumValue) {
 			this.maximumValue = maximumValue;
+			return this;
+		}
+
+		@Override
+		public Builder<T> rethrowValidationException(boolean rethrowValidationException) {
+			this.rethrowValidationException = rethrowValidationException;
 			return this;
 		}
 
@@ -443,6 +471,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 			NumberField<T> numberField = createNumberField(initializeFormat());
 			numberField.setMinimumValue(minimumValue);
 			numberField.setMaximumValue(maximumValue);
+			numberField.setRethrowValidationException(rethrowValidationException);
 			numberField.setConvertGroupingToDecimalSeparator(convertGroupingToDecimalSeparator);
 			if (groupingUsed != null) {
 				numberField.setGroupingUsed(groupingUsed);

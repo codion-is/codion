@@ -342,6 +342,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 		private JTextComponent textComponent;
 		private boolean convertGroupingToDecimalSeparator = true;
+		private boolean rethrowValidationException = true;
 
 		NumberParsingDocumentFilter(NumberParser<T> parser) {
 			this.parser = requireNonNull(parser, "parser");
@@ -371,7 +372,15 @@ class NumberDocument<T extends Number> extends PlainDocument {
 				NumberParser.NumberParseResult<T> parseResult = parser.parse(builder.toString());
 				if (parseResult.successful()) {
 					if (parseResult.value() != null) {
-						validate(parseResult.value());
+						try {
+							validate(parseResult.value());
+						}
+						catch (IllegalArgumentException e) {
+							if (rethrowValidationException) {
+								throw e;
+							}
+							return;
+						}
 					}
 					super.replace(filterBypass, 0, document.getLength(), parseResult.text(), attributeSet);
 					if (textComponent != null) {
@@ -408,6 +417,14 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 		boolean isConvertGroupingToDecimalSeparator() {
 			return convertGroupingToDecimalSeparator;
+		}
+
+		void setRethrowValidationException(boolean rethrowValidationException) {
+			this.rethrowValidationException = rethrowValidationException;
+		}
+
+		boolean isRethrowValidationException() {
+			return rethrowValidationException;
 		}
 
 		/**

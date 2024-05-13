@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.resource.MessageBundle;
@@ -29,21 +30,26 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionS
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.function.Consumer;
 
+import static is.codion.common.item.Item.item;
 import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.*;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -58,8 +64,9 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 
 	private final TableConditionModel<C> conditionModel;
 	private final Collection<ColumnConditionPanel<C, ?>> conditionPanels;
+	private final FilterTableColumnModel<C> columnModel;
 	private final FilterTableColumnComponentPanel<C> componentPanel;
-	private final Value<ConditionState> conditionState = Value.nonNull(ConditionState.HIDDEN)
+	private final Value<ConditionState> conditionState = Value.nonNull(HIDDEN)
 					.consumer(this::onStateChanged)
 					.build();
 	private final State hiddenState = State.state(true);
@@ -71,6 +78,7 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 																		FilterTableColumnModel<C> columnModel) {
 		this.conditionModel = requireNonNull(conditionModel);
 		this.conditionPanels = unmodifiableList(new ArrayList<>(requireNonNull(conditionPanels)));
+		this.columnModel = columnModel;
 		Map<C, JComponent> collect = conditionPanels.stream()
 						.collect(toMap(panel -> panel.conditionModel()
 										.columnIdentifier(), JComponent.class::cast));
@@ -96,10 +104,11 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	}
 
 	@Override
-	public <T extends ColumnConditionPanel<C, ?>> Optional<T> conditionPanel(C columnIdentifier) {
-		return (Optional<T>) conditionPanels.stream()
+	public <T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier) {
+		return (T) conditionPanels.stream()
 						.filter(panel -> panel.conditionModel().columnIdentifier().equals(columnIdentifier))
-						.findFirst();
+						.findFirst()
+						.orElseThrow(() -> new IllegalStateException("No condition panel available for " + columnIdentifier));
 	}
 
 	@Override
@@ -122,6 +131,32 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 						.build();
 	}
 
+	@Override
+	public void selectCondition(JComponent dialogOwner) {
+		List<Item<C>> columnItems = conditionPanels.stream()
+						.filter(panel -> columnModel.visible(panel.conditionModel().columnIdentifier()).get())
+						.map(panel -> item(panel.conditionModel().columnIdentifier(),
+										Objects.toString(columnModel.column(panel.conditionModel().columnIdentifier()).getHeaderValue())))
+						.sorted()
+						.collect(toList());
+		if (columnItems.size() == 1) {
+			conditionState.map(panelState -> panelState == HIDDEN ? SIMPLE : panelState);
+			conditionPanel(columnItems.get(0).get()).requestInputFocus();
+		}
+		else if (!columnItems.isEmpty()) {
+			Dialogs.selectionDialog(columnItems)
+							.owner(dialogOwner)
+							.title(MESSAGES.getString("select_condition"))
+							.selectSingle()
+							.map(columnItem -> conditionPanel(columnItem.get()))
+							.map(ColumnConditionPanel.class::cast)
+							.ifPresent(conditionPanel -> {
+								conditionState.map(panelState -> panelState == HIDDEN ? SIMPLE : panelState);
+								conditionPanel.requestInputFocus();
+							});
+		}
+	}
+
 	/**
 	 * @param <C> the column identifier type
 	 * @param conditionModel the condition model
@@ -130,8 +165,8 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	 * @return a new {@link FilterTableConditionPanel}
 	 */
 	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(TableConditionModel<C> conditionModel,
-																																										 Collection<ColumnConditionPanel<C, ?>> conditionPanels,
-																																										 FilterTableColumnModel<C> columnModel) {
+																																					 Collection<ColumnConditionPanel<C, ?>> conditionPanels,
+																																					 FilterTableColumnModel<C> columnModel) {
 		return new FilterTableConditionPanel<>(conditionModel, conditionPanels, columnModel);
 	}
 
@@ -159,13 +194,13 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 
 	private void configureStates() {
 		State.group(hiddenState, simpleState, advancedState);
-		hiddenState.addConsumer(new StateConsumer(ConditionState.HIDDEN));
-		simpleState.addConsumer(new StateConsumer(ConditionState.SIMPLE));
-		advancedState.addConsumer(new StateConsumer(ConditionState.ADVANCED));
+		hiddenState.addConsumer(new StateConsumer(HIDDEN));
+		simpleState.addConsumer(new StateConsumer(SIMPLE));
+		advancedState.addConsumer(new StateConsumer(ADVANCED));
 		conditionState.addConsumer(state -> {
-			hiddenState.set(state == ConditionState.HIDDEN);
-			simpleState.set(state == ConditionState.SIMPLE);
-			advancedState.set(state == ConditionState.ADVANCED);
+			hiddenState.set(state == HIDDEN);
+			simpleState.set(state == SIMPLE);
+			advancedState.set(state == ADVANCED);
 		});
 	}
 

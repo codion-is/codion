@@ -20,10 +20,11 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.Controls;
 
+import javax.swing.JComponent;
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * A UI component based on a {@link TableConditionModel}.
@@ -44,19 +45,29 @@ public interface TableConditionPanel<C> {
 	/**
 	 * @return the value controlling the condition panel state
 	 */
-	Value<ColumnConditionPanel.ConditionState> state();
+	Value<ConditionState> state();
 
 	/**
 	 * @param <T> the column value type
 	 * @param columnIdentifier the column identifier
-	 * @return the condition panel associated with the given column or an empty Optional in case none exists
+	 * @return the condition panel associated with the given column
+	 * @throws IllegalStateException in case no panel is available
 	 */
-	<T extends ColumnConditionPanel<C, ?>> Optional<T> conditionPanel(C columnIdentifier);
+	<T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier);
 
 	/**
 	 * @return the controls provided by this condition panel, for example toggling the advanced mode and clearing the condition
 	 */
 	Controls controls();
+
+	/**
+	 * Selects one conditon panel to receive the input focus.
+	 * If only one panel is available, that one receives the input focus.
+	 * If multiple conditon panels are available a selection dialog is presented.
+	 * Override to implement.
+	 * @param dialogOwner the dialog owner
+	 */
+	default void selectCondition(JComponent dialogOwner) {}
 
 	/**
 	 * @param <C> the type identifying the table columns
