@@ -18,18 +18,6 @@ public interface Chinook {
 		Column<String> NAME = TYPE.stringColumn("name");
 	}
 
-	interface Album {
-		EntityType TYPE = DOMAIN.entityType("chinook.album");
-
-		Column<Long> ALBUMID = TYPE.longColumn("albumid");
-		Column<String> TITLE = TYPE.stringColumn("title");
-		Column<Long> ARTISTID = TYPE.longColumn("artistid");
-		Column<byte[]> COVER = TYPE.byteArrayColumn("cover");
-		Column<Object> TAGS = TYPE.column("tags", Object.class);
-
-		ForeignKey ARTISTID_FK = TYPE.foreignKey("artistid_fk", ARTISTID, Artist.ARTISTID);
-	}
-
 	interface Employee {
 		EntityType TYPE = DOMAIN.entityType("chinook.employee");
 
@@ -52,6 +40,35 @@ public interface Chinook {
 		ForeignKey REPORTSTO_FK = TYPE.foreignKey("reportsto_fk", REPORTSTO, Employee.EMPLOYEEID);
 	}
 
+	interface Genre {
+		EntityType TYPE = DOMAIN.entityType("chinook.genre");
+
+		Column<Long> GENREID = TYPE.longColumn("genreid");
+		Column<String> NAME = TYPE.stringColumn("name");
+	}
+
+	interface Mediatype {
+		EntityType TYPE = DOMAIN.entityType("chinook.mediatype");
+
+		Column<Long> MEDIATYPEID = TYPE.longColumn("mediatypeid");
+		Column<String> NAME = TYPE.stringColumn("name");
+	}
+
+	interface Playlist {
+		EntityType TYPE = DOMAIN.entityType("chinook.playlist");
+
+		Column<Long> PLAYLISTID = TYPE.longColumn("playlistid");
+		Column<String> NAME = TYPE.stringColumn("name");
+	}
+
+	interface Users {
+		EntityType TYPE = DOMAIN.entityType("chinook.users");
+
+		Column<Long> USERID = TYPE.longColumn("userid");
+		Column<String> USERNAME = TYPE.stringColumn("username");
+		Column<Integer> PASSWORDHASH = TYPE.integerColumn("passwordhash");
+	}
+
 	interface Customer {
 		EntityType TYPE = DOMAIN.entityType("chinook.customer");
 
@@ -72,13 +89,6 @@ public interface Chinook {
 		ForeignKey SUPPORTREPID_FK = TYPE.foreignKey("supportrepid_fk", SUPPORTREPID, Employee.EMPLOYEEID);
 	}
 
-	interface Genre {
-		EntityType TYPE = DOMAIN.entityType("chinook.genre");
-
-		Column<Long> GENREID = TYPE.longColumn("genreid");
-		Column<String> NAME = TYPE.stringColumn("name");
-	}
-
 	interface Invoice {
 		EntityType TYPE = DOMAIN.entityType("chinook.invoice");
 
@@ -95,11 +105,16 @@ public interface Chinook {
 		ForeignKey CUSTOMERID_FK = TYPE.foreignKey("customerid_fk", CUSTOMERID, Customer.CUSTOMERID);
 	}
 
-	interface Mediatype {
-		EntityType TYPE = DOMAIN.entityType("chinook.mediatype");
+	interface Album {
+		EntityType TYPE = DOMAIN.entityType("chinook.album");
 
-		Column<Long> MEDIATYPEID = TYPE.longColumn("mediatypeid");
-		Column<String> NAME = TYPE.stringColumn("name");
+		Column<Long> ALBUMID = TYPE.longColumn("albumid");
+		Column<String> TITLE = TYPE.stringColumn("title");
+		Column<Long> ARTISTID = TYPE.longColumn("artistid");
+		Column<byte[]> COVER = TYPE.byteArrayColumn("cover");
+		Column<Object> TAGS = TYPE.column("tags", Object.class);
+
+		ForeignKey ARTISTID_FK = TYPE.foreignKey("artistid_fk", ARTISTID, Artist.ARTISTID);
 	}
 
 	interface Track {
@@ -134,13 +149,6 @@ public interface Chinook {
 		ForeignKey TRACKID_FK = TYPE.foreignKey("trackid_fk", TRACKID, Track.TRACKID);
 	}
 
-	interface Playlist {
-		EntityType TYPE = DOMAIN.entityType("chinook.playlist");
-
-		Column<Long> PLAYLISTID = TYPE.longColumn("playlistid");
-		Column<String> NAME = TYPE.stringColumn("name");
-	}
-
 	interface Playlisttrack {
 		EntityType TYPE = DOMAIN.entityType("chinook.playlisttrack");
 
@@ -150,13 +158,5 @@ public interface Chinook {
 
 		ForeignKey PLAYLISTID_FK = TYPE.foreignKey("playlistid_fk", PLAYLISTID, Playlist.PLAYLISTID);
 		ForeignKey TRACKID_FK = TYPE.foreignKey("trackid_fk", TRACKID, Track.TRACKID);
-	}
-
-	interface Users {
-		EntityType TYPE = DOMAIN.entityType("chinook.users");
-
-		Column<Long> USERID = TYPE.longColumn("userid");
-		Column<String> USERNAME = TYPE.stringColumn("username");
-		Column<Integer> PASSWORDHASH = TYPE.integerColumn("passwordhash");
 	}
 }

@@ -43,6 +43,20 @@ public interface Petstore {
 		Column<String> EMAIL = TYPE.stringColumn("email");
 	}
 
+	interface ItemTags {
+		EntityType TYPE = DOMAIN.entityType("petstore.item_tags");
+
+		Column<String> NAME = TYPE.stringColumn("name");
+		Column<String> TAG = TYPE.stringColumn("tag");
+	}
+
+	interface Tag {
+		EntityType TYPE = DOMAIN.entityType("petstore.tag");
+
+		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
+		Column<String> TAG = TYPE.stringColumn("tag");
+	}
+
 	interface Product {
 		EntityType TYPE = DOMAIN.entityType("petstore.product");
 
@@ -74,20 +88,6 @@ public interface Petstore {
 		ForeignKey PRODUCT_ID_FK = TYPE.foreignKey("product_id_fk", PRODUCT_ID, Product.PRODUCT_ID);
 		ForeignKey ADDRESS_ID_FK = TYPE.foreignKey("address_id_fk", ADDRESS_ID, Address.ADDRESS_ID);
 		ForeignKey CONTACT_INFO_ID_FK = TYPE.foreignKey("contact_info_id_fk", CONTACT_INFO_ID, ContactInfo.CONTACT_INFO_ID);
-	}
-
-	interface ItemTags {
-		EntityType TYPE = DOMAIN.entityType("petstore.item_tags");
-
-		Column<String> NAME = TYPE.stringColumn("name");
-		Column<String> TAG = TYPE.stringColumn("tag");
-	}
-
-	interface Tag {
-		EntityType TYPE = DOMAIN.entityType("petstore.tag");
-
-		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
-		Column<String> TAG = TYPE.stringColumn("tag");
 	}
 
 	interface TagItem {

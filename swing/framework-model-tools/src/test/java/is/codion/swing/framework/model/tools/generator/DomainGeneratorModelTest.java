@@ -39,7 +39,7 @@ public final class DomainGeneratorModelTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	@Test
-	void petclinic() throws Exception {
+	void petstore() throws Exception {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().refresh();
 		model.schemaModel().comparator().set(comparing(SchemaRow::name));

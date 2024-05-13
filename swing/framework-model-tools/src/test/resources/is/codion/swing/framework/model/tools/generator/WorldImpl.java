@@ -14,8 +14,75 @@ public final class WorldImpl extends DomainModel {
 	public WorldImpl() {
 		super(DOMAIN);
 		setStrictForeignKeys(false);
-		add(city(), country(), countrylanguage(),
-				countryCityV());
+		add(countryCityV(), city(), country(),
+				countrylanguage());
+	}
+
+	static EntityDefinition countryCityV() {
+		return CountryCityV.TYPE.define(
+				CountryCityV.COUNTRYCODE.define()
+					.column()
+					.caption("Countrycode"),
+				CountryCityV.COUNTRYNAME.define()
+					.column()
+					.caption("Countryname"),
+				CountryCityV.CONTINENT.define()
+					.column()
+					.caption("Continent"),
+				CountryCityV.REGION.define()
+					.column()
+					.caption("Region"),
+				CountryCityV.SURFACEAREA.define()
+					.column()
+					.caption("Surfacearea"),
+				CountryCityV.INDEPYEAR.define()
+					.column()
+					.caption("Indepyear"),
+				CountryCityV.COUNTRYPOPULATION.define()
+					.column()
+					.caption("Countrypopulation"),
+				CountryCityV.LIFEEXPECTANCY.define()
+					.column()
+					.caption("Lifeexpectancy"),
+				CountryCityV.GNP.define()
+					.column()
+					.caption("Gnp"),
+				CountryCityV.GNPOLD.define()
+					.column()
+					.caption("Gnpold"),
+				CountryCityV.LOCALNAME.define()
+					.column()
+					.caption("Localname"),
+				CountryCityV.GOVERNMENTFORM.define()
+					.column()
+					.caption("Governmentform"),
+				CountryCityV.HEADOFSTATE.define()
+					.column()
+					.caption("Headofstate"),
+				CountryCityV.CAPITAL.define()
+					.column()
+					.caption("Capital"),
+				CountryCityV.CODE2.define()
+					.column()
+					.caption("Code2"),
+				CountryCityV.FLAG.define()
+					.column()
+					.caption("Flag"),
+				CountryCityV.CITYID.define()
+					.column()
+					.caption("Cityid"),
+				CountryCityV.CITYNAME.define()
+					.column()
+					.caption("Cityname"),
+				CountryCityV.DISTRICT.define()
+					.column()
+					.caption("District"),
+				CountryCityV.CITYPOPULATION.define()
+					.column()
+					.caption("Citypopulation"))
+			.caption("Country city v")
+			.readOnly(true)
+			.build();
 	}
 
 	static EntityDefinition city() {
@@ -147,73 +214,6 @@ public final class WorldImpl extends DomainModel {
 					.nullable(false)
 					.maximumFractionDigits(1))
 			.caption("Countrylanguage")
-			.build();
-	}
-
-	static EntityDefinition countryCityV() {
-		return CountryCityV.TYPE.define(
-				CountryCityV.COUNTRYCODE.define()
-					.column()
-					.caption("Countrycode"),
-				CountryCityV.COUNTRYNAME.define()
-					.column()
-					.caption("Countryname"),
-				CountryCityV.CONTINENT.define()
-					.column()
-					.caption("Continent"),
-				CountryCityV.REGION.define()
-					.column()
-					.caption("Region"),
-				CountryCityV.SURFACEAREA.define()
-					.column()
-					.caption("Surfacearea"),
-				CountryCityV.INDEPYEAR.define()
-					.column()
-					.caption("Indepyear"),
-				CountryCityV.COUNTRYPOPULATION.define()
-					.column()
-					.caption("Countrypopulation"),
-				CountryCityV.LIFEEXPECTANCY.define()
-					.column()
-					.caption("Lifeexpectancy"),
-				CountryCityV.GNP.define()
-					.column()
-					.caption("Gnp"),
-				CountryCityV.GNPOLD.define()
-					.column()
-					.caption("Gnpold"),
-				CountryCityV.LOCALNAME.define()
-					.column()
-					.caption("Localname"),
-				CountryCityV.GOVERNMENTFORM.define()
-					.column()
-					.caption("Governmentform"),
-				CountryCityV.HEADOFSTATE.define()
-					.column()
-					.caption("Headofstate"),
-				CountryCityV.CAPITAL.define()
-					.column()
-					.caption("Capital"),
-				CountryCityV.CODE2.define()
-					.column()
-					.caption("Code2"),
-				CountryCityV.FLAG.define()
-					.column()
-					.caption("Flag"),
-				CountryCityV.CITYID.define()
-					.column()
-					.caption("Cityid"),
-				CountryCityV.CITYNAME.define()
-					.column()
-					.caption("Cityname"),
-				CountryCityV.DISTRICT.define()
-					.column()
-					.caption("District"),
-				CountryCityV.CITYPOPULATION.define()
-					.column()
-					.caption("Citypopulation"))
-			.caption("Country city v")
-			.readOnly(true)
 			.build();
 	}
 }

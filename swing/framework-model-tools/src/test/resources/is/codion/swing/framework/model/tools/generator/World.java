@@ -21,8 +21,75 @@ public final class World extends DomainModel {
 	public World() {
 		super(DOMAIN);
 		setStrictForeignKeys(false);
-		add(city(), country(), countrylanguage(),
-				countryCityV());
+		add(countryCityV(), city(), country(),
+				countrylanguage());
+	}
+
+	static EntityDefinition countryCityV() {
+		return CountryCityV.TYPE.define(
+				CountryCityV.COUNTRYCODE.define()
+					.column()
+					.caption("Countrycode"),
+				CountryCityV.COUNTRYNAME.define()
+					.column()
+					.caption("Countryname"),
+				CountryCityV.CONTINENT.define()
+					.column()
+					.caption("Continent"),
+				CountryCityV.REGION.define()
+					.column()
+					.caption("Region"),
+				CountryCityV.SURFACEAREA.define()
+					.column()
+					.caption("Surfacearea"),
+				CountryCityV.INDEPYEAR.define()
+					.column()
+					.caption("Indepyear"),
+				CountryCityV.COUNTRYPOPULATION.define()
+					.column()
+					.caption("Countrypopulation"),
+				CountryCityV.LIFEEXPECTANCY.define()
+					.column()
+					.caption("Lifeexpectancy"),
+				CountryCityV.GNP.define()
+					.column()
+					.caption("Gnp"),
+				CountryCityV.GNPOLD.define()
+					.column()
+					.caption("Gnpold"),
+				CountryCityV.LOCALNAME.define()
+					.column()
+					.caption("Localname"),
+				CountryCityV.GOVERNMENTFORM.define()
+					.column()
+					.caption("Governmentform"),
+				CountryCityV.HEADOFSTATE.define()
+					.column()
+					.caption("Headofstate"),
+				CountryCityV.CAPITAL.define()
+					.column()
+					.caption("Capital"),
+				CountryCityV.CODE2.define()
+					.column()
+					.caption("Code2"),
+				CountryCityV.FLAG.define()
+					.column()
+					.caption("Flag"),
+				CountryCityV.CITYID.define()
+					.column()
+					.caption("Cityid"),
+				CountryCityV.CITYNAME.define()
+					.column()
+					.caption("Cityname"),
+				CountryCityV.DISTRICT.define()
+					.column()
+					.caption("District"),
+				CountryCityV.CITYPOPULATION.define()
+					.column()
+					.caption("Citypopulation"))
+			.caption("Country city v")
+			.readOnly(true)
+			.build();
 	}
 
 	static EntityDefinition city() {
@@ -157,71 +224,29 @@ public final class World extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition countryCityV() {
-		return CountryCityV.TYPE.define(
-				CountryCityV.COUNTRYCODE.define()
-					.column()
-					.caption("Countrycode"),
-				CountryCityV.COUNTRYNAME.define()
-					.column()
-					.caption("Countryname"),
-				CountryCityV.CONTINENT.define()
-					.column()
-					.caption("Continent"),
-				CountryCityV.REGION.define()
-					.column()
-					.caption("Region"),
-				CountryCityV.SURFACEAREA.define()
-					.column()
-					.caption("Surfacearea"),
-				CountryCityV.INDEPYEAR.define()
-					.column()
-					.caption("Indepyear"),
-				CountryCityV.COUNTRYPOPULATION.define()
-					.column()
-					.caption("Countrypopulation"),
-				CountryCityV.LIFEEXPECTANCY.define()
-					.column()
-					.caption("Lifeexpectancy"),
-				CountryCityV.GNP.define()
-					.column()
-					.caption("Gnp"),
-				CountryCityV.GNPOLD.define()
-					.column()
-					.caption("Gnpold"),
-				CountryCityV.LOCALNAME.define()
-					.column()
-					.caption("Localname"),
-				CountryCityV.GOVERNMENTFORM.define()
-					.column()
-					.caption("Governmentform"),
-				CountryCityV.HEADOFSTATE.define()
-					.column()
-					.caption("Headofstate"),
-				CountryCityV.CAPITAL.define()
-					.column()
-					.caption("Capital"),
-				CountryCityV.CODE2.define()
-					.column()
-					.caption("Code2"),
-				CountryCityV.FLAG.define()
-					.column()
-					.caption("Flag"),
-				CountryCityV.CITYID.define()
-					.column()
-					.caption("Cityid"),
-				CountryCityV.CITYNAME.define()
-					.column()
-					.caption("Cityname"),
-				CountryCityV.DISTRICT.define()
-					.column()
-					.caption("District"),
-				CountryCityV.CITYPOPULATION.define()
-					.column()
-					.caption("Citypopulation"))
-			.caption("Country city v")
-			.readOnly(true)
-			.build();
+	public interface CountryCityV {
+		EntityType TYPE = DOMAIN.entityType("world.country_city_v");
+
+		Column<String> COUNTRYCODE = TYPE.stringColumn("countrycode");
+		Column<String> COUNTRYNAME = TYPE.stringColumn("countryname");
+		Column<String> CONTINENT = TYPE.stringColumn("continent");
+		Column<String> REGION = TYPE.stringColumn("region");
+		Column<Double> SURFACEAREA = TYPE.doubleColumn("surfacearea");
+		Column<Short> INDEPYEAR = TYPE.shortColumn("indepyear");
+		Column<Integer> COUNTRYPOPULATION = TYPE.integerColumn("countrypopulation");
+		Column<Double> LIFEEXPECTANCY = TYPE.doubleColumn("lifeexpectancy");
+		Column<Double> GNP = TYPE.doubleColumn("gnp");
+		Column<Double> GNPOLD = TYPE.doubleColumn("gnpold");
+		Column<String> LOCALNAME = TYPE.stringColumn("localname");
+		Column<String> GOVERNMENTFORM = TYPE.stringColumn("governmentform");
+		Column<String> HEADOFSTATE = TYPE.stringColumn("headofstate");
+		Column<Integer> CAPITAL = TYPE.integerColumn("capital");
+		Column<String> CODE2 = TYPE.stringColumn("code2");
+		Column<byte[]> FLAG = TYPE.byteArrayColumn("flag");
+		Column<Integer> CITYID = TYPE.integerColumn("cityid");
+		Column<String> CITYNAME = TYPE.stringColumn("cityname");
+		Column<String> DISTRICT = TYPE.stringColumn("district");
+		Column<Integer> CITYPOPULATION = TYPE.integerColumn("citypopulation");
 	}
 
 	public interface City {
@@ -269,30 +294,5 @@ public final class World extends DomainModel {
 		Column<Double> PERCENTAGE = TYPE.doubleColumn("percentage");
 
 		ForeignKey COUNTRYCODE_FK = TYPE.foreignKey("countrycode_fk", COUNTRYCODE, Country.CODE);
-	}
-
-	public interface CountryCityV {
-		EntityType TYPE = DOMAIN.entityType("world.country_city_v");
-
-		Column<String> COUNTRYCODE = TYPE.stringColumn("countrycode");
-		Column<String> COUNTRYNAME = TYPE.stringColumn("countryname");
-		Column<String> CONTINENT = TYPE.stringColumn("continent");
-		Column<String> REGION = TYPE.stringColumn("region");
-		Column<Double> SURFACEAREA = TYPE.doubleColumn("surfacearea");
-		Column<Short> INDEPYEAR = TYPE.shortColumn("indepyear");
-		Column<Integer> COUNTRYPOPULATION = TYPE.integerColumn("countrypopulation");
-		Column<Double> LIFEEXPECTANCY = TYPE.doubleColumn("lifeexpectancy");
-		Column<Double> GNP = TYPE.doubleColumn("gnp");
-		Column<Double> GNPOLD = TYPE.doubleColumn("gnpold");
-		Column<String> LOCALNAME = TYPE.stringColumn("localname");
-		Column<String> GOVERNMENTFORM = TYPE.stringColumn("governmentform");
-		Column<String> HEADOFSTATE = TYPE.stringColumn("headofstate");
-		Column<Integer> CAPITAL = TYPE.integerColumn("capital");
-		Column<String> CODE2 = TYPE.stringColumn("code2");
-		Column<byte[]> FLAG = TYPE.byteArrayColumn("flag");
-		Column<Integer> CITYID = TYPE.integerColumn("cityid");
-		Column<String> CITYNAME = TYPE.stringColumn("cityname");
-		Column<String> DISTRICT = TYPE.stringColumn("district");
-		Column<Integer> CITYPOPULATION = TYPE.integerColumn("citypopulation");
 	}
 }

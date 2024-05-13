@@ -122,6 +122,7 @@ Codion Change Log
 - DomainToString now highlights the selected entity definition in the source.
 - DomainGeneratorModel.DEFAULT_DOMAIN_PACKAGE configuration value added.
 - DomainGeneratorModel now orders class elements according to the entity dependency graph and disables strict foreign keys in case of cyclical dependencies.
+- DomainToString, definition ordering improved.
 ### is.codion.swing.framework.ui
 - EntityEditPanel, control configuration refactored, now consistent with EntityTablePanel.
 - EntityTablePanel.PopupMenuConfig and ToolBarConfig removed, quite unnecessary.

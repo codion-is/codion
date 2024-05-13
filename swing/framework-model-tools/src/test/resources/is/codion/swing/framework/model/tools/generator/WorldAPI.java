@@ -10,6 +10,31 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 public interface World {
 	DomainType DOMAIN = domainType(World.class);
 
+	interface CountryCityV {
+		EntityType TYPE = DOMAIN.entityType("world.country_city_v");
+
+		Column<String> COUNTRYCODE = TYPE.stringColumn("countrycode");
+		Column<String> COUNTRYNAME = TYPE.stringColumn("countryname");
+		Column<String> CONTINENT = TYPE.stringColumn("continent");
+		Column<String> REGION = TYPE.stringColumn("region");
+		Column<Double> SURFACEAREA = TYPE.doubleColumn("surfacearea");
+		Column<Short> INDEPYEAR = TYPE.shortColumn("indepyear");
+		Column<Integer> COUNTRYPOPULATION = TYPE.integerColumn("countrypopulation");
+		Column<Double> LIFEEXPECTANCY = TYPE.doubleColumn("lifeexpectancy");
+		Column<Double> GNP = TYPE.doubleColumn("gnp");
+		Column<Double> GNPOLD = TYPE.doubleColumn("gnpold");
+		Column<String> LOCALNAME = TYPE.stringColumn("localname");
+		Column<String> GOVERNMENTFORM = TYPE.stringColumn("governmentform");
+		Column<String> HEADOFSTATE = TYPE.stringColumn("headofstate");
+		Column<Integer> CAPITAL = TYPE.integerColumn("capital");
+		Column<String> CODE2 = TYPE.stringColumn("code2");
+		Column<byte[]> FLAG = TYPE.byteArrayColumn("flag");
+		Column<Integer> CITYID = TYPE.integerColumn("cityid");
+		Column<String> CITYNAME = TYPE.stringColumn("cityname");
+		Column<String> DISTRICT = TYPE.stringColumn("district");
+		Column<Integer> CITYPOPULATION = TYPE.integerColumn("citypopulation");
+	}
+
 	interface City {
 		EntityType TYPE = DOMAIN.entityType("world.city");
 
@@ -55,30 +80,5 @@ public interface World {
 		Column<Double> PERCENTAGE = TYPE.doubleColumn("percentage");
 
 		ForeignKey COUNTRYCODE_FK = TYPE.foreignKey("countrycode_fk", COUNTRYCODE, Country.CODE);
-	}
-
-	interface CountryCityV {
-		EntityType TYPE = DOMAIN.entityType("world.country_city_v");
-
-		Column<String> COUNTRYCODE = TYPE.stringColumn("countrycode");
-		Column<String> COUNTRYNAME = TYPE.stringColumn("countryname");
-		Column<String> CONTINENT = TYPE.stringColumn("continent");
-		Column<String> REGION = TYPE.stringColumn("region");
-		Column<Double> SURFACEAREA = TYPE.doubleColumn("surfacearea");
-		Column<Short> INDEPYEAR = TYPE.shortColumn("indepyear");
-		Column<Integer> COUNTRYPOPULATION = TYPE.integerColumn("countrypopulation");
-		Column<Double> LIFEEXPECTANCY = TYPE.doubleColumn("lifeexpectancy");
-		Column<Double> GNP = TYPE.doubleColumn("gnp");
-		Column<Double> GNPOLD = TYPE.doubleColumn("gnpold");
-		Column<String> LOCALNAME = TYPE.stringColumn("localname");
-		Column<String> GOVERNMENTFORM = TYPE.stringColumn("governmentform");
-		Column<String> HEADOFSTATE = TYPE.stringColumn("headofstate");
-		Column<Integer> CAPITAL = TYPE.integerColumn("capital");
-		Column<String> CODE2 = TYPE.stringColumn("code2");
-		Column<byte[]> FLAG = TYPE.byteArrayColumn("flag");
-		Column<Integer> CITYID = TYPE.integerColumn("cityid");
-		Column<String> CITYNAME = TYPE.stringColumn("cityname");
-		Column<String> DISTRICT = TYPE.stringColumn("district");
-		Column<Integer> CITYPOPULATION = TYPE.integerColumn("citypopulation");
 	}
 }

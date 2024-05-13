@@ -21,10 +21,10 @@ import is.codion.chinook.domain.Chinook.Users;
 public final class ChinookImpl extends DomainModel {
 	public ChinookImpl() {
 		super(DOMAIN);
-		add(artist(), album(), employee(),
-				customer(), genre(), invoice(),
-				mediatype(), track(), invoiceline(),
-				playlist(), playlisttrack(), users());
+		add(artist(), employee(), genre(),
+				mediatype(), playlist(), users(),
+				customer(), invoice(), album(),
+				track(), invoiceline(), playlisttrack());
 	}
 
 	static EntityDefinition artist() {
@@ -38,32 +38,6 @@ public final class ChinookImpl extends DomainModel {
 					.maximumLength(120))
 			.keyGenerator(identity())
 			.caption("Artist")
-			.build();
-	}
-
-	static EntityDefinition album() {
-		return Album.TYPE.define(
-				Album.ALBUMID.define()
-					.primaryKey(),
-				Album.TITLE.define()
-					.column()
-					.caption("Title")
-					.nullable(false)
-					.maximumLength(160),
-				Album.ARTISTID.define()
-					.column()
-					.nullable(false),
-				Album.ARTISTID_FK.define()
-					.foreignKey()
-					.caption("Artist"),
-				Album.COVER.define()
-					.column()
-					.caption("Cover"),
-				Album.TAGS.define()
-					.column()
-					.caption("Tags"))
-			.keyGenerator(identity())
-			.caption("Album")
 			.build();
 	}
 
@@ -134,6 +108,66 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
+	static EntityDefinition genre() {
+		return Genre.TYPE.define(
+				Genre.GENREID.define()
+					.primaryKey(),
+				Genre.NAME.define()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(120))
+			.keyGenerator(identity())
+			.caption("Genre")
+			.build();
+	}
+
+	static EntityDefinition mediatype() {
+		return Mediatype.TYPE.define(
+				Mediatype.MEDIATYPEID.define()
+					.primaryKey(),
+				Mediatype.NAME.define()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(120))
+			.keyGenerator(identity())
+			.caption("Mediatype")
+			.build();
+	}
+
+	static EntityDefinition playlist() {
+		return Playlist.TYPE.define(
+				Playlist.PLAYLISTID.define()
+					.primaryKey(),
+				Playlist.NAME.define()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(120))
+			.keyGenerator(identity())
+			.caption("Playlist")
+			.build();
+	}
+
+	static EntityDefinition users() {
+		return Users.TYPE.define(
+				Users.USERID.define()
+					.primaryKey(),
+				Users.USERNAME.define()
+					.column()
+					.caption("Username")
+					.nullable(false)
+					.maximumLength(20),
+				Users.PASSWORDHASH.define()
+					.column()
+					.caption("Passwordhash")
+					.nullable(false))
+			.keyGenerator(identity())
+			.caption("Users")
+			.build();
+	}
+
 	static EntityDefinition customer() {
 		return Customer.TYPE.define(
 				Customer.CUSTOMERID.define()
@@ -195,20 +229,6 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition genre() {
-		return Genre.TYPE.define(
-				Genre.GENREID.define()
-					.primaryKey(),
-				Genre.NAME.define()
-					.column()
-					.caption("Name")
-					.nullable(false)
-					.maximumLength(120))
-			.keyGenerator(identity())
-			.caption("Genre")
-			.build();
-	}
-
 	static EntityDefinition invoice() {
 		return Invoice.TYPE.define(
 				Invoice.INVOICEID.define()
@@ -252,17 +272,29 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition mediatype() {
-		return Mediatype.TYPE.define(
-				Mediatype.MEDIATYPEID.define()
+	static EntityDefinition album() {
+		return Album.TYPE.define(
+				Album.ALBUMID.define()
 					.primaryKey(),
-				Mediatype.NAME.define()
+				Album.TITLE.define()
 					.column()
-					.caption("Name")
+					.caption("Title")
 					.nullable(false)
-					.maximumLength(120))
+					.maximumLength(160),
+				Album.ARTISTID.define()
+					.column()
+					.nullable(false),
+				Album.ARTISTID_FK.define()
+					.foreignKey()
+					.caption("Artist"),
+				Album.COVER.define()
+					.column()
+					.caption("Cover"),
+				Album.TAGS.define()
+					.column()
+					.caption("Tags"))
 			.keyGenerator(identity())
-			.caption("Mediatype")
+			.caption("Album")
 			.build();
 	}
 
@@ -345,20 +377,6 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition playlist() {
-		return Playlist.TYPE.define(
-				Playlist.PLAYLISTID.define()
-					.primaryKey(),
-				Playlist.NAME.define()
-					.column()
-					.caption("Name")
-					.nullable(false)
-					.maximumLength(120))
-			.keyGenerator(identity())
-			.caption("Playlist")
-			.build();
-	}
-
 	static EntityDefinition playlisttrack() {
 		return Playlisttrack.TYPE.define(
 				Playlisttrack.PLAYLISTTRACKID.define()
@@ -377,24 +395,6 @@ public final class ChinookImpl extends DomainModel {
 					.caption("Track"))
 			.keyGenerator(identity())
 			.caption("Playlisttrack")
-			.build();
-	}
-
-	static EntityDefinition users() {
-		return Users.TYPE.define(
-				Users.USERID.define()
-					.primaryKey(),
-				Users.USERNAME.define()
-					.column()
-					.caption("Username")
-					.nullable(false)
-					.maximumLength(20),
-				Users.PASSWORDHASH.define()
-					.column()
-					.caption("Passwordhash")
-					.nullable(false))
-			.keyGenerator(identity())
-			.caption("Users")
 			.build();
 	}
 }

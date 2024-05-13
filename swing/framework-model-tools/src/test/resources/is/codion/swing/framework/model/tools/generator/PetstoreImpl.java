@@ -18,8 +18,8 @@ public final class PetstoreImpl extends DomainModel {
 	public PetstoreImpl() {
 		super(DOMAIN);
 		add(address(), category(), contactInfo(),
-				product(), item(), itemTags(),
-				tag(), tagItem());
+				itemTags(), tag(), product(),
+				item(), tagItem());
 	}
 
 	static EntityDefinition address() {
@@ -117,6 +117,33 @@ public final class PetstoreImpl extends DomainModel {
 			.build();
 	}
 
+	static EntityDefinition itemTags() {
+		return ItemTags.TYPE.define(
+				ItemTags.NAME.define()
+					.column()
+					.caption("Name"),
+				ItemTags.TAG.define()
+					.column()
+					.caption("Tag"))
+			.caption("Item tags")
+			.readOnly(true)
+			.build();
+	}
+
+	static EntityDefinition tag() {
+		return Tag.TYPE.define(
+				Tag.TAG_ID.define()
+					.primaryKey(),
+				Tag.TAG.define()
+					.column()
+					.caption("Tag")
+					.nullable(false)
+					.maximumLength(30))
+			.keyGenerator(identity())
+			.caption("Tag")
+			.build();
+	}
+
 	static EntityDefinition product() {
 		return Product.TYPE.define(
 				Product.PRODUCT_ID.define()
@@ -206,33 +233,6 @@ public final class PetstoreImpl extends DomainModel {
 					.columnHasDefaultValue(true))
 			.keyGenerator(identity())
 			.caption("Item")
-			.build();
-	}
-
-	static EntityDefinition itemTags() {
-		return ItemTags.TYPE.define(
-				ItemTags.NAME.define()
-					.column()
-					.caption("Name"),
-				ItemTags.TAG.define()
-					.column()
-					.caption("Tag"))
-			.caption("Item tags")
-			.readOnly(true)
-			.build();
-	}
-
-	static EntityDefinition tag() {
-		return Tag.TYPE.define(
-				Tag.TAG_ID.define()
-					.primaryKey(),
-				Tag.TAG.define()
-					.column()
-					.caption("Tag")
-					.nullable(false)
-					.maximumLength(30))
-			.keyGenerator(identity())
-			.caption("Tag")
 			.build();
 	}
 

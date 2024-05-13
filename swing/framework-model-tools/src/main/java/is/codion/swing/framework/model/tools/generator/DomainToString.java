@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.model.tools.generator;
 
+import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -39,6 +40,7 @@ import com.squareup.javapoet.TypeSpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -466,11 +468,15 @@ final class DomainToString {
 		return "EntityDefinition " + interfaceName(definition.tableName(), false) + "()";
 	}
 
-	private static List<EntityDefinition> sortDefinitions(DatabaseDomain domain) {
+	static List<EntityDefinition> sortDefinitions(Domain domain) {
 		Map<EntityType, EntityDefinition> definitions = domain.entities().definitions().stream()
 						.collect(toMap(EntityDefinition::entityType, Function.identity()));
-
-		return definitions.values().stream()
+		List<EntityDefinition> sorted = new ArrayList<>(definitions.values().stream()
+						.filter(def -> dependencies(def, definitions).isEmpty())
+						.sorted(Comparator.comparing(EntityDefinition::tableName))
+						.collect(toList()));
+		List<EntityDefinition> withDependencies = definitions.values().stream()
+						.filter(def -> !sorted.contains(def))
 						.sorted((d1, d2) -> {
 							if (dependencies(d1, definitions).contains(d2.entityType())) {
 								return 1;
@@ -479,9 +485,13 @@ final class DomainToString {
 								return -1;
 							}
 
-							return d1.tableName().compareTo(d2.tableName());
+							return 0;
 						})
 						.collect(toList());
+
+		sorted.addAll(withDependencies);
+
+		return sorted;
 	}
 
 	static boolean cyclicalDependencies(Collection<EntityDefinition> definitions) {

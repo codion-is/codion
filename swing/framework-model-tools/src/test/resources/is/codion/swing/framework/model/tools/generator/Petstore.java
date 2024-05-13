@@ -25,8 +25,8 @@ public final class Petstore extends DomainModel {
 	public Petstore() {
 		super(DOMAIN);
 		add(address(), category(), contactInfo(),
-				product(), item(), itemTags(),
-				tag(), tagItem());
+				itemTags(), tag(), product(),
+				item(), tagItem());
 	}
 
 	static EntityDefinition address() {
@@ -124,6 +124,33 @@ public final class Petstore extends DomainModel {
 			.build();
 	}
 
+	static EntityDefinition itemTags() {
+		return ItemTags.TYPE.define(
+				ItemTags.NAME.define()
+					.column()
+					.caption("Name"),
+				ItemTags.TAG.define()
+					.column()
+					.caption("Tag"))
+			.caption("Item tags")
+			.readOnly(true)
+			.build();
+	}
+
+	static EntityDefinition tag() {
+		return Tag.TYPE.define(
+				Tag.TAG_ID.define()
+					.primaryKey(),
+				Tag.TAG.define()
+					.column()
+					.caption("Tag")
+					.nullable(false)
+					.maximumLength(30))
+			.keyGenerator(identity())
+			.caption("Tag")
+			.build();
+	}
+
 	static EntityDefinition product() {
 		return Product.TYPE.define(
 				Product.PRODUCT_ID.define()
@@ -216,33 +243,6 @@ public final class Petstore extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition itemTags() {
-		return ItemTags.TYPE.define(
-				ItemTags.NAME.define()
-					.column()
-					.caption("Name"),
-				ItemTags.TAG.define()
-					.column()
-					.caption("Tag"))
-			.caption("Item tags")
-			.readOnly(true)
-			.build();
-	}
-
-	static EntityDefinition tag() {
-		return Tag.TYPE.define(
-				Tag.TAG_ID.define()
-					.primaryKey(),
-				Tag.TAG.define()
-					.column()
-					.caption("Tag")
-					.nullable(false)
-					.maximumLength(30))
-			.keyGenerator(identity())
-			.caption("Tag")
-			.build();
-	}
-
 	static EntityDefinition tagItem() {
 		return TagItem.TYPE.define(
 				TagItem.TAG_ID.define()
@@ -292,6 +292,20 @@ public final class Petstore extends DomainModel {
 		Column<String> EMAIL = TYPE.stringColumn("email");
 	}
 
+	public interface ItemTags {
+		EntityType TYPE = DOMAIN.entityType("petstore.item_tags");
+
+		Column<String> NAME = TYPE.stringColumn("name");
+		Column<String> TAG = TYPE.stringColumn("tag");
+	}
+
+	public interface Tag {
+		EntityType TYPE = DOMAIN.entityType("petstore.tag");
+
+		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
+		Column<String> TAG = TYPE.stringColumn("tag");
+	}
+
 	public interface Product {
 		EntityType TYPE = DOMAIN.entityType("petstore.product");
 
@@ -323,20 +337,6 @@ public final class Petstore extends DomainModel {
 		ForeignKey PRODUCT_ID_FK = TYPE.foreignKey("product_id_fk", PRODUCT_ID, Product.PRODUCT_ID);
 		ForeignKey ADDRESS_ID_FK = TYPE.foreignKey("address_id_fk", ADDRESS_ID, Address.ADDRESS_ID);
 		ForeignKey CONTACT_INFO_ID_FK = TYPE.foreignKey("contact_info_id_fk", CONTACT_INFO_ID, ContactInfo.CONTACT_INFO_ID);
-	}
-
-	public interface ItemTags {
-		EntityType TYPE = DOMAIN.entityType("petstore.item_tags");
-
-		Column<String> NAME = TYPE.stringColumn("name");
-		Column<String> TAG = TYPE.stringColumn("tag");
-	}
-
-	public interface Tag {
-		EntityType TYPE = DOMAIN.entityType("petstore.tag");
-
-		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
-		Column<String> TAG = TYPE.stringColumn("tag");
 	}
 
 	public interface TagItem {
