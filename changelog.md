@@ -171,6 +171,7 @@ Codion Change Log
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.
 - DomainGeneratorPanel, save implemented.
+- DomainGeneratorPanel bug fixed, directory creation improved.
 
 ## 0.17.43
 ### is.codion.common.core

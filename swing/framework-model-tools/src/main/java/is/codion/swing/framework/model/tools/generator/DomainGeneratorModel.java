@@ -228,7 +228,7 @@ public final class DomainGeneratorModel {
 						.collect(toList());
 	}
 
-	private Path savePath(File directory) throws IOException {
+	private Path savePath(File directory) {
 		Path path = directory.toPath();
 		String domainPackage = domainPackageValue.get();
 		if (domainPackage != null) {
@@ -242,28 +242,19 @@ public final class DomainGeneratorModel {
 
 	private void saveApiImpl(Path path, SchemaRow schema) throws IOException {
 		String interfaceName = interfaceName(schema.domainModel.type().name(), true);
-		if (path.toFile().mkdirs()) {
-			Path filePath = path.resolve(interfaceName + ".java");
-			Files.write(filePath, singleton(domainApiValue.get()));
-			path = path.resolve("impl");
-			if (path.toFile().mkdirs()) {
-				filePath = path.resolve(interfaceName + "Impl.java");
-				Files.write(filePath, singleton(domainImplValue.get()));
-			}
-		}
-		else {
-			throw new IOException("Could not create directories: " + path);
-		}
+		Files.createDirectories(path);
+		Path filePath = path.resolve(interfaceName + ".java");
+		Files.write(filePath, singleton(domainApiValue.get()));
+		path = path.resolve("impl");
+		Files.createDirectories(path);
+		filePath = path.resolve(interfaceName + "Impl.java");
+		Files.write(filePath, singleton(domainImplValue.get()));
 	}
 
 	private void saveCombined(Path path, SchemaRow schema) throws IOException {
 		String interfaceName = interfaceName(schema.domainModel.type().name(), true);
-		if (path.toFile().mkdirs()) {
-			Files.write(path.resolve(interfaceName + ".java"), singleton(domainCombinedValue.get()));
-		}
-		else {
-			throw new IOException("Could not create directories: " + path);
-		}
+		Files.createDirectories(path);
+		Files.write(path.resolve(interfaceName + ".java"), singleton(domainCombinedValue.get()));
 	}
 
 	private final class SchemaItems implements Supplier<Collection<SchemaRow>> {

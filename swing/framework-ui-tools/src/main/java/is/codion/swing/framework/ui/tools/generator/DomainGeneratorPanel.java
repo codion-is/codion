@@ -266,7 +266,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.eastComponent(gridLayoutPanel(2, 1)
 										.add(label(" ").build())
 										.add(button(Control.builder(this::save)
-														.name("Save...")
+														.name("Save")
 														.mnemonic('S')
 														.enabled(model.saveEnabled()))
 														.build())
