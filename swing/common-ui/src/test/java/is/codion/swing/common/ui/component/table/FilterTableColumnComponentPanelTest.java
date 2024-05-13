@@ -40,7 +40,7 @@ public class FilterTableColumnComponentPanelTest {
 	private final FilterTableModel.Columns<Object, Integer> columns = new FilterTableModel.Columns<>() {
 		@Override
 		public List<Integer> identifiers() {
-			return List.of(0, 1, 2);
+			return asList(0, 1, 2);
 		}
 
 		@Override

@@ -68,7 +68,8 @@ import static is.codion.framework.model.EntityTableConditionModel.entityTableCon
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -921,7 +922,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 			this.identifiers = entityDefinition.attributes().definitions().stream()
 							.filter(attributeDefinition -> !attributeDefinition.hidden())
 							.map(AttributeDefinition::attribute)
-							.collect(toUnmodifiableList());
+							.collect(toList());
 		}
 
 		@Override
