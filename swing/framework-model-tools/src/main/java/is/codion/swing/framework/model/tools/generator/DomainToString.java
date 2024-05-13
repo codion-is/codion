@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static com.squareup.javapoet.MethodSpec.methodBuilder;
@@ -56,8 +55,11 @@ import static com.squareup.javapoet.TypeSpec.classBuilder;
 import static com.squareup.javapoet.TypeSpec.interfaceBuilder;
 import static is.codion.common.Separators.LINE_SEPARATOR;
 import static is.codion.common.Text.nullOrEmpty;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
+import static java.util.stream.Stream.concat;
 import static javax.lang.model.element.Modifier.*;
 
 final class DomainToString {
@@ -469,36 +471,24 @@ final class DomainToString {
 	}
 
 	static List<EntityDefinition> sortDefinitions(Domain domain) {
-		Map<EntityType, EntityDefinition> definitions = domain.entities().definitions().stream()
-						.collect(toMap(EntityDefinition::entityType, Function.identity()));
-		List<EntityDefinition> sorted = new ArrayList<>(definitions.values().stream()
-						.filter(def -> dependencies(def, definitions).isEmpty())
-						.sorted(Comparator.comparing(EntityDefinition::tableName))
-						.collect(toList()));
-		List<EntityDefinition> withDependencies = definitions.values().stream()
-						.filter(def -> !sorted.contains(def))
-						.sorted((d1, d2) -> {
-							if (dependencies(d1, definitions).contains(d2.entityType())) {
-								return 1;
-							}
-							else if (dependencies(d2, definitions).contains(d1.entityType())) {
-								return -1;
-							}
+		Map<EntityType, Set<EntityType>> dependencies = dependencies(domain);
+		Collection<EntityDefinition> definitions = domain.entities().definitions();
 
-							return 0;
-						})
+		return concat(definitions.stream()
+										.filter(definition -> dependencies.get(definition.entityType()).isEmpty())
+										.sorted(comparing(EntityDefinition::tableName)),
+						definitions.stream()
+										.filter(definition -> !dependencies.get(definition.entityType()).isEmpty())
+										.sorted(comparing(EntityDefinition::tableName))
+										.sorted(new DependencyOrder(dependencies)))
 						.collect(toList());
-
-		sorted.addAll(withDependencies);
-
-		return sorted;
 	}
 
 	static boolean cyclicalDependencies(Collection<EntityDefinition> definitions) {
 		Map<EntityType, EntityDefinition> definitionMap = definitions.stream()
-						.collect(toMap(EntityDefinition::entityType, Function.identity()));
+						.collect(toMap(EntityDefinition::entityType, identity()));
 		for (EntityDefinition definition : definitions) {
-			Set<EntityType> dependencies = dependencies(definition, new HashSet<>(), definitionMap);
+			Set<EntityType> dependencies = dependencies(definition.foreignKeys().get(), new HashSet<>(), definitionMap);
 			if (dependencies.contains(definition.entityType())) {
 				return true;
 			}
@@ -507,20 +497,31 @@ final class DomainToString {
 		return false;
 	}
 
-	private static Set<EntityType> dependencies(EntityDefinition definition,
-																							Map<EntityType, EntityDefinition> definitions) {
-		return dependencies(definition, new HashSet<>(), definitions);
+	private static Map<EntityType, Set<EntityType>> dependencies(Domain domain) {
+		Map<EntityType, EntityDefinition> definitions = domain.entities().definitions().stream()
+						.collect(toMap(EntityDefinition::entityType, identity()));
+
+		return domain.entities().definitions().stream()
+						.collect(toMap(EntityDefinition::entityType,
+										definition -> dependencies(definition, definitions)));
 	}
 
-	private static Set<EntityType> dependencies(EntityDefinition definition, Set<EntityType> dependencies,
+	private static Set<EntityType> dependencies(EntityDefinition definition,
 																							Map<EntityType, EntityDefinition> definitions) {
-		for (ForeignKey foreignKey : definition.foreignKeys().get()) {
-			if (!foreignKey.referencedType().equals(definition.entityType())
-							&& !dependencies.contains(foreignKey.referencedType())) {
-				dependencies.add(foreignKey.referencedType());
-				dependencies.addAll(dependencies(definitions.get(foreignKey.referencedType()), dependencies, definitions));
-			}
-		}
+		return dependencies(definition.foreignKeys().get(), new HashSet<>(), definitions);
+	}
+
+	private static Set<EntityType> dependencies(Collection<ForeignKey> foreignKeys,
+																							Set<EntityType> dependencies,
+																							Map<EntityType, EntityDefinition> definitions) {
+		foreignKeys.stream()
+						.filter(foreignKey -> !foreignKey.referencedType().equals(foreignKey.entityType()))
+						.filter(foreignKey -> !dependencies.contains(foreignKey.referencedType()))
+						.forEach(foreignKey -> {
+							dependencies.add(foreignKey.referencedType());
+							dependencies.addAll(dependencies(definitions.get(foreignKey.referencedType())
+											.foreignKeys().get(), dependencies, definitions));
+						});
 
 		return dependencies;
 	}
@@ -551,5 +552,26 @@ final class DomainToString {
 		}
 
 		return builder.toString();
+	}
+
+	private static final class DependencyOrder implements Comparator<EntityDefinition> {
+
+		private final Map<EntityType, Set<EntityType>> dependencies;
+
+		private DependencyOrder(Map<EntityType, Set<EntityType>> dependencies) {
+			this.dependencies = dependencies;
+		}
+
+		@Override
+		public int compare(EntityDefinition definition1, EntityDefinition definition2) {
+			if (dependencies.get(definition1.entityType()).contains(definition2.entityType())) {
+				return 1;
+			}
+			else if (dependencies.get(definition2.entityType()).contains(definition1.entityType())) {
+				return -1;
+			}
+
+			return 0;
+		}
 	}
 }

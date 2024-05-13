@@ -31,7 +31,7 @@ public final class Chinook extends DomainModel {
 		super(DOMAIN);
 		add(artist(), employee(), genre(),
 				mediatype(), playlist(), users(),
-				customer(), invoice(), album(),
+				album(), customer(), invoice(),
 				track(), invoiceline(), playlisttrack());
 	}
 
@@ -176,6 +176,32 @@ public final class Chinook extends DomainModel {
 			.build();
 	}
 
+	static EntityDefinition album() {
+		return Album.TYPE.define(
+				Album.ALBUMID.define()
+					.primaryKey(),
+				Album.TITLE.define()
+					.column()
+					.caption("Title")
+					.nullable(false)
+					.maximumLength(160),
+				Album.ARTISTID.define()
+					.column()
+					.nullable(false),
+				Album.ARTISTID_FK.define()
+					.foreignKey()
+					.caption("Artist"),
+				Album.COVER.define()
+					.column()
+					.caption("Cover"),
+				Album.TAGS.define()
+					.column()
+					.caption("Tags"))
+			.keyGenerator(identity())
+			.caption("Album")
+			.build();
+	}
+
 	static EntityDefinition customer() {
 		return Customer.TYPE.define(
 				Customer.CUSTOMERID.define()
@@ -277,32 +303,6 @@ public final class Chinook extends DomainModel {
 					.maximumFractionDigits(2))
 			.keyGenerator(identity())
 			.caption("Invoice")
-			.build();
-	}
-
-	static EntityDefinition album() {
-		return Album.TYPE.define(
-				Album.ALBUMID.define()
-					.primaryKey(),
-				Album.TITLE.define()
-					.column()
-					.caption("Title")
-					.nullable(false)
-					.maximumLength(160),
-				Album.ARTISTID.define()
-					.column()
-					.nullable(false),
-				Album.ARTISTID_FK.define()
-					.foreignKey()
-					.caption("Artist"),
-				Album.COVER.define()
-					.column()
-					.caption("Cover"),
-				Album.TAGS.define()
-					.column()
-					.caption("Tags"))
-			.keyGenerator(identity())
-			.caption("Album")
 			.build();
 	}
 
@@ -464,6 +464,18 @@ public final class Chinook extends DomainModel {
 		Column<Integer> PASSWORDHASH = TYPE.integerColumn("passwordhash");
 	}
 
+	public interface Album {
+		EntityType TYPE = DOMAIN.entityType("chinook.album");
+
+		Column<Long> ALBUMID = TYPE.longColumn("albumid");
+		Column<String> TITLE = TYPE.stringColumn("title");
+		Column<Long> ARTISTID = TYPE.longColumn("artistid");
+		Column<byte[]> COVER = TYPE.byteArrayColumn("cover");
+		Column<Object> TAGS = TYPE.column("tags", Object.class);
+
+		ForeignKey ARTISTID_FK = TYPE.foreignKey("artistid_fk", ARTISTID, Artist.ARTISTID);
+	}
+
 	public interface Customer {
 		EntityType TYPE = DOMAIN.entityType("chinook.customer");
 
@@ -498,18 +510,6 @@ public final class Chinook extends DomainModel {
 		Column<Double> TOTAL = TYPE.doubleColumn("total");
 
 		ForeignKey CUSTOMERID_FK = TYPE.foreignKey("customerid_fk", CUSTOMERID, Customer.CUSTOMERID);
-	}
-
-	public interface Album {
-		EntityType TYPE = DOMAIN.entityType("chinook.album");
-
-		Column<Long> ALBUMID = TYPE.longColumn("albumid");
-		Column<String> TITLE = TYPE.stringColumn("title");
-		Column<Long> ARTISTID = TYPE.longColumn("artistid");
-		Column<byte[]> COVER = TYPE.byteArrayColumn("cover");
-		Column<Object> TAGS = TYPE.column("tags", Object.class);
-
-		ForeignKey ARTISTID_FK = TYPE.foreignKey("artistid_fk", ARTISTID, Artist.ARTISTID);
 	}
 
 	public interface Track {

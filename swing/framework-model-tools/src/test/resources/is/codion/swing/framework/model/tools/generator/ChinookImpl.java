@@ -23,7 +23,7 @@ public final class ChinookImpl extends DomainModel {
 		super(DOMAIN);
 		add(artist(), employee(), genre(),
 				mediatype(), playlist(), users(),
-				customer(), invoice(), album(),
+				album(), customer(), invoice(),
 				track(), invoiceline(), playlisttrack());
 	}
 
@@ -168,6 +168,32 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
+	static EntityDefinition album() {
+		return Album.TYPE.define(
+				Album.ALBUMID.define()
+					.primaryKey(),
+				Album.TITLE.define()
+					.column()
+					.caption("Title")
+					.nullable(false)
+					.maximumLength(160),
+				Album.ARTISTID.define()
+					.column()
+					.nullable(false),
+				Album.ARTISTID_FK.define()
+					.foreignKey()
+					.caption("Artist"),
+				Album.COVER.define()
+					.column()
+					.caption("Cover"),
+				Album.TAGS.define()
+					.column()
+					.caption("Tags"))
+			.keyGenerator(identity())
+			.caption("Album")
+			.build();
+	}
+
 	static EntityDefinition customer() {
 		return Customer.TYPE.define(
 				Customer.CUSTOMERID.define()
@@ -269,32 +295,6 @@ public final class ChinookImpl extends DomainModel {
 					.maximumFractionDigits(2))
 			.keyGenerator(identity())
 			.caption("Invoice")
-			.build();
-	}
-
-	static EntityDefinition album() {
-		return Album.TYPE.define(
-				Album.ALBUMID.define()
-					.primaryKey(),
-				Album.TITLE.define()
-					.column()
-					.caption("Title")
-					.nullable(false)
-					.maximumLength(160),
-				Album.ARTISTID.define()
-					.column()
-					.nullable(false),
-				Album.ARTISTID_FK.define()
-					.foreignKey()
-					.caption("Artist"),
-				Album.COVER.define()
-					.column()
-					.caption("Cover"),
-				Album.TAGS.define()
-					.column()
-					.caption("Tags"))
-			.keyGenerator(identity())
-			.caption("Album")
 			.build();
 	}
 

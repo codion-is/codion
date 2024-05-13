@@ -185,10 +185,10 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		EntityDefinition definition = connectionProvider.entities().definition(entityType);
 		definition.columns().definitions().forEach(columnDefinition ->
 						conditionModelFactory.createConditionModel(columnDefinition.attribute())
-										.ifPresent(model -> models.add((ColumnConditionModel<Attribute<?>, ?>) model)));
+										.ifPresent(models::add));
 		definition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
 						conditionModelFactory.createConditionModel(foreignKeyDefinition.attribute())
-										.ifPresent(model -> models.add((ColumnConditionModel<Attribute<?>, ?>) model)));
+										.ifPresent(models::add));
 
 		return models.stream()
 						.map(model -> (ColumnConditionModel<Attribute<?>, ?>) model)
