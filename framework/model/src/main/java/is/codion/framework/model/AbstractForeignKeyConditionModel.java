@@ -32,7 +32,6 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -42,9 +41,9 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
 
 	private final ColumnConditionModel<ForeignKey, Entity> conditionModel;
 
-	protected AbstractForeignKeyConditionModel(ForeignKey foreignKey) {
+	protected AbstractForeignKeyConditionModel(ForeignKey foreignKey, List<Operator> operators) {
 		conditionModel = ColumnConditionModel.builder(requireNonNull(foreignKey), Entity.class)
-						.operators(asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN))
+						.operators(operators)
 						.build();
 	}
 
@@ -185,6 +184,7 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
 
 	/**
 	 * @return the search model controlling the in values
+	 * @throws IllegalStateException in case no such model is available
 	 */
 	public abstract EntitySearchModel inSearchModel();
 }

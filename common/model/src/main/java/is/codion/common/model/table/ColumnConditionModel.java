@@ -194,8 +194,10 @@ public interface ColumnConditionModel<C, T> {
 	State enabled();
 
 	/**
-	 * Disables and clears this condition model, that is, sets the upper and lower bounds to null
-	 * and the operator to the default value {@link Operator#EQUAL}
+	 * Clears this condition model, that is, sets all bounds to null
+	 * and the operator to the first of the ones available.
+	 * @see #autoEnable()
+	 * @see #operators()
 	 */
 	void clear();
 

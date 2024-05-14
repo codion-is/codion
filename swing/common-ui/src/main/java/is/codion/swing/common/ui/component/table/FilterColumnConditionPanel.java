@@ -47,13 +47,13 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static is.codion.common.Operator.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
@@ -63,6 +63,7 @@ import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
@@ -121,6 +122,10 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private static final String UNKNOWN_OPERATOR = "Unknown operator: ";
+	private static final List<Operator> LOWER_BOUND_OPERATORS = asList(
+					GREATER_THAN, GREATER_THAN, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
+	private static final List<Operator> UPPER_BOUND_OPERATORS = asList(
+					LESS_THAN, LESS_THAN_OR_EQUAL, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
 
 	private final JToggleButton toggleEnabledButton;
 	private final JComboBox<Item<Operator>> operatorCombo;
@@ -135,16 +140,15 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	private FilterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel,
 																		 String caption, FieldFactory<C> fieldFactory) {
 		super(conditionModel, caption);
-		setLayout(new BorderLayout());
 		requireNonNull(fieldFactory, "fieldFactory");
 		boolean modelLocked = conditionModel.locked().get();
 		conditionModel.locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
-		this.equalField = fieldFactory.createEqualField(conditionModel);
-		this.upperBoundField = fieldFactory.createUpperBoundField(conditionModel).orElse(null);
-		this.lowerBoundField = fieldFactory.createLowerBoundField(conditionModel).orElse(null);
-		this.inField = fieldFactory.createInField(conditionModel);
-		this.operatorCombo = createOperatorComboBox(conditionModel.operators());
-		this.toggleEnabledButton = radioButton(conditionModel.enabled())
+		this.equalField = createEqualField(fieldFactory);
+		this.upperBoundField = createUpperBoundField(fieldFactory);
+		this.lowerBoundField = createLowerBoundField(fieldFactory);
+		this.inField = createInField(fieldFactory);
+		this.operatorCombo = createOperatorComboBox(conditionModel().operators());
+		this.toggleEnabledButton = radioButton(conditionModel().enabled())
 						.horizontalAlignment(CENTER)
 						.popupMenu(radioButton -> menu(Controls.builder()
 										.control(ToggleControl.builder(conditionModel.autoEnable())
@@ -175,7 +179,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		switch (conditionModel().operator().get()) {
 			case EQUAL:
 			case NOT_EQUAL:
-				equalField.requestFocusInWindow();
+				equalField().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			case GREATER_THAN:
 			case GREATER_THAN_OR_EQUAL:
@@ -183,15 +187,15 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 			case BETWEEN:
 			case NOT_BETWEEN_EXCLUSIVE:
 			case NOT_BETWEEN:
-				lowerBoundField.requestFocusInWindow();
+				lowerBoundField().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			case LESS_THAN:
 			case LESS_THAN_OR_EQUAL:
-				upperBoundField.requestFocusInWindow();
+				upperBoundField().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			case IN:
 			case NOT_IN:
-				inField.requestFocusInWindow();
+				inField().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			default:
 				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel().operator().get());
@@ -208,29 +212,29 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	/**
 	 * @return the JComponent used to specify the equal value
 	 */
-	public JComponent equalField() {
-		return equalField;
+	public Optional<JComponent> equalField() {
+		return Optional.ofNullable(equalField);
 	}
 
 	/**
 	 * @return the JComponent used to specify the upper bound
 	 */
-	public JComponent upperBoundField() {
-		return upperBoundField;
+	public Optional<JComponent> upperBoundField() {
+		return Optional.ofNullable(upperBoundField);
 	}
 
 	/**
 	 * @return the JComponent used to specify the lower bound
 	 */
-	public JComponent lowerBoundField() {
-		return lowerBoundField;
+	public Optional<JComponent> lowerBoundField() {
+		return Optional.ofNullable(lowerBoundField);
 	}
 
 	/**
 	 * @return the JComponent used to specify the in values
 	 */
-	public JComponent inField() {
-		return inField;
+	public Optional<JComponent> inField() {
+		return Optional.ofNullable(inField);
 	}
 
 	/**
@@ -304,6 +308,42 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		JComponent createInField(ColumnConditionModel<C, ?> conditionModel);
 	}
 
+	private JComponent createEqualField(FieldFactory<C> fieldFactory) {
+		return equalFieldRequired() ? fieldFactory.createEqualField(conditionModel()) : null;
+	}
+
+	private JComponent createUpperBoundField(FieldFactory<C> fieldFactory) {
+		return upperBoundFieldRequired() ? fieldFactory.createUpperBoundField(conditionModel()).orElse(null) : null;
+	}
+
+	private JComponent createLowerBoundField(FieldFactory<C> fieldFactory) {
+		return lowerBoundFieldRequired() ? fieldFactory.createLowerBoundField(conditionModel()).orElse(null) : null;
+	}
+
+	private JComponent createInField(FieldFactory<C> fieldFactory) {
+		return inFieldRequired() ? fieldFactory.createInField(conditionModel()) : null;
+	}
+
+	private boolean equalFieldRequired() {
+		return conditionModel().operators().contains(EQUAL) ||
+						conditionModel().operators().contains(NOT_EQUAL);
+	}
+
+	private boolean upperBoundFieldRequired() {
+		return conditionModel().operators().stream()
+						.anyMatch(UPPER_BOUND_OPERATORS::contains);
+	}
+
+	private boolean lowerBoundFieldRequired() {
+		return conditionModel().operators().stream()
+						.anyMatch(LOWER_BOUND_OPERATORS::contains);
+	}
+
+	private boolean inFieldRequired() {
+		return conditionModel().operators().contains(IN) ||
+						conditionModel().operators().contains(NOT_IN);
+	}
+
 	/**
 	 * Binds events to relevant GUI actions
 	 */
@@ -316,9 +356,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NEXT_OPERATOR).get())
 						.action(Control.control(this::selectNextOperator));
 		enableOnEnterKeyEvent.enable(operatorCombo);
-		enableOnEnterKeyEvent.enable(equalField);
-		previousOperatorKeyEvent.enable(equalField);
-		nextOperatorKeyEvent.enable(equalField);
+		if (equalField != null) {
+			enableOnEnterKeyEvent.enable(equalField);
+			previousOperatorKeyEvent.enable(equalField);
+			nextOperatorKeyEvent.enable(equalField);
+		}
 		if (upperBoundField != null) {
 			enableOnEnterKeyEvent.enable(upperBoundField);
 			previousOperatorKeyEvent.enable(upperBoundField);
@@ -329,9 +371,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 			previousOperatorKeyEvent.enable(lowerBoundField);
 			nextOperatorKeyEvent.enable(lowerBoundField);
 		}
-		enableOnEnterKeyEvent.enable(inField);
-		previousOperatorKeyEvent.enable(inField);
-		nextOperatorKeyEvent.enable(inField);
+		if (inField != null) {
+			enableOnEnterKeyEvent.enable(inField);
+			previousOperatorKeyEvent.enable(inField);
+			nextOperatorKeyEvent.enable(inField);
+		}
 		enableOnEnterKeyEvent.enable(toggleEnabledButton);
 	}
 
@@ -464,6 +508,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private void initializeUI() {
+		setLayout(new BorderLayout());
 		linkToEnabledState(conditionModel().locked().not(),
 						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
 		controlPanel.add(operatorCombo, BorderLayout.CENTER);
@@ -472,7 +517,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private void singleValuePanel(JComponent boundField) {
-		if (!Arrays.asList(inputPanel.getComponents()).contains(boundField)) {
+		if (!asList(inputPanel.getComponents()).contains(boundField)) {
 			boolean requestFocus = boundFieldHasFocus();
 			clearInputPanel(requestFocus);
 			inputPanel.add(boundField, BorderLayout.CENTER);
@@ -486,7 +531,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private void rangePanel() {
-		if (!Arrays.asList(inputPanel.getComponents()).contains(rangePanel)) {
+		if (!asList(inputPanel.getComponents()).contains(rangePanel)) {
 			boolean requestFocus = boundFieldHasFocus();
 			clearInputPanel(requestFocus);
 			rangePanel.add(lowerBoundField);

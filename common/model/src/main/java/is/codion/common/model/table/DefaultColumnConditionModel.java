@@ -213,12 +213,11 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	@Override
 	public void clear() {
-		enabled.set(false);
 		setEqualValue(null);
 		setUpperBound(null);
 		setLowerBound(null);
 		setInValues(emptyList());
-		operator.set(Operator.EQUAL);
+		operator.set(operators.get(0));
 	}
 
 	@Override

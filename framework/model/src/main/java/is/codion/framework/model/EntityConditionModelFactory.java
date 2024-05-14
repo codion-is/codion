@@ -31,7 +31,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.util.Optional;
 
-import static is.codion.framework.model.ForeignKeyConditionModel.foreignKeyConditionModel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -57,12 +56,14 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
-			return Optional.of(foreignKeyConditionModel(foreignKey,
-							this::createEqualSearchModel, this::createInSearchModel));
+			return Optional.of(ForeignKeyConditionModel.builder(foreignKey)
+							.includeEqualOperators(createEqualSearchModel(foreignKey))
+							.includeInOperators(createInSearchModel(foreignKey))
+							.build());
 		}
 
 		ColumnDefinition<?> column = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
-    ColumnConditionModel<?, ?> model = ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+		ColumnConditionModel<?, ?> model = ColumnConditionModel.builder(attribute, attribute.type().valueClass())
 						.format(column.format())
 						.dateTimePattern(column.dateTimePattern())
 						.build();

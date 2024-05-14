@@ -18,19 +18,21 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A condition model using {@link EntitySearchModel} for
  * both the {@link #equalValue()} and {@link #inValues()}.
- * @see #foreignKeyConditionModel(ForeignKey, Function, Function)
+ * @see #builder(ForeignKey)
  */
 public final class ForeignKeyConditionModel extends AbstractForeignKeyConditionModel {
 
@@ -39,38 +41,74 @@ public final class ForeignKeyConditionModel extends AbstractForeignKeyConditionM
 
 	private boolean updatingModel = false;
 
-	private ForeignKeyConditionModel(ForeignKey foreignKey,
-																	 Function<ForeignKey, EntitySearchModel> equalSearchModel,
-																	 Function<ForeignKey, EntitySearchModel> inSearchModel) {
-		super(foreignKey);
-		this.equalSearchModel = requireNonNull(equalSearchModel).apply(foreignKey);
-		this.inSearchModel = requireNonNull(inSearchModel).apply(foreignKey);
+	private ForeignKeyConditionModel(DefaultBuilder builder) {
+		super(builder.foreignKey, builder.operators());
+		this.equalSearchModel = builder.equalSearchModel;
+		this.inSearchModel = builder.inSearchModel;
 		bindSearchModelEvents();
 	}
 
 	/**
 	 * @return the combo box model controlling the equal value
+	 * @throws IllegalStateException in case no such model is available
 	 */
 	public EntitySearchModel equalSearchModel() {
+		if (equalSearchModel == null) {
+			throw new IllegalStateException("equalSearchModel is not available");
+		}
+
 		return equalSearchModel;
 	}
 
 	@Override
 	public EntitySearchModel inSearchModel() {
+		if (inSearchModel == null) {
+			throw new IllegalStateException("inSearchModel is not available");
+		}
+
 		return inSearchModel;
 	}
 
-	public static ForeignKeyConditionModel foreignKeyConditionModel(ForeignKey foreignKey,
-																																	Function<ForeignKey, EntitySearchModel> equalSearchModel,
-																																	Function<ForeignKey, EntitySearchModel> inSearchModel) {
-		return new ForeignKeyConditionModel(foreignKey, equalSearchModel, inSearchModel);
+	/**
+	 * @param foreignKey the foreign key
+	 * @return a new {@link ForeignKeyConditionModel.Builder}
+	 */
+	public static Builder builder(ForeignKey foreignKey) {
+		return new DefaultBuilder(foreignKey);
+	}
+
+	/**
+	 * A builder for a {@link ForeignKeyConditionModel}
+	 */
+	public interface Builder {
+
+		/**
+		 * @param equalSearchModel the search model to use for the EQUAl condition
+		 * @return this builder
+		 */
+		Builder includeEqualOperators(EntitySearchModel equalSearchModel);
+
+		/**
+		 * @param inSearchModel the search model to use for the IN condition
+		 * @return this builder
+		 */
+		Builder includeInOperators(EntitySearchModel inSearchModel);
+
+		/**
+		 * @return a new {@link ForeignKeyConditionModel} instance
+		 */
+		ForeignKeyConditionModel build();
 	}
 
 	private void bindSearchModelEvents() {
-		equalSearchModel.entity().addConsumer(new SetEqualValue());
-		equalValue().addConsumer(new SelectEqualValue());
-		inSearchModel.entities().addConsumer(new SetInValues());
-		inValues().addConsumer(new SelectInValues());
+		if (equalSearchModel != null) {
+			equalSearchModel.entity().addConsumer(new SetEqualValue());
+			equalValue().addConsumer(new SelectEqualValue());
+		}
+		if (inSearchModel != null) {
+			inSearchModel.entities().addConsumer(new SetInValues());
+			inValues().addConsumer(new SelectInValues());
+		}
 	}
 
 	private final class SetEqualValue implements Consumer<Entity> {
@@ -118,6 +156,49 @@ public final class ForeignKeyConditionModel extends AbstractForeignKeyConditionM
 			finally {
 				updatingModel = false;
 			}
+		}
+	}
+
+	private static final class DefaultBuilder implements Builder {
+
+		private final ForeignKey foreignKey;
+
+		private EntitySearchModel equalSearchModel;
+		private EntitySearchModel inSearchModel;
+
+		private DefaultBuilder(ForeignKey foreignKey) {
+			this.foreignKey = requireNonNull(foreignKey);
+		}
+
+		@Override
+		public Builder includeEqualOperators(EntitySearchModel equalSearchModel) {
+			this.equalSearchModel = requireNonNull(equalSearchModel);
+			return this;
+		}
+
+		@Override
+		public Builder includeInOperators(EntitySearchModel inSearchModel) {
+			this.inSearchModel = requireNonNull(inSearchModel);
+			return this;
+		}
+
+		@Override
+		public ForeignKeyConditionModel build() {
+			return new ForeignKeyConditionModel(this);
+		}
+
+		private List<Operator> operators() {
+			if (equalSearchModel == null && inSearchModel == null) {
+				throw new IllegalStateException("You must specify either an equalSearchModel or an inSearchModel");
+			}
+			if (equalSearchModel != null && inSearchModel != null) {
+				return asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN);
+			}
+			if (equalSearchModel != null) {
+				return asList(Operator.EQUAL, Operator.NOT_EQUAL);
+			}
+
+			return asList(Operator.IN, Operator.NOT_IN);
 		}
 	}
 }

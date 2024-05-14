@@ -112,6 +112,7 @@ Codion Change Log
 - DefaultEntityConditionModel.createConditionModels() bug fixed, did not respect Factory.include().
 - EntityConditionModelFactory no longer excludes hidden attributes.
 - AbstractForeignKeyConditionModel column identifier type now Attribute<Entity> instead of ForeignKey.
+- ForeignKeyConditionModel.builder() added, replacing static factory method, available operators now configurable.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model
@@ -120,6 +121,7 @@ Codion Change Log
 - EntityComboBoxModel.HANDLE_EDIT_EVENTS configuration value added.
 - EntityComboBoxConditionModel replaced with SwingForeignKeyConditionModel.
 - SwingEntityTableModel EntityConditionModelFactory parameter replaced with EntityTableConditionModel.
+- SwingForeignKeyConditionModel.builder() added, replacing static factory method, available operators now configurable.
 ### is.codion.swing.framework.model.tools
 - DomainGenerator now uses com.squareup.javapoet to generate the source and generates a full domain implementation class.
 - DomainToString now handles views correctly, refactoring.
