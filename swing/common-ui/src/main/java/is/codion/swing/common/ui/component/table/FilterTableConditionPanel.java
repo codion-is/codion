@@ -33,7 +33,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,12 +56,11 @@ import static java.util.stream.Collectors.toMap;
  * @param <C> the column identifier type
  * @see #filterTableConditionPanel(TableConditionModel, Collection, FilterTableColumnModel)
  */
-public final class FilterTableConditionPanel<C> extends JPanel implements TableConditionPanel<C> {
+public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(FilterColumnConditionPanel.class, getBundle(FilterTableConditionPanel.class.getName()));
 
-	private final TableConditionModel<C> conditionModel;
 	private final Collection<ColumnConditionPanel<C, ?>> conditionPanels;
 	private final FilterTableColumnModel<C> columnModel;
 	private final FilterTableColumnComponentPanel<C> componentPanel;
@@ -76,14 +74,13 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	private FilterTableConditionPanel(TableConditionModel<C> conditionModel,
 																		Collection<ColumnConditionPanel<C, ?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel) {
-		this.conditionModel = requireNonNull(conditionModel);
+		super(conditionModel);
 		this.conditionPanels = unmodifiableList(new ArrayList<>(requireNonNull(conditionPanels)));
 		this.columnModel = columnModel;
 		Map<C, JComponent> collect = conditionPanels.stream()
 						.collect(toMap(panel -> panel.conditionModel()
 										.columnIdentifier(), JComponent.class::cast));
 		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel), collect);
-		setLayout(new BorderLayout());
 		configureStates();
 	}
 
@@ -91,11 +88,6 @@ public final class FilterTableConditionPanel<C> extends JPanel implements TableC
 	public void updateUI() {
 		super.updateUI();
 		Utilities.updateUI(componentPanel);
-	}
-
-	@Override
-	public TableConditionModel<C> conditionModel() {
-		return conditionModel;
 	}
 
 	@Override

@@ -82,6 +82,7 @@ Codion Change Log
 - NumberDocument, NumberField.setRethrowValidationException() added, can now be turned off for the field to prevent invalid input without displaying the exception.
 - TableConditionPanel.conditionPanel() no longer returns Optional.
 - TableConditionPanel.selectCondition() added.
+- TableConditionPanel and ColumnConditionPanel now abstract classes.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.

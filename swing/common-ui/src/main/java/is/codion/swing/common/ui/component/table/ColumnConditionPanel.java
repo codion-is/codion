@@ -22,41 +22,65 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.value.Value;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import java.util.Collection;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * A UI component for a {@link ColumnConditionModel}.
+ * A base class for a UI component based on a {@link ColumnConditionModel}.
  * @param <C> the type identifying the table columns
  * @param <T> the condition value type
  */
-public interface ColumnConditionPanel<C, T> {
+public abstract class ColumnConditionPanel<C, T> extends JPanel {
+
+	private final ColumnConditionModel<C, T> conditionModel;
 
 	/**
 	 * The available condition panel states
 	 */
-	enum ConditionState {
+	public enum ConditionState {
+		/**
+		 * The condition panel is hidden.
+		 */
 		HIDDEN,
+		/**
+		 * The condition panel is in a simple state.
+		 */
 		SIMPLE,
+		/**
+		 * The condition panel is in an advanced state.
+		 */
 		ADVANCED
+	}
+
+	/**
+	 * Instantiates a new {@link ColumnConditionPanel}
+	 * @param conditionModel the condition model
+	 */
+	protected ColumnConditionPanel(ColumnConditionModel<C, T> conditionModel) {
+		this.conditionModel = requireNonNull(conditionModel);
 	}
 
 	/**
 	 * @return the condition model this panel is based on
 	 */
-	ColumnConditionModel<C, T> conditionModel();
+	public final ColumnConditionModel<C, T> conditionModel() {
+		return conditionModel;
+	}
 
 	/**
 	 * @return the components presented by this condition panel
 	 */
-	Collection<JComponent> components();
+	public abstract Collection<JComponent> components();
 
 	/**
 	 * Requests keyboard focus for this panel
 	 */
-	void requestInputFocus();
+	public abstract void requestInputFocus();
 
 	/**
 	 * @return the value controlling the condition panel state
 	 */
-	Value<ConditionState> state();
+	public abstract Value<ConditionState> state();
 }

@@ -78,7 +78,7 @@ import static javax.swing.SwingConstants.CENTER;
  * @see #filterColumnConditionPanel(ColumnConditionModel)
  * @see #filterColumnConditionPanel(ColumnConditionModel, FieldFactory)
  */
-public final class FilterColumnConditionPanel<C, T> extends JPanel implements ColumnConditionPanel<C, T> {
+public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel<C, T> {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(FilterColumnConditionPanel.class, getBundle(FilterColumnConditionPanel.class.getName()));
@@ -123,7 +123,6 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 
 	private static final String UNKNOWN_OPERATOR = "Unknown operator: ";
 
-	private final ColumnConditionModel<C, T> conditionModel;
 	private final JToggleButton toggleEnabledButton;
 	private final JComboBox<Item<Operator>> operatorCombo;
 	private final JComponent equalField;
@@ -142,7 +141,7 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 
 	private FilterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel,
 																		 FieldFactory<C> fieldFactory) {
-		this.conditionModel = requireNonNull(conditionModel);
+		super(conditionModel);
 		requireNonNull(fieldFactory, "fieldFactory");
 		boolean modelLocked = conditionModel.locked().get();
 		conditionModel.locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
@@ -169,11 +168,6 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 		super.updateUI();
 		Utilities.updateUI(toggleEnabledButton, operatorCombo, equalField,
 						lowerBoundField, upperBoundField, inField, controlPanel, inputPanel, rangePanel);
-	}
-
-	@Override
-	public ColumnConditionModel<C, T> conditionModel() {
-		return conditionModel;
 	}
 
 	@Override
@@ -494,7 +488,6 @@ public final class FilterColumnConditionPanel<C, T> extends JPanel implements Co
 	private void initializeUI() {
 		linkToEnabledState(conditionModel().locked().not(),
 						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
-		setLayout(new BorderLayout());
 		controlPanel.add(operatorCombo, BorderLayout.CENTER);
 		onOperatorChanged(conditionModel().operator().get());
 		addStringConfigurationPopupMenu();

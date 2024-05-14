@@ -24,28 +24,43 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionS
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import java.util.Collection;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * A UI component based on a {@link TableConditionModel}.
+ * A base class for a UI component based on a {@link TableConditionModel}.
  * @param <C> the type used to identify the table columns
  */
-public interface TableConditionPanel<C> {
+public abstract class TableConditionPanel<C> extends JPanel {
+
+	private final TableConditionModel<C> conditionModel;
+
+	/**
+	 * Instantiates a new {@link TableConditionPanel}
+	 * @param conditionModel the condition model
+	 */
+	protected TableConditionPanel(TableConditionModel<C> conditionModel) {
+		this.conditionModel = requireNonNull(conditionModel);
+	}
 
 	/**
 	 * @return the underlying condition model
 	 */
-	TableConditionModel<C> conditionModel();
+	public final TableConditionModel<C> conditionModel() {
+		return conditionModel;
+	}
 
 	/**
 	 * @return an unmodifiable view of the condition panels
 	 */
-	Collection<ColumnConditionPanel<C, ?>> conditionPanels();
+	public abstract Collection<ColumnConditionPanel<C, ?>> conditionPanels();
 
 	/**
 	 * @return the value controlling the condition panel state
 	 */
-	Value<ConditionState> state();
+	public abstract Value<ConditionState> state();
 
 	/**
 	 * @param <T> the column value type
@@ -53,26 +68,26 @@ public interface TableConditionPanel<C> {
 	 * @return the condition panel associated with the given column
 	 * @throws IllegalStateException in case no panel is available
 	 */
-	<T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier);
+	public abstract <T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier);
 
 	/**
 	 * @return the controls provided by this condition panel, for example toggling the advanced mode and clearing the condition
 	 */
-	Controls controls();
+	public abstract Controls controls();
 
 	/**
 	 * Selects one conditon panel to receive the input focus.
-	 * If only one panel is available, that one receives the input focus.
+	 * If only one panel is available, that one receives the input focus automatically.
 	 * If multiple conditon panels are available a selection dialog is presented.
 	 * Override to implement.
 	 * @param dialogOwner the dialog owner
 	 */
-	default void selectCondition(JComponent dialogOwner) {}
+	public void selectCondition(JComponent dialogOwner) {}
 
 	/**
 	 * @param <C> the type identifying the table columns
 	 */
-	interface Factory<C> {
+	public interface Factory<C> {
 
 		/**
 		 * @param conditionModel the condition model
