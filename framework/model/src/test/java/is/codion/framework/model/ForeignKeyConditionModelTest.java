@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.model.ForeignKeyConditionModel.foreignKeyConditionModel;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,9 +47,10 @@ public class ForeignKeyConditionModelTest {
 
 	@Test
 	void inSearchModel() throws DatabaseException {
-		ForeignKeyConditionModel conditionModel = foreignKeyConditionModel(Employee.DEPARTMENT_FK,
-						foreignKey -> EntitySearchModel.builder(foreignKey.referencedType(), CONNECTION_PROVIDER).build(),
-						foreignKey -> EntitySearchModel.builder(foreignKey.referencedType(), CONNECTION_PROVIDER).build());
+		ForeignKeyConditionModel conditionModel = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+						.includeEqualOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
+						.includeInOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
+						.build();
 		EntitySearchModel inSearchModel = conditionModel.inSearchModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		inSearchModel.entity().set(sales);
@@ -70,9 +70,10 @@ public class ForeignKeyConditionModelTest {
 
 	@Test
 	void equalSearchModel() throws DatabaseException {
-		ForeignKeyConditionModel conditionModel = foreignKeyConditionModel(Employee.DEPARTMENT_FK,
-						foreignKey -> EntitySearchModel.builder(foreignKey.referencedType(), CONNECTION_PROVIDER).build(),
-						foreignKey -> EntitySearchModel.builder(foreignKey.referencedType(), CONNECTION_PROVIDER).build());
+		ForeignKeyConditionModel conditionModel = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+						.includeEqualOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
+						.includeInOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
+						.build();
 		EntitySearchModel equalSearchModel = conditionModel.equalSearchModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		equalSearchModel.entity().set(sales);

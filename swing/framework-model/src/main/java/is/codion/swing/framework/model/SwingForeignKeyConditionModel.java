@@ -18,22 +18,25 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractForeignKeyConditionModel;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A condition model using a {@link EntityComboBoxModel} for the {@link #equalValue()}
  * and a {@link EntitySearchModel} for the {@link #inValues()}.
- * @see #swingForeignKeyConditionModel(ForeignKey, Function, Function)
+ * @see #builder(ForeignKey)
  */
 public final class SwingForeignKeyConditionModel extends AbstractForeignKeyConditionModel {
 
@@ -42,49 +45,75 @@ public final class SwingForeignKeyConditionModel extends AbstractForeignKeyCondi
 
 	private boolean updatingModel = false;
 
-	private SwingForeignKeyConditionModel(ForeignKey foreignKey,
-																				Function<ForeignKey, EntityComboBoxModel> equalComboBoxModel,
-																				Function<ForeignKey, EntitySearchModel> inSearchModel) {
-		super(foreignKey);
-		this.inSearchModel = requireNonNull(inSearchModel.apply(foreignKey));
-		this.equalComboBoxModel = requireNonNull(equalComboBoxModel).apply(foreignKey);
-		bindComboBoxEvents();
-		bindSearchModelEvents();
+	private SwingForeignKeyConditionModel(DefaultBuilder builder) {
+		super(builder.foreignKey, builder.operators());
+		this.inSearchModel = builder.inSearchModel;
+		this.equalComboBoxModel = builder.equalComboBoxModel;
+		bindEvents();
 	}
 
 	/**
 	 * @return the combo box model controlling the equal value
+	 * @throws IllegalStateException in case no such model is available
 	 */
 	public EntityComboBoxModel equalComboBoxModel() {
+		if (equalComboBoxModel == null) {
+			throw new IllegalStateException("equalComboBoxModel is not available");
+		}
+
 		return equalComboBoxModel;
 	}
 
 	@Override
 	public EntitySearchModel inSearchModel() {
+		if (inSearchModel == null) {
+			throw new IllegalStateException("inSearchModel is not available");
+		}
+
 		return inSearchModel;
 	}
 
 	/**
 	 * @param foreignKey the foreign key
-	 * @param equalComboBoxModel provides the combo box model controlling the equal value
-	 * @param inSearchModel provides the search model controlling the in value
-	 * @return a new {@link SwingForeignKeyConditionModel}
+	 * @return a new {@link SwingForeignKeyConditionModel.Builder}
 	 */
-	public static SwingForeignKeyConditionModel swingForeignKeyConditionModel(ForeignKey foreignKey,
-																																						Function<ForeignKey, EntityComboBoxModel> equalComboBoxModel,
-																																						Function<ForeignKey, EntitySearchModel> inSearchModel) {
-		return new SwingForeignKeyConditionModel(foreignKey, equalComboBoxModel, inSearchModel);
+	public static SwingForeignKeyConditionModel.Builder builder(ForeignKey foreignKey) {
+		return new DefaultBuilder(foreignKey);
 	}
 
-	private void bindComboBoxEvents() {
-		equalComboBoxModel.selectionEvent().addConsumer(new SetEqualValue());
-		equalValue().addConsumer(new SelectEqualValue());
-		equalComboBoxModel.refresher().refreshEvent().addListener(() -> equalComboBoxModel.setSelectedItem(getEqualValue()));
+	/**
+	 * A builder for a {@link SwingForeignKeyConditionModel}
+	 */
+	public interface Builder {
+
+		/**
+		 * @param equalComboBoxModel the combo box model to use for the EQUAl condition
+		 * @return this builder
+		 */
+		Builder includeEqualOperators(EntityComboBoxModel equalComboBoxModel);
+
+		/**
+		 * @param inSearchModel the search model to use for the IN condition
+		 * @return this builder
+		 */
+		Builder includeInOperators(EntitySearchModel inSearchModel);
+
+		/**
+		 * @return a new {@link ForeignKeyConditionModel} instance
+		 */
+		SwingForeignKeyConditionModel build();
 	}
 
-	private void bindSearchModelEvents() {
-		inSearchModel.entities().addConsumer(new SetInValues());
-		inValues().addConsumer(new SelectInValues());
+	private void bindEvents() {
+		if (equalComboBoxModel != null) {
+			equalComboBoxModel.selectionEvent().addConsumer(new SetEqualValue());
+			equalValue().addConsumer(new SelectEqualValue());
+			equalComboBoxModel.refresher().refreshEvent().addListener(() -> equalComboBoxModel.setSelectedItem(getEqualValue()));
+		}
+		if (inSearchModel != null) {
+			inSearchModel.entities().addConsumer(new SetInValues());
+			inValues().addConsumer(new SelectInValues());
+		}
 	}
 
 	private final class SetEqualValue implements Consumer<Entity> {
@@ -132,6 +161,49 @@ public final class SwingForeignKeyConditionModel extends AbstractForeignKeyCondi
 			finally {
 				updatingModel = false;
 			}
+		}
+	}
+
+	private static final class DefaultBuilder implements Builder {
+
+		private final ForeignKey foreignKey;
+
+		private EntityComboBoxModel equalComboBoxModel;
+		private EntitySearchModel inSearchModel;
+
+		private DefaultBuilder(ForeignKey foreignKey) {
+			this.foreignKey = requireNonNull(foreignKey);
+		}
+
+		@Override
+		public Builder includeEqualOperators(EntityComboBoxModel equalComboBoxModel) {
+			this.equalComboBoxModel = requireNonNull(equalComboBoxModel);
+			return this;
+		}
+
+		@Override
+		public Builder includeInOperators(EntitySearchModel inSearchModel) {
+			this.inSearchModel = requireNonNull(inSearchModel);
+			return this;
+		}
+
+		@Override
+		public SwingForeignKeyConditionModel build() {
+			return new SwingForeignKeyConditionModel(this);
+		}
+
+		private List<Operator> operators() {
+			if (equalComboBoxModel == null && inSearchModel == null) {
+				throw new IllegalStateException("You must specify either an equalComboBoxModel or an inSearchModel");
+			}
+			if (equalComboBoxModel != null && inSearchModel != null) {
+				return asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN);
+			}
+			if (equalComboBoxModel != null) {
+				return asList(Operator.EQUAL, Operator.NOT_EQUAL);
+			}
+
+			return asList(Operator.IN, Operator.NOT_IN);
 		}
 	}
 }

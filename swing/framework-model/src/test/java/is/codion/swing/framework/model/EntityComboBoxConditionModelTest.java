@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.swing.framework.model.SwingForeignKeyConditionModel.swingForeignKeyConditionModel;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,14 +50,14 @@ public class EntityComboBoxConditionModelTest {
 
 	@Test
 	void searchEntitiesComboBoxModel() throws DatabaseException {
-		SwingForeignKeyConditionModel conditionModel = swingForeignKeyConditionModel(Employee.DEPARTMENT_FK,
-						foreignKey -> {
-							EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(foreignKey.referencedType(), CONNECTION_PROVIDER);
+		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
 							comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
-
-							return comboBoxModel;
-			},
-						foreignKey -> EntitySearchModel.builder(foreignKey.referencedType(), CONNECTION_PROVIDER).build());
+		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
+		SwingForeignKeyConditionModel conditionModel =
+						SwingForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+										.includeEqualOperators(comboBoxModel)
+										.includeInOperators(searchModel)
+										.build();
 		EntityComboBoxModel equalComboBoxModel = conditionModel.equalComboBoxModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		equalComboBoxModel.setSelectedItem(sales);
@@ -77,9 +76,14 @@ public class EntityComboBoxConditionModelTest {
 
 	@Test
 	void inSearchModel() throws DatabaseException {
-		SwingForeignKeyConditionModel conditionModel = swingForeignKeyConditionModel(Employee.DEPARTMENT_FK,
-						foreignKey -> new EntityComboBoxModel(foreignKey.referencedType(), CONNECTION_PROVIDER),
-						foreignKey -> EntitySearchModel.builder(foreignKey.referencedType(), CONNECTION_PROVIDER).build());
+		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
+							comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
+		SwingForeignKeyConditionModel conditionModel =
+						SwingForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+										.includeEqualOperators(comboBoxModel)
+										.includeInOperators(searchModel)
+										.build();
 		EntitySearchModel inSearchModel = conditionModel.inSearchModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		inSearchModel.entity().set(sales);

@@ -28,8 +28,6 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Optional;
 
-import static is.codion.swing.framework.model.SwingForeignKeyConditionModel.swingForeignKeyConditionModel;
-
 /**
  * A Swing {@link ColumnConditionModel.Factory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
@@ -48,8 +46,10 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			if (definition(foreignKey.referencedType()).smallDataset()) {
-				return Optional.of(swingForeignKeyConditionModel(foreignKey,
-								this::createEqualComboBoxModel, this::createInSearchModel));
+				return Optional.of(SwingForeignKeyConditionModel.builder(foreignKey)
+								.includeEqualOperators(createEqualComboBoxModel(foreignKey))
+								.includeInOperators(createInSearchModel(foreignKey))
+								.build());
 			}
 		}
 
