@@ -77,6 +77,7 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -85,9 +86,11 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
@@ -107,6 +110,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -432,7 +436,7 @@ public class EntityTablePanel extends JPanel {
 
 	private final FilterTable<Entity, Attribute<?>> table;
 	private final JScrollPane tableScrollPane = new JScrollPane();
-	private final TableConditionPanel<Attribute<?>> conditionPanel;
+	private final TableConditionPanel<Attribute<?>> tableConditionPanel;
 	private final JScrollPane conditionPanelScrollPane;
 	private final JScrollPane filterPanelScrollPane;
 	private final EntityEditPanel editPanel;
@@ -473,8 +477,8 @@ public class EntityTablePanel extends JPanel {
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(config);
 		this.table = configuration.tableBuilder.build();
-		this.conditionPanel = createConditionPanel();
-		this.conditionPanelScrollPane = conditionPanel == null ? null : createLinkedScrollPane((JComponent) conditionPanel);
+		this.tableConditionPanel = createConditionPanel();
+		this.conditionPanelScrollPane = tableConditionPanel == null ? null : createLinkedScrollPane(tableConditionPanel);
 		this.filterPanelScrollPane = createLinkedScrollPane(table.filterPanel());
 		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
@@ -505,8 +509,8 @@ public class EntityTablePanel extends JPanel {
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(config);
 		this.table = configuration.tableBuilder.build();
-		this.conditionPanel = createConditionPanel();
-		this.conditionPanelScrollPane = conditionPanel == null ? null : createLinkedScrollPane((JComponent) conditionPanel);
+		this.tableConditionPanel = createConditionPanel();
+		this.conditionPanelScrollPane = tableConditionPanel == null ? null : createLinkedScrollPane(tableConditionPanel);
 		this.filterPanelScrollPane = createLinkedScrollPane(table.filterPanel());
 		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
@@ -520,7 +524,7 @@ public class EntityTablePanel extends JPanel {
 	public void updateUI() {
 		super.updateUI();
 		Utilities.updateUI(conditionPanelScrollPane, filterPanelScrollPane);
-		Utilities.updateUI((JComponent) conditionPanel);
+		Utilities.updateUI(tableConditionPanel);
 	}
 
 	/**
@@ -549,11 +553,11 @@ public class EntityTablePanel extends JPanel {
 	 * @see Config#includeConditionPanel(boolean)
 	 */
 	public final <T extends TableConditionPanel<Attribute<?>>> T conditionPanel() {
-		if (conditionPanel == null) {
+		if (tableConditionPanel == null) {
 			throw new IllegalStateException("No condition panel is available");
 		}
 
-		return (T) conditionPanel;
+		return (T) tableConditionPanel;
 	}
 
 	/**
@@ -1270,18 +1274,18 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createSelectConditionPanelControl() {
-		return Control.control(() -> conditionPanel().selectCondition(this));
+		return Control.control(() -> conditionPanel().selectConditionPanel(this));
 	}
 
 	private Controls createConditionControls() {
-		if (!configuration.includeConditionPanel || conditionPanel == null) {
+		if (!configuration.includeConditionPanel || tableConditionPanel == null) {
 			return null;
 		}
 		Controls conditionControls = Controls.builder()
 						.name(FrameworkMessages.searchNoun())
 						.smallIcon(ICONS.search())
 						.build();
-		Controls conditionPanelControls = conditionPanel.controls();
+		Controls conditionPanelControls = tableConditionPanel.controls();
 		if (conditionPanelControls.notEmpty()) {
 			conditionControls.addAll(conditionPanelControls);
 			conditionControls.addSeparator();
@@ -1302,11 +1306,11 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createSelectFilterPanelControl() {
-		return Control.control(() -> table.filterPanel().selectCondition(this));
+		return Control.control(() -> table.filterPanel().selectConditionPanel(this));
 	}
 
 	private void toggleConditionPanel() {
-		toggleConditionPanel(conditionPanelScrollPane, conditionPanel.state());
+		toggleConditionPanel(conditionPanelScrollPane, tableConditionPanel.state());
 	}
 
 	private void toggleFilterPanel() {
@@ -1445,7 +1449,7 @@ public class EntityTablePanel extends JPanel {
 						.floatable(false)
 						.rollover(false)
 						.visible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS ||
-										(conditionPanel != null && conditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)))
+										(tableConditionPanel != null && tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)))
 						.build();
 	}
 
@@ -1458,20 +1462,39 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private FilterColumnConditionPanel<Attribute<?>, ?> createConditionPanel(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
-		return filterColumnConditionPanel(conditionModel, (FieldFactory<Attribute<?>>) configuration.conditionFieldFactory);
+		FilterColumnConditionPanel<Attribute<?>, ?> conditionPanel = filterColumnConditionPanel(conditionModel,
+						Objects.toString(table.columnModel().column(conditionModel.columnIdentifier()).getHeaderValue()),
+						configuration.conditionFieldFactory);
+		configureConditionPanel(conditionPanel);
+
+		return conditionPanel;
+	}
+
+	private void configureConditionPanel(FilterColumnConditionPanel<Attribute<?>, ?> conditionPanel) {
+		conditionPanel.components().forEach(component -> configureConditionComponent(component, conditionPanel.conditionModel().columnIdentifier()));
+	}
+
+	private void configureConditionComponent(JComponent component, Attribute<?> attribute) {
+		TableCellRenderer cellRenderer = table.columnModel().column(attribute).getCellRenderer();
+		if (cellRenderer instanceof DefaultTableCellRenderer && component instanceof JTextField) {
+			((JTextField) component).setHorizontalAlignment(((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment());
+		}
+		else if (component instanceof JCheckBox) {
+			((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
+		}
 	}
 
 	private TableConditionPanel<Attribute<?>> createConditionPanel() {
 		if (!configuration.includeConditionPanel) {
 			return null;
 		}
-		TableConditionPanel<Attribute<?>> tableConditionPanel = configuration.tableConditionPanelFactory
+		TableConditionPanel<Attribute<?>> conditionPanel = configuration.tableConditionPanelFactory
 						.create(tableModel.conditionModel(), createConditionPanels(), table.getColumnModel());
-		if (!(tableConditionPanel instanceof JComponent)) {
+		if (!(conditionPanel instanceof JComponent)) {
 			throw new IllegalStateException("Table condition panel must extend JComponent");
 		}
 
-		return tableConditionPanel;
+		return conditionPanel;
 	}
 
 	private void bindTableEvents() {
@@ -1492,11 +1515,11 @@ public class EntityTablePanel extends JPanel {
 		tableModel.refresher().observer().addConsumer(this::onRefreshingChanged);
 		tableModel.refresher().refreshFailedEvent().addConsumer(this::onException);
 		tableModel.editModel().insertUpdateOrDeleteEvent().addListener(table::repaint);
-		if (conditionPanel != null) {
+		if (tableConditionPanel != null) {
 			enableConditionPanelRefreshOnEnter();
-			conditionPanel.conditionPanels().forEach(panel -> panel.components().forEach(component ->
+			tableConditionPanel.conditionPanels().forEach(panel -> panel.components().forEach(component ->
 							component.addFocusListener(new ScrollToColumn(panel.conditionModel().columnIdentifier()))));
-			conditionPanel.state().addListener(this::revalidate);
+			tableConditionPanel.state().addListener(this::revalidate);
 		}
 		if (configuration.includeFilterPanel) {
 			table.filterPanel().conditionPanels().forEach(panel -> panel.components().forEach(component ->
@@ -1509,8 +1532,8 @@ public class EntityTablePanel extends JPanel {
 		KeyEvents.builder(VK_ENTER)
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 						.action(conditionRefreshControl)
-						.enable((JComponent) conditionPanel);
-		conditionPanel.conditionPanels().stream()
+						.enable((JComponent) tableConditionPanel);
+		tableConditionPanel.conditionPanels().stream()
 						.flatMap(panel -> panel.components().stream())
 						.forEach(this::enableConditionPanelRefreshOnEnter);
 	}
@@ -2144,7 +2167,7 @@ public class EntityTablePanel extends JPanel {
 		private final FilterTable.Builder<Entity, Attribute<?>> tableBuilder;
 
 		private TableConditionPanel.Factory<Attribute<?>> tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
-		private FieldFactory<? extends Attribute<?>> conditionFieldFactory;
+		private FieldFactory<Attribute<?>> conditionFieldFactory;
 		private boolean includeSouthPanel = true;
 		private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
 		private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
@@ -2176,7 +2199,7 @@ public class EntityTablePanel extends JPanel {
 							.cellRendererFactory(new EntityTableCellRendererFactory(tablePanel.tableModel))
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
-			this.conditionFieldFactory = new EntityConditionFieldFactory(entityDefinition, this::columnModel);
+			this.conditionFieldFactory = new EntityConditionFieldFactory(entityDefinition);
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
 							.map(AttributeDefinition::attribute)
@@ -2252,7 +2275,7 @@ public class EntityTablePanel extends JPanel {
 		 * @return this Config instance
 		 * @see EntityTablePanel#conditionPanel()
 		 */
-		public Config conditionFieldFactory(FieldFactory<? extends Attribute<?>> conditionFieldFactory) {
+		public Config conditionFieldFactory(FieldFactory<Attribute<?>> conditionFieldFactory) {
 			this.conditionFieldFactory = requireNonNull(conditionFieldFactory);
 			return this;
 		}
@@ -2496,10 +2519,6 @@ public class EntityTablePanel extends JPanel {
 							EDIT_SELECTED_ATTRIBUTE;
 		}
 
-		private FilterTableColumnModel<Attribute<?>> columnModel() {
-			return tablePanel.table.columnModel();
-		}
-
 		private static final class DefaultTableConditionPanelFactory
 						implements TableConditionPanel.Factory<Attribute<?>> {
 
@@ -2607,9 +2626,9 @@ public class EntityTablePanel extends JPanel {
 
 		private TablePanel() {
 			super(new BorderLayout());
-			if (configuration.includeConditionPanel && conditionPanel != null) {
-				conditionPanel.state().addConsumer(this::conditionPanelStateChanged);
-				if (conditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)) {
+			if (configuration.includeConditionPanel && tableConditionPanel != null) {
+				tableConditionPanel.state().addConsumer(this::conditionPanelStateChanged);
+				if (tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)) {
 					add(conditionPanelScrollPane, BorderLayout.NORTH);
 				}
 			}

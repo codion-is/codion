@@ -77,6 +77,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -841,7 +842,7 @@ public final class FilterTable<R, C> extends JTable {
 
 
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
-		List<ColumnConditionModel<C, ?>> collect = tableModel.filterModel()
+		List<ColumnConditionModel<C, ?>> filterModels = tableModel.filterModel()
 						.conditionModels()
 						.values()
 						.stream()
@@ -849,8 +850,9 @@ public final class FilterTable<R, C> extends JTable {
 						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.columnClass()))
 						.collect(toList());
 		List<ColumnConditionPanel<C, ?>> conditionPanels = new ArrayList<>();
-		for (ColumnConditionModel<C, ?> conditionModel : collect) {
-			ColumnConditionPanel<C, ?> conditionPanel = filterColumnConditionPanel(conditionModel, filterFieldFactory);
+		for (ColumnConditionModel<C, ?> conditionModel : filterModels) {
+			ColumnConditionPanel<C, ?> conditionPanel = filterColumnConditionPanel(conditionModel,
+							Objects.toString(columnModel().column(conditionModel.columnIdentifier()).getHeaderValue()), filterFieldFactory);
 			configureComponents(conditionPanel, columnModel().column(conditionPanel.conditionModel().columnIdentifier()).getCellRenderer());
 			conditionPanels.add(conditionPanel);
 		}
@@ -859,7 +861,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private ColumnConditionPanel<C, ?> configureComponents(ColumnConditionPanel<C, ?> conditionPanel,
-																																	 TableCellRenderer cellRenderer) {
+																												 TableCellRenderer cellRenderer) {
 		if (cellRenderer instanceof DefaultTableCellRenderer) {
 			int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
 			conditionPanel.components().stream()

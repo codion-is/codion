@@ -71,12 +71,12 @@ import static javax.swing.SwingConstants.CENTER;
 
 /**
  * A UI implementation for {@link ColumnConditionModel}.
- * For instances use the {@link #filterColumnConditionPanel(ColumnConditionModel)} or
- * {@link #filterColumnConditionPanel(ColumnConditionModel, FieldFactory)} factory methods.
+ * For instances use the {@link #filterColumnConditionPanel(ColumnConditionModel, String)} or
+ * {@link #filterColumnConditionPanel(ColumnConditionModel, String, FieldFactory)} factory methods.
  * @param <C> the type of objects used to identify columns
  * @param <T> the column value type
- * @see #filterColumnConditionPanel(ColumnConditionModel)
- * @see #filterColumnConditionPanel(ColumnConditionModel, FieldFactory)
+ * @see #filterColumnConditionPanel(ColumnConditionModel, String)
+ * @see #filterColumnConditionPanel(ColumnConditionModel, String, FieldFactory)
  */
 public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel<C, T> {
 
@@ -140,8 +140,9 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	private final State advancedState = State.state();
 
 	private FilterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel,
-																		 FieldFactory<C> fieldFactory) {
-		super(conditionModel);
+																		 String caption, FieldFactory<C> fieldFactory) {
+		super(conditionModel, caption);
+		setLayout(new BorderLayout());
 		requireNonNull(fieldFactory, "fieldFactory");
 		boolean modelLocked = conditionModel.locked().get();
 		conditionModel.locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
@@ -248,27 +249,29 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	/**
 	 * Instantiates a new {@link FilterColumnConditionPanel}, with a default bound field factory.
 	 * @param conditionModel the condition model to base this panel on
+	 * @param caption the caption to use when presenting this condition panel
 	 * @param <C> the type of objects used to identify columns
 	 * @param <T> the column value type
 	 * @return a new {@link FilterColumnConditionPanel} instance or an empty Optional in case the column type is not supported
 	 */
-	public static <C, T> FilterColumnConditionPanel<C, T> filterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel) {
-		return filterColumnConditionPanel(conditionModel, new DefaultFieldFactory<>());
+	public static <C, T> FilterColumnConditionPanel<C, T> filterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel, String caption) {
+		return filterColumnConditionPanel(conditionModel, caption, new DefaultFieldFactory<>());
 	}
 
 	/**
 	 * Instantiates a new {@link FilterColumnConditionPanel}.
-	 * @param conditionModel the condition model to base this panel on
-	 * @param fieldFactory the input field factory
 	 * @param <C> the type of objects used to identify columns
 	 * @param <T> the column value type
+	 * @param conditionModel the condition model to base this panel on
+	 * @param caption the caption to use when presenting this condition panel
+	 * @param fieldFactory the input field factory
 	 * @return a new {@link FilterColumnConditionPanel} instance or an empty Optional in case the column type is not supported by the given bound field factory
 	 * @throws IllegalArgumentException in case the given field factory does not support the column value type
 	 */
 	public static <C, T> FilterColumnConditionPanel<C, T> filterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel,
-																																														 FieldFactory<C> fieldFactory) {
+																																									 String caption, FieldFactory<C> fieldFactory) {
 		if (requireNonNull(fieldFactory).supportsType(requireNonNull(conditionModel).columnClass())) {
-			return new FilterColumnConditionPanel<>(conditionModel, fieldFactory);
+			return new FilterColumnConditionPanel<>(conditionModel, caption, fieldFactory);
 		}
 
 		throw new IllegalArgumentException("Field factory does not support the column value type");

@@ -83,6 +83,8 @@ Codion Change Log
 - TableConditionPanel.conditionPanel() no longer returns Optional.
 - TableConditionPanel.selectCondition() added.
 - TableConditionPanel and ColumnConditionPanel now abstract classes.
+- ColumnConditionPanel.caption() added.
+- TableConditionPanel.selectCondition() renamed selectConditionPanel() and implemented, related refactoring.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.

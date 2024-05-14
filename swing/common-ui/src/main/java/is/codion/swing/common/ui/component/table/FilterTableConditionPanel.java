@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.resource.MessageBundle;
@@ -30,25 +29,20 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionS
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.dialog.Dialogs;
 
-import javax.swing.JComponent;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-import static is.codion.common.item.Item.item;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.*;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.stream.Collectors.toList;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -75,12 +69,12 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 																		Collection<ColumnConditionPanel<C, ?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel) {
 		super(conditionModel);
+		setLayout(new BorderLayout());
 		this.conditionPanels = unmodifiableList(new ArrayList<>(requireNonNull(conditionPanels)));
 		this.columnModel = columnModel;
-		Map<C, JComponent> collect = conditionPanels.stream()
-						.collect(toMap(panel -> panel.conditionModel()
-										.columnIdentifier(), JComponent.class::cast));
-		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel), collect);
+		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel),
+						conditionPanels.stream().collect(toMap(panel ->
+										panel.conditionModel().columnIdentifier(), identity())));
 		configureStates();
 	}
 
@@ -93,6 +87,13 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	@Override
 	public Collection<ColumnConditionPanel<C, ?>> conditionPanels() {
 		return conditionPanels;
+	}
+
+	@Override
+	public Collection<ColumnConditionPanel<C, ?>> selectableConditionPanels() {
+		return conditionPanels.stream()
+						.filter(conditionPanel -> columnModel.visible(conditionPanel.conditionModel().columnIdentifier()).get())
+						.collect(Collectors.toList());
 	}
 
 	@Override
@@ -121,32 +122,6 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 						.control(Control.builder(this::clearConditions)
 										.name(Messages.clear()))
 						.build();
-	}
-
-	@Override
-	public void selectCondition(JComponent dialogOwner) {
-		List<Item<C>> columnItems = conditionPanels.stream()
-						.filter(panel -> columnModel.visible(panel.conditionModel().columnIdentifier()).get())
-						.map(panel -> item(panel.conditionModel().columnIdentifier(),
-										Objects.toString(columnModel.column(panel.conditionModel().columnIdentifier()).getHeaderValue())))
-						.sorted()
-						.collect(toList());
-		if (columnItems.size() == 1) {
-			conditionState.map(panelState -> panelState == HIDDEN ? SIMPLE : panelState);
-			conditionPanel(columnItems.get(0).get()).requestInputFocus();
-		}
-		else if (!columnItems.isEmpty()) {
-			Dialogs.selectionDialog(columnItems)
-							.owner(dialogOwner)
-							.title(MESSAGES.getString("select_condition"))
-							.selectSingle()
-							.map(columnItem -> conditionPanel(columnItem.get()))
-							.map(ColumnConditionPanel.class::cast)
-							.ifPresent(conditionPanel -> {
-								conditionState.map(panelState -> panelState == HIDDEN ? SIMPLE : panelState);
-								conditionPanel.requestInputFocus();
-							});
-		}
 	}
 
 	/**

@@ -18,22 +18,35 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.item.Item;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Collection;
+import java.util.List;
 
+import static is.codion.common.item.Item.item;
+import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.HIDDEN;
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.SIMPLE;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A base class for a UI component based on a {@link TableConditionModel}.
  * @param <C> the type used to identify the table columns
  */
 public abstract class TableConditionPanel<C> extends JPanel {
+
+	private static final MessageBundle MESSAGES =
+					messageBundle(FilterColumnConditionPanel.class, getBundle(TableConditionPanel.class.getName()));
 
 	private final TableConditionModel<C> conditionModel;
 
@@ -56,6 +69,15 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 * @return an unmodifiable view of the condition panels
 	 */
 	public abstract Collection<ColumnConditionPanel<C, ?>> conditionPanels();
+
+	/**
+	 * By default this returns all condition panels, override to customize.
+	 * @return the selectable panels
+	 * @see #selectConditionPanel(JComponent)
+	 */
+	public Collection<ColumnConditionPanel<C, ?>> selectableConditionPanels() {
+		return conditionPanels();
+	}
 
 	/**
 	 * @return the value controlling the condition panel state
@@ -82,7 +104,28 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 * Override to implement.
 	 * @param dialogOwner the dialog owner
 	 */
-	public void selectCondition(JComponent dialogOwner) {}
+	public final void selectConditionPanel(JComponent dialogOwner) {
+		List<Item<C>> columnItems = selectableConditionPanels().stream()
+						.map(panel -> item(panel.conditionModel().columnIdentifier(), panel.caption()))
+						.sorted()
+						.collect(toList());
+		if (columnItems.size() == 1) {
+			state().map(state -> state == HIDDEN ? SIMPLE : state);
+			conditionPanel(columnItems.get(0).get()).requestInputFocus();
+		}
+		else if (!columnItems.isEmpty()) {
+			Dialogs.selectionDialog(columnItems)
+							.owner(dialogOwner)
+							.title(MESSAGES.getString("select_condition"))
+							.selectSingle()
+							.map(columnItem -> conditionPanel(columnItem.get()))
+							.map(ColumnConditionPanel.class::cast)
+							.ifPresent(conditionPanel -> {
+								state().map(state -> state == HIDDEN ? SIMPLE : state);
+								conditionPanel.requestInputFocus();
+							});
+		}
+	}
 
 	/**
 	 * @param <C> the type identifying the table columns
