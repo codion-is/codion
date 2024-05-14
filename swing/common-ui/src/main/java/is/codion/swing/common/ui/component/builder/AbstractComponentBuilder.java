@@ -78,6 +78,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private final List<PropertyChangeListener> propertyChangeListeners = new ArrayList<>();
 	private final Map<String, PropertyChangeListener> propertyChangeListenerMap = new HashMap<>();
 	private final List<Value.Validator<T>> validators = new ArrayList<>();
+	private final List<Runnable> listeners = new ArrayList<>();
+	private final List<Consumer<T>> consumers = new ArrayList<>();
 
 	private C component;
 	private ComponentValue<T, C> componentValue;
@@ -380,6 +382,18 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
+	public final B listener(Runnable listener) {
+		this.listeners.add(requireNonNull(listener));
+		return self();
+	}
+
+	@Override
+	public final B consumer(Consumer<T> consumer) {
+		this.consumers.add(requireNonNull(consumer));
+		return self();
+	}
+
+	@Override
 	public final B initialValue(T initialValue) {
 		this.initialValue = initialValue;
 		return self();
@@ -465,6 +479,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		}
 		linkedValues.forEach(linkedValue -> componentValue(component).link(linkedValue));
 		linkedValueObservers.forEach(linkedValueObserver -> componentValue(component).link(linkedValueObserver));
+		listeners.forEach(listener -> componentValue(component).addListener(listener));
+		consumers.forEach(consumer -> componentValue(component).addConsumer(consumer));
 		if (label != null) {
 			label.setLabelFor(component);
 		}

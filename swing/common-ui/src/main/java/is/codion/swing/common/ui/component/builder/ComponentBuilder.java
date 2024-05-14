@@ -354,6 +354,18 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B link(ValueObserver<T> linkedValue);
 
 	/**
+	 * @param listener a listener to add to the resulting component value
+	 * @return this builder instance
+	 */
+	B listener(Runnable listener);
+
+	/**
+	 * @param consumer a consumer to add to the resulting component value
+	 * @return this builder instance
+	 */
+	B consumer(Consumer<T> consumer);
+
+	/**
 	 * Sets the initial value for the component, overridden by {@link #link(Value)}.
 	 * Note that null is not explicitely set, the component is assumed to represent the null
 	 * value right after it's been created.

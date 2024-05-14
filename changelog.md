@@ -86,6 +86,7 @@ Codion Change Log
 - ColumnConditionPanel.caption() added.
 - TableConditionPanel.selectCondition() renamed selectConditionPanel() and implemented, related refactoring.
 - ColumnConditionPanel.state() no longer abstract.
+- ComponentBuilder.listener() and consumer() added.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.

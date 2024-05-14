@@ -25,7 +25,6 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
-import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
@@ -47,6 +46,7 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static is.codion.swing.framework.model.tools.generator.DomainToString.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
@@ -85,18 +85,23 @@ public final class DomainGeneratorModel {
 									.items(new EntityItems())
 									.build();
 	private final Connection connection;
-	private final Value<String> domainPackageValue = Value.nonNull(DEFAULT_DOMAIN_PACKAGE.get()).build();
-	private final Value<String> sourceDirectoryValue = Value.nonNull(DEFAULT_SOURCE_DIRECTORY.get()).build();
 	private final State domainPackageSpecified = State.state();
+	private final Value<String> domainPackageValue = Value.nonNull(DEFAULT_DOMAIN_PACKAGE.get())
+					.listener(this::updateDomainSource)
+					.consumer(pkg -> domainPackageSpecified.set(!nullOrEmpty(pkg)))
+					.build();
 	private final State sourceDirectorySpecified = State.state();
+	private final Value<String> sourceDirectoryValue = Value.nonNull(DEFAULT_SOURCE_DIRECTORY.get())
+					.consumer(dir -> sourceDirectorySpecified.set(nonNull(dir)))
+					.build();
 	private final Value<String> domainImplValue = Value.<String>nullable()
-					.notify(Notify.WHEN_SET)
+					.notify(WHEN_SET)
 					.build();
 	private final Value<String> domainApiValue = Value.<String>nullable()
-					.notify(Notify.WHEN_SET)
+					.notify(WHEN_SET)
 					.build();
 	private final Value<String> domainCombinedValue = Value.<String>nullable()
-					.notify(Notify.WHEN_SET)
+					.notify(WHEN_SET)
 					.build();
 	private final Value<String> apiSearchValue = Value.value();
 	private final Value<String> implSearchValue = Value.value();
@@ -188,9 +193,6 @@ public final class DomainGeneratorModel {
 	private void bindEvents() {
 		schemaTableModel.selectionModel().selectionEvent().addListener(entityTableModel::refresh);
 		schemaTableModel.selectionModel().selectionEvent().addListener(this::updateDomainSource);
-		domainPackageValue.addListener(this::updateDomainSource);
-		domainPackageValue.addConsumer(pkg -> domainPackageSpecified.set(!nullOrEmpty(pkg)));
-		sourceDirectoryValue.addConsumer(dir -> sourceDirectorySpecified.set(nonNull(dir)));
 		entityModel().selectionModel().selectedItemEvent().addConsumer(this::search);
 	}
 
