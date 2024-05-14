@@ -19,12 +19,15 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Collection;
+import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -35,6 +38,12 @@ import static java.util.Objects.requireNonNull;
 public abstract class ColumnConditionPanel<C, T> extends JPanel {
 
 	private final ColumnConditionModel<C, T> conditionModel;
+	private final Value<ConditionState> conditionState = Value.nonNull(HIDDEN)
+					.consumer(this::onStateChanged)
+					.build();
+	private final State hiddenState = State.state(true);
+	private final State simpleState = State.state();
+	private final State advancedState = State.state();
 
 	/**
 	 * The available condition panel states
@@ -63,6 +72,7 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 */
 	protected ColumnConditionPanel(ColumnConditionModel<C, T> conditionModel) {
 		this(requireNonNull(conditionModel), conditionModel.columnIdentifier().toString());
+		configureStates();
 	}
 
 	/**
@@ -83,6 +93,13 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	}
 
 	/**
+	 * @return the value controlling the condition panel state
+	 */
+	public final Value<ConditionState> state() {
+		return conditionState;
+	}
+
+	/**
 	 * @return the caption to use when presenting this condition panel
 	 */
 	public final String caption() {
@@ -99,8 +116,33 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 */
 	public abstract void requestInputFocus();
 
-	/**
-	 * @return the value controlling the condition panel state
-	 */
-	public abstract Value<ConditionState> state();
+	protected abstract void onStateChanged(ConditionState state);
+
+	private void configureStates() {
+		State.group(hiddenState, simpleState, advancedState);
+		hiddenState.addConsumer(new StateConsumer(HIDDEN));
+		simpleState.addConsumer(new StateConsumer(SIMPLE));
+		advancedState.addConsumer(new StateConsumer(ADVANCED));
+		conditionState.addConsumer(state -> {
+			hiddenState.set(state == HIDDEN);
+			simpleState.set(state == SIMPLE);
+			advancedState.set(state == ADVANCED);
+		});
+	}
+
+	private final class StateConsumer implements Consumer<Boolean> {
+
+		private final ConditionState state;
+
+		private StateConsumer(ConditionState state) {
+			this.state = state;
+		}
+
+		@Override
+		public void accept(Boolean enabled) {
+			if (enabled) {
+				conditionState.set(state);
+			}
+		}
+	}
 }

@@ -52,7 +52,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -132,12 +131,6 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	private final JPanel controlPanel = new JPanel(new BorderLayout());
 	private final JPanel inputPanel = new JPanel(new BorderLayout());
 	private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
-	private final Value<ConditionState> conditionState = Value.nonNull(ConditionState.HIDDEN)
-					.consumer(this::onStateChanged)
-					.build();
-	private final State hiddenState = State.state(true);
-	private final State simpleState = State.state();
-	private final State advancedState = State.state();
 
 	private FilterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel,
 																		 String caption, FieldFactory<C> fieldFactory) {
@@ -160,7 +153,6 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 						.build();
 		conditionModel.locked().set(modelLocked);
 		initializeUI();
-		configureStates();
 		bindEvents();
 	}
 
@@ -204,11 +196,6 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 			default:
 				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel().operator().get());
 		}
-	}
-
-	@Override
-	public Value<ConditionState> state() {
-		return conditionState;
 	}
 
 	/**
@@ -379,19 +366,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		repaint();
 	}
 
-	private void configureStates() {
-		State.group(hiddenState, simpleState, advancedState);
-		hiddenState.addConsumer(new StateConsumer(ConditionState.HIDDEN));
-		simpleState.addConsumer(new StateConsumer(ConditionState.SIMPLE));
-		advancedState.addConsumer(new StateConsumer(ConditionState.ADVANCED));
-		conditionState.addConsumer(state -> {
-			hiddenState.set(state == ConditionState.HIDDEN);
-			simpleState.set(state == ConditionState.SIMPLE);
-			advancedState.set(state == ConditionState.ADVANCED);
-		});
-	}
-
-	private void onStateChanged(ConditionState conditionState) {
+	protected void onStateChanged(ConditionState conditionState) {
 		switch (conditionState) {
 			case HIDDEN:
 				setHidden();
@@ -501,7 +476,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 			boolean requestFocus = boundFieldHasFocus();
 			clearInputPanel(requestFocus);
 			inputPanel.add(boundField, BorderLayout.CENTER);
-			if (conditionState.isEqualTo(ConditionState.SIMPLE)) {
+			if (state().isEqualTo(ConditionState.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (requestFocus) {
@@ -517,7 +492,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 			rangePanel.add(lowerBoundField);
 			rangePanel.add(upperBoundField);
 			inputPanel.add(rangePanel, BorderLayout.CENTER);
-			if (conditionState.isEqualTo(ConditionState.SIMPLE)) {
+			if (state().isEqualTo(ConditionState.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (requestFocus) {
@@ -648,21 +623,6 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 				return "α ∉";
 			default:
 				throw new IllegalArgumentException(UNKNOWN_OPERATOR + operator);
-		}
-	}
-
-	private final class StateConsumer implements Consumer<Boolean> {
-		private final ConditionState state;
-
-		private StateConsumer(ConditionState state) {
-			this.state = state;
-		}
-
-		@Override
-		public void accept(Boolean enabled) {
-			if (enabled) {
-				conditionState.set(state);
-			}
 		}
 	}
 

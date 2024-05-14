@@ -1485,16 +1485,12 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private TableConditionPanel<Attribute<?>> createConditionPanel() {
-		if (!configuration.includeConditionPanel) {
-			return null;
-		}
-		TableConditionPanel<Attribute<?>> conditionPanel = configuration.tableConditionPanelFactory
-						.create(tableModel.conditionModel(), createConditionPanels(), table.getColumnModel());
-		if (!(conditionPanel instanceof JComponent)) {
-			throw new IllegalStateException("Table condition panel must extend JComponent");
+		if (configuration.includeConditionPanel) {
+			return configuration.tableConditionPanelFactory
+							.create(tableModel.conditionModel(), createConditionPanels(), table.getColumnModel());
 		}
 
-		return conditionPanel;
+		return null;
 	}
 
 	private void bindTableEvents() {
