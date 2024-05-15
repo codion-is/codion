@@ -267,7 +267,7 @@ public final class FilterTable<R, C> extends JTable {
 		setAutoResizeMode(builder.autoResizeMode);
 		configureColumns(builder.cellRendererFactory);
 		configureTableHeader(builder.columnReorderingAllowed, builder.columnResizingAllowed);
-		bindEvents(builder.shortcuts);
+		bindEvents(builder.shortcuts, builder.columnReorderingAllowed, builder.columnResizingAllowed);
 	}
 
 	@Override
@@ -698,7 +698,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void toggleColumnSorting(int selectedColumn, boolean add) {
-		if (selectedColumn != -1) {
+		if (sortingEnabled.get() && selectedColumn != -1) {
 			C columnIdentifier = columnModel().getColumn(selectedColumn).getIdentifier();
 			if (sortModel.isSortingEnabled(columnIdentifier)) {
 				if (add) {
@@ -791,7 +791,9 @@ public final class FilterTable<R, C> extends JTable {
 		return autoResizeComboBoxModel;
 	}
 
-	private void bindEvents(KeyboardShortcuts<FilterTableControl> shortcuts) {
+	private void bindEvents(KeyboardShortcuts<FilterTableControl> shortcuts,
+													boolean columnReorderingAllowed,
+													boolean columnResizingAllowed) {
 		columnModel().columnHiddenEvent().addConsumer(this::onColumnHidden);
 		tableModel.selectionModel().selectedIndexesEvent().addConsumer(new ScrollToSelected());
 		tableModel.filterModel().conditionChangedEvent().addListener(getTableHeader()::repaint);
@@ -800,7 +802,8 @@ public final class FilterTable<R, C> extends JTable {
 		sortModel.sortingChangedEvent().addListener(() ->
 						tableModel.comparator().set(sortModel.sorted() ? sortModel.comparator() : null));
 		addMouseListener(new FilterTableMouseListener());
-		addKeyListener(new MoveResizeColumnKeyListener(shortcuts));
+		addKeyListener(new MoveResizeColumnKeyListener(shortcuts,
+						columnReorderingAllowed, columnResizingAllowed));
 		shortcuts.keyStroke(COPY_CELL).optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
 										.action(createCopyCellControl())
@@ -1334,12 +1337,19 @@ public final class FilterTable<R, C> extends JTable {
 
 	private final class MoveResizeColumnKeyListener extends KeyAdapter {
 
+		private final boolean columnResizingAllowed;
+		private final boolean columnReorderingAllowed;
+
 		private final KeyStroke moveLeft;
 		private final KeyStroke moveRight;
 		private final KeyStroke increaseSize;
 		private final KeyStroke decreaseSize;
 
-		private MoveResizeColumnKeyListener(KeyboardShortcuts<FilterTableControl> shortcuts) {
+		private MoveResizeColumnKeyListener(KeyboardShortcuts<FilterTableControl> shortcuts,
+																				boolean columnReorderingAllowed,
+																				boolean columnResizingAllowed) {
+			this.columnReorderingAllowed = columnReorderingAllowed;
+			this.columnResizingAllowed = columnResizingAllowed;
 			moveLeft = shortcuts.keyStroke(MOVE_COLUMN_LEFT).get();
 			moveRight = shortcuts.keyStroke(MOVE_COLUMN_RIGHT).get();
 			increaseSize = shortcuts.keyStroke(INCREASE_COLUMN_SIZE).get();
@@ -1348,11 +1358,11 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (move(e)) {
+			if (columnReorderingAllowed && move(e)) {
 				moveSelectedColumn(e.getKeyCode() == moveLeft.getKeyCode());
 				e.consume();
 			}
-			else if (resize(e)) {
+			else if (columnResizingAllowed && resize(e)) {
 				resizeSelectedColumn(e.getKeyCode() == increaseSize.getKeyCode());
 				e.consume();
 			}

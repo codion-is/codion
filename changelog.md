@@ -87,6 +87,7 @@ Codion Change Log
 - TableConditionPanel.selectCondition() renamed selectConditionPanel() and implemented, related refactoring.
 - ColumnConditionPanel.state() no longer abstract.
 - ComponentBuilder.listener() and consumer() added.
+- FilterTable bug fixed, sorting, column reordering and resizing key events were enabled even though the functionality had been disabled. 
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
