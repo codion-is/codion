@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.event.EventObserver;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.resource.MessageBundle;
@@ -30,6 +31,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -96,6 +98,13 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 * @return the controls provided by this condition panel, for example toggling the advanced mode and clearing the condition
 	 */
 	public abstract Controls controls();
+
+	/**
+	 * @return an event observer notified when a column condition panel receives focus
+	 */
+	public Optional<EventObserver<C>> focusGainedEvent() {
+		return Optional.empty();
+	}
 
 	/**
 	 * Selects one conditon panel to receive the input focus.

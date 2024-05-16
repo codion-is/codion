@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
@@ -31,8 +33,11 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import java.awt.BorderLayout;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -58,6 +63,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	private final Collection<ColumnConditionPanel<C, ?>> conditionPanels;
 	private final FilterTableColumnModel<C> columnModel;
 	private final FilterTableColumnComponentPanel<C> componentPanel;
+	private final Event<C> focusGainedEvent = Event.event();
 	private final Value<ConditionState> conditionState = Value.nonNull(HIDDEN)
 					.consumer(this::onStateChanged)
 					.build();
@@ -75,6 +81,8 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel),
 						conditionPanels.stream().collect(toMap(panel ->
 										panel.conditionModel().columnIdentifier(), identity())));
+		conditionPanels.forEach(panel -> panel.components().forEach(component ->
+							component.addFocusListener(new PanelFocusListener(panel.conditionModel().columnIdentifier()))));
 		configureStates();
 	}
 
@@ -122,6 +130,11 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 						.control(Control.builder(this::clearConditions)
 										.name(Messages.clear()))
 						.build();
+	}
+
+	@Override
+	public Optional<EventObserver<C>> focusGainedEvent() {
+		return Optional.of(focusGainedEvent.observer());
 	}
 
 	/**
@@ -183,6 +196,20 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 			if (enabled) {
 				conditionState.set(state);
 			}
+		}
+	}
+
+	private final class PanelFocusListener extends FocusAdapter {
+
+		private final C columnIdentifier;
+
+		private PanelFocusListener(C columnIdentifier) {
+			this.columnIdentifier = columnIdentifier;
+		}
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			focusGainedEvent.accept(columnIdentifier);
 		}
 	}
 }

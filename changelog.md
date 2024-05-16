@@ -87,7 +87,8 @@ Codion Change Log
 - TableConditionPanel.selectCondition() renamed selectConditionPanel() and implemented, related refactoring.
 - ColumnConditionPanel.state() no longer abstract.
 - ComponentBuilder.listener() and consumer() added.
-- FilterTable bug fixed, sorting, column reordering and resizing key events were enabled even though the functionality had been disabled. 
+- FilterTable bug fixed, sorting, column reordering and resizing key events were enabled even though the functionality had been disabled.
+- TableConditionPanel.focusEvent() added.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
@@ -183,6 +184,7 @@ Codion Change Log
 - EntityFieldFactory renamed EntityConditionFieldFactory, now public.
 - EntityComboBox now displays a wait cursor while the model is refreshing.
 - EntityTablePanel bug fixed, refresh toolbar visibility now initialized correctly.
+- EntityTablePanel, table condition panel initialized lazily.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.
