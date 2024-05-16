@@ -73,8 +73,8 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 
 	@Override
 	public void onSelection(Collection<Entity> selectedEntities) {
-		if (detailModel().containsTableModel() && detailModel().tableModel()
-						.conditionModel().setInConditionValues(foreignKey, selectedEntities) && refreshOnSelection.get()) {
+		if (detailModel().containsTableModel() &&
+						setForeignKeyCondition(selectedEntities) && refreshOnSelection.get()) {
 			detailModel().tableModel().refresher().refreshThen(items -> setEditModelForeignKeyValue(selectedEntities));
 		}
 		else {
@@ -89,8 +89,8 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 		if (!entities.isEmpty()) {
 			detailModel().editModel().put(foreignKey, entities.iterator().next());
 		}
-		if (detailModel().containsTableModel() && searchByInsertedEntity.get()
-						&& detailModel().tableModel().conditionModel().setInConditionValues(foreignKey, entities)) {
+		if (detailModel().containsTableModel() &&
+						searchByInsertedEntity.get() && setForeignKeyCondition(entities)) {
 			detailModel().tableModel().refresh();
 		}
 	}
@@ -122,5 +122,19 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 		if (detailModel().editModel().exists().not().get() && (foreignKeyValue != null || clearForeignKeyOnEmptySelection.get())) {
 			detailModel().editModel().put(foreignKey, foreignKeyValue);
 		}
+	}
+
+	private boolean setForeignKeyCondition(Collection<Entity> selectedEntities) {
+		if (selectedEntities.isEmpty()) {
+			return detailModel().tableModel().conditionModel()
+							.setEqualConditionValue(foreignKey, null);
+		}
+		else if (selectedEntities.size() == 1) {
+			return detailModel().tableModel().conditionModel()
+							.setEqualConditionValue(foreignKey, selectedEntities.iterator().next());
+		}
+
+		return detailModel().tableModel().conditionModel()
+						.setInConditionValues(foreignKey, selectedEntities);
 	}
 }

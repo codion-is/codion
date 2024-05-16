@@ -228,10 +228,10 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		editModel.put(Department.NAME, "Name");
 		editModel.put(Department.LOCATION, "Loc");
 		Entity inserted = editModel.insert();
-		Collection<Entity> equalsValues = employeeModel.tableModel().conditionModel()
+		Entity equalValue = employeeModel.tableModel().conditionModel()
 						.attributeModel(Employee.DEPARTMENT_FK)
-						.getInValues();
-		assertEquals(inserted, equalsValues.iterator().next());
+						.getEqualValue();
+		assertEquals(inserted, equalValue);
 		editModel.delete();
 	}
 

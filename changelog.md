@@ -118,6 +118,7 @@ Codion Change Log
 - ForeignKeyConditionModel.builder() added, replacing static factory method, available operators now configurable.
 - ForeignKeyConditionModel.condition() added, a shorthand for adding a condition to both the IN and EQUAL search/combobox models.
 - EntityTableConditionModel.setEqualConditionValue() added.
+- DefaultForeignKeyDetailModelLink now uses the EQUAL operator in case of a single value when setting the foreign key condition.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model
