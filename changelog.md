@@ -99,6 +99,7 @@ Codion Change Log
 ### is.codion.framework.json.domain
 - EntityObjectMapper.serializeEntities() and serializeKeys() removed.
 - ColumnConditionSerializer bug fixed, did not deserialize case insensitive IN conditions correctly.
+- EntityDeserializer, EntityKeyDeserializer, minor backwards incompatible changes reverted.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.report() exception handling improved, now throws DatabaseException in case of an SQLException.
 - DefaultLocalEntityConnection exception handling refactored in order to guarantee rollbacks in case of RuntimeExceptions.
@@ -114,6 +115,7 @@ Codion Change Log
 - EntityConditionModelFactory no longer excludes hidden attributes.
 - AbstractForeignKeyConditionModel column identifier type now Attribute<Entity> instead of ForeignKey.
 - ForeignKeyConditionModel.builder() added, replacing static factory method, available operators now configurable.
+- ForeignKeyConditionModel.condition() added, a shorthand for adding a condition to both the IN and EQUAL search/combobox models.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model
