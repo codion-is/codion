@@ -123,6 +123,7 @@ Codion Change Log
 - EntityComboBoxConditionModel replaced with SwingForeignKeyConditionModel.
 - SwingEntityTableModel EntityConditionModelFactory parameter replaced with EntityTableConditionModel.
 - SwingForeignKeyConditionModel.builder() added, replacing static factory method, available operators now configurable.
+- SwingEntityTableModel bug fixed, now uses a SwingEntityConditionModelFactory by default.
 ### is.codion.swing.framework.model.tools
 - DomainGenerator now uses com.squareup.javapoet to generate the source and generates a full domain implementation class.
 - DomainToString now handles views correctly, refactoring.

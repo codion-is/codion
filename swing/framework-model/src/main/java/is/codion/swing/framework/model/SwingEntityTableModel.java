@@ -123,7 +123,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	 * @param editModel the edit model
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
-		this(editModel, entityTableConditionModel(editModel.entityType(), editModel.connectionProvider()));
+		this(editModel, entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
+						new SwingEntityConditionModelFactory(editModel.connectionProvider())));
 	}
 
 	/**
