@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
+import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -107,6 +108,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 						builder.keyboardShortcuts.keyStroke(ADD).get());
 		editControl = createEditControl(builder.editPanel,
 						builder.keyboardShortcuts.keyStroke(EDIT).get());
+		builder.comboBoxModel().refresher().observer()
+						.addConsumer(this::onRefreshingChanged);
 	}
 
 	@Override
@@ -296,6 +299,15 @@ public final class EntityComboBox extends JComboBox<Entity> {
 							.onCancel(() -> getModel().setForeignKeyFilterKeys(foreignKey, currentFilterKeys))
 							.show();
 		};
+	}
+
+	private void onRefreshingChanged(boolean refreshing) {
+		if (refreshing) {
+			setCursor(Cursors.WAIT);
+		}
+		else {
+			setCursor(Cursors.DEFAULT);
+		}
 	}
 
 	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
