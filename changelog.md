@@ -96,6 +96,7 @@ Codion Change Log
 - AbstractQueriedKeyGenerator, IdentityKeyGenerator now remove any previous value from the entity before setting the key value, removing original value related memory churn.
 - Entity.valuesAsString() removed.
 - Entity.mapToValue(), mapToType() and mapKeysToType() renamed groupByValue(), groupByType() and groupKeysByType() respectively.
+- DefaultEntity.createPrimaryKey() now creates a pseudo primary key, containing all column values, for entities without a defined primary key.
 ### is.codion.framework.json.domain
 - EntityObjectMapper.serializeEntities() and serializeKeys() removed.
 - ColumnConditionSerializer bug fixed, did not deserialize case insensitive IN conditions correctly.

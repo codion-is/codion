@@ -252,7 +252,8 @@ public class DefaultLocalEntityConnectionTest {
 						.build();
 
 		Entity.Key key = connection.insert(noPk);
-		assertTrue(key.isNull());
+		assertFalse(key.isNull());
+		assertFalse(key.primaryKey());
 	}
 
 	@Test

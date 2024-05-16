@@ -708,7 +708,7 @@ class DefaultEntity implements Entity, Serializable {
 	 */
 	private Key createPrimaryKey(boolean originalValues) {
 		if (definition.primaryKey().columns().isEmpty()) {
-			return new DefaultKey(definition, emptyList(), true);
+			return createPseudoPrimaryKey(originalValues);
 		}
 		List<Column<?>> primaryKeyColumns = definition.primaryKey().columns();
 		if (primaryKeyColumns.size() == 1) {
@@ -716,6 +716,20 @@ class DefaultEntity implements Entity, Serializable {
 		}
 
 		return createMultiColumnPrimaryKey(primaryKeyColumns, originalValues);
+	}
+
+	private DefaultKey createPseudoPrimaryKey(boolean originalValues) {
+		Map<Column<?>, Object> allColumnValues = new HashMap<>();
+		values.keySet().stream()
+						.map(attribute -> definition.attributes().definition(attribute))
+						.filter(ColumnDefinition.class::isInstance)
+						.map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
+						.forEach(columnDefinition ->
+										allColumnValues.put(columnDefinition.attribute(), originalValues ?
+														original(columnDefinition.attribute()) :
+														values.get(columnDefinition.attribute())));
+
+		return new DefaultKey(definition, allColumnValues, false);
 	}
 
 	private DefaultKey createSingleColumnPrimaryKey(Column<?> column, boolean originalValues) {

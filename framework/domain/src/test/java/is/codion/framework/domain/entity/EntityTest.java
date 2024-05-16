@@ -320,6 +320,7 @@ public final class EntityTest {
 						.with(NoPk.COL3, 3)
 						.build();
 		Collection<Entity.Key> keys = Entity.primaryKeys(singletonList(noPk));
-		assertTrue(keys.iterator().next().isNull());
+		assertFalse(keys.iterator().next().isNull());
+		assertFalse(keys.iterator().next().primaryKey());
 	}
 }
