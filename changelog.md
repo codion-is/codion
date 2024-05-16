@@ -117,6 +117,7 @@ Codion Change Log
 - AbstractForeignKeyConditionModel column identifier type now Attribute<Entity> instead of ForeignKey.
 - ForeignKeyConditionModel.builder() added, replacing static factory method, available operators now configurable.
 - ForeignKeyConditionModel.condition() added, a shorthand for adding a condition to both the IN and EQUAL search/combobox models.
+- EntityTableConditionModel.setEqualConditionValue() added.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model

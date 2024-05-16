@@ -83,6 +83,21 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
+	public <T> boolean setEqualConditionValue(Attribute<T> attribute, T value) {
+		requireNonNull(attribute);
+		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
+		Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
+		ColumnConditionModel<Attribute<?>, T> columnConditionModel =
+						(ColumnConditionModel<Attribute<?>, T>) conditionModel.conditionModels().get(attribute);
+		if (columnConditionModel != null) {
+			columnConditionModel.operator().set(Operator.EQUAL);
+			columnConditionModel.setEqualValue(value);
+			columnConditionModel.enabled().set(value != null);
+		}
+		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
+	}
+
+	@Override
 	public <T> boolean setInConditionValues(Attribute<T> attribute, Collection<T> values) {
 		requireNonNull(attribute);
 		requireNonNull(values);

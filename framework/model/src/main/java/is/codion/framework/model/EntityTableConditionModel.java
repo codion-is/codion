@@ -50,8 +50,18 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 	EntityConnectionProvider connectionProvider();
 
 	/**
-	 * Sets the search condition values of the condition model associated with {@code attribute}.
-	 * Enables the condition model in case {@code values} is non-empty or disables it if {@code values is empty}.
+	 * Sets the EQUAL condition value of the condition model associated with {@code attribute}.
+	 * Enables the condition model in case {@code value} is non-empty or disables it if {@code values is empty}.
+	 * @param attribute the attribute
+	 * @param values the search condition value
+	 * @param <T> the value type
+	 * @return true if the search state changed as a result of this method call, false otherwise
+	 */
+	<T> boolean setEqualConditionValue(Attribute<T> attribute, T value);
+
+	/**
+	 * Sets the IN condition values of the condition model associated with {@code attribute}.
+	 * Enables the condition model in case {@code value} is non-empty or disables it if {@code values is empty}.
 	 * @param attribute the attribute
 	 * @param values the search condition values, an empty Collection for none
 	 * @param <T> the value type

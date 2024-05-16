@@ -84,6 +84,22 @@ public class DefaultEntityTableConditionModelTest {
 	}
 
 	@Test
+	void setEqualConditionValue() throws DatabaseException {
+		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
+		assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
+		boolean searchStateChanged = conditionModel.setEqualConditionValue(Employee.DEPARTMENT_FK, sales);
+		assertTrue(searchStateChanged);
+		assertTrue(conditionModel.enabled(Employee.DEPARTMENT_FK));
+		ColumnConditionModel<Attribute<?>, Entity> deptModel =
+						conditionModel.attributeModel(Employee.DEPARTMENT_FK);
+		assertSame(deptModel.getEqualValue(), sales);
+		assertThrows(NullPointerException.class, () -> conditionModel.setEqualConditionValue(null, sales));
+		searchStateChanged = conditionModel.setEqualConditionValue(Employee.DEPARTMENT_FK, null);
+		assertTrue(searchStateChanged);
+		assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
+	}
+
+	@Test
 	void setInConditionValues() throws DatabaseException {
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
