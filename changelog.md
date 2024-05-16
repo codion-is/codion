@@ -176,6 +176,7 @@ Codion Change Log
 - EntityDialogs, add button caption now Add instead of Insert.
 - EntityFieldFactory renamed EntityConditionFieldFactory, now public.
 - EntityComboBox now displays a wait cursor while the model is refreshing.
+- EntityTablePanel bug fixed, refresh toolbar visibility now initialized correctly.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.

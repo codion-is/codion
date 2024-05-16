@@ -2627,6 +2627,8 @@ public class EntityTablePanel extends JPanel {
 				if (tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)) {
 					add(conditionPanelScrollPane, BorderLayout.NORTH);
 				}
+				refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
+							|| tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN));
 			}
 			tableSouthPanel = new JPanel(new BorderLayout());
 			if (configuration.includeSummaryPanel && containsSummaryModels(table)) {
