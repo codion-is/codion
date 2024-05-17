@@ -18,23 +18,28 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.resource.MessageBundle;
+import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.HIDDEN;
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.SIMPLE;
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
@@ -49,6 +54,12 @@ public abstract class TableConditionPanel<C> extends JPanel {
 					messageBundle(FilterColumnConditionPanel.class, getBundle(TableConditionPanel.class.getName()));
 
 	private final TableConditionModel<C> conditionModel;
+	private final Value<ConditionState> conditionState = Value.nonNull(HIDDEN)
+					.consumer(this::onStateChanged)
+					.build();
+	private final State hiddenState = State.state(true);
+	private final State simpleState = State.state();
+	private final State advancedState = State.state();
 
 	/**
 	 * Instantiates a new {@link TableConditionPanel}
@@ -56,6 +67,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 */
 	protected TableConditionPanel(TableConditionModel<C> conditionModel) {
 		this.conditionModel = requireNonNull(conditionModel);
+		configureStates();
 	}
 
 	/**
@@ -63,6 +75,13 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 */
 	public final TableConditionModel<C> conditionModel() {
 		return conditionModel;
+	}
+
+	/**
+	 * @return the value controlling the condition panel state
+	 */
+	public final Value<ConditionState> state() {
+		return conditionState;
 	}
 
 	/**
@@ -80,11 +99,6 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * @return the value controlling the condition panel state
-	 */
-	public abstract Value<ConditionState> state();
-
-	/**
 	 * @param <T> the column value type
 	 * @param columnIdentifier the column identifier
 	 * @return the condition panel associated with the given column
@@ -98,11 +112,20 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * The default implementation returns an empty Controls instance.
-	 * @return the controls provided by this condition panel, for example toggling the advanced mode and clearing the condition
+	 * @return the controls provided by this condition panel, for example clearing the condition and toggling the condition state
 	 */
 	public Controls controls() {
-		return Controls.controls();
+		return Controls.builder()
+						.control(ToggleControl.builder(hiddenState)
+										.name(MESSAGES.getString("hidden")))
+						.control(ToggleControl.builder(simpleState)
+										.name(MESSAGES.getString("simple")))
+						.control(ToggleControl.builder(advancedState)
+										.name(MESSAGES.getString("advanced")))
+						.separator()
+						.control(Control.builder(this::clearConditions)
+										.name(Messages.clear()))
+						.build();
 	}
 
 	/**
@@ -135,6 +158,25 @@ public abstract class TableConditionPanel<C> extends JPanel {
 		}
 	}
 
+	protected abstract void onStateChanged(ConditionState state);
+
+	private void configureStates() {
+		State.group(hiddenState, simpleState, advancedState);
+		hiddenState.addConsumer(new StateConsumer(HIDDEN));
+		simpleState.addConsumer(new StateConsumer(SIMPLE));
+		advancedState.addConsumer(new StateConsumer(ADVANCED));
+		conditionState.addConsumer(state -> {
+			hiddenState.set(state == HIDDEN);
+			simpleState.set(state == SIMPLE);
+			advancedState.set(state == ADVANCED);
+		});
+	}
+
+	private void clearConditions() {
+		conditionModel.conditionModels().values()
+						.forEach(ColumnConditionModel::clear);
+	}
+
 	/**
 	 * @param <C> the type identifying the table columns
 	 */
@@ -149,5 +191,21 @@ public abstract class TableConditionPanel<C> extends JPanel {
 		TableConditionPanel<C> create(TableConditionModel<C> conditionModel,
 																	Collection<ColumnConditionPanel<C, ?>> conditionPanels,
 																	FilterTableColumnModel<C> columnModel);
+	}
+
+	private final class StateConsumer implements Consumer<Boolean> {
+
+		private final ConditionState state;
+
+		private StateConsumer(ConditionState state) {
+			this.state = state;
+		}
+
+		@Override
+		public void accept(Boolean enabled) {
+			if (enabled) {
+				conditionState.set(state);
+			}
+		}
 	}
 }

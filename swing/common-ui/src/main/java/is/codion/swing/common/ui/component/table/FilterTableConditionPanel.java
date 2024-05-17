@@ -18,31 +18,19 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.i18n.Messages;
-import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
-import is.codion.common.resource.MessageBundle;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
-import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.ToggleControl;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.*;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
@@ -53,17 +41,8 @@ import static java.util.stream.Collectors.toMap;
  */
 public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
-	private static final MessageBundle MESSAGES =
-					messageBundle(FilterColumnConditionPanel.class, getBundle(FilterTableConditionPanel.class.getName()));
-
 	private final Collection<ColumnConditionPanel<C, ?>> conditionPanels;
 	private final FilterTableColumnModel<C> columnModel;
-	private final Value<ConditionState> conditionState = Value.nonNull(HIDDEN)
-					.consumer(this::onStateChanged)
-					.build();
-	private final State hiddenState = State.state(true);
-	private final State simpleState = State.state();
-	private final State advancedState = State.state();
 
 	private FilterTableColumnComponentPanel<C> componentPanel;
 	private boolean initialized;
@@ -94,26 +73,6 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 						.collect(Collectors.toList());
 	}
 
-	@Override
-	public Value<ConditionState> state() {
-		return conditionState;
-	}
-
-	@Override
-	public Controls controls() {
-		return Controls.builder()
-						.control(ToggleControl.builder(hiddenState)
-										.name(MESSAGES.getString("hidden")))
-						.control(ToggleControl.builder(simpleState)
-										.name(MESSAGES.getString("simple")))
-						.control(ToggleControl.builder(advancedState)
-										.name(MESSAGES.getString("advanced")))
-						.separator()
-						.control(Control.builder(this::clearConditions)
-										.name(Messages.clear()))
-						.build();
-	}
-
 	/**
 	 * @param <C> the column identifier type
 	 * @param conditionModel the condition model
@@ -127,13 +86,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 		return new FilterTableConditionPanel<>(conditionModel, conditionPanels, columnModel);
 	}
 
-	private void clearConditions() {
-		conditionPanels.stream()
-						.map(ColumnConditionPanel::conditionModel)
-						.forEach(ColumnConditionModel::clear);
-	}
-
-	private void onStateChanged(ConditionState conditionState) {
+	protected void onStateChanged(ConditionState conditionState) {
 		conditionPanels.forEach(panel -> panel.state().set(conditionState));
 		switch (conditionState) {
 			case HIDDEN:
@@ -156,35 +109,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 			Map<C, ColumnConditionPanel<C, ?>> conditionPanelMap = conditionPanels.stream()
 							.collect(toMap(panel -> panel.conditionModel().columnIdentifier(), identity()));
 			componentPanel = filterTableColumnComponentPanel(columnModel, conditionPanelMap);
-			configureStates();
 			initialized = true;
-		}
-	}
-
-	private void configureStates() {
-		State.group(hiddenState, simpleState, advancedState);
-		hiddenState.addConsumer(new StateConsumer(HIDDEN));
-		simpleState.addConsumer(new StateConsumer(SIMPLE));
-		advancedState.addConsumer(new StateConsumer(ADVANCED));
-		conditionState.addConsumer(state -> {
-			hiddenState.set(state == HIDDEN);
-			simpleState.set(state == SIMPLE);
-			advancedState.set(state == ADVANCED);
-		});
-	}
-
-	private final class StateConsumer implements Consumer<Boolean> {
-		private final ConditionState state;
-
-		private StateConsumer(ConditionState state) {
-			this.state = state;
-		}
-
-		@Override
-		public void accept(Boolean enabled) {
-			if (enabled) {
-				conditionState.set(state);
-			}
 		}
 	}
 }

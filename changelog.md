@@ -91,6 +91,7 @@ Codion Change Log
 - TableConditionPanel.focusEvent() added.
 - FilterColumnConditionPanel now initialized lazily.
 - FilterTableConditionPanel.focusGainedEvent() moved to ColumnConditionPanel, related refactoring.
+- TableConditionPanel.state() now final, controls() implemented, related refactoring.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
