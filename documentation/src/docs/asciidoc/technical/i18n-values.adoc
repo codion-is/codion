@@ -481,12 +481,12 @@ is/codion/swing/common/ui/component/table/FilterTable_is_IS.properties
 |single_selection_mode|Single selection|Einnar línu val
 |===
 
-=== is/codion/swing/common/ui/component/table/FilterTableConditionPanel.java
+=== is/codion/swing/common/ui/component/table/TableConditionPanel.java
 
 [source]
 ----
-is/codion/swing/common/ui/component/table/FilterTableConditionPanel.properties
-is/codion/swing/common/ui/component/table/FilterTableConditionPanel_is_IS.properties
+is/codion/swing/common/ui/component/table/TableConditionPanel.properties
+is/codion/swing/common/ui/component/table/TableConditionPanel_is_IS.properties
 ----
 [cols="1,1,1"]
 |===
@@ -688,6 +688,20 @@ is/codion/swing/common/ui/laf/LookAndFeelProvider_is_IS.properties
 |===
 
 == codion-swing-framework-ui
+
+=== is/codion/swing/framework/ui/DefaultEntityApplicationPanelBuilder.java
+
+[source]
+----
+is/codion/swing/framework/ui/DefaultEntityApplicationPanelBuilder.properties
+is/codion/swing/framework/ui/DefaultEntityApplicationPanelBuilder_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|initializing|Initializing user interface|Frumstilli viðmót
+|===
 
 === is/codion/swing/framework/ui/EntityApplicationPanel.java
 

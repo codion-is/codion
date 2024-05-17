@@ -191,6 +191,7 @@ Codion Change Log
 - EntityTablePanel bug fixed, refresh toolbar visibility now initialized correctly.
 - EntityTablePanel, table condition panel initialized lazily.
 - EntityApplicationPanel, frame size and maximized state now saved in user preferences, Builder.defaultFrameSize() added.
+- DefaultEntityApplicationPanelBuilder, now displays an empty frame while the application panel is being initialized.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.

@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -60,6 +61,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.model.UserPreferences.getUserPreference;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.framework.db.EntityConnectionProvider.CLIENT_DOMAIN_TYPE;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -71,11 +73,15 @@ import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>>
 				implements EntityApplicationPanel.Builder<M, P> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityApplicationPanelBuilder.class);
+
+	private static final MessageBundle MESSAGES =
+					messageBundle(DefaultEntityApplicationPanelBuilder.class, getBundle(DefaultEntityApplicationPanelBuilder.class.getName()));
 
 	private static final String CODION_APPLICATION_VERSION = "codion.application.version";
 	private static final int DEFAULT_LOGO_SIZE = 68;
@@ -383,11 +389,16 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private void startApplication(M applicationModel, long initializationStarted) {
-		P applicationPanel = initializeApplicationPanel(applicationModel);
-		JFrame applicationFrame = applicationFrame(applicationPanel);
+		JFrame applicationFrame = createFrame();
 		if (setUncaughtExceptionHandler) {
 			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionHandler(applicationFrame));
 		}
+		if (displayFrame) {
+			applicationFrame.setTitle(MESSAGES.getString("initializing") + " " + applicationName);
+			applicationFrame.setVisible(true);
+		}
+		P applicationPanel = initializeApplicationPanel(applicationModel);
+		configureFrame(applicationFrame, applicationPanel);
 		LOG.info("{}, application started successfully: {} ms", applicationFrame.getTitle(), System.currentTimeMillis() - initializationStarted);
 		if (displayFrame) {
 			applicationFrame.setVisible(true);
@@ -395,6 +406,29 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		if (onApplicationStarted != null) {
 			onApplicationStarted.accept(applicationPanel);
 		}
+	}
+
+	private JFrame createFrame() {
+		JFrame frame = frameSupplier.get();
+		frame.getContentPane().setLayout(new BorderLayout());
+		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		frame.setIconImage(applicationIcon.getImage());
+		if (frameSize != null) {
+			frame.setSize(frameSize);
+		}
+		else if (defaultFrameSize != null) {
+			frame.setSize(defaultFrameSize);
+		}
+		else {
+			frame.pack();
+			Windows.setSizeWithinScreenBounds(frame);
+		}
+		frame.setLocationRelativeTo(null);
+		if (maximizeFrame) {
+			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		}
+
+		return frame;
 	}
 
 	private User initializeUser() {
@@ -424,27 +458,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		return applicationPanel;
 	}
 
-	private JFrame applicationFrame(P applicationPanel) {
-		JFrame frame = frameSupplier.get();
-		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		frame.setIconImage(applicationIcon.getImage());
+	private void configureFrame(JFrame frame, P applicationPanel) {
 		frame.addWindowListener(new ExitOnClose(applicationPanel));
-		frame.getContentPane().setLayout(new BorderLayout());
-		frame.getContentPane().add(applicationPanel, BorderLayout.CENTER);
-		if (frameSize != null) {
-			frame.setSize(frameSize);
-		}
-		else if (defaultFrameSize != null) {
-			frame.setSize(defaultFrameSize);
-		}
-		else {
-			frame.pack();
-			Windows.setSizeWithinScreenBounds(frame);
-		}
-		frame.setLocationRelativeTo(null);
-		if (maximizeFrame) {
-			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-		}
 		if (frameTitle != null) {
 			frame.setTitle(frameTitle.get());
 			frameTitle.addConsumer(new FrameTitleConsumer(frame));
@@ -459,6 +474,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			}
 		}
 		frame.setAlwaysOnTop(applicationPanel.alwaysOnTop().get());
+		frame.getContentPane().add(applicationPanel, BorderLayout.CENTER);
 	}
 
 	private String createDefaultFrameTitle(M applicationModel) {
