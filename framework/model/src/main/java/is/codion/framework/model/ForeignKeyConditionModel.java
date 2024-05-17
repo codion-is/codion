@@ -37,11 +37,11 @@ import static java.util.Objects.requireNonNull;
 /**
  * An abstract base class for {@link ForeignKey} based {@link ColumnConditionModel}s.
  */
-public abstract class AbstractForeignKeyConditionModel implements ColumnConditionModel<Attribute<?>, Entity> {
+public abstract class ForeignKeyConditionModel implements ColumnConditionModel<Attribute<?>, Entity> {
 
 	private final ColumnConditionModel<ForeignKey, Entity> conditionModel;
 
-	protected AbstractForeignKeyConditionModel(ForeignKey foreignKey, List<Operator> operators) {
+	protected ForeignKeyConditionModel(ForeignKey foreignKey, List<Operator> operators) {
 		conditionModel = ColumnConditionModel.builder(requireNonNull(foreignKey), Entity.class)
 						.operators(operators)
 						.build();

@@ -21,8 +21,8 @@ package is.codion.swing.framework.model;
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.AbstractForeignKeyConditionModel;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.List;
@@ -37,7 +37,7 @@ import static java.util.Objects.requireNonNull;
  * and a {@link EntitySearchModel} for the {@link #inValues()}.
  * @see #builder(ForeignKey)
  */
-public final class SwingForeignKeyConditionModel extends AbstractForeignKeyConditionModel {
+public final class SwingForeignKeyConditionModel extends ForeignKeyConditionModel {
 
 	private final EntityComboBoxModel equalComboBoxModel;
 	private final EntitySearchModel inSearchModel;

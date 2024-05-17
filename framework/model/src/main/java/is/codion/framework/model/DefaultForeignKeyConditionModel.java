@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
  * both the {@link #equalValue()} and {@link #inValues()}.
  * @see #builder(ForeignKey)
  */
-public final class DefaultForeignKeyConditionModel extends AbstractForeignKeyConditionModel {
+public final class DefaultForeignKeyConditionModel extends ForeignKeyConditionModel {
 
 	private final EntitySearchModel equalSearchModel;
 	private final EntitySearchModel inSearchModel;
@@ -45,7 +45,7 @@ public final class DefaultForeignKeyConditionModel extends AbstractForeignKeyCon
 		super(builder.foreignKey, builder.operators());
 		this.equalSearchModel = builder.equalSearchModel;
 		this.inSearchModel = builder.inSearchModel;
-		bindSearchModelEvents();
+		bindEvents();
 	}
 
 	/**
@@ -100,7 +100,7 @@ public final class DefaultForeignKeyConditionModel extends AbstractForeignKeyCon
 		DefaultForeignKeyConditionModel build();
 	}
 
-	private void bindSearchModelEvents() {
+	private void bindEvents() {
 		if (equalSearchModel != null) {
 			equalSearchModel.entity().addConsumer(new SetEqualValue());
 			equalValue().addConsumer(new SelectEqualValue());

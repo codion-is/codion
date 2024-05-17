@@ -123,7 +123,8 @@ Codion Change Log
 - ForeignKeyConditionModel.condition() added, a shorthand for adding a condition to both the IN and EQUAL search/combobox models.
 - EntityTableConditionModel.setEqualConditionValue() added.
 - DefaultForeignKeyDetailModelLink now uses the EQUAL operator in case of a single value when setting the foreign key condition.
-- ForeignKeyConditionModel renamed DefaultForeignKeyConditionModel. 
+- ForeignKeyConditionModel renamed DefaultForeignKeyConditionModel.
+- AbstractForeignKeyConditionModel renamed ForeignKeyConditionModel.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model
