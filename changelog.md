@@ -190,6 +190,7 @@ Codion Change Log
 - EntityComboBox now displays a wait cursor while the model is refreshing.
 - EntityTablePanel bug fixed, refresh toolbar visibility now initialized correctly.
 - EntityTablePanel, table condition panel initialized lazily.
+- EntityApplicationPanel, frame size and maximized state now saved in user preferences, Builder.defaultFrameSize() added.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.

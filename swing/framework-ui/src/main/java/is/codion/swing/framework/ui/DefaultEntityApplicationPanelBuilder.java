@@ -67,6 +67,7 @@ import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
+import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 import static java.util.Objects.requireNonNull;
@@ -86,6 +87,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private final String applicationDefaultUsernameProperty;
 	private final String applicationLookAndFeelProperty;
 	private final String applicationFontSizeProperty;
+	private final String applicationFrameSizeProperty;
+	private final String applicationFrameMaximizedProperty;
 
 	private DomainType domainType = CLIENT_DOMAIN_TYPE.get();
 	private String applicationName = "";
@@ -111,6 +114,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private boolean displayFrame = true;
 	private boolean includeMainMenu = true;
 	private Dimension frameSize;
+	private Dimension defaultFrameSize;
 	private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.get();
 	private User defaultLoginUser;
 	private User automaticLoginUser;
@@ -121,8 +125,12 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		this.applicationDefaultUsernameProperty = EntityApplicationPanel.DEFAULT_USERNAME_PROPERTY + "#" + applicationPanelClass.getSimpleName();
 		this.applicationLookAndFeelProperty = EntityApplicationPanel.LOOK_AND_FEEL_PROPERTY + "#" + applicationPanelClass.getSimpleName();
 		this.applicationFontSizeProperty = EntityApplicationPanel.FONT_SIZE_PROPERTY + "#" + applicationPanelClass.getSimpleName();
+		this.applicationFrameSizeProperty = EntityApplicationPanel.FRAME_SIZE_PROPERTY + "#" + applicationPanelClass.getSimpleName();
+		this.applicationFrameMaximizedProperty = EntityApplicationPanel.FRAME_MAXIMIZED_PROPERTY + "#" + applicationPanelClass.getSimpleName();
 		this.defaultLoginUser = User.user(getUserPreference(applicationDefaultUsernameProperty,
 						EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name")));
+		this.frameSize = parseFrameSize(getUserPreference(applicationFrameSizeProperty, null));
+		this.maximizeFrame = parseBoolean(getUserPreference(applicationFrameMaximizedProperty, "false"));
 	}
 
 	@Override
@@ -247,6 +255,12 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	@Override
 	public EntityApplicationPanel.Builder<M, P> frameSize(Dimension frameSize) {
 		this.frameSize = frameSize;
+		return this;
+	}
+
+	@Override
+	public EntityApplicationPanel.Builder<M, P> defaultFrameSize(Dimension defaultFrameSize) {
+		this.defaultFrameSize = defaultFrameSize;
 		return this;
 	}
 
@@ -420,6 +434,9 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		if (frameSize != null) {
 			frame.setSize(frameSize);
 		}
+		else if (defaultFrameSize != null) {
+			frame.setSize(defaultFrameSize);
+		}
 		else {
 			frame.pack();
 			Windows.setSizeWithinScreenBounds(frame);
@@ -442,8 +459,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			}
 		}
 		frame.setAlwaysOnTop(applicationPanel.alwaysOnTop().get());
-
-		return frame;
 	}
 
 	private String createDefaultFrameTitle(M applicationModel) {
@@ -516,6 +531,16 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			Window focusOwnerParentWindow = parentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
 			displayExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
 		}
+	}
+
+	private static Dimension parseFrameSize(String userPreference) {
+		if (userPreference == null) {
+			return null;
+		}
+
+		String[] split = userPreference.split("x");
+
+		return new Dimension(parseInt(split[0]), parseInt(split[1]));
 	}
 
 	private final class DefaultDialogLoginProvider implements LoginProvider {

@@ -99,9 +99,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.model.UserPreferences.getUserPreference;
+import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -128,6 +130,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	static final String DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
 	static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
 	static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
+	static final String FRAME_SIZE_PROPERTY = "is.codion.swing.framework.ui.frameSize";
+	static final String FRAME_MAXIMIZED_PROPERTY = "is.codion.swing.framework.ui.maximized";
 
 	/**
 	 * Specifies the URL to the application help<br>
@@ -171,6 +175,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private final String applicationDefaultUsernameProperty;
 	private final String applicationLookAndFeelProperty;
 	private final String applicationFontSizeProperty;
+	private final String applicationFrameSizeProperty;
+	private final String applicationFrameMaximizedProperty;
 
 	private final M applicationModel;
 	private final Collection<EntityPanel.Builder> supportPanelBuilders = new ArrayList<>();
@@ -199,6 +205,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
 		this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
 		this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
+		this.applicationFrameSizeProperty = FRAME_SIZE_PROPERTY + "#" + getClass().getSimpleName();
+		this.applicationFrameMaximizedProperty = FRAME_MAXIMIZED_PROPERTY + "#" + getClass().getSimpleName();
 		//initialize button captions, not in a static initializer since applications may set the locale in main()
 		UiManagerDefaults.initialize();
 	}
@@ -781,6 +789,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 */
 	protected void savePreferences() {
 		entityPanels().forEach(EntityPanel::savePreferences);
+		JFrame parentFrame = Utilities.parentFrame(this);
+		if (parentFrame != null) {
+			boolean maximized = (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH;
+			setUserPreference(applicationFrameMaximizedProperty, Boolean.toString(maximized));
+			if (!maximized) {
+				Dimension size = parentFrame.getSize();
+				setUserPreference(applicationFrameSizeProperty, size.width + "x" + size.height);
+			}
+		}
 	}
 
 	private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {
@@ -1203,6 +1220,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		 * @return this Builder instance
 		 */
 		Builder<M, P> frameSize(Dimension frameSize);
+
+		/**
+		 * @param defaultFrameSize the default frame size when no previous size is available in user preferences
+		 * @return this Builder instance
+		 */
+		Builder<M, P> defaultFrameSize(Dimension defaultFrameSize);
 
 		/**
 		 * If this is set to false, the {@link #connectionProviderFactory(ConnectionProviderFactory)}
