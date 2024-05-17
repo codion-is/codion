@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.swing.common.ui.component.text.NumberDocument.NumberParser.NumberParseResult;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -369,24 +370,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 				Document document = filterBypass.getDocument();
 				StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
 				builder.replace(offset, offset + length, text);
-				NumberParser.NumberParseResult<T> parseResult = parser.parse(builder.toString());
+				NumberParseResult<T> parseResult = parser.parse(builder.toString());
 				if (parseResult.successful()) {
-					if (parseResult.value() != null) {
-						try {
-							validate(parseResult.value());
-						}
-						catch (IllegalArgumentException e) {
-							if (rethrowValidationException) {
-								throw e;
-							}
-							return;
-						}
-					}
-					super.replace(filterBypass, 0, document.getLength(), parseResult.text(), attributeSet);
-					if (textComponent != null) {
-						textComponent.getCaret().setDot(offset + text.length() + parseResult.charetOffset());
-					}
-					value.set(parseResult.value());
+					validateReplace(parseResult, filterBypass, attributeSet,
+									offset + text.length() + parseResult.charetOffset());
 				}
 			}
 		}
@@ -449,6 +436,26 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			}
 
 			return text;
+		}
+
+		private void validateReplace(NumberParseResult<T> parseResult, FilterBypass filterBypass,
+																 AttributeSet attributeSet, int dotLocation) throws BadLocationException {
+			if (parseResult.value() != null) {
+				try {
+					validate(parseResult.value());
+				}
+				catch (IllegalArgumentException e) {
+					if (rethrowValidationException) {
+						throw e;
+					}
+					return;
+				}
+			}
+			super.replace(filterBypass, 0, filterBypass.getDocument().getLength(), parseResult.text(), attributeSet);
+			value.set(parseResult.value());
+			if (textComponent != null) {
+				textComponent.getCaret().setDot(dotLocation);
+			}
 		}
 
 		private static final class NumberRangeValidator<T extends Number> implements Value.Validator<T> {
