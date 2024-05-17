@@ -92,6 +92,7 @@ Codion Change Log
 - FilterColumnConditionPanel now initialized lazily.
 - FilterTableConditionPanel.focusGainedEvent() moved to ColumnConditionPanel, related refactoring.
 - TableConditionPanel.state() now final, controls() implemented, related refactoring.
+- DefaultFilterTableColumnModel.setVisibleColumns() bug fixed, now resets the selected column to zero after the columns have been configured.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.

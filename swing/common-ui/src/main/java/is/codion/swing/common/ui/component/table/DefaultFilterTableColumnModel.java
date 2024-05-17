@@ -89,6 +89,9 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 				visibleStates.get(column.getIdentifier()).set(false);
 			}
 		}
+		if (!columnIdentifiers.isEmpty()) {
+			tableColumnModel.getSelectionModel().setSelectionInterval(0, 0);
+		}
 	}
 
 	@Override
