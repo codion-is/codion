@@ -30,18 +30,18 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A condition model using {@link EntitySearchModel} for
+ * A default foreign key condition model using {@link EntitySearchModel} for
  * both the {@link #equalValue()} and {@link #inValues()}.
  * @see #builder(ForeignKey)
  */
-public final class ForeignKeyConditionModel extends AbstractForeignKeyConditionModel {
+public final class DefaultForeignKeyConditionModel extends AbstractForeignKeyConditionModel {
 
 	private final EntitySearchModel equalSearchModel;
 	private final EntitySearchModel inSearchModel;
 
 	private boolean updatingModel = false;
 
-	private ForeignKeyConditionModel(DefaultBuilder builder) {
+	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
 		super(builder.foreignKey, builder.operators());
 		this.equalSearchModel = builder.equalSearchModel;
 		this.inSearchModel = builder.inSearchModel;
@@ -71,14 +71,14 @@ public final class ForeignKeyConditionModel extends AbstractForeignKeyConditionM
 
 	/**
 	 * @param foreignKey the foreign key
-	 * @return a new {@link ForeignKeyConditionModel.Builder}
+	 * @return a new {@link DefaultForeignKeyConditionModel.Builder}
 	 */
 	public static Builder builder(ForeignKey foreignKey) {
 		return new DefaultBuilder(foreignKey);
 	}
 
 	/**
-	 * A builder for a {@link ForeignKeyConditionModel}
+	 * A builder for a {@link DefaultForeignKeyConditionModel}
 	 */
 	public interface Builder {
 
@@ -95,9 +95,9 @@ public final class ForeignKeyConditionModel extends AbstractForeignKeyConditionM
 		Builder includeInOperators(EntitySearchModel inSearchModel);
 
 		/**
-		 * @return a new {@link ForeignKeyConditionModel} instance
+		 * @return a new {@link DefaultForeignKeyConditionModel} instance
 		 */
-		ForeignKeyConditionModel build();
+		DefaultForeignKeyConditionModel build();
 	}
 
 	private void bindSearchModelEvents() {
@@ -183,8 +183,8 @@ public final class ForeignKeyConditionModel extends AbstractForeignKeyConditionM
 		}
 
 		@Override
-		public ForeignKeyConditionModel build() {
-			return new ForeignKeyConditionModel(this);
+		public DefaultForeignKeyConditionModel build() {
+			return new DefaultForeignKeyConditionModel(this);
 		}
 
 		private List<Operator> operators() {

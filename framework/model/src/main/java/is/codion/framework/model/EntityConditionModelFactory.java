@@ -56,7 +56,7 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
-			return Optional.of(ForeignKeyConditionModel.builder(foreignKey)
+			return Optional.of(DefaultForeignKeyConditionModel.builder(foreignKey)
 							.includeEqualOperators(createEqualSearchModel(foreignKey))
 							.includeInOperators(createInSearchModel(foreignKey))
 							.build());

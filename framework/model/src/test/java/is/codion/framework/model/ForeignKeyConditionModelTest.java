@@ -47,7 +47,7 @@ public class ForeignKeyConditionModelTest {
 
 	@Test
 	void inSearchModel() throws DatabaseException {
-		ForeignKeyConditionModel conditionModel = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+		AbstractForeignKeyConditionModel conditionModel = DefaultForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
 						.includeEqualOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.includeInOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.build();
@@ -70,7 +70,7 @@ public class ForeignKeyConditionModelTest {
 
 	@Test
 	void equalSearchModel() throws DatabaseException {
-		ForeignKeyConditionModel conditionModel = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+		DefaultForeignKeyConditionModel conditionModel = DefaultForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
 						.includeEqualOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.includeInOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.build();

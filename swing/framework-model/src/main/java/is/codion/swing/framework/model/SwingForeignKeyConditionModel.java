@@ -23,7 +23,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractForeignKeyConditionModel;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.List;
@@ -99,7 +98,7 @@ public final class SwingForeignKeyConditionModel extends AbstractForeignKeyCondi
 		Builder includeInOperators(EntitySearchModel inSearchModel);
 
 		/**
-		 * @return a new {@link ForeignKeyConditionModel} instance
+		 * @return a new {@link SwingForeignKeyConditionModel} instance
 		 */
 		SwingForeignKeyConditionModel build();
 	}
