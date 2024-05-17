@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.event.EventObserver;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.resource.MessageBundle;
@@ -31,7 +30,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -92,18 +90,19 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 * @return the condition panel associated with the given column
 	 * @throws IllegalStateException in case no panel is available
 	 */
-	public abstract <T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier);
+	public <T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier) {
+		return (T) conditionPanels().stream()
+						.filter(panel -> panel.conditionModel().columnIdentifier().equals(columnIdentifier))
+						.findFirst()
+						.orElseThrow(() -> new IllegalStateException("No condition panel available for " + columnIdentifier));
+	}
 
 	/**
+	 * The default implementation returns an empty Controls instance.
 	 * @return the controls provided by this condition panel, for example toggling the advanced mode and clearing the condition
 	 */
-	public abstract Controls controls();
-
-	/**
-	 * @return an event observer notified when a column condition panel receives focus
-	 */
-	public Optional<EventObserver<C>> focusGainedEvent() {
-		return Optional.empty();
+	public Controls controls() {
+		return Controls.controls();
 	}
 
 	/**

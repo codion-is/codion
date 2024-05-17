@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -25,6 +26,7 @@ import is.codion.common.value.Value;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.*;
@@ -115,6 +117,14 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 * Requests keyboard focus for this panel
 	 */
 	public abstract void requestInputFocus();
+
+	/**
+	 * The default implementation returns an empty Optional.
+	 * @return an event notified when a subcomponent of this condition panel receives focus or an empty Optional if none is available
+	 */
+	public Optional<EventObserver<C>> focusGainedEvent() {
+		return Optional.empty();
+	}
 
 	protected abstract void onStateChanged(ConditionState state);
 

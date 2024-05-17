@@ -1532,16 +1532,18 @@ public class EntityTablePanel extends JPanel {
 		tableModel.refresher().refreshFailedEvent().addConsumer(this::onException);
 		tableModel.editModel().insertUpdateOrDeleteEvent().addListener(table::repaint);
 		if (configuration.includeFilterPanel) {
-			table.filterPanel().focusGainedEvent()
-							.ifPresent(event -> event.addConsumer(new ScrollToColumn()));
+			table.filterPanel().conditionPanels().forEach(conditionPanel ->
+							conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
+											focusGainedEvent.addConsumer(new ScrollToColumn())));
 		}
 	}
 
 	private void initializeConditionPanel() {
 		tableConditionPanel = createConditionPanel();
 		conditionPanelScrollPane = createLinkedScrollPane(tableConditionPanel);
-		tableConditionPanel.focusGainedEvent()
-						.ifPresent(event -> event.addConsumer(new ScrollToColumn()));
+		tableConditionPanel.conditionPanels().forEach(conditionPanel ->
+						conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
+										focusGainedEvent.addConsumer(new ScrollToColumn())));
 		tableConditionPanel.state().addConsumer(tablePanel::conditionPanelStateChanged);
 		if (tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)) {
 			tablePanel.add(conditionPanelScrollPane, BorderLayout.NORTH);

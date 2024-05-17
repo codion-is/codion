@@ -19,6 +19,8 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Operator;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
@@ -47,6 +49,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -128,6 +132,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 					LESS_THAN, LESS_THAN_OR_EQUAL, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
 
 	private final FieldFactory<C> fieldFactory;
+	private final Event<C> focusGainedEvent = Event.event();
 
 	private JToggleButton toggleEnabledButton;
 	private JComboBox<Item<Operator>> operatorCombo;
@@ -187,6 +192,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 			default:
 				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel().operator().get());
 		}
+	}
+
+	@Override
+	public Optional<EventObserver<C>> focusGainedEvent() {
+		return Optional.of(focusGainedEvent);
 	}
 
 	/**
@@ -378,6 +388,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		conditionModel().operator().addConsumer(this::onOperatorChanged);
 		linkToEnabledState(conditionModel().locked().not(),
 						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
+		components().forEach(component ->
+						component.addFocusListener(new FocusGained(conditionModel().columnIdentifier())));
 		KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_ENABLED).get())
 						.action(Control.control(this::toggleEnabled));
 		KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_OPERATOR).get())
@@ -677,6 +689,20 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 				return "α ∉";
 			default:
 				throw new IllegalArgumentException(UNKNOWN_OPERATOR + operator);
+		}
+	}
+
+	private final class FocusGained extends FocusAdapter {
+
+		private final C columnIdentifier;
+
+		private FocusGained(C columnIdentifier) {
+			this.columnIdentifier = columnIdentifier;
+		}
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			focusGainedEvent.accept(columnIdentifier);
 		}
 	}
 
