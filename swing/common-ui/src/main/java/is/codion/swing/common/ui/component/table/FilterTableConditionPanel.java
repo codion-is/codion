@@ -37,6 +37,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -62,7 +63,6 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	private final Collection<ColumnConditionPanel<C, ?>> conditionPanels;
 	private final FilterTableColumnModel<C> columnModel;
-	private final FilterTableColumnComponentPanel<C> componentPanel;
 	private final Event<C> focusGainedEvent = Event.event();
 	private final Value<ConditionState> conditionState = Value.nonNull(HIDDEN)
 					.consumer(this::onStateChanged)
@@ -71,19 +71,15 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	private final State simpleState = State.state();
 	private final State advancedState = State.state();
 
+	private FilterTableColumnComponentPanel<C> componentPanel;
+	private boolean initialized;
+
 	private FilterTableConditionPanel(TableConditionModel<C> conditionModel,
 																		Collection<ColumnConditionPanel<C, ?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel) {
 		super(conditionModel);
-		setLayout(new BorderLayout());
 		this.conditionPanels = unmodifiableList(new ArrayList<>(requireNonNull(conditionPanels)));
-		this.columnModel = columnModel;
-		this.componentPanel = filterTableColumnComponentPanel(requireNonNull(columnModel),
-						conditionPanels.stream().collect(toMap(panel ->
-										panel.conditionModel().columnIdentifier(), identity())));
-		conditionPanels.forEach(panel -> panel.components().forEach(component ->
-							component.addFocusListener(new PanelFocusListener(panel.conditionModel().columnIdentifier()))));
-		configureStates();
+		this.columnModel = requireNonNull(columnModel);
 	}
 
 	@Override
@@ -164,12 +160,28 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 				break;
 			case SIMPLE:
 			case ADVANCED:
+				initialize();
 				add(componentPanel, BorderLayout.CENTER);
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown panel state: " + conditionState);
 		}
 		revalidate();
+	}
+
+	private void initialize() {
+		if (!initialized) {
+			setLayout(new BorderLayout());
+			Map<C, ColumnConditionPanel<C, ?>> conditionPanelMap = conditionPanels.stream()
+							.collect(toMap(panel -> panel.conditionModel().columnIdentifier(), identity()));
+			componentPanel = filterTableColumnComponentPanel(columnModel, conditionPanelMap);
+			for (ColumnConditionPanel<C, ?> conditionPanel : conditionPanels) {
+				conditionPanel.components().forEach(component ->
+								component.addFocusListener(new FocusGained(conditionPanel.conditionModel().columnIdentifier())));
+			}
+			configureStates();
+			initialized = true;
+		}
 	}
 
 	private void configureStates() {
@@ -199,11 +211,11 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 		}
 	}
 
-	private final class PanelFocusListener extends FocusAdapter {
+	private final class FocusGained extends FocusAdapter {
 
 		private final C columnIdentifier;
 
-		private PanelFocusListener(C columnIdentifier) {
+		private FocusGained(C columnIdentifier) {
 			this.columnIdentifier = columnIdentifier;
 		}
 

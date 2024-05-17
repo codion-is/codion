@@ -127,37 +127,24 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	private static final List<Operator> UPPER_BOUND_OPERATORS = asList(
 					LESS_THAN, LESS_THAN_OR_EQUAL, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
 
-	private final JToggleButton toggleEnabledButton;
-	private final JComboBox<Item<Operator>> operatorCombo;
-	private final JComponent equalField;
-	private final JComponent upperBoundField;
-	private final JComponent lowerBoundField;
-	private final JComponent inField;
-	private final JPanel controlPanel = new JPanel(new BorderLayout());
-	private final JPanel inputPanel = new JPanel(new BorderLayout());
-	private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
+	private final FieldFactory<C> fieldFactory;
+
+	private JToggleButton toggleEnabledButton;
+	private JComboBox<Item<Operator>> operatorCombo;
+	private JComponent equalField;
+	private JComponent upperBoundField;
+	private JComponent lowerBoundField;
+	private JComponent inField;
+	private JPanel controlPanel;
+	private JPanel inputPanel;
+	private JPanel rangePanel;
+
+	private boolean initialized = false;
 
 	private FilterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel,
 																		 String caption, FieldFactory<C> fieldFactory) {
 		super(conditionModel, caption);
-		requireNonNull(fieldFactory, "fieldFactory");
-		boolean modelLocked = conditionModel.locked().get();
-		conditionModel.locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
-		this.equalField = createEqualField(fieldFactory);
-		this.upperBoundField = createUpperBoundField(fieldFactory);
-		this.lowerBoundField = createLowerBoundField(fieldFactory);
-		this.inField = createInField(fieldFactory);
-		this.operatorCombo = createOperatorComboBox(conditionModel().operators());
-		this.toggleEnabledButton = radioButton(conditionModel().enabled())
-						.horizontalAlignment(CENTER)
-						.popupMenu(radioButton -> menu(Controls.builder()
-										.control(ToggleControl.builder(conditionModel.autoEnable())
-														.name(MESSAGES.getString("auto_enable"))).build())
-										.createPopupMenu())
-						.build();
-		conditionModel.locked().set(modelLocked);
-		initializeUI();
-		bindEvents();
+		this.fieldFactory = requireNonNull(fieldFactory, "fieldFactory");
 	}
 
 	@Override
@@ -206,6 +193,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	 * @return the condition operator combo box
 	 */
 	public JComboBox<Item<Operator>> operatorComboBox() {
+		initialize();
+
 		return operatorCombo;
 	}
 
@@ -213,6 +202,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	 * @return the JComponent used to specify the equal value
 	 */
 	public Optional<JComponent> equalField() {
+		initialize();
+
 		return Optional.ofNullable(equalField);
 	}
 
@@ -220,6 +211,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	 * @return the JComponent used to specify the upper bound
 	 */
 	public Optional<JComponent> upperBoundField() {
+		initialize();
+
 		return Optional.ofNullable(upperBoundField);
 	}
 
@@ -227,6 +220,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	 * @return the JComponent used to specify the lower bound
 	 */
 	public Optional<JComponent> lowerBoundField() {
+		initialize();
+
 		return Optional.ofNullable(lowerBoundField);
 	}
 
@@ -234,6 +229,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	 * @return the JComponent used to specify the in values
 	 */
 	public Optional<JComponent> inField() {
+		initialize();
+
 		return Optional.ofNullable(inField);
 	}
 
@@ -344,11 +341,43 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 						conditionModel().operators().contains(NOT_IN);
 	}
 
-	/**
-	 * Binds events to relevant GUI actions
-	 */
+	private void initialize() {
+		if (!initialized) {
+			setLayout(new BorderLayout());
+			createComponents();
+			bindEvents();
+			controlPanel.add(operatorCombo, BorderLayout.CENTER);
+			addStringConfigurationPopupMenu();
+			onOperatorChanged(conditionModel().operator().get());
+			initialized = true;
+		}
+	}
+
+	private void createComponents() {
+		controlPanel = new JPanel(new BorderLayout());
+		inputPanel = new JPanel(new BorderLayout());
+		rangePanel = new JPanel(new GridLayout(1, 2));
+		toggleEnabledButton = radioButton(conditionModel().enabled())
+						.horizontalAlignment(CENTER)
+						.popupMenu(radioButton -> menu(Controls.builder()
+										.control(ToggleControl.builder(conditionModel().autoEnable())
+														.name(MESSAGES.getString("auto_enable"))).build())
+										.createPopupMenu())
+						.build();
+		boolean modelLocked = conditionModel().locked().get();
+		conditionModel().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
+		equalField = createEqualField(fieldFactory);
+		upperBoundField = createUpperBoundField(fieldFactory);
+		lowerBoundField = createLowerBoundField(fieldFactory);
+		inField = createInField(fieldFactory);
+		operatorCombo = createOperatorComboBox(conditionModel().operators());
+		conditionModel().locked().set(modelLocked);
+	}
+
 	private void bindEvents() {
 		conditionModel().operator().addConsumer(this::onOperatorChanged);
+		linkToEnabledState(conditionModel().locked().not(),
+						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
 		KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_ENABLED).get())
 						.action(Control.control(this::toggleEnabled));
 		KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_OPERATOR).get())
@@ -356,27 +385,14 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NEXT_OPERATOR).get())
 						.action(Control.control(this::selectNextOperator));
 		enableOnEnterKeyEvent.enable(operatorCombo);
-		if (equalField != null) {
-			enableOnEnterKeyEvent.enable(equalField);
-			previousOperatorKeyEvent.enable(equalField);
-			nextOperatorKeyEvent.enable(equalField);
-		}
-		if (upperBoundField != null) {
-			enableOnEnterKeyEvent.enable(upperBoundField);
-			previousOperatorKeyEvent.enable(upperBoundField);
-			nextOperatorKeyEvent.enable(upperBoundField);
-		}
-		if (lowerBoundField != null) {
-			enableOnEnterKeyEvent.enable(lowerBoundField);
-			previousOperatorKeyEvent.enable(lowerBoundField);
-			nextOperatorKeyEvent.enable(lowerBoundField);
-		}
-		if (inField != null) {
-			enableOnEnterKeyEvent.enable(inField);
-			previousOperatorKeyEvent.enable(inField);
-			nextOperatorKeyEvent.enable(inField);
-		}
 		enableOnEnterKeyEvent.enable(toggleEnabledButton);
+		Stream.of(equalField, upperBoundField, lowerBoundField, inField)
+						.filter(Objects::nonNull)
+						.forEach(field -> {
+							enableOnEnterKeyEvent.enable(field);
+							previousOperatorKeyEvent.enable(field);
+							nextOperatorKeyEvent.enable(field);
+						});
 	}
 
 	private void onOperatorChanged(Operator operator) {
@@ -432,6 +448,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private void setSimple() {
+		initialize();
 		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
 		boolean parentOfFocusOwner = parentOfType(FilterColumnConditionPanel.class, focusOwner) == this;
 		if (parentOfFocusOwner) {
@@ -448,6 +465,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private void setAdvanced() {
+		initialize();
 		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
 		boolean parentOfFocusOwner = parentOfType(FilterColumnConditionPanel.class, focusOwner) == this;
 		if (parentOfFocusOwner) {
@@ -505,15 +523,6 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		else {
 			itemComboBoxModel.setSelectedItem(visibleItems.get(visibleItems.size() - 1));
 		}
-	}
-
-	private void initializeUI() {
-		setLayout(new BorderLayout());
-		linkToEnabledState(conditionModel().locked().not(),
-						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
-		controlPanel.add(operatorCombo, BorderLayout.CENTER);
-		onOperatorChanged(conditionModel().operator().get());
-		addStringConfigurationPopupMenu();
 	}
 
 	private void singleValuePanel(JComponent boundField) {
