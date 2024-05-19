@@ -183,8 +183,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 										.separator()
 										.control(lookAndFeelSelectionDialog()
 														.owner(this)
-														.userPreferencePropertyName(EntityServerMonitorPanel.class.getName())
-														.createControl())
+														.createControl(EntityServerMonitorPanel::lookAndFeelSelected))
 										.control(createAlwaysOnTopControl()))
 						.control(Controls.builder()
 										.name("Tools")
@@ -277,6 +276,11 @@ public final class EntityServerMonitorPanel extends JPanel {
 
 	private static User adminUser() {
 		return User.parse(ServerConfiguration.ADMIN_USER.getOrThrow());
+	}
+
+	private static void lookAndFeelSelected(LookAndFeelProvider selectedLookAndFeel) {
+		setUserPreference(EntityServerMonitorPanel.class.getName(),
+						selectedLookAndFeel.lookAndFeelInfo().getClassName());
 	}
 
 	public static void main(String[] arguments) {

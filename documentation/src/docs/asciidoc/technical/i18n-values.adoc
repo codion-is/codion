@@ -629,7 +629,6 @@ is/codion/swing/common/ui/dialog/DefaultFontSizeSelectionDialogBuilder_is_IS.pro
 |===
 |key|default|is_IS
 
-|font_size_selected_message|The selected font size will be activated on next application start|Valin leturstærð virkjast við næstu ræsingu
 |select_font_size|Select Font Size|Velja Leturstærð
 |===
 
@@ -700,7 +699,7 @@ is/codion/swing/framework/ui/DefaultEntityApplicationPanelBuilder_is_IS.properti
 |===
 |key|default|is_IS
 
-|initializing|Initializing user interface|Frumstilli viðmót
+|initializing|Initializing|Frumstilli
 |===
 
 === is/codion/swing/framework/ui/EntityApplicationPanel.java
@@ -718,6 +717,7 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |always_on_top|Always on Top|Alltaf Ofan á
 |application_version|Application Version|Kerfisútgáfa
 |codion_version|Codion Version|Codion Útgáfa
+|font_size_selected_message|The selected font size will be activated on next application start|Valin leturstærð virkjast við næstu ræsingu
 |help|Help|Hjálp
 |help_mnemonic|H|H
 |keyboard_shortcuts|Keyboard shortcuts|Flýtilyklar

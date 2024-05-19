@@ -98,8 +98,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.common.model.UserPreferences.getUserPreference;
-import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -107,6 +105,8 @@ import static java.awt.Frame.MAXIMIZED_BOTH;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
+import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.UIManager.getLookAndFeel;
 
 /**
  * A central application panel class.
@@ -114,6 +114,15 @@ import static javax.swing.BorderFactory.createEmptyBorder;
  * @see #builder(Class, Class)
  */
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel> extends JPanel {
+
+	/**
+	 * Specifies whether the client should save and apply user preferences<br>
+	 * Value type: Boolean<br>
+	 * Default value: true<br>
+	 * @see #savePreferences()
+	 */
+	public static final PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
+					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".useClientPreferences", true);
 
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
@@ -126,12 +135,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private static final String MEMORY_USAGE = "memory_usage";
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
-
-	static final String DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
-	static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
-	static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
-	static final String FRAME_SIZE_PROPERTY = "is.codion.swing.framework.ui.frameSize";
-	static final String FRAME_MAXIMIZED_PROPERTY = "is.codion.swing.framework.ui.maximized";
 
 	/**
 	 * Specifies the URL to the application help<br>
@@ -172,12 +175,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private final MessageBundle resourceBundle =
 					messageBundle(EntityApplicationPanel.class, getBundle(EntityApplicationPanel.class.getName()));
 
-	private final String applicationDefaultUsernameProperty;
-	private final String applicationLookAndFeelProperty;
-	private final String applicationFontSizeProperty;
-	private final String applicationFrameSizeProperty;
-	private final String applicationFrameMaximizedProperty;
-
 	private final M applicationModel;
 	private final Collection<EntityPanel.Builder> supportPanelBuilders = new ArrayList<>();
 	private final List<EntityPanel> entityPanels = new ArrayList<>();
@@ -193,6 +190,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private final Map<Object, State> logLevelStates = createLogLevelStateMap();
 
+	private ApplicationPreferences preferences;
+	private boolean saveDefaultUsername = true;
+	private int fontSize = 100;
 	private boolean initialized = false;
 
 	public EntityApplicationPanel(M applicationModel) {
@@ -202,11 +202,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	public EntityApplicationPanel(M applicationModel, Function<EntityApplicationPanel<?>, ApplicationLayout> applicationLayout) {
 		this.applicationModel = requireNonNull(applicationModel);
 		this.applicationLayout = requireNonNull(applicationLayout).apply(this);
-		this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
-		this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
-		this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
-		this.applicationFrameSizeProperty = FRAME_SIZE_PROPERTY + "#" + getClass().getSimpleName();
-		this.applicationFrameMaximizedProperty = FRAME_MAXIMIZED_PROPERTY + "#" + getClass().getSimpleName();
 		//initialize button captions, not in a static initializer since applications may set the locale in main()
 		UiManagerDefaults.initialize();
 	}
@@ -581,17 +576,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	protected final Control createSelectLookAndFeelControl() {
 		return Dialogs.lookAndFeelSelectionDialog()
 						.owner(this)
-						.userPreferencePropertyName(applicationLookAndFeelProperty)
-						.createControl();
+						.createControl(lookAndFeelProvider -> {});
 	}
 
 	/**
 	 * @return a Control for selecting the font size
 	 */
 	protected final Control createSelectFontSizeControl() {
-		return Dialogs.fontSizeSelectionDialog(applicationFontSizeProperty)
+		return Dialogs.fontSizeSelectionDialog()
 						.owner(this)
-						.createControl();
+						.initialSelection(preferences.fontSize())
+						.createControl(selectedFontSize -> {
+							fontSize = selectedFontSize;
+							showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
+						});
 	}
 
 	/**
@@ -775,29 +773,30 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
-	 * @return the default username, that is, the username of the last successful login from user preferences,
-	 * or the operating system username, if no username is found in user preferences.
-	 */
-	protected final String defaultUsername() {
-		return getUserPreference(applicationDefaultUsernameProperty,
-						EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name"));
-	}
-
-	/**
 	 * Called during the exit() method, override to save user preferences on program exit,
 	 * remember to call super.savePreferences() when overriding
+	 * @see #USE_CLIENT_PREFERENCES
 	 */
 	protected void savePreferences() {
-		entityPanels().forEach(EntityPanel::savePreferences);
-		JFrame parentFrame = Utilities.parentFrame(this);
-		if (parentFrame != null) {
-			boolean maximized = (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH;
-			setUserPreference(applicationFrameMaximizedProperty, Boolean.toString(maximized));
-			if (!maximized) {
-				Dimension size = parentFrame.getSize();
-				setUserPreference(applicationFrameSizeProperty, size.width + "x" + size.height);
+		if (USE_CLIENT_PREFERENCES.get()) {
+			entityPanels().forEach(EntityPanel::savePreferences);
+			try {
+				createPreferences().save(getClass());
+			}
+			catch (Exception e) {
+				LOG.error("Error while saving application preferences", e);
 			}
 		}
+	}
+
+	private ApplicationPreferences createPreferences() {
+		JFrame parentFrame = Utilities.parentFrame(this);
+
+		return new ApplicationPreferences(
+						saveDefaultUsername ? applicationModel.connectionProvider().user().username() : null,
+						getLookAndFeel().getClass().getName(), fontSize,
+						parentFrame == null ? null : parentFrame.getSize(),
+						parentFrame != null && (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH);
 	}
 
 	private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {
@@ -937,6 +936,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
 		return entities.definition(entityType).foreignKeys().get().stream()
 						.allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
+	}
+
+	void setPreferences(ApplicationPreferences preferences) {
+		this.preferences = preferences;
+	}
+
+	void setSaveDefaultUsername(boolean saveDefaultUsername) {
+		this.saveDefaultUsername = saveDefaultUsername;
 	}
 
 	private final class SelectActivatedPanel implements Consumer<Boolean> {

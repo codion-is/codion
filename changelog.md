@@ -93,6 +93,7 @@ Codion Change Log
 - FilterTableConditionPanel.focusGainedEvent() moved to ColumnConditionPanel, related refactoring.
 - TableConditionPanel.state() now final, controls() implemented, related refactoring.
 - DefaultFilterTableColumnModel.setVisibleColumns() bug fixed, now resets the selected column to zero after the columns have been configured.
+- LookAndFeelSelectionDialogBuilder, FontSizeSelectionDialogBuilder, selection method consumer parameter added, no longer return the selected value.
 ### is.codion.framework.domain
 - DefaultDomain renamed DomainModel.
 - Entity.valuesEqual() instance methods renamed equalValues(), static ones removed.
@@ -193,6 +194,7 @@ Codion Change Log
 - EntityTablePanel, table condition panel initialized lazily.
 - EntityApplicationPanel, frame size and maximized state now saved in user preferences, Builder.defaultFrameSize() added.
 - DefaultEntityApplicationPanelBuilder, now displays an empty frame while the application panel is being initialized.
+- EntityApplicationPanel, user preferences functionality improved, related refactoring.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.

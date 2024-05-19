@@ -710,24 +710,21 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Saves user preferences
 	 * @see #userPreferencesKey()
-	 * @see EntityPanel.Config#USE_CLIENT_PREFERENCES
 	 */
 	public void savePreferences() {
-		if (EntityPanel.Config.USE_CLIENT_PREFERENCES.get()) {
-			try {
-				UserPreferences.setUserPreference(userPreferencesKey() + COLUMN_PREFERENCES,
-								ColumnPreferences.toString(createColumnPreferences()));
-			}
-			catch (Exception e) {
-				LOG.error("Error while saving column preferences", e);
-			}
-			try {
-				UserPreferences.setUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES,
-								ConditionPreferences.toString(createConditionPreferences()));
-			}
-			catch (Exception e) {
-				LOG.error("Error while saving condition preferences", e);
-			}
+		try {
+			UserPreferences.setUserPreference(userPreferencesKey() + COLUMN_PREFERENCES,
+							ColumnPreferences.toString(createColumnPreferences()));
+		}
+		catch (Exception e) {
+			LOG.error("Error while saving column preferences", e);
+		}
+		try {
+			UserPreferences.setUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES,
+							ConditionPreferences.toString(createConditionPreferences()));
+		}
+		catch (Exception e) {
+			LOG.error("Error while saving condition preferences", e);
 		}
 	}
 
@@ -1829,19 +1826,17 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void applyPreferences() {
-		if (EntityPanel.Config.USE_CLIENT_PREFERENCES.get()) {
-			String columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + COLUMN_PREFERENCES, "");
-			if (columnPreferencesString.isEmpty()) {//todo remove: see if a legacy one without "-columns" postfix exists
-				columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
-			}
-			if (!columnPreferencesString.isEmpty()) {
-				applyColumnPreferences(columnPreferencesString);
-			}
+		String columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + COLUMN_PREFERENCES, "");
+		if (columnPreferencesString.isEmpty()) {//todo remove: see if a legacy one without "-columns" postfix exists
+			columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
+		}
+		if (!columnPreferencesString.isEmpty()) {
+			applyColumnPreferences(columnPreferencesString);
+		}
 
-			String conditionPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES, "");
-			if (!conditionPreferencesString.isEmpty()) {
-				applyConditionPreferences(conditionPreferencesString);
-			}
+		String conditionPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES, "");
+		if (!conditionPreferencesString.isEmpty()) {
+			applyConditionPreferences(conditionPreferencesString);
 		}
 	}
 

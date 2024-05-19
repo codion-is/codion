@@ -66,6 +66,7 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 
+import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.Windows.frame;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -170,8 +171,7 @@ public final class LoadTestPanel<T> extends JPanel {
 										.mnemonic('V')
 										.control(lookAndFeelSelectionDialog()
 														.owner(this)
-														.userPreferencePropertyName(LoadTestPanel.class.getName())
-														.createControl())
+														.createControl(LoadTestPanel::lookAndFeelSelected))
 										.control(ToggleControl.builder(loadTestModel.collectChartData())
 														.name("Collect chart data"))
 										.control(Control.builder(loadTestModel::clearCharts)
@@ -520,6 +520,11 @@ public final class LoadTestPanel<T> extends JPanel {
 						.add(new JLabel("Memory usage:"))
 						.add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS))
 						.build();
+	}
+
+	private static void lookAndFeelSelected(LookAndFeelProvider selectedLookAndFeel) {
+		setUserPreference(LoadTestPanel.class.getName(),
+						selectedLookAndFeel.lookAndFeelInfo().getClassName());
 	}
 
 	private final class ApplicationTableCellRendererFactory implements

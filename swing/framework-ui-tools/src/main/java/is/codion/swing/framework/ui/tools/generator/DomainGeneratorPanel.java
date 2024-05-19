@@ -71,6 +71,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static is.codion.common.Configuration.stringValue;
+import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.SearchHighlighter.searchHighlighter;
 import static is.codion.swing.common.ui.control.Control.control;
@@ -391,8 +392,7 @@ public final class DomainGeneratorPanel extends JPanel {
 										.mnemonic('V')
 										.control(lookAndFeelSelectionDialog()
 														.owner(this)
-														.userPreferencePropertyName(DomainGeneratorPanel.class.getName())
-														.createControl()))
+														.createControl(DomainGeneratorPanel::lookAndFeelSelected)))
 						.build();
 	}
 
@@ -455,6 +455,11 @@ public final class DomainGeneratorPanel extends JPanel {
 										.build();
 
 		return asList(entityTypeColumn, typeColumn);
+	}
+
+	private static void lookAndFeelSelected(LookAndFeelProvider lookAndFeelProvider) {
+		setUserPreference(DomainGeneratorPanel.class.getName(),
+						lookAndFeelProvider.lookAndFeelInfo().getClassName());
 	}
 
 	/**

@@ -74,7 +74,9 @@ public final class Windows {
 						.getDefaultConfiguration().getBounds().getSize();
 		Dimension frameSize = window.getSize();
 		if (frameSize.getHeight() > screenSize.getHeight() || frameSize.getWidth() > screenSize.getWidth()) {
-			window.setSize(screenSize);
+			Dimension newFrameSize = new Dimension((int) Math.min(frameSize.getWidth(), screenSize.getWidth()),
+							(int) Math.min(frameSize.getHeight(), screenSize.getHeight()));
+			window.setSize(newFrameSize);
 		}
 	}
 

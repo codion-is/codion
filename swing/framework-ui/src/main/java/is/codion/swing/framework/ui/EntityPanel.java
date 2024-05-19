@@ -1229,14 +1229,6 @@ public class EntityPanel extends JPanel {
 	public static final class Config {
 
 		/**
-		 * Specifies whether the client should save and apply user preferences<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
-		 */
-		public static final PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
-						Configuration.booleanValue(EntityPanel.class.getName() + ".useClientPreferences", true);
-
-		/**
 		 * Indicates whether keyboard navigation will be enabled<br>
 		 * Value type: Boolean<br>
 		 * Default value: true

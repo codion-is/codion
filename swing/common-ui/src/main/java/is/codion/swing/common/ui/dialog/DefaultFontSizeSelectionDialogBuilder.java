@@ -19,9 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.item.Item;
-import is.codion.common.model.UserPreferences;
 import is.codion.common.resource.MessageBundle;
-import is.codion.common.state.State;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.control.Control;
@@ -30,7 +28,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import java.awt.BorderLayout;
@@ -38,7 +35,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.function.Consumer;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
@@ -48,13 +45,8 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 
 final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDialogBuilder {
 
-	private final String userPreferencePropertyName;
-
 	private JComponent owner;
-
-	DefaultFontSizeSelectionDialogBuilder(String userPreferencePropertyName) {
-		this.userPreferencePropertyName = requireNonNull(userPreferencePropertyName);
-	}
+	private int initialSelection = 100;
 
 	@Override
 	public FontSizeSelectionDialogBuilder owner(JComponent owner) {
@@ -63,51 +55,49 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 	}
 
 	@Override
-	public Control createControl() {
+	public Control createControl(Consumer<Integer> selectedFontSize) {
+		requireNonNull(selectedFontSize);
 		MessageBundle resourceBundle =
 						messageBundle(DefaultFontSizeSelectionDialogBuilder.class,
 										getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName()));
 		String caption = resourceBundle.getString("select_font_size");
 
-		return Control.builder(() -> selectFontSize()
-										.ifPresent(fontSize -> {
-											UserPreferences.setUserPreference(userPreferencePropertyName, Integer.toString(fontSize));
-											JOptionPane.showMessageDialog(owner, resourceBundle.getString("font_size_selected_message"));
-										}))
+		return Control.builder(() -> selectFontSize(selectedFontSize))
 						.name(caption)
 						.build();
 	}
 
 	@Override
-	public OptionalInt selectFontSize() {
-		MessageBundle resourceBundle = messageBundle(DefaultFileSelectionDialogBuilder.class,
-						getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName()));
-		int currentFontSize = Integer.parseInt(UserPreferences.getUserPreference(userPreferencePropertyName, "100"));
-		FontSizeSelectionPanel fontSizeSelectionPanel = new FontSizeSelectionPanel(currentFontSize);
-		State okPressed = State.state();
+	public FontSizeSelectionDialogBuilder initialSelection(int initialSelection) {
+		this.initialSelection = initialSelection;
+		return this;
+	}
+
+	@Override
+	public void selectFontSize(Consumer<Integer> selectedFontSize) {
+		requireNonNull(selectedFontSize);
+		MessageBundle resourceBundle =
+						messageBundle(DefaultFileSelectionDialogBuilder.class,
+										getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName()));
+		FontSizeSelectionPanel fontSizeSelectionPanel = new FontSizeSelectionPanel(initialSelection);
 		new DefaultOkCancelDialogBuilder(fontSizeSelectionPanel)
 						.owner(owner)
 						.title(resourceBundle.getString("select_font_size"))
-						.onOk(() -> okPressed.set(true))
+						.onOk(() -> selectedFontSize.accept(fontSizeSelectionPanel.selectedFontSize()))
 						.show();
-		if (okPressed.get()) {
-			return OptionalInt.of(fontSizeSelectionPanel.selectedFontSize());
-		}
-
-		return OptionalInt.empty();
 	}
 
 	private static final class FontSizeSelectionPanel extends JPanel {
 
 		private final ItemComboBoxModel<Integer> fontSizeComboBoxModel;
 
-		private FontSizeSelectionPanel(int currentFontSize) {
+		private FontSizeSelectionPanel(int initialFontSize) {
 			super(Layouts.borderLayout());
 			List<Item<Integer>> values = initializeValues();
 			this.fontSizeComboBoxModel = itemComboBoxModel(values);
 			add(ItemComboBoxBuilder.builder(fontSizeComboBoxModel)
-							.initialValue(currentFontSize)
-							.renderer(new FontSizeCellRenderer(values, currentFontSize))
+							.initialValue(initialFontSize)
+							.renderer(new FontSizeCellRenderer(values, initialFontSize))
 							.build(), BorderLayout.CENTER);
 			setBorder(createEmptyBorder(10, 10, 0, 10));
 		}

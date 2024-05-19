@@ -18,9 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.model.UserPreferences;
 import is.codion.common.resource.MessageBundle;
-import is.codion.common.state.State;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
@@ -29,7 +27,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.util.Optional;
+import java.util.function.Consumer;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
@@ -42,7 +40,6 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
 	private JComponent owner;
 	private boolean enableOnSelection = LookAndFeelComboBox.ENABLE_ON_SELECTION.get();
-	private String userPreferencePropertyName;
 
 	@Override
 	public LookAndFeelSelectionDialogBuilder owner(JComponent owner) {
@@ -57,48 +54,30 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	}
 
 	@Override
-	public LookAndFeelSelectionDialogBuilder userPreferencePropertyName(String userPreferencePropertyName) {
-		this.userPreferencePropertyName = userPreferencePropertyName;
-		return this;
-	}
-
-	@Override
-	public Control createControl() {
+	public Control createControl(Consumer<LookAndFeelProvider> selectedLookAndFeel) {
 		MessageBundle resourceBundle =
 						messageBundle(LookAndFeelProvider.class,
 										getBundle(LookAndFeelProvider.class.getName()));
 		String caption = resourceBundle.getString("select_look_and_feel");
 
-		return Control.builder(() -> selectLookAndFeel()
-										.ifPresent(provider -> {
-											if (userPreferencePropertyName != null) {
-												UserPreferences.setUserPreference(userPreferencePropertyName, provider.lookAndFeelInfo().getClassName());
-											}
-										}))
+		return Control.builder(() -> selectLookAndFeel(selectedLookAndFeel))
 						.name(caption)
 						.build();
 	}
 
 	@Override
-	public Optional<LookAndFeelProvider> selectLookAndFeel() {
+	public void selectLookAndFeel(Consumer<LookAndFeelProvider> selectedLookAndFeel) {
+		requireNonNull(selectedLookAndFeel);
 		LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(enableOnSelection);
 		JPanel basePanel = new JPanel(new BorderLayout());
 		basePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, 0, PADDING));
 		basePanel.add(lookAndFeelComboBox, BorderLayout.CENTER);
-		State okPressed = State.state();
 		new DefaultOkCancelDialogBuilder(basePanel)
 						.owner(owner)
 						.title(messageBundle(LookAndFeelProvider.class,
 										getBundle(LookAndFeelProvider.class.getName())).getString("select_look_and_feel"))
-						.onOk(() -> okPressed.set(true))
+						.onOk(() -> selectedLookAndFeel.accept(lookAndFeelComboBox.selectedLookAndFeel()))
+						.onCancel(lookAndFeelComboBox::revert)
 						.show();
-		if (okPressed.get()) {
-			lookAndFeelComboBox.enableSelected();
-
-			return Optional.of(lookAndFeelComboBox.selectedLookAndFeel());
-		}
-		lookAndFeelComboBox.revert();
-
-		return Optional.empty();
 	}
 }

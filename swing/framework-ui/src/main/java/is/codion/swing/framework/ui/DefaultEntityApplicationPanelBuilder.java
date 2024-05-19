@@ -20,7 +20,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
-import is.codion.common.model.UserPreferences;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
@@ -60,17 +59,16 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.Text.nullOrEmpty;
-import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.framework.db.EntityConnectionProvider.CLIENT_DOMAIN_TYPE;
 import static is.codion.swing.common.ui.Utilities.*;
+import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
-import static java.lang.Boolean.parseBoolean;
-import static java.lang.Integer.parseInt;
+import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -90,11 +88,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private final Class<M> applicationModelClass;
 	private final Class<P> applicationPanelClass;
 
-	private final String applicationDefaultUsernameProperty;
-	private final String applicationLookAndFeelProperty;
-	private final String applicationFontSizeProperty;
-	private final String applicationFrameSizeProperty;
-	private final String applicationFrameMaximizedProperty;
+	private final ApplicationPreferences preferences;
 
 	private DomainType domainType = CLIENT_DOMAIN_TYPE.get();
 	private String applicationName = "";
@@ -128,15 +122,10 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	DefaultEntityApplicationPanelBuilder(Class<M> applicationModelClass, Class<P> applicationPanelClass) {
 		this.applicationModelClass = requireNonNull(applicationModelClass);
 		this.applicationPanelClass = requireNonNull(applicationPanelClass);
-		this.applicationDefaultUsernameProperty = EntityApplicationPanel.DEFAULT_USERNAME_PROPERTY + "#" + applicationPanelClass.getSimpleName();
-		this.applicationLookAndFeelProperty = EntityApplicationPanel.LOOK_AND_FEEL_PROPERTY + "#" + applicationPanelClass.getSimpleName();
-		this.applicationFontSizeProperty = EntityApplicationPanel.FONT_SIZE_PROPERTY + "#" + applicationPanelClass.getSimpleName();
-		this.applicationFrameSizeProperty = EntityApplicationPanel.FRAME_SIZE_PROPERTY + "#" + applicationPanelClass.getSimpleName();
-		this.applicationFrameMaximizedProperty = EntityApplicationPanel.FRAME_MAXIMIZED_PROPERTY + "#" + applicationPanelClass.getSimpleName();
-		this.defaultLoginUser = User.user(getUserPreference(applicationDefaultUsernameProperty,
-						EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name")));
-		this.frameSize = parseFrameSize(getUserPreference(applicationFrameSizeProperty, null));
-		this.maximizeFrame = parseBoolean(getUserPreference(applicationFrameMaximizedProperty, "false"));
+		this.preferences = ApplicationPreferences.load(applicationPanelClass);
+		this.defaultLoginUser = User.user(preferences.defaultUsername());
+		this.frameSize = preferences.frameSize();
+		this.maximizeFrame = preferences.frameMaximized();
 	}
 
 	@Override
@@ -327,7 +316,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			beforeApplicationStarted.run();
 		}
 		EntityConnectionProvider connectionProvider = initializeConnectionProvider(initializeUser());
-		long initializationStarted = System.currentTimeMillis();
+		long initializationStarted = currentTimeMillis();
 		if (displayStartupDialog) {
 			Dialogs.progressWorkerDialog(new InitializeApplicationModel(connectionProvider))
 							.title(applicationName)
@@ -359,11 +348,13 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			return lookAndFeelClassName;
 		}
 
-		return getUserPreference(applicationLookAndFeelProperty, defaultLookAndFeelClassName);
+		String userPreference = preferences.lookAndFeel();
+
+		return userPreference == null ? defaultLookAndFeelClassName : userPreference;
 	}
 
 	private void configureFontsAndIcons() {
-		int fontSizePercentage = fontSizePercentage();
+		int fontSizePercentage = preferences.fontSize();
 		int logoSize = DEFAULT_LOGO_SIZE;
 		if (fontSizePercentage != 100) {
 			setFontSizePercentage(fontSizePercentage);
@@ -373,10 +364,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		if (applicationIcon == null) {
 			applicationIcon = FrameworkIcons.instance().logo(logoSize);
 		}
-	}
-
-	private int fontSizePercentage() {
-		return parseInt(getUserPreference(applicationFontSizeProperty, "100"));
 	}
 
 	/**
@@ -398,8 +385,10 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			applicationFrame.setVisible(true);
 		}
 		P applicationPanel = initializeApplicationPanel(applicationModel);
+		applicationPanel.setPreferences(preferences);
+		applicationPanel.setSaveDefaultUsername(saveDefaultUsername);
 		configureFrame(applicationFrame, applicationPanel);
-		LOG.info("{}, application started successfully: {} ms", applicationFrame.getTitle(), System.currentTimeMillis() - initializationStarted);
+		LOG.info("{}, application started successfully: {} ms", applicationFrame.getTitle(), currentTimeMillis() - initializationStarted);
 		if (displayFrame) {
 			applicationFrame.setVisible(true);
 		}
@@ -420,8 +409,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			frame.setSize(defaultFrameSize);
 		}
 		else {
-			frame.pack();
-			Windows.setSizeWithinScreenBounds(frame);
+			frame.setSize(screenSizeRatio(0.5));
 		}
 		frame.setLocationRelativeTo(null);
 		if (maximizeFrame) {
@@ -439,12 +427,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			return null;
 		}
 
-		User user = loginProvider.login();
-		if (saveDefaultUsername) {
-			UserPreferences.setUserPreference(applicationDefaultUsernameProperty, user.username());
-		}
-
-		return user;
+		return loginProvider.login();
 	}
 
 	private M initializeApplicationModel(EntityConnectionProvider connectionProvider) {
@@ -475,6 +458,11 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 		frame.setAlwaysOnTop(applicationPanel.alwaysOnTop().get());
 		frame.getContentPane().add(applicationPanel, BorderLayout.CENTER);
+		if (frameSize == null && defaultFrameSize == null) {
+			frame.pack();
+			Windows.setSizeWithinScreenBounds(frame);
+			frame.setLocationRelativeTo(null);
+		}
 	}
 
 	private String createDefaultFrameTitle(M applicationModel) {
@@ -547,16 +535,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			Window focusOwnerParentWindow = parentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
 			displayExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
 		}
-	}
-
-	private static Dimension parseFrameSize(String userPreference) {
-		if (userPreference == null) {
-			return null;
-		}
-
-		String[] split = userPreference.split("x");
-
-		return new Dimension(parseInt(split[0]), parseInt(split[1]));
 	}
 
 	private final class DefaultDialogLoginProvider implements LoginProvider {
