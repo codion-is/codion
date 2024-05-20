@@ -24,7 +24,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.model.DefaultForeignKeyConditionModel;
+import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -63,8 +63,8 @@ public final class CountryTableModel extends SwingEntityTableModel {
 	}
 
 	private void configureCapitalConditionModel() {
-		DefaultForeignKeyConditionModel capitalConditionModel =
-						(DefaultForeignKeyConditionModel) conditionModel()
+		ForeignKeyConditionModel capitalConditionModel =
+						(ForeignKeyConditionModel) conditionModel()
 										.attributeModel(Country.CAPITAL_FK);
 		CapitalConditionSupplier capitalCondition = new CapitalConditionSupplier();
 		capitalConditionModel.equalSearchModel().condition().set(capitalCondition);

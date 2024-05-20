@@ -131,6 +131,7 @@ Codion Change Log
 - EntityApplicationModel.warnAboutUnsavedData() and containsUnsavedData() removed.
 - EntityEditModel.WARN_ABOUT_UNSAVED_DATA removed, beforeEntityEvent() added.
 - EntityComboBoxModel, inheritance replaced with composition.
+- DefaultForeignKeyConditionModel renamed ForeignKeyConditionModel, abstract base class removed, inheritance replaced with composition. 
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model
@@ -142,6 +143,7 @@ Codion Change Log
 - SwingForeignKeyConditionModel.builder() added, replacing static factory method, available operators now configurable.
 - SwingEntityTableModel bug fixed, now uses a SwingEntityConditionModelFactory by default.
 - EntityComboBoxModel now final.
+- SwingForeignKeyConditionModel, inheritance replaced with composition.
 ### is.codion.swing.framework.model.tools
 - DomainGenerator now uses com.squareup.javapoet to generate the source and generates a full domain implementation class.
 - DomainToString now handles views correctly, refactoring.

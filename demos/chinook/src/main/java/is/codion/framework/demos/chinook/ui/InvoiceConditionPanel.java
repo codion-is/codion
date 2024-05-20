@@ -25,7 +25,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.model.DefaultForeignKeyConditionModel;
+import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel;
@@ -200,7 +200,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				super(conditionModel, invoiceDefinition.attributes().definition(conditionModel.columnIdentifier()).caption());
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(), caption()));
-				DefaultForeignKeyConditionModel foreignKeyConditionModel = (DefaultForeignKeyConditionModel) conditionModel;
+				ForeignKeyConditionModel foreignKeyConditionModel = (ForeignKeyConditionModel) conditionModel;
 				foreignKeyConditionModel.equalValue().addConsumer(customer ->
 								foreignKeyConditionModel.inValues().value().set(customer));
 				searchField = EntitySearchField.builder(foreignKeyConditionModel.inSearchModel())

@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.DefaultForeignKeyConditionModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -121,8 +120,8 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 	}
 
 	private JComponent createEqualForeignKeyField(ColumnConditionModel<? extends Attribute<?>, ?> model) {
-		if (model instanceof DefaultForeignKeyConditionModel) {
-			EntitySearchModel searchModel = ((DefaultForeignKeyConditionModel) model).equalSearchModel();
+		if (model instanceof ForeignKeyConditionModel) {
+			EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).equalSearchModel();
 
 			return inputComponents.foreignKeySearchField((ForeignKey) model.columnIdentifier(), searchModel).build();
 		}

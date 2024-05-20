@@ -19,12 +19,19 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.Operator;
+import is.codion.common.event.EventObserver;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.state.State;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
+import java.text.Format;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -37,15 +44,18 @@ import static java.util.Objects.requireNonNull;
  * and a {@link EntitySearchModel} for the {@link #inValues()}.
  * @see #builder(ForeignKey)
  */
-public final class SwingForeignKeyConditionModel extends ForeignKeyConditionModel {
+public final class SwingForeignKeyConditionModel implements ColumnConditionModel<Attribute<?>, Entity> {
 
+	private final ColumnConditionModel<ForeignKey, Entity> conditionModel;
 	private final EntityComboBoxModel equalComboBoxModel;
 	private final EntitySearchModel inSearchModel;
 
 	private boolean updatingModel = false;
 
 	private SwingForeignKeyConditionModel(DefaultBuilder builder) {
-		super(builder.foreignKey, builder.operators());
+		this.conditionModel = ColumnConditionModel.builder(builder.foreignKey, Entity.class)
+						.operators(builder.operators())
+						.build();
 		this.inSearchModel = builder.inSearchModel;
 		this.equalComboBoxModel = builder.equalComboBoxModel;
 		bindEvents();
@@ -63,13 +73,151 @@ public final class SwingForeignKeyConditionModel extends ForeignKeyConditionMode
 		return equalComboBoxModel;
 	}
 
-	@Override
+	/**
+	 * @return the search model controlling the in values
+	 * @throws IllegalStateException in case no such model is available
+	 */
 	public EntitySearchModel inSearchModel() {
 		if (inSearchModel == null) {
 			throw new IllegalStateException("inSearchModel is not available");
 		}
 
 		return inSearchModel;
+	}
+
+	@Override
+	public Attribute<?> columnIdentifier() {
+		return conditionModel.columnIdentifier();
+	}
+
+	@Override
+	public State caseSensitive() {
+		return conditionModel.caseSensitive();
+	}
+
+	@Override
+	public Format format() {
+		return conditionModel.format();
+	}
+
+	@Override
+	public String dateTimePattern() {
+		return conditionModel.dateTimePattern();
+	}
+
+	@Override
+	public Value<AutomaticWildcard> automaticWildcard() {
+		return conditionModel.automaticWildcard();
+	}
+
+	@Override
+	public State autoEnable() {
+		return conditionModel.autoEnable();
+	}
+
+	@Override
+	public State locked() {
+		return conditionModel.locked();
+	}
+
+	@Override
+	public Class<Entity> columnClass() {
+		return conditionModel.columnClass();
+	}
+
+	@Override
+	public void setEqualValue(Entity value) {
+		conditionModel.setEqualValue(value);
+	}
+
+	@Override
+	public Entity getEqualValue() {
+		return conditionModel.getEqualValue();
+	}
+
+	@Override
+	public void setInValues(Collection<Entity> values) {
+		conditionModel.setInValues(values);
+	}
+
+	@Override
+	public Collection<Entity> getInValues() {
+		return conditionModel.getInValues();
+	}
+
+	@Override
+	public void setUpperBound(Entity upper) {
+		conditionModel.setUpperBound(upper);
+	}
+
+	@Override
+	public Entity getUpperBound() {
+		return conditionModel.getUpperBound();
+	}
+
+	@Override
+	public void setLowerBound(Entity value) {
+		conditionModel.setLowerBound(value);
+	}
+
+	@Override
+	public Entity getLowerBound() {
+		return conditionModel.getLowerBound();
+	}
+
+	@Override
+	public List<Operator> operators() {
+		return conditionModel.operators();
+	}
+
+	@Override
+	public char wildcard() {
+		return conditionModel.wildcard();
+	}
+
+	@Override
+	public State enabled() {
+		return conditionModel.enabled();
+	}
+
+	@Override
+	public void clear() {
+		conditionModel.clear();
+	}
+
+	@Override
+	public Value<Entity> equalValue() {
+		return conditionModel.equalValue();
+	}
+
+	@Override
+	public ValueSet<Entity> inValues() {
+		return conditionModel.inValues();
+	}
+
+	@Override
+	public Value<Entity> upperBoundValue() {
+		return conditionModel.upperBoundValue();
+	}
+
+	@Override
+	public Value<Entity> lowerBoundValue() {
+		return conditionModel.lowerBoundValue();
+	}
+
+	@Override
+	public Value<Operator> operator() {
+		return conditionModel.operator();
+	}
+
+	@Override
+	public boolean accepts(Comparable<Entity> columnValue) {
+		return conditionModel.accepts(columnValue);
+	}
+
+	@Override
+	public EventObserver<?> conditionChangedEvent() {
+		return conditionModel.conditionChangedEvent();
 	}
 
 	/**
