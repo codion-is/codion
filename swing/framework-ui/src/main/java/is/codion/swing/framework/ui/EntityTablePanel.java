@@ -693,21 +693,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Returns the key used to identify user preferences for this table panel, that is column positions, widths and such.
-	 * The default implementation is:
-	 * <pre>
-	 * {@code
-	 * return tableModel().getClass().getSimpleName() + "-" + entityType();
-	 * }
-	 * </pre>
-	 * Override in case this key is not unique.
-	 * @return the key used to identify user preferences for this table model
-	 */
-	public String userPreferencesKey() {
-		return tableModel.getClass().getSimpleName() + "-" + tableModel.entityType();
-	}
-
-	/**
 	 * Saves user preferences
 	 * @see #userPreferencesKey()
 	 */
@@ -1047,6 +1032,21 @@ public class EntityTablePanel extends JPanel {
 		return EntityDialogs.editAttributeDialog(tableModel.editModel(), attribute)
 						.owner(this)
 						.componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) configuration.editComponentFactories.get(attribute));
+	}
+
+	/**
+	 * Returns the key used to identify user preferences for this table panel, that is column positions, widths and such.
+	 * The default implementation is:
+	 * <pre>
+	 * {@code
+	 * return tableModel().getClass().getSimpleName() + "-" + entityType();
+	 * }
+	 * </pre>
+	 * Override in case this key is not unique within the application.
+	 * @return the key used to identify user preferences for this table panel
+	 */
+	protected String userPreferencesKey() {
+		return tableModel.getClass().getSimpleName() + "-" + tableModel.entityType();
 	}
 
 	/**

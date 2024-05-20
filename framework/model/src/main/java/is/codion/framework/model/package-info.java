@@ -22,7 +22,6 @@
  * {@link is.codion.framework.model.EntityApplicationModel#AUTHENTICATION_REQUIRED}<br>
  * {@link is.codion.framework.model.EntityApplicationModel#SAVE_DEFAULT_USERNAME}<br>
  * {@link is.codion.framework.model.EntityEditModel#PERSIST_FOREIGN_KEYS}<br>
- * {@link is.codion.framework.model.EntityEditModel#WARN_ABOUT_UNSAVED_DATA}<br>
  * {@link is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS}<br>
  * {@link is.codion.framework.model.EntityTableModel#ON_INSERT}<br>
  * {@link is.codion.framework.model.EntityTableModel#HANDLE_EDIT_EVENTS}<br>

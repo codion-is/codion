@@ -22,6 +22,7 @@ import is.codion.common.Configuration;
 import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
+import is.codion.common.model.CancelException;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -33,7 +34,6 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.Delete;
 import is.codion.framework.model.EntityEditModel.Insert;
 import is.codion.framework.model.EntityEditModel.Update;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.Controls;
@@ -601,8 +601,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.name(FrameworkMessages.update())
 						.enabled(State.and(active,
 										editModel().updateEnabled(),
-										editModel().exists(),
-										editModel().modified()))
+										editModel().editing()))
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
 						.smallIcon(ICONS.update())
@@ -627,12 +626,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void bindEvents() {
-		editModel().confirmOverwriteEvent().addConsumer(confirmationState -> {
-			int result = showConfirmDialog(Utilities.parentWindow(EntityEditPanel.this),
-							FrameworkMessages.unsavedDataWarning(), FrameworkMessages.unsavedDataWarningTitle(),
-							JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			confirmationState.set(result == JOptionPane.YES_OPTION);
-		});
+		editModel().beforeEntityEvent().addConsumer(this::beforeEntity);
+	}
+
+	private void beforeEntity(Entity entity) {
+		if (configuration.modifiedWarning && editModel().editing().get() && showConfirmDialog(this,
+						FrameworkMessages.modifiedWarning(), FrameworkMessages.modifiedWarningTitle(),
+						JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+			throw new CancelException();
+		}
 	}
 
 	private void setupFocusActivation() {
@@ -706,6 +708,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						Configuration.booleanValue(EntityEditPanel.class.getName() + ".useFocusActivation", true);
 
 		/**
+		 * Indicates whether the panel should ask for confirmation before discarding unsaved modifications<br>
+		 * Value type: Boolean<br>
+		 * Default value: false
+		 */
+		public static final PropertyValue<Boolean> MODIFIED_WARNING =
+						Configuration.booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);
+
+		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
 		public static final KeyboardShortcuts<EntityEditPanelControl> KEYBOARD_SHORTCUTS = keyboardShortcuts(EntityEditPanelControl.class);
@@ -720,6 +730,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private boolean requestFocusAfterInsert = true;
 		private boolean focusActivation = USE_FOCUS_ACTIVATION.get();
 		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.get();
+		private boolean modifiedWarning = MODIFIED_WARNING.get();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
 						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 		private Confirmer insertConfirmer = DEFAULT_INSERT_CONFIRMER;
@@ -744,6 +755,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			this.updateConfirmer = config.updateConfirmer;
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeEntityMenu = config.includeEntityMenu;
+			this.modifiedWarning = config.modifiedWarning;
 		}
 
 		/**
@@ -807,6 +819,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 */
 		public Config includeEntityMenu(boolean includeEntityMenu) {
 			this.includeEntityMenu = includeEntityMenu;
+			return this;
+		}
+
+		/**
+		 * @param modifiedWarning specifies whether this edit panel presents a warning before discarding unsaved modifications
+		 * @see #MODIFIED_WARNING
+		 * @see EntityEditModel#editing()
+		 */
+		public Config modifiedWarning(boolean modifiedWarning) {
+			this.modifiedWarning = modifiedWarning;
 			return this;
 		}
 

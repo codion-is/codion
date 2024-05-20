@@ -39,7 +39,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.framework.model.EntityApplicationModel;
+import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
@@ -97,6 +97,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -105,6 +106,7 @@ import static java.awt.Frame.MAXIMIZED_BOTH;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
+import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.UIManager.getLookAndFeel;
 
@@ -185,6 +187,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 					.build();
 	private final Event<?> onExitEvent = Event.event();
 	private final Event<EntityApplicationPanel<?>> onInitialized = Event.event();
+	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.get();
 
 	private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
 
@@ -302,8 +305,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * Exits this application
 	 * @throws CancelException if the exit is cancelled
 	 * @see #exitEvent()
+	 * @see EntityEditPanel.Config#MODIFIED_WARNING
 	 * @see EntityApplicationPanel#CONFIRM_EXIT
-	 * @see EntityApplicationModel#warnAboutUnsavedData()
 	 */
 	public final void exit() {
 		if (cancelExit()) {
@@ -845,15 +848,35 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	private boolean cancelExit() {
-		boolean cancelForUnsavedData = applicationModel().warnAboutUnsavedData().get() && applicationModel().containsUnsavedData() &&
-						JOptionPane.showConfirmDialog(this, FrameworkMessages.unsavedDataWarning(),
-										FrameworkMessages.unsavedDataWarningTitle(),
-										JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
-		boolean exitNotConfirmed = CONFIRM_EXIT.get() && JOptionPane.showConfirmDialog(this,
-						FrameworkMessages.confirmExit(), FrameworkMessages.confirmExitTitle(),
-						JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
+		Collection<EntityPanel> modified = modified(entityPanels);
+		if (modifiedWarning && !modified.isEmpty()) {
+			return showConfirmDialog(this,
+							createModifiedMessage(modified), FrameworkMessages.modifiedWarningTitle(),
+							JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION;
+		}
 
-		return cancelForUnsavedData || exitNotConfirmed;
+		return CONFIRM_EXIT.get() && showConfirmDialog(this,
+						FrameworkMessages.confirmExit(), FrameworkMessages.confirmExitTitle(),
+						JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION;
+	}
+
+	private static Collection<EntityPanel> modified(Collection<EntityPanel> panels) {
+		Collection<EntityPanel> modifiedPanels = new ArrayList<>();
+		for (EntityPanel panel : panels) {
+			EntityEditModel editModel = panel.editModel();
+			if (editModel.editing().get()) {
+				modifiedPanels.add(panel);
+			}
+			modifiedPanels.addAll(modified(panel.detailPanels()));
+		}
+
+		return modifiedPanels;
+	}
+
+	private static String createModifiedMessage(Collection<EntityPanel> modified) {
+		return modified.stream()
+						.map(EntityPanel::caption)
+						.collect(Collectors.joining(", ")) + "\n" + FrameworkMessages.modifiedWarning();
 	}
 
 	private static Map<Object, State> createLogLevelStateMap() {

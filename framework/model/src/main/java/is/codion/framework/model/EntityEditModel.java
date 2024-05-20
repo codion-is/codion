@@ -55,14 +55,6 @@ public interface EntityEditModel {
 	PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = Configuration.booleanValue(EntityEditModel.class.getName() + ".persistForeignKeys", true);
 
 	/**
-	 * Indicates whether the application should ask for confirmation when exiting if some data is unsaved<br>
-	 * and whether it should warn when unsaved data is about to be lost, i.e. due to selection changes.
-	 * Value type: Boolean<br>
-	 * Default value: false
-	 */
-	PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue(EntityEditModel.class.getName() + ".warnAboutUnsavedData", false);
-
-	/**
 	 * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}<br>
 	 * Value type: Boolean<br>
 	 * Default value: true<br>
@@ -101,6 +93,7 @@ public interface EntityEditModel {
 	 * the effect is the same as calling {@link #defaults()}.
 	 * @param entity the entity
 	 * @see #defaults()
+	 * @see #beforeEntityEvent()
 	 */
 	void set(Entity entity);
 
@@ -195,13 +188,6 @@ public interface EntityEditModel {
 	 * @return the definition of the underlying entity
 	 */
 	EntityDefinition entityDefinition();
-
-	/**
-	 * @return a state controlling whether this edit model triggers a warning before overwriting unsaved data
-	 * @see #WARN_ABOUT_UNSAVED_DATA
-	 * @see #confirmOverwriteEvent()
-	 */
-	State overwriteWarning();
 
 	/**
 	 * Making this edit model read-only prevents any changes from being
@@ -492,6 +478,13 @@ public interface EntityEditModel {
 	StateObserver exists();
 
 	/**
+	 * @return a {@link StateObserver} indicating whether the active entity exists and is modified
+	 * @see #modified()
+	 * @see #exists()
+	 */
+	StateObserver editing();
+
+	/**
 	 * @return a {@link StateObserver} indicating whether the primary key of the active entity is null
 	 */
 	StateObserver primaryKeyNull();
@@ -529,6 +522,13 @@ public interface EntityEditModel {
 	EventObserver<Entity> entityEvent();
 
 	/**
+	 * @return an observer notified each time the active entity is about to be set
+	 * @see #set(Entity)
+	 * @see #defaults()
+	 */
+	EventObserver<Entity> beforeEntityEvent();
+
+	/**
 	 * @return an observer notified before an insert is performed
 	 */
 	EventObserver<Collection<Entity>> beforeInsertEvent();
@@ -562,11 +562,6 @@ public interface EntityEditModel {
 	 * @return an observer notified each time one or more entities are updated, inserted or deleted via this model
 	 */
 	EventObserver<?> insertUpdateOrDeleteEvent();
-
-	/**
-	 * @return an observer notified each time the active entity is about to be set
-	 */
-	EventObserver<State> confirmOverwriteEvent();
 
 	/**
 	 * Represents a task for inserting entities, split up for use with a background thread.

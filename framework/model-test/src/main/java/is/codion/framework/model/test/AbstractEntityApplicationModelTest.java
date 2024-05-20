@@ -120,41 +120,6 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 		assertFalse(model.containsEntityModel(detailModel));
 	}
 
-	@Test
-	public void containsUnsavedData() {
-		Model deptModel = createDepartmentModel();
-		if (!deptModel.containsTableModel()) {
-			return;
-		}
-
-		Model empModel = deptModel.detailModel(Employee.TYPE);
-		deptModel.detailModelLink(empModel).active().set(true);
-
-		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-		model.addEntityModel(deptModel);
-
-		assertFalse(model.containsUnsavedData());
-
-		model.refresh();
-
-		deptModel.tableModel().selectionModel().setSelectedIndex(0);
-		empModel.tableModel().selectionModel().setSelectedIndex(0);
-
-		String name = empModel.editModel().get(Employee.NAME);
-		empModel.editModel().put(Employee.NAME, "Darri");
-		assertTrue(model.containsUnsavedData());
-
-		empModel.editModel().put(Employee.NAME, name);
-		assertFalse(model.containsUnsavedData());
-
-		name = deptModel.editModel().get(Department.NAME);
-		deptModel.editModel().put(Department.NAME, "Darri");
-		assertTrue(model.containsUnsavedData());
-
-		deptModel.editModel().put(Department.NAME, name);
-		assertFalse(model.containsUnsavedData());
-	}
-
 	protected final EntityConnectionProvider connectionProvider() {
 		return connectionProvider;
 	}

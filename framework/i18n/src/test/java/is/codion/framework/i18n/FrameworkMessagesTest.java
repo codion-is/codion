@@ -55,8 +55,8 @@ public class FrameworkMessagesTest {
 		FrameworkMessages.saveMnemonic();
 		FrameworkMessages.confirmExit();
 		FrameworkMessages.confirmExitTitle();
-		FrameworkMessages.unsavedDataWarning();
-		FrameworkMessages.unsavedDataWarningTitle();
+		FrameworkMessages.modifiedWarning();
+		FrameworkMessages.modifiedWarningTitle();
 		FrameworkMessages.confirmUpdate();
 		FrameworkMessages.confirmDelete(42);
 		FrameworkMessages.confirmDelete(1);

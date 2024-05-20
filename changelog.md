@@ -127,6 +127,8 @@ Codion Change Log
 - DefaultForeignKeyDetailModelLink now uses the EQUAL operator in case of a single value when setting the foreign key condition.
 - ForeignKeyConditionModel renamed DefaultForeignKeyConditionModel.
 - AbstractForeignKeyConditionModel renamed ForeignKeyConditionModel.
+- EntityApplicationModel.warnAboutUnsavedData() and containsUnsavedData() removed.
+- EntityEditModel.WARN_ABOUT_UNSAVED_DATA removed, beforeEntityEvent() added.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model
@@ -195,6 +197,8 @@ Codion Change Log
 - EntityApplicationPanel, frame size and maximized state now saved in user preferences, Builder.defaultFrameSize() added.
 - DefaultEntityApplicationPanelBuilder, now displays an empty frame while the application panel is being initialized.
 - EntityApplicationPanel, user preferences functionality improved, related refactoring.
+- EntityEditPanel.Config.modifiedWarning() added, related refactoring.
+- EntityTablePanel.userPreferencesKey() now protected.
 ### is.codion.swing.framework.ui.tools
 - DomainGeneratorPanel.DEFAULT_USERNAME configuration value added.
 - DomainGeneratorPanel.DEFAULT_USERNAME renamed DEFAULT_USER, can include password.

@@ -63,8 +63,8 @@ public final class FrameworkMessages {
 	private static final String SAVE_MNEMONIC = "save_mnemonic";
 	private static final String CONFIRM_EXIT = "confirm_exit";
 	private static final String CONFIRM_EXIT_TITLE = "confirm_exit_title";
-	private static final String UNSAVED_DATA_WARNING = "unsaved_data_warning";
-	private static final String UNSAVED_DATA_WARNING_TITLE = "unsaved_data_warning_title";
+	private static final String MODIFIED_WARNING = "modified_warning";
+	private static final String MODIFIED_WARNING_TITLE = "modified_warning_title";
 	private static final String CONFIRM_UPDATE = "confirm_update";
 	private static final String CONFIRM_DELETE = "confirm_delete";
 	private static final String CONFIRM_INSERT = "confirm_insert";
@@ -299,17 +299,17 @@ public final class FrameworkMessages {
 	}
 
 	/**
-	 * @return unsaved data warning
+	 * @return unsaved modifications warning
 	 */
-	public static String unsavedDataWarning() {
-		return get(UNSAVED_DATA_WARNING);
+	public static String modifiedWarning() {
+		return get(MODIFIED_WARNING);
 	}
 
 	/**
-	 * @return unsaved data warning title
+	 * @return unsaved modifications warning title
 	 */
-	public static String unsavedDataWarningTitle() {
-		return get(UNSAVED_DATA_WARNING_TITLE);
+	public static String modifiedWarningTitle() {
+		return get(MODIFIED_WARNING_TITLE);
 	}
 
 	/**

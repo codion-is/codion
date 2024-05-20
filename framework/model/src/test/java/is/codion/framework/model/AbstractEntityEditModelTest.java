@@ -472,55 +472,6 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void containsUnsavedData() throws DatabaseException {
-		employeeEditModel.overwriteWarning().set(true);
-		employeeEditModel.persist(Employee.DEPARTMENT_FK).set(false);
-
-		Consumer<State> alwaysConfirmConsumer = data -> data.set(true);
-		Consumer<State> alwaysDenyConsumer = data -> data.set(false);
-
-		employeeEditModel.confirmOverwriteEvent().addConsumer(alwaysConfirmConsumer);
-		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
-		Entity adams = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("ADAMS"));
-		employeeEditModel.set(king);
-		employeeEditModel.put(Employee.NAME, "New name");
-		employeeEditModel.set(adams);
-		assertEquals(adams, employeeEditModel.entity());
-
-		employeeEditModel.confirmOverwriteEvent().removeConsumer(alwaysConfirmConsumer);
-		employeeEditModel.defaults();
-		employeeEditModel.confirmOverwriteEvent().addConsumer(alwaysDenyConsumer);
-
-		employeeEditModel.set(adams);
-		employeeEditModel.put(Employee.NAME, "A name");
-		employeeEditModel.set(king);
-		assertEquals("A name", employeeEditModel.get(Employee.NAME));
-
-		employeeEditModel.confirmOverwriteEvent().removeConsumer(alwaysDenyConsumer);
-		employeeEditModel.defaults();
-		employeeEditModel.confirmOverwriteEvent().addConsumer(alwaysDenyConsumer);
-
-		employeeEditModel.set(adams);
-		employeeEditModel.put(Employee.DEPARTMENT_FK, king.get(Employee.DEPARTMENT_FK));
-		employeeEditModel.set(adams);
-		assertEquals(king.get(Employee.DEPARTMENT_FK), employeeEditModel.get(Employee.DEPARTMENT_FK));
-
-		employeeEditModel.overwriteWarning().set(false);
-
-		employeeEditModel.set(adams);
-		employeeEditModel.put(Employee.HIREDATE, LocalDate.now());
-		assertTrue(employeeEditModel.exists().get() && employeeEditModel.modified().get());
-
-		employeeEditModel.put(Employee.HIREDATE, adams.get(Employee.HIREDATE));
-		assertFalse(employeeEditModel.exists().get() && employeeEditModel.modified().get());
-
-		employeeEditModel.persist(Employee.MGR_FK).set(false);
-
-		employeeEditModel.put(Employee.MGR_FK, null);//default value JONES
-		assertTrue(employeeEditModel.exists().get() && employeeEditModel.modified().get());
-	}
-
-	@Test
 	void replace() throws DatabaseException {
 		Entity james = employeeEditModel.connection()
 						.selectSingle(Employee.NAME.equalTo("JAMES"));

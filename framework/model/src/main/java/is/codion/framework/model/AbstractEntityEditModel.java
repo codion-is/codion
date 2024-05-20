@@ -128,11 +128,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final State overwriteWarning() {
-		return states.overwriteWarning;
-	}
-
-	@Override
 	public final State postEditEvents() {
 		return states.postEditEvents;
 	}
@@ -174,15 +169,19 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
+	public final StateObserver editing() {
+		return states.editing;
+	}
+
+	@Override
 	public final StateObserver primaryKeyNull() {
 		return states.primaryKeyNull.observer();
 	}
 
 	@Override
 	public final void set(Entity entity) {
-		if (setEntityAllowed()) {
-			setEntity(entity);
-		}
+		events.beforeEntity.accept(entity);
+		setEntity(entity);
 	}
 
 	@Override
@@ -452,6 +451,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
+	public final EventObserver<Entity> beforeEntityEvent() {
+		return events.beforeEntity.observer();
+	}
+
+	@Override
 	public final EventObserver<Collection<Entity>> beforeInsertEvent() {
 		return events.beforeInsert.observer();
 	}
@@ -484,11 +488,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final EventObserver<?> insertUpdateOrDeleteEvent() {
 		return events.insertUpdateOrDelete.observer();
-	}
-
-	@Override
-	public final EventObserver<State> confirmOverwriteEvent() {
-		return events.confirmOverwrite.observer();
 	}
 
 	/**
@@ -633,17 +632,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 */
 	protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
 		events.afterDelete.accept(requireNonNull(deletedEntities));
-	}
-
-	private boolean setEntityAllowed() {
-		if (states.overwriteWarning.get() && exists().get() && modified().get()) {
-			State confirmation = State.state(true);
-			events.confirmOverwrite.accept(confirmation);
-
-			return confirmation.get();
-		}
-
-		return true;
 	}
 
 	private void setEntity(Entity entity) {
@@ -1036,7 +1024,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Collection<Entity>> beforeDelete = Event.event();
 		private final Event<Collection<Entity>> afterDelete = Event.event();
 		private final Event<?> insertUpdateOrDelete = Event.event();
-		private final Event<State> confirmOverwrite = Event.event();
+		private final Event<Entity> beforeEntity = Event.event();
 		private final Event<Entity> entity = Event.event();
 		private final Event<Attribute<?>> valueChange = Event.event();
 		private final Map<Attribute<?>, Event<?>> editEvents = new ConcurrentHashMap<>();
@@ -1094,13 +1082,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final State entityValid = State.state();
 		private final State entityExists = State.state(false);
 		private final State entityModified = State.state();
+		private final StateObserver editing = State.and(entityExists, entityModified);
 		private final State primaryKeyNull = State.state(true);
 		private final State readOnly = State.state();
 		private final State insertEnabled = State.state(true);
 		private final State updateEnabled = State.state(true);
 		private final State updateMultipleEnabled = State.state(true);
 		private final State deleteEnabled = State.state(true);
-		private final State overwriteWarning = State.state(WARN_ABOUT_UNSAVED_DATA.get());
 		private final State postEditEvents = State.state(POST_EDIT_EVENTS.get());
 		private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
 		private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
