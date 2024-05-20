@@ -21,6 +21,7 @@
  * <br>
  * {@link is.codion.framework.json.domain.EntityObjectMapper}<br>
  * {@link is.codion.framework.json.domain.EntityObjectMapperFactory}<br>
+ * @uses is.codion.framework.json.domain.EntityObjectMapperFactory
  */
 module is.codion.framework.json.domain {
 	requires transitive com.fasterxml.jackson.databind;

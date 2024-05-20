@@ -25,6 +25,10 @@
  * {@link is.codion.common.rmi.server.Authenticator}<br>
  * {@link is.codion.common.rmi.server.RemoteClient}<br>
  * {@link is.codion.common.rmi.server.ObjectInputFilterFactory}<br>
+ * @uses is.codion.common.rmi.server.AuxiliaryServerFactory
+ * @uses is.codion.common.rmi.server.Authenticator
+ * @uses is.codion.common.rmi.server.ObjectInputFilterFactory
+ * @provides is.codion.common.rmi.server.ObjectInputFilterFactory
  */
 module is.codion.common.rmi {
 	requires org.slf4j;

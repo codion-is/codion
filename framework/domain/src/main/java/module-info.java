@@ -31,6 +31,7 @@
  * {@link is.codion.framework.domain.entity.condition.Condition}<br>
  * {@link is.codion.framework.domain.entity.condition.ColumnCondition}<br>
  * {@link is.codion.framework.domain.entity.condition.ForeignKeyCondition}<br>
+ * @uses is.codion.framework.domain.Domain
  */
 module is.codion.framework.domain {
 	requires transitive is.codion.common.db;

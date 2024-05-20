@@ -26,6 +26,9 @@
  * {@link is.codion.swing.framework.ui.component.EntityComboBox}<br>
  * {@link is.codion.swing.framework.ui.component.EntityComponents}<br>
  * {@link is.codion.swing.framework.ui.icon.FrameworkIcons}<br>
+ * @uses is.codion.swing.framework.ui.icon.FrameworkIcons
+ * @provides is.codion.swing.framework.ui.icon.FrameworkIcons
+ * @provides org.kordamp.ikonli.IkonHandler
  */
 module is.codion.swing.framework.ui {
 	requires org.slf4j;

@@ -28,7 +28,6 @@
  * <br>
  * @uses is.codion.common.db.database.DatabaseFactory
  * @uses is.codion.common.db.pool.ConnectionPoolFactory
- * @provides is.codion.common.db.pool.ConnectionPoolFactory
  */
 module is.codion.common.db {
 	requires transitive java.sql;
