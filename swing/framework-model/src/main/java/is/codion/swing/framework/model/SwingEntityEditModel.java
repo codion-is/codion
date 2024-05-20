@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -256,7 +257,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	}
 
 	private <T> FilterComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
-		FilterComboBoxModel<T> comboBoxModel = new FilterComboBoxModel<>();
+		FilterComboBoxModel<T> comboBoxModel = filterComboBoxModel();
 		comboBoxModel.refresher().items().set(column.type().isEnum() ?
 						new EnumAttributeItems<>(column) :
 						new ColumnItems<>(connectionProvider(), column));

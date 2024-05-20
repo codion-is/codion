@@ -34,7 +34,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Cursors;
@@ -101,6 +101,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
@@ -634,7 +635,7 @@ public final class EntitySearchField extends HintTextField {
 		private static JPanel createSearchColumnPanel(EntitySearchModel searchModel) {
 			CardLayout cardLayout = new CardLayout(5, 5);
 			PanelBuilder columnBasePanelBuilder = panel(cardLayout);
-			FilterComboBoxModel<Item<Column<String>>> columnComboBoxModel = new FilterComboBoxModel<>();
+			ItemComboBoxModel<Column<String>> columnComboBoxModel = itemComboBoxModel();
 			EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
 			for (Map.Entry<Column<String>, EntitySearchModel.Settings> entry : searchModel.settings().entrySet()) {
 				columnComboBoxModel.add(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));

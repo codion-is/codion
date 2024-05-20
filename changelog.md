@@ -43,6 +43,7 @@ Codion Change Log
 - FilteredTableModel renamed FilterTableModel, related renaming.
 - FilteredComboBoxModel renamed FilterComboBoxModel.
 - FilteredTableModel.ColumnValueProvider renamed ColumnValues, related renaming.
+- FilterComboBoxModel now interface, DefaultFilterComboBoxModel added.
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
 - ProgressDialog bug fixed, no longer adds an empty south panel when no controls are specified.
@@ -129,6 +130,7 @@ Codion Change Log
 - AbstractForeignKeyConditionModel renamed ForeignKeyConditionModel.
 - EntityApplicationModel.warnAboutUnsavedData() and containsUnsavedData() removed.
 - EntityEditModel.WARN_ABOUT_UNSAVED_DATA removed, beforeEntityEvent() added.
+- EntityComboBoxModel, inheritance replaced with composition.
 ### is.codion.framework.servlet
 - EntityService refactored.
 ### is.codion.swing.framework.model

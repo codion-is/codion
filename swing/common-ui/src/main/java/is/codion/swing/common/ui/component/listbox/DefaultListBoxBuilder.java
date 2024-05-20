@@ -40,6 +40,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
@@ -66,7 +67,7 @@ final class DefaultListBoxBuilder<T>
 
 	@Override
 	protected JComboBox<T> createComponent() {
-		FilterComboBoxModel<T> comboBoxModel = new FilterComboBoxModel<>();
+		FilterComboBoxModel<T> comboBoxModel = filterComboBoxModel();
 		ListComboBox<T> comboBox = new ListComboBox<>(comboBoxModel, itemValue, linkedValue);
 		comboBox.setEditor(new Editor<>(itemValue));
 		comboBox.setEditable(true);

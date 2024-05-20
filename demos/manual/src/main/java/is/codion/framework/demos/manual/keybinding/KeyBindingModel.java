@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
@@ -198,7 +199,7 @@ final class KeyBindingModel {
 
 	private static FilterComboBoxModel<String> createComponentComboBoxModel(
 					FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-		FilterComboBoxModel<String> comboBoxModel = new FilterComboBoxModel<>();
+		FilterComboBoxModel<String> comboBoxModel = filterComboBoxModel();
 		comboBoxModel.refresher().items().set(new ComponentItems(lookAndFeelComboBoxModel));
 
 		return comboBoxModel;

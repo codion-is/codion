@@ -20,9 +20,11 @@ package is.codion.swing.framework.model.component;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventObserver;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -36,10 +38,13 @@ import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
+import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,7 +62,7 @@ import static java.util.Objects.requireNonNull;
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
  * @see #entityComboBoxModel(EntityType, EntityConnectionProvider)
  */
-public final class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
+public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	/**
 	 * Specifies whether entity combo box models handle entity edit events, by replacing updated entities and removing deleted ones<br>
@@ -68,6 +73,8 @@ public final class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 */
 	public static final PropertyValue<Boolean> HANDLE_EDIT_EVENTS =
 					Configuration.booleanValue(EntityComboBoxModel.class.getName() + ".handleEditEvents", true);
+
+	private final FilterComboBoxModel<Entity> comboBoxModel;
 
 	private final EntityType entityType;
 	private final EntityConnectionProvider connectionProvider;
@@ -91,15 +98,16 @@ public final class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	private EntityComboBoxModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		this.comboBoxModel = FilterComboBoxModel.filterComboBoxModel();
 		this.entityType = requireNonNull(entityType, "entityType");
 		this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
 		this.entities = connectionProvider.entities();
 		this.orderBy = Value.nullable(this.entities.definition(entityType).orderBy().orElse(null)).build();
 		this.conditionSupplier = Value.nonNull((Supplier<Condition>) new DefaultConditionSupplier()).build();
-		selectedItemTranslator().set(new SelectedItemTranslator());
-		refresher().items().set(this::performQuery);
-		validator().set(new ItemValidator());
-		includeCondition().set(foreignKeyIncludeCondition);
+		comboBoxModel.selectedItemTranslator().set(new SelectedItemTranslator());
+		comboBoxModel.refresher().items().set(this::performQuery);
+		comboBoxModel.validator().set(new ItemValidator());
+		comboBoxModel.includeCondition().set(foreignKeyIncludeCondition);
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
 
@@ -314,6 +322,196 @@ public final class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		}
 
 		return createSelectorValue(new EntityFinder<>(attribute));
+	}
+
+	@Override
+	public void clear() {
+		comboBoxModel.clear();
+	}
+
+	@Override
+	public boolean cleared() {
+		return comboBoxModel.cleared();
+	}
+
+	@Override
+	public void setItems(Collection<Entity> items) {
+		comboBoxModel.setItems(items);
+	}
+
+	@Override
+	public void add(Entity item) {
+		comboBoxModel.add(item);
+	}
+
+	@Override
+	public void remove(Entity item) {
+		comboBoxModel.remove(item);
+	}
+
+	@Override
+	public void replace(Entity item, Entity replacement) {
+		comboBoxModel.replace(item, replacement);
+	}
+
+	@Override
+	public void sortItems() {
+		comboBoxModel.sortItems();
+	}
+
+	@Override
+	public Value<Comparator<Entity>> comparator() {
+		return comboBoxModel.comparator();
+	}
+
+	@Override
+	public Value<Predicate<Entity>> validator() {
+		return comboBoxModel.validator();
+	}
+
+	@Override
+	public Value<Function<Object, Entity>> selectedItemTranslator() {
+		return comboBoxModel.selectedItemTranslator();
+	}
+
+	@Override
+	public Value<Predicate<Entity>> validSelectionPredicate() {
+		return comboBoxModel.validSelectionPredicate();
+	}
+
+	@Override
+	public State includeNull() {
+		return comboBoxModel.includeNull();
+	}
+
+	@Override
+	public Value<Entity> nullItem() {
+		return comboBoxModel.nullItem();
+	}
+
+	@Override
+	public boolean nullSelected() {
+		return comboBoxModel.nullSelected();
+	}
+
+	@Override
+	public StateObserver selectionEmpty() {
+		return comboBoxModel.selectionEmpty();
+	}
+
+	@Override
+	public Entity selectedValue() {
+		return comboBoxModel.selectedValue();
+	}
+
+	@Override
+	public Entity getSelectedItem() {
+		return comboBoxModel.getSelectedItem();
+	}
+
+	@Override
+	public State filterSelectedItem() {
+		return comboBoxModel.filterSelectedItem();
+	}
+
+	@Override
+	public <V> Value<V> createSelectorValue(ItemFinder<Entity, V> itemFinder) {
+		return comboBoxModel.createSelectorValue(itemFinder);
+	}
+
+	@Override
+	public EventObserver<Entity> selectionEvent() {
+		return comboBoxModel.selectionEvent();
+	}
+
+	@Override
+	public void filterItems() {
+		comboBoxModel.filterItems();
+	}
+
+	@Override
+	public Value<Predicate<Entity>> includeCondition() {
+		return comboBoxModel.includeCondition();
+	}
+
+	@Override
+	public Collection<Entity> items() {
+		return comboBoxModel.items();
+	}
+
+	@Override
+	public List<Entity> visibleItems() {
+		return comboBoxModel.visibleItems();
+	}
+
+	@Override
+	public Collection<Entity> filteredItems() {
+		return comboBoxModel.filteredItems();
+	}
+
+	@Override
+	public int visibleCount() {
+		return comboBoxModel.visibleCount();
+	}
+
+	@Override
+	public int filteredCount() {
+		return comboBoxModel.filteredCount();
+	}
+
+	@Override
+	public boolean containsItem(Entity item) {
+		return comboBoxModel.containsItem(item);
+	}
+
+	@Override
+	public boolean visible(Entity item) {
+		return comboBoxModel.visible(item);
+	}
+
+	@Override
+	public boolean filtered(Entity item) {
+		return comboBoxModel.filtered(item);
+	}
+
+	@Override
+	public Refresher<Entity> refresher() {
+		return comboBoxModel.refresher();
+	}
+
+	@Override
+	public void refresh() {
+		comboBoxModel.refresh();
+	}
+
+	@Override
+	public void refreshThen(Consumer<Collection<Entity>> afterRefresh) {
+		comboBoxModel.refreshThen(afterRefresh);
+	}
+
+	@Override
+	public void setSelectedItem(Object selectedItem) {
+		comboBoxModel.setSelectedItem(selectedItem);
+	}
+
+	@Override
+	public int getSize() {
+		return comboBoxModel.getSize();
+	}
+
+	@Override
+	public Entity getElementAt(int index) {
+		return comboBoxModel.getElementAt(index);
+	}
+
+	@Override
+	public void addListDataListener(ListDataListener listener) {
+		comboBoxModel.addListDataListener(listener);
+	}
+
+	@Override
+	public void removeListDataListener(ListDataListener listener) {
+		comboBoxModel.removeListDataListener(listener);
 	}
 
 	/**

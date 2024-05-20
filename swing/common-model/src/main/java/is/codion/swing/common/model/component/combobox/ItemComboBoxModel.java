@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  * @see #sortedItemComboBoxModel()
  * @see #booleanItemComboBoxModel()
  */
-public final class ItemComboBoxModel<T> extends FilterComboBoxModel<Item<T>> {
+public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<T>> {
 
 	private ItemComboBoxModel(List<Item<T>> items) {
 		selectedItemTranslator().set(new SelectedItemTranslator());
