@@ -26,9 +26,11 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.TestDomain;
+import is.codion.swing.framework.ui.TestDomain.Department;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -44,12 +46,12 @@ public final class EntityComboBoxPanelTest {
 
 	@Test
 	void test() throws DatabaseException {
-		EntityComboBoxModel model = new EntityComboBoxModel(TestDomain.Department.TYPE, CONNECTION_PROVIDER);
+		EntityComboBoxModel model = entityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
 		model.refresh();
 		ComponentValue<Entity, EntityComboBoxPanel> value = EntityComboBoxPanel.builder(model, () -> null)
 						.buildValue();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
-						TestDomain.Department.NAME.equalTo("SALES"));
+						Department.NAME.equalTo("SALES"));
 		model.setSelectedItem(sales);
 		assertEquals(sales, value.get());
 		value.clear();

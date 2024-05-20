@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -174,7 +175,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 */
 	public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeys().definition(foreignKey);
-		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider());
+		EntityComboBoxModel comboBoxModel = entityComboBoxModel(foreignKey.referencedType(), connectionProvider());
 		comboBoxModel.attributes().set(foreignKeyDefinition.attributes());
 		if (nullable(foreignKey)) {
 			comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());

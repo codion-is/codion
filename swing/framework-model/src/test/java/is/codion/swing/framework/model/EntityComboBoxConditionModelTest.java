@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,7 +51,7 @@ public class EntityComboBoxConditionModelTest {
 
 	@Test
 	void searchEntitiesComboBoxModel() throws DatabaseException {
-		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
+		EntityComboBoxModel comboBoxModel = entityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
 							comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		SwingForeignKeyConditionModel conditionModel =
@@ -76,7 +77,7 @@ public class EntityComboBoxConditionModelTest {
 
 	@Test
 	void inSearchModel() throws DatabaseException {
-		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
+		EntityComboBoxModel comboBoxModel = entityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
 							comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		SwingForeignKeyConditionModel conditionModel =

@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,7 +63,7 @@ public final class EntityComboBoxModelTest {
 	private final EntityComboBoxModel comboBoxModel;
 
 	public EntityComboBoxModelTest() {
-		comboBoxModel = new EntityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
+		comboBoxModel = entityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
 	}
 
 	@Test
@@ -99,18 +100,18 @@ public final class EntityComboBoxModelTest {
 
 	@Test
 	void constructorNullEntityType() {
-		assertThrows(NullPointerException.class, () -> new EntityComboBoxModel(null, CONNECTION_PROVIDER));
+		assertThrows(NullPointerException.class, () -> entityComboBoxModel(null, CONNECTION_PROVIDER));
 	}
 
 	@Test
 	void constructorNullConnectionProvider() {
-		assertThrows(NullPointerException.class, () -> new EntityComboBoxModel(Employee.TYPE, null));
+		assertThrows(NullPointerException.class, () -> entityComboBoxModel(Employee.TYPE, null));
 	}
 
 	@Test
 	void foreignKeyFilterComboBoxModel() {
 		EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
-		EntityComboBoxModel empBox = new EntityComboBoxModel(Employee.TYPE, connectionProvider);
+		EntityComboBoxModel empBox = entityComboBoxModel(Employee.TYPE, connectionProvider);
 		empBox.setNullCaption("-");
 		empBox.refresh();
 		assertEquals(17, empBox.getSize());
@@ -131,7 +132,7 @@ public final class EntityComboBoxModelTest {
 	@Test
 	void foreignKeyConditionComboBoxModel() {
 		EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
-		EntityComboBoxModel empBox = new EntityComboBoxModel(Employee.TYPE, connectionProvider);
+		EntityComboBoxModel empBox = entityComboBoxModel(Employee.TYPE, connectionProvider);
 		empBox.setNullCaption("-");
 		empBox.refresh();
 		assertEquals(17, empBox.getSize());

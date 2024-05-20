@@ -28,6 +28,8 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Optional;
 
+import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
+
 /**
  * A Swing {@link ColumnConditionModel.Factory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
@@ -61,7 +63,7 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
 	 * @return a combo box model to use for the equal value
 	 */
 	protected EntityComboBoxModel createEqualComboBoxModel(ForeignKey foreignKey) {
-		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider());
+		EntityComboBoxModel comboBoxModel = entityComboBoxModel(foreignKey.referencedType(), connectionProvider());
 		comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 
 		return comboBoxModel;

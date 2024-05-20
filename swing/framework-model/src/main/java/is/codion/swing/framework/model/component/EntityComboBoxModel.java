@@ -55,8 +55,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
+ * @see #entityComboBoxModel(EntityType, EntityConnectionProvider)
  */
-public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
+public final class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 	/**
 	 * Specifies whether entity combo box models handle entity edit events, by replacing updated entities and removing deleted ones<br>
@@ -65,7 +66,8 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @see #handleEditEvents()
 	 * @see is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS
 	 */
-	public static final PropertyValue<Boolean> HANDLE_EDIT_EVENTS = Configuration.booleanValue(EntityComboBoxModel.class.getName() + ".handleEditEvents", true);
+	public static final PropertyValue<Boolean> HANDLE_EDIT_EVENTS =
+					Configuration.booleanValue(EntityComboBoxModel.class.getName() + ".handleEditEvents", true);
 
 	private final EntityType entityType;
 	private final EntityConnectionProvider connectionProvider;
@@ -88,11 +90,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
-	/**
-	 * @param entityType the type of the entity this combo box model should represent
-	 * @param connectionProvider a EntityConnectionProvider instance
-	 */
-	public EntityComboBoxModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+	private EntityComboBoxModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		this.entityType = requireNonNull(entityType, "entityType");
 		this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
 		this.entities = connectionProvider.entities();
@@ -106,21 +104,21 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public final String toString() {
+	public String toString() {
 		return getClass().getSimpleName() + " [entityType: " + entityType + "]";
 	}
 
 	/**
 	 * @return the connection provider used by this combo box model
 	 */
-	public final EntityConnectionProvider connectionProvider() {
+	public EntityConnectionProvider connectionProvider() {
 		return connectionProvider;
 	}
 
 	/**
 	 * @return the type of the entity this combo box model is based on
 	 */
-	public final EntityType entityType() {
+	public EntityType entityType() {
 		return entityType;
 	}
 
@@ -131,7 +129,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @see #includeNull()
 	 * @see #nullItem()
 	 */
-	public final void setNullCaption(String nullCaption) {
+	public void setNullCaption(String nullCaption) {
 		requireNonNull(nullCaption, "nullCaption");
 		includeNull().set(true);
 		nullItem().set(ProxyBuilder.builder(Entity.class)
@@ -146,7 +144,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * An empty Collection indicates that all attributes should be selected.
 	 * @return the ValueSet controlling the attributes to select, an empty ValueSet indicating all available attributes
 	 */
-	public final ValueSet<Attribute<?>> attributes() {
+	public ValueSet<Attribute<?>> attributes() {
 		return attributes;
 	}
 
@@ -155,7 +153,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * updating any updated items and removing deleted ones
 	 * @see EntityEditEvents
 	 */
-	public final State handleEditEvents() {
+	public State handleEditEvents() {
 		return handleEditEvents;
 	}
 
@@ -163,7 +161,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @param primaryKey the primary key of the entity to fetch from this model
 	 * @return the entity with the given key if found in the model, an empty Optional otherwise
 	 */
-	public final Optional<Entity> find(Entity.Key primaryKey) {
+	public Optional<Entity> find(Entity.Key primaryKey) {
 		requireNonNull(primaryKey);
 		return items().stream()
 						.filter(Objects::nonNull)
@@ -176,7 +174,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * If the entity is not available in the model this method returns silently without changing the selection.
 	 * @param primaryKey the primary key of the entity to select
 	 */
-	public final void select(Entity.Key primaryKey) {
+	public void select(Entity.Key primaryKey) {
 		requireNonNull(primaryKey);
 		Optional<Entity> entity = find(primaryKey);
 		if (entity.isPresent()) {
@@ -191,7 +189,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * Controls the condition supplier to use when querying data, set to null to fetch all underlying entities.
 	 * @return a value controlling the condition supplier
 	 */
-	public final Value<Supplier<Condition>> condition() {
+	public Value<Supplier<Condition>> condition() {
 		return conditionSupplier;
 	}
 
@@ -202,7 +200,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @return the Value controlling the orderBy
 	 * @see #comparator()
 	 */
-	public final Value<OrderBy> orderBy() {
+	public Value<OrderBy> orderBy() {
 		return orderBy;
 	}
 
@@ -216,7 +214,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @return the {@link Predicate} based on the foreign key filter entities
 	 * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
 	 */
-	public final Predicate<Entity> foreignKeyIncludeCondition() {
+	public Predicate<Entity> foreignKeyIncludeCondition() {
 		return foreignKeyIncludeCondition;
 	}
 
@@ -225,7 +223,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @param foreignKey the foreign key
 	 * @param keys the keys, an empty Collection for none
 	 */
-	public final void setForeignKeyFilterKeys(ForeignKey foreignKey, Collection<Entity.Key> keys) {
+	public void setForeignKeyFilterKeys(ForeignKey foreignKey, Collection<Entity.Key> keys) {
 		requireNonNull(foreignKey);
 		requireNonNull(keys);
 		if (keys.isEmpty()) {
@@ -242,7 +240,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @param foreignKey the foreign key
 	 * @return the keys currently used to filter the items of this model by foreign key, an empty collection for none
 	 */
-	public final Collection<Entity.Key> getForeignKeyFilterKeys(ForeignKey foreignKey) {
+	public Collection<Entity.Key> getForeignKeyFilterKeys(ForeignKey foreignKey) {
 		requireNonNull(foreignKey);
 		if (foreignKeyFilterKeys.containsKey(foreignKey)) {
 			return unmodifiableCollection(new ArrayList<>(foreignKeyFilterKeys.get(foreignKey)));
@@ -259,7 +257,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @return the State controlling whether foreign key filtering should be strict
 	 * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
 	 */
-	public final State strictForeignKeyFiltering() {
+	public State strictForeignKeyFiltering() {
 		return strictForeignKeyFiltering;
 	}
 
@@ -269,7 +267,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @return a combo box model for selecting a filtering value for this combo box model
 	 * @see #linkForeignKeyFilterComboBoxModel(ForeignKey, EntityComboBoxModel)
 	 */
-	public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(ForeignKey foreignKey) {
+	public EntityComboBoxModel createForeignKeyFilterComboBoxModel(ForeignKey foreignKey) {
 		return createForeignKeyComboBoxModel(foreignKey, true);
 	}
 
@@ -280,7 +278,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @return a combo box model for selecting a filtering value for this combo box model
 	 * @see #linkForeignKeyConditionComboBoxModel(ForeignKey, EntityComboBoxModel)
 	 */
-	public final EntityComboBoxModel createForeignKeyConditionComboBoxModel(ForeignKey foreignKey) {
+	public EntityComboBoxModel createForeignKeyConditionComboBoxModel(ForeignKey foreignKey) {
 		return createForeignKeyComboBoxModel(foreignKey, false);
 	}
 
@@ -290,7 +288,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @param foreignKey the foreign key attribute
 	 * @param foreignKeyModel the combo box model to link
 	 */
-	public final void linkForeignKeyFilterComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
+	public void linkForeignKeyFilterComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
 		linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, true);
 	}
 
@@ -300,7 +298,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @param foreignKey the foreign key attribute
 	 * @param foreignKeyModel the combo box model to link
 	 */
-	public final void linkForeignKeyConditionComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
+	public void linkForeignKeyConditionComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
 		linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, false);
 	}
 
@@ -310,12 +308,21 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @param attribute the attribute
 	 * @return a {@link Value} for selecting items by attribute value
 	 */
-	public final <T> Value<T> createSelectorValue(Attribute<T> attribute) {
+	public <T> Value<T> createSelectorValue(Attribute<T> attribute) {
 		if (!entities.definition(entityType()).attributes().contains(attribute)) {
 			throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
 		}
 
 		return createSelectorValue(new EntityFinder<>(attribute));
+	}
+
+	/**
+	 * @param entityType the type of the entity this combo box model should represent
+	 * @param connectionProvider a EntityConnectionProvider instance
+	 * @return a new {@link EntityComboBoxModel} instance
+	 */
+	public static EntityComboBoxModel entityComboBoxModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		return new EntityComboBoxModel(entityType, connectionProvider);
 	}
 
 	/**
@@ -327,7 +334,7 @@ public class EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @see #attributes()
 	 * @see #orderBy()
 	 */
-	protected Collection<Entity> performQuery() {
+	private Collection<Entity> performQuery() {
 		try {
 			return connectionProvider.connection().select(where(conditionSupplier.get().get())
 							.attributes(attributes.get())

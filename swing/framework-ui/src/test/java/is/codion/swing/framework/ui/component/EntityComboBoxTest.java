@@ -31,6 +31,7 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -50,7 +51,7 @@ public class EntityComboBoxTest {
 
 	@Test
 	void inputProvider() throws Exception {
-		EntityComboBoxModel model = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
+		EntityComboBoxModel model = entityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
 		model.refresh();
 		Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
 		model.setSelectedItem(operations);
@@ -70,7 +71,7 @@ public class EntityComboBoxTest {
 
 	@Test
 	void integerSelectorField() {
-		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
+		EntityComboBoxModel comboBoxModel = entityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
 		comboBoxModel.refresh();
 		Entity.Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 3);
 		comboBoxModel.select(jonesKey);
