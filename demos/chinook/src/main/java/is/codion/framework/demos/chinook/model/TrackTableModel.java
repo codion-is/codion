@@ -19,16 +19,22 @@
 package is.codion.framework.demos.chinook.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.value.Value.Validator;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.swing.framework.model.SwingEntityConditionModelFactory;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Optional;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;
+import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 
 public final class TrackTableModel extends SwingEntityTableModel {
 
@@ -36,7 +42,8 @@ public final class TrackTableModel extends SwingEntityTableModel {
 	private static final int MAXIMUM_LIMIT = 10_000;
 
 	public TrackTableModel(EntityConnectionProvider connectionProvider) {
-		super(Track.TYPE, connectionProvider);
+		super(entityTableConditionModel(Track.TYPE, connectionProvider,
+						new TrackConditionModelFactory(connectionProvider)));
 		editable().set(true);
 		configureLimit();
 	}
@@ -64,6 +71,24 @@ public final class TrackTableModel extends SwingEntityTableModel {
 				// The error message is never displayed, so not required
 				throw new IllegalArgumentException();
 			}
+		}
+	}
+
+	private static class TrackConditionModelFactory extends SwingEntityConditionModelFactory {
+
+		private TrackConditionModelFactory(EntityConnectionProvider connectionProvider) {
+			super(connectionProvider);
+		}
+
+		@Override
+		public Optional<ColumnConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+			if (attribute.equals(Track.MEDIATYPE_FK)) {
+				return Optional.of(SwingForeignKeyConditionModel.builder(Track.MEDIATYPE_FK)
+												.includeEqualOperators(createEqualComboBoxModel(Track.MEDIATYPE_FK))
+								.build());
+			}
+
+			return super.createConditionModel(attribute);
 		}
 	}
 }
