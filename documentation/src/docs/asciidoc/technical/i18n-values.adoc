@@ -301,6 +301,8 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |insert|Add|Vista
 |insert_mnemonic|A|V
 |insert_tip|Add a new record based on the given values|Vista nýja færslu byggða á innslegnum gildum
+|modified_warning|Unsaved modifications will be lost, continue?|Óvistaðar breytingar munu tapast, viltu halda áfram?
+|modified_warning_title|Unsaved modifications|Óvistaðar breytingar
 |no_search_results|Search did not return any results|Leit skilaði engum niðurstöðum
 |save|Save|Vista
 |save_mnemonic|S|V
@@ -311,8 +313,6 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |settings|Settings|Stillingar
 |support_tables|Support Tables|Stoðtöflur
 |support_tables_mnemonic|O|O
-|unsaved_data_warning|Unsaved data will be lost, continue?|Óvistuð gögn fundust, viltu halda áfram?
-|unsaved_data_warning_title|Unsaved data!|Óvistuð gögn!
 |update|Update|Uppfæra
 |update_mnemonic|U|U
 |update_tip|Update the current record based on the given values|Uppfæra færslu út frá innslegnum gildum
