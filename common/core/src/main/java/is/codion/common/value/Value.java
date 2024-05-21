@@ -138,14 +138,14 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * @return true if this value did not already contain the specified validator
 	 * @throws IllegalArgumentException in case the current value is invalid according to the validator
 	 */
-	boolean addValidator(Validator<T> validator);
+	boolean addValidator(Validator<? super T> validator);
 
 	/**
 	 * Removes the given validator from this value
 	 * @param validator the validator
 	 * @return true if this value contained the specified validator
 	 */
-	boolean removeValidator(Validator<T> validator);
+	boolean removeValidator(Validator<? super T> validator);
 
 	/**
 	 * Validate the given value using all validators
@@ -214,7 +214,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		 * @param validator the validator to add
 		 * @return this builder instance
 		 */
-		B validator(Validator<T> validator);
+		B validator(Validator<? super T> validator);
 
 		/**
 		 * Links the given value to the resulting value
@@ -242,7 +242,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		 * @param consumer a consumer to add
 		 * @return this builder instance
 		 */
-		B consumer(Consumer<T> consumer);
+		B consumer(Consumer<? super T> consumer);
 
 		/**
 		 * @param weakListener a weak listener to add
@@ -254,7 +254,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		 * @param weakConsumer a weak consumer to add
 		 * @return this builder instance
 		 */
-		B weakConsumer(Consumer<T> weakConsumer);
+		B weakConsumer(Consumer<? super T> weakConsumer);
 
 		/**
 		 * @return a new {@link Value} instance based on this builder

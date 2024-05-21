@@ -46,32 +46,33 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private final Runnable autoEnableListener = new AutoEnableListener();
 	private final Event<?> conditionChangedEvent = Event.event();
 	private final State locked = State.state();
+	private final Value.Validator<Object> lockValidator = value -> checkLock();
 	private final ValueSet<T> inValues = ValueSet.<T>builder()
 					.notify(Notify.WHEN_SET)
-					.validator(value -> checkLock())
+					.validator(lockValidator)
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
 	private final Value<T> equalValue = Value.<T>nullable()
 					.notify(Notify.WHEN_SET)
-					.validator(value -> checkLock())
+					.validator(lockValidator)
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
 	private final Value<T> upperBoundValue = Value.<T>nullable()
 					.notify(Notify.WHEN_SET)
-					.validator(value -> checkLock())
+					.validator(lockValidator)
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
 	private final Value<T> lowerBoundValue = Value.<T>nullable()
 					.notify(Notify.WHEN_SET)
-					.validator(value -> checkLock())
+					.validator(lockValidator)
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
 	private final Value<Operator> operator = Value.nonNull(Operator.EQUAL)
-					.validator(value -> checkLock())
+					.validator(lockValidator)
 					.validator(this::validateOperator)
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)

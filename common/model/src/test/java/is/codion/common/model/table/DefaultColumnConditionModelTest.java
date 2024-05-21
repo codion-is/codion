@@ -81,18 +81,14 @@ public class DefaultColumnConditionModelTest {
 
 		model.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
 		assertEquals("%test%", model.getEqualValue());
-		assertEquals("%test%", model.getEqualValue());
 
 		model.automaticWildcard().set(AutomaticWildcard.PREFIX);
-		assertEquals("%test", model.getEqualValue());
 		assertEquals("%test", model.getEqualValue());
 
 		model.automaticWildcard().set(AutomaticWildcard.POSTFIX);
 		assertEquals("test%", model.getEqualValue());
-		assertEquals("test%", model.getEqualValue());
 
 		model.automaticWildcard().set(AutomaticWildcard.NONE);
-		assertEquals("test", model.getEqualValue());
 		assertEquals("test", model.getEqualValue());
 
 		model.clear();

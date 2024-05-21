@@ -48,7 +48,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	private final Notify notify;
 
 	private Event<T> changeEvent;
-	private Set<Validator<T>> validators;
+	private Set<Validator<? super T>> validators;
 	private Map<Value<T>, ValueLink<T>> linkedValues;
 	private Consumer<T> originalValueConsumer;
 	private ValueObserver<T> observer;
@@ -79,7 +79,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	@Override
 	public final boolean set(T value) {
 		T newValue = value == null ? nullValue : value;
-		for (Validator<T> validator : validators()) {
+		for (Validator<? super T> validator : validators()) {
 			validator.validate(newValue);
 		}
 		T previousValue = get();
@@ -215,7 +215,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final boolean addValidator(Validator<T> validator) {
+	public final boolean addValidator(Validator<? super T> validator) {
 		requireNonNull(validator, "validator").validate(get());
 		if (validators == null) {
 			validators = new LinkedHashSet<>(1);
@@ -225,7 +225,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final boolean removeValidator(Validator<T> validator) {
+	public final boolean removeValidator(Validator<? super T> validator) {
 		requireNonNull(validator, "validator");
 		if (validators != null) {
 			return validators.remove(validator);
@@ -272,7 +272,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 		return linkedValues == null ? emptySet() : linkedValues.keySet();
 	}
 
-	final Collection<Validator<T>> validators() {
+	final Collection<Validator<? super T>> validators() {
 		return validators == null ? emptyList() : validators;
 	}
 

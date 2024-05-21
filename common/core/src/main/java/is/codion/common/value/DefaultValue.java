@@ -55,13 +55,13 @@ class DefaultValue<T> extends AbstractValue<T> {
 	static class DefaultBuilder<T, B extends Builder<T, B>> implements Builder<T, B> {
 
 		private final T nullValue;
-		private final List<Validator<T>> validators = new ArrayList<>();
+		private final List<Validator<? super T>> validators = new ArrayList<>();
 		private final List<Value<T>> linkedValues = new ArrayList<>();
 		private final List<ValueObserver<T>> linkedObservers = new ArrayList<>();
 		private final List<Runnable> listeners = new ArrayList<>();
 		private final List<Runnable> weakListeners = new ArrayList<>();
-		private final List<Consumer<T>> consumers = new ArrayList<>();
-		private final List<Consumer<T>> weakConsumers = new ArrayList<>();
+		private final List<Consumer<? super T>> consumers = new ArrayList<>();
+		private final List<Consumer<? super T>> weakConsumers = new ArrayList<>();
 
 		private T initialValue;
 		private Notify notify = Notify.WHEN_CHANGED;
@@ -88,7 +88,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public final B validator(Validator<T> validator) {
+		public final B validator(Validator<? super T> validator) {
 			this.validators.add(requireNonNull(validator));
 			return self();
 		}
@@ -112,7 +112,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public final B consumer(Consumer<T> consumer) {
+		public final B consumer(Consumer<? super T> consumer) {
 			this.consumers.add(requireNonNull(consumer));
 			return self();
 		}
@@ -124,7 +124,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public final B weakConsumer(Consumer<T> weakConsumer) {
+		public final B weakConsumer(Consumer<? super T> weakConsumer) {
 			this.weakConsumers.add(requireNonNull(weakConsumer));
 			return self();
 		}

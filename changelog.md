@@ -17,6 +17,7 @@ Codion Change Log
 - State.Group no longer uses weak references for member states.
 - State.Group now enables the previously enabled state when the currently enabled state is disabled, instead of leaving all states disabled.
 - State.Group bug fixed, now enables the next state when the currently enabled state is disabled and a previously active state is not available.
+- Value.addValidator(), removeValidator(), validator type now ? super T.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 - Database.createConnectionPool() now returns the pool.
