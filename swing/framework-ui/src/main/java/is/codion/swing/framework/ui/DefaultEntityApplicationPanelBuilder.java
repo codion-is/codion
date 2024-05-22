@@ -386,7 +386,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 		try {
 			P applicationPanel = initializeApplicationPanel(applicationModel);
-			applicationPanel.setPreferences(preferences);
 			applicationPanel.setSaveDefaultUsername(saveDefaultUsername);
 			configureFrame(applicationFrame, applicationPanel);
 			LOG.info("{}, application started successfully: {} ms", applicationFrame.getTitle(), currentTimeMillis() - initializationStarted);

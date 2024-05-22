@@ -37,7 +37,7 @@ final class ApplicationPreferences {
 	private static final String LEGACY_FRAME_SIZE_PROPERTY = "is.codion.swing.framework.ui.frameSize";
 	private static final String LEGACY_FRAME_MAXIMIZED_PROPERTY = "is.codion.swing.framework.ui.maximized";
 
-	private static final String PREFERNECES_KEY = "#preferences";
+	private static final String PREFERENCES_KEY = "#preferences";
 
 	private static final String DEFAULT_USERNAME_KEY = "defaultUsername";
 	private static final String LOOK_AND_FEEL_KEY = "lookAndFeel";
@@ -81,7 +81,7 @@ final class ApplicationPreferences {
 	}
 
 	void save(Class<?> applicationClassName) {
-		UserPreferences.setUserPreference(applicationClassName.getName() + PREFERNECES_KEY, toJSONObject().toString());
+		UserPreferences.setUserPreference(applicationClassName.getName() + PREFERENCES_KEY, toJSONObject().toString());
 	}
 
 	private JSONObject toJSONObject() {
@@ -96,7 +96,7 @@ final class ApplicationPreferences {
 	}
 
 	static ApplicationPreferences load(Class<?> applicationClass) {
-		String preferences = getUserPreference(applicationClass.getName() + PREFERNECES_KEY, "");
+		String preferences = getUserPreference(applicationClass.getName() + PREFERENCES_KEY, "");
 		if (preferences.isEmpty()) {
 			String applicationDefaultUsernameProperty = LEGACY_DEFAULT_USERNAME_PROPERTY + "#" + applicationClass.getSimpleName();
 			String applicationLookAndFeelProperty = LEGACY_LOOK_AND_FEEL_PROPERTY + "#" + applicationClass.getSimpleName();

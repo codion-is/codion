@@ -193,7 +193,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private final Map<Object, State> logLevelStates = createLogLevelStateMap();
 
-	private ApplicationPreferences preferences;
 	private boolean saveDefaultUsername = true;
 	private int fontSize = 100;
 	private boolean initialized = false;
@@ -588,7 +587,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	protected final Control createSelectFontSizeControl() {
 		return Dialogs.fontSizeSelectionDialog()
 						.owner(this)
-						.initialSelection(preferences.fontSize())
+						.initialSelection(fontSize)
 						.createControl(selectedFontSize -> {
 							fontSize = selectedFontSize;
 							showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
@@ -959,10 +958,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
 		return entities.definition(entityType).foreignKeys().get().stream()
 						.allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
-	}
-
-	void setPreferences(ApplicationPreferences preferences) {
-		this.preferences = preferences;
 	}
 
 	void setSaveDefaultUsername(boolean saveDefaultUsername) {
