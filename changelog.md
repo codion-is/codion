@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.1-SNAPSHOT
+### is.codion.swing.framework.ui
+- EntityConditionFieldFactory.createInForeignKeyField() bug fixed, did not handle SwingForeignKeyConditionModel.
 
 ## 0.18.0
 ### is.codion

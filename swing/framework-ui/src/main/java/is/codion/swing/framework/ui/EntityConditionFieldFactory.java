@@ -144,6 +144,12 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 			return configureSearchField(searchModel, inputComponents
 							.foreignKeySearchField((ForeignKey) model.columnIdentifier(), searchModel).build());
 		}
+		if (model instanceof SwingForeignKeyConditionModel) {
+			EntitySearchModel searchModel = ((SwingForeignKeyConditionModel) model).inSearchModel();
+
+			return configureSearchField(searchModel, inputComponents
+							.foreignKeySearchField((ForeignKey) model.columnIdentifier(), searchModel).build());
+		}
 
 		throw new IllegalArgumentException("Unknown foreign key condition model type: " + model);
 	}
