@@ -258,8 +258,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	public void importJSON(File file) throws IOException {
 		List<Entity> entities = objectMapper.deserializeEntities(
 						String.join("\n", Files.readAllLines(file.toPath())));
-		tableModel().clear();
-		tableModel().conditionModel().clear();
+		clearTableAndConditions();
 		tableModel().addItemsAtSorted(0, entities);
 	}
 
