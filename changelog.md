@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.1-SNAPSHOT
 ### is.codion.swing.framework.ui
 - EntityConditionFieldFactory.createInForeignKeyField() bug fixed, did not handle SwingForeignKeyConditionModel.
+- DefaultEntityApplicationPanelBuilder bug fixed, did not close initialization frame on exception.
 
 ## 0.18.0
 ### is.codion

@@ -384,16 +384,22 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			applicationFrame.setTitle(MESSAGES.getString("initializing") + " " + applicationName);
 			applicationFrame.setVisible(true);
 		}
-		P applicationPanel = initializeApplicationPanel(applicationModel);
-		applicationPanel.setPreferences(preferences);
-		applicationPanel.setSaveDefaultUsername(saveDefaultUsername);
-		configureFrame(applicationFrame, applicationPanel);
-		LOG.info("{}, application started successfully: {} ms", applicationFrame.getTitle(), currentTimeMillis() - initializationStarted);
-		if (displayFrame) {
-			applicationFrame.setVisible(true);
+		try {
+			P applicationPanel = initializeApplicationPanel(applicationModel);
+			applicationPanel.setPreferences(preferences);
+			applicationPanel.setSaveDefaultUsername(saveDefaultUsername);
+			configureFrame(applicationFrame, applicationPanel);
+			LOG.info("{}, application started successfully: {} ms", applicationFrame.getTitle(), currentTimeMillis() - initializationStarted);
+			if (displayFrame) {
+				applicationFrame.setVisible(true);
+			}
+			if (onApplicationStarted != null) {
+				onApplicationStarted.accept(applicationPanel);
+			}
 		}
-		if (onApplicationStarted != null) {
-			onApplicationStarted.accept(applicationPanel);
+		catch (Exception e) {
+			applicationFrame.dispose();
+			throw new RuntimeException(e);
 		}
 	}
 
