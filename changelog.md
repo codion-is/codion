@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.1-SNAPSHOT
 ### is.codion.swing.common.ui
 - TableConditionPanel.initializedEvent() added.
+### is.codion.swing.framework.model
+- SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
 ### is.codion.swing.framework.ui
 - EntityConditionFieldFactory.createInForeignKeyField() bug fixed, did not handle SwingForeignKeyConditionModel.
 - DefaultEntityApplicationPanelBuilder bug fixed, did not close initialization frame on exception.

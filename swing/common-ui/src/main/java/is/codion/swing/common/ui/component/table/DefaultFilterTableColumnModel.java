@@ -267,7 +267,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	private State createVisibleState(C identifier) {
 		State visibleState = State.state(true);
 		visibleState.addValidator(value -> checkIfLocked());
-		visibleState.addConsumer(visible -> setColumnVisibleInternal(identifier, visible));
+		visibleState.addConsumer(visible -> setColumnVisible(identifier, visible));
 
 		return visibleState;
 	}
@@ -281,7 +281,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		return visibleState;
 	}
 
-	private void setColumnVisibleInternal(C identifier, boolean visible) {
+	private void setColumnVisible(C identifier, boolean visible) {
 		if (visible) {
 			showColumn(identifier);
 		}

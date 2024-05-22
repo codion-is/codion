@@ -65,8 +65,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -920,10 +919,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 		private EntityTableColumns(EntityDefinition entityDefinition) {
 			this.entityDefinition = entityDefinition;
-			this.identifiers = entityDefinition.attributes().definitions().stream()
+			this.identifiers = unmodifiableList(entityDefinition.attributes().definitions().stream()
 							.filter(attributeDefinition -> !attributeDefinition.hidden())
 							.map(AttributeDefinition::attribute)
-							.collect(toList());
+							.collect(toList()));
 		}
 
 		@Override
@@ -944,11 +943,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		@Override
 		public String string(Entity entity, Attribute<?> attribute) {
 			return entity.string(attribute);
-		}
-
-		@Override
-		public <T> Comparable<T> comparable(Entity entity, Attribute<?> attribute) {
-			return (Comparable<T>) entity.get(attribute);
 		}
 
 		@Override

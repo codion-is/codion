@@ -90,7 +90,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	/**
 	 * @return the table columns
 	 */
-	Columns<R,C> columns();
+	Columns<R, C> columns();
 
 	/**
 	 * Returns a String representation of the value for the given row and column.
@@ -366,7 +366,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param index the identifier index
 		 * @return the identifier at the given index
 		 */
-	  default C identifier(int index) {
+		default C identifier(int index) {
 			return identifiers().get(index);
 		}
 
