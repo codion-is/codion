@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.1-SNAPSHOT
+
 ## 0.18.0
 ### is.codion
 - ServiceConfigurationError caught, cause unwrapped and rethrown.
