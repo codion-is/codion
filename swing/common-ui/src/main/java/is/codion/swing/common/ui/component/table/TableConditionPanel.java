@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
@@ -35,6 +36,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static is.codion.common.item.Item.item;
@@ -158,7 +160,17 @@ public abstract class TableConditionPanel<C> extends JPanel {
 		}
 	}
 
-	protected abstract void onStateChanged(ConditionState state);
+	/**
+	 * An event observer notified when this condition panel has been initialized and all its components created.<br>
+	 * If this event returns an empty optional it can be assumed that this condition panel is initialized when constructed.<br>
+	 * The default implementation returns an empty Optional.
+	 * @return an event notified when this condition panel has been initialized or an empty Optional if not available
+	 */
+	public Optional<EventObserver<?>> initializedEvent() {
+		return Optional.empty();
+	}
+
+	protected void onStateChanged(ConditionState state) {}
 
 	private void configureStates() {
 		State.group(hiddenState, simpleState, advancedState);

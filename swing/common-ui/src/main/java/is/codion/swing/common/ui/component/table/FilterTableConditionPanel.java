@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
@@ -26,6 +28,7 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
@@ -43,6 +46,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	private final Collection<ColumnConditionPanel<C, ?>> conditionPanels;
 	private final FilterTableColumnModel<C> columnModel;
+	private final Event<?> initializedEvent = Event.event();
 
 	private FilterTableColumnComponentPanel<C> componentPanel;
 	private boolean initialized;
@@ -71,6 +75,11 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 		return conditionPanels.stream()
 						.filter(conditionPanel -> columnModel.visible(conditionPanel.conditionModel().columnIdentifier()).get())
 						.collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<EventObserver<?>> initializedEvent() {
+		return Optional.of(initializedEvent.observer());
 	}
 
 	/**
@@ -110,6 +119,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 							.collect(toMap(panel -> panel.conditionModel().columnIdentifier(), identity()));
 			componentPanel = filterTableColumnComponentPanel(columnModel, conditionPanelMap);
 			initialized = true;
+			initializedEvent.run();
 		}
 	}
 }

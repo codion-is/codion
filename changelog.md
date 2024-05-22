@@ -2,9 +2,12 @@ Codion Change Log
 ==================
 
 ## 0.18.1-SNAPSHOT
+### is.codion.swing.common.ui
+- TableConditionPanel.initializedEvent() added.
 ### is.codion.swing.framework.ui
 - EntityConditionFieldFactory.createInForeignKeyField() bug fixed, did not handle SwingForeignKeyConditionModel.
 - DefaultEntityApplicationPanelBuilder bug fixed, did not close initialization frame on exception.
+- EntityTablePanel no longer initializes the table condition panel lazily, now that FilterColumnConditionPanel is initialized lazily.
 
 ## 0.18.0
 ### is.codion
