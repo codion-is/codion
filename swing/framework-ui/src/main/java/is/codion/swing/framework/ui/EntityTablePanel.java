@@ -552,9 +552,6 @@ public class EntityTablePanel extends JPanel {
 		if (!configuration.includeConditionPanel) {
 			throw new IllegalStateException("No condition panel is available");
 		}
-		if (conditionPanelScrollPane == null) {
-			initializeConditionPanel();
-		}
 
 		return (T) tableConditionPanel;
 	}
@@ -1550,12 +1547,14 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void initializeConditionPanel() {
-		conditionPanelScrollPane = createLinkedScrollPane(tableConditionPanel);
-		if (tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)) {
-			tablePanel.add(conditionPanelScrollPane, BorderLayout.NORTH);
+		if (conditionPanelScrollPane == null) {
+			conditionPanelScrollPane = createLinkedScrollPane(tableConditionPanel);
+			if (tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)) {
+				tablePanel.add(conditionPanelScrollPane, BorderLayout.NORTH);
+			}
+			refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
+							|| tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN));
 		}
-		refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
-						|| tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN));
 	}
 
 	private void enableConditionPanelRefreshOnEnter(JComponent component) {
@@ -2645,6 +2644,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void conditionPanelStateChanged(ConditionState conditionState) {
+			initializeConditionPanel();
 			refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
 							|| conditionState != ConditionState.HIDDEN);
 			if (conditionState == ConditionState.HIDDEN) {

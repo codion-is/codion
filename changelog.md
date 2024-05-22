@@ -11,6 +11,7 @@ Codion Change Log
 - DefaultEntityApplicationPanelBuilder bug fixed, did not close initialization frame on exception.
 - EntityTablePanel no longer initializes the table condition panel lazily, now that FilterColumnConditionPanel is initialized lazily.
 - EntityApplicationPanel.preferences removed.
+- EntityTablePanel.conditionPanelStateChanged() bug fixed, did not initialize the condition scroll pane.
 
 ## 0.18.0
 ### is.codion
@@ -224,7 +225,7 @@ Codion Change Log
 
 ## 0.17.43
 ### is.codion.common.core
-- Text.delimitedString() bug fixed, no header resulted caused a line break.
+- Text.delimitedString() bug fixed, no header caused a line break.
 - Text.randomString() removed.
 - Text.textFileContents() removed.
 - Text.delimitedString() removed.
