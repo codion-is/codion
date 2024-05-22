@@ -87,7 +87,7 @@ Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and F
 
 Minimalistic bare-bones project, with a local JDBC connection option. A good place to start.
 
-image::documentation/src/docs/asciidoc/images/petclinic-client.png[Petclinic client]
+image::https://github.com/codion-is/petclinic/blob/main/src/docs/asciidoc/images/owners.png[Petclinic client]
 
 === https://github.com/codion-is/world[World]
 
@@ -95,7 +95,7 @@ Fully configured multi-module project, with separate client modules configured f
 
 Includes server and server monitor modules and jlink/jpackage configurations.
 
-image::documentation/src/docs/asciidoc/images/world-client.png[World client]
+image::https://github.com/codion-is/world/blob/main/documentation/src/docs/asciidoc/images/world-client.png[World client]
 
 === https://github.com/codion-is/chinook[Chinook]
 
@@ -103,7 +103,7 @@ Fully configured multi-module project, with separate client modules configured f
 
 Includes load-test, server, and server monitor modules and jlink/jpackage configurations.
 
-image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
+image::https://github.com/codion-is/chinook/blob/main/documentation/src/docs/asciidoc/images/customers.png[Chinook client]
 
 NOTE: The "waterfall" master/detail UI layout used in these demo applications is what the framework provides by default and can be customized at will.
 
