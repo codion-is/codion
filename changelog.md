@@ -15,6 +15,7 @@ Codion Change Log
 - EntityApplicationPanel.preferences removed.
 - EntityTablePanel.conditionPanelStateChanged() bug fixed, did not initialize the condition scroll pane.
 - EntityTablePanel.configureColumnConditionComponent() bug fixed, did not handle combo boxes.
+- EntityTablePanel, minor optimization, now uses a single ScrollToColumn instance.
 
 ## 0.18.0
 ### is.codion

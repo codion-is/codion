@@ -447,6 +447,7 @@ public class EntityTablePanel extends JPanel {
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
 	private final List<Controls> additionalToolBarControls = new ArrayList<>();
+	private final ScrollToColumn scrollToColumn = new ScrollToColumn();
 
 	private JScrollPane conditionPanelScrollPane;
 	private JScrollPane filterPanelScrollPane;
@@ -1505,7 +1506,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void configureColumnConditionPanel(ColumnConditionPanel<Attribute<?>, ?> conditionPanel) {
 		conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
-						focusGainedEvent.addConsumer(new ScrollToColumn()));
+						focusGainedEvent.addConsumer(scrollToColumn));
 		conditionPanel.components().forEach(component ->
 						configureColumnConditionComponent(component, conditionPanel.conditionModel().columnIdentifier()));
 	}
@@ -1551,7 +1552,7 @@ public class EntityTablePanel extends JPanel {
 		if (configuration.includeFilterPanel) {
 			table.filterPanel().conditionPanels().forEach(conditionPanel ->
 							conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
-											focusGainedEvent.addConsumer(new ScrollToColumn())));
+											focusGainedEvent.addConsumer(scrollToColumn)));
 		}
 	}
 
