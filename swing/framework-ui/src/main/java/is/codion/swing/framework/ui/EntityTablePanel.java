@@ -1497,11 +1497,9 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private FilterColumnConditionPanel<Attribute<?>, ?> createColumnConditionPanel(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
-		FilterColumnConditionPanel<Attribute<?>, ?> conditionPanel = filterColumnConditionPanel(conditionModel,
+		return filterColumnConditionPanel(conditionModel,
 						Objects.toString(table.columnModel().column(conditionModel.columnIdentifier()).getHeaderValue()),
 						configuration.conditionFieldFactory);
-
-		return conditionPanel;
 	}
 
 	private void configureColumnConditionPanel(ColumnConditionPanel<Attribute<?>, ?> conditionPanel) {
@@ -1553,17 +1551,6 @@ public class EntityTablePanel extends JPanel {
 			table.filterPanel().conditionPanels().forEach(conditionPanel ->
 							conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
 											focusGainedEvent.addConsumer(scrollToColumn)));
-		}
-	}
-
-	private void initializeConditionPanel() {
-		if (conditionPanelScrollPane == null) {
-			conditionPanelScrollPane = createLinkedScrollPane(tableConditionPanel);
-			if (tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)) {
-				tablePanel.add(conditionPanelScrollPane, BorderLayout.NORTH);
-			}
-			refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
-							|| tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN));
 		}
 	}
 
@@ -1951,16 +1938,6 @@ public class EntityTablePanel extends JPanel {
 		constraints.weightx = 1.0;
 
 		return constraints;
-	}
-
-	private JScrollPane createLinkedScrollPane(JComponent componentToScroll) {
-		return Components.scrollPane(componentToScroll)
-						.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
-						.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
-						.onBuild(scrollPane -> linkBoundedRangeModels(
-										tableScrollPane.getHorizontalScrollBar().getModel(),
-										scrollPane.getHorizontalScrollBar().getModel()))
-						.build();
 	}
 
 	private static Point popupLocation(JTable table) {
@@ -2664,6 +2641,27 @@ public class EntityTablePanel extends JPanel {
 				add(conditionPanelScrollPane, BorderLayout.NORTH);
 			}
 			revalidate();
+		}
+
+		private void initializeConditionPanel() {
+			if (conditionPanelScrollPane == null) {
+				conditionPanelScrollPane = createLinkedScrollPane(tableConditionPanel);
+				if (tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN)) {
+					tablePanel.add(conditionPanelScrollPane, BorderLayout.NORTH);
+				}
+				refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
+								|| tableConditionPanel.state().isNotEqualTo(ConditionState.HIDDEN));
+			}
+		}
+
+		private JScrollPane createLinkedScrollPane(JComponent componentToScroll) {
+			return Components.scrollPane(componentToScroll)
+							.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
+							.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
+							.onBuild(scrollPane -> linkBoundedRangeModels(
+											tableScrollPane.getHorizontalScrollBar().getModel(),
+											scrollPane.getHorizontalScrollBar().getModel()))
+							.build();
 		}
 
 		private void filterPanelStateChanged(ConditionState conditionState) {

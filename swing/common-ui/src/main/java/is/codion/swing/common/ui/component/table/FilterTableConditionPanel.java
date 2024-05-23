@@ -95,6 +95,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 		return new FilterTableConditionPanel<>(conditionModel, conditionPanels, columnModel);
 	}
 
+	@Override
 	protected void onStateChanged(ConditionState conditionState) {
 		conditionPanels.forEach(panel -> panel.state().set(conditionState));
 		switch (conditionState) {
