@@ -17,6 +17,7 @@ Codion Change Log
 - EntityTablePanel.conditionPanelStateChanged() bug fixed, did not initialize the condition scroll pane.
 - EntityTablePanel.configureColumnConditionComponent() bug fixed, did not handle combo boxes.
 - EntityTablePanel, minor optimization, now uses a single ScrollToColumn instance.
+- EntityEditPanel bug fixed, modified warning no longer triggered when the active entity is replaced with an updated version of itself.
 
 ## 0.18.0
 ### is.codion

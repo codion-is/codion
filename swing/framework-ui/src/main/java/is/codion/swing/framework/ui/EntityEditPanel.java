@@ -55,6 +55,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -630,7 +631,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void beforeEntity(Entity entity) {
-		if (configuration.modifiedWarning && editModel().editing().get() && showConfirmDialog(this,
+		if (configuration.modifiedWarning
+						&& editModel().editing().get()
+						&& !Objects.equals(editModel().entity(), entity)
+						&& showConfirmDialog(this,
 						FrameworkMessages.modifiedWarning(), FrameworkMessages.modifiedWarningTitle(),
 						JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
 			throw new CancelException();
