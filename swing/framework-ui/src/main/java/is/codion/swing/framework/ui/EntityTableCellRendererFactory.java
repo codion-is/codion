@@ -20,12 +20,11 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Builder;
 import is.codion.swing.common.ui.component.table.FilterTableCellRendererFactory;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-
-import javax.swing.table.TableCellRenderer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -44,7 +43,7 @@ public class EntityTableCellRendererFactory implements FilterTableCellRendererFa
 	}
 
 	@Override
-	public final TableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
+	public final FilterTableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
 		return builder(column).build();
 	}
 

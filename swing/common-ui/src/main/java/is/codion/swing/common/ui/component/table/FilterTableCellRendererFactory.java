@@ -18,16 +18,14 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import javax.swing.table.TableCellRenderer;
-
 /**
- * A factory for {@link TableCellRenderer} instances.
+ * A factory for {@link FilterTableCellRenderer} instances.
  */
 public interface FilterTableCellRendererFactory<C> {
 
 	/**
 	 * @param column the column
-	 * @return a {@link TableCellRenderer} instance for the given column
+	 * @return a {@link FilterTableCellRenderer} instance for the given column
 	 */
-	TableCellRenderer tableCellRenderer(FilterTableColumn<C> column);
+	FilterTableCellRenderer tableCellRenderer(FilterTableColumn<C> column);
 }

@@ -59,7 +59,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.text.NumberFormat;
@@ -531,7 +530,7 @@ public final class LoadTestPanel<T> extends JPanel {
 					FilterTableCellRendererFactory<ColumnId> {
 
 		@Override
-		public TableCellRenderer tableCellRenderer(FilterTableColumn<ColumnId> column) {
+		public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<ColumnId> column) {
 			FilterTableCellRenderer.Builder<ApplicationRow, ColumnId> builder =
 							FilterTableCellRenderer.builder(model().applicationTableModel(), column.getIdentifier(), Integer.class);
 			if (column.getIdentifier().equals(ColumnId.DURATION)) {
