@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - TableConditionPanel.initializedEvent() added.
 - FilterTable bug fixed, now configures the filter condition panels correctly.
+- FilterTableCellRenderer, minor renaming of configuration value keys.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
 ### is.codion.swing.framework.ui
