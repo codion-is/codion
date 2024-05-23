@@ -1513,8 +1513,17 @@ public class EntityTablePanel extends JPanel {
 	private void configureColumnConditionComponent(JComponent component, Attribute<?> attribute) {
 		enableConditionPanelRefreshOnEnter(component);
 		TableCellRenderer cellRenderer = table.columnModel().column(attribute).getCellRenderer();
-		if (cellRenderer instanceof DefaultTableCellRenderer && component instanceof JTextField) {
-			((JTextField) component).setHorizontalAlignment(((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment());
+		if (cellRenderer instanceof DefaultTableCellRenderer) {
+			int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
+			if (component instanceof JTextField) {
+				((JTextField) component).setHorizontalAlignment(horizontalAlignment);
+			}
+			else if (component instanceof JComboBox) {
+				Component editorComponent = ((JComboBox<?>) component).getEditor().getEditorComponent();
+				if (editorComponent instanceof JTextField) {
+					((JTextField) editorComponent).setHorizontalAlignment(horizontalAlignment);
+				}
+			}
 		}
 		else if (component instanceof JCheckBox) {
 			((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);

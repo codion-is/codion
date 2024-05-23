@@ -12,6 +12,7 @@ Codion Change Log
 - EntityTablePanel no longer initializes the table condition panel lazily, now that FilterColumnConditionPanel is initialized lazily.
 - EntityApplicationPanel.preferences removed.
 - EntityTablePanel.conditionPanelStateChanged() bug fixed, did not initialize the condition scroll pane.
+- EntityTablePanel.configureColumnConditionComponent() bug fixed, did not handle combo boxes.
 
 ## 0.18.0
 ### is.codion
