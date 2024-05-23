@@ -6,7 +6,8 @@ Codion Change Log
 - TableConditionPanel.initializedEvent() added.
 - FilterTable bug fixed, now configures the filter condition panels correctly.
 - FilterTableCellRenderer, minor renaming of configuration value keys.
-- FilterTableCellRendererFactory.tableCellRenderer() now returns FilterTableCellRenderer instead of TableCellRenderer. 
+- FilterTableCellRendererFactory.tableCellRenderer() now returns FilterTableCellRenderer instead of TableCellRenderer.
+- FilterColumnConditionPanel bug fixed, GREATER_THAN_OR_EQUAL was missing from LOWER_BOUND_OPERATORS.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
 ### is.codion.swing.framework.ui

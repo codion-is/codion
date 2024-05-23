@@ -127,7 +127,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private static final String UNKNOWN_OPERATOR = "Unknown operator: ";
 	private static final List<Operator> LOWER_BOUND_OPERATORS = asList(
-					GREATER_THAN, GREATER_THAN, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
+					GREATER_THAN, GREATER_THAN_OR_EQUAL, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
 	private static final List<Operator> UPPER_BOUND_OPERATORS = asList(
 					LESS_THAN, LESS_THAN_OR_EQUAL, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
 
