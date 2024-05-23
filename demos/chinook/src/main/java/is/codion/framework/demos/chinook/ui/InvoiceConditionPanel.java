@@ -98,7 +98,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 	@Override
 	public Collection<ColumnConditionPanel<Attribute<?>, ?>> selectableConditionPanels() {
-		return state().isEqualTo(ADVANCED) ? super.selectableConditionPanels() : simpleConditionPanel.conditionPanels();
+		return state().isEqualTo(ADVANCED) ? advancedConditionPanel.selectableConditionPanels() : simpleConditionPanel.conditionPanels();
 	}
 
 	@Override
