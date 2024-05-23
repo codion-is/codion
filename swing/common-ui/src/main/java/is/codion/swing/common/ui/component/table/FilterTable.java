@@ -51,6 +51,8 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
 
 import javax.swing.Action;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -58,12 +60,14 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -339,6 +343,9 @@ public final class FilterTable<R, C> extends JTable {
 	public FilterTableConditionPanel<C> filterPanel() {
 		if (filterPanel == null) {
 			filterPanel = filterTableConditionPanel(tableModel.filterModel(), createColumnFilterPanels(), columnModel());
+			filterPanel.initializedEvent().ifPresent(initializedEvent ->
+							initializedEvent.addListener(() -> filterPanel.conditionPanels()
+											.forEach(this::configureColumnConditionPanel)));
 		}
 
 		return filterPanel;
@@ -843,37 +850,40 @@ public final class FilterTable<R, C> extends JTable {
 		return components.stream();
 	}
 
-
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
-		List<ColumnConditionModel<C, ?>> filterModels = tableModel.filterModel()
+		return tableModel.filterModel()
 						.conditionModels()
 						.values()
 						.stream()
 						.filter(conditionModel -> columnModel().containsColumn(conditionModel.columnIdentifier()))
 						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.columnClass()))
+						.map(conditionModel -> filterColumnConditionPanel(conditionModel,
+										Objects.toString(columnModel().column(conditionModel.columnIdentifier()).getHeaderValue()), filterFieldFactory))
 						.collect(toList());
-		List<ColumnConditionPanel<C, ?>> conditionPanels = new ArrayList<>();
-		for (ColumnConditionModel<C, ?> conditionModel : filterModels) {
-			ColumnConditionPanel<C, ?> conditionPanel = filterColumnConditionPanel(conditionModel,
-							Objects.toString(columnModel().column(conditionModel.columnIdentifier()).getHeaderValue()), filterFieldFactory);
-			configureComponents(conditionPanel, columnModel().column(conditionPanel.conditionModel().columnIdentifier()).getCellRenderer());
-			conditionPanels.add(conditionPanel);
-		}
-
-		return conditionPanels;
 	}
 
-	private ColumnConditionPanel<C, ?> configureComponents(ColumnConditionPanel<C, ?> conditionPanel,
-																												 TableCellRenderer cellRenderer) {
+	private void configureColumnConditionPanel(ColumnConditionPanel<C, ?> conditionPanel) {
+		conditionPanel.components().forEach(component ->
+						configureColumnConditionComponent(component, conditionPanel.conditionModel().columnIdentifier()));
+	}
+
+	private void configureColumnConditionComponent(JComponent component, C columnIdentifier) {
+		TableCellRenderer cellRenderer = columnModel().column(columnIdentifier).getCellRenderer();
 		if (cellRenderer instanceof DefaultTableCellRenderer) {
 			int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
-			conditionPanel.components().stream()
-							.filter(JTextField.class::isInstance)
-							.map(JTextField.class::cast)
-							.forEach(textField -> textField.setHorizontalAlignment(horizontalAlignment));
+			if (component instanceof JTextField) {
+				((JTextField) component).setHorizontalAlignment(horizontalAlignment);
+			}
+			else if (component instanceof JComboBox) {
+				Component editorComponent = ((JComboBox<?>) component).getEditor().getEditorComponent();
+				if (editorComponent instanceof JTextField) {
+					((JTextField) editorComponent).setHorizontalAlignment(horizontalAlignment);
+				}
+			}
 		}
-
-		return conditionPanel;
+		else if (component instanceof JCheckBox) {
+			((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
+		}
 	}
 
 	private static void addIfComponent(Collection<JComponent> components, Object object) {
