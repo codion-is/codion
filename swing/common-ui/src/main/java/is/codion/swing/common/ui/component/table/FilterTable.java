@@ -939,7 +939,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final class MouseSortHandler extends MouseAdapter {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (!sortingEnabled.get() || e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
+			if (!sortingEnabled.get() || e.getButton() != MouseEvent.BUTTON1 || e.isControlDown()) {
 				return;
 			}
 
@@ -952,7 +952,7 @@ public final class FilterTable<R, C> extends JTable {
 				C columnIdentifier = columnModel.getColumn(index).getIdentifier();
 				if (sortModel.isSortingEnabled(columnIdentifier)) {
 					SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(columnIdentifier));
-					if (e.isControlDown()) {
+					if (e.isAltDown()) {
 						sortModel.addSortOrder(columnIdentifier, nextSortOrder);
 					}
 					else {
