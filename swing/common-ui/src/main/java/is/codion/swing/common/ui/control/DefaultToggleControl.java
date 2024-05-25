@@ -18,11 +18,11 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
 import java.awt.event.ActionEvent;
-import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
 
@@ -60,9 +60,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 	public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copy(Value<Boolean> value) {
 		B builder = (B) new ToggleControlBuilder<>(value)
 						.enabled(enabled());
-		Arrays.stream(getKeys())
-						.map(String.class::cast)
-						.forEach(key -> builder.value(key, getValue(key)));
+		keys().forEach(key -> builder.value(key, getValue(key)));
 
 		return builder;
 	}
@@ -70,5 +68,20 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 	@Override
 	public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copy(State state) {
 		return copy((Value<Boolean>) state);
+	}
+
+	@Override
+	public <B extends Builder<Control, B>> Builder<Control, B> copy(Command command) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <B extends Builder<Control, B>> Builder<Control, B> copy(ActionCommand actionCommand) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <B extends Builder<Control, B>> Builder<Control, B> copy(Event<ActionEvent> event) {
+		throw new UnsupportedOperationException();
 	}
 }

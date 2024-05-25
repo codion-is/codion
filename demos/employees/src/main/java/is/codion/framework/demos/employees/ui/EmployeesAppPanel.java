@@ -101,10 +101,10 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 	// tag::createToolsMenuControls[]
 	@Override
 	protected Controls createToolsMenuControls() {
-		return super.createToolsMenuControls()
-						.add(Control.builder(this::importJSON)
-										.name("Import JSON")
-										.build());
+		return super.createToolsMenuControls().copy()
+						.control(Control.builder(this::importJSON)
+										.name("Import JSON"))
+						.build();
 	}
 	// end::createToolsMenuControls[]
 

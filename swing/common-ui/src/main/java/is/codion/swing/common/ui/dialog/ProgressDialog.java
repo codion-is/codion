@@ -100,9 +100,10 @@ public final class ProgressDialog extends JDialog {
 			basePanelBuilder.eastComponent(builder.eastPanel);
 		}
 		basePanelBuilder.centerComponent(progressBar);
-		if (builder.controls.notEmpty()) {
+		Controls controls = builder.controls.build();
+		if (controls.notEmpty()) {
 			basePanelBuilder.southComponent(PanelBuilder.builder(flowLayout(FlowLayout.TRAILING))
-							.add(ButtonPanelBuilder.builder(builder.controls).build())
+							.add(ButtonPanelBuilder.builder(controls).build())
 							.build());
 		}
 
@@ -205,7 +206,7 @@ public final class ProgressDialog extends JDialog {
 
 	static class DefaultBuilder extends AbstractDialogBuilder<Builder> implements Builder {
 
-		private final Controls controls = Controls.controls();
+		private final Controls.Builder controls = Controls.builder();
 
 		private int maximumProgress = 100;
 		private boolean indeterminate = true;
@@ -262,7 +263,7 @@ public final class ProgressDialog extends JDialog {
 
 		@Override
 		public Builder control(Control control) {
-			this.controls.add(requireNonNull(control));
+			this.controls.control(requireNonNull(control));
 			return this;
 		}
 

@@ -920,8 +920,8 @@ public final class ComponentsTest {
 
 	@Test
 	void menuBar() {
-		Controls base = Controls.controls();
-		base.add(controls);
+		Controls.Builder base = Controls.builder();
+		base.control(controls);
 
 		JMenuBar menu = Components.menu(base).createMenuBar();
 		assertEquals(1, menu.getMenuCount());
@@ -934,8 +934,9 @@ public final class ComponentsTest {
 
 	@Test
 	void popupMenu() {
-		Controls base = Controls.controls();
-		base.add(controls);
+		Controls base = Controls.builder()
+						.control(controls)
+						.build();
 
 		Components.menu(base).createPopupMenu();
 	}

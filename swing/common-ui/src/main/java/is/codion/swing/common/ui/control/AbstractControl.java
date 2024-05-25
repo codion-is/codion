@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.event.Event;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -28,8 +27,8 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -37,6 +36,7 @@ import java.util.OptionalInt;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * An abstrct Control implementation, implementing everything except actionPerformed().
@@ -51,7 +51,6 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	static final String FOREGROUND = "Foreground";
 
 	private final StateObserver enabledObserver;
-	private final Consumer<Exception> onException;
 
 	// Keep this in a field since it's added as a weak listener
 	private final Enabler enabler = new Enabler();
@@ -60,7 +59,6 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	AbstractControl(AbstractControlBuilder<?, ?> builder) {
 		super((String) builder.values.get(NAME));
 		this.initialized = true;
-		this.onException = builder.onException;
 		this.enabledObserver = builder.enabled == null ? State.state(true) : builder.enabled;
 		this.enabledObserver.addWeakConsumer(enabler);
 		super.setEnabled(this.enabledObserver.get());
@@ -92,6 +90,14 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		}
 
 		return super.getValue(key);
+	}
+
+	@Override
+	public final Collection<String> keys() {
+		return Arrays.stream(getKeys())
+						.filter(String.class::isInstance)
+						.map(String.class::cast)
+						.collect(toList());
 	}
 
 	@Override
@@ -148,45 +154,6 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		return Optional.ofNullable((Font) getValue(FONT));
 	}
 
-	@Override
-	public final <B extends Builder<Control, B>> Builder<Control, B> copy(Command command) {
-		return createBuilder(command, null);
-	}
-
-	@Override
-	public final <B extends Builder<Control, B>> Builder<Control, B> copy(ActionCommand actionCommand) {
-		return createBuilder(null, actionCommand);
-	}
-
-	@Override
-	public final <B extends Builder<Control, B>> Builder<Control, B> copy(Event<ActionEvent> event) {
-		requireNonNull(event);
-
-		return copy(event::accept);
-	}
-
-	/**
-	 * Handles the given exception using the underlying exception handler
-	 * @param exception the exception to handle
-	 */
-	protected final void handleException(Exception exception) {
-		onException.accept(exception);
-	}
-
-	<B extends Builder<Control, B>> Builder<Control, B> createBuilder(Command command, ActionCommand actionCommand) {
-		if (command == null && actionCommand == null) {
-			throw new NullPointerException("Command or ActionCommand must be specified");
-		}
-		B builder = new DefaultControl.DefaultControlBuilder<Control, B>(command, actionCommand)
-						.enabled(enabledObserver)
-						.onException(onException);
-		Arrays.stream(getKeys())
-						.map(String.class::cast)
-						.forEach(key -> builder.value(key, getValue(key)));
-
-		return builder;
-	}
-
 	private final class Enabler implements Consumer<Boolean> {
 
 		@Override
@@ -200,7 +167,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		private final Map<String, Object> values = new HashMap<>();
 
 		private StateObserver enabled;
-		private Consumer<Exception> onException = DEFAULT_EXCEPTION_HANDLER;
+		protected Consumer<Exception> onException = DEFAULT_EXCEPTION_HANDLER;
 
 		@Override
 		public final B name(String name) {

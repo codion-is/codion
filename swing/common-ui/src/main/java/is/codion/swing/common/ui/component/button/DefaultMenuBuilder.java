@@ -38,7 +38,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder> implements MenuBuilder {
 
-	private final Controls controls;
+	private final Controls.Builder controlsBuilder;
 
 	private final List<MenuListener> menuListeners = new ArrayList<>();
 	private final List<PopupMenuListener> popupMenuListeners = new ArrayList<>();
@@ -47,18 +47,18 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 
 	DefaultMenuBuilder(Controls controls) {
 		super(controls);
-		this.controls = controls == null ? Controls.controls() : controls;
+		this.controlsBuilder = controls == null ? Controls.builder() : controls.copy();
 	}
 
 	@Override
 	public MenuBuilder controls(Controls controls) {
-		this.controls.add(requireNonNull(controls));
+		this.controlsBuilder.control(requireNonNull(controls));
 		return this;
 	}
 
 	@Override
 	public MenuBuilder separator() {
-		this.controls.addSeparator();
+		this.controlsBuilder.separator();
 		return this;
 	}
 
@@ -97,7 +97,7 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 	@Override
 	public JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		controls.actions().stream()
+		controlsBuilder.build().actions().stream()
 						.filter(new IsControlsInstance())
 						.map(new CastToControls())
 						.filter(new IsNotEmptyControls())
@@ -108,6 +108,7 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 
 	@Override
 	protected JMenu createButton() {
+		Controls controls = controlsBuilder.build();
 		JMenu menu = new JMenu(controls);
 		menuListeners.forEach(new AddMenuListener(menu));
 		new MenuControlHandler(menu, controls, menuItemBuilder, toggleMenuItemBuilder);

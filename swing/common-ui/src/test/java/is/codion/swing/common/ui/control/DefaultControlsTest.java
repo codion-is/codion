@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.control;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.Action;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultControlsTest {
@@ -28,44 +30,57 @@ public class DefaultControlsTest {
 	void test() {
 		Control one = Control.control(() -> {});
 		Control two = Control.control(() -> {});
-		Controls list = Controls.builder().name("list").controls(one, two).build();
-		assertThrows(NullPointerException.class, () -> list.add(null));
-		assertThrows(NullPointerException.class, () -> list.addAt(0, null));
-		list.remove(null);
-		assertTrue(list.name().isPresent());
-		assertFalse(list.smallIcon().isPresent());
-		assertEquals("list", list.name().orElse(null));
-		Controls list1 = Controls.controls();
-		assertFalse(list1.name().isPresent());
-		Controls list2 = Controls.builder()
-						.name("list")
+		Action action = Control.control(() -> {});
+		Controls controls = Controls.builder()
+						.name("controls")
+						.control(one)
+						.separator()
+						.control(two)
+						.action(action)
+						.build();
+
+		assertTrue(controls.name().isPresent());
+		assertFalse(controls.smallIcon().isPresent());
+		assertEquals("controls", controls.name().orElse(null));
+
+		Controls controls1 = Controls.builder()
+						.name("controls")
+						.control(one)
+						.separator()
 						.control(two)
 						.build();
-		assertTrue(list2.name().isPresent());
-		assertEquals("list", list2.name().orElse(null));
-		list2.addAt(0, one);
-		list2.addSeparatorAt(1);
+		assertTrue(controls1.name().isPresent());
+		assertEquals("controls", controls1.name().orElse(null));
 
-		assertEquals(one, list2.get(0));
-		assertSame(Controls.SEPARATOR, list2.get(1));
-		assertEquals(two, list2.get(2));
+		assertEquals(one, controls1.get(0));
+		assertSame(Controls.SEPARATOR, controls1.get(1));
+		assertEquals(two, controls1.get(2));
 
-		assertTrue(list2.actions().contains(one));
-		assertTrue(list2.actions().contains(two));
-		assertEquals(3, list2.size());
-		list2.addSeparator();
-		assertEquals(4, list2.size());
+		assertTrue(controls1.actions().contains(one));
+		assertTrue(controls1.actions().contains(two));
+		assertEquals(3, controls1.size());
 
-		list2.remove(two);
-		assertFalse(list2.actions().contains(two));
+		assertTrue(controls1.notEmpty());
 
-		list2.removeAll();
-		assertFalse(list2.actions().contains(one));
-		assertTrue(list2.empty());
-		assertFalse(list2.notEmpty());
-
-		assertThrows(UnsupportedOperationException.class, () -> list.setEnabled(false));
-		assertThrows(UnsupportedOperationException.class, () -> list.putValue("enabled", false));
+		assertThrows(UnsupportedOperationException.class, () -> controls.setEnabled(false));
+		assertThrows(UnsupportedOperationException.class, () -> controls.putValue("enabled", false));
 		assertThrows(IllegalArgumentException.class, () -> Control.builder(() -> {}).value("enabled", false));
+	}
+
+	@Test
+	void copy() {
+		Control one = Control.control(() -> {});
+		Control two = Control.control(() -> {});
+		Action action = Control.control(() -> {});
+		DefaultControls controls = (DefaultControls) Controls.builder()
+						.name("controls")
+						.control(one)
+						.separator()
+						.control(two)
+						.action(action)
+						.build();
+		DefaultControls copy = (DefaultControls) controls.copy().build();
+		controls.keys().forEach(key -> assertEquals(controls.getValue(key), copy.getValue(key)));
+		assertSame(controls.enabled(), copy.enabled());
 	}
 }

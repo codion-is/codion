@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractControlPanelBuilder<C extends JComponent, B extends ControlPanelBuilder<C, B>>
 				extends AbstractComponentBuilder<Void, C, B> implements ControlPanelBuilder<C, B> {
 
-	private final Controls controls = Controls.controls();
+	private final Controls.Builder builder = Controls.builder();
 
 	private final ButtonBuilder<?, ?, ?> buttonBuilder = ButtonBuilder.builder();
 	private final ToggleButtonBuilder<?, ?> toggleButtonBuilder = ToggleButtonBuilder.builder();
@@ -45,7 +45,7 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
 	protected AbstractControlPanelBuilder(Controls controls) {
 		if (controls != null) {
-			this.controls.addAll(controls);
+			builder.actions(controls.actions());
 		}
 	}
 
@@ -60,19 +60,19 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
 	@Override
 	public final B action(Action action) {
-		this.controls.add(requireNonNull(action));
+		builder.action(requireNonNull(action));
 		return self();
 	}
 
 	@Override
 	public final B controls(Controls controls) {
-		this.controls.addAll(requireNonNull(controls));
+		builder.actions(requireNonNull(controls).actions());
 		return self();
 	}
 
 	@Override
 	public final B separator() {
-		this.controls.addSeparator();
+		builder.separator();
 		return self();
 	}
 
@@ -142,7 +142,7 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	protected final void setInitialValue(C component, Void initialValue) {}
 
 	protected final Controls controls() {
-		return controls;
+		return builder.build();
 	}
 
 	protected final int orientation() {

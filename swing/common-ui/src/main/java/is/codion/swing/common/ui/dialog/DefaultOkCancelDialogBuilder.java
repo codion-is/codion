@@ -117,7 +117,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 
 	@Override
 	public JDialog build() {
-		controls().removeAll();
+		actions().clear();
 		if (okAction == null) {
 			okAction = Control.builder(onOk == null ? new DefaultOkCommand(component()) : new PerformAndCloseCommand(onOk, component()))
 							.name(Messages.ok())

@@ -39,7 +39,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -51,7 +53,7 @@ import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
 class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends AbstractDialogBuilder<B> implements ActionDialogBuilder<B> {
 
-	private final Controls controls = Controls.controls();
+	private final List<Action> actions = new ArrayList<>();
 	private final JComponent component;
 
 	private Action defaultAction;
@@ -69,15 +71,15 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 
 	@Override
 	public B action(Action action) {
-		controls.add(action);
+		actions.add(requireNonNull(action));
 		return self();
 	}
 
 	@Override
 	public B defaultAction(Action defaultAction) {
 		this.defaultAction = requireNonNull(defaultAction);
-		if (!controls.actions().contains(defaultAction)) {
-			controls.add(defaultAction);
+		if (!actions.contains(defaultAction)) {
+			actions.add(defaultAction);
 		}
 		return self();
 	}
@@ -85,8 +87,8 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 	@Override
 	public B escapeAction(Action escapeAction) {
 		this.escapeAction = requireNonNull(escapeAction);
-		if (!controls.actions().contains(escapeAction)) {
-			controls.add(escapeAction);
+		if (!actions.contains(escapeAction)) {
+			actions.add(escapeAction);
 		}
 		return self();
 	}
@@ -137,11 +139,13 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 
 	@Override
 	public JDialog build() {
-		if (controls.empty()) {
-			throw new IllegalStateException("No controls have been specified");
+		if (actions.isEmpty()) {
+			throw new IllegalStateException("No actions have been specified");
 		}
 
-		JPanel buttonPanel = ButtonPanelBuilder.builder(controls).build();
+		JPanel buttonPanel = ButtonPanelBuilder.builder(Controls.builder()
+						.actions(actions))
+						.build();
 		JPanel panel = BorderLayoutPanelBuilder.builder(new BorderLayout())
 						.centerComponent(component)
 						.southComponent(PanelBuilder.builder(Layouts.flowLayout(buttonPanelConstraints))
@@ -172,8 +176,8 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 		return dialog;
 	}
 
-	protected final Controls controls() {
-		return controls;
+	protected final List<Action> actions() {
+		return actions;
 	}
 
 	protected final JComponent component() {

@@ -427,29 +427,29 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see #createHelpMenuControls()
 	 */
 	protected Controls createMainMenuControls() {
-		Controls menuControls = Controls.controls();
+		Controls.Builder menuControls = Controls.builder();
 		Controls fileMenuControls = createFileMenuControls();
 		if (fileMenuControls != null && fileMenuControls.notEmpty()) {
-			menuControls.add(fileMenuControls);
+			menuControls.control(fileMenuControls);
 		}
 		Controls viewMenuControls = createViewMenuControls();
 		if (viewMenuControls != null && viewMenuControls.notEmpty()) {
-			menuControls.add(viewMenuControls);
+			menuControls.control(viewMenuControls);
 		}
 		Controls toolsMenuControls = createToolsMenuControls();
 		if (toolsMenuControls != null && toolsMenuControls.notEmpty()) {
-			menuControls.add(toolsMenuControls);
+			menuControls.control(toolsMenuControls);
 		}
 		Controls supportTableMenuControls = createSupportTableMenuControls();
 		if (supportTableMenuControls != null && supportTableMenuControls.notEmpty()) {
-			menuControls.add(supportTableMenuControls);
+			menuControls.control(supportTableMenuControls);
 		}
 		Controls helpMenuControls = createHelpMenuControls();
 		if (helpMenuControls != null && helpMenuControls.notEmpty()) {
-			menuControls.add(helpMenuControls);
+			menuControls.control(helpMenuControls);
 		}
 
-		return menuControls;
+		return menuControls.build();
 	}
 
 	/**
@@ -491,22 +491,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return the Controls specifying the items in the 'Help' menu
 	 */
 	protected Controls createHelpMenuControls() {
-		Controls controls = Controls.builder()
+		Controls.Builder builder = Controls.builder()
 						.name(resourceBundle.getString(HELP))
 						.mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
 						.control(createHelpControl())
 						.control(createViewKeyboardShortcutsControl())
 						.separator()
-						.control(createAboutControl())
-						.build();
+						.control(createAboutControl());
 
 		Controls logControls = createLogControls();
-		if (logControls != null && !logControls.empty()) {
-			controls.addSeparatorAt(2);
-			controls.addAt(3, logControls);
+		if (!logControls.empty()) {
+			builder.separatorAt(2);
+			builder.controlAt(3, logControls);
 		}
 
-		return controls;
+		return builder.build();
 	}
 
 	/**
@@ -538,15 +537,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return a Control for setting the log level
 	 */
 	protected final Control createLogLevelControl() {
-		Controls logLevelControls = Controls.builder()
+		Controls.Builder logLevelControls = Controls.builder()
 						.name(resourceBundle.getString(LOG_LEVEL))
-						.description(resourceBundle.getString(LOG_LEVEL_DESC))
-						.build();
-		logLevelStates.forEach((logLevel, state) -> logLevelControls.add(ToggleControl.builder(state)
+						.description(resourceBundle.getString(LOG_LEVEL_DESC));
+		logLevelStates.forEach((logLevel, state) -> logLevelControls.control(ToggleControl.builder(state)
 						.name(logLevel.toString())
 						.build()));
 
-		return logLevelControls;
+		return logLevelControls.build();
 	}
 
 	/**
