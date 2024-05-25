@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.control.DefaultControls.ControlsBuilder;
 import is.codion.swing.common.ui.control.DefaultControls.DefaultConfig;
 
 import javax.swing.Action;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -41,35 +42,6 @@ public interface Controls extends Control {
 	 * @return an unmodifiable view of the actions in this set
 	 */
 	List<Action> actions();
-
-	/**
-	 * Adds the given action to this Controls instance,
-	 * adding a null action has the same effect as addSeparator()
-	 * @param action the action to add
-	 * @return this Controls instance
-	 */
-	Controls add(Action action);
-
-	/**
-	 * Adds the given action to this Controls instance at the specified index,
-	 * adding a null action has the same effect as addSeparator()
-	 * @param index the index
-	 * @param action the action to add at the specified index
-	 * @return this Controls instance
-	 */
-	Controls addAt(int index, Action action);
-
-	/**
-	 * @param action the action to remove
-	 * @return this Controls instance
-	 */
-	Controls remove(Action action);
-
-	/**
-	 * Removes all actions from this controls instance
-	 * @return this Controls instance
-	 */
-	Controls removeAll();
 
 	/**
 	 * @return the number of controls in this controls instance
@@ -92,46 +64,8 @@ public interface Controls extends Control {
 	 */
 	Action get(int index);
 
-	/**
-	 * @param controls the controls to add
-	 * @return this Control instance
-	 */
-	Controls add(Controls controls);
-
-	/**
-	 * @param index the index
-	 * @param controls the controls to add at the specified index
-	 * @return this Controls instance
-	 */
-	Controls addAt(int index, Controls controls);
-
-	/**
-	 * Adds a separator to the end of this controls instance
-	 * @return this Controls instance
-	 */
-	Controls addSeparator();
-
-	/**
-	 * Adds a separator at the given index
-	 * @param index the index
-	 * @return this Controls instance
-	 */
-	Controls addSeparatorAt(int index);
-
-	/**
-	 * Adds all actions found in {@code controls} to this controls instance
-	 * @param controls the source list
-	 * @return this Controls instance
-	 */
-	Controls addAll(Controls controls);
-
-	/**
-	 * Constructs a new Controls instance.
-	 * @return a new Controls instance.
-	 */
-	static Controls controls() {
-		return builder().build();
-	}
+	@Override
+	Builder copy();
 
 	/**
 	 * Constructs a new Controls instance.
@@ -188,6 +122,20 @@ public interface Controls extends Control {
 		Builder control(Control.Builder<?, ?> controlBuilder);
 
 		/**
+		 * @param index the index at which to add the control
+		 * @param control the control to add to this controls instance
+		 * @return this Builder instance
+		 */
+		Builder controlAt(int index, Control control);
+
+		/**
+		 * @param index the index at which to add the control
+		 * @param controlBuilder the control builder to add to this controls instance
+		 * @return this Builder instance
+		 */
+		Builder controlAt(int index, Control.Builder<?, ?> controlBuilder);
+
+		/**
 		 * @param controls the controls to add
 		 * @return this Builder instance
 		 */
@@ -206,16 +154,48 @@ public interface Controls extends Control {
 		Builder action(Action action);
 
 		/**
+		 * @param index the index at which to add the action
+		 * @param action the Action to add to this controls instance
+		 * @return this Builder instance
+		 */
+		Builder actionAt(int index, Action action);
+
+		/**
 		 * @param actions the Actions to add to this controls instance
 		 * @return this Builder instance
 		 */
 		Builder actions(Action... actions);
 
 		/**
+		 * @param actions the Actions to add to this controls instance
+		 * @return this Builder instance
+		 */
+		Builder actions(Collection<Action> actions);
+
+		/**
 		 * Adds a separator to the Controls
 		 * @return this Builder instance
 		 */
 		Builder separator();
+
+		/**
+		 * Adds a separator to the Controls
+		 * @param index the index at which to insert the separator
+		 * @return this Builder instance
+		 */
+		Builder separatorAt(int index);
+
+		/**
+		 * @param action the action to remove
+		 * @return this Builder instance
+		 */
+		Builder remove(Action action);
+
+		/**
+		 * Removes all actions from this controls builder instance
+		 * @return this Builder instance
+		 */
+		Builder removeAll();
 	}
 
 	/**

@@ -22,12 +22,14 @@ import is.codion.common.event.Event;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.control.DefaultControl.DefaultControlBuilder;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
@@ -86,6 +88,12 @@ public interface Control extends Action {
 	 * @return the font or an empty Optional if none is available
 	 */
 	Optional<Font> font();
+
+	/**
+	 * @return the keys for values that have been set for this control
+	 * @see AbstractAction#getKeys()
+	 */
+	Collection<String> keys();
 
 	/**
 	 * Unsupported, the enabled state of Controls is based on their {@code enabled} state observer

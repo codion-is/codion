@@ -18,17 +18,24 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.event.Event;
+
 import java.awt.event.ActionEvent;
+import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
 
 final class DefaultControl extends AbstractControl {
 
 	private final Command command;
 	private final ActionCommand actionCommand;
+	private final Consumer<Exception> onException;
 
 	private DefaultControl(Command command, ActionCommand actionCommand, DefaultControlBuilder<?, ?> builder) {
 		super(builder);
 		this.command = command;
 		this.actionCommand = actionCommand;
+		this.onException = builder.onException;
 	}
 
 	@Override
@@ -42,13 +49,42 @@ final class DefaultControl extends AbstractControl {
 			}
 		}
 		catch (Exception exception) {
-			handleException(exception);
+			onException.accept(exception);
 		}
 	}
 
 	@Override
 	public <C extends Control, B extends Builder<C, B>> Builder<C, B> copy() {
 		return (Builder<C, B>) createBuilder(command, null);
+	}
+
+	@Override
+	public <B extends Builder<Control, B>> Builder<Control, B> copy(Command command) {
+		return createBuilder(command, null);
+	}
+
+	@Override
+	public <B extends Builder<Control, B>> Builder<Control, B> copy(ActionCommand actionCommand) {
+		return createBuilder(null, actionCommand);
+	}
+
+	@Override
+	public <B extends Builder<Control, B>> Builder<Control, B> copy(Event<ActionEvent> event) {
+		requireNonNull(event);
+
+		return copy(event::accept);
+	}
+
+	<B extends Builder<Control, B>> Builder<Control, B> createBuilder(Command command, ActionCommand actionCommand) {
+		if (command == null && actionCommand == null) {
+			throw new NullPointerException("Command or ActionCommand must be specified");
+		}
+		B builder = new DefaultControl.DefaultControlBuilder<Control, B>(command, actionCommand)
+						.enabled(enabled())
+						.onException(onException);
+		keys().forEach(key -> builder.value(key, getValue(key)));
+
+		return builder;
 	}
 
 	static final class DefaultControlBuilder<C extends Control, B extends Builder<C, B>> extends AbstractControlBuilder<C, B> {

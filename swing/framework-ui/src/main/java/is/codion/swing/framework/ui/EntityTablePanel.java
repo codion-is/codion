@@ -1135,19 +1135,19 @@ public class EntityTablePanel extends JPanel {
 	 */
 	private Controls createEditAttributeControls() {
 		StateObserver editSelectedEnabledObserver = createEditSelectedEnabledObserver();
-		Controls editControls = Controls.builder()
+		Controls.Builder builder = Controls.builder()
 						.name(FrameworkMessages.edit())
 						.enabled(editSelectedEnabledObserver)
 						.smallIcon(ICONS.edit())
-						.description(FrameworkMessages.editSelectedTip())
-						.build();
+						.description(FrameworkMessages.editSelectedTip());
 		configuration.editable.get().stream()
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
 						.sorted(AttributeDefinition.definitionComparator())
-						.forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelected(attributeDefinition.attribute()))
+						.forEach(attributeDefinition -> builder.control(Control.builder(() -> editSelected(attributeDefinition.attribute()))
 										.name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())
 										.enabled(editSelectedEnabledObserver)
 										.build()));
+		Controls editControls = builder.build();
 
 		return editControls.empty() ? null : editControls;
 	}
@@ -1232,29 +1232,31 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Controls createAdditionalPopupControls() {
-		Controls additionalControls = Controls.controls();
-		additionalPopupControls.forEach(controlList -> {
-			if (!controlList.name().isPresent()) {
-				additionalControls.addAll(controlList);
+		Controls.Builder builder = Controls.builder();
+		additionalPopupControls.forEach(controls -> {
+			if (!controls.name().isPresent()) {
+				builder.actions(controls.actions());
 			}
 			else {
-				additionalControls.add(controlList);
+				builder.control(controls);
 			}
 		});
+		Controls additionalControls = builder.build();
 
 		return additionalControls.empty() ? null : additionalControls;
 	}
 
 	private Controls createAdditionalToolbarControls() {
-		Controls additionalControls = Controls.controls();
-		additionalToolBarControls.forEach(controlsList -> {
-			if (!controlsList.name().isPresent()) {
-				additionalControls.addAll(controlsList);
+		Controls.Builder builder = Controls.builder();
+		additionalToolBarControls.forEach(controls -> {
+			if (!controls.name().isPresent()) {
+				builder.actions(controls.actions());
 			}
 			else {
-				additionalControls.add(controlsList);
+				builder.control(controls);
 			}
 		});
+		Controls additionalControls = builder.build();
 
 		return additionalControls.empty() ? null : additionalControls;
 	}
@@ -1274,19 +1276,20 @@ public class EntityTablePanel extends JPanel {
 		if (!configuration.includeConditionPanel || tableConditionPanel == null) {
 			return null;
 		}
-		Controls conditionControls = Controls.builder()
+		Controls.Builder builder = Controls.builder()
 						.name(FrameworkMessages.searchNoun())
-						.smallIcon(ICONS.search())
-						.build();
+						.smallIcon(ICONS.search());
 		Controls conditionPanelControls = tableConditionPanel.controls();
 		if (conditionPanelControls.notEmpty()) {
-			conditionControls.addAll(conditionPanelControls);
-			conditionControls.addSeparator();
+			builder.actions(conditionPanelControls.actions());
+			builder.separator();
 		}
-		conditionControls.add(ToggleControl.builder(tableModel.conditionRequired())
+		builder.control(ToggleControl.builder(tableModel.conditionRequired())
 						.name(MESSAGES.getString("require_query_condition"))
 						.description(MESSAGES.getString("require_query_condition_description"))
 						.build());
+
+		Controls conditionControls = builder.build();
 
 		return conditionControls.empty() ? null : conditionControls;
 	}
@@ -1336,14 +1339,14 @@ public class EntityTablePanel extends JPanel {
 		if (!configuration.includeFilterPanel) {
 			return null;
 		}
-		Controls filterControls = Controls.builder()
+		Controls.Builder builder = Controls.builder()
 						.name(FrameworkMessages.filterNoun())
-						.smallIcon(ICONS.filter())
-						.build();
+						.smallIcon(ICONS.filter());
 		Controls filterPanelControls = table.filterPanel().controls();
 		if (filterPanelControls.notEmpty()) {
-			filterControls.addAll(filterPanelControls);
+			builder.actions(filterPanelControls.actions());
 		}
+		Controls filterControls = builder.build();
 
 		return filterControls.empty() ? null : filterControls;
 	}

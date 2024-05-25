@@ -18,11 +18,14 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.event.Event;
+
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,36 +43,12 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 	DefaultControls(ControlsBuilder builder) {
 		super(builder);
-		builder.controls.forEach(this::add);
+		actions.addAll(builder.actions);
 	}
 
 	@Override
 	public List<Action> actions() {
 		return unmodifiableList(actions);
-	}
-
-	@Override
-	public Controls add(Action action) {
-		actions.add(requireNonNull(action, "action"));
-		return this;
-	}
-
-	@Override
-	public Controls addAt(int index, Action action) {
-		actions.add(index, requireNonNull(action, "action"));
-		return this;
-	}
-
-	@Override
-	public Controls remove(Action action) {
-		actions.remove(action);
-		return this;
-	}
-
-	@Override
-	public Controls removeAll() {
-		actions.clear();
-		return this;
 	}
 
 	@Override
@@ -93,40 +72,25 @@ final class DefaultControls extends AbstractControl implements Controls {
 	}
 
 	@Override
-	public Controls add(Controls controls) {
-		actions.add(requireNonNull(controls, CONTROLS_PARAMETER));
-		return this;
-	}
-
-	@Override
-	public Controls addAt(int index, Controls controls) {
-		actions.add(index, requireNonNull(controls, CONTROLS_PARAMETER));
-		return this;
-	}
-
-	@Override
-	public Controls addSeparator() {
-		actions.add(SEPARATOR);
-		return this;
-	}
-
-	@Override
-	public Controls addSeparatorAt(int index) {
-		actions.add(index, SEPARATOR);
-		return this;
-	}
-
-	@Override
-	public Controls addAll(Controls controls) {
-		actions.addAll(requireNonNull(controls, CONTROLS_PARAMETER).actions());
-		return this;
-	}
-
-	@Override
 	public void actionPerformed(ActionEvent e) {/*Not required*/}
 
 	@Override
-	public <C extends Control, B extends Control.Builder<C, B>> Control.Builder<C, B> copy() {
+	public Controls.Builder copy() {
+		return new ControlsBuilder(this);
+	}
+
+	@Override
+	public <B extends Control.Builder<Control, B>> Control.Builder<Control, B> copy(Command command) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <B extends Control.Builder<Control, B>> Control.Builder<Control, B> copy(ActionCommand actionCommand) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <B extends Control.Builder<Control, B>> Control.Builder<Control, B> copy(Event<ActionEvent> event) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -247,10 +211,10 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public Controls create() {
-			Controls created = Controls.controls();
-			items.forEach(item -> item.addTo(created));
+			Controls.Builder builder = Controls.builder();
+			items.forEach(item -> item.addTo(builder));
 
-			return created;
+			return builder.build();
 		}
 
 		private void add(T controlIdentifier) {
@@ -261,7 +225,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		private interface ControlItem {
-			void addTo(Controls controlsToAddTo);
+			void addTo(Controls.Builder builder);
 		}
 
 		private static final class StandardControl<T> implements ControlItem {
@@ -275,7 +239,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 			}
 
 			@Override
-			public void addTo(Controls controlsToAddTo) {
+			public void addTo(Controls.Builder builder) {
 				controlProvider.apply(tableControl).ifPresent(control -> {
 					if (control instanceof Controls) {
 						Controls controls = (Controls) control;
@@ -283,15 +247,15 @@ final class DefaultControls extends AbstractControl implements Controls {
 							if (!controls.name().isPresent()) {
 								controls.actions().stream()
 												.filter(action -> action != SEPARATOR)
-												.forEach(action -> new CustomAction(action).addTo(controlsToAddTo));
+												.forEach(action -> new CustomAction(action).addTo(builder));
 							}
 							else {
-								controlsToAddTo.add(controls);
+								builder.control(controls);
 							}
 						}
 					}
 					else {
-						controlsToAddTo.add(control);
+						builder.control(control);
 					}
 				});
 			}
@@ -323,48 +287,63 @@ final class DefaultControls extends AbstractControl implements Controls {
 			}
 
 			@Override
-			public void addTo(Controls controlsToAddTo) {
-				controlsToAddTo.add(action);
+			public void addTo(Controls.Builder builder) {
+				builder.action(action);
 			}
 		}
 
 		private static final class Separator implements ControlItem {
 
 			@Override
-			public void addTo(Controls controlsToAddTo) {
-				List<Action> actions = controlsToAddTo.actions();
-				if (actions.isEmpty() || actions.get(actions.size() - 1) != Controls.SEPARATOR) {
-					controlsToAddTo.addSeparator();
-				}
+			public void addTo(Controls.Builder builder) {
+				builder.separator();
 			}
 		}
 	}
 
 	static final class ControlsBuilder extends AbstractControlBuilder<Controls, Controls.Builder> implements Controls.Builder {
 
-		private final List<Action> controls = new ArrayList<>();
+		private final List<Action> actions = new ArrayList<>();
+
+		ControlsBuilder() {}
+
+		private ControlsBuilder(DefaultControls controls) {
+			enabled(controls.enabled());
+			controls.keys().forEach(key -> value(key, controls.getValue(key)));
+			actions.addAll(controls.actions);
+		}
 
 		@Override
 		public Controls.Builder control(Control control) {
-			controls.add(requireNonNull(control));
-			return this;
+			return controlAt(actions.size(), control);
 		}
 
 		@Override
 		public Controls.Builder control(Control.Builder<?, ?> controlBuilder) {
-			controls.add(requireNonNull(controlBuilder).build());
+			return controlAt(actions.size(), controlBuilder);
+		}
+
+		@Override
+		public Controls.Builder controlAt(int index, Control control) {
+			actions.add(index, requireNonNull(control));
+			return this;
+		}
+
+		@Override
+		public Controls.Builder controlAt(int index, Control.Builder<?, ?> controlBuilder) {
+			actions.add(index, requireNonNull(controlBuilder).build());
 			return this;
 		}
 
 		@Override
 		public Controls.Builder controls(Control... controls) {
-			this.controls.addAll(Arrays.asList(requireNonNull(controls)));
+			this.actions.addAll(Arrays.asList(requireNonNull(controls)));
 			return this;
 		}
 
 		@Override
 		public Controls.Builder controls(Control.Builder<?, ?>... controlBuilders) {
-			this.controls.addAll(Arrays.stream(controlBuilders)
+			this.actions.addAll(Arrays.stream(controlBuilders)
 							.map(new BuildControl())
 							.collect(Collectors.toList()));
 			return this;
@@ -372,19 +351,48 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public Controls.Builder action(Action action) {
-			this.controls.add(requireNonNull(action));
+			return actionAt(actions.size(), action);
+		}
+
+		@Override
+		public Controls.Builder actionAt(int index, Action action) {
+			this.actions.add(index, requireNonNull(action));
 			return this;
 		}
 
 		@Override
 		public Controls.Builder actions(Action... actions) {
-			this.controls.addAll(Arrays.asList(requireNonNull(actions)));
+			return actions(Arrays.asList(requireNonNull(actions)));
+		}
+
+		@Override
+		public Controls.Builder actions(Collection<Action> actions) {
+			this.actions.addAll(requireNonNull(actions));
 			return this;
 		}
 
 		@Override
 		public Controls.Builder separator() {
-			this.controls.add(SEPARATOR);
+			return separatorAt(actions.size());
+		}
+
+		@Override
+		public Controls.Builder separatorAt(int index) {
+			if (actions.isEmpty() || actions.get(index - 1) != Controls.SEPARATOR) {
+				this.actions.add(SEPARATOR);
+			}
+			return this;
+		}
+
+		@Override
+		public Controls.Builder remove(Action action) {
+			this.actions.remove(requireNonNull(action));
+			return this;
+		}
+
+		@Override
+		public Controls.Builder removeAll() {
+			this.actions.clear();
 			return this;
 		}
 
