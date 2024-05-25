@@ -125,6 +125,16 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 							.enabled(okEnabled)
 							.build();
 		}
+		else if (okAction instanceof Control) {
+			okAction = ((Control) okAction).copy()
+							.name(Messages.ok())
+							.mnemonic(Messages.okMnemonic())
+							.build();
+		}
+		else {
+			okAction.putValue(Action.NAME, Messages.ok());
+			okAction.putValue(Action.MNEMONIC_KEY, (int) Messages.okMnemonic());
+		}
 		if (cancelAction == null) {
 			cancelAction = Control.builder(onCancel == null ? new DefaultCancelCommand(component()) : new PerformAndCloseCommand(onCancel, component()))
 							.name(Messages.cancel())
@@ -132,10 +142,16 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 							.enabled(cancelEnabled)
 							.build();
 		}
-		okAction.putValue(Action.NAME, Messages.ok());
-		okAction.putValue(Action.MNEMONIC_KEY, (int) Messages.okMnemonic());
-		cancelAction.putValue(Action.NAME, Messages.cancel());
-		cancelAction.putValue(Action.MNEMONIC_KEY, (int) Messages.cancelMnemonic());
+		else if (cancelAction instanceof Control) {
+			cancelAction = ((Control) cancelAction).copy()
+							.name(Messages.cancel())
+							.mnemonic(Messages.cancelMnemonic())
+							.build();
+		}
+		else {
+			cancelAction.putValue(Action.NAME, Messages.cancel());
+			cancelAction.putValue(Action.MNEMONIC_KEY, (int) Messages.cancelMnemonic());
+		}
 		super.defaultAction(okAction);
 		super.escapeAction(cancelAction);
 

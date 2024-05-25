@@ -116,7 +116,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.ui.Utilities.*;
@@ -1235,7 +1234,7 @@ public class EntityTablePanel extends JPanel {
 	private Controls createAdditionalPopupControls() {
 		Controls additionalControls = Controls.controls();
 		additionalPopupControls.forEach(controlList -> {
-			if (nullOrEmpty(controlList.getName())) {
+			if (!controlList.name().isPresent()) {
 				additionalControls.addAll(controlList);
 			}
 			else {
@@ -1249,7 +1248,7 @@ public class EntityTablePanel extends JPanel {
 	private Controls createAdditionalToolbarControls() {
 		Controls additionalControls = Controls.controls();
 		additionalToolBarControls.forEach(controlsList -> {
-			if (nullOrEmpty(controlsList.getName())) {
+			if (!controlsList.name().isPresent()) {
 				additionalControls.addAll(controlsList);
 			}
 			else {

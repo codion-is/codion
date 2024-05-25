@@ -18,18 +18,17 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.state.StateObserver;
-
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
@@ -39,9 +38,9 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 	private final List<Action> actions = new ArrayList<>();
 
-	DefaultControls(String name, StateObserver enabledState, List<Action> controls) {
-		super(name, enabledState);
-		controls.forEach(this::add);
+	DefaultControls(ControlsBuilder builder) {
+		super(builder);
+		builder.controls.forEach(this::add);
 	}
 
 	@Override
@@ -281,7 +280,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 					if (control instanceof Controls) {
 						Controls controls = (Controls) control;
 						if (controls.notEmpty()) {
-							if (nullOrEmpty(controls.getName())) {
+							if (!controls.name().isPresent()) {
 								controls.actions().stream()
 												.filter(action -> action != SEPARATOR)
 												.forEach(action -> new CustomAction(action).addTo(controlsToAddTo));
@@ -337,6 +336,68 @@ final class DefaultControls extends AbstractControl implements Controls {
 				if (actions.isEmpty() || actions.get(actions.size() - 1) != Controls.SEPARATOR) {
 					controlsToAddTo.addSeparator();
 				}
+			}
+		}
+	}
+
+	static final class ControlsBuilder extends AbstractControlBuilder<Controls, Controls.Builder> implements Controls.Builder {
+
+		private final List<Action> controls = new ArrayList<>();
+
+		@Override
+		public Controls.Builder control(Control control) {
+			controls.add(requireNonNull(control));
+			return this;
+		}
+
+		@Override
+		public Controls.Builder control(Control.Builder<?, ?> controlBuilder) {
+			controls.add(requireNonNull(controlBuilder).build());
+			return this;
+		}
+
+		@Override
+		public Controls.Builder controls(Control... controls) {
+			this.controls.addAll(Arrays.asList(requireNonNull(controls)));
+			return this;
+		}
+
+		@Override
+		public Controls.Builder controls(Control.Builder<?, ?>... controlBuilders) {
+			this.controls.addAll(Arrays.stream(controlBuilders)
+							.map(new BuildControl())
+							.collect(Collectors.toList()));
+			return this;
+		}
+
+		@Override
+		public Controls.Builder action(Action action) {
+			this.controls.add(requireNonNull(action));
+			return this;
+		}
+
+		@Override
+		public Controls.Builder actions(Action... actions) {
+			this.controls.addAll(Arrays.asList(requireNonNull(actions)));
+			return this;
+		}
+
+		@Override
+		public Controls.Builder separator() {
+			this.controls.add(SEPARATOR);
+			return this;
+		}
+
+		@Override
+		public Controls build() {
+			return new DefaultControls(this);
+		}
+
+		private static final class BuildControl implements Function<Control.Builder<?, ?>, Control> {
+
+			@Override
+			public Control apply(Control.Builder<?, ?> builder) {
+				return builder.build();
 			}
 		}
 	}

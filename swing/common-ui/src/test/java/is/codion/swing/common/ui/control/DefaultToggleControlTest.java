@@ -104,7 +104,7 @@ public class DefaultToggleControlTest {
 		enabledState.set(true);
 		assertTrue(control.isEnabled());
 		assertTrue(buttonModel.isEnabled());
-		assertEquals(control.getName(), "stateToggleControl");
+		assertEquals("stateToggleControl", control.name().orElse(null));
 		assertFalse(control.value().get());
 		state.set(true);
 		assertTrue(control.value().get());
@@ -194,9 +194,9 @@ public class DefaultToggleControlTest {
 		assertTrue(control.isEnabled());
 		assertTrue(copy.isEnabled());
 
-		assertNotEquals(control.getName(), copy.getName());
-		assertNotEquals(control.getDescription(), copy.getDescription());
-		assertEquals(control.getMnemonic(), copy.getMnemonic());
+		assertNotEquals(control.name().orElse(null), copy.name().orElse(null));
+		assertNotEquals(control.description().orElse(null), copy.description().orElse(null));
+		assertEquals(control.mnemonic().orElse(0), copy.mnemonic().orElse(1));
 		assertNotEquals(control.getValue("key"), copy.getValue("key"));
 	}
 }

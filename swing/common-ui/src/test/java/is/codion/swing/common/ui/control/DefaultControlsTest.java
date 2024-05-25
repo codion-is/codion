@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.control;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.common.Text.nullOrEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultControlsTest {
@@ -33,16 +32,17 @@ public class DefaultControlsTest {
 		assertThrows(NullPointerException.class, () -> list.add(null));
 		assertThrows(NullPointerException.class, () -> list.addAt(0, null));
 		list.remove(null);
-		assertFalse(nullOrEmpty(list.getName()));
-		assertNull(list.getSmallIcon());
-		assertEquals("list", list.getName());
+		assertTrue(list.name().isPresent());
+		assertFalse(list.smallIcon().isPresent());
+		assertEquals("list", list.name().orElse(null));
 		Controls list1 = Controls.controls();
-		assertTrue(nullOrEmpty(list1.getName()));
-		assertEquals("", list1.getName());
-		Controls list2 = Controls.builder().control(two).build();
-		list2.setName("list");
-		assertFalse(nullOrEmpty(list2.getName()));
-		assertEquals("list", list2.getName());
+		assertFalse(list1.name().isPresent());
+		Controls list2 = Controls.builder()
+						.name("list")
+						.control(two)
+						.build();
+		assertTrue(list2.name().isPresent());
+		assertEquals("list", list2.name().orElse(null));
 		list2.addAt(0, one);
 		list2.addSeparatorAt(1);
 
@@ -65,7 +65,7 @@ public class DefaultControlsTest {
 		assertFalse(list2.notEmpty());
 
 		assertThrows(UnsupportedOperationException.class, () -> list.setEnabled(false));
-		assertThrows(IllegalArgumentException.class, () -> list.putValue("enabled", false));
+		assertThrows(UnsupportedOperationException.class, () -> list.putValue("enabled", false));
 		assertThrows(IllegalArgumentException.class, () -> Control.builder(() -> {}).value("enabled", false));
 	}
 }

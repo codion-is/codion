@@ -49,6 +49,10 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>>
 				extends AbstractComponentBuilder<T, C, B> implements ButtonBuilder<T, C, B> {
 
+	private static final String FONT = "Font";
+	private static final String BACKGROUND = "Background";
+	private static final String FOREGROUND = "Foreground";
+
 	private final List<ActionListener> actionListeners = new ArrayList<>();
 
 	private String text;
@@ -245,9 +249,9 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 		C button = createButton();
 		if (action != null) {
 			button.setAction(action);
-			button.setBackground((Color) action.getValue(Control.BACKGROUND));
-			button.setForeground((Color) action.getValue(Control.FOREGROUND));
-			Font actionFont = (Font) action.getValue(Control.FONT);
+			button.setBackground((Color) action.getValue(BACKGROUND));
+			button.setForeground((Color) action.getValue(FOREGROUND));
+			Font actionFont = (Font) action.getValue(FONT);
 			if (actionFont != null) {
 				button.setFont(actionFont);
 			}
@@ -405,13 +409,13 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			switch (evt.getPropertyName()) {
-				case Control.BACKGROUND:
+				case BACKGROUND:
 					button.setBackground((Color) evt.getNewValue());
 					break;
-				case Control.FOREGROUND:
+				case FOREGROUND:
 					button.setForeground((Color) evt.getNewValue());
 					break;
-				case Control.FONT:
+				case FONT:
 					if (evt.getNewValue() != null) {
 						button.setFont((Font) evt.getNewValue());
 					}

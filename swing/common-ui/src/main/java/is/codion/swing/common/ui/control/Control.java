@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.control;
 
 import is.codion.common.event.Event;
 import is.codion.common.state.StateObserver;
+import is.codion.swing.common.ui.control.DefaultControl.DefaultControlBuilder;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -27,9 +28,9 @@ import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.Consumer;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A beefed up Action.
@@ -37,39 +38,14 @@ import static java.util.Objects.requireNonNull;
 public interface Control extends Action {
 
 	/**
-	 * The key used for storing the Font.
+	 * @return the description or an empty Optional if none is available
 	 */
-	String FONT = "Font";
+	Optional<String> description();
 
 	/**
-	 * The key used for storing the background color.
+	 * @return the name or an empty Optional if none is available
 	 */
-	String BACKGROUND = "Background";
-
-	/**
-	 * The key used for storing the foreground color.
-	 */
-	String FOREGROUND = "Foreground";
-
-	/**
-	 * @param description the description string
-	 */
-	void setDescription(String description);
-
-	/**
-	 * @return the description
-	 */
-	String getDescription();
-
-	/**
-	 * @return the name
-	 */
-	String getName();
-
-	/**
-	 * @param name the name of this Control
-	 */
-	void setName(String name);
+	Optional<String> name();
 
 	/**
 	 * @return a StateObsrver indicating whether this Control is enabled
@@ -77,74 +53,39 @@ public interface Control extends Action {
 	StateObserver enabled();
 
 	/**
-	 * @param mnemonic the mnemonic to associate with this Control
+	 * @return the mnemonic or an empty Optional if none is available
 	 */
-	void setMnemonic(int mnemonic);
+	OptionalInt mnemonic();
 
 	/**
-	 * @return the mnemonic, 0 if none is specified
+	 * @return the KeyStroke associated with this Control or an empty Optional if none is available
 	 */
-	int getMnemonic();
+	Optional<KeyStroke> keyStroke();
 
 	/**
-	 * @param keyStroke the KeyStroke to associate with this Control
+	 * @return the small icon or an empty Optional if none is available
 	 */
-	void setKeyStroke(KeyStroke keyStroke);
+	Optional<Icon> smallIcon();
 
 	/**
-	 * @return the KeyStroke associated with this Control, if any
+	 * @return the large icon or an empty Optional if none is available
 	 */
-	KeyStroke getKeyStroke();
+	Optional<Icon> largeIcon();
 
 	/**
-	 * @param smallIcon the small icon to associate with this Control
+	 * @return the background color or an empty Optional if none is available
 	 */
-	void setSmallIcon(Icon smallIcon);
+	Optional<Color> background();
 
 	/**
-	 * @return the icon
+	 * @return the foreground color or an empty Optional if none is available
 	 */
-	Icon getSmallIcon();
+	Optional<Color> foreground();
 
 	/**
-	 * @param largeIcon the large icon to associate with this Control
+	 * @return the font or an empty Optional if none is available
 	 */
-	void setLargeIcon(Icon largeIcon);
-
-	/**
-	 * @return the icon
-	 */
-	Icon getLargeIcon();
-
-	/**
-	 * @param background the background color
-	 */
-	void setBackground(Color background);
-
-	/**
-	 * @return the background color
-	 */
-	Color getBackground();
-
-	/**
-	 * @param foreground the foreground color
-	 */
-	void setForeground(Color foreground);
-
-	/**
-	 * @return the foreground color
-	 */
-	Color getForeground();
-
-	/**
-	 * @param font the font
-	 */
-	void setFont(Font font);
-
-	/**
-	 * @return the font
-	 */
-	Font getFont();
+	Optional<Font> font();
 
 	/**
 	 * Unsupported, the enabled state of Controls is based on their {@code enabled} state observer
@@ -230,22 +171,13 @@ public interface Control extends Action {
 	}
 
 	/**
-	 * Creates a Control which triggers the given event on action performed
-	 * @param event the event
-	 * @return a control which triggers the given event
-	 */
-	static Control eventControl(Event<ActionEvent> event) {
-		return eventControlBuilder(event).build();
-	}
-
-	/**
 	 * Creates a new Builder.
 	 * @param command the command to base the control on
 	 * @param <B> the builder type
 	 * @return a new Control.Builder
 	 */
 	static <B extends Builder<Control, B>> Builder<Control, B> builder(Command command) {
-		return new ControlBuilder<>(command);
+		return new DefaultControlBuilder<>(command, null);
 	}
 
 	/**
@@ -255,18 +187,7 @@ public interface Control extends Action {
 	 * @return a new Control.Builder
 	 */
 	static <B extends Builder<Control, B>> Builder<Control, B> actionControlBuilder(ActionCommand actionCommand) {
-		return new ControlBuilder<>(actionCommand);
-	}
-
-	/**
-	 * Creates a Builder for a control which triggers the given event on action performed
-	 * @param event the event
-	 * @param <B> the builder type
-	 * @return a new Control.Builder
-	 */
-	static <B extends Builder<Control, B>> Builder<Control, B> eventControlBuilder(Event<ActionEvent> event) {
-		requireNonNull(event, "event");
-		return new ControlBuilder<>(event::accept);
+		return new DefaultControlBuilder<>(null, actionCommand);
 	}
 
 	/**
@@ -292,7 +213,7 @@ public interface Control extends Action {
 		 * @param mnemonic the control mnemonic
 		 * @return this Builder instance
 		 */
-		B mnemonic(char mnemonic);
+		B mnemonic(int mnemonic);
 
 		/**
 		 * @param smallIcon the small control icon
@@ -311,6 +232,24 @@ public interface Control extends Action {
 		 * @return this Builder instance
 		 */
 		B description(String description);
+
+		/**
+		 * @param foreground the foreground color
+		 * @return this Builder instance
+		 */
+		B foreground(Color foreground);
+
+		/**
+		 * @param background the background color
+		 * @return this Builder instance
+		 */
+		B background(Color background);
+
+		/**
+		 * @param font the font
+		 * @return this Builder instance
+		 */
+		B font(Font font);
 
 		/**
 		 * @param keyStroke the keystroke to associate with the control

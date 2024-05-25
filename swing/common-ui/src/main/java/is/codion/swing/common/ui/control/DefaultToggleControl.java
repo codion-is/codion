@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 
 import java.awt.event.ActionEvent;
@@ -39,9 +38,9 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 	 * @param name the name
 	 * @param enabled an observer indicating when this control should be enabled
 	 */
-	DefaultToggleControl(Value<Boolean> value, String name, StateObserver enabled) {
-		super(name, enabled);
-		this.value = requireNonNull(value, "value");
+	DefaultToggleControl(ToggleControlBuilder<?> builder) {
+		super(builder);
+		this.value = requireNonNull(builder.value, "value");
 	}
 
 	@Override
@@ -60,15 +59,8 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 	@Override
 	public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copy(Value<Boolean> value) {
 		B builder = (B) new ToggleControlBuilder<>(value)
-						.enabled(enabledObserver)
-						.description(getDescription())
-						.name(getName())
-						.mnemonic((char) getMnemonic())
-						.keyStroke(getKeyStroke())
-						.smallIcon(getSmallIcon())
-						.largeIcon(getLargeIcon());
+						.enabled(enabled());
 		Arrays.stream(getKeys())
-						.filter(key -> !STANDARD_KEYS.contains(key))
 						.map(String.class::cast)
 						.forEach(key -> builder.value(key, getValue(key)));
 

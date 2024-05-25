@@ -18,38 +18,52 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.state.StateObserver;
-
 import java.awt.event.ActionEvent;
-import java.util.function.Consumer;
-
-import static java.util.Objects.requireNonNull;
 
 final class DefaultControl extends AbstractControl {
 
 	private final Command command;
-	private final Consumer<Exception> onException;
+	private final ActionCommand actionCommand;
 
-	DefaultControl(Command command, String name, StateObserver enabled,
-								 Consumer<Exception> onException) {
-		super(name, enabled);
-		this.command = requireNonNull(command);
-		this.onException = requireNonNull(onException);
+	private DefaultControl(Command command, ActionCommand actionCommand, DefaultControlBuilder<?, ?> builder) {
+		super(builder);
+		this.command = command;
+		this.actionCommand = actionCommand;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			command.execute();
+			if (command != null) {
+				command.execute();
+			}
+			else {
+				actionCommand.execute(e);
+			}
 		}
 		catch (Exception exception) {
-			onException.accept(exception);
+			handleException(exception);
 		}
 	}
 
 	@Override
 	public <C extends Control, B extends Builder<C, B>> Builder<C, B> copy() {
-		return (Builder<C, B>) createBuilder(command, null)
-						.onException(onException);
+		return (Builder<C, B>) createBuilder(command, null);
+	}
+
+	static final class DefaultControlBuilder<C extends Control, B extends Builder<C, B>> extends AbstractControlBuilder<C, B> {
+
+		private final Command command;
+		private final ActionCommand actionCommand;
+
+		DefaultControlBuilder(Command command, ActionCommand actionCommand) {
+			this.command = command;
+			this.actionCommand = actionCommand;
+		}
+
+		@Override
+		public C build() {
+			return (C) new DefaultControl(command, actionCommand, this);
+		}
 	}
 }

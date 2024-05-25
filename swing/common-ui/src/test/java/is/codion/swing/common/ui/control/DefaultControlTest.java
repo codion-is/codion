@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.event.Event;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 
@@ -55,44 +54,37 @@ public final class DefaultControlTest {
 	@Test
 	void test() {
 		State enabledState = State.state();
-		Control control = Control.builder(this::method).enabled(enabledState).build();
+		Font font = new JButton().getFont().deriveFont(Font.ITALIC);
+		Control control = Control.builder(this::method)
+						.enabled(enabledState)
+						.foreground(Color.RED)
+						.background(Color.BLACK)
+						.font(font)
+						.build();
 		JButton button = button(control).build();
 		assertFalse(button.isEnabled());
 		enabledState.set(true);
 		assertTrue(button.isEnabled());
 		button.doClick();
 		assertEquals(1, callCount);
-		control.setForeground(Color.RED);
 		assertEquals(button.getForeground(), Color.RED);
-		control.setBackground(Color.BLACK);
 		assertEquals(button.getBackground(), Color.BLACK);
-		Font font = button.getFont().deriveFont(Font.ITALIC);
-		control.setFont(font);
 		assertEquals(button.getFont(), font);
-	}
-
-	@Test
-	void eventControl() {
-		State state = State.state();
-		Event<ActionEvent> event = Event.event();
-		event.addListener(() -> state.set(true));
-		Control.eventControl(event).actionPerformed(null);
-		assertTrue(state.get());
+		assertThrows(UnsupportedOperationException.class, () -> control.putValue("test", "test"));
 	}
 
 	@Test
 	void basics() {
-		Control test = Control.control(this::doNothing);
-		test.setName("test");
+		Control test = Control.builder(this::doNothing)
+						.name("test")
+						.description("description")
+						.mnemonic(10)
+						.build();
 		assertEquals("test", test.toString());
-		assertEquals("test", test.getName());
-		assertEquals(0, test.getMnemonic());
-		test.setMnemonic(10);
-		assertEquals(10, test.getMnemonic());
-		assertNull(test.getSmallIcon());
-		test.setKeyStroke(null);
-		test.setDescription("description");
-		assertEquals("description", test.getDescription());
+		assertEquals("test", test.name().orElse(null));
+		assertEquals(10, test.mnemonic().orElse(0));
+		assertFalse(test.smallIcon().isPresent());
+		assertEquals("description", test.description().orElse(null));
 		test.actionPerformed(null);
 	}
 
@@ -104,7 +96,6 @@ public final class DefaultControlTest {
 			assertEquals(actionEvent.getActionCommand(), "test");
 			assertEquals(actionEvent.getID(), ActionEvent.ACTION_PERFORMED);
 		});
-		assertInstanceOf(DefaultActionControl.class, test);
 		test.actionPerformed(event);
 	}
 
@@ -112,8 +103,8 @@ public final class DefaultControlTest {
 	void setEnabled() {
 		State enabledState = State.state();
 		Control control = Control.builder(this::doNothing).name("control").enabled(enabledState.observer()).build();
-		assertEquals("control", control.getName());
-		assertEquals(enabledState.observer(), control.enabled());
+		assertEquals("control", control.name().orElse(null));
+		assertSame(enabledState.observer(), control.enabled());
 		assertFalse(control.isEnabled());
 		enabledState.set(true);
 		assertTrue(control.isEnabled());
@@ -169,9 +160,9 @@ public final class DefaultControlTest {
 		assertTrue(control.isEnabled());
 		assertTrue(copy.isEnabled());
 
-		assertNotEquals(control.getName(), copy.getName());
-		assertNotEquals(control.getDescription(), copy.getDescription());
-		assertEquals(control.getMnemonic(), copy.getMnemonic());
+		assertNotEquals(control.name().orElse(null), copy.name().orElse(null));
+		assertNotEquals(control.description().orElse(null), copy.description().orElse(null));
+		assertEquals(control.mnemonic().orElse(0), copy.mnemonic().orElse(1));
 		assertNotEquals(control.getValue("key"), copy.getValue("key"));
 	}
 

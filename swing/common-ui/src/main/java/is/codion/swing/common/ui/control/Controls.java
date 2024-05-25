@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.swing.common.ui.control.DefaultControls.ControlsBuilder;
 import is.codion.swing.common.ui.control.DefaultControls.DefaultConfig;
 
 import javax.swing.Action;
