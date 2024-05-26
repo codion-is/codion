@@ -24,6 +24,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -123,7 +124,8 @@ public final class SearchHighlighter {
 										.action(control(this::previousSearchPosition)))
 						.keyEvent(KeyEvents.builder(VK_ESCAPE)
 										.action(control(textComponent::requestFocusInWindow)))
-						.popupMenu(textField -> createPopupMenu(ToggleControl.builder(caseSensitiveState)
+						.popupMenu(textField -> createPopupMenu(Control.builder()
+										.toggle(caseSensitiveState)
 										.name(MESSAGES.getString("case_sensitive"))
 										.build()))
 						.hint(Messages.find() + "...")

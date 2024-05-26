@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.event.Event;
+import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.swing.common.ui.control.DefaultControl.DefaultControlBuilder;
+import is.codion.common.value.Value;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -105,35 +105,25 @@ public interface Control extends Action {
 	void setEnabled(boolean enabled);
 
 	/**
-	 * Returns a {@link Control.Builder} instance, based on a copy of this control, using the same command.
+	 * Returns a new {@link Control.Builder} instance, based on a copy of this control, using the same command.
 	 * @param <B> the builder type
 	 * @return a new builder
 	 */
 	<C extends Control, B extends Builder<C, B>> Builder<C, B> copy();
 
 	/**
-	 * Returns a {@link Control.Builder} instance, based on a copy of this control, using the given command.
+	 * Returns a new {@link CommandControlBuilder} instance, based on a copy of this control, using the given command.
 	 * @param command the command for the resulting control
-	 * @param <B> the builder type
 	 * @return a new builder
 	 */
-	<B extends Builder<Control, B>> Builder<Control, B> copy(Command command);
+	CommandControlBuilder copy(Command command);
 
 	/**
-	 * Returns a {@link Control.Builder} instance, based on a copy of this control, using the given command.
+	 * Returns a new {@link CommandControlBuilder} instance, based on a copy of this control, using the given command.
 	 * @param actionCommand the command for the resulting control
-	 * @param <B> the builder type
 	 * @return a new builder
 	 */
-	<B extends Builder<Control, B>> Builder<Control, B> copy(ActionCommand actionCommand);
-
-	/**
-	 * Returns a {@link Control.Builder} instance, based on a copy of this control, using the given command.
-	 * @param event the event for the resulting control to trigger
-	 * @param <B> the builder type
-	 * @return a new builder
-	 */
-	<B extends Builder<Control, B>> Builder<Control, B> copy(Event<ActionEvent> event);
+	CommandControlBuilder copy(ActionCommand actionCommand);
 
 	/**
 	 * A command interface, allowing Controls based on method references
@@ -166,7 +156,7 @@ public interface Control extends Action {
 	 * @return a Control for calling the given {@link Control.Command}
 	 */
 	static Control control(Command command) {
-		return builder(command).build();
+		return builder().command(command).build();
 	}
 
 	/**
@@ -175,27 +165,32 @@ public interface Control extends Action {
 	 * @return a Control for calling the given {@link Control.Command}
 	 */
 	static Control actionControl(ActionCommand actionCommand) {
-		return actionControlBuilder(actionCommand).build();
+		return builder().actionCommand(actionCommand).build();
 	}
 
 	/**
-	 * Creates a new Builder.
-	 * @param command the command to base the control on
-	 * @param <B> the builder type
-	 * @return a new Control.Builder
+	 * Creates a new ToggleControl based on the given value
+	 * @param value the value
+	 * @return a new ToggleControl
 	 */
-	static <B extends Builder<Control, B>> Builder<Control, B> builder(Command command) {
-		return new DefaultControlBuilder<>(command, null);
+	static ToggleControl toggleControl(Value<Boolean> value) {
+		return builder().toggle(value).build();
 	}
 
 	/**
-	 * Creates a new Builder.
-	 * @param actionCommand the action command to base the control on
-	 * @param <B> the builder type
-	 * @return a new Control.Builder
+	 * Creates a new ToggleControl based on the given state
+	 * @param state the state
+	 * @return a new ToggleControl
 	 */
-	static <B extends Builder<Control, B>> Builder<Control, B> actionControlBuilder(ActionCommand actionCommand) {
-		return new DefaultControlBuilder<>(null, actionCommand);
+	static ToggleControl toggleControl(State state) {
+		return builder().toggle(state).build();
+	}
+
+	/**
+	 * @return a new Control {@link BuilderFactory} instance
+	 */
+	static BuilderFactory builder() {
+		return new DefaultControl.DefaultControlBuilderFactory();
 	}
 
 	/**
@@ -277,15 +272,50 @@ public interface Control extends Action {
 		B value(String key, Object value);
 
 		/**
-		 * @param onException the exception handler for this control
-		 * @return this builder
-		 */
-		B onException(Consumer<Exception> onException);
-
-		/**
 		 * @return a new Control instance
 		 * @throws IllegalStateException in case no command has been set
 		 */
 		C build();
+	}
+
+	interface CommandControlBuilder extends Builder<Control, CommandControlBuilder> {
+
+		/**
+		 * @param onException the exception handler for this control
+		 * @return this builder
+		 */
+		CommandControlBuilder onException(Consumer<Exception> onException);
+	}
+
+	interface ToggleControlBuilder extends Control.Builder<ToggleControl, ToggleControlBuilder> {}
+
+	/**
+	 * Provides control builders.
+	 */
+	interface BuilderFactory {
+
+		/**
+		 * @param command the command to execute
+		 * @return a new {@link CommandControlBuilder} instance
+		 */
+		CommandControlBuilder command(Command command);
+
+		/**
+		 * @param actionCommand the action command to execute
+		 * @return a new {@link CommandControlBuilder} instance
+		 */
+		CommandControlBuilder actionCommand(ActionCommand actionCommand);
+
+		/**
+		 * @param value the value to toggle
+		 * @return a new {@link ToggleControlBuilder} instance
+		 */
+		ToggleControlBuilder toggle(Value<Boolean> value);
+
+		/**
+		 * @param state the state to toggle
+		 * @return a new {@link ToggleControlBuilder} instance
+		 */
+		ToggleControlBuilder toggle(State state);
 	}
 }

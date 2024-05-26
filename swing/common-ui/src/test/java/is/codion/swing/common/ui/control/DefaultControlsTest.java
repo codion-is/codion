@@ -64,7 +64,9 @@ public class DefaultControlsTest {
 
 		assertThrows(UnsupportedOperationException.class, () -> controls.setEnabled(false));
 		assertThrows(UnsupportedOperationException.class, () -> controls.putValue("enabled", false));
-		assertThrows(IllegalArgumentException.class, () -> Control.builder(() -> {}).value("enabled", false));
+		assertThrows(IllegalArgumentException.class, () -> Control.builder()
+						.command(() -> {})
+						.value("enabled", false));
 	}
 
 	@Test

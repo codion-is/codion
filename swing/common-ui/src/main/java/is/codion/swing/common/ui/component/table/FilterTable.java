@@ -530,7 +530,8 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return a control for showing the column selection dialog
 	 */
 	public Control createSelectColumnsControl() {
-		return Control.builder(this::selectColumns)
+		return Control.builder()
+						.command(this::selectColumns)
 						.name(MESSAGES.getString(SELECT) + "...")
 						.enabled(columnModel().locked().not())
 						.description(MESSAGES.getString(SELECT_COLUMNS))
@@ -555,7 +556,8 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return a Control for resetting the columns to their original location and visibility
 	 */
 	public Control createResetColumnsControl() {
-		return Control.builder(columnModel()::resetColumns)
+		return Control.builder()
+						.command(columnModel()::resetColumns)
 						.name(MESSAGES.getString(RESET))
 						.enabled(columnModel().locked().not())
 						.description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
@@ -566,7 +568,8 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return a Control for selecting the auto-resize mode
 	 */
 	public Control createAutoResizeModeControl() {
-		return Control.builder(this::selectAutoResizeMode)
+		return Control.builder()
+						.command(this::selectAutoResizeMode)
 						.name(MESSAGES.getString(AUTO_RESIZE) + "...")
 						.enabled(columnModel().locked().not())
 						.build();
@@ -576,7 +579,8 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return a ToggleControl for toggling the table selection mode (single or multiple)
 	 */
 	public ToggleControl createSingleSelectionModeControl() {
-		return ToggleControl.builder(tableModel.selectionModel().singleSelectionMode())
+		return Control.builder()
+						.toggle(tableModel.selectionModel().singleSelectionMode())
 						.name(MESSAGES.getString(SINGLE_SELECTION_MODE))
 						.build();
 	}
@@ -585,7 +589,8 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return a Control for copying the contents of the selected cell
 	 */
 	public Control createCopyCellControl() {
-		return Control.builder(this::copySelectedCell)
+		return Control.builder()
+						.command(this::copySelectedCell)
 						.name(MESSAGES.getString("copy_cell"))
 						.enabled(tableModel.selectionModel().selectionNotEmpty())
 						.build();
@@ -720,9 +725,11 @@ public final class FilterTable<R, C> extends JTable {
 
 	private Controls searchFieldPopupMenuControls() {
 		return Controls.builder()
-						.control(ToggleControl.builder(searchModel.caseSensitive())
+						.control(Control.builder()
+										.toggle(searchModel.caseSensitive())
 										.name(MESSAGES.getString("case_sensitive_search")))
-						.controls(ToggleControl.builder(searchModel.regularExpression())
+						.controls(Control.builder()
+										.toggle(searchModel.regularExpression())
 										.name(MESSAGES.getString("regular_expression_search")))
 						.build();
 	}
@@ -760,7 +767,8 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private ToggleControl createToggleColumnControl(FilterTableColumn<C> column) {
-		return ToggleControl.builder(columnModel().visible(column.getIdentifier()))
+		return Control.builder()
+						.toggle(columnModel().visible(column.getIdentifier()))
 						.name(String.valueOf(column.getHeaderValue()))
 						.description(column.toolTipText())
 						.build();

@@ -35,7 +35,6 @@ import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -162,7 +161,8 @@ public final class LoadTestPanel<T> extends JPanel {
 						.controls(Controls.builder()
 										.name("File")
 										.mnemonic('F')
-										.control(Control.builder(this::exit)
+										.control(Control.builder()
+														.command(this::exit)
 														.name("Exit")
 														.mnemonic('X')))
 						.controls(Controls.builder()
@@ -171,9 +171,11 @@ public final class LoadTestPanel<T> extends JPanel {
 										.control(lookAndFeelSelectionDialog()
 														.owner(this)
 														.createControl(LoadTestPanel::lookAndFeelSelected))
-										.control(ToggleControl.builder(loadTestModel.collectChartData())
+										.control(Control.builder()
+														.toggle(loadTestModel.collectChartData())
 														.name("Collect chart data"))
-										.control(Control.builder(loadTestModel::clearCharts)
+										.control(Control.builder()
+														.command(loadTestModel::clearCharts)
 														.name("Clear charts")))
 						.build();
 	}
@@ -196,7 +198,8 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private JPanel createAddRemoveApplicationPanel() {
 		return borderLayoutPanel()
-						.westComponent(button(Control.builder(loadTest::removeApplicationBatch)
+						.westComponent(button(Control.builder()
+										.command(loadTest::removeApplicationBatch)
 										.name("-")
 										.description("Remove application batch"))
 										.build())
@@ -207,7 +210,8 @@ public final class LoadTestPanel<T> extends JPanel {
 										.columns(5)
 										.link(loadTest.applicationCount())
 										.build())
-						.eastComponent(button(Control.builder(loadTest::addApplicationBatch)
+						.eastComponent(button(Control.builder()
+										.command(loadTest::addApplicationBatch)
 										.name("+")
 										.description("Add application batch"))
 										.build())
@@ -282,7 +286,8 @@ public final class LoadTestPanel<T> extends JPanel {
 		return flexibleGridLayoutPanel(1, 3)
 						.add(new JLabel("User"))
 						.add(usernameField)
-						.add(new JButton(Control.builder(this::setUser)
+						.add(new JButton(Control.builder()
+										.command(this::setUser)
 										.name("...")
 										.description("Set the application user")
 										.build()))
@@ -385,11 +390,13 @@ public final class LoadTestPanel<T> extends JPanel {
 						.scrollToSelectedItem(false)
 						.cellRendererFactory(new ApplicationTableCellRendererFactory())
 						.popupMenuControls(table -> Controls.builder()
-										.control(Control.builder(table.getModel()::refresh)
+										.control(Control.builder()
+														.command(table.getModel()::refresh)
 														.name("Refresh")
 														.enabled(model().autoRefreshApplications().not()))
 										.separator()
-										.control(Control.builder(model()::removeSelectedApplications)
+										.control(Control.builder()
+														.command(model()::removeSelectedApplications)
 														.name("Remove selected"))
 										.separator()
 										.controls(Controls.builder()
@@ -469,12 +476,14 @@ public final class LoadTestPanel<T> extends JPanel {
 		JTextArea exceptionsArea = textArea()
 						.editable(false)
 						.build();
-		JButton refreshButton = button(Control.builder(new RefreshExceptionsCommand(exceptionsArea, scenario))
+		JButton refreshButton = button(Control.builder()
+						.command(new RefreshExceptionsCommand(exceptionsArea, scenario))
 						.name("Refresh"))
 						.build();
 		refreshButton.doClick();
 
-		JButton clearButton = button(Control.builder(new ClearExceptionsCommand(exceptionsArea, scenario))
+		JButton clearButton = button(Control.builder()
+						.command(new ClearExceptionsCommand(exceptionsArea, scenario))
 						.name("Clear"))
 						.build();
 

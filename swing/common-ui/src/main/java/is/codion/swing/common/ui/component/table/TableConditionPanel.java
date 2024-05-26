@@ -29,7 +29,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.JComponent;
@@ -118,14 +117,18 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 */
 	public Controls controls() {
 		return Controls.builder()
-						.control(ToggleControl.builder(hiddenState)
+						.control(Control.builder()
+										.toggle(hiddenState)
 										.name(MESSAGES.getString("hidden")))
-						.control(ToggleControl.builder(simpleState)
+						.control(Control.builder()
+										.toggle(simpleState)
 										.name(MESSAGES.getString("simple")))
-						.control(ToggleControl.builder(advancedState)
+						.control(Control.builder()
+										.toggle(advancedState)
 										.name(MESSAGES.getString("advanced")))
 						.separator()
-						.control(Control.builder(this::clearConditions)
+						.control(Control.builder()
+										.command(this::clearConditions)
 										.name(Messages.clear()))
 						.build();
 	}

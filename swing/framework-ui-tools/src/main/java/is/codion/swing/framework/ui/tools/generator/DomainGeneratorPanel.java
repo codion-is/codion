@@ -159,7 +159,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private FilterTable<SchemaRow, SchemaColumns.Id> createSchemaTable() {
-		Control populateSchemaControl = Control.builder(this::populateSchema)
+		Control populateSchemaControl = Control.builder()
+						.command(this::populateSchema)
 						.name("Populate")
 						.enabled(model.schemaModel().selectionModel().selectionNotEmpty())
 						.build();
@@ -222,7 +223,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private static Control createCopyControl(JTextArea textArea) {
-		return Control.builder(() -> Utilities.setClipboard(textArea.getText()))
+		return Control.builder()
+						.command(() -> Utilities.setClipboard(textArea.getText()))
 						.name(Messages.copy())
 						.mnemonic(Messages.copy().charAt(0))
 						.build();
@@ -266,7 +268,8 @@ public final class DomainGeneratorPanel extends JPanel {
 										.build())
 						.eastComponent(gridLayoutPanel(2, 1)
 										.add(label(" ").build())
-										.add(button(Control.builder(this::save)
+										.add(button(Control.builder()
+														.command(this::save)
 														.name("Save")
 														.mnemonic('S')
 														.enabled(model.saveEnabled()))
@@ -279,7 +282,8 @@ public final class DomainGeneratorPanel extends JPanel {
 		JLabel sourceDirectoryLabel = label("Source directory")
 						.displayedMnemonic('D')
 						.build();
-		Control selectSourceDirectoryControl = Control.builder(this::selectSourceDirectory)
+		Control selectSourceDirectoryControl = Control.builder()
+						.command(this::selectSourceDirectory)
 						.name("...")
 						.build();
 
@@ -384,7 +388,8 @@ public final class DomainGeneratorPanel extends JPanel {
 						.controls(Controls.builder()
 										.name("File")
 										.mnemonic('F')
-										.control(Control.builder(() -> System.exit(0))
+										.control(Control.builder()
+														.command(() -> System.exit(0))
 														.name("Exit")
 														.mnemonic('X')))
 						.controls(Controls.builder()

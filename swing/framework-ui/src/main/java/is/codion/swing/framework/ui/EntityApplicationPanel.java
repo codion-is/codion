@@ -526,7 +526,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return a Control for exiting the application
 	 */
 	protected final Control createExitControl() {
-		return Control.builder(this::exit)
+		return Control.builder()
+						.command(this::exit)
 						.name(FrameworkMessages.exit())
 						.description(FrameworkMessages.exitTip())
 						.mnemonic(FrameworkMessages.exitMnemonic())
@@ -540,7 +541,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Controls.Builder logLevelControls = Controls.builder()
 						.name(resourceBundle.getString(LOG_LEVEL))
 						.description(resourceBundle.getString(LOG_LEVEL_DESC));
-		logLevelStates.forEach((logLevel, state) -> logLevelControls.control(ToggleControl.builder(state)
+		logLevelStates.forEach((logLevel, state) -> logLevelControls.control(Control.builder()
+						.toggle(state)
 						.name(logLevel.toString())
 						.build()));
 
@@ -551,7 +553,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return a Control for viewing the application structure tree
 	 */
 	protected final Control createViewApplicationTreeControl() {
-		return Control.builder(this::viewApplicationTree)
+		return Control.builder()
+						.command(this::viewApplicationTree)
 						.name(resourceBundle.getString("view_application_tree"))
 						.build();
 	}
@@ -560,7 +563,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return a Control for viewing the application dependency tree
 	 */
 	protected final Control createViewDependencyTree() {
-		return Control.builder(this::viewDependencyTree)
+		return Control.builder()
+						.command(this::viewDependencyTree)
 						.name(FrameworkMessages.dependencies())
 						.build();
 	}
@@ -596,7 +600,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return a Control controlling the always on top status
 	 */
 	protected final ToggleControl createAlwaysOnTopControl() {
-		return ToggleControl.builder(alwaysOnTopState)
+		return Control.builder()
+						.toggle(alwaysOnTopState)
 						.name(resourceBundle.getString(ALWAYS_ON_TOP))
 						.build();
 	}
@@ -605,7 +610,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return a Control for viewing information about the application
 	 */
 	protected final Control createAboutControl() {
-		return Control.builder(this::displayAbout)
+		return Control.builder()
+						.command(this::displayAbout)
 						.name(resourceBundle.getString(ABOUT) + "...")
 						.build();
 	}
@@ -614,7 +620,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return a Control for displaying the help
 	 */
 	protected final Control createHelpControl() {
-		return Control.builder(this::displayHelp)
+		return Control.builder()
+						.command(this::displayHelp)
 						.name(resourceBundle.getString(HELP) + "...")
 						.build();
 	}
@@ -623,7 +630,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return a Control for displaying the keyboard shortcuts overview
 	 */
 	protected final Control createViewKeyboardShortcutsControl() {
-		return Control.builder(this::displayKeyboardShortcuts)
+		return Control.builder()
+						.command(this::displayKeyboardShortcuts)
 						.name(resourceBundle.getString(KEYBOARD_SHORTCUTS) + "...")
 						.build();
 	}
@@ -800,7 +808,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {
-		return Control.builder(() -> displayEntityPanel(panelBuilder))
+		return Control.builder()
+						.command(() -> displayEntityPanel(panelBuilder))
 						.name(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
 						.smallIcon(panelBuilder.icon().orElse(null))
 						.build();
@@ -920,7 +929,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		}
 		String firstLogFile = files.iterator().next();
 
-		return Control.builder(() -> Desktop.getDesktop().open(new File(firstLogFile)))
+		return Control.builder()
+						.command(() -> Desktop.getDesktop().open(new File(firstLogFile)))
 						.name(resourceBundle.getString("open_log_file"))
 						.description(resourceBundle.getString("open_log_file") + " (" + firstLogFile + ")")
 						.build();

@@ -148,7 +148,7 @@ public final class DialogsTest {
 						.stringPainted(true)
 						.northPanel(new JPanel())
 						.westPanel(new JPanel())
-						.control(Control.builder(() -> {}))
+						.control(Control.builder().command(() -> {}))
 						.build();
 	}
 

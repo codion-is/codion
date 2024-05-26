@@ -24,7 +24,6 @@ import is.codion.common.user.User;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 
@@ -151,10 +150,12 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 						.consumer(textArea::setLineWrap)
 						.build();
 		textArea.setComponentPopupMenu(menu(Controls.builder()
-						.control(Control.builder(() -> saveLogToFile(textArea))
+						.control(Control.builder()
+										.command(() -> saveLogToFile(textArea))
 										.name("Save to file..."))
 						.separator()
-						.control(ToggleControl.builder(lineWrapState)
+						.control(Control.builder()
+										.toggle(lineWrapState)
 										.name("Line wrap")))
 						.createPopupMenu());
 

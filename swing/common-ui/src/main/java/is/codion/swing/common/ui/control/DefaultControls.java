@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.event.Event;
-
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
@@ -80,17 +78,12 @@ final class DefaultControls extends AbstractControl implements Controls {
 	}
 
 	@Override
-	public <B extends Control.Builder<Control, B>> Control.Builder<Control, B> copy(Command command) {
+	public CommandControlBuilder copy(Command command) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public <B extends Control.Builder<Control, B>> Control.Builder<Control, B> copy(ActionCommand actionCommand) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public <B extends Control.Builder<Control, B>> Control.Builder<Control, B> copy(Event<ActionEvent> event) {
+	public CommandControlBuilder copy(ActionCommand actionCommand) {
 		throw new UnsupportedOperationException();
 	}
 

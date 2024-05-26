@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
@@ -38,7 +37,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 	 * @param name the name
 	 * @param enabled an observer indicating when this control should be enabled
 	 */
-	DefaultToggleControl(ToggleControlBuilder<?> builder) {
+	DefaultToggleControl(DefaultToggleControlBuilder builder) {
 		super(builder);
 		this.value = requireNonNull(builder.value, "value");
 	}
@@ -52,13 +51,13 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 	public void actionPerformed(ActionEvent e) {/*Not required*/}
 
 	@Override
-	public <C extends Control, B extends Builder<C, B>> Builder<C, B> copy() {
-		return (Builder<C, B>) copy(value);
+	public ToggleControlBuilder copy() {
+		return copy(value);
 	}
 
 	@Override
-	public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copy(Value<Boolean> value) {
-		B builder = (B) new ToggleControlBuilder<>(value)
+	public ToggleControlBuilder copy(Value<Boolean> value) {
+		ToggleControlBuilder builder = new DefaultToggleControlBuilder(value)
 						.enabled(enabled());
 		keys().forEach(key -> builder.value(key, getValue(key)));
 
@@ -66,22 +65,17 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 	}
 
 	@Override
-	public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copy(State state) {
+	public ToggleControlBuilder copy(State state) {
 		return copy((Value<Boolean>) state);
 	}
 
 	@Override
-	public <B extends Builder<Control, B>> Builder<Control, B> copy(Command command) {
+	public CommandControlBuilder copy(Command command) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public <B extends Builder<Control, B>> Builder<Control, B> copy(ActionCommand actionCommand) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public <B extends Builder<Control, B>> Builder<Control, B> copy(Event<ActionEvent> event) {
+	public CommandControlBuilder copy(ActionCommand actionCommand) {
 		throw new UnsupportedOperationException();
 	}
 }

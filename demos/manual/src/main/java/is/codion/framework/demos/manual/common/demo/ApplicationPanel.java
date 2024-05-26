@@ -88,7 +88,8 @@ public final class ApplicationPanel extends JPanel {
 						.transferFocusOnEnter(true)
 						.build(checkBox -> settingsPanel.add(checkBox, BorderLayout.WEST));
 
-		button(Control.builder(model::clear)
+		button(Control.builder()
+						.command(model::clear)
 						.enabled(inputEnabledState)
 						.name("Clear")
 						.mnemonic('L'))
@@ -402,8 +403,9 @@ public final class ApplicationPanel extends JPanel {
 
 	private static Control createSelectRandomItemControl(ItemComboBoxModel<Integer> integerItemComboBoxModel) {
 		Random random = new Random();
-		return Control.builder(() ->
-										integerItemComboBoxModel.setSelectedItem(random.nextInt(integerItemComboBoxModel.getSize()) + 1))
+		return Control.builder()
+						.command(() -> integerItemComboBoxModel.setSelectedItem(
+										random.nextInt(integerItemComboBoxModel.getSize()) + 1))
 						.name("Select Random Item")
 						.build();
 	}

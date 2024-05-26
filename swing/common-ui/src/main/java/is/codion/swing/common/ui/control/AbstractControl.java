@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
@@ -35,7 +34,6 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -43,7 +41,6 @@ import static java.util.stream.Collectors.toList;
  */
 abstract class AbstractControl extends AbstractAction implements Control {
 
-	private static final Consumer<Exception> DEFAULT_EXCEPTION_HANDLER = new DefaultExceptionHandler();
 	private static final String ENABLED = "enabled";
 
 	static final String FONT = "Font";
@@ -167,7 +164,6 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		private final Map<String, Object> values = new HashMap<>();
 
 		private StateObserver enabled;
-		protected Consumer<Exception> onException = DEFAULT_EXCEPTION_HANDLER;
 
 		@Override
 		public final B name(String name) {
@@ -238,29 +234,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
 			return self();
 		}
 
-		@Override
-		public final B onException(Consumer<Exception> onException) {
-			this.onException = requireNonNull(onException);
-			return self();
-		}
-
 		protected final B self() {
 			return (B) this;
-		}
-	}
-
-	private static final class DefaultExceptionHandler implements Consumer<Exception> {
-
-		@Override
-		public void accept(Exception exception) {
-			if (exception instanceof CancelException) {
-				return; // Operation cancelled
-			}
-			if (exception instanceof RuntimeException) {
-				throw (RuntimeException) exception;
-			}
-
-			throw new RuntimeException(exception);
 		}
 	}
 }

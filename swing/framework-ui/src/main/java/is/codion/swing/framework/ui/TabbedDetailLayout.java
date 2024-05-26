@@ -296,7 +296,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 		if (entityPanel.containsTablePanel() && includeControls) {
 			EntityTablePanel tablePanel = entityPanel.tablePanel();
 			tablePanel.addToolBarControls(Controls.builder()
-							.control(Control.builder(detailController::toggleDetailState)
+							.control(Control.builder()
+											.command(detailController::toggleDetailState)
 											.smallIcon(ICONS.detail())
 											.description(MESSAGES.getString("toggle_detail")))
 							.build());
@@ -304,7 +305,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 							.name(MESSAGES.getString(DETAIL_TABLES))
 							.smallIcon(ICONS.detail())
 							.controls(entityPanel.detailPanels().stream()
-											.map(detailPanel -> Control.builder(new ActivateDetailPanel(detailPanel))
+											.map(detailPanel -> Control.builder()
+															.command(new ActivateDetailPanel(detailPanel))
 															.name(detailPanel.caption())
 															.build())
 											.toArray(Control[]::new))

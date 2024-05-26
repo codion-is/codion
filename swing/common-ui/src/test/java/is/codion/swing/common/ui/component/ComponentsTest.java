@@ -87,11 +87,14 @@ public final class ComponentsTest {
 
 	private final Controls controls = Controls.builder()
 					.name("SubMenu")
-					.controls(Control.builder(() -> {})
+					.controls(Control.builder()
+													.command(() -> {})
 													.name("one"),
-									Control.builder(() -> {})
+									Control.builder()
+													.command(() -> {})
 													.name("two"),
-									ToggleControl.builder(State.state())
+									Control.builder()
+													.toggle(State.state())
 													.name("three"))
 					.build();
 
@@ -327,7 +330,8 @@ public final class ComponentsTest {
 
 		State enabledState = State.state(true);
 		State state = State.state();
-		ToggleControl toggleControl = ToggleControl.builder(state)
+		ToggleControl toggleControl = Control.builder()
+						.toggle(state)
 						.enabled(enabledState)
 						.build();
 		button = Components.checkBox()
@@ -368,7 +372,8 @@ public final class ComponentsTest {
 
 		State enabledState = State.state(true);
 		State state = State.state();
-		ToggleControl toggleControl = ToggleControl.builder(state)
+		ToggleControl toggleControl = Control.builder()
+						.toggle(state)
 						.enabled(enabledState)
 						.build();
 		button = Components.toggleButton()
@@ -412,7 +417,8 @@ public final class ComponentsTest {
 
 		State enabledState = State.state(true);
 		State state = State.state();
-		ToggleControl toggleControl = ToggleControl.builder(state)
+		ToggleControl toggleControl = Control.builder()
+						.toggle(state)
 						.enabled(enabledState)
 						.build();
 		button = Components.radioButton()
@@ -443,7 +449,8 @@ public final class ComponentsTest {
 
 		State enabledState = State.state(true);
 		State state = State.state(true);
-		ToggleControl toggleControl = ToggleControl.builder(state)
+		ToggleControl toggleControl = Control.builder()
+						.toggle(state)
 						.enabled(enabledState)
 						.build();
 		JCheckBoxMenuItem checkBox = Components.checkBoxMenuItem()
@@ -467,7 +474,8 @@ public final class ComponentsTest {
 
 		State enabledState = State.state(true);
 		State state = State.state(true);
-		ToggleControl toggleControl = ToggleControl.builder(state)
+		ToggleControl toggleControl = Control.builder()
+						.toggle(state)
 						.enabled(enabledState)
 						.build();
 		JRadioButtonMenuItem button = Components.radioButtonMenuItem()
@@ -946,14 +954,18 @@ public final class ComponentsTest {
 		JPanel base = new JPanel();
 		base.add(Components.buttonPanel(Controls.builder()
 										.name("SubMenu")
-										.controls(Control.builder(() -> {})
+										.controls(Control.builder()
+																		.command(() -> {})
 																		.name("one"),
-														Control.builder(() -> {})
+														Control.builder()
+																		.command(() -> {})
 																		.name("two"),
-														ToggleControl.builder(State.state())
+														Control.builder()
+																		.toggle(State.state())
 																		.name("three"))
 										.controls(Controls.builder()
-														.control(Control.builder(() -> {})
+														.control(Control.builder()
+																		.command(() -> {})
 																		.name("four")))
 										.build())
 						.orientation(SwingConstants.VERTICAL)

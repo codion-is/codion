@@ -32,7 +32,6 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
 
@@ -370,7 +369,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		toggleEnabledButton = radioButton(conditionModel().enabled())
 						.horizontalAlignment(CENTER)
 						.popupMenu(radioButton -> menu(Controls.builder()
-										.control(ToggleControl.builder(conditionModel().autoEnable())
+										.control(Control.builder()
+														.toggle(conditionModel().autoEnable())
 														.name(MESSAGES.getString("auto_enable"))).build())
 										.createPopupMenu())
 						.build();
@@ -586,7 +586,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	private void addStringConfigurationPopupMenu() {
 		if (isStringOrCharacter()) {
 			Controls.Builder controlsBuilder = Controls.builder();
-			controlsBuilder.control(ToggleControl.builder(conditionModel().caseSensitive())
+			controlsBuilder.control(Control.builder()
+							.toggle(conditionModel().caseSensitive())
 							.name(MESSAGES.getString("case_sensitive")));
 			if (conditionModel().columnClass().equals(String.class)) {
 				controlsBuilder.controls(createAutomaticWildcardControls());
@@ -636,13 +637,17 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 		return Controls.builder()
 						.name(MESSAGES.getString("automatic_wildcard"))
-						.control(ToggleControl.builder(automaticWildcardNoneState)
+						.control(Control.builder()
+										.toggle(automaticWildcardNoneState)
 										.name(AutomaticWildcard.NONE.description()))
-						.control(ToggleControl.builder(automaticWildcardPostfixState)
+						.control(Control.builder()
+										.toggle(automaticWildcardPostfixState)
 										.name(AutomaticWildcard.POSTFIX.description()))
-						.control(ToggleControl.builder(automaticWildcardPrefixState)
+						.control(Control.builder()
+										.toggle(automaticWildcardPrefixState)
 										.name(AutomaticWildcard.PREFIX.description()))
-						.control(ToggleControl.builder(automaticWildcardPrefixAndPostfixState)
+						.control(Control.builder()
+										.toggle(automaticWildcardPrefixAndPostfixState)
 										.name(AutomaticWildcard.PREFIX_AND_POSTFIX.description()))
 						.build();
 	}

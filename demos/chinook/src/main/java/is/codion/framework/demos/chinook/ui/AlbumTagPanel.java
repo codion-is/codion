@@ -52,18 +52,22 @@ final class AlbumTagPanel extends JPanel {
 	private final DefaultListModel<String> tagListModel;
 	private final State selectionEmpty = State.state(true);
 	private final State movingTags = State.state(false);
-	private final Control addTagControl = Control.builder(this::addTag)
+	private final Control addTagControl = Control.builder()
+					.command(this::addTag)
 					.smallIcon(ICONS.icon(Foundation.PLUS))
 					.build();
-	private final Control removeTagControl = Control.builder(this::removeTag)
+	private final Control removeTagControl = Control.builder()
+					.command(this::removeTag)
 					.smallIcon(ICONS.icon(Foundation.MINUS))
 					.enabled(selectionEmpty.not())
 					.build();
-	private final Control moveSelectionUpControl = Control.builder(this::moveSelectedTagsUp)
+	private final Control moveSelectionUpControl = Control.builder()
+					.command(this::moveSelectedTagsUp)
 					.smallIcon(ICONS.up())
 					.enabled(selectionEmpty.not())
 					.build();
-	private final Control moveSelectionDownControl = Control.builder(this::moveSelectedTagsDown)
+	private final Control moveSelectionDownControl = Control.builder()
+					.command(this::moveSelectedTagsDown)
 					.smallIcon(ICONS.down())
 					.enabled(selectionEmpty.not())
 					.build();

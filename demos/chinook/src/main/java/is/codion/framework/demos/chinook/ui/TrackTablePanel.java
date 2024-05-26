@@ -54,7 +54,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 										.cellRendererFactory(new RatingCellRendererFactory(tableModel, Track.RATING)))
 						.includeLimitMenu(true));
 		configurePopupMenu(config -> config.clear()
-						.control(Control.builder(this::raisePriceOfSelected)
+						.control(Control.builder()
+										.command(this::raisePriceOfSelected)
 										.name(BUNDLE.getString("raise_price") + "...")
 										.enabled(tableModel().selectionModel().selectionNotEmpty()))
 						.separator()

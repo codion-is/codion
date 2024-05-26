@@ -11,6 +11,7 @@ Codion Change Log
 - FilterTable, mouse click modifier for adding a sort column changed from Ctrl to Alt.
 - Control now immutable, related refactoring.
 - Controls now immutable, related refactoring.
+- Control.BuilderFactory added, related refactoring.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
 ### is.codion.swing.framework.ui

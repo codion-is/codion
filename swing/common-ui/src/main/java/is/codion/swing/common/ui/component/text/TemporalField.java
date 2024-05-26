@@ -134,12 +134,14 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		getDocument().addDocumentListener(new TemporalDocumentListener());
 		if (builder.incrementDecrementEnabled) {
 			builder.keyboardShortcuts.keyStroke(INCREMENT).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
-							.action(Control.builder(this::increment)
+							.action(Control.builder()
+											.command(this::increment)
 											.enabled(valueNull.not())
 											.build())
 							.enable(this));
 			builder.keyboardShortcuts.keyStroke(DECREMENT).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
-							.action(Control.builder(this::decrement)
+							.action(Control.builder()
+											.command(this::decrement)
 											.enabled(valueNull.not())
 											.build())
 							.enable(this));
@@ -274,7 +276,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 	private Control createCalendarControl() {
 		if (CalendarPanel.supportedTypes().contains(temporalClass)) {
-			return Control.builder(this::displayCalendar)
+			return Control.builder()
+							.command(this::displayCalendar)
 							.name(calendarIcon == null ? "..." : null)
 							.smallIcon(calendarIcon)
 							.description(MESSAGES.getString("display_calendar"))

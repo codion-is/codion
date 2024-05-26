@@ -18,7 +18,9 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.event.Event;
+import is.codion.common.model.CancelException;
+import is.codion.common.state.State;
+import is.codion.common.value.Value;
 
 import java.awt.event.ActionEvent;
 import java.util.function.Consumer;
@@ -27,11 +29,13 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultControl extends AbstractControl {
 
+	private static final Consumer<Exception> DEFAULT_EXCEPTION_HANDLER = new DefaultExceptionHandler();
+
 	private final Command command;
 	private final ActionCommand actionCommand;
 	private final Consumer<Exception> onException;
 
-	private DefaultControl(Command command, ActionCommand actionCommand, DefaultControlBuilder<?, ?> builder) {
+	private DefaultControl(Command command, ActionCommand actionCommand, DefaultControlBuilder builder) {
 		super(builder);
 		this.command = command;
 		this.actionCommand = actionCommand;
@@ -54,32 +58,25 @@ final class DefaultControl extends AbstractControl {
 	}
 
 	@Override
-	public <C extends Control, B extends Builder<C, B>> Builder<C, B> copy() {
-		return (Builder<C, B>) createBuilder(command, null);
+	public CommandControlBuilder copy() {
+		return createBuilder(command, actionCommand);
 	}
 
 	@Override
-	public <B extends Builder<Control, B>> Builder<Control, B> copy(Command command) {
+	public CommandControlBuilder copy(Command command) {
 		return createBuilder(command, null);
 	}
 
 	@Override
-	public <B extends Builder<Control, B>> Builder<Control, B> copy(ActionCommand actionCommand) {
+	public CommandControlBuilder copy(ActionCommand actionCommand) {
 		return createBuilder(null, actionCommand);
 	}
 
-	@Override
-	public <B extends Builder<Control, B>> Builder<Control, B> copy(Event<ActionEvent> event) {
-		requireNonNull(event);
-
-		return copy(event::accept);
-	}
-
-	<B extends Builder<Control, B>> Builder<Control, B> createBuilder(Command command, ActionCommand actionCommand) {
+	CommandControlBuilder createBuilder(Command command, ActionCommand actionCommand) {
 		if (command == null && actionCommand == null) {
 			throw new NullPointerException("Command or ActionCommand must be specified");
 		}
-		B builder = new DefaultControl.DefaultControlBuilder<Control, B>(command, actionCommand)
+		CommandControlBuilder builder = new DefaultControl.DefaultControlBuilder(command, actionCommand)
 						.enabled(enabled())
 						.onException(onException);
 		keys().forEach(key -> builder.value(key, getValue(key)));
@@ -87,10 +84,12 @@ final class DefaultControl extends AbstractControl {
 		return builder;
 	}
 
-	static final class DefaultControlBuilder<C extends Control, B extends Builder<C, B>> extends AbstractControlBuilder<C, B> {
+	static final class DefaultControlBuilder extends AbstractControlBuilder<Control, CommandControlBuilder> implements CommandControlBuilder {
 
 		private final Command command;
 		private final ActionCommand actionCommand;
+
+		private Consumer<Exception> onException = DEFAULT_EXCEPTION_HANDLER;
 
 		DefaultControlBuilder(Command command, ActionCommand actionCommand) {
 			this.command = command;
@@ -98,8 +97,53 @@ final class DefaultControl extends AbstractControl {
 		}
 
 		@Override
-		public C build() {
-			return (C) new DefaultControl(command, actionCommand, this);
+		public CommandControlBuilder onException(Consumer<Exception> onException) {
+			this.onException = requireNonNull(onException);
+			return self();
+		}
+
+		@Override
+		public Control build() {
+			return new DefaultControl(command, actionCommand, this);
+		}
+	}
+
+	static final class DefaultControlBuilderFactory implements Control.BuilderFactory {
+
+		@Override
+		public CommandControlBuilder command(Command command) {
+			return new DefaultControlBuilder(requireNonNull(command), null);
+		}
+
+
+		@Override
+		public CommandControlBuilder actionCommand(ActionCommand actionCommand) {
+			return new DefaultControlBuilder(null, requireNonNull(actionCommand));
+		}
+
+		@Override
+		public ToggleControlBuilder toggle(Value<Boolean> value) {
+			return new DefaultToggleControlBuilder(value);
+		}
+
+		@Override
+		public ToggleControlBuilder toggle(State state) {
+			return new DefaultToggleControlBuilder(state);
+		}
+	}
+
+	private static final class DefaultExceptionHandler implements Consumer<Exception> {
+
+		@Override
+		public void accept(Exception exception) {
+			if (exception instanceof CancelException) {
+				return; // Operation cancelled
+			}
+			if (exception instanceof RuntimeException) {
+				throw (RuntimeException) exception;
+			}
+
+			throw new RuntimeException(exception);
 		}
 	}
 }

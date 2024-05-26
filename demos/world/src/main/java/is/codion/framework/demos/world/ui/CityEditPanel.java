@@ -58,7 +58,8 @@ public final class CityEditPanel extends EntityEditPanel {
 		this.mapKit = Maps.createMapKit();
 		tableModel.addDisplayLocationConsumer(this::displayLocation);
 		configureControls(config -> config
-						.control(Control.builder(this::populateLocation)
+						.control(Control.builder()
+										.command(this::populateLocation)
 										.enabled(State.and(active(),
 														editModel().isNull(City.LOCATION),
 														editModel().exists()))

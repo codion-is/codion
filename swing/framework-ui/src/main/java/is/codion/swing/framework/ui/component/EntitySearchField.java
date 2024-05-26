@@ -305,7 +305,8 @@ public final class EntitySearchField extends HintTextField {
 	 */
 	public Control searchControl() {
 		if (searchControl == null) {
-			searchControl = Control.builder(this::performSearch)
+			searchControl = Control.builder()
+							.command(this::performSearch)
 							.smallIcon(ICONS.search())
 							.enabled(model.searchStringModified())
 							.build();
@@ -580,7 +581,8 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private JPopupMenu createPopupMenu() {
-		return menu(Controls.controls(Control.builder(() -> Dialogs.componentDialog(settingsPanel())
+		return menu(Controls.controls(Control.builder()
+						.command(() -> Dialogs.componentDialog(settingsPanel())
 										.owner(EntitySearchField.this)
 										.title(FrameworkMessages.settings())
 										.icon(ICONS.settings())

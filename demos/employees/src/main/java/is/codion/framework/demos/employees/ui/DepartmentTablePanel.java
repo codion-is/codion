@@ -50,7 +50,8 @@ public class DepartmentTablePanel extends EntityTablePanel {
 	// tag::setupControls[]
 	@Override
 	protected void setupControls() {
-		control(PRINT).set(Control.builder(this::viewEmployeeReport)
+		control(PRINT).set(Control.builder()
+						.command(this::viewEmployeeReport)
 						.name("Employee Report")
 						.smallIcon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selectionModel().selectionNotEmpty())

@@ -271,7 +271,8 @@ public final class TextFieldPanel extends JPanel {
 	}
 
 	private Control createTextAreaControl(DefaultBuilder builder) {
-		return Control.builder(this::inputFromUser)
+		return Control.builder()
+						.command(this::inputFromUser)
 						.name(builder.buttonIcon == null ? "..." : "")
 						.smallIcon(builder.buttonIcon)
 						.build();

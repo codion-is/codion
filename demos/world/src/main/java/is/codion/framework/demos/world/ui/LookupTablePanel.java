@@ -93,7 +93,8 @@ final class LookupTablePanel extends EntityTablePanel {
 					.consumer(this::setMapDialogVisible)
 					.build();
 
-	private final Control toggleMapControl = ToggleControl.builder(mapDialogVisible)
+	private final Control toggleMapControl = Control.builder()
+					.toggle(mapDialogVisible)
 					.smallIcon(ICONS.icon(Foundation.MAP))
 					.name("Show map")
 					.build();
@@ -123,12 +124,14 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	@Override
 	protected void setupControls() {
-		control(CLEAR).set(Control.builder(this::clearTableAndConditions)
+		control(CLEAR).set(Control.builder()
+						.command(this::clearTableAndConditions)
 						.name("Clear")
 						.mnemonic('C')
 						.smallIcon(ICONS.clear())
 						.build());
-		control(SELECT_COLUMNS).set(ToggleControl.builder(columnSelectionPanelVisible)
+		control(SELECT_COLUMNS).set(Control.builder()
+						.toggle(columnSelectionPanelVisible)
 						.name("Select")
 						.build());
 	}
@@ -147,14 +150,17 @@ final class LookupTablePanel extends EntityTablePanel {
 						.control(Controls.builder()
 										.name("Export")
 										.smallIcon(ICONS.icon(Foundation.PAGE_EXPORT))
-										.control(Control.builder(this::exportCSV)
+										.control(Control.builder()
+														.command(this::exportCSV)
 														.name("CSV..."))
-										.control(Control.builder(this::exportJSON)
+										.control(Control.builder()
+														.command(this::exportJSON)
 														.name("JSON...")))
 						.control(Controls.builder()
 										.name("Import")
 										.smallIcon(ICONS.icon(Foundation.PAGE_ADD))
-										.control(Control.builder(this::importJSON)
+										.control(Control.builder()
+														.command(this::importJSON)
 														.name("JSON...")))
 						.separator()
 						.control(toggleMapControl)
@@ -288,7 +294,8 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private static Control createSelectAllColumnsControl(Controls toggleColumnsControls) {
-		return Control.builder(() -> toggleColumnsControls.actions().stream()
+		return Control.builder()
+						.command(() -> toggleColumnsControls.actions().stream()
 										.map(ToggleControl.class::cast)
 										.forEach(toggleControl -> toggleControl.value().set(true)))
 						.name("Select all")

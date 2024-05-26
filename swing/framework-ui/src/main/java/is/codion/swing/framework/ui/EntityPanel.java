@@ -920,7 +920,8 @@ public class EntityPanel extends JPanel {
 	 * @return a Control instance for toggling the edit panel state
 	 */
 	private Control createToggleEditPanelControl() {
-		return Control.builder(this::toggleEditPanelState)
+		return Control.builder()
+						.command(this::toggleEditPanelState)
 						.smallIcon(ICONS.editPanel())
 						.description(MESSAGES.getString("toggle_edit"))
 						.build();
@@ -930,7 +931,8 @@ public class EntityPanel extends JPanel {
 	 * @return a Control instance for refreshing the table model
 	 */
 	private Control createRefreshTableControl() {
-		return Control.builder(tableModel()::refresh)
+		return Control.builder()
+						.command(tableModel()::refresh)
 						.name(Messages.refresh())
 						.enabled(editPanel == null ? null : editPanel.active())
 						.description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")

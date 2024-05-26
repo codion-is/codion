@@ -563,7 +563,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private Control createDeleteControl() {
-		return Control.builder(deleteCommand()
+		return Control.builder()
+						.command(deleteCommand()
 										.confirm(true)
 										.build())
 						.name(FrameworkMessages.delete())
@@ -578,7 +579,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private Control createClearControl() {
-		return Control.builder(this::clearAndRequestFocus)
+		return Control.builder()
+						.command(this::clearAndRequestFocus)
 						.name(Messages.clear())
 						.enabled(active)
 						.description(Messages.clearTip() + ALT_PREFIX + Messages.clearMnemonic() + ")")
@@ -596,7 +598,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private Control createUpdateControl() {
-		return Control.builder(updateCommand()
+		return Control.builder()
+						.command(updateCommand()
 										.confirm(true)
 										.build())
 						.name(FrameworkMessages.update())
@@ -614,7 +617,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		boolean useSaveCaption = EntityEditPanel.Config.USE_SAVE_CAPTION.get();
 		char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.insertMnemonic();
 		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.insert();
-		return Control.builder(insertCommand()
+		return Control.builder()
+						.command(insertCommand()
 										.confirm(true)
 										.build())
 						.name(caption)

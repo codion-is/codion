@@ -111,8 +111,8 @@ public final class EventStateValue {
 		// tag::control[]
 		State state = State.state();
 
-		Control control = Control.builder(() ->
-										System.out.println("Hello Control"))
+		Control control = Control.builder()
+						.command(() -> System.out.println("Hello Control"))
 						.enabled(state)
 						.build();
 

@@ -45,7 +45,8 @@ public class CustomerTablePanel extends EntityTablePanel {
 		// associate a custom Control with the PRINT control code,
 		// which calls the viewCustomerReport method in this class,
 		// enabled only when the selection is not empty
-		control(PRINT).set(Control.builder(this::viewCustomerReport)
+		control(PRINT).set(Control.builder()
+						.command(this::viewCustomerReport)
 						.name("Customer report")
 						.smallIcon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selectionModel().selectionNotEmpty())

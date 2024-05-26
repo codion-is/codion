@@ -56,7 +56,8 @@ public final class InputControls {
 		// tag::control[]
 		State somethingEnabledState = State.state(true);
 
-		Control control = Control.builder(() -> System.out.println("Doing something"))
+		Control control = Control.builder()
+						.command(() -> System.out.println("Doing something"))
 						.name("Do something")
 						.mnemonic('D')
 						.enabled(somethingEnabledState)
@@ -69,7 +70,8 @@ public final class InputControls {
 				System.out.println("Doing something else");
 			}
 		};
-		Control actionControl = Control.actionControlBuilder(actionCommand)
+		Control actionControl = Control.builder()
+						.actionCommand(actionCommand)
 						.name("Do something else")
 						.mnemonic('S')
 						.build();
@@ -97,29 +99,35 @@ public final class InputControls {
 	void controls() {
 		// tag::controls[]
 		Controls controls = Controls.builder()
-						.control(Control.builder(this::doFirst)
+						.control(Control.builder()
+										.command(this::doFirst)
 										.name("First")
 										.mnemonic('F'))
-						.control(Control.builder(this::doSecond)
+						.control(Control.builder()
+										.command(this::doSecond)
 										.name("Second")
 										.mnemonic('S'))
 						.control(Controls.builder()
 										.name("Submenu")
-										.control(Control.builder(this::doSubFirst)
+										.control(Control.builder()
+														.command(this::doSubFirst)
 														.name("Sub-first")
 														.mnemonic('b'))
-										.control(Control.builder(this::doSubSecond)
+										.control(Control.builder()
+														.command(this::doSubSecond)
 														.name("Sub-second")
 														.mnemonic('u')))
 						.build();
 
 		JMenu menu = Components.menu(controls).build();
 
-		Control firstControl = Control.builder(this::doFirst)
+		Control firstControl = Control.builder()
+						.command(this::doFirst)
 						.name("First")
 						.mnemonic('F')
 						.build();
-		Control secondControl = Control.builder(this::doSecond)
+		Control secondControl = Control.builder()
+						.command(this::doSecond)
 						.name("Second")
 						.mnemonic('S')
 						.build();

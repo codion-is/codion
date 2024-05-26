@@ -169,7 +169,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	 * @return a Control for filtering this combo box
 	 */
 	public Control createForeignKeyFilterControl(ForeignKey foreignKey) {
-		return Control.builder(createForeignKeyFilterCommand(requireNonNull(foreignKey)))
+		return Control.builder()
+						.command(createForeignKeyFilterCommand(requireNonNull(foreignKey)))
 						.smallIcon(FrameworkIcons.instance().filter())
 						.build();
 	}

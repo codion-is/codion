@@ -34,7 +34,7 @@ public class KeyEventsTest {
 	@Test
 	void addRemoveKeyEvent() {
 		JTextField textField = new JTextField();
-		Control control = Control.builder(() -> {}).build();
+		Control control = Control.builder().command(() -> {}).build();
 		KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(control);
 		builder.enable(textField);
 		String actionMapKey = (String) textField.getInputMap().get(KeyStroke.getKeyStroke(VK_ENTER, 0));

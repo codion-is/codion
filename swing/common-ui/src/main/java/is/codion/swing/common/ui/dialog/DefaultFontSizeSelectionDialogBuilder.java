@@ -62,7 +62,8 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 										getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName()));
 		String caption = resourceBundle.getString("select_font_size");
 
-		return Control.builder(() -> selectFontSize(selectedFontSize))
+		return Control.builder()
+						.command(() -> selectFontSize(selectedFontSize))
 						.name(caption)
 						.build();
 	}

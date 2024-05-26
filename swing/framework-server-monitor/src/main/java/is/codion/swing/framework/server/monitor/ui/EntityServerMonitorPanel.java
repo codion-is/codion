@@ -32,7 +32,6 @@ import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -194,40 +193,46 @@ public final class EntityServerMonitorPanel extends JPanel {
 	}
 
 	private Control createRefreshControl() {
-		return Control.builder(model::refresh)
+		return Control.builder()
+						.command(model::refresh)
 						.name("Refresh")
 						.mnemonic('R')
 						.build();
 	}
 
 	private Control createAlwaysOnTopControl() {
-		return ToggleControl.builder(alwaysOnTopState)
+		return Control.builder()
+						.toggle(alwaysOnTopState)
 						.name("Always on Top")
 						.mnemonic('A')
 						.build();
 	}
 
 	private Control createUpateIntervalControl() {
-		return Control.builder(this::setUpdateInterval)
+		return Control.builder()
+						.command(this::setUpdateInterval)
 						.name("Chart update interval...")
 						.build();
 	}
 
 	private Control createClearChartsControl() {
-		return Control.builder(model::clearCharts)
+		return Control.builder()
+						.command(model::clearCharts)
 						.name("Clear charts")
 						.build();
 	}
 
 	private Control createSetJDKDirControl() {
-		return Control.builder(this::setJDKDir)
+		return Control.builder()
+						.command(this::setJDKDir)
 						.name("Set JDK home...")
 						.mnemonic('S')
 						.build();
 	}
 
 	private Control createJConsoleControl() {
-		return Control.builder(this::runJConsole)
+		return Control.builder()
+						.command(this::runJConsole)
 						.name("Run JConsole")
 						.mnemonic('J')
 						.build();
@@ -260,7 +265,8 @@ public final class EntityServerMonitorPanel extends JPanel {
 	}
 
 	private static Control createExitControl() {
-		return Control.builder(() -> System.exit(0))
+		return Control.builder()
+						.command(() -> System.exit(0))
 						.name("Exit")
 						.mnemonic('X')
 						.build();

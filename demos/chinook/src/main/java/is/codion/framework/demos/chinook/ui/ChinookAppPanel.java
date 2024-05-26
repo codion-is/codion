@@ -148,7 +148,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	@Override
 	protected Controls createViewMenuControls() {
 		return super.createViewMenuControls().copy()
-						.controlAt(2, Control.builder(this::selectLanguage)
+						.controlAt(2, Control.builder()
+										.command(this::selectLanguage)
 										.name(bundle.getString(SELECT_LANGUAGE))
 										.build())
 						.build();

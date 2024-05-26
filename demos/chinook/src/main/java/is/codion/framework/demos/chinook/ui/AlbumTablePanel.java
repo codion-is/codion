@@ -55,7 +55,8 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	}
 
 	private Control viewCoverControl() {
-		return Control.builder(this::viewSelectedCover)
+		return Control.builder()
+						.command(this::viewSelectedCover)
 						.enabled(tableModel().selectionModel().singleSelection())
 						.build();
 	}

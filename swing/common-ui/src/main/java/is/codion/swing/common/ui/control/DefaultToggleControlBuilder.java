@@ -20,14 +20,15 @@ package is.codion.swing.common.ui.control;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.control.AbstractControl.AbstractControlBuilder;
+import is.codion.swing.common.ui.control.Control.ToggleControlBuilder;
 
 import static java.util.Objects.requireNonNull;
 
-final class ToggleControlBuilder<B extends Control.Builder<ToggleControl, B>> extends AbstractControlBuilder<ToggleControl, B> {
+final class DefaultToggleControlBuilder extends AbstractControlBuilder<ToggleControl, ToggleControlBuilder> implements ToggleControlBuilder {
 
 	final Value<Boolean> value;
 
-	ToggleControlBuilder(Value<Boolean> value) {
+	DefaultToggleControlBuilder(Value<Boolean> value) {
 		this.value = requireNonNull(value);
 	}
 

@@ -51,7 +51,8 @@ public final class CustomerTablePanel extends EntityTablePanel {
 
 	@Override
 	protected void setupControls() {
-		control(PRINT).set(Control.builder(this::viewCustomerReport)
+		control(PRINT).set(Control.builder()
+						.command(this::viewCustomerReport)
 						.name(BUNDLE.getString("customer_report"))
 						.smallIcon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selectionModel().selectionNotEmpty())

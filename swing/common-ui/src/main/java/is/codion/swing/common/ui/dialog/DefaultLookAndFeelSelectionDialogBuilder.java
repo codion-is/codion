@@ -60,7 +60,8 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 										getBundle(LookAndFeelProvider.class.getName()));
 		String caption = resourceBundle.getString("select_look_and_feel");
 
-		return Control.builder(() -> selectLookAndFeel(selectedLookAndFeel))
+		return Control.builder()
+						.command(() -> selectLookAndFeel(selectedLookAndFeel))
 						.name(caption)
 						.build();
 	}

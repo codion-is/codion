@@ -119,7 +119,8 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 	public JDialog build() {
 		actions().clear();
 		if (okAction == null) {
-			okAction = Control.builder(onOk == null ? new DefaultOkCommand(component()) : new PerformAndCloseCommand(onOk, component()))
+			okAction = Control.builder()
+							.command(onOk == null ? new DefaultOkCommand(component()) : new PerformAndCloseCommand(onOk, component()))
 							.name(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
 							.enabled(okEnabled)
@@ -136,7 +137,8 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 			okAction.putValue(Action.MNEMONIC_KEY, (int) Messages.okMnemonic());
 		}
 		if (cancelAction == null) {
-			cancelAction = Control.builder(onCancel == null ? new DefaultCancelCommand(component()) : new PerformAndCloseCommand(onCancel, component()))
+			cancelAction = Control.builder()
+							.command(onCancel == null ? new DefaultCancelCommand(component()) : new PerformAndCloseCommand(onCancel, component()))
 							.name(Messages.cancel())
 							.mnemonic(Messages.cancelMnemonic())
 							.enabled(cancelEnabled)

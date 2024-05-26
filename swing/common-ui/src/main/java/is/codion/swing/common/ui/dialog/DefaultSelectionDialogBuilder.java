@@ -105,7 +105,8 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 
 	private static <T> List<T> select(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
 		JList<T> list = createList(builder, singleSelection);
-		Control okControl = Control.builder(() -> Utilities.parentDialog(list).dispose())
+		Control okControl = Control.builder()
+						.command(() -> Utilities.parentDialog(list).dispose())
 						.enabled(builder.allowEmptySelection ? null : createSelectionNonEmptyState(list))
 						.build();
 		list.addMouseListener(new MouseAdapter() {

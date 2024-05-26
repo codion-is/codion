@@ -137,7 +137,8 @@ public final class ClientMonitorPanel extends JPanel {
 
 	private JPopupMenu createPopupMenu(FilterTable<RemoteClient, Id> table) {
 		return menu(Controls.builder()
-						.control(Control.builder(this::disconnect)
+						.control(Control.builder()
+										.command(this::disconnect)
 										.name("Disconnect")
 										.enabled(model.clientInstanceTableModel().selectionModel().selectionNotEmpty()))
 						.separator()

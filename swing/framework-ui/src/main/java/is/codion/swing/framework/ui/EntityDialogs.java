@@ -520,12 +520,14 @@ public final class EntityDialogs {
 		private final SwingEntityTableModel tableModel;
 		private final EntityTablePanel entityTablePanel;
 
-		private final Control okControl = Control.builder(this::ok)
+		private final Control okControl = Control.builder()
+						.command(this::ok)
 						.name(Messages.ok())
 						.mnemonic(Messages.okMnemonic())
 						.build();
 		private final Control cancelControl;
-		private final Control searchControl = Control.builder(this::search)
+		private final Control searchControl = Control.builder()
+						.command(this::search)
 						.name(FrameworkMessages.searchVerb())
 						.mnemonic(FrameworkMessages.searchMnemonic())
 						.build();
@@ -544,7 +546,8 @@ public final class EntityDialogs {
 			this.tableModel = requireNonNull(tableModel, "tableModel");
 			this.tableModel.editModel().readOnly().set(true);
 			this.entityTablePanel = createTablePanel(tableModel, preferredSize, singleSelection);
-			this.cancelControl = Control.builder(dialog::dispose)
+			this.cancelControl = Control.builder()
+							.command(dialog::dispose)
 							.name(Messages.cancel())
 							.mnemonic(Messages.cancelMnemonic())
 							.build();
@@ -675,7 +678,8 @@ public final class EntityDialogs {
 
 		private static Control createAddControl(EntityEditPanel editPanel,
 																						Consumer<Collection<Entity>> onInsert) {
-			return Control.builder(editPanel.insertCommand()
+			return Control.builder()
+							.command(editPanel.insertCommand()
 											.confirm(false)
 											.onInsert(onInsert)
 											.build())
@@ -750,14 +754,15 @@ public final class EntityDialogs {
 
 			@Override
 			public void accept(Collection<Entity> updated) {
-	  		onUpdate.accept(updated.iterator().next());
+				onUpdate.accept(updated.iterator().next());
 				disposeDialog.run();
 			}
 		}
 
 		private static Control createUpdateControl(EntityEditPanel editPanel,
 																							 Consumer<Collection<Entity>> onUpdate) {
-			return Control.builder(editPanel.updateCommand()
+			return Control.builder()
+							.command(editPanel.updateCommand()
 											.onUpdate(onUpdate)
 											.build())
 							.name(FrameworkMessages.update())
@@ -769,7 +774,8 @@ public final class EntityDialogs {
 	}
 
 	private static Control createCancelControl(Runnable disposeDialog) {
-		return Control.builder(new RunnableCommand(disposeDialog))
+		return Control.builder()
+						.command(new RunnableCommand(disposeDialog))
 						.name(Messages.cancel())
 						.mnemonic(Messages.cancelMnemonic())
 						.build();

@@ -1083,7 +1083,8 @@ public class EntityTablePanel extends JPanel {
 	 * @return the add control
 	 */
 	private Control createAddControl() {
-		return Control.builder(() -> addEntityDialog(() -> editPanel)
+		return Control.builder()
+						.command(() -> addEntityDialog(() -> editPanel)
 										.owner(this)
 										.closeDialog(false)
 										.show())
@@ -1098,7 +1099,8 @@ public class EntityTablePanel extends JPanel {
 	 * @return the edit control
 	 */
 	private Control createEditControl() {
-		return Control.builder(() -> editEntityDialog(() -> editPanel)
+		return Control.builder()
+						.command(() -> editEntityDialog(() -> editPanel)
 										.owner(this)
 										.show())
 						.name(FrameworkMessages.edit())
@@ -1117,7 +1119,8 @@ public class EntityTablePanel extends JPanel {
 	 * @see EntityEditModel#updateEnabled()
 	 */
 	private Control createEditSelectedAttributeControl() {
-		return Control.builder(this::editSelected)
+		return Control.builder()
+						.command(this::editSelected)
 						.name(FrameworkMessages.edit())
 						.enabled(createEditSelectedEnabledObserver())
 						.smallIcon(ICONS.edit())
@@ -1143,7 +1146,8 @@ public class EntityTablePanel extends JPanel {
 		configuration.editable.get().stream()
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
 						.sorted(AttributeDefinition.definitionComparator())
-						.forEach(attributeDefinition -> builder.control(Control.builder(() -> editSelected(attributeDefinition.attribute()))
+						.forEach(attributeDefinition -> builder.control(Control.builder()
+										.command(() -> editSelected(attributeDefinition.attribute()))
 										.name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())
 										.enabled(editSelectedEnabledObserver)
 										.build()));
@@ -1166,7 +1170,8 @@ public class EntityTablePanel extends JPanel {
 	 * @return a control for showing the dependencies dialog
 	 */
 	private Control createViewDependenciesControl() {
-		return Control.builder(this::viewDependencies)
+		return Control.builder()
+						.command(this::viewDependencies)
 						.name(FrameworkMessages.dependencies())
 						.enabled(tableModel.selectionModel().selectionNotEmpty())
 						.description(FrameworkMessages.dependenciesTip())
@@ -1179,7 +1184,8 @@ public class EntityTablePanel extends JPanel {
 	 * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
 	 */
 	private Control createDeleteControl() {
-		return Control.builder(new DeleteCommand())
+		return Control.builder()
+						.command(new DeleteCommand())
 						.name(FrameworkMessages.delete())
 						.enabled(State.and(
 										tableModel.editModel().deleteEnabled(),
@@ -1193,7 +1199,8 @@ public class EntityTablePanel extends JPanel {
 	 * @return a Control for refreshing the underlying table data
 	 */
 	private Control createRefreshControl() {
-		return Control.builder(tableModel::refresh)
+		return Control.builder()
+						.command(tableModel::refresh)
 						.name(Messages.refresh())
 						.description(Messages.refreshTip())
 						.mnemonic(Messages.refreshMnemonic())
@@ -1211,7 +1218,8 @@ public class EntityTablePanel extends JPanel {
 	 * @return a Control for clearing the underlying table model, that is, removing all rows
 	 */
 	private Control createClearControl() {
-		return Control.builder(tableModel::clear)
+		return Control.builder()
+						.command(tableModel::clear)
 						.name(Messages.clear())
 						.description(Messages.clearTip())
 						.mnemonic(Messages.clearMnemonic())
@@ -1262,7 +1270,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createToggleConditionPanelControl() {
-		return Control.builder(this::toggleConditionPanel)
+		return Control.builder()
+						.command(this::toggleConditionPanel)
 						.smallIcon(ICONS.search())
 						.description(MESSAGES.getString("show_condition_panel"))
 						.build();
@@ -1284,7 +1293,8 @@ public class EntityTablePanel extends JPanel {
 			builder.actions(conditionPanelControls.actions());
 			builder.separator();
 		}
-		builder.control(ToggleControl.builder(tableModel.conditionRequired())
+		builder.control(Control.builder()
+						.toggle(tableModel.conditionRequired())
 						.name(MESSAGES.getString("require_query_condition"))
 						.description(MESSAGES.getString("require_query_condition_description"))
 						.build());
@@ -1295,7 +1305,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createToggleFilterPanelControl() {
-		return Control.builder(this::toggleFilterPanel)
+		return Control.builder()
+						.command(this::toggleFilterPanel)
 						.smallIcon(ICONS.filter())
 						.description(MESSAGES.getString("show_filter_panel"))
 						.build();
@@ -1352,14 +1363,16 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createToggleSummaryPanelControl() {
-		return ToggleControl.builder(summaryPanelVisibleState)
+		return Control.builder()
+						.toggle(summaryPanelVisibleState)
 						.smallIcon(ICONS.summary())
 						.description(MESSAGES.getString("toggle_summary_tip"))
 						.build();
 	}
 
 	private Control createClearSelectionControl() {
-		return Control.builder(tableModel.selectionModel()::clearSelection)
+		return Control.builder()
+						.command(tableModel.selectionModel()::clearSelection)
 						.enabled(tableModel.selectionModel().selectionNotEmpty())
 						.smallIcon(ICONS.clearSelection())
 						.description(MESSAGES.getString("clear_selection_tip"))
@@ -1367,14 +1380,16 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createMoveSelectionDownControl() {
-		return Control.builder(tableModel.selectionModel()::moveSelectionDown)
+		return Control.builder()
+						.command(tableModel.selectionModel()::moveSelectionDown)
 						.smallIcon(ICONS.down())
 						.description(MESSAGES.getString("selection_down_tip"))
 						.build();
 	}
 
 	private Control createMoveSelectionUpControl() {
-		return Control.builder(tableModel.selectionModel()::moveSelectionUp)
+		return Control.builder()
+						.command(tableModel.selectionModel()::moveSelectionUp)
 						.smallIcon(ICONS.up())
 						.description(MESSAGES.getString("selection_up_tip"))
 						.build();
@@ -1414,7 +1429,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createCopyRowsControl() {
-		return Control.builder(table::copyToClipboard)
+		return Control.builder()
+						.command(table::copyToClipboard)
 						.name(FrameworkMessages.copyTableWithHeader())
 						.build();
 	}
@@ -1445,7 +1461,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createConditionRefreshControl() {
-		return Control.builder(tableModel::refresh)
+		return Control.builder()
+						.command(tableModel::refresh)
 						.enabled(tableModel.conditionChanged())
 						.smallIcon(ICONS.refreshRequired())
 						.build();
@@ -2785,7 +2802,8 @@ public class EntityTablePanel extends JPanel {
 
 		private JPopupMenu createLimitMenu() {
 			JPopupMenu popupMenu = new JPopupMenu();
-			popupMenu.add(Control.builder(this::configureLimit)
+			popupMenu.add(Control.builder()
+							.command(this::configureLimit)
 							.name(MESSAGES.getString("row_limit"))
 							.build());
 

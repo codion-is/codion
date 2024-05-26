@@ -55,7 +55,8 @@ public final class DefaultControlTest {
 	void test() {
 		State enabledState = State.state();
 		Font font = new JButton().getFont().deriveFont(Font.ITALIC);
-		Control control = Control.builder(this::method)
+		Control control = Control.builder()
+						.command(this::method)
 						.enabled(enabledState)
 						.foreground(Color.RED)
 						.background(Color.BLACK)
@@ -75,7 +76,8 @@ public final class DefaultControlTest {
 
 	@Test
 	void basics() {
-		Control test = Control.builder(this::doNothing)
+		Control test = Control.builder()
+						.command(this::doNothing)
 						.name("test")
 						.description("description")
 						.mnemonic(10)
@@ -102,7 +104,7 @@ public final class DefaultControlTest {
 	@Test
 	void setEnabled() {
 		State enabledState = State.state();
-		Control control = Control.builder(this::doNothing).name("control").enabled(enabledState.observer()).build();
+		Control control = Control.builder().command(this::doNothing).name("control").enabled(enabledState.observer()).build();
 		assertEquals("control", control.name().orElse(null));
 		assertSame(enabledState.observer(), control.enabled());
 		assertFalse(control.isEnabled());
@@ -139,7 +141,8 @@ public final class DefaultControlTest {
 	@Test
 	void copy() {
 		State enabled = State.state();
-		Control control = Control.builder(() -> {})
+		Control control = Control.builder()
+						.command(() -> {})
 						.enabled(enabled)
 						.name("name")
 						.description("desc")
