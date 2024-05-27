@@ -1241,12 +1241,12 @@ public class EntityTablePanel extends JPanel {
 
 	private Controls createAdditionalPopupControls() {
 		Controls.Builder builder = Controls.builder();
-		additionalPopupControls.forEach(controls -> {
-			if (!controls.name().isPresent()) {
-				builder.actions(controls.actions());
+		additionalPopupControls.forEach(additionalControls -> {
+			if (!additionalControls.name().isPresent()) {
+				builder.actions(additionalControls.actions());
 			}
 			else {
-				builder.control(controls);
+				builder.control(additionalControls);
 			}
 		});
 		Controls additionalControls = builder.build();
@@ -1256,12 +1256,12 @@ public class EntityTablePanel extends JPanel {
 
 	private Controls createAdditionalToolbarControls() {
 		Controls.Builder builder = Controls.builder();
-		additionalToolBarControls.forEach(controls -> {
-			if (!controls.name().isPresent()) {
-				builder.actions(controls.actions());
+		additionalToolBarControls.forEach(additionalControls -> {
+			if (!additionalControls.name().isPresent()) {
+				builder.actions(additionalControls.actions());
 			}
 			else {
-				builder.control(controls);
+				builder.control(additionalControls);
 			}
 		});
 		Controls additionalControls = builder.build();

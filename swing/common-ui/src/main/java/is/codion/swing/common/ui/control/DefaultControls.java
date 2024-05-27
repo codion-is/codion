@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.event.Event;
-
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
@@ -36,8 +34,6 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultControls extends AbstractControl implements Controls {
-
-	private static final String CONTROLS_PARAMETER = "controls";
 
 	private final List<Action> actions = new ArrayList<>();
 
