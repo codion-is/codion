@@ -85,4 +85,21 @@ public class DefaultControlsTest {
 		controls.keys().forEach(key -> assertEquals(controls.getValue(key), copy.getValue(key)));
 		assertSame(controls.enabled(), copy.enabled());
 	}
+
+	@Test
+	void copy() {
+		Control one = Control.control(() -> {});
+		Control two = Control.control(() -> {});
+		Action action = Control.control(() -> {});
+		DefaultControls controls = (DefaultControls) Controls.builder()
+						.name("controls")
+						.control(one)
+						.separator()
+						.control(two)
+						.action(action)
+						.build();
+		DefaultControls copy = (DefaultControls) controls.copy().build();
+		controls.keys().forEach(key -> assertEquals(controls.getValue(key), copy.getValue(key)));
+		assertSame(controls.enabled(), copy.enabled());
+	}
 }

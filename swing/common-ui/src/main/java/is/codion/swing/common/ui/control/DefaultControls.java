@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.event.Event;
+
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;

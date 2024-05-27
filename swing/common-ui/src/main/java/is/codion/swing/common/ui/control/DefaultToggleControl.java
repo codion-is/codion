@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
