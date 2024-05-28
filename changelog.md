@@ -23,6 +23,7 @@ Codion Change Log
 - EntityTablePanel.configureColumnConditionComponent() bug fixed, did not handle combo boxes.
 - EntityTablePanel, minor optimization, now uses a single ScrollToColumn instance.
 - EntityEditPanel bug fixed, modified warning no longer triggered when the active entity is replaced with an updated version of itself.
+- EntityApplicationPanel.createHelpMenuControls() bug fixed, trailing separator removed.
 
 ## 0.18.0
 ### is.codion

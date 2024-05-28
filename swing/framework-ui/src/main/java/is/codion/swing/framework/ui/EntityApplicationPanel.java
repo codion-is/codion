@@ -495,17 +495,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 						.name(resourceBundle.getString(HELP))
 						.mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
 						.control(createHelpControl())
-						.control(createViewKeyboardShortcutsControl())
-						.separator()
-						.control(createAboutControl());
+						.control(createViewKeyboardShortcutsControl());
 
 		Controls logControls = createLogControls();
 		if (!logControls.empty()) {
-			builder.separatorAt(2);
-			builder.controlAt(3, logControls);
+			builder.separator()
+							.control(logControls);
 		}
 
-		return builder.build();
+		return builder.separator()
+						.control(createAboutControl()).build();
 	}
 
 	/**
