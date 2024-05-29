@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
+import is.codion.common.model.CancelException;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -327,11 +328,14 @@ public class EntityEditComponentPanel extends JPanel {
 
 	/**
 	 * Handles the given exception, simply displays the error message to the user by default.
+	 * Note that this method does nothing in case of a {@link CancelException}.
 	 * @param exception the exception to handle
 	 * @see #displayException(Exception)
 	 */
 	protected void onException(Exception exception) {
-		displayException(exception);
+		if (!(exception instanceof CancelException)) {
+			displayException(exception);
+		}
 	}
 
 	/**
