@@ -338,7 +338,7 @@ public class FilterTableTest {
 	@Test
 	void sorting() {
 		FilterTable<TestRow, Integer> table = createTestTable();
-		FilterTableModel<TestRow, Integer> tableModel = table.getModel();
+		FilterTableModel<TestRow, Integer> tableModel = table.model();
 		AtomicInteger actionsPerformed = new AtomicInteger();
 		Consumer<Integer> consumer = columnIdentifier -> actionsPerformed.incrementAndGet();
 		table.sortModel().sortingChangedEvent().addConsumer(consumer);
@@ -383,7 +383,7 @@ public class FilterTableTest {
 	@Test
 	void customSorting() {
 		FilterTable<TestRow, Integer> table = createTestTable(Comparator.reverseOrder());
-		FilterTableModel<TestRow, Integer> tableModel = table.getModel();
+		FilterTableModel<TestRow, Integer> tableModel = table.model();
 		tableModel.refresh();
 		FilterTableSortModel<TestRow, Integer> sortModel = table.sortModel();
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
@@ -395,7 +395,7 @@ public class FilterTableTest {
 	@Test
 	void selectionAndSorting() {
 		FilterTable<TestRow, Integer> table = createTestTable();
-		FilterTableModel<TestRow, Integer> tableModel = table.getModel();
+		FilterTableModel<TestRow, Integer> tableModel = table.model();
 		tableModel.refresh();
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
@@ -435,7 +435,7 @@ public class FilterTableTest {
 	@Test
 	void export() {
 		FilterTable<TestRow, Integer> table = createTestTable();
-		table.getModel().refresh();
+		table.model().refresh();
 
 		String expected = "0" + Separators.LINE_SEPARATOR +
 						"a" + Separators.LINE_SEPARATOR +
@@ -447,7 +447,7 @@ public class FilterTableTest {
 						.delimiter('\t')
 						.get());
 
-		table.getModel().selectionModel().setSelectedIndexes(asList(0, 1, 3));
+		table.model().selectionModel().setSelectedIndexes(asList(0, 1, 3));
 
 		String selected = "a" + Separators.LINE_SEPARATOR +
 						"b" + Separators.LINE_SEPARATOR +

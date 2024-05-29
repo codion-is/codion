@@ -890,7 +890,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void select(JComponent dialogOwner, List<Entity> entities) {
-			table.getModel().addItemsAtSorted(0, requireNonNull(entities));
+			table.model().addItemsAtSorted(0, requireNonNull(entities));
 			table.scrollRectToVisible(table.getCellRect(0, 0, true));
 			initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
 
@@ -900,7 +900,7 @@ public final class EntitySearchField extends HintTextField {
 							.okAction(selectControl)
 							.show();
 
-			table.getModel().clear();
+			table.model().clear();
 			table.searchField().setText("");
 		}
 
@@ -946,7 +946,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() throws Exception {
-				searchModel.entities().set(table.getModel().selectionModel().getSelectedItems());
+				searchModel.entities().set(table.model().selectionModel().getSelectedItems());
 				disposeParentWindow(table);
 			}
 		}

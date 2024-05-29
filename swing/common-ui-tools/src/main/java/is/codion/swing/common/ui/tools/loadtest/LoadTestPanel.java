@@ -391,7 +391,7 @@ public final class LoadTestPanel<T> extends JPanel {
 						.cellRendererFactory(new ApplicationTableCellRendererFactory())
 						.popupMenuControls(table -> Controls.builder()
 										.control(Control.builder()
-														.command(table.getModel()::refresh)
+														.command(table.model()::refresh)
 														.name("Refresh")
 														.enabled(model().autoRefreshApplications().not()))
 										.separator()

@@ -288,6 +288,13 @@ public final class FilterTable<R, C> extends JTable {
 		return (FilterTableModel<R, C>) super.getModel();
 	}
 
+	/**
+	 * @return the table model
+	 */
+	public FilterTableModel<R, C> model() {
+		return getModel();
+	}
+
 	@Override
 	public FilterTableColumnModel<C> getColumnModel() {
 		return (FilterTableColumnModel<C>) super.getColumnModel();
@@ -494,7 +501,7 @@ public final class FilterTable<R, C> extends JTable {
 		int selectedColumn = getSelectedColumn();
 		if (selectedRow >= 0 && selectedColumn >= 0) {
 			FilterTableColumn<C> column = columnModel().getColumn(selectedColumn);
-			Utilities.setClipboard(getModel().getStringAt(selectedRow, column.identifier()));
+			Utilities.setClipboard(model().getStringAt(selectedRow, column.identifier()));
 		}
 	}
 

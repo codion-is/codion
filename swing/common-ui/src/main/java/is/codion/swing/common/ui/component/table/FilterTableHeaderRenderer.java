@@ -59,7 +59,7 @@ final class FilterTableHeaderRenderer<R, C> implements TableCellRenderer {
 		if (component instanceof JLabel) {
 			JLabel label = (JLabel) component;
 			FilterTableColumn<C> tableColumn = filterTable.getColumnModel().getColumn(column);
-			ColumnConditionModel<?, ?> filterModel = filterTable.getModel().filterModel().conditionModels().get(tableColumn.identifier());
+			ColumnConditionModel<?, ?> filterModel = filterTable.model().filterModel().conditionModels().get(tableColumn.identifier());
 			label.setFont((filterModel != null && filterModel.enabled().get()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
 			label.setIcon(sortArrowIcon(tableColumn.identifier(), label.getFont().getSize() + SORT_ICON_SIZE));
 			label.setIconTextGap(0);

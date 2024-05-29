@@ -13,6 +13,7 @@ Codion Change Log
 - Controls now immutable, related refactoring.
 - Control.BuilderFactory added, related refactoring.
 - FilterTableColumn.identifier() added.
+- FilterTable.model() added.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
 ### is.codion.swing.framework.ui
