@@ -105,9 +105,9 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	private EntityComboBox(DefaultBuilder builder) {
 		super(builder.comboBoxModel());
 		addControl = createAddControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(ADD).get());
+						builder.keyboardShortcuts.keyStroke(ADD).get(), builder.confirmAdd);
 		editControl = createEditControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(EDIT).get());
+						builder.keyboardShortcuts.keyStroke(EDIT).get(), builder.confirmEdit);
 		builder.comboBoxModel().refresher().observer()
 						.addConsumer(this::onRefreshingChanged);
 	}
@@ -281,14 +281,28 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		 * @return this builder instance
 		 */
 		Builder keyStroke(EntityComboBoxControl control, KeyStroke keyStroke);
+
+		/**
+		 * @param confirmAdd true if adding an item should be confirmed
+		 * @return this builder instance
+		 * @see #editPanel(Supplier)
+		 */
+		Builder confirmAdd(boolean confirmAdd);
+
+		/**
+		 * @param confirmEdit true if editing an item should be confirmed
+		 * @return this builder instance
+		 * @see #editPanel(Supplier)
+		 */
+		Builder confirmEdit(boolean confirmEdit);
 	}
 
-	private Control createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
-		return editPanel == null ? null : EntityControls.createAddControl(this, editPanel, keyStroke);
+	private Control createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+		return editPanel == null ? null : EntityControls.createAddControl(this, editPanel, keyStroke, confirm);
 	}
 
-	private Control createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
-		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke);
+	private Control createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke, confirm);
 	}
 
 	private Control.Command createForeignKeyFilterCommand(ForeignKey foreignKey) {
@@ -316,6 +330,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		private final KeyboardShortcuts<EntityComboBoxControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private Supplier<EntityEditPanel> editPanel;
+		private boolean confirmAdd;
+		private boolean confirmEdit;
 
 		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
 			super(comboBoxModel, linkedValue);
@@ -335,6 +351,18 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		@Override
 		public Builder keyStroke(EntityComboBoxControl control, KeyStroke keyStroke) {
 			keyboardShortcuts.keyStroke(control).set(keyStroke);
+			return this;
+		}
+
+		@Override
+		public Builder confirmAdd(boolean confirmAdd) {
+			this.confirmAdd = confirmAdd;
+			return this;
+		}
+
+		@Override
+		public Builder confirmEdit(boolean confirmEdit) {
+			this.confirmEdit = confirmEdit;
 			return this;
 		}
 

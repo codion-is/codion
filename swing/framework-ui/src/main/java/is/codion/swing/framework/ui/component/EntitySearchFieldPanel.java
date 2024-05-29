@@ -135,6 +135,18 @@ public final class EntitySearchFieldPanel extends JPanel {
 		Builder includeEditButton(boolean includeEditButton);
 
 		/**
+		 * @param confirmAdd true if adding an item should be confirmed
+		 * @return this builder instance
+		 */
+		Builder confirmAdd(boolean confirmAdd);
+
+		/**
+		 * @param confirmEdit true if editing an item should be confirmed
+		 * @return this builder instance
+		 */
+		Builder confirmEdit(boolean confirmEdit);
+
+		/**
 		 * Default false
 		 * @param buttonsFocusable true if the buttons should be focusable
 		 * @return this builder instance
@@ -270,6 +282,18 @@ public final class EntitySearchFieldPanel extends JPanel {
 				throw new IllegalStateException("You must provide an editPanel");
 			}
 			this.includeEditButton = includeEditButton;
+			return this;
+		}
+
+		@Override
+		public Builder confirmAdd(boolean confirmAdd) {
+			this.searchFieldBuilder.confirmAdd(confirmAdd);
+			return this;
+		}
+
+		@Override
+		public Builder confirmEdit(boolean confirmEdit) {
+			this.searchFieldBuilder.confirmEdit(confirmEdit);
 			return this;
 		}
 

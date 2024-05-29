@@ -226,9 +226,9 @@ public final class EntitySearchField extends HintTextField {
 		super(builder.searchHintEnabled ? Messages.search() + "..." : null);
 		model = requireNonNull(builder.searchModel);
 		addControl = createAddControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(EntitySearchFieldControl.ADD).get());
+						builder.keyboardShortcuts.keyStroke(EntitySearchFieldControl.ADD).get(), builder.confirmAdd);
 		editControl = createEditControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(EntitySearchFieldControl.EDIT).get());
+						builder.keyboardShortcuts.keyStroke(EntitySearchFieldControl.EDIT).get(), builder.confirmEdit);
 		if (builder.columns != -1) {
 			setColumns(builder.columns);
 		}
@@ -253,12 +253,12 @@ public final class EntitySearchField extends HintTextField {
 		bindEvents();
 	}
 
-	private Control createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
-		return editPanel == null ? null : EntityControls.createAddControl(this, editPanel, keyStroke);
+	private Control createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+		return editPanel == null ? null : EntityControls.createAddControl(this, editPanel, keyStroke, confirm);
 	}
 
-	private Control createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
-		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke);
+	private Control createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke, confirm);
 	}
 
 	@Override
@@ -470,6 +470,20 @@ public final class EntitySearchField extends HintTextField {
 		 * @return this builder instance
 		 */
 		Builder limit(int limit);
+
+		/**
+		 * @param confirmAdd true if adding an item should be confirmed
+		 * @return this builder instance
+		 * @see #editPanel(Supplier)
+		 */
+		Builder confirmAdd(boolean confirmAdd);
+
+		/**
+		 * @param confirmEdit true if editing an item should be confirmed
+		 * @return this builder instance
+		 * @see #editPanel(Supplier)
+		 */
+		Builder confirmEdit(boolean confirmEdit);
 	}
 
 	private void bindEvents() {
@@ -1089,6 +1103,8 @@ public final class EntitySearchField extends HintTextField {
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
 		private Function<EntitySearchModel, Selector> selectorFactory = new ListSelectorFactory();
 		private Supplier<EntityEditPanel> editPanel;
+		private boolean confirmAdd;
+		private boolean confirmEdit;
 
 		private DefaultEntitySearchFieldBuilder(EntitySearchModel searchModel) {
 			this.searchModel = searchModel;
@@ -1163,6 +1179,18 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public Builder limit(int limit) {
 			this.searchModel.limit().set(limit);
+			return this;
+		}
+
+		@Override
+		public Builder confirmAdd(boolean confirmAdd) {
+			this.confirmAdd = confirmAdd;
+			return this;
+		}
+
+		@Override
+		public Builder confirmEdit(boolean confirmEdit) {
+			this.confirmEdit = confirmEdit;
 			return this;
 		}
 

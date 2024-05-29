@@ -25,6 +25,7 @@ Codion Change Log
 - EntityEditPanel bug fixed, modified warning no longer triggered when the active entity is replaced with an updated version of itself.
 - EntityApplicationPanel.createHelpMenuControls() bug fixed, trailing separator removed.
 - EntityDialogs.AddEntityDialogBuilder, EditEntityDialogBuilder.confirm() added, default false.
+- EntityComboBox, EntityComboBoxPanel.Builder, EntitySearchField, EntitySearchFieldPanel.Builder.confirmAdd() and confirmEdit() added.
 
 ## 0.18.0
 ### is.codion

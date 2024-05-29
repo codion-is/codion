@@ -65,11 +65,13 @@ final class EntityControls {
 	 * @param comboBox the combo box in which to select the new entity
 	 * @param editPanel the edit panel supplier
 	 * @param keyStroke the control keyStroke
+	 * @param confirm true if the insert should be confirmed
 	 * @return the add Control
 	 */
-	static Control createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+	static Control createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
 		return createAddControl(() -> addEntityDialog(editPanel)
 						.owner(comboBox)
+						.confirm(confirm)
 						.onInsert(new EntityComboBoxOnInsert(comboBox.getModel()))
 						.show(), comboBox, keyStroke);
 	}
@@ -81,11 +83,13 @@ final class EntityControls {
 	 * @param searchField the search field in which to select the new entity
 	 * @param editPanel the edit panel supplier
 	 * @param keyStroke the control keyStroke
+	 * @param confirm true if the insert should be confirmed
 	 * @return the add Control
 	 */
-	static Control createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+	static Control createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
 		return createAddControl(() -> addEntityDialog(editPanel)
 						.owner(searchField)
+						.confirm(confirm)
 						.onInsert(new EntitySearchFieldOnInsert(searchField.model()))
 						.show(), searchField, keyStroke);
 	}
@@ -97,11 +101,13 @@ final class EntityControls {
 	 * @param comboBox the combo box which selected item to edit
 	 * @param editPanel the edit panel supplier
 	 * @param keyStroke the control keyStroke
+	 * @param confirm true if the update should be confirmed
 	 * @return the edit Control
 	 */
-	static Control createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+	static Control createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
 		return createEditControl(() -> editEntityDialog(editPanel)
 						.owner(comboBox)
+						.confirm(confirm)
 						.entity(() -> comboBox.getModel().selectedValue())
 						.onUpdate(new EntityComboBoxOnUpdate(comboBox.getModel()))
 						.show(), comboBox, comboBox.getModel().selectionEmpty().not(), keyStroke);
@@ -114,11 +120,13 @@ final class EntityControls {
 	 * @param searchField the search field which selected item to edit
 	 * @param editPanel the edit panel supplier
 	 * @param keyStroke the control keyStroke
+	 * @param confirm true if the update should be confirmed
 	 * @return the edit Control
 	 */
-	static Control createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+	static Control createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
 		return createEditControl(() -> editEntityDialog(editPanel)
 						.owner(searchField)
+						.confirm(confirm)
 						.entity(() -> searchField.model().entity().get())
 						.onUpdate(new EntitySearchFieldOnUpdate(searchField.model()))
 						.show(), searchField, searchField.model().selectionEmpty().not(), keyStroke);
