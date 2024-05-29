@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.DetailModelLink;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -1107,7 +1108,10 @@ public class EntityPanel extends JPanel {
 	}
 
 	private void displayEditFrame(JPanel editControlPanel) {
-		editWindow = Windows.frame(editControlPanel)
+		editWindow = Windows.frame(borderLayoutPanel()
+										.centerComponent(editControlPanel)
+										.border(Borders.emptyBorder())
+										.build())
 						.locationRelativeTo(tablePanel == null ? this : tablePanel)
 						.title(configuration.caption)
 						.icon(configuration.icon)
@@ -1117,7 +1121,10 @@ public class EntityPanel extends JPanel {
 	}
 
 	private void displayEditDialog(JPanel editControlPanel) {
-		editWindow = Dialogs.componentDialog(editControlPanel)
+		editWindow = Dialogs.componentDialog(borderLayoutPanel()
+										.centerComponent(editControlPanel)
+										.border(Borders.emptyBorder())
+										.build())
 						.owner(this)
 						.locationRelativeTo(tablePanel == null ? this : tablePanel)
 						.title(configuration.caption)

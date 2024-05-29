@@ -27,6 +27,7 @@ Codion Change Log
 - EntityDialogs.AddEntityDialogBuilder, EditEntityDialogBuilder.confirm() added, default false.
 - EntityComboBox, EntityComboBoxPanel.Builder, EntitySearchField, EntitySearchFieldPanel.Builder.confirmAdd() and confirmEdit() added.
 - EntityEditComponentPanel.onException() bug fixed, no longer displays cancel exceptions.
+- EntityPanel, empty border added around edit panel when displayed in a window.
 
 ## 0.18.0
 ### is.codion
