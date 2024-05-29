@@ -24,6 +24,7 @@ Codion Change Log
 - EntityTablePanel, minor optimization, now uses a single ScrollToColumn instance.
 - EntityEditPanel bug fixed, modified warning no longer triggered when the active entity is replaced with an updated version of itself.
 - EntityApplicationPanel.createHelpMenuControls() bug fixed, trailing separator removed.
+- EntityDialogs.AddEntityDialogBuilder, EditEntityDialogBuilder.confirm() added, default false.
 
 ## 0.18.0
 ### is.codion

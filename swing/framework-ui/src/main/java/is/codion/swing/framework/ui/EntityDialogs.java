@@ -214,6 +214,12 @@ public final class EntityDialogs {
 		AddEntityDialogBuilder closeDialog(boolean closeDialog);
 
 		/**
+		 * @param confirm if true then a confirmation dialog is presented before inserting, default false
+		 * @return this builder instance
+		 */
+		AddEntityDialogBuilder confirm(boolean confirm);
+
+		/**
 		 * Displays the dialog.
 		 */
 		void show();
@@ -235,6 +241,12 @@ public final class EntityDialogs {
 		 * @return this builder instance
 		 */
 		EditEntityDialogBuilder onUpdate(Consumer<Entity> onUpdate);
+
+		/**
+		 * @param confirm if true then a confirmation dialog is presented before updating, default false
+		 * @return this builder instance
+		 */
+		EditEntityDialogBuilder confirm(boolean confirm);
 
 		/**
 		 * Displays the dialog.
@@ -622,6 +634,7 @@ public final class EntityDialogs {
 
 		private Consumer<Entity> onInsert = emptyConsumer();
 		private boolean closeDialog = true;
+		private boolean confirm = false;
 
 		private DefaultAddEntityDialogBuilder(Supplier<EntityEditPanel> editPanelSupplier) {
 			this.editPanelSupplier = requireNonNull(editPanelSupplier);
@@ -640,6 +653,12 @@ public final class EntityDialogs {
 		}
 
 		@Override
+		public AddEntityDialogBuilder confirm(boolean confirm) {
+			this.confirm = confirm;
+			return this;
+		}
+
+		@Override
 		public void show() {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			SwingEntityEditModel editModel = editPanel.editModel();
@@ -651,7 +670,7 @@ public final class EntityDialogs {
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createAddControl(editPanel,
-											new InsertConsumer(disposeDialog)))
+											new InsertConsumer(disposeDialog), confirm))
 							.escapeAction(createCancelControl(disposeDialog))
 							.title(FrameworkMessages.add() + " - " + editModel.entities()
 											.definition(editModel.entityType()).caption())
@@ -677,10 +696,11 @@ public final class EntityDialogs {
 		}
 
 		private static Control createAddControl(EntityEditPanel editPanel,
-																						Consumer<Collection<Entity>> onInsert) {
+																						Consumer<Collection<Entity>> onInsert,
+																						boolean confirm) {
 			return Control.builder()
 							.command(editPanel.insertCommand()
-											.confirm(false)
+											.confirm(confirm)
 											.onInsert(onInsert)
 											.build())
 							.name(FrameworkMessages.add())
@@ -697,6 +717,7 @@ public final class EntityDialogs {
 
 		private Supplier<Entity> entity;
 		private Consumer<Entity> onUpdate = emptyConsumer();
+		private boolean confirm = false;
 
 		private DefaultEditEntityDialogBuilder(Supplier<EntityEditPanel> editPanelSupplier) {
 			this.editPanelSupplier = requireNonNull(editPanelSupplier);
@@ -715,6 +736,12 @@ public final class EntityDialogs {
 		}
 
 		@Override
+		public EditEntityDialogBuilder confirm(boolean confirm) {
+			this.confirm = confirm;
+			return this;
+		}
+
+		@Override
 		public void show() {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			SwingEntityEditModel editModel = editPanel.editModel();
@@ -727,7 +754,7 @@ public final class EntityDialogs {
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createUpdateControl(editPanel,
-											new UpdateConsumer(disposeDialog)))
+											new UpdateConsumer(disposeDialog), confirm))
 							.escapeAction(createCancelControl(disposeDialog))
 							.title(FrameworkMessages.edit() + " - " + editModel.entities()
 											.definition(editModel.entityType()).caption())
@@ -760,9 +787,11 @@ public final class EntityDialogs {
 		}
 
 		private static Control createUpdateControl(EntityEditPanel editPanel,
-																							 Consumer<Collection<Entity>> onUpdate) {
+																							 Consumer<Collection<Entity>> onUpdate,
+																							 boolean confirm) {
 			return Control.builder()
 							.command(editPanel.updateCommand()
+											.confirm(confirm)
 											.onUpdate(onUpdate)
 											.build())
 							.name(FrameworkMessages.update())
