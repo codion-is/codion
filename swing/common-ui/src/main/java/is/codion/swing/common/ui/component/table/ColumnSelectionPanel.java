@@ -85,12 +85,12 @@ final class ColumnSelectionPanel<C> extends JPanel {
 	void applyChanges() {
 		columnModel.visible().forEach(tableColumn -> {
 			if (!visibleStates.get(tableColumn).get()) {
-				columnModel.visible(tableColumn.getIdentifier()).set(false);
+				columnModel.visible(tableColumn.identifier()).set(false);
 			}
 		});
 		new ArrayList<>(columnModel.hidden()).forEach(tableColumn -> {
 			if (visibleStates.get(tableColumn).get()) {
-				columnModel.visible(tableColumn.getIdentifier()).set(true);
+				columnModel.visible(tableColumn.identifier()).set(true);
 			}
 		});
 	}
@@ -99,7 +99,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
 		Map<FilterTableColumn<C>, State> states = new LinkedHashMap<>();
 		columnModel.columns().stream()
 						.sorted(new FilterTable.ColumnComparator())
-						.forEach(column -> states.put(column, State.state(columnModel.visible(column.getIdentifier()).get())));
+						.forEach(column -> states.put(column, State.state(columnModel.visible(column.identifier()).get())));
 
 		return states;
 	}

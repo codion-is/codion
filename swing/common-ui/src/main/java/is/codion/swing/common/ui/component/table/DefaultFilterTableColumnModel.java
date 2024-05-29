@@ -85,8 +85,8 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 			moveColumn(getColumnIndex(identifier), columnIndex++);
 		}
 		for (FilterTableColumn<C> column : columns()) {
-			if (!columnIdentifiers.contains(column.getIdentifier())) {
-				visibleStates.get(column.getIdentifier()).set(false);
+			if (!columnIdentifiers.contains(column.identifier())) {
+				visibleStates.get(column.identifier()).set(false);
 			}
 		}
 		if (!columnIdentifiers.isEmpty()) {
@@ -257,7 +257,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	private void initializeColumn(FilterTableColumn<C> column) {
-		C identifier = column.getIdentifier();
+		C identifier = column.identifier();
 		columns.put(identifier, column);
 		columnIdentifiers.put(column.getModelIndex(), identifier);
 		tableColumnModel.addColumn(column);
@@ -326,7 +326,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		}
 
 		private Set<FilterTableColumn<C>> columnsToTheRightOf(FilterTableColumn<C> column) {
-			return IntStream.range(tableColumnModel.getColumnIndex(column.getIdentifier()) + 1, tableColumnModel.getColumnCount())
+			return IntStream.range(tableColumnModel.getColumnIndex(column.identifier()) + 1, tableColumnModel.getColumnCount())
 							.mapToObj(columnIndex -> (FilterTableColumn<C>) tableColumnModel.getColumn(columnIndex))
 							.collect(Collectors.toSet());
 		}

@@ -541,8 +541,8 @@ public final class LoadTestPanel<T> extends JPanel {
 		@Override
 		public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<ColumnId> column) {
 			FilterTableCellRenderer.Builder<ApplicationRow, ColumnId> builder =
-							FilterTableCellRenderer.builder(model().applicationTableModel(), column.getIdentifier(), Integer.class);
-			if (column.getIdentifier().equals(ColumnId.DURATION)) {
+							FilterTableCellRenderer.builder(model().applicationTableModel(), column.identifier(), Integer.class);
+			if (column.identifier().equals(ColumnId.DURATION)) {
 				builder.string(duration -> duration == null ? null : DURATION_FORMAT.format(duration));
 			}
 

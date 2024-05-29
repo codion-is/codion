@@ -52,7 +52,7 @@ public class EntityTableCellRendererFactory implements FilterTableCellRendererFa
 	 * @return a builder for a table cell renderer
 	 */
 	protected Builder<Entity, Attribute<?>> builder(FilterTableColumn<Attribute<?>> column) {
-		return EntityTableCellRenderer.builder(tableModel, column.getIdentifier());
+		return EntityTableCellRenderer.builder(tableModel, column.identifier());
 	}
 
 	/**

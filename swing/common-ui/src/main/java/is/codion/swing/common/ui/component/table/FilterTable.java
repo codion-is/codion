@@ -494,7 +494,7 @@ public final class FilterTable<R, C> extends JTable {
 		int selectedColumn = getSelectedColumn();
 		if (selectedRow >= 0 && selectedColumn >= 0) {
 			FilterTableColumn<C> column = columnModel().getColumn(selectedColumn);
-			Utilities.setClipboard(getModel().getStringAt(selectedRow, column.getIdentifier()));
+			Utilities.setClipboard(getModel().getStringAt(selectedRow, column.identifier()));
 		}
 	}
 
@@ -711,7 +711,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void toggleColumnSorting(int selectedColumn, boolean add) {
 		if (sortingEnabled.get() && selectedColumn != -1) {
-			C columnIdentifier = columnModel().getColumn(selectedColumn).getIdentifier();
+			C columnIdentifier = columnModel().getColumn(selectedColumn).identifier();
 			if (sortModel.isSortingEnabled(columnIdentifier)) {
 				if (add) {
 					sortModel.addSortOrder(columnIdentifier, nextSortOrder(sortModel.sortOrder(columnIdentifier)));
@@ -768,7 +768,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private ToggleControl createToggleColumnControl(FilterTableColumn<C> column) {
 		return Control.builder()
-						.toggle(columnModel().visible(column.getIdentifier()))
+						.toggle(columnModel().visible(column.identifier()))
 						.name(String.valueOf(column.getHeaderValue()))
 						.description(column.toolTipText())
 						.build();
@@ -957,7 +957,7 @@ public final class FilterTable<R, C> extends JTable {
 				if (!getSelectionModel().isSelectionEmpty()) {
 					setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 				}
-				C columnIdentifier = columnModel.getColumn(index).getIdentifier();
+				C columnIdentifier = columnModel.getColumn(index).identifier();
 				if (sortModel.isSortingEnabled(columnIdentifier)) {
 					SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(columnIdentifier));
 					if (e.isAltDown()) {
@@ -1348,7 +1348,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private List<String> stringValues(int row, List<FilterTableColumn<C>> columns) {
 			return columns.stream()
-							.map(column -> tableModel.getStringAt(row, column.getIdentifier()))
+							.map(column -> tableModel.getStringAt(row, column.identifier()))
 							.collect(toList());
 		}
 	}
@@ -1452,8 +1452,8 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<C> column) {
-			return FilterTableCellRenderer.builder(tableModel, column.getIdentifier(),
-							tableModel.getColumnClass(column.getIdentifier())).build();
+			return FilterTableCellRenderer.builder(tableModel, column.identifier(),
+							tableModel.getColumnClass(column.identifier())).build();
 		}
 	}
 

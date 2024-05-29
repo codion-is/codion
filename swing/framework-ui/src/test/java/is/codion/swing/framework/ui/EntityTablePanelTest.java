@@ -107,7 +107,7 @@ public class EntityTablePanelTest {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		FilterTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(Detail.STRING);
-		assertEquals(Detail.STRING, column.getIdentifier());
+		assertEquals(Detail.STRING, column.identifier());
 	}
 
 	@Test

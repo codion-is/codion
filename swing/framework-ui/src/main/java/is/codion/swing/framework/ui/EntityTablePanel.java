@@ -1678,7 +1678,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void configureColumn(FilterTableColumn<Attribute<?>> column) {
-		TableCellEditor tableCellEditor = createTableCellEditor(column.getIdentifier());
+		TableCellEditor tableCellEditor = createTableCellEditor(column.identifier());
 		if (tableCellEditor != null) {
 			column.setCellEditor(tableCellEditor);
 		}
@@ -1761,7 +1761,7 @@ public class EntityTablePanel extends JPanel {
 		Map<Attribute<?>, ColumnPreferences> columnPreferencesMap = new HashMap<>();
 		FilterTableColumnModel<Attribute<?>> columnModel = table.getColumnModel();
 		for (FilterTableColumn<Attribute<?>> column : columnModel.columns()) {
-			Attribute<?> attribute = column.getIdentifier();
+			Attribute<?> attribute = column.identifier();
 			int index = columnModel.visible(attribute).get() ? columnModel.getColumnIndex(attribute) : -1;
 			columnPreferencesMap.put(attribute, columnPreferences(attribute, index, column.getWidth()));
 		}
@@ -1859,7 +1859,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void applyColumnPreferences(String preferencesString) {
 		List<Attribute<?>> columnAttributes = table.getColumnModel().columns().stream()
-						.map(FilterTableColumn::getIdentifier)
+						.map(FilterTableColumn::identifier)
 						.collect(toList());
 		try {
 			ColumnPreferences.apply(this, columnAttributes, preferencesString, (attribute, columnWidth) ->
@@ -1995,7 +1995,7 @@ public class EntityTablePanel extends JPanel {
 			TableCellRenderer renderer = tableColumn.getCellRenderer();
 			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
 							&& ((FilterTableCellRenderer) renderer).columnShading()
-							&& tableModel.conditionModel().enabled(tableColumn.getIdentifier());
+							&& tableModel.conditionModel().enabled(tableColumn.identifier());
 			Font defaultFont = component.getFont();
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
@@ -2695,7 +2695,7 @@ public class EntityTablePanel extends JPanel {
 
 		private static boolean containsSummaryModels(FilterTable<Entity, Attribute<?>> table) {
 			return table.getColumnModel().columns().stream()
-							.map(FilterTableColumn::getIdentifier)
+							.map(FilterTableColumn::identifier)
 							.map(table.summaryModel()::summaryModel)
 							.anyMatch(Optional::isPresent);
 		}
@@ -2712,9 +2712,9 @@ public class EntityTablePanel extends JPanel {
 		private Map<Attribute<?>, JComponent> createColumnSummaryPanels() {
 			Map<Attribute<?>, JComponent> components = new HashMap<>();
 			table.getColumnModel().columns().forEach(column ->
-							table.summaryModel().summaryModel(column.getIdentifier())
+							table.summaryModel().summaryModel(column.identifier())
 											.ifPresent(columnSummaryModel ->
-															components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel,
+															components.put(column.identifier(), columnSummaryPanel(columnSummaryModel,
 																			((FilterTableCellRenderer) column.getCellRenderer()).horizontalAlignment()))));
 
 			return components;

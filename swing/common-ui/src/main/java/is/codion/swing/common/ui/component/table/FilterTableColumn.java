@@ -86,6 +86,13 @@ public final class FilterTableColumn<C> extends TableColumn {
 	}
 
 	/**
+	 * @return the column identifier
+	 */
+	public C identifier() {
+		return getIdentifier();
+	}
+
+	/**
 	 * @return the tool tip text to display for this column, null in case of no tool tip
 	 */
 	public String toolTipText() {

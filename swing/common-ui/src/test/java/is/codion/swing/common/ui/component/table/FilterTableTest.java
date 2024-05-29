@@ -429,7 +429,7 @@ public class FilterTableTest {
 	@Test
 	void columnModel() {
 		FilterTableColumn<Integer> column = createTestTable().columnModel().getColumn(0);
-		assertEquals(0, column.getIdentifier());
+		assertEquals(0, column.identifier());
 	}
 
 	@Test

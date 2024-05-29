@@ -110,7 +110,7 @@ public class FilterTableColumnComponentPanelTest {
 
 	private static Map<Integer, JPanel> createColumnComponents(FilterTableColumnModel<Integer> columnModel) {
 		Map<Integer, JPanel> columnComponents = new HashMap<>();
-		columnModel.columns().forEach(column -> columnComponents.put(column.getIdentifier(), new JPanel()));
+		columnModel.columns().forEach(column -> columnComponents.put(column.identifier(), new JPanel()));
 
 		return columnComponents;
 	}

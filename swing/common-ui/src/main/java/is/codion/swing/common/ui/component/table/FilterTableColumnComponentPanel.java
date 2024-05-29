@@ -151,8 +151,8 @@ public final class FilterTableColumnComponentPanel<C> extends JPanel {
 	}
 
 	private JComponent columnComponent(FilterTableColumn<C> column) {
-		return components.getOrDefault(column.getIdentifier(),
-						nullComponents.computeIfAbsent(column.getIdentifier(), c -> new JPanel()));
+		return components.getOrDefault(column.identifier(),
+						nullComponents.computeIfAbsent(column.identifier(), c -> new JPanel()));
 	}
 
 	private static void syncPanelWidth(JComponent component, TableColumn column) {
