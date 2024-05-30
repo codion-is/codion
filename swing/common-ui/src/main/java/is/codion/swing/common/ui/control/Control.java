@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.control;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.control.CommandControl.CommandControlBuilder;
+import is.codion.swing.common.ui.control.ToggleControl.ToggleControlBuilder;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -32,7 +34,6 @@ import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.function.Consumer;
 
 /**
  * A beefed up Action.
@@ -105,25 +106,11 @@ public interface Control extends Action {
 	void setEnabled(boolean enabled);
 
 	/**
-	 * Returns a new {@link Control.Builder} instance, based on a copy of this control, using the same command.
+	 * Returns a new {@link Control.Builder} instance, based on a copy of this control.
 	 * @param <B> the builder type
 	 * @return a new builder
 	 */
 	<C extends Control, B extends Builder<C, B>> Builder<C, B> copy();
-
-	/**
-	 * Returns a new {@link CommandControlBuilder} instance, based on a copy of this control, using the given command.
-	 * @param command the command for the resulting control
-	 * @return a new builder
-	 */
-	CommandControlBuilder copy(Command command);
-
-	/**
-	 * Returns a new {@link CommandControlBuilder} instance, based on a copy of this control, using the given command.
-	 * @param actionCommand the command for the resulting control
-	 * @return a new builder
-	 */
-	CommandControlBuilder copy(ActionCommand actionCommand);
 
 	/**
 	 * A command interface, allowing Controls based on method references
@@ -190,7 +177,7 @@ public interface Control extends Action {
 	 * @return a new Control {@link BuilderFactory} instance
 	 */
 	static BuilderFactory builder() {
-		return new DefaultControl.DefaultControlBuilderFactory();
+		return new DefaultControlBuilderFactory();
 	}
 
 	/**
@@ -277,17 +264,6 @@ public interface Control extends Action {
 		 */
 		C build();
 	}
-
-	interface CommandControlBuilder extends Builder<Control, CommandControlBuilder> {
-
-		/**
-		 * @param onException the exception handler for this control
-		 * @return this builder
-		 */
-		CommandControlBuilder onException(Consumer<Exception> onException);
-	}
-
-	interface ToggleControlBuilder extends Control.Builder<ToggleControl, ToggleControlBuilder> {}
 
 	/**
 	 * Provides control builders.

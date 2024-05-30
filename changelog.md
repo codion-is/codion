@@ -14,6 +14,7 @@ Codion Change Log
 - Control.BuilderFactory added, related refactoring.
 - FilterTableColumn.identifier() added.
 - FilterTable.model() added.
+- Control related renaming and refactoring.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
 ### is.codion.swing.framework.model.tools

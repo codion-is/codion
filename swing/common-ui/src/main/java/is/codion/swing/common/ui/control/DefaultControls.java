@@ -75,16 +75,6 @@ final class DefaultControls extends AbstractControl implements Controls {
 		return new ControlsBuilder(this);
 	}
 
-	@Override
-	public CommandControlBuilder copy(Command command) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public CommandControlBuilder copy(ActionCommand actionCommand) {
-		throw new UnsupportedOperationException();
-	}
-
 	static final class DefaultSeparator implements Action {
 
 		private static final String CONTROLS_SEPARATOR = "Separator";

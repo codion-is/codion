@@ -69,13 +69,17 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 		return copy((Value<Boolean>) state);
 	}
 
-	@Override
-	public CommandControlBuilder copy(Command command) {
-		throw new UnsupportedOperationException();
-	}
+	static final class DefaultToggleControlBuilder extends AbstractControlBuilder<ToggleControl, ToggleControlBuilder> implements ToggleControlBuilder {
 
-	@Override
-	public CommandControlBuilder copy(ActionCommand actionCommand) {
-		throw new UnsupportedOperationException();
+		final Value<Boolean> value;
+
+		DefaultToggleControlBuilder(Value<Boolean> value) {
+			this.value = requireNonNull(value);
+		}
+
+		@Override
+		public ToggleControl build() {
+			return new DefaultToggleControl(this);
+		}
 	}
 }

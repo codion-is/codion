@@ -35,6 +35,7 @@ public interface ToggleControl extends Control {
 	 * Returns a {@link ToggleControlBuilder} instance, based on a copy of this control, using the same value
 	 * @return a new builder
 	 */
+	@Override
 	ToggleControlBuilder copy();
 
 	/**
@@ -50,4 +51,9 @@ public interface ToggleControl extends Control {
 	 * @return a new builder
 	 */
 	ToggleControlBuilder copy(State state);
+
+	/**
+	 * Builds a {@link ToggleControl}
+	 */
+	interface ToggleControlBuilder extends Builder<ToggleControl, ToggleControlBuilder> {}
 }

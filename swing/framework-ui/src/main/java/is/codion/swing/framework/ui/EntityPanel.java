@@ -32,6 +32,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -1058,7 +1059,7 @@ public class EntityPanel extends JPanel {
 		}
 		if (containsEditPanel()) {
 			editPanel.control(SELECT_INPUT_FIELD).map(control ->
-							control.copy(this::selectInputComponent).build());
+							((CommandControl) control).copy(this::selectInputComponent).build());
 		}
 	}
 

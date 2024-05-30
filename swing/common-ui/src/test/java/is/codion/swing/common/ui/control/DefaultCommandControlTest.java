@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
 import static is.codion.swing.common.ui.component.Components.button;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class DefaultControlTest {
+public final class DefaultCommandControlTest {
 
 	private int callCount = 0;
 

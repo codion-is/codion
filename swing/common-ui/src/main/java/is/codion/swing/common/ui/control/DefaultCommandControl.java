@@ -19,15 +19,13 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
 
 import java.awt.event.ActionEvent;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultControl extends AbstractControl {
+final class DefaultCommandControl extends AbstractControl implements CommandControl {
 
 	private static final Consumer<Exception> DEFAULT_EXCEPTION_HANDLER = new DefaultExceptionHandler();
 
@@ -35,7 +33,7 @@ final class DefaultControl extends AbstractControl {
 	private final ActionCommand actionCommand;
 	private final Consumer<Exception> onException;
 
-	private DefaultControl(Command command, ActionCommand actionCommand, DefaultControlBuilder builder) {
+	private DefaultCommandControl(Command command, ActionCommand actionCommand, DefaultCommandControlBuilder builder) {
 		super(builder);
 		this.command = command;
 		this.actionCommand = actionCommand;
@@ -59,24 +57,24 @@ final class DefaultControl extends AbstractControl {
 
 	@Override
 	public CommandControlBuilder copy() {
-		return createBuilder(command, actionCommand);
+		return copyBuilder(command, actionCommand);
 	}
 
 	@Override
 	public CommandControlBuilder copy(Command command) {
-		return createBuilder(command, null);
+		return copyBuilder(command, null);
 	}
 
 	@Override
 	public CommandControlBuilder copy(ActionCommand actionCommand) {
-		return createBuilder(null, actionCommand);
+		return copyBuilder(null, actionCommand);
 	}
 
-	CommandControlBuilder createBuilder(Command command, ActionCommand actionCommand) {
+	private CommandControlBuilder copyBuilder(Command command, ActionCommand actionCommand) {
 		if (command == null && actionCommand == null) {
 			throw new NullPointerException("Command or ActionCommand must be specified");
 		}
-		CommandControlBuilder builder = new DefaultControl.DefaultControlBuilder(command, actionCommand)
+		CommandControlBuilder builder = new DefaultCommandControlBuilder(command, actionCommand)
 						.enabled(enabled())
 						.onException(onException);
 		keys().forEach(key -> builder.value(key, getValue(key)));
@@ -84,14 +82,14 @@ final class DefaultControl extends AbstractControl {
 		return builder;
 	}
 
-	static final class DefaultControlBuilder extends AbstractControlBuilder<Control, CommandControlBuilder> implements CommandControlBuilder {
+	static final class DefaultCommandControlBuilder extends AbstractControlBuilder<CommandControl, CommandControlBuilder> implements CommandControlBuilder {
 
 		private final Command command;
 		private final ActionCommand actionCommand;
 
 		private Consumer<Exception> onException = DEFAULT_EXCEPTION_HANDLER;
 
-		DefaultControlBuilder(Command command, ActionCommand actionCommand) {
+		DefaultCommandControlBuilder(Command command, ActionCommand actionCommand) {
 			this.command = command;
 			this.actionCommand = actionCommand;
 		}
@@ -103,32 +101,8 @@ final class DefaultControl extends AbstractControl {
 		}
 
 		@Override
-		public Control build() {
-			return new DefaultControl(command, actionCommand, this);
-		}
-	}
-
-	static final class DefaultControlBuilderFactory implements Control.BuilderFactory {
-
-		@Override
-		public CommandControlBuilder command(Command command) {
-			return new DefaultControlBuilder(requireNonNull(command), null);
-		}
-
-
-		@Override
-		public CommandControlBuilder actionCommand(ActionCommand actionCommand) {
-			return new DefaultControlBuilder(null, requireNonNull(actionCommand));
-		}
-
-		@Override
-		public ToggleControlBuilder toggle(Value<Boolean> value) {
-			return new DefaultToggleControlBuilder(value);
-		}
-
-		@Override
-		public ToggleControlBuilder toggle(State state) {
-			return new DefaultToggleControlBuilder(state);
+		public CommandControl build() {
+			return new DefaultCommandControl(command, actionCommand, this);
 		}
 	}
 
