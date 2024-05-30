@@ -16,6 +16,8 @@ Codion Change Log
 - FilterTable.model() added.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
+### is.codion.swing.framework.model.tools
+- DomainGeneratorModel bug fixed, sourceDirectorySpecified and domainPackageSpecified states now initialized properly.
 ### is.codion.swing.framework.ui
 - EntityConditionFieldFactory.createInForeignKeyField() bug fixed, did not handle SwingForeignKeyConditionModel.
 - DefaultEntityApplicationPanelBuilder bug fixed, did not close initialization frame on exception.

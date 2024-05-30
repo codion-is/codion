@@ -87,12 +87,11 @@ public final class DomainGeneratorModel {
 	private final Connection connection;
 	private final State domainPackageSpecified = State.state();
 	private final Value<String> domainPackageValue = Value.nonNull(DEFAULT_DOMAIN_PACKAGE.get())
-					.listener(this::updateDomainSource)
-					.consumer(pkg -> domainPackageSpecified.set(!nullOrEmpty(pkg)))
+					.listener(this::domainPackageChanged)
 					.build();
 	private final State sourceDirectorySpecified = State.state();
 	private final Value<String> sourceDirectoryValue = Value.nonNull(DEFAULT_SOURCE_DIRECTORY.get())
-					.consumer(dir -> sourceDirectorySpecified.set(nonNull(dir)))
+					.listener(this::sourceDirectoryChanged)
 					.build();
 	private final Value<String> domainImplValue = Value.<String>nullable()
 					.notify(WHEN_SET)
@@ -108,6 +107,8 @@ public final class DomainGeneratorModel {
 
 	private DomainGeneratorModel(Database database, User user) throws DatabaseException {
 		this.connection = requireNonNull(database, "database").createConnection(user);
+		sourceDirectoryChanged();
+		domainPackageChanged();
 		try {
 			this.metaDataModel = new MetaDataModel(connection.getMetaData());
 			this.schemaTableModel.refresh();
@@ -210,6 +211,15 @@ public final class DomainGeneratorModel {
 	 */
 	public static DomainGeneratorModel domainGeneratorModel(Database database, User user) throws DatabaseException {
 		return new DomainGeneratorModel(database, user);
+	}
+
+	private void sourceDirectoryChanged() {
+		sourceDirectorySpecified.set(nonNull(sourceDirectoryValue.get()));
+	}
+
+	private void domainPackageChanged() {
+		domainPackageSpecified.set(!nullOrEmpty(domainPackageValue.get()));
+		updateDomainSource();
 	}
 
 	private void updateDomainSource() {

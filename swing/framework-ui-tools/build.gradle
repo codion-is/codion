@@ -42,7 +42,8 @@ tasks.register("runDomainGeneratorH2", JavaExec) {
                             "../../demos/petclinic/src/main/sql/create_schema.sql," +
                             "../../demos/petstore/src/main/sql/create_schema.sql," +
                             "../../demos/world/src/main/sql/create_schema.sql",
-            "codion.domain.generator.defaultUser": "sa"
+            "codion.domain.generator.defaultUser": "sa",
+            "codion.domain.generator.defaultDomainPackage" : "is.codion.demo.domain"
     ]
 }
 
