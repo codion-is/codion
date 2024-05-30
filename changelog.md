@@ -18,6 +18,7 @@ Codion Change Log
 - SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
 ### is.codion.swing.framework.model.tools
 - DomainGeneratorModel bug fixed, sourceDirectorySpecified and domainPackageSpecified states now initialized properly.
+- DomainGeneratorModel bug fixed, save now enabled only when a populated schema is selected.
 ### is.codion.swing.framework.ui
 - EntityConditionFieldFactory.createInForeignKeyField() bug fixed, did not handle SwingForeignKeyConditionModel.
 - DefaultEntityApplicationPanelBuilder bug fixed, did not close initialization frame on exception.

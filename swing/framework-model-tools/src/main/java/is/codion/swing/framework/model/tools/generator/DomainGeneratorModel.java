@@ -80,6 +80,7 @@ public final class DomainGeneratorModel {
 					FilterTableModel.builder(new SchemaColumns())
 									.items(new SchemaItems())
 									.build();
+	private final State populatedSchemaSelected = State.state();
 	private final FilterTableModel<EntityRow, EntityColumns.Id> entityTableModel =
 					FilterTableModel.builder(new EntityColumns())
 									.items(new EntityItems())
@@ -169,8 +170,7 @@ public final class DomainGeneratorModel {
 			int index = schemaTableModel.indexOf(schema);
 			schemaTableModel.fireTableRowsUpdated(index, index);
 		});
-		entityTableModel.refresh();
-		updateDomainSource();
+		schemaSelectionChanged();
 	}
 
 	public void saveApiImpl() throws IOException {
@@ -188,13 +188,20 @@ public final class DomainGeneratorModel {
 	}
 
 	public StateObserver saveEnabled() {
-		return State.and(domainPackageSpecified, sourceDirectorySpecified);
+		return State.and(domainPackageSpecified, sourceDirectorySpecified, populatedSchemaSelected);
 	}
 
 	private void bindEvents() {
-		schemaTableModel.selectionModel().selectionEvent().addListener(entityTableModel::refresh);
-		schemaTableModel.selectionModel().selectionEvent().addListener(this::updateDomainSource);
+		schemaTableModel.selectionModel().selectionEvent().addListener(this::schemaSelectionChanged);
 		entityModel().selectionModel().selectedItemEvent().addConsumer(this::search);
+	}
+
+	private void schemaSelectionChanged() {
+		entityTableModel.refresh();
+		updateDomainSource();
+		populatedSchemaSelected.set(schemaTableModel.selectionModel().selectedItem()
+						.map(schemaRow -> schemaRow.populated)
+						.orElse(false));
 	}
 
 	private void search(EntityRow entityRow) {
