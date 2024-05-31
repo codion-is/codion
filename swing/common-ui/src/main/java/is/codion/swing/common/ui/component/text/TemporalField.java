@@ -53,7 +53,7 @@ import java.time.temporal.Temporal;
 import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.component.text.TemporalField.TemporalFieldControl.*;
+import static is.codion.swing.common.ui.component.text.TemporalField.ControlIds.*;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
 import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
@@ -75,12 +75,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts CONTROL_SHORTCUTS = controlShortcuts(TemporalFieldControl.class);
+	public static final ControlShortcuts CONTROL_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 	/**
 	 * The controls.
 	 */
-	public interface TemporalFieldControl {
+	public interface ControlIds {
 		/**
 		 * Display a calendar for date/time input.<br>
 		 * Default key stroke: INSERT

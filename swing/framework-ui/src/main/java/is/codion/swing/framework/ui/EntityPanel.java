@@ -79,14 +79,14 @@ import static is.codion.swing.common.ui.control.ControlId.controls;
 import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
 import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.SELECT_INPUT_FIELD;
+import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.SELECT_INPUT_FIELD;
+import static is.codion.swing.framework.ui.EntityPanel.ControlIds.REFRESH;
+import static is.codion.swing.framework.ui.EntityPanel.ControlIds.*;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
-import static is.codion.swing.framework.ui.EntityPanel.EntityPanelControl.REFRESH;
-import static is.codion.swing.framework.ui.EntityPanel.EntityPanelControl.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.WindowType.DIALOG;
 import static is.codion.swing.framework.ui.EntityPanel.WindowType.FRAME;
-import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.*;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -150,7 +150,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * The standard controls available in a entity panel
 	 */
-	public interface EntityPanelControl {
+	public interface ControlIds {
 		/**
 		 * Requests focus for the edit panel (intial focus component).<br>
 		 * Default key stroke: CTRL-E
@@ -299,7 +299,7 @@ public class EntityPanel extends JPanel {
 						.minimumSize(new Dimension(0, 0))
 						.build();
 		this.configuration = configure(config);
-		this.controls = createControlsMap();
+		this.controls = createControls();
 		this.controlsConfiguration = createControlsConfiguration();
 		this.detailLayout = configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
@@ -715,8 +715,8 @@ public class EntityPanel extends JPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link EntityPanelControl#EDIT_CONTROLS EntityPanelControl#EDIT_CONTROLS}</li>
-	 *   <li>{@link EntityPanelControl#REFRESH EntityPanelControl#REFRESH}</li>
+	 *   <li>{@link ControlIds#EDIT_CONTROLS ControlIds#EDIT_CONTROLS}</li>
+	 *   <li>{@link ControlIds#REFRESH ControlIds#REFRESH}</li>
 	 * </ul>
 	 * @param controlsConfig provides access to the controls configuration
 	 * @see Controls.Config#clear()
@@ -759,7 +759,7 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Sets up the keyboard actions.
-	 * @see EntityPanelControl
+	 * @see ControlIds
 	 */
 	protected final void setupKeyboardActions() {
 		if (containsTablePanel()) {
@@ -1141,13 +1141,13 @@ public class EntityPanel extends JPanel {
 		return Controls.config(controls, asList(EDIT_CONTROLS, REFRESH));
 	}
 
-	private ControlSet createControlsMap() {
+	private ControlSet createControls() {
 		Value.Validator<Control> controlValueValidator = control -> {
 			if (initialized) {
 				throw new IllegalStateException("Controls must be configured before the panel is initialized");
 			}
 		};
-		ControlSet controlSet = ControlSet.controlSet(EntityPanelControl.class);
+		ControlSet controlSet = ControlSet.controlSet(ControlIds.class);
 		controlSet.controls().forEach(control -> control.addValidator(controlValueValidator));
 		controlSet.control(REQUEST_EDIT_PANEL_FOCUS).set(createRequestEditPanelFocusControl());
 		controlSet.control(TOGGLE_EDIT_PANEL).set(createToggleEditPanelControl());
@@ -1287,7 +1287,7 @@ public class EntityPanel extends JPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(EntityPanelControl.class);
+		public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 		private final EntityPanel entityPanel;
 		private final ControlShortcuts shortcuts;

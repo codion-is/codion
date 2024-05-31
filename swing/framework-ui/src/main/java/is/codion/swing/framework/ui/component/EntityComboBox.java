@@ -52,8 +52,8 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
 import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
-import static is.codion.swing.framework.ui.component.EntityComboBox.EntityComboBoxControl.ADD;
-import static is.codion.swing.framework.ui.component.EntityComboBox.EntityComboBoxControl.EDIT;
+import static is.codion.swing.framework.ui.component.EntityComboBox.ControlIds.ADD;
+import static is.codion.swing.framework.ui.component.EntityComboBox.ControlIds.EDIT;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
@@ -71,13 +71,13 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(EntityComboBoxControl.class);
+	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 	/**
 	 * The available controls.
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public interface EntityComboBoxControl {
+	public interface ControlIds {
 		/**
 		 * Displays a dialog for adding a new record.<br>
 		 * Default key stroke: INSERT

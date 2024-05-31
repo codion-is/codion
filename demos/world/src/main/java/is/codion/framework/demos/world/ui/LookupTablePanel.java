@@ -58,7 +58,7 @@ import static is.codion.framework.demos.world.ui.LookupTablePanel.ExportFormat.C
 import static is.codion.framework.demos.world.ui.LookupTablePanel.ExportFormat.JSON;
 import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static is.codion.swing.common.ui.component.Components.toolBar;
-import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.*;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;

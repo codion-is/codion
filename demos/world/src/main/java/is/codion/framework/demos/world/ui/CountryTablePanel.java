@@ -33,7 +33,7 @@ import net.sf.jasperreports.swing.JRViewer;
 
 import java.awt.Dimension;
 
-import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.PRINT;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.PRINT;
 
 final class CountryTablePanel extends EntityTablePanel {
 

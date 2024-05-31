@@ -64,7 +64,7 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.ColumnConditionPanelControl.*;
+import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.ControlIds.*;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlId.toggleControl;
 import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
@@ -94,12 +94,12 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ColumnConditionPanelControl.class);
+	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 	/**
 	 * The condition controls.
 	 */
-	public interface ColumnConditionPanelControl {
+	public interface ControlIds {
 		/**
 		 * Toggle the enabled status on/off.<br>
 		 * Default key stroke: CTRL-ENTER

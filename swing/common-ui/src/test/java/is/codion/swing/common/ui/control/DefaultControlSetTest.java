@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.control;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.swing.common.ui.control.ControlId.*;
 import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -28,17 +29,17 @@ import static java.awt.event.KeyEvent.VK_S;
 
 public final class DefaultControlSetTest {
 
-	public interface ControlTypes {
-		ControlId<CommandControl> COMMAND_CONTROL = ControlId.commandControl(keyStroke(VK_INSERT));
-		ControlId<Controls> CONTROLS = ControlId.controls();
-		ControlId<ToggleControl> TOGGLE_CONTROL = ControlId.toggleControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+	public interface ControlIds {
+		ControlId<CommandControl> COMMAND_CONTROL = commandControl(keyStroke(VK_INSERT));
+		ControlId<Controls> CONTROLS = controls();
+		ControlId<ToggleControl> TOGGLE_CONTROL = toggleControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 	}
 
 	@Test
 	void test() {
-		ControlSet controlSet = new DefaultControlSet(ControlTypes.class);
-		controlSet.control(ControlTypes.COMMAND_CONTROL).get();
-		controlSet.control(ControlTypes.CONTROLS).get();
-		controlSet.control(ControlTypes.TOGGLE_CONTROL).get();
+		ControlSet controlSet = new DefaultControlSet(ControlIds.class);
+		controlSet.control(ControlIds.COMMAND_CONTROL).get();
+		controlSet.control(ControlIds.CONTROLS).get();
+		controlSet.control(ControlIds.TOGGLE_CONTROL).get();
 	}
 }

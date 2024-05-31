@@ -222,15 +222,15 @@ final class DefaultControls extends AbstractControl implements Controls {
 			public void addTo(ControlsBuilder builder) {
 				controls.control(tableControl).optional().ifPresent(control -> {
 					if (control instanceof Controls) {
-						Controls controls = (Controls) control;
-						if (controls.notEmpty()) {
-							if (!controls.name().isPresent()) {
-								controls.actions().stream()
+						Controls controlsToAdd = (Controls) control;
+						if (controlsToAdd.notEmpty()) {
+							if (!controlsToAdd.name().isPresent()) {
+								controlsToAdd.actions().stream()
 												.filter(action -> action != SEPARATOR)
 												.forEach(action -> new CustomAction(action).addTo(builder));
 							}
 							else {
-								builder.control(controls);
+								builder.control(controlsToAdd);
 							}
 						}
 					}

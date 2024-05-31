@@ -174,13 +174,13 @@ public final class EntitySearchField extends HintTextField {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(EntitySearchFieldControl.class);
+	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 	/**
 	 * The available controls.
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public interface EntitySearchFieldControl {
+	public interface ControlIds {
 		/**
 		 * Displays a dialog for adding a new record.<br>
 		 * Default key stroke: INSERT
@@ -217,9 +217,9 @@ public final class EntitySearchField extends HintTextField {
 		super(builder.searchHintEnabled ? Messages.search() + "..." : null);
 		model = requireNonNull(builder.searchModel);
 		addControl = createAddControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(EntitySearchFieldControl.ADD).get(), builder.confirmAdd);
+						builder.keyboardShortcuts.keyStroke(ControlIds.ADD).get(), builder.confirmAdd);
 		editControl = createEditControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(EntitySearchFieldControl.EDIT).get(), builder.confirmEdit);
+						builder.keyboardShortcuts.keyStroke(ControlIds.EDIT).get(), builder.confirmEdit);
 		if (builder.columns != -1) {
 			setColumns(builder.columns);
 		}

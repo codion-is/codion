@@ -26,22 +26,23 @@ import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.util.stream.Stream;
 
+import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
 import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
-import static is.codion.swing.common.ui.control.ControlShortcutsTest.Shortcut.ONE;
-import static is.codion.swing.common.ui.control.ControlShortcutsTest.Shortcut.TWO;
+import static is.codion.swing.common.ui.control.ControlShortcutsTest.ControlIds.ONE;
+import static is.codion.swing.common.ui.control.ControlShortcutsTest.ControlIds.TWO;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ControlShortcutsTest {
 
-	interface Shortcut {
-		ControlId<CommandControl> ONE = ControlId.commandControl(keyStroke(KeyEvent.VK_1));
-		ControlId<CommandControl> TWO = ControlId.commandControl(keyStroke(KeyEvent.VK_2));
+	interface ControlIds {
+		ControlId<CommandControl> ONE = commandControl(keyStroke(KeyEvent.VK_1));
+		ControlId<CommandControl> TWO = commandControl(keyStroke(KeyEvent.VK_2));
 	}
 
 	@Test
 	void test() {
-		ControlShortcuts shortcuts = controlShortcuts(Shortcut.class);
+		ControlShortcuts shortcuts = controlShortcuts(ControlIds.class);
 
 		assertEquals(KeyEvent.VK_1, shortcuts.keyStroke(ONE).get().getKeyCode());
 		assertEquals(KeyEvent.VK_2, shortcuts.keyStroke(TWO).get().getKeyCode());

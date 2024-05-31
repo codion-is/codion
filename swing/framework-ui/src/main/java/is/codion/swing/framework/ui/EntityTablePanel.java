@@ -138,7 +138,7 @@ import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDepend
 import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
-import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.*;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.*;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -192,7 +192,7 @@ public class EntityTablePanel extends JPanel {
 	private static final String COLUMN_PREFERENCES = "-columns";
 	private static final String CONDITIONS_PREFERENCES = "-conditions";
 
-	public interface EntityTablePanelControl {
+	public interface ControlIds {
 		/**
 		 * Add a new entity instance.<br>
 		 * Default key stroke: INSERT
@@ -256,7 +256,7 @@ public class EntityTablePanel extends JPanel {
 		 */
 		ControlId<CommandControl> PRINT = commandControl(keyStroke(VK_P, CTRL_DOWN_MASK));
 		/**
-		 * Triggers the {@link EntityTablePanelControl#DELETE} control.<br>
+		 * Triggers the {@link ControlIds#DELETE} control.<br>
 		 * Default key stroke: DELETE
 		 */
 		ControlId<CommandControl> DELETE = commandControl(keyStroke(VK_DELETE));
@@ -835,7 +835,7 @@ public class EntityTablePanel extends JPanel {
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
 	 *   configureToolBar(config -> config.clear()
-	 *           .standard(EntityTablePanelControl.REFRESH)
+	 *           .standard(ControlIds.REFRESH)
 	 *           .separator()
 	 *           .control(createCustomControl())
 	 *           .separator()
@@ -843,19 +843,19 @@ public class EntityTablePanel extends JPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link EntityTablePanelControl#TOGGLE_SUMMARY_PANEL EntityTablePanelControl#TOGGLE_SUMMARY_PANEL}</li>
-	 * 	 <li>{@link EntityTablePanelControl#TOGGLE_CONDITION_PANEL EntityTablePanelControl#TOGGLE_CONDITION_PANEL}</li>
-	 * 	 <li>{@link EntityTablePanelControl#TOGGLE_FILTER_PANEL EntityTablePanelControl#TOGGLE_FILTER_PANEL}</li>
+	 *   <li>{@link ControlIds#TOGGLE_SUMMARY_PANEL ControlIds#TOGGLE_SUMMARY_PANEL}</li>
+	 * 	 <li>{@link ControlIds#TOGGLE_CONDITION_PANEL ControlIds#TOGGLE_CONDITION_PANEL}</li>
+	 * 	 <li>{@link ControlIds#TOGGLE_FILTER_PANEL ControlIds#TOGGLE_FILTER_PANEL}</li>
 	 * 	 <li>Separator</li>
-	 * 	 <li>{@link EntityTablePanelControl#ADD EntityTablePanelControl#ADD} (If an EditPanel is available)</li>
-	 * 	 <li>{@link EntityTablePanelControl#EDIT EntityTablePanelControl#EDIT} (If an EditPanel is available)</li>
-	 * 	 <li>{@link EntityTablePanelControl#DELETE EntityTablePanelControl#DELETE}</li>
+	 * 	 <li>{@link ControlIds#ADD ControlIds#ADD} (If an EditPanel is available)</li>
+	 * 	 <li>{@link ControlIds#EDIT ControlIds#EDIT} (If an EditPanel is available)</li>
+	 * 	 <li>{@link ControlIds#DELETE ControlIds#DELETE}</li>
 	 * 	 <li>Separator</li>
-	 * 	 <li>{@link EntityTablePanelControl#EDIT_SELECTED_ATTRIBUTE EntityTablePanelControl#EDIT_SELECTED_ATTRIBUTE}</li>
+	 * 	 <li>{@link ControlIds#EDIT_SELECTED_ATTRIBUTE ControlIds#EDIT_SELECTED_ATTRIBUTE}</li>
 	 * 	 <li>Separator</li>
-	 * 	 <li>{@link EntityTablePanelControl#PRINT EntityTablePanelControl#PRINT}</li>
+	 * 	 <li>{@link ControlIds#PRINT ControlIds#PRINT}</li>
 	 * 	 <li>Separator</li>
-	 * 	 <li>{@link EntityTablePanelControl#ADDITIONAL_TOOLBAR_CONTROLS EntityTablePanelControl#ADDITIONAL_TOOLBAR_CONTROLS}</li>
+	 * 	 <li>{@link ControlIds#ADDITIONAL_TOOLBAR_CONTROLS ControlIds#ADDITIONAL_TOOLBAR_CONTROLS}</li>
 	 * </ul>
 	 * @param toolBarConfig provides access to the toolbar configuration
 	 * @see Controls.Config#clear()
@@ -871,7 +871,7 @@ public class EntityTablePanel extends JPanel {
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
 	 *   configurePopupMenu(config -> config.clear()
-	 *           .standard(EntityTablePanelControl.REFRESH)
+	 *           .standard(ControlIds.REFRESH)
 	 *           .separator()
 	 *           .control(createCustomControl())
 	 *           .separator()
@@ -879,30 +879,30 @@ public class EntityTablePanel extends JPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link EntityTablePanelControl#REFRESH EntityTablePanelControl#REFRESH}</li>
-	 *   <li>{@link EntityTablePanelControl#CLEAR EntityTablePanelControl#CLEAR}</li>
+	 *   <li>{@link ControlIds#REFRESH ControlIds#REFRESH}</li>
+	 *   <li>{@link ControlIds#CLEAR ControlIds#CLEAR}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link EntityTablePanelControl#ADD EntityTablePanelControl#ADD} (If an EditPanel is available)</li>
-	 *   <li>{@link EntityTablePanelControl#EDIT EntityTablePanelControl#EDIT} (If an EditPanel is available)</li>
-	 *   <li>{@link EntityTablePanelControl#DELETE EntityTablePanelControl#DELETE}</li>
+	 *   <li>{@link ControlIds#ADD ControlIds#ADD} (If an EditPanel is available)</li>
+	 *   <li>{@link ControlIds#EDIT ControlIds#EDIT} (If an EditPanel is available)</li>
+	 *   <li>{@link ControlIds#DELETE ControlIds#DELETE}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link EntityTablePanelControl#EDIT_SELECTED_ATTRIBUTE EntityTablePanelControl#EDIT_SELECTED_ATTRIBUTE} or {@link EntityTablePanelControl#EDIT_ATTRIBUTE_CONTROLS EntityTablePanelControl#EDIT_ATTRIBUTE_CONTROLS}</li>
+	 *   <li>{@link ControlIds#EDIT_SELECTED_ATTRIBUTE ControlIds#EDIT_SELECTED_ATTRIBUTE} or {@link ControlIds#EDIT_ATTRIBUTE_CONTROLS ControlIds#EDIT_ATTRIBUTE_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link EntityTablePanelControl#VIEW_DEPENDENCIES EntityTablePanelControl#VIEW_DEPENDENCIES}</li>
+	 *   <li>{@link ControlIds#VIEW_DEPENDENCIES ControlIds#VIEW_DEPENDENCIES}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link EntityTablePanelControl#ADDITIONAL_POPUP_MENU_CONTROLS EntityTablePanelControl#ADDITIONAL_POPUP_MENU_CONTROLS}</li>
+	 *   <li>{@link ControlIds#ADDITIONAL_POPUP_MENU_CONTROLS ControlIds#ADDITIONAL_POPUP_MENU_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link EntityTablePanelControl#PRINT_CONTROLS EntityTablePanelControl#PRINT_CONTROLS}</li>
+	 *   <li>{@link ControlIds#PRINT_CONTROLS ControlIds#PRINT_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link EntityTablePanelControl#COLUMN_CONTROLS EntityTablePanelControl#COLUMN_CONTROLS}</li>
+	 *   <li>{@link ControlIds#COLUMN_CONTROLS ControlIds#COLUMN_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link EntityTablePanelControl#SELECTION_MODE EntityTablePanelControl#SELECTION_MODE}</li>
+	 *   <li>{@link ControlIds#SELECTION_MODE ControlIds#SELECTION_MODE}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link EntityTablePanelControl#CONDITION_CONTROLS EntityTablePanelControl#CONDITION_CONTROLS}</li>
+	 *   <li>{@link ControlIds#CONDITION_CONTROLS ControlIds#CONDITION_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link EntityTablePanelControl#FILTER_CONTROLS EntityTablePanelControl#FILTER_CONTROLS}</li>
+	 *   <li>{@link ControlIds#FILTER_CONTROLS ControlIds#FILTER_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link EntityTablePanelControl#COPY_CONTROLS EntityTablePanelControl#COPY_CONTROLS}</li>
+	 *   <li>{@link ControlIds#COPY_CONTROLS ControlIds#COPY_CONTROLS}</li>
 	 * </ul>
 	 * @param popupMenuConfig provides access to the popup menu configuration
 	 * @see Controls.Config#clear()
@@ -1591,7 +1591,7 @@ public class EntityTablePanel extends JPanel {
 				throw new IllegalStateException("Controls must be configured before the panel is initialized");
 			}
 		};
-		ControlSet controlSet = ControlSet.controlSet(EntityTablePanelControl.class);
+		ControlSet controlSet = ControlSet.controlSet(ControlIds.class);
 		controlSet.controls().forEach(control -> control.addValidator(controlValueValidator));
 		if (includeDeleteControl()) {
 			controlSet.control(DELETE).set(createDeleteControl());
@@ -2144,7 +2144,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(EntityTablePanelControl.class);
+		public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 		private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 

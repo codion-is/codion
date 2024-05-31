@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.PRINT;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.PRINT;
 
 // tag::constructor[]
 public class DepartmentTablePanel extends EntityTablePanel {

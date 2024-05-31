@@ -51,7 +51,8 @@ import java.awt.event.FocusEvent;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
-import static is.codion.swing.common.ui.component.text.TextFieldPanel.TextFieldPanelControl.DISPLAY_TEXT_AREA;
+import static is.codion.swing.common.ui.component.text.TextFieldPanel.ControlIds.DISPLAY_TEXT_AREA;
+import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
 import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static java.awt.event.KeyEvent.VK_INSERT;
@@ -71,17 +72,17 @@ public final class TextFieldPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts CONTROL_SHORTCUTS = controlShortcuts(TextFieldPanelControl.class);
+	public static final ControlShortcuts CONTROL_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 	/**
 	 * The available controls.
 	 */
-	public interface TextFieldPanelControl {
+	public interface ControlIds {
 		/**
 		 * Displays a text area for longer text input.<br>
 		 * Default key stroke: INSERT
 		 */
-		ControlId<CommandControl> DISPLAY_TEXT_AREA = ControlId.commandControl(keyStroke(VK_INSERT));
+		ControlId<CommandControl> DISPLAY_TEXT_AREA = commandControl(keyStroke(VK_INSERT));
 	}
 
 	private final JTextField textField;

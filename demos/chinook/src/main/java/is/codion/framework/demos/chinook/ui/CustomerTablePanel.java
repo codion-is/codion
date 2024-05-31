@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.PRINT;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.PRINT;
 import static java.util.ResourceBundle.getBundle;
 
 public final class CustomerTablePanel extends EntityTablePanel {

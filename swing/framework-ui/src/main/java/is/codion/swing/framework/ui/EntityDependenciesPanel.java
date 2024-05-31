@@ -49,9 +49,9 @@ import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
 import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
-import static is.codion.swing.framework.ui.EntityDependenciesPanel.EntityDependenciesPanelControl.NAVIGATE_LEFT;
-import static is.codion.swing.framework.ui.EntityDependenciesPanel.EntityDependenciesPanelControl.NAVIGATE_RIGHT;
-import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.*;
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlIds.NAVIGATE_LEFT;
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlIds.NAVIGATE_RIGHT;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -72,12 +72,12 @@ public final class EntityDependenciesPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(EntityDependenciesPanelControl.class);
+	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 	/**
 	 * The dependencies panel controls.
 	 */
-	public interface EntityDependenciesPanelControl {
+	public interface ControlIds {
 		/**
 		 * Navigates to the dependencies panel on the left (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW

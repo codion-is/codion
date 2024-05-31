@@ -70,7 +70,7 @@ import java.util.stream.IntStream;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.calendar.CalendarPanel.CalendarPanelControl.*;
+import static is.codion.swing.common.ui.component.calendar.CalendarPanel.ControlIds.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
@@ -104,12 +104,12 @@ public final class CalendarPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts CONTROL_SHORTCUTS = controlShortcuts(CalendarPanelControl.class);
+	public static final ControlShortcuts CONTROL_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 	/**
 	 * The available controls.
 	 */
-	public interface CalendarPanelControl {
+	public interface ControlIds {
 
 		/**
 		 * Select the previous year.<br>

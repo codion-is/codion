@@ -50,7 +50,7 @@ import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.INSERT;
+import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.INSERT;
 import static java.util.Collections.singletonList;
 
 /**

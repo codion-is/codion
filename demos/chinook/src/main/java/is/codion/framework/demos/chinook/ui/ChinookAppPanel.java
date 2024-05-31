@@ -59,7 +59,7 @@ import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.radioButton;
 import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.HIDDEN;
-import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.DELETE;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.DELETE;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.JOptionPane.showMessageDialog;

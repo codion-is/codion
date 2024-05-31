@@ -74,7 +74,7 @@ import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.GAP;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.panelStateMapper;
-import static is.codion.swing.framework.ui.TabbedDetailLayout.TabbedDetailLayoutControl.*;
+import static is.codion.swing.framework.ui.TabbedDetailLayout.ControlIds.*;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -117,12 +117,12 @@ public final class TabbedDetailLayout implements DetailLayout {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(TabbedDetailLayoutControl.class);
+	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 	/**
 	 * The controls.
 	 */
-	public interface TabbedDetailLayoutControl {
+	public interface ControlIds {
 		/**
 		 * Resizes the detail panel to the right.<br>
 		 * Default key stroke: SHIFT-ALT-RIGHT ARROW

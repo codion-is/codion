@@ -66,7 +66,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.CLEAR;
+import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.CLEAR;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 

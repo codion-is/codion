@@ -67,7 +67,7 @@ import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcut
 import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
-import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.*;
+import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_I;
@@ -95,7 +95,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Note that changing the shortcut keystroke after the panel
 	 * has been initialized has no effect.
 	 */
-	public interface EntityEditPanelControl {
+	public interface ControlIds {
 		/**
 		 * Performs an insert.
 		 */
@@ -502,10 +502,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link EntityEditPanelControl#INSERT EntityEditPanelControl#INSERT}</li>
-	 *   <li>{@link EntityEditPanelControl#UPDATE EntityEditPanelControl#UPDATE}</li>
-	 *   <li>{@link EntityEditPanelControl#DELETE EntityEditPanelControl#DELETE}</li>
-	 *   <li>{@link EntityEditPanelControl#CLEAR EntityEditPanelControl#CLEAR}</li>
+	 *   <li>{@link ControlIds#INSERT ControlIds#INSERT}</li>
+	 *   <li>{@link ControlIds#UPDATE ControlIds#UPDATE}</li>
+	 *   <li>{@link ControlIds#DELETE ControlIds#DELETE}</li>
+	 *   <li>{@link ControlIds#CLEAR ControlIds#CLEAR}</li>
 	 * </ul>
 	 * @param controlsConfig provides access to the controls configuration
 	 * @see Controls.Config#clear()
@@ -520,7 +520,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 				throw new IllegalStateException("Controls must be configured before the panel is initialized");
 			}
 		};
-		ControlSet controlSet = controlSet(EntityEditPanelControl.class);
+		ControlSet controlSet = controlSet(ControlIds.class);
 		controlSet.controls().forEach(control -> control.addValidator(controlValueValidator));
 		if (!editModel().readOnly().get()) {
 			if (editModel().insertEnabled().get()) {
@@ -706,7 +706,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(EntityEditPanelControl.class);
+		public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 		private static final Confirmer DEFAULT_INSERT_CONFIRMER = Confirmer.NONE;
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();

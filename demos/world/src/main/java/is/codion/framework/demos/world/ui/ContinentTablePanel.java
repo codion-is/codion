@@ -23,7 +23,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 
-import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.REFRESH;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.REFRESH;
 
 final class ContinentTablePanel extends EntityTablePanel {
 

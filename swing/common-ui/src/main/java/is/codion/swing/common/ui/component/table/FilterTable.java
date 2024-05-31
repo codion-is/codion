@@ -96,7 +96,7 @@ import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.filterColumnConditionPanel;
-import static is.codion.swing.common.ui.component.table.FilterTable.FilterTableControl.*;
+import static is.codion.swing.common.ui.component.table.FilterTable.ControlIds.*;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.control.Control.control;
@@ -145,12 +145,12 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts DEFAULT_KEYBOARD_SHORTCUTS = controlShortcuts(FilterTableControl.class);
+	public static final ControlShortcuts DEFAULT_KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
 
 	/**
 	 * The controls.
 	 */
-	public interface FilterTableControl {
+	public interface ControlIds {
 		/**
 		 * Moves the selected column to the left.<br>
 		 * Default key stroke: CTRL-SHIFT-LEFT
