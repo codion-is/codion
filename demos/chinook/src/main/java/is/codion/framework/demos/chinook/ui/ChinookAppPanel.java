@@ -57,7 +57,7 @@ import java.util.ResourceBundle;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.radioButton;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.HIDDEN;
 import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.DELETE;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;

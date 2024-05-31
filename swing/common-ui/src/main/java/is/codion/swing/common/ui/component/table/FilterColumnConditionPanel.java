@@ -30,10 +30,14 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlShortcuts;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
+import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -42,7 +46,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
-import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -62,8 +65,10 @@ import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.ColumnConditionPanelControl.*;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlId.toggleControl;
+import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
@@ -89,39 +94,27 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<ColumnConditionPanelControl> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(ColumnConditionPanelControl.class);
+	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ColumnConditionPanelControl.class);
 
 	/**
 	 * The condition controls.
 	 */
-	public enum ColumnConditionPanelControl implements KeyboardShortcuts.Shortcut {
+	public interface ColumnConditionPanelControl {
 		/**
 		 * Toggle the enabled status on/off.<br>
 		 * Default key stroke: CTRL-ENTER
 		 */
-		TOGGLE_ENABLED(keyStroke(VK_ENTER, CTRL_DOWN_MASK)),
+		ControlId<ToggleControl> TOGGLE_ENABLED = toggleControl(keyStroke(VK_ENTER, CTRL_DOWN_MASK));
 		/**
 		 * Select the previous condition operator.<br>
 		 * Default key stroke: CTRL-UP ARROW
 		 */
-		PREVIOUS_OPERATOR(keyStroke(VK_UP, CTRL_DOWN_MASK)),
+		ControlId<CommandControl> PREVIOUS_OPERATOR = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK));
 		/**
 		 * Select the next condition operator.<br>
 		 * Default key stroke: CTRL-DOWN ARROW
 		 */
-		NEXT_OPERATOR(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
-
-		private final KeyStroke defaultKeystroke;
-
-		ColumnConditionPanelControl(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public Optional<KeyStroke> defaultKeystroke() {
-			return Optional.ofNullable(defaultKeystroke);
-		}
+		ControlId<CommandControl> NEXT_OPERATOR = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
 	}
 
 	private static final String UNKNOWN_OPERATOR = "Unknown operator: ";
@@ -585,7 +578,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private void addStringConfigurationPopupMenu() {
 		if (isStringOrCharacter()) {
-			Controls.Builder controlsBuilder = Controls.builder();
+			ControlsBuilder controlsBuilder = Controls.builder();
 			controlsBuilder.control(Control.builder()
 							.toggle(conditionModel().caseSensitive())
 							.name(MESSAGES.getString("case_sensitive")));

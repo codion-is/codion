@@ -25,10 +25,12 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.Cursors;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlShortcuts;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -36,18 +38,17 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.EntityDependenciesPanelControl.NAVIGATE_LEFT;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.EntityDependenciesPanelControl.NAVIGATE_RIGHT;
 import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.*;
@@ -71,34 +72,22 @@ public final class EntityDependenciesPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<EntityDependenciesPanelControl> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(EntityDependenciesPanelControl.class);
+	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(EntityDependenciesPanelControl.class);
 
 	/**
 	 * The dependencies panel controls.
 	 */
-	public enum EntityDependenciesPanelControl implements KeyboardShortcuts.Shortcut {
+	public interface EntityDependenciesPanelControl {
 		/**
 		 * Navigates to the dependencies panel on the left (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		NAVIGATE_LEFT(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
+		ControlId<CommandControl> NAVIGATE_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the dependencies panel on the right (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		NAVIGATE_RIGHT(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
-
-		private final KeyStroke defaultKeystroke;
-
-		EntityDependenciesPanelControl(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public Optional<KeyStroke> defaultKeystroke() {
-			return Optional.ofNullable(defaultKeystroke);
-		}
+		ControlId<CommandControl> NAVIGATE_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 	}
 
 	private final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);

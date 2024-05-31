@@ -24,6 +24,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractAction;
@@ -111,7 +112,7 @@ public final class EventStateValue {
 		// tag::control[]
 		State state = State.state();
 
-		Control control = Control.builder()
+		CommandControl control = Control.builder()
 						.command(() -> System.out.println("Hello Control"))
 						.enabled(state)
 						.build();

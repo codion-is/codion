@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -206,7 +207,7 @@ public final class ProgressDialog extends JDialog {
 
 	static class DefaultBuilder extends AbstractDialogBuilder<Builder> implements Builder {
 
-		private final Controls.Builder controls = Controls.builder();
+		private final ControlsBuilder controls = Controls.builder();
 
 		private int maximumProgress = 100;
 		private boolean indeterminate = true;

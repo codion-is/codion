@@ -142,7 +142,7 @@ public interface Control extends Action {
 	 * @param command the {@link Control.Command} on which to base the control
 	 * @return a Control for calling the given {@link Control.Command}
 	 */
-	static Control control(Command command) {
+	static CommandControl control(Command command) {
 		return builder().command(command).build();
 	}
 
@@ -151,7 +151,7 @@ public interface Control extends Action {
 	 * @param actionCommand the {@link Control.ActionCommand} on which to base the control
 	 * @return a Control for calling the given {@link Control.Command}
 	 */
-	static Control actionControl(ActionCommand actionCommand) {
+	static CommandControl actionControl(ActionCommand actionCommand) {
 		return builder().actionCommand(actionCommand).build();
 	}
 

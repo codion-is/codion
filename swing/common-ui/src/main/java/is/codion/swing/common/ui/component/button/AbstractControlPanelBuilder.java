@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -33,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractControlPanelBuilder<C extends JComponent, B extends ControlPanelBuilder<C, B>>
 				extends AbstractComponentBuilder<Void, C, B> implements ControlPanelBuilder<C, B> {
 
-	private final Controls.Builder builder = Controls.builder();
+	private final ControlsBuilder builder = Controls.builder();
 
 	private final ButtonBuilder<?, ?, ?> buttonBuilder = ButtonBuilder.builder();
 	private final ToggleButtonBuilder<?, ?> toggleButtonBuilder = ToggleButtonBuilder.builder();

@@ -26,11 +26,13 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlShortcuts;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.DetailController;
@@ -66,15 +68,16 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.GAP;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.panelStateMapper;
 import static is.codion.swing.framework.ui.TabbedDetailLayout.TabbedDetailLayoutControl.*;
-import static java.awt.event.InputEvent.ALT_DOWN_MASK;
-import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
-import static java.awt.event.KeyEvent.*;
+import static java.awt.event.InputEvent.*;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -114,44 +117,32 @@ public final class TabbedDetailLayout implements DetailLayout {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<TabbedDetailLayoutControl> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(TabbedDetailLayoutControl.class);
+	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(TabbedDetailLayoutControl.class);
 
 	/**
 	 * The controls.
 	 */
-	public enum TabbedDetailLayoutControl implements KeyboardShortcuts.Shortcut {
+	public interface TabbedDetailLayoutControl {
 		/**
 		 * Resizes the detail panel to the right.<br>
 		 * Default key stroke: SHIFT-ALT-RIGHT ARROW
 		 */
-		RESIZE_RIGHT(keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK)),
+		ControlId<CommandControl> RESIZE_RIGHT = commandControl(keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Resizes the detail panel to the left.<br>
 		 * Default key stroke: SHIFT-ALT-LEFT ARROW
 		 */
-		RESIZE_LEFT(keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK)),
+		ControlId<CommandControl> RESIZE_LEFT = commandControl(keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Collapses the detail panel all the way to the right, hiding it.<br>
 		 * Default key stroke: SHIFT-CTRL-ALT RIGHT ARROW
 		 */
-		COLLAPSE(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK)),
+		ControlId<CommandControl> COLLAPSE = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Expands the detail panel all the way to the left, hiding the parent.<br>
 		 * Default key stroke: SHIFT-CTRL-ALT LEFT ARROW
 		 */
-		EXPAND(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
-
-		private final KeyStroke defaultKeystroke;
-
-		TabbedDetailLayoutControl(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public Optional<KeyStroke> defaultKeystroke() {
-			return Optional.ofNullable(defaultKeystroke);
-		}
+		ControlId<CommandControl> EXPAND = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 	}
 
 	private static final int RESIZE_AMOUNT = 30;
@@ -164,7 +155,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private final TabbedDetailController detailController;
 	private final boolean includeControls;
 	private final double splitPaneResizeWeight;
-	private final KeyboardShortcuts<TabbedDetailLayoutControl> keyboardShortcuts;
+	private final ControlShortcuts keyboardShortcuts;
 	private final WindowType windowType;
 
 	private JTabbedPane tabbedPane;
@@ -260,11 +251,11 @@ public final class TabbedDetailLayout implements DetailLayout {
 		Builder includeControls(boolean includeControls);
 
 		/**
-		 * @param control the control
+		 * @param controlId the control id
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(TabbedDetailLayoutControl control, KeyStroke keyStroke);
+		Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke);
 
 		/**
 		 * @return a new {@link TabbedDetailLayout} instance based on this builder
@@ -621,7 +612,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final KeyboardShortcuts<TabbedDetailLayoutControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final ControlShortcuts keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private final EntityPanel entityPanel;
 		private final Set<PanelState> enabledDetailStates =
@@ -682,8 +673,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public Builder keyStroke(TabbedDetailLayoutControl control, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(control).set(keyStroke);
+		public Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
+			keyboardShortcuts.keyStroke(controlId).set(keyStroke);
 			return this;
 		}
 

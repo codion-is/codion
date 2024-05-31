@@ -28,8 +28,10 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -56,7 +58,7 @@ public final class InputControls {
 		// tag::control[]
 		State somethingEnabledState = State.state(true);
 
-		Control control = Control.builder()
+		CommandControl control = Control.builder()
 						.command(() -> System.out.println("Doing something"))
 						.name("Do something")
 						.mnemonic('D')
@@ -70,7 +72,7 @@ public final class InputControls {
 				System.out.println("Doing something else");
 			}
 		};
-		Control actionControl = Control.builder()
+		CommandControl actionControl = Control.builder()
 						.actionCommand(actionCommand)
 						.name("Do something else")
 						.mnemonic('S')
@@ -82,14 +84,24 @@ public final class InputControls {
 		// tag::toggleControl[]
 		State state = State.state();
 
-		JToggleButton toggleButton = Components.toggleButton(state)
+		ToggleControl toggleStateControl = Control.builder()
+						.toggle(state)
+						.build();
+
+		JToggleButton toggleButton = Components.toggleButton()
+						.toggleControl(toggleStateControl)
 						.text("Change state")
 						.mnemonic('C')
 						.build();
 
 		Value<Boolean> booleanValue = Value.value();
 
-		JCheckBox checkBox = Components.checkBox(booleanValue)
+		ToggleControl toggleValueControl = Control.builder()
+						.toggle(booleanValue)
+						.build();
+
+		JCheckBox checkBox = Components.checkBox()
+						.toggleControl(toggleValueControl)
 						.text("Change value")
 						.mnemonic('V')
 						.build();

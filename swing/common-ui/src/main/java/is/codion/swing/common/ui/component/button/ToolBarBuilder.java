@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
 import javax.swing.JToolBar;
 
@@ -69,7 +70,7 @@ public interface ToolBarBuilder extends ControlPanelBuilder<JToolBar, ToolBarBui
 	 * @param controlsBuilder the controls builder
 	 * @return a new {@link ToolBarBuilder}
 	 */
-	static ToolBarBuilder builder(Controls.Builder controlsBuilder) {
+	static ToolBarBuilder builder(ControlsBuilder controlsBuilder) {
 		return new DefaultToolBarBuilder(requireNonNull(controlsBuilder).build());
 	}
 }

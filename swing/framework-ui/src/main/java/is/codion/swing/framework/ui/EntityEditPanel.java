@@ -34,11 +34,14 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.Delete;
 import is.codion.framework.model.EntityEditModel.Insert;
 import is.codion.framework.model.EntityEditModel.Update;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
+import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlSet;
+import is.codion.swing.common.ui.control.ControlShortcuts;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -48,24 +51,21 @@ import org.slf4j.LoggerFactory;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
+import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlSet.controlSet;
+import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
@@ -74,10 +74,8 @@ import static java.awt.event.KeyEvent.VK_I;
 import static java.awt.event.KeyEvent.VK_V;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.stream.Collectors.toMap;
 import static javax.swing.JOptionPane.showConfirmDialog;
 
 /**
@@ -97,49 +95,34 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Note that changing the shortcut keystroke after the panel
 	 * has been initialized has no effect.
 	 */
-	public enum EntityEditPanelControl implements KeyboardShortcuts.Shortcut {
+	public interface EntityEditPanelControl {
 		/**
 		 * Performs an insert.
 		 */
-		INSERT,
+		ControlId<CommandControl> INSERT = commandControl();
 		/**
 		 * Performs an update.
 		 */
-		UPDATE,
+		ControlId<CommandControl> UPDATE = commandControl();
 		/**
 		 * Performs a delete.
 		 */
-		DELETE,
+		ControlId<CommandControl> DELETE = commandControl();
 		/**
 		 * Clears the input fields.
 		 */
-		CLEAR,
+		ControlId<CommandControl> CLEAR = commandControl();
 		/**
 		 * Displays a dialog for selecting an input field.<br>
 		 * Default key stroke: CTRL-I
 		 */
-		SELECT_INPUT_FIELD(keyStroke(VK_I, CTRL_DOWN_MASK)),
+		ControlId<CommandControl> SELECT_INPUT_FIELD = commandControl(keyStroke(VK_I, CTRL_DOWN_MASK));
 		/**
 		 * Displays the entity menu, if available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 * @see Config#INCLUDE_ENTITY_MENU
 		 */
-		DISPLAY_ENTITY_MENU(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
-
-		private final KeyStroke defaultKeystroke;
-
-		EntityEditPanelControl() {
-			this(null);
-		}
-
-		EntityEditPanelControl(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public Optional<KeyStroke> defaultKeystroke() {
-			return Optional.ofNullable(defaultKeystroke);
-		}
+		ControlId<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 	}
 
 	static {
@@ -156,8 +139,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
-	private final Controls.Config<EntityEditPanelControl> controlsConfiguration;
-	private final Map<EntityEditPanelControl, Value<Control>> controls;
+	private final Controls.Config controlsConfiguration;
+	private final ControlSet controls;
 	private final State active;
 
 	final Config configuration;
@@ -180,9 +163,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	public EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> config) {
 		super(editModel);
 		this.configuration = configure(config);
-		this.controlsConfiguration = createControlsConfiguration();
 		this.active = State.state(!configuration.focusActivation);
 		this.controls = createControls();
+		this.controlsConfiguration = createControlsConfiguration();
 		setupFocusActivation();
 		setupKeyboardActions();
 		if (editModel.exists().not().get()) {
@@ -213,14 +196,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * Returns a {@link Value} containing the control associated with {@code control},
+	 * Returns a {@link Value} containing the control associated with {@code controlId},
 	 * an empty {@link Value} if no such control is available.
 	 * Note that standard controls are populated during initialization, so until then, these values may be empty.
-	 * @param control the control
-	 * @return the {@link Value} containing the control associated with {@code control}
+	 * @param controlId the control id
+	 * @return the {@link Value} containing the control associated with {@code controlId}
 	 */
-	public final Value<Control> control(EntityEditPanelControl control) {
-		return controls.get(requireNonNull(control));
+	public <T extends Control> Value<T> control(ControlId<T> controlId) {
+		return controls.control(requireNonNull(controlId));
 	}
 
 	/**
@@ -485,7 +468,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	/**
 	 * Override to setup any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
-	 * @see #control(EntityEditPanelControl)
+	 * @see #control(ControlId)
 	 */
 	protected void setupControls() {}
 
@@ -527,42 +510,39 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * @param controlsConfig provides access to the controls configuration
 	 * @see Controls.Config#clear()
 	 */
-	protected final void configureControls(Consumer<Controls.Config<EntityEditPanelControl>> controlsConfig) {
+	protected final void configureControls(Consumer<Controls.Config> controlsConfig) {
 		requireNonNull(controlsConfig).accept(controlsConfiguration);
 	}
 
-	private Map<EntityEditPanelControl, Value<Control>> createControls() {
+	private ControlSet createControls() {
 		Value.Validator<Control> controlValueValidator = control -> {
 			if (initialized) {
 				throw new IllegalStateException("Controls must be configured before the panel is initialized");
 			}
 		};
-
-		Map<EntityEditPanelControl, Value<Control>> controlMap = Stream.of(values())
-						.collect(toMap(Function.identity(), controlCode -> Value.<Control>nullable()
-										.validator(controlValueValidator)
-										.build()));
+		ControlSet controlSet = controlSet(EntityEditPanelControl.class);
+		controlSet.controls().forEach(control -> control.addValidator(controlValueValidator));
 		if (!editModel().readOnly().get()) {
 			if (editModel().insertEnabled().get()) {
-				controlMap.get(INSERT).set(createInsertControl());
+				controlSet.control(INSERT).set(createInsertControl());
 			}
 			if (editModel().updateEnabled().get()) {
-				controlMap.get(UPDATE).set(createUpdateControl());
+				controlSet.control(UPDATE).set(createUpdateControl());
 			}
 			if (editModel().deleteEnabled().get()) {
-				controlMap.get(DELETE).set(createDeleteControl());
+				controlSet.control(DELETE).set(createDeleteControl());
 			}
 		}
-		controlMap.get(CLEAR).set(createClearControl());
-		controlMap.get(SELECT_INPUT_FIELD).set(createSelectInputComponentControl());
+		controlSet.control(CLEAR).set(createClearControl());
+		controlSet.control(SELECT_INPUT_FIELD).set(createSelectInputComponentControl());
 		if (configuration.includeEntityMenu) {
-			controlMap.get(DISPLAY_ENTITY_MENU).set(createShowEntityMenuControl());
+			controlSet.control(DISPLAY_ENTITY_MENU).set(createShowEntityMenuControl());
 		}
 
-		return unmodifiableMap(controlMap);
+		return controlSet;
 	}
 
-	private Control createDeleteControl() {
+	private CommandControl createDeleteControl() {
 		return Control.builder()
 						.command(deleteCommand()
 										.confirm(true)
@@ -578,7 +558,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.build();
 	}
 
-	private Control createClearControl() {
+	private CommandControl createClearControl() {
 		return Control.builder()
 						.command(this::clearAndRequestFocus)
 						.name(Messages.clear())
@@ -589,15 +569,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.build();
 	}
 
-	private Control createSelectInputComponentControl() {
+	private CommandControl createSelectInputComponentControl() {
 		return Control.control(this::selectInputComponent);
 	}
 
-	private Control createShowEntityMenuControl() {
+	private CommandControl createShowEntityMenuControl() {
 		return Control.control(this::showEntityMenu);
 	}
 
-	private Control createUpdateControl() {
+	private CommandControl createUpdateControl() {
 		return Control.builder()
 						.command(updateCommand()
 										.confirm(true)
@@ -613,7 +593,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.build();
 	}
 
-	private Control createInsertControl() {
+	private CommandControl createInsertControl() {
 		boolean useSaveCaption = EntityEditPanel.Config.USE_SAVE_CAPTION.get();
 		char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.insertMnemonic();
 		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.insert();
@@ -677,8 +657,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		return new Config(config);
 	}
 
-	private Controls.Config<EntityEditPanelControl> createControlsConfiguration() {
-		return Controls.config(identifier -> control(identifier).optional(), asList(
+	private Controls.Config createControlsConfiguration() {
+		return Controls.config(controls, asList(
 						INSERT,
 						UPDATE,
 						DELETE,
@@ -726,7 +706,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final KeyboardShortcuts<EntityEditPanelControl> KEYBOARD_SHORTCUTS = keyboardShortcuts(EntityEditPanelControl.class);
+		public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(EntityEditPanelControl.class);
 
 		private static final Confirmer DEFAULT_INSERT_CONFIRMER = Confirmer.NONE;
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
@@ -745,7 +725,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
 		private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
 
-		final KeyboardShortcuts<EntityEditPanelControl> shortcuts;
+		final ControlShortcuts shortcuts;
 
 		private Config(EntityEditPanel editPanel) {
 			this.editPanel = editPanel;
@@ -774,10 +754,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		/**
-		 * @param shortcuts provides this panels {@link KeyboardShortcuts} instance.
+		 * @param shortcuts provides this panels {@link ControlShortcuts} instance.
 		 * @return this Config instance
 		 */
-		public Config keyStrokes(Consumer<KeyboardShortcuts<EntityEditPanelControl>> shortcuts) {
+		public Config keyStrokes(Consumer<ControlShortcuts> shortcuts) {
 			requireNonNull(shortcuts).accept(this.shortcuts);
 			return this;
 		}

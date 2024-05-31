@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
 import javax.swing.Action;
 import javax.swing.JPanel;
@@ -64,7 +65,7 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
 	 * @param controlsBuilder the controls builder
 	 * @return a new button panel builder
 	 */
-	static ButtonPanelBuilder builder(Controls.Builder controlsBuilder) {
+	static ButtonPanelBuilder builder(ControlsBuilder controlsBuilder) {
 		return builder(requireNonNull(controlsBuilder).build());
 	}
 }

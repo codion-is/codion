@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 	private final List<Action> actions = new ArrayList<>();
 
-	DefaultControls(ControlsBuilder builder) {
+	DefaultControls(DefaultControlsBuilder builder) {
 		super(builder);
 		actions.addAll(builder.actions);
 	}
@@ -71,8 +70,8 @@ final class DefaultControls extends AbstractControl implements Controls {
 	public void actionPerformed(ActionEvent e) {/*Not required*/}
 
 	@Override
-	public Controls.Builder copy() {
-		return new ControlsBuilder(this);
+	public ControlsBuilder copy() {
+		return new DefaultControlsBuilder(this);
 	}
 
 	static final class DefaultSeparator implements Action {
@@ -117,22 +116,22 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 	}
 
-	static final class DefaultConfig<T extends Enum<T>> implements Config<T> {
+	static final class DefaultConfig implements Config {
 
 		private static final ControlItem SEPARATOR = new Separator();
 
-		private final List<T> defaults;
-		private final Function<T, Optional<Control>> standardControls;
+		private final List<ControlId<?>> defaults;
+		private final ControlSet controls;
 		private final List<ControlItem> items = new ArrayList<>();
 
-		DefaultConfig(Function<T, Optional<Control>> standardControls, List<T> defaults) {
+		DefaultConfig(ControlSet controls, List<ControlId<?>> defaults) {
 			this.defaults = requireNonNull(defaults);
-			this.standardControls = requireNonNull(standardControls);
+			this.controls = requireNonNull(controls);
 			defaults();
 		}
 
 		@Override
-		public Config<T> separator() {
+		public Config separator() {
 			if (items.isEmpty() || items.get(items.size() - 1) != SEPARATOR) {
 				items.add(SEPARATOR);
 			}
@@ -140,42 +139,42 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Config<T> standard(T identifier) {
-			add(requireNonNull(identifier));
+		public Config standard(ControlId<?> controlId) {
+			add(requireNonNull(controlId));
 			return this;
 		}
 
 		@Override
-		public Config<T> control(Control control) {
+		public Config control(Control control) {
 			items.add(new CustomAction(requireNonNull(control)));
 			return this;
 		}
 
 		@Override
-		public Config<T> control(Control.Builder<?, ?> controlBuilder) {
+		public Config control(Control.Builder<?, ?> controlBuilder) {
 			return control(requireNonNull(controlBuilder).build());
 		}
 
 		@Override
-		public Config<T> action(Action action) {
+		public Config action(Action action) {
 			items.add(new CustomAction(requireNonNull(action)));
 			return this;
 		}
 
 		@Override
-		public Config<T> clear() {
+		public Config clear() {
 			items.clear();
 			return this;
 		}
 
 		@Override
-		public Config<T> defaults() {
+		public Config defaults() {
 			return defaults(null);
 		}
 
 		@Override
-		public Config<T> defaults(T stopAt) {
-			for (T control : defaults) {
+		public Config defaults(ControlId<?> stopAt) {
+			for (ControlId<?> control : defaults) {
 				if (control == null) {
 					separator();
 				}
@@ -192,36 +191,36 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public Controls create() {
-			Controls.Builder builder = Controls.builder();
+			ControlsBuilder builder = Controls.builder();
 			items.forEach(item -> item.addTo(builder));
 
 			return builder.build();
 		}
 
-		private void add(T controlIdentifier) {
-			StandardControl<T> standardControl = new StandardControl<>(controlIdentifier, standardControls);
+		private void add(ControlId<?> controlIdentifier) {
+			StandardControl standardControl = new StandardControl(controlIdentifier, controls);
 			if (!items.contains(standardControl)) {
 				items.add(standardControl);
 			}
 		}
 
 		private interface ControlItem {
-			void addTo(Controls.Builder builder);
+			void addTo(ControlsBuilder builder);
 		}
 
-		private static final class StandardControl<T> implements ControlItem {
+		private static final class StandardControl implements ControlItem {
 
-			private final T tableControl;
-			private final Function<T, Optional<Control>> controlProvider;
+			private final ControlId<?> tableControl;
+			private final ControlSet controls;
 
-			private StandardControl(T tableControl, Function<T, Optional<Control>> controlProvider) {
+			private StandardControl(ControlId<?> tableControl, ControlSet controls) {
 				this.tableControl = tableControl;
-				this.controlProvider = controlProvider;
+				this.controls = controls;
 			}
 
 			@Override
-			public void addTo(Controls.Builder builder) {
-				controlProvider.apply(tableControl).ifPresent(control -> {
+			public void addTo(ControlsBuilder builder) {
+				controls.control(tableControl).optional().ifPresent(control -> {
 					if (control instanceof Controls) {
 						Controls controls = (Controls) control;
 						if (controls.notEmpty()) {
@@ -249,7 +248,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 				if (!(object instanceof DefaultConfig.StandardControl)) {
 					return false;
 				}
-				StandardControl<?> that = (StandardControl<?>) object;
+				StandardControl that = (StandardControl) object;
 				return tableControl == that.tableControl;
 			}
 
@@ -268,7 +267,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 			}
 
 			@Override
-			public void addTo(Controls.Builder builder) {
+			public void addTo(ControlsBuilder builder) {
 				builder.action(action);
 			}
 		}
@@ -276,54 +275,54 @@ final class DefaultControls extends AbstractControl implements Controls {
 		private static final class Separator implements ControlItem {
 
 			@Override
-			public void addTo(Controls.Builder builder) {
+			public void addTo(ControlsBuilder builder) {
 				builder.separator();
 			}
 		}
 	}
 
-	static final class ControlsBuilder extends AbstractControlBuilder<Controls, Controls.Builder> implements Controls.Builder {
+	static final class DefaultControlsBuilder extends AbstractControlBuilder<Controls, ControlsBuilder> implements ControlsBuilder {
 
 		private final List<Action> actions = new ArrayList<>();
 
-		ControlsBuilder() {}
+		DefaultControlsBuilder() {}
 
-		private ControlsBuilder(DefaultControls controls) {
+		private DefaultControlsBuilder(DefaultControls controls) {
 			enabled(controls.enabled());
 			controls.keys().forEach(key -> value(key, controls.getValue(key)));
 			actions.addAll(controls.actions);
 		}
 
 		@Override
-		public Controls.Builder control(Control control) {
+		public ControlsBuilder control(Control control) {
 			return controlAt(actions.size(), control);
 		}
 
 		@Override
-		public Controls.Builder control(Control.Builder<?, ?> controlBuilder) {
+		public ControlsBuilder control(Control.Builder<?, ?> controlBuilder) {
 			return controlAt(actions.size(), controlBuilder);
 		}
 
 		@Override
-		public Controls.Builder controlAt(int index, Control control) {
+		public ControlsBuilder controlAt(int index, Control control) {
 			actions.add(index, requireNonNull(control));
 			return this;
 		}
 
 		@Override
-		public Controls.Builder controlAt(int index, Control.Builder<?, ?> controlBuilder) {
+		public ControlsBuilder controlAt(int index, Control.Builder<?, ?> controlBuilder) {
 			actions.add(index, requireNonNull(controlBuilder).build());
 			return this;
 		}
 
 		@Override
-		public Controls.Builder controls(Control... controls) {
+		public ControlsBuilder controls(Control... controls) {
 			this.actions.addAll(Arrays.asList(requireNonNull(controls)));
 			return this;
 		}
 
 		@Override
-		public Controls.Builder controls(Control.Builder<?, ?>... controlBuilders) {
+		public ControlsBuilder controls(Control.Builder<?, ?>... controlBuilders) {
 			this.actions.addAll(Arrays.stream(controlBuilders)
 							.map(new BuildControl())
 							.collect(Collectors.toList()));
@@ -331,34 +330,34 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Controls.Builder action(Action action) {
+		public ControlsBuilder action(Action action) {
 			return actionAt(actions.size(), action);
 		}
 
 		@Override
-		public Controls.Builder actionAt(int index, Action action) {
+		public ControlsBuilder actionAt(int index, Action action) {
 			this.actions.add(index, requireNonNull(action));
 			return this;
 		}
 
 		@Override
-		public Controls.Builder actions(Action... actions) {
+		public ControlsBuilder actions(Action... actions) {
 			return actions(Arrays.asList(requireNonNull(actions)));
 		}
 
 		@Override
-		public Controls.Builder actions(Collection<Action> actions) {
+		public ControlsBuilder actions(Collection<Action> actions) {
 			this.actions.addAll(requireNonNull(actions));
 			return this;
 		}
 
 		@Override
-		public Controls.Builder separator() {
+		public ControlsBuilder separator() {
 			return separatorAt(actions.size());
 		}
 
 		@Override
-		public Controls.Builder separatorAt(int index) {
+		public ControlsBuilder separatorAt(int index) {
 			if (actions.isEmpty() || actions.get(index - 1) != Controls.SEPARATOR) {
 				this.actions.add(SEPARATOR);
 			}
@@ -366,13 +365,13 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Controls.Builder remove(Action action) {
+		public ControlsBuilder remove(Action action) {
 			this.actions.remove(requireNonNull(action));
 			return this;
 		}
 
 		@Override
-		public Controls.Builder removeAll() {
+		public ControlsBuilder removeAll() {
 			this.actions.clear();
 			return this;
 		}

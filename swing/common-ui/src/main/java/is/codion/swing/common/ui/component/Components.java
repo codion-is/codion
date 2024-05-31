@@ -61,6 +61,7 @@ import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
@@ -998,10 +999,10 @@ public final class Components {
 	}
 
 	/**
-	 * @param controlsBuilder the Controls.Builder
+	 * @param controlsBuilder the {@link ControlsBuilder}
 	 * @return a {@link javax.swing.JToolBar} builder
 	 */
-	public static ToolBarBuilder toolBar(Controls.Builder controlsBuilder) {
+	public static ToolBarBuilder toolBar(ControlsBuilder controlsBuilder) {
 		return ToolBarBuilder.builder(controlsBuilder);
 	}
 
@@ -1029,10 +1030,10 @@ public final class Components {
 	}
 
 	/**
-	 * @param controlsBuilder the Controls.Builder
+	 * @param controlsBuilder the {@link ControlsBuilder}
 	 * @return a button panel builder
 	 */
-	public static ButtonPanelBuilder buttonPanel(Controls.Builder controlsBuilder) {
+	public static ButtonPanelBuilder buttonPanel(ControlsBuilder controlsBuilder) {
 		return ButtonPanelBuilder.builder(controlsBuilder);
 	}
 
@@ -1105,10 +1106,10 @@ public final class Components {
 	}
 
 	/**
-	 * @param controlsBuilder the Controls.Builder to base the menu on
+	 * @param controlsBuilder the {@link ControlsBuilder} to base the menu on
 	 * @return a new menu builder
 	 */
-	public static MenuBuilder menu(Controls.Builder controlsBuilder) {
+	public static MenuBuilder menu(ControlsBuilder controlsBuilder) {
 		return MenuBuilder.builder(controlsBuilder);
 	}
 }

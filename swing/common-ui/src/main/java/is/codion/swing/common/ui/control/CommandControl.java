@@ -26,8 +26,7 @@ import java.util.function.Consumer;
 public interface CommandControl extends Control {
 
 	/**
-	 * Returns a new {@link CommandControlBuilder} instance, based on a copy of this control, using the given command.
-	 * @param command the command for the resulting control
+	 * Returns a new {@link CommandControlBuilder} instance, based on a copy of this control.
 	 * @return a new builder
 	 */
 	@Override

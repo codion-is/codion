@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -105,7 +106,7 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder>,
 	 * @param controlsBuilder the controls builder to base the menu on
 	 * @return a new MenuBuilder based on the given controls
 	 */
-	static MenuBuilder builder(Controls.Builder controlsBuilder) {
+	static MenuBuilder builder(ControlsBuilder controlsBuilder) {
 		return new DefaultMenuBuilder(requireNonNull(controlsBuilder).build());
 	}
 }

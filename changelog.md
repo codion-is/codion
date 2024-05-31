@@ -15,6 +15,7 @@ Codion Change Log
 - FilterTableColumn.identifier() added.
 - FilterTable.model() added.
 - Control related renaming and refactoring.
+- ControlId, ControlShortcuts and ControlSet added, KeyboardShortcuts removed, related refactoring.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
 ### is.codion.swing.framework.model.tools

@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
@@ -38,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder> implements MenuBuilder {
 
-	private final Controls.Builder controlsBuilder;
+	private final ControlsBuilder controlsBuilder;
 
 	private final List<MenuListener> menuListeners = new ArrayList<>();
 	private final List<PopupMenuListener> popupMenuListeners = new ArrayList<>();

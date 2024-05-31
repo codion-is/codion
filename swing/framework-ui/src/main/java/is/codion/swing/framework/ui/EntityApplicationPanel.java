@@ -47,6 +47,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
@@ -427,7 +428,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see #createHelpMenuControls()
 	 */
 	protected Controls createMainMenuControls() {
-		Controls.Builder menuControls = Controls.builder();
+		ControlsBuilder menuControls = Controls.builder();
 		Controls fileMenuControls = createFileMenuControls();
 		if (fileMenuControls != null && fileMenuControls.notEmpty()) {
 			menuControls.control(fileMenuControls);
@@ -491,7 +492,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return the Controls specifying the items in the 'Help' menu
 	 */
 	protected Controls createHelpMenuControls() {
-		Controls.Builder builder = Controls.builder()
+		ControlsBuilder builder = Controls.builder()
 						.name(resourceBundle.getString(HELP))
 						.mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
 						.control(createHelpControl())
@@ -537,7 +538,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return a Control for setting the log level
 	 */
 	protected final Control createLogLevelControl() {
-		Controls.Builder logLevelControls = Controls.builder()
+		ControlsBuilder logLevelControls = Controls.builder()
 						.name(resourceBundle.getString(LOG_LEVEL))
 						.description(resourceBundle.getString(LOG_LEVEL_DESC));
 		logLevelStates.forEach((logLevel, state) -> logLevelControls.control(Control.builder()
@@ -907,7 +908,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	private Controls createLogControls() {
-		Controls.Builder builder = Controls.builder()
+		ControlsBuilder builder = Controls.builder()
 						.name(resourceBundle.getString("log"))
 						.mnemonic(resourceBundle.getString("log_mnemonic").charAt(0));
 		if (!logLevelStates.isEmpty()) {

@@ -130,10 +130,6 @@ final class LookupTablePanel extends EntityTablePanel {
 						.mnemonic('C')
 						.smallIcon(ICONS.clear())
 						.build());
-		control(SELECT_COLUMNS).set(Control.builder()
-						.toggle(columnSelectionPanelVisible)
-						.name("Select")
-						.build());
 	}
 
 	@Override
@@ -165,7 +161,18 @@ final class LookupTablePanel extends EntityTablePanel {
 						.separator()
 						.control(toggleMapControl)
 						.separator()
-						.defaults());
+						.control(Controls.builder()
+										.name("Columns")
+										.smallIcon(FrameworkIcons.instance().columns())
+										.control(Control.builder()
+														.toggle(columnSelectionPanelVisible)
+														.name("Select")
+														.build())
+										.control(control(RESET_COLUMNS).get())
+										.control(control(COLUMN_AUTO_RESIZE_MODE).get()))
+						.separator()
+						.standard(CONDITION_CONTROLS)
+						.standard(COPY_CONTROLS));
 
 		configureToolBar(config -> config.clear()
 						.control(toggleMapControl)

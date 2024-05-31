@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui.key;
+package is.codion.swing.common.ui.control;
 
 import is.codion.common.value.Value;
 
@@ -24,40 +24,30 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
-import java.util.Optional;
 import java.util.stream.Stream;
 
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
+import static is.codion.swing.common.ui.control.ControlShortcutsTest.Shortcut.ONE;
+import static is.codion.swing.common.ui.control.ControlShortcutsTest.Shortcut.TWO;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class KeyboardShortcutsTest {
+public final class ControlShortcutsTest {
 
-	enum Shortcut implements KeyboardShortcuts.Shortcut {
-		ONE(keyStroke(KeyEvent.VK_1)),
-		TWO(keyStroke(KeyEvent.VK_2));
-
-		private final KeyStroke defaultKeystroke;
-
-		Shortcut(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public Optional<KeyStroke> defaultKeystroke() {
-			return Optional.ofNullable(defaultKeystroke);
-		}
+	interface Shortcut {
+		ControlId<CommandControl> ONE = ControlId.commandControl(keyStroke(KeyEvent.VK_1));
+		ControlId<CommandControl> TWO = ControlId.commandControl(keyStroke(KeyEvent.VK_2));
 	}
 
 	@Test
 	void test() {
-		KeyboardShortcuts<Shortcut> shortcuts = keyboardShortcuts(Shortcut.class);
+		ControlShortcuts shortcuts = controlShortcuts(Shortcut.class);
 
-		assertEquals(KeyEvent.VK_1, shortcuts.keyStroke(Shortcut.ONE).get().getKeyCode());
-		assertEquals(KeyEvent.VK_2, shortcuts.keyStroke(Shortcut.TWO).get().getKeyCode());
+		assertEquals(KeyEvent.VK_1, shortcuts.keyStroke(ONE).get().getKeyCode());
+		assertEquals(KeyEvent.VK_2, shortcuts.keyStroke(TWO).get().getKeyCode());
 
-		KeyboardShortcuts<Shortcut> copy = shortcuts.copy();
-		Stream.of(Shortcut.values()).forEach(shortcut -> {
+		ControlShortcuts copy = shortcuts.copy();
+		Stream.of(ONE, TWO).forEach(shortcut -> {
 			Value<KeyStroke> keyStrokeValue = shortcuts.keyStroke(shortcut);
 			Value<KeyStroke> keyStrokeValueCopy = copy.keyStroke(shortcut);
 			assertNotSame(keyStrokeValue, keyStrokeValueCopy);

@@ -26,10 +26,12 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlShortcuts;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
 import javax.swing.AbstractButton;
@@ -46,13 +48,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static is.codion.swing.common.ui.component.text.TextFieldPanel.TextFieldPanelControl.DISPLAY_TEXT_AREA;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -70,29 +71,17 @@ public final class TextFieldPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<TextFieldPanelControl> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(TextFieldPanelControl.class);
+	public static final ControlShortcuts CONTROL_SHORTCUTS = controlShortcuts(TextFieldPanelControl.class);
 
 	/**
 	 * The available controls.
 	 */
-	public enum TextFieldPanelControl implements KeyboardShortcuts.Shortcut {
+	public interface TextFieldPanelControl {
 		/**
 		 * Displays a text area for longer text input.<br>
 		 * Default key stroke: INSERT
 		 */
-		DISPLAY_TEXT_AREA(keyStroke(VK_INSERT));
-
-		private final KeyStroke defaultKeystroke;
-
-		TextFieldPanelControl(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public Optional<KeyStroke> defaultKeystroke() {
-			return Optional.ofNullable(defaultKeystroke);
-		}
+		ControlId<CommandControl> DISPLAY_TEXT_AREA = ControlId.commandControl(keyStroke(VK_INSERT));
 	}
 
 	private final JTextField textField;
@@ -263,11 +252,11 @@ public final class TextFieldPanel extends JPanel {
 		Builder maximumLength(int maximumLength);
 
 		/**
-		 * @param control the control
+		 * @param controlId the control id
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(TextFieldPanelControl control, KeyStroke keyStroke);
+		Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke);
 	}
 
 	private Control createTextAreaControl(DefaultBuilder builder) {
@@ -279,7 +268,7 @@ public final class TextFieldPanel extends JPanel {
 	}
 
 	private JTextField createTextField(DefaultBuilder builder) {
-		builder.keyboardShortcuts.keyStroke(DISPLAY_TEXT_AREA).optional().ifPresent(keyStroke ->
+		builder.controlShortcuts.keyStroke(DISPLAY_TEXT_AREA).optional().ifPresent(keyStroke ->
 						builder.textFieldBuilder.keyEvent(KeyEvents.builder(keyStroke)
 										.action(textAreaControl)));
 
@@ -328,7 +317,7 @@ public final class TextFieldPanel extends JPanel {
 		private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
 		private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null);
-		private final KeyboardShortcuts<TextFieldPanelControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final ControlShortcuts controlShortcuts = CONTROL_SHORTCUTS.copy();
 
 		private boolean buttonFocusable;
 		private ImageIcon buttonIcon;
@@ -409,8 +398,8 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		public TextFieldPanel.Builder keyStroke(TextFieldPanelControl control, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(control).set(keyStroke);
+		public TextFieldPanel.Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
+			controlShortcuts.keyStroke(controlId).set(keyStroke);
 			return this;
 		}
 

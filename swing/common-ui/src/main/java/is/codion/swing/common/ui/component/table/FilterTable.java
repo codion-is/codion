@@ -43,12 +43,14 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionS
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlShortcuts;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 
 import javax.swing.Action;
 import javax.swing.JCheckBox;
@@ -98,8 +100,9 @@ import static is.codion.swing.common.ui.component.table.FilterTable.FilterTableC
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.lang.String.join;
@@ -142,59 +145,47 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<FilterTableControl> DEFAULT_KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(FilterTableControl.class);
+	public static final ControlShortcuts DEFAULT_KEYBOARD_SHORTCUTS = controlShortcuts(FilterTableControl.class);
 
 	/**
 	 * The controls.
 	 */
-	public enum FilterTableControl implements KeyboardShortcuts.Shortcut {
+	public interface FilterTableControl {
 		/**
 		 * Moves the selected column to the left.<br>
 		 * Default key stroke: CTRL-SHIFT-LEFT
 		 */
-		MOVE_COLUMN_LEFT(keyStroke(VK_LEFT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK)),
+		ControlId<CommandControl> MOVE_COLUMN_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selected column to the right.<br>
 		 * Default key stroke: CTRL-SHIFT-RIGHT
 		 */
-		MOVE_COLUMN_RIGHT(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK)),
+		ControlId<CommandControl> MOVE_COLUMN_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Decreases the size of the selected column.<br>
 		 * Default key stroke: CTRL-SUBTRACT
 		 */
-		DECREASE_COLUMN_SIZE(keyStroke(VK_SUBTRACT, CTRL_DOWN_MASK)),
+		ControlId<CommandControl> DECREASE_COLUMN_SIZE = commandControl(keyStroke(VK_SUBTRACT, CTRL_DOWN_MASK));
 		/**
 		 * Increases the size of the selected column.<br>
 		 * Default key stroke: CTRL-ADD
 		 */
-		INCREASE_COLUMN_SIZE(keyStroke(VK_ADD, CTRL_DOWN_MASK)),
+		ControlId<CommandControl> INCREASE_COLUMN_SIZE = commandControl(keyStroke(VK_ADD, CTRL_DOWN_MASK));
 		/**
 		 * Copy the selected cell contents to the clipboard.<br>
 		 * Default key stroke: CTRL-ALT-C
 		 */
-		COPY_CELL(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
+		ControlId<CommandControl> COPY_CELL = commandControl(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Toggles the sort on the selected column.<br>
 		 * Default key stroke: ALT-DOWN ARROW
 		 */
-		TOGGLE_SORT_COLUMN(keyStroke(VK_DOWN, ALT_DOWN_MASK)),
+		ControlId<CommandControl> TOGGLE_SORT_COLUMN = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK));
 		/**
 		 * Toggles the sort on the selected column adding it to any already sorted columns.<br>
 		 * Default key stroke: ALT-UP ARROW
 		 */
-		TOGGLE_SORT_COLUMN_ADD(keyStroke(VK_UP, ALT_DOWN_MASK));
-
-		private final KeyStroke defaultKeystroke;
-
-		FilterTableControl(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public Optional<KeyStroke> defaultKeystroke() {
-			return Optional.ofNullable(defaultKeystroke);
-		}
+		ControlId<CommandControl> TOGGLE_SORT_COLUMN_ADD = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
 	}
 
 	/**
@@ -536,7 +527,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return a control for showing the column selection dialog
 	 */
-	public Control createSelectColumnsControl() {
+	public CommandControl createSelectColumnsControl() {
 		return Control.builder()
 						.command(this::selectColumns)
 						.name(MESSAGES.getString(SELECT) + "...")
@@ -562,7 +553,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return a Control for resetting the columns to their original location and visibility
 	 */
-	public Control createResetColumnsControl() {
+	public CommandControl createResetColumnsControl() {
 		return Control.builder()
 						.command(columnModel()::resetColumns)
 						.name(MESSAGES.getString(RESET))
@@ -574,7 +565,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return a Control for selecting the auto-resize mode
 	 */
-	public Control createAutoResizeModeControl() {
+	public CommandControl createAutoResizeModeControl() {
 		return Control.builder()
 						.command(this::selectAutoResizeMode)
 						.name(MESSAGES.getString(AUTO_RESIZE) + "...")
@@ -595,7 +586,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return a Control for copying the contents of the selected cell
 	 */
-	public Control createCopyCellControl() {
+	public CommandControl createCopyCellControl() {
 		return Control.builder()
 						.command(this::copySelectedCell)
 						.name(MESSAGES.getString("copy_cell"))
@@ -813,7 +804,7 @@ public final class FilterTable<R, C> extends JTable {
 		return autoResizeComboBoxModel;
 	}
 
-	private void bindEvents(KeyboardShortcuts<FilterTableControl> shortcuts,
+	private void bindEvents(ControlShortcuts shortcuts,
 													boolean columnReorderingAllowed,
 													boolean columnResizingAllowed) {
 		columnModel().columnHiddenEvent().addConsumer(this::onColumnHidden);
@@ -1074,10 +1065,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filterState(ConditionState filterState);
 
 		/**
-		 * @param shortcuts provides this tables {@link KeyboardShortcuts} instance.
+		 * @param shortcuts provides this tables {@link ControlShortcuts} instance.
 		 * @return this builder instance
 		 */
-		Builder<R, C> keyStrokes(Consumer<KeyboardShortcuts<FilterTableControl>> shortcuts);
+		Builder<R, C> keyStrokes(Consumer<ControlShortcuts> shortcuts);
 	}
 
 	/**
@@ -1121,7 +1112,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private final FilterTableModel<R, C> tableModel;
 		private final List<FilterTableColumn<C>> columns;
-		private final KeyboardShortcuts<FilterTableControl> shortcuts = DEFAULT_KEYBOARD_SHORTCUTS.copy();
+		private final ControlShortcuts shortcuts = DEFAULT_KEYBOARD_SHORTCUTS.copy();
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private FieldFactory<C> filterFieldFactory = new DefaultFieldFactory<>();
@@ -1222,7 +1213,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> keyStrokes(Consumer<KeyboardShortcuts<FilterTableControl>> shortcuts) {
+		public Builder<R, C> keyStrokes(Consumer<ControlShortcuts> shortcuts) {
 			requireNonNull(shortcuts).accept(this.shortcuts);
 			return this;
 		}
@@ -1370,7 +1361,7 @@ public final class FilterTable<R, C> extends JTable {
 		private final KeyStroke increaseSize;
 		private final KeyStroke decreaseSize;
 
-		private MoveResizeColumnKeyListener(KeyboardShortcuts<FilterTableControl> shortcuts,
+		private MoveResizeColumnKeyListener(ControlShortcuts shortcuts,
 																				boolean columnReorderingAllowed,
 																				boolean columnResizingAllowed) {
 			this.columnReorderingAllowed = columnReorderingAllowed;

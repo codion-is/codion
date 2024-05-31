@@ -14,54 +14,40 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui.key;
+package is.codion.swing.common.ui.control;
 
 import is.codion.common.value.Value;
 
 import javax.swing.KeyStroke;
-import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
 import static javax.swing.KeyStroke.getKeyStroke;
 
 /**
- * Holds mutable keyboard shortcut keyStrokes, mapped to enum based shortcut keys.
- * @param <T> the shortcut key type
- * @see #keyboardShortcuts(Class)
+ * Manages keyboard shortcuts for Controls.
  */
-public interface KeyboardShortcuts<T extends Enum<T> & KeyboardShortcuts.Shortcut> {
+public interface ControlShortcuts {
 
 	/**
-	 * @param shortcut the shortcut key
-	 * @return the {@link Value} controlling the key stroke for the given shortcut key
+	 * @param controlId the control id
+	 * @return the {@link Value} controlling the key stroke for the given control
+	 * @throws IllegalArgumentException in case no control is associated with the given control id
 	 */
-	Value<KeyStroke> keyStroke(T shortcut);
+	Value<KeyStroke> keyStroke(ControlId<?> controlId);
 
 	/**
-	 * @return a copy of this {@link KeyboardShortcuts} instance
+	 * @return a copy of this {@link ControlShortcuts} instance
 	 */
-	KeyboardShortcuts<T> copy();
+	ControlShortcuts copy();
 
 	/**
-	 * Specifies a keyboard shortcut providing a default key stroke.
+	 * @param controlIdClass the class containing the control ids
+	 * @return a new {@link ControlShortcuts} instance
 	 */
-	interface Shortcut {
-
-		/**
-		 * @return the default keystroke for this shortcut, an empty Optional if none is available
-		 */
-		Optional<KeyStroke> defaultKeystroke();
-	}
-
-	/**
-	 * @param shortcutKeyClass the shortcut key class
-	 * @param <T> the shortcut key type
-	 * @return a new {@link KeyboardShortcuts} instance
-	 * @throws IllegalArgumentException in case any of the shortcut keys is missing a default keystroke
-	 */
-	static <T extends Enum<T> & Shortcut> KeyboardShortcuts<T> keyboardShortcuts(Class<T> shortcutKeyClass) {
-		return new DefaultKeyboardShortcuts<>(shortcutKeyClass);
+	static ControlShortcuts controlShortcuts(Class<?> controlIdClass) {
+		return new DefaultControlShortcuts(requireNonNull(controlIdClass));
 	}
 
 	/**

@@ -31,9 +31,11 @@ import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.combobox.DefaultComboBoxBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
+import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlShortcuts;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -47,8 +49,9 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.framework.ui.component.EntityComboBox.EntityComboBoxControl.ADD;
 import static is.codion.swing.framework.ui.component.EntityComboBox.EntityComboBoxControl.EDIT;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -68,35 +71,23 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<EntityComboBoxControl> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(EntityComboBoxControl.class);
+	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(EntityComboBoxControl.class);
 
 	/**
 	 * The available controls.
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public enum EntityComboBoxControl implements KeyboardShortcuts.Shortcut {
+	public interface EntityComboBoxControl {
 		/**
 		 * Displays a dialog for adding a new record.<br>
 		 * Default key stroke: INSERT
 		 */
-		ADD(keyStroke(VK_INSERT)),
+		ControlId<CommandControl> ADD = commandControl(keyStroke(VK_INSERT));
 		/**
 		 * Displays a dialog for editing the selected record.<br>
 		 * Default key stroke: CTRL-INSERT
 		 */
-		EDIT(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
-
-		private final KeyStroke defaultKeystroke;
-
-		EntityComboBoxControl(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public Optional<KeyStroke> defaultKeystroke() {
-			return Optional.ofNullable(defaultKeystroke);
-		}
+		ControlId<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
 	}
 
 	private final Control addControl;
@@ -276,11 +267,11 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		Builder editPanel(Supplier<EntityEditPanel> editPanel);
 
 		/**
-		 * @param control the combo box control
+		 * @param controlId the combo box control id
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(EntityComboBoxControl control, KeyStroke keyStroke);
+		Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke);
 
 		/**
 		 * @param confirmAdd true if adding an item should be confirmed
@@ -327,7 +318,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
 
-		private final KeyboardShortcuts<EntityComboBoxControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final ControlShortcuts keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private Supplier<EntityEditPanel> editPanel;
 		private boolean confirmAdd;
@@ -349,8 +340,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		}
 
 		@Override
-		public Builder keyStroke(EntityComboBoxControl control, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(control).set(keyStroke);
+		public Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
+			keyboardShortcuts.keyStroke(controlId).set(keyStroke);
 			return this;
 		}
 

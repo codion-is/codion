@@ -34,10 +34,12 @@ import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlSet;
+import is.codion.swing.common.ui.control.ControlShortcuts;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -49,7 +51,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
@@ -64,19 +65,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.CHECKBOX;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlId.controls;
+import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
+import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.SELECT_INPUT_FIELD;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
@@ -91,11 +92,9 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.SwingConstants.HORIZONTAL;
 import static javax.swing.SwingConstants.VERTICAL;
@@ -151,60 +150,45 @@ public class EntityPanel extends JPanel {
 	/**
 	 * The standard controls available in a entity panel
 	 */
-	public enum EntityPanelControl implements KeyboardShortcuts.Shortcut {
+	public interface EntityPanelControl {
 		/**
 		 * Requests focus for the edit panel (intial focus component).<br>
 		 * Default key stroke: CTRL-E
 		 */
-		REQUEST_EDIT_PANEL_FOCUS(keyStroke(VK_E, CTRL_DOWN_MASK)),
+		ControlId<CommandControl> REQUEST_EDIT_PANEL_FOCUS = commandControl(keyStroke(VK_E, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the edit panel between hidden, embedded and dialog.<br>
 		 * Default key stroke: CTRL-ALT-E
 		 */
-		TOGGLE_EDIT_PANEL(keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
+		ControlId<CommandControl> TOGGLE_EDIT_PANEL = commandControl(keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the parent panel, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
-		NAVIGATE_UP(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
+		ControlId<CommandControl> NAVIGATE_UP = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the selected child panel, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
-		NAVIGATE_DOWN(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
+		ControlId<CommandControl> NAVIGATE_DOWN = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the sibling panel on the right, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		NAVIGATE_RIGHT(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
+		ControlId<CommandControl> NAVIGATE_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the sibling panel on the left, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		NAVIGATE_LEFT(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
+		ControlId<CommandControl> NAVIGATE_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Refreshes the table.
 		 */
-		REFRESH,
+		ControlId<CommandControl> REFRESH = commandControl();
 		/**
 		 * The edit panel controls.
 		 */
-		EDIT_CONTROLS;
-
-		private final KeyStroke defaultKeystroke;
-
-		EntityPanelControl() {
-			this(null);
-		}
-
-		EntityPanelControl(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public Optional<KeyStroke> defaultKeystroke() {
-			return Optional.ofNullable(defaultKeystroke);
-		}
+		ControlId<Controls> EDIT_CONTROLS = controls();
 	}
 
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
@@ -222,8 +206,8 @@ public class EntityPanel extends JPanel {
 	private final Function<PanelState, PanelState> editPanelStateMapper;
 
 	private final Config configuration;
-	private final Map<EntityPanelControl, Value<Control>> controls;
-	private final Controls.Config<EntityPanelControl> controlsConfiguration;
+	private final ControlSet controls;
+	private final Controls.Config controlsConfiguration;
 
 	private EntityPanel parentPanel;
 	private EntityPanel previousSiblingPanel;
@@ -466,14 +450,14 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Returns a {@link Value} containing the control associated with {@code control},
+	 * Returns a {@link Value} containing the control associated with {@code controlId},
 	 * an empty {@link Value} if no such control is available.
 	 * Note that standard controls are populated during initialization, so until then, these values may be empty.
-	 * @param control the control
-	 * @return the {@link Value} containing the control associated with {@code control}
+	 * @param controlId the control id
+	 * @return the {@link Value} containing the control associated with {@code controlId}
 	 */
-	public final Value<Control> control(EntityPanelControl control) {
-		return controls.get(requireNonNull(control));
+	public <T extends Control> Value<T> control(ControlId<T> controlId) {
+		return controls.control(requireNonNull(controlId));
 	}
 
 	/**
@@ -682,7 +666,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Override to setup any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
-	 * @see #control(EntityPanelControl)
+	 * @see #control(ControlId)
 	 */
 	protected void setupControls() {}
 
@@ -704,7 +688,7 @@ public class EntityPanel extends JPanel {
 	 * such as insert, update, delete, clear and refresh.
 	 * @param controls the controls to display on the component
 	 * @return the component containing the edit and table panel controls, null if no controls are available
-	 * @see #control(EntityPanelControl)
+	 * @see #control(ControlId)
 	 * @see EntityEditPanel#controls()
 	 * @see #configureControls(Consumer)
 	 * @see Config#TOOLBAR_CONTROLS
@@ -737,7 +721,7 @@ public class EntityPanel extends JPanel {
 	 * @param controlsConfig provides access to the controls configuration
 	 * @see Controls.Config#clear()
 	 */
-	protected final void configureControls(Consumer<Controls.Config<EntityPanelControl>> controlsConfig) {
+	protected final void configureControls(Consumer<Controls.Config> controlsConfig) {
 		requireNonNull(controlsConfig).accept(controlsConfiguration);
 	}
 
@@ -914,14 +898,14 @@ public class EntityPanel extends JPanel {
 	/**
 	 * @return a Control instance for requesting edit panel focus
 	 */
-	private Control createRequestEditPanelFocusControl() {
+	private CommandControl createRequestEditPanelFocusControl() {
 		return Control.control(this::requestEditPanelFocus);
 	}
 
 	/**
 	 * @return a Control instance for toggling the edit panel state
 	 */
-	private Control createToggleEditPanelControl() {
+	private CommandControl createToggleEditPanelControl() {
 		return Control.builder()
 						.command(this::toggleEditPanelState)
 						.smallIcon(ICONS.editPanel())
@@ -932,7 +916,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * @return a Control instance for refreshing the table model
 	 */
-	private Control createRefreshTableControl() {
+	private CommandControl createRefreshTableControl() {
 		return Control.builder()
 						.command(tableModel()::refresh)
 						.name(Messages.refresh())
@@ -949,7 +933,7 @@ public class EntityPanel extends JPanel {
 	protected final void initializeEditPanel() {
 		if (editPanel != null) {
 			editPanel.initialize();
-			controls.get(EDIT_CONTROLS).set(editPanel.controls());
+			controls.control(EDIT_CONTROLS).set(editPanel.controls());
 		}
 	}
 
@@ -1059,7 +1043,7 @@ public class EntityPanel extends JPanel {
 		}
 		if (containsEditPanel()) {
 			editPanel.control(SELECT_INPUT_FIELD).map(control ->
-							((CommandControl) control).copy(this::selectInputComponent).build());
+							control.copy(this::selectInputComponent).build());
 		}
 	}
 
@@ -1153,33 +1137,29 @@ public class EntityPanel extends JPanel {
 		return new Config(config);
 	}
 
-	private Controls.Config<EntityPanelControl> createControlsConfiguration() {
-		return Controls.config(identifier -> control(identifier).optional(),
-						asList(EDIT_CONTROLS, REFRESH));
+	private Controls.Config createControlsConfiguration() {
+		return Controls.config(controls, asList(EDIT_CONTROLS, REFRESH));
 	}
 
-	private Map<EntityPanelControl, Value<Control>> createControlsMap() {
+	private ControlSet createControlsMap() {
 		Value.Validator<Control> controlValueValidator = control -> {
 			if (initialized) {
 				throw new IllegalStateException("Controls must be configured before the panel is initialized");
 			}
 		};
-
-		Map<EntityPanelControl, Value<Control>> controlMap = Stream.of(EntityPanelControl.values())
-						.collect(toMap(Function.identity(), controlCode -> Value.<Control>nullable()
-										.validator(controlValueValidator)
-										.build()));
-		controlMap.get(REQUEST_EDIT_PANEL_FOCUS).set(createRequestEditPanelFocusControl());
-		controlMap.get(TOGGLE_EDIT_PANEL).set(createToggleEditPanelControl());
-		controlMap.get(NAVIGATE_UP).set(Control.control(new Navigate(UP)));
-		controlMap.get(NAVIGATE_DOWN).set(Control.control(new Navigate(DOWN)));
-		controlMap.get(NAVIGATE_LEFT).set(Control.control(new Navigate(LEFT)));
-		controlMap.get(NAVIGATE_RIGHT).set(Control.control(new Navigate(RIGHT)));
+		ControlSet controlSet = ControlSet.controlSet(EntityPanelControl.class);
+		controlSet.controls().forEach(control -> control.addValidator(controlValueValidator));
+		controlSet.control(REQUEST_EDIT_PANEL_FOCUS).set(createRequestEditPanelFocusControl());
+		controlSet.control(TOGGLE_EDIT_PANEL).set(createToggleEditPanelControl());
+		controlSet.control(NAVIGATE_UP).set(Control.control(new Navigate(UP)));
+		controlSet.control(NAVIGATE_DOWN).set(Control.control(new Navigate(DOWN)));
+		controlSet.control(NAVIGATE_LEFT).set(Control.control(new Navigate(LEFT)));
+		controlSet.control(NAVIGATE_RIGHT).set(Control.control(new Navigate(RIGHT)));
 		if (containsTablePanel()) {
-			controlMap.get(REFRESH).set(createRefreshTableControl());
+			controlSet.control(REFRESH).set(createRefreshTableControl());
 		}
 
-		return unmodifiableMap(controlMap);
+		return controlSet;
 	}
 
 	private final class ShowHiddenEditPanel implements Control.Command {
@@ -1307,11 +1287,10 @@ public class EntityPanel extends JPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final KeyboardShortcuts<EntityPanelControl> KEYBOARD_SHORTCUTS =
-						keyboardShortcuts(EntityPanelControl.class);
+		public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(EntityPanelControl.class);
 
 		private final EntityPanel entityPanel;
-		private final KeyboardShortcuts<EntityPanelControl> shortcuts;
+		private final ControlShortcuts shortcuts;
 		private final Set<PanelState> enabledEditStates;
 
 		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
@@ -1481,10 +1460,10 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
-		 * @param shortcuts provides this panels {@link KeyboardShortcuts} instance.
+		 * @param shortcuts provides this panels {@link ControlShortcuts} instance.
 		 * @return this Config instance
 		 */
-		public Config keyStrokes(Consumer<KeyboardShortcuts<EntityPanelControl>> shortcuts) {
+		public Config keyStrokes(Consumer<ControlShortcuts> shortcuts) {
 			requireNonNull(shortcuts).accept(this.shortcuts);
 			return this;
 		}
