@@ -99,22 +99,25 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	/**
 	 * The condition controls.
 	 */
-	public interface ControlIds {
+	public static final class ControlIds {
+
 		/**
 		 * Toggle the enabled status on/off.<br>
 		 * Default key stroke: CTRL-ENTER
 		 */
-		ControlId<ToggleControl> TOGGLE_ENABLED = toggleControl(keyStroke(VK_ENTER, CTRL_DOWN_MASK));
+		public static final ControlId<ToggleControl> TOGGLE_ENABLED = toggleControl(keyStroke(VK_ENTER, CTRL_DOWN_MASK));
 		/**
 		 * Select the previous condition operator.<br>
 		 * Default key stroke: CTRL-UP ARROW
 		 */
-		ControlId<CommandControl> PREVIOUS_OPERATOR = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> PREVIOUS_OPERATOR = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK));
 		/**
 		 * Select the next condition operator.<br>
 		 * Default key stroke: CTRL-DOWN ARROW
 		 */
-		ControlId<CommandControl> NEXT_OPERATOR = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> NEXT_OPERATOR = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
+
+		private ControlIds() {}
 	}
 
 	private static final String UNKNOWN_OPERATOR = "Unknown operator: ";

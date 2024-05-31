@@ -29,10 +29,10 @@ import static java.awt.event.KeyEvent.VK_S;
 
 public final class DefaultControlSetTest {
 
-	public interface ControlIds {
-		ControlId<CommandControl> COMMAND_CONTROL = commandControl(keyStroke(VK_INSERT));
-		ControlId<Controls> CONTROLS = controls();
-		ControlId<ToggleControl> TOGGLE_CONTROL = toggleControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+	public static final class ControlIds {
+		public static final ControlId<CommandControl> COMMAND_CONTROL = commandControl(keyStroke(VK_INSERT));
+		public static final ControlId<Controls> CONTROLS = controls();
+		public static final ControlId<ToggleControl> TOGGLE_CONTROL = toggleControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 	}
 
 	@Test

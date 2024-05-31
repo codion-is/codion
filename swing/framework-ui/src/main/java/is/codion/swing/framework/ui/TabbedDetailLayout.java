@@ -122,27 +122,30 @@ public final class TabbedDetailLayout implements DetailLayout {
 	/**
 	 * The controls.
 	 */
-	public interface ControlIds {
+	public static final class ControlIds {
+
 		/**
 		 * Resizes the detail panel to the right.<br>
 		 * Default key stroke: SHIFT-ALT-RIGHT ARROW
 		 */
-		ControlId<CommandControl> RESIZE_RIGHT = commandControl(keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> RESIZE_RIGHT = commandControl(keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Resizes the detail panel to the left.<br>
 		 * Default key stroke: SHIFT-ALT-LEFT ARROW
 		 */
-		ControlId<CommandControl> RESIZE_LEFT = commandControl(keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> RESIZE_LEFT = commandControl(keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Collapses the detail panel all the way to the right, hiding it.<br>
 		 * Default key stroke: SHIFT-CTRL-ALT RIGHT ARROW
 		 */
-		ControlId<CommandControl> COLLAPSE = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> COLLAPSE = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Expands the detail panel all the way to the left, hiding the parent.<br>
 		 * Default key stroke: SHIFT-CTRL-ALT LEFT ARROW
 		 */
-		ControlId<CommandControl> EXPAND = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> EXPAND = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+
+		private ControlIds() {}
 	}
 
 	private static final int RESIZE_AMOUNT = 30;

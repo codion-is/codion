@@ -150,45 +150,48 @@ public class EntityPanel extends JPanel {
 	/**
 	 * The standard controls available in a entity panel
 	 */
-	public interface ControlIds {
+	public static final class ControlIds {
+
 		/**
 		 * Requests focus for the edit panel (intial focus component).<br>
 		 * Default key stroke: CTRL-E
 		 */
-		ControlId<CommandControl> REQUEST_EDIT_PANEL_FOCUS = commandControl(keyStroke(VK_E, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> REQUEST_EDIT_PANEL_FOCUS = commandControl(keyStroke(VK_E, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the edit panel between hidden, embedded and dialog.<br>
 		 * Default key stroke: CTRL-ALT-E
 		 */
-		ControlId<CommandControl> TOGGLE_EDIT_PANEL = commandControl(keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> TOGGLE_EDIT_PANEL = commandControl(keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the parent panel, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
-		ControlId<CommandControl> NAVIGATE_UP = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> NAVIGATE_UP = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the selected child panel, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
-		ControlId<CommandControl> NAVIGATE_DOWN = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> NAVIGATE_DOWN = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the sibling panel on the right, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		ControlId<CommandControl> NAVIGATE_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> NAVIGATE_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the sibling panel on the left, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		ControlId<CommandControl> NAVIGATE_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> NAVIGATE_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Refreshes the table.
 		 */
-		ControlId<CommandControl> REFRESH = commandControl();
+		public static final ControlId<CommandControl> REFRESH = commandControl();
 		/**
 		 * The edit panel controls.
 		 */
-		ControlId<Controls> EDIT_CONTROLS = controls();
+		public static final ControlId<Controls> EDIT_CONTROLS = controls();
+
+		private ControlIds() {}
 	}
 
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};

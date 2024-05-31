@@ -109,68 +109,70 @@ public final class CalendarPanel extends JPanel {
 	/**
 	 * The available controls.
 	 */
-	public interface ControlIds {
+	public static final class ControlIds {
 
 		/**
 		 * Select the previous year.<br>
 		 * Default key stroke: CTRL-DOWN ARROW
 		 */
-		ControlId<CommandControl> PREVIOUS_YEAR = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> PREVIOUS_YEAR = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
 		/**
 		 * Select the next year.<br>
 		 * Default key stroke: CTRL-UP ARROW
 		 */
-		ControlId<CommandControl> NEXT_YEAR = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> NEXT_YEAR = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK));
 		/**
 		 * Select the previous month.<br>
 		 * Default key stroke: SHIFT-DOWN ARROW
 		 */
-		ControlId<CommandControl> PREVIOUS_MONTH = commandControl(keyStroke(VK_DOWN, SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> PREVIOUS_MONTH = commandControl(keyStroke(VK_DOWN, SHIFT_DOWN_MASK));
 		/**
 		 * Select the next month.<br>
 		 * Default key stroke: SHIFT-UP ARROW
 		 */
-		ControlId<CommandControl> NEXT_MONTH = commandControl(keyStroke(VK_UP, SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> NEXT_MONTH = commandControl(keyStroke(VK_UP, SHIFT_DOWN_MASK));
 		/**
 		 * Select the previous week.<br>
 		 * Default key stroke: ALT-UP ARROW
 		 */
-		ControlId<CommandControl> PREVIOUS_WEEK = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> PREVIOUS_WEEK = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
 		/**
 		 * Select the next week.<br>
 		 * Default key stroke: ALT-DOWN ARROW
 		 */
-		ControlId<CommandControl> NEXT_WEEK = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> NEXT_WEEK = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK));
 		/**
 		 * Select the previous day.<br>
 		 * Default key stroke: ALT-LEFT ARROW
 		 */
-		ControlId<CommandControl> PREVIOUS_DAY = commandControl(keyStroke(VK_LEFT, ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> PREVIOUS_DAY = commandControl(keyStroke(VK_LEFT, ALT_DOWN_MASK));
 		/**
 		 * Select the next day.<br>
 		 * Default key stroke: ALT-RIGHT ARROW
 		 */
-		ControlId<CommandControl> NEXT_DAY = commandControl(keyStroke(VK_RIGHT, ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> NEXT_DAY = commandControl(keyStroke(VK_RIGHT, ALT_DOWN_MASK));
 		/**
 		 * Select the previous hour.<br>
 		 * Default key stroke: SHIFT-ALT-DOWN ARROW
 		 */
-		ControlId<CommandControl> PREVIOUS_HOUR = commandControl(keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> PREVIOUS_HOUR = commandControl(keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Select the next hour.<br>
 		 * Default key stroke: SHIFT-ALT-UP ARROW
 		 */
-		ControlId<CommandControl> NEXT_HOUR = commandControl(keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> NEXT_HOUR = commandControl(keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Select the previous minute.<br>
 		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
-		ControlId<CommandControl> PREVIOUS_MINUTE = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> PREVIOUS_MINUTE = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Select the next minute.<br>
 		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
-		ControlId<CommandControl> NEXT_MINUTE = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> NEXT_MINUTE = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+
+		private ControlIds() {}
 	}
 
 	private static final Set<Class<? extends Temporal>> SUPPORTED_TYPES =

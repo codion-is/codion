@@ -95,34 +95,37 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Note that changing the shortcut keystroke after the panel
 	 * has been initialized has no effect.
 	 */
-	public interface ControlIds {
+	public static final class ControlIds {
+
 		/**
 		 * Performs an insert.
 		 */
-		ControlId<CommandControl> INSERT = commandControl();
+		public static final ControlId<CommandControl> INSERT = commandControl();
 		/**
 		 * Performs an update.
 		 */
-		ControlId<CommandControl> UPDATE = commandControl();
+		public static final ControlId<CommandControl> UPDATE = commandControl();
 		/**
 		 * Performs a delete.
 		 */
-		ControlId<CommandControl> DELETE = commandControl();
+		public static final ControlId<CommandControl> DELETE = commandControl();
 		/**
 		 * Clears the input fields.
 		 */
-		ControlId<CommandControl> CLEAR = commandControl();
+		public static final ControlId<CommandControl> CLEAR = commandControl();
 		/**
 		 * Displays a dialog for selecting an input field.<br>
 		 * Default key stroke: CTRL-I
 		 */
-		ControlId<CommandControl> SELECT_INPUT_FIELD = commandControl(keyStroke(VK_I, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> SELECT_INPUT_FIELD = commandControl(keyStroke(VK_I, CTRL_DOWN_MASK));
 		/**
 		 * Displays the entity menu, if available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 * @see Config#INCLUDE_ENTITY_MENU
 		 */
-		ControlId<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+
+		private ControlIds() {}
 	}
 
 	static {

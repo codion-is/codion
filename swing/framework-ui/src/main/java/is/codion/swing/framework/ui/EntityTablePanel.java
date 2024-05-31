@@ -192,184 +192,187 @@ public class EntityTablePanel extends JPanel {
 	private static final String COLUMN_PREFERENCES = "-columns";
 	private static final String CONDITIONS_PREFERENCES = "-conditions";
 
-	public interface ControlIds {
+	public static final class ControlIds {
+
 		/**
 		 * Add a new entity instance.<br>
 		 * Default key stroke: INSERT
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
 		 */
-		ControlId<CommandControl> ADD = commandControl(keyStroke(VK_INSERT));
+		public static final ControlId<CommandControl> ADD = commandControl(keyStroke(VK_INSERT));
 		/**
 		 * Edit the selected entity instance.<br>
 		 * Default key stroke: CTRL-INSERT
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
 		 */
-		ControlId<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
 		/**
 		 * Select and edit a single attribute value for the selected entity instances.<br>
 		 * Default key stroke: SHIFT-INSERT
 		 * @see Config#editAttributeSelection(EditAttributeSelection)
 		 */
-		ControlId<CommandControl> EDIT_SELECTED_ATTRIBUTE = commandControl(keyStroke(VK_INSERT, SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> EDIT_SELECTED_ATTRIBUTE = commandControl(keyStroke(VK_INSERT, SHIFT_DOWN_MASK));
 		/**
 		 * Requests focus for the table.<br>
 		 * Default key stroke: CTRL-T
 		 */
-		ControlId<CommandControl> REQUEST_TABLE_FOCUS = commandControl(keyStroke(VK_T, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> REQUEST_TABLE_FOCUS = commandControl(keyStroke(VK_T, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the condition panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-S
 		 * @see TableConditionPanel#state()
 		 */
-		ControlId<CommandControl> TOGGLE_CONDITION_PANEL = commandControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> TOGGLE_CONDITION_PANEL = commandControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays a dialog for selecting a column condition panel.<br>
 		 * Default key stroke: CTRL-S
 		 */
-		ControlId<CommandControl> SELECT_CONDITION_PANEL = commandControl(keyStroke(VK_S, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> SELECT_CONDITION_PANEL = commandControl(keyStroke(VK_S, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the filter panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-F
 		 * @see TableConditionPanel#state()
 		 */
-		ControlId<CommandControl> TOGGLE_FILTER_PANEL = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> TOGGLE_FILTER_PANEL = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays a dialog for selecting a column filter panel.<br>
 		 * Default key stroke: CTRL-SHIFT-F
 		 */
-		ControlId<CommandControl> SELECT_FILTER_PANEL = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> SELECT_FILTER_PANEL = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selection up.<br>
 		 * Default key stroke: ALT-SHIFT-UP
 		 */
-		ControlId<CommandControl> MOVE_SELECTION_UP = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> MOVE_SELECTION_UP = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selection down.<br>
 		 * Default key stroke: ALT-SHIFT-DOWN
 		 */
-		ControlId<CommandControl> MOVE_SELECTION_DOWN = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> MOVE_SELECTION_DOWN = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * The main print action<br>
 		 * Default key stroke: CTRL-P
 		 */
-		ControlId<CommandControl> PRINT = commandControl(keyStroke(VK_P, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> PRINT = commandControl(keyStroke(VK_P, CTRL_DOWN_MASK));
 		/**
 		 * Triggers the {@link ControlIds#DELETE} control.<br>
 		 * Default key stroke: DELETE
 		 */
-		ControlId<CommandControl> DELETE = commandControl(keyStroke(VK_DELETE));
+		public static final ControlId<CommandControl> DELETE = commandControl(keyStroke(VK_DELETE));
 		/**
 		 * Displays the table popup menu, if one is available.<br>
 		 * Default key stroke: CTRL-G
 		 */
-		ControlId<CommandControl> DISPLAY_POPUP_MENU = commandControl(keyStroke(VK_G, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> DISPLAY_POPUP_MENU = commandControl(keyStroke(VK_G, CTRL_DOWN_MASK));
 		/**
 		 * Displays the entity menu, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 */
-		ControlId<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * A {@link Controls} instance containing controls for printing.
 		 */
-		ControlId<Controls> PRINT_CONTROLS = controls();
+		public static final ControlId<Controls> PRINT_CONTROLS = controls();
 		/**
 		 * A {@link Controls} instance containing any additional popup menu controls.
 		 * @see #addPopupMenuControls(Controls)
 		 */
-		ControlId<Controls> ADDITIONAL_POPUP_MENU_CONTROLS = controls();
+		public static final ControlId<Controls> ADDITIONAL_POPUP_MENU_CONTROLS = controls();
 		/**
 		 * A {@link Controls} instance containing any additional toolbar controls.
 		 * @see #addToolBarControls(Controls)
 		 */
-		ControlId<Controls> ADDITIONAL_TOOLBAR_CONTROLS = controls();
+		public static final ControlId<Controls> ADDITIONAL_TOOLBAR_CONTROLS = controls();
 		/**
 		 * A {@link Control} for viewing the dependencies of the selected entities.
 		 */
-		ControlId<CommandControl> VIEW_DEPENDENCIES = commandControl();
+		public static final ControlId<CommandControl> VIEW_DEPENDENCIES = commandControl();
 		/**
 		 * A {@link Controls} instance containing edit controls for all editable attributes.
 		 * @see Config#editAttributeSelection(EditAttributeSelection)
 		 */
-		ControlId<Controls> EDIT_ATTRIBUTE_CONTROLS = controls();
+		public static final ControlId<Controls> EDIT_ATTRIBUTE_CONTROLS = controls();
 		/**
 		 * A {@link Control} for displaying a dialog for selecting the visible table columns.
 		 * @see Config#columnSelection(ColumnSelection)
 		 */
-		ControlId<CommandControl> SELECT_COLUMNS = commandControl();
+		public static final ControlId<CommandControl> SELECT_COLUMNS = commandControl();
 		/**
 		 * A {@link Controls} instance containing a {@link ToggleControl} for each columns visibility.
 		 * @see Config#columnSelection(ColumnSelection)
 		 */
-		ControlId<Controls> TOGGLE_COLUMN_CONTROLS = controls();
+		public static final ControlId<Controls> TOGGLE_COLUMN_CONTROLS = controls();
 		/**
 		 * A {@link Control} for resetting the columns to their original visibility and location.
 		 */
-		ControlId<CommandControl> RESET_COLUMNS = commandControl();
+		public static final ControlId<CommandControl> RESET_COLUMNS = commandControl();
 		/**
 		 * A {@link Control} for displaying a dialog for configuring the column auto-resize-mode.
 		 * @see JTable#setAutoResizeMode(int)
 		 */
-		ControlId<CommandControl> COLUMN_AUTO_RESIZE_MODE = commandControl();
+		public static final ControlId<CommandControl> COLUMN_AUTO_RESIZE_MODE = commandControl();
 		/**
 		 * A {@link Control} for toggling between single and multi selection mode.
 		 */
-		ControlId<ToggleControl> SELECTION_MODE = toggleControl();
+		public static final ControlId<ToggleControl> SELECTION_MODE = toggleControl();
 		/**
 		 * A {@link Control} for clearing the data from the table.
 		 * @see SwingEntityTableModel#clear()
 		 */
-		ControlId<CommandControl> CLEAR = commandControl();
+		public static final ControlId<CommandControl> CLEAR = commandControl();
 		/**
 		 * A {@link Control} for refreshing the table data.<br>
 		 * Default key stroke: ALT-R
 		 * @see SwingEntityTableModel#refresh()
 		 */
-		ControlId<CommandControl> REFRESH = commandControl(keyStroke(VK_R, ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> REFRESH = commandControl(keyStroke(VK_R, ALT_DOWN_MASK));
 		/**
 		 * A {@link ToggleControl} for showing/hiding the summary panel.
 		 */
-		ControlId<ToggleControl> TOGGLE_SUMMARY_PANEL = toggleControl();
+		public static final ControlId<ToggleControl> TOGGLE_SUMMARY_PANEL = toggleControl();
 		/**
 		 * A {@link Controls} instance containing the condition panel controls.
 		 */
-		ControlId<Controls> CONDITION_CONTROLS = controls();
+		public static final ControlId<Controls> CONDITION_CONTROLS = controls();
 		/**
 		 * A {@link Controls} instance containing the filter panel controls.
 		 */
-		ControlId<Controls> FILTER_CONTROLS = controls();
+		public static final ControlId<Controls> FILTER_CONTROLS = controls();
 		/**
 		 * A {@link Control} for clearing the table selection.
 		 */
-		ControlId<CommandControl> CLEAR_SELECTION = commandControl();
+		public static final ControlId<CommandControl> CLEAR_SELECTION = commandControl();
 		/**
 		 * A {@link Controls} instance containing controls for copying either cell or table data.
 		 * @see #COPY_CELL
 		 * @see #COPY_ROWS
 		 */
-		ControlId<Controls> COPY_CONTROLS = controls();
+		public static final ControlId<Controls> COPY_CONTROLS = controls();
 		/**
 		 * A {@link Control} for copying the selected cell data.<br>
 		 * Default key stroke: CTRL-ALT-C
 		 */
-		ControlId<CommandControl> COPY_CELL = commandControl(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> COPY_CELL = commandControl(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * A {@link Control} for copying the table rows with header.
 		 */
-		ControlId<CommandControl> COPY_ROWS = commandControl();
+		public static final ControlId<CommandControl> COPY_ROWS = commandControl();
 		/**
 		 * A {@link Controls} instance containing controls for configuring columns.
 		 * @see #SELECT_COLUMNS
 		 * @see #RESET_COLUMNS
 		 * @see #COLUMN_AUTO_RESIZE_MODE
 		 */
-		ControlId<Controls> COLUMN_CONTROLS = controls();
+		public static final ControlId<Controls> COLUMN_CONTROLS = controls();
 		/**
 		 * Requests focus for the table search field.<br>
 		 * Default key stroke: CTRL-F
 		 */
-		ControlId<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK));
+
+		private ControlIds() {}
 	}
 
 	/**

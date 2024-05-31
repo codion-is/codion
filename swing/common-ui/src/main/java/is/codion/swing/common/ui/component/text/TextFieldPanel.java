@@ -77,12 +77,15 @@ public final class TextFieldPanel extends JPanel {
 	/**
 	 * The available controls.
 	 */
-	public interface ControlIds {
+	public static final class ControlIds {
+
 		/**
 		 * Displays a text area for longer text input.<br>
 		 * Default key stroke: INSERT
 		 */
-		ControlId<CommandControl> DISPLAY_TEXT_AREA = commandControl(keyStroke(VK_INSERT));
+		public static final ControlId<CommandControl> DISPLAY_TEXT_AREA = commandControl(keyStroke(VK_INSERT));
+
+		private ControlIds() {}
 	}
 
 	private final JTextField textField;

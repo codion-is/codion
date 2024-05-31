@@ -180,17 +180,20 @@ public final class EntitySearchField extends HintTextField {
 	 * The available controls.
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public interface ControlIds {
+	public static final class ControlIds {
+
 		/**
 		 * Displays a dialog for adding a new record.<br>
 		 * Default key stroke: INSERT
 		 */
-		ControlId<CommandControl> ADD = commandControl(keyStroke(VK_INSERT));
+		public static final ControlId<CommandControl> ADD = commandControl(keyStroke(VK_INSERT));
 		/**
 		 * Displays a dialog for editing the selected record.<br>
 		 * Default key stroke: CTRL-INSERT
 		 */
-		ControlId<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+
+		private ControlIds() {}
 	}
 
 	private final EntitySearchModel model;

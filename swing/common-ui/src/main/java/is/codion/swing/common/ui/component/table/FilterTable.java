@@ -150,42 +150,45 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * The controls.
 	 */
-	public interface ControlIds {
+	public static final class ControlIds {
+
 		/**
 		 * Moves the selected column to the left.<br>
 		 * Default key stroke: CTRL-SHIFT-LEFT
 		 */
-		ControlId<CommandControl> MOVE_COLUMN_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> MOVE_COLUMN_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selected column to the right.<br>
 		 * Default key stroke: CTRL-SHIFT-RIGHT
 		 */
-		ControlId<CommandControl> MOVE_COLUMN_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlId<CommandControl> MOVE_COLUMN_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Decreases the size of the selected column.<br>
 		 * Default key stroke: CTRL-SUBTRACT
 		 */
-		ControlId<CommandControl> DECREASE_COLUMN_SIZE = commandControl(keyStroke(VK_SUBTRACT, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> DECREASE_COLUMN_SIZE = commandControl(keyStroke(VK_SUBTRACT, CTRL_DOWN_MASK));
 		/**
 		 * Increases the size of the selected column.<br>
 		 * Default key stroke: CTRL-ADD
 		 */
-		ControlId<CommandControl> INCREASE_COLUMN_SIZE = commandControl(keyStroke(VK_ADD, CTRL_DOWN_MASK));
+		public static final ControlId<CommandControl> INCREASE_COLUMN_SIZE = commandControl(keyStroke(VK_ADD, CTRL_DOWN_MASK));
 		/**
 		 * Copy the selected cell contents to the clipboard.<br>
 		 * Default key stroke: CTRL-ALT-C
 		 */
-		ControlId<CommandControl> COPY_CELL = commandControl(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> COPY_CELL = commandControl(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Toggles the sort on the selected column.<br>
 		 * Default key stroke: ALT-DOWN ARROW
 		 */
-		ControlId<CommandControl> TOGGLE_SORT_COLUMN = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> TOGGLE_SORT_COLUMN = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK));
 		/**
 		 * Toggles the sort on the selected column adding it to any already sorted columns.<br>
 		 * Default key stroke: ALT-UP ARROW
 		 */
-		ControlId<CommandControl> TOGGLE_SORT_COLUMN_ADD = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
+		public static final ControlId<CommandControl> TOGGLE_SORT_COLUMN_ADD = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
+
+		private ControlIds() {}
 	}
 
 	/**

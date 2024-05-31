@@ -80,22 +80,25 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	/**
 	 * The controls.
 	 */
-	public interface ControlIds {
+	public static final class ControlIds {
+
 		/**
 		 * Display a calendar for date/time input.<br>
 		 * Default key stroke: INSERT
 		 */
-		ControlId<CommandControl> DISPLAY_CALENDAR = commandControl(keyStroke(VK_INSERT));
+		public static final ControlId<CommandControl> DISPLAY_CALENDAR = commandControl(keyStroke(VK_INSERT));
 		/**
 		 * Increments the date component under the cursor.<br>
 		 * Default key stroke: UP ARROW
 		 */
-		ControlId<CommandControl> INCREMENT = commandControl(keyStroke(VK_UP));
+		public static final ControlId<CommandControl> INCREMENT = commandControl(keyStroke(VK_UP));
 		/**
 		 * Decrements the date component under the cursor.<br>
 		 * Default key stroke: DOWN ARROW
 		 */
-		ControlId<CommandControl> DECREMENT = commandControl(keyStroke(VK_DOWN));
+		public static final ControlId<CommandControl> DECREMENT = commandControl(keyStroke(VK_DOWN));
+
+		private ControlIds() {}
 	}
 
 	private static final char DAY = 'd';
