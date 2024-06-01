@@ -17,6 +17,7 @@ Codion Change Log
 - Control related renaming and refactoring.
 - ControlId, ControlShortcuts and ControlSet added, KeyboardShortcuts removed, related refactoring.
 - KeyEvents, special handling added for JSpinner.
+- AbstractSpinnerBuilder, now makes the spinner non-focusable only if editable, editor no longer focusable if not editable, no longer overrides enableTransferFocusOnEnter().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
 ### is.codion.swing.framework.model.tools

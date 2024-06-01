@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.spinner;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
@@ -86,10 +85,13 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 		JSpinner spinner = createSpinner();
 		JComponent editor = spinner.getEditor();
 		if (editor instanceof JSpinner.DefaultEditor) {
-			spinner.setFocusable(false);//the editor field handles the focus
 			JTextField editorField = ((JSpinner.DefaultEditor) editor).getTextField();
-			if (!editable) {
+			if (editable) {
+				spinner.setFocusable(false);
+			}
+			else {
 				editorField.setEditable(false);
+				editorField.setFocusable(false);
 			}
 			if (columns != -1) {
 				editorField.setColumns(columns);
@@ -111,12 +113,6 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 	@Override
 	protected final void setInitialValue(JSpinner component, T initialValue) {
 		component.setValue(initialValue);
-	}
-
-	@Override
-	protected final void enableTransferFocusOnEnter(JSpinner component) {
-		super.enableTransferFocusOnEnter(component);
-		TransferFocusOnEnter.enable(((JSpinner.DefaultEditor) component.getEditor()).getTextField());
 	}
 
 	protected JSpinner createSpinner() {
