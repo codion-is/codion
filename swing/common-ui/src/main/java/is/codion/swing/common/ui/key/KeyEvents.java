@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.key;
 import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 
 import static java.awt.event.KeyEvent.VK_UNDEFINED;
@@ -244,6 +245,9 @@ public final class KeyEvents {
 			if (component instanceof JComboBox<?>) {
 				enable((JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent(), actionMapKey);
 			}
+			if (component instanceof JSpinner && ((JSpinner) component).getEditor() instanceof JSpinner.DefaultEditor) {
+				enable(((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField());
+			}
 		}
 
 		private void disable(JComponent component, Object actionMapKey) {
@@ -251,6 +255,9 @@ public final class KeyEvents {
 			component.getInputMap(condition).put(keyStroke, null);
 			if (component instanceof JComboBox<?>) {
 				disable((JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent(), actionMapKey);
+			}
+			if (component instanceof JSpinner && ((JSpinner) component).getEditor() instanceof JSpinner.DefaultEditor) {
+				disable(((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField());
 			}
 		}
 	}
