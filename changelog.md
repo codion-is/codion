@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.18.1-SNAPSHOT
+## 0.18.1
 ### is.codion.swing.common.ui
 - TableConditionPanel.initializedEvent() added.
 - FilterTable bug fixed, now configures the filter condition panels correctly.
