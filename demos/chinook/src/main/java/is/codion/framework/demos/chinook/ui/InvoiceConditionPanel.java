@@ -19,6 +19,8 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.Operator;
+import is.codion.common.event.EventObserver;
+import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
@@ -26,6 +28,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.ForeignKeyConditionModel;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel;
@@ -42,23 +45,33 @@ import is.codion.swing.framework.ui.component.EntitySearchField;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerListModel;
 import java.awt.BorderLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.YearMonth;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.ADVANCED;
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.filterColumnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
+import static java.time.Month.DECEMBER;
+import static java.time.Month.JANUARY;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.ResourceBundle.getBundle;
@@ -78,13 +91,15 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 	InvoiceConditionPanel(EntityDefinition invoiceDefinition,
 												TableConditionModel<Attribute<?>> conditionModel,
-												FilterTableColumnModel<Attribute<?>> columnModel) {
+												FilterTableColumnModel<Attribute<?>> columnModel,
+												Runnable onDateChanged) {
 		super(conditionModel);
 		setLayout(new BorderLayout());
 		this.columnModel = columnModel;
-		this.simpleConditionPanel = new SimpleConditionPanel(conditionModel, invoiceDefinition);
+		this.simpleConditionPanel = new SimpleConditionPanel(conditionModel, invoiceDefinition, onDateChanged);
 		this.advancedConditionPanel = filterTableConditionPanel(conditionModel,
 						createConditionPanels(new EntityConditionFieldFactory(invoiceDefinition)), columnModel);
+		state().link(advancedConditionPanel.state());
 	}
 
 	@Override
@@ -121,34 +136,31 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		return advancedConditionPanel.controls();
 	}
 
+	@Override
+	public Optional<EventObserver<?>> initializedEvent() {
+		return advancedConditionPanel.initializedEvent();
+	}
+
 	protected void onStateChanged(ConditionState conditionState) {
-		advancedConditionPanel.state().set(conditionState);
 		removeAll();
 		switch (conditionState) {
-			case HIDDEN:
-				break;
 			case SIMPLE:
 				add(simpleConditionPanel, BorderLayout.CENTER);
-				simpleConditionPanel.customerConditionPanel.requestInputFocus();
+				simpleConditionPanel.activate();
 				break;
 			case ADVANCED:
 				add(advancedConditionPanel, BorderLayout.CENTER);
-				currentAttribut().ifPresent(attribute ->
-								advancedConditionPanel.conditionPanel(attribute).requestInputFocus());
+				if (simpleConditionPanel.customerConditionPanel.hasInputFocus()) {
+					advancedConditionPanel.conditionPanel(Invoice.CUSTOMER_FK).requestInputFocus();
+				}
+				else if (simpleConditionPanel.dateConditionPanel.hasInputFocus()) {
+					advancedConditionPanel.conditionPanel(Invoice.DATE).requestInputFocus();
+				}
+				break;
+			default:
 				break;
 		}
 		revalidate();
-	}
-
-	private Optional<Attribute<?>> currentAttribut() {
-		if (simpleConditionPanel.customerConditionPanel.hasInputFocus()) {
-			return Optional.of(Invoice.CUSTOMER_FK);
-		}
-		if (simpleConditionPanel.dateConditionPanel.hasInputFocus()) {
-			return Optional.of(Invoice.DATE);
-		}
-
-		return Optional.empty();
 	}
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(FieldFactory<Attribute<?>> fieldFactory) {
@@ -171,11 +183,13 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		private final DateConditionPanel dateConditionPanel;
 
 		private SimpleConditionPanel(TableConditionModel<Attribute<?>> conditionModel,
-																 EntityDefinition invoiceDefinition) {
+																 EntityDefinition invoiceDefinition, Runnable onDateChanged) {
 			super(new BorderLayout());
 			setBorder(createEmptyBorder(5, 5, 5, 5));
 			customerConditionPanel = new CustomerConditionPanel(conditionModel.conditionModel(Invoice.CUSTOMER_FK), invoiceDefinition);
 			dateConditionPanel = new DateConditionPanel(conditionModel.conditionModel(Invoice.DATE), invoiceDefinition);
+			dateConditionPanel.yearValue.addListener(onDateChanged);
+			dateConditionPanel.monthValue.addListener(onDateChanged);
 			initializeUI();
 		}
 
@@ -192,6 +206,12 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			return asList(customerConditionPanel, dateConditionPanel);
 		}
 
+		private void activate() {
+			customerConditionPanel.conditionModel().operator().set(Operator.IN);
+			dateConditionPanel.conditionModel().operator().set(Operator.BETWEEN);
+			customerConditionPanel.requestInputFocus();
+		}
+
 		private static final class CustomerConditionPanel extends ColumnConditionPanel<Attribute<?>, Entity> {
 
 			private final EntitySearchField searchField;
@@ -201,8 +221,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(), caption()));
 				ForeignKeyConditionModel foreignKeyConditionModel = (ForeignKeyConditionModel) conditionModel;
-				foreignKeyConditionModel.equalValue().addConsumer(customer ->
-								foreignKeyConditionModel.inValues().value().set(customer));
+				foreignKeyConditionModel.inValues().value().link(foreignKeyConditionModel.equalValue());
 				searchField = EntitySearchField.builder(foreignKeyConditionModel.inSearchModel())
 								.columns(25)
 								.build();
@@ -229,22 +248,15 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 		private static final class DateConditionPanel extends ColumnConditionPanel<Attribute<?>, LocalDate> {
 
-			private final ComponentValue<Integer, NumberField<Integer>> yearValue = integerField()
+			private final ComponentValue<Integer, NumberField<Integer>> yearValue = Components.integerField()
 							.initialValue(LocalDate.now().getYear())
 							.listener(this::updateCondition)
 							.focusable(false)
-							.horizontalAlignment(SwingConstants.CENTER)
 							.buildValue();
-			private final ComponentValue<Integer, NumberField<Integer>> monthValue = integerField()
-							.columns(2)
-							.valueRange(1, 12)
+			private final ComponentValue<Month, JSpinner> monthValue = Components.<Month>itemSpinner(new MonthSpinnerModel())
 							.listener(this::updateCondition)
-							.rethrowValidationException(false)
-							.horizontalAlignment(SwingConstants.CENTER)
-							.keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
-											.action(control(this::incrementMonth)))
-							.keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
-											.action(control(this::decrementMonth)))
+							.editable(false)
+							.columns(3)
 							.keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
 											.modifiers(InputEvent.CTRL_DOWN_MASK)
 											.action(control(this::incrementYear)))
@@ -256,7 +268,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			private DateConditionPanel(ColumnConditionModel<Attribute<?>, LocalDate> conditionModel, EntityDefinition invoiceDefinition) {
 				super(conditionModel, invoiceDefinition.attributes().definition(conditionModel.columnIdentifier()).caption());
 				setLayout(new BorderLayout());
-				conditionModel.operator().set(Operator.BETWEEN);
+				conditionModel().operator().set(Operator.BETWEEN);
 				updateCondition();
 				initializeUI();
 			}
@@ -275,19 +287,9 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 								.add(borderLayoutPanel()
 												.centerComponent(monthValue.component())
 												.border(createTitledBorder(createEmptyBorder(),
-																BUNDLE.getString("month"), CENTER, DEFAULT_POSITION))
+																BUNDLE.getString("month")))
 												.build())
 								.build(), BorderLayout.CENTER);
-			}
-
-			private static Integer incrementMonth(Integer month) {
-				return month == null ? 1 :
-								month == 12 ? 1 : month + 1;
-			}
-
-			private static Integer decrementMonth(Integer month) {
-				return month == null ? 12 :
-								month == 1 ? 12 : month - 1;
 			}
 
 			private void incrementYear() {
@@ -296,20 +298,6 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 			private void decrementYear() {
 				yearValue.map(year -> year - 1);
-			}
-
-			private void incrementMonth() {
-				monthValue.map(DateConditionPanel::incrementMonth);
-				if (monthValue.isEqualTo(1)) {
-					incrementYear();
-				}
-			}
-
-			private void decrementMonth() {
-				monthValue.map(DateConditionPanel::decrementMonth);
-				if (monthValue.isEqualTo(12)) {
-					decrementYear();
-				}
 			}
 
 			@Override
@@ -329,14 +317,14 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 			private LocalDate lowerBound() {
 				int year = yearValue.optional().orElse(LocalDate.now().getYear());
-				int month = monthValue.optional().orElse(1);
+				Month month = monthValue.optional().orElse(JANUARY);
 
 				return LocalDate.of(year, month, 1);
 			}
 
 			private LocalDate upperBound() {
 				int year = yearValue.optional().orElse(LocalDate.now().getYear());
-				int month = monthValue.optional().orElse(12);
+				Month month = monthValue.optional().orElse(DECEMBER);
 				YearMonth yearMonth = YearMonth.of(year, month);
 
 				return LocalDate.of(year, month, yearMonth.lengthOfMonth());
@@ -344,6 +332,23 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 			private boolean hasInputFocus() {
 				return yearValue.component().hasFocus() || monthValue.component().hasFocus();
+			}
+
+			private static final class MonthSpinnerModel extends SpinnerListModel {
+
+				private MonthSpinnerModel() {
+					super(createMonthsList());
+				}
+
+				private static List<Item<Month>> createMonthsList() {
+					List<Item<Month>> months = Arrays.stream(Month.values())
+									.map(month -> Item.item(month, month.getDisplayName(TextStyle.SHORT, Locale.getDefault())))
+									.collect(toList());
+					months.add(0, Item.item(null, ""));
+					Collections.reverse(months);
+
+					return months;
+				}
 			}
 		}
 	}

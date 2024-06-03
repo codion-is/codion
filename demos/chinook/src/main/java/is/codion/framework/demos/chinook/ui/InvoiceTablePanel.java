@@ -20,7 +20,6 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
@@ -37,23 +36,23 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 	public InvoiceTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
 						.editable(attributes -> attributes.remove(Invoice.TOTAL))
-						.tableConditionPanelFactory(new InvoiceConditionPanelFactory(tableModel.entityDefinition())));
+						.tableConditionPanelFactory(new InvoiceConditionPanelFactory(tableModel)));
 		conditionPanel().state().set(SIMPLE);
 	}
 
 	private static final class InvoiceConditionPanelFactory implements TableConditionPanel.Factory<Attribute<?>> {
 
-		private final EntityDefinition entityDefinition;
+		private final SwingEntityTableModel tableModel;
 
-		private InvoiceConditionPanelFactory(EntityDefinition entityDefinition) {
-			this.entityDefinition = entityDefinition;
+		private InvoiceConditionPanelFactory(SwingEntityTableModel tableModel) {
+			this.tableModel = tableModel;
 		}
 
 		@Override
 		public TableConditionPanel<Attribute<?>> create(TableConditionModel<Attribute<?>> conditionModel,
 																										Collection<ColumnConditionPanel<Attribute<?>, ?>> columnConditionPanels,
 																										FilterTableColumnModel<Attribute<?>> columnModel) {
-			return new InvoiceConditionPanel(entityDefinition, conditionModel, columnModel);
+			return new InvoiceConditionPanel(tableModel.entityDefinition(), conditionModel, columnModel, tableModel::refresh);
 		}
 	}
 }
