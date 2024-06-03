@@ -28,24 +28,24 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-final class DefaultControlShortcuts implements ControlShortcuts {
+final class DefaultControlKeyStrokes implements ControlKeyStrokes {
 
 	private final Map<ControlId<?>, Value<KeyStroke>> keyStrokes = new HashMap<>();
 
-	DefaultControlShortcuts(Class<?> controlIdsClass) {
+	DefaultControlKeyStrokes(Class<?> controlIdsClass) {
 		this(Stream.of(controlIdsClass.getFields())
 						.filter(DefaultControlSet::publicStaticFinalControlId)
 						.map(DefaultControlSet::controlId)
 						.collect(toList()));
 	}
 
-	DefaultControlShortcuts(Collection<ControlId<?>> controlIds) {
+	DefaultControlKeyStrokes(Collection<ControlId<?>> controlIds) {
 		controlIds.forEach(controlId -> keyStrokes.put(controlId, Value.<KeyStroke>nullable()
 						.initialValue(controlId.defaultKeystroke().orElse(null))
 						.build()));
 	}
 
-	private DefaultControlShortcuts(DefaultControlShortcuts controlKeyStrokes) {
+	private DefaultControlKeyStrokes(DefaultControlKeyStrokes controlKeyStrokes) {
 		controlKeyStrokes.keyStrokes.forEach((controlType, keyStrokeValue) ->
 						keyStrokes.put(controlType, Value.<KeyStroke>nullable()
 										.initialValue(keyStrokeValue.get())
@@ -63,7 +63,7 @@ final class DefaultControlShortcuts implements ControlShortcuts {
 	}
 
 	@Override
-	public ControlShortcuts copy() {
-		return new DefaultControlShortcuts(this);
+	public ControlKeyStrokes copy() {
+		return new DefaultControlKeyStrokes(this);
 	}
 }

@@ -38,8 +38,8 @@ import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.control.ControlSet;
-import is.codion.swing.common.ui.control.ControlShortcuts;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -62,9 +62,9 @@ import java.util.function.Consumer;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.control.ControlSet.controlSet;
-import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
-import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.*;
@@ -635,13 +635,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void setupKeyboardActions() {
-		configuration.shortcuts.keyStroke(DISPLAY_ENTITY_MENU).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(DISPLAY_ENTITY_MENU).optional().ifPresent(keyStroke ->
 						control(DISPLAY_ENTITY_MENU).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(this)));
-		configuration.shortcuts.keyStroke(SELECT_INPUT_FIELD).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(SELECT_INPUT_FIELD).optional().ifPresent(keyStroke ->
 						control(SELECT_INPUT_FIELD).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -709,7 +709,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
+		public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
 
 		private static final Confirmer DEFAULT_INSERT_CONFIRMER = Confirmer.NONE;
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
@@ -728,16 +728,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
 		private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
 
-		final ControlShortcuts shortcuts;
+		final ControlKeyStrokes keyStrokes;
 
 		private Config(EntityEditPanel editPanel) {
 			this.editPanel = editPanel;
-			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
+			this.keyStrokes = CONTROL_KEY_STROKES.copy();
 		}
 
 		private Config(Config config) {
 			this.editPanel = config.editPanel;
-			this.shortcuts = config.shortcuts.copy();
+			this.keyStrokes = config.keyStrokes.copy();
 			this.clearAfterInsert = config.clearAfterInsert;
 			this.requestFocusAfterInsert = config.requestFocusAfterInsert;
 			this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
@@ -757,11 +757,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		/**
-		 * @param shortcuts provides this panels {@link ControlShortcuts} instance.
+		 * @param keyStrokes provides this panels {@link ControlKeyStrokes} instance.
 		 * @return this Config instance
 		 */
-		public Config keyStrokes(Consumer<ControlShortcuts> shortcuts) {
-			requireNonNull(shortcuts).accept(this.shortcuts);
+		public Config keyStrokes(Consumer<ControlKeyStrokes> keyStrokes) {
+			requireNonNull(keyStrokes).accept(this.keyStrokes);
 			return this;
 		}
 

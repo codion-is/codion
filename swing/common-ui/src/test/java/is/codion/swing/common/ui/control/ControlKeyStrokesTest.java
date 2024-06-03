@@ -27,13 +27,13 @@ import java.awt.event.KeyEvent;
 import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
-import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
-import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
-import static is.codion.swing.common.ui.control.ControlShortcutsTest.ControlIds.ONE;
-import static is.codion.swing.common.ui.control.ControlShortcutsTest.ControlIds.TWO;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
+import static is.codion.swing.common.ui.control.ControlKeyStrokesTest.ControlIds.ONE;
+import static is.codion.swing.common.ui.control.ControlKeyStrokesTest.ControlIds.TWO;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class ControlShortcutsTest {
+public final class ControlKeyStrokesTest {
 
 	interface ControlIds {
 		ControlId<CommandControl> ONE = commandControl(keyStroke(KeyEvent.VK_1));
@@ -42,14 +42,14 @@ public final class ControlShortcutsTest {
 
 	@Test
 	void test() {
-		ControlShortcuts shortcuts = controlShortcuts(ControlIds.class);
+		ControlKeyStrokes keyStrokes = controlKeyStrokes(ControlIds.class);
 
-		assertEquals(KeyEvent.VK_1, shortcuts.keyStroke(ONE).get().getKeyCode());
-		assertEquals(KeyEvent.VK_2, shortcuts.keyStroke(TWO).get().getKeyCode());
+		assertEquals(KeyEvent.VK_1, keyStrokes.keyStroke(ONE).get().getKeyCode());
+		assertEquals(KeyEvent.VK_2, keyStrokes.keyStroke(TWO).get().getKeyCode());
 
-		ControlShortcuts copy = shortcuts.copy();
+		ControlKeyStrokes copy = keyStrokes.copy();
 		Stream.of(ONE, TWO).forEach(shortcut -> {
-			Value<KeyStroke> keyStrokeValue = shortcuts.keyStroke(shortcut);
+			Value<KeyStroke> keyStrokeValue = keyStrokes.keyStroke(shortcut);
 			Value<KeyStroke> keyStrokeValueCopy = copy.keyStroke(shortcut);
 			assertNotSame(keyStrokeValue, keyStrokeValueCopy);
 			assertTrue(keyStrokeValue.isEqualTo(keyStrokeValueCopy.get()));

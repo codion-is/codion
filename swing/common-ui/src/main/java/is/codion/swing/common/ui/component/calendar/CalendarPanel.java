@@ -27,7 +27,7 @@ import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlId;
-import is.codion.swing.common.ui.control.ControlShortcuts;
+import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.FocusManager;
@@ -73,8 +73,8 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.calendar.CalendarPanel.ControlIds.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
-import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
-import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
@@ -104,7 +104,7 @@ public final class CalendarPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts CONTROL_SHORTCUTS = controlShortcuts(ControlIds.class);
+	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
 
 	/**
 	 * The available controls.
@@ -243,7 +243,7 @@ public final class CalendarPanel extends JPanel {
 		formattedDateLabel = new JLabel("", SwingConstants.CENTER);
 		formattedDateLabel.setBorder(emptyBorder());
 		initializeUI();
-		addKeyEvents(builder.controlShortcuts);
+		addKeyEvents(builder.controlKeyStrokes);
 		updateFormattedDate();
 	}
 
@@ -366,7 +366,7 @@ public final class CalendarPanel extends JPanel {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final ControlShortcuts controlShortcuts = CONTROL_SHORTCUTS.copy();
+		private final ControlKeyStrokes controlKeyStrokes = CONTROL_KEY_STROKES.copy();
 
 		private LocalDateTime initialValue;
 		private boolean includeTime = false;
@@ -398,7 +398,7 @@ public final class CalendarPanel extends JPanel {
 
 		@Override
 		public Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
-			controlShortcuts.keyStroke(controlId).set(keyStroke);
+			controlKeyStrokes.keyStroke(controlId).set(keyStroke);
 			return this;
 		}
 
@@ -646,31 +646,31 @@ public final class CalendarPanel extends JPanel {
 		formattedDateLabel.setText(dateFormatter.format(getLocalDateTime()) + (includeTime ? ", " + timeFormatter.format(getLocalDateTime()) : ""));
 	}
 
-	private void addKeyEvents(ControlShortcuts keyboardShortcuts) {
-		keyboardShortcuts.keyStroke(PREVIOUS_YEAR).optional().ifPresent(keyStroke ->
+	private void addKeyEvents(ControlKeyStrokes controlKeyStrokes) {
+		controlKeyStrokes.keyStroke(PREVIOUS_YEAR).optional().ifPresent(keyStroke ->
 						addKeyEvent(keyStroke, control(this::previousYear)));
-		keyboardShortcuts.keyStroke(NEXT_YEAR).optional().ifPresent(keyStroke ->
+		controlKeyStrokes.keyStroke(NEXT_YEAR).optional().ifPresent(keyStroke ->
 						addKeyEvent(keyStroke, control(this::nextYear)));
-		keyboardShortcuts.keyStroke(PREVIOUS_MONTH).optional().ifPresent(keyStroke ->
+		controlKeyStrokes.keyStroke(PREVIOUS_MONTH).optional().ifPresent(keyStroke ->
 						addKeyEvent(keyStroke, control(this::previousMonth)));
-		keyboardShortcuts.keyStroke(NEXT_MONTH).optional().ifPresent(keyStroke ->
+		controlKeyStrokes.keyStroke(NEXT_MONTH).optional().ifPresent(keyStroke ->
 						addKeyEvent(keyStroke, control(this::nextMonth)));
-		keyboardShortcuts.keyStroke(PREVIOUS_WEEK).optional().ifPresent(keyStroke ->
+		controlKeyStrokes.keyStroke(PREVIOUS_WEEK).optional().ifPresent(keyStroke ->
 						addKeyEvent(keyStroke, control(this::previousWeek)));
-		keyboardShortcuts.keyStroke(NEXT_WEEK).optional().ifPresent(keyStroke ->
+		controlKeyStrokes.keyStroke(NEXT_WEEK).optional().ifPresent(keyStroke ->
 						addKeyEvent(keyStroke, control(this::nextWeek)));
-		keyboardShortcuts.keyStroke(PREVIOUS_DAY).optional().ifPresent(keyStroke ->
+		controlKeyStrokes.keyStroke(PREVIOUS_DAY).optional().ifPresent(keyStroke ->
 						addKeyEvent(keyStroke, control(this::previousDay)));
-		keyboardShortcuts.keyStroke(NEXT_DAY).optional().ifPresent(keyStroke ->
+		controlKeyStrokes.keyStroke(NEXT_DAY).optional().ifPresent(keyStroke ->
 						addKeyEvent(keyStroke, control(this::nextDay)));
 		if (includeTime) {
-			keyboardShortcuts.keyStroke(PREVIOUS_HOUR).optional().ifPresent(keyStroke ->
+			controlKeyStrokes.keyStroke(PREVIOUS_HOUR).optional().ifPresent(keyStroke ->
 							addKeyEvent(keyStroke, control(this::previousHour)));
-			keyboardShortcuts.keyStroke(NEXT_HOUR).optional().ifPresent(keyStroke ->
+			controlKeyStrokes.keyStroke(NEXT_HOUR).optional().ifPresent(keyStroke ->
 							addKeyEvent(keyStroke, control(this::nextHour)));
-			keyboardShortcuts.keyStroke(PREVIOUS_MINUTE).optional().ifPresent(keyStroke ->
+			controlKeyStrokes.keyStroke(PREVIOUS_MINUTE).optional().ifPresent(keyStroke ->
 							addKeyEvent(keyStroke, control(this::previousMinute)));
-			keyboardShortcuts.keyStroke(NEXT_MINUTE).optional().ifPresent(keyStroke ->
+			controlKeyStrokes.keyStroke(NEXT_MINUTE).optional().ifPresent(keyStroke ->
 							addKeyEvent(keyStroke, control(this::nextMinute)));
 		}
 	}

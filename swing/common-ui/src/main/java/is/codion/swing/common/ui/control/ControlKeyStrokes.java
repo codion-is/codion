@@ -26,9 +26,9 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.KeyStroke.getKeyStroke;
 
 /**
- * Manages keyboard shortcuts for Controls.
+ * Manages keystrokes for Controls.
  */
-public interface ControlShortcuts {
+public interface ControlKeyStrokes {
 
 	/**
 	 * @param controlId the control id
@@ -38,16 +38,16 @@ public interface ControlShortcuts {
 	Value<KeyStroke> keyStroke(ControlId<?> controlId);
 
 	/**
-	 * @return a copy of this {@link ControlShortcuts} instance
+	 * @return a copy of this {@link ControlKeyStrokes} instance
 	 */
-	ControlShortcuts copy();
+	ControlKeyStrokes copy();
 
 	/**
 	 * @param controlIdsClass the class containing the control ids
-	 * @return a new {@link ControlShortcuts} instance
+	 * @return a new {@link ControlKeyStrokes} instance
 	 */
-	static ControlShortcuts controlShortcuts(Class<?> controlIdsClass) {
-		return new DefaultControlShortcuts(requireNonNull(controlIdsClass));
+	static ControlKeyStrokes controlKeyStrokes(Class<?> controlIdsClass) {
+		return new DefaultControlKeyStrokes(requireNonNull(controlIdsClass));
 	}
 
 	/**

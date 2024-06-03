@@ -33,7 +33,7 @@ import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlId;
-import is.codion.swing.common.ui.control.ControlShortcuts;
+import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -67,8 +67,8 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.ControlIds.*;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlId.toggleControl;
-import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
-import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
@@ -94,7 +94,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
+	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
 
 	/**
 	 * The condition controls.
@@ -386,11 +386,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
 		components().forEach(component ->
 						component.addFocusListener(new FocusGained(conditionModel().columnIdentifier())));
-		KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_ENABLED).get())
+		KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(CONTROL_KEY_STROKES.keyStroke(TOGGLE_ENABLED).get())
 						.action(Control.control(this::toggleEnabled));
-		KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_OPERATOR).get())
+		KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(CONTROL_KEY_STROKES.keyStroke(PREVIOUS_OPERATOR).get())
 						.action(Control.control(this::selectPreviousOperator));
-		KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NEXT_OPERATOR).get())
+		KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(CONTROL_KEY_STROKES.keyStroke(NEXT_OPERATOR).get())
 						.action(Control.control(this::selectNextOperator));
 		enableOnEnterKeyEvent.enable(operatorCombo);
 		enableOnEnterKeyEvent.enable(toggleEnabledButton);

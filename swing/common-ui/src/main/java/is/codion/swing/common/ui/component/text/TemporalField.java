@@ -29,7 +29,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlId;
-import is.codion.swing.common.ui.control.ControlShortcuts;
+import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -55,8 +55,8 @@ import java.util.Optional;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.TemporalField.ControlIds.*;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
-import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
-import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -75,7 +75,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts CONTROL_SHORTCUTS = controlShortcuts(ControlIds.class);
+	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
 
 	/**
 	 * The controls.
@@ -128,13 +128,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		setFocusLostBehavior(builder.focusLostBehaviour);
 		getDocument().addDocumentListener(new TemporalDocumentListener());
 		if (builder.incrementDecrementEnabled) {
-			builder.controlShortcuts.keyStroke(INCREMENT).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
+			builder.controlKeyStrokes.keyStroke(INCREMENT).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
 							.action(Control.builder()
 											.command(this::increment)
 											.enabled(valueNull.not())
 											.build())
 							.enable(this));
-			builder.controlShortcuts.keyStroke(DECREMENT).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
+			builder.controlKeyStrokes.keyStroke(DECREMENT).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
 							.action(Control.builder()
 											.command(this::decrement)
 											.enabled(valueNull.not())
@@ -143,7 +143,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 		calendarControl = createCalendarControl();
 		if (calendarControl != null) {
-			builder.controlShortcuts.keyStroke(DISPLAY_CALENDAR).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
+			builder.controlKeyStrokes.keyStroke(DISPLAY_CALENDAR).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
 							.action(calendarControl)
 							.enable(this));
 		}
@@ -399,7 +399,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		private final Class<T> temporalClass;
 		private final String dateTimePattern;
 		private final String mask;
-		private final ControlShortcuts controlShortcuts = CONTROL_SHORTCUTS.copy();
+		private final ControlKeyStrokes controlKeyStrokes = CONTROL_KEY_STROKES.copy();
 
 		private DateTimeFormatter dateTimeFormatter;
 		private DateTimeParser<T> dateTimeParser;
@@ -448,7 +448,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 		@Override
 		public Builder<T> keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
-			controlShortcuts.keyStroke(controlId).set(keyStroke);
+			controlKeyStrokes.keyStroke(controlId).set(keyStroke);
 			return this;
 		}
 

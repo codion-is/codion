@@ -65,8 +65,8 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.control.ControlSet;
-import is.codion.swing.common.ui.control.ControlShortcuts;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -130,8 +130,8 @@ import static is.codion.swing.common.ui.component.table.FilterColumnConditionPan
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.ControlId.*;
-import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
-import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.framework.ui.ColumnPreferences.columnPreferences;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
@@ -748,84 +748,84 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	protected void setupKeyboardActions() {
-		configuration.shortcuts.keyStroke(REFRESH).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(REFRESH).optional().ifPresent(keyStroke ->
 						control(REFRESH).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(this)));
-		configuration.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(REQUEST_TABLE_FOCUS).optional().ifPresent(keyStroke ->
 						control(REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(this)));
-		configuration.shortcuts.keyStroke(SELECT_CONDITION_PANEL).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(SELECT_CONDITION_PANEL).optional().ifPresent(keyStroke ->
 						control(SELECT_CONDITION_PANEL).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(this)));
-		configuration.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(TOGGLE_CONDITION_PANEL).optional().ifPresent(keyStroke ->
 						control(TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(this)));
-		configuration.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(TOGGLE_FILTER_PANEL).optional().ifPresent(keyStroke ->
 						control(TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(this)));
-		configuration.shortcuts.keyStroke(SELECT_FILTER_PANEL).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(SELECT_FILTER_PANEL).optional().ifPresent(keyStroke ->
 						control(SELECT_FILTER_PANEL).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(this)));
-		configuration.shortcuts.keyStroke(PRINT).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(PRINT).optional().ifPresent(keyStroke ->
 						control(PRINT).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(this)));
-		configuration.shortcuts.keyStroke(ADD).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(ADD).optional().ifPresent(keyStroke ->
 						control(ADD).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.action(control)
 														.enable(table)));
-		configuration.shortcuts.keyStroke(EDIT).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(EDIT).optional().ifPresent(keyStroke ->
 						control(EDIT).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.action(control)
 														.enable(table)));
-		configuration.shortcuts.keyStroke(EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(keyStroke ->
 						control(EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.action(control)
 														.enable(table)));
-		configuration.shortcuts.keyStroke(DELETE).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(DELETE).optional().ifPresent(keyStroke ->
 						control(DELETE).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.action(control)
 														.enable(table)));
-		configuration.shortcuts.keyStroke(MOVE_SELECTION_UP).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(MOVE_SELECTION_UP).optional().ifPresent(keyStroke ->
 						control(MOVE_SELECTION_UP).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.action(control)
 														.enable(table)));
-		configuration.shortcuts.keyStroke(MOVE_SELECTION_DOWN).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(MOVE_SELECTION_DOWN).optional().ifPresent(keyStroke ->
 						control(MOVE_SELECTION_DOWN).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.action(control)
 														.enable(table)));
-		configuration.shortcuts.keyStroke(DISPLAY_ENTITY_MENU).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(DISPLAY_ENTITY_MENU).optional().ifPresent(keyStroke ->
 						control(DISPLAY_ENTITY_MENU).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.action(control)
 														.enable(table)));
-		configuration.shortcuts.keyStroke(DISPLAY_POPUP_MENU).optional().ifPresent(keyStroke ->
+		configuration.keyStrokes.keyStroke(DISPLAY_POPUP_MENU).optional().ifPresent(keyStroke ->
 						control(DISPLAY_POPUP_MENU).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
 														.action(control)
@@ -2147,7 +2147,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
+		public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
 
 		private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 
@@ -2181,7 +2181,7 @@ public class EntityTablePanel extends JPanel {
 		private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
 		private Confirmer deleteConfirmer;
 
-		final ControlShortcuts shortcuts;
+		final ControlKeyStrokes keyStrokes;
 
 		private Config(EntityTablePanel tablePanel) {
 			this.tablePanel = tablePanel;
@@ -2192,7 +2192,7 @@ public class EntityTablePanel extends JPanel {
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
 			this.conditionFieldFactory = new EntityConditionFieldFactory(entityDefinition);
-			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
+			this.keyStrokes = CONTROL_KEY_STROKES.copy();
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
 							.map(AttributeDefinition::attribute)
 							.collect(toSet()));
@@ -2208,7 +2208,7 @@ public class EntityTablePanel extends JPanel {
 			this.tablePanel = config.tablePanel;
 			this.entityDefinition = config.entityDefinition;
 			this.tableBuilder = config.tableBuilder;
-			this.shortcuts = config.shortcuts.copy();
+			this.keyStrokes = config.keyStrokes.copy();
 			this.editable = valueSet(config.editable.get());
 			this.includeSouthPanel = config.includeSouthPanel;
 			this.includeConditionPanel = config.includeConditionPanel;
@@ -2410,11 +2410,11 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param shortcuts provides this tables {@link ControlShortcuts} instance.
+		 * @param keyStrokes provides this tables {@link ControlKeyStrokes} instance.
 		 * @return this Config instance
 		 */
-		public Config keyStrokes(Consumer<ControlShortcuts> shortcuts) {
-			requireNonNull(shortcuts).accept(this.shortcuts);
+		public Config keyStrokes(Consumer<ControlKeyStrokes> keyStrokes) {
+			requireNonNull(keyStrokes).accept(this.keyStrokes);
 			return this;
 		}
 

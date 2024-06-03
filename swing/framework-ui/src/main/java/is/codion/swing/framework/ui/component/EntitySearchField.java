@@ -54,7 +54,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlId;
-import is.codion.swing.common.ui.control.ControlShortcuts;
+import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -112,8 +112,8 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
-import static is.codion.swing.common.ui.control.ControlShortcuts.controlShortcuts;
-import static is.codion.swing.common.ui.control.ControlShortcuts.keyStroke;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
+import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.dialog.Dialogs.okCancelDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
@@ -174,7 +174,7 @@ public final class EntitySearchField extends HintTextField {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final ControlShortcuts KEYBOARD_SHORTCUTS = controlShortcuts(ControlIds.class);
+	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
 
 	/**
 	 * The available controls.
@@ -220,9 +220,9 @@ public final class EntitySearchField extends HintTextField {
 		super(builder.searchHintEnabled ? Messages.search() + "..." : null);
 		model = requireNonNull(builder.searchModel);
 		addControl = createAddControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(ControlIds.ADD).get(), builder.confirmAdd);
+						builder.controlKeyStrokes.keyStroke(ControlIds.ADD).get(), builder.confirmAdd);
 		editControl = createEditControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(ControlIds.EDIT).get(), builder.confirmEdit);
+						builder.controlKeyStrokes.keyStroke(ControlIds.EDIT).get(), builder.confirmEdit);
 		if (builder.columns != -1) {
 			setColumns(builder.columns);
 		}
@@ -1086,7 +1086,7 @@ public final class EntitySearchField extends HintTextField {
 	private static final class DefaultEntitySearchFieldBuilder extends AbstractComponentBuilder<Entity, EntitySearchField, Builder> implements Builder {
 
 		private final EntitySearchModel searchModel;
-		private final ControlShortcuts keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final ControlKeyStrokes controlKeyStrokes = CONTROL_KEY_STROKES.copy();
 
 		private int columns = -1;
 		private boolean upperCase;
@@ -1166,7 +1166,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(controlId).set(keyStroke);
+			controlKeyStrokes.keyStroke(controlId).set(keyStroke);
 			return this;
 		}
 
