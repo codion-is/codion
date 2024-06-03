@@ -116,4 +116,11 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 
 		return spinner;
 	}
+
+	@Override
+	protected void setInitialValue(JSpinner component, T initialValue) {
+		if (initialValue != null) {
+			super.setInitialValue(component, initialValue);
+		}
+	}
 }

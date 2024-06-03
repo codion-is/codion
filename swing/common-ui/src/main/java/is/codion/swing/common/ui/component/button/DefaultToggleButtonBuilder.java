@@ -34,6 +34,9 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 
 	DefaultToggleButtonBuilder(Value<Boolean> linkedValue) {
 		super(linkedValue);
+		if (linkedValue == null) {
+			initialValue(false);
+		}
 	}
 
 	@Override
@@ -42,6 +45,7 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 			throw new IllegalArgumentException("This toggle button builder does not support a nullable value");
 		}
 		this.toggleControl = toggleControl;
+		initialValue(toggleControl.value().get());
 		action(toggleControl);
 		return self();
 	}
@@ -76,6 +80,6 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 
 	@Override
 	protected final void setInitialValue(C component, Boolean initialValue) {
-		component.setSelected(initialValue);
+		component.setSelected(initialValue != null && initialValue);
 	}
 }

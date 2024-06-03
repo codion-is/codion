@@ -19,6 +19,7 @@ Codion Change Log
 - KeyEvents, special handling added for JSpinner.
 - AbstractSpinnerBuilder, now makes the spinner non-focusable only if editable, editor no longer focusable if not editable, no longer overrides enableTransferFocusOnEnter().
 - AbstractControl.Enabler now acts on the EDT.
+- AbstractComponentBuilder now always sets the initial value even if it is null, related refactoring.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityTableColumns, problematic override of comparable() removed.
 ### is.codion.swing.framework.model.tools

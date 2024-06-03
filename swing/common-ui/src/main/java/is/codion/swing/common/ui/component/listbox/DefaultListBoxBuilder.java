@@ -85,7 +85,9 @@ final class DefaultListBoxBuilder<T>
 	protected void setInitialValue(JComboBox<T> comboBox, Set<T> initialValue) {
 		FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) comboBox.getModel();
 		comboBoxModel.clear();
-		initialValue.forEach(comboBoxModel::add);
+		if (initialValue != null) {
+			initialValue.forEach(comboBoxModel::add);
+		}
 	}
 
 	private static int horizontalAlignment(JComponent component) {

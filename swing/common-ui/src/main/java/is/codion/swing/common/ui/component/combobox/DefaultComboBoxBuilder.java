@@ -58,6 +58,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 	protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
 		super(linkedValue);
 		this.comboBoxModel = requireNonNull(comboBoxModel);
+		initialValue((T) comboBoxModel.getSelectedItem());
 		preferredHeight(preferredTextFieldHeight());
 		if (comboBoxModel instanceof FilterComboBoxModel) {
 			popupMenuControl(comboBox -> Control.builder()

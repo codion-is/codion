@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.OptionalInt;
 
+import static java.util.Collections.emptyList;
+
 final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<T, List<T>, ListBuilder.SelectedItems<T>>
 				implements ListBuilder.SelectedItems<T> {
 
@@ -51,7 +53,7 @@ final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<T, Li
 
 	@Override
 	protected void setInitialValue(JList<T> component, List<T> initialValue) {
-		ListSelectedItemsValue.selectValues(component, initialValue);
+		ListSelectedItemsValue.selectValues(component, initialValue == null ? emptyList() : initialValue);
 	}
 
 	private static final class ListSelectedItemsValue<T> extends AbstractComponentValue<List<T>, JList<T>> {

@@ -31,8 +31,6 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, LabelBuilder<T>> implements LabelBuilder<T> {
 
-	private final String text;
-
 	private Icon icon;
 	private int horizontalAlignment = HORIZONTAL_ALIGNMENT.get();
 	private Integer displayedMnemonic;
@@ -41,17 +39,15 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
 	private JComponent component;
 
 	DefaultLabelBuilder(Icon icon) {
-		this.text = null;
 		icon(requireNonNull(icon));
 		horizontalAlignment(SwingConstants.CENTER);
 	}
 
 	DefaultLabelBuilder(String text) {
-		this.text = text;
+		initialValue((T) text);
 	}
 
 	DefaultLabelBuilder(ValueObserver<T> linkedValue) {
-		this.text = null;
 		link(requireNonNull(linkedValue));
 	}
 
@@ -93,7 +89,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
 
 	@Override
 	protected JLabel createComponent() {
-		JLabel label = new JLabel(text, icon, horizontalAlignment);
+		JLabel label = new JLabel("", icon, horizontalAlignment);
 		if (displayedMnemonic != null) {
 			label.setDisplayedMnemonic(displayedMnemonic);
 		}
@@ -117,6 +113,6 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
 
 	@Override
 	protected void setInitialValue(JLabel component, T initialValue) {
-		component.setText(initialValue.toString());
+		component.setText(initialValue == null ? "" : initialValue.toString());
 	}
 }

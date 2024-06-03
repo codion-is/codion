@@ -36,6 +36,9 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 
 	AbstractToggleMenuItemBuilder(Value<Boolean> linkedValue) {
 		super(linkedValue);
+		if (linkedValue == null) {
+			initialValue(false);
+		}
 		horizontalAlignment(SwingConstants.LEADING);
 	}
 
@@ -45,6 +48,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 			throw new IllegalArgumentException("A toggle menu item does not support a nullable value");
 		}
 		this.toggleControl = toggleControl;
+		initialValue(toggleControl.value().get());
 		action(toggleControl);
 		return self();
 	}
@@ -79,7 +83,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 
 	@Override
 	protected final void setInitialValue(C component, Boolean initialValue) {
-		component.setSelected(initialValue);
+		component.setSelected(initialValue != null && initialValue);
 	}
 
 	@Override

@@ -474,7 +474,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 			component.setFocusCycleRoot(true);
 		}
 		validators.forEach(validator -> componentValue(component).addValidator(validator));
-		if (initialValue != null) {
+		if (linkedValues.isEmpty() && linkedValueObservers.isEmpty()) {
 			setInitialValue(component, initialValue);
 		}
 		linkedValues.forEach(linkedValue -> componentValue(component).link(linkedValue));
@@ -538,9 +538,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	protected abstract ComponentValue<T, C> createComponentValue(C component);
 
 	/**
-	 * Sets the initial value in the component, only called for non-null values.
+	 * Sets the initial value in the component.
 	 * @param component the component
-	 * @param initialValue the initial value, not null
+	 * @param initialValue the initial value, may be null
 	 */
 	protected abstract void setInitialValue(C component, T initialValue);
 

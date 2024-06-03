@@ -111,7 +111,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 	}
 
 	@Override
-	protected final void setInitialValue(JSpinner component, T initialValue) {
+	protected void setInitialValue(JSpinner component, T initialValue) {
 		component.setValue(initialValue);
 	}
 
