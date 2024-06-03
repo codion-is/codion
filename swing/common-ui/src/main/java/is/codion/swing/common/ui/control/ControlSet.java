@@ -41,10 +41,10 @@ public interface ControlSet {
 	Collection<Value<Control>> controls();
 
 	/**
-	 * @param controlIdClass the class containing the control ids
+	 * @param controlIdsClass the class containing the control ids
 	 * @return a new {@link ControlSet} initialized with control ids found in the given class
 	 */
-	static ControlSet controlSet(Class<?> controlIdClass) {
-		return new DefaultControlSet(controlIdClass);
+	static ControlSet controlSet(Class<?> controlIdsClass) {
+		return new DefaultControlSet(controlIdsClass);
 	}
 }

@@ -36,8 +36,8 @@ final class DefaultControlSet implements ControlSet {
 
 	private final Map<ControlId<?>, Value<Control>> controls;
 
-	DefaultControlSet(Class<?> shortcutsClass) {
-		this(Stream.of(shortcutsClass.getFields())
+	DefaultControlSet(Class<?> controlIdsClass) {
+		this(Stream.of(controlIdsClass.getFields())
 						.filter(DefaultControlSet::publicStaticFinalControlId)
 						.map(DefaultControlSet::controlId)
 						.collect(toList()));

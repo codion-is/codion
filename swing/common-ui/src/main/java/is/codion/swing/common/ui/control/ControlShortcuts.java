@@ -43,11 +43,11 @@ public interface ControlShortcuts {
 	ControlShortcuts copy();
 
 	/**
-	 * @param controlIdClass the class containing the control ids
+	 * @param controlIdsClass the class containing the control ids
 	 * @return a new {@link ControlShortcuts} instance
 	 */
-	static ControlShortcuts controlShortcuts(Class<?> controlIdClass) {
-		return new DefaultControlShortcuts(requireNonNull(controlIdClass));
+	static ControlShortcuts controlShortcuts(Class<?> controlIdsClass) {
+		return new DefaultControlShortcuts(requireNonNull(controlIdsClass));
 	}
 
 	/**

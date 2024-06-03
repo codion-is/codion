@@ -32,8 +32,8 @@ final class DefaultControlShortcuts implements ControlShortcuts {
 
 	private final Map<ControlId<?>, Value<KeyStroke>> keyStrokes = new HashMap<>();
 
-	DefaultControlShortcuts(Class<?> controlIdClass) {
-		this(Stream.of(controlIdClass.getFields())
+	DefaultControlShortcuts(Class<?> controlIdsClass) {
+		this(Stream.of(controlIdsClass.getFields())
 						.filter(DefaultControlSet::publicStaticFinalControlId)
 						.map(DefaultControlSet::controlId)
 						.collect(toList()));
@@ -51,7 +51,6 @@ final class DefaultControlShortcuts implements ControlShortcuts {
 										.initialValue(keyStrokeValue.get())
 										.build()));
 	}
-
 
 	@Override
 	public Value<KeyStroke> keyStroke(ControlId<?> controlId) {
