@@ -24,6 +24,7 @@ import is.codion.common.state.StateObserver;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Arrays;
@@ -155,7 +156,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
 		@Override
 		public void accept(Boolean enabled) {
-			AbstractControl.super.setEnabled(enabled);
+			SwingUtilities.invokeLater(() -> AbstractControl.super.setEnabled(enabled));
 		}
 	}
 

@@ -31,6 +31,7 @@ import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
 import javax.swing.JMenuItem;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 
 import static is.codion.swing.common.ui.component.Components.toggleButton;
 import static org.junit.jupiter.api.Assertions.*;
@@ -105,24 +106,26 @@ public class DefaultToggleControlTest {
 						.getModel();
 		assertFalse(control.isEnabled());
 		assertFalse(buttonModel.isEnabled());
-		enabledState.set(true);
-		assertTrue(control.isEnabled());
-		assertTrue(buttonModel.isEnabled());
-		assertEquals("stateToggleControl", control.name().orElse(null));
-		assertFalse(control.value().get());
-		state.set(true);
-		assertTrue(control.value().get());
-		state.set(false);
-		assertFalse(control.value().get());
-		control.value().set(true);
-		assertTrue(state.get());
-		control.value().set(false);
-		assertFalse(state.get());
+		SwingUtilities.invokeLater(() -> {
+			enabledState.set(true);
+			assertTrue(control.isEnabled());
+			assertTrue(buttonModel.isEnabled());
+			assertEquals("stateToggleControl", control.name().orElse(null));
+			assertFalse(control.value().get());
+			state.set(true);
+			assertTrue(control.value().get());
+			state.set(false);
+			assertFalse(control.value().get());
+			control.value().set(true);
+			assertTrue(state.get());
+			control.value().set(false);
+			assertFalse(state.get());
 
-		enabledState.set(false);
-		assertFalse(control.isEnabled());
-		enabledState.set(true);
-		assertTrue(control.isEnabled());
+			enabledState.set(false);
+			assertFalse(control.isEnabled());
+			enabledState.set(true);
+			assertTrue(control.isEnabled());
+		});
 	}
 
 	@Test
@@ -196,14 +199,16 @@ public class DefaultToggleControlTest {
 		assertFalse(control.isEnabled());
 		assertFalse(copy.isEnabled());
 
-		enabled.set(true);
+		SwingUtilities.invokeLater(() -> {
+			enabled.set(true);
 
-		assertTrue(control.isEnabled());
-		assertTrue(copy.isEnabled());
+			assertTrue(control.isEnabled());
+			assertTrue(copy.isEnabled());
 
-		assertNotEquals(control.name().orElse(null), copy.name().orElse(null));
-		assertNotEquals(control.description().orElse(null), copy.description().orElse(null));
-		assertEquals(control.mnemonic().orElse(0), copy.mnemonic().orElse(1));
-		assertNotEquals(control.getValue("key"), copy.getValue("key"));
+			assertNotEquals(control.name().orElse(null), copy.name().orElse(null));
+			assertNotEquals(control.description().orElse(null), copy.description().orElse(null));
+			assertEquals(control.mnemonic().orElse(0), copy.mnemonic().orElse(1));
+			assertNotEquals(control.getValue("key"), copy.getValue("key"));
+		});
 	}
 }

@@ -23,6 +23,7 @@ import is.codion.common.state.State;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -72,15 +73,16 @@ public class TemporalFieldPanelTest {
 	}
 
 	@Test
-	void enabledState() throws InterruptedException {
-		State enabledState = State.state();
-		TemporalFieldPanel<LocalDate> inputPanel = TemporalFieldPanel.builder(LocalDate.class, "dd.MM.yyyy").build();
-		linkToEnabledState(enabledState, inputPanel);
-		assertFalse(inputPanel.temporalField().isEnabled());
-		JButton calendarButton = inputPanel.calendarButton();
-		assertFalse(calendarButton.isEnabled());
-		enabledState.set(true);
-		Thread.sleep(100);
-		assertTrue(calendarButton.isEnabled());
+	void enabledState() {
+		SwingUtilities.invokeLater(() -> {
+			State enabledState = State.state();
+			TemporalFieldPanel<LocalDate> inputPanel = TemporalFieldPanel.builder(LocalDate.class, "dd.MM.yyyy").build();
+			linkToEnabledState(enabledState, inputPanel);
+			assertFalse(inputPanel.temporalField().isEnabled());
+			JButton calendarButton = inputPanel.calendarButton();
+			assertFalse(calendarButton.isEnabled());
+			enabledState.set(true);
+			assertTrue(calendarButton.isEnabled());
+		});
 	}
 }

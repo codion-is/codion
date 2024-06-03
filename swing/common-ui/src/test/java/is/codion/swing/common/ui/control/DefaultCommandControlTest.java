@@ -24,6 +24,7 @@ import is.codion.common.state.State;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -64,14 +65,16 @@ public final class DefaultCommandControlTest {
 						.build();
 		JButton button = button(control).build();
 		assertFalse(button.isEnabled());
-		enabledState.set(true);
-		assertTrue(button.isEnabled());
-		button.doClick();
-		assertEquals(1, callCount);
-		assertEquals(button.getForeground(), Color.RED);
-		assertEquals(button.getBackground(), Color.BLACK);
-		assertEquals(button.getFont(), font);
-		assertThrows(UnsupportedOperationException.class, () -> control.putValue("test", "test"));
+		SwingUtilities.invokeLater(() -> {
+			enabledState.set(true);
+			assertTrue(button.isEnabled());
+			button.doClick();
+			assertEquals(1, callCount);
+			assertEquals(button.getForeground(), Color.RED);
+			assertEquals(button.getBackground(), Color.BLACK);
+			assertEquals(button.getFont(), font);
+			assertThrows(UnsupportedOperationException.class, () -> control.putValue("test", "test"));
+		});
 	}
 
 	@Test
@@ -108,10 +111,12 @@ public final class DefaultCommandControlTest {
 		assertEquals("control", control.name().orElse(null));
 		assertSame(enabledState.observer(), control.enabled());
 		assertFalse(control.isEnabled());
-		enabledState.set(true);
-		assertTrue(control.isEnabled());
-		enabledState.set(false);
-		assertFalse(control.isEnabled());
+		SwingUtilities.invokeLater(() -> {
+			enabledState.set(true);
+			assertTrue(control.isEnabled());
+			enabledState.set(false);
+			assertFalse(control.isEnabled());
+		});
 	}
 
 	@Test
@@ -158,15 +163,17 @@ public final class DefaultCommandControlTest {
 		assertFalse(control.isEnabled());
 		assertFalse(copy.isEnabled());
 
-		enabled.set(true);
+		SwingUtilities.invokeLater(() -> {
+			enabled.set(true);
 
-		assertTrue(control.isEnabled());
-		assertTrue(copy.isEnabled());
+			assertTrue(control.isEnabled());
+			assertTrue(copy.isEnabled());
 
-		assertNotEquals(control.name().orElse(null), copy.name().orElse(null));
-		assertNotEquals(control.description().orElse(null), copy.description().orElse(null));
-		assertEquals(control.mnemonic().orElse(0), copy.mnemonic().orElse(1));
-		assertNotEquals(control.getValue("key"), copy.getValue("key"));
+			assertNotEquals(control.name().orElse(null), copy.name().orElse(null));
+			assertNotEquals(control.description().orElse(null), copy.description().orElse(null));
+			assertEquals(control.mnemonic().orElse(0), copy.mnemonic().orElse(1));
+			assertNotEquals(control.getValue("key"), copy.getValue("key"));
+		});
 	}
 
 	private void doNothing() {}

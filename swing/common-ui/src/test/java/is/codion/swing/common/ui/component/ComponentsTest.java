@@ -63,6 +63,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -335,7 +336,7 @@ public final class ComponentsTest {
 						.toggle(state)
 						.enabled(enabledState)
 						.build();
-		button = Components.checkBox()
+		JCheckBox checkBox = Components.checkBox()
 						.toggleControl(toggleControl)
 						.build();
 		state.set(true);
@@ -343,10 +344,12 @@ public final class ComponentsTest {
 		toggleControl.value().set(false);
 		assertFalse(state.get());
 
-		enabledState.set(false);
-		assertFalse(button.isEnabled());
-		enabledState.set(true);
-		assertTrue(button.isEnabled());
+		SwingUtilities.invokeLater(() -> {
+			enabledState.set(false);
+			assertFalse(checkBox.isEnabled());
+			enabledState.set(true);
+			assertTrue(checkBox.isEnabled());
+		});
 	}
 
 	@Test
@@ -377,7 +380,7 @@ public final class ComponentsTest {
 						.toggle(state)
 						.enabled(enabledState)
 						.build();
-		button = Components.toggleButton()
+		JToggleButton toggleButton = Components.toggleButton()
 						.toggleControl(toggleControl)
 						.buildValue()
 						.component();
@@ -386,10 +389,12 @@ public final class ComponentsTest {
 		toggleControl.value().set(false);
 		assertFalse(state.get());
 
-		enabledState.set(false);
-		assertFalse(button.isEnabled());
-		enabledState.set(true);
-		assertTrue(button.isEnabled());
+		SwingUtilities.invokeLater(() -> {
+			enabledState.set(false);
+			assertFalse(toggleButton.isEnabled());
+			enabledState.set(true);
+			assertTrue(toggleButton.isEnabled());
+		});
 	}
 
 	@Test
@@ -422,7 +427,7 @@ public final class ComponentsTest {
 						.toggle(state)
 						.enabled(enabledState)
 						.build();
-		button = Components.radioButton()
+		JRadioButton radioButton = Components.radioButton()
 						.toggleControl(toggleControl)
 						.buildValue()
 						.component();
@@ -431,10 +436,12 @@ public final class ComponentsTest {
 		toggleControl.value().set(false);
 		assertFalse(state.get());
 
-		enabledState.set(false);
-		assertFalse(button.isEnabled());
-		enabledState.set(true);
-		assertTrue(button.isEnabled());
+		SwingUtilities.invokeLater(() -> {
+			enabledState.set(false);
+			assertFalse(radioButton.isEnabled());
+			enabledState.set(true);
+			assertTrue(radioButton.isEnabled());
+		});
 	}
 
 	@Test
@@ -463,10 +470,12 @@ public final class ComponentsTest {
 		checkBox.setSelected(true);
 		assertTrue(state.get());
 
-		enabledState.set(false);
-		assertFalse(checkBox.isEnabled());
-		enabledState.set(true);
-		assertTrue(checkBox.isEnabled());
+		SwingUtilities.invokeLater(() -> {
+			enabledState.set(false);
+			assertFalse(checkBox.isEnabled());
+			enabledState.set(true);
+			assertTrue(checkBox.isEnabled());
+		});
 	}
 
 	@Test
@@ -489,10 +498,12 @@ public final class ComponentsTest {
 		button.setSelected(true);
 		assertTrue(state.get());
 
-		enabledState.set(false);
-		assertFalse(button.isEnabled());
-		enabledState.set(true);
-		assertTrue(button.isEnabled());
+		SwingUtilities.invokeLater(() -> {
+			enabledState.set(false);
+			assertFalse(button.isEnabled());
+			enabledState.set(true);
+			assertTrue(button.isEnabled());
+		});
 	}
 
 	@Test
