@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.2
 ### is.codion.swing.common.ui
 - Control.control() renamed commandControl().
+### is.codion.framework.model
+- EntityConditionModelFactory, now creates condition models for all attributes, whether selectable or not.
 
 ## 0.18.1
 ### is.codion.swing.common.ui

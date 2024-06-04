@@ -23,11 +23,9 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.util.Optional;
 
@@ -50,10 +48,6 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 
 	@Override
 	public Optional<ColumnConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
-		if (!include(attribute)) {
-			return Optional.empty();
-		}
-
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			return Optional.of(ForeignKeyConditionModel.builder(foreignKey)
@@ -69,23 +63,6 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
 						.build();
 
 		return Optional.of((ColumnConditionModel<Attribute<?>, ?>) model);
-	}
-
-	private boolean include(Attribute<?> attribute) {
-		requireNonNull(attribute);
-		AttributeDefinition<?> definition = connectionProvider.entities()
-						.definition(attribute.entityType())
-						.attributes().definition(attribute);
-		if (definition instanceof ForeignKeyDefinition) {
-			return true;
-		}
-		if (definition instanceof ColumnDefinition<?>) {
-			ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) definition;
-
-			return columnDefinition.selectable();
-		}
-
-		return false;
 	}
 
 	/**
