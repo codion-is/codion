@@ -65,6 +65,7 @@ import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.ControlIds.*;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlId.toggleControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
@@ -387,11 +388,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		components().forEach(component ->
 						component.addFocusListener(new FocusGained(conditionModel().columnIdentifier())));
 		KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(CONTROL_KEY_STROKES.keyStroke(TOGGLE_ENABLED).get())
-						.action(Control.control(this::toggleEnabled));
+						.action(commandControl(this::toggleEnabled));
 		KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(CONTROL_KEY_STROKES.keyStroke(PREVIOUS_OPERATOR).get())
-						.action(Control.control(this::selectPreviousOperator));
+						.action(commandControl(this::selectPreviousOperator));
 		KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(CONTROL_KEY_STROKES.keyStroke(NEXT_OPERATOR).get())
-						.action(Control.control(this::selectNextOperator));
+						.action(commandControl(this::selectNextOperator));
 		enableOnEnterKeyEvent.enable(operatorCombo);
 		enableOnEnterKeyEvent.enable(toggleEnabledButton);
 		Stream.of(equalField, upperBoundField, lowerBoundField, inField)

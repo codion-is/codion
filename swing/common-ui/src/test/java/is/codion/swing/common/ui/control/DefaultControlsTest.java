@@ -28,9 +28,9 @@ public class DefaultControlsTest {
 
 	@Test
 	void test() {
-		Control one = Control.control(() -> {});
-		Control two = Control.control(() -> {});
-		Action action = Control.control(() -> {});
+		Control one = Control.commandControl(() -> {});
+		Control two = Control.commandControl(() -> {});
+		Action action = Control.commandControl(() -> {});
 		Controls controls = Controls.builder()
 						.name("controls")
 						.control(one)
@@ -71,9 +71,9 @@ public class DefaultControlsTest {
 
 	@Test
 	void copy() {
-		Control one = Control.control(() -> {});
-		Control two = Control.control(() -> {});
-		Action action = Control.control(() -> {});
+		Control one = Control.commandControl(() -> {});
+		Control two = Control.commandControl(() -> {});
+		Action action = Control.commandControl(() -> {});
 		DefaultControls controls = (DefaultControls) Controls.builder()
 						.name("controls")
 						.control(one)

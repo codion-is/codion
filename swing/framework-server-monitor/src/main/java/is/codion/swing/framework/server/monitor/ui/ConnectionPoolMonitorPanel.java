@@ -43,7 +43,7 @@ import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldSize;
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
@@ -251,7 +251,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 										.text("Check out times")
 										.maximumSize(preferredTextFieldSize())
 										.build())
-						.add(button(control(model::clearStatistics))
+						.add(button(commandControl(model::clearStatistics))
 										.text("Clear")
 										.maximumSize(preferredTextFieldSize())
 										.build())
@@ -292,7 +292,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 														.centerComponent(resetTimeField)
 														.build())
 										.build())
-						.eastComponent(button(control(model::resetStatistics))
+						.eastComponent(button(commandControl(model::resetStatistics))
 										.text("Reset")
 										.build())
 						.build();

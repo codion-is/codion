@@ -31,7 +31,7 @@ import javax.swing.JScrollPane;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
@@ -210,10 +210,10 @@ final class KeyboardShortcutsPanel extends JPanel {
 	private static void addScrollKeyEvents(JScrollPane scrollPane) {
 		JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
 		KeyEvents.builder(VK_UP)
-						.action(control(() -> verticalScrollBar.setValue(verticalScrollBar.getValue() - VERTICAL_UNIT_INCREMENT)))
+						.action(commandControl(() -> verticalScrollBar.setValue(verticalScrollBar.getValue() - VERTICAL_UNIT_INCREMENT)))
 						.enable(scrollPane);
 		KeyEvents.builder(VK_DOWN)
-						.action(control(() -> verticalScrollBar.setValue(verticalScrollBar.getValue() + VERTICAL_UNIT_INCREMENT)))
+						.action(commandControl(() -> verticalScrollBar.setValue(verticalScrollBar.getValue() + VERTICAL_UNIT_INCREMENT)))
 						.enable(scrollPane);
 	}
 }

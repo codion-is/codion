@@ -47,7 +47,7 @@ import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.SearchHighlighter.searchHighlighter;
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.dialog.Dialogs.fileSelectionDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
@@ -84,7 +84,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 		this.searchField = searchHighlighter.createSearchField();
 		KeyEvents.builder(KeyEvent.VK_F)
 						.modifiers(InputEvent.CTRL_DOWN_MASK)
-						.action(Control.control(searchField::requestFocusInWindow))
+						.action(commandControl(searchField::requestFocusInWindow))
 						.enable(logTextArea);
 		initializeUI();
 		updateView();
@@ -105,7 +105,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 						.add(checkBox(model.loggingEnabled())
 										.text("Logging enabled")
 										.build())
-						.add(button(control(this::updateView))
+						.add(button(commandControl(this::updateView))
 										.text("Refresh log")
 										.build())
 						.build();

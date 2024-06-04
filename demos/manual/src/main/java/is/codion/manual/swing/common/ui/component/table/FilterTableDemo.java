@@ -24,12 +24,12 @@ import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel;
-import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JTable;
 import java.util.List;
 
 import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.createFilterTableModel;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static java.util.Arrays.asList;
 
 final class FilterTableDemo {
@@ -48,7 +48,7 @@ final class FilterTableDemo {
 										.build());
 
 		FilterTable<Row, Column> filterTable = FilterTable.builder(tableModel, columns)
-						.doubleClickAction(Control.control(() ->
+						.doubleClickAction(commandControl(() ->
 										tableModel.selectionModel().selectedItem()
 														.ifPresent(System.out::println)))
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)

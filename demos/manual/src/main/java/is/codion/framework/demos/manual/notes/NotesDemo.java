@@ -36,7 +36,6 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -66,6 +65,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.CLEAR;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -149,7 +149,7 @@ public final class NotesDemo {
 							.hint("Take note...")
 							// Use the Enter key for inserting, updating
 							// and deleting, depending on the edit model state
-							.action(Control.control(this::insertDeleteOrUpdate));
+							.action(commandControl(this::insertDeleteOrUpdate));
 
 			setLayout(Layouts.borderLayout());
 			add(component(Note.NOTE).get(), BorderLayout.CENTER);

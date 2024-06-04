@@ -71,7 +71,7 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.calendar.CalendarPanel.ControlIds.*;
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
@@ -552,7 +552,7 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JButton createSelectTodayButton() {
-		return button(control(this::selectToday))
+		return button(commandControl(this::selectToday))
 						.text(MESSAGES.getString("today"))
 						.mnemonic(MESSAGES.getString("today_mnemonic").charAt(0))
 						.enabled(todaySelected.not())
@@ -648,30 +648,30 @@ public final class CalendarPanel extends JPanel {
 
 	private void addKeyEvents(ControlKeyStrokes controlKeyStrokes) {
 		controlKeyStrokes.keyStroke(PREVIOUS_YEAR).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, control(this::previousYear)));
+						addKeyEvent(keyStroke, commandControl(this::previousYear)));
 		controlKeyStrokes.keyStroke(NEXT_YEAR).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, control(this::nextYear)));
+						addKeyEvent(keyStroke, commandControl(this::nextYear)));
 		controlKeyStrokes.keyStroke(PREVIOUS_MONTH).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, control(this::previousMonth)));
+						addKeyEvent(keyStroke, commandControl(this::previousMonth)));
 		controlKeyStrokes.keyStroke(NEXT_MONTH).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, control(this::nextMonth)));
+						addKeyEvent(keyStroke, commandControl(this::nextMonth)));
 		controlKeyStrokes.keyStroke(PREVIOUS_WEEK).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, control(this::previousWeek)));
+						addKeyEvent(keyStroke, commandControl(this::previousWeek)));
 		controlKeyStrokes.keyStroke(NEXT_WEEK).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, control(this::nextWeek)));
+						addKeyEvent(keyStroke, commandControl(this::nextWeek)));
 		controlKeyStrokes.keyStroke(PREVIOUS_DAY).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, control(this::previousDay)));
+						addKeyEvent(keyStroke, commandControl(this::previousDay)));
 		controlKeyStrokes.keyStroke(NEXT_DAY).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, control(this::nextDay)));
+						addKeyEvent(keyStroke, commandControl(this::nextDay)));
 		if (includeTime) {
 			controlKeyStrokes.keyStroke(PREVIOUS_HOUR).optional().ifPresent(keyStroke ->
-							addKeyEvent(keyStroke, control(this::previousHour)));
+							addKeyEvent(keyStroke, commandControl(this::previousHour)));
 			controlKeyStrokes.keyStroke(NEXT_HOUR).optional().ifPresent(keyStroke ->
-							addKeyEvent(keyStroke, control(this::nextHour)));
+							addKeyEvent(keyStroke, commandControl(this::nextHour)));
 			controlKeyStrokes.keyStroke(PREVIOUS_MINUTE).optional().ifPresent(keyStroke ->
-							addKeyEvent(keyStroke, control(this::previousMinute)));
+							addKeyEvent(keyStroke, commandControl(this::previousMinute)));
 			controlKeyStrokes.keyStroke(NEXT_MINUTE).optional().ifPresent(keyStroke ->
-							addKeyEvent(keyStroke, control(this::nextMinute)));
+							addKeyEvent(keyStroke, commandControl(this::nextMinute)));
 		}
 	}
 

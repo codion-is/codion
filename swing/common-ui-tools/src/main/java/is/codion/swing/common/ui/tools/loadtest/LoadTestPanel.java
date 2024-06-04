@@ -68,6 +68,7 @@ import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.Windows.frame;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
@@ -386,7 +387,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private FilterTable<ApplicationRow, ColumnId> createApplicationsTable() {
 		return FilterTable.builder(model().applicationTableModel(), createApplicationTableModelColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.doubleClickAction(Control.control(this::viewException))
+						.doubleClickAction(commandControl(this::viewException))
 						.scrollToSelectedItem(false)
 						.cellRendererFactory(new ApplicationTableCellRendererFactory())
 						.popupMenuControls(table -> Controls.builder()

@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.2
+### is.codion.swing.common.ui
+- Control.control() renamed commandControl().
 
 ## 0.18.1
 ### is.codion.swing.common.ui

@@ -297,7 +297,7 @@ public final class ComponentsTest {
 	void button() {
 		Components.button()
 						.iconTextGap(5)
-						.action(Control.control(() -> {}))
+						.action(Control.commandControl(() -> {}))
 						.preferredSize(new Dimension(10, 10))
 						.borderPainted(false)
 						.focusPainted(false)
@@ -447,7 +447,7 @@ public final class ComponentsTest {
 	@Test
 	void menuItem() {
 		Components.menuItem();
-		Control control = Control.control(() -> {});
+		Control control = Control.commandControl(() -> {});
 		Components.menuItem(control).buildValue();
 	}
 
@@ -606,7 +606,7 @@ public final class ComponentsTest {
 						.columns(10)
 						.upperCase(true)
 						.selectAllOnFocusGained(true)
-						.action(Control.control(() -> {}))
+						.action(Control.commandControl(() -> {}))
 						.selector(component -> Optional.empty())
 						.format(null)
 						.horizontalAlignment(SwingConstants.CENTER)

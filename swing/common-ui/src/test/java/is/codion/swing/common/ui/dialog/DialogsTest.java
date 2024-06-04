@@ -33,7 +33,7 @@ import javax.swing.JPanel;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
 
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class DialogsTest {
@@ -46,14 +46,14 @@ public final class DialogsTest {
 						.icon(Logos.logoTransparent())
 						.modal(false)
 						.resizable(false)
-						.enterAction(control(() -> {}))
+						.enterAction(commandControl(() -> {}))
 						.onOpened(e -> {})
 						.onClosed(e -> {})
 						.closeEvent(Event.event())
 						.confirmCloseListener(state -> {})
 						.disposeOnEscape(false)
 						.keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
-										.action(Control.control(() -> {})))
+										.action(Control.commandControl(() -> {})))
 						.build();
 	}
 
@@ -119,23 +119,23 @@ public final class DialogsTest {
 
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
 						.onOk(runnable)
-						.okAction(control(command)));
+						.okAction(commandControl(command)));
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
 						.onCancel(runnable)
-						.cancelAction(control(command)));
+						.cancelAction(commandControl(command)));
 
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
-						.okAction(control(command))
+						.okAction(commandControl(command))
 						.onOk(runnable));
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
-						.cancelAction(control(command))
+						.cancelAction(commandControl(command))
 						.onCancel(runnable));
 
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
-						.okAction(control(command))
+						.okAction(commandControl(command))
 						.okEnabled(state));
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
-						.cancelAction(control(command))
+						.cancelAction(commandControl(command))
 						.cancelEnabled(state));
 	}
 

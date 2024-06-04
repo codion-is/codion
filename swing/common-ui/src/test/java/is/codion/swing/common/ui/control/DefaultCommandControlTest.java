@@ -121,25 +121,25 @@ public final class DefaultCommandControlTest {
 
 	@Test
 	void setEnabledViaMethod() {
-		Control test = Control.control(this::doNothing);
+		Control test = Control.commandControl(this::doNothing);
 		assertThrows(UnsupportedOperationException.class, () -> test.setEnabled(true));
 	}
 
 	@Test
 	void exceptionOnExecute() {
-		Control control = Control.control(this::errorMethod);
+		Control control = Control.commandControl(this::errorMethod);
 		assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
 	}
 
 	@Test
 	void runtimeExceptionOnExecute() {
-		Control control = Control.control(this::runtimeErrorMethod);
+		Control control = Control.commandControl(this::runtimeErrorMethod);
 		assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
 	}
 
 	@Test
 	void cancelOnExecute() {
-		Control control = Control.control(this::cancelMethod);
+		Control control = Control.commandControl(this::cancelMethod);
 		control.actionPerformed(null);
 	}
 

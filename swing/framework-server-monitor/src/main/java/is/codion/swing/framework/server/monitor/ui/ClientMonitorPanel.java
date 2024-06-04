@@ -43,7 +43,7 @@ import java.util.List;
 
 import static is.codion.swing.common.ui.Utilities.linkBoundedRangeModels;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.server.monitor.ClientMonitor.RemoteClientColumns.Id.*;
 import static java.util.Arrays.asList;
@@ -100,7 +100,7 @@ public final class ClientMonitorPanel extends JPanel {
 																		.add(checkBox(advancedFilterState)
 																						.text("Advanced filters")
 																						.build())
-																		.add(button(control(this::refresh))
+																		.add(button(commandControl(this::refresh))
 																						.text("Refresh")
 																						.build())
 																		.build())

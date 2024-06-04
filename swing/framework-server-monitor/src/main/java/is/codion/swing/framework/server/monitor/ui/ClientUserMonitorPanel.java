@@ -44,7 +44,7 @@ import java.time.temporal.Temporal;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.dialog.Dialogs.exceptionDialog;
 import static is.codion.swing.framework.server.monitor.ClientUserMonitor.UserHistoryColumns;
 import static java.util.Arrays.asList;
@@ -99,11 +99,11 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.add(integerSpinner(new SpinnerNumberModel(), model.idleConnectionTimeout())
 										.columns(4)
 										.build())
-						.add(button(control(model::disconnectTimedOut))
+						.add(button(commandControl(model::disconnectTimedOut))
 										.text("Disconnect idle")
 										.toolTipText("Disconnect those that have exceeded the allowed idle time")
 										.build())
-						.add(button(control(this::disconnectAll))
+						.add(button(commandControl(this::disconnectAll))
 										.text("Disconnect all")
 										.toolTipText("Disconnect all clients")
 										.build())
@@ -127,7 +127,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 		JPanel configBase = borderLayoutPanel()
 						.centerComponent(configPanel)
-						.eastComponent(button(control(model::resetHistory))
+						.eastComponent(button(commandControl(model::resetHistory))
 										.text("Reset")
 										.build())
 						.build();

@@ -47,7 +47,7 @@ import java.util.Set;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static is.codion.swing.common.ui.Utilities.setClipboard;
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -208,7 +208,7 @@ final class EntityPopupMenu extends JPopupMenu {
 	}
 
 	private static Control clipboardControl(Entity entity, Attribute<?> attribute) {
-		return control(new ClipboardCommand(entity, attribute));
+		return commandControl(new ClipboardCommand(entity, attribute));
 	}
 
 	private static final class ClipboardCommand implements Control.Command {

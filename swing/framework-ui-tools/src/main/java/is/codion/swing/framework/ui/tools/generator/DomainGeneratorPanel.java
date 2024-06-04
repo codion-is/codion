@@ -74,7 +74,7 @@ import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.SearchHighlighter.searchHighlighter;
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
@@ -305,7 +305,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.onBuild(field -> KeyEvents.builder(KeyEvent.VK_P)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.modifiers(InputEvent.ALT_DOWN_MASK)
-										.action(control(field::requestFocusInWindow))
+										.action(commandControl(field::requestFocusInWindow))
 										.enable(this))
 						.build(packageLabel::setLabelFor);
 	}
@@ -320,7 +320,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.onBuild(field -> KeyEvents.builder(KeyEvent.VK_D)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.modifiers(InputEvent.ALT_DOWN_MASK)
-										.action(control(field::requestFocusInWindow))
+										.action(commandControl(field::requestFocusInWindow))
 										.enable(this))
 						.build(sourceDirectoryLabel::setLabelFor);
 	}
@@ -415,19 +415,19 @@ public final class DomainGeneratorPanel extends JPanel {
 						.modifiers(InputEvent.ALT_DOWN_MASK)
 						.condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 						.keyCode(KeyEvent.VK_1)
-						.action(control(schemaTable::requestFocusInWindow))
+						.action(commandControl(schemaTable::requestFocusInWindow))
 						.enable(this)
 						.keyCode(KeyEvent.VK_2)
-						.action(control(entityTable::requestFocusInWindow))
+						.action(commandControl(entityTable::requestFocusInWindow))
 						.enable(this)
 						.keyCode(KeyEvent.VK_3)
-						.action(control(apiTextArea::requestFocusInWindow))
+						.action(commandControl(apiTextArea::requestFocusInWindow))
 						.enable(this)
 						.keyCode(KeyEvent.VK_4)
-						.action(control(implementationTextArea::requestFocusInWindow))
+						.action(commandControl(implementationTextArea::requestFocusInWindow))
 						.enable(this)
 						.keyCode(KeyEvent.VK_5)
-						.action(control(combinedTextArea::requestFocusInWindow))
+						.action(commandControl(combinedTextArea::requestFocusInWindow))
 						.enable(this);
 	}
 

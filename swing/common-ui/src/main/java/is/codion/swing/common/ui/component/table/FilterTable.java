@@ -99,7 +99,7 @@ import static is.codion.swing.common.ui.component.table.FilterColumnConditionPan
 import static is.codion.swing.common.ui.component.table.FilterTable.ControlIds.*;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
@@ -649,11 +649,11 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return a search field
 	 */
 	private JTextField createSearchField() {
-		Control nextResult = control(() -> selectSearchResult(false, true));
-		Control selectNextResult = control(() -> selectSearchResult(true, true));
-		Control previousResult = control(() -> selectSearchResult(false, false));
-		Control selectPreviousResult = control(() -> selectSearchResult(true, false));
-		Control requestTableFocus = control(this::requestFocusInWindow);
+		Control nextResult = commandControl(() -> selectSearchResult(false, true));
+		Control selectNextResult = commandControl(() -> selectSearchResult(true, true));
+		Control previousResult = commandControl(() -> selectSearchResult(false, false));
+		Control selectPreviousResult = commandControl(() -> selectSearchResult(true, false));
+		Control requestTableFocus = commandControl(this::requestFocusInWindow);
 
 		return Components.stringField(searchModel.searchString())
 						.minimumWidth(SEARCH_FIELD_MINIMUM_WIDTH)
@@ -681,7 +681,7 @@ public final class FilterTable<R, C> extends JTable {
 						.onTextChanged(this::onSearchTextChanged)
 						.onBuild(field -> KeyEvents.builder(VK_F)
 										.modifiers(CTRL_DOWN_MASK)
-										.action(control(field::requestFocusInWindow))
+										.action(commandControl(field::requestFocusInWindow))
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this))
 						.build();
@@ -843,11 +843,11 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private Control createToggleSortColumnAddControl() {
-		return control(() -> toggleColumnSorting(getSelectedColumn(), true));
+		return commandControl(() -> toggleColumnSorting(getSelectedColumn(), true));
 	}
 
 	private Control createToggleSortColumnControl() {
-		return control(() -> toggleColumnSorting(getSelectedColumn(), false));
+		return commandControl(() -> toggleColumnSorting(getSelectedColumn(), false));
 	}
 
 	private static Stream<JComponent> columnComponents(FilterTableColumn<?> column) {

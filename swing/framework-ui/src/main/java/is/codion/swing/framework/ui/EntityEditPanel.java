@@ -61,6 +61,7 @@ import java.util.function.Consumer;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
@@ -573,11 +574,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private CommandControl createSelectInputComponentControl() {
-		return Control.control(this::selectInputComponent);
+		return commandControl(this::selectInputComponent);
 	}
 
 	private CommandControl createShowEntityMenuControl() {
-		return Control.control(this::showEntityMenu);
+		return commandControl(this::showEntityMenu);
 	}
 
 	private CommandControl createUpdateControl() {

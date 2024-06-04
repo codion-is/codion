@@ -110,7 +110,7 @@ import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
-import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.control.ControlId.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
@@ -778,7 +778,7 @@ public final class EntitySearchField extends HintTextField {
 		private final JLabel resultLimitLabel = label()
 						.horizontalAlignment(SwingConstants.RIGHT)
 						.build();
-		private final Control selectControl = control(new SelectCommand());
+		private final Control selectControl = commandControl(new SelectCommand());
 
 		private DefaultListSelector(EntitySearchModel searchModel) {
 			this.searchModel = requireNonNull(searchModel);
@@ -860,7 +860,7 @@ public final class EntitySearchField extends HintTextField {
 		private final JLabel resultLimitLabel = label()
 						.horizontalAlignment(SwingConstants.RIGHT)
 						.build();
-		private final Control selectControl = control(new SelectCommand());
+		private final Control selectControl = commandControl(new SelectCommand());
 
 		private DefaultTableSelector(EntitySearchModel searchModel) {
 			this.searchModel = requireNonNull(searchModel);
@@ -921,7 +921,7 @@ public final class EntitySearchField extends HintTextField {
 											.action(selectControl))
 							.keyEvent(KeyEvents.builder(VK_F)
 											.modifiers(CTRL_DOWN_MASK)
-											.action(control(this::requestSearchFieldFocus)))
+											.action(commandControl(this::requestSearchFieldFocus)))
 							.onBuild(t -> KeyEvents.builder(VK_ENTER)
 											.action(selectControl)
 											.enable(t.searchField()))
