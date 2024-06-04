@@ -34,11 +34,13 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 	Column<T> attribute();
 
 	/**
+	 * Note: returns null when used in a remote connection context.
 	 * @return the column name
 	 */
 	String name();
 
 	/**
+	 * Note: returns null when used in a remote connection context.
 	 * @return the column expression to use when selecting or the column name if no expression has been set
 	 */
 	String expression();
@@ -49,6 +51,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 	int type();
 
 	/**
+	 * Note: returns null when used in a remote connection context.
 	 * @param <C> the colum value type
 	 * @return the {@link Converter} for this column.
 	 */

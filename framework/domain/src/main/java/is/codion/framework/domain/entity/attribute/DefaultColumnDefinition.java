@@ -55,15 +55,15 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private final boolean insertable;
 	private final boolean updatable;
 	private final boolean searchable;
+	private final boolean groupBy;
+	private final boolean aggregate;
+	private final boolean selectable;
+	private final boolean lazy;
 
 	private final transient String name;
 	private final transient String expression;
 	private final transient Fetcher<Object> fetcher;
 	private final transient Converter<T, Object> converter;
-	private final transient boolean groupBy;
-	private final transient boolean aggregate;
-	private final transient boolean selectable;
-	private final transient boolean lazy;
 
 	protected DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
 		super(builder);
