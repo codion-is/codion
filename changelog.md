@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.2
+
 ## 0.18.1
 ### is.codion.swing.common.ui
 - TableConditionPanel.initializedEvent() added.
