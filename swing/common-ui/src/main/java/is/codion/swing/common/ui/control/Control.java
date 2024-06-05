@@ -152,7 +152,7 @@ public interface Control extends Action {
 	 * @return a Control for calling the given {@link Control.Command}
 	 */
 	static CommandControl actionControl(ActionCommand actionCommand) {
-		return builder().actionCommand(actionCommand).build();
+		return builder().action(actionCommand).build();
 	}
 
 	/**
@@ -280,7 +280,7 @@ public interface Control extends Action {
 		 * @param actionCommand the action command to execute
 		 * @return a new {@link CommandControlBuilder} instance
 		 */
-		CommandControlBuilder actionCommand(ActionCommand actionCommand);
+		CommandControlBuilder action(ActionCommand actionCommand);
 
 		/**
 		 * @param value the value to toggle

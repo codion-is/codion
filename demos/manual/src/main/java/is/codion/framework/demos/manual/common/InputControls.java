@@ -73,7 +73,7 @@ public final class InputControls {
 			}
 		};
 		CommandControl actionControl = Control.builder()
-						.actionCommand(actionCommand)
+						.action(actionCommand)
 						.name("Do something else")
 						.mnemonic('S')
 						.build();

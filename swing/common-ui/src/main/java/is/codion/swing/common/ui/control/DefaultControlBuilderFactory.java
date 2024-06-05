@@ -38,7 +38,7 @@ final class DefaultControlBuilderFactory implements BuilderFactory {
 	}
 
 	@Override
-	public CommandControlBuilder actionCommand(ActionCommand actionCommand) {
+	public CommandControlBuilder action(ActionCommand actionCommand) {
 		return new DefaultCommandControlBuilder(null, requireNonNull(actionCommand));
 	}
 

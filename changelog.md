@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.2
 ### is.codion.swing.common.ui
 - Control.control() renamed commandControl().
+- Control.BuilderFactory.actionCommand() renamed action().
 ### is.codion.framework.domain
 - DefaultColumnDefinition.groupBy, aggregate, selectable and lazy no longer transient.
 ### is.codion.framework.model
