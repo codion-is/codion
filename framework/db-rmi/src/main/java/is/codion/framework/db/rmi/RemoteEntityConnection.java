@@ -92,7 +92,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 *     connection.commitTransaction();
 	 * }
 	 * catch (DatabaseException e) {
-   *     connection.rollbackTransaction();
+	 *     connection.rollbackTransaction();
 	 *     throw e;
 	 * }
 	 * catch (Exception e) {          // Very important to catch Exception

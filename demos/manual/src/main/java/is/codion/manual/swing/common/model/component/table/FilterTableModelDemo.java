@@ -80,6 +80,7 @@ public final class FilterTableModelDemo {
 						throw new IllegalArgumentException();
 				}
 			}
+
 			@Override
 			public Object value(Row row, Column identifier) {
 				switch (identifier) {

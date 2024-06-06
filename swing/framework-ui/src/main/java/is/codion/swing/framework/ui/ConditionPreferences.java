@@ -93,72 +93,72 @@ final class ConditionPreferences {
 		return conditionObject;
 	}
 
-		/**
-		 * Creates a new {@link ConditionPreferences} instance.
-		 * @param attribute the attribute
-		 * @param autoEnable true if auto enable is enabled
-		 * @param caseSensitive true if case sensitive
-		 * @param automaticWildcard the automatic wildcard state
-		 * @return a new {@link ConditionPreferences} instance.
-		 */
-		static ConditionPreferences conditionPreferences(Attribute<?> attribute, boolean autoEnable, boolean caseSensitive,
-																										 AutomaticWildcard automaticWildcard) {
-			return new ConditionPreferences(attribute, autoEnable, caseSensitive, automaticWildcard);
-		}
+	/**
+	 * Creates a new {@link ConditionPreferences} instance.
+	 * @param attribute the attribute
+	 * @param autoEnable true if auto enable is enabled
+	 * @param caseSensitive true if case sensitive
+	 * @param automaticWildcard the automatic wildcard state
+	 * @return a new {@link ConditionPreferences} instance.
+	 */
+	static ConditionPreferences conditionPreferences(Attribute<?> attribute, boolean autoEnable, boolean caseSensitive,
+																									 AutomaticWildcard automaticWildcard) {
+		return new ConditionPreferences(attribute, autoEnable, caseSensitive, automaticWildcard);
+	}
 
-		/**
-		 * @param conditionPreferences the condition preferences mapped to their respective attribute
-		 * @return a string encoding of the given preferences
-		 */
-		static String toString(Map<Attribute<?>, ConditionPreferences> conditionPreferences) {
-			requireNonNull(conditionPreferences);
-			JSONObject jsonConditionPreferences = new JSONObject();
-			conditionPreferences.forEach((attribute, preferences) -> jsonConditionPreferences.put(attribute.name(), preferences.toJSONObject()));
-			JSONObject preferencesRoot = new JSONObject();
-			preferencesRoot.put(ConditionPreferences.CONDITIONS_KEY, jsonConditionPreferences);
+	/**
+	 * @param conditionPreferences the condition preferences mapped to their respective attribute
+	 * @return a string encoding of the given preferences
+	 */
+	static String toString(Map<Attribute<?>, ConditionPreferences> conditionPreferences) {
+		requireNonNull(conditionPreferences);
+		JSONObject jsonConditionPreferences = new JSONObject();
+		conditionPreferences.forEach((attribute, preferences) -> jsonConditionPreferences.put(attribute.name(), preferences.toJSONObject()));
+		JSONObject preferencesRoot = new JSONObject();
+		preferencesRoot.put(ConditionPreferences.CONDITIONS_KEY, jsonConditionPreferences);
 
-			return preferencesRoot.toString();
-		}
+		return preferencesRoot.toString();
+	}
 
-		/**
-		 * @param attributes the attributes
-		 * @param preferencesString the preferences encoded as as string
-		 * @return a map containing the {@link EntityTablePanel.ColumnPreferences} instances parsed from the given string
-		 */
-		static Map<Attribute<?>, ConditionPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {
-			requireNonNull(preferencesString);
-			JSONObject jsonObject = new JSONObject(preferencesString).getJSONObject(ConditionPreferences.CONDITIONS_KEY);
-			return requireNonNull(attributes).stream()
-							.map(attribute -> conditionPreferences(attribute, requireNonNull(jsonObject)))
-							.filter(Optional::isPresent)
-							.map(Optional::get)
-							.collect(toMap(ConditionPreferences::attribute, Function.identity()));
-		}
+	/**
+	 * @param attributes the attributes
+	 * @param preferencesString the preferences encoded as as string
+	 * @return a map containing the {@link EntityTablePanel.ColumnPreferences} instances parsed from the given string
+	 */
+	static Map<Attribute<?>, ConditionPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {
+		requireNonNull(preferencesString);
+		JSONObject jsonObject = new JSONObject(preferencesString).getJSONObject(ConditionPreferences.CONDITIONS_KEY);
+		return requireNonNull(attributes).stream()
+						.map(attribute -> conditionPreferences(attribute, requireNonNull(jsonObject)))
+						.filter(Optional::isPresent)
+						.map(Optional::get)
+						.collect(toMap(ConditionPreferences::attribute, Function.identity()));
+	}
 
-		/**
-		 * Applies the given condition preferences to the given table model
-		 * @param tableModel the table model to apply the preferences to
-		 * @param columnAttributes the available column attributes
-		 * @param preferencesString the condition preferences string
-		 */
-		static void apply(EntityTableModel<?> tableModel, List<Attribute<?>> columnAttributes, String preferencesString) {
-			requireNonNull(tableModel);
-			requireNonNull(columnAttributes);
-			requireNonNull(preferencesString);
+	/**
+	 * Applies the given condition preferences to the given table model
+	 * @param tableModel the table model to apply the preferences to
+	 * @param columnAttributes the available column attributes
+	 * @param preferencesString the condition preferences string
+	 */
+	static void apply(EntityTableModel<?> tableModel, List<Attribute<?>> columnAttributes, String preferencesString) {
+		requireNonNull(tableModel);
+		requireNonNull(columnAttributes);
+		requireNonNull(preferencesString);
 
-			Map<Attribute<?>, ConditionPreferences> conditionPreferences = fromString(columnAttributes, preferencesString);
-			for (Attribute<?> attribute : columnAttributes) {
-				ConditionPreferences preferences = conditionPreferences.get(attribute);
-				if (preferences != null) {
-					ColumnConditionModel<? extends Attribute<?>, Object> conditionModel = tableModel.conditionModel().conditionModel(attribute);
-					if (conditionModel != null) {
-						conditionModel.caseSensitive().set(preferences.caseSensitive());
-						conditionModel.autoEnable().set(preferences.autoEnable());
-						conditionModel.automaticWildcard().set(preferences.automaticWildcard());
-					}
+		Map<Attribute<?>, ConditionPreferences> conditionPreferences = fromString(columnAttributes, preferencesString);
+		for (Attribute<?> attribute : columnAttributes) {
+			ConditionPreferences preferences = conditionPreferences.get(attribute);
+			if (preferences != null) {
+				ColumnConditionModel<? extends Attribute<?>, Object> conditionModel = tableModel.conditionModel().conditionModel(attribute);
+				if (conditionModel != null) {
+					conditionModel.caseSensitive().set(preferences.caseSensitive());
+					conditionModel.autoEnable().set(preferences.autoEnable());
+					conditionModel.automaticWildcard().set(preferences.automaticWildcard());
 				}
 			}
 		}
+	}
 
 	static Optional<ConditionPreferences> conditionPreferences(Attribute<?> attribute, JSONObject preferences) {
 		if (preferences.has(attribute.name())) {

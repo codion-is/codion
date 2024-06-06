@@ -50,7 +50,7 @@ final class DefaultListBoxBuilder<T>
 				extends AbstractComponentBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>>
 				implements ListBoxBuilder<T> {
 
-	private final ComponentValue<T,? extends JComponent> itemValue;
+	private final ComponentValue<T, ? extends JComponent> itemValue;
 	private final ValueSet<T> linkedValue;
 	private Function<Object, String> string = new DefaultString();
 

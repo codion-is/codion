@@ -34,7 +34,7 @@ import static java.util.ResourceBundle.getBundle;
  */
 final class PostgreSQLDatabase extends AbstractDatabase {
 
-	private static final MessageBundle MESSAGES = 
+	private static final MessageBundle MESSAGES =
 					messageBundle(PostgreSQLDatabase.class, getBundle(PostgreSQLDatabase.class.getName()));
 
 	private static final Map<String, String> ERROR_CODE_MAP = new HashMap<>();

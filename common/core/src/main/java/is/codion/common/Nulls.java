@@ -48,6 +48,6 @@ public final class Nulls {
 		if (objects.length == 0) {
 			return true;
 		}
-    return Arrays.stream(objects).noneMatch(Objects::isNull);
-  }
+		return Arrays.stream(objects).noneMatch(Objects::isNull);
+	}
 }

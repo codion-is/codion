@@ -23,6 +23,6 @@
  */
 module is.codion.framework.i18n {
 	requires transitive is.codion.common.core;
-	
+
 	exports is.codion.framework.i18n;
 }

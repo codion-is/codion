@@ -123,7 +123,7 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final ConnectionPoolWrapper createConnectionPool(ConnectionPoolFactory connectionPoolFactory,
-																				 User poolUser) throws DatabaseException {
+																													User poolUser) throws DatabaseException {
 		requireNonNull(connectionPoolFactory, "connectionPoolFactory");
 		requireNonNull(poolUser, "poolUser");
 		if (connectionPools.containsKey(poolUser.username().toLowerCase())) {

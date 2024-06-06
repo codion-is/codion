@@ -240,8 +240,8 @@ public final class ServerMonitorPanel extends JPanel {
 	private JPanel createOperationPanel() {
 		FilterTable<DomainOperation, OperationColumns.Id> table =
 						FilterTable.builder(model.operationTableModel(), createOperationColumns())
-						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.build();
+										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+										.build();
 
 		JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
 						.add(button(commandControl(model::refreshOperationList))
@@ -258,8 +258,8 @@ public final class ServerMonitorPanel extends JPanel {
 	private JPanel createReportPanel() {
 		FilterTable<DomainReport, ReportColumns.Id> table =
 						FilterTable.builder(model.reportTableModel(), createReportColumns())
-						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.build();
+										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+										.build();
 
 		JPanel clearCacheAndRefreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
 						.add(button(commandControl(model::clearReportCache))
@@ -279,8 +279,8 @@ public final class ServerMonitorPanel extends JPanel {
 	private JPanel createEntityPanel() {
 		FilterTable<DomainEntityDefinition, DomainColumns.Id> table =
 						FilterTable.builder(model.domainTableModel(), createDomainColumns())
-						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.build();
+										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+										.build();
 
 		JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
 						.add(button(commandControl(model::refreshDomainList))
@@ -379,50 +379,50 @@ public final class ServerMonitorPanel extends JPanel {
 	}
 
 	private static List<FilterTableColumn<ReportColumns.Id>> createReportColumns() {
-			return Arrays.asList(
-							FilterTableColumn.builder(ReportColumns.Id.DOMAIN)
-											.headerValue(DOMAIN)
-											.build(),
-							FilterTableColumn.builder(ReportColumns.Id.REPORT)
-											.headerValue("Report")
-											.build(),
-							FilterTableColumn.builder(ReportColumns.Id.TYPE)
-											.headerValue("Type")
-											.build(),
-							FilterTableColumn.builder(ReportColumns.Id.PATH)
-											.headerValue("Path")
-											.build(),
-							FilterTableColumn.builder(ReportColumns.Id.CACHED)
-											.headerValue("Cached")
-											.build());
+		return Arrays.asList(
+						FilterTableColumn.builder(ReportColumns.Id.DOMAIN)
+										.headerValue(DOMAIN)
+										.build(),
+						FilterTableColumn.builder(ReportColumns.Id.REPORT)
+										.headerValue("Report")
+										.build(),
+						FilterTableColumn.builder(ReportColumns.Id.TYPE)
+										.headerValue("Type")
+										.build(),
+						FilterTableColumn.builder(ReportColumns.Id.PATH)
+										.headerValue("Path")
+										.build(),
+						FilterTableColumn.builder(ReportColumns.Id.CACHED)
+										.headerValue("Cached")
+										.build());
 	}
 
 	private static List<FilterTableColumn<DomainColumns.Id>> createDomainColumns() {
-			return Arrays.asList(
-							FilterTableColumn.builder(DomainColumns.Id.DOMAIN)
-											.headerValue(DOMAIN)
-											.build(),
-							FilterTableColumn.builder(DomainColumns.Id.ENTITY)
-											.headerValue("Entity")
-											.build(),
-							FilterTableColumn.builder(DomainColumns.Id.TABLE)
-											.headerValue("Table")
-											.build());
+		return Arrays.asList(
+						FilterTableColumn.builder(DomainColumns.Id.DOMAIN)
+										.headerValue(DOMAIN)
+										.build(),
+						FilterTableColumn.builder(DomainColumns.Id.ENTITY)
+										.headerValue("Entity")
+										.build(),
+						FilterTableColumn.builder(DomainColumns.Id.TABLE)
+										.headerValue("Table")
+										.build());
 	}
 
-		private static List<FilterTableColumn<OperationColumns.Id>> createOperationColumns() {
-			return Arrays.asList(
-							FilterTableColumn.builder(OperationColumns.Id.DOMAIN)
-											.headerValue(DOMAIN)
-											.build(),
-							FilterTableColumn.builder(OperationColumns.Id.TYPE)
-											.headerValue("Type")
-											.build(),
-							FilterTableColumn.builder(OperationColumns.Id.OPERATION)
-											.headerValue("Operation")
-											.build(),
-							FilterTableColumn.builder(OperationColumns.Id.CLASS)
-											.headerValue("Class")
-											.build());
+	private static List<FilterTableColumn<OperationColumns.Id>> createOperationColumns() {
+		return Arrays.asList(
+						FilterTableColumn.builder(OperationColumns.Id.DOMAIN)
+										.headerValue(DOMAIN)
+										.build(),
+						FilterTableColumn.builder(OperationColumns.Id.TYPE)
+										.headerValue("Type")
+										.build(),
+						FilterTableColumn.builder(OperationColumns.Id.OPERATION)
+										.headerValue("Operation")
+										.build(),
+						FilterTableColumn.builder(OperationColumns.Id.CLASS)
+										.headerValue("Class")
+										.build());
 	}
 }

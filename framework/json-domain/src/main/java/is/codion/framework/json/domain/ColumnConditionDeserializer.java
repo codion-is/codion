@@ -148,8 +148,8 @@ final class ColumnConditionDeserializer implements Serializable {
 			Collection<String> inValues = (Collection<String>) values;
 
 			return (ColumnCondition<T>) (caseSensitive ?
-										stringColumn.in(inValues) :
-										stringColumn.inIgnoreCase(inValues));
+							stringColumn.in(inValues) :
+							stringColumn.inIgnoreCase(inValues));
 		}
 
 		return column.in(values);
@@ -161,8 +161,8 @@ final class ColumnConditionDeserializer implements Serializable {
 			Collection<String> inValues = (Collection<String>) values;
 
 			return (ColumnCondition<T>) (caseSensitive ?
-										stringColumn.notIn(inValues) :
-										stringColumn.notInIgnoreCase(inValues));
+							stringColumn.notIn(inValues) :
+							stringColumn.notInIgnoreCase(inValues));
 		}
 
 		return column.notIn(values);

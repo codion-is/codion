@@ -144,7 +144,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 		}
 
 		JPanel buttonPanel = ButtonPanelBuilder.builder(Controls.builder()
-						.actions(actions))
+										.actions(actions))
 						.build();
 		JPanel panel = BorderLayoutPanelBuilder.builder(new BorderLayout())
 						.centerComponent(component)
