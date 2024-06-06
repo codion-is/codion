@@ -78,11 +78,11 @@ public final class FilterTableColumn<C> extends TableColumn {
 
 	/**
 	 * @param identifier an identifier for this column
-	 * @throws IllegalStateException always, changing the identifier is not supported
+	 * @throws UnsupportedOperationException, changing the identifier is not supported
 	 */
 	@Override
 	public void setIdentifier(Object identifier) {
-		throw new IllegalStateException("Can't change the identifier of a FilterTableColumn");
+		throw new UnsupportedOperationException("Changing the identifier of a FilterTableColumn is not supported");
 	}
 
 	/**
