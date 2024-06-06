@@ -1077,7 +1077,7 @@ public class EntityPanel extends JPanel {
 				break;
 			case EMBEDDED:
 				disposeEditWindow();
-				mainPanel.add(editControlPanel, BorderLayout.NORTH);
+				mainPanel.add(editControlPanel, configuration.editPanelContstraints);
 				break;
 			case WINDOW:
 				displayEditWindow();
@@ -1264,7 +1264,7 @@ public class EntityPanel extends JPanel {
 
 		/**
 		 * Specifies where the control panel should be placed in a BorderLayout<br>
-		 * Value type: Boolean<br>
+		 * Value type: String<br>
 		 * Default value: {@link BorderLayout#EAST}
 		 * @see #TOOLBAR_CONTROLS
 		 */
@@ -1273,12 +1273,20 @@ public class EntityPanel extends JPanel {
 
 		/**
 		 * Specifies where the control toolbar should be placed in a BorderLayout<br>
-		 * Value type: Boolean<br>
+		 * Value type: String<br>
 		 * Default value: BorderLayout.WEST
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_TOOLBAR_CONSTRAINTS =
-						Configuration.stringValue(EntityPanel.class.getName() + ".controlToolbarConstraints", BorderLayout.WEST);
+						Configuration.stringValue(EntityPanel.class.getName() + ".controlToolBarConstraints", BorderLayout.WEST);
+
+		/**
+		 * Specifies where the edit panel should be placed in a BorderLayout<br>
+		 * Value type: Boolean<br>
+		 * Default value: BorderLayout.NORTH
+		 */
+		public static final PropertyValue<String> EDIT_PANEL_CONSTRAINTS =
+						Configuration.stringValue(EntityPanel.class.getName() + ".editPanelConstraints", BorderLayout.NORTH);
 
 		/**
 		 * Specifies whether entity panels should include controls by default<br>
@@ -1307,6 +1315,7 @@ public class EntityPanel extends JPanel {
 		private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
 		private WindowType windowType = WINDOW_TYPE.get();
 		private PanelState initialEditState = EMBEDDED;
+		private String editPanelContstraints = EDIT_PANEL_CONSTRAINTS.get();
 		private String caption;
 		private String description;
 		private ImageIcon icon;
@@ -1334,6 +1343,7 @@ public class EntityPanel extends JPanel {
 			this.icon = config.icon;
 			this.disposeEditDialogOnEscape = config.disposeEditDialogOnEscape;
 			this.windowType = config.windowType;
+			this.editPanelContstraints = config.editPanelContstraints;
 		}
 
 		/**
@@ -1413,16 +1423,17 @@ public class EntityPanel extends JPanel {
 		 * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
 		 */
 		public Config controlComponentConstraints(String controlComponentConstraints) {
-			switch (requireNonNull(controlComponentConstraints)) {
-				case BorderLayout.SOUTH:
-				case BorderLayout.NORTH:
-				case BorderLayout.EAST:
-				case BorderLayout.WEST:
-					break;
-				default:
-					throw new IllegalArgumentException("Control component constraints must be one of BorderLayout.SOUTH, NORTH, EAST or WEST");
-			}
-			this.controlComponentConstraints = controlComponentConstraints;
+			this.controlComponentConstraints = validateBorderLayoutConstraints(controlComponentConstraints);
+			return this;
+		}
+
+		/**
+		 * @param editPanelConstraints the edit panel constraints
+		 * @return this Config instance
+		 * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
+		 */
+		public Config editPanelConstraints(String editPanelConstraints) {
+			this.editPanelContstraints = validateBorderLayoutConstraints(editPanelConstraints);
 			return this;
 		}
 
@@ -1524,6 +1535,20 @@ public class EntityPanel extends JPanel {
 		private boolean horizontalControlLayout() {
 			return controlComponentConstraints.equals(BorderLayout.SOUTH) ||
 							controlComponentConstraints.equals(BorderLayout.NORTH);
+		}
+
+		private static String validateBorderLayoutConstraints(String constraints) {
+			switch (requireNonNull(constraints)) {
+				case BorderLayout.SOUTH:
+				case BorderLayout.NORTH:
+				case BorderLayout.EAST:
+				case BorderLayout.WEST:
+					break;
+				default:
+					throw new IllegalArgumentException("Constraints must be one of BorderLayout.SOUTH, NORTH, EAST or WEST");
+			}
+
+			return constraints;
 		}
 
 		private static final class DefaultDetailLayout implements Function<EntityPanel, DetailLayout> {

@@ -13,6 +13,8 @@ Codion Change Log
 - DefaultColumnDefinition.groupBy, aggregate, selectable and lazy no longer transient.
 ### is.codion.framework.model
 - EntityConditionModelFactory, now creates condition models for all attributes, whether selectable or not.
+### is.codion.swing.framework.ui
+- EntityPanel.Config.editPanelConstraints() and EDIT_PANEL_CONSTRAINTS configuration value added.
 
 ## 0.18.1
 ### is.codion.swing.common.ui
