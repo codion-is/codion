@@ -30,6 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SortOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -47,8 +48,6 @@ public class FilterTableTest {
 	private static final TestRow C = new TestRow("c");
 	private static final TestRow D = new TestRow("d");
 	private static final TestRow E = new TestRow("e");
-	private static final TestRow F = new TestRow("f");
-	private static final TestRow G = new TestRow("g");
 	private static final TestRow NULL = new TestRow(null);
 
 	private static final List<TestRow> ITEMS = unmodifiableList(asList(A, B, C, D, E));
@@ -457,6 +456,31 @@ public class FilterTableTest {
 						.header(false)
 						.selected(true)
 						.get());
+	}
+
+	@Test
+	void nonUniqueColumnIdentifiers() {
+		FilterTableModel<Object, Integer> model = FilterTableModel.builder(new FilterTableModel.Columns<Object, Integer>() {
+							@Override
+							public List<Integer> identifiers() {
+								return List.of(0, 1);
+							}
+
+							@Override
+							public Class<?> columnClass(Integer identifier) {
+								return Object.class;
+							}
+
+							@Override
+							public Object value(Object row, Integer identifier) {
+								return null;
+							}
+						})
+						.build();
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model, Arrays.asList(
+						FilterTableColumn.filterTableColumn(0, 0),
+						FilterTableColumn.filterTableColumn(0, 1)
+		)));
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,

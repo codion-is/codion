@@ -596,7 +596,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			if (requireNonNull(columns).identifiers().isEmpty()) {
 				throw new IllegalArgumentException("No columns specified");
 			}
-			this.columns = requireNonNull(columns);
+			this.columns = validateIdentifiers(columns);
 		}
 
 		@Override
@@ -632,6 +632,14 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public FilterTableModel<R, C> build() {
 			return new DefaultFilterTableModel<>(this);
+		}
+
+		private Columns<R, C> validateIdentifiers(Columns<R, C> columns) {
+			if (new HashSet<>(columns.identifiers()).size() != columns.identifiers().size()) {
+				throw new IllegalArgumentException("Column identifiers are not unique");
+			}
+
+			return columns;
 		}
 
 		private static final class ValidPredicate<R> implements Predicate<R> {

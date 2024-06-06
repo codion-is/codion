@@ -1133,7 +1133,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = requireNonNull(tableModel);
-			this.columns = new ArrayList<>(requireNonNull(columns));
+			this.columns = new ArrayList<>(validateIdentifiers(columns));
 			this.cellRendererFactory = new DefaultFilterTableCellRendererFactory<>(tableModel);
 		}
 
@@ -1233,6 +1233,17 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		protected void setInitialValue(FilterTable<R, C> component, Void initialValue) {}
+
+		private Collection<FilterTableColumn<C>> validateIdentifiers(List<FilterTableColumn<C>> columns) {
+			if (columns.stream()
+							.map(FilterTableColumn::identifier)
+							.distinct()
+							.count() != columns.size()) {
+				throw new IllegalArgumentException("Column identifiers are not unique");
+			}
+
+			return columns;
+		}
 	}
 
 	private final class DefaultSummaryValuesFactory implements SummaryValues.Factory<C> {

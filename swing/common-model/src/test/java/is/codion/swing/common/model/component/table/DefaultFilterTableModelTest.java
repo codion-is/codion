@@ -51,7 +51,6 @@ public final class DefaultFilterTableModelTest {
 	private static final TestRow E = new TestRow("e");
 	private static final TestRow F = new TestRow("f");
 	private static final TestRow G = new TestRow("g");
-	private static final TestRow NULL = new TestRow(null);
 	private static final List<TestRow> ITEMS = unmodifiableList(asList(A, B, C, D, E));
 
 	private FilterTableModel<TestRow, Integer> tableModel;
@@ -90,6 +89,26 @@ public final class DefaultFilterTableModelTest {
 	@BeforeEach
 	void setUp() {
 		tableModel = createTestModel();
+	}
+
+	@Test
+	void nonUniqueColumnIdentifiers() {
+		assertThrows(IllegalArgumentException.class, () -> FilterTableModel.builder(new Columns<Object, Object>() {
+			@Override
+			public List<Object> identifiers() {
+				return List.of(0, 1, 0);
+			}
+
+			@Override
+			public Class<?> columnClass(Object o) {
+				return Object.class;
+			}
+
+			@Override
+			public Object value(Object row, Object o) {
+				return null;
+			}
+		}));
 	}
 
 	@Test
