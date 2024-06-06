@@ -11,6 +11,7 @@ Overview of the available i18n properties files and their keys and values.
 is/codion/common/Operator.properties
 is/codion/common/Operator_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -38,6 +39,7 @@ is/codion/common/Operator_is_IS.properties
 is/codion/common/i18n/Messages.properties
 is/codion/common/i18n/Messages_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -74,6 +76,7 @@ is/codion/common/i18n/Messages_is_IS.properties
 is/codion/common/model/table/ColumnConditionModel$AutomaticWildcard.properties
 is/codion/common/model/table/ColumnConditionModel$AutomaticWildcard_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -91,6 +94,7 @@ is/codion/common/model/table/ColumnConditionModel$AutomaticWildcard_is_IS.proper
 is/codion/common/model/table/ColumnSummary.properties
 is/codion/common/model/table/ColumnSummary_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -112,6 +116,7 @@ is/codion/common/model/table/ColumnSummary_is_IS.properties
 is/codion/common/rmi/server/exception/ConnectionNotAvailableException.properties
 is/codion/common/rmi/server/exception/ConnectionNotAvailableException_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -128,6 +133,7 @@ is/codion/common/rmi/server/exception/ConnectionNotAvailableException_is_IS.prop
 is/codion/dbms/h2/H2Database.properties
 is/codion/dbms/h2/H2Database_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -149,6 +155,7 @@ is/codion/dbms/h2/H2Database_is_IS.properties
 is/codion/dbms/oracle/OracleDatabase.properties
 is/codion/dbms/oracle/OracleDatabase_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -176,6 +183,7 @@ is/codion/dbms/oracle/OracleDatabase_is_IS.properties
 is/codion/dbms/postgresql/PostgreSQLDatabase.properties
 is/codion/dbms/postgresql/PostgreSQLDatabase_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -199,6 +207,7 @@ is/codion/dbms/postgresql/PostgreSQLDatabase_is_IS.properties
 is/codion/framework/db/http/HttpEntityConnection.properties
 is/codion/framework/db/http/HttpEntityConnection_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -216,6 +225,7 @@ is/codion/framework/db/http/HttpEntityConnection_is_IS.properties
 is/codion/framework/db/local/LocalEntityConnection.properties
 is/codion/framework/db/local/LocalEntityConnection_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -235,6 +245,7 @@ is/codion/framework/db/local/LocalEntityConnection_is_IS.properties
 is/codion/framework/domain/entity/DefaultEntityValidator.properties
 is/codion/framework/domain/entity/DefaultEntityValidator_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -253,6 +264,7 @@ is/codion/framework/domain/entity/DefaultEntityValidator_is_IS.properties
 is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition.properties
 is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -269,6 +281,7 @@ is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition_is_IS.pr
 is/codion/framework/i18n/FrameworkMessages.properties
 is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -329,6 +342,7 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 is/codion/plugin/imagepanel/NavigableImagePanel.properties
 is/codion/plugin/imagepanel/NavigableImagePanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -345,6 +359,7 @@ is/codion/plugin/imagepanel/NavigableImagePanel_is_IS.properties
 is/codion/swing/common/ui/SwingMessages.properties
 is/codion/swing/common/ui/SwingMessages_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -413,6 +428,7 @@ Slóðin fannst ekki.
 is/codion/swing/common/ui/component/calendar/CalendarPanel.properties
 is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -428,6 +444,7 @@ is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 is/codion/swing/common/ui/component/table/ColumnSelectionPanel.properties
 is/codion/swing/common/ui/component/table/ColumnSelectionPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -445,6 +462,7 @@ is/codion/swing/common/ui/component/table/ColumnSelectionPanel_is_IS.properties
 is/codion/swing/common/ui/component/table/FilterColumnConditionPanel.properties
 is/codion/swing/common/ui/component/table/FilterColumnConditionPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -461,6 +479,7 @@ is/codion/swing/common/ui/component/table/FilterColumnConditionPanel_is_IS.prope
 is/codion/swing/common/ui/component/table/FilterTable.properties
 is/codion/swing/common/ui/component/table/FilterTable_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -488,6 +507,7 @@ is/codion/swing/common/ui/component/table/FilterTable_is_IS.properties
 is/codion/swing/common/ui/component/table/TableConditionPanel.properties
 is/codion/swing/common/ui/component/table/TableConditionPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -505,6 +525,7 @@ is/codion/swing/common/ui/component/table/TableConditionPanel_is_IS.properties
 is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFilter.properties
 is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFilter_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -519,6 +540,7 @@ is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFil
 is/codion/swing/common/ui/component/text/SearchHighlighter.properties
 is/codion/swing/common/ui/component/text/SearchHighlighter_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -533,6 +555,7 @@ is/codion/swing/common/ui/component/text/SearchHighlighter_is_IS.properties
 is/codion/swing/common/ui/component/text/StringLengthValidator.properties
 is/codion/swing/common/ui/component/text/StringLengthValidator_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -547,6 +570,7 @@ is/codion/swing/common/ui/component/text/StringLengthValidator_is_IS.properties
 is/codion/swing/common/ui/component/text/TemporalField.properties
 is/codion/swing/common/ui/component/text/TemporalField_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -561,6 +585,7 @@ is/codion/swing/common/ui/component/text/TemporalField_is_IS.properties
 is/codion/swing/common/ui/component/text/TextFieldPanel.properties
 is/codion/swing/common/ui/component/text/TextFieldPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -575,6 +600,7 @@ is/codion/swing/common/ui/component/text/TextFieldPanel_is_IS.properties
 is/codion/swing/common/ui/dialog/DefaultCalendarDialogBuilder.properties
 is/codion/swing/common/ui/dialog/DefaultCalendarDialogBuilder_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -590,6 +616,7 @@ is/codion/swing/common/ui/dialog/DefaultCalendarDialogBuilder_is_IS.properties
 is/codion/swing/common/ui/dialog/DefaultExceptionDialogBuilder.properties
 is/codion/swing/common/ui/dialog/DefaultExceptionDialogBuilder_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -604,6 +631,7 @@ is/codion/swing/common/ui/dialog/DefaultExceptionDialogBuilder_is_IS.properties
 is/codion/swing/common/ui/dialog/DefaultFileSelectionDialogBuilder.properties
 is/codion/swing/common/ui/dialog/DefaultFileSelectionDialogBuilder_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -625,6 +653,7 @@ is/codion/swing/common/ui/dialog/DefaultFileSelectionDialogBuilder_is_IS.propert
 is/codion/swing/common/ui/dialog/DefaultFontSizeSelectionDialogBuilder.properties
 is/codion/swing/common/ui/dialog/DefaultFontSizeSelectionDialogBuilder_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -639,6 +668,7 @@ is/codion/swing/common/ui/dialog/DefaultFontSizeSelectionDialogBuilder_is_IS.pro
 is/codion/swing/common/ui/dialog/DefaultSelectionDialogBuilder.properties
 is/codion/swing/common/ui/dialog/DefaultSelectionDialogBuilder_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -654,6 +684,7 @@ is/codion/swing/common/ui/dialog/DefaultSelectionDialogBuilder_is_IS.properties
 is/codion/swing/common/ui/dialog/ExceptionPanel.properties
 is/codion/swing/common/ui/dialog/ExceptionPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -679,6 +710,7 @@ is/codion/swing/common/ui/dialog/ExceptionPanel_is_IS.properties
 is/codion/swing/common/ui/laf/LookAndFeelProvider.properties
 is/codion/swing/common/ui/laf/LookAndFeelProvider_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -695,6 +727,7 @@ is/codion/swing/common/ui/laf/LookAndFeelProvider_is_IS.properties
 is/codion/swing/framework/ui/DefaultEntityApplicationPanelBuilder.properties
 is/codion/swing/framework/ui/DefaultEntityApplicationPanelBuilder_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -709,6 +742,7 @@ is/codion/swing/framework/ui/DefaultEntityApplicationPanelBuilder_is_IS.properti
 is/codion/swing/framework/ui/EntityApplicationPanel.properties
 is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -739,6 +773,7 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 is/codion/swing/framework/ui/EntityDependenciesPanel.properties
 is/codion/swing/framework/ui/EntityDependenciesPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -754,6 +789,7 @@ is/codion/swing/framework/ui/EntityDependenciesPanel_is_IS.properties
 is/codion/swing/framework/ui/EntityEditPanel.properties
 is/codion/swing/framework/ui/EntityEditPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -771,6 +807,7 @@ is/codion/swing/framework/ui/EntityEditPanel_is_IS.properties
 is/codion/swing/framework/ui/EntityPanel.properties
 is/codion/swing/framework/ui/EntityPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -785,6 +822,7 @@ is/codion/swing/framework/ui/EntityPanel_is_IS.properties
 is/codion/swing/framework/ui/EntityTablePanel.properties
 is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -813,6 +851,7 @@ is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 is/codion/swing/framework/ui/KeyboardShortcutsPanel.properties
 is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -889,6 +928,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 is/codion/swing/framework/ui/TabbedDetailLayout.properties
 is/codion/swing/framework/ui/TabbedDetailLayout_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -904,6 +944,7 @@ is/codion/swing/framework/ui/TabbedDetailLayout_is_IS.properties
 is/codion/swing/framework/ui/component/EntityComboBox.properties
 is/codion/swing/framework/ui/component/EntityComboBox_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -918,6 +959,7 @@ is/codion/swing/framework/ui/component/EntityComboBox_is_IS.properties
 is/codion/swing/framework/ui/component/EntityControls.properties
 is/codion/swing/framework/ui/component/EntityControls_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS
@@ -933,6 +975,7 @@ is/codion/swing/framework/ui/component/EntityControls_is_IS.properties
 is/codion/swing/framework/ui/component/EntitySearchField.properties
 is/codion/swing/framework/ui/component/EntitySearchField_is_IS.properties
 ----
+
 [cols="1,1,1"]
 |===
 |key|default|is_IS

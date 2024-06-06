@@ -15,6 +15,7 @@ Holds value instances which are bound to input components in the panel below.
 [%collapsible]
 ====
 demos/manual/src/main/java/is/codion/framework/demos/manual/common/demo/ApplicationModel.java
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationModel.java[tags=demoModelImport]
@@ -28,6 +29,7 @@ include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationMo
 [%collapsible]
 ====
 demos/manual/src/main/java/is/codion/framework/demos/manual/common/demo/ApplicationPanel.java
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationPanel.java[tags=demoPanelImport]

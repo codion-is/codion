@@ -30,7 +30,8 @@ Codion is a full-stack, Java rich client desktop CRUD application framework, bas
 
 == Motivation
 
-My main motivation for developing Codion back in 2004 was the lack of application frameworks based on Java Standard Edition. I was writing rather basic desktop CRUD appliations, so I wanted to stick with Standard Edition components, Swing, JDBC and RMI.
+My main motivation for developing Codion back in 2004 was the lack of application frameworks based on Java Standard Edition.
+I was writing rather basic desktop CRUD appliations, so I wanted to stick with Standard Edition components, Swing, JDBC and RMI.
 
 I figured a CRUD application framework should:
 
@@ -85,7 +86,8 @@ Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and F
 
 === https://github.com/codion-is/petclinic[Petclinic]
 
-Minimalistic bare-bones project, with a local JDBC connection option. A good place to start.
+Minimalistic bare-bones project, with a local JDBC connection option.
+A good place to start.
 
 image::https://github.com/codion-is/petclinic/blob/main/src/docs/asciidoc/images/owners.png[Petclinic client]
 
@@ -119,7 +121,9 @@ Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object 
 
 === Entities
 
-The Codion framework is based around the `Entity` class which represents a row in a table or query. An `Entity` maps `Attributes` to their respective values and keeps track of values that have been modified since they were first set. `Entity` instances are basically data transfer objects and are *not* managed by the framework. For persistance see <<Persistance>> below.
+The Codion framework is based around the `Entity` class which represents a row in a table or query.
+An `Entity` maps `Attributes` to their respective values and keeps track of values that have been modified since they were first set. `Entity` instances are basically data transfer objects and are *not* managed by the framework.
+For persistance see <<Persistance>> below.
 
 [source,java]
 ----
@@ -154,7 +158,8 @@ System.out.println(customer.modified()); //false
 
 === Defining entities
 
-`EntityType` represents a table (or query), `Attribute` represents a typed value identifier, usually appearing as one of its subclasses `Column` or `ForeignKey`. The metadata required to present and persist entities is encapsulated by `EntityDefinition` and `AttributeDefinition`.
+`EntityType` represents a table (or query), `Attribute` represents a typed value identifier, usually appearing as one of its subclasses `Column` or `ForeignKey`.
+The metadata required to present and persist entities is encapsulated by `EntityDefinition` and `AttributeDefinition`.
 
 In the below example, we define a domain model with two entities, `Customer` and `Address` with a master/detail retionship, using the following steps:
 
@@ -338,7 +343,8 @@ add(address);
 |is.codion.framework.domain.test|is.codion:codion-framework-domain-test:{version}
 |===
 
-The `EntityTestUnit` class provides a JUnit testing harness for the domain model. The `EntityTestUnit.test(entityType)` method runs insert, select, update and delete on a randomly (or manually) generated  entity instance, verifying the results.
+The `EntityTestUnit` class provides a JUnit testing harness for the domain model.
+The `EntityTestUnit.test(entityType)` method runs insert, select, update and delete on a randomly (or manually) generated entity instance, verifying the results.
 
 [source,java]
 ----
@@ -368,7 +374,9 @@ public class StoreTest extends EntityTestUnit {
 |is.codion.swing.framework.ui|is.codion:codion-swing-framework-ui:{version}
 |===
 
-In the following example, we use the domain model from above and implement a `CustomerEditPanel` and `AddressEditPanel` by extending `EntityEditPanel`. These edit panels, as their names suggest, provide the UI for editing entity instances. In the `main` method we use these building blocks to assemble and display a client.
+In the following example, we use the domain model from above and implement a `CustomerEditPanel` and `AddressEditPanel` by extending `EntityEditPanel`.
+These edit panels, as their names suggest, provide the UI for editing entity instances.
+In the `main` method we use these building blocks to assemble and display a client.
 
 [source,java]
 ----
@@ -459,7 +467,6 @@ public class StoreDemo {
 ----
 
 ...and the result, all in all around 150 lines of code.
-
 image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
 
 == Persistance
@@ -473,7 +480,8 @@ image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
 |is.codion.framework.db.http|is.codion:codion-framework-db-http:{version}|HTTP
 |===
 
-The `EntityConnection` interface defines the database layer. There are three implementations available; local, which is based on a direct JDBC connection (used below), RMI and HTTP which are both served by the Codion Server.
+The `EntityConnection` interface defines the database layer.
+There are three implementations available; local, which is based on a direct JDBC connection (used below), RMI and HTTP which are both served by the Codion Server.
 
 [source,java]
 ----
@@ -553,11 +561,14 @@ The SQL queries generated by the framework are extremely simple, which means tha
 |SQL Server|is.codion:codion-dbms-sqlserver:{version}
 |===
 
-The *Oracle*, *PostgreSQL* and *H2* implementations have all been used in production systems for many years, whereas the *Db2* and *SQL Server* implementations have only been used for testing purposes. The rest have not been formally tested, but chances are they will just work.
+The *Oracle*, *PostgreSQL* and *H2* implementations have all been used in production systems for many years, whereas the *Db2* and *SQL Server* implementations have only been used for testing purposes.
+The rest have not been formally tested, but chances are they will just work.
 
 == Localization
 
-Localized messages are available in English (default) and Icelandic. There are a whole lot of {url-technical}/technical.html#_internationalization_i18n[localized messages] so if you are interested in providing translations that would be much appreciated. This i18n page can be generated with the following Gradle target.
+Localized messages are available in English (default) and Icelandic.
+There are a whole lot of {url-technical}/technical.html#_internationalization_i18n[localized messages] so if you are interested in providing translations that would be much appreciated.
+This i18n page can be generated with the following Gradle target.
 
 [source,shell]
 ----
@@ -568,7 +579,9 @@ gradlew documentation:generateI18nPage
 
 === Where is version 1.0?
 
-The primary reason for the 0.x.y version is to be able to respond to community feedback before freezing the public API. Until version 1.0, backwards compatibility will not be a priority and the API should be considered unstable. All changes will be documented in the Change Log and upgrade instructions included when necessary.
+The primary reason for the 0.x.y version is to be able to respond to community feedback before freezing the public API.
+Until version 1.0, backwards compatibility will not be a priority and the API should be considered unstable.
+All changes will be documented in the Change Log and upgrade instructions included when necessary.
 
 === Semantic Versioning
 

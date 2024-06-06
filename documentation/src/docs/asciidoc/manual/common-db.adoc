@@ -15,24 +15,28 @@ The {url-javadoc}{common-db}/is/codion/common/db/database/Database.html[Database
 There are multiple ways to aquire a Database instance.
 
 * By specifying a JDBC url via a system property.
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=systemProperty]
 ----
 
 * By setting the JDBC url configuration value directly.
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=configuration]
 ----
 
 * By instantiating a DatabaseFactory directly.
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=url]
 ----
 
 * By instantiating a DBMS specific DatabaseFactory directly.
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=factory]

@@ -8,7 +8,7 @@ The application model layer consists of the {url-javadoc}{framework-model}/is/co
 
 An *EntityModel* always contains an *EntityEditModel* instance and usually contains a *EntityTableModel* as well.
 
-[plantuml, entity-model-diagram, svg, align=center]
+[plantuml,entity-model-diagram,svg,align=center]
 -------------------------------------------
 interface EntityModel {
     +EntityEditModel editModel()
@@ -42,7 +42,8 @@ include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerAddre
 
 == EntityTableModel
 
-Every *EntityTableModel* contains a *EntityEditModel* instance. A default edit model implementation is created automatically by the *EntityTableModel* if one is not supplied via a constructor argument.
+Every *EntityTableModel* contains a *EntityEditModel* instance.
+A default edit model implementation is created automatically by the *EntityTableModel* if one is not supplied via a constructor argument.
 
 [source,java]
 ----
@@ -61,7 +62,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerEditM
 
 An *EntityModel* can contain one or more detail models, usually based on foreign key relationships.
 
-[plantuml, entity-detail-model-diagram, svg, align=center]
+[plantuml,entity-detail-model-diagram,svg,align=center]
 -------------------------------------------
 interface EntityModel {
     +Collection<EntityModel> detailModels()
@@ -90,4 +91,5 @@ include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerModel
 ----
 
 == Examples
+
 * <<{dir-tutorials}/employees/employees.adoc#_model, Employees entity models>>

@@ -2,7 +2,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-[plantuml, entity-table-model-diagram, svg, align=center]
+[plantuml,entity-table-model-diagram,svg,align=center]
 -------------------------------------------
 interface EntityTableModel {
     +EntityEditModel editModel()

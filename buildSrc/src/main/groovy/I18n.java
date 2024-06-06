@@ -46,7 +46,7 @@ public final class I18n {
 				builder.append("[source]\n");
 				builder.append("----\n");
 				resource.localeFiles.values().forEach(localeFile -> builder.append(removePrefix(localeFile)).append("\n"));
-				builder.append("----\n");
+				builder.append("----\n\n");
 				builder.append("[cols=\"");
 				builder.append(IntStream.rangeClosed(0, resource.locales.size())
 								.mapToObj(i -> "1")

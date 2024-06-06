@@ -22,7 +22,7 @@
 
 The default master/detail panel layout.
 
-image::technical/world-client.png[Client UI, 720]
+image::technical/world-client.png[Client UI,720]
 
 == Architecture
 

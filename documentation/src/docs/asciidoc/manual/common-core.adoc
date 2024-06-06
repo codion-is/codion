@@ -9,7 +9,7 @@ Three common classes used throughout the framework are {url-javadoc}{common-core
 
 === Event
 
-[plantuml, event-diagram, svg, align=center]
+[plantuml,event-diagram,svg,align=center]
 -------------------------------------------
 skinparam genericDisplay old
 
@@ -37,7 +37,9 @@ Consumer <-- Event
 EventObserver *-- Event
 -------------------------------------------
 
-The {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class is a synchronous event implementation used throughout the framework. Classes typically expose their events via public *event* accessors. Events are triggered by calling the *run* method in case no data is associated with the event or *accept* in case data should be propogated to listeners.
+The {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class is a synchronous event implementation used throughout the framework.
+Classes typically expose their events via public *event* accessors.
+Events are triggered by calling the *run* method in case no data is associated with the event or *accept* in case data should be propogated to listeners.
 
 The associated {url-javadoc}{common-core}/is/codion/common/event/EventObserver.html[EventObserver] instance can not trigger the event and can be safely passed around.
 
@@ -52,7 +54,7 @@ include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.ja
 
 === Value
 
-[plantuml, value-diagram, svg, align=center]
+[plantuml,value-diagram,svg,align=center]
 -------------------------------------------
 skinparam genericDisplay old
 
@@ -86,7 +88,8 @@ Values can be linked so that changes in one are reflected in the other.
 include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=value]
 ----
 
-Values can be non-nullable if a _nullValue_ is specified when the value is initialized. Null is then translated to the _nullValue_ when set.
+Values can be non-nullable if a _nullValue_ is specified when the value is initialized.
+Null is then translated to the _nullValue_ when set.
 
 [source,java,indent=0]
 ----
@@ -95,7 +98,7 @@ include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.ja
 
 === State
 
-[plantuml, state-diagram, svg, align=center]
+[plantuml,state-diagram,svg,align=center]
 -------------------------------------------
 skinparam genericDisplay old
 
@@ -116,7 +119,8 @@ State -|> Value
 State -|> StateObserver
 -------------------------------------------
 
-The {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver]. A *State* implements *Value<Boolean>* and is non-nullable .
+The {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver].
+A *State* implements *Value<Boolean>* and is non-nullable .
 
 States are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class.
 

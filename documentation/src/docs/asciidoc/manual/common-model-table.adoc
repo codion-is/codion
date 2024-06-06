@@ -4,7 +4,7 @@
 
 == FilterTableModel
 
-[plantuml, filter-table-model-diagram, svg, align=center]
+[plantuml,filter-table-model-diagram,svg,align=center]
 -------------------------------------------
 
 interface FilterTableModel {

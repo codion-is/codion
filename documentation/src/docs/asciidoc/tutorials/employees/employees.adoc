@@ -31,7 +31,9 @@ include::{dir-source-sql}/create_schema.sql[]
 [#_domain_model]
 == Domain model
 
-We start by creating a class named Employees in a package of our choosing, extending DomainModel and define the identity and column constants required for the department {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity], which is based on the EMPLOYEES.DEPARTMENT table. The EntityType constant represents the entity type, the columns represent the columns in the table. The entityType in this example contains the actual table name (employees.department), but the table name can be specified via the __tableName()__ builder method when the entity is defined.The column names are the actual column names from the table, but these can also be specified via __columnName()__ builder method.
+We start by creating a class named Employees in a package of our choosing, extending DomainModel and define the identity and column constants required for the department {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity], which is based on the EMPLOYEES.DEPARTMENT table.
+The EntityType constant represents the entity type, the columns represent the columns in the table.
+The entityType in this example contains the actual table name (employees.department), but the table name can be specified via the __tableName()__ builder method when the entity is defined.The column names are the actual column names from the table, but these can also be specified via __columnName()__ builder method.
 
 [source,java]
 ----
@@ -52,14 +54,20 @@ In this section we add a constructor, adding two entity definition builders to t
 include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tags=constructor]
 ----
 
-Next we add the method defining the department entity. *EntityDefinition.Builder* instances are provided by the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] class, via the *definition* method, which takes an array of *AttributeDefinition.Builder* instances as parameter. For an overview of the *AttributeDefinition* class see <<{basedir}/manual/manual.adoc#_attributes, Manual#Attributes>>. The *EntityDefinition.Builder* class provides chained setters for configuring the entity, such as the primary key value source. Here we set the default order by, the so-called *stringFactory* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity, and we also set the *caption*. In this case we simply have the department string provider return the department name.
+Next we add the method defining the department entity. *EntityDefinition.Builder* instances are provided by the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] class, via the *definition* method, which takes an array of *AttributeDefinition.Builder* instances as parameter.
+For an overview of the *AttributeDefinition* class see <<{basedir}/manual/manual.adoc#_attributes, Manual#Attributes>>.
+The *EntityDefinition.Builder* class provides chained setters for configuring the entity, such as the primary key value source.
+Here we set the default order by, the so-called *stringFactory* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity, and we also set the *caption*.
+In this case we simply have the department string provider return the department name.
 
 [source,java]
 ----
 include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tags=defineDepartment]
 ----
 
-Next we define the employee entity. Here we set the *keyGenerator* to *KeyGenerator.sequence("employees.employee_seq")* which, as the name suggests, fetches a value from a sequence. Here we also introduce the <<{basedir}/manual/manual.adoc#_foreignkey, ForeignKey>>, the *orderBy*, as well as a *ColorProvider* which is responsible for providing a custom color for an entity instance.
+Next we define the employee entity.
+Here we set the *keyGenerator* to *KeyGenerator.sequence("employees.employee_seq")* which, as the name suggests, fetches a value from a sequence.
+Here we also introduce the <<{basedir}/manual/manual.adoc#_foreignkey, ForeignKey>>, the *orderBy*, as well as a *ColorProvider* which is responsible for providing a custom color for an entity instance.
 
 [source,java]
 ----
@@ -68,7 +76,11 @@ include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[
 
 === Domain unit test
 
-To unit test the domain model we extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html[EntityTestUnit] and create a public test method for each entity we want tested and within that method call *test(entityType)*. The *EntityTestUnit* relies on information from the domain model to construct random entity instances and run insert, update, select and delete tests. The tests are run within their own transactions which are then rolled back. We can provide our own entity instances if we'd like by overriding *initializeTestEntity(entityType, foreignKeyEntities)* handling the cases we'd like and delegating the rest to the superclass implementation. The same can be done for entities that are referenced via foreign keys and are required in order to be able to insert records.
+To unit test the domain model we extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html[EntityTestUnit] and create a public test method for each entity we want tested and within that method call *test(entityType)*.
+The *EntityTestUnit* relies on information from the domain model to construct random entity instances and run insert, update, select and delete tests.
+The tests are run within their own transactions which are then rolled back.
+We can provide our own entity instances if we'd like by overriding *initializeTestEntity(entityType, foreignKeyEntities)* handling the cases we'd like and delegating the rest to the superclass implementation.
+The same can be done for entities that are referenced via foreign keys and are required in order to be able to insert records.
 
 NOTE: The {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#TEST_USER[EntityTestUnit.TEST_USER] configuration value specifies the user credentials to use when running the tests, you can set it directly or via the *codion.test.user* system property.
 
@@ -79,8 +91,7 @@ include::{dir-test-source}/is/codion/framework/demos/employees/domain/EmployeesT
 
 Here is the parameter required for running the Employees test on the default H2 embedded database, assuming the database resides in the working directory.
 
--Dcodion.db.url=jdbc:h2:mem:h2db
--Dcodion.test.user=scott:tiger
+-Dcodion.db.url=jdbc:h2:mem:h2db -Dcodion.test.user=scott:tiger
 
 For further information on parameters required for running Codion applications see <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> and <<{basedir}/technical/server.adoc#_server_configuration, server configuration>>.
 
@@ -88,14 +99,16 @@ For further information on parameters required for running Codion applications s
 
 In many cases we can use the default model implementations, but here we will customize the employee edit model by extending {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/SwingEntityEditModel.html[SwingEntityEditModel].
 
-We must provide a constructor with a single *EntityConnectionProvider* parameter. We also call the *bindEvents* method we define later on.
+We must provide a constructor with a single *EntityConnectionProvider* parameter.
+We also call the *bindEvents* method we define later on.
 
 [source,java]
 ----
 include::{dir-source}/is/codion/framework/demos/employees/model/EmployeeEditModel.java[tags=constructor]
 ----
 
-At some point we are going to be editing the manager attribute of an employee which means we'll need a list of managers. We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager attribute.
+At some point we are going to be editing the manager attribute of an employee which means we'll need a list of managers.
+We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager attribute.
 
 NOTE: The foreign key (Employee.MGR_FK) is used when referring to the manager attribute, very rarely do we have to worry about the underlying reference attribute (Employee.MGR).
 
@@ -124,7 +137,8 @@ A class extending *EntityEditPanel* must provide a constructor taking a single *
 include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentEditPanel.java[tags=constructor]
 ----
 
-We override the *intializeUI* method to construct the actual UI, used for editing the department entity. The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class provides methods for creating all the basic controls required, named *create...*, such as *createTextField(attribute)* or *createForeignKeyComboBox(foreignKey)*.
+We override the *intializeUI* method to construct the actual UI, used for editing the department entity.
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class provides methods for creating all the basic controls required, named *create...*, such as *createTextField(attribute)* or *createForeignKeyComboBox(foreignKey)*.
 
 [source,java]
 ----
@@ -140,7 +154,8 @@ A class extending *EntityTablePanel* must provide a constructor taking a single 
 include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentTablePanel.java[tags=constructor]
 ----
 
-We create a method for viewing a report, which is called via an action we'll initialize in the next step. For further information about report viewing and printing see <<{basedir}/manual/manual.adoc#_reporting_with_jasperreports, Manual#Reporting with JasperReports>>.
+We create a method for viewing a report, which is called via an action we'll initialize in the next step.
+For further information about report viewing and printing see <<{basedir}/manual/manual.adoc#_reporting_with_jasperreports, Manual#Reporting with JasperReports>>.
 
 [source,java]
 ----
@@ -181,7 +196,9 @@ include::{dir-source}/is/codion/framework/demos/employees/model/EmployeesAppMode
 [#_main_application_panel]
 === Main application panel
 
-We create a main application panel by extending {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. A constructor with a single *EmployeesAppModel* argument is required. Overriding *createEntityPanels()* we create two *EntityPanels* using the *SwingEntityModels* from the application model and return the department panel, which will act as the root panel.
+We create a main application panel by extending {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel].
+A constructor with a single *EmployeesAppModel* argument is required.
+Overriding *createEntityPanels()* we create two *EntityPanels* using the *SwingEntityModels* from the application model and return the department panel, which will act as the root panel.
 
 [source,java]
 ----
@@ -202,7 +219,8 @@ We override *createToolsMenuControls()* to add our import action to the Tools me
 include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeesAppPanel.java[tags=createToolsMenuControls]
 ----
 
-We create a *main()* method for configuring and running the application. See <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> for what configuration is required for running the client.
+We create a *main()* method for configuring and running the application.
+See <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> for what configuration is required for running the client.
 
 [source,java]
 ----

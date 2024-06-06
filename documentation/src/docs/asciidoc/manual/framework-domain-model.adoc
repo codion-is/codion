@@ -12,7 +12,8 @@ A Codion domain model is based around the {url-javadoc}{framework-domain}/is/cod
 == Domain core classes
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain]*::
-Specifies a domain model, containing entity definitions, procedures, functions and reports. A Codion domain model is implemented by extending the *{url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel]* class and populating it with entity definitions.
+Specifies a domain model, containing entity definitions, procedures, functions and reports.
+A Codion domain model is implemented by extending the *{url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel]* class and populating it with entity definitions.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/DomainType.html[DomainType]*::
 A unique identifier for a domain model and a factory for *EntityType* instances associated with that domain model.
@@ -21,9 +22,10 @@ A unique identifier for a domain model and a factory for *EntityType* instances 
 A unique identifier for an entity type (based on a table or query) and a factory for *Attribute* instances associated with that entity type.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Attribute.html[Attribute]*::
-A typed identifier for a column, foreign key or transient value, usually a *Column* or *ForeignKey*, allowing for type safe access to the associated value. Attributes are usually wrapped in an interface, serving as a convenient namespace.
+A typed identifier for a column, foreign key or transient value, usually a *Column* or *ForeignKey*, allowing for type safe access to the associated value.
+Attributes are usually wrapped in an interface, serving as a convenient namespace.
 
-[plantuml, attribute-diagram, svg, align=center]
+[plantuml,attribute-diagram,svg,align=center]
 -------------------------------------------
 skinparam genericDisplay old
 
@@ -54,8 +56,7 @@ Each *Attribute* has an associated *AttributeDefinition* (or one of its subclass
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity]*::
 Represents a row in a table (or query) and maps *Attributes* to their associated values while keeping track of values which have been modified since they were initially set.
 
-
-[plantuml, entity-diagram, svg, align=center]
+[plantuml,entity-diagram,svg,align=center]
 -------------------------------------------
 
 interface Entity {
@@ -69,6 +70,7 @@ interface Entity {
 Represents a unique key for a given entity.
 
 == Domain API
+
 To define a domain model API we:
 
 * Create a {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainType.html[DomainType] constant representing the domain.
@@ -81,6 +83,7 @@ These constants represent the domain API and are used when referring to tables, 
 ----
 include::{dir-source}/is/codion/framework/demos/manual/store/minimal/ManualDomainModel.java[tags=storeApi]
 ----
+
 <1> The *DomainType* instance serves as a factory for *EntityTypes* associated with that domain.
 <2> Each *EntityType* instance serves as a factory for *Columns* and *ForeignKeys* associated with that entity.
 
@@ -89,7 +92,9 @@ Typically the underlying table name is used as the *EntityType* name, but you ca
 The underlying column name is typically used as the *Column* name, but as with the *EntityType* you can use whatever value you want and specify the column name via the *columnName()* method when creating the associated *ColumnDefinition*.
 
 == Domain implementation
-The domain model is implemented by extending the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class and populating it with *EntityDefinitions* based on the domain tables. An *EntityDefinition* is comprised of *AttributeDefinitions* based on the *Attributes* associated with the entity.
+
+The domain model is implemented by extending the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class and populating it with *EntityDefinitions* based on the domain tables.
+An *EntityDefinition* is comprised of *AttributeDefinitions* based on the *Attributes* associated with the entity.
 
 The *EntityType* and *Attribute* constants provide *define()* methods returning builders which allow for further configuration (such as nullability and maximum length for values and the caption and primary key generator for the entity definition)..
 
@@ -99,9 +104,11 @@ NOTE: If a caption is not specified for an attribute, it is marked as hidden and
 ----
 include::{dir-source}/is/codion/framework/demos/manual/store/minimal/ManualDomainModel.java[tags=storeImpl]
 ----
+
 <1> The *DomainType* constant is a required constructor parameter.
 
-{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain] is a https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html[Service Provider Interface (SPI)], and it is recommended to configure the domain implementation class for the https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[Service Loader]. Without the Service Loader you are restricted to a local JDBC connection, since you must manually provide a domain instance when establishing a connection, instead of just referring to the *DomainType* constant.
+{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain] is a https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html[Service Provider Interface (SPI)], and it is recommended to configure the domain implementation class for the https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[Service Loader].
+Without the Service Loader you are restricted to a local JDBC connection, since you must manually provide a domain instance when establishing a connection, instead of just referring to the *DomainType* constant.
 
 _src/main/java/module-info.java_
 
@@ -120,7 +127,8 @@ _src/main/resources/META-INF/services/is.codion.framework.domain.Domain_
 is.codion.framework.demos.store.domain.StoreImpl
 ----
 
-NOTE: The domain model implementation must be on the classpath when running with a local JDBC connection, but when running with a RMI or HTTP connection the domain model API is sufficient. If you forsee using RMI or HTTP connections it is recommended to split your domain model into separate API and implementation modules, to simplify client configurations (see https://github.com/codion-is/chinook[Chinook] and https://github.com/codion-is/world[World] demo applications, see https://github.com/codion-is/petclinic[Petclinic] for a simple single class domain model).
+NOTE: The domain model implementation must be on the classpath when running with a local JDBC connection, but when running with a RMI or HTTP connection the domain model API is sufficient.
+If you forsee using RMI or HTTP connections it is recommended to split your domain model into separate API and implementation modules, to simplify client configurations (see https://github.com/codion-is/chinook[Chinook] and https://github.com/codion-is/world[World] demo applications, see https://github.com/codion-is/petclinic[Petclinic] for a simple single class domain model).
 
 The domain model provides an {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html#entities{opar}{cpar}[entities()], which contains the entity definitions and serves as a factory for *Entity* and *Entity.Key* instances.
 
@@ -199,7 +207,8 @@ include::{dir-source}/is/codion/framework/demos/manual/world/domain/World.java[t
 [#_attributes]
 == Attributes
 
-For the framework to know how to present and persist values, *Attributes* need further configuration. Each attribute is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/AttributeDefinition.html[AttributeDefinition] class or one of its subclasses, which encapsulates the required metadata.
+For the framework to know how to present and persist values, *Attributes* need further configuration.
+Each attribute is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/AttributeDefinition.html[AttributeDefinition] class or one of its subclasses, which encapsulates the required metadata.
 
 The *Attribute*, *Column* and *ForeignKey* classes provide methods for creating *AttributeDefinition.Builder* instances, which can be used to configure the attributes.
 
@@ -220,7 +229,8 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 === Derived
 
-A derived attribute is used to represent a value which is derived from one or more attributes in the same entity. The value of a derived attribute is provided via a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/DerivedAttribute.Provider.html[DerivedAttribute.Provider] implementation as shown below.
+A derived attribute is used to represent a value which is derived from one or more attributes in the same entity.
+The value of a derived attribute is provided via a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/DerivedAttribute.Provider.html[DerivedAttribute.Provider] implementation as shown below.
 
 [source,java,indent=0]
 ----
@@ -259,7 +269,8 @@ It is recommended that entities have a primary key defined, that is, one or more
 
 The primary key defined in the domain model does not have to correspond to an actual table primary (or unique) key, although that is of course preferable.
 
-If no primary key columns are specified, *equals()* will not work (since it is based on the primary key). You can still use the *Entity.columnValuesEqual()* method to check if all column based values are equal in two entities without primary keys.
+If no primary key columns are specified, *equals()* will not work (since it is based on the primary key).
+You can still use the *Entity.columnValuesEqual()* method to check if all column based values are equal in two entities without primary keys.
 
 [source,java,indent=0]
 ----
@@ -355,6 +366,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 ----
 
 === Examples
+
 * <<{dir-tutorials}/world/world.adoc#_domain_model, World domain model>>
 * <<{dir-tutorials}/employees/employees.adoc#_domain_model, Employees domain model>>
 * <<{dir-tutorials}/chinook/chinook.adoc#_domain_model, Chinook domain model>>
@@ -363,7 +375,9 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 [#_keygenerator]
 == KeyGenerator
 
-The framework provides implementations for most commonly used primary key generation strategies, identity column, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] class serves as a factory for {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
+The framework provides implementations for most commonly used primary key generation strategies, identity column, sequence (with or without trigger) and auto-increment columns.
+The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] class serves as a factory for {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] implementations.
+Static imports are assumed in the below examples.
 
 === Identity
 
@@ -421,7 +435,8 @@ include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[t
 
 == StringFactory
 
-The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/StringFactory.html[StringFactory] class provides a builder for a *Function<Entity, String>* instance, which is then used to provide the *toString()* implementations for entities. This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
+The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/StringFactory.html[StringFactory] class provides a builder for a *Function<Entity, String>* instance, which is then used to provide the *toString()* implementations for entities.
+This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
 
 [source,java,indent=0]
 ----
@@ -460,7 +475,9 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 Custom validation of Entities is performed by implementing a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityValidator.html[EntityValidator].
 
-The *DefaultEntityValidator* implementation provides basic range and null validation and can be extended to provide further validations. Note that validation is performed quite often, so it should not perform expensive operations. Validation requiring database access for example belongs in the application model or ui.
+The *DefaultEntityValidator* implementation provides basic range and null validation and can be extended to provide further validations.
+Note that validation is performed quite often, so it should not perform expensive operations.
+Validation requiring database access for example belongs in the application model or ui.
 
 [source,java,indent=0]
 ----
@@ -480,8 +497,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 == Custom data types
 
-When using a custom data type you must specify the *columnClass* of a ColumnDefinition and
-provide a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.Converter.html[Converter] implementation.
+When using a custom data type you must specify the *columnClass* of a ColumnDefinition and provide a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.Converter.html[Converter] implementation.
 
 [source,java,indent=0]
 ----
@@ -546,9 +562,11 @@ The following methods all have default implementations which are based on random
 
 * {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeForeignKeyEntity{opar}is.codion.framework.domain.entity.attribute.ForeignKey{comma}java.util.Map{cpar}[initializeForeignKeyEntity] should return an entity instance for the given foreign key to use for a foreign key reference required for inserting the entity being tested.
 * {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeTestEntity{opar}is.codion.framework.domain.entity.EntityType{comma}java.util.Map{cpar}[initializeTestEntity] should return an entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#modifyEntity{opar}is.codion.framework.domain.entity.Entity{comma}java.util.Map{cpar}[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#modifyEntity{opar}is.codion.framework.domain.entity.Entity{comma}java.util.Map{cpar}[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated.
+If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
-To run the full CRUD test for a domain entity you need to call the *test(EntityType entityType)* method with the entity type as parameter. You can either create a single *testDomain()* method and call the *test* method in turn for each entityType or create a *entityName* method for each domain entity, as we do in the example below.
+To run the full CRUD test for a domain entity you need to call the *test(EntityType entityType)* method with the entity type as parameter.
+You can either create a single *testDomain()* method and call the *test* method in turn for each entityType or create a *entityName* method for each domain entity, as we do in the example below.
 
 [source,java]
 ----

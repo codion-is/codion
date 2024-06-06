@@ -16,7 +16,8 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/Condition
 ----
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/Condition.Combination.html[Condition.Combination]*::
-Extends *Condition* and represents a combination of *Condition* instances, which are combined using either *AND* or *OR*. These can be nested and combined with other condition combinations.
+Extends *Condition* and represents a combination of *Condition* instances, which are combined using either *AND* or *OR*.
+These can be nested and combined with other condition combinations.
 
 [source,java,indent=0]
 ----

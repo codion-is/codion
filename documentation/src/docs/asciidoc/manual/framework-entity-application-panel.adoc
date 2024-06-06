@@ -4,7 +4,8 @@
 :dir-tutorials: ../tutorials
 :url-javadoc: link:../api
 
-The EntityApplicationPanel class serves as the main application UI. When extending this class you must provide a constructor with a single application model parameter, as seen below.
+The EntityApplicationPanel class serves as the main application UI.
+When extending this class you must provide a constructor with a single application model parameter, as seen below.
 
 [source,java]
 ----

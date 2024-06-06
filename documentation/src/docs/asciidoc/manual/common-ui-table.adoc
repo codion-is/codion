@@ -4,7 +4,7 @@
 
 == FilterTable
 
-[plantuml, filter-table-diagram, svg, align=center]
+[plantuml,filter-table-diagram,svg,align=center]
 -------------------------------------------
 
 class JTable {}
