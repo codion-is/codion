@@ -26,7 +26,7 @@ import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -70,9 +70,9 @@ import java.util.stream.IntStream;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.calendar.CalendarPanel.ControlIds.*;
+import static is.codion.swing.common.ui.component.calendar.CalendarPanel.ControlKeys.*;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -102,77 +102,76 @@ public final class CalendarPanel extends JPanel {
 					messageBundle(CalendarPanel.class, getBundle(CalendarPanel.class.getName()));
 
 	/**
-	 * The default keyboard shortcut keyStrokes.
-	 */
-	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
-
-	/**
 	 * The available controls.
 	 */
-	public static final class ControlIds {
+	public static final class ControlKeys {
 
 		/**
 		 * Select the previous year.<br>
 		 * Default key stroke: CTRL-DOWN ARROW
 		 */
-		public static final ControlId<CommandControl> PREVIOUS_YEAR = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_YEAR = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
 		/**
 		 * Select the next year.<br>
 		 * Default key stroke: CTRL-UP ARROW
 		 */
-		public static final ControlId<CommandControl> NEXT_YEAR = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_YEAR = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK));
 		/**
 		 * Select the previous month.<br>
 		 * Default key stroke: SHIFT-DOWN ARROW
 		 */
-		public static final ControlId<CommandControl> PREVIOUS_MONTH = commandControl(keyStroke(VK_DOWN, SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_MONTH = commandControl(keyStroke(VK_DOWN, SHIFT_DOWN_MASK));
 		/**
 		 * Select the next month.<br>
 		 * Default key stroke: SHIFT-UP ARROW
 		 */
-		public static final ControlId<CommandControl> NEXT_MONTH = commandControl(keyStroke(VK_UP, SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_MONTH = commandControl(keyStroke(VK_UP, SHIFT_DOWN_MASK));
 		/**
 		 * Select the previous week.<br>
 		 * Default key stroke: ALT-UP ARROW
 		 */
-		public static final ControlId<CommandControl> PREVIOUS_WEEK = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_WEEK = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
 		/**
 		 * Select the next week.<br>
 		 * Default key stroke: ALT-DOWN ARROW
 		 */
-		public static final ControlId<CommandControl> NEXT_WEEK = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_WEEK = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK));
 		/**
 		 * Select the previous day.<br>
 		 * Default key stroke: ALT-LEFT ARROW
 		 */
-		public static final ControlId<CommandControl> PREVIOUS_DAY = commandControl(keyStroke(VK_LEFT, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_DAY = commandControl(keyStroke(VK_LEFT, ALT_DOWN_MASK));
 		/**
 		 * Select the next day.<br>
 		 * Default key stroke: ALT-RIGHT ARROW
 		 */
-		public static final ControlId<CommandControl> NEXT_DAY = commandControl(keyStroke(VK_RIGHT, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_DAY = commandControl(keyStroke(VK_RIGHT, ALT_DOWN_MASK));
 		/**
 		 * Select the previous hour.<br>
 		 * Default key stroke: SHIFT-ALT-DOWN ARROW
 		 */
-		public static final ControlId<CommandControl> PREVIOUS_HOUR = commandControl(keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_HOUR = commandControl(keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Select the next hour.<br>
 		 * Default key stroke: SHIFT-ALT-UP ARROW
 		 */
-		public static final ControlId<CommandControl> NEXT_HOUR = commandControl(keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_HOUR = commandControl(keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Select the previous minute.<br>
 		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
-		public static final ControlId<CommandControl> PREVIOUS_MINUTE = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_MINUTE = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Select the next minute.<br>
 		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
-		public static final ControlId<CommandControl> NEXT_MINUTE = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_MINUTE = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		/**
+		 * The default keyboard shortcut keyStrokes.
+		 */
+		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
-		private ControlIds() {}
+		private ControlKeys() {}
 	}
 
 	private static final Set<Class<? extends Temporal>> SUPPORTED_TYPES =
@@ -352,11 +351,11 @@ public final class CalendarPanel extends JPanel {
 		Builder includeTodayButton(boolean includeTodayButton);
 
 		/**
-		 * @param controlId the control id
+		 * @param controlKey the control key
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke);
+		Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 
 		/**
 		 * @return a new {@link CalendarPanel} based on this builder
@@ -366,7 +365,7 @@ public final class CalendarPanel extends JPanel {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final ControlKeyStrokes controlKeyStrokes = CONTROL_KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = KEY_STROKES.copy();
 
 		private LocalDateTime initialValue;
 		private boolean includeTime = false;
@@ -397,8 +396,8 @@ public final class CalendarPanel extends JPanel {
 		}
 
 		@Override
-		public Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlId).set(keyStroke);
+		public Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 

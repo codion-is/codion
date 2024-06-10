@@ -95,7 +95,7 @@ public interface Controls extends Control {
 	 * @param defaults the default controls layout
 	 * @return a new Config instance
 	 */
-	static Config config(ControlSet controls, List<ControlId<?>> defaults) {
+	static Config config(ControlMap controls, List<ControlKey<?>> defaults) {
 		return new DefaultConfig(controls, defaults);
 	}
 
@@ -206,10 +206,10 @@ public interface Controls extends Control {
 
 		/**
 		 * Adds a standard control
-		 * @param controlId the control identifier
+		 * @param controlKey the control key
 		 * @return this config instance
 		 */
-		Config standard(ControlId<?> controlId);
+		Config standard(ControlKey<?> controlKey);
 
 		/**
 		 * @param control the control to add
@@ -240,7 +240,7 @@ public interface Controls extends Control {
 		 * @param stopAt the table control to stop at (inclusive)
 		 * @return this config instance
 		 */
-		Config defaults(ControlId<?> stopAt);
+		Config defaults(ControlKey<?> stopAt);
 
 		/**
 		 * Clears all controls from this config

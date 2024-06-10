@@ -33,7 +33,7 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -49,11 +49,11 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
-import static is.codion.swing.framework.ui.component.EntityComboBox.ControlIds.ADD;
-import static is.codion.swing.framework.ui.component.EntityComboBox.ControlIds.EDIT;
+import static is.codion.swing.framework.ui.component.EntityComboBox.ControlKeys.ADD;
+import static is.codion.swing.framework.ui.component.EntityComboBox.ControlKeys.EDIT;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
@@ -69,28 +69,27 @@ public final class EntityComboBox extends JComboBox<Entity> {
 					messageBundle(EntityComboBox.class, getBundle(EntityComboBox.class.getName()));
 
 	/**
-	 * The default keyboard shortcut keyStrokes.
-	 */
-	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
-
-	/**
 	 * The available controls.
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public static final class ControlIds {
+	public static final class ControlKeys {
 
 		/**
 		 * Displays a dialog for adding a new record.<br>
 		 * Default key stroke: INSERT
 		 */
-		public static final ControlId<CommandControl> ADD = commandControl(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> ADD = commandControl(keyStroke(VK_INSERT));
 		/**
 		 * Displays a dialog for editing the selected record.<br>
 		 * Default key stroke: CTRL-INSERT
 		 */
-		public static final ControlId<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		/**
+		 * The default keyboard shortcut keyStrokes.
+		 */
+		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
-		private ControlIds() {}
+		private ControlKeys() {}
 	}
 
 	private final Control addControl;
@@ -270,11 +269,11 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		Builder editPanel(Supplier<EntityEditPanel> editPanel);
 
 		/**
-		 * @param controlId the combo box control id
+		 * @param controlKey the control key
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke);
+		Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 
 		/**
 		 * @param confirmAdd true if adding an item should be confirmed
@@ -321,7 +320,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
 
-		private final ControlKeyStrokes controlKeyStrokes = CONTROL_KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = ControlKeys.KEY_STROKES.copy();
 
 		private Supplier<EntityEditPanel> editPanel;
 		private boolean confirmAdd;
@@ -343,8 +342,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		}
 
 		@Override
-		public Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlId).set(keyStroke);
+		public Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 

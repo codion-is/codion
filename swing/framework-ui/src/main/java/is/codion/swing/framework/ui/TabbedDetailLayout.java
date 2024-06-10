@@ -28,7 +28,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -68,13 +68,13 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
-import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.GAP;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.panelStateMapper;
-import static is.codion.swing.framework.ui.TabbedDetailLayout.ControlIds.*;
+import static is.codion.swing.framework.ui.TabbedDetailLayout.ControlKeys.*;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -115,37 +115,36 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	/**
-	 * The default keyboard shortcut keyStrokes.
-	 */
-	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
-
-	/**
 	 * The controls.
 	 */
-	public static final class ControlIds {
+	public static final class ControlKeys {
 
 		/**
 		 * Resizes the detail panel to the right.<br>
 		 * Default key stroke: SHIFT-ALT-RIGHT ARROW
 		 */
-		public static final ControlId<CommandControl> RESIZE_RIGHT = commandControl(keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> RESIZE_RIGHT = commandControl(keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Resizes the detail panel to the left.<br>
 		 * Default key stroke: SHIFT-ALT-LEFT ARROW
 		 */
-		public static final ControlId<CommandControl> RESIZE_LEFT = commandControl(keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> RESIZE_LEFT = commandControl(keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Collapses the detail panel all the way to the right, hiding it.<br>
 		 * Default key stroke: SHIFT-CTRL-ALT RIGHT ARROW
 		 */
-		public static final ControlId<CommandControl> COLLAPSE = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COLLAPSE = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Expands the detail panel all the way to the left, hiding the parent.<br>
 		 * Default key stroke: SHIFT-CTRL-ALT LEFT ARROW
 		 */
-		public static final ControlId<CommandControl> EXPAND = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> EXPAND = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		/**
+		 * The default keyboard shortcut keyStrokes.
+		 */
+		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
-		private ControlIds() {}
+		private ControlKeys() {}
 	}
 
 	private static final int RESIZE_AMOUNT = 30;
@@ -254,11 +253,11 @@ public final class TabbedDetailLayout implements DetailLayout {
 		Builder includeControls(boolean includeControls);
 
 		/**
-		 * @param controlId the control id
+		 * @param controlKey the control key
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke);
+		Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 
 		/**
 		 * @return a new {@link TabbedDetailLayout} instance based on this builder
@@ -615,7 +614,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final ControlKeyStrokes controlKeyStrokes = CONTROL_KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = KEY_STROKES.copy();
 
 		private final EntityPanel entityPanel;
 		private final Set<PanelState> enabledDetailStates =
@@ -676,8 +675,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlId).set(keyStroke);
+		public Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 

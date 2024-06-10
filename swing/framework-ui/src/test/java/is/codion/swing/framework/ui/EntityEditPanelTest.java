@@ -29,7 +29,7 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.*;
+import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityEditPanelTest {

@@ -30,33 +30,33 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultControlKeyStrokes implements ControlKeyStrokes {
 
-	private final Map<ControlId<?>, Value<KeyStroke>> keyStrokes = new HashMap<>();
+	private final Map<ControlKey<?>, Value<KeyStroke>> keyStrokes = new HashMap<>();
 
-	DefaultControlKeyStrokes(Class<?> controlIdsClass) {
-		this(Stream.of(controlIdsClass.getFields())
-						.filter(DefaultControlSet::publicStaticFinalControlId)
-						.map(DefaultControlSet::controlId)
+	DefaultControlKeyStrokes(Class<?> controlKeysClass) {
+		this(Stream.of(controlKeysClass.getFields())
+						.filter(DefaultControlMap::publicStaticFinalControlKey)
+						.map(DefaultControlMap::controlKey)
 						.collect(toList()));
 	}
 
-	DefaultControlKeyStrokes(Collection<ControlId<?>> controlIds) {
-		controlIds.forEach(controlId -> keyStrokes.put(controlId, Value.<KeyStroke>nullable()
-						.initialValue(controlId.defaultKeystroke().orElse(null))
+	DefaultControlKeyStrokes(Collection<ControlKey<?>> controlKeys) {
+		controlKeys.forEach(controlKey -> keyStrokes.put(controlKey, Value.<KeyStroke>nullable()
+						.initialValue(controlKey.defaultKeystroke().orElse(null))
 						.build()));
 	}
 
 	private DefaultControlKeyStrokes(DefaultControlKeyStrokes controlKeyStrokes) {
-		controlKeyStrokes.keyStrokes.forEach((controlType, keyStrokeValue) ->
-						keyStrokes.put(controlType, Value.<KeyStroke>nullable()
+		controlKeyStrokes.keyStrokes.forEach((controlKey, keyStrokeValue) ->
+						keyStrokes.put(controlKey, Value.<KeyStroke>nullable()
 										.initialValue(keyStrokeValue.get())
 										.build()));
 	}
 
 	@Override
-	public Value<KeyStroke> keyStroke(ControlId<?> controlId) {
-		Value<KeyStroke> keyStroke = keyStrokes.get(controlId);
+	public Value<KeyStroke> keyStroke(ControlKey<?> controlKey) {
+		Value<KeyStroke> keyStroke = keyStrokes.get(controlKey);
 		if (keyStroke == null) {
-			throw new IllegalArgumentException("Unknown controlId");
+			throw new IllegalArgumentException("Unknown controlKey");
 		}
 
 		return keyStroke;

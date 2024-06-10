@@ -23,12 +23,12 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultControlId<T extends Control> implements ControlId<T> {
+final class DefaultControlKey<T extends Control> implements ControlKey<T> {
 
 	private final Class<T> controlClass;
 	private final KeyStroke defaultKeyStroke;
 
-	DefaultControlId(Class<T> controlClass, KeyStroke defaultKeyStroke) {
+	DefaultControlKey(Class<T> controlClass, KeyStroke defaultKeyStroke) {
 		this.controlClass = requireNonNull(controlClass);
 		this.defaultKeyStroke = defaultKeyStroke;
 	}

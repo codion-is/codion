@@ -45,7 +45,7 @@ import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColum
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -96,11 +96,11 @@ import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.filterColumnConditionPanel;
-import static is.codion.swing.common.ui.component.table.FilterTable.ControlIds.*;
+import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.*;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static java.awt.event.InputEvent.*;
@@ -143,52 +143,51 @@ public final class FilterTable<R, C> extends JTable {
 					Configuration.booleanValue(FilterTable.class.getName() + ".allowColumnReordering", true);
 
 	/**
-	 * The default keyboard shortcut keyStrokes.
-	 */
-	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
-
-	/**
 	 * The controls.
 	 */
-	public static final class ControlIds {
+	public static final class ControlKeys {
 
 		/**
 		 * Moves the selected column to the left.<br>
 		 * Default key stroke: CTRL-SHIFT-LEFT
 		 */
-		public static final ControlId<CommandControl> MOVE_COLUMN_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> MOVE_COLUMN_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selected column to the right.<br>
 		 * Default key stroke: CTRL-SHIFT-RIGHT
 		 */
-		public static final ControlId<CommandControl> MOVE_COLUMN_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> MOVE_COLUMN_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Decreases the size of the selected column.<br>
 		 * Default key stroke: CTRL-SUBTRACT
 		 */
-		public static final ControlId<CommandControl> DECREASE_COLUMN_SIZE = commandControl(keyStroke(VK_SUBTRACT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> DECREASE_COLUMN_SIZE = commandControl(keyStroke(VK_SUBTRACT, CTRL_DOWN_MASK));
 		/**
 		 * Increases the size of the selected column.<br>
 		 * Default key stroke: CTRL-ADD
 		 */
-		public static final ControlId<CommandControl> INCREASE_COLUMN_SIZE = commandControl(keyStroke(VK_ADD, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> INCREASE_COLUMN_SIZE = commandControl(keyStroke(VK_ADD, CTRL_DOWN_MASK));
 		/**
 		 * Copy the selected cell contents to the clipboard.<br>
 		 * Default key stroke: CTRL-ALT-C
 		 */
-		public static final ControlId<CommandControl> COPY_CELL = commandControl(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COPY_CELL = commandControl(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Toggles the sort on the selected column.<br>
 		 * Default key stroke: ALT-DOWN ARROW
 		 */
-		public static final ControlId<CommandControl> TOGGLE_SORT_COLUMN = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_SORT_COLUMN = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK));
 		/**
 		 * Toggles the sort on the selected column adding it to any already sorted columns.<br>
 		 * Default key stroke: ALT-UP ARROW
 		 */
-		public static final ControlId<CommandControl> TOGGLE_SORT_COLUMN_ADD = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_SORT_COLUMN_ADD = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
+		/**
+		 * The default keyboard shortcut keyStrokes.
+		 */
+		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
-		private ControlIds() {}
+		private ControlKeys() {}
 	}
 
 	/**
@@ -1115,7 +1114,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private final FilterTableModel<R, C> tableModel;
 		private final List<FilterTableColumn<C>> columns;
-		private final ControlKeyStrokes keyStrokes = CONTROL_KEY_STROKES.copy();
+		private final ControlKeyStrokes keyStrokes = KEY_STROKES.copy();
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private FieldFactory<C> filterFieldFactory = new DefaultFieldFactory<>();

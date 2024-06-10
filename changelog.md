@@ -9,6 +9,7 @@ Codion Change Log
 - Control.BuilderFactory.actionCommand() renamed action().
 - FilterTable now validates column identifier uniqueness.
 - FilterTableColumn.setIdentifier() now throws UnsupportedOperationException instead of IllegalStateException.
+- ControlSet renamed ControlMap, ControlId renamed ControlKey.
 ### is.codion.framework.domain
 - DefaultColumnDefinition.groupBy, aggregate, selectable and lazy no longer transient.
 ### is.codion.framework.model

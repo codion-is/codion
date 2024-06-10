@@ -31,11 +31,11 @@ import static javax.swing.KeyStroke.getKeyStroke;
 public interface ControlKeyStrokes {
 
 	/**
-	 * @param controlId the control id
+	 * @param controlKey the control key
 	 * @return the {@link Value} controlling the key stroke for the given control
-	 * @throws IllegalArgumentException in case no control is associated with the given control id
+	 * @throws IllegalArgumentException in case no control is associated with the given control key
 	 */
-	Value<KeyStroke> keyStroke(ControlId<?> controlId);
+	Value<KeyStroke> keyStroke(ControlKey<?> controlKey);
 
 	/**
 	 * @return a copy of this {@link ControlKeyStrokes} instance
@@ -43,7 +43,7 @@ public interface ControlKeyStrokes {
 	ControlKeyStrokes copy();
 
 	/**
-	 * @param controlIdsClass the class containing the control ids
+	 * @param controlIdsClass the class containing the control keys
 	 * @return a new {@link ControlKeyStrokes} instance
 	 */
 	static ControlKeyStrokes controlKeyStrokes(Class<?> controlIdsClass) {

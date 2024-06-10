@@ -25,10 +25,10 @@ import java.util.Optional;
  * Identifies a {@link Control} instance
  * @param <T> the control type
  */
-public interface ControlId<T extends Control> {
+public interface ControlKey<T extends Control> {
 
 	/**
-	 * @return the class of the control identified by this identifier
+	 * @return the class of the control identified by this key
 	 */
 	Class<T> controlClass();
 
@@ -38,47 +38,47 @@ public interface ControlId<T extends Control> {
 	Optional<KeyStroke> defaultKeystroke();
 
 	/**
-	 * @return a new {@link ControlId} for identifying a {@link CommandControl} instance
+	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 */
-	static ControlId<CommandControl> commandControl() {
+	static ControlKey<CommandControl> commandControl() {
 		return commandControl(null);
 	}
 
 	/**
-	 * @return a new {@link ControlId} for identifying a {@link CommandControl} instance
+	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 * @param defaultKeyStroke the default keystroke
 	 */
-	static ControlId<CommandControl> commandControl(KeyStroke defaultKeyStroke) {
-		return new DefaultControlId<>(CommandControl.class, defaultKeyStroke);
+	static ControlKey<CommandControl> commandControl(KeyStroke defaultKeyStroke) {
+		return new DefaultControlKey<>(CommandControl.class, defaultKeyStroke);
 	}
 
 	/**
-	 * @return a new {@link ControlId} for identifying a {@link CommandControl} instance
+	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 */
-	static ControlId<ToggleControl> toggleControl() {
+	static ControlKey<ToggleControl> toggleControl() {
 		return toggleControl(null);
 	}
 
 	/**
-	 * @return a new {@link ControlId} for identifying a {@link CommandControl} instance
+	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 * @param defaultKeyStroke the default keystroke
 	 */
-	static ControlId<ToggleControl> toggleControl(KeyStroke defaultKeyStroke) {
-		return new DefaultControlId<>(ToggleControl.class, defaultKeyStroke);
+	static ControlKey<ToggleControl> toggleControl(KeyStroke defaultKeyStroke) {
+		return new DefaultControlKey<>(ToggleControl.class, defaultKeyStroke);
 	}
 
 	/**
-	 * @return a new {@link ControlId} for identifying a {@link Controls} instance
+	 * @return a new {@link ControlKey} for identifying a {@link Controls} instance
 	 */
-	static ControlId<Controls> controls() {
+	static ControlKey<Controls> controls() {
 		return controls(null);
 	}
 
 	/**
-	 * @return a new {@link ControlId} for identifying a {@link Controls} instance
+	 * @return a new {@link ControlKey} for identifying a {@link Controls} instance
 	 * @param defaultKeyStroke the default keystroke
 	 */
-	static ControlId<Controls> controls(KeyStroke defaultKeyStroke) {
-		return new DefaultControlId<>(Controls.class, defaultKeyStroke);
+	static ControlKey<Controls> controls(KeyStroke defaultKeyStroke) {
+		return new DefaultControlKey<>(Controls.class, defaultKeyStroke);
 	}
 }

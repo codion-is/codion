@@ -27,7 +27,7 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -47,12 +47,12 @@ import java.util.Map;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
-import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlIds.NAVIGATE_LEFT;
-import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlIds.NAVIGATE_RIGHT;
-import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.*;
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_LEFT;
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_RIGHT;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -71,27 +71,26 @@ public final class EntityDependenciesPanel extends JPanel {
 					messageBundle(EntityDependenciesPanel.class, getBundle(EntityDependenciesPanel.class.getName()));
 
 	/**
-	 * The default keyboard shortcut keyStrokes.
-	 */
-	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
-
-	/**
 	 * The dependencies panel controls.
 	 */
-	public static final class ControlIds {
+	public static final class ControlKeys {
 
 		/**
 		 * Navigates to the dependencies panel on the left (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		public static final ControlId<CommandControl> NAVIGATE_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the dependencies panel on the right (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		public static final ControlId<CommandControl> NAVIGATE_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		/**
+		 * The default keyboard shortcut keyStrokes.
+		 */
+		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
-		private ControlIds() {}
+		private ControlKeys() {}
 	}
 
 	private final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
@@ -103,11 +102,11 @@ public final class EntityDependenciesPanel extends JPanel {
 							createTablePanel(entry.getValue(), connectionProvider));
 		}
 		add(tabPane, BorderLayout.CENTER);
-		KeyEvents.builder(CONTROL_KEY_STROKES.keyStroke(NAVIGATE_RIGHT).get())
+		KeyEvents.builder(ControlKeys.KEY_STROKES.keyStroke(NAVIGATE_RIGHT).get())
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 						.action(commandControl(new NavigateRightCommand()))
 						.enable(tabPane);
-		KeyEvents.builder(CONTROL_KEY_STROKES.keyStroke(NAVIGATE_LEFT).get())
+		KeyEvents.builder(ControlKeys.KEY_STROKES.keyStroke(NAVIGATE_LEFT).get())
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 						.action(commandControl(new NavigateLeftCommand()))
 						.enable(tabPane);

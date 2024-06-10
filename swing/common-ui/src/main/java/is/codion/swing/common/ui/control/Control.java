@@ -51,7 +51,7 @@ public interface Control extends Action {
 	Optional<String> name();
 
 	/**
-	 * @return a StateObsrver indicating whether this Control is enabled
+	 * @return a StateObserver indicating whether this Control is enabled
 	 */
 	StateObserver enabled();
 

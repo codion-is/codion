@@ -32,27 +32,27 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-final class DefaultControlSet implements ControlSet {
+final class DefaultControlMap implements ControlMap {
 
-	private final Map<ControlId<?>, Value<Control>> controls;
+	private final Map<ControlKey<?>, Value<Control>> controls;
 
-	DefaultControlSet(Class<?> controlIdsClass) {
-		this(Stream.of(controlIdsClass.getFields())
-						.filter(DefaultControlSet::publicStaticFinalControlId)
-						.map(DefaultControlSet::controlId)
+	DefaultControlMap(Class<?> controlKeysClass) {
+		this(Stream.of(controlKeysClass.getFields())
+						.filter(DefaultControlMap::publicStaticFinalControlKey)
+						.map(DefaultControlMap::controlKey)
 						.collect(toList()));
 	}
 
-	private DefaultControlSet(Collection<ControlId<?>> controlIds) {
-		controls = unmodifiableMap(controlIds.stream()
-						.collect(toMap(Function.identity(), controlId -> Value.<Control>nullable().build())));
+	private DefaultControlMap(Collection<ControlKey<?>> controlKeys) {
+		controls = unmodifiableMap(controlKeys.stream()
+						.collect(toMap(Function.identity(), controlKey -> Value.<Control>nullable().build())));
 	}
 
 	@Override
-	public <T extends Control> Value<T> control(ControlId<T> controlId) {
-		Value<Control> value = controls.get(requireNonNull(controlId));
+	public <T extends Control> Value<T> control(ControlKey<T> controlKey) {
+		Value<Control> value = controls.get(requireNonNull(controlKey));
 		if (value == null) {
-			throw new IllegalArgumentException("Unknown controlId");
+			throw new IllegalArgumentException("Unknown controlKey");
 		}
 
 		return (Value<T>) value;
@@ -63,16 +63,16 @@ final class DefaultControlSet implements ControlSet {
 		return controls.values();
 	}
 
-	static boolean publicStaticFinalControlId(Field field) {
+	static boolean publicStaticFinalControlKey(Field field) {
 		return isPublic(field.getModifiers())
 						&& isStatic(field.getModifiers())
 						&& isFinal(field.getModifiers())
-						&& ControlId.class.isAssignableFrom(field.getType());
+						&& ControlKey.class.isAssignableFrom(field.getType());
 	}
 
-	static ControlId<?> controlId(Field field) {
+	static ControlKey<?> controlKey(Field field) {
 		try {
-			return (ControlId<?>) field.get(null);
+			return (ControlKey<?>) field.get(null);
 		}
 		catch (IllegalAccessException e) {
 			throw new RuntimeException(e);

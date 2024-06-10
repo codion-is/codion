@@ -66,7 +66,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.CLEAR;
+import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.CLEAR;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 

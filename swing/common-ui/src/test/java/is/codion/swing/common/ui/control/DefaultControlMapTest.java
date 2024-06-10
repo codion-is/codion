@@ -20,26 +20,26 @@ package is.codion.swing.common.ui.control;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.swing.common.ui.control.ControlId.*;
+import static is.codion.swing.common.ui.control.ControlKey.*;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.awt.event.KeyEvent.VK_S;
 
-public final class DefaultControlSetTest {
+public final class DefaultControlMapTest {
 
-	public static final class ControlIds {
-		public static final ControlId<CommandControl> COMMAND_CONTROL = commandControl(keyStroke(VK_INSERT));
-		public static final ControlId<Controls> CONTROLS = controls();
-		public static final ControlId<ToggleControl> TOGGLE_CONTROL = toggleControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+	public static final class ControlKeys {
+		public static final ControlKey<CommandControl> COMMAND_CONTROL = commandControl(keyStroke(VK_INSERT));
+		public static final ControlKey<Controls> CONTROLS = controls();
+		public static final ControlKey<ToggleControl> TOGGLE_CONTROL = toggleControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 	}
 
 	@Test
 	void test() {
-		ControlSet controlSet = new DefaultControlSet(ControlIds.class);
-		controlSet.control(ControlIds.COMMAND_CONTROL).get();
-		controlSet.control(ControlIds.CONTROLS).get();
-		controlSet.control(ControlIds.TOGGLE_CONTROL).get();
+		ControlMap controlMap = new DefaultControlMap(ControlKeys.class);
+		controlMap.control(ControlKeys.COMMAND_CONTROL).get();
+		controlMap.control(ControlKeys.CONTROLS).get();
+		controlMap.control(ControlKeys.TOGGLE_CONTROL).get();
 	}
 }

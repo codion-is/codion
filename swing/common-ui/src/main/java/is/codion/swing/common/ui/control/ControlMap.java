@@ -25,15 +25,15 @@ import java.util.Collection;
 /**
  * Manages a set of {@link Control} instances.
  */
-public interface ControlSet {
+public interface ControlMap {
 
 	/**
-	 * @param controlId the control id
-	 * @return the {@link Value} specifying the {@link Control} associated with the given id
+	 * @param controlKey the control key
+	 * @return the {@link Value} specifying the {@link Control} associated with the given key
 	 * @param <T> the control type
-	 * @throws IllegalArgumentException in case no control is associated with the given shortcut
+	 * @throws IllegalArgumentException in case no control is associated with the given key
 	 */
-	<T extends Control> Value<T> control(ControlId<T> controlId);
+	<T extends Control> Value<T> control(ControlKey<T> controlKey);
 
 	/**
 	 * @return all available controls
@@ -41,10 +41,10 @@ public interface ControlSet {
 	Collection<Value<Control>> controls();
 
 	/**
-	 * @param controlIdsClass the class containing the control ids
-	 * @return a new {@link ControlSet} initialized with control ids found in the given class
+	 * @param controlKeysClass the class containing the control keys
+	 * @return a new {@link ControlMap} initialized with control keys found in the given class
 	 */
-	static ControlSet controlSet(Class<?> controlIdsClass) {
-		return new DefaultControlSet(controlIdsClass);
+	static ControlMap controlMap(Class<?> controlKeysClass) {
+		return new DefaultControlMap(controlKeysClass);
 	}
 }

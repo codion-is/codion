@@ -32,8 +32,8 @@ import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutP
 import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.INSERT;
-import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.UPDATE;
+import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.INSERT;
+import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.UPDATE;
 
 public final class InvoiceLineEditPanel extends EntityEditPanel {
 

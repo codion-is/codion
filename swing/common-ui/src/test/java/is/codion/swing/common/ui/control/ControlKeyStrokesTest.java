@@ -26,23 +26,23 @@ import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.util.stream.Stream;
 
-import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
-import static is.codion.swing.common.ui.control.ControlKeyStrokesTest.ControlIds.ONE;
-import static is.codion.swing.common.ui.control.ControlKeyStrokesTest.ControlIds.TWO;
+import static is.codion.swing.common.ui.control.ControlKeyStrokesTest.ControlKeys.ONE;
+import static is.codion.swing.common.ui.control.ControlKeyStrokesTest.ControlKeys.TWO;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ControlKeyStrokesTest {
 
-	interface ControlIds {
-		ControlId<CommandControl> ONE = commandControl(keyStroke(KeyEvent.VK_1));
-		ControlId<CommandControl> TWO = commandControl(keyStroke(KeyEvent.VK_2));
+	interface ControlKeys {
+		ControlKey<CommandControl> ONE = commandControl(keyStroke(KeyEvent.VK_1));
+		ControlKey<CommandControl> TWO = commandControl(keyStroke(KeyEvent.VK_2));
 	}
 
 	@Test
 	void test() {
-		ControlKeyStrokes keyStrokes = controlKeyStrokes(ControlIds.class);
+		ControlKeyStrokes keyStrokes = controlKeyStrokes(ControlKeys.class);
 
 		assertEquals(KeyEvent.VK_1, keyStrokes.keyStroke(ONE).get().getKeyCode());
 		assertEquals(KeyEvent.VK_2, keyStrokes.keyStroke(TWO).get().getKeyCode());

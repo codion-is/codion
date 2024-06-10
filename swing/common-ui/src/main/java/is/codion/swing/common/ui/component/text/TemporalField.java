@@ -28,7 +28,7 @@ import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -53,8 +53,8 @@ import java.time.temporal.Temporal;
 import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.component.text.TemporalField.ControlIds.*;
-import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.component.text.TemporalField.ControlKeys.*;
+import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static java.awt.event.KeyEvent.*;
@@ -73,32 +73,31 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 					messageBundle(TemporalField.class, getBundle(TemporalField.class.getName()));
 
 	/**
-	 * The default keyboard shortcut keyStrokes.
-	 */
-	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
-
-	/**
 	 * The controls.
 	 */
-	public static final class ControlIds {
+	public static final class ControlKeys {
 
 		/**
 		 * Display a calendar for date/time input.<br>
 		 * Default key stroke: INSERT
 		 */
-		public static final ControlId<CommandControl> DISPLAY_CALENDAR = commandControl(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> DISPLAY_CALENDAR = commandControl(keyStroke(VK_INSERT));
 		/**
 		 * Increments the date component under the cursor.<br>
 		 * Default key stroke: UP ARROW
 		 */
-		public static final ControlId<CommandControl> INCREMENT = commandControl(keyStroke(VK_UP));
+		public static final ControlKey<CommandControl> INCREMENT = commandControl(keyStroke(VK_UP));
 		/**
 		 * Decrements the date component under the cursor.<br>
 		 * Default key stroke: DOWN ARROW
 		 */
-		public static final ControlId<CommandControl> DECREMENT = commandControl(keyStroke(VK_DOWN));
+		public static final ControlKey<CommandControl> DECREMENT = commandControl(keyStroke(VK_DOWN));
+		/**
+		 * The default keyboard shortcut keyStrokes.
+		 */
+		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
-		private ControlIds() {}
+		private ControlKeys() {}
 	}
 
 	private static final char DAY = 'd';
@@ -370,11 +369,11 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		Builder<T> incrementDecrementEnabled(boolean incrementDecrementEnabled);
 
 		/**
-		 * @param controlId the control id
+		 * @param controlKey the control key
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder<T> keyStroke(ControlId<?> controlId, KeyStroke keyStroke);
+		Builder<T> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 	}
 
 	/**
@@ -399,7 +398,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		private final Class<T> temporalClass;
 		private final String dateTimePattern;
 		private final String mask;
-		private final ControlKeyStrokes controlKeyStrokes = CONTROL_KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = KEY_STROKES.copy();
 
 		private DateTimeFormatter dateTimeFormatter;
 		private DateTimeParser<T> dateTimeParser;
@@ -447,8 +446,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 
 		@Override
-		public Builder<T> keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlId).set(keyStroke);
+		public Builder<T> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 

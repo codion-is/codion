@@ -31,8 +31,8 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import java.util.ResourceBundle;
 
-import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.DELETE;
-import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.EDIT_ATTRIBUTE_CONTROLS;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.DELETE;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.EDIT_ATTRIBUTE_CONTROLS;
 import static java.util.ResourceBundle.getBundle;
 
 public final class PlaylistTablePanel extends EntityTablePanel {

@@ -35,14 +35,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.PRINT;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
 
 // tag::customerTablePanel[]
 public class CustomerTablePanel extends EntityTablePanel {
 
 	public CustomerTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel);
-		// associate a custom Control with the PRINT control code,
+		// associate a custom Control with the PRINT control key,
 		// which calls the viewCustomerReport method in this class,
 		// enabled only when the selection is not empty
 		control(PRINT).set(Control.builder()

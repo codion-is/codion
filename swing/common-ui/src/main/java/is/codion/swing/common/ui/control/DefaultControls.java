@@ -120,11 +120,11 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		private static final ControlItem SEPARATOR = new Separator();
 
-		private final List<ControlId<?>> defaults;
-		private final ControlSet controls;
+		private final List<ControlKey<?>> defaults;
+		private final ControlMap controls;
 		private final List<ControlItem> items = new ArrayList<>();
 
-		DefaultConfig(ControlSet controls, List<ControlId<?>> defaults) {
+		DefaultConfig(ControlMap controls, List<ControlKey<?>> defaults) {
 			this.defaults = requireNonNull(defaults);
 			this.controls = requireNonNull(controls);
 			defaults();
@@ -139,8 +139,8 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Config standard(ControlId<?> controlId) {
-			add(requireNonNull(controlId));
+		public Config standard(ControlKey<?> controlKey) {
+			add(requireNonNull(controlKey));
 			return this;
 		}
 
@@ -173,8 +173,8 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Config defaults(ControlId<?> stopAt) {
-			for (ControlId<?> control : defaults) {
+		public Config defaults(ControlKey<?> stopAt) {
+			for (ControlKey<?> control : defaults) {
 				if (control == null) {
 					separator();
 				}
@@ -197,7 +197,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 			return builder.build();
 		}
 
-		private void add(ControlId<?> controlIdentifier) {
+		private void add(ControlKey<?> controlIdentifier) {
 			StandardControl standardControl = new StandardControl(controlIdentifier, controls);
 			if (!items.contains(standardControl)) {
 				items.add(standardControl);
@@ -210,10 +210,10 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		private static final class StandardControl implements ControlItem {
 
-			private final ControlId<?> tableControl;
-			private final ControlSet controls;
+			private final ControlKey<?> tableControl;
+			private final ControlMap controls;
 
-			private StandardControl(ControlId<?> tableControl, ControlSet controls) {
+			private StandardControl(ControlKey<?> tableControl, ControlMap controls) {
 				this.tableControl = tableControl;
 				this.controls = controls;
 			}

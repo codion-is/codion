@@ -64,9 +64,9 @@ import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlKeyStrokes;
-import is.codion.swing.common.ui.control.ControlSet;
+import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -130,8 +130,9 @@ import static is.codion.swing.common.ui.component.table.FilterColumnConditionPan
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlId.controls;
-import static is.codion.swing.common.ui.control.ControlId.toggleControl;
+import static is.codion.swing.common.ui.control.ControlKey.commandControl;
+import static is.codion.swing.common.ui.control.ControlKey.controls;
+import static is.codion.swing.common.ui.control.ControlKey.toggleControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
@@ -140,7 +141,7 @@ import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDepend
 import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
-import static is.codion.swing.framework.ui.EntityTablePanel.ControlIds.*;
+import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -194,7 +195,7 @@ public class EntityTablePanel extends JPanel {
 	private static final String COLUMN_PREFERENCES = "-columns";
 	private static final String CONDITIONS_PREFERENCES = "-conditions";
 
-	public static final class ControlIds {
+	public static final class ControlKeys {
 
 		/**
 		 * Add a new entity instance.<br>
@@ -202,179 +203,183 @@ public class EntityTablePanel extends JPanel {
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
 		 */
-		public static final ControlId<CommandControl> ADD = ControlId.commandControl(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> ADD = commandControl(keyStroke(VK_INSERT));
 		/**
 		 * Edit the selected entity instance.<br>
 		 * Default key stroke: CTRL-INSERT
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
 		 */
-		public static final ControlId<CommandControl> EDIT = ControlId.commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
 		/**
 		 * Select and edit a single attribute value for the selected entity instances.<br>
 		 * Default key stroke: SHIFT-INSERT
 		 * @see Config#editAttributeSelection(EditAttributeSelection)
 		 */
-		public static final ControlId<CommandControl> EDIT_SELECTED_ATTRIBUTE = ControlId.commandControl(keyStroke(VK_INSERT, SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT_SELECTED_ATTRIBUTE = commandControl(keyStroke(VK_INSERT, SHIFT_DOWN_MASK));
 		/**
 		 * Requests focus for the table.<br>
 		 * Default key stroke: CTRL-T
 		 */
-		public static final ControlId<CommandControl> REQUEST_TABLE_FOCUS = ControlId.commandControl(keyStroke(VK_T, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> REQUEST_TABLE_FOCUS = commandControl(keyStroke(VK_T, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the condition panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-S
 		 * @see TableConditionPanel#state()
 		 */
-		public static final ControlId<CommandControl> TOGGLE_CONDITION_PANEL = ControlId.commandControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_CONDITION_PANEL = commandControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays a dialog for selecting a column condition panel.<br>
 		 * Default key stroke: CTRL-S
 		 */
-		public static final ControlId<CommandControl> SELECT_CONDITION_PANEL = ControlId.commandControl(keyStroke(VK_S, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_CONDITION_PANEL = commandControl(keyStroke(VK_S, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the filter panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-F
 		 * @see TableConditionPanel#state()
 		 */
-		public static final ControlId<CommandControl> TOGGLE_FILTER_PANEL = ControlId.commandControl(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_FILTER_PANEL = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays a dialog for selecting a column filter panel.<br>
 		 * Default key stroke: CTRL-SHIFT-F
 		 */
-		public static final ControlId<CommandControl> SELECT_FILTER_PANEL = ControlId.commandControl(keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_FILTER_PANEL = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selection up.<br>
 		 * Default key stroke: ALT-SHIFT-UP
 		 */
-		public static final ControlId<CommandControl> MOVE_SELECTION_UP = ControlId.commandControl(keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> MOVE_SELECTION_UP = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selection down.<br>
 		 * Default key stroke: ALT-SHIFT-DOWN
 		 */
-		public static final ControlId<CommandControl> MOVE_SELECTION_DOWN = ControlId.commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> MOVE_SELECTION_DOWN = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * The main print action<br>
 		 * Default key stroke: CTRL-P
 		 */
-		public static final ControlId<CommandControl> PRINT = ControlId.commandControl(keyStroke(VK_P, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> PRINT = commandControl(keyStroke(VK_P, CTRL_DOWN_MASK));
 		/**
-		 * Triggers the {@link ControlIds#DELETE} control.<br>
+		 * Triggers the {@link ControlKeys#DELETE} control.<br>
 		 * Default key stroke: DELETE
 		 */
-		public static final ControlId<CommandControl> DELETE = ControlId.commandControl(keyStroke(VK_DELETE));
+		public static final ControlKey<CommandControl> DELETE = commandControl(keyStroke(VK_DELETE));
 		/**
 		 * Displays the table popup menu, if one is available.<br>
 		 * Default key stroke: CTRL-G
 		 */
-		public static final ControlId<CommandControl> DISPLAY_POPUP_MENU = ControlId.commandControl(keyStroke(VK_G, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_POPUP_MENU = commandControl(keyStroke(VK_G, CTRL_DOWN_MASK));
 		/**
 		 * Displays the entity menu, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 */
-		public static final ControlId<CommandControl> DISPLAY_ENTITY_MENU = ControlId.commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * A {@link Controls} instance containing controls for printing.
 		 */
-		public static final ControlId<Controls> PRINT_CONTROLS = controls();
+		public static final ControlKey<Controls> PRINT_CONTROLS = controls();
 		/**
 		 * A {@link Controls} instance containing any additional popup menu controls.
 		 * @see #addPopupMenuControls(Controls)
 		 */
-		public static final ControlId<Controls> ADDITIONAL_POPUP_MENU_CONTROLS = controls();
+		public static final ControlKey<Controls> ADDITIONAL_POPUP_MENU_CONTROLS = controls();
 		/**
 		 * A {@link Controls} instance containing any additional toolbar controls.
 		 * @see #addToolBarControls(Controls)
 		 */
-		public static final ControlId<Controls> ADDITIONAL_TOOLBAR_CONTROLS = controls();
+		public static final ControlKey<Controls> ADDITIONAL_TOOLBAR_CONTROLS = controls();
 		/**
 		 * A {@link Control} for viewing the dependencies of the selected entities.
 		 */
-		public static final ControlId<CommandControl> VIEW_DEPENDENCIES = ControlId.commandControl();
+		public static final ControlKey<CommandControl> VIEW_DEPENDENCIES = commandControl();
 		/**
 		 * A {@link Controls} instance containing edit controls for all editable attributes.
 		 * @see Config#editAttributeSelection(EditAttributeSelection)
 		 */
-		public static final ControlId<Controls> EDIT_ATTRIBUTE_CONTROLS = controls();
+		public static final ControlKey<Controls> EDIT_ATTRIBUTE_CONTROLS = controls();
 		/**
 		 * A {@link Control} for displaying a dialog for selecting the visible table columns.
 		 * @see Config#columnSelection(ColumnSelection)
 		 */
-		public static final ControlId<CommandControl> SELECT_COLUMNS = ControlId.commandControl();
+		public static final ControlKey<CommandControl> SELECT_COLUMNS = commandControl();
 		/**
 		 * A {@link Controls} instance containing a {@link ToggleControl} for each columns visibility.
 		 * @see Config#columnSelection(ColumnSelection)
 		 */
-		public static final ControlId<Controls> TOGGLE_COLUMN_CONTROLS = controls();
+		public static final ControlKey<Controls> TOGGLE_COLUMN_CONTROLS = controls();
 		/**
 		 * A {@link Control} for resetting the columns to their original visibility and location.
 		 */
-		public static final ControlId<CommandControl> RESET_COLUMNS = ControlId.commandControl();
+		public static final ControlKey<CommandControl> RESET_COLUMNS = commandControl();
 		/**
 		 * A {@link Control} for displaying a dialog for configuring the column auto-resize-mode.
 		 * @see JTable#setAutoResizeMode(int)
 		 */
-		public static final ControlId<CommandControl> COLUMN_AUTO_RESIZE_MODE = ControlId.commandControl();
+		public static final ControlKey<CommandControl> COLUMN_AUTO_RESIZE_MODE = commandControl();
 		/**
 		 * A {@link Control} for toggling between single and multi selection mode.
 		 */
-		public static final ControlId<ToggleControl> SELECTION_MODE = toggleControl();
+		public static final ControlKey<ToggleControl> SELECTION_MODE = toggleControl();
 		/**
 		 * A {@link Control} for clearing the data from the table.
 		 * @see SwingEntityTableModel#clear()
 		 */
-		public static final ControlId<CommandControl> CLEAR = ControlId.commandControl();
+		public static final ControlKey<CommandControl> CLEAR = commandControl();
 		/**
 		 * A {@link Control} for refreshing the table data.<br>
 		 * Default key stroke: ALT-R
 		 * @see SwingEntityTableModel#refresh()
 		 */
-		public static final ControlId<CommandControl> REFRESH = ControlId.commandControl(keyStroke(VK_R, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> REFRESH = commandControl(keyStroke(VK_R, ALT_DOWN_MASK));
 		/**
 		 * A {@link ToggleControl} for showing/hiding the summary panel.
 		 */
-		public static final ControlId<ToggleControl> TOGGLE_SUMMARY_PANEL = toggleControl();
+		public static final ControlKey<ToggleControl> TOGGLE_SUMMARY_PANEL = toggleControl();
 		/**
 		 * A {@link Controls} instance containing the condition panel controls.
 		 */
-		public static final ControlId<Controls> CONDITION_CONTROLS = controls();
+		public static final ControlKey<Controls> CONDITION_CONTROLS = controls();
 		/**
 		 * A {@link Controls} instance containing the filter panel controls.
 		 */
-		public static final ControlId<Controls> FILTER_CONTROLS = controls();
+		public static final ControlKey<Controls> FILTER_CONTROLS = controls();
 		/**
 		 * A {@link Control} for clearing the table selection.
 		 */
-		public static final ControlId<CommandControl> CLEAR_SELECTION = ControlId.commandControl();
+		public static final ControlKey<CommandControl> CLEAR_SELECTION = commandControl();
 		/**
 		 * A {@link Controls} instance containing controls for copying either cell or table data.
 		 * @see #COPY_CELL
 		 * @see #COPY_ROWS
 		 */
-		public static final ControlId<Controls> COPY_CONTROLS = controls();
+		public static final ControlKey<Controls> COPY_CONTROLS = controls();
 		/**
 		 * A {@link Control} for copying the selected cell data.<br>
 		 * Default key stroke: CTRL-ALT-C
 		 */
-		public static final ControlId<CommandControl> COPY_CELL = ControlId.commandControl(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COPY_CELL = commandControl(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * A {@link Control} for copying the table rows with header.
 		 */
-		public static final ControlId<CommandControl> COPY_ROWS = ControlId.commandControl();
+		public static final ControlKey<CommandControl> COPY_ROWS = commandControl();
 		/**
 		 * A {@link Controls} instance containing controls for configuring columns.
 		 * @see #SELECT_COLUMNS
 		 * @see #RESET_COLUMNS
 		 * @see #COLUMN_AUTO_RESIZE_MODE
 		 */
-		public static final ControlId<Controls> COLUMN_CONTROLS = controls();
+		public static final ControlKey<Controls> COLUMN_CONTROLS = controls();
 		/**
 		 * Requests focus for the table search field.<br>
 		 * Default key stroke: CTRL-F
 		 */
-		public static final ControlId<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = ControlId.commandControl(keyStroke(VK_F, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK));
+		/**
+		 * The default keyboard shortcut keyStrokes.
+		 */
+		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
-		private ControlIds() {}
+		private ControlKeys() {}
 	}
 
 	/**
@@ -432,7 +437,7 @@ public class EntityTablePanel extends JPanel {
 	private final TablePanel tablePanel = new TablePanel();
 	private final EntityEditPanel editPanel;
 	private final TableConditionPanel<Attribute<?>> tableConditionPanel;
-	private final ControlSet controls;
+	private final ControlMap controls;
 	private final Controls.Config popupMenuConfiguration;
 	private final Controls.Config toolBarConfiguration;
 	private final SwingEntityTableModel tableModel;
@@ -601,11 +606,11 @@ public class EntityTablePanel extends JPanel {
 	 * Returns a {@link Value} containing the control associated with {@code controlId},
 	 * an empty {@link Value} if no such control is available.
 	 * Note that standard controls are populated during initialization, so until then, these values may be empty.
-	 * @param controlId the control id
+	 * @param controlKey the control key
 	 * @return the {@link Value} containing the control associated with {@code controlId}
 	 */
-	public <T extends Control> Value<T> control(ControlId<T> controlId) {
-		return controls.control(requireNonNull(controlId));
+	public <T extends Control> Value<T> control(ControlKey<T> controlKey) {
+		return controls.control(requireNonNull(controlKey));
 	}
 
 	/**
@@ -735,7 +740,7 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Override to setup any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
-	 * @see #control(ControlId)
+	 * @see #control(ControlKey)
 	 */
 	protected void setupControls() {}
 
@@ -840,7 +845,7 @@ public class EntityTablePanel extends JPanel {
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
 	 *   configureToolBar(config -> config.clear()
-	 *           .standard(ControlIds.REFRESH)
+	 *           .standard(ControlKeys.REFRESH)
 	 *           .separator()
 	 *           .control(createCustomControl())
 	 *           .separator()
@@ -848,19 +853,19 @@ public class EntityTablePanel extends JPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link ControlIds#TOGGLE_SUMMARY_PANEL ControlIds#TOGGLE_SUMMARY_PANEL}</li>
-	 * 	 <li>{@link ControlIds#TOGGLE_CONDITION_PANEL ControlIds#TOGGLE_CONDITION_PANEL}</li>
-	 * 	 <li>{@link ControlIds#TOGGLE_FILTER_PANEL ControlIds#TOGGLE_FILTER_PANEL}</li>
+	 *   <li>{@link ControlKeys#TOGGLE_SUMMARY_PANEL ControlKeys#TOGGLE_SUMMARY_PANEL}</li>
+	 * 	 <li>{@link ControlKeys#TOGGLE_CONDITION_PANEL ControlKeys#TOGGLE_CONDITION_PANEL}</li>
+	 * 	 <li>{@link ControlKeys#TOGGLE_FILTER_PANEL ControlKeys#TOGGLE_FILTER_PANEL}</li>
 	 * 	 <li>Separator</li>
-	 * 	 <li>{@link ControlIds#ADD ControlIds#ADD} (If an EditPanel is available)</li>
-	 * 	 <li>{@link ControlIds#EDIT ControlIds#EDIT} (If an EditPanel is available)</li>
-	 * 	 <li>{@link ControlIds#DELETE ControlIds#DELETE}</li>
+	 * 	 <li>{@link ControlKeys#ADD ControlKeys#ADD} (If an EditPanel is available)</li>
+	 * 	 <li>{@link ControlKeys#EDIT ControlKeys#EDIT} (If an EditPanel is available)</li>
+	 * 	 <li>{@link ControlKeys#DELETE ControlKeys#DELETE}</li>
 	 * 	 <li>Separator</li>
-	 * 	 <li>{@link ControlIds#EDIT_SELECTED_ATTRIBUTE ControlIds#EDIT_SELECTED_ATTRIBUTE}</li>
+	 * 	 <li>{@link ControlKeys#EDIT_SELECTED_ATTRIBUTE ControlKeys#EDIT_SELECTED_ATTRIBUTE}</li>
 	 * 	 <li>Separator</li>
-	 * 	 <li>{@link ControlIds#PRINT ControlIds#PRINT}</li>
+	 * 	 <li>{@link ControlKeys#PRINT ControlKeys#PRINT}</li>
 	 * 	 <li>Separator</li>
-	 * 	 <li>{@link ControlIds#ADDITIONAL_TOOLBAR_CONTROLS ControlIds#ADDITIONAL_TOOLBAR_CONTROLS}</li>
+	 * 	 <li>{@link ControlKeys#ADDITIONAL_TOOLBAR_CONTROLS ControlKeys#ADDITIONAL_TOOLBAR_CONTROLS}</li>
 	 * </ul>
 	 * @param toolBarConfig provides access to the toolbar configuration
 	 * @see Controls.Config#clear()
@@ -876,7 +881,7 @@ public class EntityTablePanel extends JPanel {
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
 	 *   configurePopupMenu(config -> config.clear()
-	 *           .standard(ControlIds.REFRESH)
+	 *           .standard(ControlKeys.REFRESH)
 	 *           .separator()
 	 *           .control(createCustomControl())
 	 *           .separator()
@@ -884,30 +889,30 @@ public class EntityTablePanel extends JPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link ControlIds#REFRESH ControlIds#REFRESH}</li>
-	 *   <li>{@link ControlIds#CLEAR ControlIds#CLEAR}</li>
+	 *   <li>{@link ControlKeys#REFRESH ControlKeys#REFRESH}</li>
+	 *   <li>{@link ControlKeys#CLEAR ControlKeys#CLEAR}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link ControlIds#ADD ControlIds#ADD} (If an EditPanel is available)</li>
-	 *   <li>{@link ControlIds#EDIT ControlIds#EDIT} (If an EditPanel is available)</li>
-	 *   <li>{@link ControlIds#DELETE ControlIds#DELETE}</li>
+	 *   <li>{@link ControlKeys#ADD ControlKeys#ADD} (If an EditPanel is available)</li>
+	 *   <li>{@link ControlKeys#EDIT ControlKeys#EDIT} (If an EditPanel is available)</li>
+	 *   <li>{@link ControlKeys#DELETE ControlKeys#DELETE}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link ControlIds#EDIT_SELECTED_ATTRIBUTE ControlIds#EDIT_SELECTED_ATTRIBUTE} or {@link ControlIds#EDIT_ATTRIBUTE_CONTROLS ControlIds#EDIT_ATTRIBUTE_CONTROLS}</li>
+	 *   <li>{@link ControlKeys#EDIT_SELECTED_ATTRIBUTE ControlKeys#EDIT_SELECTED_ATTRIBUTE} or {@link ControlKeys#EDIT_ATTRIBUTE_CONTROLS ControlKeys#EDIT_ATTRIBUTE_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link ControlIds#VIEW_DEPENDENCIES ControlIds#VIEW_DEPENDENCIES}</li>
+	 *   <li>{@link ControlKeys#VIEW_DEPENDENCIES ControlKeys#VIEW_DEPENDENCIES}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link ControlIds#ADDITIONAL_POPUP_MENU_CONTROLS ControlIds#ADDITIONAL_POPUP_MENU_CONTROLS}</li>
+	 *   <li>{@link ControlKeys#ADDITIONAL_POPUP_MENU_CONTROLS ControlKeys#ADDITIONAL_POPUP_MENU_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link ControlIds#PRINT_CONTROLS ControlIds#PRINT_CONTROLS}</li>
+	 *   <li>{@link ControlKeys#PRINT_CONTROLS ControlKeys#PRINT_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link ControlIds#COLUMN_CONTROLS ControlIds#COLUMN_CONTROLS}</li>
+	 *   <li>{@link ControlKeys#COLUMN_CONTROLS ControlKeys#COLUMN_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link ControlIds#SELECTION_MODE ControlIds#SELECTION_MODE}</li>
+	 *   <li>{@link ControlKeys#SELECTION_MODE ControlKeys#SELECTION_MODE}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link ControlIds#CONDITION_CONTROLS ControlIds#CONDITION_CONTROLS}</li>
+	 *   <li>{@link ControlKeys#CONDITION_CONTROLS ControlKeys#CONDITION_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link ControlIds#FILTER_CONTROLS ControlIds#FILTER_CONTROLS}</li>
+	 *   <li>{@link ControlKeys#FILTER_CONTROLS ControlKeys#FILTER_CONTROLS}</li>
 	 *   <li>Separator</li>
-	 *   <li>{@link ControlIds#COPY_CONTROLS ControlIds#COPY_CONTROLS}</li>
+	 *   <li>{@link ControlKeys#COPY_CONTROLS ControlKeys#COPY_CONTROLS}</li>
 	 * </ul>
 	 * @param popupMenuConfig provides access to the popup menu configuration
 	 * @see Controls.Config#clear()
@@ -1590,67 +1595,67 @@ public class EntityTablePanel extends JPanel {
 		summaryPanelVisibleState.addValidator(new ComponentAvailableValidator(summaryPanel, "summary"));
 	}
 
-	private ControlSet createControls() {
+	private ControlMap createControls() {
 		Value.Validator<Control> controlValueValidator = control -> {
 			if (initialized) {
 				throw new IllegalStateException("Controls must be configured before the panel is initialized");
 			}
 		};
-		ControlSet controlSet = ControlSet.controlSet(ControlIds.class);
-		controlSet.controls().forEach(control -> control.addValidator(controlValueValidator));
+		ControlMap controlMap = ControlMap.controlMap(ControlKeys.class);
+		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
 		if (includeDeleteControl()) {
-			controlSet.control(DELETE).set(createDeleteControl());
+			controlMap.control(DELETE).set(createDeleteControl());
 		}
 		if (includeAddControl()) {
-			controlSet.control(ADD).set(createAddControl());
+			controlMap.control(ADD).set(createAddControl());
 		}
 		if (includeEditControl()) {
-			controlSet.control(EDIT).set(createEditControl());
+			controlMap.control(EDIT).set(createEditControl());
 		}
 		if (includeEditAttributeControls()) {
-			controlSet.control(EDIT_ATTRIBUTE_CONTROLS).set(createEditAttributeControls());
-			controlSet.control(EDIT_SELECTED_ATTRIBUTE).set(createEditSelectedAttributeControl());
+			controlMap.control(EDIT_ATTRIBUTE_CONTROLS).set(createEditAttributeControls());
+			controlMap.control(EDIT_SELECTED_ATTRIBUTE).set(createEditSelectedAttributeControl());
 		}
 		if (configuration.includeClearControl) {
-			controlSet.control(CLEAR).set(createClearControl());
+			controlMap.control(CLEAR).set(createClearControl());
 		}
-		controlSet.control(REFRESH).set(createRefreshControl());
-		controlSet.control(SELECT_COLUMNS).set(table.createSelectColumnsControl());
-		controlSet.control(TOGGLE_COLUMN_CONTROLS).set(table.createToggleColumnsControls());
-		controlSet.control(RESET_COLUMNS).set(table.createResetColumnsControl());
-		controlSet.control(COLUMN_AUTO_RESIZE_MODE).set(table.createAutoResizeModeControl());
+		controlMap.control(REFRESH).set(createRefreshControl());
+		controlMap.control(SELECT_COLUMNS).set(table.createSelectColumnsControl());
+		controlMap.control(TOGGLE_COLUMN_CONTROLS).set(table.createToggleColumnsControls());
+		controlMap.control(RESET_COLUMNS).set(table.createResetColumnsControl());
+		controlMap.control(COLUMN_AUTO_RESIZE_MODE).set(table.createAutoResizeModeControl());
 		if (includeViewDependenciesControl()) {
-			controlSet.control(VIEW_DEPENDENCIES).set(createViewDependenciesControl());
+			controlMap.control(VIEW_DEPENDENCIES).set(createViewDependenciesControl());
 		}
 		if (configuration.includeSummaryPanel) {
-			controlSet.control(TOGGLE_SUMMARY_PANEL).set(createToggleSummaryPanelControl());
+			controlMap.control(TOGGLE_SUMMARY_PANEL).set(createToggleSummaryPanelControl());
 		}
 		if (configuration.includeConditionPanel) {
-			controlSet.control(TOGGLE_CONDITION_PANEL).set(createToggleConditionPanelControl());
-			controlSet.control(SELECT_CONDITION_PANEL).set(createSelectConditionPanelControl());
+			controlMap.control(TOGGLE_CONDITION_PANEL).set(createToggleConditionPanelControl());
+			controlMap.control(SELECT_CONDITION_PANEL).set(createSelectConditionPanelControl());
 		}
 		if (configuration.includeFilterPanel) {
-			controlSet.control(TOGGLE_FILTER_PANEL).set(createToggleFilterPanelControl());
-			controlSet.control(SELECT_FILTER_PANEL).set(createSelectFilterPanelControl());
+			controlMap.control(TOGGLE_FILTER_PANEL).set(createToggleFilterPanelControl());
+			controlMap.control(SELECT_FILTER_PANEL).set(createSelectFilterPanelControl());
 		}
-		controlSet.control(CLEAR_SELECTION).set(createClearSelectionControl());
-		controlSet.control(MOVE_SELECTION_UP).set(createMoveSelectionUpControl());
-		controlSet.control(MOVE_SELECTION_DOWN).set(createMoveSelectionDownControl());
-		controlSet.control(COPY_CELL).set(table.createCopyCellControl());
-		controlSet.control(COPY_ROWS).set(createCopyRowsControl());
+		controlMap.control(CLEAR_SELECTION).set(createClearSelectionControl());
+		controlMap.control(MOVE_SELECTION_UP).set(createMoveSelectionUpControl());
+		controlMap.control(MOVE_SELECTION_DOWN).set(createMoveSelectionDownControl());
+		controlMap.control(COPY_CELL).set(table.createCopyCellControl());
+		controlMap.control(COPY_ROWS).set(createCopyRowsControl());
 		if (configuration.includeEntityMenu) {
-			controlSet.control(DISPLAY_ENTITY_MENU).set(commandControl(this::showEntityMenu));
+			controlMap.control(DISPLAY_ENTITY_MENU).set(commandControl(this::showEntityMenu));
 		}
 		if (configuration.includePopupMenu) {
-			controlSet.control(DISPLAY_POPUP_MENU).set(commandControl(this::showPopupMenu));
+			controlMap.control(DISPLAY_POPUP_MENU).set(commandControl(this::showPopupMenu));
 		}
 		if (configuration.includeSelectionModeControl) {
-			controlSet.control(SELECTION_MODE).set(table.createSingleSelectionModeControl());
+			controlMap.control(SELECTION_MODE).set(table.createSingleSelectionModeControl());
 		}
-		controlSet.control(REQUEST_TABLE_FOCUS).set(createRequestTableFocusControl());
-		controlSet.control(REQUEST_SEARCH_FIELD_FOCUS).set(createRequestSearchFieldFocusControl());
+		controlMap.control(REQUEST_TABLE_FOCUS).set(createRequestTableFocusControl());
+		controlMap.control(REQUEST_SEARCH_FIELD_FOCUS).set(createRequestSearchFieldFocusControl());
 
-		return controlSet;
+		return controlMap;
 	}
 
 	private void setupStandardControls() {
@@ -2146,11 +2151,6 @@ public class EntityTablePanel extends JPanel {
 		public static final PropertyValue<EditAttributeSelection> EDIT_ATTRIBUTE_SELECTION =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".editAttributeSelection", EditAttributeSelection.class, EditAttributeSelection.MENU);
 
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
-
 		private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 
 		private final EntityTablePanel tablePanel;
@@ -2194,7 +2194,7 @@ public class EntityTablePanel extends JPanel {
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
 			this.conditionFieldFactory = new EntityConditionFieldFactory(entityDefinition);
-			this.keyStrokes = CONTROL_KEY_STROKES.copy();
+			this.keyStrokes = KEY_STROKES.copy();
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
 							.map(AttributeDefinition::attribute)
 							.collect(toSet()));
@@ -2507,7 +2507,7 @@ public class EntityTablePanel extends JPanel {
 			return this;
 		}
 
-		private ControlId<?> popupMenuEditAttributeControl() {
+		private ControlKey<?> popupMenuEditAttributeControl() {
 			return editAttributeSelection == EditAttributeSelection.MENU ?
 							EDIT_ATTRIBUTE_CONTROLS :
 							EDIT_SELECTED_ATTRIBUTE;

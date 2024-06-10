@@ -28,7 +28,7 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -51,8 +51,8 @@ import java.awt.event.FocusEvent;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
-import static is.codion.swing.common.ui.component.text.TextFieldPanel.ControlIds.DISPLAY_TEXT_AREA;
-import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.component.text.TextFieldPanel.ControlKeys.DISPLAY_TEXT_AREA;
+import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static java.awt.event.KeyEvent.VK_INSERT;
@@ -70,22 +70,22 @@ public final class TextFieldPanel extends JPanel {
 					messageBundle(TextFieldPanel.class, getBundle(TextFieldPanel.class.getName()));
 
 	/**
-	 * The default keyboard shortcut keyStrokes.
-	 */
-	public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
-
-	/**
 	 * The available controls.
 	 */
-	public static final class ControlIds {
+	public static final class ControlKeys {
 
 		/**
 		 * Displays a text area for longer text input.<br>
 		 * Default key stroke: INSERT
 		 */
-		public static final ControlId<CommandControl> DISPLAY_TEXT_AREA = commandControl(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> DISPLAY_TEXT_AREA = commandControl(keyStroke(VK_INSERT));
 
-		private ControlIds() {}
+		/**
+		 * The default keyboard shortcut keyStrokes.
+		 */
+		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
+
+		private ControlKeys() {}
 	}
 
 	private final JTextField textField;
@@ -256,11 +256,11 @@ public final class TextFieldPanel extends JPanel {
 		Builder maximumLength(int maximumLength);
 
 		/**
-		 * @param controlId the control id
+		 * @param controlKey the control key
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke);
+		Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 	}
 
 	private Control createTextAreaControl(DefaultBuilder builder) {
@@ -321,7 +321,7 @@ public final class TextFieldPanel extends JPanel {
 		private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
 		private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null);
-		private final ControlKeyStrokes controlKeyStrokes = CONTROL_KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = ControlKeys.KEY_STROKES.copy();
 
 		private boolean buttonFocusable;
 		private ImageIcon buttonIcon;
@@ -402,8 +402,8 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		public TextFieldPanel.Builder keyStroke(ControlId<?> controlId, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlId).set(keyStroke);
+		public TextFieldPanel.Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 

@@ -37,9 +37,9 @@ import is.codion.framework.model.EntityEditModel.Update;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
-import is.codion.swing.common.ui.control.ControlId;
+import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlKeyStrokes;
-import is.codion.swing.common.ui.control.ControlSet;
+import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -62,13 +62,13 @@ import java.util.function.Consumer;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlId.commandControl;
+import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
-import static is.codion.swing.common.ui.control.ControlSet.controlSet;
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
-import static is.codion.swing.framework.ui.EntityEditPanel.ControlIds.*;
+import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_I;
@@ -96,37 +96,41 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Note that changing the shortcut keystroke after the panel
 	 * has been initialized has no effect.
 	 */
-	public static final class ControlIds {
+	public static final class ControlKeys {
 
 		/**
 		 * Performs an insert.
 		 */
-		public static final ControlId<CommandControl> INSERT = commandControl();
+		public static final ControlKey<CommandControl> INSERT = commandControl();
 		/**
 		 * Performs an update.
 		 */
-		public static final ControlId<CommandControl> UPDATE = commandControl();
+		public static final ControlKey<CommandControl> UPDATE = commandControl();
 		/**
 		 * Performs a delete.
 		 */
-		public static final ControlId<CommandControl> DELETE = commandControl();
+		public static final ControlKey<CommandControl> DELETE = commandControl();
 		/**
 		 * Clears the input fields.
 		 */
-		public static final ControlId<CommandControl> CLEAR = commandControl();
+		public static final ControlKey<CommandControl> CLEAR = commandControl();
 		/**
 		 * Displays a dialog for selecting an input field.<br>
 		 * Default key stroke: CTRL-I
 		 */
-		public static final ControlId<CommandControl> SELECT_INPUT_FIELD = commandControl(keyStroke(VK_I, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_INPUT_FIELD = commandControl(keyStroke(VK_I, CTRL_DOWN_MASK));
 		/**
 		 * Displays the entity menu, if available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 * @see Config#INCLUDE_ENTITY_MENU
 		 */
-		public static final ControlId<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		/**
+		 * The default keyboard shortcut keyStrokes.
+		 */
+		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
-		private ControlIds() {}
+		private ControlKeys() {}
 	}
 
 	static {
@@ -144,7 +148,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
 	private final Controls.Config controlsConfiguration;
-	private final ControlSet controls;
+	private final ControlMap controls;
 	private final State active;
 
 	final Config configuration;
@@ -203,11 +207,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Returns a {@link Value} containing the control associated with {@code controlId},
 	 * an empty {@link Value} if no such control is available.
 	 * Note that standard controls are populated during initialization, so until then, these values may be empty.
-	 * @param controlId the control id
+	 * @param controlKey the control key
 	 * @return the {@link Value} containing the control associated with {@code controlId}
 	 */
-	public <T extends Control> Value<T> control(ControlId<T> controlId) {
-		return controls.control(requireNonNull(controlId));
+	public <T extends Control> Value<T> control(ControlKey<T> controlKey) {
+		return controls.control(requireNonNull(controlKey));
 	}
 
 	/**
@@ -472,7 +476,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	/**
 	 * Override to setup any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
-	 * @see #control(ControlId)
+	 * @see #control(ControlKey)
 	 */
 	protected void setupControls() {}
 
@@ -506,10 +510,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link ControlIds#INSERT ControlIds#INSERT}</li>
-	 *   <li>{@link ControlIds#UPDATE ControlIds#UPDATE}</li>
-	 *   <li>{@link ControlIds#DELETE ControlIds#DELETE}</li>
-	 *   <li>{@link ControlIds#CLEAR ControlIds#CLEAR}</li>
+	 *   <li>{@link ControlKeys#INSERT ControlKeys#INSERT}</li>
+	 *   <li>{@link ControlKeys#UPDATE ControlKeys#UPDATE}</li>
+	 *   <li>{@link ControlKeys#DELETE ControlKeys#DELETE}</li>
+	 *   <li>{@link ControlKeys#CLEAR ControlKeys#CLEAR}</li>
 	 * </ul>
 	 * @param controlsConfig provides access to the controls configuration
 	 * @see Controls.Config#clear()
@@ -518,32 +522,32 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		requireNonNull(controlsConfig).accept(controlsConfiguration);
 	}
 
-	private ControlSet createControls() {
+	private ControlMap createControls() {
 		Value.Validator<Control> controlValueValidator = control -> {
 			if (initialized) {
 				throw new IllegalStateException("Controls must be configured before the panel is initialized");
 			}
 		};
-		ControlSet controlSet = controlSet(ControlIds.class);
-		controlSet.controls().forEach(control -> control.addValidator(controlValueValidator));
+		ControlMap controlMap = controlMap(ControlKeys.class);
+		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
 		if (!editModel().readOnly().get()) {
 			if (editModel().insertEnabled().get()) {
-				controlSet.control(INSERT).set(createInsertControl());
+				controlMap.control(INSERT).set(createInsertControl());
 			}
 			if (editModel().updateEnabled().get()) {
-				controlSet.control(UPDATE).set(createUpdateControl());
+				controlMap.control(UPDATE).set(createUpdateControl());
 			}
 			if (editModel().deleteEnabled().get()) {
-				controlSet.control(DELETE).set(createDeleteControl());
+				controlMap.control(DELETE).set(createDeleteControl());
 			}
 		}
-		controlSet.control(CLEAR).set(createClearControl());
-		controlSet.control(SELECT_INPUT_FIELD).set(createSelectInputComponentControl());
+		controlMap.control(CLEAR).set(createClearControl());
+		controlMap.control(SELECT_INPUT_FIELD).set(createSelectInputComponentControl());
 		if (configuration.includeEntityMenu) {
-			controlSet.control(DISPLAY_ENTITY_MENU).set(createShowEntityMenuControl());
+			controlMap.control(DISPLAY_ENTITY_MENU).set(createShowEntityMenuControl());
 		}
 
-		return controlSet;
+		return controlMap;
 	}
 
 	private CommandControl createDeleteControl() {
@@ -707,11 +711,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		public static final PropertyValue<Boolean> MODIFIED_WARNING =
 						Configuration.booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);
 
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes CONTROL_KEY_STROKES = controlKeyStrokes(ControlIds.class);
-
 		private static final Confirmer DEFAULT_INSERT_CONFIRMER = Confirmer.NONE;
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
 		private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
@@ -733,7 +732,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 		private Config(EntityEditPanel editPanel) {
 			this.editPanel = editPanel;
-			this.keyStrokes = CONTROL_KEY_STROKES.copy();
+			this.keyStrokes = KEY_STROKES.copy();
 		}
 
 		private Config(Config config) {
