@@ -864,8 +864,8 @@ public final class Components {
 
 	/**
 	 * @param listModel the list model to base the list on
-	 * @return a new list builder factory
 	 * @param <T> the list value type
+	 * @return a new list builder factory
 	 */
 	public static <T> ListBuilder.Factory<T> list(ListModel<T> listModel) {
 		return ListBuilder.factory(listModel);

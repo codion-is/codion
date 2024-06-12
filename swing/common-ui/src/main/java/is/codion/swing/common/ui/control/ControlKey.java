@@ -45,8 +45,8 @@ public interface ControlKey<T extends Control> {
 	}
 
 	/**
-	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 * @param defaultKeyStroke the default keystroke
+	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 */
 	static ControlKey<CommandControl> commandControl(KeyStroke defaultKeyStroke) {
 		return new DefaultControlKey<>(CommandControl.class, defaultKeyStroke);
@@ -60,8 +60,8 @@ public interface ControlKey<T extends Control> {
 	}
 
 	/**
-	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 * @param defaultKeyStroke the default keystroke
+	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 */
 	static ControlKey<ToggleControl> toggleControl(KeyStroke defaultKeyStroke) {
 		return new DefaultControlKey<>(ToggleControl.class, defaultKeyStroke);
@@ -75,8 +75,8 @@ public interface ControlKey<T extends Control> {
 	}
 
 	/**
-	 * @return a new {@link ControlKey} for identifying a {@link Controls} instance
 	 * @param defaultKeyStroke the default keystroke
+	 * @return a new {@link ControlKey} for identifying a {@link Controls} instance
 	 */
 	static ControlKey<Controls> controls(KeyStroke defaultKeyStroke) {
 		return new DefaultControlKey<>(Controls.class, defaultKeyStroke);

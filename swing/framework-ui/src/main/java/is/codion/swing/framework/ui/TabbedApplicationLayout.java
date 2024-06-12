@@ -102,8 +102,8 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 	}
 
 	/**
-	 * @return the application panel
 	 * @param <T> the application panel type
+	 * @return the application panel
 	 */
 	protected final <T extends EntityApplicationPanel<?>> T applicationPanel() {
 		return (T) applicationPanel;

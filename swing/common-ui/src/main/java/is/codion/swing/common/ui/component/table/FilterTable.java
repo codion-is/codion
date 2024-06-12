@@ -1351,10 +1351,9 @@ public final class FilterTable<R, C> extends JTable {
 							.map(row -> stringValues(row, columns))
 							.collect(toList()));
 
-			return new StringBuilder()
-							.append(lines.stream().map(line -> join(String.valueOf(delimiter), line))
-											.collect(joining(Separators.LINE_SEPARATOR)))
-							.toString();
+			return lines.stream()
+							.map(line -> join(String.valueOf(delimiter), line))
+							.collect(joining(Separators.LINE_SEPARATOR));
 		}
 
 		private List<String> stringValues(int row, List<FilterTableColumn<C>> columns) {

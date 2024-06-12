@@ -165,16 +165,16 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 
 	/**
 	 * @param nullValue the actual value to use when the value is set to null
-	 * @return a builder for a non-null Value
 	 * @param <T> the value type
+	 * @return a builder for a non-null Value
 	 */
 	static <T> Builder<T, ?> nonNull(T nullValue) {
 		return new DefaultValue.DefaultBuilder<>(nullValue);
 	}
 
 	/**
-	 * @return a builder for a nullable Value
 	 * @param <T> the value type
+	 * @return a builder for a nullable Value
 	 */
 	static <T> Builder<T, ?> nullable() {
 		return Value.<T>nullable(null);
@@ -182,8 +182,8 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 
 	/**
 	 * @param initialValue the initial value
-	 * @return a builder for a nullable Value
 	 * @param <T> the value type
+	 * @return a builder for a nullable Value
 	 */
 	static <T> Builder<T, ?> nullable(T initialValue) {
 		return (Builder<T, ?>) new DefaultValue.DefaultBuilder<>()

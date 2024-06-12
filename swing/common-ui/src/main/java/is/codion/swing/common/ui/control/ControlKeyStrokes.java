@@ -43,11 +43,11 @@ public interface ControlKeyStrokes {
 	ControlKeyStrokes copy();
 
 	/**
-	 * @param controlIdsClass the class containing the control keys
+	 * @param controlKeysClass the class containing the control keys
 	 * @return a new {@link ControlKeyStrokes} instance
 	 */
-	static ControlKeyStrokes controlKeyStrokes(Class<?> controlIdsClass) {
-		return new DefaultControlKeyStrokes(requireNonNull(controlIdsClass));
+	static ControlKeyStrokes controlKeyStrokes(Class<?> controlKeysClass) {
+		return new DefaultControlKeyStrokes(requireNonNull(controlKeysClass));
 	}
 
 	/**

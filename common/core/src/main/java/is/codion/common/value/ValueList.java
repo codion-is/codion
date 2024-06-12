@@ -56,8 +56,8 @@ public interface ValueList<T> extends Values<T, List<T>> {
 
 	/**
 	 * Creates a new {@link ValueList.Builder} instance.
-	 * @return a new builder
 	 * @param <T> the value set type
+	 * @return a new builder
 	 */
 	static <T> Builder<T> builder() {
 		return builder(Collections.<T>emptyList());
@@ -66,8 +66,8 @@ public interface ValueList<T> extends Values<T, List<T>> {
 	/**
 	 * Creates a new {@link ValueList.Builder} instance.
 	 * @param initialValue the initial value
-	 * @return a new builder
 	 * @param <T> the value set type
+	 * @return a new builder
 	 * @throws NullPointerException in case {@code initialValue} is null
 	 */
 	static <T> Builder<T> builder(Collection<T> initialValue) {

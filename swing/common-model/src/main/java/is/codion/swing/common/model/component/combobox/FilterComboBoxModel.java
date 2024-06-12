@@ -188,8 +188,8 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	EventObserver<T> selectionEvent();
 
 	/**
-	 * @return a new {@link FilterComboBoxModel} instance
 	 * @param <T> the item type
+	 * @return a new {@link FilterComboBoxModel} instance
 	 */
 	static <T> FilterComboBoxModel<T> filterComboBoxModel() {
 		return new DefaultFilterComboBoxModel<>();

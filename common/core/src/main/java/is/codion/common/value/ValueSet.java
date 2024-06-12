@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * An observable wrapper for a Set of values, including a possible null value.
  * A factory for {@link ValueSet} instances.
@@ -54,8 +56,8 @@ public interface ValueSet<T> extends Values<T, Set<T>> {
 
 	/**
 	 * Creates a new {@link ValueSet.Builder} instance.
-	 * @return a new builder
 	 * @param <T> the value set type
+	 * @return a new builder
 	 */
 	static <T> Builder<T> builder() {
 		return builder(Collections.<T>emptySet());
@@ -64,11 +66,13 @@ public interface ValueSet<T> extends Values<T, Set<T>> {
 	/**
 	 * Creates a new {@link ValueSet.Builder} instance.
 	 * @param initialValue the initial value
-	 * @return a new builder
 	 * @param <T> the value set type
+	 * @return a new builder
 	 * @throws NullPointerException in case {@code initialValue} is null
 	 */
 	static <T> Builder<T> builder(Collection<T> initialValue) {
+		requireNonNull(initialValue);
+
 		return new DefaultValueSet.DefaultBuilder<T>()
 						.initialValue(new LinkedHashSet<>(initialValue));
 	}

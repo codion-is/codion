@@ -29,8 +29,8 @@ public interface ControlMap {
 
 	/**
 	 * @param controlKey the control key
-	 * @return the {@link Value} specifying the {@link Control} associated with the given key
 	 * @param <T> the control type
+	 * @return the {@link Value} specifying the {@link Control} associated with the given key
 	 * @throws IllegalArgumentException in case no control is associated with the given key
 	 */
 	<T extends Control> Value<T> control(ControlKey<T> controlKey);
