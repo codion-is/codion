@@ -1527,7 +1527,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 			Object columnValue;
 			String stringValue;
 			try {
-				columnValue = columnDefinition.converter().toColumnValue(value, null);
+				Column.Converter<Object, Object> converter = columnDefinition.converter();
+				if (value == null && !converter.handlesNull()) {
+					columnValue = null;
+				}
+				else {
+					columnValue = converter.toColumnValue(value, null);
+				}
 				stringValue = String.valueOf(value);
 			}
 			catch (SQLException e) {

@@ -12,6 +12,8 @@ Codion Change Log
 - ControlSet renamed ControlMap, ControlId renamed ControlKey.
 ### is.codion.framework.domain
 - DefaultColumnDefinition.groupBy, aggregate, selectable and lazy no longer transient.
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection.createValueString() bug fixed, did not respect Column.Converter.handlesNull().
 ### is.codion.framework.model
 - EntityConditionModelFactory, now creates condition models for all attributes, whether selectable or not.
 ### is.codion.swing.framework.ui
