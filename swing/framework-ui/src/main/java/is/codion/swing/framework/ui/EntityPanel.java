@@ -1212,12 +1212,19 @@ public class EntityPanel extends JPanel {
 					break;
 				case DOWN:
 					if (!detailPanels.isEmpty()) {
-						detailPanels.get(0).activate();
+						navigateDown();
 					}
 					break;
 				default:
 					throw new IllegalArgumentException("Unknown direction: " + direction);
 			}
+		}
+
+		private void navigateDown() {
+			linkedDetailPanels().stream()
+							.findFirst()
+							.orElse(detailPanels.get(0))
+							.activate();
 		}
 	}
 

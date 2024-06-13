@@ -18,6 +18,7 @@ Codion Change Log
 - EntityConditionModelFactory, now creates condition models for all attributes, whether selectable or not.
 ### is.codion.swing.framework.ui
 - EntityPanel.Config.editPanelConstraints() and EDIT_PANEL_CONSTRAINTS configuration value added.
+- EntityPanel.Navigate bug fixed, navigating down always activated the first detail panel, instead of the currently linked one. 
 
 ## 0.18.1
 ### is.codion.swing.common.ui
