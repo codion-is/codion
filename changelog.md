@@ -10,6 +10,7 @@ Codion Change Log
 - FilterTable now validates column identifier uniqueness.
 - FilterTableColumn.setIdentifier() now throws UnsupportedOperationException instead of IllegalStateException.
 - ControlSet renamed ControlMap, ControlId renamed ControlKey.
+- NumberDocument, NumberField.setRethrowValidationException() replaced with setSilentValidation().
 ### is.codion.framework.domain
 - DefaultColumnDefinition.groupBy, aggregate, selectable and lazy no longer transient.
 ### is.codion.framework.db.local

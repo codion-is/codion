@@ -28,8 +28,7 @@ import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 
 import static java.awt.event.KeyEvent.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class NumberFieldTest {
 
@@ -416,5 +415,19 @@ public final class NumberFieldTest {
 
 		document.insertString(3, "1", null);
 		assertEquals("0.01", doubleField.getText());
+	}
+
+	@Test
+	void silentValidation() {
+		NumberField<Integer> integerField = NumberField.builder(Integer.class)
+						.initialValue(10)
+						.valueRange(0, 100)
+						.build();
+		assertEquals(10, integerField.getNumber());
+		assertThrows(IllegalArgumentException.class, () -> integerField.setNumber(101));
+		integerField.setSilentValidation(true);
+		integerField.setNumber(50);
+		integerField.setNumber(110);
+		assertNull(integerField.getNumber());
 	}
 }

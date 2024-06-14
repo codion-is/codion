@@ -201,18 +201,18 @@ public final class NumberField<T extends Number> extends HintTextField {
 	}
 
 	/**
-	 * Default true.
-	 * @param rethrowValidationException true if validation exceptions should be rethrown as opposed to silently preventing invalid input
+	 * Default false.
+	 * @param silentValidation true if invalid input should be silently prevented instead of throwing validation exceptions
 	 */
-	public void setRethrowValidationException(boolean rethrowValidationException) {
-		getTypedDocument().getDocumentFilter().setRethrowValidationException(rethrowValidationException);
+	public void setSilentValidation(boolean silentValidation) {
+		getTypedDocument().getDocumentFilter().setSilentValidation(silentValidation);
 	}
 
 	/**
-	 * @return true if validation exceptions are rethrown
+	 * @return true if invalid input should be silently prevented instead of throwing validation exceptions
 	 */
-	public boolean isRethrowValidationException() {
-		return getTypedDocument().getDocumentFilter().isRethrowValidationException();
+	public boolean isSilentValidation() {
+		return getTypedDocument().getDocumentFilter().isSilentValidation();
 	}
 
 	/**
@@ -304,10 +304,10 @@ public final class NumberField<T extends Number> extends HintTextField {
 		Builder<T> maximumValue(Number maximumValue);
 
 		/**
-		 * @param rethrowValidationException true if validation exceptions should be rethrown as opposed to silently preventing invalid input
+		 * @param silentValidation true if invalid input should be silently prevented instead of throwing validation exceptions
 		 * @return this builder instance
 		 */
-		Builder<T> rethrowValidationException(boolean rethrowValidationException);
+		Builder<T> silentValidation(boolean silentValidation);
 
 		/**
 		 * @param groupingSeparator the grouping separator
@@ -391,7 +391,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		private Number maximumValue;
 		private Number minimumValue;
-		private boolean rethrowValidationException = true;
+		private boolean silentValidation = false;
 		private char groupingSeparator = 0;
 		private Boolean groupingUsed;
 		private char decimalSeparator = 0;
@@ -428,8 +428,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		public Builder<T> rethrowValidationException(boolean rethrowValidationException) {
-			this.rethrowValidationException = rethrowValidationException;
+		public Builder<T> silentValidation(boolean silentValidation) {
+			this.silentValidation = silentValidation;
 			return this;
 		}
 
@@ -471,7 +471,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 			NumberField<T> numberField = createNumberField(initializeFormat());
 			numberField.setMinimumValue(minimumValue);
 			numberField.setMaximumValue(maximumValue);
-			numberField.setRethrowValidationException(rethrowValidationException);
+			numberField.setSilentValidation(silentValidation);
 			numberField.setConvertGroupingToDecimalSeparator(convertGroupingToDecimalSeparator);
 			if (groupingUsed != null) {
 				numberField.setGroupingUsed(groupingUsed);
