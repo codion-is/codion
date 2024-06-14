@@ -280,10 +280,10 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	/**
-	 * Returns a combo box model for selecting a foreign key value for using as a condition this model.
-	 * Note that each time the selection changes in the created model this model is refreshed.
+	 * Returns a combo box model for selecting a foreign key value for using as a query condition in this model.
+	 * Note that each time the selection changes in the resulting model this model is refreshed.
 	 * @param foreignKey the foreign key
-	 * @return a combo box model for selecting a filtering value for this combo box model
+	 * @return a combo box model for selecting a condition query value for this combo box model
 	 * @see #linkForeignKeyConditionComboBoxModel(ForeignKey, EntityComboBoxModel)
 	 */
 	public EntityComboBoxModel createForeignKeyConditionComboBoxModel(ForeignKey foreignKey) {
@@ -558,7 +558,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
 
 		return foreignKeyModel;
-
 	}
 
 	private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel, boolean filter) {
