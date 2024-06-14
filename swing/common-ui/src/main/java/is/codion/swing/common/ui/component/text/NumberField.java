@@ -23,6 +23,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
+import is.codion.swing.common.ui.component.text.NumberDocument.NumberParsingDocumentFilter;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.text.BadLocationException;
@@ -54,11 +55,31 @@ public final class NumberField<T extends Number> extends HintTextField {
 	public static final PropertyValue<Boolean> CONVERT_GROUPING_TO_DECIMAL_SEPARATOR =
 					Configuration.booleanValue(NumberField.class.getName() + ".convertGroupingToDecimalSeparator", true);
 
-	private NumberField(NumberDocument<T> document) {
-		super(document);
+	private NumberField(AbstractNumberFieldBuilder<T> builder) {
+		super(builder.createDocument());
+		NumberDocument<T> document = getTypedDocument();
 		document.setTextComponent(this);
+		NumberParsingDocumentFilter<T> documentFilter = document.getDocumentFilter();
+		documentFilter.setMinimumValue(builder.minimumValue);
+		documentFilter.setMaximumValue(builder.maximumValue);
+		documentFilter.setSilentValidation(builder.silentValidation);
+		documentFilter.setConvertGroupingToDecimalSeparator(builder.convertGroupingToDecimalSeparator);
 		if (document.getFormat() instanceof DecimalFormat) {
 			addKeyListener(new GroupingSkipAdapter());
+		}
+		if (builder.groupingUsed != null) {
+			document.setGroupingUsed(builder.groupingUsed);
+		}
+		if (builder.groupingSeparator != 0) {
+			document.setGroupingSeparator(builder.groupingSeparator);
+		}
+		if (document instanceof DecimalDocument) {
+			if (builder.maximumFractionDigits != -1) {
+				((DecimalDocument<?>) document).setMaximumFractionDigits(builder.maximumFractionDigits);
+			}
+			if (builder.decimalSeparator != 0) {
+				document.setDecimalSeparator(builder.decimalSeparator);
+			}
 		}
 	}
 
@@ -468,39 +489,17 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected final NumberField<T> createTextField() {
-			NumberField<T> numberField = createNumberField(initializeFormat());
-			numberField.setMinimumValue(minimumValue);
-			numberField.setMaximumValue(maximumValue);
-			numberField.setSilentValidation(silentValidation);
-			numberField.setConvertGroupingToDecimalSeparator(convertGroupingToDecimalSeparator);
-			if (groupingUsed != null) {
-				numberField.setGroupingUsed(groupingUsed);
-			}
-			if (groupingSeparator != 0) {
-				numberField.setGroupingSeparator(groupingSeparator);
-			}
-			if (numberField.getDocument() instanceof DecimalDocument) {
-				if (maximumFractionDigits != -1) {
-					numberField.setMaximumFractionDigits(maximumFractionDigits);
-				}
-				if (decimalSeparator != 0) {
-					numberField.setDecimalSeparator(decimalSeparator);
-				}
-			}
-
-			return numberField;
+			return new NumberField<>(this);
 		}
 
-		protected abstract NumberField<T> createNumberField(NumberFormat format);
-
-		protected abstract NumberFormat createFormat();
+		protected abstract NumberDocument<T> createDocument();
 
 		@Override
 		protected final void setInitialValue(NumberField<T> component, T initialValue) {
 			component.setNumber(initialValue);
 		}
 
-		private NumberFormat initializeFormat() {
+		protected final NumberFormat initializeFormat(NumberFormat defaultFormat) {
 			NumberFormat format = (NumberFormat) format();
 			if (format != null) {
 				NumberFormat cloned = (NumberFormat) format.clone();
@@ -515,7 +514,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 				return cloned;
 			}
 
-			return createFormat();
+			return defaultFormat;
 		}
 	}
 
@@ -526,6 +525,13 @@ public final class NumberField<T extends Number> extends HintTextField {
 		return format;
 	}
 
+	private static DecimalFormat decimalFormat() {
+		DecimalFormat decimalFormat = new DecimalFormat();
+		decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
+
+		return decimalFormat;
+	}
+
 	private static final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal> {
 
 		private DefaultBigDecimalFieldBuilder(Value<BigDecimal> linkedValue) {
@@ -533,21 +539,13 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected NumberField<BigDecimal> createNumberField(NumberFormat format) {
-			return new NumberField<>(new DecimalDocument<>((DecimalFormat) format, true));
+		protected NumberDocument<BigDecimal> createDocument() {
+			return new DecimalDocument<>((DecimalFormat) initializeFormat(decimalFormat()), true);
 		}
 
 		@Override
 		protected ComponentValue<BigDecimal, NumberField<BigDecimal>> createComponentValue(NumberField<BigDecimal> component) {
 			return new BigDecimalFieldValue(component, nullable, updateOn);
-		}
-
-		@Override
-		protected NumberFormat createFormat() {
-			DecimalFormat decimalFormat = new DecimalFormat();
-			decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
-
-			return decimalFormat;
 		}
 	}
 
@@ -558,21 +556,13 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected NumberField<Double> createNumberField(NumberFormat format) {
-			return new NumberField<>(new DecimalDocument<>((DecimalFormat) format, false));
+		protected NumberDocument<Double> createDocument() {
+			return new DecimalDocument<>((DecimalFormat) initializeFormat(decimalFormat()), false);
 		}
 
 		@Override
 		protected ComponentValue<Double, NumberField<Double>> createComponentValue(NumberField<Double> component) {
 			return new DoubleFieldValue(component, nullable, updateOn);
-		}
-
-		@Override
-		protected NumberFormat createFormat() {
-			DecimalFormat decimalFormat = new DecimalFormat();
-			decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
-
-			return decimalFormat;
 		}
 	}
 
@@ -583,18 +573,13 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected NumberField<Short> createNumberField(NumberFormat format) {
-			return new NumberField<>(new NumberDocument<>(format, Short.class));
+		protected NumberDocument<Short> createDocument() {
+			return new NumberDocument<>(initializeFormat(nonGroupingIntegerFormat()), Short.class);
 		}
 
 		@Override
 		protected ComponentValue<Short, NumberField<Short>> createComponentValue(NumberField<Short> component) {
 			return new ShortFieldValue(component, nullable, updateOn);
-		}
-
-		@Override
-		protected NumberFormat createFormat() {
-			return nonGroupingIntegerFormat();
 		}
 	}
 
@@ -605,18 +590,13 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected NumberField<Integer> createNumberField(NumberFormat format) {
-			return new NumberField<>(new NumberDocument<>(format, Integer.class));
+		protected NumberDocument<Integer> createDocument() {
+			return new NumberDocument<>(initializeFormat(nonGroupingIntegerFormat()), Integer.class);
 		}
 
 		@Override
 		protected ComponentValue<Integer, NumberField<Integer>> createComponentValue(NumberField<Integer> component) {
 			return new IntegerFieldValue(component, nullable, updateOn);
-		}
-
-		@Override
-		protected NumberFormat createFormat() {
-			return nonGroupingIntegerFormat();
 		}
 	}
 
@@ -627,18 +607,13 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected NumberField<Long> createNumberField(NumberFormat format) {
-			return new NumberField<>(new NumberDocument<>(format, Long.class));
+		protected NumberDocument<Long> createDocument() {
+			return new NumberDocument<>(initializeFormat(nonGroupingIntegerFormat()), Long.class);
 		}
 
 		@Override
 		protected ComponentValue<Long, NumberField<Long>> createComponentValue(NumberField<Long> component) {
 			return new LongFieldValue(component, nullable, updateOn);
-		}
-
-		@Override
-		protected NumberFormat createFormat() {
-			return nonGroupingIntegerFormat();
 		}
 	}
 
