@@ -138,7 +138,7 @@ public final class NotesDemo {
 			super(editModel);
 			// CLEAR is the only standard control we require, for clearing the UI
 			configureControls(config -> config.clear()
-							.standard(CLEAR));
+							.control(CLEAR));
 		}
 
 		@Override

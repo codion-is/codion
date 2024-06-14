@@ -31,6 +31,6 @@ final class ContinentTablePanel extends EntityTablePanel {
 		super(tableModel, config -> config.includeSouthPanel(false));
 		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		configurePopupMenu(config -> config.clear()
-						.standard(REFRESH));
+						.control(REFRESH));
 	}
 }

@@ -206,10 +206,10 @@ public interface Controls extends Control {
 
 		/**
 		 * Adds a standard control
-		 * @param controlKey the control key
+		 * @param controlKey the key identifying the standard control to add
 		 * @return this config instance
 		 */
-		Config standard(ControlKey<?> controlKey);
+		Config control(ControlKey<?> controlKey);
 
 		/**
 		 * @param control the control to add
@@ -237,7 +237,7 @@ public interface Controls extends Control {
 
 		/**
 		 * Adds all remaining default controls, up until and including {@code stopAt}
-		 * @param stopAt the table control to stop at (inclusive)
+		 * @param stopAt the standard control to stop at (inclusive)
 		 * @return this config instance
 		 */
 		Config defaults(ControlKey<?> stopAt);

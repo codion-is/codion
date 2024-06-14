@@ -143,10 +143,10 @@ public final class EntityDependenciesPanel extends JPanel {
 		SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, connectionProvider);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeConditionPanel(false));
 		tablePanel.configurePopupMenu(config -> config.clear()
-						.standard(EDIT_ATTRIBUTE_CONTROLS)
-						.standard(DELETE)
+						.control(EDIT_ATTRIBUTE_CONTROLS)
+						.control(DELETE)
 						.separator()
-						.standard(VIEW_DEPENDENCIES));
+						.control(VIEW_DEPENDENCIES));
 
 		return tablePanel.initialize();
 	}

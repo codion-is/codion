@@ -140,8 +140,8 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	private void configurePopupMenuAndToolBar() {
 		configurePopupMenu(config -> config.clear()
-						.standard(REFRESH)
-						.standard(CLEAR)
+						.control(REFRESH)
+						.control(CLEAR)
 						.separator()
 						.control(Controls.builder()
 										.name("Export")
@@ -171,8 +171,8 @@ final class LookupTablePanel extends EntityTablePanel {
 										.control(control(RESET_COLUMNS).get())
 										.control(control(COLUMN_AUTO_RESIZE_MODE).get()))
 						.separator()
-						.standard(CONDITION_CONTROLS)
-						.standard(COPY_CONTROLS));
+						.control(CONDITION_CONTROLS)
+						.control(COPY_CONTROLS));
 
 		configureToolBar(config -> config.clear()
 						.control(toggleMapControl)

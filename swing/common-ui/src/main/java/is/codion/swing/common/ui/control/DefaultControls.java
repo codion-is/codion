@@ -139,7 +139,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Config standard(ControlKey<?> controlKey) {
+		public Config control(ControlKey<?> controlKey) {
 			add(requireNonNull(controlKey));
 			return this;
 		}
@@ -197,8 +197,8 @@ final class DefaultControls extends AbstractControl implements Controls {
 			return builder.build();
 		}
 
-		private void add(ControlKey<?> controlIdentifier) {
-			StandardControl standardControl = new StandardControl(controlIdentifier, controls);
+		private void add(ControlKey<?> controlKey) {
+			StandardControl standardControl = new StandardControl(controlKey, controls);
 			if (!items.contains(standardControl)) {
 				items.add(standardControl);
 			}
@@ -210,17 +210,17 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		private static final class StandardControl implements ControlItem {
 
-			private final ControlKey<?> tableControl;
+			private final ControlKey<?> controlKey;
 			private final ControlMap controls;
 
-			private StandardControl(ControlKey<?> tableControl, ControlMap controls) {
-				this.tableControl = tableControl;
+			private StandardControl(ControlKey<?> controlKey, ControlMap controls) {
+				this.controlKey = controlKey;
 				this.controls = controls;
 			}
 
 			@Override
 			public void addTo(ControlsBuilder builder) {
-				controls.control(tableControl).optional().ifPresent(control -> {
+				controls.control(controlKey).optional().ifPresent(control -> {
 					if (control instanceof Controls) {
 						Controls controlsToAdd = (Controls) control;
 						if (controlsToAdd.notEmpty()) {
@@ -249,12 +249,12 @@ final class DefaultControls extends AbstractControl implements Controls {
 					return false;
 				}
 				StandardControl that = (StandardControl) object;
-				return tableControl == that.tableControl;
+				return controlKey == that.controlKey;
 			}
 
 			@Override
 			public int hashCode() {
-				return Objects.hash(tableControl);
+				return Objects.hash(controlKey);
 			}
 		}
 
