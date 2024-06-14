@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.3
+
 ## 0.18.2
 ### is.codion.swing.common.model
 - DefaultFilterTableModel now validates column identifier uniqueness.
