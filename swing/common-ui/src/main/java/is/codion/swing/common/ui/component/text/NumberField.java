@@ -57,7 +57,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 	private NumberField(AbstractNumberFieldBuilder<T> builder) {
 		super(builder.createDocument());
-		NumberDocument<T> document = getTypedDocument();
+		NumberDocument<T> document = document();
 		document.setTextComponent(this);
 		NumberParsingDocumentFilter<T> documentFilter = document.getDocumentFilter();
 		documentFilter.setMinimumValue(builder.minimumValue);
@@ -96,21 +96,21 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @param groupingUsed true if grouping should be used false otherwise
 	 */
 	public void setGroupingUsed(boolean groupingUsed) {
-		getTypedDocument().setGroupingUsed(groupingUsed);
+		document().setGroupingUsed(groupingUsed);
 	}
 
 	/**
 	 * @param number the number to display in this field
 	 */
 	public void setNumber(T number) {
-		getTypedDocument().setNumber(number);
+		document().setNumber(number);
 	}
 
 	/**
 	 * @return the number being displayed in this field
 	 */
 	public T getNumber() {
-		return getTypedDocument().getNumber();
+		return document().getNumber();
 	}
 
 	/**
@@ -119,36 +119,36 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @param maximumValue the maximum value
 	 */
 	public void setValueRange(Number minimumValue, Number maximumValue) {
-		getTypedDocument().getDocumentFilter().setMinimumValue(minimumValue);
-		getTypedDocument().getDocumentFilter().setMaximumValue(maximumValue);
+		document().getDocumentFilter().setMinimumValue(minimumValue);
+		document().getDocumentFilter().setMaximumValue(maximumValue);
 	}
 
 	/**
 	 * @param minimumValue the minimum value
 	 */
 	public void setMinimumValue(Number minimumValue) {
-		getTypedDocument().getDocumentFilter().setMinimumValue(minimumValue);
+		document().getDocumentFilter().setMinimumValue(minimumValue);
 	}
 
 	/**
 	 * @return the minimum value this field should accept
 	 */
 	public Number getMinimumValue() {
-		return getTypedDocument().getDocumentFilter().getMinimumValue();
+		return document().getDocumentFilter().getMinimumValue();
 	}
 
 	/**
 	 * @param maximumValue the maximum value
 	 */
 	public void setMaximumValue(Number maximumValue) {
-		getTypedDocument().getDocumentFilter().setMaximumValue(maximumValue);
+		document().getDocumentFilter().setMaximumValue(maximumValue);
 	}
 
 	/**
 	 * @return the maximum value this field should accept
 	 */
 	public Number getMaximumValue() {
-		return getTypedDocument().getDocumentFilter().getMaximumValue();
+		return document().getDocumentFilter().getMaximumValue();
 	}
 
 	/**
@@ -158,7 +158,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @throws IllegalArgumentException in case both separators are the same character
 	 */
 	public void setSeparators(char decimalSeparator, char groupingSeparator) {
-		getTypedDocument().setSeparators(decimalSeparator, groupingSeparator);
+		document().setSeparators(decimalSeparator, groupingSeparator);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @param decimalSeparator the separator
 	 */
 	public void setDecimalSeparator(char decimalSeparator) {
-		getTypedDocument().setDecimalSeparator(decimalSeparator);
+		document().setDecimalSeparator(decimalSeparator);
 	}
 
 	/**
@@ -174,7 +174,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @param groupingSeparator the separator
 	 */
 	public void setGroupingSeparator(char groupingSeparator) {
-		getTypedDocument().setGroupingSeparator(groupingSeparator);
+		document().setGroupingSeparator(groupingSeparator);
 	}
 
 	/**
@@ -182,7 +182,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @throws IllegalStateException in case this NumberField is not based on a decimal type
 	 */
 	public int getMaximumFractionDigits() {
-		NumberDocument<T> typedDocument = getTypedDocument();
+		NumberDocument<T> typedDocument = document();
 		if (!(typedDocument instanceof DecimalDocument)) {
 			throw new IllegalStateException("This is not a decimal based NumberField");
 		}
@@ -195,12 +195,12 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @throws IllegalStateException in case this NumberField is not based on a decimal type
 	 */
 	public void setMaximumFractionDigits(int maximumFractionDigits) {
-		NumberDocument<T> typedDocument = getTypedDocument();
+		NumberDocument<T> typedDocument = document();
 		if (!(typedDocument instanceof DecimalDocument)) {
 			throw new IllegalStateException("This is not a decimal based NumberField");
 		}
 
-		((DecimalDocument<Double>) getTypedDocument()).setMaximumFractionDigits(maximumFractionDigits);
+		((DecimalDocument<Double>) document()).setMaximumFractionDigits(maximumFractionDigits);
 	}
 
 	/**
@@ -211,14 +211,14 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @param convertGroupingToDecimalSeparator true if grouping separators should be converted to decimal separators when typed
 	 */
 	public void setConvertGroupingToDecimalSeparator(boolean convertGroupingToDecimalSeparator) {
-		getTypedDocument().getDocumentFilter().setConvertGroupingToDecimalSeparator(convertGroupingToDecimalSeparator);
+		document().getDocumentFilter().setConvertGroupingToDecimalSeparator(convertGroupingToDecimalSeparator);
 	}
 
 	/**
 	 * @return true if grouping separators should be converted to decimal separators when typed
 	 */
 	public boolean isConvertGroupingToDecimalSeparator() {
-		return getTypedDocument().getDocumentFilter().isConvertGroupingToDecimalSeparator();
+		return document().getDocumentFilter().isConvertGroupingToDecimalSeparator();
 	}
 
 	/**
@@ -226,21 +226,21 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @param silentValidation true if invalid input should be silently prevented instead of throwing validation exceptions
 	 */
 	public void setSilentValidation(boolean silentValidation) {
-		getTypedDocument().getDocumentFilter().setSilentValidation(silentValidation);
+		document().getDocumentFilter().setSilentValidation(silentValidation);
 	}
 
 	/**
 	 * @return true if invalid input should be silently prevented instead of throwing validation exceptions
 	 */
 	public boolean isSilentValidation() {
-		return getTypedDocument().getDocumentFilter().isSilentValidation();
+		return document().getDocumentFilter().isSilentValidation();
 	}
 
 	/**
 	 * @return an observer notified each time the underlying value changes
 	 */
-	public ValueObserver<T> numberValue() {
-		return getTypedDocument().numberValue();
+	public ValueObserver<T> value() {
+		return document().value();
 	}
 
 	/**
@@ -266,7 +266,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * Can't override getDocument() with type cast since it's called before setting the document with a class cast exception.
 	 * @return the typed document.
 	 */
-	NumberDocument<T> getTypedDocument() {
+	NumberDocument<T> document() {
 		return (NumberDocument<T>) super.getDocument();
 	}
 
@@ -384,7 +384,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		private void skipGroupingSeparator(boolean forward) {
-			NumberDocument<?> numberDocument = getTypedDocument();
+			NumberDocument<?> numberDocument = document();
 			char groupingSeparator = ((DecimalFormat) numberDocument.getFormat()).getDecimalFormatSymbols().getGroupingSeparator();
 			try {
 				int caretPosition = getCaretPosition();

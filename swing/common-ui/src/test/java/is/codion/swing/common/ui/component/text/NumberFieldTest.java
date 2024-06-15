@@ -79,7 +79,7 @@ public final class NumberFieldTest {
 		assertEquals(987654321, (int) integerField.getNumber());
 
 		integerField.setNumber(null);
-		integerField.numberValue().addConsumer(value -> assertEquals(42, value));
+		integerField.value().addConsumer(value -> assertEquals(42, value));
 		integerField.setNumber(42);
 	}
 
@@ -224,7 +224,7 @@ public final class NumberFieldTest {
 		NumberField<Double> doubleField = NumberField.builder(Double.class).build();
 		doubleField.setGroupingUsed(true);
 		doubleField.setSeparators(',', '.');
-		NumberDocument<Double> document = doubleField.getTypedDocument();
+		NumberDocument<Double> document = doubleField.document();
 
 		doubleField.setText("123456789");
 		assertEquals("123.456.789", doubleField.getText());
@@ -347,7 +347,7 @@ public final class NumberFieldTest {
 	void trailingDecimalSeparator() throws BadLocationException {
 		NumberField<Double> doubleField = NumberField.builder(Double.class).build();
 		doubleField.setSeparators('.', ',');
-		NumberDocument<Double> document = doubleField.getTypedDocument();
+		NumberDocument<Double> document = doubleField.document();
 		document.insertString(0, "1", null);
 		assertEquals(Double.valueOf(1), doubleField.getNumber());
 		document.insertString(1, ".", null);
@@ -378,7 +378,7 @@ public final class NumberFieldTest {
 	@Test
 	void trailingDecimalZeros() throws BadLocationException {
 		NumberField<Double> doubleField = NumberField.builder(Double.class).build();
-		NumberDocument<Double> document = doubleField.getTypedDocument();
+		NumberDocument<Double> document = doubleField.document();
 		doubleField.setSeparators('.', ',');
 
 		document.insertString(0, "1", null);

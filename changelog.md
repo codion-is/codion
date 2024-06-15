@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.3
 ### is.codion.swing.common.ui
 - Controls.Config.standard() renamed control().
+- NumberField.numberValue() renamed value().
 
 ## 0.18.2
 ### is.codion.swing.common.model

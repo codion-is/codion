@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
@@ -324,7 +323,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 		@Override
 		public ControlsBuilder controls(Control.Builder<?, ?>... controlBuilders) {
 			this.actions.addAll(Arrays.stream(controlBuilders)
-							.map(new BuildControl())
+							.map(Builder::build)
 							.collect(Collectors.toList()));
 			return this;
 		}
@@ -379,14 +378,6 @@ final class DefaultControls extends AbstractControl implements Controls {
 		@Override
 		public Controls build() {
 			return new DefaultControls(this);
-		}
-
-		private static final class BuildControl implements Function<Control.Builder<?, ?>, Control> {
-
-			@Override
-			public Control apply(Control.Builder<?, ?> builder) {
-				return builder.build();
-			}
 		}
 	}
 }

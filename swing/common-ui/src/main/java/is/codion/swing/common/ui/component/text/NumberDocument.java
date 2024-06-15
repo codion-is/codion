@@ -98,7 +98,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		}
 	}
 
-	final ValueObserver<T> numberValue() {
+	final ValueObserver<T> value() {
 		return getDocumentFilter().value.observer();
 	}
 
