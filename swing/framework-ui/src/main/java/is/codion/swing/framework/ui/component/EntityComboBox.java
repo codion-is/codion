@@ -84,10 +84,6 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		 * Default key stroke: CTRL-INSERT
 		 */
 		public static final ControlKey<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -320,7 +316,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
 
-		private final ControlKeyStrokes controlKeyStrokes = ControlKeys.KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
 
 		private Supplier<EntityEditPanel> editPanel;
 		private boolean confirmAdd;

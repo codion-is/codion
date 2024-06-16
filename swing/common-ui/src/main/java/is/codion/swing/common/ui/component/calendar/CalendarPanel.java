@@ -166,10 +166,6 @@ public final class CalendarPanel extends JPanel {
 		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
 		public static final ControlKey<CommandControl> NEXT_MINUTE = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -365,7 +361,7 @@ public final class CalendarPanel extends JPanel {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final ControlKeyStrokes controlKeyStrokes = KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
 
 		private LocalDateTime initialValue;
 		private boolean includeTime = false;

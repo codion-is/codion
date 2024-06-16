@@ -125,10 +125,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * @see Config#INCLUDE_ENTITY_MENU
 		 */
 		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -732,7 +728,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 		private Config(EntityEditPanel editPanel) {
 			this.editPanel = editPanel;
-			this.keyStrokes = KEY_STROKES.copy();
+			this.keyStrokes = controlKeyStrokes(ControlKeys.class);
 		}
 
 		private Config(Config config) {

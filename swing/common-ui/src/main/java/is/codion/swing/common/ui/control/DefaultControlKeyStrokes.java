@@ -40,16 +40,13 @@ final class DefaultControlKeyStrokes implements ControlKeyStrokes {
 	}
 
 	DefaultControlKeyStrokes(Collection<ControlKey<?>> controlKeys) {
-		controlKeys.forEach(controlKey -> keyStrokes.put(controlKey, Value.<KeyStroke>nullable()
-						.initialValue(controlKey.defaultKeystroke().orElse(null))
-						.build()));
+		controlKeys.forEach(controlKey ->
+						keyStrokes.put(controlKey, Value.nullable(controlKey.defaultKeystroke().get()).build()));
 	}
 
 	private DefaultControlKeyStrokes(DefaultControlKeyStrokes controlKeyStrokes) {
 		controlKeyStrokes.keyStrokes.forEach((controlKey, keyStrokeValue) ->
-						keyStrokes.put(controlKey, Value.<KeyStroke>nullable()
-										.initialValue(keyStrokeValue.get())
-										.build()));
+						keyStrokes.put(controlKey, Value.nullable(keyStrokeValue.get()).build()));
 	}
 
 	@Override

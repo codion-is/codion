@@ -191,10 +191,6 @@ public class EntityPanel extends JPanel {
 		 * The edit panel controls.
 		 */
 		public static final ControlKey<Controls> EDIT_CONTROLS = controls();
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -1328,7 +1324,7 @@ public class EntityPanel extends JPanel {
 
 		private Config(EntityPanel entityPanel) {
 			this.entityPanel = entityPanel;
-			this.keyStrokes = ControlKeys.KEY_STROKES.copy();
+			this.keyStrokes = controlKeyStrokes(ControlKeys.class);
 			this.enabledEditStates = new LinkedHashSet<>(asList(PanelState.values()));
 			this.caption = entityPanel.model().entityDefinition().caption();
 		}

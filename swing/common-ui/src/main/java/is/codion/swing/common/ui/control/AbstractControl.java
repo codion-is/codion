@@ -38,7 +38,7 @@ import java.util.function.Consumer;
 import static java.util.stream.Collectors.toList;
 
 /**
- * An abstrct Control implementation, implementing everything except actionPerformed().
+ * An abstract Control implementation, implementing everything except actionPerformed().
  */
 abstract class AbstractControl extends AbstractAction implements Control {
 
@@ -56,10 +56,10 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
 	AbstractControl(AbstractControlBuilder<?, ?> builder) {
 		super((String) builder.values.get(NAME));
-		this.initialized = true;
-		this.enabledObserver = builder.enabled == null ? State.state(true) : builder.enabled;
-		this.enabledObserver.addWeakConsumer(enabler);
-		super.setEnabled(this.enabledObserver.get());
+		initialized = true;
+		enabledObserver = builder.enabled == null ? State.state(true) : builder.enabled;
+		enabledObserver.addWeakConsumer(enabler);
+		super.setEnabled(enabledObserver.get());
 		builder.values.forEach(super::putValue);
 	}
 

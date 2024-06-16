@@ -187,10 +187,6 @@ public final class EntitySearchField extends HintTextField {
 		 * Default key stroke: CTRL-INSERT
 		 */
 		public static final ControlKey<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -1085,7 +1081,7 @@ public final class EntitySearchField extends HintTextField {
 	private static final class DefaultEntitySearchFieldBuilder extends AbstractComponentBuilder<Entity, EntitySearchField, Builder> implements Builder {
 
 		private final EntitySearchModel searchModel;
-		private final ControlKeyStrokes controlKeyStrokes = ControlKeys.KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
 
 		private int columns = -1;
 		private boolean upperCase;

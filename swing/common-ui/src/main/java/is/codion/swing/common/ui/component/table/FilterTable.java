@@ -182,10 +182,6 @@ public final class FilterTable<R, C> extends JTable {
 		 * Default key stroke: ALT-UP ARROW
 		 */
 		public static final ControlKey<CommandControl> TOGGLE_SORT_COLUMN_ADD = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -1114,7 +1110,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private final FilterTableModel<R, C> tableModel;
 		private final List<FilterTableColumn<C>> columns;
-		private final ControlKeyStrokes keyStrokes = KEY_STROKES.copy();
+		private final ControlKeyStrokes keyStrokes = controlKeyStrokes(ControlKeys.class);
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private FieldFactory<C> filterFieldFactory = new DefaultFieldFactory<>();

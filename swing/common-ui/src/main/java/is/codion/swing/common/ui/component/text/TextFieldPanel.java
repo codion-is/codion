@@ -80,11 +80,6 @@ public final class TextFieldPanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> DISPLAY_TEXT_AREA = commandControl(keyStroke(VK_INSERT));
 
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
-
 		private ControlKeys() {}
 	}
 
@@ -321,7 +316,7 @@ public final class TextFieldPanel extends JPanel {
 		private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
 		private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null);
-		private final ControlKeyStrokes controlKeyStrokes = ControlKeys.KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
 
 		private boolean buttonFocusable;
 		private ImageIcon buttonIcon;

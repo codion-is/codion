@@ -374,10 +374,6 @@ public class EntityTablePanel extends JPanel {
 		 * Default key stroke: CTRL-F
 		 */
 		public static final ControlKey<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK));
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -2194,7 +2190,7 @@ public class EntityTablePanel extends JPanel {
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
 			this.conditionFieldFactory = new EntityConditionFieldFactory(entityDefinition);
-			this.keyStrokes = KEY_STROKES.copy();
+			this.keyStrokes = controlKeyStrokes(ControlKeys.class);
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
 							.map(AttributeDefinition::attribute)
 							.collect(toSet()));

@@ -18,8 +18,9 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.value.Value;
+
 import javax.swing.KeyStroke;
-import java.util.Optional;
 
 /**
  * Identifies a {@link Control} instance
@@ -33,9 +34,10 @@ public interface ControlKey<T extends Control> {
 	Class<T> controlClass();
 
 	/**
-	 * @return the default keystroke for this shortcut, an empty Optional if none is available
+	 * Note that changing the default keystroke has no effect on already initialized components.
+	 * @return the default keystroke for this shortcut, an empty {@link Value} if none is available
 	 */
-	Optional<KeyStroke> defaultKeystroke();
+	Value<KeyStroke> defaultKeystroke();
 
 	/**
 	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance

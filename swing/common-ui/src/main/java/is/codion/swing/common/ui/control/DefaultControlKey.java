@@ -18,19 +18,20 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.value.Value;
+
 import javax.swing.KeyStroke;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultControlKey<T extends Control> implements ControlKey<T> {
 
 	private final Class<T> controlClass;
-	private final KeyStroke defaultKeyStroke;
+	private final Value<KeyStroke> defaultKeyStroke;
 
 	DefaultControlKey(Class<T> controlClass, KeyStroke defaultKeyStroke) {
 		this.controlClass = requireNonNull(controlClass);
-		this.defaultKeyStroke = defaultKeyStroke;
+		this.defaultKeyStroke = Value.nullable(defaultKeyStroke).build();
 	}
 
 	@Override
@@ -39,7 +40,7 @@ final class DefaultControlKey<T extends Control> implements ControlKey<T> {
 	}
 
 	@Override
-	public Optional<KeyStroke> defaultKeystroke() {
-		return Optional.ofNullable(defaultKeyStroke);
+	public Value<KeyStroke> defaultKeystroke() {
+		return defaultKeyStroke;
 	}
 }

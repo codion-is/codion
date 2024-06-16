@@ -139,10 +139,6 @@ public final class TabbedDetailLayout implements DetailLayout {
 		 * Default key stroke: SHIFT-CTRL-ALT LEFT ARROW
 		 */
 		public static final ControlKey<CommandControl> EXPAND = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -614,7 +610,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final ControlKeyStrokes controlKeyStrokes = KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
 
 		private final EntityPanel entityPanel;
 		private final Set<PanelState> enabledDetailStates =

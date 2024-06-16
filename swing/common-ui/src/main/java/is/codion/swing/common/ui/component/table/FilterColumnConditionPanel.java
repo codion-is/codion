@@ -33,7 +33,6 @@ import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -68,7 +67,6 @@ import static is.codion.swing.common.ui.component.table.FilterColumnConditionPan
 import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKey.toggleControl;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
@@ -112,10 +110,6 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		 * Default key stroke: CTRL-DOWN ARROW
 		 */
 		public static final ControlKey<CommandControl> NEXT_OPERATOR = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -386,21 +380,22 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
 		components().forEach(component ->
 						component.addFocusListener(new FocusGained(conditionModel().columnIdentifier())));
-		KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KEY_STROKES.keyStroke(TOGGLE_ENABLED).get())
-						.action(commandControl(this::toggleEnabled));
-		KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(KEY_STROKES.keyStroke(PREVIOUS_OPERATOR).get())
-						.action(commandControl(this::selectPreviousOperator));
-		KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(KEY_STROKES.keyStroke(NEXT_OPERATOR).get())
-						.action(commandControl(this::selectNextOperator));
-		enableOnEnterKeyEvent.enable(operatorCombo);
-		enableOnEnterKeyEvent.enable(toggleEnabledButton);
-		Stream.of(equalField, upperBoundField, lowerBoundField, inField)
+
+		Collection<JComponent> fields = Stream.of(operatorCombo, toggleEnabledButton, equalField, upperBoundField, lowerBoundField, inField)
 						.filter(Objects::nonNull)
-						.forEach(field -> {
-							enableOnEnterKeyEvent.enable(field);
-							previousOperatorKeyEvent.enable(field);
-							nextOperatorKeyEvent.enable(field);
-						});
+						.collect(toList());
+		TOGGLE_ENABLED.defaultKeystroke().optional().ifPresent(keyStroke ->
+						KeyEvents.builder(keyStroke)
+										.action(commandControl(this::toggleEnabled))
+										.enable(fields));
+		PREVIOUS_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
+						KeyEvents.builder(keyStroke)
+										.action(commandControl(this::selectPreviousOperator))
+										.enable(fields));
+		NEXT_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
+						KeyEvents.builder(keyStroke)
+										.action(commandControl(this::selectNextOperator))
+										.enable(fields));
 	}
 
 	private void onOperatorChanged(Operator operator) {

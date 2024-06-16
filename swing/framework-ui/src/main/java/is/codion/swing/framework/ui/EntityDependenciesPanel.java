@@ -28,7 +28,6 @@ import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -48,7 +47,6 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.control.ControlKey.commandControl;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_LEFT;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_RIGHT;
@@ -85,10 +83,6 @@ public final class EntityDependenciesPanel extends JPanel {
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
 		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -102,14 +96,16 @@ public final class EntityDependenciesPanel extends JPanel {
 							createTablePanel(entry.getValue(), connectionProvider));
 		}
 		add(tabPane, BorderLayout.CENTER);
-		KeyEvents.builder(ControlKeys.KEY_STROKES.keyStroke(NAVIGATE_RIGHT).get())
-						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-						.action(commandControl(new NavigateRightCommand()))
-						.enable(tabPane);
-		KeyEvents.builder(ControlKeys.KEY_STROKES.keyStroke(NAVIGATE_LEFT).get())
-						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-						.action(commandControl(new NavigateLeftCommand()))
-						.enable(tabPane);
+		NAVIGATE_RIGHT.defaultKeystroke().optional().ifPresent(keyStroke ->
+						KeyEvents.builder(keyStroke)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.action(commandControl(new NavigateRightCommand()))
+										.enable(tabPane));
+		NAVIGATE_LEFT.defaultKeystroke().optional().ifPresent(keyStroke ->
+						KeyEvents.builder(keyStroke)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.action(commandControl(new NavigateLeftCommand()))
+										.enable(tabPane));
 	}
 
 	/**

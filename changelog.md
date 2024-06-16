@@ -6,6 +6,7 @@ Codion Change Log
 - Controls.Config.standard() renamed control().
 - NumberField.numberValue() renamed value().
 - KeyEvents.Builder.enable() and disable() overloaded with Collection parameter.
+- ControlKey.defaultKeyStroke() now Value based and configurable.
 
 ## 0.18.2
 ### is.codion.swing.common.model

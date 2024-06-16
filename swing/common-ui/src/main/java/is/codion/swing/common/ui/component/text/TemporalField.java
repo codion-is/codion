@@ -92,10 +92,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		 * Default key stroke: DOWN ARROW
 		 */
 		public static final ControlKey<CommandControl> DECREMENT = commandControl(keyStroke(VK_DOWN));
-		/**
-		 * The default keyboard shortcut keyStrokes.
-		 */
-		public static final ControlKeyStrokes KEY_STROKES = controlKeyStrokes(ControlKeys.class);
 
 		private ControlKeys() {}
 	}
@@ -398,7 +394,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		private final Class<T> temporalClass;
 		private final String dateTimePattern;
 		private final String mask;
-		private final ControlKeyStrokes controlKeyStrokes = KEY_STROKES.copy();
+		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
 
 		private DateTimeFormatter dateTimeFormatter;
 		private DateTimeParser<T> dateTimeParser;
