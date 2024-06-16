@@ -167,7 +167,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
  * |                                                    |
  * |                                                    |
  * |                                                    |
- * |                entityTable (FilterTable)         |
+ * |                entityTable (FilterTable)           |
  * |                                                    |
  * |                                                    |
  * |                                                    |
@@ -1316,7 +1316,7 @@ public class EntityTablePanel extends JPanel {
 				conditionState.set(ADVANCED);
 				break;
 			case ADVANCED:
-				setConditionStateAdvance(conditionPanelScrollPane, conditionState);
+				setConditionStateHidden(conditionPanelScrollPane, conditionState);
 				break;
 		}
 	}
@@ -1331,7 +1331,7 @@ public class EntityTablePanel extends JPanel {
 				conditionState.set(ADVANCED);
 				break;
 			case ADVANCED:
-				setConditionStateAdvance(filterPanelScrollPane, conditionState);
+				setConditionStateHidden(filterPanelScrollPane, conditionState);
 				break;
 		}
 	}
@@ -1719,7 +1719,7 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private void setConditionStateAdvance(JScrollPane scrollPane, Value<ConditionState> conditionState) {
+	private void setConditionStateHidden(JScrollPane scrollPane, Value<ConditionState> conditionState) {
 		boolean parentOfFocusOwner = parentOfType(JScrollPane.class,
 						getCurrentKeyboardFocusManager().getFocusOwner()) == scrollPane;
 		conditionState.set(ConditionState.HIDDEN);
