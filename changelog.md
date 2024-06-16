@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - Controls.Config.standard() renamed control().
 - NumberField.numberValue() renamed value().
+- KeyEvents.Builder.enable() and disable() overloaded with Collection parameter.
 
 ## 0.18.2
 ### is.codion.swing.common.model

@@ -23,8 +23,10 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
+import java.util.Collection;
 
 import static java.awt.event.KeyEvent.VK_UNDEFINED;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_FOCUSED;
 import static javax.swing.KeyStroke.getKeyStroke;
@@ -139,12 +141,28 @@ public final class KeyEvents {
 		Builder enable(JComponent... components);
 
 		/**
+		 * Builds the key event and enables it on the given components
+		 * @param components the components
+		 * @return this builder instance
+		 * @throws IllegalStateException in case no action has been set
+		 */
+		Builder enable(Collection<JComponent> components);
+
+		/**
 		 * Disables this key event on the given components
 		 * @param components the components
 		 * @return this builder instance
 		 * @throws IllegalStateException in case no action has been set
 		 */
 		Builder disable(JComponent... components);
+
+		/**
+		 * Disables this key event on the given components
+		 * @param components the components
+		 * @return this builder instance
+		 * @throws IllegalStateException in case no action has been set
+		 */
+		Builder disable(Collection<JComponent> components);
 	}
 
 	private static final class DefaultBuilder implements Builder {
@@ -205,19 +223,27 @@ public final class KeyEvents {
 
 		@Override
 		public Builder enable(JComponent... components) {
+			return enable(asList(components));
+		}
+
+		@Override
+		public Builder enable(Collection<JComponent> components) {
 			for (JComponent component : requireNonNull(components)) {
 				enable(requireNonNull(component), actionMapKey(component));
 			}
-
 			return this;
 		}
 
 		@Override
 		public Builder disable(JComponent... components) {
+			return disable(asList(components));
+		}
+
+		@Override
+		public Builder disable(Collection<JComponent> components) {
 			for (JComponent component : requireNonNull(components)) {
 				disable(requireNonNull(component), actionMapKey(component));
 			}
-
 			return this;
 		}
 
