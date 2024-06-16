@@ -1455,6 +1455,17 @@ public class EntityTablePanel extends JPanel {
 		return !tableModel.editModel().readOnly().get() && tableModel.editModel().deleteEnabled().get();
 	}
 
+	private boolean includeViewDependenciesControl() {
+		return tableModel.entities().definitions().stream()
+						.flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
+						.filter(foreignKeyDefinition -> !foreignKeyDefinition.soft())
+						.anyMatch(foreignKeyDefinition -> foreignKeyDefinition.attribute().referencedType().equals(tableModel.entityType()));
+	}
+
+	private boolean includeToggleSummaryPanelControl() {
+		return configuration.includeSummaryPanel && containsSummaryModels(table);
+	}
+
 	private Control createConditionRefreshControl() {
 		return Control.builder()
 						.command(tableModel::refresh)
@@ -1623,7 +1634,7 @@ public class EntityTablePanel extends JPanel {
 		if (includeViewDependenciesControl()) {
 			controlMap.control(VIEW_DEPENDENCIES).set(createViewDependenciesControl());
 		}
-		if (configuration.includeSummaryPanel) {
+		if (includeToggleSummaryPanelControl()) {
 			controlMap.control(TOGGLE_SUMMARY_PANEL).set(createToggleSummaryPanelControl());
 		}
 		if (configuration.includeConditionPanel) {
@@ -1662,13 +1673,6 @@ public class EntityTablePanel extends JPanel {
 		control(FILTER_CONTROLS).set(createFilterControls());
 		control(COLUMN_CONTROLS).set(createColumnControls());
 		control(COPY_CONTROLS).set(createCopyControls());
-	}
-
-	private boolean includeViewDependenciesControl() {
-		return tableModel.entities().definitions().stream()
-						.flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
-						.filter(foreignKeyDefinition -> !foreignKeyDefinition.soft())
-						.anyMatch(foreignKeyDefinition -> foreignKeyDefinition.attribute().referencedType().equals(tableModel.entityType()));
 	}
 
 	private void configureColumn(FilterTableColumn<Attribute<?>> column) {
@@ -1961,6 +1965,13 @@ public class EntityTablePanel extends JPanel {
 						table.getCellRect(table.getSelectedRow(), table.getSelectedColumn(), true).y;
 
 		return new Point(x, y + table.getRowHeight() / 2);
+	}
+
+	private static boolean containsSummaryModels(FilterTable<Entity, Attribute<?>> table) {
+		return table.getColumnModel().columns().stream()
+						.map(FilterTableColumn::identifier)
+						.map(table.summaryModel()::summaryModel)
+						.anyMatch(Optional::isPresent);
 	}
 
 	private final class ScrollToColumn implements Consumer<Attribute<?>> {
@@ -2621,7 +2632,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void initialize() {
-			if (configuration.includeSummaryPanel && containsSummaryModels(table)) {
+			if (includeToggleSummaryPanelControl()) {
 				summaryPanel = createSummaryPanel();
 				if (summaryPanel != null) {
 					summaryPanelScrollPane = createLinkedScrollPane(summaryPanel);
@@ -2680,13 +2691,6 @@ public class EntityTablePanel extends JPanel {
 				tableSouthPanel.add(filterPanelScrollPane, BorderLayout.SOUTH);
 			}
 			revalidate();
-		}
-
-		private static boolean containsSummaryModels(FilterTable<Entity, Attribute<?>> table) {
-			return table.getColumnModel().columns().stream()
-							.map(FilterTableColumn::identifier)
-							.map(table.summaryModel()::summaryModel)
-							.anyMatch(Optional::isPresent);
 		}
 
 		private FilterTableColumnComponentPanel<Attribute<?>> createSummaryPanel() {

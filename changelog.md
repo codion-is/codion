@@ -7,6 +7,8 @@ Codion Change Log
 - NumberField.numberValue() renamed value().
 - KeyEvents.Builder.enable() and disable() overloaded with Collection parameter.
 - ControlKey.defaultKeyStroke() now Value based and configurable.
+### is.codion.swing.framework.ui
+- EntityTablePanel bug fixed, summary panel toggle control displayed only if a summary panel is available.
 
 ## 0.18.2
 ### is.codion.swing.common.model
