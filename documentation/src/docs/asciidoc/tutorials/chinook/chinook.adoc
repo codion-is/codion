@@ -66,6 +66,11 @@ include::{dir-source}/is/codion/framework/demos/chinook/model/InvoiceLineEditMod
 
 [source,java]
 ----
+include::{dir-source}/is/codion/framework/demos/chinook/model/PlaylistEditModel.java[lines=19..-1]
+----
+
+[source,java]
+----
 include::{dir-source}/is/codion/framework/demos/chinook/model/PlaylistTableModel.java[lines=19..-1]
 ----
 

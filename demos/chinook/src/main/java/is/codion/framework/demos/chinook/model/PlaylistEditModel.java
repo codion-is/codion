@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
 package is.codion.framework.demos.chinook.model;
 
@@ -22,32 +22,27 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
-import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
+import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 
-import java.util.Collections;
+import java.util.Collection;
 
-public final class PlaylistTableModel extends SwingEntityTableModel {
+import static is.codion.framework.domain.entity.Entity.primaryKeys;
 
-	public PlaylistTableModel(EntityConnectionProvider connectionProvider) {
-		super(new PlaylistEditModel(connectionProvider));
+public final class PlaylistEditModel extends SwingEntityEditModel {
+
+	public PlaylistEditModel(EntityConnectionProvider connectionProvider) {
+		super(Playlist.TYPE, connectionProvider);
 	}
 
-	public void createRandomPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
-		Entity randomPlaylist = createPlaylist(parameters);
-		addItemsAt(0, Collections.singletonList(randomPlaylist));
-		selectionModel().setSelectedItem(randomPlaylist);
-	}
-
-	private Entity createPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
-		EntityConnection connection = connection();
+	@Override
+	protected void delete(Collection<Entity> playlists, EntityConnection connection) throws DatabaseException {
 		connection.startTransaction();
 		try {
-			Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
+			connection.delete(PlaylistTrack.PLAYLIST_FK.in(playlists));
+			connection.delete(primaryKeys(playlists));
 			connection.commitTransaction();
-
-			return randomPlaylist;
 		}
 		catch (DatabaseException e) {
 			connection.rollbackTransaction();
