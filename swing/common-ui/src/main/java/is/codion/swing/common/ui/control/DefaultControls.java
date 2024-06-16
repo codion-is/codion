@@ -18,7 +18,10 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.value.Value;
+
 import javax.swing.Action;
+import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -119,13 +122,12 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		private static final ControlItem SEPARATOR = new Separator();
 
+		private final Value<KeyStroke> keyStroke = Value.value();
 		private final List<ControlKey<?>> defaults;
-		private final ControlMap controls;
 		private final List<ControlItem> items = new ArrayList<>();
 
-		DefaultConfig(ControlMap controls, List<ControlKey<?>> defaults) {
+		DefaultConfig(List<ControlKey<?>> defaults) {
 			this.defaults = requireNonNull(defaults);
-			this.controls = requireNonNull(controls);
 			defaults();
 		}
 
@@ -189,36 +191,34 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Controls create() {
+		public Controls create(ControlMap controlMap) {
 			ControlsBuilder builder = Controls.builder();
-			items.forEach(item -> item.addTo(builder));
+			items.forEach(item -> item.addTo(builder, controlMap));
 
 			return builder.build();
 		}
 
 		private void add(ControlKey<?> controlKey) {
-			StandardControl standardControl = new StandardControl(controlKey, controls);
+			StandardControl standardControl = new StandardControl(controlKey);
 			if (!items.contains(standardControl)) {
 				items.add(standardControl);
 			}
 		}
 
 		private interface ControlItem {
-			void addTo(ControlsBuilder builder);
+			void addTo(ControlsBuilder builder, ControlMap controls);
 		}
 
 		private static final class StandardControl implements ControlItem {
 
 			private final ControlKey<?> controlKey;
-			private final ControlMap controls;
 
-			private StandardControl(ControlKey<?> controlKey, ControlMap controls) {
+			private StandardControl(ControlKey<?> controlKey) {
 				this.controlKey = controlKey;
-				this.controls = controls;
 			}
 
 			@Override
-			public void addTo(ControlsBuilder builder) {
+			public void addTo(ControlsBuilder builder, ControlMap controls) {
 				controls.control(controlKey).optional().ifPresent(control -> {
 					if (control instanceof Controls) {
 						Controls controlsToAdd = (Controls) control;
@@ -226,7 +226,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 							if (!controlsToAdd.name().isPresent()) {
 								controlsToAdd.actions().stream()
 												.filter(action -> action != SEPARATOR)
-												.forEach(action -> new CustomAction(action).addTo(builder));
+												.forEach(action -> new CustomAction(action).addTo(builder, controls));
 							}
 							else {
 								builder.control(controlsToAdd);
@@ -266,7 +266,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 			}
 
 			@Override
-			public void addTo(ControlsBuilder builder) {
+			public void addTo(ControlsBuilder builder, ControlMap controls) {
 				builder.action(action);
 			}
 		}
@@ -274,7 +274,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 		private static final class Separator implements ControlItem {
 
 			@Override
-			public void addTo(ControlsBuilder builder) {
+			public void addTo(ControlsBuilder builder, ControlMap controls) {
 				builder.separator();
 			}
 		}

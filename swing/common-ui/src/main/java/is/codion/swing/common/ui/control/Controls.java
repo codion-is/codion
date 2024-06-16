@@ -91,12 +91,11 @@ public interface Controls extends Control {
 	}
 
 	/**
-	 * @param controls the available controls
 	 * @param defaults the default controls layout
 	 * @return a new Config instance
 	 */
-	static Config config(ControlMap controls, List<ControlKey<?>> defaults) {
-		return new DefaultConfig(controls, defaults);
+	static Config config(List<ControlKey<?>> defaults) {
+		return new DefaultConfig(defaults);
 	}
 
 	/**
@@ -249,8 +248,9 @@ public interface Controls extends Control {
 		Config clear();
 
 		/**
+		 * @param controlMap provides the standard controls
 		 * @return a {@link Controls} instance based on this config
 		 */
-		Controls create();
+		Controls create(ControlMap controlMap);
 	}
 }

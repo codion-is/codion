@@ -222,7 +222,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			throw new IllegalStateException("Method must be called after the panel is initialized");
 		}
 
-		return controlsConfiguration.create();
+		return controlsConfiguration.create(controls);
 	}
 
 	/**
@@ -662,7 +662,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private Controls.Config createControlsConfiguration() {
-		return Controls.config(controls, asList(
+		return Controls.config(asList(
 						INSERT,
 						UPDATE,
 						DELETE,

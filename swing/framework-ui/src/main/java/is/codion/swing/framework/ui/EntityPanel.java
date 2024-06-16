@@ -749,7 +749,7 @@ public class EntityPanel extends JPanel {
 			mainPanel.add(tablePanel, BorderLayout.CENTER);
 		}
 		if (configuration.includeControls && editControlPanel != null) {
-			JComponent controlComponent = createControlComponent(controlsConfiguration.create());
+			JComponent controlComponent = createControlComponent(controlsConfiguration.create(controls));
 			if (controlComponent != null) {
 				editControlPanel.add(controlComponent, configuration.controlComponentConstraints);
 			}
@@ -1142,7 +1142,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	private Controls.Config createControlsConfiguration() {
-		return Controls.config(controls, asList(EDIT_CONTROLS, REFRESH));
+		return Controls.config(asList(EDIT_CONTROLS, REFRESH));
 	}
 
 	private ControlMap createControls() {

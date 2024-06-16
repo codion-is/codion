@@ -1685,7 +1685,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void addTablePopupMenu() {
 		if (configuration.includePopupMenu) {
-			Controls popupControls = popupMenuConfiguration.create();
+			Controls popupControls = popupMenuConfiguration.create(controls);
 			if (popupControls == null || popupControls.empty()) {
 				return;
 			}
@@ -1882,7 +1882,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Controls.Config createPopupMenuConfiguration() {
-		return Controls.config(controls, asList(
+		return Controls.config(asList(
 						REFRESH,
 						CLEAR,
 						null,
@@ -1911,7 +1911,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Controls.Config createToolBarConfiguration() {
-		return Controls.config(controls, asList(
+		return Controls.config(asList(
 						TOGGLE_SUMMARY_PANEL,
 						TOGGLE_CONDITION_PANEL,
 						TOGGLE_FILTER_PANEL,
@@ -2743,7 +2743,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private JToolBar createToolBar() {
-			Controls toolbarControls = toolBarConfiguration.create();
+			Controls toolbarControls = toolBarConfiguration.create(controls);
 			if (toolbarControls == null || toolbarControls.empty()) {
 				return null;
 			}
