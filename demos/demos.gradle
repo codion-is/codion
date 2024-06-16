@@ -21,12 +21,6 @@ sonarqube {
     skipProject = true
 }
 
-dependencies {
-    implementation(libs.slf4j.api)
-    testImplementation(libs.junit.api)
-    testRuntimeOnly(libs.junit.engine)
-}
-
 configurations {
     /** A configuration with a single jar file containing the application domain model
      * (and server classes), used by the Framework Server module when running the server*/
@@ -53,11 +47,21 @@ artifacts {
     domain domainJar
 }
 
-test {
-    useJUnitPlatform()
-    systemProperty "codion.db.url", "jdbc:h2:mem:h2db"
-    systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
-    systemProperty "codion.test.user", "scott:tiger"
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+            targets {
+                all {
+                    testTask.configure {
+                        systemProperty "codion.db.url", "jdbc:h2:mem:h2db"
+                        systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
+                        systemProperty "codion.test.user", "scott:tiger"
+                    }
+                }
+            }
+        }
+    }
 }
 
 tasks.register("writeVersion") {
