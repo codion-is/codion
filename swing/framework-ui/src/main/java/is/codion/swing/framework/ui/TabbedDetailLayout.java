@@ -29,7 +29,7 @@ import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
+import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -68,8 +68,8 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.GAP;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.panelStateMapper;
@@ -152,7 +152,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private final TabbedDetailController detailController;
 	private final boolean includeControls;
 	private final double splitPaneResizeWeight;
-	private final ControlKeyStrokes controlKeyStrokes;
+	private final ControlMap controlMap;
 	private final WindowType windowType;
 
 	private JTabbedPane tabbedPane;
@@ -165,7 +165,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		this.includeControls = builder.includeControls;
 		this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
 		this.detailController = new TabbedDetailController(builder.enabledDetailStates, builder.initialState);
-		this.controlKeyStrokes = builder.controlKeyStrokes;
+		this.controlMap = builder.controlMap;
 	}
 
 	@Override
@@ -262,19 +262,19 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private void bindEvents(EntityPanel detailPanel) {
 		detailPanel.activateEvent().addConsumer(detailController::activated);
-		controlKeyStrokes.keyStroke(RESIZE_RIGHT).optional().ifPresent(keyStroke ->
+		controlMap.keyStroke(RESIZE_RIGHT).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeAction(detailPanel, true, false))));
-		controlKeyStrokes.keyStroke(RESIZE_LEFT).optional().ifPresent(keyStroke ->
+		controlMap.keyStroke(RESIZE_LEFT).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeAction(detailPanel, false, false))));
-		controlKeyStrokes.keyStroke(COLLAPSE).optional().ifPresent(keyStroke ->
+		controlMap.keyStroke(COLLAPSE).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeAction(detailPanel, true, true))));
-		controlKeyStrokes.keyStroke(EXPAND).optional().ifPresent(keyStroke ->
+		controlMap.keyStroke(EXPAND).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeAction(detailPanel, false, true))));
@@ -609,7 +609,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
+		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private final EntityPanel entityPanel;
 		private final Set<PanelState> enabledDetailStates =
@@ -671,7 +671,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 		@Override
 		public Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
+			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 

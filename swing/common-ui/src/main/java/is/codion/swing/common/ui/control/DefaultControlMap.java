@@ -19,22 +19,26 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.key.KeyEvents;
 
+import javax.swing.KeyStroke;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.lang.reflect.Modifier.*;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 final class DefaultControlMap implements ControlMap {
 
-	private final Map<ControlKey<?>, Value<Control>> controls;
+	private final Map<ControlKey<?>, Value<Control>> controls = new HashMap<>();
+	private final Map<ControlKey<?>, Value<KeyStroke>> keyStrokes = new HashMap<>();
 
 	DefaultControlMap(Class<?> controlKeysClass) {
 		this(Stream.of(controlKeysClass.getFields())
@@ -44,8 +48,17 @@ final class DefaultControlMap implements ControlMap {
 	}
 
 	private DefaultControlMap(Collection<ControlKey<?>> controlKeys) {
-		controls = unmodifiableMap(controlKeys.stream()
+		controls.putAll(controlKeys.stream()
 						.collect(toMap(Function.identity(), controlKey -> Value.<Control>nullable().build())));
+		keyStrokes.putAll(controlKeys.stream()
+						.collect(toMap(Function.identity(), controlKey -> Value.nullable(controlKey.defaultKeystroke().get()).build())));
+	}
+
+	private DefaultControlMap(DefaultControlMap controlMap) {
+		controlMap.controls.forEach((controlKey, controlValue) ->
+						controls.put(controlKey, Value.nullable(controlValue.get()).build()));
+		controlMap.keyStrokes.forEach((controlKey, keyStrokeValue) ->
+						keyStrokes.put(controlKey, Value.nullable(keyStrokeValue.get()).build()));
 	}
 
 	@Override
@@ -63,14 +76,41 @@ final class DefaultControlMap implements ControlMap {
 		return controls.values();
 	}
 
-	static boolean publicStaticFinalControlKey(Field field) {
+	@Override
+	public Value<KeyStroke> keyStroke(ControlKey<?> controlKey) {
+		Value<KeyStroke> keyStroke = keyStrokes.get(requireNonNull(controlKey));
+		if (keyStroke == null) {
+			throw new IllegalArgumentException("Unknown controlKey");
+		}
+
+		return keyStroke;
+	}
+
+	@Override
+	public Optional<KeyEvents.Builder> keyEvent(ControlKey<?> controlKey) {
+		Optional<KeyStroke> keyStroke = keyStroke(controlKey).optional();
+		Optional<? extends Control> control = control(controlKey).optional();
+		if (keyStroke.isPresent() && control.isPresent()) {
+			return Optional.of(KeyEvents.builder(keyStroke.get())
+							.action(control.get()));
+		}
+
+		return Optional.empty();
+	}
+
+	@Override
+	public ControlMap copy() {
+		return new DefaultControlMap(this);
+	}
+
+	private static boolean publicStaticFinalControlKey(Field field) {
 		return isPublic(field.getModifiers())
 						&& isStatic(field.getModifiers())
 						&& isFinal(field.getModifiers())
 						&& ControlKey.class.isAssignableFrom(field.getType());
 	}
 
-	static ControlKey<?> controlKey(Field field) {
+	private static ControlKey<?> controlKey(Field field) {
 		try {
 			return (ControlKey<?>) field.get(null);
 		}

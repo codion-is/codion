@@ -25,10 +25,8 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
-import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.control.ControlMap;
 
 import javax.swing.FocusManager;
 import javax.swing.InputMap;
@@ -72,8 +70,8 @@ import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.calendar.CalendarPanel.ControlKeys.*;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
@@ -192,6 +190,7 @@ public final class CalendarPanel extends JPanel {
 	private final Value<Integer> minuteValue;
 	private final State todaySelected;
 
+	private final ControlMap controlMap;
 	private final Map<Integer, JToggleButton> dayButtons;
 	private final Map<Integer, State> dayStates;
 	private final JPanel dayGridPanel;
@@ -203,6 +202,7 @@ public final class CalendarPanel extends JPanel {
 	CalendarPanel(DefaultBuilder builder) {
 		this.includeTime = builder.includeTime;
 		this.includeTodayButton = builder.includeTodayButton;
+		this.controlMap = builder.controlMap;
 		LocalDateTime dateTime = builder.initialValue == null ? LocalDateTime.now() : builder.initialValue;
 		yearValue = Value.nonNull(dateTime.getYear())
 						.listener(this::updateDateTime)
@@ -237,7 +237,8 @@ public final class CalendarPanel extends JPanel {
 		formattedDateLabel = new JLabel("", SwingConstants.CENTER);
 		formattedDateLabel.setBorder(emptyBorder());
 		initializeUI();
-		addKeyEvents(builder.controlKeyStrokes);
+		createControls();
+		addKeyEvents();
 		updateFormattedDate();
 	}
 
@@ -360,7 +361,7 @@ public final class CalendarPanel extends JPanel {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
+		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private LocalDateTime initialValue;
 		private boolean includeTime = false;
@@ -392,7 +393,7 @@ public final class CalendarPanel extends JPanel {
 
 		@Override
 		public Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
+			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 
@@ -640,40 +641,60 @@ public final class CalendarPanel extends JPanel {
 		formattedDateLabel.setText(dateFormatter.format(getLocalDateTime()) + (includeTime ? ", " + timeFormatter.format(getLocalDateTime()) : ""));
 	}
 
-	private void addKeyEvents(ControlKeyStrokes controlKeyStrokes) {
-		controlKeyStrokes.keyStroke(PREVIOUS_YEAR).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, commandControl(this::previousYear)));
-		controlKeyStrokes.keyStroke(NEXT_YEAR).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, commandControl(this::nextYear)));
-		controlKeyStrokes.keyStroke(PREVIOUS_MONTH).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, commandControl(this::previousMonth)));
-		controlKeyStrokes.keyStroke(NEXT_MONTH).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, commandControl(this::nextMonth)));
-		controlKeyStrokes.keyStroke(PREVIOUS_WEEK).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, commandControl(this::previousWeek)));
-		controlKeyStrokes.keyStroke(NEXT_WEEK).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, commandControl(this::nextWeek)));
-		controlKeyStrokes.keyStroke(PREVIOUS_DAY).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, commandControl(this::previousDay)));
-		controlKeyStrokes.keyStroke(NEXT_DAY).optional().ifPresent(keyStroke ->
-						addKeyEvent(keyStroke, commandControl(this::nextDay)));
-		if (includeTime) {
-			controlKeyStrokes.keyStroke(PREVIOUS_HOUR).optional().ifPresent(keyStroke ->
-							addKeyEvent(keyStroke, commandControl(this::previousHour)));
-			controlKeyStrokes.keyStroke(NEXT_HOUR).optional().ifPresent(keyStroke ->
-							addKeyEvent(keyStroke, commandControl(this::nextHour)));
-			controlKeyStrokes.keyStroke(PREVIOUS_MINUTE).optional().ifPresent(keyStroke ->
-							addKeyEvent(keyStroke, commandControl(this::previousMinute)));
-			controlKeyStrokes.keyStroke(NEXT_MINUTE).optional().ifPresent(keyStroke ->
-							addKeyEvent(keyStroke, commandControl(this::nextMinute)));
-		}
+	private void createControls() {
+		controlMap.control(PREVIOUS_YEAR).set(commandControl(this::previousYear));
+		controlMap.control(NEXT_YEAR).set(commandControl(this::nextYear));
+		controlMap.control(PREVIOUS_MONTH).set(commandControl(this::previousMonth));
+		controlMap.control(NEXT_MONTH).set(commandControl(this::nextMonth));
+		controlMap.control(PREVIOUS_WEEK).set(commandControl(this::previousWeek));
+		controlMap.control(NEXT_WEEK).set(commandControl(this::nextWeek));
+		controlMap.control(PREVIOUS_DAY).set(commandControl(this::previousDay));
+		controlMap.control(NEXT_DAY).set(commandControl(this::nextDay));
+		controlMap.control(PREVIOUS_HOUR).set(commandControl(this::previousHour));
+		controlMap.control(NEXT_HOUR).set(commandControl(this::nextHour));
+		controlMap.control(PREVIOUS_MINUTE).set(commandControl(this::previousMinute));
+		controlMap.control(NEXT_MINUTE).set(commandControl(this::nextMinute));
 	}
 
-	private void addKeyEvent(KeyStroke keyStroke, Control control) {
-		KeyEvents.builder(keyStroke)
-						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-						.action(control)
-						.enable(this);
+	private void addKeyEvents() {
+		controlMap.keyEvent(PREVIOUS_YEAR).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		controlMap.keyEvent(NEXT_YEAR).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		controlMap.keyEvent(PREVIOUS_MONTH).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		controlMap.keyEvent(NEXT_MONTH).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		controlMap.keyEvent(PREVIOUS_WEEK).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		controlMap.keyEvent(NEXT_WEEK).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		controlMap.keyEvent(PREVIOUS_DAY).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		controlMap.keyEvent(NEXT_DAY).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		if (includeTime) {
+			controlMap.keyEvent(PREVIOUS_HOUR).ifPresent(keyEvent ->
+							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+											.enable(this));
+			controlMap.keyEvent(NEXT_HOUR).ifPresent(keyEvent ->
+							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+											.enable(this));
+			controlMap.keyEvent(PREVIOUS_MINUTE).ifPresent(keyEvent ->
+							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+											.enable(this));
+			controlMap.keyEvent(NEXT_MINUTE).ifPresent(keyEvent ->
+							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+											.enable(this));
+		}
 	}
 
 	private JSpinner createYearSpinner() {

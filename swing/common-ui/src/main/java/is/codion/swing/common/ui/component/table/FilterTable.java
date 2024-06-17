@@ -46,7 +46,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
+import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -100,8 +100,8 @@ import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.lang.String.join;
@@ -233,6 +233,8 @@ public final class FilterTable<R, C> extends JTable {
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
 
+	private final ControlMap controlMap;
+
 	private FilterTableConditionPanel<C> filterPanel;
 	private JTextField searchField;
 
@@ -251,6 +253,10 @@ public final class FilterTable<R, C> extends JTable {
 		this.doubleClickAction = Value.nullable(builder.doubleClickAction).build();
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.sortingEnabled = State.state(builder.sortingEnabled);
+		this.controlMap = builder.controlMap;
+		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
+		this.controlMap.control(TOGGLE_SORT_COLUMN).set(createToggleSortColumnControl());
+		this.controlMap.control(TOGGLE_SORT_COLUMN_ADD).set(createToggleSortColumnAddControl());
 		if (builder.filterState != ConditionState.HIDDEN) {
 			filterPanel().state().set(builder.filterState);
 		}
@@ -259,7 +265,7 @@ public final class FilterTable<R, C> extends JTable {
 		setAutoResizeMode(builder.autoResizeMode);
 		configureColumns(builder.cellRendererFactory);
 		configureTableHeader(builder.columnReorderingAllowed, builder.columnResizingAllowed);
-		bindEvents(builder.keyStrokes, builder.columnReorderingAllowed, builder.columnResizingAllowed);
+		bindEvents(builder.columnReorderingAllowed, builder.columnResizingAllowed);
 	}
 
 	@Override
@@ -379,22 +385,21 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * @return the Value controlling the action to perform when a double click is performed on the table,
-	 * null for no double click action
+	 * @return the {@link Value} controlling the action to perform when a double click is performed on the table
 	 */
 	public Value<Action> doubleClickAction() {
 		return doubleClickAction;
 	}
 
 	/**
-	 * @return the State controlling whether sorting via the table header is enabled
+	 * @return the {@link State} controlling whether sorting via the table header is enabled
 	 */
 	public State sortingEnabled() {
 		return sortingEnabled;
 	}
 
 	/**
-	 * @return the State controlling whether the JTable instance scrolls automatically to the coordinate
+	 * @return the {@link State} controlling whether the JTable instance scrolls automatically to the coordinate
 	 * of the item selected in the underlying table model
 	 */
 	public State scrollToSelectedItem() {
@@ -402,7 +407,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * @return the Value controlling the scrolling behaviour when scrolling to the selected row/column
+	 * @return the {@link Value} controlling the scrolling behaviour when scrolling to the selected row/column
 	 */
 	public Value<CenterOnScroll> centerOnScroll() {
 		return centerOnScroll;
@@ -801,8 +806,7 @@ public final class FilterTable<R, C> extends JTable {
 		return autoResizeComboBoxModel;
 	}
 
-	private void bindEvents(ControlKeyStrokes controlKeyStrokes,
-													boolean columnReorderingAllowed,
+	private void bindEvents(boolean columnReorderingAllowed,
 													boolean columnResizingAllowed) {
 		columnModel().columnHiddenEvent().addConsumer(this::onColumnHidden);
 		tableModel.selectionModel().selectedIndexesEvent().addConsumer(new ScrollToSelected());
@@ -812,20 +816,10 @@ public final class FilterTable<R, C> extends JTable {
 		sortModel.sortingChangedEvent().addListener(() ->
 						tableModel.comparator().set(sortModel.sorted() ? sortModel.comparator() : null));
 		addMouseListener(new FilterTableMouseListener());
-		addKeyListener(new MoveResizeColumnKeyListener(controlKeyStrokes,
-						columnReorderingAllowed, columnResizingAllowed));
-		controlKeyStrokes.keyStroke(COPY_CELL).optional().ifPresent(keyStroke ->
-						KeyEvents.builder(keyStroke)
-										.action(createCopyCellControl())
-										.enable(this));
-		controlKeyStrokes.keyStroke(TOGGLE_SORT_COLUMN_ADD).optional().ifPresent(keyStroke ->
-						KeyEvents.builder(keyStroke)
-										.action(createToggleSortColumnAddControl())
-										.enable(this));
-		controlKeyStrokes.keyStroke(TOGGLE_SORT_COLUMN).optional().ifPresent(keyStroke ->
-						KeyEvents.builder(keyStroke)
-										.action(createToggleSortColumnControl())
-										.enable(this));
+		addKeyListener(new MoveResizeColumnKeyListener(columnReorderingAllowed, columnResizingAllowed));
+		controlMap.keyEvent(COPY_CELL).ifPresent(keyEvent -> keyEvent.enable(this));
+		controlMap.keyEvent(TOGGLE_SORT_COLUMN_ADD).ifPresent(keyEvent -> keyEvent.enable(this));
+		controlMap.keyEvent(TOGGLE_SORT_COLUMN).ifPresent(keyEvent -> keyEvent.enable(this));
 	}
 
 	private void onColumnHidden(C columnIdentifier) {
@@ -836,11 +830,11 @@ public final class FilterTable<R, C> extends JTable {
 		}
 	}
 
-	private Control createToggleSortColumnAddControl() {
+	private CommandControl createToggleSortColumnAddControl() {
 		return commandControl(() -> toggleColumnSorting(getSelectedColumn(), true));
 	}
 
-	private Control createToggleSortColumnControl() {
+	private CommandControl createToggleSortColumnControl() {
 		return commandControl(() -> toggleColumnSorting(getSelectedColumn(), false));
 	}
 
@@ -1062,10 +1056,11 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filterState(ConditionState filterState);
 
 		/**
-		 * @param keyStrokes provides this tables {@link ControlKeyStrokes} instance.
+		 * @param controlKey the control key
+		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder<R, C> keyStrokes(Consumer<ControlKeyStrokes> keyStrokes);
+		Builder<R, C> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 	}
 
 	/**
@@ -1074,25 +1069,25 @@ public final class FilterTable<R, C> extends JTable {
 	public interface Export {
 
 		/**
-		 * @param delimiter the column delimiter (TAB by default)
+		 * @param delimiter the column delimiter, TAB by default
 		 * @return this Export instance
 		 */
 		Export delimiter(char delimiter);
 
 		/**
-		 * @param header include a column header
+		 * @param header include a column header, default true
 		 * @return this Export instance
 		 */
 		Export header(boolean header);
 
 		/**
-		 * @param hidden include hidden columns
+		 * @param hidden include hidden columns, default false
 		 * @return this Export instance
 		 */
 		Export hidden(boolean hidden);
 
 		/**
-		 * @param selected include only selected rows (default false)
+		 * @param selected include only selected rows, default false
 		 * @return this Export instance
 		 */
 		Export selected(boolean selected);
@@ -1109,7 +1104,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private final FilterTableModel<R, C> tableModel;
 		private final List<FilterTableColumn<C>> columns;
-		private final ControlKeyStrokes keyStrokes = controlKeyStrokes(ControlKeys.class);
+		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private FieldFactory<C> filterFieldFactory = new DefaultFieldFactory<>();
@@ -1210,8 +1205,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> keyStrokes(Consumer<ControlKeyStrokes> keyStrokes) {
-			requireNonNull(keyStrokes).accept(this.keyStrokes);
+		public Builder<R, C> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 
@@ -1368,15 +1363,14 @@ public final class FilterTable<R, C> extends JTable {
 		private final KeyStroke increaseSize;
 		private final KeyStroke decreaseSize;
 
-		private MoveResizeColumnKeyListener(ControlKeyStrokes keyStrokes,
-																				boolean columnReorderingAllowed,
+		private MoveResizeColumnKeyListener(boolean columnReorderingAllowed,
 																				boolean columnResizingAllowed) {
 			this.columnReorderingAllowed = columnReorderingAllowed;
 			this.columnResizingAllowed = columnResizingAllowed;
-			moveLeft = keyStrokes.keyStroke(MOVE_COLUMN_LEFT).get();
-			moveRight = keyStrokes.keyStroke(MOVE_COLUMN_RIGHT).get();
-			increaseSize = keyStrokes.keyStroke(INCREASE_COLUMN_SIZE).get();
-			decreaseSize = keyStrokes.keyStroke(DECREASE_COLUMN_SIZE).get();
+			moveLeft = controlMap.keyStroke(MOVE_COLUMN_LEFT).get();
+			moveRight = controlMap.keyStroke(MOVE_COLUMN_RIGHT).get();
+			increaseSize = controlMap.keyStroke(INCREASE_COLUMN_SIZE).get();
+			decreaseSize = controlMap.keyStroke(DECREASE_COLUMN_SIZE).get();
 		}
 
 		@Override

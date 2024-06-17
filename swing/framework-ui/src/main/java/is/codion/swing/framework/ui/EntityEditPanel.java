@@ -38,10 +38,8 @@ import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -51,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
@@ -62,10 +61,9 @@ import java.util.function.Consumer;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
@@ -143,7 +141,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
 	private final Controls.Layout controlsLayout;
-	private final ControlMap controls;
 	private final State active;
 
 	final Config configuration;
@@ -167,8 +164,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		super(editModel);
 		this.configuration = configure(config);
 		this.active = State.state(!configuration.focusActivation);
-		this.controls = createControls();
 		this.controlsLayout = createControlsLayout();
+		createControls();
 		setupFocusActivation();
 		setupKeyboardActions();
 		if (editModel.exists().not().get()) {
@@ -206,7 +203,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * @return the {@link Value} containing the control associated with {@code controlId}
 	 */
 	public <T extends Control> Value<T> control(ControlKey<T> controlKey) {
-		return controls.control(requireNonNull(controlKey));
+		return configuration.controlMap.control(requireNonNull(controlKey));
 	}
 
 	/**
@@ -221,7 +218,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			throw new IllegalStateException("Method must be called after the panel is initialized");
 		}
 
-		return controlsLayout.create(controls);
+		return controlsLayout.create(configuration.controlMap);
 	}
 
 	/**
@@ -517,13 +514,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		requireNonNull(controlsConfig).accept(controlsLayout);
 	}
 
-	private ControlMap createControls() {
+	private void createControls() {
 		Value.Validator<Control> controlValueValidator = control -> {
 			if (initialized) {
 				throw new IllegalStateException("Controls must be configured before the panel is initialized");
 			}
 		};
-		ControlMap controlMap = controlMap(ControlKeys.class);
+ 		ControlMap controlMap = configuration.controlMap;
 		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
 		if (!editModel().readOnly().get()) {
 			if (editModel().insertEnabled().get()) {
@@ -541,8 +538,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		if (configuration.includeEntityMenu) {
 			controlMap.control(DISPLAY_ENTITY_MENU).set(createShowEntityMenuControl());
 		}
-
-		return controlMap;
 	}
 
 	private CommandControl createDeleteControl() {
@@ -635,18 +630,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void setupKeyboardActions() {
-		configuration.keyStrokes.keyStroke(DISPLAY_ENTITY_MENU).optional().ifPresent(keyStroke ->
-						control(DISPLAY_ENTITY_MENU).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-														.action(control)
-														.enable(this)));
-		configuration.keyStrokes.keyStroke(SELECT_INPUT_FIELD).optional().ifPresent(keyStroke ->
-						control(SELECT_INPUT_FIELD).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-														.action(control)
-														.enable(this)));
+		configuration.controlMap.keyEvent(DISPLAY_ENTITY_MENU).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		configuration.controlMap.keyEvent(SELECT_INPUT_FIELD).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
 	}
 
 	private void showEntityMenu() {
@@ -723,16 +712,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
 		private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
 
-		final ControlKeyStrokes keyStrokes;
+		final ControlMap controlMap;
 
 		private Config(EntityEditPanel editPanel) {
 			this.editPanel = editPanel;
-			this.keyStrokes = controlKeyStrokes(ControlKeys.class);
+			this.controlMap = controlMap(ControlKeys.class);
 		}
 
 		private Config(Config config) {
 			this.editPanel = config.editPanel;
-			this.keyStrokes = config.keyStrokes.copy();
+			this.controlMap = config.controlMap.copy();
 			this.clearAfterInsert = config.clearAfterInsert;
 			this.requestFocusAfterInsert = config.requestFocusAfterInsert;
 			this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
@@ -752,11 +741,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		/**
-		 * @param keyStrokes provides this panels {@link ControlKeyStrokes} instance.
+		 * @param controlKey the control key
+		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this Config instance
 		 */
-		public Config keyStrokes(Consumer<ControlKeyStrokes> keyStrokes) {
-			requireNonNull(keyStrokes).accept(this.keyStrokes);
+		public Config keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 

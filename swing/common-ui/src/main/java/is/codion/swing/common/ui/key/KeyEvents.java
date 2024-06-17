@@ -82,6 +82,27 @@ public final class KeyEvents {
 	}
 
 	/**
+	 * Creates a {@link KeyStroke} with the given keyCode and no modifiers.
+	 * @param keyCode the key code
+	 * @return a keystroke value
+	 * @see KeyStroke#getKeyStroke(int, int)
+	 */
+	public static KeyStroke keyStroke(int keyCode) {
+		return keyStroke(keyCode, 0);
+	}
+
+	/**
+	 * Creates a {@link KeyStroke} with the given keyCode and modifiers.
+	 * @param keyCode the key code
+	 * @param modifiers the modifiers
+	 * @return a keystroke value
+	 * @see KeyStroke#getKeyStroke(int, int)
+	 */
+	public static KeyStroke keyStroke(int keyCode, int modifiers) {
+		return getKeyStroke(keyCode, modifiers);
+	}
+
+	/**
 	 * A Builder for adding a key event to a component, with a default onKeyRelease trigger
 	 * and condition {@link JComponent#WHEN_FOCUSED}.
 	 * @see KeyEvents#builder(int)

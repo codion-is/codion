@@ -65,7 +65,6 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
@@ -93,6 +92,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
@@ -131,9 +131,8 @@ import static is.codion.swing.common.ui.component.table.FilterColumnConditionPan
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.ColumnPreferences.columnPreferences;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
@@ -437,7 +436,6 @@ public class EntityTablePanel extends JPanel {
 	private final TablePanel tablePanel = new TablePanel();
 	private final EntityEditPanel editPanel;
 	private final TableConditionPanel<Attribute<?>> tableConditionPanel;
-	private final ControlMap controls;
 	private final Controls.Layout popupMenuLayout;
 	private final Controls.Layout toolBarLayout;
 	private final SwingEntityTableModel tableModel;
@@ -477,10 +475,10 @@ public class EntityTablePanel extends JPanel {
 		this.configuration = configure(config);
 		this.table = configuration.tableBuilder.build();
 		this.tableConditionPanel = createTableConditionPanel();
-		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
+		createControls();
 		bindTableEvents();
 		applyPreferences();
 	}
@@ -507,10 +505,10 @@ public class EntityTablePanel extends JPanel {
 		this.configuration = configure(config);
 		this.table = configuration.tableBuilder.build();
 		this.tableConditionPanel = createTableConditionPanel();
-		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
+		createControls();
 		bindTableEvents();
 		applyPreferences();
 	}
@@ -610,7 +608,7 @@ public class EntityTablePanel extends JPanel {
 	 * @return the {@link Value} containing the control associated with {@code controlId}
 	 */
 	public <T extends Control> Value<T> control(ControlKey<T> controlKey) {
-		return controls.control(requireNonNull(controlKey));
+		return configuration.controlMap.control(requireNonNull(controlKey));
 	}
 
 	/**
@@ -755,88 +753,35 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	protected void setupKeyboardActions() {
-		configuration.keyStrokes.keyStroke(REFRESH).optional().ifPresent(keyStroke ->
-						control(REFRESH).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-														.action(control)
-														.enable(this)));
-		configuration.keyStrokes.keyStroke(REQUEST_TABLE_FOCUS).optional().ifPresent(keyStroke ->
-						control(REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-														.action(control)
-														.enable(this)));
-		configuration.keyStrokes.keyStroke(SELECT_CONDITION_PANEL).optional().ifPresent(keyStroke ->
-						control(SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-														.action(control)
-														.enable(this)));
-		configuration.keyStrokes.keyStroke(TOGGLE_CONDITION_PANEL).optional().ifPresent(keyStroke ->
-						control(TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-														.action(control)
-														.enable(this)));
-		configuration.keyStrokes.keyStroke(TOGGLE_FILTER_PANEL).optional().ifPresent(keyStroke ->
-						control(TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-														.action(control)
-														.enable(this)));
-		configuration.keyStrokes.keyStroke(SELECT_FILTER_PANEL).optional().ifPresent(keyStroke ->
-						control(SELECT_FILTER_PANEL).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-														.action(control)
-														.enable(this)));
-		configuration.keyStrokes.keyStroke(PRINT).optional().ifPresent(keyStroke ->
-						control(PRINT).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-														.action(control)
-														.enable(this)));
-		configuration.keyStrokes.keyStroke(ADD).optional().ifPresent(keyStroke ->
-						control(ADD).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.action(control)
-														.enable(table)));
-		configuration.keyStrokes.keyStroke(EDIT).optional().ifPresent(keyStroke ->
-						control(EDIT).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.action(control)
-														.enable(table)));
-		configuration.keyStrokes.keyStroke(EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(keyStroke ->
-						control(EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.action(control)
-														.enable(table)));
-		configuration.keyStrokes.keyStroke(DELETE).optional().ifPresent(keyStroke ->
-						control(DELETE).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.action(control)
-														.enable(table)));
-		configuration.keyStrokes.keyStroke(MOVE_SELECTION_UP).optional().ifPresent(keyStroke ->
-						control(MOVE_SELECTION_UP).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.action(control)
-														.enable(table)));
-		configuration.keyStrokes.keyStroke(MOVE_SELECTION_DOWN).optional().ifPresent(keyStroke ->
-						control(MOVE_SELECTION_DOWN).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.action(control)
-														.enable(table)));
-		configuration.keyStrokes.keyStroke(DISPLAY_ENTITY_MENU).optional().ifPresent(keyStroke ->
-						control(DISPLAY_ENTITY_MENU).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.action(control)
-														.enable(table)));
-		configuration.keyStrokes.keyStroke(DISPLAY_POPUP_MENU).optional().ifPresent(keyStroke ->
-						control(DISPLAY_POPUP_MENU).optional().ifPresent(control ->
-										KeyEvents.builder(keyStroke)
-														.action(control)
-														.enable(table)));
+		configuration.controlMap.keyEvent(REFRESH).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		configuration.controlMap.keyEvent(SELECT_CONDITION_PANEL).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		configuration.controlMap.keyEvent(TOGGLE_CONDITION_PANEL).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		configuration.controlMap.keyEvent(TOGGLE_FILTER_PANEL).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		configuration.controlMap.keyEvent(SELECT_FILTER_PANEL).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		configuration.controlMap.keyEvent(PRINT).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		configuration.controlMap.keyEvent(ADD).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(EDIT).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(EDIT_SELECTED_ATTRIBUTE).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(DELETE).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(MOVE_SELECTION_UP).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(MOVE_SELECTION_DOWN).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(DISPLAY_ENTITY_MENU).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(DISPLAY_POPUP_MENU).ifPresent(keyEvent -> keyEvent.enable(table));
 	}
 
 	/**
@@ -1606,13 +1551,13 @@ public class EntityTablePanel extends JPanel {
 		summaryPanelVisibleState.addValidator(new ComponentAvailableValidator(summaryPanel, "summary"));
 	}
 
-	private ControlMap createControls() {
+	private void createControls() {
 		Value.Validator<Control> controlValueValidator = control -> {
 			if (initialized) {
 				throw new IllegalStateException("Controls must be configured before the panel is initialized");
 			}
 		};
-		ControlMap controlMap = ControlMap.controlMap(ControlKeys.class);
+		ControlMap controlMap = configuration.controlMap;
 		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
 		if (includeDeleteControl()) {
 			controlMap.control(DELETE).set(createDeleteControl());
@@ -1665,8 +1610,6 @@ public class EntityTablePanel extends JPanel {
 		}
 		controlMap.control(REQUEST_TABLE_FOCUS).set(createRequestTableFocusControl());
 		controlMap.control(REQUEST_SEARCH_FIELD_FOCUS).set(createRequestSearchFieldFocusControl());
-
-		return controlMap;
 	}
 
 	private void setupStandardControls() {
@@ -1689,7 +1632,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void addTablePopupMenu() {
 		if (configuration.includePopupMenu) {
-			Controls popupControls = popupMenuLayout.create(controls);
+			Controls popupControls = popupMenuLayout.create(configuration.controlMap);
 			if (popupControls == null || popupControls.empty()) {
 				return;
 			}
@@ -2194,7 +2137,7 @@ public class EntityTablePanel extends JPanel {
 		private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
 		private Confirmer deleteConfirmer;
 
-		final ControlKeyStrokes keyStrokes;
+		final ControlMap controlMap;
 
 		private Config(EntityTablePanel tablePanel) {
 			this.tablePanel = tablePanel;
@@ -2205,7 +2148,7 @@ public class EntityTablePanel extends JPanel {
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
 			this.conditionFieldFactory = new EntityConditionFieldFactory(entityDefinition);
-			this.keyStrokes = controlKeyStrokes(ControlKeys.class);
+			this.controlMap = ControlMap.controlMap(ControlKeys.class);
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
 							.map(AttributeDefinition::attribute)
 							.collect(toSet()));
@@ -2221,7 +2164,7 @@ public class EntityTablePanel extends JPanel {
 			this.tablePanel = config.tablePanel;
 			this.entityDefinition = config.entityDefinition;
 			this.tableBuilder = config.tableBuilder;
-			this.keyStrokes = config.keyStrokes.copy();
+			this.controlMap = config.controlMap.copy();
 			this.editable = valueSet(config.editable.get());
 			this.includeSouthPanel = config.includeSouthPanel;
 			this.includeConditionPanel = config.includeConditionPanel;
@@ -2423,11 +2366,12 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param keyStrokes provides this tables {@link ControlKeyStrokes} instance.
+		 * @param controlKey the control key
+		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this Config instance
 		 */
-		public Config keyStrokes(Consumer<ControlKeyStrokes> keyStrokes) {
-			requireNonNull(keyStrokes).accept(this.keyStrokes);
+		public Config keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 
@@ -2747,7 +2691,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private JToolBar createToolBar() {
-			Controls toolbarControls = toolBarLayout.create(controls);
+			Controls toolbarControls = toolBarLayout.create(configuration.controlMap);
 			if (toolbarControls == null || toolbarControls.empty()) {
 				return null;
 			}

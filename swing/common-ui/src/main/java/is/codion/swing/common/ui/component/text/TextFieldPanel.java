@@ -29,9 +29,8 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
+import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
 import javax.swing.AbstractButton;
@@ -52,8 +51,8 @@ import java.awt.event.FocusEvent;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static is.codion.swing.common.ui.component.text.TextFieldPanel.ControlKeys.DISPLAY_TEXT_AREA;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -84,14 +83,15 @@ public final class TextFieldPanel extends JPanel {
 
 	private final JTextField textField;
 	private final Value<AbstractButton> button = Value.value();
-	private final Control textAreaControl;
+	private final ControlMap controlMap;
 	private final String dialogTitle;
 	private final String caption;
 	private final Dimension textAreaSize;
 	private final int maximumLength;
 
 	private TextFieldPanel(DefaultBuilder builder) {
-		this.textAreaControl = createTextAreaControl(builder);
+		this.controlMap = builder.controlMap;
+		this.controlMap.control(DISPLAY_TEXT_AREA).set(createTextAreaControl(builder));
 		this.textField = createTextField(builder);
 		this.dialogTitle = builder.dialogTitle;
 		this.textAreaSize = builder.textAreaSize;
@@ -257,7 +257,7 @@ public final class TextFieldPanel extends JPanel {
 		Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 	}
 
-	private Control createTextAreaControl(DefaultBuilder builder) {
+	private CommandControl createTextAreaControl(DefaultBuilder builder) {
 		return Control.builder()
 						.command(this::inputFromUser)
 						.name(builder.buttonIcon == null ? "..." : "")
@@ -266,17 +266,16 @@ public final class TextFieldPanel extends JPanel {
 	}
 
 	private JTextField createTextField(DefaultBuilder builder) {
-		builder.controlKeyStrokes.keyStroke(DISPLAY_TEXT_AREA).optional().ifPresent(keyStroke ->
-						builder.textFieldBuilder.keyEvent(KeyEvents.builder(keyStroke)
-										.action(textAreaControl)));
-
-		return builder.textFieldBuilder.build();
+		return builder.textFieldBuilder
+						.onBuild(field -> controlMap.keyEvent(DISPLAY_TEXT_AREA)
+										.ifPresent(keyEvent -> keyEvent.enable(field)))
+						.build();
 	}
 
 	private void initializeUI(boolean buttonFocusable) {
 		setLayout(new BorderLayout());
 		add(textField, BorderLayout.CENTER);
-		add(ButtonPanelBuilder.builder(textAreaControl)
+		add(ButtonPanelBuilder.builder(controlMap.control(DISPLAY_TEXT_AREA).get())
 						.buttonsFocusable(buttonFocusable)
 						.toolTipText(MESSAGES.getString("show_input_dialog"))
 						.preferredButtonSize(new Dimension(textField.getPreferredSize().height, textField.getPreferredSize().height))
@@ -315,7 +314,7 @@ public final class TextFieldPanel extends JPanel {
 		private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
 		private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null);
-		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
+		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private boolean buttonFocusable;
 		private ImageIcon buttonIcon;
@@ -397,7 +396,7 @@ public final class TextFieldPanel extends JPanel {
 
 		@Override
 		public TextFieldPanel.Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
+			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 

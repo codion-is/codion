@@ -29,9 +29,8 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
+import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
@@ -54,8 +53,8 @@ import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.TemporalField.ControlKeys.*;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -109,7 +108,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	private final State valueNull = State.state();
 	private final String dateTimePattern;
 	private final ImageIcon calendarIcon;
-	private final Control calendarControl;
+	private final ControlMap controlMap;
 
 	private TemporalField(DefaultBuilder<T> builder) {
 		super(createFormatter(builder.mask));
@@ -119,28 +118,23 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		this.dateTimeParser = builder.dateTimeParser;
 		this.dateTimePattern = builder.dateTimePattern;
 		this.calendarIcon = builder.calendarIcon;
+		this.controlMap = builder.controlMap;
+		this.controlMap.control(INCREMENT).set(Control.builder()
+						.command(this::increment)
+						.enabled(valueNull.not())
+						.build());
+		this.controlMap.control(DECREMENT).set(Control.builder()
+						.command(this::decrement)
+						.enabled(valueNull.not())
+						.build());
+		this.controlMap.control(DISPLAY_CALENDAR).set(createCalendarControl());
+		if (builder.incrementDecrementEnabled) {
+			this.controlMap.keyEvent(INCREMENT).ifPresent(keyEvent -> keyEvent.enable(this));
+			this.controlMap.keyEvent(DECREMENT).ifPresent(keyEvent -> keyEvent.enable(this));
+		}
+		this.controlMap.keyEvent(DISPLAY_CALENDAR).ifPresent(keyEvent -> keyEvent.enable(this));
 		setFocusLostBehavior(builder.focusLostBehaviour);
 		getDocument().addDocumentListener(new TemporalDocumentListener());
-		if (builder.incrementDecrementEnabled) {
-			builder.controlKeyStrokes.keyStroke(INCREMENT).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
-							.action(Control.builder()
-											.command(this::increment)
-											.enabled(valueNull.not())
-											.build())
-							.enable(this));
-			builder.controlKeyStrokes.keyStroke(DECREMENT).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
-							.action(Control.builder()
-											.command(this::decrement)
-											.enabled(valueNull.not())
-											.build())
-							.enable(this));
-		}
-		calendarControl = createCalendarControl();
-		if (calendarControl != null) {
-			builder.controlKeyStrokes.keyStroke(DISPLAY_CALENDAR).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
-							.action(calendarControl)
-							.enable(this));
-		}
 	}
 
 	/**
@@ -148,8 +142,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	 * in case a Calendar is not supported for the given temporal type
 	 * @return a Control for displaying a calendar
 	 */
-	public Optional<Control> calendarControl() {
-		return Optional.ofNullable(calendarControl);
+	public Optional<CommandControl> calendarControl() {
+		return controlMap.control(DISPLAY_CALENDAR).optional();
 	}
 
 	/**
@@ -263,7 +257,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 	}
 
-	private Control createCalendarControl() {
+	private CommandControl createCalendarControl() {
 		if (CalendarPanel.supportedTypes().contains(temporalClass)) {
 			return Control.builder()
 							.command(this::displayCalendar)
@@ -393,7 +387,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		private final Class<T> temporalClass;
 		private final String dateTimePattern;
 		private final String mask;
-		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
+		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private DateTimeFormatter dateTimeFormatter;
 		private DateTimeParser<T> dateTimeParser;
@@ -442,7 +436,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 		@Override
 		public Builder<T> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
+			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 

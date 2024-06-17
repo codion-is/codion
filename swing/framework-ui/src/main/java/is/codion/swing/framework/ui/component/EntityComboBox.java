@@ -34,7 +34,7 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
+import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -49,8 +49,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.component.EntityComboBox.ControlKeys.ADD;
 import static is.codion.swing.framework.ui.component.EntityComboBox.ControlKeys.EDIT;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -87,15 +87,15 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		private ControlKeys() {}
 	}
 
-	private final Control addControl;
-	private final Control editControl;
+	private final ControlMap controlMap;
 
 	private EntityComboBox(DefaultBuilder builder) {
 		super(builder.comboBoxModel());
-		addControl = createAddControl(builder.editPanel,
-						builder.controlKeyStrokes.keyStroke(ADD).get(), builder.confirmAdd);
-		editControl = createEditControl(builder.editPanel,
-						builder.controlKeyStrokes.keyStroke(EDIT).get(), builder.confirmEdit);
+		this.controlMap = builder.controlMap;
+		this.controlMap.control(ADD).set(createAddControl(builder.editPanel,
+						builder.controlMap.keyStroke(ADD).get(), builder.confirmAdd));
+		this.controlMap.control(EDIT).set(createEditControl(builder.editPanel,
+						builder.controlMap.keyStroke(EDIT).get(), builder.confirmEdit));
 		builder.comboBoxModel().refresher().observer()
 						.addConsumer(this::onRefreshingChanged);
 	}
@@ -109,16 +109,16 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	 * @return a Control for inserting a new record, if one is available
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public Optional<Control> addControl() {
-		return Optional.ofNullable(addControl);
+	public Optional<CommandControl> addControl() {
+		return controlMap.control(ADD).optional();
 	}
 
 	/**
 	 * @return a Control for editing the selected record, if one is available
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public Optional<Control> editControl() {
-		return Optional.ofNullable(editControl);
+	public Optional<CommandControl> editControl() {
+		return controlMap.control(EDIT).optional();
 	}
 
 	/**
@@ -285,11 +285,11 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		Builder confirmEdit(boolean confirmEdit);
 	}
 
-	private Control createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	private CommandControl createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
 		return editPanel == null ? null : EntityControls.createAddControl(this, editPanel, keyStroke, confirm);
 	}
 
-	private Control createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	private CommandControl createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
 		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke, confirm);
 	}
 
@@ -315,7 +315,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
 
-		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
+		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private Supplier<EntityEditPanel> editPanel;
 		private boolean confirmAdd;
@@ -338,7 +338,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 		@Override
 		public Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
+			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 

@@ -19,8 +19,11 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.key.KeyEvents;
 
+import javax.swing.KeyStroke;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Manages a set of {@link Control} instances.
@@ -39,6 +42,26 @@ public interface ControlMap {
 	 * @return all available controls
 	 */
 	Collection<Value<Control>> controls();
+
+	/**
+	 * @param controlKey the control key
+	 * @return the {@link Value} controlling the key stroke for the given control
+	 * @throws IllegalArgumentException in case no control is associated with the given control key
+	 */
+	Value<KeyStroke> keyStroke(ControlKey<?> controlKey);
+
+	/**
+	 * Returns a {@link KeyEvents.Builder} instance if a keyStroke and a Control is associated with the given {@link ControlKey},
+	 * otherwise an empty {@link Optional}.
+	 * @param controlKey the key identifying the control
+	 * @return a key event builder for the given control
+	 */
+	Optional<KeyEvents.Builder> keyEvent(ControlKey<?> controlKey);
+
+	/**
+	 * @return a copy of this {@link ControlMap} instance
+	 */
+	ControlMap copy();
 
 	/**
 	 * @param controlKeysClass the class containing the control keys

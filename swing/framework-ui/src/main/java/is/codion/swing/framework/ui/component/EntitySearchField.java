@@ -54,7 +54,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.control.ControlKeyStrokes;
+import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -111,11 +111,13 @@ import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
-import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
+import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.dialog.Dialogs.okCancelDialog;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
+import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.ADD;
+import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.EDIT;
 import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
@@ -197,8 +199,7 @@ public final class EntitySearchField extends HintTextField {
 	private final State searching = State.state();
 	private final Value<Function<EntitySearchModel, Selector>> selectorFactory;
 	private final Value<SearchIndicator> searchIndicator;
-	private final Control addControl;
-	private final Control editControl;
+	private final ControlMap controlMap;
 
 	private SettingsPanel settingsPanel;
 	private SingleSelectionValue singleSelectionValue;
@@ -213,10 +214,11 @@ public final class EntitySearchField extends HintTextField {
 	private EntitySearchField(DefaultEntitySearchFieldBuilder builder) {
 		super(builder.searchHintEnabled ? Messages.search() + "..." : null);
 		model = requireNonNull(builder.searchModel);
-		addControl = createAddControl(builder.editPanel,
-						builder.controlKeyStrokes.keyStroke(ControlKeys.ADD).get(), builder.confirmAdd);
-		editControl = createEditControl(builder.editPanel,
-						builder.controlKeyStrokes.keyStroke(ControlKeys.EDIT).get(), builder.confirmEdit);
+		controlMap = builder.controlMap;
+		controlMap.control(ADD).set(createAddControl(builder.editPanel,
+						controlMap.keyStroke(ADD).get(), builder.confirmAdd));
+		controlMap.control(EDIT).set(createEditControl(builder.editPanel,
+						controlMap.keyStroke(EDIT).get(), builder.confirmEdit));
 		if (builder.columns != -1) {
 			setColumns(builder.columns);
 		}
@@ -241,11 +243,11 @@ public final class EntitySearchField extends HintTextField {
 		bindEvents();
 	}
 
-	private Control createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	private CommandControl createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
 		return editPanel == null ? null : EntityControls.createAddControl(this, editPanel, keyStroke, confirm);
 	}
 
-	private Control createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	private CommandControl createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
 		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke, confirm);
 	}
 
@@ -307,16 +309,16 @@ public final class EntitySearchField extends HintTextField {
 	 * @return a Control for inserting a new record, if one is available
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public Optional<Control> addControl() {
-		return Optional.ofNullable(addControl);
+	public Optional<CommandControl> addControl() {
+		return controlMap.control(ADD).optional();
 	}
 
 	/**
 	 * @return a Control for editing the selected record, if one is available
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public Optional<Control> editControl() {
-		return Optional.ofNullable(editControl);
+	public Optional<CommandControl> editControl() {
+		return controlMap.control(EDIT).optional();
 	}
 
 	/**
@@ -1080,7 +1082,7 @@ public final class EntitySearchField extends HintTextField {
 	private static final class DefaultEntitySearchFieldBuilder extends AbstractComponentBuilder<Entity, EntitySearchField, Builder> implements Builder {
 
 		private final EntitySearchModel searchModel;
-		private final ControlKeyStrokes controlKeyStrokes = controlKeyStrokes(ControlKeys.class);
+		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private int columns = -1;
 		private boolean upperCase;
@@ -1160,7 +1162,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
-			controlKeyStrokes.keyStroke(controlKey).set(keyStroke);
+			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}
 
