@@ -19,23 +19,34 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.control.Controls.ControlsKey;
+import is.codion.swing.common.ui.control.Controls.Layout;
 
 import javax.swing.KeyStroke;
+import java.util.Optional;
 
-/**
- * Identifies a {@link Control} instance
- * @param <T> the control type
- */
-public interface ControlKey<T extends Control> {
+final class DefaultControlsKey implements ControlsKey {
 
-	/**
-	 * @return the class of the control identified by this key
-	 */
-	Class<T> controlClass();
+	private final Value<KeyStroke> defaultKeyStroke;
+	private final Layout defaultLayout;
 
-	/**
-	 * Note that changing the default keystroke has no effect on already initialized components.
-	 * @return the default keystroke for this shortcut, an empty {@link Value} if none is available
-	 */
-	Value<KeyStroke> defaultKeystroke();
+	DefaultControlsKey(KeyStroke defaultKeyStroke, Layout defaultLayout) {
+		this.defaultKeyStroke = Value.nullable(defaultKeyStroke).build();
+		this.defaultLayout = defaultLayout;
+	}
+
+	@Override
+	public Class<Controls> controlClass() {
+		return Controls.class;
+	}
+
+	@Override
+	public Value<KeyStroke> defaultKeystroke() {
+		return defaultKeyStroke;
+	}
+
+	@Override
+	public Optional<Layout> defaultLayout() {
+		return Optional.ofNullable(defaultLayout);
+	}
 }

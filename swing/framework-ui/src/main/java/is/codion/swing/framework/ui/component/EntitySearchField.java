@@ -111,7 +111,6 @@ import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.dialog.Dialogs.okCancelDialog;
@@ -181,12 +180,12 @@ public final class EntitySearchField extends HintTextField {
 		 * Displays a dialog for adding a new record.<br>
 		 * Default key stroke: INSERT
 		 */
-		public static final ControlKey<CommandControl> ADD = commandControl(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> ADD = CommandControl.key(keyStroke(VK_INSERT));
 		/**
 		 * Displays a dialog for editing the selected record.<br>
 		 * Default key stroke: CTRL-INSERT
 		 */
-		public static final ControlKey<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT = CommandControl.key(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

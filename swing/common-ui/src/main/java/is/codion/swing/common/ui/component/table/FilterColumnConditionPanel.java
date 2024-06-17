@@ -65,8 +65,6 @@ import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.ControlKeys.*;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKey.commandControl;
-import static is.codion.swing.common.ui.control.ControlKey.toggleControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
@@ -99,17 +97,17 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		 * Toggle the enabled status on/off.<br>
 		 * Default key stroke: CTRL-ENTER
 		 */
-		public static final ControlKey<ToggleControl> TOGGLE_ENABLED = toggleControl(keyStroke(VK_ENTER, CTRL_DOWN_MASK));
+		public static final ControlKey<ToggleControl> TOGGLE_ENABLED = ToggleControl.key(keyStroke(VK_ENTER, CTRL_DOWN_MASK));
 		/**
 		 * Select the previous condition operator.<br>
 		 * Default key stroke: CTRL-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_OPERATOR = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_OPERATOR = CommandControl.key(keyStroke(VK_UP, CTRL_DOWN_MASK));
 		/**
 		 * Select the next condition operator.<br>
 		 * Default key stroke: CTRL-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_OPERATOR = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_OPERATOR = CommandControl.key(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

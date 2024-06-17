@@ -54,7 +54,6 @@ import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.TemporalField.ControlKeys.*;
-import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static java.awt.event.KeyEvent.*;
@@ -81,17 +80,17 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		 * Display a calendar for date/time input.<br>
 		 * Default key stroke: INSERT
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_CALENDAR = commandControl(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> DISPLAY_CALENDAR = CommandControl.key(keyStroke(VK_INSERT));
 		/**
 		 * Increments the date component under the cursor.<br>
 		 * Default key stroke: UP ARROW
 		 */
-		public static final ControlKey<CommandControl> INCREMENT = commandControl(keyStroke(VK_UP));
+		public static final ControlKey<CommandControl> INCREMENT = CommandControl.key(keyStroke(VK_UP));
 		/**
 		 * Decrements the date component under the cursor.<br>
 		 * Default key stroke: DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> DECREMENT = commandControl(keyStroke(VK_DOWN));
+		public static final ControlKey<CommandControl> DECREMENT = CommandControl.key(keyStroke(VK_DOWN));
 
 		private ControlKeys() {}
 	}

@@ -26,7 +26,6 @@ import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.util.stream.Stream;
 
-import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.control.ControlKeyStrokesTest.ControlKeys.ONE;
@@ -36,8 +35,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class ControlKeyStrokesTest {
 
 	interface ControlKeys {
-		ControlKey<CommandControl> ONE = commandControl(keyStroke(KeyEvent.VK_1));
-		ControlKey<CommandControl> TWO = commandControl(keyStroke(KeyEvent.VK_2));
+		ControlKey<CommandControl> ONE = CommandControl.key(keyStroke(KeyEvent.VK_1));
+		ControlKey<CommandControl> TWO = CommandControl.key(keyStroke(KeyEvent.VK_2));
 	}
 
 	@Test

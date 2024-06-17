@@ -28,7 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
@@ -118,7 +119,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 	}
 
-	static final class DefaultConfig implements Config {
+	static final class DefaultLayout implements Layout {
 
 		private static final ControlItem SEPARATOR = new Separator();
 
@@ -126,13 +127,29 @@ final class DefaultControls extends AbstractControl implements Controls {
 		private final List<ControlKey<?>> defaults;
 		private final List<ControlItem> items = new ArrayList<>();
 
-		DefaultConfig(List<ControlKey<?>> defaults) {
+		DefaultLayout(List<ControlKey<?>> defaults) {
 			this.defaults = requireNonNull(defaults);
 			defaults();
 		}
 
+		private DefaultLayout(DefaultLayout layout) {
+			this.keyStroke.set(layout.keyStroke.get());
+			this.defaults = new ArrayList<>(layout.defaults);
+			defaults();
+		}
+
 		@Override
-		public Config separator() {
+		public Class<Controls> controlClass() {
+			return Controls.class;
+		}
+
+		@Override
+		public Value<KeyStroke> defaultKeystroke() {
+			return keyStroke;
+		}
+
+		@Override
+		public Layout separator() {
 			if (items.isEmpty() || items.get(items.size() - 1) != SEPARATOR) {
 				items.add(SEPARATOR);
 			}
@@ -140,41 +157,61 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Config control(ControlKey<?> controlKey) {
+		public Layout control(ControlKey<?> controlKey) {
 			add(requireNonNull(controlKey));
 			return this;
 		}
 
 		@Override
-		public Config control(Control control) {
+		public Layout control(Control control) {
 			items.add(new CustomAction(requireNonNull(control)));
 			return this;
 		}
 
 		@Override
-		public Config control(Control.Builder<?, ?> controlBuilder) {
+		public Layout control(Control.Builder<?, ?> controlBuilder) {
 			return control(requireNonNull(controlBuilder).build());
 		}
 
 		@Override
-		public Config action(Action action) {
+		public Layout action(Action action) {
 			items.add(new CustomAction(requireNonNull(action)));
 			return this;
 		}
 
 		@Override
-		public Config clear() {
+		public Layout controls(ControlKey<Controls> controlsKey) {
+			return control(controlsKey);
+		}
+
+		@Override
+		public Layout controls(ControlsKey controlsKey, Consumer<Layout> layout) {
+			Layout defaultLayout = controlsKey.defaultLayout()
+							.map(Layout::copy)
+							.orElseThrow(() -> new IllegalArgumentException("No default controls layout available"));
+			layout.accept(defaultLayout);
+			items.add(new StandardControls(controlsKey, defaultLayout));
+			return this;
+		}
+
+		@Override
+		public Layout clear() {
 			items.clear();
 			return this;
 		}
 
 		@Override
-		public Config defaults() {
+		public Layout copy() {
+			return new DefaultLayout(this);
+		}
+
+		@Override
+		public Layout defaults() {
 			return defaults(null);
 		}
 
 		@Override
-		public Config defaults(ControlKey<?> stopAt) {
+		public Layout defaults(ControlKey<?> stopAt) {
 			for (ControlKey<?> control : defaults) {
 				if (control == null) {
 					separator();
@@ -199,14 +236,24 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		private void add(ControlKey<?> controlKey) {
-			StandardControl standardControl = new StandardControl(controlKey);
-			if (!items.contains(standardControl)) {
-				items.add(standardControl);
+			if (!contains(controlKey)) {
+				items.add(new StandardControl(controlKey));
 			}
 		}
 
+		private boolean contains(ControlKey<?> controlKey) {
+			return items.stream()
+							.map(ControlItem::controlKey)
+							.filter(Optional::isPresent)
+							.map(Optional::get)
+							.anyMatch(controlKey::equals);
+		}
+
 		private interface ControlItem {
-			void addTo(ControlsBuilder builder, ControlMap controls);
+			void addTo(ControlsBuilder builder, ControlMap controlMap);
+			default Optional<ControlKey<?>> controlKey() {
+				return Optional.empty();
+			}
 		}
 
 		private static final class StandardControl implements ControlItem {
@@ -218,20 +265,10 @@ final class DefaultControls extends AbstractControl implements Controls {
 			}
 
 			@Override
-			public void addTo(ControlsBuilder builder, ControlMap controls) {
-				controls.control(controlKey).optional().ifPresent(control -> {
+			public void addTo(ControlsBuilder builder, ControlMap controlMap) {
+				controlMap.control(controlKey).optional().ifPresent(control -> {
 					if (control instanceof Controls) {
-						Controls controlsToAdd = (Controls) control;
-						if (controlsToAdd.notEmpty()) {
-							if (!controlsToAdd.name().isPresent()) {
-								controlsToAdd.actions().stream()
-												.filter(action -> action != SEPARATOR)
-												.forEach(action -> new CustomAction(action).addTo(builder, controls));
-							}
-							else {
-								builder.control(controlsToAdd);
-							}
-						}
+						addControls(builder, (Controls) control, controlMap);
 					}
 					else {
 						builder.control(control);
@@ -240,20 +277,46 @@ final class DefaultControls extends AbstractControl implements Controls {
 			}
 
 			@Override
-			public boolean equals(Object object) {
-				if (this == object) {
-					return true;
+			public Optional<ControlKey<?>> controlKey() {
+				return Optional.of(controlKey);
+			}
+
+			private static void addControls(ControlsBuilder builder, Controls controlsToAdd, ControlMap controlMap) {
+				if (controlsToAdd.notEmpty()) {
+					if (!controlsToAdd.name().isPresent()) {
+						controlsToAdd.actions().stream()
+										.filter(action -> action != SEPARATOR)
+										.forEach(action -> new CustomAction(action).addTo(builder, controlMap));
+					}
+					else {
+						builder.control(controlsToAdd);
+					}
 				}
-				if (!(object instanceof DefaultConfig.StandardControl)) {
-					return false;
-				}
-				StandardControl that = (StandardControl) object;
-				return controlKey == that.controlKey;
+			}
+		}
+
+		private static final class StandardControls implements ControlItem {
+
+			private final ControlsKey controlsKey;
+			private final Layout layout;
+
+			private StandardControls(ControlsKey controlsKey, Layout layout) {
+				this.controlsKey = controlsKey;
+				this.layout = layout;
 			}
 
 			@Override
-			public int hashCode() {
-				return Objects.hash(controlKey);
+			public void addTo(ControlsBuilder builder, ControlMap controlMap) {
+				Controls defaultControls = controlMap.control(controlsKey).get();
+				Controls configuredControls = layout.create(controlMap);
+				builder.controls(defaultControls.copy()
+								.removeAll()
+								.actions(configuredControls.actions()));
+			}
+
+			@Override
+			public Optional<ControlKey<?>> controlKey() {
+				return Optional.of(controlsKey);
 			}
 		}
 
@@ -266,7 +329,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 			}
 
 			@Override
-			public void addTo(ControlsBuilder builder, ControlMap controls) {
+			public void addTo(ControlsBuilder builder, ControlMap controlMap) {
 				builder.action(action);
 			}
 		}
@@ -274,7 +337,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 		private static final class Separator implements ControlItem {
 
 			@Override
-			public void addTo(ControlsBuilder builder, ControlMap controls) {
+			public void addTo(ControlsBuilder builder, ControlMap controlMap) {
 				builder.separator();
 			}
 		}

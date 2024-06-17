@@ -72,7 +72,6 @@ import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.calendar.CalendarPanel.ControlKeys.*;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -110,62 +109,62 @@ public final class CalendarPanel extends JPanel {
 		 * Select the previous year.<br>
 		 * Default key stroke: CTRL-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_YEAR = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_YEAR = CommandControl.key(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
 		/**
 		 * Select the next year.<br>
 		 * Default key stroke: CTRL-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_YEAR = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_YEAR = CommandControl.key(keyStroke(VK_UP, CTRL_DOWN_MASK));
 		/**
 		 * Select the previous month.<br>
 		 * Default key stroke: SHIFT-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_MONTH = commandControl(keyStroke(VK_DOWN, SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_MONTH = CommandControl.key(keyStroke(VK_DOWN, SHIFT_DOWN_MASK));
 		/**
 		 * Select the next month.<br>
 		 * Default key stroke: SHIFT-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_MONTH = commandControl(keyStroke(VK_UP, SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_MONTH = CommandControl.key(keyStroke(VK_UP, SHIFT_DOWN_MASK));
 		/**
 		 * Select the previous week.<br>
 		 * Default key stroke: ALT-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_WEEK = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_WEEK = CommandControl.key(keyStroke(VK_UP, ALT_DOWN_MASK));
 		/**
 		 * Select the next week.<br>
 		 * Default key stroke: ALT-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_WEEK = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_WEEK = CommandControl.key(keyStroke(VK_DOWN, ALT_DOWN_MASK));
 		/**
 		 * Select the previous day.<br>
 		 * Default key stroke: ALT-LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_DAY = commandControl(keyStroke(VK_LEFT, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_DAY = CommandControl.key(keyStroke(VK_LEFT, ALT_DOWN_MASK));
 		/**
 		 * Select the next day.<br>
 		 * Default key stroke: ALT-RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_DAY = commandControl(keyStroke(VK_RIGHT, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_DAY = CommandControl.key(keyStroke(VK_RIGHT, ALT_DOWN_MASK));
 		/**
 		 * Select the previous hour.<br>
 		 * Default key stroke: SHIFT-ALT-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_HOUR = commandControl(keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_HOUR = CommandControl.key(keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Select the next hour.<br>
 		 * Default key stroke: SHIFT-ALT-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_HOUR = commandControl(keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_HOUR = CommandControl.key(keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Select the previous minute.<br>
 		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_MINUTE = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_MINUTE = CommandControl.key(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Select the next minute.<br>
 		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_MINUTE = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_MINUTE = CommandControl.key(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

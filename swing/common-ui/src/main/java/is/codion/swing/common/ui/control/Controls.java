@@ -18,12 +18,14 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.swing.common.ui.control.DefaultControls.DefaultConfig;
 import is.codion.swing.common.ui.control.DefaultControls.DefaultControlsBuilder;
+import is.codion.swing.common.ui.control.DefaultControls.DefaultLayout;
 
 import javax.swing.Action;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * A collection of controls and separators, note that these can be nested controls.
@@ -94,8 +96,34 @@ public interface Controls extends Control {
 	 * @param defaults the default controls layout
 	 * @return a new Config instance
 	 */
-	static Config config(List<ControlKey<?>> defaults) {
-		return new DefaultConfig(defaults);
+	static Layout layout(List<ControlKey<?>> defaults) {
+		return new DefaultLayout(defaults);
+	}
+
+	/**
+	 * @return a new {@link ControlKey} for identifying a {@link Controls} instance
+	 */
+	static ControlsKey key() {
+		return key(null);
+	}
+
+	/**
+	 * @param defaultLayout the default controls layout
+	 * @return a new {@link ControlsKey} for identifying a {@link Controls} instance
+	 */
+	static ControlsKey key(Layout defaultLayout) {
+		return new DefaultControlsKey(null, defaultLayout);
+	}
+
+	/**
+	 * A {@link ControlKey} for {@link Controls} instances
+	 */
+	interface ControlsKey extends ControlKey<Controls> {
+
+		/**
+		 * @return the default layout config, if available
+		 */
+		Optional<Layout> defaultLayout();
 	}
 
 	/**
@@ -193,63 +221,84 @@ public interface Controls extends Control {
 	}
 
 	/**
-	 * Configures controls.
+	 * Specifies a layout for a {@link Controls} instance.
 	 */
-	interface Config {
+	interface Layout extends ControlKey<Controls> {
 
 		/**
 		 * Adds a separator
-		 * @return this config instance
+		 * @return this layout instance
 		 */
-		Config separator();
+		Layout separator();
 
 		/**
 		 * Adds a standard control
 		 * @param controlKey the key identifying the standard control to add
-		 * @return this config instance
+		 * @return this layout instance
 		 */
-		Config control(ControlKey<?> controlKey);
+		Layout control(ControlKey<?> controlKey);
 
 		/**
 		 * @param control the control to add
-		 * @return this config instance
+		 * @return this layout instance
 		 */
-		Config control(Control control);
+		Layout control(Control control);
 
 		/**
 		 * @param controlBuilder the builder for the control to add
-		 * @return this config instance
+		 * @return this layout instance
 		 */
-		Config control(Control.Builder<?, ?> controlBuilder);
+		Layout control(Control.Builder<?, ?> controlBuilder);
+
+		/**
+		 * Adds standard controls
+		 * @param controlsKey the key identifying the standard controls to add
+		 * @return this layout instance
+		 */
+		Layout controls(ControlKey<Controls> controlsKey);
+
+		/**
+		 * Adds standard configurable controls
+		 * @param controlsKey the controls key
+		 * @param layout provides a way to configure the layout
+		 * @return this layout instance
+		 * @throws IllegalArgumentException in case the {@link Controls} associated with {@code controlsKey} does not provide a default layout
+		 */
+		Layout controls(ControlsKey controlsKey, Consumer<Layout> layout);
 
 		/**
 		 * @param action the Action to add
-		 * @return this config instance
+		 * @return this layout instance
 		 */
-		Config action(Action action);
+		Layout action(Action action);
 
 		/**
 		 * Adds all remaining default controls
-		 * @return this config instance
+		 * @return this layout instance
 		 */
-		Config defaults();
+		Layout defaults();
 
 		/**
 		 * Adds all remaining default controls, up until and including {@code stopAt}
 		 * @param stopAt the standard control to stop at (inclusive)
-		 * @return this config instance
+		 * @return this layout instance
 		 */
-		Config defaults(ControlKey<?> stopAt);
+		Layout defaults(ControlKey<?> stopAt);
 
 		/**
-		 * Clears all controls from this config
-		 * @return this config instance
+		 * Clears all controls from this layout
+		 * @return this layout instance
 		 */
-		Config clear();
+		Layout clear();
+
+		/**
+		 * @return a copy of this {@link Layout} instance
+		 */
+		Layout copy();
 
 		/**
 		 * @param controlMap provides the standard controls
-		 * @return a {@link Controls} instance based on this config
+		 * @return a {@link Controls} instance based on this layout
 		 */
 		Controls create(ControlMap controlMap);
 	}

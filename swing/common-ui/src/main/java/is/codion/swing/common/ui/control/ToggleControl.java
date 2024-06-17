@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.control;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
+import javax.swing.KeyStroke;
+
 /**
  * A Control for toggling a boolean value.
  */
@@ -51,6 +53,21 @@ public interface ToggleControl extends Control {
 	 * @return a new builder
 	 */
 	ToggleControlBuilder copy(State state);
+
+	/**
+	 * @return a new {@link ControlKey} for identifying a {@link ToggleControl} instance
+	 */
+	static ControlKey<ToggleControl> key() {
+		return key(null);
+	}
+
+	/**
+	 * @param defaultKeyStroke the default keystroke
+	 * @return a new {@link ControlKey} for identifying a {@link ToggleControl} instance
+	 */
+	static ControlKey<ToggleControl> key(KeyStroke defaultKeyStroke) {
+		return new DefaultControlKey<>(ToggleControl.class, defaultKeyStroke);
+	}
 
 	/**
 	 * Builds a {@link ToggleControl}

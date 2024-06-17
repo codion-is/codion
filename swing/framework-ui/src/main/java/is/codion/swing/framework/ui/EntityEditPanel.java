@@ -62,7 +62,6 @@ import java.util.function.Consumer;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
@@ -101,30 +100,30 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * Performs an insert.
 		 */
-		public static final ControlKey<CommandControl> INSERT = commandControl();
+		public static final ControlKey<CommandControl> INSERT = CommandControl.key();
 		/**
 		 * Performs an update.
 		 */
-		public static final ControlKey<CommandControl> UPDATE = commandControl();
+		public static final ControlKey<CommandControl> UPDATE = CommandControl.key();
 		/**
 		 * Performs a delete.
 		 */
-		public static final ControlKey<CommandControl> DELETE = commandControl();
+		public static final ControlKey<CommandControl> DELETE = CommandControl.key();
 		/**
 		 * Clears the input fields.
 		 */
-		public static final ControlKey<CommandControl> CLEAR = commandControl();
+		public static final ControlKey<CommandControl> CLEAR = CommandControl.key();
 		/**
 		 * Displays a dialog for selecting an input field.<br>
 		 * Default key stroke: CTRL-I
 		 */
-		public static final ControlKey<CommandControl> SELECT_INPUT_FIELD = commandControl(keyStroke(VK_I, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_INPUT_FIELD = CommandControl.key(keyStroke(VK_I, CTRL_DOWN_MASK));
 		/**
 		 * Displays the entity menu, if available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 * @see Config#INCLUDE_ENTITY_MENU
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = CommandControl.key(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}
@@ -143,7 +142,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
-	private final Controls.Config controlsConfiguration;
+	private final Controls.Layout controlsLayout;
 	private final ControlMap controls;
 	private final State active;
 
@@ -169,7 +168,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		this.configuration = configure(config);
 		this.active = State.state(!configuration.focusActivation);
 		this.controls = createControls();
-		this.controlsConfiguration = createControlsConfiguration();
+		this.controlsLayout = createControlsLayout();
 		setupFocusActivation();
 		setupKeyboardActions();
 		if (editModel.exists().not().get()) {
@@ -222,7 +221,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			throw new IllegalStateException("Method must be called after the panel is initialized");
 		}
 
-		return controlsConfiguration.create(controls);
+		return controlsLayout.create(controls);
 	}
 
 	/**
@@ -497,10 +496,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * Configures the controls.<br>
-	 * Note that the {@link Controls.Config} instance has pre-configured defaults,
+	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
-	 *   configureControls(config -> config
+	 *   configureControls(layout -> layout
 	 *           .separator()
 	 *           .control(createCustomControl()))
 	 * </pre>
@@ -512,10 +511,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 *   <li>{@link ControlKeys#CLEAR ControlKeys#CLEAR}</li>
 	 * </ul>
 	 * @param controlsConfig provides access to the controls configuration
-	 * @see Controls.Config#clear()
+	 * @see Controls.Layout#clear()
 	 */
-	protected final void configureControls(Consumer<Controls.Config> controlsConfig) {
-		requireNonNull(controlsConfig).accept(controlsConfiguration);
+	protected final void configureControls(Consumer<Controls.Layout> controlsConfig) {
+		requireNonNull(controlsConfig).accept(controlsLayout);
 	}
 
 	private ControlMap createControls() {
@@ -661,8 +660,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		return new Config(config);
 	}
 
-	private Controls.Config createControlsConfiguration() {
-		return Controls.config(asList(
+	private static Controls.Layout createControlsLayout() {
+		return Controls.layout(asList(
 						INSERT,
 						UPDATE,
 						DELETE,

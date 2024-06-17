@@ -52,7 +52,6 @@ import java.awt.event.FocusEvent;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static is.codion.swing.common.ui.component.text.TextFieldPanel.ControlKeys.DISPLAY_TEXT_AREA;
-import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static java.awt.event.KeyEvent.VK_INSERT;
@@ -78,7 +77,7 @@ public final class TextFieldPanel extends JPanel {
 		 * Displays a text area for longer text input.<br>
 		 * Default key stroke: INSERT
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_TEXT_AREA = commandControl(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> DISPLAY_TEXT_AREA = CommandControl.key(keyStroke(VK_INSERT));
 
 		private ControlKeys() {}
 	}

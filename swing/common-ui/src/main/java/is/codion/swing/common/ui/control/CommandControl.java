@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.control;
 
+import javax.swing.KeyStroke;
 import java.util.function.Consumer;
 
 /**
@@ -45,6 +46,21 @@ public interface CommandControl extends Control {
 	 * @return a new builder
 	 */
 	CommandControlBuilder copy(ActionCommand actionCommand);
+
+	/**
+	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
+	 */
+	static ControlKey<CommandControl> key() {
+		return key(null);
+	}
+
+	/**
+	 * @param defaultKeyStroke the default keystroke
+	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
+	 */
+	static ControlKey<CommandControl> key(KeyStroke defaultKeyStroke) {
+		return new DefaultControlKey<>(CommandControl.class, defaultKeyStroke);
+	}
 
 	/**
 	 * Builds a {@link CommandControl}

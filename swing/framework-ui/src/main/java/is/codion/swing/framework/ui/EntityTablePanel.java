@@ -69,6 +69,7 @@ import is.codion.swing.common.ui.control.ControlKeyStrokes;
 import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
+import is.codion.swing.common.ui.control.Controls.ControlsKey;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -130,9 +131,6 @@ import static is.codion.swing.common.ui.component.table.FilterColumnConditionPan
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKey.commandControl;
-import static is.codion.swing.common.ui.control.ControlKey.controls;
-import static is.codion.swing.common.ui.control.ControlKey.toggleControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
@@ -203,177 +201,183 @@ public class EntityTablePanel extends JPanel {
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
 		 */
-		public static final ControlKey<CommandControl> ADD = commandControl(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> ADD = CommandControl.key(keyStroke(VK_INSERT));
 		/**
 		 * Edit the selected entity instance.<br>
 		 * Default key stroke: CTRL-INSERT
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
 		 */
-		public static final ControlKey<CommandControl> EDIT = commandControl(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT = CommandControl.key(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
 		/**
 		 * Select and edit a single attribute value for the selected entity instances.<br>
 		 * Default key stroke: SHIFT-INSERT
 		 * @see Config#editAttributeSelection(EditAttributeSelection)
 		 */
-		public static final ControlKey<CommandControl> EDIT_SELECTED_ATTRIBUTE = commandControl(keyStroke(VK_INSERT, SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT_SELECTED_ATTRIBUTE = CommandControl.key(keyStroke(VK_INSERT, SHIFT_DOWN_MASK));
 		/**
 		 * Requests focus for the table.<br>
 		 * Default key stroke: CTRL-T
 		 */
-		public static final ControlKey<CommandControl> REQUEST_TABLE_FOCUS = commandControl(keyStroke(VK_T, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> REQUEST_TABLE_FOCUS = CommandControl.key(keyStroke(VK_T, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the condition panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-S
 		 * @see TableConditionPanel#state()
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_CONDITION_PANEL = commandControl(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_CONDITION_PANEL = CommandControl.key(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays a dialog for selecting a column condition panel.<br>
 		 * Default key stroke: CTRL-S
 		 */
-		public static final ControlKey<CommandControl> SELECT_CONDITION_PANEL = commandControl(keyStroke(VK_S, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_CONDITION_PANEL = CommandControl.key(keyStroke(VK_S, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the filter panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-F
 		 * @see TableConditionPanel#state()
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_FILTER_PANEL = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_FILTER_PANEL = CommandControl.key(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays a dialog for selecting a column filter panel.<br>
 		 * Default key stroke: CTRL-SHIFT-F
 		 */
-		public static final ControlKey<CommandControl> SELECT_FILTER_PANEL = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_FILTER_PANEL = CommandControl.key(keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selection up.<br>
 		 * Default key stroke: ALT-SHIFT-UP
 		 */
-		public static final ControlKey<CommandControl> MOVE_SELECTION_UP = commandControl(keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> MOVE_SELECTION_UP = CommandControl.key(keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selection down.<br>
 		 * Default key stroke: ALT-SHIFT-DOWN
 		 */
-		public static final ControlKey<CommandControl> MOVE_SELECTION_DOWN = commandControl(keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> MOVE_SELECTION_DOWN = CommandControl.key(keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * The main print action<br>
 		 * Default key stroke: CTRL-P
 		 */
-		public static final ControlKey<CommandControl> PRINT = commandControl(keyStroke(VK_P, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> PRINT = CommandControl.key(keyStroke(VK_P, CTRL_DOWN_MASK));
 		/**
 		 * Triggers the {@link ControlKeys#DELETE} control.<br>
 		 * Default key stroke: DELETE
 		 */
-		public static final ControlKey<CommandControl> DELETE = commandControl(keyStroke(VK_DELETE));
+		public static final ControlKey<CommandControl> DELETE = CommandControl.key(keyStroke(VK_DELETE));
 		/**
 		 * Displays the table popup menu, if one is available.<br>
 		 * Default key stroke: CTRL-G
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_POPUP_MENU = commandControl(keyStroke(VK_G, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_POPUP_MENU = CommandControl.key(keyStroke(VK_G, CTRL_DOWN_MASK));
 		/**
 		 * Displays the entity menu, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = commandControl(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = CommandControl.key(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * A {@link Controls} instance containing controls for printing.
 		 */
-		public static final ControlKey<Controls> PRINT_CONTROLS = controls();
+		public static final ControlKey<Controls> PRINT_CONTROLS = Controls.key();
 		/**
 		 * A {@link Controls} instance containing any additional popup menu controls.
 		 * @see #addPopupMenuControls(Controls)
 		 */
-		public static final ControlKey<Controls> ADDITIONAL_POPUP_MENU_CONTROLS = controls();
+		public static final ControlKey<Controls> ADDITIONAL_POPUP_MENU_CONTROLS = Controls.key();
 		/**
 		 * A {@link Controls} instance containing any additional toolbar controls.
 		 * @see #addToolBarControls(Controls)
 		 */
-		public static final ControlKey<Controls> ADDITIONAL_TOOLBAR_CONTROLS = controls();
+		public static final ControlKey<Controls> ADDITIONAL_TOOLBAR_CONTROLS = Controls.key();
 		/**
 		 * A {@link Control} for viewing the dependencies of the selected entities.
 		 */
-		public static final ControlKey<CommandControl> VIEW_DEPENDENCIES = commandControl();
+		public static final ControlKey<CommandControl> VIEW_DEPENDENCIES = CommandControl.key();
 		/**
 		 * A {@link Controls} instance containing edit controls for all editable attributes.
 		 * @see Config#editAttributeSelection(EditAttributeSelection)
 		 */
-		public static final ControlKey<Controls> EDIT_ATTRIBUTE_CONTROLS = controls();
+		public static final ControlKey<Controls> EDIT_ATTRIBUTE_CONTROLS = Controls.key();
 		/**
 		 * A {@link Control} for displaying a dialog for selecting the visible table columns.
 		 * @see Config#columnSelection(ColumnSelection)
 		 */
-		public static final ControlKey<CommandControl> SELECT_COLUMNS = commandControl();
+		public static final ControlKey<CommandControl> SELECT_COLUMNS = CommandControl.key();
 		/**
 		 * A {@link Controls} instance containing a {@link ToggleControl} for each columns visibility.
 		 * @see Config#columnSelection(ColumnSelection)
 		 */
-		public static final ControlKey<Controls> TOGGLE_COLUMN_CONTROLS = controls();
+		public static final ControlKey<Controls> TOGGLE_COLUMN_CONTROLS = Controls.key();
 		/**
 		 * A {@link Control} for resetting the columns to their original visibility and location.
 		 */
-		public static final ControlKey<CommandControl> RESET_COLUMNS = commandControl();
+		public static final ControlKey<CommandControl> RESET_COLUMNS = CommandControl.key();
 		/**
 		 * A {@link Control} for displaying a dialog for configuring the column auto-resize-mode.
 		 * @see JTable#setAutoResizeMode(int)
 		 */
-		public static final ControlKey<CommandControl> COLUMN_AUTO_RESIZE_MODE = commandControl();
+		public static final ControlKey<CommandControl> COLUMN_AUTO_RESIZE_MODE = CommandControl.key();
 		/**
 		 * A {@link Control} for toggling between single and multi selection mode.
 		 */
-		public static final ControlKey<ToggleControl> SELECTION_MODE = toggleControl();
+		public static final ControlKey<ToggleControl> SELECTION_MODE = ToggleControl.key();
 		/**
 		 * A {@link Control} for clearing the data from the table.
 		 * @see SwingEntityTableModel#clear()
 		 */
-		public static final ControlKey<CommandControl> CLEAR = commandControl();
+		public static final ControlKey<CommandControl> CLEAR = CommandControl.key();
 		/**
 		 * A {@link Control} for refreshing the table data.<br>
 		 * Default key stroke: ALT-R
 		 * @see SwingEntityTableModel#refresh()
 		 */
-		public static final ControlKey<CommandControl> REFRESH = commandControl(keyStroke(VK_R, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> REFRESH = CommandControl.key(keyStroke(VK_R, ALT_DOWN_MASK));
 		/**
 		 * A {@link ToggleControl} for showing/hiding the summary panel.
 		 */
-		public static final ControlKey<ToggleControl> TOGGLE_SUMMARY_PANEL = toggleControl();
+		public static final ControlKey<ToggleControl> TOGGLE_SUMMARY_PANEL = ToggleControl.key();
 		/**
 		 * A {@link Controls} instance containing the condition panel controls.
 		 */
-		public static final ControlKey<Controls> CONDITION_CONTROLS = controls();
+		public static final ControlKey<Controls> CONDITION_CONTROLS = Controls.key();
 		/**
 		 * A {@link Controls} instance containing the filter panel controls.
 		 */
-		public static final ControlKey<Controls> FILTER_CONTROLS = controls();
+		public static final ControlKey<Controls> FILTER_CONTROLS = Controls.key();
 		/**
 		 * A {@link Control} for clearing the table selection.
 		 */
-		public static final ControlKey<CommandControl> CLEAR_SELECTION = commandControl();
-		/**
-		 * A {@link Controls} instance containing controls for copying either cell or table data.
-		 * @see #COPY_CELL
-		 * @see #COPY_ROWS
-		 */
-		public static final ControlKey<Controls> COPY_CONTROLS = controls();
+		public static final ControlKey<CommandControl> CLEAR_SELECTION = CommandControl.key();
 		/**
 		 * A {@link Control} for copying the selected cell data.<br>
 		 * Default key stroke: CTRL-ALT-C
 		 */
-		public static final ControlKey<CommandControl> COPY_CELL = commandControl(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * A {@link Control} for copying the table rows with header.
 		 */
-		public static final ControlKey<CommandControl> COPY_ROWS = commandControl();
+		public static final ControlKey<CommandControl> COPY_ROWS = CommandControl.key();
+		/**
+		 * A {@link Controls} instance containing controls for copying either cell or table data.
+		 * <li>{@link ControlKeys#COPY_ROWS ControlKeys#COPY_ROWS}</li>
+		 * <li>{@link ControlKeys#COPY_CELL ControlKeys#COPY_CELL}</li>
+		 * @see #COPY_CELL
+		 * @see #COPY_ROWS
+		 */
+		public static final ControlsKey COPY_CONTROLS = Controls.key(Controls.layout(asList(COPY_CELL, COPY_ROWS)));
 		/**
 		 * A {@link Controls} instance containing controls for configuring columns.
+		 * <li>{@link ControlKeys#SELECT_COLUMNS ControlKeys#SELECT_COLUMNS} or {@link ControlKeys#TOGGLE_COLUMN_CONTROLS ControlKeys#TOGGLE_COLUMN_CONTROLS}</li>
+		 * <li>{@link ControlKeys#RESET_COLUMNS ControlKeys#RESET_COLUMNS}</li>
+		 * <li>{@link ControlKeys#COLUMN_AUTO_RESIZE_MODE ControlKeys#COLUMN_AUTO_RESIZE_MODE}</li>
 		 * @see #SELECT_COLUMNS
+		 * @see #TOGGLE_COLUMN_CONTROLS
 		 * @see #RESET_COLUMNS
 		 * @see #COLUMN_AUTO_RESIZE_MODE
 		 */
-		public static final ControlKey<Controls> COLUMN_CONTROLS = controls();
+		public static final ControlsKey COLUMN_CONTROLS = Controls.key(Controls.layout(asList(SELECT_COLUMNS, TOGGLE_COLUMN_CONTROLS, RESET_COLUMNS, COLUMN_AUTO_RESIZE_MODE)));
 		/**
 		 * Requests focus for the table search field.<br>
 		 * Default key stroke: CTRL-F
 		 */
-		public static final ControlKey<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = commandControl(keyStroke(VK_F, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = CommandControl.key(keyStroke(VK_F, CTRL_DOWN_MASK));
 
 		private ControlKeys() {}
 	}
@@ -434,8 +438,8 @@ public class EntityTablePanel extends JPanel {
 	private final EntityEditPanel editPanel;
 	private final TableConditionPanel<Attribute<?>> tableConditionPanel;
 	private final ControlMap controls;
-	private final Controls.Config popupMenuConfiguration;
-	private final Controls.Config toolBarConfiguration;
+	private final Controls.Layout popupMenuLayout;
+	private final Controls.Layout toolBarLayout;
 	private final SwingEntityTableModel tableModel;
 	private final Control conditionRefreshControl;
 	private final JToolBar refreshButtonToolBar;
@@ -475,8 +479,8 @@ public class EntityTablePanel extends JPanel {
 		this.tableConditionPanel = createTableConditionPanel();
 		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
-		this.popupMenuConfiguration = createPopupMenuConfiguration();
-		this.toolBarConfiguration = createToolBarConfiguration();
+		this.popupMenuLayout = createPopupMenuLayout();
+		this.toolBarLayout = createToolBarLayout();
 		bindTableEvents();
 		applyPreferences();
 	}
@@ -505,8 +509,8 @@ public class EntityTablePanel extends JPanel {
 		this.tableConditionPanel = createTableConditionPanel();
 		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
-		this.popupMenuConfiguration = createPopupMenuConfiguration();
-		this.toolBarConfiguration = createToolBarConfiguration();
+		this.popupMenuLayout = createPopupMenuLayout();
+		this.toolBarLayout = createToolBarLayout();
 		bindTableEvents();
 		applyPreferences();
 	}
@@ -836,11 +840,11 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Configures the toolbar controls.<br>
-	 * Note that the {@link Controls.Config} instance has pre-configured defaults,
+	 * Configures the toolbar controls layout.<br>
+	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
-	 *   configureToolBar(config -> config.clear()
+	 *   configureToolBar(layout -> layout.clear()
 	 *           .standard(ControlKeys.REFRESH)
 	 *           .separator()
 	 *           .control(createCustomControl())
@@ -863,20 +867,20 @@ public class EntityTablePanel extends JPanel {
 	 * 	 <li>Separator</li>
 	 * 	 <li>{@link ControlKeys#ADDITIONAL_TOOLBAR_CONTROLS ControlKeys#ADDITIONAL_TOOLBAR_CONTROLS}</li>
 	 * </ul>
-	 * @param toolBarConfig provides access to the toolbar configuration
-	 * @see Controls.Config#clear()
+	 * @param toolBarLayout provides access to the toolbar configuration
+	 * @see Controls.Layout#clear()
 	 */
-	protected final void configureToolBar(Consumer<Controls.Config> toolBarConfig) {
+	protected final void configureToolBar(Consumer<Controls.Layout> toolBarLayout) {
 		throwIfInitialized();
-		requireNonNull(toolBarConfig).accept(this.toolBarConfiguration);
+		requireNonNull(toolBarLayout).accept(this.toolBarLayout);
 	}
 
 	/**
-	 * Configures the popup menu controls.<br>
-	 * Note that the {@link Controls.Config} instance has pre-configured defaults,
+	 * Configures the popup menu controls layout.<br>
+	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
-	 *   configurePopupMenu(config -> config.clear()
+	 *   configurePopupMenu(layout -> layout.clear()
 	 *           .standard(ControlKeys.REFRESH)
 	 *           .separator()
 	 *           .control(createCustomControl())
@@ -910,12 +914,12 @@ public class EntityTablePanel extends JPanel {
 	 *   <li>Separator</li>
 	 *   <li>{@link ControlKeys#COPY_CONTROLS ControlKeys#COPY_CONTROLS}</li>
 	 * </ul>
-	 * @param popupMenuConfig provides access to the popup menu configuration
-	 * @see Controls.Config#clear()
+	 * @param popupMenuLayout provides access to the popup menu layout
+	 * @see Controls.Layout#clear()
 	 */
-	protected final void configurePopupMenu(Consumer<Controls.Config> popupMenuConfig) {
+	protected final void configurePopupMenu(Consumer<Controls.Layout> popupMenuLayout) {
 		throwIfInitialized();
-		requireNonNull(popupMenuConfig).accept(this.popupMenuConfiguration);
+		requireNonNull(popupMenuLayout).accept(this.popupMenuLayout);
 	}
 
 	/**
@@ -1685,7 +1689,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void addTablePopupMenu() {
 		if (configuration.includePopupMenu) {
-			Controls popupControls = popupMenuConfiguration.create(controls);
+			Controls popupControls = popupMenuLayout.create(controls);
 			if (popupControls == null || popupControls.empty()) {
 				return;
 			}
@@ -1881,8 +1885,8 @@ public class EntityTablePanel extends JPanel {
 		return new Config(config);
 	}
 
-	private Controls.Config createPopupMenuConfiguration() {
-		return Controls.config(asList(
+	private Controls.Layout createPopupMenuLayout() {
+		return Controls.layout(asList(
 						REFRESH,
 						CLEAR,
 						null,
@@ -1910,8 +1914,8 @@ public class EntityTablePanel extends JPanel {
 		));
 	}
 
-	private Controls.Config createToolBarConfiguration() {
-		return Controls.config(asList(
+	private Controls.Layout createToolBarLayout() {
+		return Controls.layout(asList(
 						TOGGLE_SUMMARY_PANEL,
 						TOGGLE_CONDITION_PANEL,
 						TOGGLE_FILTER_PANEL,
@@ -2743,7 +2747,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private JToolBar createToolBar() {
-			Controls toolbarControls = toolBarConfiguration.create(controls);
+			Controls toolbarControls = toolBarLayout.create(controls);
 			if (toolbarControls == null || toolbarControls.empty()) {
 				return null;
 			}

@@ -46,7 +46,6 @@ import java.util.Map;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKey.commandControl;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_LEFT;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_RIGHT;
@@ -77,12 +76,12 @@ public final class EntityDependenciesPanel extends JPanel {
 		 * Navigates to the dependencies panel on the left (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the dependencies panel on the right (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

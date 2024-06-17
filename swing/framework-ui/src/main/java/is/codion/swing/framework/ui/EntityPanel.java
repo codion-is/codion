@@ -75,8 +75,6 @@ import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.CHECKBOX;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.control.ControlKey.commandControl;
-import static is.codion.swing.common.ui.control.ControlKey.controls;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.controlKeyStrokes;
 import static is.codion.swing.common.ui.control.ControlKeyStrokes.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -157,40 +155,40 @@ public class EntityPanel extends JPanel {
 		 * Requests focus for the edit panel (intial focus component).<br>
 		 * Default key stroke: CTRL-E
 		 */
-		public static final ControlKey<CommandControl> REQUEST_EDIT_PANEL_FOCUS = commandControl(keyStroke(VK_E, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> REQUEST_EDIT_PANEL_FOCUS = CommandControl.key(keyStroke(VK_E, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the edit panel between hidden, embedded and dialog.<br>
 		 * Default key stroke: CTRL-ALT-E
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_EDIT_PANEL = commandControl(keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_EDIT_PANEL = CommandControl.key(keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the parent panel, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_UP = commandControl(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_UP = CommandControl.key(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the selected child panel, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_DOWN = commandControl(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_DOWN = CommandControl.key(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the sibling panel on the right, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = commandControl(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the sibling panel on the left, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_LEFT = commandControl(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Refreshes the table.
 		 */
-		public static final ControlKey<CommandControl> REFRESH = commandControl();
+		public static final ControlKey<CommandControl> REFRESH = CommandControl.key();
 		/**
 		 * The edit panel controls.
 		 */
-		public static final ControlKey<Controls> EDIT_CONTROLS = controls();
+		public static final ControlKey<Controls> EDIT_CONTROLS = Controls.key();
 
 		private ControlKeys() {}
 	}
@@ -211,7 +209,7 @@ public class EntityPanel extends JPanel {
 
 	private final Config configuration;
 	private final ControlMap controls;
-	private final Controls.Config controlsConfiguration;
+	private final Controls.Layout controlsLayout;
 
 	private EntityPanel parentPanel;
 	private EntityPanel previousSiblingPanel;
@@ -304,7 +302,7 @@ public class EntityPanel extends JPanel {
 						.build();
 		this.configuration = configure(config);
 		this.controls = createControls();
-		this.controlsConfiguration = createControlsConfiguration();
+		this.controlsLayout = createControlsConfiguration();
 		this.detailLayout = configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
 		this.editPanelStateMapper = panelStateMapper(configuration.enabledEditStates);
@@ -709,11 +707,11 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Configures the controls.<br>
-	 * Note that the {@link Controls.Config} instance has pre-configured defaults,
+	 * Configures the controls layout.<br>
+	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
-	 *   configureControls(config -> config
+	 *   configureControls(layout -> layout
 	 *           .separator()
 	 *           .control(createCustomControl()))
 	 * </pre>
@@ -722,11 +720,11 @@ public class EntityPanel extends JPanel {
 	 *   <li>{@link ControlKeys#EDIT_CONTROLS ControlKeys#EDIT_CONTROLS}</li>
 	 *   <li>{@link ControlKeys#REFRESH ControlKeys#REFRESH}</li>
 	 * </ul>
-	 * @param controlsConfig provides access to the controls configuration
-	 * @see Controls.Config#clear()
+	 * @param controlsLayout provides access to the controls layout configuration
+	 * @see Controls.Layout#clear()
 	 */
-	protected final void configureControls(Consumer<Controls.Config> controlsConfig) {
-		requireNonNull(controlsConfig).accept(controlsConfiguration);
+	protected final void configureControls(Consumer<Controls.Layout> controlsLayout) {
+		requireNonNull(controlsLayout).accept(this.controlsLayout);
 	}
 
 	/**
@@ -749,7 +747,7 @@ public class EntityPanel extends JPanel {
 			mainPanel.add(tablePanel, BorderLayout.CENTER);
 		}
 		if (configuration.includeControls && editControlPanel != null) {
-			JComponent controlComponent = createControlComponent(controlsConfiguration.create(controls));
+			JComponent controlComponent = createControlComponent(controlsLayout.create(controls));
 			if (controlComponent != null) {
 				editControlPanel.add(controlComponent, configuration.controlComponentConstraints);
 			}
@@ -1141,8 +1139,8 @@ public class EntityPanel extends JPanel {
 		return new Config(config);
 	}
 
-	private Controls.Config createControlsConfiguration() {
-		return Controls.config(asList(EDIT_CONTROLS, REFRESH));
+	private static Controls.Layout createControlsConfiguration() {
+		return Controls.layout(asList(EDIT_CONTROLS, REFRESH));
 	}
 
 	private ControlMap createControls() {

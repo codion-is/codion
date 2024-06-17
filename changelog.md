@@ -8,6 +8,7 @@ Codion Change Log
 - KeyEvents.Builder.enable() and disable() overloaded with Collection parameter.
 - ControlKey.defaultKeyStroke() now Value based and configurable.
 - Controls.Config.create(), ControlMap parameter added, related refactoring.
+- Controls.Config renamed Layout, standard controls layouts can now be configured, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, summary panel toggle control displayed only if a summary panel is available.
 
