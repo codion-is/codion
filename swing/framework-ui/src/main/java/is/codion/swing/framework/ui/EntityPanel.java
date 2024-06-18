@@ -451,11 +451,10 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Returns a {@link Value} containing the control associated with {@code controlId},
+	 * Returns a {@link Value} containing the control associated with {@code controlKey},
 	 * an empty {@link Value} if no such control is available.
-	 * Note that standard controls are populated during initialization, so until then, these values may be empty.
 	 * @param controlKey the control key
-	 * @return the {@link Value} containing the control associated with {@code controlId}
+	 * @return the {@link Value} containing the control associated with {@code controlKey}
 	 */
 	public <T extends Control> Value<T> control(ControlKey<T> controlKey) {
 		return configuration.controlMap.control(requireNonNull(controlKey));
