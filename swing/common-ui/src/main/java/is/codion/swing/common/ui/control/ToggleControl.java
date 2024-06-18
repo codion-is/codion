@@ -55,18 +55,20 @@ public interface ToggleControl extends Control {
 	ToggleControlBuilder copy(State state);
 
 	/**
+	 * @param name the control name
 	 * @return a new {@link ControlKey} for identifying a {@link ToggleControl} instance
 	 */
-	static ControlKey<ToggleControl> key() {
-		return key(null);
+	static ControlKey<ToggleControl> key(String name) {
+		return key(name, null);
 	}
 
 	/**
+	 * @param name the control name
 	 * @param defaultKeyStroke the default keystroke
 	 * @return a new {@link ControlKey} for identifying a {@link ToggleControl} instance
 	 */
-	static ControlKey<ToggleControl> key(KeyStroke defaultKeyStroke) {
-		return new DefaultControlKey<>(ToggleControl.class, defaultKeyStroke);
+	static ControlKey<ToggleControl> key(String name, KeyStroke defaultKeyStroke) {
+		return new DefaultControlKey<>(name, ToggleControl.class, defaultKeyStroke);
 	}
 
 	/**

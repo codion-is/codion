@@ -76,12 +76,12 @@ public final class EntityDependenciesPanel extends JPanel {
 		 * Navigates to the dependencies panel on the left (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key("navigateLeft", keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the dependencies panel on the right (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key("navigateRight", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

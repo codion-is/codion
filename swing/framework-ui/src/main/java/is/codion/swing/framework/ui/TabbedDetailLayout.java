@@ -122,22 +122,22 @@ public final class TabbedDetailLayout implements DetailLayout {
 		 * Resizes the detail panel to the right.<br>
 		 * Default key stroke: SHIFT-ALT-RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> RESIZE_RIGHT = CommandControl.key(keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> RESIZE_RIGHT = CommandControl.key("resizeRight", keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Resizes the detail panel to the left.<br>
 		 * Default key stroke: SHIFT-ALT-LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> RESIZE_LEFT = CommandControl.key(keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> RESIZE_LEFT = CommandControl.key("resizeLeft", keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Collapses the detail panel all the way to the right, hiding it.<br>
 		 * Default key stroke: SHIFT-CTRL-ALT RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> COLLAPSE = CommandControl.key(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COLLAPSE = CommandControl.key("collapse", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Expands the detail panel all the way to the left, hiding the parent.<br>
 		 * Default key stroke: SHIFT-CTRL-ALT LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> EXPAND = CommandControl.key(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> EXPAND = CommandControl.key("expand", keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

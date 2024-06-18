@@ -10,6 +10,8 @@ Codion Change Log
 - Controls.Config.create(), ControlMap parameter added, related refactoring.
 - Controls.Config renamed Layout, standard controls layouts can now be configured, related refactoring.
 - ControlKeyStrokes removed, instance methods moved to ControlMap, static helper methods moved to KeyEvents, related refactoring.
+- Controls.Layout no longer extends ControlsKey.
+- ControlKey.name() added.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, summary panel toggle control displayed only if a summary panel is available.
 

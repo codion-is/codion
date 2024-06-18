@@ -76,7 +76,7 @@ public final class TextFieldPanel extends JPanel {
 		 * Displays a text area for longer text input.<br>
 		 * Default key stroke: INSERT
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_TEXT_AREA = CommandControl.key(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> DISPLAY_TEXT_AREA = CommandControl.key("displayTextArea", keyStroke(VK_INSERT));
 
 		private ControlKeys() {}
 	}

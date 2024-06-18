@@ -29,9 +29,9 @@ import static java.awt.event.KeyEvent.VK_S;
 public final class DefaultControlMapTest {
 
 	public static final class ControlKeys {
-		public static final ControlKey<CommandControl> COMMAND_CONTROL = CommandControl.key(keyStroke(VK_INSERT));
-		public static final ControlKey<Controls> CONTROLS = Controls.key();
-		public static final ControlKey<ToggleControl> TOGGLE_CONTROL = ToggleControl.key(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COMMAND_CONTROL = CommandControl.key("commandControl", keyStroke(VK_INSERT));
+		public static final ControlKey<Controls> CONTROLS = Controls.key("controls");
+		public static final ControlKey<ToggleControl> TOGGLE_CONTROL = ToggleControl.key("toggleControl", keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 	}
 
 	@Test

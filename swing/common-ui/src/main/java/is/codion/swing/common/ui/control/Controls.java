@@ -101,18 +101,20 @@ public interface Controls extends Control {
 	}
 
 	/**
+	 * @param name the controls name
 	 * @return a new {@link ControlKey} for identifying a {@link Controls} instance
 	 */
-	static ControlsKey key() {
-		return key(null);
+	static ControlsKey key(String name) {
+		return key(name, null);
 	}
 
 	/**
+	 * @param name the controls name
 	 * @param defaultLayout the default controls layout
 	 * @return a new {@link ControlsKey} for identifying a {@link Controls} instance
 	 */
-	static ControlsKey key(Layout defaultLayout) {
-		return new DefaultControlsKey(null, defaultLayout);
+	static ControlsKey key(String name, Layout defaultLayout) {
+		return new DefaultControlsKey(name, null, defaultLayout);
 	}
 
 	/**
@@ -223,7 +225,7 @@ public interface Controls extends Control {
 	/**
 	 * Specifies a layout for a {@link Controls} instance.
 	 */
-	interface Layout extends ControlKey<Controls> {
+	interface Layout {
 
 		/**
 		 * Adds a separator

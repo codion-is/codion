@@ -25,14 +25,23 @@ import is.codion.swing.common.ui.control.Controls.Layout;
 import javax.swing.KeyStroke;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
+
 final class DefaultControlsKey implements ControlsKey {
 
+	private final String name;
 	private final Value<KeyStroke> defaultKeyStroke;
 	private final Layout defaultLayout;
 
-	DefaultControlsKey(KeyStroke defaultKeyStroke, Layout defaultLayout) {
+	DefaultControlsKey(String name, KeyStroke defaultKeyStroke, Layout defaultLayout) {
+		this.name = requireNonNull(name);
 		this.defaultKeyStroke = Value.nullable(defaultKeyStroke).build();
 		this.defaultLayout = defaultLayout;
+	}
+
+	@Override
+	public String name() {
+		return name;
 	}
 
 	@Override
@@ -48,5 +57,10 @@ final class DefaultControlsKey implements ControlsKey {
 	@Override
 	public Optional<Layout> defaultLayout() {
 		return Optional.ofNullable(defaultLayout);
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 }

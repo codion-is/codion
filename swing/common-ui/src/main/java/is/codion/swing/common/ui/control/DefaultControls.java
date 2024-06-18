@@ -139,16 +139,6 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Class<Controls> controlClass() {
-			return Controls.class;
-		}
-
-		@Override
-		public Value<KeyStroke> defaultKeystroke() {
-			return keyStroke;
-		}
-
-		@Override
 		public Layout separator() {
 			if (items.isEmpty() || items.get(items.size() - 1) != SEPARATOR) {
 				items.add(SEPARATOR);

@@ -48,18 +48,20 @@ public interface CommandControl extends Control {
 	CommandControlBuilder copy(ActionCommand actionCommand);
 
 	/**
+	 * @param name the control name
 	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 */
-	static ControlKey<CommandControl> key() {
-		return key(null);
+	static ControlKey<CommandControl> key(String name) {
+		return key(name, null);
 	}
 
 	/**
+	 * @param name the control name
 	 * @param defaultKeyStroke the default keystroke
 	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 */
-	static ControlKey<CommandControl> key(KeyStroke defaultKeyStroke) {
-		return new DefaultControlKey<>(CommandControl.class, defaultKeyStroke);
+	static ControlKey<CommandControl> key(String name, KeyStroke defaultKeyStroke) {
+		return new DefaultControlKey<>(name, CommandControl.class, defaultKeyStroke);
 	}
 
 	/**

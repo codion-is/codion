@@ -155,40 +155,40 @@ public class EntityPanel extends JPanel {
 		 * Requests focus for the edit panel (intial focus component).<br>
 		 * Default key stroke: CTRL-E
 		 */
-		public static final ControlKey<CommandControl> REQUEST_EDIT_PANEL_FOCUS = CommandControl.key(keyStroke(VK_E, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> REQUEST_EDIT_PANEL_FOCUS = CommandControl.key("requestEditPanelFocus", keyStroke(VK_E, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the edit panel between hidden, embedded and dialog.<br>
 		 * Default key stroke: CTRL-ALT-E
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_EDIT_PANEL = CommandControl.key(keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_EDIT_PANEL = CommandControl.key("toggleEditPanel", keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the parent panel, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_UP = CommandControl.key(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_UP = CommandControl.key("navigateUp", keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the selected child panel, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_DOWN = CommandControl.key(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_DOWN = CommandControl.key("navigateDown", keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the sibling panel on the right, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key("navigateRight", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the sibling panel on the left, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key("navigateLeft", keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Refreshes the table.
 		 */
-		public static final ControlKey<CommandControl> REFRESH = CommandControl.key();
+		public static final ControlKey<CommandControl> REFRESH = CommandControl.key("refresh");
 		/**
 		 * The edit panel controls.
 		 */
-		public static final ControlKey<Controls> EDIT_CONTROLS = Controls.key();
+		public static final ControlKey<Controls> EDIT_CONTROLS = Controls.key("editControls");
 
 		private ControlKeys() {}
 	}

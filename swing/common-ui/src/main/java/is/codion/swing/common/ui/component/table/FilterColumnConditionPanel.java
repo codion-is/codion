@@ -97,17 +97,17 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		 * Toggle the enabled status on/off.<br>
 		 * Default key stroke: CTRL-ENTER
 		 */
-		public static final ControlKey<ToggleControl> TOGGLE_ENABLED = ToggleControl.key(keyStroke(VK_ENTER, CTRL_DOWN_MASK));
+		public static final ControlKey<ToggleControl> TOGGLE_ENABLED = ToggleControl.key("toggleEnabled", keyStroke(VK_ENTER, CTRL_DOWN_MASK));
 		/**
 		 * Select the previous condition operator.<br>
 		 * Default key stroke: CTRL-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_OPERATOR = CommandControl.key(keyStroke(VK_UP, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_OPERATOR = CommandControl.key("previousOperator", keyStroke(VK_UP, CTRL_DOWN_MASK));
 		/**
 		 * Select the next condition operator.<br>
 		 * Default key stroke: CTRL-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_OPERATOR = CommandControl.key(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_OPERATOR = CommandControl.key("nextOperator", keyStroke(VK_DOWN, CTRL_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

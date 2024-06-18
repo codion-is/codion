@@ -98,30 +98,30 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * Performs an insert.
 		 */
-		public static final ControlKey<CommandControl> INSERT = CommandControl.key();
+		public static final ControlKey<CommandControl> INSERT = CommandControl.key("insert");
 		/**
 		 * Performs an update.
 		 */
-		public static final ControlKey<CommandControl> UPDATE = CommandControl.key();
+		public static final ControlKey<CommandControl> UPDATE = CommandControl.key("update");
 		/**
 		 * Performs a delete.
 		 */
-		public static final ControlKey<CommandControl> DELETE = CommandControl.key();
+		public static final ControlKey<CommandControl> DELETE = CommandControl.key("delete");
 		/**
 		 * Clears the input fields.
 		 */
-		public static final ControlKey<CommandControl> CLEAR = CommandControl.key();
+		public static final ControlKey<CommandControl> CLEAR = CommandControl.key("clear");
 		/**
 		 * Displays a dialog for selecting an input field.<br>
 		 * Default key stroke: CTRL-I
 		 */
-		public static final ControlKey<CommandControl> SELECT_INPUT_FIELD = CommandControl.key(keyStroke(VK_I, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_INPUT_FIELD = CommandControl.key("selectInputField", keyStroke(VK_I, CTRL_DOWN_MASK));
 		/**
 		 * Displays the entity menu, if available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 * @see Config#INCLUDE_ENTITY_MENU
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = CommandControl.key(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = CommandControl.key("displayEntityMenu", keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

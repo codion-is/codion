@@ -29,6 +29,11 @@ import javax.swing.KeyStroke;
 public interface ControlKey<T extends Control> {
 
 	/**
+	 * @return the control name
+	 */
+	String name();
+
+	/**
 	 * @return the class of the control identified by this key
 	 */
 	Class<T> controlClass();

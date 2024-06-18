@@ -77,12 +77,12 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		 * Displays a dialog for adding a new record.<br>
 		 * Default key stroke: INSERT
 		 */
-		public static final ControlKey<CommandControl> ADD = CommandControl.key(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> ADD = CommandControl.key("add", keyStroke(VK_INSERT));
 		/**
 		 * Displays a dialog for editing the selected record.<br>
 		 * Default key stroke: CTRL-INSERT
 		 */
-		public static final ControlKey<CommandControl> EDIT = CommandControl.key(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT = CommandControl.key("edit", keyStroke(VK_INSERT, CTRL_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

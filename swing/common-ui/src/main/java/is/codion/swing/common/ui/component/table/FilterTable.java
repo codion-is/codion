@@ -150,37 +150,37 @@ public final class FilterTable<R, C> extends JTable {
 		 * Moves the selected column to the left.<br>
 		 * Default key stroke: CTRL-SHIFT-LEFT
 		 */
-		public static final ControlKey<CommandControl> MOVE_COLUMN_LEFT = CommandControl.key(keyStroke(VK_LEFT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> MOVE_COLUMN_LEFT = CommandControl.key("moveColumnLeft", keyStroke(VK_LEFT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selected column to the right.<br>
 		 * Default key stroke: CTRL-SHIFT-RIGHT
 		 */
-		public static final ControlKey<CommandControl> MOVE_COLUMN_RIGHT = CommandControl.key(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> MOVE_COLUMN_RIGHT = CommandControl.key("moveColumnRight", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Decreases the size of the selected column.<br>
 		 * Default key stroke: CTRL-SUBTRACT
 		 */
-		public static final ControlKey<CommandControl> DECREASE_COLUMN_SIZE = CommandControl.key(keyStroke(VK_SUBTRACT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> DECREASE_COLUMN_SIZE = CommandControl.key("decreaseColumnSize", keyStroke(VK_SUBTRACT, CTRL_DOWN_MASK));
 		/**
 		 * Increases the size of the selected column.<br>
 		 * Default key stroke: CTRL-ADD
 		 */
-		public static final ControlKey<CommandControl> INCREASE_COLUMN_SIZE = CommandControl.key(keyStroke(VK_ADD, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> INCREASE_COLUMN_SIZE = CommandControl.key("increaseColumnSize", keyStroke(VK_ADD, CTRL_DOWN_MASK));
 		/**
 		 * Copy the selected cell contents to the clipboard.<br>
 		 * Default key stroke: CTRL-ALT-C
 		 */
-		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell", keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Toggles the sort on the selected column.<br>
 		 * Default key stroke: ALT-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_SORT_COLUMN = CommandControl.key(keyStroke(VK_DOWN, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_SORT_COLUMN = CommandControl.key("toggleSortColumn", keyStroke(VK_DOWN, ALT_DOWN_MASK));
 		/**
 		 * Toggles the sort on the selected column adding it to any already sorted columns.<br>
 		 * Default key stroke: ALT-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_SORT_COLUMN_ADD = CommandControl.key(keyStroke(VK_UP, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_SORT_COLUMN_ADD = CommandControl.key("toggleSortColumnAdd", keyStroke(VK_UP, ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

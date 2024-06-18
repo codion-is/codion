@@ -79,17 +79,17 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		 * Display a calendar for date/time input.<br>
 		 * Default key stroke: INSERT
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_CALENDAR = CommandControl.key(keyStroke(VK_INSERT));
+		public static final ControlKey<CommandControl> DISPLAY_CALENDAR = CommandControl.key("displayCalendar", keyStroke(VK_INSERT));
 		/**
 		 * Increments the date component under the cursor.<br>
 		 * Default key stroke: UP ARROW
 		 */
-		public static final ControlKey<CommandControl> INCREMENT = CommandControl.key(keyStroke(VK_UP));
+		public static final ControlKey<CommandControl> INCREMENT = CommandControl.key("increment", keyStroke(VK_UP));
 		/**
 		 * Decrements the date component under the cursor.<br>
 		 * Default key stroke: DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> DECREMENT = CommandControl.key(keyStroke(VK_DOWN));
+		public static final ControlKey<CommandControl> DECREMENT = CommandControl.key("decrement", keyStroke(VK_DOWN));
 
 		private ControlKeys() {}
 	}
