@@ -208,7 +208,6 @@ dependencyResolutionManagement {
             library("javalin-ssl", "io.javalin.community.ssl", "ssl-plugin").versionRef("javalin")
 
             library("junit-api", "org.junit.jupiter", "junit-jupiter-api").versionRef("junit")
-            library("junit-engine", "org.junit.jupiter", "junit-jupiter-engine").versionRef("junit")
 
             library("sslcontext-kickstart", "io.github.hakky54", "sslcontext-kickstart").versionRef("sslcontext.kickstart")
             library("flatlaf", "com.formdev", "flatlaf").versionRef("flatlaf")
