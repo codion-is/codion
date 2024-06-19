@@ -52,6 +52,7 @@ import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
@@ -145,13 +146,14 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	}
 
 	@Override
-	protected Controls createViewMenuControls() {
-		return super.createViewMenuControls().copy()
-						.controlAt(2, Control.builder()
-										.command(this::selectLanguage)
-										.name(bundle.getString(SELECT_LANGUAGE))
-										.build())
-						.build();
+	protected Optional<Controls> createViewMenuControls() {
+		return super.createViewMenuControls()
+						.map(controls -> controls.copy()
+										.controlAt(2, Control.builder()
+														.command(this::selectLanguage)
+														.name(bundle.getString(SELECT_LANGUAGE))
+														.build())
+										.build());
 	}
 
 	private void selectLanguage() {

@@ -42,6 +42,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
 import static java.util.Collections.singletonList;
@@ -100,12 +101,13 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
 	// tag::createToolsMenuControls[]
 	@Override
-	protected Controls createToolsMenuControls() {
-		return super.createToolsMenuControls().copy()
-						.control(Control.builder()
-										.command(this::importJSON)
-										.name("Import JSON"))
-						.build();
+	protected Optional<Controls> createToolsMenuControls() {
+		return super.createToolsMenuControls()
+						.map(controls -> controls.copy()
+										.control(Control.builder()
+														.command(this::importJSON)
+														.name("Import JSON"))
+										.build());
 	}
 	// end::createToolsMenuControls[]
 

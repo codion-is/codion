@@ -43,7 +43,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -456,10 +455,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			frame.setTitle(createDefaultFrameTitle(applicationPanel.applicationModel()));
 		}
 		if (includeMainMenu) {
-			JMenuBar menuBar = applicationPanel.createMenuBar();
-			if (menuBar != null) {
-				frame.setJMenuBar(menuBar);
-			}
+			applicationPanel.createMenuBar().ifPresent(frame::setJMenuBar);
 		}
 		frame.setAlwaysOnTop(applicationPanel.alwaysOnTop().get());
 		frame.getContentPane().add(applicationPanel, BorderLayout.CENTER);

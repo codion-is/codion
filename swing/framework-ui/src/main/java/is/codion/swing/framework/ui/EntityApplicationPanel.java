@@ -421,77 +421,75 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
-	 * @return the controls on which to base the main menu
+	 * @return the controls on which to base the main menu or an empty Optional if the menu should be excluded
 	 * @see #createFileMenuControls()
 	 * @see #createViewMenuControls()
 	 * @see #createToolsMenuControls()
+	 * @see #createSupportTableMenuControls()
 	 * @see #createHelpMenuControls()
 	 */
-	protected Controls createMainMenuControls() {
+	protected Optional<Controls> createMainMenuControls() {
 		ControlsBuilder menuControls = Controls.builder();
-		Controls fileMenuControls = createFileMenuControls();
-		if (fileMenuControls != null && fileMenuControls.notEmpty()) {
-			menuControls.control(fileMenuControls);
-		}
-		Controls viewMenuControls = createViewMenuControls();
-		if (viewMenuControls != null && viewMenuControls.notEmpty()) {
-			menuControls.control(viewMenuControls);
-		}
-		Controls toolsMenuControls = createToolsMenuControls();
-		if (toolsMenuControls != null && toolsMenuControls.notEmpty()) {
-			menuControls.control(toolsMenuControls);
-		}
-		Controls supportTableMenuControls = createSupportTableMenuControls();
-		if (supportTableMenuControls != null && supportTableMenuControls.notEmpty()) {
-			menuControls.control(supportTableMenuControls);
-		}
-		Controls helpMenuControls = createHelpMenuControls();
-		if (helpMenuControls != null && helpMenuControls.notEmpty()) {
-			menuControls.control(helpMenuControls);
-		}
+		createFileMenuControls()
+						.filter(Controls::notEmpty)
+						.ifPresent(menuControls::control);
+		createViewMenuControls()
+						.filter(Controls::notEmpty)
+						.ifPresent(menuControls::control);
+		createToolsMenuControls()
+						.filter(Controls::notEmpty)
+						.ifPresent(menuControls::control);
+		createSupportTableMenuControls()
+						.filter(Controls::notEmpty)
+						.ifPresent(menuControls::control);
+		createHelpMenuControls()
+						.filter(Controls::notEmpty)
+						.ifPresent(menuControls::control);
 
-		return menuControls.build();
+		Controls controls = menuControls.build();
+
+		return controls.empty() ? Optional.empty() : Optional.of(controls);
 	}
 
 	/**
-	 * @return the Controls specifying the items in the 'File' menu
+	 * @return the Controls specifying the items in the 'File' menu or an empty Optional to skip the menu
 	 */
-	protected Controls createFileMenuControls() {
-		return Controls.builder()
+	protected Optional<Controls> createFileMenuControls() {
+		return Optional.of(Controls.builder()
 						.name(FrameworkMessages.file())
 						.mnemonic(FrameworkMessages.fileMnemonic())
 						.control(createExitControl())
-						.build();
+						.build());
 	}
 
 	/**
-	 * @return the Controls specifying the items in the 'Tools' menu
+	 * @return the Controls specifying the items in the 'Tools' menu or an empty Optional to skip the menu
 	 */
-	protected Controls createToolsMenuControls() {
-		return Controls.builder()
+	protected Optional<Controls> createToolsMenuControls() {
+		return Optional.of(Controls.builder()
 						.name(resourceBundle.getString("tools"))
 						.mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0))
-						.build();
+						.build());
 	}
 
 	/**
-	 * @return the Controls specifying the items in the 'View' menu
+	 * @return the Controls specifying the items in the 'View' menu or an empty Optional to skip the menu
 	 */
-	protected Controls createViewMenuControls() {
-		return Controls.builder()
+	protected Optional<Controls> createViewMenuControls() {
+		return Optional.of(Controls.builder()
 						.name(FrameworkMessages.view())
 						.mnemonic(FrameworkMessages.viewMnemonic())
 						.control(createSelectLookAndFeelControl())
 						.control(createSelectFontSizeControl())
 						.separator()
 						.control(createAlwaysOnTopControl())
-						.build();
+						.build());
 	}
 
 	/**
-	 * @return the Controls specifying the items in the 'Help' menu
+	 * @return the Controls specifying the items in the 'Help' menu or an empty Optional to skip the menu
 	 */
-	protected Controls createHelpMenuControls() {
+	protected Optional<Controls> createHelpMenuControls() {
 		ControlsBuilder builder = Controls.builder()
 						.name(resourceBundle.getString(HELP))
 						.mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
@@ -504,22 +502,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 							.control(logControls);
 		}
 
-		return builder.separator()
-						.control(createAboutControl()).build();
+		return Optional.of(builder.separator()
+						.control(createAboutControl()).build());
 	}
 
 	/**
-	 * @return the Controls on which to base the Support Tables menu
+	 * @return the Controls on which to base the Support Tables menu or an empty Optional to skip the menu
 	 */
-	protected Controls createSupportTableMenuControls() {
-		return Controls.builder()
+	protected Optional<Controls> createSupportTableMenuControls() {
+		return supportPanelBuilders.isEmpty() ? Optional.empty() : Optional.of(Controls.builder()
 						.name(FrameworkMessages.supportTables())
 						.mnemonic(FrameworkMessages.supportTablesMnemonic())
 						.controls(supportPanelBuilders.stream()
 										.sorted(new SupportPanelBuilderComparator(applicationModel.entities()))
 										.map(this::createSupportPanelControl)
 										.toArray(Control[]::new))
-						.build();
+						.build());
 	}
 
 	/**
@@ -768,16 +766,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	/**
 	 * Creates the JMenuBar to use on the application Frame
-	 * @return by default a JMenuBar based on the main menu controls
+	 * @return by default a JMenuBar based on the main menu controls or an empty Optional in case of no menu bar
 	 * @see #createMainMenuControls()
 	 */
-	protected JMenuBar createMenuBar() {
-		Controls mainMenuControls = createMainMenuControls();
-		if (mainMenuControls == null || mainMenuControls.empty()) {
-			return null;
-		}
-
-		return menu(mainMenuControls).createMenuBar();
+	protected Optional<JMenuBar> createMenuBar() {
+		return createMainMenuControls().filter(Controls::notEmpty)
+						.map(mainMenuControls -> menu(mainMenuControls).createMenuBar());
 	}
 
 	/**
