@@ -80,6 +80,7 @@ import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
@@ -297,7 +298,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 															.command(new ActivateDetailPanel(detailPanel))
 															.name(detailPanel.caption())
 															.build())
-											.toArray(Control[]::new))
+											.collect(toList()))
 							.build());
 		}
 	}

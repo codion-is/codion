@@ -548,7 +548,7 @@ public final class FilterTable<R, C> extends JTable {
 						.controls(columnModel().columns().stream()
 										.sorted(new ColumnComparator())
 										.map(this::createToggleColumnControl)
-										.toArray(ToggleControl[]::new))
+										.collect(toList()))
 						.build();
 	}
 
@@ -728,7 +728,7 @@ public final class FilterTable<R, C> extends JTable {
 						.control(Control.builder()
 										.toggle(searchModel.caseSensitive())
 										.name(MESSAGES.getString("case_sensitive_search")))
-						.controls(Control.builder()
+						.control(Control.builder()
 										.toggle(searchModel.regularExpression())
 										.name(MESSAGES.getString("regular_expression_search")))
 						.build();

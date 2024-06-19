@@ -166,6 +166,12 @@ public interface Controls extends Control {
 		ControlsBuilder controls(Control... controls);
 
 		/**
+		 * @param controls the controls to add
+		 * @return this Builder instance
+		 */
+		ControlsBuilder controls(Collection<Control> controls);
+
+		/**
 		 * @param controlBuilders the control builder to add
 		 * @return this Builder instance
 		 */

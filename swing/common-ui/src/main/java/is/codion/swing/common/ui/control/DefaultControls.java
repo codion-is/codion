@@ -299,7 +299,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 			public void addTo(ControlsBuilder builder, ControlMap controlMap) {
 				Controls defaultControls = controlMap.control(controlsKey).get();
 				Controls configuredControls = layout.create(controlMap);
-				builder.controls(defaultControls.copy()
+				builder.control(defaultControls.copy()
 								.removeAll()
 								.actions(configuredControls.actions()));
 			}
@@ -369,7 +369,12 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public ControlsBuilder controls(Control... controls) {
-			this.actions.addAll(Arrays.asList(requireNonNull(controls)));
+			return controls(Arrays.asList(requireNonNull(controls)));
+		}
+
+		@Override
+		public ControlsBuilder controls(Collection<Control> controls) {
+			this.actions.addAll(requireNonNull(controls));
 			return this;
 		}
 

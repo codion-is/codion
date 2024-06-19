@@ -44,6 +44,7 @@ import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.WindowType.FRAME;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A detail layout which displays detail panels in a window, opened via the table popup menu.
@@ -114,7 +115,7 @@ public final class WindowDetailLayout implements DetailLayout {
 															.name(detailPanel.caption())
 															.smallIcon(detailPanel.icon().orElse(null))
 															.build())
-											.toArray(Control[]::new))
+											.collect(toList()))
 							.build());
 		}
 	}

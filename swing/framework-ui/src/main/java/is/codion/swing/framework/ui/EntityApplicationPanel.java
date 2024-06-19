@@ -98,7 +98,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -106,6 +105,8 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -516,7 +517,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 						.controls(supportPanelBuilders.stream()
 										.sorted(new SupportPanelBuilderComparator(applicationModel.entities()))
 										.map(this::createSupportPanelControl)
-										.toArray(Control[]::new))
+										.collect(toList()))
 						.build());
 	}
 
@@ -533,18 +534,19 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
-	 * @return a Control for setting the log level
+	 * @return Controls for setting the log level
 	 */
-	protected final Control createLogLevelControl() {
-		ControlsBuilder logLevelControls = Controls.builder()
+	protected final Controls createLogLevelControl() {
+		return Controls.builder()
 						.name(resourceBundle.getString(LOG_LEVEL))
-						.description(resourceBundle.getString(LOG_LEVEL_DESC));
-		logLevelStates.forEach((logLevel, state) -> logLevelControls.control(Control.builder()
-						.toggle(state)
-						.name(logLevel.toString())
-						.build()));
-
-		return logLevelControls.build();
+						.description(resourceBundle.getString(LOG_LEVEL_DESC))
+						.controls(logLevelStates.entrySet().stream()
+										.map(entry -> Control.builder()
+														.toggle(entry.getValue())
+														.name(entry.getKey().toString())
+														.build())
+										.collect(toList()))
+						.build();
 	}
 
 	/**
@@ -876,7 +878,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private static String createModifiedMessage(Collection<EntityPanel> modified) {
 		return modified.stream()
 						.map(EntityPanel::caption)
-						.collect(Collectors.joining(", ")) + "\n" + FrameworkMessages.modifiedWarning();
+						.collect(joining(", ")) + "\n" + FrameworkMessages.modifiedWarning();
 	}
 
 	private static Map<Object, State> createLogLevelStateMap() {

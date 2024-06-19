@@ -579,7 +579,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 							.toggle(conditionModel().caseSensitive())
 							.name(MESSAGES.getString("case_sensitive")));
 			if (conditionModel().columnClass().equals(String.class)) {
-				controlsBuilder.controls(createAutomaticWildcardControls());
+				controlsBuilder.control(createAutomaticWildcardControls());
 			}
 			JPopupMenu popupMenu = menu(controlsBuilder).createPopupMenu();
 			Stream.of(equalField, lowerBoundField, upperBoundField, inField)
