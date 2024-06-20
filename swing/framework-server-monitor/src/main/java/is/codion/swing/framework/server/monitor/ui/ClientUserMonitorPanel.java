@@ -77,7 +77,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 	public void disconnectAll() throws RemoteException {
 		if (showConfirmDialog(this, "Are you sure you want to disconnect all clients?", "Disconnect all",
-						JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 			model.disconnectAll();
 		}
 	}

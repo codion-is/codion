@@ -127,7 +127,7 @@ public final class ServerMonitorPanel extends JPanel {
 
 	public void shutdownServer() {
 		if (JOptionPane.showConfirmDialog(this, "Are you sure you want to shut down this server?", "Confirm shutdown",
-						JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 			model.shutdownServer();
 		}
 	}

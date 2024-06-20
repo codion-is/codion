@@ -21,6 +21,8 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, summary panel toggle control displayed only if a summary panel is available.
 - EntityApplicationPanel.createMainMenuControls() and related methods now Optional based.
+### is.codion.swing.framework.server.monitor
+- ServerMonitorPanel, ClientUserMonitorPanel, shutdown and disconnect confirmation changed from OK/Cancel to Yes/No.
 
 ## 0.18.2
 ### is.codion.swing.common.model
