@@ -44,108 +44,111 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 	 */
 	@Override
 	public ConnectionPoolWrapper createConnectionPool(ConnectionFactory connectionFactory, User user) {
-		return new DataSourceWrapper(connectionFactory, user, createDataSource(user, connectionFactory));
+		return new DataSourceWrapper(connectionFactory, user, createDataSource(connectionFactory, user));
 	}
 
-	private static DataSource createDataSource(User user, ConnectionFactory connectionFactory) {
-		PoolProperties pp = new PoolProperties();
-		pp.setUrl(connectionFactory.url());
-		pp.setDefaultAutoCommit(false);
-		pp.setName(user.username());
+	private static DataSource createDataSource(ConnectionFactory connectionFactory, User user) {
+		PoolProperties properties = new PoolProperties();
+		properties.setUrl(connectionFactory.url());
+		properties.setDefaultAutoCommit(false);
+		properties.setName(user.username());
 		//Codion does not validate connections coming from a connection pool
-		pp.setTestOnBorrow(true);
-		pp.setValidator(new ConnectionValidator(connectionFactory));
-		pp.setMaxActive(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
-		pp.setInitialSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
-		pp.setMaxIdle(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
-		pp.setMinIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.get());
-		pp.setSuspectTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.get() / 1000);
+		properties.setTestOnBorrow(true);
+		properties.setValidator(new ConnectionValidator(connectionFactory));
+		properties.setMaxActive(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
+		properties.setInitialSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
+		properties.setMaxIdle(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
+		properties.setMinIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.get());
+		properties.setSuspectTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.get() / 1000);
 
-		return new DataSource(pp);
+		return new DataSource(properties);
 	}
 
 	private static final class DataSourceWrapper extends AbstractConnectionPoolWrapper<DataSource> {
 
 		private DataSourceWrapper(ConnectionFactory connectionFactory, User user, DataSource dataSource) {
-			super(connectionFactory, user, dataSource);
-			dataSource.setDataSource(poolDataSource());
-			setPool(dataSource);
+			super(connectionFactory, user, dataSource,
+							dataSourceProxy -> {
+								dataSource.setDataSource(dataSourceProxy);
+
+								return dataSource;
+							});
 		}
 
 		@Override
 		public void close() {
-			getPool().close();
+			connectionPool().close();
 		}
 
 		@Override
 		public int getCleanupInterval() {
-			return getPool().getTimeBetweenEvictionRunsMillis();
+			return connectionPool().getTimeBetweenEvictionRunsMillis();
 		}
 
 		@Override
 		public void setCleanupInterval(int poolCleanupInterval) {
-			getPool().setTimeBetweenEvictionRunsMillis(poolCleanupInterval);
+			connectionPool().setTimeBetweenEvictionRunsMillis(poolCleanupInterval);
 		}
 
 		@Override
 		public int getIdleConnectionTimeout() {
-			return getPool().getSuspectTimeout() * 1000;
+			return connectionPool().getSuspectTimeout() * 1000;
 		}
 
 		@Override
 		public void setIdleConnectionTimeout(int idleConnectionTimeout) {
-			getPool().setSuspectTimeout(idleConnectionTimeout / 1000);
+			connectionPool().setSuspectTimeout(idleConnectionTimeout / 1000);
 		}
 
 		@Override
 		public int getMinimumPoolSize() {
-			return getPool().getMinIdle();
+			return connectionPool().getMinIdle();
 		}
 
 		@Override
 		public void setMinimumPoolSize(int minimumPoolSize) {
-			getPool().setMinIdle(minimumPoolSize);
+			connectionPool().setMinIdle(minimumPoolSize);
 		}
 
 		@Override
 		public int getMaximumPoolSize() {
-			return getPool().getMaxActive();
+			return connectionPool().getMaxActive();
 		}
 
 		@Override
 		public void setMaximumPoolSize(int maximumPoolSize) {
-			getPool().setMaxActive(maximumPoolSize);
-			getPool().setMaxIdle(maximumPoolSize);
+			connectionPool().setMaxActive(maximumPoolSize);
+			connectionPool().setMaxIdle(maximumPoolSize);
 		}
 
 		@Override
 		public int getMaximumCheckOutTime() {
-			return getPool().getMaxWait();
+			return connectionPool().getMaxWait();
 		}
 
 		@Override
 		public void setMaximumCheckOutTime(int maximumCheckOutTime) {
-			getPool().setMaxWait(maximumCheckOutTime);
+			connectionPool().setMaxWait(maximumCheckOutTime);
 		}
 
 		@Override
 		protected Connection fetchConnection() throws SQLException {
-			return getPool().getConnection();
+			return connectionPool().getConnection();
 		}
 
 		@Override
 		protected int available() {
-			return getPool().getSize() - getPool().getActive();
+			return connectionPool().getSize() - connectionPool().getActive();
 		}
 
 		@Override
 		protected int inUse() {
-			return getPool().getActive();
+			return connectionPool().getActive();
 		}
 
 		@Override
 		protected int waiting() {
-			return getPool().getWaitCount();
+			return connectionPool().getWaitCount();
 		}
 	}
 

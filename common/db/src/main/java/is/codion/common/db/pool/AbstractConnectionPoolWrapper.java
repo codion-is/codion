@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.function.Function;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static java.util.Objects.requireNonNull;
@@ -42,34 +43,29 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	/**
 	 * The actual connection pool object
 	 */
-	private T pool;
+	private final T connectionPool;
 	private final ConnectionFactory connectionFactory;
 	private final User user;
-	private final DataSource poolDataSource;
 	private final DefaultConnectionPoolCounter counter;
 
 	/**
 	 * Instantiates a new AbstractConnectionPool instance.
 	 * @param connectionFactory the connection factory
 	 * @param user the connection pool user
-	 * @param poolDataSource the DataSource
+	 * @param dataSource the data source
+	 * @param poolFactory creates the actual connection pool based on the given data source
 	 */
-	protected AbstractConnectionPoolWrapper(ConnectionFactory connectionFactory, User user, DataSource poolDataSource) {
+	protected AbstractConnectionPoolWrapper(ConnectionFactory connectionFactory, User user, DataSource dataSource,
+																					Function<DataSource, T> poolFactory) {
 		this.connectionFactory = requireNonNull(connectionFactory, "connectionFactory");
 		this.user = requireNonNull(user, "user");
-		this.poolDataSource = (DataSource) newProxyInstance(DataSource.class.getClassLoader(),
-						new Class[] {DataSource.class}, new DataSourceInvocationHandler(requireNonNull(poolDataSource, "poolDataSource")));
 		this.counter = new DefaultConnectionPoolCounter(this);
+		this.connectionPool = requireNonNull(poolFactory, "poolFactory").apply(createDataSourceProxy(requireNonNull(dataSource, "dataSource")));
 	}
 
 	@Override
 	public final User user() {
 		return user;
-	}
-
-	@Override
-	public final DataSource poolDataSource() {
-		return poolDataSource;
 	}
 
 	@Override
@@ -131,17 +127,10 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	protected abstract Connection fetchConnection() throws SQLException;
 
 	/**
-	 * @param pool the underlying connection pool
+	 * @return the underlying connection pool instance
 	 */
-	protected final void setPool(T pool) {
-		this.pool = requireNonNull(pool, "pool");
-	}
-
-	/**
-	 * @return the underlying pool object
-	 */
-	protected final T getPool() {
-		return pool;
+	protected final T connectionPool() {
+		return connectionPool;
 	}
 
 	/**
@@ -177,6 +166,11 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 		if (!this.user.username().equalsIgnoreCase(user.username()) || !Arrays.equals(this.user.password(), user.password())) {
 			throw new AuthenticationException("Wrong username or password");
 		}
+	}
+
+	private DataSource createDataSourceProxy(DataSource dataSource) {
+		return (DataSource) newProxyInstance(DataSource.class.getClassLoader(),
+						new Class[] {DataSource.class}, new DataSourceInvocationHandler(dataSource));
 	}
 
 	private final class DataSourceInvocationHandler implements InvocationHandler {

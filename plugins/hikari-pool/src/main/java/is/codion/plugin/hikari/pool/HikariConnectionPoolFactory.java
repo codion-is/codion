@@ -45,30 +45,40 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
 	 */
 	@Override
 	public ConnectionPoolWrapper createConnectionPool(ConnectionFactory connectionFactory, User user) {
-		return new HikariConnectionPoolWrapper(connectionFactory, user);
+		return new HikariConnectionPoolWrapper(connectionFactory, user, createConfig(connectionFactory, user));
+	}
+
+	private static HikariConfig createConfig(ConnectionFactory connectionFactory, User user) {
+		HikariConfig config = new HikariConfig();
+		config.setJdbcUrl(connectionFactory.url());
+		config.setAutoCommit(false);
+		config.setUsername(user.username());
+		config.setMaximumPoolSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
+		config.setMinimumIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.get());
+		config.setIdleTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.get());
+
+		return config;
 	}
 
 	private static final class HikariConnectionPoolWrapper extends AbstractConnectionPoolWrapper<HikariPool> {
 
-		private final HikariConfig config = new HikariConfig();
+		private final HikariConfig config;
 
-		private HikariConnectionPoolWrapper(ConnectionFactory connectionFactory, User user) {
+		private HikariConnectionPoolWrapper(ConnectionFactory connectionFactory, User user, HikariConfig config) {
 			super(connectionFactory, user, new DriverDataSource(connectionFactory.url(), null,
-							new Properties(), user.username(), String.valueOf(user.password())));
-			config.setJdbcUrl(connectionFactory.url());
-			config.setAutoCommit(false);
-			config.setUsername(user.username());
-			config.setMaximumPoolSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
-			config.setMinimumIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.get());
-			config.setIdleTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.get());
-			config.setDataSource(poolDataSource());
-			setPool(new HikariPool(config));
+											new Properties(), user.username(), String.valueOf(user.password())),
+							dataSourceProxy -> {
+								config.setDataSource(dataSourceProxy);
+
+								return new HikariPool(config);
+							});
+			this.config = config;
 		}
 
 		@Override
 		public void close() {
 			try {
-				getPool().shutdown();
+				connectionPool().shutdown();
 			}
 			catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
@@ -115,12 +125,12 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
 
 		@Override
 		protected int available() {
-			return getPool().getIdleConnections();
+			return connectionPool().getIdleConnections();
 		}
 
 		@Override
 		protected int inUse() {
-			return getPool().getActiveConnections();
+			return connectionPool().getActiveConnections();
 		}
 
 		@Override
@@ -135,12 +145,12 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
 
 		@Override
 		protected Connection fetchConnection() throws SQLException {
-			return getPool().getConnection();
+			return connectionPool().getConnection();
 		}
 
 		@Override
 		protected int waiting() {
-			return getPool().getThreadsAwaitingConnection();
+			return connectionPool().getThreadsAwaitingConnection();
 		}
 	}
 }

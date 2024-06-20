@@ -23,7 +23,6 @@ import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 import is.codion.framework.server.EntityServerAdmin;
 
-import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -267,11 +266,6 @@ public final class PoolMonitor {
 
 		@Override
 		public Connection connection(User user) {
-			return null;
-		}
-
-		@Override
-		public DataSource poolDataSource() {
 			return null;
 		}
 

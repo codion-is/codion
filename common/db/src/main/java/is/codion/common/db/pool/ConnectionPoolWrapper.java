@@ -23,7 +23,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 
 /**
@@ -67,11 +66,6 @@ public interface ConnectionPoolWrapper {
 	 * @return the user this connection pool is based on.
 	 */
 	User user();
-
-	/**
-	 * @return the DataSource used by this connection pool
-	 */
-	DataSource poolDataSource();
 
 	/**
 	 * Closes this connection pool, connections subsequently checked in are disconnected

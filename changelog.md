@@ -2,6 +2,9 @@ Codion Change Log
 ==================
 
 ## 0.18.3
+### is.codion.common.db
+- ConnectionPoolWrapper.poolDataSource() removed, getPool() renamed connectionPool(), related refactoring.
+- AbstractConnectionPoolWrapper.connectionPool now final.
 ### is.codion.common.model
 - DefaultLoadTest.DefaultBuilder.user() null check added.
 ### is.codion.swing.common.ui
