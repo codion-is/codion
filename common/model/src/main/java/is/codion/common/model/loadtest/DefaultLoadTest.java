@@ -394,7 +394,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 
 		@Override
 		public Builder<T> user(User user) {
-			this.user = user;
+			this.user = requireNonNull(user);
 			return this;
 		}
 
