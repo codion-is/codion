@@ -48,7 +48,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 						.listener(this::onIntervalChanged)
 						.build();
 		this.initialDelay = builder.initialDelay;
-		this.timeUnit = builder.timeUnit;
+		this.timeUnit = builder.timeUnit();
 		this.threadFactory = builder.threadFactory;
 	}
 
@@ -149,11 +149,16 @@ final class DefaultTaskScheduler implements TaskScheduler {
 			if (interval == 0) {
 				throw new IllegalStateException("An interval > 0 is required for building a TaskScheduler");
 			}
+
+			return new DefaultTaskScheduler(this);
+		}
+
+		private TimeUnit timeUnit() {
 			if (timeUnit == null) {
 				throw new IllegalStateException("A time unit is required for building a TaskScheduler");
 			}
 
-			return new DefaultTaskScheduler(this);
+			return timeUnit;
 		}
 	}
 

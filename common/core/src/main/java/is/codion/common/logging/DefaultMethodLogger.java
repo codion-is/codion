@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -215,7 +214,7 @@ final class DefaultMethodLogger implements MethodLogger {
 			int timestampLength = stringBuilder.length();
 			stringBuilder.append(method);
 			String padString = Text.rightPad("", timestampLength, ' ');
-			if (!nullOrEmpty(enterMessage)) {
+			if (enterMessage != null && !enterMessage.isEmpty()) {
 				if (multiLine(enterMessage)) {
 					stringBuilder.append(NEWLINE).append(padString).append(enterMessage.replace(NEWLINE, NEWLINE + padString));
 				}

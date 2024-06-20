@@ -40,7 +40,7 @@ final class DefaultUser implements User, Serializable {
 			throw new IllegalArgumentException("Username must be non-empty");
 		}
 		this.username = username;
-		setPassword(password);
+		this.password = createPassword(password);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ final class DefaultUser implements User, Serializable {
 	@Override
 	public User clearPassword() {
 		Arrays.fill(password, (char) 0);
-		setPassword(null);
+		this.password = createPassword(null);
 		return this;
 	}
 
@@ -92,10 +92,10 @@ final class DefaultUser implements User, Serializable {
 	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		this.username = (String) stream.readObject();
-		setPassword((char[]) stream.readObject());
+		this.password = createPassword((char[]) stream.readObject());
 	}
 
-	private void setPassword(char[] password) {
-		this.password = password == null ? new char[0] : Arrays.copyOf(password, password.length);
+	private static char[] createPassword(char[] password) {
+		return password == null ? new char[0] : Arrays.copyOf(password, password.length);
 	}
 }
