@@ -29,6 +29,11 @@ import java.time.LocalDateTime;
 public interface RemoteClient extends ConnectionRequest {
 
 	/**
+	 * @see #clientHost()
+	 */
+	String UNKNOWN_HOST = "unknown host";
+
+	/**
 	 * @return the initial connection request this client is based on
 	 */
 	ConnectionRequest connectionRequest();
@@ -87,7 +92,7 @@ public interface RemoteClient extends ConnectionRequest {
 	 * @return a new RemoteClient instance
 	 */
 	static RemoteClient remoteClient(ConnectionRequest connectionRequest, User databaseUser) {
-		return remoteClient(connectionRequest, databaseUser, null);
+		return remoteClient(connectionRequest, databaseUser, UNKNOWN_HOST);
 	}
 
 	/**

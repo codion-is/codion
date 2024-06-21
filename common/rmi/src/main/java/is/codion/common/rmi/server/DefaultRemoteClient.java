@@ -50,8 +50,8 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 	DefaultRemoteClient(ConnectionRequest connectionRequest, User databaseUser, String clientHost, LocalDateTime creationTime) {
 		this.connectionRequest = requireNonNull(connectionRequest, "connectionRequest");
 		this.databaseUser = requireNonNull(databaseUser, "databaseUser");
-		this.clientHost = clientHost;
-		this.creationTime = creationTime;
+		this.clientHost = requireNonNull(clientHost);
+		this.creationTime = requireNonNull(creationTime);
 	}
 
 	@Override

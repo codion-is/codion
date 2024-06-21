@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.db
 - ConnectionPoolWrapper.poolDataSource() removed, getPool() renamed connectionPool(), related refactoring.
 - AbstractConnectionPoolWrapper.connectionPool now final.
+### is.codion.common.rmi
+- RemoteClient.clientHost() no longer nullable, RemoteClient.UNKNOWN_HOST added.
 ### is.codion.common.model
 - DefaultLoadTest.DefaultBuilder.user() null check added.
 - ColumnConditionModel.format() now returns Optional.

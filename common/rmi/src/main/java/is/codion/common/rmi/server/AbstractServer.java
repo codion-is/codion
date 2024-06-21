@@ -520,7 +520,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 			try {
 				return getClientHost();
 			}
-			catch (ServerNotActiveException ignored) {/*ignored*/}
+			catch (ServerNotActiveException ignored) {
+				return RemoteClient.UNKNOWN_HOST;
+			}
 		}
 
 		return requestParameterHost;
