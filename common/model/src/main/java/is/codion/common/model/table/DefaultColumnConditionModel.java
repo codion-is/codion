@@ -31,6 +31,7 @@ import is.codion.common.value.ValueSet;
 import java.text.Format;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -123,8 +124,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	@Override
-	public Format format() {
-		return format;
+	public Optional<Format> format() {
+		return Optional.ofNullable(format);
 	}
 
 	@Override

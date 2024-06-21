@@ -7,6 +7,7 @@ Codion Change Log
 - AbstractConnectionPoolWrapper.connectionPool now final.
 ### is.codion.common.model
 - DefaultLoadTest.DefaultBuilder.user() null check added.
+- ColumnConditionModel.format() now returns Optional.
 ### is.codion.swing.common.ui
 - Controls.Config.standard() renamed control().
 - NumberField.numberValue() renamed value().

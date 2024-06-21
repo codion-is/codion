@@ -94,23 +94,23 @@ final class DefaultFieldFactory<C> implements FieldFactory<C> {
 		}
 		if (columnClass.equals(Short.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) shortField()
-							.format(columnConditionModel.format());
+							.format(columnConditionModel.format().orElse(null));
 		}
 		if (columnClass.equals(Integer.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) integerField()
-							.format(columnConditionModel.format());
+							.format(columnConditionModel.format().orElse(null));
 		}
 		else if (columnClass.equals(Double.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) doubleField()
-							.format(columnConditionModel.format());
+							.format(columnConditionModel.format().orElse(null));
 		}
 		else if (columnClass.equals(BigDecimal.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) bigDecimalField()
-							.format(columnConditionModel.format());
+							.format(columnConditionModel.format().orElse(null));
 		}
 		else if (columnClass.equals(Long.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) longField()
-							.format(columnConditionModel.format());
+							.format(columnConditionModel.format().orElse(null));
 		}
 		else if (columnClass.equals(LocalTime.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) localTimeField(columnConditionModel.dateTimePattern());

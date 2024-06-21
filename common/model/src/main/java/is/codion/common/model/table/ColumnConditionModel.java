@@ -106,9 +106,9 @@ public interface ColumnConditionModel<C, T> {
 	State caseSensitive();
 
 	/**
-	 * @return the Format object to use when formatting input, if any
+	 * @return the Format object to use when formatting input, an empty Optional in case none is available
 	 */
-	Format format();
+	Optional<Format> format();
 
 	/**
 	 * @return the date/time format pattern, if any

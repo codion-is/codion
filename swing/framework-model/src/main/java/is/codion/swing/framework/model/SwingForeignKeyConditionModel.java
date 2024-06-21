@@ -33,6 +33,7 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import java.text.Format;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -96,7 +97,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 	}
 
 	@Override
-	public Format format() {
+	public Optional<Format> format() {
 		return conditionModel.format();
 	}
 

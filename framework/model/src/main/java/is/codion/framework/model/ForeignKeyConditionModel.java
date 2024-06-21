@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import java.text.Format;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -94,7 +95,7 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	}
 
 	@Override
-	public Format format() {
+	public Optional<Format> format() {
 		return conditionModel.format();
 	}
 
