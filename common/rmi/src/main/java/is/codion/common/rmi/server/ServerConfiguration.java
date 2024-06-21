@@ -26,6 +26,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -199,19 +200,19 @@ public interface ServerConfiguration {
 	boolean sslEnabled();
 
 	/**
-	 * @return the rmi client socket factory to use, null for default
+	 * @return the rmi client socket factory to use, or an empty Optional if none is specified
 	 */
-	RMIClientSocketFactory rmiClientSocketFactory();
+	Optional<RMIClientSocketFactory> rmiClientSocketFactory();
 
 	/**
-	 * @return the rmi server socket factory to use, null for default
+	 * @return the rmi server socket factory to use, or an empty Optional if none is specified
 	 */
-	RMIServerSocketFactory rmiServerSocketFactory();
+	Optional<RMIServerSocketFactory> rmiServerSocketFactory();
 
 	/**
-	 * @return the object input filter factory class name, if any
+	 * @return the object input filter factory class name, or an empty Optional if none is specified
 	 */
-	String objectInputFilterFactoryClassName();
+	Optional<String> objectInputFilterFactoryClassName();
 
 	/**
 	 * @return the interval between server connection maintenance runs, in milliseconds.

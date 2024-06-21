@@ -32,6 +32,7 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static is.codion.common.Text.nullOrEmpty;
@@ -107,18 +108,18 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	}
 
 	@Override
-	public RMIClientSocketFactory rmiClientSocketFactory() {
-		return rmiClientSocketFactory;
+	public Optional<RMIClientSocketFactory> rmiClientSocketFactory() {
+		return Optional.ofNullable(rmiClientSocketFactory);
 	}
 
 	@Override
-	public RMIServerSocketFactory rmiServerSocketFactory() {
-		return rmiServerSocketFactory;
+	public Optional<RMIServerSocketFactory> rmiServerSocketFactory() {
+		return Optional.ofNullable(rmiServerSocketFactory);
 	}
 
 	@Override
-	public String objectInputFilterFactoryClassName() {
-		return objectInputFilterFactoryClassName;
+	public Optional<String> objectInputFilterFactoryClassName() {
+		return Optional.ofNullable(objectInputFilterFactoryClassName);
 	}
 
 	@Override

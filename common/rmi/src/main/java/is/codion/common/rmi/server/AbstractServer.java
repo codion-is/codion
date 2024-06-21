@@ -90,7 +90,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 */
 	protected AbstractServer(ServerConfiguration configuration) throws RemoteException {
 		super(requireNonNull(configuration, "configuration").port(),
-						configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
+						configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
 		Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 		try {
 			this.configuration = configuration;
@@ -428,7 +428,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 				AuxiliaryServerFactory<T, A, ?> auxiliaryServerFactory = AuxiliaryServerFactory.instance(auxiliaryServerFactoryClassName);
 				AuxiliaryServer auxiliaryServer = auxiliaryServerFactory.createServer(this);
 				auxiliaryServers.add(auxiliaryServer);
-				Callable<?> starter = () -> startAuxiliaryServer(auxiliaryServer);
+				Callable<?> starter = () -> {
+					startAuxiliaryServer(auxiliaryServer);
+					return null;
+				};
 				newSingleThreadExecutor(new DaemonThreadFactory()).submit(starter).get();
 			}
 		}
@@ -458,11 +461,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	}
 
 	private static void configureObjectInputFilter(ServerConfiguration configuration) {
-		String objectInputFilterFactoryClassName = configuration.objectInputFilterFactoryClassName();
-		if (objectInputFilterFactoryClassName == null) {
+		if (!configuration.objectInputFilterFactoryClassName().isPresent()) {
 			LOG.warn("No ObjectInputFilterFactoryClassName specified");
 		}
 		else {
+			String objectInputFilterFactoryClassName = configuration.objectInputFilterFactoryClassName().get();
 			ObjectInputFilterFactory inputFilterFactory = ObjectInputFilterFactory.instance(objectInputFilterFactoryClassName);
 			ObjectInputFilter objectInputFilter = inputFilterFactory.createObjectInputFilter();
 			ObjectInputFilter.Config.setSerialFilter(objectInputFilter);
@@ -479,12 +482,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 	}
 
-	private static Object startAuxiliaryServer(AuxiliaryServer server) throws Exception {
+	private static void startAuxiliaryServer(AuxiliaryServer server) throws Exception {
 		try {
 			server.startServer();
 			LOG.info("Auxiliary server started: {}", server);
-
-			return null;
 		}
 		catch (Exception e) {
 			LOG.error("Starting auxiliary server", e);

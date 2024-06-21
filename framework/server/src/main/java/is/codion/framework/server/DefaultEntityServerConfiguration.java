@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static java.util.Collections.unmodifiableCollection;
@@ -86,17 +87,17 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
-	public RMIClientSocketFactory rmiClientSocketFactory() {
+	public Optional<RMIClientSocketFactory> rmiClientSocketFactory() {
 		return serverConfiguration.rmiClientSocketFactory();
 	}
 
 	@Override
-	public RMIServerSocketFactory rmiServerSocketFactory() {
+	public Optional<RMIServerSocketFactory> rmiServerSocketFactory() {
 		return serverConfiguration.rmiServerSocketFactory();
 	}
 
 	@Override
-	public String objectInputFilterFactoryClassName() {
+	public Optional<String> objectInputFilterFactoryClassName() {
 		return serverConfiguration.objectInputFilterFactoryClassName();
 	}
 

@@ -7,6 +7,7 @@ Codion Change Log
 - AbstractConnectionPoolWrapper.connectionPool now final.
 ### is.codion.common.rmi
 - RemoteClient.clientHost() no longer nullable, RemoteClient.UNKNOWN_HOST added.
+- ServerConfiguration.rmiClientSocketFactory(), rmiServerSocketFactory() and objectInputFilterFactoryClassName() now return Optional.
 ### is.codion.common.model
 - DefaultLoadTest.DefaultBuilder.user() null check added.
 - ColumnConditionModel.format() now returns Optional.

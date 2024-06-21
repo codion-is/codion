@@ -122,7 +122,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 
 	@Override
 	public String toString() {
-		return user.toString() + " [" + clientTypeId + "] - " + clientId.toString();
+		return user + " [" + clientTypeId + "] - " + clientId;
 	}
 
 	static final class DefaultBuilder implements Builder {
