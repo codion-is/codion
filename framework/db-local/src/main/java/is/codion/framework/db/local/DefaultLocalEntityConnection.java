@@ -1490,7 +1490,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 																											 Collection<Column<?>> modifiedColumns) {
 		StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED)).append(": ").append(entity.entityType());
 		for (Column<?> column : modifiedColumns) {
-			builder.append("\n").append(column.toString())
+			builder.append("\n").append(column)
 							.append(": ").append(entity.original(column))
 							.append(" -> ").append(modified.get(column));
 		}

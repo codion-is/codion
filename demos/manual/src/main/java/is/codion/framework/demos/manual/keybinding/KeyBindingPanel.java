@@ -29,11 +29,11 @@ import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.util.Arrays;
 import java.util.List;
@@ -107,7 +107,7 @@ public final class KeyBindingPanel extends JPanel {
 						.forEach(LookAndFeelProvider::addLookAndFeel);
 		SwingUtilities.invokeLater(() -> Windows.frame(new KeyBindingPanel())
 						.title("Key Bindings")
-						.defaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+						.defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
 						.centerFrame(true)
 						.show());
 	}

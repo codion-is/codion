@@ -22,6 +22,8 @@ import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
+import java.awt.BorderLayout;
+
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
@@ -57,7 +59,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
 										.centerComponent(createInputPanel(Department.NAME))
 										.build())
 						.centerComponent(createInputPanel(Department.LOCATION))
-						.build(), borderLayout().CENTER);
+						.build(), BorderLayout.CENTER);
 	}
 }
 // end::initializeUI[]

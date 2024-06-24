@@ -68,6 +68,8 @@ public final class Completion {
 	public static final PropertyValue<Mode> COMBO_BOX_COMPLETION_MODE =
 					Configuration.enumValue(Completion.class.getName() + ".completionMode", Mode.class, Mode.MAXIMUM_MATCH);
 
+	private Completion() {}
+
 	/**
 	 * Enables maximum match on the given combobox
 	 * @param comboBox the combobox on which to enable maximum match

@@ -281,7 +281,7 @@ public final class KeyEvents {
 
 			return new StringBuilder(component.getClass().getSimpleName())
 							.append(actionName == null ? "" : (" " + actionName))
-							.append(" ").append(keyStroke.toString())
+							.append(" ").append(keyStroke)
 							.append(" ").append(condition)
 							.toString();
 		}
