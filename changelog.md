@@ -27,6 +27,7 @@ Codion Change Log
 - EntityTablePanel bug fixed, summary panel toggle control displayed only if a summary panel is available.
 - EntityApplicationPanel.createMainMenuControls() and related methods now Optional based.
 - EntityApplicationPanel, control for opening log folder added to help menu, related refactoring.
+- EntityPanel, EntityEditPanel, EntityTablePanel.Config.keyStroke() now consumer based providing access to the current keyStroke.
 ### is.codion.swing.framework.server.monitor
 - ServerMonitorPanel, ClientUserMonitorPanel, shutdown and disconnect confirmation changed from OK/Cancel to Yes/No.
 

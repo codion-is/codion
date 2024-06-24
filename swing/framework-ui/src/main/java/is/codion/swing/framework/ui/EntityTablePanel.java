@@ -2366,11 +2366,11 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * @param controlKey the control key
-		 * @param keyStroke the keyStroke to assign to the given control
+		 * @param keyStroke provides access to the {@link Value} controlling the key stroke for the given control
 		 * @return this Config instance
 		 */
-		public Config keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
-			controlMap.keyStroke(controlKey).set(keyStroke);
+		public Config keyStroke(ControlKey<?> controlKey, Consumer<Value<KeyStroke>> keyStroke) {
+			requireNonNull(keyStroke).accept(controlMap.keyStroke(controlKey));
 			return this;
 		}
 
