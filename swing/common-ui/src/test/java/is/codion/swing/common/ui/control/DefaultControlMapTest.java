@@ -20,11 +20,13 @@ package is.codion.swing.common.ui.control;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.awt.event.KeyEvent.VK_S;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultControlMapTest {
 
@@ -37,8 +39,17 @@ public final class DefaultControlMapTest {
 	@Test
 	void test() {
 		ControlMap controlMap = new DefaultControlMap(ControlKeys.class);
-		controlMap.control(ControlKeys.COMMAND_CONTROL).get();
-		controlMap.control(ControlKeys.CONTROLS).get();
-		controlMap.control(ControlKeys.TOGGLE_CONTROL).get();
+		controlMap.control(ControlKeys.COMMAND_CONTROL).set(commandControl(this::test));
+		assertNull(controlMap.control(ControlKeys.CONTROLS).get());
+		assertNull(controlMap.control(ControlKeys.TOGGLE_CONTROL).get());
+		ControlKey<CommandControl> test = CommandControl.key("test");
+		assertThrows(IllegalArgumentException.class, () -> controlMap.control(test));
+		assertThrows(IllegalArgumentException.class, () -> controlMap.keyStroke(test));
+		assertTrue(controlMap.keyEvent(ControlKeys.COMMAND_CONTROL).isPresent());
+		assertFalse(controlMap.keyEvent(ControlKeys.CONTROLS).isPresent());
+		ControlMap copy = controlMap.copy();
+		assertEquals(copy.controls().size(), controlMap.controls().size());
+		assertSame(copy.control(ControlKeys.COMMAND_CONTROL).get(), controlMap.control(ControlKeys.COMMAND_CONTROL).get());
+		assertSame(copy.keyStroke(ControlKeys.COMMAND_CONTROL).get(), controlMap.keyStroke(ControlKeys.COMMAND_CONTROL).get());
 	}
 }

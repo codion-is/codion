@@ -65,7 +65,7 @@ final class DefaultControlMap implements ControlMap {
 	public <T extends Control> Value<T> control(ControlKey<T> controlKey) {
 		Value<Control> value = controls.get(requireNonNull(controlKey));
 		if (value == null) {
-			throw new IllegalArgumentException("Unknown controlKey");
+			throw new IllegalArgumentException("Unknown controlKey: " + controlKey);
 		}
 
 		return (Value<T>) value;
@@ -80,7 +80,7 @@ final class DefaultControlMap implements ControlMap {
 	public Value<KeyStroke> keyStroke(ControlKey<?> controlKey) {
 		Value<KeyStroke> keyStroke = keyStrokes.get(requireNonNull(controlKey));
 		if (keyStroke == null) {
-			throw new IllegalArgumentException("Unknown controlKey");
+			throw new IllegalArgumentException("Unknown controlKey: " + controlKey);
 		}
 
 		return keyStroke;
