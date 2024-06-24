@@ -22,6 +22,7 @@ Codion Change Log
 - Controls.Layout no longer extends ControlsKey.
 - ControlKey.name() added.
 - Controls.Builder.controls(Collection<Control> controls) added, related cleanup.
+- FilterTableColumn.toolTipText() now returns Optional.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, summary panel toggle control displayed only if a summary panel is available.
 - EntityApplicationPanel.createMainMenuControls() and related methods now Optional based.

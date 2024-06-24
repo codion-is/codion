@@ -770,7 +770,7 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.toggle(columnModel().visible(column.identifier()))
 						.name(String.valueOf(column.getHeaderValue()))
-						.description(column.toolTipText())
+						.description(column.toolTipText().orElse(null))
 						.build();
 	}
 
@@ -1466,7 +1466,7 @@ public final class FilterTable<R, C> extends JTable {
 		public String getToolTipText(MouseEvent event) {
 			int index = columnModel.getColumnIndexAtX(event.getPoint().x);
 			if (index != -1) {
-				return ((FilterTableColumn<?>) columnModel.getColumn(index)).toolTipText();
+				return ((FilterTableColumn<?>) columnModel.getColumn(index)).toolTipText().orElse(null);
 			}
 
 			return null;

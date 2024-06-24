@@ -68,7 +68,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
 		this.checkBoxes = visibleStates.entrySet().stream()
 						.map(entry -> checkBox(entry.getValue())
 										.text(String.valueOf(entry.getKey().getHeaderValue()))
-										.toolTipText(entry.getKey().toolTipText())
+										.toolTipText(entry.getKey().toolTipText().orElse(null))
 										.build())
 						.collect(Collectors.toList());
 		JScrollPane checkBoxPanel = createCheckBoxPanel();

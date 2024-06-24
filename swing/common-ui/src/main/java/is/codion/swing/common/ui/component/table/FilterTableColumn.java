@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.table;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -93,10 +94,10 @@ public final class FilterTableColumn<C> extends TableColumn {
 	}
 
 	/**
-	 * @return the tool tip text to display for this column, null in case of no tool tip
+	 * @return the tool tip text to display for this column, an empty Optional in case of no tool tip
 	 */
-	public String toolTipText() {
-		return toolTipText;
+	public Optional<String> toolTipText() {
+		return Optional.ofNullable(toolTipText);
 	}
 
 	/**
