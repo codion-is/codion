@@ -760,7 +760,9 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |log_level_desc|Set the logging level for the application|Stilla nákvæmni logs
 |log_mnemonic|L|L
 |memory_usage|Memory Usage|Minnisnotkun
-|open_log_file|Open Log File|Opna Log Skrá
+|open_log|Open Log|Opna Log
+|open_log_file|File|Skrá
+|open_log_folder|Folder|Möppu
 |tools|Tools|Tól
 |tools_mnemonic|T|T
 |view_application_tree|Application Tree|Yfirlitsmynd

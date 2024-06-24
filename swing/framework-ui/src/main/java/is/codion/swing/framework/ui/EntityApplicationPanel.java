@@ -910,26 +910,46 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		if (!logLevelStates.isEmpty()) {
 			builder.control(createLogLevelControl());
 		}
-		Control logFileControl = createLogFileControl();
-		if (logFileControl != null) {
-			builder.control(logFileControl);
-		}
+		createOpenLogControls().ifPresent(builder::control);
 
 		return builder.build();
 	}
 
-	private Control createLogFileControl() {
+	private Optional<Controls> createOpenLogControls() {
+		ControlsBuilder builder = Controls.builder()
+						.name(resourceBundle.getString("open_log"));
+		createLogFileControl().ifPresent(builder::control);
+		createLogFolderControl().ifPresent(builder::control);
+
+		return Optional.of(builder.build());
+	}
+
+	private Optional<Control> createLogFileControl() {
+		return firstLogFile()
+						.map(firstLogFile -> Control.builder()
+										.command(() -> Desktop.getDesktop().open(firstLogFile))
+										.name(resourceBundle.getString("open_log_file"))
+										.description(firstLogFile.getAbsolutePath())
+										.build());
+	}
+
+	private Optional<Control> createLogFolderControl() {
+		return firstLogFile()
+						.map(File::getParentFile)
+						.map(logFileFolder -> Control.builder()
+										.command(() -> Desktop.getDesktop().open(logFileFolder))
+										.name(resourceBundle.getString("open_log_folder"))
+										.description(logFileFolder.getAbsolutePath())
+										.build());
+	}
+
+	private static Optional<File> firstLogFile() {
 		Collection<String> files = LoggerProxy.instance().files();
 		if (files.isEmpty()) {
-			return null;
+			return Optional.empty();
 		}
-		String firstLogFile = files.iterator().next();
 
-		return Control.builder()
-						.command(() -> Desktop.getDesktop().open(new File(firstLogFile)))
-						.name(resourceBundle.getString("open_log_file"))
-						.description(resourceBundle.getString("open_log_file") + " (" + firstLogFile + ")")
-						.build();
+		return Optional.of(new File(files.iterator().next()));
 	}
 
 	private static JScrollPane createTree(TreeModel treeModel) {
