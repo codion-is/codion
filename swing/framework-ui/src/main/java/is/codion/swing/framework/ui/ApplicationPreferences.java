@@ -20,6 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Text;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.user.User;
 
 import org.json.JSONObject;
 
@@ -82,6 +83,10 @@ final class ApplicationPreferences {
 
 	void save(Class<?> applicationClassName) {
 		UserPreferences.setUserPreference(applicationClassName.getName() + PREFERENCES_KEY, toJSONObject().toString());
+	}
+
+	User defaultLoginUser() {
+		return defaultUsername == null || defaultUsername.isEmpty() ? null : User.user(defaultUsername);
 	}
 
 	private JSONObject toJSONObject() {

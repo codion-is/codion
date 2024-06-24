@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.4
+### is.codion.swing.framework.ui
+- DefaultEntityApplicationPanelBuilder bug fixed, no longer tries to create a default login user when no default username is available in preferences.
 
 ## 0.18.3
 ### is.codion.common.db
