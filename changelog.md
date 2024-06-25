@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.4
 ### is.codion
 - Load test, generator and server monitor modules moved to tools directory.
+- Load test, generator and server monitor modules renamed.
 ### is.codion.swing.common.tools.model
 - Module renamed to is.codion.swing.common.loadtest.model.
 ### is.codion.swing.common.tools.ui

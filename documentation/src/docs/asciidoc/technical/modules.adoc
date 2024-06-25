@@ -376,7 +376,7 @@ image::modules/swing/common-ui/build/reports/dependency-graph/dependency-graph.s
 ====
 
 [discrete]
-=== codion-swing-common-loadtest-model
+=== codion-tools-loadtest-model
 
 .Dependency graph
 [%collapsible]
@@ -385,7 +385,7 @@ image::modules/tools/common-loadtest-model/build/reports/dependency-graph/depend
 ====
 
 [discrete]
-=== codion-swing-common-loadtest-ui
+=== codion-tools-loadtest-ui
 
 .Dependency graph
 [%collapsible]
@@ -421,7 +421,7 @@ image::modules/swing/framework-ui-test/build/reports/dependency-graph/dependency
 ====
 
 [discrete]
-=== codion-swing-framework-generator-model
+=== codion-tools-generator-model
 
 .Dependency graph
 [%collapsible]
@@ -430,7 +430,7 @@ image::modules/tools/framework-generator-model/build/reports/dependency-graph/de
 ====
 
 [discrete]
-=== codion-swing-framework-generator-ui
+=== codion-tools-generator-ui
 
 .Dependency graph
 [%collapsible]
@@ -439,7 +439,7 @@ image::modules/tools/framework-generator-ui/build/reports/dependency-graph/depen
 ====
 
 [discrete]
-=== codion-swing-framework-server-monitor
+=== codion-tools-server-monitor
 
 .Dependency graph
 [%collapsible]

@@ -21,7 +21,7 @@
  * <br>
  * {@link is.codion.swing.framework.generator.model.DomainGeneratorModel}<br>
  */
-module is.codion.swing.framework.generator.model {
+module is.codion.tools.generator.model {
 	requires org.slf4j;
 	requires java.compiler;
 	requires com.squareup.javapoet;

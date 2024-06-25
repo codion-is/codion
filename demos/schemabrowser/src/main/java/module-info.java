@@ -20,7 +20,7 @@
  * Schema browser demo.
  */
 module is.codion.framework.demos.schemabrowser {
-	requires is.codion.swing.common.loadtest.ui;
+	requires is.codion.tools.loadtest.ui;
 	requires is.codion.swing.framework.ui;
 	requires com.formdev.flatlaf.intellijthemes;
 

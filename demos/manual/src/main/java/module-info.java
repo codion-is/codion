@@ -29,7 +29,7 @@ module is.codion.framework.demos.manual {
 	requires is.codion.framework.db.http;
 	requires is.codion.framework.server;
 	requires is.codion.framework.servlet;
-	requires is.codion.swing.common.loadtest.ui;
+	requires is.codion.tools.loadtest.ui;
 	requires is.codion.swing.common.ui;
 	requires is.codion.swing.framework.model;
 	requires is.codion.swing.framework.ui;

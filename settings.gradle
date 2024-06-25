@@ -97,11 +97,11 @@ project(":codion-swing-common-model").projectDir = file("swing/common-model")
 include "codion-swing-common-ui"
 project(":codion-swing-common-ui").projectDir = file("swing/common-ui")
 
-include "codion-swing-common-loadtest-model"
-project(":codion-swing-common-loadtest-model").projectDir = file("tools/common-loadtest-model")
+include "codion-tools-loadtest-model"
+project(":codion-tools-loadtest-model").projectDir = file("tools/loadtest-model")
 
-include "codion-swing-common-loadtest-ui"
-project(":codion-swing-common-loadtest-ui").projectDir = file("tools/common-loadtest-ui")
+include "codion-tools-loadtest-ui"
+project(":codion-tools-loadtest-ui").projectDir = file("tools/loadtest-ui")
 
 include "codion-swing-framework-model"
 project(":codion-swing-framework-model").projectDir = file("swing/framework-model")
@@ -112,14 +112,14 @@ project(":codion-swing-framework-ui").projectDir = file("swing/framework-ui")
 include "codion-swing-framework-ui-test"
 project(":codion-swing-framework-ui-test").projectDir = file("swing/framework-ui-test")
 
-include "codion-swing-framework-generator-model"
-project(":codion-swing-framework-generator-model").projectDir = file("tools/framework-generator-model")
+include "codion-tools-generator-model"
+project(":codion-tools-generator-model").projectDir = file("tools/generator-model")
 
-include "codion-swing-framework-generator-ui"
-project(":codion-swing-framework-generator-ui").projectDir = file("tools/framework-generator-ui")
+include "codion-tools-generator-ui"
+project(":codion-tools-generator-ui").projectDir = file("tools/generator-ui")
 
-include "codion-swing-framework-server-monitor"
-project(":codion-swing-framework-server-monitor").projectDir = file("tools/framework-server-monitor")
+include "codion-tools-server-monitor"
+project(":codion-tools-server-monitor").projectDir = file("tools/server-monitor")
 
 include "codion-plugin-hikari-pool"
 project(":codion-plugin-hikari-pool").projectDir = file("plugins/hikari-pool")

@@ -17,14 +17,18 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Framework Swing generator UI.<br>
+ * Common Swing loadtest model<br>
  * <br>
- * {@link is.codion.swing.framework.generator.ui.DomainGeneratorPanel}<br>
+ * {@link is.codion.swing.common.loadtest.model.LoadTestModel}
  */
-module is.codion.swing.framework.generator.ui {
-	requires com.formdev.flatlaf.intellijthemes;
-	requires is.codion.swing.common.ui;
-	requires is.codion.swing.framework.generator.model;
+module is.codion.tools.loadtest.model {
+	requires org.slf4j;
+	requires org.jfree.jfreechart;
+	requires jdk.management;
+	requires transitive java.desktop;
+	requires transitive is.codion.common.db;
+	requires transitive is.codion.common.model;
+	requires transitive is.codion.swing.common.model;
 
-	exports is.codion.swing.framework.generator.ui;
+	exports is.codion.swing.common.loadtest.model;
 }

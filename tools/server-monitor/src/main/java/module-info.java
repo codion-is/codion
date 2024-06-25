@@ -19,7 +19,7 @@
 /**
  * Framework EntityServer monitor.
  */
-module is.codion.swing.framework.server.monitor {
+module is.codion.tools.server.monitor {
 	requires org.slf4j;
 	requires org.jfree.jfreechart;
 	requires com.formdev.flatlaf.intellijthemes;

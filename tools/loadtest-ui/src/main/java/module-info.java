@@ -17,18 +17,15 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Common Swing loadtest model<br>
+ * Common Swing loadtest UI.<br>
  * <br>
- * {@link is.codion.swing.common.loadtest.model.LoadTestModel}
+ * {@link is.codion.swing.common.loadtest.ui.LoadTestPanel}<br>
  */
-module is.codion.swing.common.loadtest.model {
-	requires org.slf4j;
+module is.codion.tools.loadtest.ui {
 	requires org.jfree.jfreechart;
-	requires jdk.management;
-	requires transitive java.desktop;
-	requires transitive is.codion.common.db;
-	requires transitive is.codion.common.model;
-	requires transitive is.codion.swing.common.model;
+	requires com.formdev.flatlaf.intellijthemes;
+	requires transitive is.codion.tools.loadtest.model;
+	requires transitive is.codion.swing.common.ui;
 
-	exports is.codion.swing.common.loadtest.model;
+	exports is.codion.swing.common.loadtest.ui;
 }

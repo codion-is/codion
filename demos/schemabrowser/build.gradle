@@ -1,8 +1,7 @@
 apply from: "../demos.gradle"
 
 dependencies {
-    implementation project(":codion-swing-common-loadtest-model")
-    implementation project(":codion-swing-common-loadtest-ui")
+    implementation project(":codion-tools-loadtest-ui")
     implementation project(":codion-swing-framework-ui")
 
     implementation(libs.flatlaf.intellij.themes)

@@ -2,7 +2,7 @@ dependencies {
     api project(":codion-common-core")
     api project(":codion-common-model")
 
-    api project(":codion-swing-common-loadtest-model")
+    api project(":codion-tools-loadtest-model")
     api project(":codion-swing-common-ui")
 
     implementation(libs.flatlaf.intellij.themes)
