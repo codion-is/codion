@@ -19,7 +19,7 @@
 /**
  * Framework Swing generator model classes, such as:<br>
  * <br>
- * {@link is.codion.swing.framework.generator.model.DomainGeneratorModel}<br>
+ * {@link is.codion.tools.generator.model.DomainGeneratorModel}<br>
  */
 module is.codion.tools.generator.model {
 	requires org.slf4j;
@@ -28,5 +28,5 @@ module is.codion.tools.generator.model {
 	requires transitive is.codion.framework.domain;
 	requires transitive is.codion.swing.common.model;
 
-	exports is.codion.swing.framework.generator.model;
+	exports is.codion.tools.generator.model;
 }

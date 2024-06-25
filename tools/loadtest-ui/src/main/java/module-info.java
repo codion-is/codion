@@ -19,7 +19,7 @@
 /**
  * Common Swing loadtest UI.<br>
  * <br>
- * {@link is.codion.swing.common.loadtest.ui.LoadTestPanel}<br>
+ * {@link is.codion.tools.loadtest.ui.LoadTestPanel}<br>
  */
 module is.codion.tools.loadtest.ui {
 	requires org.jfree.jfreechart;
@@ -27,5 +27,5 @@ module is.codion.tools.loadtest.ui {
 	requires transitive is.codion.tools.loadtest.model;
 	requires transitive is.codion.swing.common.ui;
 
-	exports is.codion.swing.common.loadtest.ui;
+	exports is.codion.tools.loadtest.ui;
 }

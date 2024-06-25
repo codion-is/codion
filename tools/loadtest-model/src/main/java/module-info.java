@@ -19,7 +19,7 @@
 /**
  * Common Swing loadtest model<br>
  * <br>
- * {@link is.codion.swing.common.loadtest.model.LoadTestModel}
+ * {@link is.codion.tools.loadtest.model.LoadTestModel}
  */
 module is.codion.tools.loadtest.model {
 	requires org.slf4j;
@@ -30,5 +30,5 @@ module is.codion.tools.loadtest.model {
 	requires transitive is.codion.common.model;
 	requires transitive is.codion.swing.common.model;
 
-	exports is.codion.swing.common.loadtest.model;
+	exports is.codion.tools.loadtest.model;
 }

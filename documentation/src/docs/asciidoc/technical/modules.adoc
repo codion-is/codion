@@ -376,24 +376,6 @@ image::modules/swing/common-ui/build/reports/dependency-graph/dependency-graph.s
 ====
 
 [discrete]
-=== codion-tools-loadtest-model
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/tools/common-loadtest-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-[discrete]
-=== codion-tools-loadtest-ui
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/tools/common-loadtest-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-[discrete]
 === codion-swing-framework-model
 
 .Dependency graph
@@ -420,13 +402,26 @@ image::modules/swing/framework-ui/build/reports/dependency-graph/dependency-grap
 image::modules/swing/framework-ui-test/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
+== Tools
+
+[discrete]
+=== codion-tools-server-monitor
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/tools/server-monitor/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+=== Generator
+
 [discrete]
 === codion-tools-generator-model
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/tools/framework-generator-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/generator-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -435,16 +430,27 @@ image::modules/tools/framework-generator-model/build/reports/dependency-graph/de
 .Dependency graph
 [%collapsible]
 ====
-image::modules/tools/framework-generator-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/generator-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
+=== Load Test
+
 [discrete]
-=== codion-tools-server-monitor
+=== codion-tools-loadtest-model
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/tools/framework-server-monitor/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/loadtest-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== codion-tools-loadtest-ui
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/tools/loadtest-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 == Plugins

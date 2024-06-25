@@ -31,7 +31,7 @@ dependencies {
 
 tasks.register("runDomainGeneratorH2", JavaExec) {
     group "application"
-    mainClass.set("is.codion.swing.framework.generator.ui.DomainGeneratorPanel")
+    mainClass.set("is.codion.tools.generator.ui.DomainGeneratorPanel")
     classpath = sourceSets.main.runtimeClasspath
     maxHeapSize = "256m"
     systemProperties = [
@@ -49,7 +49,7 @@ tasks.register("runDomainGeneratorH2", JavaExec) {
 
 //tasks.register("runDomainGeneratorOracle", JavaExec) {
 //    group "application"
-//    mainClass.set("is.codion.swing.framework.generator.ui.DomainGeneratorPanel")
+//    mainClass.set("is.codion.tools.generator.ui.DomainGeneratorPanel")
 //    classpath = sourceSets.main.runtimeClasspath
 //    maxHeapSize = "256m"
 //    systemProperties = [
@@ -59,7 +59,7 @@ tasks.register("runDomainGeneratorH2", JavaExec) {
 
 //tasks.register("runDomainGeneratorPostgres", JavaExec) {
 //    group "application"
-//    mainClass.set("is.codion.swing.framework.generator.ui.DomainGeneratorPanel")
+//    mainClass.set("is.codion.tools.generator.ui.DomainGeneratorPanel")
 //    classpath = sourceSets.main.runtimeClasspath
 //    maxHeapSize = "256m"
 //    systemProperties = [
@@ -69,7 +69,7 @@ tasks.register("runDomainGeneratorH2", JavaExec) {
 
 //tasks.register("runDomainGeneratorMariaDB", JavaExec) {
 //    group "application"
-//    mainClass.set("is.codion.swing.framework.generator.ui.DomainGeneratorPanel")
+//    mainClass.set("is.codion.tools.generator.ui.DomainGeneratorPanel")
 //    classpath = sourceSets.main.runtimeClasspath
 //    maxHeapSize = "256m"
 //    systemProperties = [

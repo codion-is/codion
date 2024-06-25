@@ -19,12 +19,12 @@
 /**
  * Framework Swing generator UI.<br>
  * <br>
- * {@link is.codion.swing.framework.generator.ui.DomainGeneratorPanel}<br>
+ * {@link is.codion.tools.generator.ui.DomainGeneratorPanel}<br>
  */
 module is.codion.tools.generator.ui {
 	requires com.formdev.flatlaf.intellijthemes;
 	requires is.codion.swing.common.ui;
 	requires is.codion.tools.generator.model;
 
-	exports is.codion.swing.framework.generator.ui;
+	exports is.codion.tools.generator.ui;
 }

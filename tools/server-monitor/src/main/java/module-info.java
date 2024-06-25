@@ -26,6 +26,6 @@ module is.codion.tools.server.monitor {
 	requires is.codion.framework.server;
 	requires is.codion.swing.common.ui;
 
-	exports is.codion.swing.framework.server.monitor;
-	exports is.codion.swing.framework.server.monitor.ui;
+	exports is.codion.tools.server.monitor;
+	exports is.codion.tools.server.monitor.ui;
 }

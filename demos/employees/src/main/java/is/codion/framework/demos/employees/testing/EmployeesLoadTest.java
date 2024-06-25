@@ -35,8 +35,8 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import java.util.function.Function;
 
 import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
-import static is.codion.swing.common.loadtest.model.LoadTestModel.loadTestModel;
-import static is.codion.swing.common.loadtest.ui.LoadTestPanel.loadTestPanel;
+import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
+import static is.codion.tools.loadtest.ui.LoadTestPanel.loadTestPanel;
 import static java.util.Arrays.asList;
 
 // tag::loadTest[]

@@ -36,8 +36,8 @@ import java.util.Random;
 
 import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.framework.domain.entity.condition.Condition.all;
-import static is.codion.swing.common.loadtest.model.LoadTestModel.loadTestModel;
-import static is.codion.swing.common.loadtest.ui.LoadTestPanel.loadTestPanel;
+import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
+import static is.codion.tools.loadtest.ui.LoadTestPanel.loadTestPanel;
 import static java.util.Arrays.asList;
 
 public final class EmployeesServletLoadTest {
