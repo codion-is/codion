@@ -14,20 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
-/**
- * Domain model unit test classes.<br>
- * <br>
- * {@link is.codion.framework.domain.entity.test.EntityTestUnit}<br>
- * {@link is.codion.framework.domain.entity.test.DefaultEntityFactory}<br>
- * @provides is.codion.framework.db.EntityConnectionProvider
- */
-module is.codion.framework.domain.test {
-	requires org.slf4j;
-	requires org.junit.jupiter.api;
-	requires transitive is.codion.framework.db.core;
-	requires is.codion.framework.db.local;
+package is.codion.framework.demos.employees.testing.scenarios;
 
-	exports is.codion.framework.domain.entity.test;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
+import is.codion.framework.demos.employees.model.EmployeesAppModel;
+import is.codion.framework.model.EntityTableModel;
+
+import java.util.Random;
+
+abstract class AbstractPerformer implements Performer<EmployeesAppModel> {
+
+	private static final Random RANDOM = new Random();
+
+	protected static void selectRandomRow(EntityTableModel<?> tableModel) {
+		if (tableModel.getRowCount() > 0) {
+			tableModel.selectionModel().setSelectedIndex(RANDOM.nextInt(tableModel.getRowCount()));
+		}
+	}
 }

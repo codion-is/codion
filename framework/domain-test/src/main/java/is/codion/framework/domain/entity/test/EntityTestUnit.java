@@ -35,16 +35,9 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -55,8 +48,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class EntityTestUnit {
 
-	private static final Logger LOG = LoggerFactory.getLogger(EntityTestUnit.class);
-
 	/**
 	 * Specifies the database user to use when running domain unit tests.
 	 */
@@ -65,12 +56,12 @@ public class EntityTestUnit {
 	private static final int SELECT_LIMIT = 10;
 
 	private final EntityConnectionProvider connectionProvider;
+	private final EntityFactory entityFactory;
 
 	/**
 	 * Instantiates a new EntityTestUnit.
 	 * The default database user is based on the {@link #TEST_USER} configuration value.
 	 * @param domain the domain model
-	 * @throws NullPointerException in case domainClass is null
 	 */
 	public EntityTestUnit(Domain domain) {
 		this(domain, initializeDefaultUser());
@@ -79,15 +70,34 @@ public class EntityTestUnit {
 	/**
 	 * Instantiates a new EntityTestUnit.
 	 * @param domain the domain model
+	 * @param entityFactory the factory used to create test entities
+	 */
+	public EntityTestUnit(Domain domain, EntityFactory entityFactory) {
+		this(domain, entityFactory, initializeDefaultUser());
+	}
+
+	/**
+	 * Instantiates a new EntityTestUnit.
+	 * @param domain the domain model
 	 * @param user the user to use when running the tests
-	 * @throws NullPointerException in case domainClass or user is null
 	 */
 	public EntityTestUnit(Domain domain, User user) {
+		this(domain, new DefaultEntityFactory(domain.entities()), user);
+	}
+
+	/**
+	 * Instantiates a new EntityTestUnit.
+	 * @param domain the domain model
+	 * @param entityFactory the factory used to create test entities
+	 * @param user the user to use when running the tests
+	 */
+	public EntityTestUnit(Domain domain, EntityFactory entityFactory, User user) {
 		this.connectionProvider = LocalEntityConnectionProvider.builder()
 						.domain(requireNonNull(domain, "domain"))
 						.clientTypeId(getClass().getName())
 						.user(requireNonNull(user, "user"))
 						.build();
+		this.entityFactory = requireNonNull(entityFactory);
 	}
 
 	/**
@@ -106,23 +116,84 @@ public class EntityTestUnit {
 		EntityConnection connection = connectionProvider.connection();
 		connection.startTransaction();
 		try {
-			Map<ForeignKey, Entity> foreignKeyEntities = initializeForeignKeyEntities(entityType, new HashMap<>(), connection);
-			Entity testEntity = null;
+			Map<ForeignKey, Entity> foreignKeyEntities = entityFactory.foreignKeyEntities(entityType, new HashMap<>(), connection);
+			Entity entity = null;
 			EntityDefinition entityDefinition = entities().definition(entityType);
 			if (!entityDefinition.readOnly()) {
-				testEntity = testInsert(requireNonNull(initializeTestEntity(entityType, foreignKeyEntities), "test entity"), connection);
-				assertTrue(testEntity.primaryKey().isNotNull());
-				testUpdate(testEntity, initializeForeignKeyEntities(entityType, foreignKeyEntities, connection), connection, this);
+				entity = testInsert(requireNonNull(entityFactory.entity(entityType, foreignKeyEntities),
+								"EntityFactory.entity() must return a non-null entity"), connection);
+				assertTrue(entity.primaryKey().isNotNull());
+				entityFactory.modify(entity, entityFactory.foreignKeyEntities(entityType, foreignKeyEntities, connection));
+				testUpdate(entity, connection);
 			}
-			testSelect(entityType, testEntity, connection);
+			testSelect(entityType, entity, connection);
 			if (!entityDefinition.readOnly()) {
-				testDelete(testEntity, connection);
+				testDelete(entity, connection);
 			}
 		}
 		finally {
 			connection.rollbackTransaction();
 			connection.close();
 		}
+	}
+
+	/**
+	 * Handles creating and modifying entities used for testing.
+	 */
+	public interface EntityFactory {
+
+		/**
+		 * This method returns the Entity instance on which to run the tests, by default this method creates an instance
+		 * filled with random values.
+		 * @param entityType the entityType for which to initialize an entity instance for testing
+		 * @return the entity instance to use for testing the entity type
+		 */
+		Entity entity(EntityType entityType);
+
+		/**
+		 * This method returns the Entity instance on which to run the tests, by default this method creates an instance
+		 * filled with random values.
+		 * @param entityType the entityType for which to initialize an entity instance for testing
+		 * @param foreignKeyEntities the entities referenced via foreign keys
+		 * @return the entity instance to use for testing the entity type
+		 */
+		Entity entity(EntityType entityType, Map<ForeignKey, Entity> foreignKeyEntities);
+
+		/**
+		 * Initializes an Entity instance to reference via the given foreign key, by default this method creates an Entity
+		 * filled with random values. Subclasses can override and provide a hard coded instance or select one from the database.
+		 * Note that this default implementation returns null in case the referenced entity type is read-only.
+		 * @param foreignKey the foreign key referencing the entity
+		 * @param foreignKeyEntities the entities referenced via foreign keys
+		 * @return an entity for the given foreign key
+		 * @throws DatabaseException in case of an exception
+		 */
+		Entity foreignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities);
+
+		/**
+		 * This method should return {@code entity} in a modified state
+		 * @param entity the entity to modify
+		 */
+		void modify(Entity entity);
+
+		/**
+		 * This method should return {@code entity} in a modified state
+		 * @param entity the entity to modify
+		 * @param foreignKeyEntities the entities referenced via foreign keys
+		 */
+		void modify(Entity entity, Map<ForeignKey, Entity> foreignKeyEntities);
+
+		/**
+		 * Initializes the entities referenced by the entity identified by {@code entityType}
+		 * @param entityType the type of the entity for which to initialize the referenced entities
+		 * @param foreignKeyEntities foreign key entities already created
+		 * @param connection the connection to use
+		 * @return the reference entities mapped to their respective foreign keys
+		 * @throws DatabaseException in case of an exception
+		 * @see #foreignKeyEntities(EntityType, Map, EntityConnection)
+		 */
+		Map<ForeignKey, Entity> foreignKeyEntities(EntityType entityType, Map<ForeignKey, Entity> foreignKeyEntities,
+																							 EntityConnection connection) throws DatabaseException;
 	}
 
 	/**
@@ -133,110 +204,41 @@ public class EntityTestUnit {
 	}
 
 	/**
-	 * This method returns the Entity instance on which to run the tests, by default this method creates an instance
-	 * filled with random values.
-	 * @param entityType the entityType for which to initialize an entity instance for testing
-	 * @param foreignKeyEntities the entities referenced via foreign keys
-	 * @return the entity instance to use for testing the entity type
-	 */
-	protected Entity initializeTestEntity(EntityType entityType, Map<ForeignKey, Entity> foreignKeyEntities) {
-		return EntityTestUtil.createRandomEntity(entities(), entityType, foreignKeyEntities);
-	}
-
-	/**
-	 * Initializes an Entity instance to reference via the given foreign key, by default this method creates an Entity
-	 * filled with random values. Subclasses can override and provide a hard coded instance or select one from the database.
-	 * Note that this default implementation returns null in case the referenced entity type is read-only.
-	 * @param foreignKey the foreign key referencing the entity
-	 * @param foreignKeyEntities the entities referenced via foreign keys
-	 * @return an entity for the given foreign key
-	 * @throws DatabaseException in case of an exception
-	 */
-	protected Entity initializeForeignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities) throws DatabaseException {
-		if (entities().definition(requireNonNull(foreignKey).referencedType()).readOnly()) {
-			return null;
-		}
-
-		return EntityTestUtil.createRandomEntity(entities(), foreignKey.referencedType(), foreignKeyEntities);
-	}
-
-	/**
-	 * This method should return {@code testEntity} in a modified state
-	 * @param testEntity the entity to modify
-	 * @param foreignKeyEntities the entities referenced via foreign keys
-	 */
-	protected void modifyEntity(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities) {
-		EntityTestUtil.randomize(entities(), testEntity, foreignKeyEntities);
-	}
-
-	/**
-	 * Initializes the entities referenced by the entity identified by {@code entityType}
-	 * @param entityType the type of the entity for which to initialize the referenced entities
-	 * @param foreignKeyEntities foreign key entities already created
-	 * @param connection the connection to use
-	 * @return the Entities to reference mapped to their respective foreign keys
-	 * @throws DatabaseException in case of an exception
-	 * @see #initializeForeignKeyEntity(ForeignKey, Map)
-	 */
-	private Map<ForeignKey, Entity> initializeForeignKeyEntities(EntityType entityType,
-																															 Map<ForeignKey, Entity> foreignKeyEntities,
-																															 EntityConnection connection) throws DatabaseException {
-		List<ForeignKey> foreignKeys = new ArrayList<>(entities().definition(entityType).foreignKeys().get());
-		//we have to start with non-self-referential ones
-		foreignKeys.sort((fk1, fk2) -> !fk1.referencedType().equals(entityType) ? -1 : 1);
-		for (ForeignKey foreignKey : foreignKeys) {
-			EntityType referencedEntityType = foreignKey.referencedType();
-			if (!foreignKeyEntities.containsKey(foreignKey)) {
-				if (!Objects.equals(entityType, referencedEntityType)) {
-					foreignKeyEntities.put(foreignKey, null);//short circuit recursion, value replaced below
-					initializeForeignKeyEntities(referencedEntityType, foreignKeyEntities, connection);
-				}
-				Entity referencedEntity = initializeForeignKeyEntity(foreignKey, foreignKeyEntities);
-				if (referencedEntity != null) {
-					foreignKeyEntities.put(foreignKey, insertOrSelect(referencedEntity, connection));
-				}
-			}
-		}
-
-		return foreignKeyEntities;
-	}
-
-	/**
 	 * Tests inserting the given entity
-	 * @param testEntity the entity to test insert for
+	 * @param entity the entity to test insert for
 	 * @param connection the connection to use
 	 * @return the same entity retrieved from the database after the insert
 	 * @throws DatabaseException in case of an exception
 	 */
-	private static Entity testInsert(Entity testEntity, EntityConnection connection) throws DatabaseException {
+	private static Entity testInsert(Entity entity, EntityConnection connection) throws DatabaseException {
 		try {
-			Entity insertedEntity = connection.insertSelect(testEntity);
-			assertEquals(testEntity.primaryKey(), insertedEntity.primaryKey());
-			testEntity.definition().columns().definitions().stream()
+			Entity insertedEntity = connection.insertSelect(entity);
+			assertEquals(entity.primaryKey(), insertedEntity.primaryKey());
+			entity.definition().columns().definitions().stream()
 							.filter(ColumnDefinition::insertable)
-							.forEach(columnDefinition -> assertValueEqual(testEntity, insertedEntity, columnDefinition));
+							.forEach(columnDefinition -> assertValueEqual(entity, insertedEntity, columnDefinition));
 
 			return insertedEntity;
 		}
 		catch (RecordNotFoundException e) {
-			fail("Inserted entity of type " + testEntity.entityType() + " not returned by select after insert");
+			fail("Inserted entity of type " + entity.entityType() + " not returned by select after insert");
 			throw e;
 		}
 	}
 
 	/**
-	 * Tests selecting the given entity, if {@code testEntity} is null
+	 * Tests selecting the given entity, if {@code entity} is null
 	 * then selecting many entities is tested.
-	 * @param entityType the entityType in case {@code testEntity} is null
-	 * @param testEntity the entity to test selecting
+	 * @param entityType the entityType in case {@code entity} is null
+	 * @param entity the entity to test selecting
 	 * @param connection the connection to use
 	 * @throws DatabaseException in case of an exception
 	 */
-	private static void testSelect(EntityType entityType, Entity testEntity,
+	private static void testSelect(EntityType entityType, Entity entity,
 																 EntityConnection connection) throws DatabaseException {
-		if (testEntity != null) {
-			assertEquals(testEntity, connection.select(testEntity.primaryKey()),
-							"Entity of type " + testEntity.entityType() + " failed equals comparison");
+		if (entity != null) {
+			assertEquals(entity, connection.select(entity.primaryKey()),
+							"Entity of type " + entity.entityType() + " failed equals comparison");
 		}
 		else {
 			connection.select(Select.all(entityType)
@@ -247,70 +249,44 @@ public class EntityTestUnit {
 
 	/**
 	 * Test updating the given entity, if the entity is not modified this test does nothing
-	 * @param testEntity the entity to test updating
+	 * @param entity the entity to test updating
 	 * @param foreignKeyEntities the entities referenced via foreign keys
 	 * @param connection the connection to use
 	 * @param entityTestUnit the test unit instance, for modifying the entity
 	 * @throws DatabaseException in case of an exception
 	 */
-	private static void testUpdate(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities,
-																 EntityConnection connection, EntityTestUnit entityTestUnit) throws DatabaseException {
-		entityTestUnit.modifyEntity(testEntity, foreignKeyEntities);
-		if (!testEntity.modified()) {
+	private static void testUpdate(Entity entity, EntityConnection connection) throws DatabaseException {
+		if (!entity.modified()) {
 			return;
 		}
 
-		Entity updatedEntity = connection.updateSelect(testEntity);
-		assertEquals(testEntity.primaryKey(), updatedEntity.primaryKey());
-		testEntity.definition().columns().definitions().stream()
+		Entity updatedEntity = connection.updateSelect(entity);
+		assertEquals(entity.primaryKey(), updatedEntity.primaryKey());
+		entity.definition().columns().definitions().stream()
 						.filter(ColumnDefinition::updatable)
-						.forEach(columnDefinition -> assertValueEqual(testEntity, updatedEntity, columnDefinition));
+						.forEach(columnDefinition -> assertValueEqual(entity, updatedEntity, columnDefinition));
 	}
 
 	/**
 	 * Test deleting the given entity
-	 * @param testEntity the entity to test deleting
+	 * @param entity the entity to test deleting
 	 * @param connection the connection to use
 	 * @throws DatabaseException in case of an exception
 	 */
-	private static void testDelete(Entity testEntity, EntityConnection connection) throws DatabaseException {
-		connection.delete(Entity.primaryKeys(singletonList(testEntity)));
+	private static void testDelete(Entity entity, EntityConnection connection) throws DatabaseException {
+		connection.delete(Entity.primaryKeys(singletonList(entity)));
 		boolean caught = false;
 		try {
-			connection.select(testEntity.primaryKey());
+			connection.select(entity.primaryKey());
 		}
 		catch (RecordNotFoundException e) {
 			caught = true;
 		}
-		assertTrue(caught, "Entity of type " + testEntity.entityType() + " failed delete test");
+		assertTrue(caught, "Entity of type " + entity.entityType() + " failed delete test");
 	}
 
-	/**
-	 * Inserts or selects the given entity if it exists and returns the result
-	 * @param entity the entity to initialize
-	 * @param connection the connection to use
-	 * @return the entity
-	 * @throws DatabaseException in case of an exception
-	 */
-	private static Entity insertOrSelect(Entity entity, EntityConnection connection) throws DatabaseException {
-		try {
-			if (entity.primaryKey().isNotNull()) {
-				Collection<Entity> selected = connection.select(singletonList(entity.primaryKey()));
-				if (!selected.isEmpty()) {
-					return selected.iterator().next();
-				}
-			}
-
-			return connection.insertSelect(entity);
-		}
-		catch (DatabaseException e) {
-			LOG.error("EntityTestUnit.insertOrSelect()", e);
-			throw new DatabaseException(e.getMessage() + ": " + entity);
-		}
-	}
-
-	private static void assertValueEqual(Entity testEntity, Entity updated, ColumnDefinition<?> columnDefinition) {
-		Object beforeUpdate = testEntity.get(columnDefinition.attribute());
+	private static void assertValueEqual(Entity entity, Entity updated, ColumnDefinition<?> columnDefinition) {
+		Object beforeUpdate = entity.get(columnDefinition.attribute());
 		Object afterUpdate = updated.get(columnDefinition.attribute());
 		String message = "Values of column " + columnDefinition + " should be equal after update ["
 						+ beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "

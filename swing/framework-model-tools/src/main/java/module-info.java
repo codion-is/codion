@@ -25,10 +25,9 @@ module is.codion.swing.framework.model.tools {
 	requires org.slf4j;
 	requires java.compiler;
 	requires com.squareup.javapoet;
-	requires transitive is.codion.swing.common.model.tools;
-	requires transitive is.codion.swing.framework.model;
+	requires transitive is.codion.framework.domain;
+	requires transitive is.codion.swing.common.model;
 
 	exports is.codion.swing.framework.model.tools.generator;
-	exports is.codion.swing.framework.model.tools.loadtest;
 	exports is.codion.swing.framework.model.tools.metadata;
 }

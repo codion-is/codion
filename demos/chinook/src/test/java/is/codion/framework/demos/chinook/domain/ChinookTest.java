@@ -22,8 +22,9 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.test.DefaultEntityFactory;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -38,8 +39,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ChinookTest extends EntityTestUnit {
 
+	private static final ChinookImpl DOMAIN = new ChinookImpl();
+
 	public ChinookTest() {
-		super(new ChinookImpl());
+		super(DOMAIN, new ChinookEntityFactory());
 	}
 
 	@Test
@@ -119,21 +122,27 @@ public class ChinookTest extends EntityTestUnit {
 		}
 	}
 
-	@Override
-	protected Entity initializeTestEntity(EntityType entityType, Map<ForeignKey, Entity> foreignKeyEntities) {
-		Entity testEntity = super.initializeTestEntity(entityType, foreignKeyEntities);
-		if (entityType.equals(Album.TYPE)) {
-			testEntity.put(Album.TAGS, asList("tag_one", "tag_two"));
+	private static final class ChinookEntityFactory extends DefaultEntityFactory {
+
+		private ChinookEntityFactory() {
+			super(DOMAIN.entities());
 		}
 
-		return testEntity;
-	}
+		@Override
+		public void modify(Entity entity, Map<ForeignKey, Entity> foreignKeyEntities) {
+			super.modify(entity, foreignKeyEntities);
+			if (entity.entityType().equals(Album.TYPE)) {
+				entity.put(Album.TAGS, asList("tag_one", "tag_two", "tag_three"));
+			}
+		}
 
-	@Override
-	protected void modifyEntity(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities) {
-		super.modifyEntity(testEntity, foreignKeyEntities);
-		if (testEntity.entityType().equals(Album.TYPE)) {
-			testEntity.put(Album.TAGS, asList("tag_one", "tag_two", "tag_three"));
+		@Override
+		protected <T> T createValue(Attribute<T> attribute, Map<ForeignKey, Entity> referenceEntities) {
+			if (attribute.equals(Album.TAGS)) {
+				return (T) asList("tag_one", "tag_two");
+			}
+
+			return super.createValue(attribute, referenceEntities);
 		}
 	}
 }

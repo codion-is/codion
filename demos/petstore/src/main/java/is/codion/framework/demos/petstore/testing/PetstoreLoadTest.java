@@ -25,13 +25,14 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petstore.domain.Petstore;
 import is.codion.framework.demos.petstore.model.PetstoreAppModel;
+import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
+import java.util.Random;
 import java.util.function.Function;
 
 import static is.codion.swing.common.model.tools.loadtest.LoadTestModel.loadTestModel;
 import static is.codion.swing.common.ui.tools.loadtest.LoadTestPanel.loadTestPanel;
-import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.selectRandomRow;
 import static java.util.Collections.singletonList;
 
 public final class PetstoreLoadTest {
@@ -64,6 +65,8 @@ public final class PetstoreLoadTest {
 	private static final class PetstoreUsageScenario
 					implements Performer<PetstoreAppModel> {
 
+		private static final Random RANDOM = new Random();
+
 		@Override
 		public void perform(PetstoreAppModel application) throws Exception {
 			SwingEntityModel categoryModel = application.entityModels().iterator().next();
@@ -72,6 +75,12 @@ public final class PetstoreLoadTest {
 			selectRandomRow(categoryModel.tableModel());
 			selectRandomRow(categoryModel.detailModels().iterator().next().tableModel());
 			selectRandomRow(categoryModel.detailModels().iterator().next().detailModels().iterator().next().tableModel());
+		}
+
+		private static void selectRandomRow(EntityTableModel<?> tableModel) {
+			if (tableModel.getRowCount() > 0) {
+				tableModel.selectionModel().setSelectedIndex(RANDOM.nextInt(tableModel.getRowCount()));
+			}
 		}
 	}
 

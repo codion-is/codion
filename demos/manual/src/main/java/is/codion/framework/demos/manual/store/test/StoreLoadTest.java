@@ -26,14 +26,15 @@ import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
+import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
+import java.util.Random;
 import java.util.function.Function;
 
 import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.swing.common.model.tools.loadtest.LoadTestModel.loadTestModel;
 import static is.codion.swing.common.ui.tools.loadtest.LoadTestPanel.loadTestPanel;
-import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.selectRandomRow;
 import static java.util.Collections.singletonList;
 
 // tag::storeLoadTest[]
@@ -57,11 +58,19 @@ public class StoreLoadTest {
 	private static class StoreScenarioPerformer
 					implements Performer<StoreApplicationModel> {
 
+		private static final Random RANDOM = new Random();
+
 		@Override
 		public void perform(StoreApplicationModel application) {
 			SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
 			customerModel.tableModel().refresh();
 			selectRandomRow(customerModel.tableModel());
+		}
+
+		private static void selectRandomRow(EntityTableModel<?> tableModel) {
+			if (tableModel.getRowCount() > 0) {
+				tableModel.selectionModel().setSelectedIndex(RANDOM.nextInt(tableModel.getRowCount()));
+			}
 		}
 	}
 
