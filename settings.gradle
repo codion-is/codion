@@ -97,11 +97,11 @@ project(":codion-swing-common-model").projectDir = file("swing/common-model")
 include "codion-swing-common-ui"
 project(":codion-swing-common-ui").projectDir = file("swing/common-ui")
 
-include "codion-swing-common-model-tools"
-project(":codion-swing-common-model-tools").projectDir = file("swing/common-model-tools")
+include "codion-swing-common-loadtest-model"
+project(":codion-swing-common-loadtest-model").projectDir = file("swing/common-loadtest-model")
 
-include "codion-swing-common-ui-tools"
-project(":codion-swing-common-ui-tools").projectDir = file("swing/common-ui-tools")
+include "codion-swing-common-loadtest-ui"
+project(":codion-swing-common-loadtest-ui").projectDir = file("swing/common-loadtest-ui")
 
 include "codion-swing-framework-model"
 project(":codion-swing-framework-model").projectDir = file("swing/framework-model")

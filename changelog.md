@@ -2,6 +2,10 @@ Codion Change Log
 ==================
 
 ## 0.18.4
+### is.codion.swing.common.tools.model
+- Module renamed to is.codion.swing.common.loadtest.model.
+### is.codion.swing.common.tools.ui
+- Module renamed to is.codion.swing.common.loadtest.ui.
 ### is.codion.framework.domain.entity.test
 - EntityTestUtil replaced with EntityTestUnit.EntityFactory, related refactoring.
 ### is.codion.swing.framework.model.tools

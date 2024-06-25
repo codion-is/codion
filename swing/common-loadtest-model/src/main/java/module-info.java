@@ -17,17 +17,18 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Petstore demo.
+ * Common Swing loadtest model<br>
+ * <br>
+ * {@link is.codion.swing.common.loadtest.model.LoadTestModel}
  */
-module is.codion.framework.demos.petstore {
-	requires is.codion.swing.common.loadtest.ui;
-	requires is.codion.swing.framework.ui;
+module is.codion.swing.common.loadtest.model {
+	requires org.slf4j;
+	requires org.jfree.jfreechart;
+	requires jdk.management;
+	requires transitive java.desktop;
+	requires transitive is.codion.common.db;
+	requires transitive is.codion.common.model;
+	requires transitive is.codion.swing.common.model;
 
-	exports is.codion.framework.demos.petstore.model
-					to is.codion.swing.framework.model, is.codion.swing.framework.ui;
-	exports is.codion.framework.demos.petstore.ui
-					to is.codion.swing.framework.ui;
-
-	provides is.codion.framework.domain.Domain
-					with is.codion.framework.demos.petstore.domain.Petstore;
+	exports is.codion.swing.common.loadtest.model;
 }

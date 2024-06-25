@@ -376,21 +376,21 @@ image::modules/swing/common-ui/build/reports/dependency-graph/dependency-graph.s
 ====
 
 [discrete]
-=== codion-swing-common-model-tools
+=== codion-swing-common-loadtest-model
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/swing/common-model-tools/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/swing/common-loadtest-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
-=== codion-swing-common-ui-tools
+=== codion-swing-common-loadtest-ui
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/swing/common-ui-tools/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/swing/common-loadtest-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -421,21 +421,21 @@ image::modules/swing/framework-ui-test/build/reports/dependency-graph/dependency
 ====
 
 [discrete]
-=== codion-swing-framework-model-tools
+=== codion-swing-framework-generator-model
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/swing/framework-model-tools/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/swing/framework-generator-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
-=== codion-swing-framework-ui-tools
+=== codion-swing-framework-generator-ui
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/swing/framework-ui-tools/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/swing/framework-generator-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
