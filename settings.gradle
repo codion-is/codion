@@ -106,17 +106,17 @@ project(":codion-swing-common-ui-tools").projectDir = file("swing/common-ui-tool
 include "codion-swing-framework-model"
 project(":codion-swing-framework-model").projectDir = file("swing/framework-model")
 
-include "codion-swing-framework-generator-model"
-project(":codion-swing-framework-generator-model").projectDir = file("swing/framework-generator-model")
-
 include "codion-swing-framework-ui"
 project(":codion-swing-framework-ui").projectDir = file("swing/framework-ui")
 
-include "codion-swing-framework-generator-ui"
-project(":codion-swing-framework-generator-ui").projectDir = file("swing/framework-generator-ui")
-
 include "codion-swing-framework-ui-test"
 project(":codion-swing-framework-ui-test").projectDir = file("swing/framework-ui-test")
+
+include "codion-swing-framework-generator-model"
+project(":codion-swing-framework-generator-model").projectDir = file("swing/framework-generator-model")
+
+include "codion-swing-framework-generator-ui"
+project(":codion-swing-framework-generator-ui").projectDir = file("swing/framework-generator-ui")
 
 include "codion-swing-framework-server-monitor"
 project(":codion-swing-framework-server-monitor").projectDir = file("swing/framework-server-monitor")
