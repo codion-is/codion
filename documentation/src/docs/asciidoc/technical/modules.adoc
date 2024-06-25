@@ -381,7 +381,7 @@ image::modules/swing/common-ui/build/reports/dependency-graph/dependency-graph.s
 .Dependency graph
 [%collapsible]
 ====
-image::modules/swing/common-loadtest-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/common-loadtest-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -390,7 +390,7 @@ image::modules/swing/common-loadtest-model/build/reports/dependency-graph/depend
 .Dependency graph
 [%collapsible]
 ====
-image::modules/swing/common-loadtest-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/common-loadtest-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -426,7 +426,7 @@ image::modules/swing/framework-ui-test/build/reports/dependency-graph/dependency
 .Dependency graph
 [%collapsible]
 ====
-image::modules/swing/framework-generator-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/framework-generator-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -435,7 +435,7 @@ image::modules/swing/framework-generator-model/build/reports/dependency-graph/de
 .Dependency graph
 [%collapsible]
 ====
-image::modules/swing/framework-generator-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/framework-generator-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -444,7 +444,7 @@ image::modules/swing/framework-generator-ui/build/reports/dependency-graph/depen
 .Dependency graph
 [%collapsible]
 ====
-image::modules/swing/framework-server-monitor/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/framework-server-monitor/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 == Plugins
