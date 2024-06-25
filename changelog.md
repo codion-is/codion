@@ -6,6 +6,9 @@ Codion Change Log
 - EntityTestUtil replaced with EntityTestUnit.EntityFactory, related refactoring.
 ### is.codion.swing.framework.model.tools
 - EntityLoadTestUtil removed.
+- Module renamed to is.codion.swing.framework.generator.model.
+### is.codion.swing.framework.ui.tools
+- Module renamed to is.codion.swing.framework.generator.ui.
 ### is.codion.swing.framework.ui
 - DefaultEntityApplicationPanelBuilder bug fixed, no longer tries to create a default login user when no default username is available in preferences.
 

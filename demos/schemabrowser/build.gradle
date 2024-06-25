@@ -4,7 +4,6 @@ dependencies {
     implementation project(":codion-swing-common-model-tools")
     implementation project(":codion-swing-common-ui-tools")
     implementation project(":codion-swing-framework-ui")
-    implementation project(":codion-swing-framework-model-tools")
 
     implementation(libs.flatlaf.intellij.themes)
 

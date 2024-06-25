@@ -27,7 +27,6 @@ module is.codion.framework.demos.employees {
 	requires is.codion.framework.domain.test;
 	requires is.codion.framework.json.domain;
 	requires is.codion.swing.common.ui.tools;
-	requires is.codion.swing.framework.model.tools;
 	requires is.codion.swing.framework.ui;
 	requires is.codion.framework.server;
 	requires is.codion.plugin.jasperreports;

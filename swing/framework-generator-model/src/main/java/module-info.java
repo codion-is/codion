@@ -17,17 +17,16 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Petstore demo.
+ * Framework Swing generator model classes, such as:<br>
+ * <br>
+ * {@link is.codion.swing.framework.generator.model.DomainGeneratorModel}<br>
  */
-module is.codion.framework.demos.petstore {
-	requires is.codion.swing.common.ui.tools;
-	requires is.codion.swing.framework.ui;
+module is.codion.swing.framework.generator.model {
+	requires org.slf4j;
+	requires java.compiler;
+	requires com.squareup.javapoet;
+	requires transitive is.codion.framework.domain;
+	requires transitive is.codion.swing.common.model;
 
-	exports is.codion.framework.demos.petstore.model
-					to is.codion.swing.framework.model, is.codion.swing.framework.ui;
-	exports is.codion.framework.demos.petstore.ui
-					to is.codion.swing.framework.ui;
-
-	provides is.codion.framework.domain.Domain
-					with is.codion.framework.demos.petstore.domain.Petstore;
+	exports is.codion.swing.framework.generator.model;
 }

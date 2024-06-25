@@ -14,20 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
 /**
- * Petstore demo.
+ * Package configuration values:<br>
+ * {@link is.codion.swing.framework.generator.model.DomainGeneratorModel#DEFAULT_DOMAIN_PACKAGE}
+ * {@link is.codion.swing.framework.generator.model.DomainGeneratorModel#DEFAULT_SOURCE_DIRECTORY}
  */
-module is.codion.framework.demos.petstore {
-	requires is.codion.swing.common.ui.tools;
-	requires is.codion.swing.framework.ui;
-
-	exports is.codion.framework.demos.petstore.model
-					to is.codion.swing.framework.model, is.codion.swing.framework.ui;
-	exports is.codion.framework.demos.petstore.ui
-					to is.codion.swing.framework.ui;
-
-	provides is.codion.framework.domain.Domain
-					with is.codion.framework.demos.petstore.domain.Petstore;
-}
+package is.codion.swing.framework.generator.model;

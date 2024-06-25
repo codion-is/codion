@@ -17,17 +17,14 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Petstore demo.
+ * Framework Swing generator UI.<br>
+ * <br>
+ * {@link is.codion.swing.framework.generator.ui.DomainGeneratorPanel}<br>
  */
-module is.codion.framework.demos.petstore {
-	requires is.codion.swing.common.ui.tools;
-	requires is.codion.swing.framework.ui;
+module is.codion.swing.framework.generator.ui {
+	requires com.formdev.flatlaf.intellijthemes;
+	requires is.codion.swing.common.ui;
+	requires is.codion.swing.framework.generator.model;
 
-	exports is.codion.framework.demos.petstore.model
-					to is.codion.swing.framework.model, is.codion.swing.framework.ui;
-	exports is.codion.framework.demos.petstore.ui
-					to is.codion.swing.framework.ui;
-
-	provides is.codion.framework.domain.Domain
-					with is.codion.framework.demos.petstore.domain.Petstore;
+	exports is.codion.swing.framework.generator.ui;
 }
