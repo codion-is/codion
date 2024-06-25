@@ -5,7 +5,7 @@
 
 The application load testing harness is used to see how your application, server and database handle multiple concurrent users.
 
-This is done by using the {url-javadoc}{swing-common-model-tools}/is/codion/swing/common/model/tools/loadtest/LoadTestModel.html[LoadTestModel] and {url-javadoc}{swing-common-ui-tools}/is/codion/swing/common/ui/tools/loadtest/LoadTestPanel.html[LoadTestPanel] classes as shown below.
+This is done by using the {url-javadoc}{tools-loadtest-model}/is/codion/tools/loadtest/model/LoadTestModel.html[LoadTestModel] and {url-javadoc}{tools-loadtest-ui}/is/codion/tools/loadtest/ui/LoadTestPanel.html[LoadTestPanel] classes as shown below.
 
 [source,java]
 ----
