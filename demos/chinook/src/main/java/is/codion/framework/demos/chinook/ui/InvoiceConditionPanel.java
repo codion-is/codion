@@ -141,6 +141,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		return advancedConditionPanel.initializedEvent();
 	}
 
+	@Override
 	protected void onStateChanged(ConditionState conditionState) {
 		removeAll();
 		switch (conditionState) {
