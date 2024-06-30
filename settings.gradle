@@ -118,8 +118,11 @@ project(":codion-tools-generator-model").projectDir = file("tools/generator/mode
 include "codion-tools-generator-ui"
 project(":codion-tools-generator-ui").projectDir = file("tools/generator/ui")
 
-include "codion-tools-server-monitor"
-project(":codion-tools-server-monitor").projectDir = file("tools/server-monitor")
+include "codion-tools-server-monitor-model"
+project(":codion-tools-server-monitor-model").projectDir = file("tools/server-monitor/model")
+
+include "codion-tools-server-monitor-ui"
+project(":codion-tools-server-monitor-ui").projectDir = file("tools/server-monitor/ui")
 
 include "codion-plugin-hikari-pool"
 project(":codion-plugin-hikari-pool").projectDir = file("plugins/hikari-pool")

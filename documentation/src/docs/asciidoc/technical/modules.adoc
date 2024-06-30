@@ -405,12 +405,21 @@ image::modules/swing/framework-ui-test/build/reports/dependency-graph/dependency
 == Tools
 
 [discrete]
-=== codion-tools-server-monitor
+=== codion-tools-server-monitor-model
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/tools/server-monitor/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/server-monitor/model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== codion-tools-server-monitor-ui
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/tools/server-monitor/ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 === Generator
@@ -421,7 +430,7 @@ image::modules/tools/server-monitor/build/reports/dependency-graph/dependency-gr
 .Dependency graph
 [%collapsible]
 ====
-image::modules/tools/generator-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/generator/model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -430,7 +439,7 @@ image::modules/tools/generator-model/build/reports/dependency-graph/dependency-g
 .Dependency graph
 [%collapsible]
 ====
-image::modules/tools/generator-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/generator/ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 === Load Test
@@ -441,7 +450,7 @@ image::modules/tools/generator-ui/build/reports/dependency-graph/dependency-grap
 .Dependency graph
 [%collapsible]
 ====
-image::modules/tools/loadtest-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/loadtest/model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -450,7 +459,7 @@ image::modules/tools/loadtest-model/build/reports/dependency-graph/dependency-gr
 .Dependency graph
 [%collapsible]
 ====
-image::modules/tools/loadtest-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/loadtest/ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 == Plugins
