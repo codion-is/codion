@@ -410,7 +410,7 @@ image::modules/swing/framework-ui-test/build/reports/dependency-graph/dependency
 .Dependency graph
 [%collapsible]
 ====
-image::modules/tools/server-monitor/model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/monitor/model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -419,7 +419,7 @@ image::modules/tools/server-monitor/model/build/reports/dependency-graph/depende
 .Dependency graph
 [%collapsible]
 ====
-image::modules/tools/server-monitor/ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/tools/monitor/ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 === Generator
