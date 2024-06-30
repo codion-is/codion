@@ -204,8 +204,8 @@ public final class DomainGeneratorModel {
 	}
 
 	private void search(EntityRow entityRow) {
-		apiSearchValue.set(entityRow == null ? null : DomainToString.apiSearchString(entityRow.definition));
-		implSearchValue.set(entityRow == null ? null : DomainToString.implSearchString(entityRow.definition));
+		apiSearchValue.set(entityRow == null ? null : DomainString.apiSearchString(entityRow.definition));
+		implSearchValue.set(entityRow == null ? null : DomainString.implSearchString(entityRow.definition));
 	}
 
 	/**
@@ -229,21 +229,26 @@ public final class DomainGeneratorModel {
 	}
 
 	private void updateDomainSource() {
-		String packageName = domainPackageValue.get();
-		if (!PACKAGE_PATTERN.matcher(packageName).matches()) {
-			packageName = "";
+		DatabaseDomain selectedDomain = selectedDomain();
+		if (selectedDomain != null) {
+			DomainString domainString = new DomainString(selectedDomain, domainPackageValue.optional()
+							.filter(DomainGeneratorModel::validPackageName)
+							.orElse(""));
+			domainApiValue.set(domainString.api());
+			domainImplValue.set(domainString.implementation());
+			domainCombinedValue.set(domainString.combined());
 		}
-		domainApiValue.set(DomainToString.apiString(selectedDomains(), packageName));
-		domainImplValue.set(DomainToString.implementationString(selectedDomains(), packageName));
-		domainCombinedValue.set(DomainToString.combinedString(selectedDomains(), packageName));
+		else {
+			domainApiValue.set(null);
+			domainImplValue.set(null);
+			domainCombinedValue.set(null);
+		}
 	}
 
-	private List<DatabaseDomain> selectedDomains() {
-		return schemaTableModel.selectionModel().getSelectedItems().stream()
-						.map(SchemaRow::domain)
-						.filter(Optional::isPresent)
-						.map(Optional::get)
-						.collect(toList());
+	private DatabaseDomain selectedDomain() {
+		return schemaTableModel.selectionModel().selectedItem()
+						.map(schemaRow -> schemaRow.domainModel)
+						.orElse(null);
 	}
 
 	private Path savePath(File directory) {
@@ -259,7 +264,7 @@ public final class DomainGeneratorModel {
 	}
 
 	private void saveApiImpl(Path path, SchemaRow schema) throws IOException {
-		String interfaceName = DomainToString.interfaceName(schema.domainModel.type().name(), true);
+		String interfaceName = DomainString.interfaceName(schema.domainModel.type().name(), true);
 		Files.createDirectories(path);
 		Path filePath = path.resolve(interfaceName + ".java");
 		Files.write(filePath, singleton(domainApiValue.get()));
@@ -270,9 +275,13 @@ public final class DomainGeneratorModel {
 	}
 
 	private void saveCombined(Path path, SchemaRow schema) throws IOException {
-		String interfaceName = DomainToString.interfaceName(schema.domainModel.type().name(), true);
+		String interfaceName = DomainString.interfaceName(schema.domainModel.type().name(), true);
 		Files.createDirectories(path);
 		Files.write(path.resolve(interfaceName + ".java"), singleton(domainCombinedValue.get()));
+	}
+
+	private static boolean validPackageName(String packageName) {
+		return PACKAGE_PATTERN.matcher(packageName).matches();
 	}
 
 	private final class SchemaItems implements Supplier<Collection<SchemaRow>> {

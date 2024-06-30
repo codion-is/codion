@@ -62,35 +62,39 @@ import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.concat;
 import static javax.lang.model.element.Modifier.*;
 
-final class DomainToString {
+final class DomainString {
 
 	private static final String INDENT = "\t";
 	private static final String DOUBLE_INDENT = INDENT + INDENT;
 	private static final String TRIPLE_INDENT = DOUBLE_INDENT + INDENT;
 	private static final String DOMAIN = "DOMAIN";
 
-	private DomainToString() {}
+	private final String api;
+	private final String implementation;
+	private final String combined;
 
-	static String apiString(List<DatabaseDomain> domains, String packageName) {
-		return domains.stream()
-						.map(domain -> toApiString(domain.type().name(), sortDefinitions(domain), packageName))
-						.collect(joining(LINE_SEPARATOR + LINE_SEPARATOR));
+	DomainString(DatabaseDomain domain, String packageName) {
+		requireNonNull(packageName);
+		String interfaceName = interfaceName(requireNonNull(domain).type().name(), true);
+		List<EntityDefinition> entityDefinitions = sortDefinitions(domain);
+		this.api = toApiString(entityDefinitions, packageName, interfaceName);
+		this.implementation = toImplementationString(entityDefinitions, packageName, interfaceName);
+		this.combined = toCombinedString(entityDefinitions, packageName, interfaceName);
 	}
 
-	static String implementationString(Collection<DatabaseDomain> domains, String packageName) {
-		return domains.stream()
-						.map(domain -> toImplementationString(domain.type().name(), sortDefinitions(domain), packageName))
-						.collect(joining(LINE_SEPARATOR + LINE_SEPARATOR));
+	String api() {
+		return api;
 	}
 
-	static String combinedString(Collection<DatabaseDomain> domains, String packageName) {
-		return domains.stream()
-						.map(domain -> toCombinedString(domain.type().name(), sortDefinitions(domain), packageName))
-						.collect(joining(LINE_SEPARATOR + LINE_SEPARATOR));
+	String implementation() {
+		return implementation;
 	}
 
-	private static String toApiString(String domainName, List<EntityDefinition> definitions, String packageName) {
-		String className = interfaceName(domainName, true);
+	String combined() {
+		return combined;
+	}
+
+	private static String toApiString(List<EntityDefinition> definitions, String packageName, String className) {
 		TypeSpec.Builder classBuilder = interfaceBuilder(className)
 						.addModifiers(PUBLIC)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
@@ -108,9 +112,7 @@ final class DomainToString {
 						.toString());
 	}
 
-	private static String toImplementationString(String domainName, List<EntityDefinition> definitions,
-																							 String packageName) {
-		String className = interfaceName(domainName, true);
+	private static String toImplementationString(List<EntityDefinition> definitions, String packageName, String className) {
 		TypeSpec.Builder classBuilder = classBuilder(className + "Impl")
 						.addModifiers(PUBLIC, FINAL)
 						.superclass(DomainModel.class);
@@ -137,9 +139,7 @@ final class DomainToString {
 		return sourceString;
 	}
 
-	private static String toCombinedString(String domainName, List<EntityDefinition> definitions,
-																				 String packageName) {
-		String className = interfaceName(domainName, true);
+	private static String toCombinedString(List<EntityDefinition> definitions, String packageName, String className) {
 		TypeSpec.Builder classBuilder = classBuilder(className)
 						.addModifiers(PUBLIC, FINAL)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
@@ -187,8 +187,7 @@ final class DomainToString {
 						.build();
 	}
 
-	private static Map<EntityDefinition, String> addDefinitionMethods(Collection<EntityDefinition> definitions,
-																																		TypeSpec.Builder classBuilder) {
+	private static Map<EntityDefinition, String> addDefinitionMethods(List<EntityDefinition> definitions, TypeSpec.Builder classBuilder) {
 		Map<EntityDefinition, String> definitionMethods = new LinkedHashMap<>();
 		definitions.forEach(definition ->
 						addDefinition(definition, classBuilder, definitionMethods::put));
@@ -430,7 +429,7 @@ final class DomainToString {
 																						Collection<EntityDefinition> definitions,
 																						String parentInterface) {
 		List<String> interfaceNames = definitions.stream()
-						.map(DomainToString::createInterface)
+						.map(DomainString::createInterface)
 						.map(interfaceSpec -> interfaceSpec.name)
 						.sorted()
 						.collect(toList());
@@ -470,7 +469,7 @@ final class DomainToString {
 		return "EntityDefinition " + interfaceName(definition.tableName(), false) + "()";
 	}
 
-	static List<EntityDefinition> sortDefinitions(Domain domain) {
+	private static List<EntityDefinition> sortDefinitions(Domain domain) {
 		Map<EntityType, Set<EntityType>> dependencies = dependencies(domain);
 		Collection<EntityDefinition> definitions = domain.entities().definitions();
 
@@ -484,7 +483,7 @@ final class DomainToString {
 						.collect(toList());
 	}
 
-	static boolean cyclicalDependencies(Collection<EntityDefinition> definitions) {
+	private static boolean cyclicalDependencies(Collection<EntityDefinition> definitions) {
 		Map<EntityType, EntityDefinition> definitionMap = definitions.stream()
 						.collect(toMap(EntityDefinition::entityType, identity()));
 		for (EntityDefinition definition : definitions) {
