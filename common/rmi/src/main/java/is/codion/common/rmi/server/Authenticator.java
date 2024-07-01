@@ -20,11 +20,13 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.rmi.server.exception.LoginException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * An authenticator.
@@ -71,12 +73,7 @@ public interface Authenticator {
 	 */
 	static List<Authenticator> authenticators() {
 		try {
-			List<Authenticator> authenticators = new ArrayList<>();
-			for (Authenticator authenticator : ServiceLoader.load(Authenticator.class)) {
-				authenticators.add(authenticator);
-			}
-
-			return authenticators;
+			return stream(ServiceLoader.load(Authenticator.class).spliterator(), false).collect(toList());
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

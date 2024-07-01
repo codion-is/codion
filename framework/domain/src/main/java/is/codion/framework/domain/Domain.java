@@ -29,13 +29,14 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.entity.Entities;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Represents an application domain model, entities, reports and database operations.
@@ -118,14 +119,8 @@ public interface Domain {
 	 * @return a list containing all the Domains registered with {@link ServiceLoader}.
 	 */
 	static List<Domain> domains() {
-		List<Domain> domains = new ArrayList<>();
 		try {
-			ServiceLoader<Domain> loader = ServiceLoader.load(Domain.class);
-			for (Domain domain : loader) {
-				domains.add(domain);
-			}
-
-			return unmodifiableList(domains);
+			return unmodifiableList(stream(ServiceLoader.load(Domain.class).spliterator(), false).collect(toList()));
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

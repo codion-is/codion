@@ -25,6 +25,7 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Provides {@link EntityObjectMapper} instances for a given domain.<br>
@@ -57,15 +58,11 @@ public interface EntityObjectMapperFactory {
 	static EntityObjectMapperFactory instance(DomainType domainType) {
 		requireNonNull(domainType);
 		try {
-			ServiceLoader<EntityObjectMapperFactory> loader = ServiceLoader.load(EntityObjectMapperFactory.class);
-			for (EntityObjectMapperFactory factory : loader) {
-				if (factory.compatibleWith(domainType)) {
-					return factory;
-				}
-			}
-
-			//compatible with all domain models
-			return mapperDomainType -> true;
+			return stream(ServiceLoader.load(EntityObjectMapperFactory.class).spliterator(), false)
+							.filter(factory -> factory.compatibleWith(domainType))
+							.findFirst()
+							//compatible with all domain models
+							.orElse(mapperDomainType -> true);
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

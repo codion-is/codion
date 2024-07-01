@@ -19,13 +19,13 @@
 package is.codion.common.resource;
 
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 final class DefaultMessageBundle extends ResourceBundle implements MessageBundle {
 
@@ -58,13 +58,9 @@ final class DefaultMessageBundle extends ResourceBundle implements MessageBundle
 
 	private static Resources resources() {
 		try {
-			ServiceLoader<Resources> loader = ServiceLoader.load(Resources.class);
-			Iterator<Resources> iterator = loader.iterator();
-			if (iterator.hasNext()) {
-				return iterator.next();
-			}
-
-			return DEFAULT;
+			return stream(ServiceLoader.load(Resources.class).spliterator(), false)
+							.findFirst()
+							.orElse(DEFAULT);
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

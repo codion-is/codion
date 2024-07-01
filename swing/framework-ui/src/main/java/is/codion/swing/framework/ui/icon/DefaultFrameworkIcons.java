@@ -32,11 +32,11 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static is.codion.swing.framework.ui.icon.FrameworkIkon.*;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * A default FrameworkIcons implementation.
@@ -238,14 +238,10 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
 	private static FrameworkIcons createInstance() {
 		String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
 		try {
-			ServiceLoader<FrameworkIcons> loader = ServiceLoader.load(FrameworkIcons.class);
-			for (FrameworkIcons icons : loader) {
-				if (Objects.equals(icons.getClass().getName(), iconsClassName)) {
-					return icons;
-				}
-			}
-
-			throw new IllegalArgumentException("FrameworkIcons implementation " + iconsClassName + " not found");
+			return stream(ServiceLoader.load(FrameworkIcons.class).spliterator(), false)
+							.filter(icons -> icons.getClass().getName().equals(iconsClassName))
+							.findFirst()
+							.orElseThrow(() -> new IllegalArgumentException("FrameworkIcons implementation " + iconsClassName + " not found"));
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

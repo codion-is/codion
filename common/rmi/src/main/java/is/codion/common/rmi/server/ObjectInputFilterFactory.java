@@ -23,6 +23,7 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Creates {@link ObjectInputFilter} a instance.
@@ -43,14 +44,10 @@ public interface ObjectInputFilterFactory {
 	static ObjectInputFilterFactory instance(String classname) {
 		requireNonNull(classname, "classname");
 		try {
-			ServiceLoader<ObjectInputFilterFactory> loader = ServiceLoader.load(ObjectInputFilterFactory.class);
-			for (ObjectInputFilterFactory factory : loader) {
-				if (factory.getClass().getName().equals(classname)) {
-					return factory;
-				}
-			}
-
-			throw new IllegalStateException("No object input filter factory of type: " + classname + " available");
+			return stream(ServiceLoader.load(ObjectInputFilterFactory.class).spliterator(), false)
+							.filter(factory -> factory.getClass().getName().equals(classname))
+							.findFirst()
+							.orElseThrow(() -> new IllegalStateException("No object input filter factory of type: " + classname + " available"));
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

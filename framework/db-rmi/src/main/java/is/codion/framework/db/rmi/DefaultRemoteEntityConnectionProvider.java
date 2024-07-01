@@ -51,9 +51,6 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
 
-	private static final String CONNECTED = "connected";
-	private static final String ENTITIES = "entities";
-
 	private Server<RemoteEntityConnection, ServerAdmin> server;
 	private String serverName;
 	private boolean truststoreResolved = false;
@@ -162,6 +159,9 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 	}
 
 	private static final class RemoteEntityConnectionHandler implements InvocationHandler {
+
+		private static final String CONNECTED = "connected";
+		private static final String ENTITIES = "entities";
 
 		private final Map<Method, Method> methodCache = new HashMap<>();
 		private final RemoteEntityConnection remoteConnection;

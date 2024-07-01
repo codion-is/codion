@@ -23,6 +23,7 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Provides a {@link AuxiliaryServer} implementation.
@@ -51,13 +52,10 @@ public interface AuxiliaryServerFactory<C extends Remote, A extends ServerAdmin,
 	static <C extends Remote, A extends ServerAdmin, T extends AuxiliaryServer> AuxiliaryServerFactory<C, A, T> instance(String classname) {
 		requireNonNull(classname, "classname");
 		try {
-			for (AuxiliaryServerFactory<C, A, T> serverProvider : ServiceLoader.load(AuxiliaryServerFactory.class)) {
-				if (serverProvider.getClass().getName().equals(classname)) {
-					return serverProvider;
-				}
-			}
-
-			throw new IllegalStateException("No auxiliary server factory of type: " + classname + " available");
+			return stream(ServiceLoader.load(AuxiliaryServerFactory.class).spliterator(), false)
+							.filter(serverFactory -> serverFactory.getClass().getName().equals(classname))
+							.findFirst()
+							.orElseThrow(() -> new IllegalStateException("No auxiliary server factory of type: " + classname + " available"));
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

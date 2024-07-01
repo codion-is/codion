@@ -31,6 +31,8 @@ import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import static java.util.stream.StreamSupport.stream;
+
 /**
  * Specifies a class responsible for providing a single {@link EntityConnection} instance.
  * {@link #connection()} is guaranteed to return a healthy connection or throw an exception.
@@ -148,13 +150,10 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	static Builder<?, ?> builder() {
 		String clientConnectionType = CLIENT_CONNECTION_TYPE.getOrThrow();
 		try {
-			for (Builder<?, ?> builder : ServiceLoader.load(Builder.class)) {
-				if (builder.connectionType().equalsIgnoreCase(clientConnectionType)) {
-					return builder;
-				}
-			}
-
-			throw new IllegalArgumentException("No connection provider builder available for requested client connection type: " + clientConnectionType);
+			return stream(ServiceLoader.load(Builder.class).spliterator(), false)
+							.filter(builder -> builder.connectionType().equalsIgnoreCase(clientConnectionType))
+							.findFirst()
+							.orElseThrow(() -> new IllegalArgumentException("No connection provider builder available for requested client connection type: " + clientConnectionType));
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

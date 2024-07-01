@@ -24,6 +24,7 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Provides {@link Database} implementations
@@ -64,14 +65,10 @@ public interface DatabaseFactory {
 	static DatabaseFactory instance(String url) throws SQLException {
 		String driver = driverClassName(url);
 		try {
-			ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
-			for (DatabaseFactory factory : loader) {
-				if (factory.driverCompatible(driver)) {
-					return factory;
-				}
-			}
-
-			throw new IllegalArgumentException("No DatabaseFactory implementation available for driver: " + driver);
+			return stream(ServiceLoader.load(DatabaseFactory.class).spliterator(), false)
+							.filter(factory -> factory.driverCompatible(driver))
+							.findFirst()
+							.orElseThrow(() -> new IllegalArgumentException("No DatabaseFactory implementation available for driver: " + driver));
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

@@ -22,11 +22,11 @@ import is.codion.common.db.connection.ConnectionFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 
-import java.util.Iterator;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Provides connection pool implementations
@@ -52,14 +52,10 @@ public interface ConnectionPoolFactory {
 	static ConnectionPoolFactory instance(String classname) {
 		requireNonNull(classname, "classname");
 		try {
-			ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
-			for (ConnectionPoolFactory factory : loader) {
-				if (factory.getClass().getName().equals(classname)) {
-					return factory;
-				}
-			}
-
-			throw new IllegalStateException("No connection pool factory of type: " + classname + " available");
+			return stream(ServiceLoader.load(ConnectionPoolFactory.class).spliterator(), false)
+							.filter(factory -> factory.getClass().getName().equals(classname))
+							.findFirst()
+							.orElseThrow(() -> new IllegalStateException("No connection pool factory of type: " + classname + " available"));
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();
@@ -77,13 +73,9 @@ public interface ConnectionPoolFactory {
 	 */
 	static ConnectionPoolFactory instance() {
 		try {
-			ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
-			Iterator<ConnectionPoolFactory> iterator = loader.iterator();
-			if (iterator.hasNext()) {
-				return iterator.next();
-			}
-
-			throw new IllegalStateException("No connection pool factory available");
+			return stream(ServiceLoader.load(ConnectionPoolFactory.class).spliterator(), false)
+							.findFirst()
+							.orElseThrow(() -> new IllegalStateException("No connection pool factory available"));
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();
