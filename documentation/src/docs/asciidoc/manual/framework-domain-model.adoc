@@ -552,18 +552,18 @@ include::{dir-petstore-source}/is/codion/framework/demos/petstore/manual/Entitie
 
 === Introduction
 
-To unit test the CRUD operations on the domain model extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/DomainTest.html[DomainTest].
+To unit test the CRUD operations on the domain model extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.html[DomainTest].
 
 The unit tests are run within a single transaction which is rolled back after the test finishes, so these tests are pretty much guaranteed to leave no junk data behind.
 
 === DomainTest
 
-The following methods all have default implementations which are based on randomly created values, based on the value constraints set in the domain model, override if the default ones are not working.
+The DomainTest uses a default {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DefaultEntityFactory.html[EntityFactory] implementation which provides test entities with randomly created values, based on the value constraints set in the domain model. Extend this class and pass to the super constructor, overriding the required methods.
 
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/DomainTest.html#initializeForeignKeyEntity{opar}is.codion.framework.domain.entity.attribute.ForeignKey{comma}java.util.Map{cpar}[initializeForeignKeyEntity] should return an entity instance for the given foreign key to use for a foreign key reference required for inserting the entity being tested.
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/DomainTest.html#initializeTestEntity{opar}is.codion.framework.domain.entity.EntityType{comma}java.util.Map{cpar}[initializeTestEntity] should return an entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/DomainTest.html#modifyEntity{opar}is.codion.framework.domain.entity.Entity{comma}java.util.Map{cpar}[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated.
-If *modifyEntity* returns an unmodified entity, the update test is skipped.
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#foreignKey{opar}is.codion.framework.domain.entity.attribute.ForeignKey{comma}java.util.Map{cpar}[foreignKey] should return an entity instance for the given foreign key to use for a foreign key reference required for inserting the entity being tested.
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#entity{opar}is.codion.framework.domain.entity.EntityType{comma}java.util.Map{cpar}[entity] should return an entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#modify{opar}is.codion.framework.domain.entity.Entity{comma}java.util.Map{cpar}[modify] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated.
+If *modify* returns an unmodified entity, the update test is skipped.
 
 To run the full CRUD test for a domain entity you need to call the *test(EntityType entityType)* method with the entity type as parameter.
 You can either create a single *testDomain()* method and call the *test* method in turn for each entityType or create a *entityName* method for each domain entity, as we do in the example below.
