@@ -108,8 +108,9 @@ public interface ProxyBuilder<T> {
 		 * Invokes this proxy method.
 		 * @param parameters the parameters
 		 * @return the result
+		 * @throws Throwable in case of an exception
 		 */
-		Object invoke(Parameters<T> parameters);
+		Object invoke(Parameters<T> parameters) throws Throwable;
 
 		/**
 		 * Parameters available to the invocation handler when calling a proxy method.
