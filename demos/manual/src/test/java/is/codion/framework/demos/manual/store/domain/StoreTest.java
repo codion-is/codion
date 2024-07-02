@@ -22,11 +22,11 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
-import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
-public final class StoreTest extends EntityTestUnit {
+public final class StoreTest extends DomainTest {
 
 	public StoreTest() {
 		super(new Store());

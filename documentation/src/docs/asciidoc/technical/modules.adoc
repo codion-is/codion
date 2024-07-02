@@ -187,7 +187,7 @@ image::modules/framework/domain/build/reports/dependency-graph/dependency-graph.
 
 Domain model unit test related classes.
 
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/package-summary.html[is.codion.framework.domain.entity.test]
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/package-summary.html[is.codion.framework.domain.test]
 
 .Dependency graph
 [%collapsible]

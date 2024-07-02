@@ -76,13 +76,13 @@ include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[
 
 === Domain unit test
 
-To unit test the domain model we extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html[EntityTestUnit] and create a public test method for each entity we want tested and within that method call *test(entityType)*.
-The *EntityTestUnit* relies on information from the domain model to construct random entity instances and run insert, update, select and delete tests.
+To unit test the domain model we extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.html[DomainTest] and create a test method for each entity we want tested and within that method call *test(entityType)*.
+The *DomainTest* relies on information from the domain model to construct random entity instances and run insert, update, select and delete tests.
 The tests are run within their own transactions which are then rolled back.
-We can provide our own entity instances if we'd like by overriding *initializeTestEntity(entityType, foreignKeyEntities)* handling the cases we'd like and delegating the rest to the superclass implementation.
+We can provide our own entity instances by passing our own *EntityFactory* implementation to the super constructor, overriding *entity(entityType, foreignKeyEntities)* handling the cases we'd like and delegating the rest to the superclass implementation.
 The same can be done for entities that are referenced via foreign keys and are required in order to be able to insert records.
 
-NOTE: The {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#TEST_USER[EntityTestUnit.TEST_USER] configuration value specifies the user credentials to use when running the tests, you can set it directly or via the *codion.test.user* system property.
+NOTE: The {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.html#TEST_USER[DomainTest.TEST_USER] configuration value specifies the user credentials to use when running the tests, you can set it directly or via the *codion.test.user* system property.
 
 [source,java]
 ----

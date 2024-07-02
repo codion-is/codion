@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2008 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity.test;
+package is.codion.framework.domain.test;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * A class for unit testing a domain model.
  */
-public class EntityTestUnit {
+public class DomainTest {
 
 	/**
 	 * Specifies the database user to use when running domain unit tests.
@@ -59,39 +59,39 @@ public class EntityTestUnit {
 	private final EntityFactory entityFactory;
 
 	/**
-	 * Instantiates a new EntityTestUnit.
+	 * Instantiates a new DomainTest.
 	 * The default database user is based on the {@link #TEST_USER} configuration value.
 	 * @param domain the domain model
 	 */
-	public EntityTestUnit(Domain domain) {
+	public DomainTest(Domain domain) {
 		this(domain, initializeDefaultUser());
 	}
 
 	/**
-	 * Instantiates a new EntityTestUnit.
+	 * Instantiates a new DomainTest.
 	 * @param domain the domain model
 	 * @param entityFactory the factory used to create test entities
 	 */
-	public EntityTestUnit(Domain domain, EntityFactory entityFactory) {
+	public DomainTest(Domain domain, EntityFactory entityFactory) {
 		this(domain, entityFactory, initializeDefaultUser());
 	}
 
 	/**
-	 * Instantiates a new EntityTestUnit.
+	 * Instantiates a new DomainTest.
 	 * @param domain the domain model
 	 * @param user the user to use when running the tests
 	 */
-	public EntityTestUnit(Domain domain, User user) {
+	public DomainTest(Domain domain, User user) {
 		this(domain, new DefaultEntityFactory(domain.entities()), user);
 	}
 
 	/**
-	 * Instantiates a new EntityTestUnit.
+	 * Instantiates a new DomainTest.
 	 * @param domain the domain model
 	 * @param entityFactory the factory used to create test entities
 	 * @param user the user to use when running the tests
 	 */
-	public EntityTestUnit(Domain domain, EntityFactory entityFactory, User user) {
+	public DomainTest(Domain domain, EntityFactory entityFactory, User user) {
 		this.connectionProvider = LocalEntityConnectionProvider.builder()
 						.domain(requireNonNull(domain, "domain"))
 						.clientTypeId(getClass().getName())
@@ -197,7 +197,7 @@ public class EntityTestUnit {
 	}
 
 	/**
-	 * @return the EntityConnection instance used by this EntityTestUnit
+	 * @return the EntityConnection instance used by this DomainTest
 	 */
 	protected final EntityConnection connection() {
 		return connectionProvider.connection();
@@ -252,7 +252,6 @@ public class EntityTestUnit {
 	 * @param entity the entity to test updating
 	 * @param foreignKeyEntities the entities referenced via foreign keys
 	 * @param connection the connection to use
-	 * @param entityTestUnit the test unit instance, for modifying the entity
 	 * @throws DatabaseException in case of an exception
 	 */
 	private static void testUpdate(Entity entity, EntityConnection connection) throws DatabaseException {

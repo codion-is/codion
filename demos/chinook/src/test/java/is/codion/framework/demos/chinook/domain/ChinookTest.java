@@ -24,8 +24,8 @@ import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.test.DefaultEntityFactory;
-import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.test.DefaultEntityFactory;
+import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +37,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ChinookTest extends EntityTestUnit {
+public class ChinookTest extends DomainTest {
 
 	private static final ChinookImpl DOMAIN = new ChinookImpl();
 

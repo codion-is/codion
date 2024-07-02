@@ -20,12 +20,12 @@ package is.codion.framework.demos.employees.domain;
 
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
-import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
 // tag::domainTest[]
-public class EmployeesTest extends EntityTestUnit {
+public class EmployeesTest extends DomainTest {
 
 	public EmployeesTest() {
 		super(new Employees());

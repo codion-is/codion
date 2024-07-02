@@ -20,11 +20,11 @@ package is.codion.framework.demos.manual.store.minimal.domain;
 
 import is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
-import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
-public class StoreTest extends EntityTestUnit {
+public class StoreTest extends DomainTest {
 
 	public StoreTest() {
 		super(new Store());

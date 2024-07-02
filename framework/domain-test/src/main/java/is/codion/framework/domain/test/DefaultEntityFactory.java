@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2021 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity.test;
+package is.codion.framework.domain.test;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.item.Item;
@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.test.DomainTest.EntityFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Handles creating and manipulating Entity instances for testing purposes.
  */
-public class DefaultEntityFactory implements EntityTestUnit.EntityFactory {
+public class DefaultEntityFactory implements EntityFactory {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityFactory.class);
 
@@ -373,7 +374,7 @@ public class DefaultEntityFactory implements EntityTestUnit.EntityFactory {
 			return connection.insertSelect(entity);
 		}
 		catch (DatabaseException e) {
-			LOG.error("EntityTestUnit.insertOrSelect()", e);
+			LOG.error("DefaultEntityFactory.insertOrSelect()", e);
 			throw new DatabaseException(e.getMessage() + ": " + entity);
 		}
 	}

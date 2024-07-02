@@ -23,7 +23,7 @@ import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.test.DefaultEntityFactory;
+import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import java.util.HashMap;

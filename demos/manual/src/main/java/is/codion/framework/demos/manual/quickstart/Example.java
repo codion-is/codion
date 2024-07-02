@@ -36,7 +36,7 @@ import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.test.DomainTest;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -242,7 +242,7 @@ public final class Example {
 
 	static void domainModelTest() {
 		// tag::domainModelTest[]
-		class StoreTest extends EntityTestUnit {
+		class StoreTest extends DomainTest {
 
 			public StoreTest() {
 				super(new Store(), User.parse("scott:tiger"));

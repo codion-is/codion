@@ -7,6 +7,8 @@ Codion Change Log
 - ProxyBuilder.ProxyMethod.invoke() now throws Throwable.
 ### is.codion.common.db
 - AbstractConnectionPoolWrapper now uses ProxyBuilder.
+### is.codion.framework.domain.test
+- EntityTestUnit renamed DomainTest.
 ### is.codion.tools.monitor.ui
 - HostMonitorPanel, refresh toolbar removed.
 ### is.codion.swing.framework.ui

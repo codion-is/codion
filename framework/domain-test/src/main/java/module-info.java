@@ -19,8 +19,8 @@
 /**
  * Domain model unit test classes.<br>
  * <br>
- * {@link is.codion.framework.domain.entity.test.EntityTestUnit}<br>
- * {@link is.codion.framework.domain.entity.test.DefaultEntityFactory}<br>
+ * {@link is.codion.framework.domain.test.DomainTest}<br>
+ * {@link is.codion.framework.domain.test.DefaultEntityFactory}<br>
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.domain.test {
@@ -29,5 +29,5 @@ module is.codion.framework.domain.test {
 	requires transitive is.codion.framework.db.core;
 	requires is.codion.framework.db.local;
 
-	exports is.codion.framework.domain.entity.test;
+	exports is.codion.framework.domain.test;
 }

@@ -18,13 +18,13 @@
  */
 package is.codion.framework.demos.petstore.domain;
 
-import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
-public class PetstoreTest extends EntityTestUnit {
+public class PetstoreTest extends DomainTest {
 
 	public PetstoreTest() {
 		super(new Petstore());

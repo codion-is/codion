@@ -24,8 +24,8 @@ import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.test.DefaultEntityFactory;
-import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.test.DefaultEntityFactory;
+import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.UUID;
 
 // tag::storeTest[]
-public class StoreTest extends EntityTestUnit {
+public class StoreTest extends DomainTest {
 
 	private static final Store DOMAIN = new Store();
 

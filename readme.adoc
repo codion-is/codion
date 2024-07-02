@@ -343,12 +343,12 @@ add(address);
 |is.codion.framework.domain.test|is.codion:codion-framework-domain-test:{version}
 |===
 
-The `EntityTestUnit` class provides a JUnit testing harness for the domain model.
-The `EntityTestUnit.test(entityType)` method runs insert, select, update and delete on a randomly (or manually) generated entity instance, verifying the results.
+The `DomainTest` class provides a JUnit testing harness for the domain model.
+The `DomainTest.test(entityType)` method runs insert, select, update and delete on a randomly (or manually) generated entity instance, verifying the results.
 
 [source,java]
 ----
-public class StoreTest extends EntityTestUnit {
+public class StoreTest extends DomainTest {
 
   public StoreTest() {
     super(new Store());

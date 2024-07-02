@@ -26,14 +26,14 @@ import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.test.DefaultEntityFactory;
-import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.test.DefaultEntityFactory;
+import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-public final class WorldImplTest extends EntityTestUnit {
+public final class WorldImplTest extends DomainTest {
 
 	private static final WorldImpl DOMAIN = new WorldImpl();
 

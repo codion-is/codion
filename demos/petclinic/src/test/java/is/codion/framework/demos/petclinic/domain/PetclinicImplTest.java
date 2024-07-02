@@ -26,11 +26,11 @@ import is.codion.framework.demos.petclinic.domain.api.Specialty;
 import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
-import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
-public final class PetclinicImplTest extends EntityTestUnit {
+public final class PetclinicImplTest extends DomainTest {
 
 	public PetclinicImplTest() {
 		super(new PetclinicImpl());
