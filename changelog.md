@@ -9,6 +9,8 @@ Codion Change Log
 - AbstractConnectionPoolWrapper now uses ProxyBuilder.
 ### is.codion.tools.monitor.ui
 - HostMonitorPanel, refresh toolbar removed.
+### is.codion.swing.framework.ui
+- EntityTablePanel bug fixed, refresh progress bar did not updateUI() when switching look and feel.
 
 ## 0.18.4
 ### is.codion

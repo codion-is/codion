@@ -88,6 +88,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -2681,6 +2682,12 @@ public class EntityTablePanel extends JPanel {
 			}
 		}
 
+		@Override
+		public void updateUI() {
+			super.updateUI();
+			Utilities.updateUI(statusPanel);
+		}
+
 		private StatusPanel statusPanel() {
 			if (statusPanel == null) {
 				statusPanel = new StatusPanel();
@@ -2710,8 +2717,17 @@ public class EntityTablePanel extends JPanel {
 		private final Value<String> statusMessage = Value.nonNull("")
 						.initialValue(configuration.statusMessage.apply(tableModel))
 						.build();
-		private final JLabel label = createStatusLabel();
-		private final JPanel progressPanel = createProgressPanel();
+		private final JLabel label = Components.label(statusMessage)
+						.horizontalAlignment(SwingConstants.CENTER)
+						.build();
+		private final JProgressBar progressBar = Components.progressBar()
+						.indeterminate(true)
+						.string(MESSAGES.getString("refreshing"))
+						.stringPainted(true)
+						.build();
+		private final JPanel progressPanel = Components.panel(new GridBagLayout())
+						.add(progressBar, createHorizontalFillConstraints())
+						.build();
 
 		private StatusPanel() {
 			super(new BorderLayout());
@@ -2724,20 +2740,10 @@ public class EntityTablePanel extends JPanel {
 			}
 		}
 
-		private JLabel createStatusLabel() {
-			return Components.label(statusMessage)
-							.horizontalAlignment(SwingConstants.CENTER)
-							.build();
-		}
-
-		private static JPanel createProgressPanel() {
-			return Components.panel(new GridBagLayout())
-							.add(Components.progressBar()
-											.indeterminate(true)
-											.string(MESSAGES.getString("refreshing"))
-											.stringPainted(true)
-											.build(), createHorizontalFillConstraints())
-							.build();
+		@Override
+		public void updateUI() {
+			super.updateUI();
+			Utilities.updateUI(label, progressBar, progressPanel);
 		}
 
 		private JPopupMenu createLimitMenu() {
