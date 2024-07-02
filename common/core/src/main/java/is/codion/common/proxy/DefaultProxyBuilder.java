@@ -184,10 +184,12 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 
 		private final String methodName;
 		private final Class<?>[] parameterTypes;
+		private final int hashCode;
 
 		private MethodKey(Method method) {
 			this.methodName = method.getName();
 			this.parameterTypes = method.getParameterTypes();
+			this.hashCode = createHashCode();
 		}
 
 		@Override
@@ -206,10 +208,11 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 
 		@Override
 		public int hashCode() {
-			int result = methodName.hashCode();
-			result = 31 * result + Arrays.hashCode(parameterTypes);
+			return hashCode;
+		}
 
-			return result;
+		private int createHashCode() {
+			return 31 * methodName.hashCode() + Arrays.hashCode(parameterTypes);
 		}
 	}
 }
