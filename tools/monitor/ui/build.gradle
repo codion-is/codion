@@ -9,7 +9,7 @@ dependencies {
 
     implementation project(":codion-framework-server")
 
-    implementation project(":codion-tools-server-monitor-model")
+    implementation project(":codion-tools-monitor-model")
 
     implementation(libs.flatlaf.intellij.themes)
     implementation(libs.slf4j.api)
