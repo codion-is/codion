@@ -194,7 +194,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
 	private Control createRefreshControl() {
 		return Control.builder()
-						.command(model::refresh)
+						.command(this::refresh)
 						.name("Refresh")
 						.mnemonic('R')
 						.build();

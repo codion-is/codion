@@ -18,8 +18,6 @@
  */
 package is.codion.tools.monitor.ui;
 
-import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.tools.monitor.model.HostMonitor;
 import is.codion.tools.monitor.model.ServerMonitor;
 
@@ -28,7 +26,6 @@ import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
-import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
 
@@ -54,18 +51,9 @@ public final class HostMonitorPanel extends JPanel {
 
 	private void initializeUI() throws RemoteException {
 		setLayout(borderLayout());
-		add(toolBar(controls()).build(), BorderLayout.NORTH);
 		serverPane = new JTabbedPane();
 		add(serverPane, BorderLayout.CENTER);
 		addServerTabs();
-	}
-
-	private Controls controls() {
-		return Controls.builder()
-						.control(Control.builder()
-										.command(model::refresh)
-										.name("Refresh"))
-						.build();
 	}
 
 	private void bindEvents() {
