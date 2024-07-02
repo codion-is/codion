@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.core
 - DefaultProxyBuilder.MethodKey now caches the hashCode.
 - ProxyBuilder.ProxyMethod.invoke() now throws Throwable.
+### is.codion.common.db
+- AbstractConnectionPoolWrapper now uses ProxyBuilder.
 
 ## 0.18.4
 ### is.codion

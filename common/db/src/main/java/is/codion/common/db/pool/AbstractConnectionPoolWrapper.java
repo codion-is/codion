@@ -21,17 +21,17 @@ package is.codion.common.db.pool;
 import is.codion.common.db.connection.ConnectionFactory;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.proxy.ProxyBuilder;
+import is.codion.common.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.common.user.User;
 
 import javax.sql.DataSource;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import static java.lang.reflect.Proxy.newProxyInstance;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -39,6 +39,9 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the type representing the actual pool object
  */
 public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPoolWrapper {
+
+	private static final String GET_CONNECTION = "getConnection";
+	private static final String CLOSE = "close";
 
 	/**
 	 * The actual connection pool object
@@ -169,48 +172,39 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	}
 
 	private DataSource createDataSourceProxy(DataSource dataSource) {
-		return (DataSource) newProxyInstance(DataSource.class.getClassLoader(),
-						new Class[] {DataSource.class}, new DataSourceInvocationHandler(dataSource));
+		GetConnection getConnection = new GetConnection();
+
+		return ProxyBuilder.builder(DataSource.class)
+						.delegate(dataSource)
+						.method(GET_CONNECTION, getConnection)
+						.method(GET_CONNECTION, asList(String.class, String.class), getConnection)
+						.build();
 	}
 
-	private final class DataSourceInvocationHandler implements InvocationHandler {
-
-		private final DataSource dataSource;
-
-		private DataSourceInvocationHandler(DataSource dataSource) {
-			this.dataSource = dataSource;
-		}
+	private final class GetConnection implements ProxyMethod<DataSource> {
 
 		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			if ("getConnection".equals(method.getName())) {
-				Connection connection = connectionFactory.createConnection(user);
-				counter.incrementConnectionsCreatedCounter();
+		public Object invoke(Parameters<DataSource> parameters) throws Throwable {
+			Connection connection = connectionFactory.createConnection(user);
+			counter.incrementConnectionsCreatedCounter();
 
-				return newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class},
-								new ConnectionInvocationHandler(connection));
-			}
-
-			return method.invoke(dataSource, args);
+			return ProxyBuilder.builder(Connection.class)
+							.delegate(connection)
+							.method(CLOSE, new Close())
+							.build();
 		}
 	}
 
-	private final class ConnectionInvocationHandler implements InvocationHandler {
-
-		private final Connection connection;
-
-		private ConnectionInvocationHandler(Connection connection) {
-			this.connection = connection;
-		}
+	private final class Close implements ProxyMethod<Connection> {
 
 		@Override
-		public Object invoke(Object connectionProxy, Method connectionMethod,
-												 Object[] connectionArgs) throws Throwable {
-			if ("close".equals(connectionMethod.getName()) && !connection.isClosed()) {
+		public Object invoke(Parameters<Connection> parameters) throws Throwable {
+			Connection connection = parameters.delegate();
+			if (!connection.isClosed()) {
 				counter.incrementConnectionsDestroyedCounter();
 			}
-
-			return connectionMethod.invoke(connection, connectionArgs);
+			connection.close();
+			return null;
 		}
 	}
 }
