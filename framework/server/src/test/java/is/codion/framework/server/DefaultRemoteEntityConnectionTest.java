@@ -79,7 +79,7 @@ public class DefaultRemoteEntityConnectionTest {
 		connection.delete(condition);
 		assertTrue(connection.select(condition).isEmpty());
 		connection.close();
-		connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
+		connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1239);
 		assertFalse(connection.select(condition).isEmpty());
 		connection.close();
 	}
@@ -92,7 +92,7 @@ public class DefaultRemoteEntityConnectionTest {
 		try {
 			RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
 							.user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
-			adapter = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
+			adapter = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1240);
 
 			registry = Server.Locator.registry();
 
