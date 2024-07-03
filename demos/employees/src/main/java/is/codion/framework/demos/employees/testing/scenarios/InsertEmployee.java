@@ -22,12 +22,8 @@ import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.swing.framework.model.SwingEntityModel;
-
-import java.util.HashMap;
-import java.util.Map;
 
 // tag::loadTest[]
 public final class InsertEmployee extends AbstractPerformer {
@@ -37,9 +33,9 @@ public final class InsertEmployee extends AbstractPerformer {
 		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
 		selectRandomRow(departmentModel.tableModel());
 		SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
-		Map<ForeignKey, Entity> foreignKeyEntities = new HashMap<>();
-		foreignKeyEntities.put(Employee.DEPARTMENT_FK, departmentModel.tableModel().selectionModel().getSelectedItem());
-		employeeModel.editModel().set(new DefaultEntityFactory(application.entities()).entity(Employee.TYPE, foreignKeyEntities));
+		Entity employee = new DefaultEntityFactory(application.entities()).entity(Employee.TYPE);
+		employee.put(Employee.DEPARTMENT_FK, departmentModel.tableModel().selectionModel().getSelectedItem());
+		employeeModel.editModel().set(employee);
 		employeeModel.editModel().insert();
 	}
 }

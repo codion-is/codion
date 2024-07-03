@@ -23,14 +23,12 @@ import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistP
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Map;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static java.util.Arrays.asList;
@@ -129,20 +127,20 @@ public class ChinookTest extends DomainTest {
 		}
 
 		@Override
-		public void modify(Entity entity, Map<ForeignKey, Entity> foreignKeyEntities) {
-			super.modify(entity, foreignKeyEntities);
+		public void modify(Entity entity) {
+			super.modify(entity);
 			if (entity.entityType().equals(Album.TYPE)) {
 				entity.put(Album.TAGS, asList("tag_one", "tag_two", "tag_three"));
 			}
 		}
 
 		@Override
-		protected <T> T createValue(Attribute<T> attribute, Map<ForeignKey, Entity> referenceEntities) {
+		protected <T> T createValue(Attribute<T> attribute) {
 			if (attribute.equals(Album.TAGS)) {
 				return (T) asList("tag_one", "tag_two");
 			}
 
-			return super.createValue(attribute, referenceEntities);
+			return super.createValue(attribute);
 		}
 	}
 }

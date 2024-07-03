@@ -36,8 +36,7 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -82,7 +81,7 @@ public class DomainTest {
 	 * @param user the user to use when running the tests
 	 */
 	public DomainTest(Domain domain, User user) {
-		this(domain, new DefaultEntityFactory(domain.entities()), user);
+		this(domain, new DefaultEntityFactory(requireNonNull(domain).entities()), user);
 	}
 
 	/**
@@ -116,14 +115,17 @@ public class DomainTest {
 		EntityConnection connection = connectionProvider.connection();
 		connection.startTransaction();
 		try {
-			Map<ForeignKey, Entity> foreignKeyEntities = entityFactory.foreignKeyEntities(entityType, new HashMap<>(), connection);
+			entityFactory.populateForeignKeys(entityType, connection);
 			Entity entity = null;
 			EntityDefinition entityDefinition = entities().definition(entityType);
 			if (!entityDefinition.readOnly()) {
-				entity = testInsert(requireNonNull(entityFactory.entity(entityType, foreignKeyEntities),
-								"EntityFactory.entity() must return a non-null entity"), connection);
+				entity = entityFactory.entity(entityType);
+				if (entity == null) {
+					throw new IllegalStateException("EntityFactory.entity() must return a non-null entity");
+				}
+				entity = testInsert(entity, connection);
 				assertTrue(entity.primaryKey().isNotNull());
-				entityFactory.modify(entity, entityFactory.foreignKeyEntities(entityType, foreignKeyEntities, connection));
+				entityFactory.modify(entity);
 				testUpdate(entity, connection);
 			}
 			testSelect(entityType, entity, connection);
@@ -151,24 +153,14 @@ public class DomainTest {
 		Entity entity(EntityType entityType);
 
 		/**
-		 * This method returns the Entity instance on which to run the tests, by default this method creates an instance
-		 * filled with random values.
-		 * @param entityType the entityType for which to initialize an entity instance for testing
-		 * @param foreignKeyEntities the entities referenced via foreign keys
-		 * @return the entity instance to use for testing the entity type
-		 */
-		Entity entity(EntityType entityType, Map<ForeignKey, Entity> foreignKeyEntities);
-
-		/**
 		 * Initializes an Entity instance to reference via the given foreign key, by default this method creates an Entity
 		 * filled with random values. Subclasses can override and provide a hard coded instance or select one from the database.
 		 * Note that this default implementation returns null in case the referenced entity type is read-only.
 		 * @param foreignKey the foreign key referencing the entity
-		 * @param foreignKeyEntities the entities referenced via foreign keys
-		 * @return an entity for the given foreign key
+		 * @return an entity for the given foreign key or an empty Optional if none is required
 		 * @throws DatabaseException in case of an exception
 		 */
-		Entity foreignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities);
+		Optional<Entity> foreignKey(ForeignKey foreignKey);
 
 		/**
 		 * This method should return {@code entity} in a modified state
@@ -177,23 +169,12 @@ public class DomainTest {
 		void modify(Entity entity);
 
 		/**
-		 * This method should return {@code entity} in a modified state
-		 * @param entity the entity to modify
-		 * @param foreignKeyEntities the entities referenced via foreign keys
-		 */
-		void modify(Entity entity, Map<ForeignKey, Entity> foreignKeyEntities);
-
-		/**
 		 * Initializes the entities referenced by the entity identified by {@code entityType}
 		 * @param entityType the type of the entity for which to initialize the referenced entities
-		 * @param foreignKeyEntities foreign key entities already created
 		 * @param connection the connection to use
-		 * @return the reference entities mapped to their respective foreign keys
 		 * @throws DatabaseException in case of an exception
-		 * @see #foreignKeyEntities(EntityType, Map, EntityConnection)
 		 */
-		Map<ForeignKey, Entity> foreignKeyEntities(EntityType entityType, Map<ForeignKey, Entity> foreignKeyEntities,
-																							 EntityConnection connection) throws DatabaseException;
+		void populateForeignKeys(EntityType entityType, EntityConnection connection) throws DatabaseException;
 	}
 
 	/**

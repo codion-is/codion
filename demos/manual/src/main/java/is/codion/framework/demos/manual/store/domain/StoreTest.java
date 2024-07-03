@@ -29,7 +29,7 @@ import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 // tag::storeTest[]
@@ -63,23 +63,21 @@ public class StoreTest extends DomainTest {
 		}
 
 		@Override
-		public Entity foreignKeyEntity(ForeignKey foreignKey,
-																	 Map<ForeignKey, Entity> foreignKeyEntities) {
+		public Optional<Entity> foreignKey(ForeignKey foreignKey) {
 			//see if the currently running test requires an ADDRESS entity
 			if (foreignKey.referencedType().equals(Address.TYPE)) {
-				return entities().builder(Address.TYPE)
+				return Optional.of(entities().builder(Address.TYPE)
 								.with(Address.ID, 21L)
 								.with(Address.STREET, "One Way")
 								.with(Address.CITY, "Sin City")
-								.build();
+								.build());
 			}
 
-			return super.foreignKeyEntity(foreignKey, foreignKeyEntities);
+			return super.foreignKey(foreignKey);
 		}
 
 		@Override
-		public Entity entity(EntityType entityType,
-												 Map<ForeignKey, Entity> foreignKeyEntities) {
+		public Entity entity(EntityType entityType) {
 			if (entityType.equals(Address.TYPE)) {
 				//Initialize an entity representing the table STORE.ADDRESS,
 				//which can be used for the testing
@@ -101,16 +99,16 @@ public class StoreTest extends DomainTest {
 			}
 			else if (entityType.equals(CustomerAddress.TYPE)) {
 				return entities().builder(CustomerAddress.TYPE)
-								.with(CustomerAddress.CUSTOMER_FK, foreignKeyEntities.get(Customer.TYPE))
-								.with(CustomerAddress.ADDRESS_FK, foreignKeyEntities.get(Address.TYPE))
+								.with(CustomerAddress.CUSTOMER_FK, entity(Customer.TYPE))
+								.with(CustomerAddress.ADDRESS_FK, entity(Address.TYPE))
 								.build();
 			}
 
-			return super.entity(entityType, foreignKeyEntities);
+			return super.entity(entityType);
 		}
 
 		@Override
-		public void modify(Entity entity, Map<ForeignKey, Entity> foreignKeyEntities) {
+		public void modify(Entity entity) {
 			if (entity.entityType().equals(Address.TYPE)) {
 				entity.put(Address.STREET, "New Street");
 				entity.put(Address.CITY, "New City");

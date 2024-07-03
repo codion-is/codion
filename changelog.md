@@ -9,6 +9,7 @@ Codion Change Log
 - AbstractConnectionPoolWrapper now uses ProxyBuilder.
 ### is.codion.framework.domain.test
 - EntityTestUnit renamed DomainTest.
+- DomainTest.EntityFactory refactored.
 ### is.codion.tools.monitor.ui
 - HostMonitorPanel, refresh toolbar removed.
 ### is.codion.swing.framework.ui
