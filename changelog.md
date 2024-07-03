@@ -12,6 +12,8 @@ Codion Change Log
 - DomainTest.EntityFactory refactored.
 ### is.codion.tools.monitor.ui
 - HostMonitorPanel, refresh toolbar removed.
+### is.codion.swing.common.ui
+- DefaultFilterTableSearchModel bug fixed, no longer throws ArrayIndexOutOfBoundsException when searching through a table with one or more hidden columns.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, refresh progress bar did not updateUI() when switching look and feel.
 

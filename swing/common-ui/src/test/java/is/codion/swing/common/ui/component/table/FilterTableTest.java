@@ -30,13 +30,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SortOrder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static is.codion.swing.common.ui.component.table.FilterTableColumn.filterTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -126,7 +126,7 @@ public class FilterTableTest {
 		FilterTableModel.Columns<List<String>, Integer> columns = new FilterTableModel.Columns<List<String>, Integer>() {
 			@Override
 			public List<Integer> identifiers() {
-				return singletonList(0);
+				return asList(0, 1);
 			}
 
 			@Override
@@ -143,14 +143,15 @@ public class FilterTableTest {
 		FilterTableModel<List<String>, Integer> tableModel =
 						FilterTableModel.<List<String>, Integer>builder(columns)
 										.items(() -> asList(
-														singletonList("darri"),
-														singletonList("dac"),
-														singletonList("dansinn"),
-														singletonList("dlabo")))
+														asList("darri", "hidden"),
+														asList("dac", "hidden"),
+														asList("dansinn", "hidden"),
+														asList("dlabo", "hidden")))
 										.build();
 
 		FilterTable<List<String>, Integer> filterTable = FilterTable.builder(tableModel,
-						singletonList(FilterTableColumn.filterTableColumn(0))).build();
+						asList(filterTableColumn(0), filterTableColumn(1))).build();
+		filterTable.columnModel().visible(1).set(false);
 		tableModel.refresh();
 
 		new JScrollPane(filterTable);
@@ -477,9 +478,9 @@ public class FilterTableTest {
 							}
 						})
 						.build();
-		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model, Arrays.asList(
-						FilterTableColumn.filterTableColumn(0, 0),
-						FilterTableColumn.filterTableColumn(0, 1)
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model, asList(
+						filterTableColumn(0, 0),
+						filterTableColumn(0, 1)
 		)));
 	}
 
