@@ -135,6 +135,7 @@ public final class Store extends DomainModel {
 														.column()
 														.caption("Valid")
 														.columnHasDefaultValue(true)
+														.defaultValue(true)
 														.nullable(false))
 						.stringFactory(StringFactory.builder()
 										.value(Address.STREET)

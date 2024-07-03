@@ -1,6 +1,7 @@
 = Domain Model
 :dir-tutorials: ../tutorials
 :dir-source: ../../../../../demos/manual/src/main/java
+:dir-test-source: ../../../../../demos/manual/src/test/java
 :dir-petstore-source: ../../../../../demos/petstore/src/main/java
 :dir-world-source: ../../../../../demos/world/src/main/java
 :dir-world-resources: ../../../../../demos/world/src/main/resources
@@ -570,7 +571,7 @@ You can either create a single *testDomain()* method and call the *test* method 
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreTest.java[tags=storeTest]
+include::{dir-test-source}/is/codion/framework/demos/manual/store/domain/StoreTest.java[tags=storeTest]
 ----
 
 === Examples

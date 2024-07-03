@@ -18,32 +18,109 @@
  */
 package is.codion.framework.demos.manual.store.domain;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
-public final class StoreTest extends DomainTest {
+import java.util.Optional;
+import java.util.UUID;
+
+// tag::storeTest[]
+public class StoreTest extends DomainTest {
+
+	private static final Store DOMAIN = new Store();
 
 	public StoreTest() {
-		super(new Store());
+		super(DOMAIN, new StoreEntityFactory());
 	}
 
 	@Test
-	void customer() throws DatabaseException {
+	public void customer() throws Exception {
 		test(Customer.TYPE);
 	}
 
 	@Test
-	void address() throws DatabaseException {
+	public void address() throws Exception {
 		test(Address.TYPE);
 	}
 
 	@Test
-	void customerAddress() throws Exception {
+	public void customerAddress() throws Exception {
 		test(CustomerAddress.TYPE);
 	}
+
+	private static final class StoreEntityFactory extends DefaultEntityFactory {
+
+		private StoreEntityFactory() {
+			super(DOMAIN.entities());
+		}
+
+		@Override
+		public Optional<Entity> foreignKey(ForeignKey foreignKey) {
+			//see if the currently running test requires an ADDRESS entity
+			if (foreignKey.referencedType().equals(Address.TYPE)) {
+				return Optional.of(entities().builder(Address.TYPE)
+								.with(Address.ID, 21L)
+								.with(Address.STREET, "One Way")
+								.with(Address.CITY, "Sin City")
+								.build());
+			}
+
+			return super.foreignKey(foreignKey);
+		}
+
+		@Override
+		public Entity entity(EntityType entityType) {
+			if (entityType.equals(Address.TYPE)) {
+				//Initialize an entity representing the table STORE.ADDRESS,
+				//which can be used for the testing
+				return entities().builder(Address.TYPE)
+								.with(Address.ID, 42L)
+								.with(Address.STREET, "Street")
+								.with(Address.CITY, "City")
+								.with(Address.VALID, true)
+								.build();
+			}
+			else if (entityType.equals(Customer.TYPE)) {
+				//Initialize an entity representing the table STORE.CUSTOMER,
+				//which can be used for the testing
+				return entities().builder(Customer.TYPE)
+								.with(Customer.ID, UUID.randomUUID().toString())
+								.with(Customer.FIRST_NAME, "Robert")
+								.with(Customer.LAST_NAME, "Ford")
+								.with(Customer.ACTIVE, true)
+								.build();
+			}
+			else if (entityType.equals(CustomerAddress.TYPE)) {
+				return entities().builder(CustomerAddress.TYPE)
+								.with(CustomerAddress.CUSTOMER_FK, entity(Customer.TYPE))
+								.with(CustomerAddress.ADDRESS_FK, entity(Address.TYPE))
+								.build();
+			}
+
+			return super.entity(entityType);
+		}
+
+		@Override
+		public void modify(Entity entity) {
+			if (entity.entityType().equals(Address.TYPE)) {
+				entity.put(Address.STREET, "New Street");
+				entity.put(Address.CITY, "New City");
+			}
+			else if (entity.entityType().equals(Customer.TYPE)) {
+				//It is sufficient to change the value of a single property, but the more, the merrier
+				entity.put(Customer.FIRST_NAME, "Jesse");
+				entity.put(Customer.LAST_NAME, "James");
+				entity.put(Customer.ACTIVE, false);
+			}
+		}
+	}
 }
+// end::storeTest[]
