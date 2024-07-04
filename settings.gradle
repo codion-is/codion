@@ -180,7 +180,7 @@ dependencyResolutionManagement {
             version("h2", "2.2.224")
             version("json", "20240303")
             //jfreechart
-            version("jfreechart", "1.5.4")
+            version("jfreechart", "1.5.5")
             version("jcommon", "1.0.24")
             version("junit", "5.10.2")
             version("sslcontext.kickstart", "8.3.6")
