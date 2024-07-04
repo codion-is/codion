@@ -37,11 +37,11 @@ tasks.register("runDomainGeneratorH2", JavaExec) {
     systemProperties = [
             "codion.db.url"                      : "jdbc:h2:mem:h2db",
             "codion.db.initScripts"              :
-                    "../../demos/chinook/src/main/sql/create_schema.sql," +
-                            "../../demos/employees/src/main/sql/create_schema.sql," +
-                            "../../demos/petclinic/src/main/sql/create_schema.sql," +
-                            "../../demos/petstore/src/main/sql/create_schema.sql," +
-                            "../../demos/world/src/main/sql/create_schema.sql",
+                    "../../../demos/chinook/src/main/sql/create_schema.sql," +
+                            "../../../demos/employees/src/main/sql/create_schema.sql," +
+                            "../../../demos/petclinic/src/main/sql/create_schema.sql," +
+                            "../../../demos/petstore/src/main/sql/create_schema.sql," +
+                            "../../../demos/world/src/main/sql/create_schema.sql",
             "codion.domain.generator.defaultUser": "sa",
             "codion.domain.generator.defaultDomainPackage" : "is.codion.demo.domain"
     ]
