@@ -16,52 +16,46 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.model.metadata;
+package is.codion.tools.generator.domain;
 
-import is.codion.tools.generator.model.metadata.MetaDataTable.TablePacker;
+import is.codion.tools.generator.domain.MetaDataTable.TablePacker;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 
-public final class MetaDataSchema {
+final class MetaDataSchema {
 
-	private final String catalog;
 	private final String name;
 	private final Map<String, MetaDataTable> tables = new HashMap<>();
 
-	private boolean populated = false;
-
-	MetaDataSchema(String name, String catalog) {
+	MetaDataSchema(String name) {
 		this.name = requireNonNull(name);
-		this.catalog = catalog;
 	}
 
-	public String name() {
+	String name() {
 		return name;
 	}
 
-	public String catalog() {
-		return catalog;
-	}
-
-	public Map<String, MetaDataTable> tables() {
+	Map<String, MetaDataTable> tables() {
 		return unmodifiableMap(tables);
 	}
 
-	public void populate(DatabaseMetaData metaData, Map<String, MetaDataSchema> schemas,
-											 Consumer<String> schemaNotifier, Set<String> populatedSchemas) {
+	void populate(DatabaseMetaData metaData, Map<String, MetaDataSchema> schemas) {
+		populate(metaData, schemas, new HashSet<>());
+	}
+
+	private void populate(DatabaseMetaData metaData, Map<String, MetaDataSchema> schemas, Set<String> populatedSchemas) {
 		if (!populatedSchemas.contains(name)) {
-			schemaNotifier.accept(name);
 			tables.clear();
 			try (ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
 				tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
@@ -69,19 +63,14 @@ public final class MetaDataSchema {
 				tables.values().stream()
 								.flatMap(table -> table.referencedSchemaNames().stream())
 								.map(schemas::get)
-								.forEach(schema -> schema.populate(metaData, schemas, schemaNotifier, populatedSchemas));
+								.forEach(schema -> schema.populate(metaData, schemas, populatedSchemas));
 				tables.values().forEach(table -> table.resolveForeignKeys(schemas));
-				populated = true;
 				populatedSchemas.add(name);
 			}
 			catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
 		}
-	}
-
-	public boolean populated() {
-		return populated;
 	}
 
 	@Override

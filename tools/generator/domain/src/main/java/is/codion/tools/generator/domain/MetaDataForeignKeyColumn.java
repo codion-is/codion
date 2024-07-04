@@ -16,14 +16,14 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.model.metadata;
+package is.codion.tools.generator.domain;
 
 import is.codion.common.db.result.ResultPacker;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public final class MetaDataForeignKeyColumn {
+final class MetaDataForeignKeyColumn {
 
 	private final String pkSchemaName;
 	private final String pkTableName;
@@ -33,9 +33,9 @@ public final class MetaDataForeignKeyColumn {
 	private final String fkColumnName;
 	private final int keySeq;
 
-	MetaDataForeignKeyColumn(String pkSchemaName, String pkTableName, String pkColumnName,
-													 String fkTableName, String fkSchemaName, String fkColumnName,
-													 int keySeq) {
+	private MetaDataForeignKeyColumn(String pkSchemaName, String pkTableName, String pkColumnName,
+																	 String fkTableName, String fkSchemaName, String fkColumnName,
+																	 int keySeq) {
 		this.pkSchemaName = pkSchemaName;
 		this.pkTableName = pkTableName;
 		this.pkColumnName = pkColumnName;
@@ -45,31 +45,31 @@ public final class MetaDataForeignKeyColumn {
 		this.keySeq = keySeq;
 	}
 
-	public String pkSchemaName() {
+	String pkSchemaName() {
 		return pkSchemaName;
 	}
 
-	public String pkTableName() {
+	String pkTableName() {
 		return pkTableName;
 	}
 
-	public String pkColumnName() {
+	String pkColumnName() {
 		return pkColumnName;
 	}
 
-	public String fkTableName() {
+	String fkTableName() {
 		return fkTableName;
 	}
 
-	public String fkSchemaName() {
+	String fkSchemaName() {
 		return fkSchemaName;
 	}
 
-	public String fkColumnName() {
+	String fkColumnName() {
 		return fkColumnName;
 	}
 
-	public int keySeq() {
+	int keySeq() {
 		return keySeq;
 	}
 

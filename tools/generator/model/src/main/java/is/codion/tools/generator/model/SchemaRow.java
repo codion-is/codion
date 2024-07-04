@@ -18,32 +18,28 @@
  */
 package is.codion.tools.generator.model;
 
-import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.tools.generator.model.metadata.MetaDataSchema;
+import is.codion.tools.generator.domain.DatabaseDomain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Optional;
 
 public final class SchemaRow {
 
-	final MetaDataSchema metadata;
-	final String catalog;
-	final String schema;
+	private final String catalog;
+	private final String schema;
 
-	boolean populated;
-	DatabaseDomain domainModel;
-	final Collection<EntityDefinition> entityDefinitions = new ArrayList<>();
+	private DatabaseDomain domainModel;
 
-	SchemaRow(MetaDataSchema metadata, String catalog, String schema, boolean populated) {
-		this.metadata = metadata;
+	SchemaRow(String catalog, String schema) {
 		this.catalog = catalog;
 		this.schema = schema;
-		this.populated = populated;
 	}
 
 	String catalog() {
 		return catalog;
+	}
+
+	String schema() {
+		return schema;
 	}
 
 	String name() {
@@ -51,7 +47,7 @@ public final class SchemaRow {
 	}
 
 	boolean populated() {
-		return populated;
+		return domainModel != null;
 	}
 
 	Optional<DatabaseDomain> domain() {
@@ -60,8 +56,5 @@ public final class SchemaRow {
 
 	void setDomain(DatabaseDomain domain) {
 		this.domainModel = domain;
-		this.entityDefinitions.clear();
-		this.entityDefinitions.addAll(domain.entities().definitions());
-		this.populated = true;
 	}
 }

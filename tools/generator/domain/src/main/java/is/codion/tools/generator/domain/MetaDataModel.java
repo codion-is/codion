@@ -16,47 +16,30 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.model.metadata;
-
-import is.codion.common.db.exception.DatabaseException;
+package is.codion.tools.generator.domain;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.function.Consumer;
 
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Objects.requireNonNull;
+final class MetaDataModel {
 
-public final class MetaDataModel {
-
+	private final MetaDataSchema schema;
 	private final Map<String, MetaDataSchema> schemas;
-	private final DatabaseMetaData metaData;
 
-	public MetaDataModel(DatabaseMetaData metaData) throws DatabaseException {
-		this.metaData = requireNonNull(metaData);
-		try {
-			this.schemas = discoverSchemas(metaData);
-		}
-		catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-	}
-
-	public Collection<MetaDataSchema> schemas() {
-		return unmodifiableCollection(schemas.values());
-	}
-
-	public void populateSchema(String schemaName, Consumer<String> schemaNotifier) {
-		MetaDataSchema schema = schemas.get(requireNonNull(schemaName));
-		if (schema == null) {
+	MetaDataModel(DatabaseMetaData metaData, String schemaName) throws SQLException {
+		this.schemas = discoverSchemas(metaData);
+		this.schema = schemas.get(schemaName);
+		if (this.schema == null) {
 			throw new IllegalArgumentException("Schema not found: " + schemaName);
 		}
-		schema.populate(metaData, schemas, schemaNotifier, new HashSet<>());
+		this.schema.populate(metaData, schemas);
+	}
+
+	MetaDataSchema schema() {
+		return schema;
 	}
 
 	private static Map<String, MetaDataSchema> discoverSchemas(DatabaseMetaData metaData) throws SQLException {
@@ -65,7 +48,7 @@ public final class MetaDataModel {
 			while (resultSet.next()) {
 				String tableSchem = resultSet.getString("TABLE_SCHEM");
 				if (tableSchem != null) {
-					schemas.put(tableSchem, new MetaDataSchema(tableSchem, resultSet.getString("TABLE_CATALOG")));
+					schemas.put(tableSchem, new MetaDataSchema(tableSchem));
 				}
 			}
 		}

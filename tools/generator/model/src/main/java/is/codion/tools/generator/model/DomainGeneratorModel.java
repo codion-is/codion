@@ -28,27 +28,29 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
-import is.codion.tools.generator.model.metadata.MetaDataModel;
+import is.codion.tools.generator.domain.DatabaseDomain;
+import is.codion.tools.generator.domain.DomainSource;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
+import static is.codion.tools.generator.domain.DatabaseDomain.databaseDomain;
+import static is.codion.tools.generator.domain.DomainSource.domainSource;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
@@ -74,7 +76,6 @@ public final class DomainGeneratorModel {
 	private static final Pattern PACKAGE_PATTERN =
 					Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$");
 
-	private final MetaDataModel metaDataModel;
 	private final FilterTableModel<SchemaRow, SchemaColumns.Id> schemaTableModel =
 					FilterTableModel.builder(new SchemaColumns())
 									.items(new SchemaItems())
@@ -109,14 +110,8 @@ public final class DomainGeneratorModel {
 		this.connection = requireNonNull(database, "database").createConnection(user);
 		sourceDirectoryChanged();
 		domainPackageChanged();
-		try {
-			this.metaDataModel = new MetaDataModel(connection.getMetaData());
-			this.schemaTableModel.refresh();
-			bindEvents();
-		}
-		catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
+		schemaTableModel.refresh();
+		bindEvents();
 	}
 
 	public FilterTableModel<SchemaRow, SchemaColumns.Id> schemaModel() {
@@ -164,8 +159,8 @@ public final class DomainGeneratorModel {
 
 	public void populateSelected(Consumer<String> schemaNotifier) {
 		schemaTableModel.selectionModel().selectedItem().ifPresent(schema -> {
-			metaDataModel.populateSchema(schema.name(), schemaNotifier);
-			schema.setDomain(new DatabaseDomain(schema.metadata));
+			schemaNotifier.accept(schema.name());
+			schema.setDomain(databaseDomain(connection, schema.name()));
 			int index = schemaTableModel.indexOf(schema);
 			schemaTableModel.fireTableRowsUpdated(index, index);
 		});
@@ -174,15 +169,25 @@ public final class DomainGeneratorModel {
 
 	public void saveApiImpl() throws IOException {
 		if (schemaTableModel.selectionModel().selectionNotEmpty().get()) {
-			SchemaRow schema = schemaTableModel.selectionModel().getSelectedItem();
-			saveApiImpl(savePath(new File(sourceDirectoryValue.get())), schema);
+			DatabaseDomain domain = selectedDomain();
+			if (domain != null) {
+				domainSource(domain, domainPackageValue.optional()
+								.filter(DomainGeneratorModel::validPackageName)
+								.orElse(""))
+								.writeApiImpl(savePath(new File(sourceDirectoryValue.get())));
+			}
 		}
 	}
 
 	public void saveCombined() throws IOException {
 		if (schemaTableModel.selectionModel().selectionNotEmpty().get()) {
-			SchemaRow schema = schemaTableModel.selectionModel().getSelectedItem();
-			saveCombined(savePath(new File(sourceDirectoryValue.get())), schema);
+			DatabaseDomain domain = selectedDomain();
+			if (domain != null) {
+				domainSource(domain, domainPackageValue.optional()
+								.filter(DomainGeneratorModel::validPackageName)
+								.orElse(""))
+								.writeCombined(savePath(new File(sourceDirectoryValue.get())));
+			}
 		}
 	}
 
@@ -199,13 +204,13 @@ public final class DomainGeneratorModel {
 		entityTableModel.refresh();
 		updateDomainSource();
 		populatedSchemaSelected.set(schemaTableModel.selectionModel().selectedItem()
-						.map(schemaRow -> schemaRow.populated)
+						.map(SchemaRow::populated)
 						.orElse(false));
 	}
 
 	private void search(EntityRow entityRow) {
-		apiSearchValue.set(entityRow == null ? null : DomainString.apiSearchString(entityRow.definition));
-		implSearchValue.set(entityRow == null ? null : DomainString.implSearchString(entityRow.definition));
+		apiSearchValue.set(entityRow == null ? null : DomainSource.apiSearchString(entityRow.definition));
+		implSearchValue.set(entityRow == null ? null : DomainSource.implSearchString(entityRow.definition));
 	}
 
 	/**
@@ -231,12 +236,12 @@ public final class DomainGeneratorModel {
 	private void updateDomainSource() {
 		DatabaseDomain selectedDomain = selectedDomain();
 		if (selectedDomain != null) {
-			DomainString domainString = new DomainString(selectedDomain, domainPackageValue.optional()
+			DomainSource domainSource = domainSource(selectedDomain, domainPackageValue.optional()
 							.filter(DomainGeneratorModel::validPackageName)
 							.orElse(""));
-			domainApiValue.set(domainString.api());
-			domainImplValue.set(domainString.implementation());
-			domainCombinedValue.set(domainString.combined());
+			domainApiValue.set(domainSource.api());
+			domainImplValue.set(domainSource.implementation());
+			domainCombinedValue.set(domainSource.combined());
 		}
 		else {
 			domainApiValue.set(null);
@@ -247,7 +252,9 @@ public final class DomainGeneratorModel {
 
 	private DatabaseDomain selectedDomain() {
 		return schemaTableModel.selectionModel().selectedItem()
-						.map(schemaRow -> schemaRow.domainModel)
+						.map(SchemaRow::domain)
+						.filter(Optional::isPresent)
+						.map(Optional::get)
 						.orElse(null);
 	}
 
@@ -263,23 +270,6 @@ public final class DomainGeneratorModel {
 		return path;
 	}
 
-	private void saveApiImpl(Path path, SchemaRow schema) throws IOException {
-		String interfaceName = DomainString.interfaceName(schema.domainModel.type().name(), true);
-		Files.createDirectories(path);
-		Path filePath = path.resolve(interfaceName + ".java");
-		Files.write(filePath, singleton(domainApiValue.get()));
-		path = path.resolve("impl");
-		Files.createDirectories(path);
-		filePath = path.resolve(interfaceName + "Impl.java");
-		Files.write(filePath, singleton(domainImplValue.get()));
-	}
-
-	private void saveCombined(Path path, SchemaRow schema) throws IOException {
-		String interfaceName = DomainString.interfaceName(schema.domainModel.type().name(), true);
-		Files.createDirectories(path);
-		Files.write(path.resolve(interfaceName + ".java"), singleton(domainCombinedValue.get()));
-	}
-
 	private static boolean validPackageName(String packageName) {
 		return PACKAGE_PATTERN.matcher(packageName).matches();
 	}
@@ -288,11 +278,20 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public Collection<SchemaRow> get() {
-			return metaDataModel.schemas()
-							.stream()
-							.map(metaDataSchema ->
-											new SchemaRow(metaDataSchema, metaDataSchema.catalog(), metaDataSchema.name(), false))
-							.collect(Collectors.toList());
+			Collection<SchemaRow> schemaRows = new ArrayList<>();
+			try (ResultSet resultSet = connection.getMetaData().getSchemas()) {
+				while (resultSet.next()) {
+					String tableSchem = resultSet.getString("TABLE_SCHEM");
+					if (tableSchem != null) {
+						schemaRows.add(new SchemaRow(resultSet.getString("TABLE_CATALOG"), tableSchem));
+					}
+				}
+
+				return schemaRows;
+			}
+			catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

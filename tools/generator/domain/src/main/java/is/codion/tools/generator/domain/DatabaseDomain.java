@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.model;
+package is.codion.tools.generator.domain;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -26,12 +26,10 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.tools.generator.model.metadata.MetaDataColumn;
-import is.codion.tools.generator.model.metadata.MetaDataForeignKeyConstraint;
-import is.codion.tools.generator.model.metadata.MetaDataSchema;
-import is.codion.tools.generator.model.metadata.MetaDataTable;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,22 +39,46 @@ import java.util.Map;
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-final class DatabaseDomain extends DomainModel {
+/**
+ * For instances use the factory method {@link #databaseDomain(Connection, String)}.
+ */
+public final class DatabaseDomain extends DomainModel {
 
 	private static final int MAXIMUM_COLUMN_SIZE = 2_147_483_647;
 
 	private final Map<MetaDataTable, EntityType> tableEntityTypes = new HashMap<>();
 
-	DatabaseDomain(MetaDataSchema schema) {
-		super(domainType(schema.name()));
+	private DatabaseDomain(Connection connection, String schemaName) throws SQLException {
+		super(domainType(schemaName));
 		setStrictForeignKeys(false);
-		schema.tables().values().forEach(this::defineEntity);
+		new MetaDataModel(connection.getMetaData(), schemaName)
+						.schema().tables().values().forEach(this::defineEntity);
 	}
 
-	String tableType(EntityType entityType) {
+	/**
+	 * Factory method for creating a new {@link DatabaseDomain} instance.
+	 * @param connection the JDBC connection
+	 * @param schemaName the schema name
+	 * @return a new {@link DatabaseDomain} instance
+	 */
+	public static DatabaseDomain databaseDomain(Connection connection, String schemaName) {
+		try {
+			return new DatabaseDomain(requireNonNull(connection), requireNonNull(schemaName));
+		}
+		catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @param entityType the entity type
+	 * @return the table type for the given entity type, table or view
+	 */
+	public String tableType(EntityType entityType) {
 		return tableEntityTypes.entrySet().stream()
 						.filter(entry -> entry.getValue().equals(entityType))
 						.findFirst()

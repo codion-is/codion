@@ -1,3 +1,0 @@
-extraJavaModuleInfo {
-    automaticModule("com.squareup:javapoet", "com.squareup.javapoet")
-}

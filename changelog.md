@@ -10,6 +10,8 @@ Codion Change Log
 ### is.codion.framework.domain.test
 - EntityTestUnit renamed DomainTest.
 - DomainTest.EntityFactory refactored.
+### is.codion.tools.generator.model
+- Module is.codion.tools.generator.domain split from model.
 ### is.codion.tools.monitor.ui
 - HostMonitorPanel, refresh toolbar removed.
 ### is.codion.swing.common.ui

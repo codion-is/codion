@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.model;
+package is.codion.tools.generator.domain;
 
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainModel;
@@ -37,6 +37,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,6 +58,7 @@ import static com.squareup.javapoet.TypeSpec.classBuilder;
 import static com.squareup.javapoet.TypeSpec.interfaceBuilder;
 import static is.codion.common.Separators.LINE_SEPARATOR;
 import static is.codion.common.Text.nullOrEmpty;
+import static java.util.Collections.singleton;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
@@ -62,39 +66,92 @@ import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.concat;
 import static javax.lang.model.element.Modifier.*;
 
-final class DomainString {
+/**
+ * For instances use the factory method {@link #domainSource(DatabaseDomain, String)}.
+ */
+public final class DomainSource {
 
 	private static final String INDENT = "\t";
 	private static final String DOUBLE_INDENT = INDENT + INDENT;
 	private static final String TRIPLE_INDENT = DOUBLE_INDENT + INDENT;
 	private static final String DOMAIN = "DOMAIN";
 
+	private final DatabaseDomain databaseDomain;
 	private final String api;
 	private final String implementation;
 	private final String combined;
 
-	DomainString(DatabaseDomain domain, String packageName) {
-		requireNonNull(packageName);
-		String interfaceName = interfaceName(requireNonNull(domain).type().name(), true);
-		List<EntityDefinition> entityDefinitions = sortDefinitions(domain);
-		this.api = toApiString(entityDefinitions, packageName, interfaceName);
-		this.implementation = toImplementationString(entityDefinitions, packageName, interfaceName);
-		this.combined = toCombinedString(entityDefinitions, packageName, interfaceName);
+	private DomainSource(DatabaseDomain databaseDomain, String sourcePackage) {
+		this.databaseDomain = requireNonNull(databaseDomain);
+		requireNonNull(sourcePackage);
+		String interfaceName = interfaceName(requireNonNull(databaseDomain).type().name(), true);
+		List<EntityDefinition> entityDefinitions = sortDefinitions(databaseDomain);
+		this.api = toApiString(entityDefinitions, sourcePackage, interfaceName);
+		this.implementation = toImplementationString(entityDefinitions, sourcePackage, interfaceName);
+		this.combined = toCombinedString(entityDefinitions, sourcePackage, interfaceName);
 	}
 
-	String api() {
+	/**
+	 * @return the api source code.
+	 */
+	public String api() {
 		return api;
 	}
 
-	String implementation() {
+	/**
+	 * @return the implementation source code.
+	 */
+	public String implementation() {
 		return implementation;
 	}
 
-	String combined() {
+	/**
+	 * @return the combined source code of the api and implementation.
+	 */
+	public String combined() {
 		return combined;
 	}
 
-	private static String toApiString(List<EntityDefinition> definitions, String packageName, String className) {
+	/**
+	 * Writes the api and implementation source code to the given path.
+	 * @param path the path to write the source code to.
+	 * @throws IOException in case of an I/O error.
+	 */
+	public void writeApiImpl(Path path) throws IOException {
+		requireNonNull(path);
+		String interfaceName = interfaceName(databaseDomain.type().name(), true);
+		Files.createDirectories(path);
+		Path filePath = path.resolve(interfaceName + ".java");
+		Files.write(filePath, singleton(api));
+		path = path.resolve("impl");
+		Files.createDirectories(path);
+		filePath = path.resolve(interfaceName + "Impl.java");
+		Files.write(filePath, singleton(implementation));
+	}
+
+	/**
+	 * Writes the combined source code to the given path.
+	 * @param path the path to write the source code to.
+	 * @throws IOException in case of an I/O error.
+	 */
+	public void writeCombined(Path path) throws IOException {
+		requireNonNull(path);
+		String interfaceName = interfaceName(databaseDomain.type().name(), true);
+		Files.createDirectories(path);
+		Files.write(path.resolve(interfaceName + ".java"), singleton(combined));
+	}
+
+	/**
+	 * Instantiates a new {@link DomainSource} instance.
+	 * @param domain the domain model to be used to generate the source code.
+	 * @param sourcePackage the source package.
+	 * @return a new {@link DomainSource} instance.
+	 */
+	public static DomainSource domainSource(DatabaseDomain domain, String sourcePackage) {
+		return new DomainSource(domain, sourcePackage);
+	}
+
+	private static String toApiString(List<EntityDefinition> definitions, String sourcePackage, String className) {
 		TypeSpec.Builder classBuilder = interfaceBuilder(className)
 						.addModifiers(PUBLIC)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
@@ -104,7 +161,7 @@ final class DomainString {
 
 		definitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
 
-		return removeInterfaceLineBreaks(JavaFile.builder(packageName.isEmpty() ? "" : packageName, classBuilder.build())
+		return removeInterfaceLineBreaks(JavaFile.builder(sourcePackage.isEmpty() ? "" : sourcePackage, classBuilder.build())
 						.addStaticImport(DomainType.class, "domainType")
 						.skipJavaLangImports(true)
 						.indent(INDENT)
@@ -112,14 +169,14 @@ final class DomainString {
 						.toString());
 	}
 
-	private static String toImplementationString(List<EntityDefinition> definitions, String packageName, String className) {
+	private static String toImplementationString(List<EntityDefinition> definitions, String sourcePackage, String className) {
 		TypeSpec.Builder classBuilder = classBuilder(className + "Impl")
 						.addModifiers(PUBLIC, FINAL)
 						.superclass(DomainModel.class);
 
 		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
 
-		String implementationPackage = packageName.isEmpty() ? "" : packageName + ".impl";
+		String implementationPackage = sourcePackage.isEmpty() ? "" : sourcePackage + ".impl";
 
 		JavaFile.Builder fileBuilder = JavaFile.builder(implementationPackage,
 										classBuilder.addMethod(createDomainConstructor(definitionMethods))
@@ -128,18 +185,18 @@ final class DomainString {
 						.skipJavaLangImports(true)
 						.indent(INDENT);
 		if (!implementationPackage.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(packageName + "." + className), DOMAIN);
+			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + className), DOMAIN);
 		}
 
 		String sourceString = fileBuilder.build().toString();
-		if (!packageName.isEmpty()) {
-			sourceString = addInterfaceImports(sourceString, definitions, packageName + "." + className);
+		if (!sourcePackage.isEmpty()) {
+			sourceString = addInterfaceImports(sourceString, definitions, sourcePackage + "." + className);
 		}
 
 		return sourceString;
 	}
 
-	private static String toCombinedString(List<EntityDefinition> definitions, String packageName, String className) {
+	private static String toCombinedString(List<EntityDefinition> definitions, String sourcePackage, String className) {
 		TypeSpec.Builder classBuilder = classBuilder(className)
 						.addModifiers(PUBLIC, FINAL)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
@@ -151,20 +208,20 @@ final class DomainString {
 		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
 		definitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
 
-		JavaFile.Builder fileBuilder = JavaFile.builder(packageName,
+		JavaFile.Builder fileBuilder = JavaFile.builder(sourcePackage,
 										classBuilder.addMethod(createDomainConstructor(definitionMethods))
 														.build())
 						.addStaticImport(DomainType.class, "domainType")
 						.addStaticImport(KeyGenerator.class, "identity")
 						.skipJavaLangImports(true)
 						.indent(INDENT);
-		if (!packageName.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(packageName + "." + className), DOMAIN);
+		if (!sourcePackage.isEmpty()) {
+			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + className), DOMAIN);
 		}
 
 		String sourceString = fileBuilder.build().toString();
-		if (!packageName.isEmpty()) {
-			sourceString = addInterfaceImports(sourceString, definitions, packageName + "." + className);
+		if (!sourcePackage.isEmpty()) {
+			sourceString = addInterfaceImports(sourceString, definitions, sourcePackage + "." + className);
 		}
 
 		return removeInterfaceLineBreaks(sourceString);
@@ -398,8 +455,8 @@ final class DomainString {
 		return "column()";
 	}
 
-	static String interfaceName(String tableName, boolean uppercase) {
-		String name = tableName.toLowerCase();
+	private static String interfaceName(String tableName, boolean uppercase) {
+		String name = requireNonNull(tableName).toLowerCase();
 		if (name.contains(".")) {
 			name = name.substring(name.lastIndexOf('.') + 1);
 		}
@@ -429,7 +486,7 @@ final class DomainString {
 																						Collection<EntityDefinition> definitions,
 																						String parentInterface) {
 		List<String> interfaceNames = definitions.stream()
-						.map(DomainString::createInterface)
+						.map(DomainSource::createInterface)
 						.map(interfaceSpec -> interfaceSpec.name)
 						.sorted()
 						.collect(toList());
@@ -461,11 +518,11 @@ final class DomainString {
 		return line != null && line.trim().startsWith(prefix);
 	}
 
-	static String apiSearchString(EntityDefinition definition) {
+	public static String apiSearchString(EntityDefinition definition) {
 		return "interface " + interfaceName(definition.tableName(), true) + " ";
 	}
 
-	static String implSearchString(EntityDefinition definition) {
+	public static String implSearchString(EntityDefinition definition) {
 		return "EntityDefinition " + interfaceName(definition.tableName(), false) + "()";
 	}
 

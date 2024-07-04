@@ -17,16 +17,15 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Framework Swing generator model classes, such as:<br>
+ * Framework domain generator model classes, such as:<br>
  * <br>
- * {@link is.codion.tools.generator.model.DomainGeneratorModel}<br>
+ * {@link is.codion.tools.generator.domain.DatabaseDomain}<br>
+ * {@link is.codion.tools.generator.domain.DomainSource}
  */
-module is.codion.tools.generator.model {
-	requires org.slf4j;
+module is.codion.tools.generator.domain {
 	requires java.compiler;
 	requires com.squareup.javapoet;
-	requires transitive is.codion.tools.generator.domain;
-	requires transitive is.codion.swing.common.model;
+	requires transitive is.codion.framework.domain;
 
-	exports is.codion.tools.generator.model;
+	exports is.codion.tools.generator.domain;
 }

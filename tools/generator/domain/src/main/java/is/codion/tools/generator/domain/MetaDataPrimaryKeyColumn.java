@@ -16,28 +16,28 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.model.metadata;
+package is.codion.tools.generator.domain;
 
 import is.codion.common.db.result.ResultPacker;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public final class MetaDataPrimaryKeyColumn {
+final class MetaDataPrimaryKeyColumn {
 
 	private final String columnName;
 	private final int index;
 
-	MetaDataPrimaryKeyColumn(String columnName, int index) {
+	private MetaDataPrimaryKeyColumn(String columnName, int index) {
 		this.columnName = columnName;
 		this.index = index;
 	}
 
-	public String columnName() {
+	String columnName() {
 		return columnName;
 	}
 
-	public int index() {
+	int index() {
 		return index;
 	}
 

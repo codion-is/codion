@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.model.metadata;
+package is.codion.tools.generator.domain;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -24,7 +24,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-public final class MetaDataForeignKeyConstraint {
+final class MetaDataForeignKeyConstraint {
 
 	private final MetaDataTable referencedTable;
 	private final Map<MetaDataColumn, MetaDataColumn> references = new LinkedHashMap<>();
@@ -33,11 +33,11 @@ public final class MetaDataForeignKeyConstraint {
 		this.referencedTable = requireNonNull(referencedTable);
 	}
 
-	public MetaDataTable referencedTable() {
+	MetaDataTable referencedTable() {
 		return referencedTable;
 	}
 
-	public Map<MetaDataColumn, MetaDataColumn> references() {
+	Map<MetaDataColumn, MetaDataColumn> references() {
 		return Collections.unmodifiableMap(references);
 	}
 

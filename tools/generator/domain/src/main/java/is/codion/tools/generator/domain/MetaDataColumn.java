@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.model.metadata;
+package is.codion.tools.generator.domain;
 
 import is.codion.common.db.result.ResultPacker;
 
@@ -33,10 +33,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * A database metadata column.
- */
-public final class MetaDataColumn {
+final class MetaDataColumn {
 
 	private final String columnName;
 	private final int dataType;
@@ -53,9 +50,9 @@ public final class MetaDataColumn {
 	private final boolean autoIncrement;
 	private final boolean generated;
 
-	MetaDataColumn(String columnName, int dataType, String typeName, Class<?> columnClass, int position, int columnSize,
-								 int decimalDigits, int nullable, String defaultValue, String comment,
-								 int primaryKeyIndex, boolean foreignKeyColumn, boolean autoIncrement, boolean generated) {
+	private MetaDataColumn(String columnName, int dataType, String typeName, Class<?> columnClass, int position, int columnSize,
+												 int decimalDigits, int nullable, String defaultValue, String comment,
+												 int primaryKeyIndex, boolean foreignKeyColumn, boolean autoIncrement, boolean generated) {
 		this.columnName = requireNonNull(columnName);
 		this.columnClass = requireNonNull(columnClass);
 		this.dataType = dataType;
@@ -72,63 +69,63 @@ public final class MetaDataColumn {
 		this.generated = generated;
 	}
 
-	public String columnName() {
+	String columnName() {
 		return columnName;
 	}
 
-	public int dataType() {
+	int dataType() {
 		return dataType;
 	}
 
-	public String typeName() {
+	String typeName() {
 		return typeName;
 	}
 
-	public int position() {
+	int position() {
 		return position;
 	}
 
-	public boolean primaryKeyColumn() {
+	boolean primaryKeyColumn() {
 		return primaryKeyIndex != -1;
 	}
 
-	public int primaryKeyIndex() {
+	int primaryKeyIndex() {
 		return primaryKeyIndex;
 	}
 
-	public boolean foreignKeyColumn() {
+	boolean foreignKeyColumn() {
 		return foreignKeyColumn;
 	}
 
-	public Class<?> columnClass() {
+	Class<?> columnClass() {
 		return columnClass;
 	}
 
-	public String defaultValue() {
+	String defaultValue() {
 		return defaultValue;
 	}
 
-	public int nullable() {
+	int nullable() {
 		return nullable;
 	}
 
-	public int columnSize() {
+	int columnSize() {
 		return columnSize;
 	}
 
-	public int decimalDigits() {
+	int decimalDigits() {
 		return decimalDigits;
 	}
 
-	public String comment() {
+	String comment() {
 		return comment;
 	}
 
-	public boolean autoIncrement() {
+	boolean autoIncrement() {
 		return autoIncrement;
 	}
 
-	public boolean generated() {
+	boolean generated() {
 		return generated;
 	}
 

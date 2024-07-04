@@ -16,11 +16,11 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.model.metadata;
+package is.codion.tools.generator.domain;
 
 import is.codion.common.db.result.ResultPacker;
-import is.codion.tools.generator.model.metadata.MetaDataColumn.ColumnPacker;
-import is.codion.tools.generator.model.metadata.MetaDataForeignKeyColumn.ForeignKeyColumnPacker;
+import is.codion.tools.generator.domain.MetaDataColumn.ColumnPacker;
+import is.codion.tools.generator.domain.MetaDataForeignKeyColumn.ForeignKeyColumnPacker;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -37,10 +37,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 
-/**
- * Represents a database table
- */
-public final class MetaDataTable {
+final class MetaDataTable {
 
 	private final MetaDataSchema schema;
 	private final String tableName;
@@ -50,8 +47,8 @@ public final class MetaDataTable {
 	private final Map<String, MetaDataColumn> columns = new LinkedHashMap<>();
 	private final List<MetaDataForeignKeyConstraint> foreignKeys = new ArrayList<>();
 
-	MetaDataTable(MetaDataSchema schema, String tableName, String tableType, String comment,
-								List<MetaDataColumn> columns, List<MetaDataForeignKeyColumn> foreignKeyColumns) {
+	private MetaDataTable(MetaDataSchema schema, String tableName, String tableType, String comment,
+												List<MetaDataColumn> columns, List<MetaDataForeignKeyColumn> foreignKeyColumns) {
 		this.schema = requireNonNull(schema);
 		this.tableName = requireNonNull(tableName);
 		this.tableType = requireNonNull(tableType);
@@ -60,34 +57,34 @@ public final class MetaDataTable {
 		requireNonNull(columns).forEach(column -> this.columns.put(column.columnName(), column));
 	}
 
-	public String tableName() {
+	String tableName() {
 		return tableName;
 	}
 
-	public MetaDataSchema schema() {
+	MetaDataSchema schema() {
 		return schema;
 	}
 
-	public String tableType() {
+	String tableType() {
 		return tableType;
 	}
 
-	public String comment() {
+	String comment() {
 		return comment;
 	}
 
-	public List<MetaDataColumn> columns() {
+	List<MetaDataColumn> columns() {
 		return unmodifiableList(new ArrayList<>(columns.values()));
 	}
 
-	public Collection<String> referencedSchemaNames() {
+	Collection<String> referencedSchemaNames() {
 		return foreignKeyColumns.stream()
 						.filter(this::referencesExternalSchema)
 						.map(MetaDataForeignKeyColumn::pkSchemaName)
 						.collect(toSet());
 	}
 
-	public Collection<MetaDataForeignKeyConstraint> foreignKeys() {
+	Collection<MetaDataForeignKeyConstraint> foreignKeys() {
 		return unmodifiableCollection(foreignKeys);
 	}
 
