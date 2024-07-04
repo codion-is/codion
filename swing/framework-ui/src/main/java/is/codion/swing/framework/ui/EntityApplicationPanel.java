@@ -327,8 +327,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 			savePreferences();
 			UserPreferences.flushUserPreferences();
 		}
-		catch (Exception e) {
-			LOG.debug("Exception while saving preferences", e);
+		catch (Throwable e) {
+			LOG.error("Exception while saving preferences", e);
 		}
 		try {
 			applicationModel.connectionProvider().close();
@@ -785,7 +785,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		if (USE_CLIENT_PREFERENCES.get()) {
 			entityPanels().forEach(EntityPanel::savePreferences);
 			try {
-				createPreferences().save(getClass());
+				throw new InternalError("testing");
+//				createPreferences().save(getClass());
 			}
 			catch (Exception e) {
 				LOG.error("Error while saving application preferences", e);

@@ -18,6 +18,7 @@ Codion Change Log
 - DefaultFilterTableSearchModel bug fixed, no longer throws ArrayIndexOutOfBoundsException when searching through a table with one or more hidden columns.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, refresh progress bar did not updateUI() when switching look and feel.
+- EntityApplicationPanel.exit() now catches Throwable when trying to save preferences, logged as error, otherwise it can prevent application exit.
 
 ## 0.18.4
 ### is.codion
