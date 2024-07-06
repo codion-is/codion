@@ -785,8 +785,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		if (USE_CLIENT_PREFERENCES.get()) {
 			entityPanels().forEach(EntityPanel::savePreferences);
 			try {
-				throw new InternalError("testing");
-//				createPreferences().save(getClass());
+				createPreferences().save(getClass());
 			}
 			catch (Exception e) {
 				LOG.error("Error while saving application preferences", e);
