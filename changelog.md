@@ -16,9 +16,12 @@ Codion Change Log
 - HostMonitorPanel, refresh toolbar removed.
 ### is.codion.swing.common.ui
 - DefaultFilterTableSearchModel bug fixed, no longer throws ArrayIndexOutOfBoundsException when searching through a table with one or more hidden columns.
+- FilterTable.Builder.cellEditorFactory() added along with FilterTableCellEditor, FilterTableCellEditorFactory and DefaultFilterTableCellEditor.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, refresh progress bar did not updateUI() when switching look and feel.
 - EntityApplicationPanel.exit() now catches Throwable when trying to save preferences, logged as error, otherwise it can prevent application exit.
+- EntityTablePanel.Config.cellEditorComponentFactories removed, functionality moved to FilterTable.
+- EntityTableCellEditorFactory added.
 
 ## 0.18.4
 ### is.codion

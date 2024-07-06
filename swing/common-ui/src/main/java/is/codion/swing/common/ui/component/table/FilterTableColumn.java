@@ -100,6 +100,11 @@ public final class FilterTableColumn<C> extends TableColumn {
 		return Optional.ofNullable(toolTipText);
 	}
 
+	@Override
+	public String toString() {
+		return identifier().toString();
+	}
+
 	/**
 	 * Instantiates a new index based {@link FilterTableColumn}.
 	 * @param modelIndex the column model index, also used as identifier

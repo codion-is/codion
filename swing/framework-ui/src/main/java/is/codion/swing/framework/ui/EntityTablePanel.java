@@ -38,7 +38,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -74,13 +73,14 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
-import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
 import is.codion.swing.framework.ui.component.EntityComponentFactory;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -96,7 +96,6 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -105,6 +104,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -881,24 +881,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Creates a TableCellEditor for the given attribute, returns null if no editor is available,
-	 * such as for non-editable attributes.
-	 * @param attribute the attribute
-	 * @return a TableCellEditor for the given attribute, null in case none is available
-	 * @see Config#editable(Consumer)
-	 */
-	protected TableCellEditor createTableCellEditor(Attribute<?> attribute) {
-		if (!configuration.editable.contains(attribute)) {
-			return null;
-		}
-		if (nonUpdatableForeignKey(attribute)) {
-			return null;
-		}
-
-		return new EntityTableCellEditor<>(() -> cellEditorComponentValue(attribute, null));
-	}
-
-	/**
 	 * This method simply adds {@code tablePanel} at location BorderLayout.CENTER and,
 	 * if non-null, the given {@code southPanel} to the {@code BorderLayout.SOUTH} location.
 	 * By overriding this method you can override the default layout.
@@ -1423,11 +1405,6 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private <T> ComponentValue<T, ? extends JComponent> cellEditorComponentValue(Attribute<T> attribute, T initialValue) {
-		return ((EntityComponentFactory<T, Attribute<T>, ?>) configuration.cellEditorComponentFactories.computeIfAbsent(attribute, a ->
-						new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).componentValue(attribute, tableModel.editModel(), initialValue);
-	}
-
 	private JToolBar createRefreshButtonToolBar() {
 		KeyEvents.builder(VK_F5)
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1623,10 +1600,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void configureColumn(FilterTableColumn<Attribute<?>> column) {
-		TableCellEditor tableCellEditor = createTableCellEditor(column.identifier());
-		if (tableCellEditor != null) {
-			column.setCellEditor(tableCellEditor);
-		}
 		column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
 	}
 
@@ -1677,21 +1650,6 @@ public class EntityTablePanel extends JPanel {
 		if (parentOfFocusOwner) {
 			table.requestFocusInWindow();
 		}
-	}
-
-	private boolean nonUpdatableForeignKey(Attribute<?> attribute) {
-		if (attribute instanceof ForeignKey) {
-			ForeignKey foreignKey = (ForeignKey) attribute;
-
-			return foreignKey.references().stream()
-							.map(ForeignKey.Reference::column)
-							.map(referenceAttribute -> tableModel.entityDefinition().columns().definition(referenceAttribute))
-							.filter(ColumnDefinition.class::isInstance)
-							.map(ColumnDefinition.class::cast)
-							.noneMatch(ColumnDefinition::updatable);
-		}
-
-		return false;
 	}
 
 	private EntityEditPanel validateEditModel(EntityEditPanel editPanel) {
@@ -2111,7 +2069,6 @@ public class EntityTablePanel extends JPanel {
 		private final EntityDefinition entityDefinition;
 		private final ValueSet<Attribute<?>> editable;
 		private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories;
-		private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories;
 		private final FilterTable.Builder<Entity, Attribute<?>> tableBuilder;
 
 		private TableConditionPanel.Factory<Attribute<?>> tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
@@ -2145,6 +2102,7 @@ public class EntityTablePanel extends JPanel {
 			this.tableBuilder = FilterTable.builder(tablePanel.tableModel, entityTableColumns(entityDefinition))
 							.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
 							.cellRendererFactory(new EntityTableCellRendererFactory(tablePanel.tableModel))
+							.cellEditorFactory(new EntityTableCellEditorFactory(tablePanel.tableModel.editModel()))
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
 			this.conditionFieldFactory = new EntityConditionFieldFactory(entityDefinition);
@@ -2154,7 +2112,6 @@ public class EntityTablePanel extends JPanel {
 							.collect(toSet()));
 			this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
 			this.editComponentFactories = new HashMap<>();
-			this.cellEditorComponentFactories = new HashMap<>();
 			this.referentialIntegrityErrorHandling = ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 			this.refreshButtonVisible = RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE;
 			this.deleteConfirmer = new DeleteConfirmer(tablePanel.tableModel.selectionModel());
@@ -2181,7 +2138,6 @@ public class EntityTablePanel extends JPanel {
 			this.columnSelection = config.columnSelection;
 			this.editAttributeSelection = config.editAttributeSelection;
 			this.editComponentFactories = new HashMap<>(config.editComponentFactories);
-			this.cellEditorComponentFactories = new HashMap<>(config.cellEditorComponentFactories);
 			this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
 			this.refreshButtonVisible = config.refreshButtonVisible;
 			this.statusMessage = config.statusMessage;
@@ -2406,22 +2362,6 @@ public class EntityTablePanel extends JPanel {
 																																												 EntityComponentFactory<T, A, C> componentFactory) {
 			entityDefinition.attributes().definition(attribute);
 			editComponentFactories.put(attribute, requireNonNull(componentFactory));
-			return this;
-		}
-
-		/**
-		 * Sets the table cell editor component factory for the given attribute.
-		 * @param attribute the attribute
-		 * @param componentFactory the component factory
-		 * @param <T> the value type
-		 * @param <A> the attribute type
-		 * @param <C> the component type
-		 * @return this Config instance
-		 */
-		public <T, A extends Attribute<T>, C extends JComponent> Config tableCellEditorFactory(A attribute,
-																																													 EntityComponentFactory<T, A, C> componentFactory) {
-			entityDefinition.attributes().definition(attribute);
-			cellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
 			return this;
 		}
 
@@ -2798,6 +2738,32 @@ public class EntityTablePanel extends JPanel {
 				catch (IllegalArgumentException e) {
 					return false;
 				}
+			}
+		}
+	}
+
+	private static final class ComboBoxEnterPressedAction extends AbstractAction {
+
+		private static final String ENTER_PRESSED = "enterPressed";
+
+		private final JComboBox<?> comboBox;
+		private final Action action;
+		private final Action enterPressedAction;
+
+		private ComboBoxEnterPressedAction(JComboBox<?> comboBox, Action action) {
+			this.comboBox = comboBox;
+			this.action = action;
+			this.enterPressedAction = comboBox.getActionMap().get(ENTER_PRESSED);
+			this.comboBox.getActionMap().put(ENTER_PRESSED, this);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (comboBox.isPopupVisible()) {
+				enterPressedAction.actionPerformed(e);
+			}
+			else if (action.isEnabled()) {
+				action.actionPerformed(e);
 			}
 		}
 	}
