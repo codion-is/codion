@@ -21,8 +21,9 @@ import static java.util.stream.Collectors.*;
 public final class I18n {
 
 	private static final String DEFAULT = "default";
+	private static final String LOCALE_PROPERTIES_PATTERN = "_[a-z]{2}_[A-Z]{2}.properties";
 
-	private final Pattern localeProperties = Pattern.compile(".*_[a-z]{2}_[A-Z]{2}.properties");
+	private final Pattern localeProperties = Pattern.compile(".*" + LOCALE_PROPERTIES_PATTERN);
 	private final Map<String, Set<Resource>> moduleResources = new LinkedHashMap<>();
 
 	public I18n(Map<String, List<String>> modulePropertiesFiles) {
@@ -94,7 +95,7 @@ public final class I18n {
 	}
 
 	private static boolean isPropertiesFileFor(String file, String resourceOwner) {
-		return file.endsWith(resourceOwner + ".properties") || file.matches(Pattern.quote(resourceOwner) + "_[a-z]{2}_[A-Z]{2}.properties");
+		return file.endsWith(resourceOwner + ".properties") || file.matches(Pattern.quote(resourceOwner) + LOCALE_PROPERTIES_PATTERN);
 	}
 
 	private static String parseLocale(String file) {
