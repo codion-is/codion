@@ -93,7 +93,7 @@ public final class WorldImplTest extends DomainTest {
 		}
 
 		@Override
-		public Optional<Entity> foreignKey(ForeignKey foreignKey) {
+		public Optional<Entity> entity(ForeignKey foreignKey) {
 			if (foreignKey.referencedType().equals(Country.TYPE)) {
 				return Optional.of(entities().builder(Country.TYPE)
 								.with(Country.CODE, "ISL")
@@ -105,7 +105,7 @@ public final class WorldImplTest extends DomainTest {
 								.build());
 			}
 
-			return super.foreignKey(foreignKey);
+			return super.entity(foreignKey);
 		}
 	}
 }

@@ -135,12 +135,12 @@ public class ChinookTest extends DomainTest {
 		}
 
 		@Override
-		protected <T> T createValue(Attribute<T> attribute) {
+		protected <T> T value(Attribute<T> attribute) {
 			if (attribute.equals(Album.TAGS)) {
 				return (T) asList("tag_one", "tag_two");
 			}
 
-			return super.createValue(attribute);
+			return super.value(attribute);
 		}
 	}
 }

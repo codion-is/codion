@@ -84,7 +84,7 @@ public class DefaultEntityFactory implements EntityFactory {
 	}
 
 	@Override
-	public Optional<Entity> foreignKey(ForeignKey foreignKey) {
+	public Optional<Entity> entity(ForeignKey foreignKey) {
 		if (entities.definition(requireNonNull(foreignKey).referencedType()).readOnly()) {
 			return Optional.empty();
 		}
@@ -109,7 +109,7 @@ public class DefaultEntityFactory implements EntityFactory {
 					foreignKeyEntities.put(foreignKey, null);//short circuit recursion, value replaced below
 					populateForeignKeys(referencedEntityType, connection);
 				}
-				foreignKey(foreignKey).ifPresent(referencedEntity ->
+				entity(foreignKey).ifPresent(referencedEntity ->
 								foreignKeyEntities.put(foreignKey, insertOrSelect(referencedEntity, connection)));
 			}
 		}
@@ -123,12 +123,12 @@ public class DefaultEntityFactory implements EntityFactory {
 	}
 
 	/**
-	 * Creates a random value for the given attribute.
+	 * Creates a value for the given attribute.
 	 * @param attribute the attribute
 	 * @param <T> the attribute value type
 	 * @return a random value
 	 */
-	protected <T> T createValue(Attribute<T> attribute) {
+	protected <T> T value(Attribute<T> attribute) {
 		requireNonNull(attribute, "attribute");
 		AttributeDefinition<T> attributeDefinition = entities.definition(attribute.entityType()).attributes().definition(attribute);
 		try {
@@ -192,14 +192,14 @@ public class DefaultEntityFactory implements EntityFactory {
 	private Entity randomEntity(EntityType entityType) {
 		requireNonNull(entityType);
 		Entity entity = entities.entity(entityType);
-		populateEntity(entity, insertableColumns(entities.definition(entityType)), this::createValue);
+		populateEntity(entity, insertableColumns(entities.definition(entityType)), this::value);
 
 		return entity;
 	}
 
 	private void randomize(Entity entity) {
 		requireNonNull(entity);
-		populateEntity(entity, updatableColumns(entity.definition()), this::createValue);
+		populateEntity(entity, updatableColumns(entity.definition()), this::value);
 	}
 
 	private static void populateEntity(Entity entity, Collection<Column<?>> columns,

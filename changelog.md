@@ -10,6 +10,7 @@ Codion Change Log
 ### is.codion.framework.domain.test
 - EntityTestUnit renamed DomainTest.
 - DomainTest.EntityFactory refactored.
+- DomainTest.EntityFactory.foreignKey() and createValue() renamed entity() and value().
 ### is.codion.tools.generator.model
 - Module is.codion.tools.generator.domain split from model.
 ### is.codion.tools.monitor.ui

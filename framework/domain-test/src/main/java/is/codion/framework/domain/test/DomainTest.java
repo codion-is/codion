@@ -30,8 +30,8 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -115,21 +115,15 @@ public class DomainTest {
 		EntityConnection connection = connectionProvider.connection();
 		connection.startTransaction();
 		try {
-			entityFactory.populateForeignKeys(entityType, connection);
-			Entity entity = null;
-			EntityDefinition entityDefinition = entities().definition(entityType);
-			if (!entityDefinition.readOnly()) {
-				entity = entityFactory.entity(entityType);
-				if (entity == null) {
-					throw new IllegalStateException("EntityFactory.entity() must return a non-null entity");
-				}
-				entity = testInsert(entity, connection);
-				assertTrue(entity.primaryKey().isNotNull());
+			if (entities().definition(entityType).readOnly()) {
+				testSelect(entityType, connection);
+			}
+			else {
+				entityFactory.populateForeignKeys(entityType, connection);
+				Entity entity = testInsert(entityFactory.entity(entityType), connection);
 				entityFactory.modify(entity);
 				testUpdate(entity, connection);
-			}
-			testSelect(entityType, entity, connection);
-			if (!entityDefinition.readOnly()) {
+				testSelect(entity, connection);
 				testDelete(entity, connection);
 			}
 		}
@@ -145,31 +139,32 @@ public class DomainTest {
 	public interface EntityFactory {
 
 		/**
-		 * This method returns the Entity instance on which to run the tests, by default this method creates an instance
-		 * filled with random values.
+		 * Initializes the Entity instance on which to run the tests, by default this method creates an instance filled with random values.
 		 * @param entityType the entityType for which to initialize an entity instance for testing
 		 * @return the entity instance to use for testing the entity type
 		 */
 		Entity entity(EntityType entityType);
 
 		/**
-		 * Initializes an Entity instance to reference via the given foreign key, by default this method creates an Entity
-		 * filled with random values. Subclasses can override and provide a hard coded instance or select one from the database.
-		 * Note that this default implementation returns null in case the referenced entity type is read-only.
+		 * Initializes an Entity instance to reference via the given foreign key, by default this method returns an non-existing Entity
+		 * filled with random values. The resulting entity is inserted if it does not already exist.
+		 * Note that this default implementation returns an empty Optional in case the referenced entity type is read-only.
 		 * @param foreignKey the foreign key referencing the entity
 		 * @return an entity for the given foreign key or an empty Optional if none is required
 		 * @throws DatabaseException in case of an exception
 		 */
-		Optional<Entity> foreignKey(ForeignKey foreignKey);
+		Optional<Entity> entity(ForeignKey foreignKey);
 
 		/**
-		 * This method should return {@code entity} in a modified state
+		 * Modifies one or more values in {@code entity}, for the update test.
+		 * If the entity is not modified, the update test will not be run.
+		 * The default implementation populates the entity with random values.
 		 * @param entity the entity to modify
 		 */
 		void modify(Entity entity);
 
 		/**
-		 * Initializes the entities referenced by the entity identified by {@code entityType}
+		 * Initializes the entities referenced by the given {@code entityType} via foreign keys
 		 * @param entityType the type of the entity for which to initialize the referenced entities
 		 * @param connection the connection to use
 		 * @throws DatabaseException in case of an exception
@@ -192,12 +187,16 @@ public class DomainTest {
 	 * @throws DatabaseException in case of an exception
 	 */
 	private static Entity testInsert(Entity entity, EntityConnection connection) throws DatabaseException {
+		if (entity == null) {
+			throw new IllegalStateException("EntityFactory.entity() must return a non-null entity");
+		}
 		try {
 			Entity insertedEntity = connection.insertSelect(entity);
 			assertEquals(entity.primaryKey(), insertedEntity.primaryKey());
+			assertTrue(entity.primaryKey().isNotNull());
 			entity.definition().columns().definitions().stream()
 							.filter(ColumnDefinition::insertable)
-							.forEach(columnDefinition -> assertValueEqual(entity, insertedEntity, columnDefinition));
+							.forEach(columnDefinition -> assertValueEqual(columnDefinition, entity, insertedEntity));
 
 			return insertedEntity;
 		}
@@ -209,23 +208,26 @@ public class DomainTest {
 
 	/**
 	 * Tests selecting the given entity, if {@code entity} is null
-	 * then selecting many entities is tested.
-	 * @param entityType the entityType in case {@code entity} is null
+	 * then selecting multiple entities of the given type is tested.
 	 * @param entity the entity to test selecting
 	 * @param connection the connection to use
 	 * @throws DatabaseException in case of an exception
 	 */
-	private static void testSelect(EntityType entityType, Entity entity,
-																 EntityConnection connection) throws DatabaseException {
-		if (entity != null) {
-			assertEquals(entity, connection.select(entity.primaryKey()),
-							"Entity of type " + entity.entityType() + " failed equals comparison");
-		}
-		else {
-			connection.select(Select.all(entityType)
-							.limit(SELECT_LIMIT)
-							.build());
-		}
+	private static void testSelect(Entity entity, EntityConnection connection) throws DatabaseException {
+		assertEquals(entity, connection.select(entity.primaryKey()),
+						"Entity of type " + entity.entityType() + " failed equals comparison");
+	}
+
+	/**
+	 * Tests selecting multiple entities of the given type.
+	 * @param entityType the entityType
+	 * @param connection the connection to use
+	 * @throws DatabaseException in case of an exception
+	 */
+	private static void testSelect(EntityType entityType, EntityConnection connection) throws DatabaseException {
+		connection.select(Select.all(entityType)
+						.limit(SELECT_LIMIT)
+						.build());
 	}
 
 	/**
@@ -244,7 +246,7 @@ public class DomainTest {
 		assertEquals(entity.primaryKey(), updatedEntity.primaryKey());
 		entity.definition().columns().definitions().stream()
 						.filter(ColumnDefinition::updatable)
-						.forEach(columnDefinition -> assertValueEqual(entity, updatedEntity, columnDefinition));
+						.forEach(columnDefinition -> assertValueEqual(columnDefinition, entity, updatedEntity));
 	}
 
 	/**
@@ -265,22 +267,26 @@ public class DomainTest {
 		assertTrue(caught, "Entity of type " + entity.entityType() + " failed delete test");
 	}
 
-	private static void assertValueEqual(Entity entity, Entity updated, ColumnDefinition<?> columnDefinition) {
-		Object beforeUpdate = entity.get(columnDefinition.attribute());
-		Object afterUpdate = updated.get(columnDefinition.attribute());
-		String message = "Values of column " + columnDefinition + " should be equal after update ["
-						+ beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
-						+ afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
+	private static void assertValueEqual(ColumnDefinition<?> columnDefinition, Entity original, Entity updated) {
+		Object originalValue = original.get(columnDefinition.attribute());
+		Object updatedValue = updated.get(columnDefinition.attribute());
+		String message = createMessage(columnDefinition.attribute(), originalValue, updatedValue);
 		if (columnDefinition.attribute().type().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
-			assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
-							&& ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
+			assertTrue((updatedValue == originalValue) || (updatedValue != null
+							&& ((BigDecimal) updatedValue).compareTo((BigDecimal) originalValue) == 0));
 		}
 		else if (columnDefinition.attribute().type().isByteArray() && !columnDefinition.lazy()) {
-			assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
+			assertArrayEquals((byte[]) originalValue, (byte[]) updatedValue, message);
 		}
 		else {
-			assertEquals(beforeUpdate, afterUpdate, message);
+			assertEquals(originalValue, updatedValue, message);
 		}
+	}
+
+	private static String createMessage(Column<?> column, Object originalValue, Object updatedValue) {
+		return "Values of column " + column + " should be equal ["
+						+ originalValue + (originalValue != null ? (" (" + originalValue.getClass() + ")") : "") + ", "
+						+ updatedValue + (updatedValue != null ? (" (" + updatedValue.getClass() + ")") : "") + "]";
 	}
 
 	private static User initializeDefaultUser() {
