@@ -564,6 +564,9 @@ public class NavigableImagePanel extends JPanel {
 	 */
 	public final void setNavigationImageEnabled(boolean enabled) {
 		navigationImageEnabled = enabled;
+		if (navigationImage == null && image != null) {
+			createNavigationImage();
+		}
 		repaint();
 	}
 

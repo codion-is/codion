@@ -11,6 +11,8 @@ Codion Change Log
 - EntityTestUnit renamed DomainTest.
 - DomainTest.EntityFactory refactored.
 - DomainTest.EntityFactory.foreignKey() and createValue() renamed entity() and value().
+### is.codion.plugin.imagepanel
+- NavigableImagePanel bug fixed, now creates the navigation image when it is enabled for the first time.
 ### is.codion.tools.generator.model
 - Module is.codion.tools.generator.domain split from model.
 ### is.codion.tools.monitor.ui
