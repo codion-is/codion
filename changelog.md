@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.6
+
 ## 0.18.5
 ### is.codion.common.core
 - DefaultProxyBuilder.MethodKey now caches the hashCode.
