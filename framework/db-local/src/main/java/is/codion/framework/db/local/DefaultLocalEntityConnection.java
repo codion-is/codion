@@ -1536,7 +1536,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 				}
 				stringValue = String.valueOf(value);
 			}
-			catch (SQLException e) {
+			catch (Exception e) {
 				//fallback to the original value
 				columnValue = value;
 				stringValue = String.valueOf(value);
