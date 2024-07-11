@@ -2,7 +2,6 @@ dependencies {
     api project(":codion-tools-generator-domain")
     api project(":codion-swing-common-model")
 
-    implementation(libs.slf4j.api)
     implementation(libs.javapoet)
 
     testRuntimeOnly project(":codion-dbms-h2")

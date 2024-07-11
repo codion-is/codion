@@ -22,9 +22,7 @@
  * {@link is.codion.tools.generator.model.DomainGeneratorModel}<br>
  */
 module is.codion.tools.generator.model {
-	requires org.slf4j;
 	requires java.compiler;
-	requires com.squareup.javapoet;
 	requires transitive is.codion.tools.generator.domain;
 	requires transitive is.codion.swing.common.model;
 

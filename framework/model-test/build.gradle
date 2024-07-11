@@ -9,6 +9,4 @@ dependencies {
     api project(":codion-framework-model")
 
     api(libs.junit.api)
-
-    implementation(libs.slf4j.api)
 }

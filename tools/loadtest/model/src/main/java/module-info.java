@@ -22,7 +22,6 @@
  * {@link is.codion.tools.loadtest.model.LoadTestModel}
  */
 module is.codion.tools.loadtest.model {
-	requires org.slf4j;
 	requires org.jfree.jfreechart;
 	requires jdk.management;
 	requires transitive java.desktop;

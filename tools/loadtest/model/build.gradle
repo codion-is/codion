@@ -6,8 +6,6 @@ dependencies {
 
     api(libs.jfreechart)
 
-    implementation(libs.slf4j.api)
-
     testRuntimeOnly project(":codion-plugin-hikari-pool")
     testRuntimeOnly project(":codion-dbms-h2")
     testRuntimeOnly(libs.h2)

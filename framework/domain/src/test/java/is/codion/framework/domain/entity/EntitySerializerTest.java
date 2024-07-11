@@ -73,7 +73,7 @@ public final class EntitySerializerTest {
 		DefaultEntity deserialized = (DefaultEntity) domain2.entities().entity(TestTable.TYPE);
 		assertFalse(deserialized.contains(TestTable.EXTRA));
 
-		serializeDeserialize(serializer1, serializer2, entity, deserialized);
+		serializeDeserialize(serializer2, entity, deserialized);
 
 		entity = (DefaultEntity) domain2.entities().builder(TestTable.TYPE)
 						.with(TestTable.ID, 1)
@@ -85,20 +85,20 @@ public final class EntitySerializerTest {
 		DefaultEntity toSerialize = entity;
 		DefaultEntity toDeserialize = deserialized;
 
-		assertThrows(IOException.class, () -> serializeDeserialize(serializer2, serializer1, toSerialize, toDeserialize));
+		assertThrows(IOException.class, () -> serializeDeserialize(serializer1, toSerialize, toDeserialize));
 
-		serializeDeserialize(serializer2, serializer3, toSerialize, toDeserialize);
+		serializeDeserialize(serializer3, toSerialize, toDeserialize);
 		assertFalse(deserialized.contains(TestTable.EXTRA));
 
 		deserialized = (DefaultEntity) domain2.entities().entity(TestTable.TYPE);
-		serializeDeserialize(serializer2, serializer2, entity, deserialized);
+		serializeDeserialize(serializer2, entity, deserialized);
 		assertTrue(deserialized.contains(TestTable.EXTRA));
 	}
 
 	private static void testSerializer(EntitySerializer serializer) throws IOException, ClassNotFoundException {
 		DefaultEntity entity = createTestEntity();
 		DefaultEntity deserializedEntity = (DefaultEntity) ENTITIES.entity(Employee.TYPE);
-		serializeDeserialize(serializer, serializer, entity, deserializedEntity);
+		serializeDeserialize(serializer, entity, deserializedEntity);
 		assertTrue(deserializedEntity.modified(Employee.NAME));
 		assertTrue(entity.equalValues(deserializedEntity));
 		assertTrue(entity.entity(Employee.DEPARTMENT_FK).equalValues(deserializedEntity.entity(Employee.DEPARTMENT_FK)));
@@ -110,16 +110,15 @@ public final class EntitySerializerTest {
 
 		DefaultKey key = createTestKey();
 		DefaultKey deserializedKey = (DefaultKey) ENTITIES.keyBuilder(CompositeMaster.TYPE).build();
-		serializeDeserialize(serializer, serializer, key, deserializedKey);
+		serializeDeserialize(serializer, key, deserializedKey);
 		assertEquals(key.values, deserializedKey.values);
 	}
 
-	private static void serializeDeserialize(EntitySerializer serializer, EntitySerializer deserializer,
-																					 DefaultEntity toSerialize, DefaultEntity toDeserialize)
+	private static void serializeDeserialize(EntitySerializer deserializer, DefaultEntity toSerialize, DefaultEntity toDeserialize)
 					throws IOException, ClassNotFoundException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try (ObjectOutputStream out = new ObjectOutputStream(bos)) {
-			serializer.serialize(toSerialize, out);
+			EntitySerializer.serialize(toSerialize, out);
 		}
 		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
 		try (ObjectInputStream in = new ObjectInputStream(bis)) {
@@ -127,12 +126,11 @@ public final class EntitySerializerTest {
 		}
 	}
 
-	private static void serializeDeserialize(EntitySerializer serializer, EntitySerializer deserializer,
-																					 DefaultKey toSerialize, DefaultKey toDeserialize)
+	private static void serializeDeserialize(EntitySerializer deserializer, DefaultKey toSerialize, DefaultKey toDeserialize)
 					throws IOException, ClassNotFoundException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try (ObjectOutputStream out = new ObjectOutputStream(bos)) {
-			serializer.serialize(toSerialize, out);
+			EntitySerializer.serialize(toSerialize, out);
 		}
 		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
 		try (ObjectInputStream in = new ObjectInputStream(bis)) {
