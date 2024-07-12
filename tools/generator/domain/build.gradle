@@ -1,7 +1,7 @@
 dependencies {
     api project(":codion-framework-domain")
 
-    api(libs.javapoet)
+    implementation(libs.javapoet)
 
     testRuntimeOnly project(":codion-dbms-h2")
     testRuntimeOnly(libs.h2)

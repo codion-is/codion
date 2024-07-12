@@ -28,7 +28,7 @@ module is.codion.framework.db.http {
 	requires java.net.http;
 	requires com.fasterxml.jackson.core;
 	requires com.fasterxml.jackson.databind;
-	requires is.codion.framework.db.core;
+	requires transitive is.codion.framework.db.core;
 	requires is.codion.framework.json.domain;
 	requires is.codion.framework.json.db;
 

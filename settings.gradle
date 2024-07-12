@@ -181,7 +181,6 @@ dependencyResolutionManagement {
             version("json", "20240303")
 
             version("jfreechart", "1.5.5")
-            version("jcommon", "1.0.24")
             version("junit", "5.10.2")
             version("sslcontext.kickstart", "8.3.6")
             version("flatlaf", "3.4.1")
@@ -208,7 +207,6 @@ dependencyResolutionManagement {
             library("json", "org.json", "json").versionRef("json")
 
             library("jfreechart", "org.jfree", "jfreechart").versionRef("jfreechart")
-            library("jcommon", "org.jfree", "jcommon").versionRef("jcommon")
 
             library("javalin", "io.javalin", "javalin").versionRef("javalin")
             library("javalin-ssl", "io.javalin.community.ssl", "ssl-plugin").versionRef("javalin")
@@ -229,7 +227,6 @@ dependencyResolutionManagement {
             library("log4j-api", "org.apache.logging.log4j", "log4j-api").versionRef("log4j")
             library("log4j-core", "org.apache.logging.log4j", "log4j-core").versionRef("log4j")
             library("tomcat-jdbc", "org.apache.tomcat", "tomcat-jdbc").versionRef("tomcat")
-            library("tomcat-juli", "org.apache.tomcat", "tomcat-juli").versionRef("tomcat")
 
             library("jasperreports", "net.sf.jasperreports", "jasperreports").versionRef("jasperreports")
             library("commons-logging", "commons-logging", "commons-logging").versionRef("commons.logging")

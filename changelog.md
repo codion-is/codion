@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.6
+### is.codion
+- Dependency cleanup using dependency-analysis-gradle-plugin.
 ### is.codion.framework.db.core
 - DefaultLocalEntityConnection.createValueString() bug fixed, now catches Exception instead of just SQLException, since creating a log message should never fail.
 

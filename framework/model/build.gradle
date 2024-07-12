@@ -1,9 +1,5 @@
 dependencies {
-    api project(":codion-common-core")
-    api project(":codion-common-db")
     api project(":codion-common-model")
-
-    api project(":codion-framework-domain")
     api project(":codion-framework-db-core")
 
     testImplementation project(":codion-framework-db-local")

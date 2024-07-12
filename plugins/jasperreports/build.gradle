@@ -5,8 +5,7 @@ plugins {
 apply plugin: BuildReportsPlugin
 
 dependencies {
-    implementation project(":codion-common-core")
-    implementation project(":codion-common-db")
+    api project(":codion-common-db")
 
     testImplementation project(":codion-framework-db-local")
 

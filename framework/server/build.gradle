@@ -9,16 +9,13 @@ configurations {
 }
 
 dependencies {
-    api project(":codion-common-core")
-    api project(":codion-common-db")
     api project(":codion-common-rmi")
-
-    api project(":codion-framework-domain")
     api project(":codion-framework-db-core")
-    api project(":codion-framework-db-local")
-    api project(":codion-framework-db-rmi")
 
-    implementation(libs.slf4j.api)
+    implementation project(":codion-framework-db-local")
+    implementation project(":codion-framework-db-rmi")
+
+    api(libs.slf4j.api)
 
     testRuntimeOnly project(":codion-plugin-hikari-pool")
     testRuntimeOnly project(":codion-dbms-h2")

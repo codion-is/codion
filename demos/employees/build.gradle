@@ -9,6 +9,7 @@ apply plugin: BuildReportsPlugin
 dependencies {
     implementation project(":codion-framework-db-local")
     implementation project(":codion-framework-db-http")
+    implementation project(":codion-framework-db-rmi")
     implementation project(":codion-framework-domain-test")
     implementation project(":codion-framework-server")
     implementation project(":codion-framework-servlet")
