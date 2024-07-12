@@ -751,7 +751,7 @@ class DefaultEntity implements Entity, Serializable {
 			return (T) values.get(attributeDefinition.attribute());
 		}
 		T derivedValue = derived(attributeDefinition);
-		if (!attributeDefinition.denormalized()) {
+		if (!attributeDefinition.denormalized() && !attributeDefinition.sourceAttributes().isEmpty()) {
 			values.put(attributeDefinition.attribute(), derivedValue);
 		}
 

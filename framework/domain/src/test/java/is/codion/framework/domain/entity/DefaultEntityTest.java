@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -1020,6 +1021,7 @@ public class DefaultEntityTest {
 		EntityType type = domainType.entityType("derived");
 		Attribute<String> stringAttribute = type.stringAttribute("string");
 		Attribute<String> derivedAttribute = type.stringAttribute("derived");
+		Attribute<UUID> derivedAttributeNoSource = type.attribute("derived_no_source", UUID.class);
 		class DerivedDomain extends DomainModel {
 			DerivedDomain() {
 				super(domainType);
@@ -1028,7 +1030,9 @@ public class DefaultEntityTest {
 												.attribute(),
 								derivedAttribute.define()
 												.derived(sourceValues ->
-																sourceValues.get(stringAttribute) + "-derived", stringAttribute)));
+																sourceValues.get(stringAttribute) + "-derived", stringAttribute),
+								derivedAttributeNoSource.define()
+												.derived(sourceValues -> UUID.randomUUID())));
 			}
 		}
 		Entity entity = new DerivedDomain().entities().entity(type);
@@ -1043,6 +1047,9 @@ public class DefaultEntityTest {
 		Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));
 		// Cached values cleared before serializing
 		assertNotSame(derivedValue, deserialized.get(derivedAttribute));
+
+		// Attributes based on no source values should not be cached
+		assertNotEquals(entity.get(derivedAttributeNoSource), entity.get(derivedAttributeNoSource));
 	}
 
 	private static Entity detailEntity(long id, Integer intValue, Double doubleValue,

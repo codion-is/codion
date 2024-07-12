@@ -9,6 +9,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - Entity.mapToPrimaryKey() renamed primaryKeyMap().
 - Entity.entitiesByValue() removed.
+- DefaultEntity bug fixed, no longer caches values of derived attributes without source attributes.
 ### is.codion.framework.domain.test
 - EntityFactory.populateForeignKeys() removed, related refactoring.
 - DomainTest now prevents transactions from being closed on the active connection during a test.
