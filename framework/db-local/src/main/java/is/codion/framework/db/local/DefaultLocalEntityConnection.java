@@ -841,7 +841,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						.attributes(primaryKeyAndWritableColumns(entityType))
 						.forUpdate()
 						.build();
-		Map<Key, Entity> currentEntitiesByKey = mapToPrimaryKey(query(selectForUpdate));
+		Map<Key, Entity> currentEntitiesByKey = primaryKeyMap(query(selectForUpdate));
 		for (Entity entity : entities) {
 			Entity current = currentEntitiesByKey.get(entity.originalPrimaryKey());
 			if (current == null) {
@@ -975,7 +975,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		}
 
 		if (referencedKey.primaryKey()) {
-			return mapToPrimaryKey(referencedEntities);
+			return primaryKeyMap(referencedEntities);
 		}
 
 		return referencedEntities.stream()

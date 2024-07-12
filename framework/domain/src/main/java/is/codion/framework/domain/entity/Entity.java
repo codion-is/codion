@@ -449,7 +449,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @return the mapped entities
 	 * @throws IllegalArgumentException in case a non-unique primary key is encountered
 	 */
-	static Map<Key, Entity> mapToPrimaryKey(Collection<Entity> entities) {
+	static Map<Key, Entity> primaryKeyMap(Collection<Entity> entities) {
 		return requireNonNull(entities).stream()
 						.collect(toMap(Entity::primaryKey, Function.identity(), ThrowIfNonUnique.INSTANCE));
 	}
@@ -487,20 +487,6 @@ public interface Entity extends Comparable<Entity> {
 	static LinkedHashMap<EntityType, List<Key>> groupKeysByType(Collection<Key> keys) {
 		return requireNonNull(keys).stream()
 						.collect(groupingBy(Key::entityType, LinkedHashMap::new, toList()));
-	}
-
-	/**
-	 * Finds entities according to attribute values
-	 * @param values the attribute values to use as condition mapped to their respective attributes
-	 * @param entities the entities to search
-	 * @return the entities having the exact same attribute values as in the given value map
-	 */
-	static Collection<Entity> entitiesByValue(Map<Attribute<?>, Object> values, Collection<Entity> entities) {
-		requireNonNull(values);
-		return requireNonNull(entities).stream()
-						.filter(entity -> values.entrySet().stream()
-										.allMatch(entry -> Objects.equals(entity.get(entry.getKey()), entry.getValue())))
-						.collect(toList());
 	}
 
 	/**

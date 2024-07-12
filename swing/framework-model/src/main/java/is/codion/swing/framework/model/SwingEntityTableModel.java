@@ -304,7 +304,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 	@Override
 	public final void replace(Collection<Entity> entities) {
-		replaceEntitiesByKey(Entity.mapToPrimaryKey(entities));
+		replaceEntitiesByKey(Entity.primaryKeyMap(entities));
 	}
 
 	@Override

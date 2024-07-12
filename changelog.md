@@ -6,6 +6,9 @@ Codion Change Log
 - Dependency cleanup using dependency-analysis-gradle-plugin.
 ### is.codion.common.core
 - ProxyBuilder.DefaultHandler.invoke() bug fixed, now unwraps the InvocationTargetException and rethrows the target exception.
+### is.codion.framework.domain
+- Entity.mapToPrimaryKey() renamed primaryKeyMap().
+- Entity.entitiesByValue() removed.
 ### is.codion.framework.domain.test
 - EntityFactory.populateForeignKeys() removed, related refactoring.
 - DomainTest now prevents transactions from being closed on the active connection during a test.

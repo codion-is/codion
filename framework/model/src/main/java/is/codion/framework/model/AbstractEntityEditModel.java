@@ -760,8 +760,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param entitiesAfterUpdate the entities after update
 	 * @return the updated entities mapped to their respective original primary keys
 	 */
-	private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(Collection<Entity> entitiesBeforeUpdate,
-																																 Collection<Entity> entitiesAfterUpdate) {
+	private static Map<Entity.Key, Entity> originalPrimaryKeyMap(Collection<Entity> entitiesBeforeUpdate,
+																															 Collection<Entity> entitiesAfterUpdate) {
 		List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
 		Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
 		for (Entity entity : entitiesBeforeUpdate) {
@@ -911,7 +911,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
+				notifyAfterUpdate(originalPrimaryKeyMap(entities, updatedEntities));
 				Entity activeEntity = entity();
 				updatedEntities.stream()
 								.filter(updatedEntity -> updatedEntity.equals(activeEntity))

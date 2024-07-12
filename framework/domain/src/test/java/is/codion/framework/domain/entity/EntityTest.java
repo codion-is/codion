@@ -23,14 +23,12 @@ import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.TestDomain.NoPk;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,21 +142,21 @@ public final class EntityTest {
 	}
 
 	@Test
-	void mapToPrimaryKey() {
+	void primaryKeyMap() {
 		Entity dept = entities.builder(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
 		Entity emp = entities.builder(Employee.TYPE)
 						.with(Employee.ID, 3)
 						.build();
-		Map<Entity.Key, Entity> entityMap = Entity.mapToPrimaryKey(asList(dept, emp));
+		Map<Entity.Key, Entity> entityMap = Entity.primaryKeyMap(asList(dept, emp));
 		assertSame(dept, entityMap.get(dept.primaryKey()));
 		assertSame(emp, entityMap.get(emp.primaryKey()));
 
 		Entity dept2 = entities.builder(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
-		assertThrows(IllegalArgumentException.class, () -> Entity.mapToPrimaryKey(asList(dept, dept2, emp)));
+		assertThrows(IllegalArgumentException.class, () -> Entity.primaryKeyMap(asList(dept, dept2, emp)));
 	}
 
 	@Test
@@ -172,7 +170,7 @@ public final class EntityTest {
 	}
 
 	@Test
-	void mapToAttributeValue() {
+	void groupByValue() {
 		List<Entity> entityList = new ArrayList<>();
 
 		Entity entityOne = entities.builder(Department.TYPE)
@@ -252,34 +250,6 @@ public final class EntityTest {
 			assertTrue(dept.isNull(definition.attribute()));
 			assertFalse(dept.isNotNull(definition.attribute()));
 		}
-	}
-
-	@Test
-	void entitiesByValue() {
-		Entity one = entities.builder(Detail.TYPE)
-						.with(Detail.ID, 1L)
-						.with(Detail.STRING, "b")
-						.build();
-
-		Entity two = entities.builder(Detail.TYPE)
-						.with(Detail.ID, 2L)
-						.with(Detail.STRING, "zz")
-						.build();
-
-		Entity three = entities.builder(Detail.TYPE)
-						.with(Detail.ID, 3L)
-						.with(Detail.STRING, "zz")
-						.build();
-
-		List<Entity> entities = asList(one, two, three);
-
-		Map<Attribute<?>, Object> values = new HashMap<>();
-		values.put(Detail.STRING, "b");
-		assertEquals(1, Entity.entitiesByValue(values, entities).size());
-		values.put(Detail.STRING, "zz");
-		assertEquals(2, Entity.entitiesByValue(values, entities).size());
-		values.put(Detail.ID, 3L);
-		assertEquals(1, Entity.entitiesByValue(values, entities).size());
 	}
 
 	@Test
