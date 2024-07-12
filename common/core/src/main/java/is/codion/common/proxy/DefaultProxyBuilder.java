@@ -19,6 +19,7 @@
 package is.codion.common.proxy;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
@@ -135,7 +136,12 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 				return proxy == args[0];
 			}
 			if (delegate != null) {
-				return method.invoke(delegate, args);
+				try {
+					return method.invoke(delegate, args);
+				}
+				catch (InvocationTargetException e) {
+					throw e.getTargetException();
+				}
 			}
 
 			throw new UnsupportedOperationException(method.toString());

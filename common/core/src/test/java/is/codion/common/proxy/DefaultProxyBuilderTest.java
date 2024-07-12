@@ -20,7 +20,6 @@ package is.codion.common.proxy;
 
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public final class DefaultProxyBuilderTest {
 		assertTrue(proxyInstance::isEmpty);
 
 		//delegate is an immutable list
-		assertThrows(UndeclaredThrowableException.class, () -> proxyInstance.add(new Object()));
+		assertThrows(UnsupportedOperationException.class, () -> proxyInstance.add(new Object()));
 
 		List<Object> proxyInstance2 = ProxyBuilder.builder(List.class)
 						.delegate(emptyList())
@@ -106,5 +105,6 @@ public final class DefaultProxyBuilderTest {
 		listProxy.remove("hey");
 		listProxy.size();
 		listProxy.equals(list);
+		assertThrows(IndexOutOfBoundsException.class, () -> listProxy.get(10));
 	}
 }
