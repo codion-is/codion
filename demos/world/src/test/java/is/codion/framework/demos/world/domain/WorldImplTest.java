@@ -19,6 +19,7 @@
 package is.codion.framework.demos.world.domain;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
@@ -35,10 +36,8 @@ import java.util.Optional;
 
 public final class WorldImplTest extends DomainTest {
 
-	private static final WorldImpl DOMAIN = new WorldImpl();
-
 	public WorldImplTest() {
-		super(DOMAIN, new WorldEntityFactory());
+		super(new WorldImpl(), WorldEntityFactory::new);
 	}
 
 	@Test
@@ -63,12 +62,12 @@ public final class WorldImplTest extends DomainTest {
 
 	private static final class WorldEntityFactory extends DefaultEntityFactory {
 
-		private WorldEntityFactory() {
-			super(DOMAIN.entities());
+		private WorldEntityFactory(EntityConnection connection) {
+			super(connection);
 		}
 
 		@Override
-		public Entity entity(EntityType entityType) {
+		public Entity entity(EntityType entityType) throws DatabaseException {
 			Entity entity = super.entity(entityType);
 			if (entityType.equals(Country.TYPE)) {
 				entity.put(Country.CODE, "XYZ");
@@ -82,7 +81,7 @@ public final class WorldImplTest extends DomainTest {
 		}
 
 		@Override
-		public void modify(Entity entity) {
+		public void modify(Entity entity) throws DatabaseException {
 			super.modify(entity);
 			if (entity.entityType().equals(Country.TYPE)) {
 				entity.put(Country.CONTINENT, "Europe");
@@ -93,7 +92,7 @@ public final class WorldImplTest extends DomainTest {
 		}
 
 		@Override
-		public Optional<Entity> entity(ForeignKey foreignKey) {
+		public Optional<Entity> entity(ForeignKey foreignKey) throws DatabaseException {
 			if (foreignKey.referencedType().equals(Country.TYPE)) {
 				return Optional.of(entities().builder(Country.TYPE)
 								.with(Country.CODE, "ISL")

@@ -18,6 +18,8 @@
  */
 package is.codion.framework.demos.manual.store.domain;
 
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
@@ -38,7 +40,7 @@ public class StoreTest extends DomainTest {
 	private static final Store DOMAIN = new Store();
 
 	public StoreTest() {
-		super(DOMAIN, new StoreEntityFactory());
+		super(DOMAIN, StoreEntityFactory::new);
 	}
 
 	@Test
@@ -58,26 +60,26 @@ public class StoreTest extends DomainTest {
 
 	private static final class StoreEntityFactory extends DefaultEntityFactory {
 
-		private StoreEntityFactory() {
-			super(DOMAIN.entities());
+		private StoreEntityFactory(EntityConnection connection) {
+			super(connection);
 		}
 
 		@Override
-		public Optional<Entity> entity(ForeignKey foreignKey) {
+		public Optional<Entity> entity(ForeignKey foreignKey) throws DatabaseException {
 			//see if the currently running test requires an ADDRESS entity
 			if (foreignKey.referencedType().equals(Address.TYPE)) {
-				return Optional.of(entities().builder(Address.TYPE)
+				return Optional.of(connection().insertSelect(entities().builder(Address.TYPE)
 								.with(Address.ID, 21L)
 								.with(Address.STREET, "One Way")
 								.with(Address.CITY, "Sin City")
-								.build());
+								.build()));
 			}
 
 			return super.entity(foreignKey);
 		}
 
 		@Override
-		public Entity entity(EntityType entityType) {
+		public Entity entity(EntityType entityType) throws DatabaseException {
 			if (entityType.equals(Address.TYPE)) {
 				//Initialize an entity representing the table STORE.ADDRESS,
 				//which can be used for the testing
@@ -100,8 +102,8 @@ public class StoreTest extends DomainTest {
 			}
 			else if (entityType.equals(CustomerAddress.TYPE)) {
 				return entities().builder(CustomerAddress.TYPE)
-								.with(CustomerAddress.CUSTOMER_FK, entity(Customer.TYPE))
-								.with(CustomerAddress.ADDRESS_FK, entity(Address.TYPE))
+								.with(CustomerAddress.CUSTOMER_FK, entity(CustomerAddress.CUSTOMER_FK).orElseThrow())
+								.with(CustomerAddress.ADDRESS_FK, entity(CustomerAddress.ADDRESS_FK).orElseThrow())
 								.build();
 			}
 

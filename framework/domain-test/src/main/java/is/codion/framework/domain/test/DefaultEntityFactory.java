@@ -42,15 +42,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.singletonList;
@@ -71,48 +68,49 @@ public class DefaultEntityFactory implements EntityFactory {
 	private static final String ALPHA_NUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final Random RANDOM = new Random();
 
+	private final EntityConnection connection;
 	private final Entities entities;
 	private final Map<ForeignKey, Entity> foreignKeyEntities = new HashMap<>();
 
-	public DefaultEntityFactory(Entities entities) {
-		this.entities = requireNonNull(entities);
+	public DefaultEntityFactory(EntityConnection connection) {
+		this.connection = requireNonNull(connection);
+		this.entities = connection.entities();
 	}
 
 	@Override
-	public Entity entity(EntityType entityType) {
-		return randomEntity(entityType);
+	public Entity entity(EntityType entityType) throws DatabaseException {
+		Entity entity = entities.entity(requireNonNull(entityType));
+		populate(entity, insertableColumns(entities.definition(entityType)));
+
+		return entity;
 	}
 
 	@Override
-	public Optional<Entity> entity(ForeignKey foreignKey) {
+	public Optional<Entity> entity(ForeignKey foreignKey) throws DatabaseException {
 		if (entities.definition(requireNonNull(foreignKey).referencedType()).readOnly()) {
 			return Optional.empty();
 		}
-
-		return Optional.of(randomEntity(foreignKey.referencedType()));
-	}
-
-	@Override
-	public void modify(Entity entity) {
-		randomize(entity);
-	}
-
-	@Override
-	public void populateForeignKeys(EntityType entityType, EntityConnection connection) throws DatabaseException {
-		List<ForeignKey> foreignKeys = new ArrayList<>(entities.definition(entityType).foreignKeys().get());
-		//we have to start with non-self-referential ones
-		foreignKeys.sort((fk1, fk2) -> !fk1.referencedType().equals(entityType) ? -1 : 1);
-		for (ForeignKey foreignKey : foreignKeys) {
-			EntityType referencedEntityType = foreignKey.referencedType();
-			if (!foreignKeyEntities.containsKey(foreignKey)) {
-				if (!Objects.equals(entityType, referencedEntityType)) {
-					foreignKeyEntities.put(foreignKey, null);//short circuit recursion, value replaced below
-					populateForeignKeys(referencedEntityType, connection);
-				}
-				entity(foreignKey).ifPresent(referencedEntity ->
-								foreignKeyEntities.put(foreignKey, insertOrSelect(referencedEntity, connection)));
-			}
+		if (foreignKeyEntities.containsKey(foreignKey)) {
+			return Optional.ofNullable(foreignKeyEntities.get(foreignKey));
 		}
+
+		foreignKeyEntities.put(foreignKey, null);// short curcuit recursion
+		Entity entity = insertOrSelect(entity(foreignKey.referencedType()), connection);
+		foreignKeyEntities.put(foreignKey, entity);
+
+		return Optional.of(entity);
+	}
+
+	@Override
+	public void modify(Entity entity) throws DatabaseException {
+		populate(requireNonNull(entity), updatableColumns(entity.definition()));
+	}
+
+	/**
+	 * @return the underlying {@link EntityConnection} instance
+	 */
+	protected final EntityConnection connection() {
+		return connection;
 	}
 
 	/**
@@ -127,13 +125,14 @@ public class DefaultEntityFactory implements EntityFactory {
 	 * @param attribute the attribute
 	 * @param <T> the attribute value type
 	 * @return a random value
+	 * @throws DatabaseException in case of an exception
 	 */
-	protected <T> T value(Attribute<T> attribute) {
+	protected <T> T value(Attribute<T> attribute) throws DatabaseException {
 		requireNonNull(attribute, "attribute");
 		AttributeDefinition<T> attributeDefinition = entities.definition(attribute.entityType()).attributes().definition(attribute);
 		try {
 			if (attributeDefinition instanceof ForeignKeyDefinition) {
-				return (T) foreignKeyEntities.get(((ForeignKeyDefinition) attributeDefinition).attribute());
+				return (T) entity(((ForeignKeyDefinition) attributeDefinition).attribute()).orElse(null);
 			}
 			if (!attributeDefinition.items().isEmpty()) {
 				return randomItem(attributeDefinition);
@@ -183,36 +182,28 @@ public class DefaultEntityFactory implements EntityFactory {
 
 			return null;
 		}
-		catch (RuntimeException e) {
-			LOG.error("Exception while creating random value for: {}", attributeDefinition.attribute(), e);
-			throw e;
+		catch (Exception e) {
+			LOG.error("Exception while fetching a value for: {}", attributeDefinition.attribute(), e);
+			if (e instanceof RuntimeException) {
+				throw e;
+			}
+			if (e instanceof DatabaseException) {
+				throw e;
+			}
+
+			throw new RuntimeException(e);
 		}
 	}
 
-	private Entity randomEntity(EntityType entityType) {
-		requireNonNull(entityType);
-		Entity entity = entities.entity(entityType);
-		populateEntity(entity, insertableColumns(entities.definition(entityType)), this::value);
-
-		return entity;
-	}
-
-	private void randomize(Entity entity) {
-		requireNonNull(entity);
-		populateEntity(entity, updatableColumns(entity.definition()), this::value);
-	}
-
-	private static void populateEntity(Entity entity, Collection<Column<?>> columns,
-																		 Function<Attribute<?>, Object> valueProvider) {
-		requireNonNull(valueProvider, "valueProvider");
+	private void populate(Entity entity, Collection<Column<?>> columns) throws DatabaseException {
 		EntityDefinition definition = entity.definition();
 		for (Column<?> column : columns) {
 			if (!definition.foreignKeys().foreignKeyColumn(column)) {
-				entity.put((Attribute<Object>) column, valueProvider.apply(column));
+				entity.put((Attribute<Object>) column, value(column));
 			}
 		}
 		for (ForeignKey foreignKey : entity.definition().foreignKeys().get()) {
-			Entity value = (Entity) valueProvider.apply(foreignKey);
+			Entity value = value(foreignKey);
 			if (value != null) {
 				entity.put(foreignKey, value);
 			}
@@ -307,20 +298,14 @@ public class DefaultEntityFactory implements EntityFactory {
 		return RANDOM.nextDouble() * (max - min) + min;
 	}
 
-	private static Entity insertOrSelect(Entity entity, EntityConnection connection) {
-		try {
-			if (entity.primaryKey().isNotNull()) {
-				Collection<Entity> selected = connection.select(singletonList(entity.primaryKey()));
-				if (!selected.isEmpty()) {
-					return selected.iterator().next();
-				}
+	private static Entity insertOrSelect(Entity entity, EntityConnection connection) throws DatabaseException {
+		if (entity.primaryKey().isNotNull()) {
+			Collection<Entity> selected = connection.select(singletonList(entity.primaryKey()));
+			if (!selected.isEmpty()) {
+				return selected.iterator().next();
 			}
+		}
 
-			return connection.insertSelect(entity);
-		}
-		catch (DatabaseException e) {
-			LOG.error("DefaultEntityFactory.insertOrSelect()", e);
-			throw new RuntimeException(e.getMessage() + ": " + entity);
-		}
+		return connection.insertSelect(entity);
 	}
 }

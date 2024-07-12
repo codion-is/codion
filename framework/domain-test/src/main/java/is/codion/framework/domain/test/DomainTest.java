@@ -37,6 +37,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -48,31 +49,32 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DomainTest {
 
 	/**
-	 * Specifies the database user to use when running domain unit tests.
+	 * Specifies the user to use when running domain unit tests.
+	 * @see User#parse(String)
 	 */
-	public static final PropertyValue<String> TEST_USER = Configuration.stringValue("codion.test.user");
+	public static final PropertyValue<String> USER = Configuration.stringValue("codion.test.user");
 
 	private static final int SELECT_LIMIT = 10;
 
 	private final EntityConnectionProvider connectionProvider;
-	private final EntityFactory entityFactory;
+	private final Function<EntityConnection, EntityFactory> entityFactory;
 
 	/**
 	 * Instantiates a new DomainTest.
-	 * The default database user is based on the {@link #TEST_USER} configuration value.
+	 * The default database user is based on the {@link #USER} configuration value.
 	 * @param domain the domain model
 	 */
 	public DomainTest(Domain domain) {
-		this(domain, initializeDefaultUser());
+		this(domain, User.parse(USER.getOrThrow()));
 	}
 
 	/**
 	 * Instantiates a new DomainTest.
 	 * @param domain the domain model
-	 * @param entityFactory the factory used to create test entities
+	 * @param entityFactory provides the factory used to create test entities
 	 */
-	public DomainTest(Domain domain, EntityFactory entityFactory) {
-		this(domain, entityFactory, initializeDefaultUser());
+	public DomainTest(Domain domain, Function<EntityConnection, EntityFactory> entityFactory) {
+		this(domain, entityFactory, User.parse(USER.getOrThrow()));
 	}
 
 	/**
@@ -81,16 +83,16 @@ public class DomainTest {
 	 * @param user the user to use when running the tests
 	 */
 	public DomainTest(Domain domain, User user) {
-		this(domain, new DefaultEntityFactory(requireNonNull(domain).entities()), user);
+		this(domain, DefaultEntityFactory::new, user);
 	}
 
 	/**
 	 * Instantiates a new DomainTest.
 	 * @param domain the domain model
-	 * @param entityFactory the factory used to create test entities
+	 * @param entityFactory provides the factory used to create test entities
 	 * @param user the user to use when running the tests
 	 */
-	public DomainTest(Domain domain, EntityFactory entityFactory, User user) {
+	public DomainTest(Domain domain, Function<EntityConnection, EntityFactory> entityFactory, User user) {
 		this.connectionProvider = LocalEntityConnectionProvider.builder()
 						.domain(requireNonNull(domain, "domain"))
 						.clientTypeId(getClass().getName())
@@ -119,9 +121,9 @@ public class DomainTest {
 				testSelect(entityType, connection);
 			}
 			else {
-				entityFactory.populateForeignKeys(entityType, connection);
-				Entity entity = testInsert(entityFactory.entity(entityType), connection);
-				entityFactory.modify(entity);
+				EntityFactory factory = entityFactory.apply(connection);
+				Entity entity = testInsert(factory.entity(entityType), connection);
+				factory.modify(entity);
 				testUpdate(entity, connection);
 				testSelect(entity, connection);
 				testDelete(entity, connection);
@@ -142,34 +144,29 @@ public class DomainTest {
 		 * Initializes the Entity instance on which to run the tests, by default this method creates an instance filled with random values.
 		 * @param entityType the entityType for which to initialize an entity instance for testing
 		 * @return the entity instance to use for testing the entity type
+		 * @throws DatabaseException in case of an exception
 		 */
-		Entity entity(EntityType entityType);
+		Entity entity(EntityType entityType) throws DatabaseException;
 
 		/**
-		 * Initializes an Entity instance to reference via the given foreign key, by default this method returns an non-existing Entity
-		 * filled with random values. The resulting entity is inserted if it does not already exist.
+		 * Initializes an Entity instance to reference via the given foreign key. The entity returned by this method must exist
+		 * in the database, so it can either return an entity with a known hard-coded primary key value or return a newly inserted one.
+		 * By default this method returns a newly inserted Entity populated with random values.
 		 * Note that this default implementation returns an empty Optional in case the referenced entity type is read-only.
 		 * @param foreignKey the foreign key referencing the entity
 		 * @return an entity for the given foreign key or an empty Optional if none is required
 		 * @throws DatabaseException in case of an exception
 		 */
-		Optional<Entity> entity(ForeignKey foreignKey);
+		Optional<Entity> entity(ForeignKey foreignKey) throws DatabaseException;
 
 		/**
 		 * Modifies one or more values in {@code entity}, for the update test.
 		 * If the entity is not modified, the update test will not be run.
 		 * The default implementation populates the entity with random values.
 		 * @param entity the entity to modify
-		 */
-		void modify(Entity entity);
-
-		/**
-		 * Initializes the entities referenced by the given {@code entityType} via foreign keys
-		 * @param entityType the type of the entity for which to initialize the referenced entities
-		 * @param connection the connection to use
 		 * @throws DatabaseException in case of an exception
 		 */
-		void populateForeignKeys(EntityType entityType, EntityConnection connection) throws DatabaseException;
+		void modify(Entity entity) throws DatabaseException;
 	}
 
 	/**
@@ -287,9 +284,5 @@ public class DomainTest {
 		return "Values of column " + column + " should be equal ["
 						+ originalValue + (originalValue != null ? (" (" + originalValue.getClass() + ")") : "") + ", "
 						+ updatedValue + (updatedValue != null ? (" (" + updatedValue.getClass() + ")") : "") + "]";
-	}
-
-	private static User initializeDefaultUser() {
-		return User.parse(TEST_USER.getOrThrow());
 	}
 }

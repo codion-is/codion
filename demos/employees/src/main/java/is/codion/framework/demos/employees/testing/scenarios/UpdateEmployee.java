@@ -39,7 +39,7 @@ public final class UpdateEmployee extends AbstractPerformer {
 		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
 		selectRandomRow(departmentModel.tableModel());
 		SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
-		EntityFactory entityFactory = new DefaultEntityFactory(application.entities());
+		EntityFactory entityFactory = new DefaultEntityFactory(application.connection());
 		if (employeeModel.tableModel().getRowCount() > 0) {
 			EntityConnection connection = employeeModel.connection();
 			connection.startTransaction();

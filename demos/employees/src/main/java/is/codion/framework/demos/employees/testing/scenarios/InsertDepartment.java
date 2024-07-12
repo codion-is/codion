@@ -30,7 +30,7 @@ public final class InsertDepartment implements Performer<EmployeesAppModel> {
 	@Override
 	public void perform(EmployeesAppModel application) throws Exception {
 		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
-		departmentModel.editModel().set(new DefaultEntityFactory(application.entities()).entity(Department.TYPE));
+		departmentModel.editModel().set(new DefaultEntityFactory(application.connection()).entity(Department.TYPE));
 		departmentModel.editModel().insert();
 	}
 }
