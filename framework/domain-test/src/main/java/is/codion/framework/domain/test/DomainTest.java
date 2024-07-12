@@ -22,6 +22,8 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.proxy.ProxyBuilder;
+import is.codion.common.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
@@ -117,16 +119,17 @@ public class DomainTest {
 		EntityConnection connection = connectionProvider.connection();
 		connection.startTransaction();
 		try {
+			EntityConnection proxyConnection = proxyConnection(connection);
 			if (entities().definition(entityType).readOnly()) {
-				testSelect(entityType, connection);
+				testSelect(entityType, proxyConnection);
 			}
 			else {
-				EntityFactory factory = entityFactory.apply(connection);
-				Entity entity = testInsert(factory.entity(entityType), connection);
+				EntityFactory factory = entityFactory.apply(proxyConnection);
+				Entity entity = testInsert(factory.entity(entityType), proxyConnection);
 				factory.modify(entity);
-				testUpdate(entity, connection);
-				testSelect(entity, connection);
-				testDelete(entity, connection);
+				testUpdate(entity, proxyConnection);
+				testSelect(entity, proxyConnection);
+				testDelete(entity, proxyConnection);
 			}
 		}
 		finally {
@@ -204,8 +207,7 @@ public class DomainTest {
 	}
 
 	/**
-	 * Tests selecting the given entity, if {@code entity} is null
-	 * then selecting multiple entities of the given type is tested.
+	 * Tests selecting the given entity.
 	 * @param entity the entity to test selecting
 	 * @param connection the connection to use
 	 * @throws DatabaseException in case of an exception
@@ -284,5 +286,18 @@ public class DomainTest {
 		return "Values of column " + column + " should be equal ["
 						+ originalValue + (originalValue != null ? (" (" + originalValue.getClass() + ")") : "") + ", "
 						+ updatedValue + (updatedValue != null ? (" (" + updatedValue.getClass() + ")") : "") + "]";
+	}
+
+	private static EntityConnection proxyConnection(EntityConnection connection) {
+		ProxyMethod<EntityConnection> throwException = parameters -> {
+			throw new IllegalStateException("Neither transaction or connection can be closed during a test");
+		};
+
+		return ProxyBuilder.builder(EntityConnection.class)
+						.delegate(connection)
+						.method("commitTransaction", throwException)
+						.method("rollbackTransaction", throwException)
+						.method("close", throwException)
+						.build();
 	}
 }

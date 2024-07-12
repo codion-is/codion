@@ -8,6 +8,7 @@ Codion Change Log
 - ProxyBuilder.DefaultHandler.invoke() bug fixed, now unwraps the InvocationTargetException and rethrows the target exception.
 ### is.codion.framework.domain.test
 - EntityFactory.populateForeignKeys() removed, related refactoring.
+- DomainTest now prevents transactions from being closed on the active connection during a test.
 ### is.codion.framework.db.core
 - DefaultLocalEntityConnection.createValueString() bug fixed, now catches Exception instead of just SQLException, since creating a log message should never fail.
 
