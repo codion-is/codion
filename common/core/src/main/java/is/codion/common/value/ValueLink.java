@@ -96,13 +96,7 @@ final class ValueLink<T> {
 			if (!updatingOriginal) {
 				try {
 					updatingLinked = true;
-					try {
-						linkedValue.set(originalValue.get());
-					}
-					catch (RuntimeException e) {
-						originalValue.set(linkedValue.get());
-						throw e;
-					}
+					linkedValue.set(originalValue.get());
 				}
 				finally {
 					updatingLinked = false;
@@ -122,13 +116,7 @@ final class ValueLink<T> {
 			if (!updatingLinked) {
 				try {
 					updatingOriginal = true;
-					try {
-						originalValue.set(linkedValue.get());
-					}
-					catch (RuntimeException e) {
-						linkedValue.set(originalValue.get());
-						throw e;
-					}
+					originalValue.set(linkedValue.get());
 				}
 				finally {
 					updatingOriginal = false;

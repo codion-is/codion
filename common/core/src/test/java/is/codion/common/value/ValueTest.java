@@ -28,28 +28,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueTest {
 
-	private Double doubleValue = 42d;
-
-	private Double getDoubleValue() {
-		return doubleValue;
-	}
-
-	private void setDoubleValue(Double value) {
-		if (value == null) {
-			throw new IllegalArgumentException("Non-null");
-		}
-		doubleValue = value;
-	}
-
 	@Test
 	void test() {
-		Value<Integer> integerValue = Value.nullable(1)
+		Value.nullable(1)
 						.notify(Value.Notify.WHEN_SET)
 						.build();
-
-		Value<String> stringValue = Value.nonNull("NullString")
+		Value.nonNull("NullString")
 						.initialValue("Testing")
 						.build();
+		assertThrows(NullPointerException.class, () -> Value.nonNull(null));
 	}
 
 	@Test
@@ -229,7 +216,7 @@ public class ValueTest {
 
 		value1.link(value2);
 
-		assertThrows(IllegalStateException.class, () -> value1.link(value2));
+		assertThrows(IllegalStateException.class, () -> value1.link(value2));//already linked
 
 		value2.link(value3);
 		value3.link(value4);
@@ -244,7 +231,7 @@ public class ValueTest {
 		assertEquals(2, value2.get());
 		assertEquals(2, value3.get());
 
-		assertThrows(IllegalStateException.class, () -> value4.link(value1));
+		assertThrows(IllegalStateException.class, () -> value4.link(value1));//cycle
 
 		value3.set(3);
 		assertEquals(3, value1.get());
@@ -260,34 +247,6 @@ public class ValueTest {
 		assertThrows(IllegalArgumentException.class, () -> value2.set(5));
 		assertThrows(IllegalArgumentException.class, () -> value3.set(5));
 		assertThrows(IllegalArgumentException.class, () -> value4.set(5));
-	}
-
-	@Test
-	void exceptionalValue() {
-		Value<Integer> value1 = new AbstractValue<Integer>() {
-			int intValue = 0;
-
-			@Override
-			protected void setValue(Integer value) {
-				if (value == -1) {
-					throw new RuntimeException();
-				}
-				intValue = value;
-			}
-
-			@Override
-			public Integer get() {
-				return intValue;
-			}
-		};
-
-		Value<Integer> value2 = Value.value();
-		value2.link(value1);
-		value2.set(1);
-		assertEquals(1, value1.get());
-
-		assertThrows(RuntimeException.class, () -> value2.set(-1));
-		assertEquals(1, value2.get());
 	}
 
 	@Test

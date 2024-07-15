@@ -6,6 +6,7 @@ Codion Change Log
 - Dependency cleanup using dependency-analysis-gradle-plugin.
 ### is.codion.common.core
 - ProxyBuilder.DefaultHandler.invoke() bug fixed, now unwraps the InvocationTargetException and rethrows the target exception.
+- ValueLink, automatically reverting a value change on exception functionality removed, far from bulletproof especially when dealing with component values.
 ### is.codion.framework.domain
 - Entity.mapToPrimaryKey() renamed primaryKeyMap().
 - Entity.entitiesByValue() removed.

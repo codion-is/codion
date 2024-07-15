@@ -104,7 +104,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * so that changes in one are reflected in the other.
 	 * Note that after a call to this method this value is the same as {@code originalValue}.
 	 * @param originalValue the original value to link this value to
-	 * @throws IllegalStateException in case the values are already linked
+	 * @throws IllegalStateException in case the values are already linked or if a cycle is detected
 	 * @throws IllegalArgumentException in case the original value is not valid according to this values validators
 	 */
 	void link(Value<T> originalValue);

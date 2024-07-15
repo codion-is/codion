@@ -31,29 +31,10 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SelectedValuesTest {
-
-	@Test
-	void selectedItemValueLinkValidate() {
-		Value<String> originalValue = Value.nullable("b")
-						.validator(value -> {
-							if (value != null && value.equals("s")) {
-								throw new IllegalArgumentException();
-							}
-						})
-						.build();
-		ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}), originalValue)
-						.buildValue();
-		JComboBox<String> box = componentValue.component();
-
-		assertEquals("b", box.getSelectedItem());
-		box.setSelectedItem("d");
-		assertEquals("d", box.getSelectedItem());
-		assertThrows(IllegalArgumentException.class, () -> box.setSelectedItem("s"));
-		assertEquals("d", box.getSelectedItem());
-	}
 
 	@Test
 	void selectedItemValueLink() {
