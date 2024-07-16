@@ -177,7 +177,7 @@ dependencyResolutionManagement {
         libs {
             version("slf4j.api", "2.0.11")
             version("logback", "1.5.6")
-            version("h2", "2.2.224")
+            version("h2", "2.3.230")
             version("json", "20240303")
 
             version("jfreechart", "1.5.5")
