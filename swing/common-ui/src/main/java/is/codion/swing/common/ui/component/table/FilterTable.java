@@ -572,7 +572,6 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.command(this::selectAutoResizeMode)
 						.name(MESSAGES.getString(AUTO_RESIZE) + "...")
-						.enabled(columnModel().locked().not())
 						.build();
 	}
 

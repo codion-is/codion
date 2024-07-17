@@ -10,6 +10,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTable.createAutoResizeModeControl() renamed createSelectAutoResizeModeControl()
 - Controls.Builder.controls() parameter now Collection<? extends Control>.
+- FilterTable.createSelectAutoResizeModeControl() bug fixed, was only enabled when column model was unlocked.
 ### is.codion.framework.domain
 - Entity.mapToPrimaryKey() renamed primaryKeyMap().
 - Entity.entitiesByValue() removed.
