@@ -373,7 +373,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public ControlsBuilder controls(Collection<Control> controls) {
+		public ControlsBuilder controls(Collection<? extends Control> controls) {
 			this.actions.addAll(requireNonNull(controls));
 			return this;
 		}

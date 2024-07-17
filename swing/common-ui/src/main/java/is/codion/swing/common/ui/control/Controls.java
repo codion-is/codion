@@ -169,7 +169,7 @@ public interface Controls extends Control {
 		 * @param controls the controls to add
 		 * @return this Builder instance
 		 */
-		ControlsBuilder controls(Collection<Control> controls);
+		ControlsBuilder controls(Collection<? extends Control> controls);
 
 		/**
 		 * @param controlBuilders the control builder to add

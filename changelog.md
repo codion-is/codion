@@ -9,6 +9,7 @@ Codion Change Log
 - ValueLink, automatically reverting a value change on exception functionality removed, far from bulletproof especially when dealing with component values.
 ### is.codion.swing.common.ui
 - FilterTable.createAutoResizeModeControl() renamed createSelectAutoResizeModeControl()
+- Controls.Builder.controls() parameter now Collection<? extends Control>.
 ### is.codion.framework.domain
 - Entity.mapToPrimaryKey() renamed primaryKeyMap().
 - Entity.entitiesByValue() removed.
