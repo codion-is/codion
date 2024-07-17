@@ -7,6 +7,8 @@ Codion Change Log
 ### is.codion.common.core
 - ProxyBuilder.DefaultHandler.invoke() bug fixed, now unwraps the InvocationTargetException and rethrows the target exception.
 - ValueLink, automatically reverting a value change on exception functionality removed, far from bulletproof especially when dealing with component values.
+### is.codion.swing.common.ui
+- FilterTable.createAutoResizeModeControl() renamed createSelectAutoResizeModeControl()
 ### is.codion.framework.domain
 - Entity.mapToPrimaryKey() renamed primaryKeyMap().
 - Entity.entitiesByValue() removed.
@@ -16,6 +18,8 @@ Codion Change Log
 - DomainTest now prevents transactions from being closed on the active connection during a test.
 ### is.codion.framework.db.core
 - DefaultLocalEntityConnection.createValueString() bug fixed, now catches Exception instead of just SQLException, since creating a log message should never fail.
+### is.codion.swing.framework.ui
+- EntityTablePanel.ControlKeys.COLUMN_AUTO_RESIZE_MODE renamed SELECT_AUTO_RESIZE_MODE.
 
 ## 0.18.5
 ### is.codion.common.core

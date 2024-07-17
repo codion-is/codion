@@ -137,7 +137,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 														.name("Columns")
 														.control(table.createToggleColumnsControls())
 														.control(table.createResetColumnsControl())
-														.control(table.createAutoResizeModeControl()))
+														.control(table.createSelectAutoResizeModeControl()))
 										.build())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.build();

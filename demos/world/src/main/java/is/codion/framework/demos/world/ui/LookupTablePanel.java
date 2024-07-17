@@ -169,7 +169,7 @@ final class LookupTablePanel extends EntityTablePanel {
 														.name("Select")
 														.build())
 										.control(control(RESET_COLUMNS).get())
-										.control(control(COLUMN_AUTO_RESIZE_MODE).get()))
+										.control(control(SELECT_AUTO_RESIZE_MODE).get()))
 						.separator()
 						.control(CONDITION_CONTROLS)
 						.control(COPY_CONTROLS));

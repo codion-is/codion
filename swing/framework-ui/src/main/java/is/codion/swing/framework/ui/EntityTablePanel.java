@@ -313,7 +313,7 @@ public class EntityTablePanel extends JPanel {
 		 * A {@link Control} for displaying a dialog for configuring the column auto-resize-mode.
 		 * @see JTable#setAutoResizeMode(int)
 		 */
-		public static final ControlKey<CommandControl> COLUMN_AUTO_RESIZE_MODE = CommandControl.key("columnAutoResizeMode");
+		public static final ControlKey<CommandControl> SELECT_AUTO_RESIZE_MODE = CommandControl.key("selectAutoResizeMode");
 		/**
 		 * A {@link Control} for toggling between single and multi selection mode.
 		 */
@@ -366,13 +366,13 @@ public class EntityTablePanel extends JPanel {
 		 * A {@link Controls} instance containing controls for configuring columns.
 		 * <li>{@link ControlKeys#SELECT_COLUMNS ControlKeys#SELECT_COLUMNS} or {@link ControlKeys#TOGGLE_COLUMN_CONTROLS ControlKeys#TOGGLE_COLUMN_CONTROLS}</li>
 		 * <li>{@link ControlKeys#RESET_COLUMNS ControlKeys#RESET_COLUMNS}</li>
-		 * <li>{@link ControlKeys#COLUMN_AUTO_RESIZE_MODE ControlKeys#COLUMN_AUTO_RESIZE_MODE}</li>
+		 * <li>{@link ControlKeys#SELECT_AUTO_RESIZE_MODE ControlKeys#COLUMN_AUTO_RESIZE_MODE}</li>
 		 * @see #SELECT_COLUMNS
 		 * @see #TOGGLE_COLUMN_CONTROLS
 		 * @see #RESET_COLUMNS
-		 * @see #COLUMN_AUTO_RESIZE_MODE
+		 * @see #SELECT_AUTO_RESIZE_MODE
 		 */
-		public static final ControlsKey COLUMN_CONTROLS = Controls.key("columnControls", Controls.layout(asList(SELECT_COLUMNS, TOGGLE_COLUMN_CONTROLS, RESET_COLUMNS, COLUMN_AUTO_RESIZE_MODE)));
+		public static final ControlsKey COLUMN_CONTROLS = Controls.key("columnControls", Controls.layout(asList(SELECT_COLUMNS, TOGGLE_COLUMN_CONTROLS, RESET_COLUMNS, SELECT_AUTO_RESIZE_MODE)));
 		/**
 		 * Requests focus for the table search field.<br>
 		 * Default key stroke: CTRL-F
@@ -1335,7 +1335,7 @@ public class EntityTablePanel extends JPanel {
 			control(TOGGLE_COLUMN_CONTROLS).optional().ifPresent(builder::control);
 		}
 		control(RESET_COLUMNS).optional().ifPresent(builder::control);
-		control(COLUMN_AUTO_RESIZE_MODE).optional().ifPresent(builder::control);
+		control(SELECT_AUTO_RESIZE_MODE).optional().ifPresent(builder::control);
 
 		Controls columnControls = builder.build();
 
@@ -1556,7 +1556,7 @@ public class EntityTablePanel extends JPanel {
 		controlMap.control(SELECT_COLUMNS).set(table.createSelectColumnsControl());
 		controlMap.control(TOGGLE_COLUMN_CONTROLS).set(table.createToggleColumnsControls());
 		controlMap.control(RESET_COLUMNS).set(table.createResetColumnsControl());
-		controlMap.control(COLUMN_AUTO_RESIZE_MODE).set(table.createAutoResizeModeControl());
+		controlMap.control(SELECT_AUTO_RESIZE_MODE).set(table.createSelectAutoResizeModeControl());
 		if (includeViewDependenciesControl()) {
 			controlMap.control(VIEW_DEPENDENCIES).set(createViewDependenciesControl());
 		}

@@ -568,7 +568,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return a Control for selecting the auto-resize mode
 	 */
-	public CommandControl createAutoResizeModeControl() {
+	public CommandControl createSelectAutoResizeModeControl() {
 		return Control.builder()
 						.command(this::selectAutoResizeMode)
 						.name(MESSAGES.getString(AUTO_RESIZE) + "...")
