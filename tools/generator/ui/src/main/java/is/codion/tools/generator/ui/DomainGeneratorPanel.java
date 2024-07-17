@@ -307,7 +307,8 @@ public final class DomainGeneratorPanel extends JPanel {
 										.modifiers(InputEvent.ALT_DOWN_MASK)
 										.action(commandControl(field::requestFocusInWindow))
 										.enable(this))
-						.build(packageLabel::setLabelFor);
+						.onBuild(packageLabel::setLabelFor)
+						.build();
 	}
 
 	private JTextField createSourceDirectoryField(JLabel sourceDirectoryLabel,
@@ -322,7 +323,8 @@ public final class DomainGeneratorPanel extends JPanel {
 										.modifiers(InputEvent.ALT_DOWN_MASK)
 										.action(commandControl(field::requestFocusInWindow))
 										.enable(this))
-						.build(sourceDirectoryLabel::setLabelFor);
+						.onBuild(sourceDirectoryLabel::setLabelFor)
+						.build();
 	}
 
 	private void selectSourceDirectory() {

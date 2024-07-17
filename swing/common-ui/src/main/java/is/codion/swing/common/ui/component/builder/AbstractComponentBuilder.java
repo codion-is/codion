@@ -494,7 +494,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		propertyChangeListeners.forEach(listener -> component.addPropertyChangeListener(listener));
 		propertyChangeListenerMap.forEach((propertyName, listener) -> component.addPropertyChangeListener(propertyName, listener));
 		buildConsumers.forEach(consumer -> consumer.accept(component));
-		buildValueConsumers.forEach(consumer -> consumer.accept(buildValue()));
+		buildValueConsumers.forEach(consumer -> consumer.accept(componentValue(component)));
 		if (onBuild != null) {
 			onBuild.accept(component);
 		}

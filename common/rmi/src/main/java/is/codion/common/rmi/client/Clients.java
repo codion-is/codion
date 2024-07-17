@@ -90,7 +90,7 @@ public final class Clients {
 	public static void resolveTrustStore() {
 		String trustStorePath = TRUSTSTORE.get();
 		if (nullOrEmpty(trustStorePath)) {
-			LOG.warn("No client truststore specified via {}", TRUSTSTORE.propertyName());
+			LOG.warn("No truststore specified via {}", TRUSTSTORE.propertyName());
 			return;
 		}
 		String password = TRUSTSTORE_PASSWORD.optional().orElse(DEFAULT_TRUSTSTORE_PASSWORD);
@@ -114,7 +114,7 @@ public final class Clients {
 			try (OutputStream outputStream = Files.newOutputStream(file.toPath())) {
 				store.store(outputStream, password.toCharArray());
 			}
-			LOG.debug("Classpath trust store written to file: {} -> {}", JAVAX_NET_TRUSTSTORE, file);
+			LOG.debug("Combined trust store written to file: {} -> {}", JAVAX_NET_TRUSTSTORE, file);
 
 			System.setProperty(JAVAX_NET_TRUSTSTORE, file.getPath());
 			System.setProperty(JAVAX_NET_TRUSTSTORE_PASSWORD, password);
