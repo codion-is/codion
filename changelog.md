@@ -11,6 +11,7 @@ Codion Change Log
 - FilterTable.createAutoResizeModeControl() renamed createSelectAutoResizeModeControl()
 - Controls.Builder.controls() parameter now Collection<? extends Control>.
 - FilterTable.createSelectAutoResizeModeControl() bug fixed, was only enabled when column model was unlocked.
+- FilterTable.createToggleAutoResizeModelControls() added.
 ### is.codion.framework.domain
 - Entity.mapToPrimaryKey() renamed primaryKeyMap().
 - Entity.entitiesByValue() removed.
@@ -22,6 +23,7 @@ Codion Change Log
 - DefaultLocalEntityConnection.createValueString() bug fixed, now catches Exception instead of just SQLException, since creating a log message should never fail.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.ControlKeys.COLUMN_AUTO_RESIZE_MODE renamed SELECT_AUTO_RESIZE_MODE.
+- EntityTablePanel.ControlKeys.TOGGLE_AUTO_RESIZE_MODE_CONTROLS added along with AutoResizeModeSelection and Config.autoResizeModeSelection().
 
 ## 0.18.5
 ### is.codion.common.core

@@ -24,6 +24,7 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
+import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.table.TableSummaryModel;
@@ -214,11 +215,13 @@ public final class FilterTable<R, C> extends JTable {
 	private static final String RESET_COLUMNS_DESCRIPTION = "reset_columns_description";
 	private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
 	private static final String AUTO_RESIZE = "auto_resize";
-	private static final String RESIZE_OFF = "resize_off";
-	private static final String RESIZE_NEXT_COLUMN = "resize_next_column";
-	private static final String RESIZE_SUBSEQUENT_COLUMNS = "resize_subsequent_columns";
-	private static final String RESIZE_LAST_COLUMN = "resize_last_column";
-	private static final String RESIZE_ALL_COLUMNS = "resize_all_columns";
+	private static final List<Item<Integer>> AUTO_RESIZE_MODES = asList(
+					item(AUTO_RESIZE_OFF, MESSAGES.getString("resize_off")),
+					item(AUTO_RESIZE_NEXT_COLUMN, MESSAGES.getString("resize_next_column")),
+					item(AUTO_RESIZE_SUBSEQUENT_COLUMNS, MESSAGES.getString("resize_subsequent_columns")),
+					item(AUTO_RESIZE_LAST_COLUMN, MESSAGES.getString("resize_last_column")),
+					item(AUTO_RESIZE_ALL_COLUMNS, MESSAGES.getString("resize_all_columns"))
+	);
 	private static final int SEARCH_FIELD_MINIMUM_WIDTH = 100;
 	private static final int COLUMN_RESIZE_AMOUNT = 10;
 
@@ -576,6 +579,16 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
+	 * @return Controls containing {@link ToggleControl}s for choosing the auto resize mode.
+	 */
+	public Controls createToggleAutoResizeModelControls() {
+		return Controls.builder()
+						.name(MESSAGES.getString(AUTO_RESIZE))
+						.controls(createAutoResizeModeControls())
+						.build();
+	}
+
+	/**
 	 * @return a ToggleControl for toggling the table selection mode (single or multiple)
 	 */
 	public ToggleControl createSingleSelectionModeControl() {
@@ -798,16 +811,32 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private ItemComboBoxModel<Integer> createAutoResizeModeComboBoxModel() {
-		ItemComboBoxModel<Integer> autoResizeComboBoxModel = itemComboBoxModel(asList(
-						item(AUTO_RESIZE_OFF, MESSAGES.getString(RESIZE_OFF)),
-						item(AUTO_RESIZE_NEXT_COLUMN, MESSAGES.getString(RESIZE_NEXT_COLUMN)),
-						item(AUTO_RESIZE_SUBSEQUENT_COLUMNS, MESSAGES.getString(RESIZE_SUBSEQUENT_COLUMNS)),
-						item(AUTO_RESIZE_LAST_COLUMN, MESSAGES.getString(RESIZE_LAST_COLUMN)),
-						item(AUTO_RESIZE_ALL_COLUMNS, MESSAGES.getString(RESIZE_ALL_COLUMNS))
-		));
-		autoResizeComboBoxModel.setSelectedItem(item(getAutoResizeMode()));
+		ItemComboBoxModel<Integer> autoResizeComboBoxModel = itemComboBoxModel(AUTO_RESIZE_MODES);
+		autoResizeComboBoxModel.setSelectedItem(AUTO_RESIZE_MODES.get(getAutoResizeMode()));
 
 		return autoResizeComboBoxModel;
+	}
+
+	private List<ToggleControl> createAutoResizeModeControls() {
+		List<ToggleControl> controls = new ArrayList<>();
+		State.Group group = State.group();
+		for (Item<Integer> resizeMode : AUTO_RESIZE_MODES) {
+			State state = State.state(resizeMode.get().equals(getAutoResizeMode()));
+			group.add(state);
+			state.addConsumer(enabled -> {
+				if (enabled) {
+					setAutoResizeMode(resizeMode.get());
+				}
+			});
+			controls.add(Control.builder()
+							.toggle(state)
+							.name(resizeMode.caption())
+							.build());
+		}
+		addPropertyChangeListener("autoResizeMode", changeEvent ->
+						controls.get((Integer) changeEvent.getNewValue()).value().set(true));
+
+		return controls;
 	}
 
 	private void bindEvents(boolean columnReorderingAllowed,

@@ -315,6 +315,11 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> SELECT_AUTO_RESIZE_MODE = CommandControl.key("selectAutoResizeMode");
 		/**
+		 * A {@link Controls} instance containing a {@link ToggleControl} for each auto-resize-mode.
+		 * @see JTable#setAutoResizeMode(int)
+		 */
+		public static final ControlKey<Controls> TOGGLE_AUTO_RESIZE_MODE_CONTROLS = Controls.key("toggleAutoResizeModeControls");
+		/**
 		 * A {@link Control} for toggling between single and multi selection mode.
 		 */
 		public static final ControlKey<ToggleControl> SELECTION_MODE = ToggleControl.key("selectionMode");
@@ -366,11 +371,12 @@ public class EntityTablePanel extends JPanel {
 		 * A {@link Controls} instance containing controls for configuring columns.
 		 * <li>{@link ControlKeys#SELECT_COLUMNS ControlKeys#SELECT_COLUMNS} or {@link ControlKeys#TOGGLE_COLUMN_CONTROLS ControlKeys#TOGGLE_COLUMN_CONTROLS}</li>
 		 * <li>{@link ControlKeys#RESET_COLUMNS ControlKeys#RESET_COLUMNS}</li>
-		 * <li>{@link ControlKeys#SELECT_AUTO_RESIZE_MODE ControlKeys#COLUMN_AUTO_RESIZE_MODE}</li>
+		 * <li>{@link ControlKeys#SELECT_AUTO_RESIZE_MODE ControlKeys#SELECT_AUTO_RESIZE_MODE} or {@link ControlKeys#TOGGLE_AUTO_RESIZE_MODE_CONTROLS ControlKeys#TOGGLE_AUTO_RESIZE_MODE_CONTROLS}</li>
 		 * @see #SELECT_COLUMNS
 		 * @see #TOGGLE_COLUMN_CONTROLS
 		 * @see #RESET_COLUMNS
 		 * @see #SELECT_AUTO_RESIZE_MODE
+		 * @see #TOGGLE_AUTO_RESIZE_MODE_CONTROLS
 		 */
 		public static final ControlsKey COLUMN_CONTROLS = Controls.key("columnControls", Controls.layout(asList(SELECT_COLUMNS, TOGGLE_COLUMN_CONTROLS, RESET_COLUMNS, SELECT_AUTO_RESIZE_MODE)));
 		/**
@@ -400,6 +406,20 @@ public class EntityTablePanel extends JPanel {
 	 * Specifies how column selection is presented.
 	 */
 	public enum ColumnSelection {
+		/**
+		 * Display a dialog.
+		 */
+		DIALOG,
+		/**
+		 * Display toggle controls directly in the menu.
+		 */
+		MENU
+	}
+
+	/**
+	 * Specifies how auto-resize-mode selection is presented.
+	 */
+	public enum AutoResizeModeSelection {
 		/**
 		 * Display a dialog.
 		 */
@@ -1335,7 +1355,12 @@ public class EntityTablePanel extends JPanel {
 			control(TOGGLE_COLUMN_CONTROLS).optional().ifPresent(builder::control);
 		}
 		control(RESET_COLUMNS).optional().ifPresent(builder::control);
-		control(SELECT_AUTO_RESIZE_MODE).optional().ifPresent(builder::control);
+		if (configuration.autoResizeModeSelection == AutoResizeModeSelection.DIALOG) {
+			control(SELECT_AUTO_RESIZE_MODE).optional().ifPresent(builder::control);
+		}
+		else {
+			control(TOGGLE_AUTO_RESIZE_MODE_CONTROLS).optional().ifPresent(builder::control);
+		}
 
 		Controls columnControls = builder.build();
 
@@ -1557,6 +1582,7 @@ public class EntityTablePanel extends JPanel {
 		controlMap.control(TOGGLE_COLUMN_CONTROLS).set(table.createToggleColumnsControls());
 		controlMap.control(RESET_COLUMNS).set(table.createResetColumnsControl());
 		controlMap.control(SELECT_AUTO_RESIZE_MODE).set(table.createSelectAutoResizeModeControl());
+		controlMap.control(TOGGLE_AUTO_RESIZE_MODE_CONTROLS).set(table.createToggleAutoResizeModelControls());
 		if (includeViewDependenciesControl()) {
 			controlMap.control(VIEW_DEPENDENCIES).set(createViewDependenciesControl());
 		}
@@ -2056,6 +2082,14 @@ public class EntityTablePanel extends JPanel {
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
 
 		/**
+		 * Specifies how column selection is presented to the user.<br>
+		 * Value type: {@link AutoResizeModeSelection}<br>
+		 * Default value: {@link AutoResizeModeSelection#DIALOG}
+		 */
+		public static final PropertyValue<AutoResizeModeSelection> AUTO_RESIZE_MODE_SELECTION =
+						Configuration.enumValue(EntityTablePanel.class.getName() + ".autoResizeModeSelection", AutoResizeModeSelection.class, AutoResizeModeSelection.DIALOG);
+
+		/**
 		 * Specifies how the edit an attribute action is presented to the user.<br>
 		 * Value type: {@link EditAttributeSelection}<br>
 		 * Default value: {@link EditAttributeSelection#MENU}
@@ -2087,6 +2121,7 @@ public class EntityTablePanel extends JPanel {
 		private boolean includeEditAttributeControl = true;
 		private boolean includeToolBar = true;
 		private ColumnSelection columnSelection = COLUMN_SELECTION.get();
+		private AutoResizeModeSelection autoResizeModeSelection = AUTO_RESIZE_MODE_SELECTION.get();
 		private EditAttributeSelection editAttributeSelection = EDIT_ATTRIBUTE_SELECTION.get();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling;
 		private RefreshButtonVisible refreshButtonVisible;
@@ -2136,6 +2171,7 @@ public class EntityTablePanel extends JPanel {
 			this.includeEditControl = config.includeEditControl;
 			this.includeEditAttributeControl = config.includeEditAttributeControl;
 			this.columnSelection = config.columnSelection;
+			this.autoResizeModeSelection = config.autoResizeModeSelection;
 			this.editAttributeSelection = config.editAttributeSelection;
 			this.editComponentFactories = new HashMap<>(config.editComponentFactories);
 			this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
@@ -2309,6 +2345,15 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public Config columnSelection(ColumnSelection columnSelection) {
 			this.columnSelection = requireNonNull(columnSelection);
+			return this;
+		}
+
+		/**
+		 * @param autoResizeModeSelection specifies how auto-resize-mode is selected
+		 * @return this Config instance
+		 */
+		public Config autoResizeModeSelection(AutoResizeModeSelection autoResizeModeSelection) {
+			this.autoResizeModeSelection = requireNonNull(autoResizeModeSelection);
 			return this;
 		}
 
