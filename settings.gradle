@@ -183,7 +183,7 @@ dependencyResolutionManagement {
             version("jfreechart", "1.5.5")
             version("junit", "5.10.2")
             version("sslcontext.kickstart", "8.3.6")
-            version("flatlaf", "3.4.1")
+            version("flatlaf", "3.5")
             version("ikonli", "12.3.1")
             version("javalin", "6.1.6")
             version("javapoet", "1.13.0")
