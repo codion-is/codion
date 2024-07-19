@@ -22,7 +22,6 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JOptionPane;
@@ -43,11 +42,6 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	private Consumer<T> onResult;
 	private Consumer<Exception> onException;
-
-	DefaultProgressWorkerDialogBuilder(ResultTask<V> task) {
-		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder(task);
-		this.progressDialogBuilder = new ProgressDialog.DefaultBuilder();
-	}
 
 	DefaultProgressWorkerDialogBuilder(ProgressResultTask<T, V> progressTask) {
 		this.progressWorkerBuilder = ProgressWorker.builder(progressTask);

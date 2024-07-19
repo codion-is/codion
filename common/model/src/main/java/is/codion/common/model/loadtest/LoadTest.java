@@ -47,7 +47,7 @@ public interface LoadTest<T> {
 	int DEFAULT_APPLICATION_BATCH_SIZE = 10;
 
 	/**
-	 * Removes all applications and exits
+	 * Shuts down and removes all applications
 	 */
 	void shutdown();
 

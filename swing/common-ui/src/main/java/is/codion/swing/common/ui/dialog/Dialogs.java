@@ -18,9 +18,10 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.MultiSelector;
 import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
 
@@ -57,7 +58,7 @@ public final class Dialogs {
 	 * @param task the task to run
 	 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 	 */
-	public static ProgressWorkerDialogBuilder<?, ?> progressWorkerDialog(Control.Command task) {
+	public static ProgressWorkerDialogBuilder<?, ?> progressWorkerDialog(Command task) {
 		requireNonNull(task);
 
 		return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> {
@@ -71,7 +72,7 @@ public final class Dialogs {
 	 * @param <T> the worker result type
 	 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 	 */
-	public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorkerDialog(ProgressWorker.ResultTask<T> task) {
+	public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorkerDialog(ResultTask<T> task) {
 		requireNonNull(task);
 
 		return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> task.execute());
@@ -85,7 +86,7 @@ public final class Dialogs {
 	 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
 	 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
 	 */
-	public static <T, V> ProgressWorkerDialogBuilder<T, V> progressWorkerDialog(ProgressWorker.ProgressResultTask<T, V> task) {
+	public static <T, V> ProgressWorkerDialogBuilder<T, V> progressWorkerDialog(ProgressResultTask<T, V> task) {
 		requireNonNull(task);
 
 		return new DefaultProgressWorkerDialogBuilder<>(task).indeterminate(false);

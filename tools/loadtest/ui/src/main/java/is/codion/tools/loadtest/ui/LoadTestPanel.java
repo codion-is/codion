@@ -32,7 +32,6 @@ import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.loadtest.model.LoadTestModel;
@@ -64,11 +63,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.common.model.UserPreferences.setUserPreference;
+import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.Windows.frame;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.commandControl;
-import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
+import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
@@ -296,7 +296,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private void setUser() {
 		User user = loadTest.user().get();
 		try {
-			loadTest.user().set(Dialogs.loginDialog()
+			loadTest.user().set(loginDialog()
 							.owner(LoadTestPanel.this)
 							.title("User")
 							.defaultUser(user == null ? null : User.user(user.username()))
@@ -500,20 +500,18 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private synchronized void exit() {
-		if (exiting) {
-			return;
+		if (!exiting) {
+			exiting = true;
+			progressWorkerDialog(loadTest::shutdown)
+							.owner(Utilities.parentFrame(this))
+							.title("Shutting down...")
+							.onResult(() -> System.exit(0))
+							.execute();
 		}
-		exiting = true;
-		JFrame frame = Utilities.parentFrame(this);
-		if (frame != null) {
-			frame.setTitle(frame.getTitle() + " - Closing...");
-		}
-		loadTest.shutdown();
-		System.exit(0);
 	}
 
 	private void displayException(Exception exception) {
-		Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
+		displayExceptionDialog(exception, parentWindow(this));
 	}
 
 	private static Exception exception(ApplicationRow application) {
