@@ -1,0 +1,64 @@
+<jasperReport name="customer_report" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="65647229-b9ea-492c-9579-df6c5298a9a2">
+	<property name="ireport.scriptlethandling" value="2"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import>net.sf.jasperreports.engine.*</import>
+	<import>java.util.*</import>
+	<import>net.sf.jasperreports.engine.data.*</import>
+	<parameter name="CUSTOMER_IDS" forPrompting="false" class="java.util.Collection"/>
+	<query language="sql"><![CDATA[select c.customerid,
+	 max(c.lastname) last_name, max(c.firstname) as first_name,
+	 i.invoicedate invoice_date,
+    sum(il.quantity * il.unitprice) as total
+from chinook.customer c, chinook.invoice i, chinook.invoiceline il
+where i.customerid = c.customerid
+and il.invoiceid = i.invoiceid
+and $X{IN, c.customerid, CUSTOMER_IDS}
+group by c.customerid, i.invoicedate]]></query>
+	<field name="LAST_NAME" class="java.lang.String"/>
+	<field name="FIRST_NAME" class="java.lang.String"/>
+	<field name="INVOICE_DATE" class="java.util.Date"/>
+	<field name="TOTAL" class="java.lang.Double"/>
+	<background splitType="Stretch"/>
+	<title height="42" splitType="Stretch">
+		<element kind="staticText" uuid="bbfd4060-5a27-46e5-a105-49eb87de82be" key="staticText-1" x="198" y="4" width="200" height="35" fontSize="24.0" hTextAlign="Center">
+			<text><![CDATA[Invoice totals]]></text>
+		</element>
+	</title>
+	<pageHeader splitType="Stretch"/>
+	<columnHeader height="18" splitType="Stretch">
+		<element kind="staticText" uuid="8b406ab0-7c83-4f2f-b338-df5c2d2f4817" key="staticText-2" x="0" y="0" width="100" height="18" fontSize="12.0" bold="true">
+			<text><![CDATA[Last name]]></text>
+		</element>
+		<element kind="staticText" uuid="fedb895d-5b4e-4aac-b30c-62a3cb66e1c4" key="staticText-3" x="108" y="0" width="101" height="18" fontSize="12.0" bold="true">
+			<text><![CDATA[First name]]></text>
+		</element>
+		<element kind="staticText" uuid="69c9e96a-e2c9-4800-99c1-8ae6ee4b7435" key="staticText-4" x="223" y="0" width="101" height="18" fontSize="12.0" bold="true">
+			<text><![CDATA[Invoice total]]></text>
+		</element>
+		<element kind="staticText" uuid="6de45897-9d3d-4da9-b230-9d862bccee9d" key="staticText-5" x="342" y="0" width="101" height="18" fontSize="12.0" bold="true">
+			<text><![CDATA[Invoice date]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<element kind="textField" uuid="18488891-36e7-40a2-95f5-67f7adaae4e3" key="textField" x="0" y="0" width="100" height="18" blankWhenNull="false">
+				<expression><![CDATA[$F{FIRST_NAME}]]></expression>
+			</element>
+			<element kind="textField" uuid="69bdf05e-b37e-4da2-b613-7865898e9416" key="textField" x="109" y="0" width="100" height="18" blankWhenNull="false">
+				<expression><![CDATA[$F{LAST_NAME}]]></expression>
+			</element>
+			<element kind="textField" uuid="64fcb085-72cd-47f7-aa9e-3e0cd54e5703" key="textField" x="224" y="0" width="100" height="18" pattern="0.##" blankWhenNull="false">
+				<expression><![CDATA[$F{TOTAL}]]></expression>
+			</element>
+			<element kind="textField" uuid="63622da2-72d0-4a87-ae89-24de8ee942f3" key="textField" x="343" y="0" width="100" height="18" blankWhenNull="false">
+				<expression><![CDATA[$F{INVOICE_DATE}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<columnFooter splitType="Stretch"/>
+	<pageFooter splitType="Stretch"/>
+	<summary splitType="Stretch"/>
+</jasperReport>

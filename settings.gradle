@@ -185,7 +185,7 @@ dependencyResolutionManagement {
             version("sslcontext.kickstart", "8.3.6")
             version("flatlaf", "3.5")
             version("ikonli", "12.3.1")
-            version("javalin", "6.1.6")
+            version("javalin", "6.2.0")
             version("javapoet", "1.13.0")
 
             version("hikari", "5.1.0")
@@ -193,12 +193,7 @@ dependencyResolutionManagement {
             version("log4j", "2.20.0")
             version("tomcat", "10.1.2")
 
-            version("jasperreports", "6.21.3")
-            version("commons.logging", "1.2")
-            version("commons.digester", "2.1")
-            version("commons.collections4", "4.4")
-            version("commons.beanutils", "1.9.4")
-            version("jdt.core.compiler", "3.35.0")
+            version("jasperreports", "7.0.0")
 
             library("slf4j-api", "org.slf4j", "slf4j-api").versionRef("slf4j.api")
             library("logback-core", "ch.qos.logback", "logback-core").versionRef("logback")
@@ -229,11 +224,7 @@ dependencyResolutionManagement {
             library("tomcat-jdbc", "org.apache.tomcat", "tomcat-jdbc").versionRef("tomcat")
 
             library("jasperreports", "net.sf.jasperreports", "jasperreports").versionRef("jasperreports")
-            library("commons-logging", "commons-logging", "commons-logging").versionRef("commons.logging")
-            library("commons-digester", "commons-digester", "commons-digester").versionRef("commons.digester")
-            library("commons-collections4", "org.apache.commons", "commons-collections4").versionRef("commons.collections4")
-            library("commons-beanutils", "commons-beanutils", "commons-beanutils").versionRef("commons.beanutils")
-            library("jdt-core-compiler", "org.eclipse.jdt", "ecj").versionRef("jdt.core.compiler")
+            library("jasperreports-jdt", "net.sf.jasperreports", "jasperreports-jdt").versionRef("jasperreports")
         }
     }
 }

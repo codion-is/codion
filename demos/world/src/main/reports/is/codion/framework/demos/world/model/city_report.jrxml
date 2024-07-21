@@ -1,0 +1,53 @@
+<jasperReport name="city_report" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0" uuid="65647229-b9ea-492c-9579-df6c5298a9a2">
+	<property name="ireport.scriptlethandling" value="2"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="population" class="java.lang.Integer"/>
+	<background splitType="Stretch"/>
+	<columnHeader height="16">
+		<element kind="staticText" uuid="ef712d38-e1c6-4922-8e38-4bd263230db5" x="350" y="2" width="84" height="14" bold="true">
+			<text><![CDATA[Name]]></text>
+		</element>
+		<element kind="staticText" uuid="8c05be12-bf23-4fac-ac18-47a1e18f5959" x="434" y="2" width="100" height="14" bold="true" hTextAlign="Center">
+			<text><![CDATA[Population]]></text>
+		</element>
+		<element kind="staticText" uuid="44915dc4-f2b8-4661-9b9a-8cb6e6f91f58" x="250" y="2" width="100" height="14" bold="true">
+			<text><![CDATA[Largest Cities]]></text>
+		</element>
+		<element kind="line" uuid="468587c6-550e-4dc1-80c2-72074816c6ff" x="0" y="1" width="535" height="1">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<pen lineStyle="Dotted"/>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</columnHeader>
+	<detail>
+		<band height="14">
+			<element kind="textField" uuid="52591026-2ffa-4ca3-b73d-31bb53463220" x="350" y="0" width="84" height="14">
+				<expression><![CDATA[$F{name}]]></expression>
+			</element>
+			<element kind="textField" uuid="376a08f3-5e56-45cd-974e-3635b8248373" x="434" y="0" width="100" height="14" pattern="###,###,###,###" hTextAlign="Center">
+				<expression><![CDATA[$F{population}]]></expression>
+			</element>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</detail>
+	<columnFooter height="1">
+		<element kind="line" uuid="e0b89b1f-85c9-4dd3-a316-a4a8359db499" x="0" y="0" width="535" height="1">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<pen lineStyle="Dotted"/>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</columnFooter>
+</jasperReport>

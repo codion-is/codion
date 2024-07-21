@@ -1,27 +1,21 @@
 plugins {
     id "org.gradlex.extra-java-module-info"
+    id "io.github.f-cramer.jasperreports"
 }
-
-apply plugin: BuildReportsPlugin
 
 dependencies {
     api project(":codion-common-db")
 
     testImplementation project(":codion-framework-db-local")
 
-    implementation(libs.jasperreports) {
-        transitive = false
+    api(libs.jasperreports) {
+        exclude group: "org.apache.xmlgraphics"
+        exclude group: "xml-apis"
     }
-
-    implementation(libs.commons.logging)
-    implementation(libs.commons.digester) {
-        transitive = false
+    compileOnly(libs.jasperreports.jdt) {
+        exclude group: "org.apache.xmlgraphics"
+        exclude group: "xml-apis"
     }
-    implementation(libs.commons.collections4)
-    implementation(libs.commons.beanutils) {
-        transitive = false
-    }
-    implementation(libs.jdt.core.compiler)
 
     testImplementation project(":codion-dbms-h2")
     testImplementation(libs.javalin) {
@@ -33,7 +27,9 @@ dependencies {
 apply from: "extra-module-info-jasperreports.gradle"
 apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
 
-buildReports {
-    sourceDir = file("src/test/reports")
-    targetDir = file(sourceSets.test.output.resourcesDir.toString())
+jasperreports {
+    srcDir = file("src/test/reports")
+    classpath.from(project.sourceSets.main.getCompileClasspath())
 }
+
+sourceSets.test.resources.srcDir(compileAllReports)

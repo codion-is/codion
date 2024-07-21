@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.6
 ### is.codion
 - Dependency cleanup using dependency-analysis-gradle-plugin.
+- BuildReportsPlugin replaced with io.github.f-cramer.jasperreports.
 ### is.codion.common.core
 - ProxyBuilder.DefaultHandler.invoke() bug fixed, now unwraps the InvocationTargetException and rethrows the target exception.
 - ValueLink, automatically reverting a value change on exception functionality removed, far from bulletproof especially when dealing with component values.
@@ -21,6 +22,8 @@ Codion Change Log
 - DomainTest now prevents transactions from being closed on the active connection during a test.
 ### is.codion.framework.db.core
 - DefaultLocalEntityConnection.createValueString() bug fixed, now catches Exception instead of just SQLException, since creating a log message should never fail.
+### is.codion.plugin.jasperreports
+- JasperReports upgraded to 7.0.0.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.ControlKeys.COLUMN_AUTO_RESIZE_MODE renamed SELECT_AUTO_RESIZE_MODE.
 - EntityTablePanel.ControlKeys.TOGGLE_AUTO_RESIZE_MODE_CONTROLS added along with AutoResizeModeSelection and Config.autoResizeModeSelection().

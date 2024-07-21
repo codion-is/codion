@@ -1,10 +1,9 @@
 plugins {
     id "org.gradlex.extra-java-module-info"
+    id "io.github.f-cramer.jasperreports"
 }
 
 apply from: "../demos.gradle"
-
-apply plugin: BuildReportsPlugin
 
 dependencies {
     implementation project(":codion-framework-db-local")
@@ -26,8 +25,9 @@ dependencies {
 
     runtimeOnly project(":codion-plugin-logback-proxy")
 
-    implementation(libs.jasperreports) {
-        transitive = false
+    compileOnly(libs.jasperreports.jdt) {
+        exclude group: "org.apache.xmlgraphics"
+        exclude group: "xml-apis"
     }
 
     runtimeOnly project(":codion-dbms-h2")
@@ -37,10 +37,11 @@ dependencies {
 apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
 apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
-buildReports {
-    sourceDir = file("src/main/reports")
-    targetDir = file(sourceSets.main.output.resourcesDir.toString() + "/is/codion/framework/demos/employees/domain")
+jasperreports {
+    classpath.from(project.sourceSets.main.compileClasspath)
 }
+
+sourceSets.main.resources.srcDir(compileAllReports)
 
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"

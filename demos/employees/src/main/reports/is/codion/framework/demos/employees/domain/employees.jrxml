@@ -8,14 +8,14 @@
 	<import>java.util.*</import>
 	<import>net.sf.jasperreports.engine.data.*</import>
 	<parameter name="DEPTNO" forPrompting="false" class="java.util.Collection"/>
-	<query language="sql"><![CDATA[select d.dname, d.loc, e.ename, e.job
+	<query language="sql"><![CDATA[select d.name as department_name, d.location, e.name as employee_name, e.job
 from employees.department d, employees.employee e
-where $X{IN, d.deptno, DEPTNO}
-and e.deptno = d.deptno
-order by d.dname, e.ename]]></query>
-	<field name="DNAME" class="java.lang.String"/>
-	<field name="LOC" class="java.lang.String"/>
-	<field name="ENAME" class="java.lang.String"/>
+where $X{IN, d.department_no, DEPTNO}
+and e.department_no = d.department_no
+order by d.name, e.name]]></query>
+	<field name="DEPARTMENT_NAME" class="java.lang.String"/>
+	<field name="LOCATION" class="java.lang.String"/>
+	<field name="EMPLOYEE_NAME" class="java.lang.String"/>
 	<field name="JOB" class="java.lang.String"/>
 	<background splitType="Stretch"/>
 	<title height="42" splitType="Stretch">
@@ -41,13 +41,13 @@ order by d.dname, e.ename]]></query>
 	<detail>
 		<band height="18" splitType="Stretch">
 			<element kind="textField" uuid="2df8ebf8-02dd-4e05-a300-8aa01f6803b0" key="textField" x="0" y="0" width="100" height="18" blankWhenNull="false">
-				<expression><![CDATA[$F{DNAME}]]></expression>
+				<expression><![CDATA[$F{DEPARTMENT_NAME}]]></expression>
 			</element>
 			<element kind="textField" uuid="66ab00b6-109b-48a8-ab2e-361d1a768a6f" key="textField" x="109" y="0" width="100" height="18" blankWhenNull="false">
-				<expression><![CDATA[$F{LOC}]]></expression>
+				<expression><![CDATA[$F{LOCATION}]]></expression>
 			</element>
 			<element kind="textField" uuid="f6ac305c-a0a6-41fe-85d4-c8e0d4d0f674" key="textField" x="224" y="0" width="100" height="18" blankWhenNull="false">
-				<expression><![CDATA[$F{ENAME}]]></expression>
+				<expression><![CDATA[$F{EMPLOYEE_NAME}]]></expression>
 			</element>
 			<element kind="textField" uuid="392439b1-5142-4b46-85c7-6cc0c8761cf1" key="textField" x="343" y="0" width="100" height="18" blankWhenNull="false">
 				<expression><![CDATA[$F{JOB}]]></expression>

@@ -1,10 +1,9 @@
 plugins {
     id "org.gradlex.extra-java-module-info"
+    id "io.github.f-cramer.jasperreports"
 }
 
 apply from: "../demos.gradle"
-
-apply plugin: BuildReportsPlugin
 
 dependencies {
     implementation project(":codion-swing-framework-ui")
@@ -29,8 +28,9 @@ dependencies {
     implementation(libs.flatlaf)
     implementation(libs.flatlaf.intellij.themes)
 
-    implementation(libs.jasperreports) {
-        transitive = false
+    compileOnly(libs.jasperreports.jdt) {
+        exclude group: "org.apache.xmlgraphics"
+        exclude group: "xml-apis"
     }
 
     runtimeOnly project(":codion-dbms-h2")
@@ -39,10 +39,14 @@ dependencies {
 
 apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
-buildReports {
-    sourceDir = file("src/main/reports")
-    targetDir = file(sourceSets.main.output.resourcesDir.toString() + "/is/codion/framework/demos/world/model")
+jasperreports {
+    classpath.from(
+        project.sourceSets.main.java.classesDirectory,
+        configurations.named(project.sourceSets.main.compileClasspathConfigurationName)
+    )
 }
+
+sourceSets.main.resources.srcDir(compileAllReports)
 
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
