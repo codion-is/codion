@@ -119,6 +119,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.common.value.ValueSet.valueSet;
@@ -1616,13 +1617,13 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void setupStandardControls() {
-		control(ADDITIONAL_POPUP_MENU_CONTROLS).set(createAdditionalPopupControls());
-		control(ADDITIONAL_TOOLBAR_CONTROLS).set(createAdditionalToolbarControls());
-		control(PRINT_CONTROLS).set(createPrintControls());
-		control(CONDITION_CONTROLS).set(createConditionControls());
-		control(FILTER_CONTROLS).set(createFilterControls());
-		control(COLUMN_CONTROLS).set(createColumnControls());
-		control(COPY_CONTROLS).set(createCopyControls());
+		control(ADDITIONAL_POPUP_MENU_CONTROLS).map(new ReplaceIfNull(this::createAdditionalPopupControls));
+		control(ADDITIONAL_TOOLBAR_CONTROLS).map(new ReplaceIfNull(this::createAdditionalToolbarControls));
+		control(PRINT_CONTROLS).map(new ReplaceIfNull(this::createPrintControls));
+		control(CONDITION_CONTROLS).map(new ReplaceIfNull(this::createConditionControls));
+		control(FILTER_CONTROLS).map(new ReplaceIfNull(this::createFilterControls));
+		control(COLUMN_CONTROLS).map(new ReplaceIfNull(this::createColumnControls));
+		control(COPY_CONTROLS).map(new ReplaceIfNull(this::createCopyControls));
 	}
 
 	private void configureColumn(FilterTableColumn<Attribute<?>> column) {
@@ -1951,6 +1952,20 @@ public class EntityTablePanel extends JPanel {
 		public boolean confirm(JComponent dialogOwner) {
 			return confirm(dialogOwner, FrameworkMessages.confirmDelete(
 							selectionModel.selectionCount()), FrameworkMessages.delete());
+		}
+	}
+
+	private static final class ReplaceIfNull implements Function<Controls, Controls> {
+
+		private final Supplier<Controls> controls;
+
+		private ReplaceIfNull(Supplier<Controls> controls) {
+			this.controls = controls;
+		}
+
+		@Override
+		public Controls apply(Controls control) {
+			return control == null ? controls.get() : control;
 		}
 	}
 

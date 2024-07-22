@@ -27,6 +27,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel.ControlKeys.COLUMN_AUTO_RESIZE_MODE renamed SELECT_AUTO_RESIZE_MODE.
 - EntityTablePanel.ControlKeys.TOGGLE_AUTO_RESIZE_MODE_CONTROLS added along with AutoResizeModeSelection and Config.autoResizeModeSelection().
+- EntityTablePanel.setupStandardControls() bug fixed, no longer overwrites previously configured controls.
 ### is.codion.tools.loadtest.ui
 - LoadTestPanel now displays an indeterminate progress bar while shutting down.
 
