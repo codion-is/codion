@@ -103,18 +103,23 @@ include::{dir-source}/is/codion/framework/demos/world/model/CountryModel.java[ta
 include::{dir-source}/is/codion/framework/demos/world/model/CountryTableModel.java[tag=**]
 ----
 
+[source,java]
+----
+include::{dir-test-source}/is/codion/framework/demos/world/model/CountryTableModelTest.java[tag=**]
+----
+
 .country_report.jrxml
 [%collapsible]
 ====
 [source,xml]
-include::{dir-reports}/country_report.jrxml[]
+include::{dir-reports}/is/codion/framework/demos/world/model/country_report.jrxml[]
 ====
 
 .city_report.jrxml
 [%collapsible]
 ====
 [source,xml]
-include::{dir-reports}/city_report.jrxml[]
+include::{dir-reports}/is/codion/framework/demos/world/model/city_report.jrxml[]
 ====
 
 [source,java]
