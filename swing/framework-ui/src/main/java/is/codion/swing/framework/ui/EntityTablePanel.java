@@ -478,7 +478,7 @@ public class EntityTablePanel extends JPanel {
 	private boolean initialized = false;
 
 	/**
-	 * Initializes a new EntityTablePanel instance
+	 * Instantiates a new EntityTablePanel instance
 	 * @param tableModel the SwingEntityTableModel instance
 	 */
 	public EntityTablePanel(SwingEntityTableModel tableModel) {
@@ -486,7 +486,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Initializes a new EntityTablePanel instance
+	 * Instantiates a new EntityTablePanel instance
 	 * @param tableModel the SwingEntityTableModel instance
 	 * @param config provides access to the table panel configuration
 	 */
@@ -506,7 +506,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Initializes a new EntityTablePanel instance
+	 * Instantiates a new EntityTablePanel instance
 	 * @param tableModel the SwingEntityTableModel instance
 	 * @param editPanel the edit panel
 	 */
@@ -515,7 +515,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Initializes a new EntityTablePanel instance
+	 * Instantiates a new EntityTablePanel instance
 	 * @param tableModel the SwingEntityTableModel instance
 	 * @param editPanel the edit panel
 	 * @param config provides access to the table panel configuration
@@ -603,7 +603,7 @@ public class EntityTablePanel extends JPanel {
 	 * @param additionalPopupMenuControls a set of controls to add to the table popup menu
 	 * @throws IllegalStateException in case this panel has already been initialized
 	 */
-	public void addPopupMenuControls(Controls additionalPopupMenuControls) {
+	public final void addPopupMenuControls(Controls additionalPopupMenuControls) {
 		throwIfInitialized();
 		this.additionalPopupControls.add(requireNonNull(additionalPopupMenuControls));
 	}
@@ -612,7 +612,7 @@ public class EntityTablePanel extends JPanel {
 	 * @param additionalToolBarControls a set of controls to add to the table toolbar menu
 	 * @throws IllegalStateException in case this panel has already been initialized
 	 */
-	public void addToolBarControls(Controls additionalToolBarControls) {
+	public final void addToolBarControls(Controls additionalToolBarControls) {
 		throwIfInitialized();
 		this.additionalToolBarControls.add(requireNonNull(additionalToolBarControls));
 	}
@@ -628,7 +628,7 @@ public class EntityTablePanel extends JPanel {
 	 * @param controlKey the control key
 	 * @return the {@link Value} containing the control associated with {@code controlKey}
 	 */
-	public <T extends Control> Value<T> control(ControlKey<T> controlKey) {
+	public final <T extends Control> Value<T> control(ControlKey<T> controlKey) {
 		return configuration.controlMap.control(requireNonNull(controlKey));
 	}
 

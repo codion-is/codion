@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.7
+### is.codion.swing.framework.ui
+- EntityTablePanel, bug fixed, three methods that should have been final are now final.
 
 ## 0.18.6
 ### is.codion
