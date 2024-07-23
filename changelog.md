@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.7
+
 ## 0.18.6
 ### is.codion
 - Dependency cleanup using dependency-analysis-gradle-plugin.
