@@ -214,7 +214,7 @@ final class DefaultState implements State {
 		}
 
 		@Override
-		public Builder validator(Validator<Boolean> validator) {
+		public Builder validator(Validator<? super Boolean> validator) {
 			valueBuilder.validator(validator);
 			return this;
 		}

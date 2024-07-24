@@ -220,7 +220,7 @@ public interface State extends StateObserver, Value<Boolean> {
 		 * @param validator the validator to add
 		 * @return this builder instance
 		 */
-		Builder validator(Validator<Boolean> validator);
+		Builder validator(Validator<? super Boolean> validator);
 
 		/**
 		 * Links the given value to the resulting state

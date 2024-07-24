@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.7
 ### is.codion.common.core
 - DatabaseConnection.getConnection() now throws IllegalStateException if the connection has been closed, valid() added.
+- State.Builder.validator() type parameter widened, now consistent with Value.addValidator().
 ### is.codion.common.model
 - ColumnConditionModel.Builder.operator() added for specifying the default condition operator.
 ### is.codion.framework.model

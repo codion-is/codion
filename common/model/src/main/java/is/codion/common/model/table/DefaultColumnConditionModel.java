@@ -82,7 +82,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	private final State autoEnable;
 	private final State enabled = State.builder()
-					.validator(value -> checkLock())
+					.validator(lockValidator)
 					.listener(conditionChangedEvent)
 					.build();
 
