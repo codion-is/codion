@@ -113,6 +113,13 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void testOperator() {
+		assertThrows(IllegalArgumentException.class, () -> ColumnConditionModel.builder("test", String.class)
+						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN))
+						.operator(Operator.IN));
+		assertThrows(IllegalArgumentException.class, () -> ColumnConditionModel.builder("test", String.class)
+						.operator(Operator.IN)
+						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN)));
+
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.LESS_THAN_OR_EQUAL, Operator.NOT_BETWEEN))
 						.build();

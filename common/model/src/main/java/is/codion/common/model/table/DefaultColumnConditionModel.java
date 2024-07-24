@@ -72,16 +72,11 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
-	private final Value<Operator> operator = Value.nonNull(Operator.EQUAL)
-					.validator(lockValidator)
-					.validator(this::validateOperator)
-					.listener(autoEnableListener)
-					.listener(conditionChangedEvent)
-					.build();
 	private final Value<AutomaticWildcard> automaticWildcard = Value.nonNull(AutomaticWildcard.NONE)
 					.listener(conditionChangedEvent)
 					.build();
 
+	private final Value<Operator> operator;
 	private final State caseSensitive;
 	private final String wildcard;
 
@@ -100,6 +95,13 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private DefaultColumnConditionModel(DefaultBuilder<C, T> builder) {
 		this.columnIdentifier = builder.columnIdentifier;
 		this.operators = unmodifiableList(builder.operators);
+		this.operator = Value.nonNull(builder.operator)
+						.initialValue(builder.operator)
+						.validator(lockValidator)
+						.validator(this::validateOperator)
+						.listener(autoEnableListener)
+						.listener(conditionChangedEvent)
+						.build();
 		this.columnClass = builder.columnClass;
 		this.wildcard = String.valueOf(builder.wildcard);
 		this.format = builder.format;
@@ -600,6 +602,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		private final Class<T> columnClass;
 
 		private List<Operator> operators;
+		private Operator operator = Operator.EQUAL;
 		private char wildcard = Text.WILDCARD_CHARACTER.get();
 		private Format format;
 		private String dateTimePattern = LocaleDateTimePattern.builder()
@@ -623,8 +626,15 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 			if (requireNonNull(operators).isEmpty()) {
 				throw new IllegalArgumentException("One or more operators must be specified");
 			}
-
+			validateOperators(operators, operator);
 			this.operators = operators;
+			return this;
+		}
+
+		@Override
+		public Builder<C, T> operator(Operator operator) {
+			validateOperators(operators, operator);
+			this.operator = operator;
 			return this;
 		}
 
@@ -667,6 +677,12 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		@Override
 		public ColumnConditionModel<C, T> build() {
 			return new DefaultColumnConditionModel<>(this);
+		}
+
+		private static void validateOperators(List<Operator> operators, Operator operator) {
+			if (!operators.contains(operator)) {
+				throw new IllegalArgumentException("Available operators do no not contain the selected operator: " + operator);
+			}
 		}
 	}
 }

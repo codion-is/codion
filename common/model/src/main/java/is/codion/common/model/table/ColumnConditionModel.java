@@ -271,8 +271,18 @@ public interface ColumnConditionModel<C, T> {
 		/**
 		 * @param operators the conditional operators available to this condition model
 		 * @return this builder instance
+		 * @throws IllegalArgumentException in case operators don't contain the selected operator
+		 * @see #operator(Operator)
 		 */
 		Builder<C, T> operators(List<Operator> operators);
+
+		/**
+		 * @param operators the initial operator
+		 * @return this builder instance
+		 * @throws IllegalArgumentException in case the model operators don't contain the given operator
+		 * @see #operators(List)
+		 */
+		Builder<C, T> operator(Operator operator);
 
 		/**
 		 * @param wildcard the character to use as wildcard

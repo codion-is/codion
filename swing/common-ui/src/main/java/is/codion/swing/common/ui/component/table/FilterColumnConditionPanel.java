@@ -486,13 +486,13 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		ItemComboBoxModel<Operator> operatorComboBoxModel = ItemComboBoxModel.itemComboBoxModel(operators.stream()
 						.map(operator -> Item.item(operator, caption(operator)))
 						.collect(toList()));
-		operatorComboBoxModel.setSelectedItem(operators.get(0));
+
 		return itemComboBox(operatorComboBoxModel, conditionModel().operator())
 						.completionMode(Completion.Mode.NONE)
 						.renderer(new OperatorComboBoxRenderer())
 						.maximumRowCount(operators.size())
 						.mouseWheelScrollingWithWrapAround(true)
-						.toolTipText(operatorComboBoxModel.selectedValue().get().description())
+						.toolTipText(conditionModel().operator().get().description())
 						.onBuild(comboBox -> operatorComboBoxModel.selectionEvent().addConsumer(selectedOperator ->
 										comboBox.setToolTipText(selectedOperator.get().description())))
 						.build();
