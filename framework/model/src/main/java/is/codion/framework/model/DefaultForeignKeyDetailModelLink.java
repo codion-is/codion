@@ -125,15 +125,6 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 	}
 
 	private boolean setForeignKeyCondition(Collection<Entity> selectedEntities) {
-		if (selectedEntities.isEmpty()) {
-			return detailModel().tableModel().conditionModel()
-							.setEqualConditionValue(foreignKey, null);
-		}
-		else if (selectedEntities.size() == 1) {
-			return detailModel().tableModel().conditionModel()
-							.setEqualConditionValue(foreignKey, selectedEntities.iterator().next());
-		}
-
 		return detailModel().tableModel().conditionModel()
 						.setInConditionValues(foreignKey, selectedEntities);
 	}

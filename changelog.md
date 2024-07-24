@@ -6,8 +6,12 @@ Codion Change Log
 - DatabaseConnection.getConnection() now throws IllegalStateException if the connection has been closed, valid() added.
 ### is.codion.common.model
 - ColumnConditionModel.Builder.operator() added for specifying the default condition operator.
+### is.codion.framework.model
+- ForeignKeyConditionModel now defaults to Operator.IN when available.
+- DefaultForeignKeyDetailModelLink.setForeignKeyCondition() now always uses Operator.IN.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, bug fixed, three methods that should have been final are now final.
+- SwingForeignKeyConditionModel now defaults to Operator.IN when available.
 
 ## 0.18.6
 ### is.codion

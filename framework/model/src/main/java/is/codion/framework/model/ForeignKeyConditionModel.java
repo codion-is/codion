@@ -54,6 +54,7 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	private ForeignKeyConditionModel(DefaultBuilder builder) {
 		this.conditionModel = ColumnConditionModel.builder(builder.foreignKey, Entity.class)
 						.operators(builder.operators())
+						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
 						.build();
 		this.equalSearchModel = builder.equalSearchModel;
 		this.inSearchModel = builder.inSearchModel;

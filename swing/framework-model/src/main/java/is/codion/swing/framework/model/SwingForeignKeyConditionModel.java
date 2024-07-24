@@ -56,6 +56,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 	private SwingForeignKeyConditionModel(DefaultBuilder builder) {
 		this.conditionModel = ColumnConditionModel.builder(builder.foreignKey, Entity.class)
 						.operators(builder.operators())
+						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
 						.build();
 		this.inSearchModel = builder.inSearchModel;
 		this.equalComboBoxModel = builder.equalComboBoxModel;
