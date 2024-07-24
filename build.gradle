@@ -242,6 +242,19 @@ tasks.register("tagRelease") {
     }
 }
 
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+
+    return !stableKeyword && !(version ==~ regex)
+}
+
+tasks.named("dependencyUpdates").configure {
+    rejectVersionIf {
+        isNonStable(it.candidate.version)
+    }
+}
+
 boolean hasPublicationProperties() {
     return project.hasProperty("sonatypeUsername") &&
             project.hasProperty("sonatypePassword") &&
