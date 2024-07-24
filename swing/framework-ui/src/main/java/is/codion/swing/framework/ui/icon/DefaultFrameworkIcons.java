@@ -22,7 +22,6 @@ import is.codion.swing.common.ui.icon.FontImageIcon;
 import is.codion.swing.common.ui.icon.FontImageIcon.IconPainter;
 import is.codion.swing.common.ui.icon.FontImageIcon.ImageIconFactory;
 import is.codion.swing.common.ui.icon.Icons;
-import is.codion.swing.common.ui.icon.Logos;
 
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -41,7 +40,7 @@ import static java.util.stream.StreamSupport.stream;
 /**
  * A default FrameworkIcons implementation.
  */
-public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
+public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private static final IconPainter LOGO_ICON_PAINTER = new IconPainter() {
 

@@ -152,8 +152,9 @@ public class DefaultDatabaseConnectionTest {
 	@Test
 	void close() {
 		dbConnection.close();
+		assertFalse(dbConnection.valid());
 		assertFalse(dbConnection.connected());
-		assertNull(dbConnection.getConnection());
+		assertThrows(IllegalStateException.class, () -> dbConnection.getConnection());
 		assertThrows(IllegalStateException.class, () -> dbConnection.startTransaction());
 		assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
 		assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());

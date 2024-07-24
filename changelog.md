@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.7
+### is.codion.common.core
+- DatabaseConnection.getConnection() now throws IllegalStateException if the connection has been closed, valid() added.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, bug fixed, three methods that should have been final are now final.
 

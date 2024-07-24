@@ -39,7 +39,6 @@ import org.slf4j.MDC;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -323,10 +322,10 @@ final class LocalConnectionHandler implements InvocationHandler {
 	}
 
 	private void returnConnectionToPool() {
-		Connection connection = poolEntityConnection.databaseConnection().getConnection();
-		if (connection != null) {
-			closeSilently(connection);
-			poolEntityConnection.databaseConnection().setConnection(null);
+		DatabaseConnection connection = poolEntityConnection.databaseConnection();
+		if (connection.connected()) {
+			closeSilently(connection.getConnection());
+			connection.setConnection(null);
 		}
 	}
 

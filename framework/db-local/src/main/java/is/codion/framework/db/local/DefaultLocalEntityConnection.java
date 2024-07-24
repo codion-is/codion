@@ -164,7 +164,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	@Override
 	public boolean connected() {
 		synchronized (connection) {
-			return connection.connected();
+			return connection.valid();
 		}
 	}
 

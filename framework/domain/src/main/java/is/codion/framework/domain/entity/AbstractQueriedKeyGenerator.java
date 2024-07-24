@@ -35,9 +35,6 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 	protected final void selectAndPopulate(Entity entity, DatabaseConnection databaseConnection) throws SQLException {
 		MethodLogger methodLogger = databaseConnection.getMethodLogger();
 		Connection connection = databaseConnection.getConnection();
-		if (connection == null) {
-			throw new IllegalStateException("No connection available when querying for key value");
-		}
 		String query = query(databaseConnection.database());
 		if (query == null) {
 			throw new IllegalStateException("Queried key generator returned no query");

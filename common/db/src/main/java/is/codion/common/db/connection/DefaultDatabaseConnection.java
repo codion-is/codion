@@ -114,6 +114,11 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
 	@Override
 	public boolean connected() {
+		return connection != null;
+	}
+
+	@Override
+	public boolean valid() {
 		return connection != null && database.connectionValid(connection);
 	}
 
@@ -124,6 +129,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
 	@Override
 	public Connection getConnection() {
+		verifyOpenConnection();
+
 		return connection;
 	}
 
@@ -249,7 +256,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	}
 
 	private void verifyOpenConnection() {
-		if (connection == null) {
+		if (!connected()) {
 			throw new IllegalStateException("Connection is closed");
 		}
 	}

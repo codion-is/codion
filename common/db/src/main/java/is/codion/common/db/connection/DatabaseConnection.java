@@ -38,14 +38,25 @@ public interface DatabaseConnection extends AutoCloseable {
 	String SQL_STATE_NO_DATA = "02000";
 
 	/**
-	 * @return true if the connection has been established and is valid
+	 * Note that this method does not check if the connection is valid, only that it is connected.
+	 * @return true if a connection has been established
+	 * @see #valid()
 	 */
 	boolean connected();
 
 	/**
-	 * Returns the underlying connection object, null in case this connection has been closed.
-	 * Use {@link #connected()} to verify that the connection is not null and valid.
-	 * @return the underlying connection object, null in case this connection has been closed
+	 * @return true if a connection has been established and is valid
+	 * @see Database#connectionValid(Connection)
+	 */
+	boolean valid();
+
+	/**
+	 * Returns the underlying connection object.
+	 * Use {@link #valid()} to verify that the connection is available and valid.
+	 * @return the underlying connection object
+	 * @throws IllegalStateException in case this connection has been closed
+	 * @see #valid()
+	 * @see #connected()
 	 */
 	Connection getConnection();
 
