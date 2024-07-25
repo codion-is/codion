@@ -13,8 +13,7 @@ dependencies {
         exclude group: "xml-apis"
     }
     compileOnly(libs.jasperreports.jdt) {
-        exclude group: "org.apache.xmlgraphics"
-        exclude group: "xml-apis"
+        exclude group: "net.sf.jasperreports"
     }
 
     testImplementation project(":codion-dbms-h2")

@@ -26,8 +26,7 @@ dependencies {
     runtimeOnly project(":codion-plugin-logback-proxy")
 
     compileOnly(libs.jasperreports.jdt) {
-        exclude group: "org.apache.xmlgraphics"
-        exclude group: "xml-apis"
+        exclude group: "net.sf.jasperreports"
     }
 
     runtimeOnly project(":codion-dbms-h2")

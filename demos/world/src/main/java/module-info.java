@@ -23,7 +23,6 @@ module is.codion.framework.demos.world {
 	requires is.codion.swing.framework.ui;
 	requires is.codion.plugin.jasperreports;
 	requires is.codion.framework.json.domain;
-	requires com.formdev.flatlaf;
 	requires com.formdev.flatlaf.intellijthemes;
 	requires org.kordamp.ikonli.foundation;
 	requires jasperreports;

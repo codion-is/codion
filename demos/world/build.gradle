@@ -13,7 +13,7 @@ dependencies {
     implementation(libs.jfreechart)
     implementation(libs.json)
     implementation "org.jxmapviewer:jxmapviewer2:2.8"
-    implementation "org.kordamp.ikonli:ikonli-foundation-pack:12.3.1"
+    implementation(libs.ikonli.foundation.pack)
 
     testImplementation project(":codion-framework-domain-test")
     testImplementation project(":codion-swing-framework-ui-test")
@@ -25,12 +25,10 @@ dependencies {
     runtimeOnly project(":codion-framework-db-rmi")
     runtimeOnly project(":codion-framework-db-http")
 
-    implementation(libs.flatlaf)
     implementation(libs.flatlaf.intellij.themes)
 
     compileOnly(libs.jasperreports.jdt) {
-        exclude group: "org.apache.xmlgraphics"
-        exclude group: "xml-apis"
+        exclude group: "net.sf.jasperreports"
     }
 
     runtimeOnly project(":codion-dbms-h2")

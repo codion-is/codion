@@ -35,7 +35,6 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.kordamp.ikonli.foundation.Foundation;
 
@@ -86,7 +85,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 						.applicationVersion(WorldAppModel.VERSION)
 						.defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
 						.defaultLoginUser(User.parse("scott:tiger"))
-						.defaultLookAndFeelClassName(FlatDarkLaf.class.getName())
 						.start();
 	}
 }

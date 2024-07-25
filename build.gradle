@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'org.revapi:gradle-revapi:1.8.0'
+        classpath "org.revapi:gradle-revapi:1.8.0"
     }
 }
 
@@ -38,6 +38,7 @@ configure(project.frameworkModules) {
     apply plugin: "project-report"
     apply plugin: "com.vanniktech.dependency.graph.generator"
     apply plugin: "signing"
+//    apply plugin: "com.palantir.revapi"
 
     clean {
         doLast {
@@ -243,7 +244,7 @@ tasks.register("tagRelease") {
 }
 
 def isNonStable = { String version ->
-    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def stableKeyword = ["RELEASE", "FINAL", "GA"].any { it -> version.toUpperCase().contains(it) }
     def regex = /^[0-9,.v-]+(-r)?$/
 
     return !stableKeyword && !(version ==~ regex)

@@ -80,12 +80,12 @@ dependencies {
 
     runtimeOnly "is.codion:codion-framework-db-local:{codion-version}"
     runtimeOnly "is.codion:codion-dbms-h2:{codion-version}"
-    runtimeOnly "com.h2database:h2:2.2.220"
+    runtimeOnly "com.h2database:h2:2.3.230"
     runtimeOnly "is.codion:codion-plugin-logback-proxy:{codion-version}"
 
     testImplementation "is.codion:codion-framework-domain-test:{codion-version}"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.3"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.3"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.3"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.3"
 }
 ----
 

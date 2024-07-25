@@ -21,15 +21,13 @@ dependencies {
     implementation project(":codion-framework-db-http")
     implementation project(":codion-framework-db-rmi")
 
-    implementation(libs.flatlaf)
     implementation(libs.flatlaf.intellij.themes)
-    implementation "org.kordamp.ikonli:ikonli-foundation-pack:12.3.1"
+    implementation(libs.ikonli.foundation.pack)
 
     testImplementation project(":codion-framework-domain-test")
 
     compileOnly(libs.jasperreports.jdt) {
-        exclude group: "org.apache.xmlgraphics"
-        exclude group: "xml-apis"
+        exclude group: "net.sf.jasperreports"
     }
 
     runtimeOnly project(":codion-dbms-h2")
