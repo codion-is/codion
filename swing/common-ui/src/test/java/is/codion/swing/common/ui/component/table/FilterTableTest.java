@@ -367,7 +367,7 @@ public class FilterTableTest {
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
 		assertEquals(0, tableModel.indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
-		assertEquals(tableModel.getRowCount() - 1, tableModel.indexOf(NULL));
+		assertEquals(tableModel.visibleCount() - 1, tableModel.indexOf(NULL));
 
 		tableModel.refresh();
 		items.add(NULL);
@@ -375,7 +375,7 @@ public class FilterTableTest {
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
 		assertEquals(0, tableModel.indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
-		assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(NULL));
+		assertEquals(tableModel.visibleCount() - 2, tableModel.indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.UNSORTED);
 		table.sortModel().sortingChangedEvent().removeConsumer(consumer);
 	}

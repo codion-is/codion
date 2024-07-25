@@ -80,27 +80,27 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 
 	@Override
 	public void addSelectedIndex(int index) {
-		checkIndex(index, tableModel.getRowCount());
+		checkIndex(index, tableModel.visibleCount());
 		addSelectionInterval(index, index);
 	}
 
 	@Override
 	public void removeSelectedIndex(int index) {
-		checkIndex(index, tableModel.getRowCount());
+		checkIndex(index, tableModel.visibleCount());
 		removeSelectionInterval(index, index);
 	}
 
 	@Override
 	public void removeSelectedIndexes(Collection<Integer> indexes) {
 		indexes.forEach(index -> {
-			checkIndex(index, tableModel.getRowCount());
+			checkIndex(index, tableModel.visibleCount());
 			removeSelectionInterval(index, index);
 		});
 	}
 
 	@Override
 	public void setSelectedIndex(int index) {
-		checkIndex(index, tableModel.getRowCount());
+		checkIndex(index, tableModel.visibleCount());
 		setSelectionInterval(index, index);
 	}
 
@@ -156,7 +156,7 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 
 	@Override
 	public void selectAll() {
-		setSelectionInterval(0, tableModel.getRowCount() - 1);
+		setSelectionInterval(0, tableModel.visibleCount() - 1);
 	}
 
 	@Override
@@ -172,7 +172,7 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 	@Override
 	public R getSelectedItem() {
 		int index = getSelectedIndex();
-		if (index >= 0 && index < tableModel.getRowCount()) {
+		if (index >= 0 && index < tableModel.visibleCount()) {
 			return tableModel.itemAt(index);
 		}
 
@@ -269,8 +269,8 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 
 	@Override
 	public void moveSelectionUp() {
-		if (tableModel.getRowCount() > 0) {
-			int lastIndex = tableModel.getRowCount() - 1;
+		if (tableModel.visibleCount() > 0) {
+			int lastIndex = tableModel.visibleCount() - 1;
 			if (isSelectionEmpty()) {
 				setSelectionInterval(lastIndex, lastIndex);
 			}
@@ -284,13 +284,13 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 
 	@Override
 	public void moveSelectionDown() {
-		if (tableModel.getRowCount() > 0) {
+		if (tableModel.visibleCount() > 0) {
 			if (isSelectionEmpty()) {
 				setSelectionInterval(0, 0);
 			}
 			else {
 				setSelectedIndexes(getSelectedIndexes().stream()
-								.map(index -> index == tableModel.getRowCount() - 1 ? 0 : index + 1)
+								.map(index -> index == tableModel.visibleCount() - 1 ? 0 : index + 1)
 								.collect(toList()));
 			}
 		}
@@ -388,7 +388,7 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 	}
 
 	private void checkIndexes(Collection<Integer> indexes) {
-		int size = tableModel.getRowCount();
+		int size = tableModel.visibleCount();
 		for (Integer index : indexes) {
 			checkIndex(index, size);
 		}

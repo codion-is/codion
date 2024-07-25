@@ -187,7 +187,7 @@ public final class DefaultFilterTableModelTest {
 		tableModel.refresher().refreshFailedEvent().addConsumer(failedConsumer);
 		tableModel.clearedEvent().addListener(clearedListener);
 		tableModel.refresh();
-		assertTrue(tableModel.getRowCount() > 0);
+		assertTrue(tableModel.visibleCount() > 0);
 		assertEquals(1, done.get());
 		assertEquals(1, cleared.get());
 
@@ -333,9 +333,9 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void clear() {
 		tableModel.refresh();
-		assertTrue(tableModel.getRowCount() > 0);
+		assertTrue(tableModel.visibleCount() > 0);
 		tableModel.clear();
-		assertEquals(0, tableModel.getRowCount());
+		assertEquals(0, tableModel.visibleCount());
 	}
 
 	@Test
@@ -427,15 +427,15 @@ public final class DefaultFilterTableModelTest {
 
 		selectionModel.setSelectedIndex(0);
 		selectionModel.moveSelectionUp();
-		assertEquals(tableModel.getRowCount() - 1, selectionModel.getSelectedIndex());
+		assertEquals(tableModel.visibleCount() - 1, selectionModel.getSelectedIndex());
 
-		selectionModel.setSelectedIndex(tableModel.getRowCount() - 1);
+		selectionModel.setSelectedIndex(tableModel.visibleCount() - 1);
 		selectionModel.moveSelectionDown();
 		assertEquals(0, selectionModel.getSelectedIndex());
 
 		selectionModel.clearSelection();
 		selectionModel.moveSelectionUp();
-		assertEquals(tableModel.getRowCount() - 1, selectionModel.getSelectedIndex());
+		assertEquals(tableModel.visibleCount() - 1, selectionModel.getSelectedIndex());
 
 		selectionModel.clearSelection();
 		selectionModel.moveSelectionDown();
@@ -550,7 +550,7 @@ public final class DefaultFilterTableModelTest {
 	void includeCondition() {
 		tableModel.refresh();
 		tableModel.includeCondition().set(item -> false);
-		assertEquals(0, tableModel.getRowCount());
+		assertEquals(0, tableModel.visibleCount());
 	}
 
 	@Test
@@ -615,9 +615,9 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.filterModel().conditionModel(0).enabled().get());
 
 		tableModel.filterModel().conditionModel(0).setEqualValue("b");
-		int rowCount = tableModel.getRowCount();
+		int rowCount = tableModel.visibleCount();
 		tableModel.addItemsAt(0, singletonList(new TestRow("x")));
-		assertEquals(rowCount, tableModel.getRowCount());
+		assertEquals(rowCount, tableModel.visibleCount());
 
 		assertThrows(IllegalArgumentException.class, () -> tableModel.filterModel().conditionModel(1));
 	}

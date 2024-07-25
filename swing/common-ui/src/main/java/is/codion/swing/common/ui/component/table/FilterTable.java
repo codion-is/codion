@@ -1370,7 +1370,7 @@ public final class FilterTable<R, C> extends JTable {
 		public String get() {
 			List<Integer> rows = selected ?
 							tableModel.selectionModel().getSelectedIndexes() :
-							IntStream.range(0, getRowCount())
+							IntStream.range(0, tableModel.visibleCount())
 											.boxed()
 											.collect(toList());
 

@@ -405,7 +405,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	private boolean addItemInternal(R item) {
-		return addItemAtInternal(getRowCount(), item);
+		return addItemAtInternal(visibleCount(), item);
 	}
 
 	private boolean addItemAtInternal(int index, R item) {
