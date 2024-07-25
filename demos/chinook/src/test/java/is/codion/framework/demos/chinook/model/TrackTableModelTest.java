@@ -47,7 +47,7 @@ public final class TrackTableModelTest {
 						.setEqualConditionValue(Track.ALBUM_FK, masterOfPuppets);
 
 		trackTableModel.refresh();
-		assertEquals(8, trackTableModel.getRowCount());
+		assertEquals(8, trackTableModel.rowCount());
 
 		trackTableModel.selectionModel().selectAll();
 		trackTableModel.raisePriceOfSelected(BigDecimal.ONE);

@@ -2540,14 +2540,14 @@ public class EntityTablePanel extends JPanel {
 
 		@Override
 		public String apply(SwingEntityTableModel tableModel) {
-			int rowCount = tableModel.getRowCount();
+			int rowCount = tableModel.rowCount();
 			int filteredCount = tableModel.filteredCount();
 			if (rowCount == 0 && filteredCount == 0) {
 				return "";
 			}
 			int selectionCount = tableModel.selectionModel().selectionCount();
 			StringBuilder builder = new StringBuilder();
-			if (tableModel.limit().isEqualTo(tableModel.getRowCount())) {
+			if (tableModel.limit().isEqualTo(tableModel.rowCount())) {
 				builder.append(MESSAGES.getString("limited_to")).append(" ");
 			}
 			builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));

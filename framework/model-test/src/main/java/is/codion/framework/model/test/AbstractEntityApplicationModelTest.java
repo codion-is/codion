@@ -74,7 +74,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 		}
 		deptModel.detailModel(Employee.TYPE).tableModel().conditionRequired().set(false);
 		model.refresh();
-		assertTrue(deptModel.tableModel().getRowCount() > 0);
+		assertTrue(deptModel.tableModel().rowCount() > 0);
 	}
 
 	@Test

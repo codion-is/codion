@@ -121,17 +121,17 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 			return;
 		}
 		departmentModel.tableModel().refresh();
-		assertTrue(departmentModel.tableModel().getRowCount() > 0);
+		assertTrue(departmentModel.tableModel().rowCount() > 0);
 
 		Model employeeModel = departmentModel.detailModel(Employee.TYPE);
 		employeeModel.tableModel().refresh();
-		assertTrue(employeeModel.tableModel().getRowCount() > 0);
+		assertTrue(employeeModel.tableModel().rowCount() > 0);
 
 		departmentModel.detailModels().forEach(detailModel -> detailModel.tableModel().clear());
-		assertEquals(0, employeeModel.tableModel().getRowCount());
+		assertEquals(0, employeeModel.tableModel().rowCount());
 
 		departmentModel.tableModel().clear();
-		assertEquals(0, departmentModel.tableModel().getRowCount());
+		assertEquals(0, departmentModel.tableModel().rowCount());
 	}
 
 	@Test
@@ -177,7 +177,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 		departmentModel.tableModel().refresh();
 		departmentModel.detailModel(Employee.TYPE).tableModel().refresh();
-		assertTrue(departmentModel.detailModel(Employee.TYPE).tableModel().getRowCount() > 0);
+		assertTrue(departmentModel.detailModel(Employee.TYPE).tableModel().rowCount() > 0);
 
 		EntityConnection connection = departmentModel.connection();
 		Entity department = connection.selectSingle(Department.NAME.equalTo("SALES"));
@@ -284,11 +284,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 		departmentModel.tableModel().refresh();
 		departmentModel.tableModel().selectionModel().setSelectedItem(dept);
-		assertEquals(0, employeeTableModel.getRowCount());
+		assertEquals(0, employeeTableModel.rowCount());
 
 		link.refreshOnSelection().set(true);
 		departmentModel.tableModel().selectionModel().setSelectedItem(dept);
-		assertNotEquals(0, employeeTableModel.getRowCount());
+		assertNotEquals(0, employeeTableModel.rowCount());
 	}
 
 	@Test

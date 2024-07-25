@@ -10,6 +10,7 @@ Codion Change Log
 ### is.codion.framework.model
 - ForeignKeyConditionModel now defaults to Operator.IN when available.
 - DefaultForeignKeyDetailModelLink.setForeignKeyCondition() now always uses Operator.IN.
+- EntityTableModel.getRowCount() renamed rowCount().
 ### is.codion.swing.framework.ui
 - EntityTablePanel, bug fixed, three methods that should have been final are now final.
 - SwingForeignKeyConditionModel now defaults to Operator.IN when available.

@@ -272,7 +272,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	/**
 	 * @return the number of visible rows in this table model
 	 */
-	int getRowCount();
+	int rowCount();
 
 	/**
 	 * @return the {@link TableSelectionModel}

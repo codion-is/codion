@@ -124,10 +124,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 						.with(Department.LOCATION, "Nowhere1")
 						.with(Department.NAME, "HELLO")
 						.build();
-		int count = deptModel.getRowCount();
+		int count = deptModel.rowCount();
 		deptModel.editModel().insert(singletonList(dept));
-		assertEquals(count + 1, deptModel.getRowCount());
-		assertEquals(dept, deptModel.visibleItems().get(deptModel.getRowCount() - 1));
+		assertEquals(count + 1, deptModel.rowCount());
+		assertEquals(dept, deptModel.visibleItems().get(deptModel.rowCount() - 1));
 
 		deptModel.onInsert().set(EntityTableModel.OnInsert.ADD_TOP_SORTED);
 		Entity dept2 = entities.builder(Department.TYPE)
@@ -136,7 +136,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 						.with(Department.NAME, "NONAME")
 						.build();
 		deptModel.editModel().insert(singletonList(dept2));
-		assertEquals(count + 2, deptModel.getRowCount());
+		assertEquals(count + 2, deptModel.rowCount());
 		assertEquals(dept2, deptModel.visibleItems().get(2));
 
 		deptModel.onInsert().set(EntityTableModel.OnInsert.DO_NOTHING);
@@ -146,10 +146,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 						.with(Department.NAME, "NONAME2")
 						.build();
 		deptModel.editModel().insert(singletonList(dept3));
-		assertEquals(count + 2, deptModel.getRowCount());
+		assertEquals(count + 2, deptModel.rowCount());
 
 		deptModel.refresh();
-		assertEquals(count + 3, deptModel.getRowCount());
+		assertEquals(count + 3, deptModel.rowCount());
 
 		deptModel.editModel().delete(asList(dept, dept2, dept3));
 	}
@@ -246,7 +246,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		assertTrue(tableModel.attributes().get().isEmpty());
 		tableModel.attributes().addAll(Employee.NAME, Employee.HIREDATE);
 		tableModel.refresh();
-		assertTrue(tableModel.getRowCount() > 0);
+		assertTrue(tableModel.rowCount() > 0);
 		tableModel.items().forEach(employee -> {
 			assertFalse(employee.contains(Employee.COMMISSION));
 			assertFalse(employee.contains(Employee.DEPARTMENT));
@@ -261,7 +261,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.limit().set(6);
 		tableModel.refresh();
-		assertEquals(6, tableModel.getRowCount());
+		assertEquals(6, tableModel.rowCount());
 		ColumnConditionModel<?, Double> commissionConditionModel =
 						tableModel.conditionModel().attributeModel(Employee.COMMISSION);
 		commissionConditionModel.operator().set(Operator.EQUAL);
@@ -269,10 +269,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		tableModel.refresh();
 		commissionConditionModel.enabled().set(false);
 		tableModel.refresh();
-		assertEquals(6, tableModel.getRowCount());
+		assertEquals(6, tableModel.rowCount());
 		tableModel.limit().clear();
 		tableModel.refresh();
-		assertEquals(16, tableModel.getRowCount());
+		assertEquals(16, tableModel.rowCount());
 	}
 
 	@Test

@@ -447,6 +447,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
+	public final int rowCount() {
+		return getRowCount();
+	}
+
+	@Override
 	public final int getRowCount() {
 		return tableModel.getRowCount();
 	}

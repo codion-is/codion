@@ -611,7 +611,7 @@ public final class EntityDialogs {
 
 		private void search() {
 			tableModel.refresh();
-			if (tableModel.getRowCount() > 0) {
+			if (tableModel.rowCount() > 0) {
 				tableModel.selectionModel().setSelectedIndexes(singletonList(0));
 				entityTablePanel.table().requestFocusInWindow();
 			}

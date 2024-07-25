@@ -83,11 +83,11 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
-		assertEquals(0, employeeTableModel.getRowCount());
+		assertEquals(0, employeeTableModel.rowCount());
 		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
 		employeeTableModel.conditionModel().setInConditionValues(Employee.DEPARTMENT_FK, singletonList(accounting));
 		employeeTableModel.refresh();
-		assertEquals(7, employeeTableModel.getRowCount());
+		assertEquals(7, employeeTableModel.rowCount());
 	}
 
 	@Test
@@ -200,18 +200,18 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 			}
 		};
 		tableModel.refresh();
-		assertEquals(16, tableModel.getRowCount());
+		assertEquals(16, tableModel.rowCount());
 		tableModel.conditionRequired().set(true);
 		tableModel.refresh();
-		assertEquals(0, tableModel.getRowCount());
+		assertEquals(0, tableModel.rowCount());
 		ColumnConditionModel<?, Entity> mgrConditionModel = tableModel.conditionModel().conditionModel(Employee.MGR_FK);
 		mgrConditionModel.setEqualValue(null);
 		mgrConditionModel.enabled().set(true);
 		tableModel.refresh();
-		assertEquals(1, tableModel.getRowCount());
+		assertEquals(1, tableModel.rowCount());
 		mgrConditionModel.enabled().set(false);
 		tableModel.refresh();
-		assertEquals(0, tableModel.getRowCount());
+		assertEquals(0, tableModel.rowCount());
 	}
 
 	@Test
