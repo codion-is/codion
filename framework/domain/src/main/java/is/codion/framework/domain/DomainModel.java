@@ -160,12 +160,12 @@ public abstract class DomainModel implements Domain {
 	}
 
 	/**
-	 * Specifies whether it should be possible to define foreign keys referencing entities that have
-	 * not been defined, this can be disabled in cases where entities have circular references.
-	 * @param strictForeignKeys true for strict foreign key validation
+	 * Specifies whether foreign keys are validated by asserting that the referenced entity has been defined.
+	 * Disable this validation in cases where entities have circular references.
+	 * @param validateForeignKeys true to enable foreign key validation, false to disable
 	 */
-	protected final void setStrictForeignKeys(boolean strictForeignKeys) {
-		entities.setStrictForeignKeysInternal(strictForeignKeys);
+	protected final void validateForeignKeys(boolean validateForeignKeys) {
+		entities.validateForeignKeysInternal(validateForeignKeys);
 	}
 
 	/**
@@ -254,8 +254,8 @@ public abstract class DomainModel implements Domain {
 			super.add(definition);
 		}
 
-		private void setStrictForeignKeysInternal(boolean strictForeignKeys) {
-			super.setStrictForeignKeys(strictForeignKeys);
+		private void validateForeignKeysInternal(boolean validateForeignKeys) {
+			super.validateForeignKeys(validateForeignKeys);
 		}
 	}
 

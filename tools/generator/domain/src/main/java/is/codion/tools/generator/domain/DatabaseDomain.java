@@ -54,7 +54,7 @@ public final class DatabaseDomain extends DomainModel {
 
 	private DatabaseDomain(Connection connection, String schemaName) throws SQLException {
 		super(domainType(schemaName));
-		setStrictForeignKeys(false);
+		validateForeignKeys(false);
 		new MetaDataModel(connection.getMetaData(), schemaName)
 						.schema().tables().values().forEach(this::defineEntity);
 	}

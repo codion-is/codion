@@ -9,6 +9,7 @@ Codion Change Log
 - ColumnConditionModel.Builder.operator() added for specifying the default condition operator.
 ### is.codion.framework.domain
 - DomainModel.add(EntityDefinition.Builder... builders) removed.
+- DomainModel, DefaultEntities.setStrictForeignKeys() renamed validateForeignKeys().
 ### is.codion.framework.model
 - ForeignKeyConditionModel now defaults to Operator.IN when available.
 - DefaultForeignKeyDetailModelLink.setForeignKeyCondition() now always uses Operator.IN.

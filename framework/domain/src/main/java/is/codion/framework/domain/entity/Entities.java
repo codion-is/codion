@@ -37,12 +37,12 @@ import java.util.List;
 public interface Entities {
 
 	/**
-	 * Specifies whether it should be possible to define foreign keys referencing entities that have
-	 * not been defined, this can be disabled in cases where entities have circular references.<br>
+	 * Specifies whether foreign keys are validated when defined by asserting that the referenced entity has been defined.
+	 * This can be disabled in cases where entities have circular references.<br>
 	 * Value type: Boolean<br>
 	 * Default value: true
 	 */
-	PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys", true);
+	PropertyValue<Boolean> VALIDATE_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.validateForeignKeys", true);
 
 	/**
 	 * Specifies whether strict deserialization should be used. This means that when an unknown attribute<br>

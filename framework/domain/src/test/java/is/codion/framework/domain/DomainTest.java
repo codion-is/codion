@@ -108,7 +108,7 @@ public class DomainTest {
 
 	@Test
 	void foreignKeyReferencingUndefinedEntityNonStrict() {
-		domain.setStrictForeignKeys(false);
+		domain.validateForeignKeys(false);
 		EntityType entityType = DOMAIN.entityType("test.entity");
 		Column<Integer> fkId = entityType.column("fk_id", Integer.class);
 		EntityType referencedEntityType = DOMAIN.entityType("test.referenced_entity");
@@ -121,7 +121,7 @@ public class DomainTest {
 														.foreignKey()
 														.caption("caption"))
 						.build());
-		domain.setStrictForeignKeys(true);
+		domain.validateForeignKeys(true);
 	}
 
 	@Test

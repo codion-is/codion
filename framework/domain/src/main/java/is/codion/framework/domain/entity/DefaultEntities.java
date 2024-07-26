@@ -47,7 +47,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	private final DomainType domainType;
 	private final Map<String, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
-	private transient boolean strictForeignKeys = STRICT_FOREIGN_KEYS.get();
+	private transient boolean validateForeignKeys = VALIDATE_FOREIGN_KEYS.get();
 
 	/**
 	 * Instantiates a new DefaultEntities for the given domainType
@@ -117,8 +117,8 @@ public abstract class DefaultEntities implements Entities, Serializable {
 		return getClass().getSimpleName() + ": " + domainType;
 	}
 
-	protected final void setStrictForeignKeys(boolean strictForeignKeys) {
-		this.strictForeignKeys = strictForeignKeys;
+	protected final void validateForeignKeys(boolean validateForeignKeys) {
+		this.validateForeignKeys = validateForeignKeys;
 	}
 
 	protected final void add(EntityDefinition definition) {
@@ -146,7 +146,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 			EntityType referencedType = foreignKey.referencedType();
 			EntityDefinition referencedEntity = referencedType.equals(entityType) ?
 							definition : entityDefinitions.get(referencedType.name());
-			if (referencedEntity == null && strictForeignKeys) {
+			if (referencedEntity == null && validateForeignKeys) {
 				throw new IllegalArgumentException("Entity '" + referencedType
 								+ "' referenced by entity '" + entityType + "' via foreign key '"
 								+ foreignKey + "' has not been defined");

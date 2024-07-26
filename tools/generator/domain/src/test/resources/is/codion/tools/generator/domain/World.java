@@ -20,7 +20,7 @@ public final class World extends DomainModel {
 
 	public World() {
 		super(DOMAIN);
-		setStrictForeignKeys(false);
+		validateForeignKeys(false);
 		add(countryCityV(), city(), country(),
 				countrylanguage());
 	}

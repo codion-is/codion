@@ -233,7 +233,7 @@ public final class DomainSource {
 						.addStatement("super(DOMAIN)");
 		StringBuilder addParameters;
 		if (cyclicalDependencies(definitionMethods.keySet())) {
-			constructorBuilder.addStatement("setStrictForeignKeys(false)");
+			constructorBuilder.addStatement("validateForeignKeys(false)");
 		}
 		addParameters = createAddParameters(new ArrayList<>(definitionMethods.values()));
 

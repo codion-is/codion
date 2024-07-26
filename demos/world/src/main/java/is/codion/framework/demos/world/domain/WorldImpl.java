@@ -55,8 +55,8 @@ public final class WorldImpl extends DomainModel {
 		//has not been defined, to prevent mistakes. But sometimes we have to
 		//deal with cyclical dependencies, such as here, where city references
 		//country and country references city. In these cases we can simply
-		//disable strict foreign keys.
-		setStrictForeignKeys(false);
+		//disable foreign key validation.
+		validateForeignKeys(false);
 
 		add(city(), country(), countryLanguage(), lookup(), continent());
 		add(Country.AVERAGE_CITY_POPULATION, new AverageCityPopulationFunction());

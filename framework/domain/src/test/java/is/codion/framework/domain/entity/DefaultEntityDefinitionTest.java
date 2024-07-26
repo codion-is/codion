@@ -268,14 +268,14 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				setStrictForeignKeys(false);
+				validateForeignKeys(false);
 				add(entityType.define(
 												integerColumn.define().primaryKey(),
 												foreignKey.define()
 																.foreignKey()
 																.caption("caption"))
 								.build());
-				setStrictForeignKeys(true);
+				validateForeignKeys(true);
 			}
 		}
 		new TestDomain();

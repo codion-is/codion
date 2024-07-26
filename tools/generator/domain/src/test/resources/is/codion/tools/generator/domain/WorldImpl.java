@@ -13,7 +13,7 @@ import is.codion.world.domain.World.Countrylanguage;
 public final class WorldImpl extends DomainModel {
 	public WorldImpl() {
 		super(DOMAIN);
-		setStrictForeignKeys(false);
+		validateForeignKeys(false);
 		add(countryCityV(), city(), country(),
 				countrylanguage());
 	}
