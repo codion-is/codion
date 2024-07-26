@@ -98,7 +98,8 @@ public final class ClientTutorial {
 															.caption("Albums"))
 							.keyGenerator(automatic("chinook.artist"))
 							.stringFactory(Artist.NAME)
-							.caption("Artists"));
+							.caption("Artists")
+							.build());
 
 			add(Album.TYPE.define(
 											Album.ID.define()
@@ -120,7 +121,8 @@ public final class ClientTutorial {
 											.text(" - ")
 											.value(Album.TITLE)
 											.build())
-							.caption("Albums"));
+							.caption("Albums")
+							.build());
 		}
 	}
 

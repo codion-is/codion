@@ -277,7 +277,7 @@ public interface ColumnConditionModel<C, T> {
 		Builder<C, T> operators(List<Operator> operators);
 
 		/**
-		 * @param operators the initial operator
+		 * @param operator the initial operator
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case the model operators don't contain the given operator
 		 * @see #operators(List)

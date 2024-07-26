@@ -68,7 +68,8 @@ public final class TestDomain extends DomainModel {
 														.maximumLength(13))
 						.smallDataset(true)
 						.stringFactory(Department.NAME)
-						.caption("Department"));
+						.caption("Department")
+						.build());
 	}
 
 	public interface Employee {
@@ -135,6 +136,7 @@ public final class TestDomain extends DomainModel {
 														.caption(Department.LOCATION.name()))
 						.stringFactory(Employee.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
-						.caption("Employee"));
+						.caption("Employee")
+						.build());
 	}
 }

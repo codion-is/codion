@@ -41,7 +41,6 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default {@link Domain} implementation. Extend to define a domain model.
  * @see #add(EntityDefinition...)
- * @see #add(EntityDefinition.Builder...)
  * @see #add(ReportType, Report)
  * @see #add(ProcedureType, DatabaseProcedure)
  * @see #add(FunctionType, DatabaseFunction)
@@ -109,24 +108,11 @@ public abstract class DomainModel implements Domain {
 	}
 
 	/**
-	 * Adds a new {@link EntityDefinition} to this domain model, by calling {@link EntityDefinition.Builder#build()}.
-	 * Note that any subsequent changes in the builder wont be reflected in the entity definition.
-	 * @param builders the builders which definitions to add
-	 * @throws IllegalArgumentException in case a entityType has already been used to define an entity
-	 * @throws IllegalArgumentException in case no attribute definitions are specified for an entity
-	 */
-	protected final void add(EntityDefinition.Builder... builders) {
-		Arrays.stream(requireNonNull(builders, "builders"))
-						.map(EntityDefinition.Builder::build)
-						.peek(this::validate)
-						.forEach(entities::addEntityDefinition);
-	}
-
-	/**
 	 * Adds a new {@link EntityDefinition} to this domain model.
 	 * @param definitions the definitions to add
 	 * @throws IllegalArgumentException in case a entityType has already been used to define an entity
 	 * @throws IllegalArgumentException in case no attribute definitions are specified for an entity
+	 * @throws IllegalArgumentException in case an entity definition is not associated with this domain
 	 */
 	protected final void add(EntityDefinition... definitions) {
 		Arrays.stream(requireNonNull(definitions, "definitions"))

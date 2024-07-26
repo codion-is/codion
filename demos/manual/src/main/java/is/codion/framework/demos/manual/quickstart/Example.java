@@ -75,7 +75,7 @@ public final class Example {
 			Column<String> LAST_NAME = TYPE.stringColumn("last_name");
 		}
 
-		EntityDefinition.Builder customer() {
+		EntityDefinition customer() {
 			return Customer.TYPE.define(
 											Customer.ID.define()
 															.primaryKey(),
@@ -94,7 +94,8 @@ public final class Example {
 											.value(Customer.LAST_NAME)
 											.text(", ")
 											.value(Customer.FIRST_NAME)
-											.build());
+											.build())
+						.build();
 		}
 
 		private static final class CustomerKeyGenerator implements KeyGenerator {
@@ -114,7 +115,7 @@ public final class Example {
 			Column<String> CITY = TYPE.stringColumn("city");
 		}
 
-		EntityDefinition.Builder address() {
+		EntityDefinition address() {
 			return Address.TYPE.define(
 											Address.ID.define()
 															.primaryKey(),
@@ -133,7 +134,8 @@ public final class Example {
 											.value(Address.STREET)
 											.text(", ")
 											.value(Address.CITY)
-											.build());
+											.build())
+						.build();
 		}
 
 		// end::address[]
@@ -149,7 +151,7 @@ public final class Example {
 			ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ID);
 		}
 
-		EntityDefinition.Builder customerAddress() {
+		EntityDefinition customerAddress() {
 			return CustomerAddress.TYPE.define(
 											CustomerAddress.ID.define()
 															.primaryKey(),
@@ -166,7 +168,8 @@ public final class Example {
 															.foreignKey()
 															.caption("Address"))
 							.keyGenerator(automatic("store.customer_address"))
-							.caption("Customer address");
+							.caption("Customer address")
+						.build();
 		}
 		// end::customerAddress[]
 	}

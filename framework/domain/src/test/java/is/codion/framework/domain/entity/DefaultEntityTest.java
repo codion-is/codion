@@ -1026,13 +1026,14 @@ public class DefaultEntityTest {
 			DerivedDomain() {
 				super(domainType);
 				add(type.define(
-								stringAttribute.define()
-												.attribute(),
-								derivedAttribute.define()
-												.derived(sourceValues ->
-																sourceValues.get(stringAttribute) + "-derived", stringAttribute),
-								derivedAttributeNoSource.define()
-												.derived(sourceValues -> UUID.randomUUID())));
+												stringAttribute.define()
+																.attribute(),
+												derivedAttribute.define()
+																.derived(sourceValues ->
+																				sourceValues.get(stringAttribute) + "-derived", stringAttribute),
+												derivedAttributeNoSource.define()
+																.derived(sourceValues -> UUID.randomUUID()))
+								.build());
 			}
 		}
 		Entity entity = new DerivedDomain().entities().entity(type);

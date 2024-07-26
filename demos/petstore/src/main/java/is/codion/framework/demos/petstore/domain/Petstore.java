@@ -54,7 +54,7 @@ public final class Petstore extends DomainModel {
 		Column<Double> LONGITUDE = TYPE.doubleColumn("Longitude");
 	}
 
-	EntityDefinition.Builder address() {
+	EntityDefinition address() {
 		return Address.TYPE.define(
 										Address.ID.define()
 														.primaryKey()
@@ -109,7 +109,8 @@ public final class Petstore extends DomainModel {
 										.value(Address.ZIP).text(", ")
 										.value(Address.STATE)
 										.build())
-						.caption("Addresses");
+						.caption("Addresses")
+						.build();
 	}
 
 	public interface Category {
@@ -121,7 +122,7 @@ public final class Petstore extends DomainModel {
 		Column<String> IMAGE_URL = TYPE.stringColumn("Image URL");
 	}
 
-	EntityDefinition.Builder category() {
+	EntityDefinition category() {
 		return Category.TYPE.define(
 										Category.ID.define()
 														.primaryKey()
@@ -147,7 +148,8 @@ public final class Petstore extends DomainModel {
 						.keyGenerator(sequence("petstore.category_seq"))
 						.orderBy(ascending(Category.NAME))
 						.stringFactory(Category.NAME)
-						.caption("Categories");
+						.caption("Categories")
+						.build();
 	}
 
 	public interface Product {
@@ -162,7 +164,7 @@ public final class Petstore extends DomainModel {
 		ForeignKey CATEGORY_FK = TYPE.foreignKey("Category", CATEGORY_ID, Category.ID);
 	}
 
-	EntityDefinition.Builder product() {
+	EntityDefinition product() {
 		return Product.TYPE.define(
 										Product.ID.define()
 														.primaryKey()
@@ -200,7 +202,8 @@ public final class Petstore extends DomainModel {
 										.text(" - ")
 										.value(Product.NAME)
 										.build())
-						.caption("Products");
+						.caption("Products")
+						.build();
 	}
 
 	public interface SellerContactInfo {
@@ -212,7 +215,7 @@ public final class Petstore extends DomainModel {
 		Column<String> EMAIL = TYPE.stringColumn("Email");
 	}
 
-	EntityDefinition.Builder sellerContactInfo() {
+	EntityDefinition sellerContactInfo() {
 		return SellerContactInfo.TYPE.define(
 										SellerContactInfo.ID.define()
 														.primaryKey()
@@ -245,7 +248,8 @@ public final class Petstore extends DomainModel {
 										.text(", ")
 										.value(SellerContactInfo.FIRST_NAME)
 										.build())
-						.caption("Seller info");
+						.caption("Seller info")
+						.build();
 	}
 
 	public interface Item {
@@ -267,7 +271,7 @@ public final class Petstore extends DomainModel {
 		ForeignKey ADDRESS_FK = TYPE.foreignKey("Address", ADDRESS_ID, Address.ID);
 	}
 
-	EntityDefinition.Builder item() {
+	EntityDefinition item() {
 		return Item.TYPE.define(
 										Item.ID.define()
 														.primaryKey()
@@ -337,7 +341,8 @@ public final class Petstore extends DomainModel {
 										.text(" - ")
 										.value(Item.NAME)
 										.build())
-						.caption("Items");
+						.caption("Items")
+						.build();
 	}
 
 	public interface Tag {
@@ -348,7 +353,7 @@ public final class Petstore extends DomainModel {
 		Column<Integer> REFCOUNT = TYPE.integerColumn("Reference count");
 	}
 
-	EntityDefinition.Builder tag() {
+	EntityDefinition tag() {
 		return Tag.TYPE.define(
 										Tag.ID.define()
 														.primaryKey()
@@ -368,7 +373,8 @@ public final class Petstore extends DomainModel {
 						.orderBy(ascending(Tag.TAG))
 						.selectTableName("petstore.tag tag")
 						.stringFactory(Tag.TAG)
-						.caption("Tags");
+						.caption("Tags")
+						.build();
 	}
 
 	public interface TagItem {
@@ -381,7 +387,7 @@ public final class Petstore extends DomainModel {
 		ForeignKey TAG_FK = TYPE.foreignKey("Tag", TAG_ID, Tag.ID);
 	}
 
-	EntityDefinition.Builder tagItem() {
+	EntityDefinition tagItem() {
 		return TagItem.TYPE.define(
 										TagItem.ITEM_ID.define()
 														.primaryKey(0)
@@ -401,6 +407,7 @@ public final class Petstore extends DomainModel {
 										.text(" - ")
 										.value(TagItem.TAG_FK)
 										.build())
-						.caption("Item tags");
+						.caption("Item tags")
+						.build();
 	}
 }

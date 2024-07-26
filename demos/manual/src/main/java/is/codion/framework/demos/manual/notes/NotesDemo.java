@@ -117,7 +117,8 @@ public final class NotesDemo {
 															.caption("Updated"))
 							.keyGenerator(KeyGenerator.identity())
 							.orderBy(OrderBy.descending(Note.CREATED))
-							.caption("Notes"));
+							.caption("Notes")
+							.build());
 		}
 	}
 

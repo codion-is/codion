@@ -111,7 +111,7 @@ public final class DatabaseDomain extends DomainModel {
 				entityDefinitionBuilder.description(table.comment());
 			}
 			entityDefinitionBuilder.readOnly("view".equalsIgnoreCase(table.tableType()));
-			add(entityDefinitionBuilder);
+			add(entityDefinitionBuilder.build());
 		}
 	}
 

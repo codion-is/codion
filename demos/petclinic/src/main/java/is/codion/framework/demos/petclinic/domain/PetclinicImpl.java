@@ -45,7 +45,7 @@ public final class PetclinicImpl extends DomainModel {
 		add(vet(), specialty(), vetSpecialty(), petType(), owner(), pet(), visit());
 	}
 
-	private EntityDefinition.Builder vet() {
+	private EntityDefinition vet() {
 		return Vet.TYPE.define(
 										Vet.ID.define()
 														.primaryKey(),
@@ -69,10 +69,11 @@ public final class PetclinicImpl extends DomainModel {
 										.value(Vet.FIRST_NAME)
 										.build())
 						.orderBy(ascending(Vet.LAST_NAME, Vet.FIRST_NAME))
-						.smallDataset(true);
+						.smallDataset(true)
+						.build();
 	}
 
-	private EntityDefinition.Builder specialty() {
+	private EntityDefinition specialty() {
 		return Specialty.TYPE.define(
 										Specialty.ID.define()
 														.primaryKey(),
@@ -85,10 +86,11 @@ public final class PetclinicImpl extends DomainModel {
 						.keyGenerator(identity())
 						.caption("Specialties")
 						.stringFactory(Specialty.NAME)
-						.smallDataset(true);
+						.smallDataset(true)
+						.build();
 	}
 
-	private EntityDefinition.Builder vetSpecialty() {
+	private EntityDefinition vetSpecialty() {
 		return VetSpecialty.TYPE.define(
 										VetSpecialty.VET.define()
 														.primaryKey(0)
@@ -107,10 +109,11 @@ public final class PetclinicImpl extends DomainModel {
 										.value(VetSpecialty.VET_FK)
 										.text(" - ")
 										.value(VetSpecialty.SPECIALTY_FK)
-										.build());
+										.build())
+						.build();
 	}
 
-	private EntityDefinition.Builder petType() {
+	private EntityDefinition petType() {
 		return PetType.TYPE.define(
 										PetType.ID.define()
 														.primaryKey(),
@@ -124,10 +127,11 @@ public final class PetclinicImpl extends DomainModel {
 						.caption("Pet types")
 						.stringFactory(PetType.NAME)
 						.orderBy(ascending(PetType.NAME))
-						.smallDataset(true);
+						.smallDataset(true)
+						.build();
 	}
 
-	private EntityDefinition.Builder owner() {
+	private EntityDefinition owner() {
 		return Owner.TYPE.define(
 										Owner.ID.define()
 														.primaryKey(),
@@ -168,7 +172,8 @@ public final class PetclinicImpl extends DomainModel {
 										.text(", ")
 										.value(Owner.FIRST_NAME)
 										.build())
-						.orderBy(ascending(Owner.LAST_NAME, Owner.FIRST_NAME));
+						.orderBy(ascending(Owner.LAST_NAME, Owner.FIRST_NAME))
+						.build();
 	}
 
 	private static final class PhoneTypeConverter implements Converter<PhoneType, String> {
@@ -184,7 +189,7 @@ public final class PetclinicImpl extends DomainModel {
 		}
 	}
 
-	private EntityDefinition.Builder pet() {
+	private EntityDefinition pet() {
 		return Pet.TYPE.define(
 										Pet.ID.define()
 														.primaryKey(),
@@ -213,10 +218,11 @@ public final class PetclinicImpl extends DomainModel {
 						.keyGenerator(identity())
 						.caption("Pets")
 						.stringFactory(Pet.NAME)
-						.orderBy(ascending(Pet.NAME));
+						.orderBy(ascending(Pet.NAME))
+						.build();
 	}
 
-	private EntityDefinition.Builder visit() {
+	private EntityDefinition visit() {
 		return Visit.TYPE.define(
 										Visit.ID.define()
 														.primaryKey(),
@@ -239,6 +245,7 @@ public final class PetclinicImpl extends DomainModel {
 										.ascending(Visit.PET_ID)
 										.descending(Visit.VISIT_DATE)
 										.build())
-						.caption("Visits");
+						.caption("Visits")
+						.build();
 	}
 }

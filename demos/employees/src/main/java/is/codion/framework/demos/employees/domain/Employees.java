@@ -101,7 +101,7 @@ public final class Employees extends DomainModel {
 	// end::constructor[]
 
 	// tag::defineDepartment[]
-	EntityDefinition.Builder department() {
+	EntityDefinition department() {
 		// Defining the entity Department.TYPE
 		return Department.TYPE.define(
 										Department.DEPARTMENT_NO.define()
@@ -120,12 +120,13 @@ public final class Employees extends DomainModel {
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
 						.stringFactory(Department.NAME)
-						.caption("Department");
+						.caption("Department")
+						.build();
 	}
 	// end::defineDepartment[]
 
 	// tag::defineEmployee[]
-	EntityDefinition.Builder employee() {
+	EntityDefinition employee() {
 		// Defining the entity Employee.TYPE
 		return Employee.TYPE.define(
 										Employee.ID.define()
@@ -190,7 +191,8 @@ public final class Employees extends DomainModel {
 							}
 
 							return null;
-						});
+						})
+						.build();
 	}
 }
 // end::defineEmployee[]

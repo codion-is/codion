@@ -79,12 +79,13 @@ public final class TestDomain extends DomainModel {
 
 	void compositeMaster() {
 		add(CompositeMaster.TYPE.define(
-						CompositeMaster.COMPOSITE_MASTER_ID.define()
-										.primaryKey(0).nullable(true),
-						CompositeMaster.COMPOSITE_MASTER_ID_2.define()
-										.primaryKey(1),
-						CompositeMaster.COMPOSITE_MASTER_ID_3.define()
-										.primaryKey(2)));
+										CompositeMaster.COMPOSITE_MASTER_ID.define()
+														.primaryKey(0).nullable(true),
+										CompositeMaster.COMPOSITE_MASTER_ID_2.define()
+														.primaryKey(1),
+										CompositeMaster.COMPOSITE_MASTER_ID_3.define()
+														.primaryKey(2))
+						.build());
 	}
 
 	public interface CompositeDetail {
@@ -101,16 +102,17 @@ public final class TestDomain extends DomainModel {
 
 	void compositeDetail() {
 		add(CompositeDetail.TYPE.define(
-						CompositeDetail.COMPOSITE_DETAIL_MASTER_ID.define()
-										.primaryKey(0),
-						CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2.define()
-										.primaryKey(1),
-						CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3.define()
-										.primaryKey(2),
-						CompositeDetail.COMPOSITE_DETAIL_MASTER_FK.define()
-										.foreignKey()
-										.caption("master")
-										.readOnly(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3)));
+										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID.define()
+														.primaryKey(0),
+										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2.define()
+														.primaryKey(1),
+										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3.define()
+														.primaryKey(2),
+										CompositeDetail.COMPOSITE_DETAIL_MASTER_FK.define()
+														.foreignKey()
+														.caption("master")
+														.readOnly(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3))
+						.build());
 	}
 
 	public interface Super {
@@ -120,7 +122,7 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void superEntity() {
-		add(Super.TYPE.define(Super.ID.define().primaryKey()));
+		add(Super.TYPE.define(Super.ID.define().primaryKey()).build());
 	}
 
 	public interface Master {
@@ -143,7 +145,8 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.readOnly(true))
 						.comparator(new MasterComparator())
-						.stringFactory(Master.NAME));
+						.stringFactory(Master.NAME)
+						.build());
 	}
 
 	public interface Master2 {
@@ -168,7 +171,8 @@ public final class TestDomain extends DomainModel {
 										Master2.NAME.define().column(),
 										Master2.CODE.define().column())
 						.comparator(Comparator.comparing(o -> o.get(Master2.CODE)))
-						.stringFactory(Master2.NAME));
+						.stringFactory(Master2.NAME)
+						.build());
 	}
 
 	public interface Detail2 {
@@ -262,7 +266,8 @@ public final class TestDomain extends DomainModel {
 						.selectTableName(DETAIL_SELECT_TABLE_NAME.name())
 						.orderBy(ascending(Detail2.STRING))
 						.smallDataset(true)
-						.stringFactory(Detail2.STRING));
+						.stringFactory(Detail2.STRING)
+						.build());
 	}
 
 	private static final class MasterComparator implements Comparator<Entity>, Serializable {
@@ -372,7 +377,8 @@ public final class TestDomain extends DomainModel {
 						.orderBy(ascending(Detail.STRING))
 						.selectTableName(DETAIL_SELECT_TABLE_NAME.name())
 						.smallDataset(true)
-						.stringFactory(Detail.STRING));
+						.stringFactory(Detail.STRING)
+						.build());
 	}
 
 	public interface Department {
@@ -424,7 +430,8 @@ public final class TestDomain extends DomainModel {
 							return builder.append(")").toString();
 						})
 						.condition(Department.NAME_NOT_NULL_CONDITION, (columns, values) -> "department name is not null")
-						.caption("Department"));
+						.caption("Department")
+						.build());
 	}
 
 	public interface Employee {
@@ -509,7 +516,8 @@ public final class TestDomain extends DomainModel {
 						.selectQuery(SelectQuery.builder()
 										.build())
 						.condition(Employee.CONDITION, (columns, values) -> "")
-						.caption("Employee"));
+						.caption("Employee")
+						.build());
 	}
 
 	private static final class DepartmentNameProvider implements DerivedAttribute.Provider<String>, Serializable {
@@ -537,13 +545,14 @@ public final class TestDomain extends DomainModel {
 
 	void keyTest() {
 		add(KeyTest.TYPE.define(
-						KeyTest.ID1.define()
-										.primaryKey(0),
-						KeyTest.ID2.define()
-										.primaryKey(1),
-						KeyTest.ID3.define()
-										.primaryKey(2)
-										.nullable(true)));
+										KeyTest.ID1.define()
+														.primaryKey(0),
+										KeyTest.ID2.define()
+														.primaryKey(1),
+										KeyTest.ID3.define()
+														.primaryKey(2)
+														.nullable(true))
+						.build());
 	}
 
 	public interface NoPk {
@@ -555,12 +564,13 @@ public final class TestDomain extends DomainModel {
 
 	void noPKEntity() {
 		add(NoPk.TYPE.define(
-						NoPk.COL1.define()
-										.column(),
-						NoPk.COL2.define()
-										.column(),
-						NoPk.COL3.define()
-										.column()));
+										NoPk.COL1.define()
+														.column(),
+										NoPk.COL2.define()
+														.column(),
+										NoPk.COL3.define()
+														.column())
+						.build());
 	}
 
 	public interface TransModifies {
@@ -572,10 +582,11 @@ public final class TestDomain extends DomainModel {
 
 	void transientModifies() {
 		add(TransModifies.TYPE.define(
-						TransModifies.ID.define()
-										.primaryKey(),
-						TransModifies.TRANS.define()
-										.attribute()));
+										TransModifies.ID.define()
+														.primaryKey(),
+										TransModifies.TRANS.define()
+														.attribute())
+						.build());
 	}
 
 	public interface TransModifiesNot {
@@ -587,11 +598,12 @@ public final class TestDomain extends DomainModel {
 
 	void transientModifiesNot() {
 		add(TransModifiesNot.TYPE.define(
-						TransModifiesNot.ID.define()
-										.primaryKey(),
-						TransModifiesNot.TRANS.define()
-										.attribute()
-										.modifiesEntity(false)));
+										TransModifiesNot.ID.define()
+														.primaryKey(),
+										TransModifiesNot.TRANS.define()
+														.attribute()
+														.modifiesEntity(false))
+						.build());
 	}
 
 	public interface NullString {
@@ -610,7 +622,8 @@ public final class TestDomain extends DomainModel {
 														.column(),
 										NullString.ATTR2.define()
 														.column())
-						.stringFactory(entity -> null));
+						.stringFactory(entity -> null)
+						.build());
 	}
 
 	public interface InvalidDerived {
@@ -630,7 +643,8 @@ public final class TestDomain extends DomainModel {
 										InvalidDerived.INVALID_DERIVED.define()
 														.derived(sourceValues -> sourceValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
 						.caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
-						.stringFactory(entity -> null));
+						.stringFactory(entity -> null)
+						.build());
 	}
 
 	public interface ForeignKeyLazyColumn {
@@ -644,12 +658,13 @@ public final class TestDomain extends DomainModel {
 
 	void foreignKeyLazyColumn() {
 		add(ForeignKeyLazyColumn.TYPE.define(
-						ForeignKeyLazyColumn.ID.define()
-										.primaryKey(),
-						ForeignKeyLazyColumn.DEPARTMENT_ID.define()
-										.column()
-										.lazy(true),
-						ForeignKeyLazyColumn.DEPARTMENT_FK.define()
-										.foreignKey()));
+										ForeignKeyLazyColumn.ID.define()
+														.primaryKey(),
+										ForeignKeyLazyColumn.DEPARTMENT_ID.define()
+														.column()
+														.lazy(true),
+										ForeignKeyLazyColumn.DEPARTMENT_FK.define()
+														.foreignKey())
+						.build());
 	}
 }

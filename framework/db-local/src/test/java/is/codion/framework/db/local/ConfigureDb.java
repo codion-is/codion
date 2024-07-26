@@ -43,8 +43,8 @@ final class ConfigureDb extends DomainModel {
 		Column<Integer> ID = TYPE.integerColumn("id");
 	}
 
-	EntityDefinition.Builder configured() {
-		return Configured.TYPE.define(Configured.ID.define().primaryKey());
+	EntityDefinition configured() {
+		return Configured.TYPE.define(Configured.ID.define().primaryKey()).build();
 	}
 
 	@Override

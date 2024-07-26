@@ -107,7 +107,8 @@ public final class EmployeesMinimalApp {
 															.caption("Department location")
 															.maximumLength(13))
 							.caption("Departments")
-							.stringFactory(Department.NAME));
+							.stringFactory(Department.NAME)
+							.build());
 			/*
 			 * We then define the entity based on the EMPLOYEES.EMPLOYEE table,
 			 * note the foreign keys, referencing the
@@ -154,7 +155,8 @@ public final class EmployeesMinimalApp {
 															.nullable(false))
 							.keyGenerator(KeyGenerator.sequence("employees.emp_seq"))
 							.caption("Employees")
-							.stringFactory(Employee.NAME));
+							.stringFactory(Employee.NAME)
+							.build());
 		}
 	}
 

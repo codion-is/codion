@@ -80,7 +80,8 @@ public final class TestDomain extends DomainModel {
 														.column(),
 										TestEntity.ENTITY.define()
 														.attribute())
-						.condition(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2"));
+						.condition(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2")
+						.build());
 	}
 
 	public interface Department {
@@ -107,7 +108,8 @@ public final class TestDomain extends DomainModel {
 										Department.LOGO.define()
 														.column())
 						.smallDataset(true)
-						.caption("Department"));
+						.caption("Department")
+						.build());
 	}
 
 	public interface Employee {
@@ -158,6 +160,7 @@ public final class TestDomain extends DomainModel {
 														.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION))
 						.stringFactory(Employee.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
-						.caption("Employee"));
+						.caption("Employee")
+						.build());
 	}
 }

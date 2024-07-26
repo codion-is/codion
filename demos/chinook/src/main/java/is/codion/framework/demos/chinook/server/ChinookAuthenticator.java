@@ -139,7 +139,8 @@ public final class ChinookAuthenticator implements Authenticator {
 															.column(),
 											User.PASSWORD_HASH.define()
 															.column())
-							.readOnly(true));
+							.readOnly(true)
+							.build());
 		}
 	}
 }

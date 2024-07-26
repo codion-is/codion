@@ -57,10 +57,11 @@ public final class TestDomainExtended extends DomainModel {
 
 	void extended() {
 		add(T_EXTENDED.define(
-						EXTENDED_ID.define().primaryKey(),
-						EXTENDED_NAME.define().column(),
-						EXTENDED_DEPT_ID.define().column(),
-						EXTENDED_DEPT_FK.define().foreignKey()));
+										EXTENDED_ID.define().primaryKey(),
+										EXTENDED_NAME.define().column(),
+										EXTENDED_DEPT_ID.define().column(),
+										EXTENDED_DEPT_FK.define().foreignKey())
+						.build());
 	}
 
 	void procedure() {
@@ -101,8 +102,9 @@ public final class TestDomainExtended extends DomainModel {
 
 		void extendedSecond() {
 			add(T_SECOND_EXTENDED.define(
-							EXTENDED_ID.define().primaryKey(),
-							EXTENDED_NAME.define().column()));
+											EXTENDED_ID.define().primaryKey(),
+											EXTENDED_NAME.define().column())
+							.build());
 		}
 	}
 
@@ -122,8 +124,9 @@ public final class TestDomainExtended extends DomainModel {
 
 		void extendedThird() {
 			add(T_THIRD_EXTENDED.define(
-							EXTENDED_ID.define().primaryKey(),
-							EXTENDED_NAME.define().column()));
+											EXTENDED_ID.define().primaryKey(),
+											EXTENDED_NAME.define().column())
+							.build());
 		}
 	}
 }

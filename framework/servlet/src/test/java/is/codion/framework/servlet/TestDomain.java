@@ -79,7 +79,8 @@ public final class TestDomain extends DomainModel {
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
 						.stringFactory(Department.NAME)
-						.caption("Department"));
+						.caption("Department")
+						.build());
 	}
 
 	public interface Employee {
@@ -152,7 +153,8 @@ public final class TestDomain extends DomainModel {
 						.stringFactory(Employee.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
-						.caption("Employee"));
+						.caption("Employee")
+						.build());
 	}
 
 	public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");

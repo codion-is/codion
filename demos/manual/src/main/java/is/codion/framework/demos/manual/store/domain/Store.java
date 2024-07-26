@@ -85,7 +85,7 @@ public final class Store extends DomainModel {
 		add(customer(), address(), customerAddress());
 	}
 
-	private EntityDefinition.Builder customer() {
+	private EntityDefinition customer() {
 		// tag::customer[]
 		return Customer.TYPE.define(
 										Customer.ID.define()
@@ -112,11 +112,12 @@ public final class Store extends DomainModel {
 						// tag::customerStringFactory[]
 						.stringFactory(new CustomerToString())
 						// end::customerStringFactory[]
-						.caption("Customer");
+						.caption("Customer")
+						.build();
 		// end::customer[]
 	}
 
-	private EntityDefinition.Builder address() {
+	private EntityDefinition address() {
 		// tag::address[]
 		return Address.TYPE.define(
 										Address.ID.define()
@@ -144,11 +145,12 @@ public final class Store extends DomainModel {
 										.build())
 						.keyGenerator(identity())
 						.smallDataset(true)
-						.caption("Address");
+						.caption("Address")
+						.build();
 		// end::address[]
 	}
 
-	private EntityDefinition.Builder customerAddress() {
+	private EntityDefinition customerAddress() {
 		// tag::customerAddress[]
 		return CustomerAddress.TYPE.define(
 										CustomerAddress.ID.define()
@@ -166,7 +168,8 @@ public final class Store extends DomainModel {
 														.foreignKey()
 														.caption("Address"))
 						.keyGenerator(identity())
-						.caption("Customer address");
+						.caption("Customer address")
+						.build();
 		// end::customerAddress[]
 	}
 

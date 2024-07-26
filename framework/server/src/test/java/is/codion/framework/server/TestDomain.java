@@ -75,7 +75,8 @@ public final class TestDomain extends DomainModel {
 														.maximumLength(13))
 						.smallDataset(true)
 						.stringFactory(Department.NAME)
-						.caption("Department"));
+						.caption("Department")
+						.build());
 
 		add(Department.PROC, (connection, argument) -> {});
 	}
@@ -149,7 +150,8 @@ public final class TestDomain extends DomainModel {
 						.stringFactory(Employee.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.condition(Employee.MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")
-						.caption("Employee"));
+						.caption("Employee")
+						.build());
 
 		add(Employee.EMP_REPORT, new AbstractReport<Object, Object, Object>("path", true) {
 			@Override

@@ -67,7 +67,7 @@ class ManualDomainModel {
 			add(city(), customer());
 		}
 
-		EntityDefinition.Builder city() {
+		EntityDefinition city() {
 			return City.TYPE.define(
 											City.ID.define()
 															.primaryKey(),
@@ -76,10 +76,11 @@ class ManualDomainModel {
 															.caption("Name")
 															.nullable(false))
 							.keyGenerator(KeyGenerator.identity())
-							.caption("Cities");
+							.caption("Cities")
+							.build();
 		}
 
-		EntityDefinition.Builder customer() {
+		EntityDefinition customer() {
 			return Customer.TYPE.define(
 											Customer.ID.define()
 															.primaryKey(),
@@ -93,7 +94,8 @@ class ManualDomainModel {
 															.foreignKey()
 															.caption("City"))
 							.keyGenerator(KeyGenerator.identity())
-							.caption("Customers");
+							.caption("Customers")
+							.build();
 		}
 	}
 	// end::storeImpl[]

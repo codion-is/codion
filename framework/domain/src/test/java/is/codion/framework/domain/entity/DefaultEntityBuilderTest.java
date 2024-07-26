@@ -89,7 +89,8 @@ public final class DefaultEntityBuilderTest {
 
 																	return sourceValue == null ? null : sourceValue + 1;
 																}, value))
-								.tableName("tableName"));
+								.tableName("tableName")
+								.build());
 			}
 		}
 		Entities entities = new TestDomain().entities();

@@ -42,9 +42,10 @@ public class DomainTest {
 		assertThrows(IllegalArgumentException.class, () -> {
 			EntityType entityType = DOMAIN.entityType("keyWithSameIndex");
 			domain.add(entityType.define(
-							entityType.column("1", Integer.class).define().primaryKey(0),
-							entityType.column("2", Integer.class).define().primaryKey(1),
-							entityType.column("3", Integer.class).define().primaryKey(1)));
+											entityType.column("1", Integer.class).define().primaryKey(0),
+											entityType.column("2", Integer.class).define().primaryKey(1),
+											entityType.column("3", Integer.class).define().primaryKey(1))
+							.build());
 		});
 	}
 
@@ -53,9 +54,10 @@ public class DomainTest {
 		assertThrows(IllegalArgumentException.class, () -> {
 			EntityType entityType = DOMAIN.entityType("keyWithSameIndex2");
 			domain.add(entityType.define(
-							entityType.column("1", Integer.class).define().primaryKey(),
-							entityType.column("2", Integer.class).define().primaryKey(),
-							entityType.column("3", Integer.class).define().primaryKey()));
+											entityType.column("1", Integer.class).define().primaryKey(),
+											entityType.column("2", Integer.class).define().primaryKey(),
+											entityType.column("3", Integer.class).define().primaryKey())
+							.build());
 		});
 	}
 
@@ -63,8 +65,8 @@ public class DomainTest {
 	void redefine() {
 		EntityType entityType = DOMAIN.entityType("redefine");
 		Column<Integer> column = entityType.integerColumn("column");
-		domain.add(entityType.define(column.define().primaryKey()));
-		assertThrows(IllegalArgumentException.class, () -> domain.add(entityType.define(column.define().primaryKey())));
+		domain.add(entityType.define(column.define().primaryKey()).build());
+		assertThrows(IllegalArgumentException.class, () -> domain.add(entityType.define(column.define().primaryKey()).build()));
 	}
 
 	@Test
@@ -75,14 +77,15 @@ public class DomainTest {
 		Column<Integer> refId = referencedEntityType.column("id", Integer.class);
 		Column<Integer> refIdNotPartOfEntity = referencedEntityType.column("id_none", Integer.class);
 		ForeignKey foreignKey = entityType.foreignKey("fk_id_fk", fkId, refIdNotPartOfEntity);
-		domain.add(referencedEntityType.define(refId.define().primaryKey()));
+		domain.add(referencedEntityType.define(refId.define().primaryKey()).build());
 
 		assertThrows(IllegalArgumentException.class, () -> domain.add(entityType.define(
-						entityType.column("id", Integer.class).define().primaryKey(),
-						fkId.define().column(),
-						foreignKey.define()
-										.foreignKey()
-										.caption("caption"))));
+										entityType.column("id", Integer.class).define().primaryKey(),
+										fkId.define().column(),
+										foreignKey.define()
+														.foreignKey()
+														.caption("caption"))
+						.build()));
 	}
 
 	@Test
@@ -94,11 +97,12 @@ public class DomainTest {
 			Column<Integer> refId = referencedEntityType.column("id", Integer.class);
 			ForeignKey foreignKey = entityType.foreignKey("fk_id_fk", fkId, refId);
 			domain.add(entityType.define(
-							entityType.column("id", Integer.class).define().primaryKey(),
-							fkId.define().column(),
-							foreignKey.define()
-											.foreignKey()
-											.caption("caption")));
+											entityType.column("id", Integer.class).define().primaryKey(),
+											fkId.define().column(),
+											foreignKey.define()
+															.foreignKey()
+															.caption("caption"))
+							.build());
 		});
 	}
 
@@ -111,11 +115,12 @@ public class DomainTest {
 		Column<Integer> refId = referencedEntityType.column("id", Integer.class);
 		ForeignKey foreignKey = entityType.foreignKey("fk_id_fk", fkId, refId);
 		domain.add(entityType.define(
-						entityType.column("id", Integer.class).define().primaryKey(),
-						fkId.define().column(),
-						foreignKey.define()
-										.foreignKey()
-										.caption("caption")));
+										entityType.column("id", Integer.class).define().primaryKey(),
+										fkId.define().column(),
+										foreignKey.define()
+														.foreignKey()
+														.caption("caption"))
+						.build());
 		domain.setStrictForeignKeys(true);
 	}
 
@@ -152,17 +157,20 @@ public class DomainTest {
 		EntityType nullConditionProvider1 = DOMAIN.entityType("nullConditionProvider1");
 		assertThrows(NullPointerException.class, () ->
 						domain.add(nullConditionProvider1.define(nullConditionProvider1.integerColumn("id").define().primaryKey())
-										.condition(null, (columns, values) -> null)));
+										.condition(null, (columns, values) -> null)
+										.build()));
 		EntityType nullConditionProvider2 = DOMAIN.entityType("nullConditionProvider2");
 		assertThrows(NullPointerException.class, () ->
 						domain.add(nullConditionProvider2.define(nullConditionProvider2.integerColumn("id").define().primaryKey())
-										.condition(nullConditionProvider2.conditionType("id"), null)));
+										.condition(nullConditionProvider2.conditionType("id"), null)
+										.build()));
 		EntityType nullConditionProvider3 = DOMAIN.entityType("nullConditionProvider3");
 		ConditionType nullConditionType = nullConditionProvider3.conditionType("id");
 		assertThrows(IllegalStateException.class, () ->
 						domain.add(nullConditionProvider3.define(nullConditionProvider3.integerColumn("id").define().primaryKey())
 										.condition(nullConditionType, (columns, values) -> null)
-										.condition(nullConditionType, (columns, values) -> null)));
+										.condition(nullConditionType, (columns, values) -> null)
+										.build()));
 	}
 
 	@Test

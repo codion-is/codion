@@ -41,15 +41,16 @@ class ForeignKeyDomain extends DomainModel {
 		Column<String> NAME = TYPE.stringColumn("name");
 	}
 
-	EntityDefinition.Builder species() {
+	EntityDefinition species() {
 		return Species.TYPE.define(
-						Species.NO.define()
-										.primaryKey()
-										.caption("Number"),
-						Species.NAME.define()
-										.column()
-										.caption("Name")
-										.maximumLength(50));
+										Species.NO.define()
+														.primaryKey()
+														.caption("Number"),
+										Species.NAME.define()
+														.column()
+														.caption("Name")
+														.maximumLength(50))
+						.build();
 	}
 
 	public interface Maturity {
@@ -59,14 +60,15 @@ class ForeignKeyDomain extends DomainModel {
 		ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", Maturity.SPECIES_NO, Species.NO);
 	}
 
-	EntityDefinition.Builder maturity() {
+	EntityDefinition maturity() {
 		return Maturity.TYPE.define(
-						Maturity.NO.define()
-										.primaryKey(0),
-						Maturity.SPECIES_NO.define()
-										.primaryKey(1),
-						Maturity.SPECIES_FK.define()
-										.foreignKey());
+										Maturity.NO.define()
+														.primaryKey(0),
+										Maturity.SPECIES_NO.define()
+														.primaryKey(1),
+										Maturity.SPECIES_FK.define()
+														.foreignKey())
+						.build();
 	}
 
 	public interface OtolithCategory {
@@ -76,14 +78,15 @@ class ForeignKeyDomain extends DomainModel {
 		ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", OtolithCategory.SPECIES_NO, Species.NO);
 	}
 
-	EntityDefinition.Builder otolithCategory() {
+	EntityDefinition otolithCategory() {
 		return OtolithCategory.TYPE.define(
-						OtolithCategory.NO.define()
-										.primaryKey(0),
-						OtolithCategory.SPECIES_NO.define()
-										.primaryKey(1),
-						OtolithCategory.SPECIES_FK.define()
-										.foreignKey());
+										OtolithCategory.NO.define()
+														.primaryKey(0),
+										OtolithCategory.SPECIES_NO.define()
+														.primaryKey(1),
+										OtolithCategory.SPECIES_FK.define()
+														.foreignKey())
+						.build();
 	}
 
 	public interface Otolith {
@@ -101,25 +104,26 @@ class ForeignKeyDomain extends DomainModel {
 						Otolith.SPECIES_NO, OtolithCategory.SPECIES_NO);
 	}
 
-	EntityDefinition.Builder otolith() {
+	EntityDefinition otolith() {
 		return Otolith.TYPE.define(
-						Otolith.STATION_ID.define()
-										.primaryKey(0),
-						Otolith.SPECIES_NO.define()
-										.primaryKey(1)
-										.updatable(true)
-										.nullable(false),
-						Otolith.SPECIES_FK.define()
-										.foreignKey(),
-						Otolith.MATURITY_NO.define()
-										.column(),
-						Otolith.MATURITY_FK.define()
-										.foreignKey()
-										.readOnly(Otolith.SPECIES_NO),
-						Otolith.OTOLITH_CATEGORY_NO.define()
-										.column(),
-						Otolith.OTOLITH_CATEGORY_FK.define()
-										.foreignKey()
-										.readOnly(Otolith.SPECIES_NO));
+										Otolith.STATION_ID.define()
+														.primaryKey(0),
+										Otolith.SPECIES_NO.define()
+														.primaryKey(1)
+														.updatable(true)
+														.nullable(false),
+										Otolith.SPECIES_FK.define()
+														.foreignKey(),
+										Otolith.MATURITY_NO.define()
+														.column(),
+										Otolith.MATURITY_FK.define()
+														.foreignKey()
+														.readOnly(Otolith.SPECIES_NO),
+										Otolith.OTOLITH_CATEGORY_NO.define()
+														.column(),
+										Otolith.OTOLITH_CATEGORY_FK.define()
+														.foreignKey()
+														.readOnly(Otolith.SPECIES_NO))
+						.build();
 	}
 }

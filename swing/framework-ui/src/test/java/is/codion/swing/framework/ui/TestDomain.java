@@ -69,7 +69,8 @@ public final class TestDomain extends DomainModel {
 										Master.CODE.define()
 														.column())
 						.comparator(Comparator.comparing(o -> o.get(Master.CODE)))
-						.stringFactory(Master.NAME));
+						.stringFactory(Master.NAME)
+						.build());
 	}
 
 	public interface Detail {
@@ -181,7 +182,8 @@ public final class TestDomain extends DomainModel {
 						.selectTableName(DETAIL_SELECT_TABLE_NAME)
 						.orderBy(ascending(Detail.STRING))
 						.smallDataset(true)
-						.stringFactory(Detail.STRING));
+						.stringFactory(Detail.STRING)
+						.build());
 	}
 
 	public interface Department {
@@ -212,7 +214,8 @@ public final class TestDomain extends DomainModel {
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
 						.stringFactory(Department.NAME)
-						.caption("Department"));
+						.caption("Department")
+						.build());
 	}
 
 	public interface Employee {
@@ -292,6 +295,7 @@ public final class TestDomain extends DomainModel {
 							}
 
 							return null;
-						}));
+						})
+						.build());
 	}
 }

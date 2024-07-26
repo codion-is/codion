@@ -64,7 +64,7 @@ public final class SchemaBrowser extends DomainModel {
 		Column<String> NAME = TYPE.stringColumn(bundle.getString("schema_name"));
 	}
 
-	EntityDefinition.Builder schema() {
+	EntityDefinition schema() {
 		return Schema.TYPE.define(
 										Schema.NAME.define()
 														.primaryKey()
@@ -73,7 +73,8 @@ public final class SchemaBrowser extends DomainModel {
 						.orderBy(ascending(Schema.NAME))
 						.readOnly(true)
 						.stringFactory(Schema.NAME)
-						.caption("Schemas");
+						.caption("Schemas")
+						.build();
 	}
 
 	public interface Table {
@@ -85,7 +86,7 @@ public final class SchemaBrowser extends DomainModel {
 		ForeignKey SCHEMA_FK = TYPE.foreignKey(bundle.getString("table_schema_ref"), SCHEMA, Schema.NAME);
 	}
 
-	EntityDefinition.Builder table() {
+	EntityDefinition table() {
 		EntityDefinition.Builder tableBuilder = Table.TYPE.define(
 										Table.SCHEMA.define()
 														.primaryKey(0),
@@ -115,7 +116,7 @@ public final class SchemaBrowser extends DomainModel {
 							.build());
 		}
 
-		return tableBuilder;
+		return tableBuilder.build();
 	}
 
 	public interface TableColumn {
@@ -131,7 +132,7 @@ public final class SchemaBrowser extends DomainModel {
 						TableColumn.TABLE_NAME, Table.NAME);
 	}
 
-	EntityDefinition.Builder tableColumn() {
+	EntityDefinition tableColumn() {
 		return TableColumn.TYPE.define(
 										TableColumn.SCHEMA.define()
 														.primaryKey(0),
@@ -154,7 +155,8 @@ public final class SchemaBrowser extends DomainModel {
 										.text(".")
 										.value(TableColumn.NAME)
 										.build())
-						.caption("Columns");
+						.caption("Columns")
+						.build();
 	}
 
 	public interface Constraint {
@@ -170,7 +172,7 @@ public final class SchemaBrowser extends DomainModel {
 						Constraint.TABLE_NAME, Table.NAME);
 	}
 
-	EntityDefinition.Builder constraint() {
+	EntityDefinition constraint() {
 		return Constraint.TYPE.define(
 										Constraint.SCHEMA.define()
 														.primaryKey(0),
@@ -193,7 +195,8 @@ public final class SchemaBrowser extends DomainModel {
 										.text(".")
 										.value(Constraint.NAME)
 										.build())
-						.caption("Constraints");
+						.caption("Constraints")
+						.build();
 	}
 
 	public interface ConstraintColumn {
@@ -211,7 +214,7 @@ public final class SchemaBrowser extends DomainModel {
 						ConstraintColumn.CONSTRAINT_NAME, Constraint.NAME);
 	}
 
-	EntityDefinition.Builder constraintColumn() {
+	EntityDefinition constraintColumn() {
 		return ConstraintColumn.TYPE.define(
 										ConstraintColumn.SCHEMA.define()
 														.primaryKey(0),
@@ -231,6 +234,7 @@ public final class SchemaBrowser extends DomainModel {
 						.tableName(bundle.getString("t_column_constraint"))
 						.orderBy(ascending(ConstraintColumn.SCHEMA, ConstraintColumn.TABLE_NAME, ConstraintColumn.CONSTRAINT_NAME))
 						.readOnly(true)
-						.caption("Constraint columns");
+						.caption("Constraint columns")
+						.build();
 	}
 }

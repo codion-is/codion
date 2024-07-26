@@ -142,7 +142,8 @@ public final class TestDomain extends DomainModel {
 						})
 						.condition(Department.DEPARTMENT_CONDITION_SALES_TYPE, (attributes, values) -> "dname = 'SALES'")
 						.condition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE, (attributes, values) -> "no_column is null")
-						.caption("Department"));
+						.caption("Department")
+						.build());
 	}
 
 	public interface Employee {
@@ -221,7 +222,8 @@ public final class TestDomain extends DomainModel {
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.condition(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")
 						.condition(Employee.MGR_GREATER_THAN_CONDITION, (attributes, values) -> "mgr > ?")
-						.caption("Employee"));
+						.caption("Employee")
+						.build());
 	}
 
 	public interface DepartmentFk {
@@ -244,7 +246,8 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.caption(DepartmentFk.LOC.name()))
 						.tableName("employees.department")
-						.stringFactory(DepartmentFk.DNAME));
+						.stringFactory(DepartmentFk.DNAME)
+						.build());
 	}
 
 	public interface EmployeeFk {
@@ -306,7 +309,8 @@ public final class TestDomain extends DomainModel {
 						.tableName("employees.employee")
 						.stringFactory(EmployeeFk.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
-						.caption("Employee"));
+						.caption("Employee")
+						.build());
 	}
 
 	public interface UUIDTestDefault {
@@ -339,7 +343,8 @@ public final class TestDomain extends DomainModel {
 										UUIDTestDefault.DATA.define()
 														.column()
 														.caption("Data"))
-						.keyGenerator(uuidKeyGenerator));
+						.keyGenerator(uuidKeyGenerator)
+						.build());
 	}
 
 	public interface UUIDTestNoDefault {
@@ -363,7 +368,8 @@ public final class TestDomain extends DomainModel {
 										UUIDTestNoDefault.DATA.define()
 														.column()
 														.caption("Data"))
-						.keyGenerator(uuidKeyGenerator));
+						.keyGenerator(uuidKeyGenerator)
+						.build());
 	}
 
 	private void operations() {
@@ -405,7 +411,8 @@ public final class TestDomain extends DomainModel {
 						.tableName("employees.employee")
 						.selectQuery(SelectQuery.builder()
 										.having("job <> 'PRESIDENT'")
-										.build()));
+										.build())
+						.build());
 	}
 
 	public interface NoPrimaryKey {
@@ -419,14 +426,15 @@ public final class TestDomain extends DomainModel {
 
 	private void noPkEntity() {
 		add(NoPrimaryKey.TYPE.define(
-						NoPrimaryKey.COL_1.define()
-										.column(),
-						NoPrimaryKey.COL_2.define()
-										.column(),
-						NoPrimaryKey.COL_3.define()
-										.column(),
-						NoPrimaryKey.COL_4.define()
-										.column()));
+										NoPrimaryKey.COL_1.define()
+														.column(),
+										NoPrimaryKey.COL_2.define()
+														.column(),
+										NoPrimaryKey.COL_3.define()
+														.column(),
+										NoPrimaryKey.COL_4.define()
+														.column())
+						.build());
 	}
 
 	public interface EmpnoDeptno {
@@ -449,7 +457,8 @@ public final class TestDomain extends DomainModel {
 										.where("e.deptno = d.deptno")
 										.orderBy("e.deptno, e.ename")
 										.build())
-						.condition(EmpnoDeptno.CONDITION, (attributes, values) -> "d.deptno = 10"));
+						.condition(EmpnoDeptno.CONDITION, (attributes, values) -> "d.deptno = 10")
+						.build());
 	}
 
 	public interface Query {
@@ -471,7 +480,8 @@ public final class TestDomain extends DomainModel {
 						.selectQuery(SelectQuery.builder()
 										.columns("empno, ename")
 										.orderBy("ename")
-										.build()));
+										.build())
+						.build());
 	}
 
 	public interface QueryColumnsWhereClause {
@@ -492,7 +502,8 @@ public final class TestDomain extends DomainModel {
 						.selectQuery(SelectQuery.builder()
 										.columns("e.empno, e.ename")
 										.where("e.deptno > 10")
-										.build()));
+										.build())
+						.build());
 	}
 
 	public interface QueryFromClause {
@@ -512,7 +523,8 @@ public final class TestDomain extends DomainModel {
 						.selectQuery(SelectQuery.builder()
 										.from("employees.employee")
 										.orderBy("ename")
-										.build()));
+										.build())
+						.build());
 	}
 
 	public interface QueryFromWhereClause {
@@ -533,7 +545,8 @@ public final class TestDomain extends DomainModel {
 										.from("employees.employee")
 										.where("deptno > 10")
 										.orderBy("deptno")
-										.build()));
+										.build())
+						.build());
 	}
 
 	public interface Master {
@@ -549,7 +562,8 @@ public final class TestDomain extends DomainModel {
 														.primaryKey(),
 										Master.DATA.define()
 														.column())
-						.keyGenerator(identity()));
+						.keyGenerator(identity())
+						.build());
 	}
 
 	public interface Detail {
@@ -575,7 +589,8 @@ public final class TestDomain extends DomainModel {
 														.column(),
 										Detail.MASTER_2_FK.define()
 														.foreignKey())
-						.keyGenerator(identity()));
+						.keyGenerator(identity())
+						.build());
 	}
 
 	public interface MasterFk {
@@ -587,10 +602,11 @@ public final class TestDomain extends DomainModel {
 
 	void masterFk() {
 		add(MasterFk.TYPE.define(
-						MasterFk.ID.define()
-										.primaryKey(),
-						MasterFk.NAME.define()
-										.column()));
+										MasterFk.ID.define()
+														.primaryKey(),
+										MasterFk.NAME.define()
+														.column())
+						.build());
 	}
 
 	public interface DetailFk {
@@ -604,12 +620,13 @@ public final class TestDomain extends DomainModel {
 
 	void detailFk() {
 		add(DetailFk.TYPE.define(
-						DetailFk.ID.define()
-										.primaryKey(),
-						DetailFk.MASTER_NAME.define()
-										.column(),
-						DetailFk.MASTER_FK.define()
-										.foreignKey()));
+										DetailFk.ID.define()
+														.primaryKey(),
+										DetailFk.MASTER_NAME.define()
+														.column(),
+										DetailFk.MASTER_FK.define()
+														.foreignKey())
+						.build());
 	}
 
 	public interface EmployeeNonOpt {
@@ -626,7 +643,8 @@ public final class TestDomain extends DomainModel {
 										EmployeeNonOpt.NAME.define()
 														.column())
 						.tableName("employees.employee")
-						.optimisticLocking(false));
+						.optimisticLocking(false)
+						.build());
 	}
 
 	public interface NullConverter {
@@ -667,6 +685,7 @@ public final class TestDomain extends DomainModel {
 										NullConverter.NAME.define()
 														.column()
 														.columnClass(String.class, new NullColumnConverter()))
-						.tableName("employees.master_fk"));
+						.tableName("employees.master_fk")
+						.build());
 	}
 }

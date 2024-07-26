@@ -68,7 +68,8 @@ public final class TestDomain extends DomainModel {
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
 						.stringFactory(Department.NAME)
-						.caption("Department"));
+						.caption("Department")
+						.build());
 	}
 
 	public interface Employee {
@@ -138,6 +139,7 @@ public final class TestDomain extends DomainModel {
 						.tableName("employees.employee")
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
 						.stringFactory(Employee.NAME)
-						.caption("Employee"));
+						.caption("Employee")
+						.build());
 	}
 }

@@ -54,7 +54,7 @@ public final class TestDomain extends DomainModel {
 		Column<Integer> CODE = TYPE.integerColumn("code");
 	}
 
-	EntityDefinition.Builder master() {
+	EntityDefinition master() {
 		return Master.TYPE.define(
 										Master.ID.define()
 														.primaryKey(),
@@ -68,7 +68,8 @@ public final class TestDomain extends DomainModel {
 
 							return code1.compareTo(code2);
 						})
-						.stringFactory(Master.NAME);
+						.stringFactory(Master.NAME)
+						.build();
 	}
 
 	public interface Detail {
@@ -96,7 +97,7 @@ public final class TestDomain extends DomainModel {
 	private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
 					item(2, "2"), item(3, "3"));
 
-	EntityDefinition.Builder detail() {
+	EntityDefinition detail() {
 		return Detail.TYPE.define(
 										Detail.ID.define()
 														.primaryKey(),
@@ -154,7 +155,8 @@ public final class TestDomain extends DomainModel {
 						.selectTableName(DETAIL_SELECT_TABLE_NAME)
 						.orderBy(ascending(Detail.STRING))
 						.smallDataset(true)
-						.stringFactory(Detail.STRING);
+						.stringFactory(Detail.STRING)
+						.build();
 	}
 
 	public interface Department {
@@ -165,7 +167,7 @@ public final class TestDomain extends DomainModel {
 		Column<String> NAME = TYPE.stringColumn("dname");
 	}
 
-	EntityDefinition.Builder department() {
+	EntityDefinition department() {
 		return Department.TYPE.define(
 										Department.ID.define()
 														.primaryKey()
@@ -184,7 +186,8 @@ public final class TestDomain extends DomainModel {
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
 						.stringFactory(Department.NAME)
-						.caption("Department");
+						.caption("Department")
+						.build();
 	}
 
 	public interface Employee {
@@ -208,7 +211,7 @@ public final class TestDomain extends DomainModel {
 		ConditionType CONDITION_3_TYPE = TYPE.conditionType("condition3Id");
 	}
 
-	EntityDefinition.Builder employee() {
+	EntityDefinition employee() {
 		return Employee.TYPE.define(
 										Employee.ID.define()
 														.primaryKey()
@@ -267,7 +270,8 @@ public final class TestDomain extends DomainModel {
 							}
 
 							return null;
-						});
+						})
+						.build();
 	}
 
 	public interface EnumEntity {
@@ -281,12 +285,13 @@ public final class TestDomain extends DomainModel {
 		}
 	}
 
-	EntityDefinition.Builder enumEntity() {
+	EntityDefinition enumEntity() {
 		return EnumEntity.TYPE.define(
-						EnumEntity.ID.define()
-										.primaryKey(),
-						EnumEntity.ENUM_TYPE.define()
-										.column());
+										EnumEntity.ID.define()
+														.primaryKey(),
+										EnumEntity.ENUM_TYPE.define()
+														.column())
+						.build();
 	}
 
 	public interface Derived {
@@ -298,21 +303,22 @@ public final class TestDomain extends DomainModel {
 		Column<Integer> INT4 = TYPE.integerColumn("int4");
 	}
 
-	EntityDefinition.Builder derived() {
+	EntityDefinition derived() {
 		return Derived.TYPE.define(
-						Derived.INT.define()
-										.column(),
-						Derived.INT2.define()
-										.derived(sourceValues -> sourceValues.optional(Derived.INT)
-														.map(value -> value + 1)
-														.orElse(null), Derived.INT),
-						Derived.INT3.define()
-										.derived(sourceValues -> sourceValues.optional(Derived.INT2)
-														.map(value -> value + 1)
-														.orElse(null), Derived.INT2),
-						Derived.INT4.define()
-										.derived(sourceValues -> sourceValues.optional(Derived.INT3)
-														.map(value -> value + 1)
-														.orElse(null), Derived.INT3));
+										Derived.INT.define()
+														.column(),
+										Derived.INT2.define()
+														.derived(sourceValues -> sourceValues.optional(Derived.INT)
+																		.map(value -> value + 1)
+																		.orElse(null), Derived.INT),
+										Derived.INT3.define()
+														.derived(sourceValues -> sourceValues.optional(Derived.INT2)
+																		.map(value -> value + 1)
+																		.orElse(null), Derived.INT2),
+										Derived.INT4.define()
+														.derived(sourceValues -> sourceValues.optional(Derived.INT3)
+																		.map(value -> value + 1)
+																		.orElse(null), Derived.INT3))
+						.build();
 	}
 }
