@@ -284,7 +284,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		public final <C> B columnClass(Class<C> columnClass, Converter<T, C> converter) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter, "valueConverter");
-			this.fetcher = fetcher(this.type, (Column<Object>) attribute);
+			this.fetcher = fetcher(this.type, (Column<Object>) super.attribute());
 			return self();
 		}
 
@@ -362,8 +362,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 		@Override
 		public final B searchable(boolean searchable) {
-			if (searchable && !attribute.type().isString()) {
-				throw new IllegalStateException("Searchable columns must be String based: " + attribute);
+			if (searchable && !super.attribute().type().isString()) {
+				throw new IllegalStateException("Searchable columns must be String based: " + super.attribute());
 			}
 			this.searchable = searchable;
 			return self();
@@ -401,17 +401,17 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 		@Override
 		public final B readOnly(boolean readOnly) {
-			throw new UnsupportedOperationException("Read only by default: " + attribute);
+			throw new UnsupportedOperationException("Read only by default: " + super.attribute());
 		}
 
 		@Override
 		public final B insertable(boolean insertable) {
-			throw new UnsupportedOperationException("Column is not insertable: " + attribute);
+			throw new UnsupportedOperationException("Column is not insertable: " + super.attribute());
 		}
 
 		@Override
 		public final B updatable(boolean updatable) {
-			throw new UnsupportedOperationException("Column is not updatable: " + attribute);
+			throw new UnsupportedOperationException("Column is not updatable: " + super.attribute());
 		}
 	}
 
@@ -425,7 +425,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 		@Override
 		public B expression(String expression) {
-			throw new UnsupportedOperationException("Column expression can not be set on a subquery column: " + attribute);
+			throw new UnsupportedOperationException("Column expression can not be set on a subquery column: " + super.attribute());
 		}
 	}
 

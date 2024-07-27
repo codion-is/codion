@@ -11,6 +11,7 @@ Codion Change Log
 - DomainModel.add(EntityDefinition.Builder... builders) removed.
 - DomainModel, DefaultEntities.setStrictForeignKeys() renamed validateForeignKeys().
 - AttributeDefinition.prepareValue() removed, functionality moved to DefaultEntity, decimal fraction digits coming from database no longer modified.
+- AbstractAttributeDefinitionBuilder.attribute no longer protected, public accessor available.
 ### is.codion.framework.model
 - ForeignKeyConditionModel now defaults to Operator.IN when available.
 - DefaultForeignKeyDetailModelLink.setForeignKeyCondition() now always uses Operator.IN.

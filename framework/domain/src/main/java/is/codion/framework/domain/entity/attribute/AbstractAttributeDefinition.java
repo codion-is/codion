@@ -462,7 +462,8 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 	abstract static class AbstractAttributeDefinitionBuilder<T, B extends AttributeDefinition.Builder<T, B>> implements AttributeDefinition.Builder<T, B> {
 
-		protected final Attribute<T> attribute;
+		private final Attribute<T> attribute;
+
 		private String caption;
 		private ValueSupplier<T> defaultValueSupplier;
 		private String captionResourceKey;

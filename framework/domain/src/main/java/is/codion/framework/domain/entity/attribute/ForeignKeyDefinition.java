@@ -78,10 +78,10 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 
 		/**
 		 * Marks the given foreign key reference column as read-only, as in, not updated when the foreign key value is set.
-		 * @param referenceColumn the reference column
+		 * @param column the reference column
 		 * @return this instance
 		 */
-		Builder readOnly(Column<?> referenceColumn);
+		Builder readOnly(Column<?> column);
 
 		/**
 		 * Specifies the attributes from the referenced entity to select. Note that the primary key attributes

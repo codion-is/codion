@@ -107,11 +107,11 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 		}
 
 		@Override
-		public ForeignKeyDefinition.Builder readOnly(Column<?> referenceColumn) {
-			if (((ForeignKey) attribute).reference(referenceColumn) == null) {
-				throw new IllegalArgumentException("Column " + referenceColumn + " is not part of foreign key: " + attribute);
+		public ForeignKeyDefinition.Builder readOnly(Column<?> column) {
+			if (((ForeignKey) super.attribute()).reference(column) == null) {
+				throw new IllegalArgumentException("Column " + column + " is not part of foreign key: " + super.attribute());
 			}
-			this.readOnlyColumns.add(referenceColumn);
+			this.readOnlyColumns.add(column);
 			return this;
 		}
 
