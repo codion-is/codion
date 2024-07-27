@@ -64,21 +64,15 @@ testing {
     }
 }
 
-tasks.register("writeVersion") {
-    group "build"
-    def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + "/version.properties")
-    inputs.property("version", project.version)
-    outputs.file(versionFile)
-    outputs.upToDateWhen { false }
+tasks.register("writeVersion", WriteProperties) {
+    destinationFile = file(temporaryDir.getAbsolutePath() + "/version.properties")
 
-    doLast {
-        def versionProperties = new Properties()
-        versionProperties.put("version", project.version)
-        versionProperties.store(versionFile.newWriter(), null)
-    }
+    property "version", project.version
 }
 
-classes.dependsOn writeVersion
+processResources {
+    from(writeVersion)
+}
 
 tasks.register("runClientLocal", JavaExec) {
     group "application"
