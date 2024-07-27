@@ -145,14 +145,6 @@ public interface AttributeDefinition<T> {
 	String description();
 
 	/**
-	 * Prepares the value according to the attribute definition, such as rounding
-	 * to the correct number of fraction digits in case of doubles
-	 * @param value the value to prepare
-	 * @return the prepared value
-	 */
-	T prepareValue(T value);
-
-	/**
 	 * Returns a string representation of the given value formatted with this attributes format.
 	 * If no format is available {@link Object#toString()} is used. By default, null values result in an empty string.
 	 * @param value the value to format.

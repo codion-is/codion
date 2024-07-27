@@ -1013,6 +1013,10 @@ public class DefaultEntityTest {
 						.build();
 
 		assertEquals(-1, aron.compareTo(bjorn));
+
+		aron.put(Employee.COMMISSION, 10.1234);
+		// decimal fraction digits adjusted
+		assertEquals(0, Double.compare(aron.get(Employee.COMMISSION), 10.12));
 	}
 
 	@Test

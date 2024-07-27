@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.Collator;
 import java.text.DecimalFormat;
@@ -350,18 +349,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	}
 
 	@Override
-	public final T prepareValue(T value) {
-		if (value instanceof Double) {
-			return (T) round((Double) value, maximumFractionDigits(), decimalRoundingMode);
-		}
-		if (value instanceof BigDecimal) {
-			return (T) ((BigDecimal) value).setScale(maximumFractionDigits(), decimalRoundingMode).stripTrailingZeros();
-		}
-
-		return value;
-	}
-
-	@Override
 	public final String string(T value) {
 		if (itemMap != null) {
 			return itemString(value);
@@ -412,11 +399,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		}
 
 		return null;
-	}
-
-	private static Double round(Double value, int places, RoundingMode roundingMode) {
-		return value == null ? null : new BigDecimal(Double.toString(value))
-						.setScale(places, requireNonNull(roundingMode)).doubleValue();
 	}
 
 	static class DefaultValueSupplier<T> implements ValueSupplier<T>, Serializable {

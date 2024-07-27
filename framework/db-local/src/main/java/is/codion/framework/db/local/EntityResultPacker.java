@@ -72,7 +72,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 		for (int i = 0; i < columnDefinitions.size(); i++) {
 			ColumnDefinition<Object> columnDefinition = (ColumnDefinition<Object>) columnDefinitions.get(i);
 			try {
-				values.put(columnDefinition.attribute(), columnDefinition.prepareValue(columnDefinition.get(resultSet, i + 1)));
+				values.put(columnDefinition.attribute(), columnDefinition.get(resultSet, i + 1));
 			}
 			catch (Exception e) {
 				throw new SQLException("Exception fetching: " + columnDefinition + ", entity: " +

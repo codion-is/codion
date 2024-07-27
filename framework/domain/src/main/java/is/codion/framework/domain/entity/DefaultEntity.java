@@ -33,6 +33,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -484,7 +486,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	private <T> T put(AttributeDefinition<T> attributeDefinition, T value) {
-		T newValue = validateAndPrepareValue(attributeDefinition, value);
+		T newValue = validateAndAdjustValue(attributeDefinition, value);
 		Attribute<T> attribute = attributeDefinition.attribute();
 		boolean initialization = !values.containsKey(attribute);
 		T previousValue = (T) values.put(attribute, newValue);
@@ -539,21 +541,25 @@ class DefaultEntity implements Entity, Serializable {
 		return false;
 	}
 
-	private <T> T validateAndPrepareValue(AttributeDefinition<T> attributeDefinition, T value) {
+	private <T> T validateAndAdjustValue(AttributeDefinition<T> attributeDefinition, T value) {
 		if (attributeDefinition.derived()) {
 			throw new IllegalArgumentException("Can not set the value of a derived attribute");
 		}
-		if (value != null && !attributeDefinition.validItem(value)) {
+		if (value == null) {
+			return null;
+		}
+		if (!attributeDefinition.validItem(value)) {
 			throw new IllegalArgumentException("Invalid item value: " + value + " for attribute " + attributeDefinition.attribute());
 		}
-		if (value != null && attributeDefinition instanceof ForeignKeyDefinition) {
-			validateForeignKeyValue((ForeignKeyDefinition) attributeDefinition, (Entity) value);
+		attributeDefinition.attribute().type().validateType(value);
+		if (attributeDefinition instanceof ForeignKeyDefinition) {
+			return (T) validateForeignKeyValue((ForeignKeyDefinition) attributeDefinition, (Entity) value);
 		}
 
-		return attributeDefinition.prepareValue(attributeDefinition.attribute().type().validateType(value));
+		return adjustDecimalFractionDigits(attributeDefinition, value);
 	}
 
-	private void validateForeignKeyValue(ForeignKeyDefinition foreignKeyDefinition, Entity foreignKeyValue) {
+	private Entity validateForeignKeyValue(ForeignKeyDefinition foreignKeyDefinition, Entity foreignKeyValue) {
 		EntityType referencedType = foreignKeyDefinition.attribute().referencedType();
 		if (!Objects.equals(referencedType, foreignKeyValue.entityType())) {
 			throw new IllegalArgumentException("Entity of type " + referencedType +
@@ -562,6 +568,8 @@ class DefaultEntity implements Entity, Serializable {
 		for (ForeignKey.Reference<?> reference : foreignKeyDefinition.references()) {
 			throwIfModifiesReadOnlyReference(foreignKeyDefinition, foreignKeyValue, reference);
 		}
+
+		return foreignKeyValue;
 	}
 
 	private void throwIfModifiesReadOnlyReference(ForeignKeyDefinition foreignKeyDefinition, Entity foreignKeyValue,
@@ -888,6 +896,22 @@ class DefaultEntity implements Entity, Serializable {
 		}
 
 		return values;
+	}
+
+	private static <T> T adjustDecimalFractionDigits(AttributeDefinition<T> attributeDefinition, T value) {
+		if (value instanceof Double) {
+			return (T) round((Double) value, attributeDefinition.maximumFractionDigits(), attributeDefinition.decimalRoundingMode());
+		}
+		if (value instanceof BigDecimal) {
+			return (T) ((BigDecimal) value).setScale(attributeDefinition.maximumFractionDigits(), attributeDefinition.decimalRoundingMode()).stripTrailingZeros();
+		}
+
+		return value;
+	}
+
+	private static Double round(Double value, int places, RoundingMode roundingMode) {
+		return value == null ? null : new BigDecimal(Double.toString(value))
+						.setScale(places, requireNonNull(roundingMode)).doubleValue();
 	}
 
 	private final class Unmodified implements Predicate<Map.Entry<Attribute<?>, Object>> {
