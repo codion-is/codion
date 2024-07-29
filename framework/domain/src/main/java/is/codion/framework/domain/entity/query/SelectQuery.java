@@ -19,13 +19,13 @@
 package is.codion.framework.domain.entity.query;
 
 /**
- * Defines a select query or parts of a select query, that is, from, column, where and orderBy clauses.
+ * Defines a select query or parts of a select query, that is, from, column, where, groupBy, having and orderBy clauses.
  * {@link Builder} provided by {@link #builder()}.
  */
 public interface SelectQuery {
 
 	/**
-	 * @return the COLUMNS clause string
+	 * @return the COLUMNS clause
 	 */
 	String columns();
 
