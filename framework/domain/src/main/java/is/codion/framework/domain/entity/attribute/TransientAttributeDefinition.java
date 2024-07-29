@@ -40,6 +40,7 @@ public interface TransientAttributeDefinition<T> extends AttributeDefinition<T> 
 	interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> {
 
 		/**
+		 * Default true.
 		 * @param modifiesEntity if false then modifications to the value will not result in the owning entity becoming modified
 		 * @return this builder instance
 		 */

@@ -1024,7 +1024,8 @@ public class DefaultEntityTest {
 		DomainType domainType = DomainType.domainType("cached_derived");
 		EntityType type = domainType.entityType("derived");
 		Attribute<String> stringAttribute = type.stringAttribute("string");
-		Attribute<String> derivedAttribute = type.stringAttribute("derived");
+		Attribute<String> derivedAttributeNonCached = type.stringAttribute("derived_non_cached");
+		Attribute<String> derivedAttributeCached = type.stringAttribute("derived_cached");
 		Attribute<UUID> derivedAttributeNoSource = type.attribute("derived_no_source", UUID.class);
 		class DerivedDomain extends DomainModel {
 			DerivedDomain() {
@@ -1032,9 +1033,13 @@ public class DefaultEntityTest {
 				add(type.define(
 												stringAttribute.define()
 																.attribute(),
-												derivedAttribute.define()
+												derivedAttributeCached.define()
 																.derived(sourceValues ->
 																				sourceValues.get(stringAttribute) + "-derived", stringAttribute),
+												derivedAttributeNonCached.define()
+																.derived(sourceValues ->
+																				sourceValues.get(stringAttribute) + "-derived", stringAttribute)
+																.cached(false),
 												derivedAttributeNoSource.define()
 																.derived(sourceValues -> UUID.randomUUID()))
 								.build());
@@ -1042,16 +1047,19 @@ public class DefaultEntityTest {
 		}
 		Entity entity = new DerivedDomain().entities().entity(type);
 		entity.put(stringAttribute, "hello");
-		String derivedValue = entity.get(derivedAttribute);
+		String derivedCachedValue = entity.get(derivedAttributeCached);
+		String derivedNonCachedValue = entity.get(derivedAttributeNonCached);
 		// Cached instance
-		assertSame(derivedValue, entity.get(derivedAttribute));
-		entity.put(stringAttribute, "hello hello");
-		derivedValue = entity.get(derivedAttribute);
-		assertSame(derivedValue, entity.get(derivedAttribute));
+		assertSame(derivedCachedValue, entity.get(derivedAttributeCached));
+		assertNotSame(derivedNonCachedValue, entity.get(derivedAttributeNonCached));
 
-		Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));
-		// Cached values cleared before serializing
-		assertNotSame(derivedValue, deserialized.get(derivedAttribute));
+		entity.put(stringAttribute, "hello hello");
+		derivedCachedValue = entity.get(derivedAttributeCached);
+		assertSame(derivedCachedValue, entity.get(derivedAttributeCached));
+		assertNotSame(derivedNonCachedValue, entity.get(derivedAttributeNonCached));
+
+		entity.remove(derivedAttributeCached);
+		assertNotSame(derivedCachedValue, entity.get(derivedAttributeCached));
 
 		// Attributes based on no source values should not be cached
 		assertNotEquals(entity.get(derivedAttributeNoSource), entity.get(derivedAttributeNoSource));

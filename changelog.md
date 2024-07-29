@@ -12,6 +12,8 @@ Codion Change Log
 - DomainModel, DefaultEntities.setStrictForeignKeys() renamed validateForeignKeys().
 - AttributeDefinition.prepareValue() removed, functionality moved to DefaultEntity, decimal fraction digits coming from database no longer modified.
 - AbstractAttributeDefinitionBuilder.attribute no longer protected, public accessor available.
+- DerivedAttributeDefinition caching can now be disabled, cached() added, default true, cached values can be removed via remove() and are included when entities are serialized.
+- AttributeDefinition.denormalized() removed, no longer used.
 ### is.codion.framework.model
 - ForeignKeyConditionModel now defaults to Operator.IN when available.
 - DefaultForeignKeyDetailModelLink.setForeignKeyCondition() now always uses Operator.IN.

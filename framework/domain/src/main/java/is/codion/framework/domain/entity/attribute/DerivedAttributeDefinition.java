@@ -35,4 +35,26 @@ public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
 	 * @return the value provider, providing the derived value
 	 */
 	DerivedAttribute.Provider<T> valueProvider();
+
+	/**
+	 * Note that cached attributes are included when an entity is serialized.
+	 * @return true if the value of this derived attribute is cached, false if computed on each access
+	 */
+	boolean cached();
+
+	/**
+	 * Builds a derived AttributeDefinition instance
+	 * @param <T> the attribute value type
+	 */
+	interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> {
+
+		/**
+		 * Default true unless no source attributes are specified or this is a denormalized attribute.
+		 * Note that cached attributes are included when an entity is serialized.
+		 * @param cached true if the value of this derived attribute should be cached, false if it should be computed on each access
+		 * @return this builder instance
+		 * @throws IllegalArgumentException in case this is a denormalized attribute
+		 */
+		DerivedAttributeDefinition.Builder<T, B> cached(boolean cached);
+	}
 }

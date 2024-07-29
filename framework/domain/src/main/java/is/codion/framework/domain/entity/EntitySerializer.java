@@ -112,7 +112,6 @@ final class EntitySerializer {
 	}
 
 	private static void serializeValues(DefaultEntity entity, ObjectOutputStream stream) throws IOException {
-		entity.clearDerivedCache();
 		serializeValues(entity.values, stream);
 		boolean modified = entity.originalValues != null;
 		stream.writeBoolean(modified);

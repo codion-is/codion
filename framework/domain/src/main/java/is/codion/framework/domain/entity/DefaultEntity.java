@@ -415,10 +415,6 @@ class DefaultEntity implements Entity, Serializable {
 		return unmodifiableSet(originalValues.entrySet());
 	}
 
-	void clearDerivedCache() {
-		definition.attributes().get().forEach(this::clearDerivedCache);
-	}
-
 	private String createToString() {
 		String string = definition.stringFactory().apply(this);
 		if (string == null) {
@@ -467,8 +463,13 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	private <T> T cached(AttributeDefinition<T> attributeDefinition) {
-		if (attributeDefinition.derived()) {
-			return derivedCached((DerivedAttributeDefinition<T>) attributeDefinition);
+		if (attributeDefinition instanceof DerivedAttributeDefinition<T>) {
+			DerivedAttributeDefinition<T> derivedDefinition = (DerivedAttributeDefinition<T>) attributeDefinition;
+			if (derivedDefinition.cached()) {
+				return derivedCached(derivedDefinition);
+			}
+
+			return derived(derivedDefinition);
 		}
 
 		return (T) values.get(attributeDefinition.attribute());
@@ -759,9 +760,7 @@ class DefaultEntity implements Entity, Serializable {
 			return (T) values.get(attributeDefinition.attribute());
 		}
 		T derivedValue = derived(attributeDefinition);
-		if (!attributeDefinition.denormalized() && !attributeDefinition.sourceAttributes().isEmpty()) {
-			values.put(attributeDefinition.attribute(), derivedValue);
-		}
+		values.put(attributeDefinition.attribute(), derivedValue);
 
 		return derivedValue;
 	}

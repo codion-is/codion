@@ -236,15 +236,15 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		}
 
 		@Override
-		public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
-																																																							Attribute<T> denormalizedAttribute) {
+		public final <B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
+																																																														Attribute<T> denormalizedAttribute) {
 			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute,
 							new DenormalizedValueProvider<>(entityAttribute, denormalizedAttribute), entityAttribute);
 		}
 
 		@Override
-		public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derived(DerivedAttribute.Provider<T> valueProvider,
-																																																				 Attribute<?>... sourceAttributes) {
+		public final <B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> derived(DerivedAttribute.Provider<T> valueProvider,
+																																																											 Attribute<?>... sourceAttributes) {
 			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute, valueProvider, sourceAttributes);
 		}
 	}

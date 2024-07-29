@@ -208,12 +208,6 @@ public interface AttributeDefinition<T> {
 	boolean derived();
 
 	/**
-	 * The value of a denormalized attribute can not be set
-	 * @return true if the value of this attribute is denormalized from a foreign key value
-	 */
-	boolean denormalized();
-
-	/**
 	 * @return the maximum length of this attribute value, -1 is returned if the maximum length is undefined,
 	 * this only applies to String (varchar) based attributes
 	 */

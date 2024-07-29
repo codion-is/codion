@@ -31,11 +31,13 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 
 	private final DerivedAttribute.Provider<T> valueProvider;
 	private final List<Attribute<?>> sourceAttributes;
+	private final boolean cached;
 
 	private DefaultDerivedAttributeDefinition(DefaultDerivedAttributeDefinitionBuilder<T, ?> builder) {
 		super(builder);
 		this.valueProvider = builder.valueProvider;
 		this.sourceAttributes = builder.sourceAttributes;
+		this.cached = builder.cached;
 	}
 
 	@Override
@@ -49,20 +51,22 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 	}
 
 	@Override
+	public boolean cached() {
+		return cached;
+	}
+
+	@Override
 	public boolean derived() {
 		return true;
 	}
 
-	@Override
-	public boolean denormalized() {
-		return valueProvider instanceof DenormalizedValueProvider;
-	}
-
-	static final class DefaultDerivedAttributeDefinitionBuilder<T, B extends AttributeDefinition.Builder<T, B>>
-					extends AbstractAttributeDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B> {
+	static final class DefaultDerivedAttributeDefinitionBuilder<T, B extends DerivedAttributeDefinition.Builder<T, B>>
+					extends AbstractAttributeDefinitionBuilder<T, B> implements DerivedAttributeDefinition.Builder<T, B> {
 
 		private final DerivedAttribute.Provider<T> valueProvider;
 		private final List<Attribute<?>> sourceAttributes;
+
+		private boolean cached;
 
 		DefaultDerivedAttributeDefinitionBuilder(Attribute<T> attribute, DerivedAttribute.Provider<T> valueProvider, Attribute<?>... sourceAttributes) {
 			super(attribute);
@@ -76,6 +80,16 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 				}
 			}
 			this.sourceAttributes = asList(sourceAttributes);
+			this.cached = !denormalized(valueProvider) && !this.sourceAttributes.isEmpty();
+		}
+
+		@Override
+		public DerivedAttributeDefinition.Builder<T, B> cached(boolean cached) {
+			if (cached && denormalized(valueProvider)) {
+				throw new IllegalArgumentException("Denormalized attribute values can not be cached");
+			}
+			this.cached = cached;
+			return self();
 		}
 
 		@Override
@@ -101,6 +115,10 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		@Override
 		public AttributeDefinition<T> build() {
 			return new DefaultDerivedAttributeDefinition<>(this);
+		}
+
+		private static boolean denormalized(DerivedAttribute.Provider<?> valueProvider) {
+			return valueProvider instanceof DenormalizedValueProvider<?>;
 		}
 	}
 }

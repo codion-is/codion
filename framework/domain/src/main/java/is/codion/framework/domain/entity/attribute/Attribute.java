@@ -199,24 +199,24 @@ public interface Attribute<T> {
 		<B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute();
 
 		/**
-		 * Instantiates a {@link AttributeDefinition.Builder} instance, for displaying a value from a referenced entity attribute.
+		 * Instantiates a {@link DerivedAttributeDefinition.Builder} instance, for displaying a value from a referenced entity attribute.
 		 * @param <B> the builder type
 		 * @param entityAttribute the entity attribute from which this attribute gets its value
 		 * @param denormalizedAttribute the attribute from the referenced entity, from which this attribute gets its value
-		 * @return a new {@link AttributeDefinition.Builder}
+		 * @return a new {@link DerivedAttributeDefinition.Builder}
 		 */
-		<B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
-																																																 Attribute<T> denormalizedAttribute);
+		<B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
+																																																							 Attribute<T> denormalizedAttribute);
 
 		/**
-		 * Instantiates a {@link AttributeDefinition.Builder} instance, which value is derived from one or more source attributes.
+		 * Instantiates a {@link DerivedAttributeDefinition.Builder} instance, which value is derived from one or more source attributes.
 		 * @param valueProvider a {@link DerivedAttribute.Provider} instance responsible for deriving the value
 		 * @param sourceAttributes the attributes from which this attribute derives its value
 		 * @param <B> the builder type
-		 * @return a new {@link AttributeDefinition.Builder}
+		 * @return a new {@link DerivedAttributeDefinition.Builder}
 		 * @throws IllegalArgumentException in case no source attributes are specified
 		 */
-		<B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derived(DerivedAttribute.Provider<T> valueProvider,
-																																														Attribute<?>... sourceAttributes);
+		<B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> derived(DerivedAttribute.Provider<T> valueProvider,
+																																																					Attribute<?>... sourceAttributes);
 	}
 }
