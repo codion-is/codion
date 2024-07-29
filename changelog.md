@@ -16,6 +16,7 @@ Codion Change Log
 - AbstractAttributeDefinitionBuilder.attribute no longer protected, public accessor available.
 - DerivedAttributeDefinition caching can now be disabled, cached() added, default true, cached values can be removed via remove() and are included when entities are serialized.
 - AttributeDefinition.denormalized() removed, no longer used.
+- KeyGenerator.Identity added.
 ### is.codion.framework.model
 - ForeignKeyConditionModel now defaults to Operator.IN when available.
 - DefaultForeignKeyDetailModelLink.setForeignKeyCondition() now always uses Operator.IN.
@@ -23,6 +24,8 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel, bug fixed, three methods that should have been final are now final.
 - SwingForeignKeyConditionModel now defaults to Operator.IN when available.
+### is.codion.tools.generator.domain
+- DomainSource no longer adds KeyGenerator.identity() import unless it is actually used.
 
 ## 0.18.6
 ### is.codion

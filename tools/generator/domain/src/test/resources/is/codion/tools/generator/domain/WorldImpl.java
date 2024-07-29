@@ -1,6 +1,5 @@
 package is.codion.world.domain.impl;
 
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.world.domain.World.DOMAIN;
 
 import is.codion.framework.domain.DomainModel;

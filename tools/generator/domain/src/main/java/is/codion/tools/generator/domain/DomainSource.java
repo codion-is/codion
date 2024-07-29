@@ -181,9 +181,11 @@ public final class DomainSource {
 		JavaFile.Builder fileBuilder = JavaFile.builder(implementationPackage,
 										classBuilder.addMethod(createDomainConstructor(definitionMethods))
 														.build())
-						.addStaticImport(KeyGenerator.class, "identity")
 						.skipJavaLangImports(true)
 						.indent(INDENT);
+		if (identityKeyGeneratorUsed(definitions)) {
+			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
+		}
 		if (!implementationPackage.isEmpty()) {
 			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + className), DOMAIN);
 		}
@@ -212,9 +214,11 @@ public final class DomainSource {
 										classBuilder.addMethod(createDomainConstructor(definitionMethods))
 														.build())
 						.addStaticImport(DomainType.class, "domainType")
-						.addStaticImport(KeyGenerator.class, "identity")
 						.skipJavaLangImports(true)
 						.indent(INDENT);
+		if (identityKeyGeneratorUsed(definitions)) {
+			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
+		}
 		if (!sourcePackage.isEmpty()) {
 			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + className), DOMAIN);
 		}
@@ -580,6 +584,12 @@ public final class DomainSource {
 						});
 
 		return dependencies;
+	}
+
+	private static boolean identityKeyGeneratorUsed(List<EntityDefinition> definitions) {
+		return definitions.stream()
+						.map(entityDefinition -> entityDefinition.primaryKey().generator())
+						.anyMatch(KeyGenerator.Identity.class::isInstance);
 	}
 
 	static String underscoreToCamelCase(String text) {

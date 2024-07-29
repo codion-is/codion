@@ -1,7 +1,6 @@
 package is.codion.world.domain;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.world.domain.World.DOMAIN;
 
 import is.codion.framework.domain.DomainModel;
