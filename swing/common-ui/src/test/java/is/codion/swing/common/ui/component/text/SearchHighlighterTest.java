@@ -39,9 +39,10 @@ public final class SearchHighlighterTest {
 
 		JTextArea textArea = new JTextArea(document);
 
-		SearchHighlighter highlighter = SearchHighlighter.searchHighlighter(textArea);
-		highlighter.highlightColor(Color.BLUE);
-		highlighter.highlightSelectedColor(Color.MAGENTA);
+		SearchHighlighter highlighter = SearchHighlighter.builder(textArea)
+						.highlightColor(Color.BLUE)
+						.selectedHighlightColor(Color.MAGENTA)
+						.build();
 
 		JTextField searchField = highlighter.createSearchField();
 

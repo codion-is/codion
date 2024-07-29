@@ -7,6 +7,8 @@ Codion Change Log
 - State.Builder.validator() type parameter widened, now consistent with Value.addValidator().
 ### is.codion.common.model
 - ColumnConditionModel.Builder.operator() added for specifying the default condition operator.
+### is.codion.swing.comon.ui
+- SearchHighlighter.Builder added, scrollYRatio and scrollXRatio added. 
 ### is.codion.framework.domain
 - DomainModel.add(EntityDefinition.Builder... builders) removed.
 - DomainModel, DefaultEntities.setStrictForeignKeys() renamed validateForeignKeys().

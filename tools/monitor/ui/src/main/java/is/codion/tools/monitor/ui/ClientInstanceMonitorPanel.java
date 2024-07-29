@@ -46,7 +46,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.text.SearchHighlighter.searchHighlighter;
 import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.dialog.Dialogs.fileSelectionDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -80,7 +79,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 	public ClientInstanceMonitorPanel(ClientInstanceMonitor model) throws RemoteException {
 		this.model = requireNonNull(model);
 		this.logTextArea = createLogTextArea();
-		this.searchHighlighter = searchHighlighter(logTextArea);
+		this.searchHighlighter = SearchHighlighter.builder(logTextArea).build();
 		this.searchField = searchHighlighter.createSearchField();
 		KeyEvents.builder(KeyEvent.VK_F)
 						.modifiers(InputEvent.CTRL_DOWN_MASK)

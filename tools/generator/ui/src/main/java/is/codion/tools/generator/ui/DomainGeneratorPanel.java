@@ -73,7 +73,6 @@ import java.util.function.Consumer;
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.text.SearchHighlighter.searchHighlighter;
 import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
@@ -177,7 +176,7 @@ public final class DomainGeneratorPanel extends JPanel {
 										.control(Controls.builder()
 														.name("Columns")
 														.control(table.createToggleColumnsControls())
-														.control(table.createSelectAutoResizeModeControl()))
+														.control(table.createToggleAutoResizeModelControls()))
 										.build())
 						.onBuild(table -> table.sortModel().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING))
 						.build();
@@ -186,7 +185,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	private FilterTable<EntityRow, EntityColumns.Id> createEntityTable() {
 		return FilterTable.builder(model.entityModel(), createEntityColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.popupMenuControl(FilterTable::createSelectAutoResizeModeControl)
+						.popupMenuControl(FilterTable::createToggleAutoResizeModelControls)
 						.onBuild(table -> table.sortModel().setSortOrder(EntityColumns.Id.ENTITY, SortOrder.ASCENDING))
 						.build();
 	}
@@ -462,6 +461,13 @@ public final class DomainGeneratorPanel extends JPanel {
 										.build();
 
 		return asList(entityTypeColumn, typeColumn);
+	}
+
+	private static SearchHighlighter searchHighlighter(JTextArea textArea) {
+		return SearchHighlighter.builder(textArea)
+						.scrollYRatio(0.2)
+						.scrollXRatio(0.5)
+						.build();
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelProvider lookAndFeelProvider) {
