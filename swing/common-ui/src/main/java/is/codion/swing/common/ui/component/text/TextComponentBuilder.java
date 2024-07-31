@@ -157,4 +157,11 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
 	 * @see #initialValue(Object)
 	 */
 	B initialCaretPosition(InitialCaretPosition initialCaretPosition);
+
+	/**
+	 * @param caretUpdatePolicy the caret update policy
+	 * @return this builder instance
+	 * @see javax.swing.text.DefaultCaret#setUpdatePolicy(int)
+	 */
+	B caretUpdatePolicy(int caretUpdatePolicy);
 }

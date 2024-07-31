@@ -61,6 +61,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
+import javax.swing.text.DefaultCaret;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.InputEvent;
@@ -235,6 +236,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.rowsColumns(40, 60)
 						.editable(false)
 						.font(monospaceFont())
+						.caretUpdatePolicy(DefaultCaret.NEVER_UPDATE)
 						.build();
 	}
 

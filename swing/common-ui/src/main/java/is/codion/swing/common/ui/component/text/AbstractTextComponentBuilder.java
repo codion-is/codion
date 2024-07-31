@@ -24,6 +24,8 @@ import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.event.CaretListener;
+import javax.swing.text.Caret;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.Insets;
@@ -59,6 +61,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	private boolean dragEnabled = false;
 	private Character focusAcceleratorKey;
 	private InitialCaretPosition initialCaretPosition = InitialCaretPosition.START;
+	private int caretUpdatePolicy = DefaultCaret.UPDATE_WHEN_ON_EDT;
 
 	protected AbstractTextComponentBuilder(Value<T> linkedValue) {
 		super(linkedValue);
@@ -187,6 +190,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	}
 
 	@Override
+	public final B caretUpdatePolicy(int caretUpdatePolicy) {
+		this.caretUpdatePolicy = caretUpdatePolicy;
+		return self();
+	}
+
+	@Override
 	protected final C createComponent() {
 		C textComponent = createTextComponent();
 		textComponent.setEditable(editable);
@@ -214,6 +223,10 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 			keyEvent(KeyEvents.builder(VK_BACK_SPACE)
 							.modifiers(CTRL_DOWN_MASK)
 							.action(new DeletePreviousWordAction()));
+		}
+		Caret caret = textComponent.getCaret();
+		if (caret instanceof DefaultCaret) {
+			((DefaultCaret) caret).setUpdatePolicy(caretUpdatePolicy);
 		}
 		if (disabledTextColor != null) {
 			textComponent.setDisabledTextColor(disabledTextColor);

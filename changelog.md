@@ -10,6 +10,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - SearchHighlighter.Builder added, scrollYRatio and scrollXRatio added.
 - TextComponentBuilder.initialCaretPosition() added along with InitialCaretPosition enum.
+- TextComponentBuilder.caretUpdatePolicy() added.
 ### is.codion.framework.domain
 - DomainModel.add(EntityDefinition.Builder... builders) removed.
 - DomainModel, DefaultEntities.setStrictForeignKeys() renamed validateForeignKeys().

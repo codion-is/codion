@@ -34,6 +34,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.text.DefaultCaret;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -142,6 +143,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 						.document(model.logDocument())
 						.editable(false)
 						.wrapStyleWord(true)
+						.caretUpdatePolicy(DefaultCaret.NEVER_UPDATE)
 						.build();
 		Font font = textArea.getFont();
 		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
