@@ -58,9 +58,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	private Consumer<String> onTextChanged;
 	private boolean dragEnabled = false;
 	private Character focusAcceleratorKey;
+	private InitialCaretPosition initialCaretPosition = InitialCaretPosition.START;
 
 	protected AbstractTextComponentBuilder(Value<T> linkedValue) {
 		super(linkedValue);
+		// Make sure this is done last, after value linking and setting the initial value
+		onBuild(this::setInitialCaretPosition);
 	}
 
 	@Override
@@ -178,6 +181,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	}
 
 	@Override
+	public final B initialCaretPosition(InitialCaretPosition initialCaretPosition) {
+		this.initialCaretPosition = requireNonNull(initialCaretPosition);
+		return self();
+	}
+
+	@Override
 	protected final C createComponent() {
 		C textComponent = createTextComponent();
 		textComponent.setEditable(editable);
@@ -242,7 +251,6 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 		else if (initialValue != null) {
 			throw new IllegalArgumentException("Unsupported type: " + initialValue.getClass());
 		}
-		component.setCaretPosition(0);
 	}
 
 	/**
@@ -250,6 +258,10 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	 * @return a JTextComponent or subclass
 	 */
 	protected abstract C createTextComponent();
+
+	private void setInitialCaretPosition(C component) {
+		component.setCaretPosition(initialCaretPosition == InitialCaretPosition.START ? 0 : component.getDocument().getLength());
+	}
 
 	private static final class AddCaretListener implements Consumer<CaretListener> {
 

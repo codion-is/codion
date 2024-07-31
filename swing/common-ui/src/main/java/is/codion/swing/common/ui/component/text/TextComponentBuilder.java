@@ -33,6 +33,13 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
 				extends ComponentBuilder<T, C, B> {
 
 	/**
+	 * Specifies the possible initial caret position given an initial value.
+	 */
+	enum InitialCaretPosition {
+		START, END
+	}
+
+	/**
 	 * @param editable false if the component should not be editable
 	 * @return this builder instance
 	 * @see JTextComponent#setEditable(boolean)
@@ -141,4 +148,13 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
 	 * @see JTextComponent#setFocusAccelerator(char)
 	 */
 	B focusAccelerator(char focusAcceleratorKey);
+
+	/**
+	 * Specifies the initial caret position for the component in case an initial value is specified.
+	 * Default {@link InitialCaretPosition#START}
+	 * @param initialCaretPosition the initial caret position
+	 * @return this builder instance
+	 * @see #initialValue(Object)
+	 */
+	B initialCaretPosition(InitialCaretPosition initialCaretPosition);
 }
