@@ -473,7 +473,9 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 		@Override
 		public BigDecimal get(ResultSet resultSet, int index) throws SQLException {
-			return resultSet.getBigDecimal(index);
+			BigDecimal value = resultSet.getBigDecimal(index);
+
+			return value == null ? null : value.stripTrailingZeros();
 		}
 	}
 

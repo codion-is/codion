@@ -20,6 +20,7 @@ Codion Change Log
 - DerivedAttributeDefinition caching can now be disabled, cached() added, default true, cached values can be removed via remove() and are included when entities are serialized.
 - AttributeDefinition.denormalized() removed, no longer used.
 - KeyGenerator.Identity added.
+- DefaultColumnDefinition.BigDecimalFetcher now strips trailing zeros from values coming from the database.
 ### is.codion.framework.model
 - ForeignKeyConditionModel now defaults to Operator.IN when available.
 - DefaultForeignKeyDetailModelLink.setForeignKeyCondition() now always uses Operator.IN.
