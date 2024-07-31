@@ -1,6 +1,6 @@
 extraJavaModuleInfo {
-    automaticModule("net.sf.jasperreports:jasperreports", "jasperreports")
-    automaticModule("net.sf.jasperreports:jasperreports-jdt", "jasperreports.jdt")
+    automaticModule("net.sf.jasperreports:jasperreports", "net.sf.jasperreports.core")
+    automaticModule("net.sf.jasperreports:jasperreports-jdt", "net.sf.jasperreports.jdt")
     automaticModule("org.eclipse.jdt:ecj", "org.eclipse.jdt.ecj")
     automaticModule("commons-collections:commons-collections", "commons.collections")
     automaticModule("commons-digester:commons-digester", "commons.digester")

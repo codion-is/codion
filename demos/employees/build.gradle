@@ -33,7 +33,6 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
 apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
 jasperreports {

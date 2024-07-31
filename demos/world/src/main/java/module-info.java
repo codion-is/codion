@@ -25,7 +25,7 @@ module is.codion.framework.demos.world {
 	requires is.codion.framework.json.domain;
 	requires com.formdev.flatlaf.intellijthemes;
 	requires org.kordamp.ikonli.foundation;
-	requires jasperreports;
+	requires net.sf.jasperreports.core;
 	requires org.jfree.jfreechart;
 	requires org.jxmapviewer.jxmapviewer2;
 	requires org.json;

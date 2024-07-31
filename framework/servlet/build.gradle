@@ -24,5 +24,4 @@ dependencies {
     testRuntimeOnly(libs.h2)
 }
 
-apply from: "extra-module-info-javalin.gradle"
 apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"

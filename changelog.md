@@ -30,6 +30,8 @@ Codion Change Log
 - SwingForeignKeyConditionModel now defaults to Operator.IN when available.
 ### is.codion.tools.generator.domain
 - DomainSource no longer adds KeyGenerator.identity() import unless it is actually used.
+### is.codion.plugin.jasperreports
+- JasperReports automatic module names updated, hopefully the ones they end up using.
 
 ## 0.18.6
 ### is.codion

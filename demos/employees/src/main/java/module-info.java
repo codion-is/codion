@@ -20,7 +20,7 @@
  * Employees demo.
  */
 module is.codion.framework.demos.employees {
-	requires jasperreports;
+	requires net.sf.jasperreports.core;
 	requires is.codion.framework.db.http;
 	requires is.codion.framework.db.local;
 	requires is.codion.framework.db.rmi;

@@ -30,7 +30,6 @@ dependencies {
 }
 
 apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
-apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
 
 tasks.register("runNotesDemo", JavaExec) {
     group "application"

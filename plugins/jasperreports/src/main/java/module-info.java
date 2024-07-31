@@ -24,7 +24,7 @@
  * {@link is.codion.plugin.jasperreports.JRReportType}<br>
  */
 module is.codion.plugin.jasperreports {
-	requires jasperreports;
+	requires net.sf.jasperreports.core;
 	requires is.codion.common.db;
 
 	exports is.codion.plugin.jasperreports;
