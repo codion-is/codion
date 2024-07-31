@@ -11,6 +11,7 @@ Codion Change Log
 - SearchHighlighter.Builder added, scrollYRatio and scrollXRatio added.
 - TextComponentBuilder.initialCaretPosition() added along with InitialCaretPosition enum.
 - TextComponentBuilder.caretUpdatePolicy() added.
+- SearchHighlighter now updates its color scheme dynamically when the look and feel is changed.
 ### is.codion.framework.domain
 - DomainModel.add(EntityDefinition.Builder... builders) removed.
 - DomainModel, DefaultEntities.setStrictForeignKeys() renamed validateForeignKeys().

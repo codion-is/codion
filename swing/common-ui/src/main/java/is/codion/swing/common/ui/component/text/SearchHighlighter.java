@@ -35,11 +35,14 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.Highlighter;
+import javax.swing.text.Highlighter.Highlight;
 import javax.swing.text.Highlighter.HighlightPainter;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -62,6 +65,8 @@ public final class SearchHighlighter {
 	private static final MessageBundle MESSAGES =
 					messageBundle(SearchHighlighter.class, getBundle(SearchHighlighter.class.getName()));
 
+	private static final String UI_PROPERTY_NAME = "UI";
+
 	private final JTextComponent textComponent;
 	private final Value<String> searchStringValue = Value.nonNull("")
 					.listener(this::searchAndHighlightResults)
@@ -72,9 +77,11 @@ public final class SearchHighlighter {
 	private final Value<Integer> currentSearchTextPositionIndex = Value.value();
 	private final Value<Integer> selectedSearchTextPosition = Value.value();
 	private final ScrollToRatio scrollToRatio;
+	private final boolean customHighlightColor;
+	private final boolean customSelectedHighlightColor;
 
 	private HighlightPainter highlightPainter;
-	private HighlightPainter selectedHightlightPainter;
+	private SelectedHighlightPainter selectedHightlightPainter;
 
 	private SearchHighlighter(DefaultBuilder builder) {
 		this.textComponent = builder.textComponent;
@@ -82,10 +89,12 @@ public final class SearchHighlighter {
 		this.caseSensitiveState = State.builder(builder.caseSensitive)
 						.listener(this::searchAndHighlightResults)
 						.build();
+		customHighlightColor = builder.customHighlightColor;
+		customSelectedHighlightColor = builder.customSelectedHighlightColor;
 		highlightPainter = new DefaultHighlightPainter(builder.selectedHighlightColor);
-		selectedHightlightPainter = new DefaultHighlightPainter(builder.highlightColor);
+		selectedHightlightPainter = new SelectedHighlightPainter(builder.highlightColor);
 		textComponent.setHighlighter(highlighter);
-		bindEvents(textComponent);
+		bindEvents();
 	}
 
 	/**
@@ -107,15 +116,15 @@ public final class SearchHighlighter {
 	 */
 	public void highlightColor(Color color) {
 		highlightPainter = new DefaultHighlightPainter(requireNonNull(color));
-		searchAndHighlightResults();
+		updateHighligths();
 	}
 
 	/**
 	 * @param color the color to use when highlighting the selected search result.
 	 */
 	public void selectedHighlightColor(Color color) {
-		selectedHightlightPainter = new DefaultHighlightPainter(requireNonNull(color));
-		searchAndHighlightResults();
+		selectedHightlightPainter = new SelectedHighlightPainter(requireNonNull(color));
+		updateHighligths();
 	}
 
 	/**
@@ -233,19 +242,20 @@ public final class SearchHighlighter {
 		}
 	}
 
-	private void bindEvents(JTextComponent textComponent) {
+	private void bindEvents() {
 		textComponent.getDocument().addDocumentListener((DocumentAdapter) e -> searchAndHighlightResults());
+		textComponent.addPropertyChangeListener(UI_PROPERTY_NAME, new UpdateHightlightColors());
 		selectedSearchTextPosition.addConsumer(selectedSearchPosition -> {
 			if (selectedSearchPosition != null) {
-				scrollToPosition(textComponent, selectedSearchPosition);
+				scrollToPosition(selectedSearchPosition);
 			}
 		});
 	}
 
-	private void scrollToPosition(JTextComponent component, int position) {
-		JViewport viewport = parentOfType(JViewport.class, component);
+	private void scrollToPosition(int position) {
+		JViewport viewport = parentOfType(JViewport.class, textComponent);
 		try {
-			Rectangle view = component.modelToView(position);
+			Rectangle view = textComponent.modelToView(position);
 			if (viewport != null && view != null) {
 				viewport.setViewPosition(viewPosition(viewport, view));
 			}
@@ -275,6 +285,31 @@ public final class SearchHighlighter {
 		yPosition = Math.min(yPosition, viewWidth - extentWidth);
 
 		return yPosition;
+	}
+
+	private void updateHighligths() {
+		Highlight[] highlights = highlighter.getHighlights();
+		highlighter.removeAllHighlights();
+		for (Highlight highlight : highlights) {
+			updateHighlight(highlight, matchPosition(highlight.getStartOffset()));
+		}
+	}
+
+	private void updateHighlight(Highlight highlight, MatchPosition matchPosition) {
+		try {
+			matchPosition.highlightTag = highlighter.addHighlight(highlight.getStartOffset(), highlight.getEndOffset(),
+							highlight.getPainter() instanceof SelectedHighlightPainter ? selectedHightlightPainter : highlightPainter);
+		}
+		catch (BadLocationException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private MatchPosition matchPosition(int startOffset) {
+		return searchTextPositions.stream()
+						.filter(matchPosition -> matchPosition.start == startOffset)
+						.findFirst()
+						.orElseThrow(IllegalStateException::new);
 	}
 
 	private static JPopupMenu createPopupMenu(ToggleControl caseSensitiveControl) {
@@ -336,6 +371,8 @@ public final class SearchHighlighter {
 
 		private Color highlightColor;
 		private Color selectedHighlightColor;
+		private boolean customHighlightColor = false;
+		private boolean customSelectedHighlightColor = false;
 		private boolean caseSensitive = true;
 		private double scrollYRatio = 0.5;
 		private double scrollXRatio = 0.5;
@@ -349,12 +386,14 @@ public final class SearchHighlighter {
 		@Override
 		public Builder highlightColor(Color highlightColor) {
 			this.highlightColor = requireNonNull(highlightColor);
+			this.customHighlightColor = true;
 			return this;
 		}
 
 		@Override
 		public Builder selectedHighlightColor(Color selectedHighlightColor) {
 			this.selectedHighlightColor = requireNonNull(selectedHighlightColor);
+			this.customSelectedHighlightColor = true;
 			return this;
 		}
 
@@ -385,6 +424,26 @@ public final class SearchHighlighter {
 		@Override
 		public SearchHighlighter build() {
 			return new SearchHighlighter(this);
+		}
+	}
+
+	private final class UpdateHightlightColors implements PropertyChangeListener {
+
+		@Override
+		public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+			if (!customHighlightColor) {
+				highlightColor(textComponent.getSelectionColor());
+			}
+			if (!customSelectedHighlightColor) {
+				selectedHighlightColor(darker(textComponent.getSelectionColor()));
+			}
+		}
+	}
+
+	private static final class SelectedHighlightPainter extends DefaultHighlightPainter {
+
+		private SelectedHighlightPainter(Color color) {
+			super(color);
 		}
 	}
 
