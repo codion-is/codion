@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.8
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel bug fixed, IN operator only selected by default if entity is searchable.
+### is.codion.swing.framework.ui
+- EntityTablePanel, EDIT control used as double click action if available.
 
 ## 0.18.7
 ### is.codion.common.core

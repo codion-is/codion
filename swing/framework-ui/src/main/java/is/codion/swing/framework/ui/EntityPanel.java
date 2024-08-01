@@ -45,7 +45,6 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -888,11 +887,10 @@ public class EntityPanel extends JPanel {
 	 */
 	protected final void initializeTablePanel() {
 		if (tablePanel != null) {
-			Value<Action> doubleClickAction = tablePanel.table().doubleClickAction();
-			if (doubleClickAction.isNull()) {
-				doubleClickAction.set(commandControl(new ShowHiddenEditPanel()));
-			}
 			tablePanel.initialize();
+			if (tablePanel.table().doubleClickAction().isNull()) {
+				tablePanel.table().doubleClickAction().set(commandControl(new ShowHiddenEditPanel()));
+			}
 		}
 	}
 

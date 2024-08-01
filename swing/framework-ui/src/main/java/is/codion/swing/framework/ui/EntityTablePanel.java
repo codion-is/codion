@@ -742,6 +742,7 @@ public class EntityTablePanel extends JPanel {
 				setupControls();
 				setupStandardControls();
 				addTablePopupMenu();
+				addDoubleClickAction();
 				layoutPanel(tablePanel, configuration.includeSouthPanel ? initializeSouthPanel() : null);
 				setSummaryPanelVisible(summaryPanelVisibleState.get());
 				bindEvents();
@@ -1640,6 +1641,12 @@ public class EntityTablePanel extends JPanel {
 			JPopupMenu popupMenu = menu(popupControls).createPopupMenu();
 			table.setComponentPopupMenu(popupMenu);
 			tableScrollPane.setComponentPopupMenu(popupMenu);
+		}
+	}
+
+	private void addDoubleClickAction() {
+		if (table.doubleClickAction().isNull()) {
+			control(EDIT).optional().ifPresent(table.doubleClickAction()::set);
 		}
 	}
 
