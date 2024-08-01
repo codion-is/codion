@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.8
+### is.codion.swing.framework.model
+- SwingForeignKeyConditionModel bug fixed, IN operator only selected by default if entity is searchable.
 
 ## 0.18.7
 ### is.codion.common.core

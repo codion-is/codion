@@ -56,7 +56,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 	private SwingForeignKeyConditionModel(DefaultBuilder builder) {
 		this.conditionModel = ColumnConditionModel.builder(builder.foreignKey, Entity.class)
 						.operators(builder.operators())
-						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
+						.operator(defaultOperator(builder))
 						.build();
 		this.inSearchModel = builder.inSearchModel;
 		this.equalComboBoxModel = builder.equalComboBoxModel;
@@ -230,6 +230,17 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 		return new DefaultBuilder(foreignKey);
 	}
 
+	private static Operator defaultOperator(DefaultBuilder builder) {
+		if (builder.inSearchModel == null) {
+			return Operator.EQUAL;
+		}
+
+		boolean searchable = !builder.inSearchModel.connectionProvider().entities()
+						.definition(builder.inSearchModel.entityType()).columns().searchable().isEmpty();
+
+		return searchable ? Operator.IN : Operator.EQUAL;
+	}
+
 	/**
 	 * A builder for a {@link SwingForeignKeyConditionModel}
 	 */
@@ -343,7 +354,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 
 		private List<Operator> operators() {
 			if (equalComboBoxModel == null && inSearchModel == null) {
-				throw new IllegalStateException("You must specify either an equalComboBoxModel or an inSearchModel");
+				throw new IllegalStateException("You must include either the EQUAL or IN operator or both");
 			}
 			if (equalComboBoxModel != null && inSearchModel != null) {
 				return asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN);
