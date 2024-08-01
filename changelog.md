@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.8
+
 ## 0.18.7
 ### is.codion.common.core
 - DatabaseConnection.getConnection() now throws IllegalStateException if the connection has been closed, valid() added.
