@@ -68,7 +68,8 @@ public final class SearchHighlighter {
 	private static final String UI_PROPERTY_NAME = "UI";
 
 	private final JTextComponent textComponent;
-	private final Value<String> searchStringValue = Value.nonNull("")
+	private final Value<String> searchStringValue = Value.builder()
+					.nonNull("")
 					.listener(this::searchAndHighlightResults)
 					.build();
 	private final State caseSensitiveState;

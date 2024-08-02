@@ -91,9 +91,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
 		this.connectionProvider = connectionProvider;
-		this.validator = Value.nonNull(entityDefinition().validator()).build();
-		this.modifiedPredicate = Value.nonNull((Predicate<Entity>) Entity::modified).build();
-		this.existsPredicate = Value.nonNull(entityDefinition().exists()).build();
+		this.validator = Value.builder()
+						.nonNull(entityDefinition().validator())
+						.build();
+		this.modifiedPredicate = Value.builder()
+						.nonNull((Predicate<Entity>) Entity::modified)
+						.build();
+		this.existsPredicate = Value.builder()
+						.nonNull(entityDefinition().exists())
+						.build();
 		this.states.readOnly.set(entityDefinition().readOnly());
 		this.events.bindEvents();
 		configurePersistentForeignKeys();
@@ -122,7 +128,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			return (Value<S>) defaultValues.get(attribute);
 		}
 
-		defaultValues.put(attribute, (Value<Supplier<?>>) Value.nonNull((S) (Supplier<T>) attributeDefinition::defaultValue).build());
+		defaultValues.put(attribute, (Value<Supplier<?>>) Value.builder()
+						.nonNull((S) (Supplier<T>) attributeDefinition::defaultValue)
+						.build());
 
 		return (Value<S>) defaultValues.get(attribute);
 	}

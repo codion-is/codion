@@ -168,7 +168,8 @@ public final class WindowDetailLayout implements DetailLayout {
 
 	private final class DetailWindow {
 
-		private final Value<PanelState> panelState = Value.nonNull(HIDDEN)
+		private final Value<PanelState> panelState = Value.builder()
+						.nonNull(HIDDEN)
 						.notify(Notify.WHEN_SET)
 						.validator(PANEL_STATE_VALIDATOR)
 						.consumer(this::updateDetailState)

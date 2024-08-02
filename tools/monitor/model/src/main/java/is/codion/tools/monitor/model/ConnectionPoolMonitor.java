@@ -83,23 +83,28 @@ public final class ConnectionPoolMonitor {
 	public ConnectionPoolMonitor(ConnectionPoolWrapper connectionPool, int updateRate) {
 		this.username = requireNonNull(connectionPool).user().username();
 		this.connectionPool = connectionPool;
-		this.pooledConnectionTimeoutValue = Value.nonNull(0)
+		this.pooledConnectionTimeoutValue = Value.builder()
+						.nonNull(0)
 						.initialValue(connectionPool.getIdleConnectionTimeout())
 						.consumer(connectionPool::setIdleConnectionTimeout)
 						.build();
-		this.pooledCleanupIntervalValue = Value.nonNull(0)
+		this.pooledCleanupIntervalValue = Value.builder()
+						.nonNull(0)
 						.initialValue(connectionPool.getCleanupInterval())
 						.consumer(connectionPool::setCleanupInterval)
 						.build();
-		this.minimumPoolSizeValue = Value.nonNull(0)
+		this.minimumPoolSizeValue = Value.builder()
+						.nonNull(0)
 						.initialValue(connectionPool.getMinimumPoolSize())
 						.consumer(connectionPool::setMinimumPoolSize)
 						.build();
-		this.maximumPoolSizeValue = Value.nonNull(0)
+		this.maximumPoolSizeValue = Value.builder()
+						.nonNull(0)
 						.initialValue(connectionPool.getMaximumPoolSize())
 						.consumer(connectionPool::setMaximumPoolSize)
 						.build();
-		this.maximumCheckoutTimeValue = Value.nonNull(0)
+		this.maximumCheckoutTimeValue = Value.builder()
+						.nonNull(0)
 						.initialValue(connectionPool.getMaximumCheckOutTime())
 						.consumer(connectionPool::setMaximumCheckOutTime)
 						.build();

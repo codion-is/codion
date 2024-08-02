@@ -47,16 +47,20 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 					.listener(this::performSearch)
 					.build();
 	private final List<RowColumn> searchResults = new ArrayList<>();
-	private final Value<Predicate<String>> searchPredicate = Value.<Predicate<String>>nullable()
+	private final Value<Predicate<String>> searchPredicate = Value.builder()
+					.<Predicate<String>>nullable()
 					.listener(this::performSearch)
 					.build();
-	private final Value<String> searchString = Value.nonNull("")
+	private final Value<String> searchString = Value.builder()
+					.nonNull("")
 					.consumer(searchText -> searchPredicate.set(createSearchPredicate(searchText)))
 					.build();
 	private final State regularExpression = State.builder()
 					.listener(searchString::clear)
 					.build();
-	private final Value<RowColumn> searchResult = Value.nonNull(NULL_COORDINATE).build();
+	private final Value<RowColumn> searchResult = Value.builder()
+					.nonNull(NULL_COORDINATE)
+					.build();
 
 	private int searchResultIndex = -1;
 

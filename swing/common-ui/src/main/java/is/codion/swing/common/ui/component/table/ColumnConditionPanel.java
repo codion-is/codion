@@ -40,7 +40,8 @@ import static java.util.Objects.requireNonNull;
 public abstract class ColumnConditionPanel<C, T> extends JPanel {
 
 	private final ColumnConditionModel<C, T> conditionModel;
-	private final Value<ConditionState> conditionState = Value.nonNull(HIDDEN)
+	private final Value<ConditionState> conditionState = Value.builder()
+					.nonNull(HIDDEN)
 					.consumer(this::onStateChanged)
 					.build();
 	private final State hiddenState = State.state(true);

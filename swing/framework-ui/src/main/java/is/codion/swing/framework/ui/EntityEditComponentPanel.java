@@ -986,7 +986,8 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	private Value<JComponent> createComponentValue(Attribute<?> attribute) {
-		return Value.<JComponent>nullable()
+		return Value.builder()
+						.<JComponent>nullable()
 						.consumer(new AddModifiedIndicator(attribute))
 						.build();
 	}
@@ -1054,11 +1055,21 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected static final class Defaults {
 
-		private final Value<Integer> textFieldColumns = Value.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.get()).build();
-		private final Value<Integer> foreignKeySearchFieldColumns = Value.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.get()).build();
-		private final Value<Integer> foreignKeyComboBoxPreferredWidth = Value.nonNull(0).build();
-		private final Value<Integer> itemComboBoxPreferredWidth = Value.nonNull(0).build();
-		private final Value<Integer> comboBoxPreferredWidth = Value.nonNull(0).build();
+		private final Value<Integer> textFieldColumns = Value.builder()
+						.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.get())
+						.build();
+		private final Value<Integer> foreignKeySearchFieldColumns = Value.builder()
+						.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.get())
+						.build();
+		private final Value<Integer> foreignKeyComboBoxPreferredWidth = Value.builder()
+						.nonNull(0)
+						.build();
+		private final Value<Integer> itemComboBoxPreferredWidth = Value.builder()
+						.nonNull(0)
+						.build();
+		private final Value<Integer> comboBoxPreferredWidth = Value.builder()
+						.nonNull(0)
+						.build();
 
 		/**
 		 * Controls the default number of text field columns, -1 for not settings the columns

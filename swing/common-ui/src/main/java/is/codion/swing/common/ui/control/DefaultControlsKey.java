@@ -35,7 +35,9 @@ final class DefaultControlsKey implements ControlsKey {
 
 	DefaultControlsKey(String name, KeyStroke defaultKeyStroke, Layout defaultLayout) {
 		this.name = requireNonNull(name);
-		this.defaultKeyStroke = Value.nullable(defaultKeyStroke).build();
+		this.defaultKeyStroke = Value.builder()
+						.nullable(defaultKeyStroke)
+						.build();
 		this.defaultLayout = defaultLayout;
 	}
 

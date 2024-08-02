@@ -73,7 +73,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final Predicate<R> validator;
 	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
-	private final Value<Comparator<R>> comparator = Value.<Comparator<R>>nullable()
+	private final Value<Comparator<R>> comparator = Value.builder()
+					.<Comparator<R>>nullable()
 					.notify(Value.Notify.WHEN_SET)
 					.build();
 
@@ -484,7 +485,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final class DefaultRefresher extends AbstractFilterModelRefresher<R> {
 
-		private final Value<RefreshStrategy> refreshStrategy = Value.nonNull(RefreshStrategy.CLEAR).build();
+		private final Value<RefreshStrategy> refreshStrategy = Value.builder()
+						.nonNull(RefreshStrategy.CLEAR)
+						.build();
 
 		private DefaultRefresher(Supplier<Collection<R>> items) {
 			super(items);

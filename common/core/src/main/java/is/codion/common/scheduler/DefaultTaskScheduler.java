@@ -43,7 +43,8 @@ final class DefaultTaskScheduler implements TaskScheduler {
 
 	private DefaultTaskScheduler(DefaultBuilder builder) {
 		this.task = builder.task;
-		this.interval = Value.nonNull(builder.interval)
+		this.interval = Value.builder()
+						.nonNull(builder.interval)
 						.validator(INTERVAL_VALIDATOR)
 						.listener(this::onIntervalChanged)
 						.build();

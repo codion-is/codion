@@ -54,25 +54,29 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
-	private final Value<T> equalValue = Value.<T>nullable()
+	private final Value<T> equalValue = Value.builder()
+					.<T>nullable()
 					.notify(Notify.WHEN_SET)
 					.validator(lockValidator)
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
-	private final Value<T> upperBoundValue = Value.<T>nullable()
+	private final Value<T> upperBoundValue = Value.builder()
+					.<T>nullable()
 					.notify(Notify.WHEN_SET)
 					.validator(lockValidator)
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
-	private final Value<T> lowerBoundValue = Value.<T>nullable()
+	private final Value<T> lowerBoundValue = Value.builder()
+					.<T>nullable()
 					.notify(Notify.WHEN_SET)
 					.validator(lockValidator)
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
-	private final Value<AutomaticWildcard> automaticWildcard = Value.nonNull(AutomaticWildcard.NONE)
+	private final Value<AutomaticWildcard> automaticWildcard = Value.builder()
+					.nonNull(AutomaticWildcard.NONE)
 					.listener(conditionChangedEvent)
 					.build();
 
@@ -95,8 +99,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private DefaultColumnConditionModel(DefaultBuilder<C, T> builder) {
 		this.columnIdentifier = builder.columnIdentifier;
 		this.operators = unmodifiableList(builder.operators);
-		this.operator = Value.nonNull(builder.operator)
-						.initialValue(builder.operator)
+		this.operator = Value.builder()
+						.nonNull(builder.operator)
 						.validator(lockValidator)
 						.validator(this::validateOperator)
 						.listener(autoEnableListener)

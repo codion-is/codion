@@ -39,7 +39,9 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 	private int inputFieldColumns = DEFAULT_FIELD_COLUMNS;
 
 	DefaultLoginDialogBuilder() {
-		title(Value.nullable(Messages.login()).build());
+		title(Value.builder()
+						.nullable(Messages.login())
+						.build());
 	}
 
 	@Override

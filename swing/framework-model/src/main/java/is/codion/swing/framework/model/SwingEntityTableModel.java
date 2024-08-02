@@ -89,7 +89,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	private final Value<Integer> limit = Value.value();
 	private final Value<OrderBy> orderBy;
 	private final State removeDeleted = State.state(true);
-	private final Value<OnInsert> onInsert = Value.nonNull(EntityTableModel.ON_INSERT.get()).build();
+	private final Value<OnInsert> onInsert = Value.builder()
+					.nonNull(EntityTableModel.ON_INSERT.get())
+					.build();
 
 	/**
 	 * Caches java.awt.Color instances parsed from hex strings via {@link #toColor(Object)}
@@ -844,7 +846,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 	private Value<OrderBy> createOrderBy() {
 		return entityDefinition().orderBy()
-						.map(entityOrderBy -> Value.nonNull(entityOrderBy).build())
+						.map(entityOrderBy -> Value.builder()
+										.nonNull(entityOrderBy)
+										.build())
 						.orElse(Value.value());
 	}
 

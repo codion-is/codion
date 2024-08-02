@@ -102,8 +102,12 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		this.entityType = requireNonNull(entityType, "entityType");
 		this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
 		this.entities = connectionProvider.entities();
-		this.orderBy = Value.nullable(this.entities.definition(entityType).orderBy().orElse(null)).build();
-		this.conditionSupplier = Value.nonNull((Supplier<Condition>) new DefaultConditionSupplier()).build();
+		this.orderBy = Value.builder()
+						.nullable(this.entities.definition(entityType).orderBy().orElse(null))
+						.build();
+		this.conditionSupplier = Value.builder()
+						.nonNull((Supplier<Condition>) new DefaultConditionSupplier())
+						.build();
 		comboBoxModel.selectedItemTranslator().set(new SelectedItemTranslator());
 		comboBoxModel.refresher().items().set(this::performQuery);
 		comboBoxModel.validator().set(new ItemValidator());

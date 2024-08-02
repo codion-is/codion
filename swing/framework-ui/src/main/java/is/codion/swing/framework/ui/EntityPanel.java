@@ -303,7 +303,8 @@ public class EntityPanel extends JPanel {
 		this.detailLayout = configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
 		this.editPanelStateMapper = panelStateMapper(configuration.enabledEditStates);
-		this.editPanelState = Value.nonNull(configuration.initialEditState)
+		this.editPanelState = Value.builder()
+						.nonNull(configuration.initialEditState)
 						.consumer(this::updateEditState)
 						.build();
 		createControls();

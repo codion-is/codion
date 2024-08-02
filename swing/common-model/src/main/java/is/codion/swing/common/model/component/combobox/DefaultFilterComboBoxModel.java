@@ -62,10 +62,18 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final List<T> filteredItems = new ArrayList<>();
 	private final Refresher<T> refresher;
 	private final Value<Predicate<T>> includeCondition = Value.value();
-	private final Value<Predicate<T>> validator = Value.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR).build();
-	private final Value<Function<Object, T>> selectedItemTranslator = Value.nonNull((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR).build();
-	private final Value<Predicate<T>> validSelectionPredicate = Value.nonNull((Predicate<T>) DEFAULT_VALID_SELECTION_PREDICATE).build();
-	private final Value<Comparator<T>> comparator = Value.nullable((Comparator<T>) DEFAULT_COMPARATOR).build();
+	private final Value<Predicate<T>> validator = Value.builder()
+					.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)
+					.build();
+	private final Value<Function<Object, T>> selectedItemTranslator = Value.builder()
+					.nonNull((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR)
+					.build();
+	private final Value<Predicate<T>> validSelectionPredicate = Value.builder()
+					.nonNull((Predicate<T>) DEFAULT_VALID_SELECTION_PREDICATE)
+					.build();
+	private final Value<Comparator<T>> comparator = Value.builder()
+					.nullable((Comparator<T>) DEFAULT_COMPARATOR)
+					.build();
 
 	/**
 	 * set during setItems()

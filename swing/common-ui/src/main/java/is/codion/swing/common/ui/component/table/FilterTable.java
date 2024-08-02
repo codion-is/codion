@@ -251,10 +251,13 @@ public final class FilterTable<R, C> extends JTable {
 		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
 						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
 		this.filterFieldFactory = builder.filterFieldFactory;
-		this.centerOnScroll = Value.nonNull(CenterOnScroll.NEITHER)
+		this.centerOnScroll = Value.builder()
+						.nonNull(CenterOnScroll.NEITHER)
 						.initialValue(builder.centerOnScroll)
 						.build();
-		this.doubleClickAction = Value.nullable(builder.doubleClickAction).build();
+		this.doubleClickAction = Value.builder()
+						.nullable(builder.doubleClickAction)
+						.build();
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.sortingEnabled = State.state(builder.sortingEnabled);
 		this.controlMap = builder.controlMap;

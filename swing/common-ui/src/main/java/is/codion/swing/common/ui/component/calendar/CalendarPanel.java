@@ -204,31 +204,44 @@ public final class CalendarPanel extends JPanel {
 		this.includeTodayButton = builder.includeTodayButton;
 		this.controlMap = builder.controlMap;
 		LocalDateTime dateTime = builder.initialValue == null ? LocalDateTime.now() : builder.initialValue;
-		yearValue = Value.nonNull(dateTime.getYear())
+		yearValue = Value.builder()
+						.nonNull(dateTime.getYear())
 						.listener(this::updateDateTime)
 						.listener(new LayoutDayPanelListener())
 						.build();
-		monthValue = Value.nonNull(dateTime.getMonth())
+		monthValue = Value.builder()
+						.nonNull(dateTime.getMonth())
 						.listener(this::updateDateTime)
 						.listener(new LayoutDayPanelListener())
 						.build();
-		dayValue = Value.nonNull(dateTime.getDayOfMonth())
+		dayValue = Value.builder()
+						.nonNull(dateTime.getDayOfMonth())
 						.listener(this::updateDateTime)
 						.build();
 		if (includeTime) {
-			hourValue = Value.nonNull(dateTime.getHour())
+			hourValue = Value.builder()
+							.nonNull(dateTime.getHour())
 							.listener(this::updateDateTime)
 							.build();
-			minuteValue = Value.nonNull(dateTime.getMinute())
+			minuteValue = Value.builder()
+							.nonNull(dateTime.getMinute())
 							.listener(this::updateDateTime)
 							.build();
 		}
 		else {
-			hourValue = Value.nonNull(0).build();
-			minuteValue = Value.nonNull(0).build();
+			hourValue = Value.builder()
+							.nonNull(0)
+							.build();
+			minuteValue = Value.builder()
+							.nonNull(0)
+							.build();
 		}
-		localDateValue = Value.nullable(createLocalDateTime().toLocalDate()).build();
-		localDateTimeValue = Value.nullable(createLocalDateTime()).build();
+		localDateValue = Value.builder()
+						.nullable(createLocalDateTime().toLocalDate())
+						.build();
+		localDateTimeValue = Value.builder()
+						.nullable(createLocalDateTime())
+						.build();
 		todaySelected = State.state(todaySelected());
 		dayStates = createDayStates();
 		dayButtons = createDayButtons();

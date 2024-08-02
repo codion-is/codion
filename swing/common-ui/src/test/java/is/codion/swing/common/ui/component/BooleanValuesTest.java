@@ -38,7 +38,7 @@ public class BooleanValuesTest {
 
 	@Test
 	void booleanToggleButtonCheckBox() {
-		Value<Boolean> booleanValue = Value.nonNull(false).build();
+		Value<Boolean> booleanValue = Value.builder().nonNull(false).build();
 		JCheckBox checkBox = Components.checkBox(booleanValue)
 						.build();
 		assertFalse(checkBox.isSelected());

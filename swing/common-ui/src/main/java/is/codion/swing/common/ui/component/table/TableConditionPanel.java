@@ -55,7 +55,8 @@ public abstract class TableConditionPanel<C> extends JPanel {
 					messageBundle(FilterColumnConditionPanel.class, getBundle(TableConditionPanel.class.getName()));
 
 	private final TableConditionModel<C> conditionModel;
-	private final Value<ConditionState> conditionState = Value.nonNull(HIDDEN)
+	private final Value<ConditionState> conditionState = Value.builder()
+					.nonNull(HIDDEN)
 					.consumer(this::onStateChanged)
 					.build();
 	private final State hiddenState = State.state(true);

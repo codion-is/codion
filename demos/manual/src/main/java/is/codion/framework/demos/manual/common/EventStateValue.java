@@ -129,14 +129,16 @@ public final class EventStateValue {
 		// tag::value[]
 		// a nullable value with 2 as the initial value
 		Value<Integer> value =
-						Value.nullable(2)
+						Value.builder()
+										.nullable(2)
 										.build();
 
 		value.set(4);
 
 		// a non-null value using 0 as null
 		Value<Integer> otherValue =
-						Value.nonNull(0)
+						Value.builder()
+										.nonNull(0)
 										// linked to the value above
 										.link(value)
 										.build();
@@ -159,9 +161,11 @@ public final class EventStateValue {
 		Integer initialValue = 42;
 		Integer nullValue = 0;
 
-		Value<Integer> value = Value.nonNull(nullValue)
-						.initialValue(initialValue)
-						.build();
+		Value<Integer> value =
+						Value.builder()
+										.nonNull(nullValue)
+										.initialValue(initialValue)
+										.build();
 
 		System.out.println(value.isNullable());//output: false
 
@@ -177,7 +181,8 @@ public final class EventStateValue {
 	private static final class Counter {
 
 		private final State valueNull = State.state(true);
-		private final Value<Integer> value = Value.<Integer>nullable()
+		private final Value<Integer> value = Value.builder()
+						.<Integer>nullable()
 						.consumer(integer -> valueNull.set(integer == null))
 						.build();
 

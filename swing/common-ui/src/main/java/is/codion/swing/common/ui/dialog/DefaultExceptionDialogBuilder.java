@@ -95,7 +95,9 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 
 	private void setTitle(Throwable rootCause) {
 		if (title == null) {
-			title(Value.nullable(messageTitle(rootCause)).build());
+			title(Value.builder()
+							.nullable(messageTitle(rootCause))
+							.build());
 		}
 	}
 

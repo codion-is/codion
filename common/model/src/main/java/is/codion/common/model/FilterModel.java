@@ -207,7 +207,9 @@ public interface FilterModel<T> {
 		 * @param items supplies the items
 		 */
 		protected AbstractRefresher(Supplier<Collection<T>> items) {
-			this.items = Value.nonNull(items).build();
+			this.items = Value.builder()
+							.nonNull(items)
+							.build();
 		}
 
 		@Override

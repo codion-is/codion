@@ -2721,7 +2721,8 @@ public class EntityTablePanel extends JPanel {
 
 	private final class StatusPanel extends JPanel {
 
-		private final Value<String> statusMessage = Value.nonNull("")
+		private final Value<String> statusMessage = Value.builder()
+						.nonNull("")
 						.initialValue(configuration.statusMessage.apply(tableModel))
 						.build();
 		private final JLabel label = Components.label(statusMessage)

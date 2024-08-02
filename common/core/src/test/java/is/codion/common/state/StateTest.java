@@ -340,7 +340,8 @@ public class StateTest {
 	@Test
 	void linking() {
 		State state = State.state();
-		Value<Boolean> value = Value.nullable(true)
+		Value<Boolean> value = Value.builder()
+						.nullable(true)
 						.link(state)
 						.build();
 

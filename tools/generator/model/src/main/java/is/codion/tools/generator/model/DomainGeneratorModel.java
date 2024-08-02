@@ -87,20 +87,25 @@ public final class DomainGeneratorModel {
 									.build();
 	private final Connection connection;
 	private final State domainPackageSpecified = State.state();
-	private final Value<String> domainPackageValue = Value.nonNull(DEFAULT_DOMAIN_PACKAGE.get())
+	private final Value<String> domainPackageValue = Value.builder()
+					.nonNull(DEFAULT_DOMAIN_PACKAGE.get())
 					.listener(this::domainPackageChanged)
 					.build();
 	private final State sourceDirectorySpecified = State.state();
-	private final Value<String> sourceDirectoryValue = Value.nonNull(DEFAULT_SOURCE_DIRECTORY.get())
+	private final Value<String> sourceDirectoryValue = Value.builder()
+					.nonNull(DEFAULT_SOURCE_DIRECTORY.get())
 					.listener(this::sourceDirectoryChanged)
 					.build();
-	private final Value<String> domainImplValue = Value.<String>nullable()
+	private final Value<String> domainImplValue = Value.builder()
+					.<String>nullable()
 					.notify(WHEN_SET)
 					.build();
-	private final Value<String> domainApiValue = Value.<String>nullable()
+	private final Value<String> domainApiValue = Value.builder()
+					.<String>nullable()
 					.notify(WHEN_SET)
 					.build();
-	private final Value<String> domainCombinedValue = Value.<String>nullable()
+	private final Value<String> domainCombinedValue = Value.builder()
+					.<String>nullable()
 					.notify(WHEN_SET)
 					.build();
 	private final Value<String> apiSearchValue = Value.value();

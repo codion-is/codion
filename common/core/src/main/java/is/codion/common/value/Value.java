@@ -28,9 +28,7 @@ import static java.util.Objects.requireNonNull;
  * A factory for {@link Value} instances.
  * @param <T> the type of the wrapped value
  * @see #value()
- * @see #nullable()
- * @see #nullable(Object)
- * @see #nonNull(Object)
+ * @see #builder()
  */
 public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 
@@ -160,34 +158,42 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * @return a Value for the given type
 	 */
 	static <T> Value<T> value() {
-		return Value.<T>nullable(null).build();
+		return builder()
+						.<T>nullable(null)
+						.build();
 	}
 
 	/**
-	 * @param nullValue the actual value to use when the value is set to null
-	 * @param <T> the value type
-	 * @return a builder for a non-null Value
+	 * @return a new {@link Value.BuilderFactory} instance
 	 */
-	static <T> Builder<T, ?> nonNull(T nullValue) {
-		return new DefaultValue.DefaultBuilder<>(nullValue);
+	static BuilderFactory builder() {
+		return new DefaultValue.DefaultBuilderFactory();
 	}
 
 	/**
-	 * @param <T> the value type
-	 * @return a builder for a nullable Value
+	 * Provides {@link Value.Builder} instances for nullable or non-nullable values.
 	 */
-	static <T> Builder<T, ?> nullable() {
-		return Value.<T>nullable(null);
-	}
+	interface BuilderFactory {
 
-	/**
-	 * @param initialValue the initial value
-	 * @param <T> the value type
-	 * @return a builder for a nullable Value
-	 */
-	static <T> Builder<T, ?> nullable(T initialValue) {
-		return (Builder<T, ?>) new DefaultValue.DefaultBuilder<>()
-						.initialValue(initialValue);
+		/**
+		 * @param nullValue the actual value to use when the value is set to null, also serves as the initial value
+		 * @param <T> the value type
+		 * @return a builder for a non-null {@link Value}
+		 */
+		<T> Builder<T, ?> nonNull(T nullValue);
+
+		/**
+		 * @param <T> the value type
+		 * @return a builder for a nullable {@link Value}
+		 */
+		<T> Builder<T, ?> nullable();
+
+		/**
+		 * @param initialValue the initial value
+		 * @param <T> the value type
+		 * @return a builder for a nullable {@link Value}
+		 */
+		<T> Builder<T, ?> nullable(T initialValue);
 	}
 
 	/**

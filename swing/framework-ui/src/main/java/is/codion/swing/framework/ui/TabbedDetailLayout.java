@@ -460,7 +460,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private TabbedDetailController(Set<PanelState> panelStates, PanelState initialState) {
 			this.panelStates = panelStates;
 			this.panelStateMapper = panelStateMapper(panelStates);
-			this.panelState = Value.nonNull(initialState)
+			this.panelState = Value.builder()
+							.nonNull(initialState)
 							.consumer(this::updateDetailState)
 							.build();
 		}

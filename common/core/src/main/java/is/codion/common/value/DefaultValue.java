@@ -52,6 +52,25 @@ class DefaultValue<T> extends AbstractValue<T> {
 		this.value = value;
 	}
 
+	static final class DefaultBuilderFactory implements BuilderFactory {
+
+		@Override
+		public <T> Builder<T, ?> nonNull(T nullValue) {
+			return new DefaultValue.DefaultBuilder<>(nullValue);
+		}
+
+		@Override
+		public <T> Builder<T, ?> nullable() {
+			return new DefaultValue.DefaultBuilder<>();
+		}
+
+		@Override
+		public <T> Builder<T, ?> nullable(T initialValue) {
+			return (Builder<T, ?>) new DefaultBuilder<>()
+							.initialValue(initialValue);
+		}
+	}
+
 	static class DefaultBuilder<T, B extends Builder<T, B>> implements Builder<T, B> {
 
 		private final T nullValue;

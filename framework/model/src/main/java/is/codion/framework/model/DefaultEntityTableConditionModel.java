@@ -59,8 +59,12 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private final EntityConnectionProvider connectionProvider;
 	private final TableConditionModel<Attribute<?>> conditionModel;
 	private final Event<?> conditionChangedEvent = Event.event();
-	private final Value<Supplier<Condition>> additionalWhere = Value.nonNull(NULL_CONDITION_SUPPLIER).build();
-	private final Value<Supplier<Condition>> additionalHaving = Value.nonNull(NULL_CONDITION_SUPPLIER).build();
+	private final Value<Supplier<Condition>> additionalWhere = Value.builder()
+					.nonNull(NULL_CONDITION_SUPPLIER)
+					.build();
+	private final Value<Supplier<Condition>> additionalHaving = Value.builder()
+					.nonNull(NULL_CONDITION_SUPPLIER)
+					.build();
 	private final NoneAggregatePredicate noneAggregatePredicate = new NoneAggregatePredicate();
 	private final AggregatePredicate aggregatePredicate = new AggregatePredicate();
 

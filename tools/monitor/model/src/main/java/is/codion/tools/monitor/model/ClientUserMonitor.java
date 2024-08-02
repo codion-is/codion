@@ -72,7 +72,8 @@ public final class ClientUserMonitor {
 	public ClientUserMonitor(EntityServerAdmin server, int updateRate) {
 		this.server = requireNonNull(server);
 		this.clientMonitor = new ClientMonitor(server);
-		this.idleConnectionTimeoutValue = Value.nonNull(0)
+		this.idleConnectionTimeoutValue = Value.builder()
+						.nonNull(0)
 						.initialValue(getIdleConnectionTimeout())
 						.consumer(this::setIdleConnectionTimeout)
 						.build();

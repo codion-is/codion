@@ -89,8 +89,12 @@ public final class ServerMonitor {
 
 	private boolean shutdown = false;
 
-	private final Value<Integer> connectionCountValue = Value.nullable(0).build();
-	private final Value<String> memoryUsageValue = Value.nullable("").build();
+	private final Value<Integer> connectionCountValue = Value.builder()
+					.nullable(0)
+					.build();
+	private final Value<String> memoryUsageValue = Value.builder()
+					.nullable("")
+					.build();
 	private final FilterTableModel<DomainEntityDefinition, DomainColumns.Id> domainTableModel =
 					FilterTableModel.builder(new DomainColumns())
 									.items(new DomainTableItems())
@@ -147,11 +151,13 @@ public final class ServerMonitor {
 		this.registryPort = registryPort;
 		this.serverAdminUser = requireNonNull(serverAdminUser);
 		this.server = connectServer(serverInformation.serverName());
-		this.connectionLimitValue = Value.nonNull(-1)
+		this.connectionLimitValue = Value.builder()
+						.nonNull(-1)
 						.initialValue(getConnectionLimit())
 						.consumer(this::setConnectionLimit)
 						.build();
-		this.logLevelValue = Value.nullable(this.server.getLogLevel())
+		this.logLevelValue = Value.builder()
+						.nullable(this.server.getLogLevel())
 						.consumer(this::setLogLevel)
 						.build();
 		this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);

@@ -31,7 +31,8 @@ public class StringValuesTest {
 
 	@Test
 	void valueLink() {
-		Value<String> textValue = Value.nullable("start")
+		Value<String> textValue = Value.builder()
+						.nullable("start")
 						.validator(text -> {
 							if (text != null && text.equals("nono")) {
 								throw new IllegalArgumentException();
@@ -77,7 +78,7 @@ public class StringValuesTest {
 
 	@Test
 	void nonNullInitialValue() {
-		Value<String> value = Value.nullable("name").build();
+		Value<String> value = Value.builder().nullable("name").build();
 		JTextField textField = Components.stringField(value)
 						.build();
 		assertEquals("name", textField.getText());

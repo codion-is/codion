@@ -68,17 +68,25 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 					.build();
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<Column<String>, Settings> settings;
-	private final Value<String> searchString = Value.nonNull("")
+	private final Value<String> searchString = Value.builder()
+					.nonNull("")
 					.notify(Notify.WHEN_SET)
 					.listener(() -> searchStringModified.set(!searchStringRepresentEntities()))
 					.build();
-	private final Value<String> separator = Value.nonNull(DEFAULT_SEPARATOR)
+	private final Value<String> separator = Value.builder()
+					.nonNull(DEFAULT_SEPARATOR)
 					.listener(this::reset)
 					.build();
 	private final boolean singleSelection;
-	private final Value<Character> wildcard = Value.nonNull(Text.WILDCARD_CHARACTER.get()).build();
-	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION).build();
-	private final Value<Function<Entity, String>> stringFunction = Value.nonNull(DEFAULT_TO_STRING).build();
+	private final Value<Character> wildcard = Value.builder()
+					.nonNull(Text.WILDCARD_CHARACTER.get())
+					.build();
+	private final Value<Supplier<Condition>> condition = Value.builder()
+					.nonNull(NULL_CONDITION)
+					.build();
+	private final Value<Function<Entity, String>> stringFunction = Value.builder()
+					.nonNull(DEFAULT_TO_STRING)
+					.build();
 	private final Value<Integer> limit;
 	private final String description;
 
@@ -92,7 +100,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.stringFunction.set(builder.stringFunction);
 		this.description = builder.description == null ? createDescription() : builder.description;
 		this.singleSelection = builder.singleSelection;
-		this.limit = Value.nullable(builder.limit).build();
+		this.limit = Value.builder()
+						.nullable(builder.limit)
+						.build();
 	}
 
 	@Override
