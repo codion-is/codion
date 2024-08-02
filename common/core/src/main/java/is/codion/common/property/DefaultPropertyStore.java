@@ -301,11 +301,6 @@ final class DefaultPropertyStore implements PropertyStore {
 		}
 
 		@Override
-		public T get() {
-			return value;
-		}
-
-		@Override
 		public void remove() {
 			boolean wasNotNull = value != null;
 			setValue(null);
@@ -317,6 +312,11 @@ final class DefaultPropertyStore implements PropertyStore {
 		@Override
 		public String toString() {
 			return propertyName;
+		}
+
+		@Override
+		protected T getValue() {
+			return value;
 		}
 
 		@Override

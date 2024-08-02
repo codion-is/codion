@@ -43,7 +43,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 	}
 
 	@Override
-	public T get() {
+	protected final T getValue() {
 		return value;
 	}
 

@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.8
 ### is.codion.common.core
 - Value.BuilderFactory added, nullable() and nonNull() methods replaced with builder() returning a BuilderFactory.
+- AbstractValue.get() now implemented and final, protected getValue() added, clearValue() removed.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel bug fixed, IN operator only selected by default if entity is searchable.
 ### is.codion.swing.framework.ui

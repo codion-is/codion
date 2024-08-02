@@ -118,7 +118,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 		}
 
 		@Override
-		public Set<T> get() {
+		protected Set<T> getValue() {
 			return Stream.concat(Stream.of(itemValue.get()), IntStream.range(0, comboBoxModel.getSize())
 											.mapToObj(comboBoxModel::getElementAt))
 							.filter(Objects::nonNull)

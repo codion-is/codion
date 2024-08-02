@@ -77,6 +77,11 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
+	public final T get() {
+		return getValue();
+	}
+
+	@Override
 	public final boolean set(T value) {
 		T newValue = value == null ? nullValue : value;
 		for (Validator<? super T> validator : validators()) {
@@ -90,7 +95,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final void clear() {
-		clearValue();
+		set(null);
 	}
 
 	@Override
@@ -240,17 +245,16 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	/**
+	 * Returns the actual internal value.
+	 * @return the value
+	 */
+	protected abstract T getValue();
+
+	/**
 	 * Sets the actual internal value.
 	 * @param value the value
 	 */
 	protected abstract void setValue(T value);
-
-	/**
-	 * Clears this value by setting it to null.
-	 */
-	protected void clearValue() {
-		set(null);
-	}
 
 	/**
 	 * Notifies listeners that the underlying value has changed or at least that it may have changed

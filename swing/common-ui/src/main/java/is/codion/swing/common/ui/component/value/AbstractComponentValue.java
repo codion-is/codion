@@ -56,13 +56,13 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
 	}
 
 	@Override
-	public final T get() {
-		return getComponentValue();
+	public final C component() {
+		return component;
 	}
 
 	@Override
-	public final C component() {
-		return component;
+	protected final T getValue() {
+		return getComponentValue();
 	}
 
 	@Override

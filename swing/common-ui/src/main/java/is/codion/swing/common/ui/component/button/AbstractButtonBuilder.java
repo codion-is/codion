@@ -353,7 +353,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 		}
 
 		@Override
-		public Boolean get() {
+		protected Boolean getValue() {
 			if (buttonModel instanceof NullableToggleButtonModel) {
 				return ((NullableToggleButtonModel) buttonModel).getState();
 			}

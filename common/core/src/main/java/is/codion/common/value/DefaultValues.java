@@ -60,13 +60,6 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 	}
 
 	@Override
-	public final C get() {
-		synchronized (lock) {
-			return super.get();
-		}
-	}
-
-	@Override
 	public final boolean add(T value) {
 		synchronized (lock) {
 			C newValues = create.get();
@@ -194,17 +187,15 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 		}
 
 		@Override
-		public T get() {
+		protected synchronized T getValue() {
 			C collection = DefaultValues.this.get();
 
 			return collection.isEmpty() ? null : collection.iterator().next();
 		}
 
 		@Override
-		protected void setValue(T value) {
-			synchronized (DefaultValues.this) {
-				DefaultValues.this.set(value == null ? emptyList() : singleton(value));
-			}
+		protected synchronized void setValue(T value) {
+			DefaultValues.this.set(value == null ? emptyList() : singleton(value));
 		}
 	}
 

@@ -618,7 +618,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		public String get() {
+		protected String getValue() {
 			return searchField.getText();
 		}
 

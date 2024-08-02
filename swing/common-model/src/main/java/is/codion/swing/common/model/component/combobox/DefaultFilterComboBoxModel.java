@@ -424,7 +424,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public V get() {
+		protected V getValue() {
 			if (selectionEmpty.get()) {
 				return null;
 			}

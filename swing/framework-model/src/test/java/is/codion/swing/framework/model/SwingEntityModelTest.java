@@ -192,7 +192,7 @@ public final class SwingEntityModelTest
 		}
 
 		@Override
-		public Entity get() {
+		protected Entity getValue() {
 			return comboBoxModel.selectedValue();
 		}
 	}

@@ -127,7 +127,7 @@ final class ItemRandomizerPanel<T> extends JPanel {
 		}
 
 		@Override
-		public Boolean get() {
+		protected Boolean getValue() {
 			return itemRandomizer.isItemEnabled(item);
 		}
 
@@ -147,7 +147,7 @@ final class ItemRandomizerPanel<T> extends JPanel {
 		}
 
 		@Override
-		public Integer get() {
+		protected Integer getValue() {
 			return itemRandomizer.weight(item);
 		}
 

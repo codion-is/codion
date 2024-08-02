@@ -1210,7 +1210,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public T get() {
+		protected T getValue() {
 			return editModel.get(attribute);
 		}
 
