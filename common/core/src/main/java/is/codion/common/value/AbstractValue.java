@@ -47,7 +47,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	private final T nullValue;
 	private final Notify notify;
 
-	private Event<T> changeEvent;
+	private Event<T> notifier;
 	private Set<Validator<? super T>> validators;
 	private Map<Value<T>, ValueLink<T>> linkedValues;
 	private Consumer<T> originalValueConsumer;
@@ -113,7 +113,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final boolean isNullable() {
+	public final boolean nullable() {
 		return nullValue == null;
 	}
 
@@ -124,13 +124,13 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean addListener(Runnable listener) {
-		return changeEvent().addListener(listener);
+		return notifier().addListener(listener);
 	}
 
 	@Override
 	public final boolean removeListener(Runnable listener) {
-		if (changeEvent != null) {
-			return changeEvent.removeListener(listener);
+		if (notifier != null) {
+			return notifier.removeListener(listener);
 		}
 
 		return false;
@@ -138,13 +138,13 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean addConsumer(Consumer<? super T> consumer) {
-		return changeEvent().addConsumer(consumer);
+		return notifier().addConsumer(consumer);
 	}
 
 	@Override
 	public final boolean removeConsumer(Consumer<? super T> consumer) {
-		if (changeEvent != null) {
-			return changeEvent.removeConsumer(consumer);
+		if (notifier != null) {
+			return notifier.removeConsumer(consumer);
 		}
 
 		return false;
@@ -152,13 +152,13 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean addWeakListener(Runnable listener) {
-		return changeEvent().addWeakListener(listener);
+		return notifier().addWeakListener(listener);
 	}
 
 	@Override
 	public final boolean removeWeakListener(Runnable listener) {
-		if (changeEvent != null) {
-			return changeEvent.removeWeakListener(listener);
+		if (notifier != null) {
+			return notifier.removeWeakListener(listener);
 		}
 
 		return false;
@@ -166,13 +166,13 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean addWeakConsumer(Consumer<? super T> consumer) {
-		return changeEvent().addWeakConsumer(consumer);
+		return notifier().addWeakConsumer(consumer);
 	}
 
 	@Override
 	public final boolean removeWeakConsumer(Consumer<? super T> consumer) {
-		if (changeEvent != null) {
-			return changeEvent.removeWeakConsumer(consumer);
+		if (notifier != null) {
+			return notifier.removeWeakConsumer(consumer);
 		}
 
 		return false;
@@ -260,8 +260,8 @@ public abstract class AbstractValue<T> implements Value<T> {
 	 * Notifies listeners that the underlying value has changed or at least that it may have changed
 	 */
 	protected final void notifyListeners() {
-		if (changeEvent != null) {
-			changeEvent.accept(get());
+		if (notifier != null) {
+			notifier.accept(get());
 		}
 	}
 
@@ -288,12 +288,12 @@ public abstract class AbstractValue<T> implements Value<T> {
 		return changed;
 	}
 
-	private synchronized Event<T> changeEvent() {
-		if (changeEvent == null) {
-			changeEvent = Event.event();
+	private synchronized Event<T> notifier() {
+		if (notifier == null) {
+			notifier = Event.event();
 		}
 
-		return changeEvent;
+		return notifier;
 	}
 
 	private final class OriginalValueConsumer implements Consumer<T> {

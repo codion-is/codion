@@ -39,7 +39,7 @@ public class ValueSetTest {
 		assertFalse(observer.notEmpty());
 		assertUnmodifiable(observer);
 
-		assertFalse(observer.isNullable());
+		assertFalse(observer.nullable());
 		assertFalse(observer.isNull());
 		assertTrue(observer.optional().isPresent());
 
