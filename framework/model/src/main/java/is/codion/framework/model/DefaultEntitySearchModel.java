@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -54,6 +53,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private static final Supplier<Condition> NULL_CONDITION = () -> null;
 	private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
 	private static final String DEFAULT_SEPARATOR = ",";
+	private static final String WILDCARD_MULTIPLE = "%";
+	private static final String WILDCARD_SINGLE = "_";
 
 	private final State searchStringModified = State.state();
 	private final State selectionEmpty = State.state(true);
@@ -71,16 +72,13 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final Value<String> searchString = Value.builder()
 					.nonNull("")
 					.notify(Notify.WHEN_SET)
-					.listener(() -> searchStringModified.set(!searchStringRepresentEntities()))
+					.listener(() -> searchStringModified.set(!searchStringRepresentsSelection()))
 					.build();
 	private final Value<String> separator = Value.builder()
 					.nonNull(DEFAULT_SEPARATOR)
 					.listener(this::reset)
 					.build();
 	private final boolean singleSelection;
-	private final Value<Character> wildcard = Value.builder()
-					.nonNull(Text.WILDCARD_CHARACTER.get())
-					.build();
 	private final Value<Supplier<Condition>> condition = Value.builder()
 					.nonNull(NULL_CONDITION)
 					.build();
@@ -138,11 +136,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	@Override
 	public Map<Column<String>, Settings> settings() {
 		return settings;
-	}
-
-	@Override
-	public Value<Character> wildcard() {
-		return wildcard;
 	}
 
 	@Override
@@ -239,16 +232,16 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		return additionalCondition == null ? conditionCombination : and(additionalCondition, conditionCombination);
 	}
 
-	private String prepareSearchString(String rawSearchString, Settings settings) {
+	private static String prepareSearchString(String rawSearchString, Settings settings) {
 		boolean wildcardPrefix = settings.wildcardPrefix().get();
 		boolean wildcardPostfix = settings.wildcardPostfix().get();
-		rawSearchString = settings.spaceAsWildcard().get() ? rawSearchString.replace(' ', wildcard.get()) : rawSearchString;
+		rawSearchString = settings.spaceAsWildcard().get() ? rawSearchString.replace(' ', '%') : rawSearchString;
 
-		return rawSearchString.equals(String.valueOf(wildcard.get())) ? String.valueOf(wildcard.get()) :
-						((wildcardPrefix ? wildcard.get() : "") + rawSearchString.trim() + (wildcardPostfix ? wildcard.get() : ""));
+		return rawSearchString.equals(WILDCARD_MULTIPLE) ? WILDCARD_MULTIPLE :
+						((wildcardPrefix ? WILDCARD_MULTIPLE : "") + rawSearchString.trim() + (wildcardPostfix ? WILDCARD_MULTIPLE : ""));
 	}
 
-	private boolean searchStringRepresentEntities() {
+	private boolean searchStringRepresentsSelection() {
 		return (entities.get().isEmpty() && searchString.get().isEmpty()) ||
 						(!entities.get().isEmpty() && entitiesToString().equals(searchString.get()));
 	}
@@ -287,7 +280,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	private static boolean containsWildcards(String value) {
-		return value.contains("%") || value.contains("_");
+		return value.contains(WILDCARD_MULTIPLE) || value.contains(WILDCARD_SINGLE);
 	}
 
 	private static final class DefaultSettings implements Settings {

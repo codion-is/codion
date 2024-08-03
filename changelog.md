@@ -6,6 +6,7 @@ Codion Change Log
 - Value.BuilderFactory added, nullable() and nonNull() methods replaced with builder() returning a BuilderFactory.
 - AbstractValue.get() now implemented and final, protected getValue() added, clearValue() removed.
 - ValueObserver.isNullable() renamed back to nullable(), no factory method conflict any more.
+- Text.WILDCARD_CHARACTER removed, wildcards no longer configurable.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel bug fixed, IN operator only selected by default if entity is searchable.
 ### is.codion.swing.framework.ui

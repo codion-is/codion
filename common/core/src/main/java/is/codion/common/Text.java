@@ -48,13 +48,6 @@ public final class Text {
 	public static final PropertyValue<String> DEFAULT_COLLATOR_LANGUAGE =
 					Configuration.stringValue("codion.defaultCollatorLanguage", Locale.getDefault().getLanguage());
 
-	/**
-	 * Specifies the wildcard character used<br>
-	 * Value type: Character<br>
-	 * Default value: %
-	 */
-	public static final PropertyValue<Character> WILDCARD_CHARACTER = Configuration.characterValue("codion.wildcardCharacter", '%');
-
 	private Text() {}
 
 	/**

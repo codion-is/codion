@@ -173,11 +173,6 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 	}
 
 	@Override
-	public char wildcard() {
-		return conditionModel.wildcard();
-	}
-
-	@Override
 	public State enabled() {
 		return conditionModel.enabled();
 	}

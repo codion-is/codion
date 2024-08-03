@@ -88,7 +88,6 @@ public final class DefaultEntitySearchModelTest {
 	void theRest() {
 		assertNotNull(searchModel.connectionProvider());
 		assertTrue(searchModel.columns().containsAll(searchable));
-		assertNotNull(searchModel.wildcard().get());
 	}
 
 	@Test
@@ -123,7 +122,6 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void searchModel() {
-		searchModel.wildcard().set('%');
 		searchModel.searchString().set("joh");
 		assertTrue(searchModel.selectionEmpty().get());
 		assertTrue(searchModel.searchStringModified().get());
@@ -223,7 +221,6 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void condition() {
-		searchModel.wildcard().set('%');
 		searchModel.searchString().set("johnson");
 		List<Entity> result = searchModel.search();
 		assertEquals(1, result.size());

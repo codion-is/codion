@@ -85,11 +85,6 @@ public interface EntitySearchModel {
 	void reset();
 
 	/**
-	 * @return the Value controlling the wildcard character
-	 */
-	Value<Character> wildcard();
-
-	/**
 	 * @return the value controlling the search result limit
 	 */
 	Value<Integer> limit();

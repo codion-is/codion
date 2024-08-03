@@ -171,11 +171,6 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	}
 
 	@Override
-	public char wildcard() {
-		return conditionModel.wildcard();
-	}
-
-	@Override
 	public State enabled() {
 		return conditionModel.enabled();
 	}

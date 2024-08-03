@@ -19,7 +19,6 @@
 package is.codion.common.model.table;
 
 import is.codion.common.Operator;
-import is.codion.common.Text;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 
 import org.junit.jupiter.api.Test;
@@ -149,7 +148,6 @@ public class DefaultColumnConditionModelTest {
 		assertFalse(model.caseSensitive().get());
 		assertEquals("test", model.columnIdentifier());
 		assertEquals(String.class, model.columnClass());
-		assertEquals(Text.WILDCARD_CHARACTER.get(), model.wildcard());
 
 		model.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
 		assertEquals(AutomaticWildcard.PREFIX_AND_POSTFIX, model.automaticWildcard().get());

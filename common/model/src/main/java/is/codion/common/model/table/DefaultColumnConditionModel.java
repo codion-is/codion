@@ -19,7 +19,6 @@
 package is.codion.common.model.table;
 
 import is.codion.common.Operator;
-import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.format.LocaleDateTimePattern;
@@ -42,6 +41,7 @@ import static java.util.stream.Collectors.joining;
 
 final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C, T> {
 
+	private static final String WILDCARD = "%";
 	private static final String REGEX_WILDCARD = ".*";
 
 	private final Runnable autoEnableListener = new AutoEnableListener();
@@ -82,7 +82,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	private final Value<Operator> operator;
 	private final State caseSensitive;
-	private final String wildcard;
 
 	private final State autoEnable;
 	private final State enabled = State.builder()
@@ -107,7 +106,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 						.listener(conditionChangedEvent)
 						.build();
 		this.columnClass = builder.columnClass;
-		this.wildcard = String.valueOf(builder.wildcard);
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
 		this.automaticWildcard.set(builder.automaticWildcard);
@@ -197,11 +195,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	@Override
 	public List<Operator> operators() {
 		return operators;
-	}
-
-	@Override
-	public char wildcard() {
-		return wildcard.charAt(0);
 	}
 
 	@Override
@@ -303,7 +296,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		if (equalValue == null) {
 			return comparable == null;
 		}
-		if (comparable instanceof String && ((String) equalValue).contains(wildcard)) {
+		if (comparable instanceof String && ((String) equalValue).contains(WILDCARD)) {
 			return isEqualWildcard((String) comparable);
 		}
 
@@ -321,7 +314,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		if (equalValue == null) {
 			return comparable != null;
 		}
-		if (comparable instanceof String && ((String) equalValue).contains(wildcard)) {
+		if (comparable instanceof String && ((String) equalValue).contains(WILDCARD)) {
 			return !isEqualWildcard((String) comparable);
 		}
 
@@ -333,19 +326,19 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		if (equalValue == null) {
 			equalValue = "";
 		}
-		if (equalValue.equals(wildcard)) {
+		if (equalValue.equals(WILDCARD)) {
 			return true;
 		}
 		if (!caseSensitive.get()) {
 			equalValue = equalValue.toLowerCase();
 		}
-		if (!equalValue.contains(wildcard)) {
+		if (!equalValue.contains(WILDCARD)) {
 			return value.compareTo(equalValue) == 0;
 		}
 
-		return Pattern.matches(Stream.of(equalValue.split(wildcard))
+		return Pattern.matches(Stream.of(equalValue.split(WILDCARD))
 						.map(Pattern::quote)
-						.collect(joining(REGEX_WILDCARD, "", equalValue.endsWith(wildcard) ? REGEX_WILDCARD : "")), value);
+						.collect(joining(REGEX_WILDCARD, "", equalValue.endsWith(WILDCARD) ? REGEX_WILDCARD : "")), value);
 	}
 
 	private boolean isLessThan(Comparable<T> comparable) {
@@ -513,17 +506,17 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		return value;
 	}
 
-	private String addWildcardPrefix(String value) {
-		if (!value.startsWith(wildcard)) {
-			return wildcard + value;
+	private static String addWildcardPrefix(String value) {
+		if (!value.startsWith(WILDCARD)) {
+			return WILDCARD + value;
 		}
 
 		return value;
 	}
 
-	private String addWildcardPostfix(String value) {
-		if (!value.endsWith(wildcard)) {
-			return value + wildcard;
+	private static String addWildcardPostfix(String value) {
+		if (!value.endsWith(WILDCARD)) {
+			return value + WILDCARD;
 		}
 
 		return value;
@@ -607,7 +600,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 		private List<Operator> operators;
 		private Operator operator = Operator.EQUAL;
-		private char wildcard = Text.WILDCARD_CHARACTER.get();
 		private Format format;
 		private String dateTimePattern = LocaleDateTimePattern.builder()
 						.delimiterDash()
@@ -639,12 +631,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		public Builder<C, T> operator(Operator operator) {
 			validateOperators(operators, operator);
 			this.operator = operator;
-			return this;
-		}
-
-		@Override
-		public Builder<C, T> wildcard(char wildcard) {
-			this.wildcard = wildcard;
 			return this;
 		}
 

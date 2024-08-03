@@ -184,11 +184,6 @@ public interface ColumnConditionModel<C, T> {
 	List<Operator> operators();
 
 	/**
-	 * @return the character used as a wildcard when working with strings
-	 */
-	char wildcard();
-
-	/**
 	 * @return a state controlling the enabled status
 	 */
 	State enabled();
@@ -283,12 +278,6 @@ public interface ColumnConditionModel<C, T> {
 		 * @see #operators(List)
 		 */
 		Builder<C, T> operator(Operator operator);
-
-		/**
-		 * @param wildcard the character to use as wildcard
-		 * @return this builder instance
-		 */
-		Builder<C, T> wildcard(char wildcard);
 
 		/**
 		 * @param format the format to use when presenting the values, numbers for example
