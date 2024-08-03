@@ -72,6 +72,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
+import static javax.swing.FocusManager.getCurrentManager;
 import static javax.swing.SwingConstants.CENTER;
 
 /**
@@ -528,13 +529,13 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private void singleValuePanel(JComponent boundField) {
 		if (!asList(inputPanel.getComponents()).contains(boundField)) {
-			boolean requestFocus = boundFieldHasFocus();
-			clearInputPanel(requestFocus);
+			boolean boundFieldHasFocus = boundFieldHasFocus();
+			clearInputPanel(boundFieldHasFocus);
 			inputPanel.add(boundField, BorderLayout.CENTER);
 			if (state().isEqualTo(ConditionState.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
-			if (requestFocus) {
+			if (boundFieldHasFocus) {
 				boundField.requestFocusInWindow();
 			}
 		}
@@ -542,25 +543,25 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private void rangePanel() {
 		if (!asList(inputPanel.getComponents()).contains(rangePanel)) {
-			boolean requestFocus = boundFieldHasFocus();
-			clearInputPanel(requestFocus);
+			boolean boundFieldHasFocus = boundFieldHasFocus();
+			clearInputPanel(boundFieldHasFocus);
 			rangePanel.add(lowerBoundField);
 			rangePanel.add(upperBoundField);
 			inputPanel.add(rangePanel, BorderLayout.CENTER);
 			if (state().isEqualTo(ConditionState.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
-			if (requestFocus) {
+			if (boundFieldHasFocus) {
 				lowerBoundField.requestFocusInWindow();
 			}
 		}
 	}
 
-	private void clearInputPanel(boolean requestFocus) {
-		if (requestFocus) {
-			//keep the focus here temporarily while we remove all
+	private void clearInputPanel(boolean clearFocus) {
+		if (clearFocus) {
+			//clear the focus here temporarily while we remove all
 			//otherwise it jumps to the first focusable component
-			inputPanel.requestFocusInWindow();
+			getCurrentManager().clearFocusOwner();
 		}
 		inputPanel.removeAll();
 	}
