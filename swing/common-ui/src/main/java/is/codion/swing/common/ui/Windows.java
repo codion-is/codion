@@ -255,9 +255,7 @@ public final class Windows {
 
 		@Override
 		public FrameBuilder title(String title) {
-			return title(Value.builder()
-							.nullable(title)
-							.build());
+			return title(Value.value(title));
 		}
 
 		@Override

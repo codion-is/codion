@@ -129,9 +129,7 @@ public final class EventStateValue {
 		// tag::value[]
 		// a nullable value with 2 as the initial value
 		Value<Integer> value =
-						Value.builder()
-										.nullable(2)
-										.build();
+						Value.value(2);
 
 		value.set(4);
 

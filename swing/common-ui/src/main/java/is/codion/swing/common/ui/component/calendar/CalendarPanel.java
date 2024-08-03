@@ -236,12 +236,8 @@ public final class CalendarPanel extends JPanel {
 							.nonNull(0)
 							.build();
 		}
-		localDateValue = Value.builder()
-						.nullable(createLocalDateTime().toLocalDate())
-						.build();
-		localDateTimeValue = Value.builder()
-						.nullable(createLocalDateTime())
-						.build();
+		localDateValue = Value.value(createLocalDateTime().toLocalDate());
+		localDateTimeValue = Value.value(createLocalDateTime());
 		todaySelected = State.state(todaySelected());
 		dayStates = createDayStates();
 		dayButtons = createDayButtons();

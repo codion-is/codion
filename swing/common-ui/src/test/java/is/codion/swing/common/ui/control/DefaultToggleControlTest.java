@@ -49,7 +49,7 @@ public class DefaultToggleControlTest {
 		booleanValue.set(true);
 		assertTrue(control.value().get());
 
-		Value<Boolean> nullableValue = Value.builder().nullable(true).build();
+		Value<Boolean> nullableValue = Value.value(true);
 		ToggleControl nullableControl = Control.builder().toggle(nullableValue).build();
 		NullableToggleButtonModel toggleButtonModel = (NullableToggleButtonModel) toggleButton()
 						.toggleControl(nullableControl)

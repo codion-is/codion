@@ -18,6 +18,8 @@
  */
 package is.codion.common.value;
 
+import is.codion.common.value.Value.Notify;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,7 +34,7 @@ public class ValueTest {
 	void test() {
 		Value.builder()
 						.nullable(1)
-						.notify(Value.Notify.WHEN_SET)
+						.notify(Notify.WHEN_SET)
 						.build();
 		Value.builder()
 						.nonNull("NullString")
@@ -129,7 +131,7 @@ public class ValueTest {
 	@Test
 	void linkValues() {
 		AtomicInteger modelValueEventCounter = new AtomicInteger();
-		Value<Integer> modelValue = Value.builder().nullable(42).build();
+		Value<Integer> modelValue = Value.value(42);
 		Value<Integer> uiValue = Value.value();
 		uiValue.link(modelValue);
 
@@ -282,7 +284,7 @@ public class ValueTest {
 							}
 						})
 						.build();
-		Value<Integer> originalValue = Value.builder().nullable(1).build();
+		Value<Integer> originalValue = Value.value(1);
 
 		value.link(originalValue);
 		assertEquals(originalValue.get(), value.get());
@@ -351,7 +353,7 @@ public class ValueTest {
 		}
 		Test test1 = new Test(1, "Hello");
 		Test test2 = new Test(2, "Hello");
-		Value<Test> value = Value.builder().nullable(test1).build();
+		Value<Test> value = Value.value(test1);
 		value.addListener(() -> {
 			throw new RuntimeException("Change event should not have been triggered");
 		});
@@ -361,7 +363,7 @@ public class ValueTest {
 
 	@Test
 	void map() {
-		Value<Integer> value = Value.builder().nullable(0).build();
+		Value<Integer> value = Value.value(0);
 		Function<Integer, Integer> increment = currentValue -> currentValue + 1;
 		value.map(increment);
 		assertEquals(1, value.get());

@@ -49,24 +49,16 @@ final class DefaultControlMap implements ControlMap {
 
 	private DefaultControlMap(Collection<ControlKey<?>> controlKeys) {
 		controls.putAll(controlKeys.stream()
-						.collect(toMap(Function.identity(), controlKey -> Value.builder()
-										.<Control>nullable()
-										.build())));
+						.collect(toMap(Function.identity(), controlKey -> Value.value())));
 		keyStrokes.putAll(controlKeys.stream()
-						.collect(toMap(Function.identity(), controlKey -> Value.builder()
-										.nullable(controlKey.defaultKeystroke().get())
-										.build())));
+						.collect(toMap(Function.identity(), controlKey -> Value.value(controlKey.defaultKeystroke().get()))));
 	}
 
 	private DefaultControlMap(DefaultControlMap controlMap) {
 		controlMap.controls.forEach((controlKey, controlValue) ->
-						controls.put(controlKey, Value.builder()
-										.nullable(controlValue.get())
-										.build()));
+						controls.put(controlKey, Value.value(controlValue.get())));
 		controlMap.keyStrokes.forEach((controlKey, keyStrokeValue) ->
-						keyStrokes.put(controlKey, Value.builder()
-										.nullable(keyStrokeValue.get())
-										.build()));
+						keyStrokes.put(controlKey, Value.value(keyStrokeValue.get())));
 	}
 
 	@Override

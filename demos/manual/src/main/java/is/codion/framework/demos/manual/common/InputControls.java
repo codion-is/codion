@@ -164,9 +164,7 @@ public final class InputControls {
 		// tag::basics[]
 		//a nullable integer value, initialized to 42
 		Value<Integer> integerValue =
-						Value.builder()
-										.nullable(42)
-										.build();
+						Value.value(42);
 
 		//create a spinner linked to the value
 		JSpinner spinner =

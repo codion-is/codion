@@ -255,9 +255,7 @@ public final class FilterTable<R, C> extends JTable {
 						.nonNull(CenterOnScroll.NEITHER)
 						.initialValue(builder.centerOnScroll)
 						.build();
-		this.doubleClickAction = Value.builder()
-						.nullable(builder.doubleClickAction)
-						.build();
+		this.doubleClickAction = Value.value(builder.doubleClickAction);
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.sortingEnabled = State.state(builder.sortingEnabled);
 		this.controlMap = builder.controlMap;

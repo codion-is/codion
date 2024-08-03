@@ -72,9 +72,7 @@ final class LoginPanel extends JPanel {
 	private final State validating = State.state();
 
 	LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent, int inputFieldColumns) {
-		Value<String> usernameValue = Value.builder()
-						.nullable(defaultUser == null ? null : defaultUser.username())
-						.build();
+		Value<String> usernameValue = Value.value(defaultUser == null ? null : defaultUser.username());
 		this.usernameField = TextFieldBuilder.builder(String.class, usernameValue)
 						.columns(inputFieldColumns)
 						.selectAllOnFocusGained(true)

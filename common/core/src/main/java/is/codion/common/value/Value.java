@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;
  * A factory for {@link Value} instances.
  * @param <T> the type of the wrapped value
  * @see #value()
+ * @see #value(Object)
  * @see #builder()
  */
 public interface Value<T> extends ValueObserver<T>, Consumer<T> {
@@ -153,13 +154,23 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	void validate(T value);
 
 	/**
-	 * Creates a new {@link Value} instance, wrapping a null initial value, using {@link Notify#WHEN_CHANGED}.
+	 * Creates a new nullable {@link Value} instance, wrapping a null initial value, using {@link Notify#WHEN_CHANGED}.
 	 * @param <T> the value type
 	 * @return a Value for the given type
 	 */
 	static <T> Value<T> value() {
+		return value(null);
+	}
+
+	/**
+	 * Creates a new nullable {@link Value} instance, wrapping the given initial value, using {@link Notify#WHEN_CHANGED}.
+	 * @param <T> the value type
+	 * @param initialValue the initial value
+	 * @return a Value for the given type
+	 */
+	static <T> Value<T> value(T initialValue) {
 		return builder()
-						.<T>nullable(null)
+						.nullable(initialValue)
 						.build();
 	}
 

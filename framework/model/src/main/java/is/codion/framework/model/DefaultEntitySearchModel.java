@@ -98,9 +98,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.stringFunction.set(builder.stringFunction);
 		this.description = builder.description == null ? createDescription() : builder.description;
 		this.singleSelection = builder.singleSelection;
-		this.limit = Value.builder()
-						.nullable(builder.limit)
-						.build();
+		this.limit = Value.value(builder.limit);
 	}
 
 	@Override

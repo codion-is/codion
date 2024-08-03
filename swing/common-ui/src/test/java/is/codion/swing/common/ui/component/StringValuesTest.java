@@ -78,7 +78,7 @@ public class StringValuesTest {
 
 	@Test
 	void nonNullInitialValue() {
-		Value<String> value = Value.builder().nullable("name").build();
+		Value<String> value = Value.value("name");
 		JTextField textField = Components.stringField(value)
 						.build();
 		assertEquals("name", textField.getText());

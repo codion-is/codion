@@ -68,9 +68,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	private final Value<Integer> applicationBatchSize;
 	private final Value<Integer> maximumThinkTime;
 	private final Value<Integer> minimumThinkTime;
-	private final Value<Integer> applicationCount = Value.builder()
-					.nullable(0)
-					.build();
+	private final Value<Integer> applicationCount = Value.value(0);
 	private final Event<?> shutdownEvent = Event.event();
 	private final Event<Result> resultEvent = Event.event();
 
