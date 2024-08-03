@@ -11,6 +11,7 @@ Codion Change Log
 - SwingForeignKeyConditionModel bug fixed, IN operator only selected by default if entity is searchable.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, EDIT control used as double click action if available.
+- TabbedDetailLayout bug fixed, detail panel no longer loses focus when embedded, focus flicker reduced by clearing the focus.
 
 ## 0.18.7
 ### is.codion.common.core

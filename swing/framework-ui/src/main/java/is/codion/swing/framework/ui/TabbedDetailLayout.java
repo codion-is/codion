@@ -82,6 +82,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.BorderFactory.createEmptyBorder;
+import static javax.swing.FocusManager.getCurrentManager;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 /**
@@ -508,6 +509,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 					selectedDetailPanel().initialize();
 					disposeDetailWindow();
 					splitPane.setRightComponent(tabbedPane);
+					selectedDetailPanel().requestInitialFocus();
 					break;
 				case WINDOW:
 					activateDetailModelLink(model);
@@ -546,20 +548,15 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private void displayDetailWindow() {
 			Window parent = parentWindow(entityPanel);
 			if (parent != null) {
-				Dimension parentSize = parent.getSize();
-				Dimension size = detailWindowSize(parentSize);
-				Point parentLocation = parent.getLocation();
-				int detailWindowX = parentLocation.x + (parentSize.width - size.width);
-				int detailWindowY = parentLocation.y + (parentSize.height - size.height) - DETAIL_WINDOW_OFFSET;
-				panelWindow = createDetailWindow();
-				panelWindow.setSize(size);
-				panelWindow.setLocation(new Point(detailWindowX, detailWindowY));
+				getCurrentManager().clearFocusOwner();
+				panelWindow = createDetailWindow(parent);
 				panelWindow.setVisible(true);
 			}
 		}
 
 		private void disposeDetailWindow() {
 			if (panelWindow != null) {
+				getCurrentManager().clearFocusOwner();
 				panelWindow.setVisible(false);
 				panelWindow.dispose();
 				panelWindow = null;
@@ -573,11 +570,20 @@ public final class TabbedDetailLayout implements DetailLayout {
 			return new Dimension(detailWindowWidth, detailWindowHeight);
 		}
 
-		private Window createDetailWindow() {
+		private Window createDetailWindow(Window parent) {
+			Dimension parentSize = parent.getSize();
+			Dimension size = detailWindowSize(parentSize);
+			Point parentLocation = parent.getLocation();
+			int detailWindowX = parentLocation.x + (parentSize.width - size.width);
+			int detailWindowY = parentLocation.y + (parentSize.height - size.height) - DETAIL_WINDOW_OFFSET;
+			Point location = new Point(detailWindowX, detailWindowY);
+
 			if (windowType == WindowType.FRAME) {
 				return Windows.frame(createEmptyBorderBasePanel(tabbedPane))
 								.title(entityPanel.caption() + " - " + MESSAGES.getString(DETAIL_TABLES))
 								.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+								.size(size)
+								.location(location)
 								.onClosed(windowEvent -> {
 									//the frame can be closed when embedding the panel, don't hide if that's the case
 									if (panelState.isNotEqualTo(EMBEDDED)) {
@@ -591,7 +597,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 							.owner(entityPanel)
 							.title(entityPanel.caption() + " - " + MESSAGES.getString(DETAIL_TABLES))
 							.modal(false)
-							.onClosed(e -> {
+							.size(size)
+							.location(location)
+							.onClosed(windowEvent -> {
 								//the dialog can be closed when embedding the panel, don't hide if that's the case
 								if (panelState.isNotEqualTo(EMBEDDED)) {
 									panelState.set(HIDDEN);
