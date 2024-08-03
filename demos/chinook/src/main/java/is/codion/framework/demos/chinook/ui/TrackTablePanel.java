@@ -29,7 +29,6 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellEditorFactory;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
@@ -50,7 +49,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 	private static final ResourceBundle BUNDLE = getBundle(TrackTablePanel.class.getName());
 
-	public TrackTablePanel(SwingEntityTableModel tableModel) {
+	public TrackTablePanel(TrackTableModel tableModel) {
 		super(tableModel, config -> config
 						.editComponentFactory(Track.RATING, new RatingComponentFactory())
 						.editComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false))
