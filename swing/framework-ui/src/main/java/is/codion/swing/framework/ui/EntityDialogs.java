@@ -746,7 +746,6 @@ public final class EntityDialogs {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			SwingEntityEditModel editModel = editPanel.editModel();
 			initializeEditModel(editModel);
-			Runnable disposeDialog = new DisposeDialog(editPanel);
 			Dialogs.actionDialog(borderLayoutPanel()
 											.centerComponent(editPanel)
 											.border(emptyBorder())
@@ -754,8 +753,8 @@ public final class EntityDialogs {
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createUpdateControl(editPanel,
-											new UpdateConsumer(disposeDialog), confirm))
-							.escapeAction(createCancelControl(disposeDialog))
+											new UpdateConsumer(new DisposeDialog(editPanel)), confirm))
+							.escapeAction(createCancelControl(new RevertAndDisposeDialog(editPanel)))
 							.title(FrameworkMessages.edit() + " - " + editModel.entities()
 											.definition(editModel.entityType()).caption())
 							.onShown(new RequestFocus(editPanel))
@@ -880,6 +879,21 @@ public final class EntityDialogs {
 
 		@Override
 		public void run() {
+			parentDialog(editPanel).dispose();
+		}
+	}
+
+	private static final class RevertAndDisposeDialog implements Runnable {
+
+		private final EntityEditPanel editPanel;
+
+		private RevertAndDisposeDialog(EntityEditPanel editPanel) {
+			this.editPanel = editPanel;
+		}
+
+		@Override
+		public void run() {
+			editPanel.editModel().revert();
 			parentDialog(editPanel).dispose();
 		}
 	}
