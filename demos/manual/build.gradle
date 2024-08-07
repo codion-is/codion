@@ -11,7 +11,9 @@ dependencies {
     implementation project(":codion-framework-db-local")
     implementation project(":codion-framework-db-rmi")
     implementation project(":codion-framework-db-http")
-    implementation project(":codion-plugin-jasperreports")
+    implementation (project(":codion-plugin-jasperreports")) {
+        exclude group: "org.apache.xmlgraphics"
+    }
 
     implementation project(":codion-framework-server")
     implementation project(":codion-framework-servlet")

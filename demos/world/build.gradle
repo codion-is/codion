@@ -8,7 +8,9 @@ apply from: "../demos.gradle"
 dependencies {
     implementation project(":codion-swing-framework-ui")
     implementation project(":codion-framework-json-domain")
-    implementation project(":codion-plugin-jasperreports")
+    implementation (project(":codion-plugin-jasperreports")) {
+        exclude group: "org.apache.xmlgraphics"
+    }
 
     implementation(libs.jfreechart)
     implementation(libs.json)

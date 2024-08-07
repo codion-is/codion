@@ -16,7 +16,9 @@ dependencies {
     implementation project(":codion-tools-loadtest-ui")
     implementation project(":codion-swing-framework-ui")
 
-    implementation project(":codion-plugin-jasperreports")
+    implementation (project(":codion-plugin-jasperreports")) {
+        exclude group: "org.apache.xmlgraphics"
+    }
     implementation project(":codion-framework-json-domain")
 
     testImplementation project(":codion-swing-framework-ui-test")

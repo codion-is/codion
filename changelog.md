@@ -16,6 +16,8 @@ Codion Change Log
 - EntityTablePanel, EDIT control used as double click action if available.
 - TabbedDetailLayout bug fixed, detail panel no longer loses focus when embedded, focus flicker reduced by clearing the focus.
 - EntityDialogs.DefaultEditEntityDialogBuilder bug fixed, now reverts any edits on cancel.
+### is.codion.plugin.jasperreports
+- Dependencies fixed, org.apache.xmlgraphics no longer excluded, automatic module info added.
 
 ## 0.18.7
 ### is.codion.common.core

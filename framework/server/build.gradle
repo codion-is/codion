@@ -24,7 +24,9 @@ dependencies {
     serverRuntime project(":codion-framework-i18n")
     serverRuntime project(":codion-framework-server")
     serverRuntime project(":codion-framework-servlet")
-    serverRuntime project(":codion-plugin-jasperreports")
+    serverRuntime (project(":codion-plugin-jasperreports")) {
+        exclude group: "org.apache.xmlgraphics"
+    }
     serverRuntime project(":codion-plugin-hikari-pool")
     serverRuntime project(":codion-plugin-logback-proxy")
 

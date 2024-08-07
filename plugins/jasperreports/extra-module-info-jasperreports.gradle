@@ -5,4 +5,21 @@ extraJavaModuleInfo {
     automaticModule("commons-collections:commons-collections", "commons.collections")
     automaticModule("commons-digester:commons-digester", "commons.digester")
     automaticModule("commons-beanutils:commons-beanutils", "commons.beanutils")
+    automaticModule("org.apache.xmlgraphics:batik-anim", "org.apache.xmlgraphics.batik.anim");
+    automaticModule("org.apache.xmlgraphics:batik-awt-util", "org.apache.xmlgraphics.batik.awt.util");
+    automaticModule("org.apache.xmlgraphics:batik-bridge", "org.apache.xmlgraphics.batik.bridge");
+    automaticModule("org.apache.xmlgraphics:batik-constants", "org.apache.xmlgraphics.batik.constants");
+    automaticModule("org.apache.xmlgraphics:batik-constants", "org.apache.xmlgraphics.batik.constants");
+    automaticModule("org.apache.xmlgraphics:batik-css", "org.apache.xmlgraphics.batik.css");
+    automaticModule("org.apache.xmlgraphics:batik-dom", "org.apache.xmlgraphics.batik.dom");
+    automaticModule("org.apache.xmlgraphics:batik-ext", "org.apache.xmlgraphics.batik.ext");
+    automaticModule("org.apache.xmlgraphics:batik-gvt", "org.apache.xmlgraphics.batik.gvt");
+    automaticModule("org.apache.xmlgraphics:batik-i18n", "org.apache.xmlgraphics.batik.i18n");
+    automaticModule("org.apache.xmlgraphics:batik-parser", "org.apache.xmlgraphics.batik.parser");
+    automaticModule("org.apache.xmlgraphics:batik-script", "org.apache.xmlgraphics.batik.script");
+    automaticModule("org.apache.xmlgraphics:batik-shared-resources", "org.apache.xmlgraphics.batik.shared.resources");
+    automaticModule("org.apache.xmlgraphics:batik-svg-dom", "org.apache.xmlgraphics.batik.svg.dom");
+    automaticModule("org.apache.xmlgraphics:batik-util", "org.apache.xmlgraphics.batik.util");
+    automaticModule("org.apache.xmlgraphics:batik-xml", "org.apache.xmlgraphics.batik.xml");
+    automaticModule("org.apache.xmlgraphics:xmlgraphics-commons", "org.apache.xmlgraphics.xmlgraphics.commons");
 }

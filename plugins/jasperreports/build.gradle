@@ -9,11 +9,10 @@ dependencies {
     testImplementation project(":codion-framework-db-local")
 
     api(libs.jasperreports) {
-        exclude group: "org.apache.xmlgraphics"
         exclude group: "xml-apis"
     }
     compileOnly(libs.jasperreports.jdt) {
-        exclude group: "net.sf.jasperreports"
+        exclude group: "xml-apis"
     }
 
     testImplementation project(":codion-dbms-h2")
