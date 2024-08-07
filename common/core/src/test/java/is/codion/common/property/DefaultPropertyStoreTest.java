@@ -21,11 +21,13 @@ package is.codion.common.property;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -42,9 +44,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class DefaultPropertyStoreTest {
 
 	@Test
-	void test() throws IOException {
-		File configFile = File.createTempFile("PropertyStoreTest.test", "properties");
-		configFile.deleteOnExit();
+	void test(@TempDir Path tempDir) throws IOException {
+		Path configFile = tempDir.resolve("PropertyStoreTest.test.properties");
 		StringBuilder configBuilder = new StringBuilder()
 						.append("stringlist.property=value1;value2;value3").append(LINE_SEPARATOR)
 						.append("intlist.property=1;2;3").append(LINE_SEPARATOR)
@@ -52,8 +53,8 @@ public final class DefaultPropertyStoreTest {
 						.append("int.property3=44").append(LINE_SEPARATOR)
 						.append("double.property=3.14").append(LINE_SEPARATOR)
 						.append("boolean.property=true");
-		Files.write(configFile.toPath(), singletonList(configBuilder.toString()));
-		DefaultPropertyStore store = new DefaultPropertyStore(configFile);
+		Files.write(configFile, singletonList(configBuilder.toString()));
+		DefaultPropertyStore store = new DefaultPropertyStore(configFile.toFile());
 
 		AtomicInteger counter = new AtomicInteger();
 		PropertyValue<String> stringValue = store.stringValue("string.property", "value");
@@ -129,9 +130,9 @@ public final class DefaultPropertyStoreTest {
 		doubleValue.set(4.22);
 		booleanValue.set(null);
 
-		store.writeToFile(configFile);
+		store.writeToFile(configFile.toFile());
 
-		List<String> propertyValues = Files.readAllLines(configFile.toPath());
+		List<String> propertyValues = Files.readAllLines(configFile);
 		assertTrue(propertyValues.contains("string.property=newValue"));
 		assertTrue(propertyValues.contains("stringlist.property=value4;value5;value6"));
 		assertTrue(propertyValues.contains("int.property1=24"));
@@ -140,8 +141,6 @@ public final class DefaultPropertyStoreTest {
 		assertTrue(propertyValues.contains("double.property=4.22"));
 		assertTrue(propertyValues.contains("boolean.property=false"));
 		assertFalse(propertyValues.contains("intlist.property=1;2;3"));
-
-		configFile.delete();
 	}
 
 	@Test
