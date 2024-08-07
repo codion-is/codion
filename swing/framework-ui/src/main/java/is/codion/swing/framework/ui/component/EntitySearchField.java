@@ -87,6 +87,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
@@ -109,7 +110,6 @@ import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.dialog.Dialogs.okCancelDialog;
@@ -238,7 +238,7 @@ public final class EntitySearchField extends HintTextField {
 						.nonNull(builder.selectorFactory)
 						.build();
 		if (builder.selectAllOnFocusGained) {
-			selectAllOnFocusGained(this);
+			addFocusListener(new SelectAllFocusListener());
 		}
 		setToolTipText(model.description());
 		setComponentPopupMenu(createPopupMenu());
@@ -1079,6 +1079,19 @@ public final class EntitySearchField extends HintTextField {
 			}
 			revalidate();
 			repaint();
+		}
+	}
+
+	private final class SelectAllFocusListener extends FocusAdapter {
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			selectAll();
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			select(0, 0);
 		}
 	}
 

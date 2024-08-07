@@ -10,6 +10,7 @@ Codion Change Log
 - Value.value() factory method overloaded with initialValue.
 ### is.codion.swing.common.ui
 - FilterColumnConditionPanel, minor focus related refactoring.
+- TextComponents.selectAllOnFocusGained() and selectNoneOnFocusGained() removed.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel bug fixed, IN operator only selected by default if entity is searchable.
 ### is.codion.swing.framework.ui

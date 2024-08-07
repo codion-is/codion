@@ -88,14 +88,4 @@ public class TextComponentsTest {
 		textField.setText("HELLO");
 		assertEquals("hello", textField.getText());
 	}
-
-	@Test
-	void selectAllOnFocusGained() {
-		JTextField textField = new JTextField("test");
-		int focusListenerCount = textField.getFocusListeners().length;
-		TextComponents.selectAllOnFocusGained(textField);
-		assertEquals(focusListenerCount + 1, textField.getFocusListeners().length);
-		TextComponents.selectNoneOnFocusGained(textField);
-		assertEquals(focusListenerCount, textField.getFocusListeners().length);
-	}
 }
