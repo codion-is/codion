@@ -8,6 +8,7 @@ Codion Change Log
 - ValueObserver.isNullable() renamed back to nullable(), no factory method conflict any more.
 - Text.WILDCARD_CHARACTER removed, wildcards no longer configurable.
 - Value.value() factory method overloaded with initialValue.
+- PropertyStore.propertyStore() and writeToFile() parameters changed from File to Path.
 ### is.codion.swing.common.ui
 - FilterColumnConditionPanel, minor focus related refactoring.
 - TextComponents.selectAllOnFocusGained() and selectNoneOnFocusGained() removed.

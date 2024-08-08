@@ -20,12 +20,12 @@ package is.codion.common.property;
 
 import is.codion.common.value.AbstractValue;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -64,7 +64,7 @@ final class DefaultPropertyStore implements PropertyStore {
 		}
 	};
 
-	DefaultPropertyStore(File propertiesFile) throws IOException {
+	DefaultPropertyStore(Path propertiesFile) throws IOException {
 		this(loadProperties(propertiesFile));
 	}
 
@@ -226,12 +226,12 @@ final class DefaultPropertyStore implements PropertyStore {
 	}
 
 	@Override
-	public void writeToFile(File propertiesFile) throws IOException {
+	public void writeToFile(Path propertiesFile) throws IOException {
 		requireNonNull(propertiesFile, "propertiesFile");
-		if (!propertiesFile.exists() && !propertiesFile.createNewFile()) {
+		if (!Files.exists(propertiesFile) && !propertiesFile.toFile().createNewFile()) {
 			throw new IOException("Unable to create properties file: " + propertiesFile);
 		}
-		try (OutputStream output = Files.newOutputStream(propertiesFile.toPath())) {
+		try (OutputStream output = Files.newOutputStream(propertiesFile)) {
 			properties.store(output, null);
 		}
 	}
@@ -243,11 +243,11 @@ final class DefaultPropertyStore implements PropertyStore {
 	 * @throws IOException in case the file exists but can not be read
 	 * @throws FileNotFoundException in case the file does not exist
 	 */
-	private static Properties loadProperties(File propertiesFile) throws IOException {
-		if (!requireNonNull(propertiesFile).exists()) {
+	private static Properties loadProperties(Path propertiesFile) throws IOException {
+		if (!Files.exists(requireNonNull(propertiesFile))) {
 			throw new FileNotFoundException(propertiesFile.toString());
 		}
-		try (InputStream input = Files.newInputStream(propertiesFile.toPath())) {
+		try (InputStream input = Files.newInputStream(propertiesFile)) {
 			return loadProperties(input);
 		}
 	}

@@ -18,10 +18,10 @@
  */
 package is.codion.common.property;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +38,7 @@ import static java.util.stream.Collectors.joining;
  * If no value is found in a configuration file or in a system property, the default property value is used as the inital value.
  * When the value is set to null via {@link is.codion.common.value.Value#set(Object)} the default value is used, if one has been specified.
  * <pre>
- * File configurationFile = new File(System.getProperty("user.home") + "/app.properties");
+ * Path configurationFile = Path.of(System.getProperty("user.home") + "/app.properties");
  *
  * PropertyStore store = PropertyStore.propertyStore(configurationFile);
  *
@@ -286,7 +286,7 @@ public interface PropertyStore {
 	 * @param propertiesFile the properties file to write to
 	 * @throws IOException in case writing the file was not successful
 	 */
-	void writeToFile(File propertiesFile) throws IOException;
+	void writeToFile(Path propertiesFile) throws IOException;
 
 	/**
 	 * Creates a new empy PropertyStore.
@@ -313,7 +313,7 @@ public interface PropertyStore {
 	 * @throws IOException in case the given properties file exists but reading it failed
 	 * @throws FileNotFoundException in case the file does not exist
 	 */
-	static PropertyStore propertyStore(File propertiesFile) throws IOException {
+	static PropertyStore propertyStore(Path propertiesFile) throws IOException {
 		return new DefaultPropertyStore(propertiesFile);
 	}
 

@@ -54,7 +54,7 @@ public final class DefaultPropertyStoreTest {
 						.append("double.property=3.14").append(LINE_SEPARATOR)
 						.append("boolean.property=true");
 		Files.write(configFile, singletonList(configBuilder.toString()));
-		DefaultPropertyStore store = new DefaultPropertyStore(configFile.toFile());
+		DefaultPropertyStore store = new DefaultPropertyStore(configFile);
 
 		AtomicInteger counter = new AtomicInteger();
 		PropertyValue<String> stringValue = store.stringValue("string.property", "value");
@@ -130,7 +130,7 @@ public final class DefaultPropertyStoreTest {
 		doubleValue.set(4.22);
 		booleanValue.set(null);
 
-		store.writeToFile(configFile.toFile());
+		store.writeToFile(configFile);
 
 		List<String> propertyValues = Files.readAllLines(configFile);
 		assertTrue(propertyValues.contains("string.property=newValue"));
@@ -147,7 +147,7 @@ public final class DefaultPropertyStoreTest {
 	void testDefaultValues() throws IOException {
 		File configFile = File.createTempFile("PropertyStoreTest.testDefaultValues", "properties");
 		configFile.deleteOnExit();
-		DefaultPropertyStore store = new DefaultPropertyStore(configFile);
+		DefaultPropertyStore store = new DefaultPropertyStore(configFile.toPath());
 		PropertyValue<String> stringValue = store.stringValue("string.property", "value");
 		assertEquals("value", stringValue.get());
 		stringValue.set("another");
@@ -202,7 +202,7 @@ public final class DefaultPropertyStoreTest {
 
 	@Test
 	void exceptions() {
-		assertThrows(FileNotFoundException.class, () -> new DefaultPropertyStore(new File("test.file")));
+		assertThrows(FileNotFoundException.class, () -> new DefaultPropertyStore(Path.of("test.file")));
 
 		PropertyStore store = PropertyStore.propertyStore();
 		store.stringValue("test", "test");

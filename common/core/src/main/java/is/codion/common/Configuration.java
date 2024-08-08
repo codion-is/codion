@@ -21,9 +21,10 @@ package is.codion.common;
 import is.codion.common.property.PropertyStore;
 import is.codion.common.property.PropertyValue;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -280,8 +281,8 @@ public final class Configuration {
 
 	static PropertyStore loadFromFile(String filePath, boolean configurationRequired) {
 		try {
-			File file = new File(filePath);
-			if (!file.exists()) {
+			Path file = Path.of(filePath);
+			if (!Files.exists(file)) {
 				if (configurationRequired) {
 					throw new RuntimeException("Required configuration file not found: " + filePath);
 				}
