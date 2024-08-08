@@ -220,6 +220,11 @@ public interface ServerConfiguration {
 	int connectionMaintenanceInterval();
 
 	/**
+	 * @return the maximum number of concurrent connections, -1 for no limit
+	 */
+	int connectionLimit();
+
+	/**
 	 * A Builder for ServerConfiguration
 	 * @param <B> the builder type
 	 */
@@ -282,6 +287,12 @@ public interface ServerConfiguration {
 		 * @return this builder instance
 		 */
 		B connectionMaintenanceIntervalMs(int connectionMaintenanceIntervalMs);
+
+		/**
+		 * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
+		 * @return this builder instance
+		 */
+		B connectionLimit(int connectionLimit);
 
 		/**
 		 * @return a new ServerConfiguration instance based on this builder

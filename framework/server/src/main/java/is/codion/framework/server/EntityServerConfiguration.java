@@ -47,15 +47,13 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 
 	Logger LOG = LoggerFactory.getLogger(EntityServerConfiguration.class);
 
-	int DEFAULT_CONNECTION_LIMIT = -1;
-
 	/**
 	 * Specifies maximum number of concurrent connections the server accepts<br>
 	 * -1 indicates no limit and 0 indicates a closed server.
 	 * Value type: Integer<br>
 	 * Default value: -1
 	 */
-	PropertyValue<Integer> CONNECTION_LIMIT = Configuration.integerValue("codion.server.connectionLimit", DEFAULT_CONNECTION_LIMIT);
+	PropertyValue<Integer> CONNECTION_LIMIT = Configuration.integerValue("codion.server.connectionLimit", -1);
 
 	/**
 	 * Specifies the class name of the connection pool factory to use.<br>
@@ -103,11 +101,6 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	User adminUser();
 
 	/**
-	 * @return the maximum number of concurrent connections, -1 for no limit
-	 */
-	int connectionLimit();
-
-	/**
 	 * @return true if client logging should be enabled on startup
 	 */
 	boolean clientLogging();
@@ -153,12 +146,6 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 		 * @return this builder instance
 		 */
 		Builder adminUser(User adminUser);
-
-		/**
-		 * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
-		 * @return this builder instance
-		 */
-		Builder connectionLimit(int connectionLimit);
 
 		/**
 		 * @param clientLogging if true then client logging is enabled on startup

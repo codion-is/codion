@@ -45,7 +45,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
 	private final Database database;
 	private final User adminUser;
-	private final int connectionLimit;
 	private final boolean clientLogging;
 	private final int idleConnectionTimeout;
 	private final String connectionPoolFactory;
@@ -57,7 +56,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		this.serverConfiguration = requireNonNull(builder.serverConfigurationBuilder.build());
 		this.database = builder.database;
 		this.adminUser = builder.adminUser;
-		this.connectionLimit = builder.connectionLimit;
 		this.clientLogging = builder.clientLogging;
 		this.idleConnectionTimeout = builder.idleConnectionTimeout;
 		this.connectionPoolFactory = builder.connectionPoolFactory;
@@ -117,6 +115,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
+	public int connectionLimit() {
+		return serverConfiguration.connectionLimit();
+	}
+
+	@Override
 	public Database database() {
 		return database;
 	}
@@ -124,11 +127,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	@Override
 	public User adminUser() {
 		return adminUser;
-	}
-
-	@Override
-	public int connectionLimit() {
-		return connectionLimit;
 	}
 
 	@Override
@@ -167,7 +165,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
 		private Database database;
 		private User adminUser;
-		private int connectionLimit = DEFAULT_CONNECTION_LIMIT;
 		private boolean clientLogging = CLIENT_LOGGING.get();
 		private int idleConnectionTimeout = ServerConfiguration.IDLE_CONNECTION_TIMEOUT.get();
 		private String connectionPoolFactory;
@@ -242,6 +239,12 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
+		public Builder connectionLimit(int connectionLimit) {
+			serverConfigurationBuilder.connectionLimit(connectionLimit);
+			return this;
+		}
+
+		@Override
 		public Builder database(Database database) {
 			this.database = requireNonNull(database);
 			return this;
@@ -250,12 +253,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		@Override
 		public Builder adminUser(User adminUser) {
 			this.adminUser = requireNonNull(adminUser);
-			return this;
-		}
-
-		@Override
-		public Builder connectionLimit(int connectionLimit) {
-			this.connectionLimit = connectionLimit;
 			return this;
 		}
 

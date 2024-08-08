@@ -56,6 +56,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	private final RMIServerSocketFactory rmiServerSocketFactory;
 	private final String objectInputFilterFactoryClassName;
 	private final int connectionMaintenanceIntervalMs;
+	private final int connectionLimit;
 
 	private String serverName;
 
@@ -71,6 +72,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		this.rmiServerSocketFactory = builder.rmiServerSocketFactory;
 		this.objectInputFilterFactoryClassName = builder.objectInputFilterFactoryClassName;
 		this.connectionMaintenanceIntervalMs = builder.connectionMaintenanceIntervalMs;
+		this.connectionLimit = builder.connectionLimit;
 	}
 
 	@Override
@@ -127,6 +129,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		return connectionMaintenanceIntervalMs;
 	}
 
+	@Override
+	public int connectionLimit() {
+		return connectionLimit;
+	}
+
 	static final class DefaultBuilder implements Builder<DefaultBuilder> {
 
 		static {
@@ -144,6 +151,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
 		private String objectInputFilterFactoryClassName;
 		private Integer connectionMaintenanceIntervalMs = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
+		private int connectionLimit = -1;
 
 		DefaultBuilder(int serverPort, int registryPort) {
 			this.serverPort = serverPort;
@@ -209,6 +217,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		@Override
 		public DefaultBuilder connectionMaintenanceIntervalMs(int connectionMaintenanceIntervalMs) {
 			this.connectionMaintenanceIntervalMs = connectionMaintenanceIntervalMs;
+			return this;
+		}
+
+		@Override
+		public DefaultBuilder connectionLimit(int connectionLimit) {
+			this.connectionLimit = connectionLimit;
 			return this;
 		}
 

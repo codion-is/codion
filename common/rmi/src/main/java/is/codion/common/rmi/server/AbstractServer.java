@@ -100,6 +100,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 							.interval(configuration.connectionMaintenanceInterval(), TimeUnit.MILLISECONDS)
 							.initialDelay(configuration.connectionMaintenanceInterval())
 							.start();
+			setConnectionLimit(configuration.connectionLimit());
 			configureObjectInputFilter(configuration);
 			startAuxiliaryServers(configuration.auxiliaryServerFactoryClassNames());
 			loadAuthenticators();

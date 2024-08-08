@@ -9,9 +9,13 @@ Codion Change Log
 - Text.WILDCARD_CHARACTER removed, wildcards no longer configurable.
 - Value.value() factory method overloaded with initialValue.
 - PropertyStore.propertyStore() and writeToFile() parameters changed from File to Path.
+### is.codion.common.rmi
+- ServerConfiguration.connectionLimit() added.
 ### is.codion.swing.common.ui
 - FilterColumnConditionPanel, minor focus related refactoring.
 - TextComponents.selectAllOnFocusGained() and selectNoneOnFocusGained() removed.
+### is.codion.framework.server
+- EntityServerConfiguration.connectionLimit() moved up to ServerConfiguration.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel bug fixed, IN operator only selected by default if entity is searchable.
 ### is.codion.swing.framework.ui

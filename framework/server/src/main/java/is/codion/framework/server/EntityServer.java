@@ -105,7 +105,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			setIdleConnectionTimeout(configuration.idleConnectionTimeout());
 			setClientTypeIdleConnectionTimeouts(configuration.clientTypeIdleConnectionTimeouts());
 			createConnectionPools(configuration.database(), configuration.connectionPoolFactory(), configuration.connectionPoolUsers());
-			setConnectionLimit(configuration.connectionLimit());
 			registry().rebind(serverInformation().serverName(), this);
 		}
 		catch (Throwable t) {
