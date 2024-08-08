@@ -31,7 +31,6 @@ import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.tools.generator.domain.DatabaseDomain;
 import is.codion.tools.generator.domain.DomainSource;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -179,7 +178,7 @@ public final class DomainGeneratorModel {
 				domainSource(domain, domainPackageValue.optional()
 								.filter(DomainGeneratorModel::validPackageName)
 								.orElse(""))
-								.writeApiImpl(savePath(new File(sourceDirectoryValue.get())));
+								.writeApiImpl(savePath(Path.of(sourceDirectoryValue.get())));
 			}
 		}
 	}
@@ -191,7 +190,7 @@ public final class DomainGeneratorModel {
 				domainSource(domain, domainPackageValue.optional()
 								.filter(DomainGeneratorModel::validPackageName)
 								.orElse(""))
-								.writeCombined(savePath(new File(sourceDirectoryValue.get())));
+								.writeCombined(savePath(Path.of(sourceDirectoryValue.get())));
 			}
 		}
 	}
@@ -263,8 +262,7 @@ public final class DomainGeneratorModel {
 						.orElse(null);
 	}
 
-	private Path savePath(File directory) {
-		Path path = directory.toPath();
+	private Path savePath(Path path) {
 		String domainPackage = domainPackageValue.get();
 		if (domainPackage != null) {
 			for (String pkg : domainPackage.split("\\.")) {

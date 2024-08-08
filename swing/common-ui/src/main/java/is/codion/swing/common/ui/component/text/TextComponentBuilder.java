@@ -47,6 +47,7 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
 	B editable(boolean editable);
 
 	/**
+	 * Default {@link UpdateOn#VALUE_CHANGE}
 	 * @param updateOn specifies when the underlying value should be updated
 	 * @return this builder instance
 	 */

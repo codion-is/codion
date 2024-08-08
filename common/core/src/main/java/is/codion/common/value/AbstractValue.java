@@ -100,7 +100,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean map(Function<T, T> mapper) {
-		return set(requireNonNull(mapper).apply(get()));
+		return Value.super.map(mapper);
 	}
 
 	@Override

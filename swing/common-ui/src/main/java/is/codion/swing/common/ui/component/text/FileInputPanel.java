@@ -37,6 +37,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static java.util.Objects.requireNonNull;
 
@@ -137,7 +138,7 @@ public final class FileInputPanel extends JPanel {
 				return null;
 			}
 			try {
-				return Files.readAllBytes(new File(filePath).toPath());
+				return Files.readAllBytes(Path.of(filePath));
 			}
 			catch (IOException e) {
 				throw new RuntimeException(e);

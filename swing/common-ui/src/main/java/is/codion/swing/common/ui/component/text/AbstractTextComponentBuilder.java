@@ -41,10 +41,9 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B extends TextComponentBuilder<T, C, B>>
 				extends AbstractComponentBuilder<T, C, B> implements TextComponentBuilder<T, C, B> {
 
-	protected UpdateOn updateOn = UpdateOn.VALUE_CHANGE;
-
 	private final List<CaretListener> caretListeners = new ArrayList<>();
 
+	private UpdateOn updateOn = UpdateOn.VALUE_CHANGE;
 	private boolean editable = true;
 	private boolean upperCase;
 	private boolean lowerCase;
@@ -271,6 +270,13 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	 * @return a JTextComponent or subclass
 	 */
 	protected abstract C createTextComponent();
+
+	/**
+	 * @return the {@link UpdateOn} policy set via {@link #updateOn(UpdateOn)}
+	 */
+	protected final UpdateOn updateOn() {
+		return updateOn;
+	}
 
 	private void setInitialCaretPosition(C component) {
 		component.setCaretPosition(initialCaretPosition == InitialCaretPosition.START ? 0 : component.getDocument().getLength());

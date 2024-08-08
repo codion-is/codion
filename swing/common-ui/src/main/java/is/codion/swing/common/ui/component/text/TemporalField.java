@@ -451,7 +451,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 		@Override
 		protected ComponentValue<T, TemporalField<T>> createComponentValue(TemporalField<T> component) {
-			return new TemporalFieldValue<>(component, updateOn);
+			return new TemporalFieldValue<>(component, updateOn());
 		}
 
 		@Override

@@ -139,10 +139,10 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 	protected ComponentValue<T, C> createComponentValue(C component) {
 		requireNonNull(component);
 		if (valueClass.equals(Character.class)) {
-			return (ComponentValue<T, C>) new CharacterFieldValue(component, updateOn);
+			return (ComponentValue<T, C>) new CharacterFieldValue(component, updateOn());
 		}
 
-		return new DefaultTextComponentValue<>(component, format, updateOn);
+		return new DefaultTextComponentValue<>(component, format, updateOn());
 	}
 
 	protected final Format format() {

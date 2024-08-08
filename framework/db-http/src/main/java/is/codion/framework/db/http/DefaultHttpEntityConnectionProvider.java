@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnectionProvider
 				implements HttpEntityConnectionProvider {
 
-	private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnectionProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultHttpEntityConnectionProvider.class);
 
 	private final String hostName;
 	private final int port;

@@ -37,7 +37,7 @@ import static is.codion.framework.db.local.LocalEntityConnection.localEntityConn
 final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectionProvider
 				implements LocalEntityConnectionProvider {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnectionProvider.class);
 
 	private final Domain domain;
 	private final Database database;

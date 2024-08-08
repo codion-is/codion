@@ -462,15 +462,15 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	}
 
 	private static void configureObjectInputFilter(ServerConfiguration configuration) {
-		if (!configuration.objectInputFilterFactoryClassName().isPresent()) {
-			LOG.warn("No ObjectInputFilterFactoryClassName specified");
-		}
-		else {
+		if (configuration.objectInputFilterFactoryClassName().isPresent()) {
 			String objectInputFilterFactoryClassName = configuration.objectInputFilterFactoryClassName().get();
 			ObjectInputFilterFactory inputFilterFactory = ObjectInputFilterFactory.instance(objectInputFilterFactoryClassName);
 			ObjectInputFilter objectInputFilter = inputFilterFactory.createObjectInputFilter();
 			ObjectInputFilter.Config.setSerialFilter(objectInputFilter);
 			LOG.info("ObjectInputFilter {} enabled", objectInputFilter.getClass().getName());
+		}
+		else {
+			LOG.warn("No ObjectInputFilterFactoryClassName specified");
 		}
 	}
 

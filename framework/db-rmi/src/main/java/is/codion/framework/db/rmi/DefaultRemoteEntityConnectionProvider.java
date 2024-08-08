@@ -49,7 +49,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnectionProvider
 				implements RemoteEntityConnectionProvider {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultRemoteEntityConnectionProvider.class);
 
 	private Server<RemoteEntityConnection, ServerAdmin> server;
 	private String serverName;

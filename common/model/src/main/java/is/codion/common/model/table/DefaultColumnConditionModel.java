@@ -530,7 +530,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	private void validateOperator(Operator operator) {
 		if (operators != null && !operators.contains(requireNonNull(operator, "operator"))) {
-			throw new IllegalArgumentException("Operator " + operator + " not available in this condition model");
+			throw new IllegalArgumentException("Operator " + operator + " not available in condition model: " + columnIdentifier);
 		}
 	}
 

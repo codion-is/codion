@@ -19,6 +19,7 @@
 package is.codion.common.value;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * A class for linking two values.
@@ -29,20 +30,13 @@ final class ValueLink<T> {
 	private final Value<T> linkedValue;
 	private final Value<T> originalValue;
 
-	private final Runnable updateLinkedValue = new UpdateLinkedValue();
-	private final Runnable updateOriginalValue = new UpdateOriginalValue();
+	private final Consumer<T> updateLinkedValue = this::updateLinkedValue;
+	private final Consumer<T> updateOriginalValue = this::updateOriginalValue;
 
 	private final LinkedValidator<T> linkedValidator;
 	private final LinkedValidator<T> originalValidator;
 
-	/**
-	 * True while the linked value is being updated
-	 */
 	private boolean updatingLinked = false;
-
-	/**
-	 * True while the original value is being updated
-	 */
 	private boolean updatingOriginal = false;
 
 	/**
@@ -59,15 +53,15 @@ final class ValueLink<T> {
 		this.linkedValidator.excluded = originalValidator;
 		this.originalValidator.excluded = linkedValidator;
 		linkedValue.set(originalValue.get());
-		originalValue.addListener(updateLinkedValue);
-		linkedValue.addListener(updateOriginalValue);
+		originalValue.addConsumer(updateLinkedValue);
+		linkedValue.addConsumer(updateOriginalValue);
 		originalValue.addValidator(linkedValidator);
 		linkedValue.addValidator(originalValidator);
 	}
 
 	void unlink() {
-		linkedValue.removeListener(updateOriginalValue);
-		originalValue.removeListener(updateLinkedValue);
+		linkedValue.removeConsumer(updateOriginalValue);
+		originalValue.removeConsumer(updateLinkedValue);
 		linkedValue.removeValidator(originalValidator);
 		originalValue.removeValidator(linkedValidator);
 	}
@@ -85,42 +79,26 @@ final class ValueLink<T> {
 		}
 	}
 
-	private final class UpdateLinkedValue implements Runnable {
-
-		@Override
-		public void run() {
-			updateLinkedValue();
-		}
-
-		private void updateLinkedValue() {
-			if (!updatingOriginal) {
-				try {
-					updatingLinked = true;
-					linkedValue.set(originalValue.get());
-				}
-				finally {
-					updatingLinked = false;
-				}
+	private void updateLinkedValue(T value) {
+		if (!updatingOriginal) {
+			updatingLinked = true;
+			try {
+				linkedValue.set(value);
+			}
+			finally {
+				updatingLinked = false;
 			}
 		}
 	}
 
-	private final class UpdateOriginalValue implements Runnable {
-
-		@Override
-		public void run() {
-			updateOriginalValue();
-		}
-
-		private void updateOriginalValue() {
-			if (!updatingLinked) {
-				try {
-					updatingOriginal = true;
-					originalValue.set(linkedValue.get());
-				}
-				finally {
-					updatingOriginal = false;
-				}
+	private void updateOriginalValue(T value) {
+		if (!updatingLinked) {
+			updatingOriginal = true;
+			try {
+				originalValue.set(value);
+			}
+			finally {
+				updatingOriginal = false;
 			}
 		}
 	}
