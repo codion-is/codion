@@ -13,5 +13,4 @@ dependencies {
 
 extraJavaModuleInfo {
     automaticModule("org.apache.tomcat:tomcat-jdbc", "tomcat.jdbc")
-    automaticModule("org.apache.tomcat:tomcat-juli", "tomcat.juli")
 }
