@@ -20,23 +20,14 @@ package is.codion.framework.server;
 
 
 import is.codion.common.Configuration;
-import is.codion.common.Text;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-
-import static is.codion.common.Text.nullOrEmpty;
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Configuration values for a {@link EntityServer}.
@@ -44,8 +35,6 @@ import static java.util.stream.Collectors.toList;
  * @see #builderFromSystemProperties()
  */
 public interface EntityServerConfiguration extends ServerConfiguration {
-
-	Logger LOG = LoggerFactory.getLogger(EntityServerConfiguration.class);
 
 	/**
 	 * Specifies maximum number of concurrent connections the server accepts<br>
@@ -203,38 +192,6 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	 * @return an entity server configuration builder initialized with values from system properties.
 	 */
 	static EntityServerConfiguration.Builder builderFromSystemProperties() {
-		Builder builder = builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
-						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
-						.sslEnabled(SSL_ENABLED.get())
-						.objectInputFilterFactoryClassName(OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME.get())
-						.adminPort(requireNonNull(ADMIN_PORT.get(), ADMIN_PORT.toString()))
-						.connectionLimit(CONNECTION_LIMIT.get())
-						.database(Database.instance())
-						.domainClassNames(Text.parseCommaSeparatedValues(DOMAIN_MODEL_CLASSES.get()))
-						.connectionPoolUsers(Text.parseCommaSeparatedValues(CONNECTION_POOL_USERS.get()).stream()
-										.map(User::parse)
-										.collect(toList()))
-						.clientLogging(CLIENT_LOGGING.get())
-						.idleConnectionTimeout(IDLE_CONNECTION_TIMEOUT.get());
-		Map<String, Integer> clientTypeIdleConnectionTimeoutMap = new HashMap<>();
-		for (String clientTimeout : Text.parseCommaSeparatedValues(CLIENT_CONNECTION_TIMEOUT.get())) {
-			String[] split = clientTimeout.split(":");
-			if (split.length < 2) {
-				throw new IllegalArgumentException("Expecting a ':' delimiter");
-			}
-			clientTypeIdleConnectionTimeoutMap.put(split[0], Integer.parseInt(split[1]));
-		}
-		builder.clientTypeIdleConnectionTimeouts(clientTypeIdleConnectionTimeoutMap);
-		String adminUserString = ADMIN_USER.get();
-		User adminUser = nullOrEmpty(adminUserString) ? null : User.parse(adminUserString);
-		if (adminUser == null) {
-			EntityServerConfiguration.LOG.info("No admin user specified");
-		}
-		else {
-			EntityServerConfiguration.LOG.info("Admin user: {}", adminUser);
-			builder.adminUser(adminUser);
-		}
-
-		return builder;
+		return DefaultEntityServerConfiguration.builderFromSystemProperties();
 	}
 }

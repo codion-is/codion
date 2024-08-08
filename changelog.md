@@ -16,6 +16,7 @@ Codion Change Log
 - TextComponents.selectAllOnFocusGained() and selectNoneOnFocusGained() removed.
 ### is.codion.framework.server
 - EntityServerConfiguration.connectionLimit() moved up to ServerConfiguration.
+- EntityServerConfiguration.LOG removed, related refactoring.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel bug fixed, IN operator only selected by default if entity is searchable.
 ### is.codion.swing.framework.ui

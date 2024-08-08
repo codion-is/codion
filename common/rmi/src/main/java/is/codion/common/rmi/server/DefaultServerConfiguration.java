@@ -44,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultServerConfiguration implements ServerConfiguration {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ServerConfiguration.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultServerConfiguration.class);
 
 	private final int port;
 	private final int registryPort;

@@ -18,10 +18,14 @@
  */
 package is.codion.framework.server;
 
+import is.codion.common.Text;
 import is.codion.common.db.database.Database;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -32,14 +36,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Configuration values for a {@link EntityServer}.
  */
 final class DefaultEntityServerConfiguration implements EntityServerConfiguration {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityServerConfiguration.class);
 
 	private final ServerConfiguration serverConfiguration;
 
@@ -157,6 +165,42 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	@Override
 	public Map<String, Integer> clientTypeIdleConnectionTimeouts() {
 		return clientTypeIdleConnectionTimeouts;
+	}
+
+	static EntityServerConfiguration.Builder builderFromSystemProperties() {
+		Builder builder = new DefaultBuilder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
+						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
+						.sslEnabled(SSL_ENABLED.get())
+						.objectInputFilterFactoryClassName(OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME.get())
+						.adminPort(requireNonNull(ADMIN_PORT.get(), ADMIN_PORT.toString()))
+						.connectionLimit(CONNECTION_LIMIT.get())
+						.database(Database.instance())
+						.domainClassNames(Text.parseCommaSeparatedValues(DOMAIN_MODEL_CLASSES.get()))
+						.connectionPoolUsers(Text.parseCommaSeparatedValues(CONNECTION_POOL_USERS.get()).stream()
+										.map(User::parse)
+										.collect(toList()))
+						.clientLogging(CLIENT_LOGGING.get())
+						.idleConnectionTimeout(IDLE_CONNECTION_TIMEOUT.get());
+		Map<String, Integer> clientTypeIdleConnectionTimeoutMap = new HashMap<>();
+		for (String clientTimeout : Text.parseCommaSeparatedValues(CLIENT_CONNECTION_TIMEOUT.get())) {
+			String[] split = clientTimeout.split(":");
+			if (split.length < 2) {
+				throw new IllegalArgumentException("Expecting a ':' delimiter");
+			}
+			clientTypeIdleConnectionTimeoutMap.put(split[0], Integer.parseInt(split[1]));
+		}
+		builder.clientTypeIdleConnectionTimeouts(clientTypeIdleConnectionTimeoutMap);
+		String adminUserString = ADMIN_USER.get();
+		User adminUser = nullOrEmpty(adminUserString) ? null : User.parse(adminUserString);
+		if (adminUser == null) {
+			LOG.info("No admin user specified");
+		}
+		else {
+			LOG.info("Admin user: {}", adminUser);
+			builder.adminUser(adminUser);
+		}
+
+		return builder;
 	}
 
 	static final class DefaultBuilder implements Builder {
