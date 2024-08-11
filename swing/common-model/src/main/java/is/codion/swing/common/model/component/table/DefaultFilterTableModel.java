@@ -477,8 +477,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private Collection<ColumnConditionModel<C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
 		return columns.identifiers().stream()
 						.map(filterModelFactory::createConditionModel)
-						.filter(Optional::isPresent)
-						.map(Optional::get)
+						.flatMap(Optional::stream)
 						.map(model -> (ColumnConditionModel<C, ?>) model)
 						.collect(toList());
 	}

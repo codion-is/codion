@@ -192,8 +192,7 @@ final class LookupTablePanel extends EntityTablePanel {
 							tableModel().selectionModel().getSelectedItems();
 			Maps.paintWaypoints(entities.stream()
 							.map(entity -> entity.optional(Lookup.CITY_LOCATION))
-							.filter(Optional::isPresent)
-							.map(Optional::get)
+							.flatMap(Optional::stream)
 							.collect(toSet()), mapKit.getMainMap());
 		}
 	}

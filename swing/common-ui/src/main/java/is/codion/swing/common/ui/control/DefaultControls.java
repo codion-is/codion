@@ -234,8 +234,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 		private boolean contains(ControlKey<?> controlKey) {
 			return items.stream()
 							.map(ControlItem::controlKey)
-							.filter(Optional::isPresent)
-							.map(Optional::get)
+							.flatMap(Optional::stream)
 							.anyMatch(controlKey::equals);
 		}
 

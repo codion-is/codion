@@ -102,8 +102,7 @@ public final class CityEditPanel extends EntityEditPanel {
 	private void displayLocation(Collection<Entity> cities) {
 		Maps.paintWaypoints(cities.stream()
 						.map(city -> city.optional(City.LOCATION))
-						.filter(Optional::isPresent)
-						.map(Optional::get)
+						.flatMap(Optional::stream)
 						.collect(toSet()), mapKit.getMainMap());
 	}
 }

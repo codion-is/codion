@@ -130,8 +130,7 @@ final class ConditionPreferences {
 		JSONObject jsonObject = new JSONObject(preferencesString).getJSONObject(ConditionPreferences.CONDITIONS_KEY);
 		return requireNonNull(attributes).stream()
 						.map(attribute -> conditionPreferences(attribute, requireNonNull(jsonObject)))
-						.filter(Optional::isPresent)
-						.map(Optional::get)
+						.flatMap(Optional::stream)
 						.collect(toMap(ConditionPreferences::attribute, Function.identity()));
 	}
 

@@ -124,8 +124,7 @@ final class ColumnPreferences {
 		JSONObject jsonObject = new JSONObject(preferencesString).getJSONObject(COLUMNS_KEY);
 		return requireNonNull(attributes).stream()
 						.map(attribute -> ColumnPreferences.columnPreferences(attribute, requireNonNull(jsonObject)))
-						.filter(Optional::isPresent)
-						.map(Optional::get)
+						.flatMap(Optional::stream)
 						.collect(toMap(ColumnPreferences::attribute, Function.identity()));
 	}
 

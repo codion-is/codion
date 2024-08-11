@@ -225,8 +225,7 @@ final class KeyBindingModel {
 				return lookAndFeelProvider.lookAndFeel().getDefaults().keySet().stream()
 								.map(Object::toString)
 								.map(ComponentItems::componentName)
-								.filter(Optional::isPresent)
-								.map(Optional::get)
+								.flatMap(Optional::stream)
 								.sorted()
 								.collect(toList());
 			}

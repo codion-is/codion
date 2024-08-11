@@ -256,9 +256,7 @@ public final class DomainGeneratorModel {
 
 	private DatabaseDomain selectedDomain() {
 		return schemaTableModel.selectionModel().selectedItem()
-						.map(SchemaRow::domain)
-						.filter(Optional::isPresent)
-						.map(Optional::get)
+						.flatMap(SchemaRow::domain)
 						.orElse(null);
 	}
 
@@ -304,8 +302,7 @@ public final class DomainGeneratorModel {
 		public Collection<EntityRow> get() {
 			return schemaTableModel.selectionModel().getSelectedItems().stream()
 							.map(SchemaRow::domain)
-							.filter(Optional::isPresent)
-							.map(Optional::get)
+							.flatMap(Optional::stream)
 							.flatMap(domain -> domain.entities().definitions().stream()
 											.map(definition -> new EntityRow(definition, domain.tableType(definition.entityType()))))
 							.collect(toList());
