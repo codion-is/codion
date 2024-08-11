@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.9
+
 ## 0.18.8
 ### is.codion.common.core
 - Value.BuilderFactory added, nullable() and nonNull() methods replaced with builder() returning a BuilderFactory.
