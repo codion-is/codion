@@ -18,7 +18,6 @@
  */
 package is.codion.tools.monitor.ui;
 
-import is.codion.common.Memory;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.rmi.client.Clients;
@@ -56,6 +55,7 @@ import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -77,6 +77,8 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private static final String JDK_PREFERENCE_KEY = EntityServerMonitorPanel.class.getSimpleName() + ".jdkPathPreferenceKey";
 	private static final double SCREEN_SIZE_RATIO = 0.75;
 	private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
+	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
+	private static final Runtime RUNTIME = Runtime.getRuntime();
 	private static String jdkDir = UserPreferences.getUserPreference(JDK_PREFERENCE_KEY, null);
 
 	private final State alwaysOnTopState = State.state();
@@ -283,12 +285,16 @@ public final class EntityServerMonitorPanel extends JPanel {
 										.columns(8)
 										.editable(false)
 										.horizontalAlignment(SwingConstants.CENTER)
-										.onBuild(memoryUsageField -> TaskScheduler.builder(() ->
-																		SwingUtilities.invokeLater(() -> memoryUsageField.setText(Memory.memoryUsage())))
+										.onBuild(memoryUsageField -> TaskScheduler.builder(() -> SwingUtilities.invokeLater(() ->
+																		memoryUsageField.setText(memoryUsage())))
 														.interval(MEMORY_USAGE_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
 														.start())
 										.build())
 						.build();
+	}
+
+	private static String memoryUsage() {
+		return MEMORY_USAGE_FORMAT.format((RUNTIME.totalMemory() - RUNTIME.freeMemory()) / 1024) + " KB";
 	}
 
 	private static User adminUser() {

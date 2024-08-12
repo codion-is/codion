@@ -67,7 +67,7 @@ public final class ServerMonitor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ServerMonitor.class);
 	private static final Format MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
-	private static final double THOUSAND = 1000;
+	private static final double K = 1024;
 	private static final String GC_EVENT_PREFIX = "GC ";
 
 	private final Event<?> serverShutDownEvent = Event.event();
@@ -492,11 +492,11 @@ public final class ServerMonitor {
 				lastStatisticsUpdateTime = timestamp;
 				connectionLimitValue.set(statistics.connectionLimit());
 				connectionCountValue.set(statistics.connectionCount());
-				memoryUsageValue.set(MEMORY_USAGE_FORMAT.format(statistics.usedMemory()) + " KB");
+				memoryUsageValue.set(MEMORY_USAGE_FORMAT.format(statistics.usedMemory() / K) + " KB");
 				connectionRequestsPerSecondSeries.add(timestamp, statistics.requestsPerSecond());
-				maxMemorySeries.add(timestamp, statistics.maximumMemory() / THOUSAND);
-				allocatedMemorySeries.add(timestamp, statistics.allocatedMemory() / THOUSAND);
-				usedMemorySeries.add(timestamp, statistics.usedMemory() / THOUSAND);
+				maxMemorySeries.add(timestamp, statistics.maximumMemory() / K / K);
+				allocatedMemorySeries.add(timestamp, statistics.allocatedMemory() / K / K);
+				usedMemorySeries.add(timestamp, statistics.usedMemory() / K / K);
 				systemLoadSeries.add(timestamp, statistics.systemCpuLoad() * 100);
 				processLoadSeries.add(timestamp, statistics.processCpuLoad() * 100);
 				connectionCountSeries.add(timestamp, statistics.connectionCount());

@@ -18,7 +18,6 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.Memory;
 import is.codion.common.Separators;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.loadtest.LoadTest;
@@ -96,6 +95,8 @@ public final class LoadTestPanel<T> extends JPanel {
 	private static final double RESIZE_WEIGHT = 0.8;
 	private static final NumberFormat DURATION_FORMAT = NumberFormat.getIntegerInstance();
 	private static final String DEFAULT_TITLE = "Codion LoadTest";
+	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
+	private static final Runtime RUNTIME = Runtime.getRuntime();
 
 	private final LoadTestModel<T> loadTestModel;
 	private final LoadTest<T> loadTest;
@@ -530,12 +531,16 @@ public final class LoadTestPanel<T> extends JPanel {
 										.columns(8)
 										.editable(false)
 										.horizontalAlignment(SwingConstants.CENTER)
-										.onBuild(memoryUsageField -> TaskScheduler.builder(() ->
-																		SwingUtilities.invokeLater(() -> memoryUsageField.setText(Memory.memoryUsage())))
+										.onBuild(memoryUsageField -> TaskScheduler.builder(() -> SwingUtilities.invokeLater(() ->
+																		memoryUsageField.setText(memoryUsage())))
 														.interval(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
 														.start())
 										.build())
 						.build();
+	}
+
+	private static String memoryUsage() {
+		return MEMORY_USAGE_FORMAT.format((RUNTIME.totalMemory() - RUNTIME.freeMemory()) / 1024) + " KB";
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelProvider selectedLookAndFeel) {

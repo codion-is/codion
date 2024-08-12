@@ -19,7 +19,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.Memory;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
@@ -85,6 +84,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.io.File;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -137,6 +137,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private static final String APPLICATION_VERSION = "application_version";
 	private static final String CODION_VERSION = "codion_version";
 	private static final String MEMORY_USAGE = "memory_usage";
+	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
+	private static final Runtime RUNTIME = Runtime.getRuntime();
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
@@ -649,7 +651,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 						.add(new JLabel(resourceBundle.getString(CODION_VERSION) + ":"))
 						.add(new JLabel(Version.versionAndMetadataString()))
 						.add(new JLabel(resourceBundle.getString(MEMORY_USAGE) + ":"))
-						.add(new JLabel(Memory.memoryUsage()));
+						.add(new JLabel(MEMORY_USAGE_FORMAT.format((RUNTIME.totalMemory() - RUNTIME.freeMemory()) / 1024) + " KB"));
 
 		return borderLayoutPanel()
 						.border(emptyBorder())

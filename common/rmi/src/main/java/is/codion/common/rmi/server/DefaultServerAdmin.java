@@ -18,7 +18,6 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.Memory;
 import is.codion.common.Separators;
 import is.codion.common.property.PropertyStore;
 import is.codion.common.property.PropertyStore.PropertyFormatter;
@@ -61,6 +60,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	private static final long serialVersionUID = 1;
 
 	private static final int GC_INFO_MAX_LENGTH = 100;
+	private static final Runtime RUNTIME = Runtime.getRuntime();
 
 	private final transient AbstractServer<?, ? extends ServerAdmin> server;
 	private final transient LinkedList<GcEvent> gcEventList = new LinkedList<>();
@@ -163,17 +163,17 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
 	@Override
 	public final long allocatedMemory() {
-		return Memory.allocatedMemory();
+		return RUNTIME.totalMemory();
 	}
 
 	@Override
 	public final long usedMemory() {
-		return Memory.usedMemory();
+		return RUNTIME.totalMemory() - RUNTIME.freeMemory();
 	}
 
 	@Override
 	public final long maxMemory() {
-		return Memory.maxMemory();
+		return RUNTIME.maxMemory();
 	}
 
 	@Override

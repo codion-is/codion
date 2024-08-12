@@ -18,7 +18,6 @@
  */
 package is.codion.tools.loadtest.model;
 
-import is.codion.common.Memory;
 import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.model.loadtest.LoadTest.ApplicationRunner;
 import is.codion.common.model.loadtest.LoadTest.Scenario;
@@ -60,8 +59,10 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
 	private static final double HUNDRED = 100d;
 	private static final double THOUSAND = 1000d;
+	private static final double K = 1024;
 	private static final int MAXIMUM_EXCEPTIONS = 20;
 	private static final AtomicInteger ZERO = new AtomicInteger();
+	private static final Runtime RUNTIME = Runtime.getRuntime();
 
 	private final LoadTest<T> loadTest;
 
@@ -313,9 +314,9 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			minimumThinkTimeSeries.add(time, loadTest.minimumThinkTime().get());
 			maximumThinkTimeSeries.add(time, loadTest.maximumThinkTime().get());
 			numberOfApplicationsSeries.add(time, loadTest.applicationCount().get());
-			allocatedMemoryCollection.add(time, Memory.allocatedMemory() / THOUSAND);
-			usedMemoryCollection.add(time, Memory.usedMemory() / THOUSAND);
-			maxMemoryCollection.add(time, Memory.maxMemory() / THOUSAND);
+			allocatedMemoryCollection.add(time, RUNTIME.totalMemory() / K / K);
+			usedMemoryCollection.add(time, (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / K / K);
+			maxMemoryCollection.add(time, RUNTIME.maxMemory() / K / K);
 			systemLoadSeries.add(time, systemCpuLoad() * HUNDRED);
 			processLoadSeries.add(time, processCpuLoad() * HUNDRED);
 			scenariosRunSeries.add(time, counter.workRequestsPerSecond());

@@ -187,17 +187,17 @@ public interface ServerAdmin extends Remote {
 		int connectionLimit();
 
 		/**
-		 * @return used memory
+		 * @return used memory in bytes
 		 */
 		long usedMemory();
 
 		/**
-		 * @return maximum memory
+		 * @return maximum memory in bytes
 		 */
 		long maximumMemory();
 
 		/**
-		 * @return allocated memory
+		 * @return allocated memory in bytes
 		 */
 		long allocatedMemory();
 
