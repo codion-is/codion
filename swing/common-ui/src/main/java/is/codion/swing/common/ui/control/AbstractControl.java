@@ -156,7 +156,12 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
 		@Override
 		public void accept(Boolean enabled) {
-			SwingUtilities.invokeLater(() -> AbstractControl.super.setEnabled(enabled));
+			if (SwingUtilities.isEventDispatchThread()) {
+				AbstractControl.super.setEnabled(enabled);
+			}
+			else {
+				SwingUtilities.invokeLater(() -> AbstractControl.super.setEnabled(enabled));
+			}
 		}
 	}
 

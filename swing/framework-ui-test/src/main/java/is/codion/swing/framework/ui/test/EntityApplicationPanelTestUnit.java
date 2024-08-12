@@ -22,6 +22,8 @@ import is.codion.common.user.User;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 
+import javax.swing.UIManager;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -50,6 +52,7 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
 	 */
 	protected final void testInitialize() {
 		EntityApplicationPanel.builder(modelClass, panelClass)
+						.lookAndFeelClassName(UIManager.getCrossPlatformLookAndFeelClassName())
 						.automaticLoginUser(user)
 						.saveDefaultUsername(false)
 						.setUncaughtExceptionHandler(false)
