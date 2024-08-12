@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.Separators;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
@@ -49,6 +48,7 @@ public class FilterTableTest {
 	private static final TestRow D = new TestRow("d");
 	private static final TestRow E = new TestRow("e");
 	private static final TestRow NULL = new TestRow(null);
+	private static final String LINE_SEPARATOR = System.lineSeparator();
 
 	private static final List<TestRow> ITEMS = unmodifiableList(asList(A, B, C, D, E));
 
@@ -437,11 +437,11 @@ public class FilterTableTest {
 		FilterTable<TestRow, Integer> table = createTestTable();
 		table.model().refresh();
 
-		String expected = "0" + Separators.LINE_SEPARATOR +
-						"a" + Separators.LINE_SEPARATOR +
-						"b" + Separators.LINE_SEPARATOR +
-						"c" + Separators.LINE_SEPARATOR +
-						"d" + Separators.LINE_SEPARATOR +
+		String expected = "0" + LINE_SEPARATOR +
+						"a" + LINE_SEPARATOR +
+						"b" + LINE_SEPARATOR +
+						"c" + LINE_SEPARATOR +
+						"d" + LINE_SEPARATOR +
 						"e";
 		assertEquals(expected, table.export()
 						.delimiter('\t')
@@ -449,8 +449,8 @@ public class FilterTableTest {
 
 		table.model().selectionModel().setSelectedIndexes(asList(0, 1, 3));
 
-		String selected = "a" + Separators.LINE_SEPARATOR +
-						"b" + Separators.LINE_SEPARATOR +
+		String selected = "a" + LINE_SEPARATOR +
+						"b" + LINE_SEPARATOR +
 						"d";
 		assertEquals(selected, table.export()
 						.delimiter('\t')

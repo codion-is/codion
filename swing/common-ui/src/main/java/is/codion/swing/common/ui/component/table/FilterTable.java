@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Configuration;
-import is.codion.common.Separators;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
@@ -1392,7 +1391,7 @@ public final class FilterTable<R, C> extends JTable {
 
 			return lines.stream()
 							.map(line -> join(String.valueOf(delimiter), line))
-							.collect(joining(Separators.LINE_SEPARATOR));
+							.collect(joining(System.lineSeparator()));
 		}
 
 		private List<String> stringValues(int row, List<FilterTableColumn<C>> columns) {

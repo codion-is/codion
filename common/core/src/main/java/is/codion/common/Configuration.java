@@ -23,6 +23,7 @@ import is.codion.common.property.PropertyValue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -253,7 +254,7 @@ public final class Configuration {
 	private static PropertyStore loadConfiguration() {
 		boolean configurationFileRequired = System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
 		String configurationFilePath = System.getProperty(CONFIGURATION_FILE,
-						System.getProperty("user.home") + Separators.FILE_SEPARATOR + "codion.config");
+						System.getProperty("user.home") + FileSystems.getDefault().getSeparator() + "codion.config");
 		if (configurationFilePath.toLowerCase().startsWith(CLASSPATH_PREFIX)) {
 			return loadFromClasspath(configurationFilePath, configurationFileRequired);
 		}

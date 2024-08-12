@@ -56,7 +56,6 @@ import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static com.squareup.javapoet.MethodSpec.methodBuilder;
 import static com.squareup.javapoet.TypeSpec.classBuilder;
 import static com.squareup.javapoet.TypeSpec.interfaceBuilder;
-import static is.codion.common.Separators.LINE_SEPARATOR;
 import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Collections.singleton;
 import static java.util.Comparator.comparing;
@@ -75,6 +74,7 @@ public final class DomainSource {
 	private static final String DOUBLE_INDENT = INDENT + INDENT;
 	private static final String TRIPLE_INDENT = DOUBLE_INDENT + INDENT;
 	private static final String DOMAIN = "DOMAIN";
+	private static final String LINE_SEPARATOR = System.lineSeparator();
 
 	private final DatabaseDomain databaseDomain;
 	private final String api;

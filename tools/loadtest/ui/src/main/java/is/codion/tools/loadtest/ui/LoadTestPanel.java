@@ -18,7 +18,6 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.Separators;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.model.loadtest.LoadTest.Scenario;
@@ -595,8 +594,8 @@ public final class LoadTestPanel<T> extends JPanel {
 			exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
 			for (Exception exception : loadTestModel.exceptions(scenario.name())) {
 				exceptionsTextArea.append(exception.getMessage());
-				exceptionsTextArea.append(Separators.LINE_SEPARATOR);
-				exceptionsTextArea.append(Separators.LINE_SEPARATOR);
+				exceptionsTextArea.append(System.lineSeparator());
+				exceptionsTextArea.append(System.lineSeparator());
 			}
 		}
 	}

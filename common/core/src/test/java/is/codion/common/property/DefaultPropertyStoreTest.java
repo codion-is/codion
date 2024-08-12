@@ -35,13 +35,14 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.common.Separators.LINE_SEPARATOR;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultPropertyStoreTest {
+
+	private static final String LINE_SEPARATOR = System.lineSeparator();
 
 	@Test
 	void test(@TempDir Path tempDir) throws IOException {
