@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.core
 - Memory utility class removed.
 - Separators utility class removed.
+- State.Builder now extends Value.Builder.
 ### is.codion.common.rmi
 - ServerConfiguration.Builder.connectionMaintenanceIntervalMs() renamed to connectionMaintenanceInterval().
 - ServerAdmin, ServerStatistics.allocatedMemory() renamed totalMemory().

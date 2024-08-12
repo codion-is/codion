@@ -208,6 +208,12 @@ final class DefaultState implements State {
 		}
 
 		@Override
+		public Builder initialValue(Boolean initialValue) {
+			valueBuilder.initialValue(initialValue);
+			return this;
+		}
+
+		@Override
 		public Builder notify(Notify notify) {
 			valueBuilder.notify(notify);
 			return this;
@@ -238,7 +244,7 @@ final class DefaultState implements State {
 		}
 
 		@Override
-		public Builder consumer(Consumer<Boolean> consumer) {
+		public Builder consumer(Consumer<? super Boolean> consumer) {
 			valueBuilder.consumer(consumer);
 			return this;
 		}
@@ -250,7 +256,7 @@ final class DefaultState implements State {
 		}
 
 		@Override
-		public Builder weakConsumer(Consumer<Boolean> weakConsumer) {
+		public Builder weakConsumer(Consumer<? super Boolean> weakConsumer) {
 			valueBuilder.weakConsumer(weakConsumer);
 			return this;
 		}
