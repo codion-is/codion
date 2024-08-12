@@ -51,7 +51,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
-import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
@@ -407,8 +406,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	}
 
 	private ClientConnection<T> createConnection(ConnectionRequest connectionRequest) throws LoginException, RemoteException {
-		RemoteClient remoteClient = remoteClient(connectionRequest,
-						clientHost((String) connectionRequest.parameters().get(CLIENT_HOST)));
+		RemoteClient remoteClient = RemoteClient.builder(connectionRequest)
+						.clientHost(clientHost((String) connectionRequest.parameters().get(CLIENT_HOST)))
+						.build();
 		for (Authenticator authenticator : sharedAuthenticators) {
 			remoteClient = authenticator.login(remoteClient);
 		}

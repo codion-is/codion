@@ -78,9 +78,9 @@ public interface ConnectionRequest {
 	ConnectionRequest copy();
 
 	/**
-	 * @return a ConnectionRequest.Builder
+	 * @return a {@link ConnectionRequest.Builder}
 	 */
-	static ConnectionRequest.Builder builder() {
+	static Builder builder() {
 		return new DefaultConnectionRequest.DefaultBuilder();
 	}
 

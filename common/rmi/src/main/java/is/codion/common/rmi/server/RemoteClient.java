@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 
 /**
  * Contains basic information about a remote client
+ * @see #builder(ConnectionRequest)
  */
 public interface RemoteClient extends ConnectionRequest {
 
@@ -49,6 +50,7 @@ public interface RemoteClient extends ConnectionRequest {
 	User databaseUser();
 
 	/**
+	 * Note that if the client host is not known {@link #UNKNOWN_HOST} is returned.
 	 * @return the client hostname
 	 */
 	String clientHost();
@@ -67,42 +69,34 @@ public interface RemoteClient extends ConnectionRequest {
 	RemoteClient copy();
 
 	/**
-	 * Instantiates a new RemoteClient
+	 * Instantiates a new {@link RemoteClient.Builder}.
 	 * @param connectionRequest the connection request
-	 * @return a new RemoteClient instance
+	 * @return a new builder
 	 */
-	static RemoteClient remoteClient(ConnectionRequest connectionRequest) {
-		return remoteClient(connectionRequest, connectionRequest.user());
+	static Builder builder(ConnectionRequest connectionRequest) {
+		return new DefaultRemoteClient.DefaultBuilder(connectionRequest);
 	}
 
 	/**
-	 * Instantiates a new RemoteClient
-	 * @param connectionRequest the connection request
-	 * @param clientHost the client hostname
-	 * @return a new RemoteClient instance
+	 * Builds a {@link RemoteClient}
 	 */
-	static RemoteClient remoteClient(ConnectionRequest connectionRequest, String clientHost) {
-		return remoteClient(connectionRequest, connectionRequest.user(), clientHost);
-	}
+	interface Builder {
 
-	/**
-	 * Instantiates a new RemoteClient
-	 * @param connectionRequest the connection request
-	 * @param databaseUser the user to use when connecting to the underlying database
-	 * @return a new RemoteClient instance
-	 */
-	static RemoteClient remoteClient(ConnectionRequest connectionRequest, User databaseUser) {
-		return remoteClient(connectionRequest, databaseUser, UNKNOWN_HOST);
-	}
+		/**
+		 * @param clientHost the client host
+		 * @return this builder instance
+		 */
+		Builder clientHost(String clientHost);
 
-	/**
-	 * Instantiates a new RemoteClient
-	 * @param connectionRequest the connection request
-	 * @param databaseUser the user to use when connecting to the underlying database
-	 * @param clientHost the client hostname
-	 * @return a new RemoteClient instance
-	 */
-	static RemoteClient remoteClient(ConnectionRequest connectionRequest, User databaseUser, String clientHost) {
-		return new DefaultRemoteClient(connectionRequest, databaseUser, clientHost);
+		/**
+		 * @param databaseUser the database user
+		 * @return this builder instance
+		 */
+		Builder databaseUser(User databaseUser);
+
+		/**
+		 * @return a new {@link RemoteClient} instance based on this builder
+		 */
+		RemoteClient build();
 	}
 }

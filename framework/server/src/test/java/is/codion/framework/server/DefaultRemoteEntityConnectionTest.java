@@ -51,28 +51,31 @@ public class DefaultRemoteEntityConnectionTest {
 
 	@Test
 	void wrongUsername() {
-		RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
-						.user(User.user("foo", "bar".toCharArray()))
-						.clientTypeId("DefaultRemoteEntityConnectionTestClient")
-						.build());
+		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+										.user(User.user("foo", "bar".toCharArray()))
+										.clientTypeId("DefaultRemoteEntityConnectionTestClient")
+										.build())
+						.build();
 		assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1234));
 	}
 
 	@Test
 	void wrongPassword() {
-		RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
-						.user(User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray()))
-						.clientTypeId("DefaultRemoteEntityConnectionTestClient")
-						.build());
+		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+										.user(User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray()))
+										.clientTypeId("DefaultRemoteEntityConnectionTestClient")
+										.build())
+						.build();
 		assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1235));
 	}
 
 	@Test
 	void rollbackOnClose() throws Exception {
-		RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
-						.user(UNIT_TEST_USER)
-						.clientTypeId("DefaultRemoteEntityConnectionTestClient")
-						.build());
+		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+										.user(UNIT_TEST_USER)
+										.clientTypeId("DefaultRemoteEntityConnectionTestClient")
+										.build())
+						.build();
 		DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
 		Condition condition = Condition.all(Employee.TYPE);
 		connection.startTransaction();
@@ -90,8 +93,11 @@ public class DefaultRemoteEntityConnectionTest {
 		DefaultRemoteEntityConnection adapter = null;
 		final String serviceName = "DefaultRemoteEntityConnectionTest";
 		try {
-			RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
-							.user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
+			RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+											.user(UNIT_TEST_USER)
+											.clientTypeId("DefaultRemoteEntityConnectionTestClient")
+											.build())
+							.build();
 			adapter = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1240);
 
 			registry = Server.Locator.registry();

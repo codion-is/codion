@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static is.codion.common.rmi.server.RemoteClient.remoteClient;
-
 public final class TestAuthenticator implements Authenticator {
 
 	private final Map<String, String> users = new HashMap<>();
@@ -50,7 +48,10 @@ public final class TestAuthenticator implements Authenticator {
 	public RemoteClient login(RemoteClient remoteClient) throws ServerAuthenticationException {
 		authenticateUser(remoteClient.user());
 
-		return remoteClient(remoteClient.connectionRequest(), databaseUser, remoteClient.clientHost());
+		return RemoteClient.builder(remoteClient.connectionRequest())
+						.databaseUser(databaseUser)
+						.clientHost(remoteClient.clientHost())
+						.build();
 	}
 
 	@Override

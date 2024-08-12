@@ -43,15 +43,18 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 	private final String clientHost;
 	private final LocalDateTime creationTime;
 
-	DefaultRemoteClient(ConnectionRequest connectionRequest, User databaseUser, String clientHost) {
-		this(connectionRequest, databaseUser, clientHost, LocalDateTime.now());
+	DefaultRemoteClient(DefaultBuilder builder) {
+		this.connectionRequest = builder.connectionRequest;
+		this.databaseUser = builder.databaseUser;
+		this.clientHost = builder.clientHost;
+		this.creationTime = LocalDateTime.now();
 	}
 
-	DefaultRemoteClient(ConnectionRequest connectionRequest, User databaseUser, String clientHost, LocalDateTime creationTime) {
-		this.connectionRequest = requireNonNull(connectionRequest, "connectionRequest");
-		this.databaseUser = requireNonNull(databaseUser, "databaseUser");
-		this.clientHost = requireNonNull(clientHost);
-		this.creationTime = requireNonNull(creationTime);
+	DefaultRemoteClient(DefaultRemoteClient remoteClient) {
+		this.connectionRequest = remoteClient.connectionRequest.copy();
+		this.databaseUser = remoteClient.databaseUser.copy();
+		this.clientHost = remoteClient.clientHost;
+		this.creationTime = remoteClient.creationTime;
 	}
 
 	@Override
@@ -116,12 +119,14 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 
 	@Override
 	public RemoteClient withDatabaseUser(User databaseUser) {
-		return new DefaultRemoteClient(connectionRequest, databaseUser, clientHost, creationTime);
+		return new DefaultBuilder(connectionRequest)
+						.databaseUser(databaseUser)
+						.build();
 	}
 
 	@Override
 	public RemoteClient copy() {
-		return new DefaultRemoteClient(connectionRequest.copy(), databaseUser.copy(), clientHost, creationTime);
+		return new DefaultRemoteClient(this);
 	}
 
 	@Override
@@ -140,10 +145,40 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 		if (databaseUser != null && !connectionRequest.user().equals(databaseUser)) {
 			builder.append(" (databaseUser: ").append(databaseUser).append(")");
 		}
-		builder.append("@").append(clientHost == null ? "unknown" : clientHost).append(" [").append(connectionRequest.clientTypeId())
+		builder.append("@").append(clientHost).append(" [").append(connectionRequest.clientTypeId())
 						.append(connectionRequest.clientVersion().map(version -> "-" + version).orElse(""))
 						.append("] - ").append(connectionRequest.clientId());
 
 		return builder.toString();
+	}
+	
+	static final class DefaultBuilder implements Builder {
+
+		private final ConnectionRequest connectionRequest;
+
+		private String clientHost = UNKNOWN_HOST;
+		private User databaseUser;
+
+		DefaultBuilder(ConnectionRequest connectionRequest) {
+			this.connectionRequest = requireNonNull(connectionRequest);
+			this.databaseUser = connectionRequest.user().copy();
+		}
+
+		@Override
+		public Builder clientHost(String clientHost) {
+			this.clientHost = requireNonNull(clientHost);
+			return this;
+		}
+
+		@Override
+		public Builder databaseUser(User databaseUser) {
+			this.databaseUser = requireNonNull(databaseUser);
+			return this;
+		}
+
+		@Override
+		public RemoteClient build() {
+			return new DefaultRemoteClient(this);
+		}
 	}
 }
