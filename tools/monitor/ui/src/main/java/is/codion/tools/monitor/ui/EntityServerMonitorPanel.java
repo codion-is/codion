@@ -18,17 +18,19 @@
  */
 package is.codion.tools.monitor.ui;
 
+import is.codion.common.Memory;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
-import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -55,6 +57,7 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -276,7 +279,15 @@ public final class EntityServerMonitorPanel extends JPanel {
 		return flowLayoutPanel(FlowLayout.TRAILING)
 						.border(createEtchedBorder())
 						.add(new JLabel("Memory usage:"))
-						.add(new MemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS))
+						.add(Components.stringField()
+										.columns(8)
+										.editable(false)
+										.horizontalAlignment(SwingConstants.CENTER)
+										.onBuild(memoryUsageField -> TaskScheduler.builder(() ->
+																		SwingUtilities.invokeLater(() -> memoryUsageField.setText(Memory.memoryUsage())))
+														.interval(MEMORY_USAGE_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
+														.start())
+										.build())
 						.build();
 	}
 

@@ -18,18 +18,20 @@
  */
 package is.codion.tools.loadtest.ui;
 
+import is.codion.common.Memory;
 import is.codion.common.Separators;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.model.loadtest.LoadTest.Scenario;
 import is.codion.common.model.randomizer.ItemRandomizer.RandomItem;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableCellRendererFactory;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
-import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
@@ -61,6 +63,7 @@ import java.awt.FlowLayout;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
@@ -523,7 +526,15 @@ public final class LoadTestPanel<T> extends JPanel {
 	private static JPanel createSouthPanel() {
 		return flowLayoutPanel(FlowLayout.TRAILING)
 						.add(new JLabel("Memory usage:"))
-						.add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS))
+						.add(Components.stringField()
+										.columns(8)
+										.editable(false)
+										.horizontalAlignment(SwingConstants.CENTER)
+										.onBuild(memoryUsageField -> TaskScheduler.builder(() ->
+																		SwingUtilities.invokeLater(() -> memoryUsageField.setText(Memory.memoryUsage())))
+														.interval(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
+														.start())
+										.build())
 						.build();
 	}
 

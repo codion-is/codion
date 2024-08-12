@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.9
 ### is.codion.common.rmi
 - ServerConfiguration.Builder.connectionMaintenanceIntervalMs() renamed to connectionMaintenanceInterval().
+### is.codion.swing.common.ui
+- MemoryUsageField removed.
 
 ## 0.18.8
 ### is.codion.common.core
