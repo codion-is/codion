@@ -89,7 +89,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	private final XYSeriesCollection scenarioCollection = new XYSeriesCollection();
 
-	private final XYSeries allocatedMemoryCollection = new XYSeries("Allocated");
+	private final XYSeries totalMemoryCollection = new XYSeries("Total");
 	private final XYSeries usedMemoryCollection = new XYSeries("Used");
 	private final XYSeries maxMemoryCollection = new XYSeries("Available");
 	private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
@@ -178,7 +178,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		minimumThinkTimeSeries.clear();
 		maximumThinkTimeSeries.clear();
 		numberOfApplicationsSeries.clear();
-		allocatedMemoryCollection.clear();
+		totalMemoryCollection.clear();
 		usedMemoryCollection.clear();
 		maxMemoryCollection.clear();
 		systemLoadSeries.clear();
@@ -266,7 +266,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		thinkTimeCollection.addSeries(maximumThinkTimeSeries);
 		numberOfApplicationsCollection.addSeries(numberOfApplicationsSeries);
 		memoryUsageCollection.addSeries(maxMemoryCollection);
-		memoryUsageCollection.addSeries(allocatedMemoryCollection);
+		memoryUsageCollection.addSeries(totalMemoryCollection);
 		memoryUsageCollection.addSeries(usedMemoryCollection);
 		systemLoadCollection.addSeries(systemLoadSeries);
 		systemLoadCollection.addSeries(processLoadSeries);
@@ -314,7 +314,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			minimumThinkTimeSeries.add(time, loadTest.minimumThinkTime().get());
 			maximumThinkTimeSeries.add(time, loadTest.maximumThinkTime().get());
 			numberOfApplicationsSeries.add(time, loadTest.applicationCount().get());
-			allocatedMemoryCollection.add(time, RUNTIME.totalMemory() / K / K);
+			totalMemoryCollection.add(time, RUNTIME.totalMemory() / K / K);
 			usedMemoryCollection.add(time, (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / K / K);
 			maxMemoryCollection.add(time, RUNTIME.maxMemory() / K / K);
 			systemLoadSeries.add(time, systemCpuLoad() * HUNDRED);

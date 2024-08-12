@@ -157,12 +157,12 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	@Override
 	public final ServerStatistics serverStatistics(long since) throws RemoteException {
 		return new DefaultServerStatistics(System.currentTimeMillis(), connectionCount(), getConnectionLimit(),
-						usedMemory(), maxMemory(), allocatedMemory(), requestsPerSecond(), systemCpuLoad(),
+						usedMemory(), maxMemory(), totalMemory(), requestsPerSecond(), systemCpuLoad(),
 						processCpuLoad(), threadStatistics(), gcEvents(since));
 	}
 
 	@Override
-	public final long allocatedMemory() {
+	public final long totalMemory() {
 		return RUNTIME.totalMemory();
 	}
 
@@ -234,7 +234,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 		private final int connectionLimit;
 		private final long usedMemory;
 		private final long maximumMemory;
-		private final long allocatedMemory;
+		private final long totalMemory;
 		private final int requestsPerSecond;
 		private final double systemCpuLoad;
 		private final double processCpuLoad;
@@ -242,7 +242,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 		private final List<GcEvent> gcEvents;
 
 		private DefaultServerStatistics(long timestamp, int connectionCount, int connectionLimit,
-																		long usedMemory, long maximumMemory, long allocatedMemory,
+																		long usedMemory, long maximumMemory, long totalMemory,
 																		int requestsPerSecond, double systemCpuLoad, double processCpuLoad,
 																		ThreadStatistics threadStatistics, List<GcEvent> gcEvents) {
 			this.timestamp = timestamp;
@@ -250,7 +250,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 			this.connectionLimit = connectionLimit;
 			this.usedMemory = usedMemory;
 			this.maximumMemory = maximumMemory;
-			this.allocatedMemory = allocatedMemory;
+			this.totalMemory = totalMemory;
 			this.requestsPerSecond = requestsPerSecond;
 			this.systemCpuLoad = systemCpuLoad;
 			this.processCpuLoad = processCpuLoad;
@@ -284,8 +284,8 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 		}
 
 		@Override
-		public long allocatedMemory() {
-			return allocatedMemory;
+		public long totalMemory() {
+			return totalMemory;
 		}
 
 		@Override

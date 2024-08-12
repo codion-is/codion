@@ -208,7 +208,7 @@ public class AbstractServerTest {
 		admin.setConnectionLimit(10);
 		admin.getConnectionLimit();
 		admin.maxMemory();
-		admin.allocatedMemory();
+		admin.totalMemory();
 		admin.clients("test");
 		admin.users();
 		admin.clients(User.user("test"));
@@ -240,7 +240,7 @@ public class AbstractServerTest {
 			threadStatistics.threadStateCount();
 		}
 		catch (NullPointerException e) {/*See above*/}
-		serverStatistics.allocatedMemory();
+		serverStatistics.totalMemory();
 		serverStatistics.gcEvents();
 		serverStatistics.connectionCount();
 		serverStatistics.maximumMemory();

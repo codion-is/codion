@@ -106,7 +106,7 @@ public final class ServerMonitor {
 	private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
 	private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
 
-	private final XYSeries allocatedMemorySeries = new XYSeries("Allocated memory");
+	private final XYSeries totalMemorySeries = new XYSeries("Total memory");
 	private final XYSeries usedMemorySeries = new XYSeries("Used memory");
 	private final XYSeries maxMemorySeries = new XYSeries("Maximum memory");
 	private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
@@ -158,7 +158,7 @@ public final class ServerMonitor {
 						.build();
 		this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
 		this.memoryUsageCollection.addSeries(maxMemorySeries);
-		this.memoryUsageCollection.addSeries(allocatedMemorySeries);
+		this.memoryUsageCollection.addSeries(totalMemorySeries);
 		this.memoryUsageCollection.addSeries(usedMemorySeries);
 		this.connectionCountCollection.addSeries(connectionCountSeries);
 		this.connectionCountCollection.addSeries(connectionLimitSeries);
@@ -308,7 +308,7 @@ public final class ServerMonitor {
 	 */
 	public void clearStatistics() {
 		connectionRequestsPerSecondSeries.clear();
-		allocatedMemorySeries.clear();
+		totalMemorySeries.clear();
 		usedMemorySeries.clear();
 		maxMemorySeries.clear();
 		connectionCountSeries.clear();
@@ -495,7 +495,7 @@ public final class ServerMonitor {
 				memoryUsageValue.set(MEMORY_USAGE_FORMAT.format(statistics.usedMemory() / K) + " KB");
 				connectionRequestsPerSecondSeries.add(timestamp, statistics.requestsPerSecond());
 				maxMemorySeries.add(timestamp, statistics.maximumMemory() / K / K);
-				allocatedMemorySeries.add(timestamp, statistics.allocatedMemory() / K / K);
+				totalMemorySeries.add(timestamp, statistics.totalMemory() / K / K);
 				usedMemorySeries.add(timestamp, statistics.usedMemory() / K / K);
 				systemLoadSeries.add(timestamp, statistics.systemCpuLoad() * 100);
 				processLoadSeries.add(timestamp, statistics.processCpuLoad() * 100);

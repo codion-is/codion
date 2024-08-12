@@ -112,7 +112,7 @@ public interface ServerAdmin extends Remote {
 	 * @return the total amount of memory allocated by the server process
 	 * @throws RemoteException in case of a communication error
 	 */
-	long allocatedMemory() throws RemoteException;
+	long totalMemory() throws RemoteException;
 
 	/**
 	 * @return the amount of memory being used by the server process
@@ -197,9 +197,9 @@ public interface ServerAdmin extends Remote {
 		long maximumMemory();
 
 		/**
-		 * @return allocated memory in bytes
+		 * @return total memory in bytes
 		 */
-		long allocatedMemory();
+		long totalMemory();
 
 		/**
 		 * @return requests per second

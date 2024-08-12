@@ -84,7 +84,7 @@ public final class DefaultEntityServerAdminTest {
 			assertEquals(1000, admin.getPooledConnectionIdleTimeout(SCOTT));
 			admin.clientLog(connectionRequest.clientId());
 
-			admin.allocatedMemory();
+			admin.totalMemory();
 			admin.setIdleConnectionTimeout(30);
 			try {
 				admin.setIdleConnectionTimeout(-1);

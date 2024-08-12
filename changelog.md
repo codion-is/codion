@@ -6,6 +6,7 @@ Codion Change Log
 - Memory utility class removed.
 ### is.codion.common.rmi
 - ServerConfiguration.Builder.connectionMaintenanceIntervalMs() renamed to connectionMaintenanceInterval().
+- ServerAdmin, ServerStatistics.allocatedMemory() renamed totalMemory().
 ### is.codion.swing.common.ui
 - MemoryUsageField removed.
 
