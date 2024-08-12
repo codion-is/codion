@@ -271,8 +271,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
-		public Builder connectionMaintenanceIntervalMs(int connectionMaintenanceIntervalMs) {
-			serverConfigurationBuilder.connectionMaintenanceIntervalMs(connectionMaintenanceIntervalMs);
+		public Builder connectionMaintenanceInterval(int connectionMaintenanceInterval) {
+			serverConfigurationBuilder.connectionMaintenanceInterval(connectionMaintenanceInterval);
 			return this;
 		}
 

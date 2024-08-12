@@ -55,7 +55,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	private final RMIClientSocketFactory rmiClientSocketFactory;
 	private final RMIServerSocketFactory rmiServerSocketFactory;
 	private final String objectInputFilterFactoryClassName;
-	private final int connectionMaintenanceIntervalMs;
+	private final int connectionMaintenanceInterval;
 	private final int connectionLimit;
 
 	private String serverName;
@@ -71,7 +71,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		this.rmiClientSocketFactory = builder.rmiClientSocketFactory;
 		this.rmiServerSocketFactory = builder.rmiServerSocketFactory;
 		this.objectInputFilterFactoryClassName = builder.objectInputFilterFactoryClassName;
-		this.connectionMaintenanceIntervalMs = builder.connectionMaintenanceIntervalMs;
+		this.connectionMaintenanceInterval = builder.connectionMaintenanceInterval;
 		this.connectionLimit = builder.connectionLimit;
 	}
 
@@ -126,7 +126,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
 	@Override
 	public int connectionMaintenanceInterval() {
-		return connectionMaintenanceIntervalMs;
+		return connectionMaintenanceInterval;
 	}
 
 	@Override
@@ -150,7 +150,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
 		private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
 		private String objectInputFilterFactoryClassName;
-		private Integer connectionMaintenanceIntervalMs = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
+		private Integer connectionMaintenanceInterval = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
 		private int connectionLimit = -1;
 
 		DefaultBuilder(int serverPort, int registryPort) {
@@ -215,8 +215,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		}
 
 		@Override
-		public DefaultBuilder connectionMaintenanceIntervalMs(int connectionMaintenanceIntervalMs) {
-			this.connectionMaintenanceIntervalMs = connectionMaintenanceIntervalMs;
+		public DefaultBuilder connectionMaintenanceInterval(int connectionMaintenanceInterval) {
+			this.connectionMaintenanceInterval = connectionMaintenanceInterval;
 			return this;
 		}
 

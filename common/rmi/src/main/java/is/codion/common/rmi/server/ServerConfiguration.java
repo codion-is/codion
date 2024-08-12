@@ -166,7 +166,7 @@ public interface ServerConfiguration {
 	 * Value type: Integer<br>
 	 * Default value: 30_000ms (30 seconds)
 	 */
-	PropertyValue<Integer> CONNECTION_MAINTENANCE_INTERVAL_MS = Configuration.integerValue("codion.server.connectionMaintenanceIntervalMs", DEFAULT_CONNECTION_MAINTENANCE_INTERVAL);
+	PropertyValue<Integer> CONNECTION_MAINTENANCE_INTERVAL = Configuration.integerValue("codion.server.connectionMaintenanceInterval", DEFAULT_CONNECTION_MAINTENANCE_INTERVAL);
 
 	/**
 	 * @return the server name
@@ -283,10 +283,10 @@ public interface ServerConfiguration {
 		B objectInputFilterFactoryClassName(String objectInputFilterFactoryClassName);
 
 		/**
-		 * @param connectionMaintenanceIntervalMs the interval between server connection maintenance runs, in milliseconds.
+		 * @param connectionMaintenanceInterval the interval between server connection maintenance runs, in milliseconds.
 		 * @return this builder instance
 		 */
-		B connectionMaintenanceIntervalMs(int connectionMaintenanceIntervalMs);
+		B connectionMaintenanceInterval(int connectionMaintenanceInterval);
 
 		/**
 		 * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
@@ -329,7 +329,7 @@ public interface ServerConfiguration {
 						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
 						.adminPort(ADMIN_PORT.get())
 						.sslEnabled(SSL_ENABLED.get())
-						.connectionMaintenanceIntervalMs(CONNECTION_MAINTENANCE_INTERVAL_MS.get())
+						.connectionMaintenanceInterval(CONNECTION_MAINTENANCE_INTERVAL.get())
 						.objectInputFilterFactoryClassName(OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME.get());
 	}
 }

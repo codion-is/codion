@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.9
+### is.codion.common.rmi
+- ServerConfiguration.Builder.connectionMaintenanceIntervalMs() renamed to connectionMaintenanceInterval().
 
 ## 0.18.8
 ### is.codion.common.core
