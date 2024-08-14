@@ -339,17 +339,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 	}
 
-	private static boolean replace(ForeignKey foreignKey, Entity entity, Entity foreignKeyValue) {
-		Entity currentForeignKeyValue = entity.entity(foreignKey);
-		if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
-			entity.put(foreignKey, foreignKeyValue.immutable());
-
-			return true;
-		}
-
-		return false;
-	}
-
 	@Override
 	public final void select(Collection<Entity.Key> keys) {
 		selectionModel().setSelectedItems(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
@@ -544,7 +533,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public void fireTableRowsUpdated(int fromIndex, int toIndex) {
+	public final void fireTableRowsUpdated(int fromIndex, int toIndex) {
 		tableModel.fireTableRowsUpdated(fromIndex, toIndex);
 	}
 
@@ -619,12 +608,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public Columns<Entity, Attribute<?>> columns() {
+	public final Columns<Entity, Attribute<?>> columns() {
 		return tableModel.columns();
 	}
 
 	@Override
-	public Value<Comparator<Entity>> comparator() {
+	public final Value<Comparator<Entity>> comparator() {
 		return tableModel.comparator();
 	}
 
@@ -830,6 +819,17 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 						.limit(limit().get())
 						.orderBy(orderBy.get())
 						.build();
+	}
+
+	private static boolean replace(ForeignKey foreignKey, Entity entity, Entity foreignKeyValue) {
+		Entity currentForeignKeyValue = entity.entity(foreignKey);
+		if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
+			entity.put(foreignKey, foreignKeyValue.immutable());
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {

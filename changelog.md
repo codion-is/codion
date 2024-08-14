@@ -14,6 +14,8 @@ Codion Change Log
 - DefaultFilterTableSelectionModel, inheritance replaced with composition.
 ### is.codion.swing.common.ui
 - MemoryUsageField removed.
+### is.codion.swing.framework.model
+- SwingEntityTableModel, bug fixed, three methods that should have been final are now final.
 
 ## 0.18.8
 ### is.codion.common.core
