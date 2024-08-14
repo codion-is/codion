@@ -140,7 +140,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
 	static final class DefaultBuilder implements Builder {
 
-		private String delimiter = "";
+		private String delimiter = ".";
 		private boolean fourDigitYear = true;
 		private String timePattern;
 

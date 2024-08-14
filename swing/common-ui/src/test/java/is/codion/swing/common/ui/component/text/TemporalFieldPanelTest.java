@@ -35,7 +35,9 @@ public class TemporalFieldPanelTest {
 
 	@Test
 	void setText() {
-		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class, "dd.MM.yyyy").build();
+		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class)
+						.dateTimePattern("dd.MM.yyyy")
+						.build();
 		panel.temporalField().setText("01.03.2010");
 		assertEquals(LocalDate.parse("01.03.2010", DateTimeFormatter.ofPattern("dd.MM.yyyy")), panel.getTemporal());
 	}
@@ -43,7 +45,9 @@ public class TemporalFieldPanelTest {
 	@Test
 	void setTemporal() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class, "dd.MM.yyyy").build();
+		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class)
+						.dateTimePattern("dd.MM.yyyy")
+						.build();
 		panel.setTemporal(LocalDate.parse("03.04.2010", formatter));
 		assertEquals("03.04.2010", panel.temporalField().getText());
 		panel.setTemporal(null);
@@ -52,7 +56,9 @@ public class TemporalFieldPanelTest {
 
 	@Test
 	void getTemporal() {
-		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class, "dd.MM.yyyy").build();
+		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class)
+						.dateTimePattern("dd.MM.yyyy")
+						.build();
 		assertFalse(panel.optional().isPresent());
 		panel.temporalField().setText("03");
 		assertFalse(panel.optional().isPresent());
@@ -64,7 +70,7 @@ public class TemporalFieldPanelTest {
 
 	@Test
 	void unsupportedType() {
-		assertThrows(IllegalArgumentException.class, () -> TemporalFieldPanel.builder(LocalTime.class, "hh:MM"));
+		assertThrows(IllegalArgumentException.class, () -> TemporalFieldPanel.builder(LocalTime.class));
 	}
 
 	@Test
@@ -76,7 +82,9 @@ public class TemporalFieldPanelTest {
 	void enabledState() {
 		SwingUtilities.invokeLater(() -> {
 			State enabledState = State.state();
-			TemporalFieldPanel<LocalDate> inputPanel = TemporalFieldPanel.builder(LocalDate.class, "dd.MM.yyyy").build();
+			TemporalFieldPanel<LocalDate> inputPanel = TemporalFieldPanel.builder(LocalDate.class)
+							.dateTimePattern("dd.MM.yyyy")
+							.build();
 			linkToEnabledState(enabledState, inputPanel);
 			assertFalse(inputPanel.temporalField().isEnabled());
 			JButton calendarButton = inputPanel.calendarButton();

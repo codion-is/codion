@@ -317,7 +317,8 @@ public final class InputControls {
 		Value<LocalTime> localTimeValue = Value.value();
 
 		TemporalField<LocalTime> temporalField =
-						Components.localTimeField("HH:mm:ss", localTimeValue)
+						Components.localTimeField(localTimeValue)
+										.dateTimePattern("HH:mm:ss")
 										.build();
 		// end::localTime[]
 	}
@@ -327,7 +328,8 @@ public final class InputControls {
 		Value<LocalDate> localDateValue = Value.value();
 
 		TemporalField<LocalDate> temporalField =
-						Components.localDateField("dd-MM-yyyy", localDateValue)
+						Components.localDateField(localDateValue)
+										.dateTimePattern("dd-MM-yyyy")
 										.build();
 		// end::localDate[]
 	}
@@ -337,7 +339,8 @@ public final class InputControls {
 		Value<LocalDateTime> localDateTimeValue = Value.value();
 
 		TemporalField<LocalDateTime> temporalField =
-						Components.localDateTimeField("dd-MM-yyyy HH:mm", localDateTimeValue)
+						Components.localDateTimeField(localDateTimeValue)
+										.dateTimePattern("dd-MM-yyyy HH:mm")
 										.build();
 		// end::localDateTime[]
 	}

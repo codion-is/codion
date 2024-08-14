@@ -133,25 +133,21 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	/**
 	 * @param <T> the value type
 	 * @param valueClass the value class
-	 * @param dateTimePattern the date time pattern
 	 * @return a builder for a temporal component
 	 */
-	public static <T extends Temporal> Builder<T> builder(Class<T> valueClass,
-																												String dateTimePattern) {
-		return new DefaultBuilder<>(valueClass, dateTimePattern, null);
+	public static <T extends Temporal> Builder<T> builder(Class<T> valueClass) {
+		return new DefaultBuilder<>(valueClass, null);
 	}
 
 	/**
 	 * @param <T> the value type
 	 * @param valueClass the value class
-	 * @param dateTimePattern the date time pattern
 	 * @param linkedValue the value to link to the component
 	 * @return a builder for a temporal component
 	 */
 	public static <T extends Temporal> Builder<T> builder(Class<T> valueClass,
-																												String dateTimePattern,
 																												Value<T> linkedValue) {
-		return new DefaultBuilder<>(valueClass, dateTimePattern, requireNonNull(linkedValue));
+		return new DefaultBuilder<>(valueClass, requireNonNull(linkedValue));
 	}
 
 	/**
@@ -159,6 +155,12 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * @param <T> the temporal type
 	 */
 	public interface Builder<T extends Temporal> extends ComponentBuilder<T, TemporalFieldPanel<T>, Builder<T>> {
+
+		/**
+		 * @param dateTimePattern the date time pattern
+		 * @return this builder instance
+		 */
+		Builder<T> dateTimePattern(String dateTimePattern);
 
 		/**
 		 * @param selectAllOnFocusGained if true the component will select contents on focus gained
@@ -227,12 +229,18 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
 		private boolean buttonFocusable;
 
-		private DefaultBuilder(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
+		private DefaultBuilder(Class<T> valueClass, Value<T> linkedValue) {
 			super(linkedValue);
 			if (!supports(valueClass)) {
 				throw new IllegalArgumentException("Unsupported temporal type: " + valueClass);
 			}
-			temporalFieldBuilder = TemporalField.builder(valueClass, requireNonNull(dateTimePattern));
+			temporalFieldBuilder = TemporalField.builder(valueClass);
+		}
+
+		@Override
+		public Builder<T> dateTimePattern(String dateTimePattern) {
+			temporalFieldBuilder.dateTimePattern(dateTimePattern);
+			return this;
 		}
 
 		@Override

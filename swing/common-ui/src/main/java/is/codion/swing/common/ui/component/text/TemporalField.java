@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -63,7 +64,8 @@ import static java.util.ResourceBundle.getBundle;
  * A JFormattedTextField for Temporal types.<br>
  * Use {@link #getTemporal()} and {@link #setTemporal(Temporal)} for accessing and setting the value.
  * @param <T> the temporal type
- * @see #builder(Class, String, Value)
+ * @see #builder(Class)
+ * @see #builder(Class, Value)
  */
 public final class TemporalField<T extends Temporal> extends JFormattedTextField {
 
@@ -192,12 +194,11 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	 * This builder supports: {@link LocalTime}, {@link LocalDate}, {@link LocalDateTime}, {@link OffsetDateTime},<br>
 	 * for other {@link Temporal} types use {@link Builder#dateTimeParser} to supply a {@link DateTimeParser} instance.
 	 * @param temporalClass the temporal class
-	 * @param dateTimePattern the date time pattern
 	 * @param <T> the temporal type
 	 * @return a new builder
 	 */
-	public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern) {
-		return new DefaultBuilder<>(temporalClass, dateTimePattern, null);
+	public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass) {
+		return new DefaultBuilder<>(temporalClass, null);
 	}
 
 	/**
@@ -205,14 +206,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	 * This builder supports: {@link LocalTime}, {@link LocalDate}, {@link LocalDateTime}, {@link OffsetDateTime},<br>
 	 * for other {@link Temporal} types use {@link Builder#dateTimeParser} to supply a {@link DateTimeParser} instance.
 	 * @param temporalClass the temporal class
-	 * @param dateTimePattern the date time pattern
 	 * @param linkedValue the value to link to the component
 	 * @param <T> the temporal type
 	 * @return a new builder
 	 */
-	public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern,
-																												Value<T> linkedValue) {
-		return new DefaultBuilder<>(temporalClass, dateTimePattern, requireNonNull(linkedValue));
+	public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, Value<T> linkedValue) {
+		return new DefaultBuilder<>(temporalClass, requireNonNull(linkedValue));
 	}
 
 	private void increment() {
@@ -322,6 +321,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	public interface Builder<T extends Temporal> extends TextFieldBuilder<T, TemporalField<T>, Builder<T>> {
 
 		/**
+		 * @param dateTimePattern the date time pattern
+		 * @return this builder instance
+		 */
+		Builder<T> dateTimePattern(String dateTimePattern);
+
+		/**
 		 * Sets the {@link DateTimeFormatter} for this field, this formatter must
 		 * be able to parse the date time pattern this field is based on.
 		 * @param dateTimeFormatter the date/time formatter
@@ -385,23 +390,30 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 					extends DefaultTextFieldBuilder<T, TemporalField<T>, Builder<T>> implements Builder<T> {
 
 		private final Class<T> temporalClass;
-		private final String dateTimePattern;
-		private final String mask;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
+		private String dateTimePattern;
 		private DateTimeFormatter dateTimeFormatter;
+		private String mask;
 		private DateTimeParser<T> dateTimeParser;
 		private int focusLostBehaviour = JFormattedTextField.COMMIT;
 		private ImageIcon calendarIcon;
 		private boolean incrementDecrementEnabled = true;
 
-		private DefaultBuilder(Class<T> temporalClass, String dateTimePattern, Value<T> linkedValue) {
+		private DefaultBuilder(Class<T> temporalClass, Value<T> linkedValue) {
 			super(temporalClass, linkedValue);
 			this.temporalClass = requireNonNull(temporalClass, "temporalClass");
-			this.dateTimePattern = requireNonNull(dateTimePattern, "dateTimePattern");
-			this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern).withZone(ZoneId.systemDefault());
-			this.mask = createMask(dateTimePattern);
 			this.dateTimeParser = createDateTimeParser(temporalClass);
+			dateTimePattern(defaultDateTimePattern());
+		}
+
+		@Override
+		public Builder<T> dateTimePattern(String dateTimePattern) {
+			this.dateTimePattern = requireNonNull(dateTimePattern, "dateTimePattern");
+			this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern)
+							.withZone(ZoneId.systemDefault());
+			this.mask = createMask(dateTimePattern);
+			return this;
 		}
 
 		@Override
@@ -457,6 +469,22 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		@Override
 		protected void setInitialValue(TemporalField<T> component, T initialValue) {
 			component.setTemporal(initialValue);
+		}
+
+		private String defaultDateTimePattern() {
+			if (temporalClass.equals(LocalTime.class)) {
+				return "HH:mm";
+			}
+			else if (temporalClass.equals(LocalDate.class)) {
+				return LocaleDateTimePattern.builder()
+								.build()
+								.dateTimePattern();
+			}
+
+			return LocaleDateTimePattern.builder()
+							.hoursMinutes()
+							.build()
+							.dateTimePattern();
 		}
 
 		private static <T extends Temporal> DateTimeParser<T> createDateTimeParser(Class<T> valueClass) {

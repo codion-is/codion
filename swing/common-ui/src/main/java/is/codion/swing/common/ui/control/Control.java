@@ -37,6 +37,11 @@ import java.util.OptionalInt;
 
 /**
  * A beefed up Action.
+ * @see #commandControl(Command)
+ * @see #actionControl(ActionCommand)
+ * @see #toggleControl(Value)
+ * @see #toggleControl(State)
+ * @see #builder()
  */
 public interface Control extends Action {
 

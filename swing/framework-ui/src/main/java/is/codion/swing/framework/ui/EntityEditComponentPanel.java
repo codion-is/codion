@@ -548,18 +548,6 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
-	 * Creates a builder for temporal field panels.
-	 * @param attribute the attribute for which to build a temporal field panel
-	 * @param dateTimePattern the date time pattern
-	 * @param <T> the temporal type
-	 * @return a text area builder
-	 */
-	protected final <T extends Temporal> TemporalFieldPanel.Builder<T> createTemporalFieldPanel(Attribute<T> attribute, String dateTimePattern) {
-		return setComponentBuilder(attribute, entityComponents.temporalFieldPanel(attribute, dateTimePattern)
-						.onBuild(inputPanel -> addValidator(attribute, inputPanel.temporalField())));
-	}
-
-	/**
 	 * Creates a builder for text fields.
 	 * @param attribute the attribute for which to build a text field
 	 * @param <T> the value type
@@ -581,18 +569,6 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T extends Temporal> TemporalField.Builder<T> createTemporalField(Attribute<T> attribute) {
 		return setComponentBuilder(attribute, entityComponents.temporalField(attribute)
-						.onBuild(field -> addValidator(attribute, field)));
-	}
-
-	/**
-	 * Creates a builder for temporal fields.
-	 * @param attribute the attribute for which to build a temporal field
-	 * @param dateTimePattern the date time pattern
-	 * @param <T> the temporal type
-	 * @return an offset date time field builder
-	 */
-	protected final <T extends Temporal> TemporalField.Builder<T> createTemporalField(Attribute<T> attribute, String dateTimePattern) {
-		return setComponentBuilder(attribute, entityComponents.temporalField(attribute, dateTimePattern)
 						.onBuild(field -> addValidator(attribute, field)));
 	}
 

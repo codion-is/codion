@@ -233,7 +233,8 @@ public final class ComponentsTest {
 	void localTimeField() {
 		Value<LocalTime> value = Value.value(LocalTime.now());
 		ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
-						Components.localTimeField("HH:mm")
+						Components.localTimeField()
+										.dateTimePattern("HH:mm")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
 										.link(value)
 										.buildValue();
@@ -244,7 +245,8 @@ public final class ComponentsTest {
 	void localDateField() {
 		Value<LocalDate> value = Value.value(LocalDate.now());
 		ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
-						Components.localDateField("dd-MM-yyyy")
+						Components.localDateField()
+										.dateTimePattern("dd-MM-yyyy")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
 										.link(value)
 										.buildValue();
@@ -255,7 +257,8 @@ public final class ComponentsTest {
 	void localDateTimeField() {
 		Value<LocalDateTime> value = Value.value(LocalDateTime.now());
 		ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
-						Components.localDateTimeField("dd-MM-yyyy HH:mm")
+						Components.localDateTimeField()
+										.dateTimePattern("dd-MM-yyyy HH:mm")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
 										.link(value)
 										.buildValue();
@@ -266,7 +269,8 @@ public final class ComponentsTest {
 	void offsetDateTimeField() {
 		Value<OffsetDateTime> value = Value.value(OffsetDateTime.now());
 		ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue =
-						Components.offsetDateTimeField("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+						Components.offsetDateTimeField()
+										.dateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
 										.link(value)
 										.buildValue();
@@ -279,7 +283,8 @@ public final class ComponentsTest {
 
 		Value<LocalDate> value = Value.value();
 		ComponentValue<LocalDate, TemporalFieldPanel<LocalDate>> componentValue =
-						Components.temporalFieldPanel(LocalDate.class, "dd-MM-yyyy", value)
+						Components.temporalFieldPanel(LocalDate.class, value)
+										.dateTimePattern("dd-MM-yyyy")
 										.columns(8)
 										.selectAllOnFocusGained(true)
 										.updateOn(UpdateOn.VALUE_CHANGE)

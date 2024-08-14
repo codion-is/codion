@@ -113,16 +113,20 @@ final class DefaultFieldFactory<C> implements FieldFactory<C> {
 							.format(columnConditionModel.format().orElse(null));
 		}
 		else if (columnClass.equals(LocalTime.class)) {
-			return (ComponentBuilder<T, ? extends JComponent, ?>) localTimeField(columnConditionModel.dateTimePattern());
+			return (ComponentBuilder<T, ? extends JComponent, ?>) localTimeField()
+							.dateTimePattern(columnConditionModel.dateTimePattern());
 		}
 		else if (columnClass.equals(LocalDate.class)) {
-			return (ComponentBuilder<T, ? extends JComponent, ?>) localDateField(columnConditionModel.dateTimePattern());
+			return (ComponentBuilder<T, ? extends JComponent, ?>) localDateField()
+							.dateTimePattern(columnConditionModel.dateTimePattern());
 		}
 		else if (columnClass.equals(LocalDateTime.class)) {
-			return (ComponentBuilder<T, ? extends JComponent, ?>) localDateTimeField(columnConditionModel.dateTimePattern());
+			return (ComponentBuilder<T, ? extends JComponent, ?>) localDateTimeField()
+							.dateTimePattern(columnConditionModel.dateTimePattern());
 		}
 		else if (columnClass.equals(OffsetDateTime.class)) {
-			return (ComponentBuilder<T, ? extends JComponent, ?>) offsetDateTimeField(columnConditionModel.dateTimePattern());
+			return (ComponentBuilder<T, ? extends JComponent, ?>) offsetDateTimeField()
+							.dateTimePattern(columnConditionModel.dateTimePattern());
 		}
 		else if (columnClass.equals(String.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) stringField();

@@ -359,18 +359,8 @@ public final class EntityComponents {
 	 * @return a {@link TemporalFieldPanel} builder
 	 */
 	public <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute) {
-		return temporalFieldPanel(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
-	}
-
-	/**
-	 * Creates a {@link TemporalFieldPanel} builder based on the given attribute.
-	 * @param attribute the attribute
-	 * @param dateTimePattern the date time pattern
-	 * @param <T> the attribute type
-	 * @return a {@link TemporalFieldPanel} builder
-	 */
-	public <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute, String dateTimePattern) {
-		return Components.temporalFieldPanel(attribute.type().valueClass(), dateTimePattern)
+		return Components.temporalFieldPanel(attribute.type().valueClass())
+						.dateTimePattern(entityDefinition.attributes().definition(attribute).dateTimePattern())
 						.toolTipText(entityDefinition.attributes().definition(attribute).description())
 						.calendarIcon(ICONS.calendar());
 	}
@@ -434,20 +424,10 @@ public final class EntityComponents {
 	 * @return a {@link TemporalField} builder
 	 */
 	public <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
-		return temporalField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
-	}
-
-	/**
-	 * Creates a {@link TemporalField} builder based on the given attribute.
-	 * @param attribute the attribute
-	 * @param dateTimePattern the date time pattern
-	 * @param <T> the temporal type
-	 * @return a {@link TemporalField} builder
-	 */
-	public <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute, String dateTimePattern) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-		return Components.temporalField(attributeDefinition.attribute().type().valueClass(), dateTimePattern)
+		return Components.temporalField(attributeDefinition.attribute().type().valueClass())
+						.dateTimePattern(entityDefinition.attributes().definition(attribute).dateTimePattern())
 						.toolTipText(attributeDefinition.description())
 						.calendarIcon(ICONS.calendar());
 	}

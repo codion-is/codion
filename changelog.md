@@ -18,6 +18,7 @@ Codion Change Log
 - MemoryUsageField removed.
 - TableConditionPanel.Factory.create(), onPanelInitialized parameter added.
 - FilterTableConditionPanel.initializedEvent() removed, onPanelInitialized parameter added to factory method.
+- TemporalField, TemporalFieldPanel, dateTimePattern parameter moved from factory method to builder, related refactoring.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel, bug fixed, three methods that should have been final are now final.
 - SwingEntityTableModel, color cache now static.
