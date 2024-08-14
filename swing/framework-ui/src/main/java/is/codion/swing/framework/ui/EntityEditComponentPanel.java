@@ -187,46 +187,6 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
-	 * Sets the component that should receive the focus when the UI is cleared or activated.
-	 * Takes precedence over the one set via {@link #initialFocusAttribute()}
-	 * @return the Value controlling the initial focus component
-	 */
-	public final Value<JComponent> initialFocusComponent() {
-		return initialFocusComponent;
-	}
-
-	/**
-	 * Sets the component associated with the given attribute as the component
-	 * that should receive the initial focus in this edit panel.
-	 * This is overridden by {@link #initialFocusComponent()}.
-	 * @return the Value controlling the initial focus attribute
-	 * @see #initialFocusComponent()
-	 */
-	public final Value<Attribute<?>> initialFocusAttribute() {
-		return initialFocusAttribute;
-	}
-
-	/**
-	 * Sets the component that should receive the focus after an insert has been performed.
-	 * Takes precedence over the one set via {@link #afterInsertFocusAttribute()}
-	 * @return the Value controlling the after insert focus component
-	 */
-	public final Value<JComponent> afterInsertFocusComponent() {
-		return afterInsertFocusComponent;
-	}
-
-	/**
-	 * Sets the component associated with the given attribute as the component
-	 * that should receive the focus after an insert is performed in this edit panel.
-	 * This is overridden by {@link #afterInsertFocusComponent()}.
-	 * @return the Value controlling the after insert focus attribute
-	 * @see #afterInsertFocusComponent()
-	 */
-	public final Value<Attribute<?>> afterInsertFocusAttribute() {
-		return afterInsertFocusAttribute;
-	}
-
-	/**
 	 * Sets the initial focus, if an initial focus component or component attribute
 	 * has been set that component receives the focus, if not, or if that component
 	 * is not focusable, this panel receives the focus.
@@ -282,7 +242,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return the {@link ValueSet} specifying attributes that should be included in component selection
 	 * @see #selectInputComponent()
 	 */
-	public final ValueSet<Attribute<?>> selectableComponents() {
+	protected final ValueSet<Attribute<?>> selectableComponents() {
 		return selectableComponents;
 	}
 
@@ -309,6 +269,46 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		return components.computeIfAbsent(attribute, this::createComponentValue);
+	}
+
+	/**
+	 * Sets the component that should receive the focus when the UI is cleared or activated.
+	 * Takes precedence over the one set via {@link #initialFocusAttribute()}
+	 * @return the Value controlling the initial focus component
+	 */
+	protected final Value<JComponent> initialFocusComponent() {
+		return initialFocusComponent;
+	}
+
+	/**
+	 * Sets the component associated with the given attribute as the component
+	 * that should receive the initial focus in this edit panel.
+	 * This is overridden by {@link #initialFocusComponent()}.
+	 * @return the Value controlling the initial focus attribute
+	 * @see #initialFocusComponent()
+	 */
+	protected final Value<Attribute<?>> initialFocusAttribute() {
+		return initialFocusAttribute;
+	}
+
+	/**
+	 * Sets the component that should receive the focus after an insert has been performed.
+	 * Takes precedence over the one set via {@link #afterInsertFocusAttribute()}
+	 * @return the Value controlling the after insert focus component
+	 */
+	protected final Value<JComponent> afterInsertFocusComponent() {
+		return afterInsertFocusComponent;
+	}
+
+	/**
+	 * Sets the component associated with the given attribute as the component
+	 * that should receive the focus after an insert is performed in this edit panel.
+	 * This is overridden by {@link #afterInsertFocusComponent()}.
+	 * @return the Value controlling the after insert focus attribute
+	 * @see #afterInsertFocusComponent()
+	 */
+	protected final Value<Attribute<?>> afterInsertFocusAttribute() {
+		return afterInsertFocusAttribute;
 	}
 
 	/**

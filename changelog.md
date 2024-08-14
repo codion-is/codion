@@ -24,6 +24,7 @@ Codion Change Log
 - SwingEntityTableModel, color cache now static.
 ### is.codion.swing.framework.ui
 - EntityEditComponentPanel.component() now protected, attributes() and component(attribute) removed, unused.
+- EntityEditComponentPanel.initialFocusComponent(), initialFocusAttribute(), afterInsertFocusComponent(), afterInsertFocusAttribute() and selectableComponents() now protected.
 
 ## 0.18.8
 ### is.codion.common.core

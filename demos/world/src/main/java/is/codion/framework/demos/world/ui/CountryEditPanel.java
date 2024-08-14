@@ -132,9 +132,8 @@ final class CountryEditPanel extends EntityEditPanel {
 			//initialize the panel components, so we can configure the country component
 			capitalEditPanel.initialize();
 			//disable the country selection component
-			capitalEditPanel.disableCountry();
 			//and change the initial focus property
-			capitalEditPanel.initialFocusAttribute().set(City.NAME);
+			capitalEditPanel.disableCountryInput();
 		}
 
 		return capitalEditPanel;

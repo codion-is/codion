@@ -94,10 +94,11 @@ public final class CityEditPanel extends EntityEditPanel {
 		add(centerPanel, BorderLayout.CENTER);
 	}
 
-	void disableCountry() {
+	void disableCountryInput() {
 		JComponent countryComponent = component(City.COUNTRY_FK).get();
 		countryComponent.setEnabled(false);
 		countryComponent.setFocusable(false);
+		initialFocusAttribute().set(City.NAME);
 	}
 
 	private void populateLocation() throws ValidationException, IOException, DatabaseException {
