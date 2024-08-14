@@ -75,6 +75,11 @@ import static java.util.stream.Collectors.toList;
  */
 public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditModel>, FilterTableModel<Entity, Attribute<?>> {
 
+	/**
+	 * Caches java.awt.Color instances parsed from hex strings via {@link #toColor(Object)}
+	 */
+	private static final Map<String, Color> COLOR_CACHE = new ConcurrentHashMap<>();
+
 	private final FilterTableModel<Entity, Attribute<?>> tableModel;
 	private final SwingEntityEditModel editModel;
 	private final EntityTableConditionModel conditionModel;
@@ -93,10 +98,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 					.nonNull(EntityTableModel.ON_INSERT.get())
 					.build();
 
-	/**
-	 * Caches java.awt.Color instances parsed from hex strings via {@link #toColor(Object)}
-	 */
-	private final Map<String, Color> colorCache = new ConcurrentHashMap<>();
 	private final State conditionChanged = State.state();
 	private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
@@ -690,7 +691,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 			return (Color) color;
 		}
 		if (color instanceof String) {
-			return colorCache.computeIfAbsent((String) color, Color::decode);
+			return COLOR_CACHE.computeIfAbsent((String) color, Color::decode);
 		}
 
 		throw new IllegalArgumentException("Unsupported Color representation: " + color);

@@ -16,6 +16,7 @@ Codion Change Log
 - MemoryUsageField removed.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel, bug fixed, three methods that should have been final are now final.
+- SwingEntityTableModel, color cache now static.
 
 ## 0.18.8
 ### is.codion.common.core
