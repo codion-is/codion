@@ -16,6 +16,8 @@ Codion Change Log
 - DefaultFilterTableSelectionModel, inheritance replaced with composition.
 ### is.codion.swing.common.ui
 - MemoryUsageField removed.
+- TableConditionPanel.Factory.create(), onPanelInitialized parameter added.
+- FilterTableConditionPanel.initializedEvent() removed, onPanelInitialized parameter added to factory method.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel, bug fixed, three methods that should have been final are now final.
 - SwingEntityTableModel, color cache now static.

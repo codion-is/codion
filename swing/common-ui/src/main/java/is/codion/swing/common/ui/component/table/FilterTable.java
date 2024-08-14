@@ -235,6 +235,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final State sortingEnabled;
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
+	private final ScrollToColumn scrollToColumn = new ScrollToColumn();
 
 	private final ControlMap controlMap;
 
@@ -347,10 +348,8 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public FilterTableConditionPanel<C> filterPanel() {
 		if (filterPanel == null) {
-			filterPanel = filterTableConditionPanel(tableModel.filterModel(), createColumnFilterPanels(), columnModel());
-			filterPanel.initializedEvent().ifPresent(initializedEvent ->
-							initializedEvent.addListener(() -> filterPanel.conditionPanels()
-											.forEach(this::configureColumnConditionPanel)));
+			filterPanel = filterTableConditionPanel(tableModel.filterModel(), createColumnFilterPanels(),
+							columnModel(), this::configureTableConditionPanel);
 		}
 
 		return filterPanel;
@@ -891,7 +890,13 @@ public final class FilterTable<R, C> extends JTable {
 						.collect(toList());
 	}
 
+	private void configureTableConditionPanel(TableConditionPanel<C> tableConditionPanel) {
+		tableConditionPanel.conditionPanels().forEach(this::configureColumnConditionPanel);
+	}
+
 	private void configureColumnConditionPanel(ColumnConditionPanel<C, ?> conditionPanel) {
+		conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
+						focusGainedEvent.addConsumer(scrollToColumn));
 		conditionPanel.components().forEach(component ->
 						configureColumnConditionComponent(component, conditionPanel.conditionModel().identifier()));
 	}
@@ -996,6 +1001,13 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			scrollRectToVisible(new Rectangle(e.getX(), getVisibleRect().y, 1, 1));
+		}
+	}
+
+	private final class ScrollToColumn implements Consumer<C> {
+		@Override
+		public void accept(C identifier) {
+			scrollToColumn(identifier);
 		}
 	}
 

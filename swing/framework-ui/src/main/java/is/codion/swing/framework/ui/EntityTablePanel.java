@@ -1450,15 +1450,13 @@ public class EntityTablePanel extends JPanel {
 	private TableConditionPanel<Attribute<?>> createTableConditionPanel() {
 		if (configuration.includeConditionPanel) {
 			TableConditionPanel<Attribute<?>> conditionPanel = configuration.tableConditionPanelFactory
-							.create(tableModel.conditionModel(), createColumnConditionPanels(), table.getColumnModel());
+							.create(tableModel.conditionModel(), createColumnConditionPanels(),
+											table.getColumnModel(), this::configureTableConditionPanel);
 			KeyEvents.builder(VK_ENTER)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.action(conditionRefreshControl)
 							.enable(conditionPanel);
 			conditionPanel.state().addConsumer(tablePanel::conditionPanelStateChanged);
-			conditionPanel.initializedEvent().ifPresent(initializedEvent ->
-							initializedEvent.addListener(() -> conditionPanel.conditionPanels()
-											.forEach(this::configureColumnConditionPanel)));
 
 			return conditionPanel;
 		}
@@ -1478,6 +1476,10 @@ public class EntityTablePanel extends JPanel {
 		return filterColumnConditionPanel(conditionModel,
 						Objects.toString(table.columnModel().column(conditionModel.identifier()).getHeaderValue()),
 						configuration.conditionFieldFactory);
+	}
+
+	private void configureTableConditionPanel(TableConditionPanel<Attribute<?>> tableConditionPanel) {
+		tableConditionPanel.conditionPanels().forEach(this::configureColumnConditionPanel);
 	}
 
 	private void configureColumnConditionPanel(ColumnConditionPanel<Attribute<?>, ?> conditionPanel) {
@@ -1914,7 +1916,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private final class ScrollToColumn implements Consumer<Attribute<?>> {
-
 		@Override
 		public void accept(Attribute<?> attribute) {
 			table.scrollToColumn(attribute);
@@ -2481,8 +2482,9 @@ public class EntityTablePanel extends JPanel {
 			@Override
 			public TableConditionPanel<Attribute<?>> create(TableConditionModel<Attribute<?>> conditionModel,
 																											Collection<ColumnConditionPanel<Attribute<?>, ?>> columnConditionPanels,
-																											FilterTableColumnModel<Attribute<?>> columnModel) {
-				return filterTableConditionPanel(conditionModel, columnConditionPanels, columnModel);
+																											FilterTableColumnModel<Attribute<?>> columnModel,
+																											Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized) {
+				return filterTableConditionPanel(conditionModel, columnConditionPanels, columnModel, onPanelInitialized);
 			}
 		}
 

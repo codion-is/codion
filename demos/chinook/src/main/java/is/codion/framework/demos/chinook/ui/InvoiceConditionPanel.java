@@ -19,7 +19,6 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.Operator;
-import is.codion.common.event.EventObserver;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
@@ -61,8 +60,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
@@ -92,13 +91,15 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 	InvoiceConditionPanel(EntityDefinition invoiceDefinition,
 												TableConditionModel<Attribute<?>> conditionModel,
 												FilterTableColumnModel<Attribute<?>> columnModel,
+												Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized,
 												Runnable onDateChanged) {
 		super(conditionModel);
 		setLayout(new BorderLayout());
 		this.columnModel = columnModel;
 		this.simpleConditionPanel = new SimpleConditionPanel(conditionModel, invoiceDefinition, onDateChanged);
 		this.advancedConditionPanel = filterTableConditionPanel(conditionModel,
-						createConditionPanels(new EntityConditionFieldFactory(invoiceDefinition)), columnModel);
+						createConditionPanels(new EntityConditionFieldFactory(invoiceDefinition)),
+						columnModel, onPanelInitialized);
 		state().link(advancedConditionPanel.state());
 	}
 
@@ -134,11 +135,6 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 	@Override
 	public Controls controls() {
 		return advancedConditionPanel.controls();
-	}
-
-	@Override
-	public Optional<EventObserver<?>> initializedEvent() {
-		return advancedConditionPanel.initializedEvent();
 	}
 
 	@Override

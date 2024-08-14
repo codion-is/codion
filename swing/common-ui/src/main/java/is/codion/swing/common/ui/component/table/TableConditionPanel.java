@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
@@ -35,7 +34,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static is.codion.common.item.Item.item;
@@ -138,7 +136,6 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 * Selects one conditon panel to receive the input focus.
 	 * If only one panel is available, that one receives the input focus automatically.
 	 * If multiple conditon panels are available a selection dialog is presented.
-	 * Override to implement.
 	 * @param dialogOwner the dialog owner
 	 */
 	public final void selectConditionPanel(JComponent dialogOwner) {
@@ -165,16 +162,10 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * An event observer notified when this condition panel has been initialized and all its components created.<br>
-	 * If this event returns an empty optional it can be assumed that this condition panel is initialized when constructed.<br>
-	 * The default implementation returns an empty Optional.
-	 * @return an event notified when this condition panel has been initialized or an empty Optional if not available
+	 * Called each time the condition state changes, override to update this panel according to the state
+	 * @param conditionState the new condition state
 	 */
-	public Optional<EventObserver<?>> initializedEvent() {
-		return Optional.empty();
-	}
-
-	protected void onStateChanged(ConditionState state) {}
+	protected void onStateChanged(ConditionState conditionState) {}
 
 	private void configureStates() {
 		State.group(hiddenState, simpleState, advancedState);
@@ -202,11 +193,13 @@ public abstract class TableConditionPanel<C> extends JPanel {
 		 * @param conditionModel the condition model
 		 * @param conditionPanels the condition panels
 		 * @param columnModel the column model
+		 * @param onPanelInitialized called when the panel has been initialized
 		 * @return a new {@link TableConditionPanel}
 		 */
 		TableConditionPanel<C> create(TableConditionModel<C> conditionModel,
 																	Collection<ColumnConditionPanel<C, ?>> conditionPanels,
-																	FilterTableColumnModel<C> columnModel);
+																	FilterTableColumnModel<C> columnModel,
+																	Consumer<TableConditionPanel<C>> onPanelInitialized);
 	}
 
 	private final class StateConsumer implements Consumer<Boolean> {
