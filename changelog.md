@@ -10,6 +10,8 @@ Codion Change Log
 - ServerConfiguration.Builder.connectionMaintenanceIntervalMs() renamed to connectionMaintenanceInterval().
 - ServerAdmin, ServerStatistics.allocatedMemory() renamed totalMemory().
 - RemoteClient.Builder added, replacing static factory methods.
+### is.codion.swing.common.model
+- DefaultFilterTableSelectionModel, inheritance replaced with composition.
 ### is.codion.swing.common.ui
 - MemoryUsageField removed.
 

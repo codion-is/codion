@@ -24,6 +24,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.event.ListSelectionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,8 +37,9 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionModel implements FilterTableSelectionModel<R> {
+final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionModel<R> {
 
+	private final FilterListSelectionModel selectionModel = new FilterListSelectionModel();
 	private final Event<?> selectionChangingEvent = Event.event();
 	private final Event<?> selectionEvent = Event.event();
 	private final Event<Integer> selectedIndexEvent = Event.event();
@@ -68,7 +70,7 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 	public void setSelectionMode(int selectionMode) {
 		if (getSelectionMode() != selectionMode) {
 			clearSelection();
-			super.setSelectionMode(selectionMode);
+			selectionModel.setSelectionMode(selectionMode);
 			singleSelectionMode.set(selectionMode == SINGLE_SELECTION);
 		}
 	}
@@ -240,31 +242,31 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 	@Override
 	public void addSelectionInterval(int fromIndex, int toIndex) {
 		selectionChangingEvent.run();
-		super.addSelectionInterval(fromIndex, toIndex);
+		selectionModel.addSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void setSelectionInterval(int fromIndex, int toIndex) {
 		selectionChangingEvent.run();
-		super.setSelectionInterval(fromIndex, toIndex);
+		selectionModel.setSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void removeSelectionInterval(int fromIndex, int toIndex) {
 		selectionChangingEvent.run();
-		super.removeSelectionInterval(fromIndex, toIndex);
+		selectionModel.removeSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void insertIndexInterval(int fromIndex, int length, boolean before) {
 		selectionChangingEvent.run();
-		super.insertIndexInterval(fromIndex, length, before);
+		selectionModel.insertIndexInterval(fromIndex, length, before);
 	}
 
 	@Override
 	public void removeIndexInterval(int fromIndex, int toIndex) {
 		selectionChangingEvent.run();
-		super.removeIndexInterval(fromIndex, toIndex);
+		selectionModel.removeIndexInterval(fromIndex, toIndex);
 	}
 
 	@Override
@@ -293,29 +295,6 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 								.map(index -> index == tableModel.visibleCount() - 1 ? 0 : index + 1)
 								.collect(toList()));
 			}
-		}
-	}
-
-	@Override
-	public void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
-		super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
-		if (!isAdjusting) {
-			selectionEmpty.set(isSelectionEmpty());
-			singleSelection.set(selectionCount() == 1);
-			int minSelIndex = getMinSelectionIndex();
-			if (selectedIndex != minSelIndex) {
-				selectedIndex = minSelIndex;
-				selectedIndexEvent.accept(selectedIndex);
-				selectedItemEvent.accept(getSelectedItem());
-			}
-			List<Integer> selectedIndexes = getSelectedIndexes();
-			selectionEvent.run();
-			selectedIndexesEvent.accept(selectedIndexes);
-			//we don't call getSelectedItems() since that would cause another call to getSelectedIndexes()
-			selectedItemsEvent.accept(selectedIndexes.stream()
-							.mapToInt(modelIndex -> modelIndex)
-							.mapToObj(tableModel::itemAt)
-							.collect(toList()));
 		}
 	}
 
@@ -369,6 +348,76 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 		return selectionEmpty.not();
 	}
 
+	@Override
+	public int getMinSelectionIndex() {
+		return selectionModel.getMinSelectionIndex();
+	}
+
+	@Override
+	public int getMaxSelectionIndex() {
+		return selectionModel.getMaxSelectionIndex();
+	}
+
+	@Override
+	public boolean isSelectedIndex(int index) {
+		return selectionModel.isSelectedIndex(index);
+	}
+
+	@Override
+	public int getAnchorSelectionIndex() {
+		return selectionModel.getAnchorSelectionIndex();
+	}
+
+	@Override
+	public void setAnchorSelectionIndex(int index) {
+		selectionModel.setAnchorSelectionIndex(index);
+	}
+
+	@Override
+	public int getLeadSelectionIndex() {
+		return selectionModel.getLeadSelectionIndex();
+	}
+
+	@Override
+	public void setLeadSelectionIndex(int index) {
+		selectionModel.setLeadSelectionIndex(index);
+	}
+
+	@Override
+	public void clearSelection() {
+		selectionModel.clearSelection();
+	}
+
+	@Override
+	public boolean isSelectionEmpty() {
+		return selectionModel.isSelectionEmpty();
+	}
+
+	@Override
+	public void setValueIsAdjusting(boolean valueIsAdjusting) {
+		selectionModel.setValueIsAdjusting(valueIsAdjusting);
+	}
+
+	@Override
+	public boolean getValueIsAdjusting() {
+		return selectionModel.getValueIsAdjusting();
+	}
+
+	@Override
+	public int getSelectionMode() {
+		return selectionModel.getSelectionMode();
+	}
+
+	@Override
+	public void addListSelectionListener(ListSelectionListener listener) {
+		selectionModel.addListSelectionListener(listener);
+	}
+
+	@Override
+	public void removeListSelectionListener(ListSelectionListener listener) {
+		selectionModel.removeListSelectionListener(listener);
+	}
+
 	private void bindEvents() {
 		singleSelectionMode.addConsumer(singleSelection ->
 						setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
@@ -397,6 +446,32 @@ final class DefaultFilterTableSelectionModel<R> extends DefaultListSelectionMode
 	private static void checkIndex(int index, int size) {
 		if (index < 0 || index > size - 1) {
 			throw new IndexOutOfBoundsException("Index: " + index + ", size: " + size);
+		}
+	}
+
+	private final class FilterListSelectionModel extends DefaultListSelectionModel {
+
+		@Override
+		protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
+			super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
+			if (!isAdjusting) {
+				selectionEmpty.set(super.isSelectionEmpty());
+				singleSelection.set(selectionCount() == 1);
+				int minSelIndex = super.getMinSelectionIndex();
+				if (selectedIndex != minSelIndex) {
+					selectedIndex = minSelIndex;
+					selectedIndexEvent.accept(selectedIndex);
+					selectedItemEvent.accept(getSelectedItem());
+				}
+				List<Integer> selectedIndexes = getSelectedIndexes();
+				selectionEvent.run();
+				selectedIndexesEvent.accept(selectedIndexes);
+				//we don't call getSelectedItems() since that would cause another call to getSelectedIndexes()
+				selectedItemsEvent.accept(selectedIndexes.stream()
+								.mapToInt(modelIndex -> modelIndex)
+								.mapToObj(tableModel::itemAt)
+								.collect(toList()));
+			}
 		}
 	}
 }
