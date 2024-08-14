@@ -25,7 +25,6 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -133,9 +132,7 @@ final class CountryEditPanel extends EntityEditPanel {
 			//initialize the panel components, so we can configure the country component
 			capitalEditPanel.initialize();
 			//disable the country selection component
-			JComponent countryComponent = capitalEditPanel.component(City.COUNTRY_FK).get();
-			countryComponent.setEnabled(false);
-			countryComponent.setFocusable(false);
+			capitalEditPanel.disableCountry();
 			//and change the initial focus property
 			capitalEditPanel.initialFocusAttribute().set(City.NAME);
 		}

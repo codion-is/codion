@@ -46,7 +46,6 @@ public final class EntityEditPanelTest {
 	void test() throws DatabaseException {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
 		TestEditPanel editPanel = new TestEditPanel(editModel);
-		assertEquals(7, editPanel.attributes().size());
 		assertThrows(IllegalStateException.class, editPanel::controls);
 		editPanel.initialize();
 		editPanel.controls();
@@ -61,7 +60,6 @@ public final class EntityEditPanelTest {
 		assertTrue(editModel.exists().get());
 		editPanel.clearAndRequestFocus();
 		assertFalse(editModel.exists().get());
-		assertEquals(7, editPanel.attributes().size());
 
 		assertNotNull(editPanel.control(INSERT));
 		assertNotNull(editPanel.control(UPDATE));

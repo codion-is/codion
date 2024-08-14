@@ -22,6 +22,8 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - SwingEntityTableModel, bug fixed, three methods that should have been final are now final.
 - SwingEntityTableModel, color cache now static.
+### is.codion.swing.framework.ui
+- EntityEditComponentPanel.component() now protected, attributes() and component(attribute) removed, unused.
 
 ## 0.18.8
 ### is.codion.common.core

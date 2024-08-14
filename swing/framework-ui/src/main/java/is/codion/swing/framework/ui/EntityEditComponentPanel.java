@@ -92,7 +92,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -106,7 +105,6 @@ import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
-import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
 
@@ -184,46 +182,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param <T> the edit model type
 	 * @return the edit model this panel is based on
 	 */
-	public final <T extends SwingEntityEditModel> T editModel() {
+ 	public final <T extends SwingEntityEditModel> T editModel() {
 		return (T) editModel;
-	}
-
-	/**
-	 * @return an unmodifiable view of the attributes that have associated components.
-	 */
-	public final Collection<Attribute<?>> attributes() {
-		Set<Attribute<?>> attributes = new HashSet<>(components.keySet());
-		attributes.addAll(componentBuilders.keySet());
-
-		return unmodifiableCollection(attributes);
-	}
-
-	/**
-	 * @param attribute the attribute
-	 * @return the Value containing the component associated with the given attribute
-	 */
-	public final Value<JComponent> component(Attribute<?> attribute) {
-		ComponentBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
-		if (componentBuilder != null) {
-			componentBuilder.build();
-		}
-
-		return components.computeIfAbsent(attribute, this::createComponentValue);
-	}
-
-	/**
-	 * @param component the component
-	 * @param <T> the attribute type
-	 * @return the attribute the given component is associated with
-	 * @throws IllegalArgumentException in case no attribute is associated with the given component
-	 */
-	public final <T> Attribute<T> attribute(JComponent component) {
-		requireNonNull(component);
-		return (Attribute<T>) components.entrySet().stream()
-						.filter(entry -> entry.getValue().get() == component)
-						.findFirst()
-						.map(Map.Entry::getKey)
-						.orElseThrow(() -> new IllegalArgumentException("No attribute is associated with this component"));
 	}
 
 	/**
@@ -336,6 +296,19 @@ public class EntityEditComponentPanel extends JPanel {
 		if (!(exception instanceof CancelException)) {
 			displayException(exception);
 		}
+	}
+
+	/**
+	 * @param attribute the attribute
+	 * @return the Value containing the component associated with the given attribute
+	 */
+	protected final Value<JComponent> component(Attribute<?> attribute) {
+		ComponentBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
+		if (componentBuilder != null) {
+			componentBuilder.build();
+		}
+
+		return components.computeIfAbsent(attribute, this::createComponentValue);
 	}
 
 	/**

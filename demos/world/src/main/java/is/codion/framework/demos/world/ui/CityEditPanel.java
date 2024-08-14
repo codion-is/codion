@@ -33,6 +33,7 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import org.jxmapviewer.JXMapKit;
 import org.kordamp.ikonli.foundation.Foundation;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.io.IOException;
@@ -91,6 +92,12 @@ public final class CityEditPanel extends EntityEditPanel {
 		}
 		setLayout(borderLayout());
 		add(centerPanel, BorderLayout.CENTER);
+	}
+
+	void disableCountry() {
+		JComponent countryComponent = component(City.COUNTRY_FK).get();
+		countryComponent.setEnabled(false);
+		countryComponent.setFocusable(false);
 	}
 
 	private void populateLocation() throws ValidationException, IOException, DatabaseException {
