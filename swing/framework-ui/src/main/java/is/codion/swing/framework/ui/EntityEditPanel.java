@@ -196,31 +196,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * Returns a {@link Value} containing the control associated with {@code controlKey},
-	 * an empty {@link Value} if no such control is available.
-	 * @param controlKey the control key
-	 * @return the {@link Value} containing the control associated with {@code controlKey}
-	 */
-	public <T extends Control> Value<T> control(ControlKey<T> controlKey) {
-		return configuration.controlMap.control(requireNonNull(controlKey));
-	}
-
-	/**
-	 * Returns a {@link Controls} instance containing all the controls configured via {@link #configureControls(Consumer)}.
-	 * @return the {@link Controls} provided by this edit panel
-	 * @throws IllegalStateException in case the panel has not been initialized
-	 * @see #initialized()
-	 * @see #configureControls(Consumer)
-	 */
-	public final Controls controls() {
-		if (!initialized()) {
-			throw new IllegalStateException("Method must be called after the panel is initialized");
-		}
-
-		return controlsLayout.create(configuration.controlMap);
-	}
-
-	/**
 	 * Initializes this EntityEditPanel.
 	 * This method marks this panel as initialized which prevents it from running again,
 	 * whether an exception occurs or not.
@@ -511,6 +486,31 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 */
 	protected final void configureControls(Consumer<Controls.Layout> controlsConfig) {
 		requireNonNull(controlsConfig).accept(controlsLayout);
+	}
+
+	/**
+	 * Returns a {@link Value} containing the control associated with {@code controlKey},
+	 * an empty {@link Value} if no such control is available.
+	 * @param controlKey the control key
+	 * @return the {@link Value} containing the control associated with {@code controlKey}
+	 */
+	protected final <T extends Control> Value<T> control(ControlKey<T> controlKey) {
+		return configuration.controlMap.control(requireNonNull(controlKey));
+	}
+
+	/**
+	 * Returns a {@link Controls} instance containing all the controls configured via {@link #configureControls(Consumer)}.
+	 * @return the {@link Controls} provided by this edit panel
+	 * @throws IllegalStateException in case the panel has not been initialized
+	 * @see #initialized()
+	 * @see #configureControls(Consumer)
+	 */
+	protected final Controls controls() {
+		if (!initialized()) {
+			throw new IllegalStateException("Method must be called after the panel is initialized");
+		}
+
+		return controlsLayout.create(configuration.controlMap);
 	}
 
 	private void createControls() {
