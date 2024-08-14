@@ -86,8 +86,8 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	}
 
 	@Override
-	public Attribute<?> columnIdentifier() {
-		return conditionModel.columnIdentifier();
+	public Attribute<?> identifier() {
+		return conditionModel.identifier();
 	}
 
 	@Override

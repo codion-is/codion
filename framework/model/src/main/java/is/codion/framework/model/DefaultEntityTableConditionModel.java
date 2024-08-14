@@ -149,13 +149,13 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
-	public <T> ColumnConditionModel<Attribute<?>, T> conditionModel(Attribute<?> columnIdentifier) {
-		return conditionModel.conditionModel(columnIdentifier);
+	public <T> ColumnConditionModel<Attribute<?>, T> conditionModel(Attribute<?> identifier) {
+		return conditionModel.conditionModel(identifier);
 	}
 
 	@Override
-	public <T> ColumnConditionModel<Attribute<?>, T> attributeModel(Attribute<T> columnIdentifier) {
-		return conditionModel(columnIdentifier);
+	public <T> ColumnConditionModel<Attribute<?>, T> attributeModel(Attribute<T> attribute) {
+		return conditionModel(attribute);
 	}
 
 	@Override
@@ -164,8 +164,8 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
-	public boolean enabled(Attribute<?> columnIdentifier) {
-		return conditionModel.enabled(columnIdentifier);
+	public boolean enabled(Attribute<?> identifier) {
+		return conditionModel.enabled(identifier);
 	}
 
 	@Override
@@ -215,7 +215,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	private static Condition condition(ColumnConditionModel<?, ?> conditionModel) {
-		if (conditionModel.columnIdentifier() instanceof ForeignKey) {
+		if (conditionModel.identifier() instanceof ForeignKey) {
 			return foreignKeyCondition((ColumnConditionModel<?, Entity>) conditionModel);
 		}
 
@@ -223,7 +223,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	private static Condition foreignKeyCondition(ColumnConditionModel<?, Entity> conditionModel) {
-		ForeignKey foreignKey = (ForeignKey) conditionModel.columnIdentifier();
+		ForeignKey foreignKey = (ForeignKey) conditionModel.identifier();
 		Entity equalValue = conditionModel.equalValue().get();
 		Collection<Entity> inValues = conditionModel.inValues().get();
 		switch (conditionModel.operator().get()) {
@@ -241,7 +241,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	private static <T> ColumnCondition<T> columnCondition(ColumnConditionModel<?, T> conditionModel) {
-		Column<T> column = (Column<T>) conditionModel.columnIdentifier();
+		Column<T> column = (Column<T>) conditionModel.identifier();
 		switch (conditionModel.operator().get()) {
 			case EQUAL:
 				return equalCondition(conditionModel, column);
@@ -368,8 +368,8 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 		@Override
 		public boolean test(ColumnConditionModel<?, ?> conditionModel) {
-			return (conditionModel.columnIdentifier() instanceof Column) &&
-							entityDefinition.columns().definition((Column<?>) conditionModel.columnIdentifier()).aggregate();
+			return (conditionModel.identifier() instanceof Column) &&
+							entityDefinition.columns().definition((Column<?>) conditionModel.identifier()).aggregate();
 		}
 	}
 
@@ -377,8 +377,8 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 		@Override
 		public boolean test(ColumnConditionModel<?, ?> conditionModel) {
-			return !(conditionModel.columnIdentifier() instanceof Column) ||
-							!entityDefinition.columns().definition((Column<?>) conditionModel.columnIdentifier()).aggregate();
+			return !(conditionModel.identifier() instanceof Column) ||
+							!entityDefinition.columns().definition((Column<?>) conditionModel.identifier()).aggregate();
 		}
 	}
 }

@@ -70,9 +70,9 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 
 		@Override
 		protected Color backgroundColorShaded(FilterTableModel<?, Attribute<?>> tableModel, int row,
-																					Attribute<?> columnIdentifier, Color cellBackgroundColor) {
-			boolean conditionEnabled = ((SwingEntityTableModel) tableModel).conditionModel().enabled(columnIdentifier);
-			boolean filterEnabled = tableModel.filterModel().enabled(columnIdentifier);
+																					Attribute<?> identifier, Color cellBackgroundColor) {
+			boolean conditionEnabled = ((SwingEntityTableModel) tableModel).conditionModel().enabled(identifier);
+			boolean filterEnabled = tableModel.filterModel().enabled(identifier);
 			boolean showCondition = conditionEnabled || filterEnabled;
 			if (showCondition) {
 				return backgroundColorShaded(row, conditionEnabled && filterEnabled, cellBackgroundColor);
@@ -115,13 +115,13 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		}
 
 		@Override
-		public Color backgroundColor(int row, Attribute<?> columnIdentifier, Object cellValue, boolean selected) {
-			return tableModel.backgroundColor(row, columnIdentifier);
+		public Color backgroundColor(int row, Attribute<?> identifier, Object cellValue, boolean selected) {
+			return tableModel.backgroundColor(row, identifier);
 		}
 
 		@Override
-		public Color foregroundColor(int row, Attribute<?> columnIdentifier, Object cellValue, boolean selected) {
-			return tableModel.foregroundColor(row, columnIdentifier);
+		public Color foregroundColor(int row, Attribute<?> identifier, Object cellValue, boolean selected) {
+			return tableModel.foregroundColor(row, identifier);
 		}
 	}
 }

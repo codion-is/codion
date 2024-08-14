@@ -40,39 +40,39 @@ public interface FilterTableSortModel<R, C> {
 
 	/**
 	 * Clears the sorting state and adds the given column sorting order.
-	 * @param columnIdentifier the identifier of the column to sort by
+	 * @param identifier the identifier of the column to sort by
 	 * @param sortOrder the sorting order
 	 * @throws IllegalStateException in case sorting is disabled for the given column
 	 * @see #addSortOrder(Object, SortOrder)
 	 * @see #sortOrder(Object)
 	 * @see #setSortingEnabled(Object, boolean)
 	 */
-	void setSortOrder(C columnIdentifier, SortOrder sortOrder);
+	void setSortOrder(C identifier, SortOrder sortOrder);
 
 	/**
 	 * Adds the given column sorting order to the currently sorted columns.
 	 * If no column sorting is enabled, this call is the equivilent to using
 	 * {@link #setSortOrder(Object, SortOrder)}.
-	 * @param columnIdentifier the identifier of the column to sort by
+	 * @param identifier the identifier of the column to sort by
 	 * @param sortOrder the sorting order
 	 * @throws IllegalStateException in case sorting is disabled for the given column
 	 * @see #setSortOrder(Object, SortOrder)
 	 * @see #sortOrder(Object)
 	 * @see #setSortingEnabled(Object, boolean)
 	 */
-	void addSortOrder(C columnIdentifier, SortOrder sortOrder);
+	void addSortOrder(C identifier, SortOrder sortOrder);
 
 	/**
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @return the {@link SortOrder} associated with the given column
 	 */
-	SortOrder sortOrder(C columnIdentifier);
+	SortOrder sortOrder(C identifier);
 
 	/**
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @return the sort priority for the given column, -1 if not sorted
 	 */
-	int sortPriority(C columnIdentifier);
+	int sortPriority(C identifier);
 
 	/**
 	 * @return true if sorting is enabled for one or more columns
@@ -94,16 +94,16 @@ public interface FilterTableSortModel<R, C> {
 	/**
 	 * Disabling sorting will cause {@link #setSortOrder(Object, SortOrder)} and
 	 * {@link #addSortOrder(Object, SortOrder)} to throw a {@link IllegalStateException} for the given column.
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @param sortingEnabled true if sorting should be enabled for the given column
 	 */
-	void setSortingEnabled(C columnIdentifier, boolean sortingEnabled);
+	void setSortingEnabled(C identifier, boolean sortingEnabled);
 
 	/**
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @return true if sorting is enabled for the given column
 	 */
-	boolean isSortingEnabled(C columnIdentifier);
+	boolean isSortingEnabled(C identifier);
 
 	/**
 	 * @return an observer notified each time the sorting state changes, with the column identifier as event data
@@ -118,7 +118,7 @@ public interface FilterTableSortModel<R, C> {
 		/**
 		 * @return the column identifier
 		 */
-		C columnIdentifier();
+		C identifier();
 
 		/**
 		 * @return the sorting order currently associated with the column

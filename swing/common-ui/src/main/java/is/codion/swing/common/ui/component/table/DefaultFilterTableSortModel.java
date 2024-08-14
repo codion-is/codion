@@ -53,21 +53,21 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public SortOrder sortOrder(C columnIdentifier) {
-		requireNonNull(columnIdentifier);
+	public SortOrder sortOrder(C identifier) {
+		requireNonNull(identifier);
 
 		return columnSortOrders.stream()
-						.filter(columnSortOrder -> columnSortOrder.columnIdentifier().equals(columnIdentifier))
+						.filter(columnSortOrder -> columnSortOrder.identifier().equals(identifier))
 						.findFirst()
 						.map(ColumnSortOrder::sortOrder)
 						.orElse(SortOrder.UNSORTED);
 	}
 
 	@Override
-	public int sortPriority(C columnIdentifier) {
-		requireNonNull(columnIdentifier);
+	public int sortPriority(C identifier) {
+		requireNonNull(identifier);
 		for (int i = 0; i < columnSortOrders.size(); i++) {
-			if (columnSortOrders.get(i).columnIdentifier().equals(columnIdentifier)) {
+			if (columnSortOrders.get(i).identifier().equals(identifier)) {
 				return i;
 			}
 		}
@@ -76,13 +76,13 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public void setSortOrder(C columnIdentifier, SortOrder sortOrder) {
-		setSortOrder(columnIdentifier, sortOrder, false);
+	public void setSortOrder(C identifier, SortOrder sortOrder) {
+		setSortOrder(identifier, sortOrder, false);
 	}
 
 	@Override
-	public void addSortOrder(C columnIdentifier, SortOrder sortOrder) {
-		setSortOrder(columnIdentifier, sortOrder, true);
+	public void addSortOrder(C identifier, SortOrder sortOrder) {
+		setSortOrder(identifier, sortOrder, true);
 	}
 
 	@Override
@@ -98,29 +98,29 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	@Override
 	public void clear() {
 		if (!columnSortOrders.isEmpty()) {
-			C firstSortColumn = columnSortOrders.get(0).columnIdentifier();
+			C firstSortColumn = columnSortOrders.get(0).identifier();
 			columnSortOrders.clear();
 			sortingChangedEvent.accept(firstSortColumn);
 		}
 	}
 
 	@Override
-	public void setSortingEnabled(C columnIdentifier, boolean sortingEnabled) {
-		requireNonNull(columnIdentifier);
+	public void setSortingEnabled(C identifier, boolean sortingEnabled) {
+		requireNonNull(identifier);
 		if (sortingEnabled) {
-			columnSortingDisabled.remove(columnIdentifier);
+			columnSortingDisabled.remove(identifier);
 		}
 		else {
-			columnSortingDisabled.add(columnIdentifier);
-			if (removeSortOrder(columnIdentifier)) {
-				sortingChangedEvent.accept(columnIdentifier);
+			columnSortingDisabled.add(identifier);
+			if (removeSortOrder(identifier)) {
+				sortingChangedEvent.accept(identifier);
 			}
 		}
 	}
 
 	@Override
-	public boolean isSortingEnabled(C columnIdentifier) {
-		return !columnSortingDisabled.contains(requireNonNull(columnIdentifier));
+	public boolean isSortingEnabled(C identifier) {
+		return !columnSortingDisabled.contains(requireNonNull(identifier));
 	}
 
 	@Override
@@ -128,26 +128,26 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		return sortingChangedEvent.observer();
 	}
 
-	private void setSortOrder(C columnIdentifier, SortOrder sortOrder, boolean addColumnToSort) {
-		requireNonNull(columnIdentifier);
+	private void setSortOrder(C identifier, SortOrder sortOrder, boolean addColumnToSort) {
+		requireNonNull(identifier);
 		requireNonNull(sortOrder);
-		if (!isSortingEnabled(columnIdentifier)) {
-			throw new IllegalStateException("Sorting is disabled for column: " + columnIdentifier);
+		if (!isSortingEnabled(identifier)) {
+			throw new IllegalStateException("Sorting is disabled for column: " + identifier);
 		}
 		if (!addColumnToSort) {
 			columnSortOrders.clear();
 		}
 		else {
-			removeSortOrder(columnIdentifier);
+			removeSortOrder(identifier);
 		}
 		if (sortOrder != SortOrder.UNSORTED) {
-			columnSortOrders.add(new DefaultColumnSortOrder<>(columnIdentifier, sortOrder));
+			columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder));
 		}
-		sortingChangedEvent.accept(columnIdentifier);
+		sortingChangedEvent.accept(identifier);
 	}
 
-	private boolean removeSortOrder(C columnIdentifier) {
-		return columnSortOrders.removeIf(columnSortOrder -> columnSortOrder.columnIdentifier().equals(columnIdentifier));
+	private boolean removeSortOrder(C identifier) {
+		return columnSortOrders.removeIf(columnSortOrder -> columnSortOrder.identifier().equals(identifier));
 	}
 
 	private final class RowComparator implements Comparator<R> {
@@ -155,7 +155,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		@Override
 		public int compare(R rowOne, R rowTwo) {
 			for (ColumnSortOrder<C> columnSortOrder : columnSortOrders) {
-				int comparison = compareRows(rowOne, rowTwo, columnSortOrder.columnIdentifier(), columnSortOrder.sortOrder());
+				int comparison = compareRows(rowOne, rowTwo, columnSortOrder.identifier(), columnSortOrder.sortOrder());
 				if (comparison != 0) {
 					return comparison;
 				}
@@ -164,9 +164,9 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 			return 0;
 		}
 
-		private int compareRows(R rowOne, R rowTwo, C columnIdentifier, SortOrder sortOrder) {
-			Object valueOne = columns.value(rowOne, columnIdentifier);
-			Object valueTwo = columns.value(rowTwo, columnIdentifier);
+		private int compareRows(R rowOne, R rowTwo, C identifier, SortOrder sortOrder) {
+			Object valueOne = columns.value(rowOne, identifier);
+			Object valueTwo = columns.value(rowTwo, identifier);
 			int comparison;
 			// Define null less than everything, except null.
 			if (valueOne == null && valueTwo == null) {
@@ -179,8 +179,8 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 				comparison = 1;
 			}
 			else {
-				comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
-								k -> columns.comparator(columnIdentifier))).compare(valueOne, valueTwo);
+				comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(identifier,
+								k -> columns.comparator(identifier))).compare(valueOne, valueTwo);
 			}
 			if (comparison != 0) {
 				return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;
@@ -192,17 +192,17 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 
 	private static final class DefaultColumnSortOrder<C> implements ColumnSortOrder<C> {
 
-		private final C columnIdentifier;
+		private final C identifier;
 		private final SortOrder sortOrder;
 
-		private DefaultColumnSortOrder(C columnIdentifier, SortOrder sortOrder) {
-			this.columnIdentifier = columnIdentifier;
+		private DefaultColumnSortOrder(C identifier, SortOrder sortOrder) {
+			this.identifier = identifier;
 			this.sortOrder = sortOrder;
 		}
 
 		@Override
-		public C columnIdentifier() {
-			return columnIdentifier;
+		public C identifier() {
+			return identifier;
 		}
 
 		@Override

@@ -89,14 +89,14 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 					.listener(conditionChangedEvent)
 					.build();
 
-	private final C columnIdentifier;
+	private final C identifier;
 	private final Class<T> columnClass;
 	private final Format format;
 	private final String dateTimePattern;
 	private final List<Operator> operators;
 
 	private DefaultColumnConditionModel(DefaultBuilder<C, T> builder) {
-		this.columnIdentifier = builder.columnIdentifier;
+		this.identifier = builder.identifier;
 		this.operators = unmodifiableList(builder.operators);
 		this.operator = Value.builder()
 						.nonNull(builder.operator)
@@ -118,8 +118,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	@Override
-	public C columnIdentifier() {
-		return columnIdentifier;
+	public C identifier() {
+		return identifier;
 	}
 
 	@Override
@@ -524,13 +524,13 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	private void checkLock() {
 		if (locked.get()) {
-			throw new IllegalStateException("Condition model for column identified by " + columnIdentifier + " is locked");
+			throw new IllegalStateException("Condition model for column identified by " + identifier + " is locked");
 		}
 	}
 
 	private void validateOperator(Operator operator) {
 		if (operators != null && !operators.contains(requireNonNull(operator, "operator"))) {
-			throw new IllegalArgumentException("Operator " + operator + " not available in condition model: " + columnIdentifier);
+			throw new IllegalArgumentException("Operator " + operator + " not available in condition model: " + identifier);
 		}
 	}
 
@@ -595,7 +595,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 		private static final List<Operator> DEFAULT_OPERATORS = asList(Operator.values());
 
-		private final C columnIdentifier;
+		private final C identifier;
 		private final Class<T> columnClass;
 
 		private List<Operator> operators;
@@ -611,8 +611,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		private boolean caseSensitive = CASE_SENSITIVE.get();
 		private boolean autoEnable = true;
 
-		DefaultBuilder(C columnIdentifier, Class<T> columnClass) {
-			this.columnIdentifier = requireNonNull(columnIdentifier);
+		DefaultBuilder(C identifier, Class<T> columnClass) {
+			this.identifier = requireNonNull(identifier);
 			this.columnClass = requireNonNull(columnClass);
 			this.operators = columnClass.equals(Boolean.class) ? singletonList(Operator.EQUAL) : DEFAULT_OPERATORS;
 		}

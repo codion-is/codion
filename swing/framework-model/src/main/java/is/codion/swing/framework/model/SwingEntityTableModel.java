@@ -464,8 +464,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final String getStringAt(int rowIndex, Attribute<?> columnIdentifier) {
-		return tableModel.getStringAt(rowIndex, columnIdentifier);
+	public final String getStringAt(int rowIndex, Attribute<?> attribute) {
+		return tableModel.getStringAt(rowIndex, attribute);
 	}
 
 	@Override
@@ -539,18 +539,18 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final <T> Collection<T> values(Attribute<?> columnIdentifier) {
-		return tableModel.values(columnIdentifier);
+	public final <T> Collection<T> values(Attribute<?> attribute) {
+		return tableModel.values(attribute);
 	}
 
 	@Override
-	public final Class<?> getColumnClass(Attribute<?> columnIdentifier) {
-		return tableModel.getColumnClass(columnIdentifier);
+	public final Class<?> getColumnClass(Attribute<?> attribute) {
+		return tableModel.getColumnClass(attribute);
 	}
 
 	@Override
-	public final <T> Collection<T> selectedValues(Attribute<?> columnIdentifier) {
-		return tableModel.selectedValues(columnIdentifier);
+	public final <T> Collection<T> selectedValues(Attribute<?> attribute) {
+		return tableModel.selectedValues(attribute);
 	}
 
 	@Override

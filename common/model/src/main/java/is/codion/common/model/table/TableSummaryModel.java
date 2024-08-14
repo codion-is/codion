@@ -28,11 +28,11 @@ import java.util.Optional;
 public interface TableSummaryModel<C> {
 
 	/**
-	 * Returns the {@link ColumnSummaryModel} associated with {@code columnIdentifier}
-	 * @param columnIdentifier the column identifier
+	 * Returns the {@link ColumnSummaryModel} associated with the column identified by {@code identifier}
+	 * @param identifier the column identifier
 	 * @return the ColumnSummaryModel for the column identified by the given identifier, an empty Optional if none is available
 	 */
-	Optional<ColumnSummaryModel> summaryModel(C columnIdentifier);
+	Optional<ColumnSummaryModel> summaryModel(C identifier);
 
 	/**
 	 * @param summaryModelFactory the summary model factory

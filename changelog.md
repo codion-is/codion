@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.9
+### is.codion
+- columnIdentifier renamed identifier where applicable.
 ### is.codion.common.core
 - Memory utility class removed.
 - Separators utility class removed.

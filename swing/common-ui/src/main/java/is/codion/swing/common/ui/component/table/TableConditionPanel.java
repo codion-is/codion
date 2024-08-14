@@ -102,15 +102,15 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 	/**
 	 * @param <T> the column value type
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @return the condition panel associated with the given column
 	 * @throws IllegalStateException in case no panel is available
 	 */
-	public <T extends ColumnConditionPanel<C, ?>> T conditionPanel(C columnIdentifier) {
+	public <T extends ColumnConditionPanel<C, ?>> T conditionPanel(C identifier) {
 		return (T) conditionPanels().stream()
-						.filter(panel -> panel.conditionModel().columnIdentifier().equals(columnIdentifier))
+						.filter(panel -> panel.conditionModel().identifier().equals(identifier))
 						.findFirst()
-						.orElseThrow(() -> new IllegalStateException("No condition panel available for " + columnIdentifier));
+						.orElseThrow(() -> new IllegalStateException("No condition panel available for " + identifier));
 	}
 
 	/**
@@ -143,7 +143,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 */
 	public final void selectConditionPanel(JComponent dialogOwner) {
 		List<Item<C>> columnItems = selectableConditionPanels().stream()
-						.map(panel -> item(panel.conditionModel().columnIdentifier(), panel.caption()))
+						.map(panel -> item(panel.conditionModel().identifier(), panel.caption()))
 						.sorted()
 						.collect(toList());
 		if (columnItems.size() == 1) {

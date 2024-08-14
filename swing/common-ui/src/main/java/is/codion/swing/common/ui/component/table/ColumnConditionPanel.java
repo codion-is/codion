@@ -74,7 +74,7 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 * @param conditionModel the condition model
 	 */
 	protected ColumnConditionPanel(ColumnConditionModel<C, T> conditionModel) {
-		this(requireNonNull(conditionModel), conditionModel.columnIdentifier().toString());
+		this(requireNonNull(conditionModel), conditionModel.identifier().toString());
 		configureStates();
 	}
 

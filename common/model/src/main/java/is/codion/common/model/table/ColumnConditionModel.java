@@ -98,7 +98,7 @@ public interface ColumnConditionModel<C, T> {
 	/**
 	 * @return the column identifier
 	 */
-	C columnIdentifier();
+	C identifier();
 
 	/**
 	 * @return the State controlling whether this model is case-sensitive, when working with strings
@@ -235,14 +235,14 @@ public interface ColumnConditionModel<C, T> {
 
 	/**
 	 * Returns a new {@link Builder} instance.
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @param columnClass the column class
 	 * @param <C> the column identifier type
 	 * @param <T> the column value type
 	 * @return a new {@link Builder} instance
 	 */
-	static <C, T> Builder<C, T> builder(C columnIdentifier, Class<T> columnClass) {
-		return new DefaultColumnConditionModel.DefaultBuilder<>(columnIdentifier, columnClass);
+	static <C, T> Builder<C, T> builder(C identifier, Class<T> columnClass) {
+		return new DefaultColumnConditionModel.DefaultBuilder<>(identifier, columnClass);
 	}
 
 	/**
@@ -252,10 +252,10 @@ public interface ColumnConditionModel<C, T> {
 
 		/**
 		 * Creates a {@link ColumnConditionModel} for a given column
-		 * @param columnIdentifier the identifier of the column for which to create a {@link ColumnConditionModel}
+		 * @param identifier the identifier of the column for which to create a {@link ColumnConditionModel}
 		 * @return a {@link ColumnConditionModel} for the given column or an empty optional if none is available
 		 */
-		Optional<ColumnConditionModel<C, ?>> createConditionModel(C columnIdentifier);
+		Optional<ColumnConditionModel<C, ?>> createConditionModel(C identifier);
 	}
 
 	/**

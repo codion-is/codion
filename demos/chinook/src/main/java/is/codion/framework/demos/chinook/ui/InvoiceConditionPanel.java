@@ -117,16 +117,16 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 	}
 
 	@Override
-	public <T extends ColumnConditionPanel<Attribute<?>, ?>> T conditionPanel(Attribute<?> columnIdentifier) {
+	public <T extends ColumnConditionPanel<Attribute<?>, ?>> T conditionPanel(Attribute<?> attribute) {
 		if (state().isNotEqualTo(ADVANCED)) {
 			return (T) simpleConditionPanel.conditionPanels().stream()
-							.filter(panel -> panel.conditionModel().columnIdentifier().equals(columnIdentifier))
+							.filter(panel -> panel.conditionModel().identifier().equals(attribute))
 							.findFirst()
 							.orElseThrow(IllegalArgumentException::new);
 		}
 
 		return (T) advancedConditionPanel.conditionPanels().stream()
-						.filter(panel -> panel.conditionModel().columnIdentifier().equals(columnIdentifier))
+						.filter(panel -> panel.conditionModel().identifier().equals(attribute))
 						.findFirst()
 						.orElseThrow(IllegalArgumentException::new);
 	}
@@ -166,7 +166,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(FieldFactory<Attribute<?>> fieldFactory) {
 		return conditionModel().conditionModels().values().stream()
-						.filter(conditionModel -> columnModel.containsColumn(conditionModel.columnIdentifier()))
+						.filter(conditionModel -> columnModel.containsColumn(conditionModel.identifier()))
 						.filter(conditionModel -> fieldFactory.supportsType(conditionModel.columnClass()))
 						.map(conditionModel -> createPanel(conditionModel, fieldFactory))
 						.collect(toList());
@@ -175,7 +175,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 	private FilterColumnConditionPanel<Attribute<?>, ?> createPanel(ColumnConditionModel<Attribute<?>, ?> conditionModel,
 																																	FieldFactory<Attribute<?>> fieldFactory) {
 		return filterColumnConditionPanel(conditionModel,
-						Objects.toString(columnModel.column(conditionModel.columnIdentifier()).getHeaderValue()), fieldFactory);
+						Objects.toString(columnModel.column(conditionModel.identifier()).getHeaderValue()), fieldFactory);
 	}
 
 	private static final class SimpleConditionPanel extends JPanel {
@@ -218,7 +218,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			private final EntitySearchField searchField;
 
 			private CustomerConditionPanel(ColumnConditionModel<Attribute<?>, Entity> conditionModel, EntityDefinition invoiceDefinition) {
-				super(conditionModel, invoiceDefinition.attributes().definition(conditionModel.columnIdentifier()).caption());
+				super(conditionModel, invoiceDefinition.attributes().definition(conditionModel.identifier()).caption());
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(), caption()));
 				ForeignKeyConditionModel foreignKeyConditionModel = (ForeignKeyConditionModel) conditionModel;
@@ -267,7 +267,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 							.buildValue();
 
 			private DateConditionPanel(ColumnConditionModel<Attribute<?>, LocalDate> conditionModel, EntityDefinition invoiceDefinition) {
-				super(conditionModel, invoiceDefinition.attributes().definition(conditionModel.columnIdentifier()).caption());
+				super(conditionModel, invoiceDefinition.attributes().definition(conditionModel.identifier()).caption());
 				setLayout(new BorderLayout());
 				conditionModel().operator().set(Operator.BETWEEN);
 				updateCondition();

@@ -51,8 +51,8 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public boolean enabled(C columnIdentifier) {
-		return conditionModels.containsKey(columnIdentifier) && conditionModels.get(columnIdentifier).enabled().get();
+	public boolean enabled(C identifier) {
+		return conditionModels.containsKey(identifier) && conditionModels.get(identifier).enabled().get();
 	}
 
 	@Override
@@ -61,10 +61,10 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public <T> ColumnConditionModel<C, T> conditionModel(C columnIdentifier) {
-		ColumnConditionModel<C, T> conditionModel = (ColumnConditionModel<C, T>) conditionModels.get(columnIdentifier);
+	public <T> ColumnConditionModel<C, T> conditionModel(C identifier) {
+		ColumnConditionModel<C, T> conditionModel = (ColumnConditionModel<C, T>) conditionModels.get(identifier);
 		if (conditionModel == null) {
-			throw new IllegalArgumentException("No condition model available for column: " + columnIdentifier);
+			throw new IllegalArgumentException("No condition model available for column: " + identifier);
 		}
 
 		return conditionModel;
@@ -78,6 +78,6 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	private Map<C, ColumnConditionModel<C, ?>> initializeColumnConditionModels(
 					Collection<ColumnConditionModel<C, ?>> conditionModels) {
 		return unmodifiableMap(conditionModels.stream()
-						.collect(Collectors.toMap(ColumnConditionModel::columnIdentifier, identity())));
+						.collect(Collectors.toMap(ColumnConditionModel::identifier, identity())));
 	}
 }

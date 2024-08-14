@@ -102,7 +102,7 @@ public class DefaultColumnConditionModelTest {
 	@Test
 	void testMisc() {
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
-		assertEquals("test", model.columnIdentifier());
+		assertEquals("test", model.identifier());
 
 		model.operator().set(Operator.EQUAL);
 		model.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
@@ -146,7 +146,7 @@ public class DefaultColumnConditionModelTest {
 		assertTrue(model.enabled().get());
 		model.caseSensitive().set(false);
 		assertFalse(model.caseSensitive().get());
-		assertEquals("test", model.columnIdentifier());
+		assertEquals("test", model.identifier());
 		assertEquals(String.class, model.columnClass());
 
 		model.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);

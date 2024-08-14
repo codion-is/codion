@@ -71,25 +71,25 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	@Override
-	public void setVisibleColumns(C... columnIdentifiers) {
-		setVisibleColumns(asList(columnIdentifiers));
+	public void setVisibleColumns(C... identifiers) {
+		setVisibleColumns(asList(identifiers));
 	}
 
 	@Override
-	public void setVisibleColumns(List<C> columnIdentifiers) {
-		requireNonNull(columnIdentifiers);
-		columnIdentifiers.forEach(this::validateColumn);
+	public void setVisibleColumns(List<C> identifiers) {
+		requireNonNull(identifiers);
+		identifiers.forEach(this::validateColumn);
 		int columnIndex = 0;
-		for (C identifier : columnIdentifiers) {
+		for (C identifier : identifiers) {
 			visibleStates.get(identifier).set(true);
 			moveColumn(getColumnIndex(identifier), columnIndex++);
 		}
 		for (FilterTableColumn<C> column : columns()) {
-			if (!columnIdentifiers.contains(column.identifier())) {
+			if (!identifiers.contains(column.identifier())) {
 				visibleStates.get(column.identifier()).set(false);
 			}
 		}
-		if (!columnIdentifiers.isEmpty()) {
+		if (!identifiers.isEmpty()) {
 			tableColumnModel.getSelectionModel().setSelectionInterval(0, 0);
 		}
 	}
@@ -113,27 +113,27 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	@Override
-	public FilterTableColumn<C> column(C columnIdentifier) {
-		FilterTableColumn<C> column = columns.get(requireNonNull(columnIdentifier));
+	public FilterTableColumn<C> column(C identifier) {
+		FilterTableColumn<C> column = columns.get(requireNonNull(identifier));
 		if (column != null) {
 			return column;
 		}
 
-		throw new IllegalArgumentException("Column not found: " + columnIdentifier);
+		throw new IllegalArgumentException("Column not found: " + identifier);
 	}
 
 	@Override
-	public boolean containsColumn(C columnIdentifier) {
-		return columns.containsKey(requireNonNull(columnIdentifier));
+	public boolean containsColumn(C identifier) {
+		return columns.containsKey(requireNonNull(identifier));
 	}
 
 	@Override
-	public State visible(C columnIdentifier) {
-		return validateColumn(requireNonNull(columnIdentifier));
+	public State visible(C identifier) {
+		return validateColumn(requireNonNull(identifier));
 	}
 
 	@Override
-	public C columnIdentifier(int columnModelIndex) {
+	public C identifier(int columnModelIndex) {
 		C identifier = columnIdentifiers.get(columnModelIndex);
 		if (identifier != null) {
 			return identifier;
@@ -272,10 +272,10 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		return visibleState;
 	}
 
-	private State validateColumn(C columnIdentifier) {
-		State visibleState = visibleStates.get(columnIdentifier);
+	private State validateColumn(C identifier) {
+		State visibleState = visibleStates.get(identifier);
 		if (visibleState == null) {
-			throw new IllegalArgumentException("Column not found: " + columnIdentifier);
+			throw new IllegalArgumentException("Column not found: " + identifier);
 		}
 
 		return visibleState;
@@ -290,22 +290,22 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		}
 	}
 
-	private void showColumn(C columnIdentifier) {
-		HiddenColumn column = hiddenColumns.get(columnIdentifier);
+	private void showColumn(C identifier) {
+		HiddenColumn column = hiddenColumns.get(identifier);
 		if (column != null) {
-			hiddenColumns.remove(columnIdentifier);
+			hiddenColumns.remove(identifier);
 			tableColumnModel.addColumn(column.column);
 			tableColumnModel.moveColumn(getColumnCount() - 1, column.indexWhenShown());
-			columnShownEvent.accept(columnIdentifier);
+			columnShownEvent.accept(identifier);
 		}
 	}
 
-	private void hideColumn(C columnIdentifier) {
-		if (!hiddenColumns.containsKey(columnIdentifier)) {
-			HiddenColumn hiddenColumn = new HiddenColumn(column(columnIdentifier));
-			hiddenColumns.put(columnIdentifier, hiddenColumn);
+	private void hideColumn(C identifier) {
+		if (!hiddenColumns.containsKey(identifier)) {
+			HiddenColumn hiddenColumn = new HiddenColumn(column(identifier));
+			hiddenColumns.put(identifier, hiddenColumn);
 			tableColumnModel.removeColumn(hiddenColumn.column);
-			columnHiddenEvent.accept(columnIdentifier);
+			columnHiddenEvent.accept(identifier);
 		}
 	}
 

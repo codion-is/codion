@@ -95,10 +95,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	/**
 	 * Returns a String representation of the value for the given row and column.
 	 * @param rowIndex the row index
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @return the string value
 	 */
-	String getStringAt(int rowIndex, C columnIdentifier);
+	String getStringAt(int rowIndex, C identifier);
 
 	/**
 	 * Adds the given items to the bottom of this table model.
@@ -186,25 +186,25 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	List<R> removeItems(int fromIndex, int toIndex);
 
 	/**
-	 * @param columnIdentifier the identifier of the column for which to retrieve the values
+	 * @param identifier the identifier of the column for which to retrieve the values
 	 * @param <T> the value type
 	 * @return the values (including nulls) of the column identified by the given identifier from the visible rows in the table model
 	 */
-	<T> Collection<T> values(C columnIdentifier);
+	<T> Collection<T> values(C identifier);
 
 	/**
 	 * Returns the class of the column with the given identifier
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @return the Class representing the given column
 	 */
-	Class<?> getColumnClass(C columnIdentifier);
+	Class<?> getColumnClass(C identifier);
 
 	/**
-	 * @param columnIdentifier the identifier of the column for which to retrieve the values
+	 * @param identifier the identifier of the column for which to retrieve the values
 	 * @param <T> the value type
 	 * @return the values (including nulls) of the column identified by the given identifier from the selected rows in the table model
 	 */
-	<T> Collection<T> selectedValues(C columnIdentifier);
+	<T> Collection<T> selectedValues(C identifier);
 
 	/**
 	 * Default {@link RefreshStrategy#CLEAR}

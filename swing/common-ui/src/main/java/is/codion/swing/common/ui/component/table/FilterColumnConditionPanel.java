@@ -378,7 +378,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		linkToEnabledState(conditionModel().locked().not(),
 						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
 		components().forEach(component ->
-						component.addFocusListener(new FocusGained(conditionModel().columnIdentifier())));
+						component.addFocusListener(new FocusGained(conditionModel().identifier())));
 
 		Collection<JComponent> fields = Stream.of(operatorCombo, toggleEnabledButton, equalField, upperBoundField, lowerBoundField, inField)
 						.filter(Objects::nonNull)
@@ -689,15 +689,15 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private final class FocusGained extends FocusAdapter {
 
-		private final C columnIdentifier;
+		private final C identifier;
 
-		private FocusGained(C columnIdentifier) {
-			this.columnIdentifier = columnIdentifier;
+		private FocusGained(C identifier) {
+			this.identifier = identifier;
 		}
 
 		@Override
 		public void focusGained(FocusEvent e) {
-			focusGainedEvent.accept(columnIdentifier);
+			focusGainedEvent.accept(identifier);
 		}
 	}
 

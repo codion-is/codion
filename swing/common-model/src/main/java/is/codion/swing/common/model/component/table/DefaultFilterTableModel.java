@@ -182,15 +182,15 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public <T> Collection<T> values(C columnIdentifier) {
+	public <T> Collection<T> values(C identifier) {
 		return (Collection<T>) columnValues(IntStream.range(0, visibleCount()).boxed(),
-						columns.identifiers().indexOf(columnIdentifier));
+						columns.identifiers().indexOf(identifier));
 	}
 
 	@Override
-	public <T> Collection<T> selectedValues(C columnIdentifier) {
+	public <T> Collection<T> selectedValues(C identifier) {
 		return (Collection<T>) columnValues(selectionModel().getSelectedIndexes().stream(),
-						columns.identifiers().indexOf(columnIdentifier));
+						columns.identifiers().indexOf(identifier));
 	}
 
 	@Override
@@ -336,8 +336,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Class<?> getColumnClass(C columnIdentifier) {
-		return columns.columnClass(requireNonNull(columnIdentifier));
+	public Class<?> getColumnClass(C identifier) {
+		return columns.columnClass(requireNonNull(identifier));
 	}
 
 	@Override
@@ -356,8 +356,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public String getStringAt(int rowIndex, C columnIdentifier) {
-		return columns.string(itemAt(rowIndex), requireNonNull(columnIdentifier));
+	public String getStringAt(int rowIndex, C identifier) {
+		return columns.string(itemAt(rowIndex), requireNonNull(identifier));
 	}
 
 	@Override
@@ -531,10 +531,10 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final class DefaultFilterModelFactory implements ColumnConditionModel.Factory<C> {
 
 		@Override
-		public Optional<ColumnConditionModel<C, ?>> createConditionModel(C columnIdentifier) {
-			Class<?> columnClass = getColumnClass(columnIdentifier);
+		public Optional<ColumnConditionModel<C, ?>> createConditionModel(C identifier) {
+			Class<?> columnClass = getColumnClass(identifier);
 			if (Comparable.class.isAssignableFrom(columnClass)) {
-				return Optional.of(ColumnConditionModel.builder(columnIdentifier, columnClass).build());
+				return Optional.of(ColumnConditionModel.builder(identifier, columnClass).build());
 			}
 
 			return Optional.empty();
@@ -565,12 +565,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private boolean accepts(R item, ColumnConditionModel<C, ?> conditionModel, Columns<R, C> columns) {
 			if (conditionModel.columnClass().equals(String.class)) {
-				String stringValue = columns.string(item, conditionModel.columnIdentifier());
+				String stringValue = columns.string(item, conditionModel.identifier());
 
 				return ((ColumnConditionModel<?, String>) conditionModel).accepts(stringValue.isEmpty() ? null : stringValue);
 			}
 
-			return conditionModel.accepts(columns.comparable(item, conditionModel.columnIdentifier()));
+			return conditionModel.accepts(columns.comparable(item, conditionModel.identifier()));
 		}
 	}
 

@@ -112,12 +112,12 @@ public interface ColumnSummaryModel {
 		interface Factory<C> {
 
 			/**
-			 * @param columnIdentifier the column identifier
+			 * @param identifier the column identifier
 			 * @param format the format to use
 			 * @param <T> the column type
 			 * @return a summary values instance or an empty Optional, if no summary is available for the column
 			 */
-			<T extends Number> Optional<SummaryValues<T>> createSummaryValues(C columnIdentifier, Format format);
+			<T extends Number> Optional<SummaryValues<T>> createSummaryValues(C identifier, Format format);
 		}
 	}
 }

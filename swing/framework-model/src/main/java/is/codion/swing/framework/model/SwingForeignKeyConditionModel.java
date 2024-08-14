@@ -88,8 +88,8 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 	}
 
 	@Override
-	public Attribute<?> columnIdentifier() {
-		return conditionModel.columnIdentifier();
+	public Attribute<?> identifier() {
+		return conditionModel.identifier();
 	}
 
 	@Override

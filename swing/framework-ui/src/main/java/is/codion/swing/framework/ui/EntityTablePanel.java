@@ -1468,7 +1468,7 @@ public class EntityTablePanel extends JPanel {
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createColumnConditionPanels() {
 		return tableModel.conditionModel().conditionModels().values().stream()
-						.filter(conditionModel -> table.columnModel().containsColumn(conditionModel.columnIdentifier()))
+						.filter(conditionModel -> table.columnModel().containsColumn(conditionModel.identifier()))
 						.filter(conditionModel -> configuration.conditionFieldFactory.supportsType(conditionModel.columnClass()))
 						.map(this::createColumnConditionPanel)
 						.collect(toList());
@@ -1476,7 +1476,7 @@ public class EntityTablePanel extends JPanel {
 
 	private FilterColumnConditionPanel<Attribute<?>, ?> createColumnConditionPanel(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
 		return filterColumnConditionPanel(conditionModel,
-						Objects.toString(table.columnModel().column(conditionModel.columnIdentifier()).getHeaderValue()),
+						Objects.toString(table.columnModel().column(conditionModel.identifier()).getHeaderValue()),
 						configuration.conditionFieldFactory);
 	}
 
@@ -1484,7 +1484,7 @@ public class EntityTablePanel extends JPanel {
 		conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
 						focusGainedEvent.addConsumer(scrollToColumn));
 		conditionPanel.components().forEach(component ->
-						configureColumnConditionComponent(component, conditionPanel.conditionModel().columnIdentifier()));
+						configureColumnConditionComponent(component, conditionPanel.conditionModel().identifier()));
 	}
 
 	private void configureColumnConditionComponent(JComponent component, Attribute<?> attribute) {
@@ -1751,14 +1751,14 @@ public class EntityTablePanel extends JPanel {
 		}
 		OrderBy.Builder builder = OrderBy.builder();
 		table.sortModel().columnSortOrder().stream()
-						.filter(columnSortOrder -> isColumn(columnSortOrder.columnIdentifier()))
+						.filter(columnSortOrder -> isColumn(columnSortOrder.identifier()))
 						.forEach(columnSortOrder -> {
 							switch (columnSortOrder.sortOrder()) {
 								case ASCENDING:
-									builder.ascending((Column<?>) columnSortOrder.columnIdentifier());
+									builder.ascending((Column<?>) columnSortOrder.identifier());
 									break;
 								case DESCENDING:
-									builder.descending((Column<?>) columnSortOrder.columnIdentifier());
+									builder.descending((Column<?>) columnSortOrder.identifier());
 									break;
 								default:
 							}
@@ -2513,10 +2513,10 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		@Override
-		public <T extends Number> Optional<ColumnSummaryModel.SummaryValues<T>> createSummaryValues(Attribute<?> attribute, Format format) {
-			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-			if (attribute.type().isNumerical() && attributeDefinition.items().isEmpty()) {
-				return Optional.of(FilterTable.summaryValues(attribute, tableModel, format));
+		public <T extends Number> Optional<ColumnSummaryModel.SummaryValues<T>> createSummaryValues(Attribute<?> identifier, Format format) {
+			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(identifier);
+			if (identifier.type().isNumerical() && attributeDefinition.items().isEmpty()) {
+				return Optional.of(FilterTable.summaryValues(identifier, tableModel, format));
 			}
 
 			return Optional.empty();

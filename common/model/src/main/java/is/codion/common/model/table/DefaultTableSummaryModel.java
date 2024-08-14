@@ -38,13 +38,13 @@ final class DefaultTableSummaryModel<C> implements TableSummaryModel<C> {
 	}
 
 	@Override
-	public Optional<ColumnSummaryModel> summaryModel(C columnIdentifier) {
-		return Optional.ofNullable(columnSummaryModels.computeIfAbsent(columnIdentifier, k ->
+	public Optional<ColumnSummaryModel> summaryModel(C identifier) {
+		return Optional.ofNullable(columnSummaryModels.computeIfAbsent(identifier, k ->
 						createSummaryModel(k, NumberFormat.getInstance()).orElse(null)));
 	}
 
-	private Optional<ColumnSummaryModel> createSummaryModel(C columnIdentifier, Format format) {
-		return summaryValuesFactory.createSummaryValues(columnIdentifier, format)
+	private Optional<ColumnSummaryModel> createSummaryModel(C identifier, Format format) {
+		return summaryValuesFactory.createSummaryValues(identifier, format)
 						.map(ColumnSummaryModel::columnSummaryModel);
 	}
 }

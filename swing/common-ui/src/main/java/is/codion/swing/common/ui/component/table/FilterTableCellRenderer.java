@@ -115,12 +115,12 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 * @param <R> the table row type
 	 * @param <C> the column identifier type
 	 * @param tableModel the table model providing the data to render
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @param columnClass the column class
 	 * @return a new {@link FilterTableCellRenderer.Builder} instance
 	 */
-	static <R, C> Builder<R, C> builder(FilterTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass) {
-		return new DefaultFilterTableCellRendererBuilder<>(tableModel, columnIdentifier, columnClass);
+	static <R, C> Builder<R, C> builder(FilterTableModel<R, C> tableModel, C identifier, Class<?> columnClass) {
+		return new DefaultFilterTableCellRendererBuilder<>(tableModel, identifier, columnClass);
 	}
 
 	/**
@@ -131,23 +131,23 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 
 		/**
 		 * @param row the row number
-		 * @param columnIdentifier the column identifier
+		 * @param identifier the column identifier
 		 * @param cellValue the cell value
 		 * @param selected true if the cell is selected
 		 * @return a background Color for the given cell, null for none
 		 */
-		default Color backgroundColor(int row, C columnIdentifier, Object cellValue, boolean selected) {
+		default Color backgroundColor(int row, C identifier, Object cellValue, boolean selected) {
 			return null;
 		}
 
 		/**
 		 * @param row the row number
-		 * @param columnIdentifier the column identifier
+		 * @param identifier the column identifier
 		 * @param cellValue the cell value
 		 * @param selected true if the cell is selected
 		 * @return a foreground Color for the given cell, null for none
 		 */
-		default Color foregroundColor(int row, C columnIdentifier, Object cellValue, boolean selected) {
+		default Color foregroundColor(int row, C identifier, Object cellValue, boolean selected) {
 			return null;
 		}
 	}
@@ -287,11 +287,11 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 			focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
 		}
 
-		protected final Color backgroundColor(FilterTableModel<?, C> tableModel, int row, C columnIdentifier, boolean columnShading,
+		protected final Color backgroundColor(FilterTableModel<?, C> tableModel, int row, C identifier, boolean columnShading,
 																					boolean selected, Color cellBackgroundColor) {
 			cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
 			if (columnShading) {
-				cellBackgroundColor = backgroundColorShaded(tableModel, row, columnIdentifier, cellBackgroundColor);
+				cellBackgroundColor = backgroundColorShaded(tableModel, row, identifier, cellBackgroundColor);
 			}
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
@@ -304,12 +304,12 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		 * Adds shading to the given cell, if applicable
 		 * @param tableModel the table model
 		 * @param row the row
-		 * @param columnIdentifier the column identifier
+		 * @param identifier the column identifier
 		 * @param cellBackgroundColor the cell specific background color, if any
 		 * @return a shaded background color
 		 */
-		protected Color backgroundColorShaded(FilterTableModel<?, C> tableModel, int row, C columnIdentifier, Color cellBackgroundColor) {
-			ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(columnIdentifier);
+		protected Color backgroundColorShaded(FilterTableModel<?, C> tableModel, int row, C identifier, Color cellBackgroundColor) {
+			ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(identifier);
 			boolean filterEnabled = filterModel != null && filterModel.enabled().get();
 			if (filterEnabled) {
 				return backgroundShaded(row, cellBackgroundColor);

@@ -37,13 +37,13 @@ public interface TableConditionModel<C> {
 	Map<C, ColumnConditionModel<C, ?>> conditionModels();
 
 	/**
-	 * The condition model associated with {@code columnIdentifier}
+	 * The condition model associated with the column identified by {@code identifier}
 	 * @param <T> the column value type
-	 * @param columnIdentifier the column identifier for which to retrieve the {@link ColumnConditionModel}
-	 * @return the {@link ColumnConditionModel} for the {@code columnIdentifier}
-	 * @throws IllegalArgumentException in case no condition model exists for the given columnIdentifier
+	 * @param identifier the column identifier for which to retrieve the {@link ColumnConditionModel}
+	 * @return the {@link ColumnConditionModel} for the {@code identifier}
+	 * @throws IllegalArgumentException in case no condition model exists for the given column identifier
 	 */
-	<T> ColumnConditionModel<C, T> conditionModel(C columnIdentifier);
+	<T> ColumnConditionModel<C, T> conditionModel(C identifier);
 
 	/**
 	 * Clears the search state of all the condition models, disables them and
@@ -57,10 +57,10 @@ public interface TableConditionModel<C> {
 	boolean enabled();
 
 	/**
-	 * @param columnIdentifier the column identifier
-	 * @return true if the condition model behind column with {@code columnIdentifier} is enabled
+	 * @param identifier the column identifier
+	 * @return true if the condition model behind column identified by {@code identifier} is enabled
 	 */
-	boolean enabled(C columnIdentifier);
+	boolean enabled(C identifier);
 
 	/**
 	 * @return an observer notified each time the condition changes

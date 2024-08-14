@@ -465,14 +465,14 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * Scrolls horizontally so that the column identified by the given identifier becomes visible.
 	 * Has no effect if this table is not contained in a scrollpanel.
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 */
-	public void scrollToColumn(C columnIdentifier) {
-		requireNonNull(columnIdentifier);
+	public void scrollToColumn(C identifier) {
+		requireNonNull(identifier);
 		JViewport viewport = Utilities.parentOfType(JViewport.class, this);
 		if (viewport != null) {
 			scrollToRowColumn(viewport, rowAtPoint(viewport.getViewPosition()),
-							columnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER);
+							columnModel().getColumnIndex(identifier), CenterOnScroll.NEITHER);
 		}
 	}
 
@@ -626,16 +626,15 @@ public final class FilterTable<R, C> extends JTable {
 
 	/**
 	 * Instantiates a new {@link SummaryValues} instance.
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @param tableModel the table model
 	 * @param format the format
 	 * @param <T> the column value type
 	 * @param <C> the column identifier type
 	 * @return a new {@link SummaryValues} instance
 	 */
-	public static <T extends Number, C> SummaryValues<T> summaryValues(C columnIdentifier,
-																																		 FilterTableModel<?, C> tableModel, Format format) {
-		return new DefaultSummaryValues<>(columnIdentifier, tableModel, format);
+	public static <T extends Number, C> SummaryValues<T> summaryValues(C identifier, FilterTableModel<?, C> tableModel, Format format) {
+		return new DefaultSummaryValues<>(identifier, tableModel, format);
 	}
 
 	/**
@@ -724,13 +723,13 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void toggleColumnSorting(int selectedColumn, boolean add) {
 		if (sortingEnabled.get() && selectedColumn != -1) {
-			C columnIdentifier = columnModel().getColumn(selectedColumn).identifier();
-			if (sortModel.isSortingEnabled(columnIdentifier)) {
+			C identifier = columnModel().getColumn(selectedColumn).identifier();
+			if (sortModel.isSortingEnabled(identifier)) {
 				if (add) {
-					sortModel.addSortOrder(columnIdentifier, nextSortOrder(sortModel.sortOrder(columnIdentifier)));
+					sortModel.addSortOrder(identifier, nextSortOrder(sortModel.sortOrder(identifier)));
 				}
 				else {
-					sortModel.setSortOrder(columnIdentifier, nextSortOrder(sortModel.sortOrder(columnIdentifier)));
+					sortModel.setSortOrder(identifier, nextSortOrder(sortModel.sortOrder(identifier)));
 				}
 			}
 		}
@@ -855,9 +854,9 @@ public final class FilterTable<R, C> extends JTable {
 		controlMap.keyEvent(TOGGLE_SORT_COLUMN).ifPresent(keyEvent -> keyEvent.enable(this));
 	}
 
-	private void onColumnHidden(C columnIdentifier) {
+	private void onColumnHidden(C identifier) {
 		//disable the filter model for the column to be hidden, to prevent confusion
-		ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(columnIdentifier);
+		ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(identifier);
 		if (filterModel != null && !filterModel.locked().get()) {
 			filterModel.enabled().set(false);
 		}
@@ -885,20 +884,20 @@ public final class FilterTable<R, C> extends JTable {
 						.conditionModels()
 						.values()
 						.stream()
-						.filter(conditionModel -> columnModel().containsColumn(conditionModel.columnIdentifier()))
+						.filter(conditionModel -> columnModel().containsColumn(conditionModel.identifier()))
 						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.columnClass()))
 						.map(conditionModel -> filterColumnConditionPanel(conditionModel,
-										Objects.toString(columnModel().column(conditionModel.columnIdentifier()).getHeaderValue()), filterFieldFactory))
+										Objects.toString(columnModel().column(conditionModel.identifier()).getHeaderValue()), filterFieldFactory))
 						.collect(toList());
 	}
 
 	private void configureColumnConditionPanel(ColumnConditionPanel<C, ?> conditionPanel) {
 		conditionPanel.components().forEach(component ->
-						configureColumnConditionComponent(component, conditionPanel.conditionModel().columnIdentifier()));
+						configureColumnConditionComponent(component, conditionPanel.conditionModel().identifier()));
 	}
 
-	private void configureColumnConditionComponent(JComponent component, C columnIdentifier) {
-		TableCellRenderer cellRenderer = columnModel().column(columnIdentifier).getCellRenderer();
+	private void configureColumnConditionComponent(JComponent component, C identifier) {
+		TableCellRenderer cellRenderer = columnModel().column(identifier).getCellRenderer();
 		if (cellRenderer instanceof DefaultTableCellRenderer) {
 			int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
 			if (component instanceof JTextField) {
@@ -979,14 +978,14 @@ public final class FilterTable<R, C> extends JTable {
 				if (!getSelectionModel().isSelectionEmpty()) {
 					setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 				}
-				C columnIdentifier = columnModel.getColumn(index).identifier();
-				if (sortModel.isSortingEnabled(columnIdentifier)) {
-					SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(columnIdentifier));
+				C identifier = columnModel.getColumn(index).identifier();
+				if (sortModel.isSortingEnabled(identifier)) {
+					SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(identifier));
 					if (e.isAltDown()) {
-						sortModel.addSortOrder(columnIdentifier, nextSortOrder);
+						sortModel.addSortOrder(identifier, nextSortOrder);
 					}
 					else {
-						sortModel.setSortOrder(columnIdentifier, nextSortOrder);
+						sortModel.setSortOrder(identifier, nextSortOrder);
 					}
 				}
 			}
@@ -1286,10 +1285,10 @@ public final class FilterTable<R, C> extends JTable {
 	private final class DefaultSummaryValuesFactory implements SummaryValues.Factory<C> {
 
 		@Override
-		public <T extends Number> Optional<SummaryValues<T>> createSummaryValues(C columnIdentifier, Format format) {
-			Class<?> columnClass = tableModel.getColumnClass(columnIdentifier);
+		public <T extends Number> Optional<SummaryValues<T>> createSummaryValues(C identifier, Format format) {
+			Class<?> columnClass = tableModel.getColumnClass(identifier);
 			if (Number.class.isAssignableFrom(columnClass)) {
-				return Optional.of(new DefaultSummaryValues<>(columnIdentifier, tableModel, format));
+				return Optional.of(new DefaultSummaryValues<>(identifier, tableModel, format));
 			}
 
 			return Optional.empty();
@@ -1298,13 +1297,13 @@ public final class FilterTable<R, C> extends JTable {
 
 	private static final class DefaultSummaryValues<T extends Number, C> implements SummaryValues<T> {
 
-		private final C columnIdentifier;
+		private final C identifier;
 		private final FilterTableModel<?, C> tableModel;
 		private final Format format;
 		private final Event<?> changeEvent = Event.event();
 
-		private DefaultSummaryValues(C columnIdentifier, FilterTableModel<?, C> tableModel, Format format) {
-			this.columnIdentifier = requireNonNull(columnIdentifier);
+		private DefaultSummaryValues(C identifier, FilterTableModel<?, C> tableModel, Format format) {
+			this.identifier = requireNonNull(identifier);
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);
 			this.tableModel.dataChangedEvent().addListener(changeEvent);
@@ -1323,7 +1322,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public Collection<T> values() {
-			return subset() ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier);
+			return subset() ? tableModel.selectedValues(identifier) : tableModel.values(identifier);
 		}
 
 		@Override

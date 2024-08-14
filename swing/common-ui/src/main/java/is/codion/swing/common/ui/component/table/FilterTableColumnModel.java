@@ -58,48 +58,48 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 
 	/**
 	 * Arranges the columns so that only the given columns are visible and in the given order
-	 * @param columnIdentifiers the column identifiers
+	 * @param identifiers the column identifiers
 	 * @throws IllegalArgumentException in case a column is not found
 	 */
-	void setVisibleColumns(C... columnIdentifiers);
+	void setVisibleColumns(C... identifiers);
 
 	/**
 	 * Arranges the columns so that only the given columns are visible and in the given order
-	 * @param columnIdentifiers the column identifiers
+	 * @param identifiers the column identifiers
 	 * @throws IllegalArgumentException in case a column is not found
 	 */
-	void setVisibleColumns(List<C> columnIdentifiers);
+	void setVisibleColumns(List<C> identifiers);
 
 	/**
 	 * Returns the TableColumn with the given identifier
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @return the TableColumn with the given identifier
 	 * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
 	 */
-	FilterTableColumn<C> column(C columnIdentifier);
+	FilterTableColumn<C> column(C identifier);
 
 	@Override
 	FilterTableColumn<C> getColumn(int columnIndex);
 
 	/**
 	 * Returns the State for controlling the column visibility
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @return a State for controlling the column visibility
 	 * @throws IllegalArgumentException in case the column is not found
 	 */
-	State visible(C columnIdentifier);
+	State visible(C identifier);
 
 	/**
-	 * @param columnIdentifier the column identifier
+	 * @param identifier the column identifier
 	 * @return true if this column model contains a column with the given identifier
 	 */
-	boolean containsColumn(C columnIdentifier);
+	boolean containsColumn(C identifier);
 
 	/**
 	 * @param modelColumnIndex the column model index
 	 * @return the column identifier
 	 */
-	C columnIdentifier(int modelColumnIndex);
+	C identifier(int modelColumnIndex);
 
 	/**
 	 * Resets the columns to their original location and visibility

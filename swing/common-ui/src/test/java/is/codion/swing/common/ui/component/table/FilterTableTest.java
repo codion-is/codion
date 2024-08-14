@@ -340,7 +340,7 @@ public class FilterTableTest {
 		FilterTable<TestRow, Integer> table = createTestTable();
 		FilterTableModel<TestRow, Integer> tableModel = table.model();
 		AtomicInteger actionsPerformed = new AtomicInteger();
-		Consumer<Integer> consumer = columnIdentifier -> actionsPerformed.incrementAndGet();
+		Consumer<Integer> consumer = identifier -> actionsPerformed.incrementAndGet();
 		table.sortModel().sortingChangedEvent().addConsumer(consumer);
 
 		tableModel.refresh();
@@ -352,7 +352,7 @@ public class FilterTableTest {
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
 		assertEquals(SortOrder.ASCENDING, sortModel.sortOrder(0));
 		assertEquals(A, tableModel.itemAt(0));
-		assertEquals(0, sortModel.columnSortOrder().get(0).columnIdentifier());
+		assertEquals(0, sortModel.columnSortOrder().get(0).identifier());
 		assertEquals(2, actionsPerformed.get());
 
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
