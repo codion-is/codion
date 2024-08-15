@@ -16,11 +16,11 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.domain;
+package is.codion.framework.domain.db;
 
 import is.codion.common.db.result.ResultPacker;
-import is.codion.tools.generator.domain.MetaDataColumn.ColumnPacker;
-import is.codion.tools.generator.domain.MetaDataForeignKeyColumn.ForeignKeyColumnPacker;
+import is.codion.framework.domain.db.MetaDataColumn.ColumnPacker;
+import is.codion.framework.domain.db.MetaDataForeignKeyColumn.ForeignKeyColumnPacker;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;

@@ -183,6 +183,19 @@ image::modules/framework/domain/build/reports/dependency-graph/dependency-graph.
 ====
 
 [discrete]
+=== codion-framework-domain-db
+
+Domain model generation from a database schema.
+
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/db/package-summary.html[is.codion.framework.domain.db]
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/framework/domain-db/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
 === codion-framework-domain-test
 
 Domain model unit test related classes.
@@ -423,6 +436,15 @@ image::modules/tools/monitor/ui/build/reports/dependency-graph/dependency-graph.
 ====
 
 === Generator
+
+[discrete]
+=== codion-tools-generator-domain
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/tools/generator/domain/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
 
 [discrete]
 === codion-tools-generator-model

@@ -18,7 +18,7 @@
  */
 package is.codion.tools.generator.model;
 
-import is.codion.tools.generator.domain.DatabaseDomain;
+import is.codion.framework.domain.db.DatabaseDomain;
 
 import java.util.Optional;
 

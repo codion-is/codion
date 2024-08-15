@@ -21,6 +21,7 @@ package is.codion.tools.generator.domain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.db.DatabaseDomain;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;

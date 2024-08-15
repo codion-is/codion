@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.10
+### is.codion.framework.domain.db
+- Module is.codion.framework.domain.db split from is.codion.tools.generator.domain.
 
 ## 0.18.9
 ### is.codion

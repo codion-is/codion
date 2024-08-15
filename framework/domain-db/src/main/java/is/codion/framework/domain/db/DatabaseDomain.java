@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.tools.generator.domain;
+package is.codion.framework.domain.db;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;

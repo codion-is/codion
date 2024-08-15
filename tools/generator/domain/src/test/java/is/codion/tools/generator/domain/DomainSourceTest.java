@@ -20,6 +20,7 @@ package is.codion.tools.generator.domain;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
+import is.codion.framework.domain.db.DatabaseDomain;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

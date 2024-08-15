@@ -58,6 +58,9 @@ project(":codion-framework-i18n").projectDir = file("framework/i18n")
 include "codion-framework-domain"
 project(":codion-framework-domain").projectDir = file("framework/domain")
 
+include "codion-framework-domain-db"
+project(":codion-framework-domain-db").projectDir = file("framework/domain-db")
+
 include "codion-framework-domain-test"
 project(":codion-framework-domain-test").projectDir = file("framework/domain-test")
 
