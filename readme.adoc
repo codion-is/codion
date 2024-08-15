@@ -469,6 +469,7 @@ public class StoreDemo {
 ----
 
 ...and the result, all in all around 150 lines of code.
+
 image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
 
 == Persistance
