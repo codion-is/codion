@@ -78,7 +78,7 @@ public interface Petstore {
 		EntityType TYPE = DOMAIN.entityType("petstore.product");
 
 		Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
-		Column<Integer> CATEGORYID = TYPE.integerColumn("categoryid");
+		Column<Integer> CATEGORY_ID = TYPE.integerColumn("category_id");
 		Column<String> NAME = TYPE.stringColumn("name");
 		Column<String> DESCRIPTION = TYPE.stringColumn("description");
 		Column<String> IMAGE_URL = TYPE.stringColumn("image_url");
@@ -87,7 +87,7 @@ public interface Petstore {
 		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
 		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
-		ForeignKey CATEGORYID_FK = TYPE.foreignKey("categoryid_fk", CATEGORYID, Category.CATEGORY_ID);
+		ForeignKey CATEGORY_FK = TYPE.foreignKey("category_fk", CATEGORY_ID, Category.CATEGORY_ID);
 	}
 
 	interface Item {
@@ -110,9 +110,9 @@ public interface Petstore {
 		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
 		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
-		ForeignKey PRODUCT_ID_FK = TYPE.foreignKey("product_id_fk", PRODUCT_ID, Product.PRODUCT_ID);
-		ForeignKey ADDRESS_ID_FK = TYPE.foreignKey("address_id_fk", ADDRESS_ID, Address.ADDRESS_ID);
-		ForeignKey CONTACT_INFO_ID_FK = TYPE.foreignKey("contact_info_id_fk", CONTACT_INFO_ID, ContactInfo.CONTACT_INFO_ID);
+		ForeignKey PRODUCT_FK = TYPE.foreignKey("product_fk", PRODUCT_ID, Product.PRODUCT_ID);
+		ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ADDRESS_ID);
+		ForeignKey CONTACT_INFO_FK = TYPE.foreignKey("contact_info_fk", CONTACT_INFO_ID, ContactInfo.CONTACT_INFO_ID);
 	}
 
 	interface TagItem {
@@ -125,7 +125,7 @@ public interface Petstore {
 		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
 		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
-		ForeignKey TAG_ID_FK = TYPE.foreignKey("tag_id_fk", TAG_ID, Tag.TAG_ID);
-		ForeignKey ITEM_ID_FK = TYPE.foreignKey("item_id_fk", ITEM_ID, Item.ITEM_ID);
+		ForeignKey TAG_FK = TYPE.foreignKey("tag_fk", TAG_ID, Tag.TAG_ID);
+		ForeignKey ITEM_FK = TYPE.foreignKey("item_fk", ITEM_ID, Item.ITEM_ID);
 	}
 }

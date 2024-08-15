@@ -204,10 +204,10 @@ public final class Petstore extends DomainModel {
 		return Product.TYPE.define(
 				Product.PRODUCT_ID.define()
 					.primaryKey(),
-				Product.CATEGORYID.define()
+				Product.CATEGORY_ID.define()
 					.column()
 					.nullable(false),
-				Product.CATEGORYID_FK.define()
+				Product.CATEGORY_FK.define()
 					.foreignKey()
 					.caption("Category"),
 				Product.NAME.define()
@@ -250,7 +250,7 @@ public final class Petstore extends DomainModel {
 				Item.PRODUCT_ID.define()
 					.column()
 					.nullable(false),
-				Item.PRODUCT_ID_FK.define()
+				Item.PRODUCT_FK.define()
 					.foreignKey()
 					.caption("Product"),
 				Item.NAME.define()
@@ -279,13 +279,13 @@ public final class Petstore extends DomainModel {
 				Item.ADDRESS_ID.define()
 					.column()
 					.nullable(false),
-				Item.ADDRESS_ID_FK.define()
+				Item.ADDRESS_FK.define()
 					.foreignKey()
 					.caption("Address"),
 				Item.CONTACT_INFO_ID.define()
 					.column()
 					.nullable(false),
-				Item.CONTACT_INFO_ID_FK.define()
+				Item.CONTACT_INFO_FK.define()
 					.foreignKey()
 					.caption("Contact info"),
 				Item.TOTAL_SCORE.define()
@@ -320,12 +320,12 @@ public final class Petstore extends DomainModel {
 		return TagItem.TYPE.define(
 				TagItem.TAG_ID.define()
 					.primaryKey(0),
-				TagItem.TAG_ID_FK.define()
+				TagItem.TAG_FK.define()
 					.foreignKey()
 					.caption("Tag"),
 				TagItem.ITEM_ID.define()
 					.primaryKey(1),
-				TagItem.ITEM_ID_FK.define()
+				TagItem.ITEM_FK.define()
 					.foreignKey()
 					.caption("Item"),
 				TagItem.INSERT_USER.define()
@@ -411,7 +411,7 @@ public final class Petstore extends DomainModel {
 		EntityType TYPE = DOMAIN.entityType("petstore.product");
 
 		Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
-		Column<Integer> CATEGORYID = TYPE.integerColumn("categoryid");
+		Column<Integer> CATEGORY_ID = TYPE.integerColumn("category_id");
 		Column<String> NAME = TYPE.stringColumn("name");
 		Column<String> DESCRIPTION = TYPE.stringColumn("description");
 		Column<String> IMAGE_URL = TYPE.stringColumn("image_url");
@@ -420,7 +420,7 @@ public final class Petstore extends DomainModel {
 		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
 		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
-		ForeignKey CATEGORYID_FK = TYPE.foreignKey("categoryid_fk", CATEGORYID, Category.CATEGORY_ID);
+		ForeignKey CATEGORY_FK = TYPE.foreignKey("category_fk", CATEGORY_ID, Category.CATEGORY_ID);
 	}
 
 	public interface Item {
@@ -443,9 +443,9 @@ public final class Petstore extends DomainModel {
 		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
 		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
-		ForeignKey PRODUCT_ID_FK = TYPE.foreignKey("product_id_fk", PRODUCT_ID, Product.PRODUCT_ID);
-		ForeignKey ADDRESS_ID_FK = TYPE.foreignKey("address_id_fk", ADDRESS_ID, Address.ADDRESS_ID);
-		ForeignKey CONTACT_INFO_ID_FK = TYPE.foreignKey("contact_info_id_fk", CONTACT_INFO_ID, ContactInfo.CONTACT_INFO_ID);
+		ForeignKey PRODUCT_FK = TYPE.foreignKey("product_fk", PRODUCT_ID, Product.PRODUCT_ID);
+		ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ADDRESS_ID);
+		ForeignKey CONTACT_INFO_FK = TYPE.foreignKey("contact_info_fk", CONTACT_INFO_ID, ContactInfo.CONTACT_INFO_ID);
 	}
 
 	public interface TagItem {
@@ -458,7 +458,7 @@ public final class Petstore extends DomainModel {
 		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
 		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
-		ForeignKey TAG_ID_FK = TYPE.foreignKey("tag_id_fk", TAG_ID, Tag.TAG_ID);
-		ForeignKey ITEM_ID_FK = TYPE.foreignKey("item_id_fk", ITEM_ID, Item.ITEM_ID);
+		ForeignKey TAG_FK = TYPE.foreignKey("tag_fk", TAG_ID, Tag.TAG_ID);
+		ForeignKey ITEM_FK = TYPE.foreignKey("item_fk", ITEM_ID, Item.ITEM_ID);
 	}
 }

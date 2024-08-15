@@ -196,10 +196,10 @@ public final class PetstoreImpl extends DomainModel {
 		return Product.TYPE.define(
 				Product.PRODUCT_ID.define()
 					.primaryKey(),
-				Product.CATEGORYID.define()
+				Product.CATEGORY_ID.define()
 					.column()
 					.nullable(false),
-				Product.CATEGORYID_FK.define()
+				Product.CATEGORY_FK.define()
 					.foreignKey()
 					.caption("Category"),
 				Product.NAME.define()
@@ -242,7 +242,7 @@ public final class PetstoreImpl extends DomainModel {
 				Item.PRODUCT_ID.define()
 					.column()
 					.nullable(false),
-				Item.PRODUCT_ID_FK.define()
+				Item.PRODUCT_FK.define()
 					.foreignKey()
 					.caption("Product"),
 				Item.NAME.define()
@@ -271,13 +271,13 @@ public final class PetstoreImpl extends DomainModel {
 				Item.ADDRESS_ID.define()
 					.column()
 					.nullable(false),
-				Item.ADDRESS_ID_FK.define()
+				Item.ADDRESS_FK.define()
 					.foreignKey()
 					.caption("Address"),
 				Item.CONTACT_INFO_ID.define()
 					.column()
 					.nullable(false),
-				Item.CONTACT_INFO_ID_FK.define()
+				Item.CONTACT_INFO_FK.define()
 					.foreignKey()
 					.caption("Contact info"),
 				Item.TOTAL_SCORE.define()
@@ -312,12 +312,12 @@ public final class PetstoreImpl extends DomainModel {
 		return TagItem.TYPE.define(
 				TagItem.TAG_ID.define()
 					.primaryKey(0),
-				TagItem.TAG_ID_FK.define()
+				TagItem.TAG_FK.define()
 					.foreignKey()
 					.caption("Tag"),
 				TagItem.ITEM_ID.define()
 					.primaryKey(1),
-				TagItem.ITEM_ID_FK.define()
+				TagItem.ITEM_FK.define()
 					.foreignKey()
 					.caption("Item"),
 				TagItem.INSERT_USER.define()

@@ -43,6 +43,7 @@ public final class DomainSourceTest {
 	void petstore() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
 			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection, "PETSTORE", SchemaSettings.builder()
+							.primaryKeyColumnSuffix("_id")
 							.auditInsertUserColumnName("insert_user")
 							.auditInsertTimeColumnName("insert_time")
 							.auditUpdateUserColumnName("update_user")

@@ -6,6 +6,7 @@ Codion Change Log
 - Module is.codion.framework.domain.db split from is.codion.tools.generator.domain.
 - DatabaseDomain renamed SchemaDomain.
 - SchemaDomain.SchemaSettings added, audit column names can now be specified.
+- SchemaDomain.SchemaSettings.primaryKeyColumnSuffix() added for improved foreign key names.
 
 ## 0.18.9
 ### is.codion

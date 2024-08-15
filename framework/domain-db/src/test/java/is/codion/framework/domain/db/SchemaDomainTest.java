@@ -32,6 +32,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class SchemaDomainTest {
 
@@ -42,6 +43,7 @@ public final class SchemaDomainTest {
 	void petstore() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
 			SchemaDomain petstore = SchemaDomain.schemaDomain(connection, "PETSTORE", SchemaSettings.builder()
+							.primaryKeyColumnSuffix("_id")
 							.auditInsertUserColumnName("insert_user")
 							.auditInsertTimeColumnName("insert_time")
 							.auditUpdateUserColumnName("update_user")
@@ -72,6 +74,8 @@ public final class SchemaDomainTest {
 								(AuditColumnDefinition<String>) attributes.definition(attributes.<String>get("UPDATE_TIME"));
 				assertEquals(AuditAction.UPDATE, updateTimeDefinition.auditAction());
 				assertEquals("Update time", updateTimeDefinition.caption());
+
+				entityDefinition.foreignKeys().get().forEach(foreignKey -> assertFalse(foreignKey.name().endsWith("_ID_FK")));
 			}
 		}
 	}

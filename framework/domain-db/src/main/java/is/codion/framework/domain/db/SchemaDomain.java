@@ -254,11 +254,23 @@ public final class SchemaDomain extends DomainModel {
 						.orElse(-1) == column.position();
 	}
 
-	private static String createForeignKeyName(MetaDataForeignKeyConstraint foreignKeyConstraint) {
+	private String createForeignKeyName(MetaDataForeignKeyConstraint foreignKeyConstraint) {
 		return foreignKeyConstraint.references().keySet().stream()
 						.map(MetaDataColumn::columnName)
 						.map(String::toUpperCase)
+						.map(this::removePrimaryKeyColumnSuffix)
 						.collect(joining("_"));
+	}
+
+	private String removePrimaryKeyColumnSuffix(String columnName) {
+		return settings.primaryKeyColumnSuffix()
+						.map(suffix -> removeSuffix(columnName, suffix))
+						.orElse(columnName);
+	}
+
+	private static String removeSuffix(String columnName, String suffix) {
+		return columnName.toLowerCase().endsWith(suffix.toLowerCase()) ?
+						columnName.substring(0, columnName.length() - suffix.length()) : columnName;
 	}
 
 	private static boolean tableHasAutoIncrementPrimaryKeyColumn(MetaDataTable table) {
@@ -272,6 +284,8 @@ public final class SchemaDomain extends DomainModel {
 	 * @see #builder()
 	 */
 	public interface SchemaSettings {
+
+		Optional<String> primaryKeyColumnSuffix();
 
 		Optional<String> auditInsertUserColumnName();
 
@@ -293,6 +307,8 @@ public final class SchemaDomain extends DomainModel {
 		 */
 		interface Builder {
 
+			Builder primaryKeyColumnSuffix(String primaryKeyColumnSuffix);
+
 			Builder auditInsertUserColumnName(String auditInsertUserColumnName);
 
 			Builder auditInsertTimeColumnName(String auditInsertTimeColumnName);
@@ -307,16 +323,23 @@ public final class SchemaDomain extends DomainModel {
 
 	private static final class DefaultSchemaSettings implements SchemaSettings {
 
+		private final String primaryKeyColumnSuffix;
 		private final String auditInsertUserColumnName;
 		private final String auditInsertTimeColumnName;
 		private final String auditUpdateUserColumnName;
 		private final String auditUpdateTimeColumnName;
 
 		private DefaultSchemaSettings(DefaultBuilder builder) {
+			this.primaryKeyColumnSuffix = builder.primaryKeyColumnSuffix;
 			this.auditInsertUserColumnName = builder.auditInsertUserColumnName;
 			this.auditInsertTimeColumnName = builder.auditInsertTimeColumnName;
 			this.auditUpdateUserColumnName = builder.auditUpdateUserColumnName;
 			this.auditUpdateTimeColumnName = builder.auditUpdateTimeColumnName;
+		}
+
+		@Override
+		public Optional<String> primaryKeyColumnSuffix() {
+			return Optional.ofNullable(primaryKeyColumnSuffix);
 		}
 
 		@Override
@@ -341,10 +364,17 @@ public final class SchemaDomain extends DomainModel {
 
 		private static final class DefaultBuilder implements Builder {
 
+			private String primaryKeyColumnSuffix;
 			private String auditInsertUserColumnName;
 			private String auditInsertTimeColumnName;
 			private String auditUpdateUserColumnName;
 			private String auditUpdateTimeColumnName;
+
+			@Override
+			public Builder primaryKeyColumnSuffix(String primaryKeyColumnSuffix) {
+				this.primaryKeyColumnSuffix = requireNonNull(primaryKeyColumnSuffix);
+				return this;
+			}
 
 			@Override
 			public Builder auditInsertUserColumnName(String auditInsertUserColumnName) {
