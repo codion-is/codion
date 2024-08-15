@@ -26,7 +26,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.framework.domain.db.DatabaseDomain;
+import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.tools.generator.domain.DomainSource;
@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
-import static is.codion.framework.domain.db.DatabaseDomain.databaseDomain;
+import static is.codion.framework.domain.db.SchemaDomain.schemaDomain;
 import static is.codion.tools.generator.domain.DomainSource.domainSource;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
@@ -164,7 +164,7 @@ public final class DomainGeneratorModel {
 	public void populateSelected(Consumer<String> schemaNotifier) {
 		schemaTableModel.selectionModel().selectedItem().ifPresent(schema -> {
 			schemaNotifier.accept(schema.name());
-			schema.setDomain(databaseDomain(connection, schema.name()));
+			schema.setDomain(schemaDomain(connection, schema.name()));
 			int index = schemaTableModel.indexOf(schema);
 			schemaTableModel.fireTableRowsUpdated(index, index);
 		});
@@ -173,7 +173,7 @@ public final class DomainGeneratorModel {
 
 	public void saveApiImpl() throws IOException {
 		if (schemaTableModel.selectionModel().selectionNotEmpty().get()) {
-			DatabaseDomain domain = selectedDomain();
+			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
 				domainSource(domain, domainPackageValue.optional()
 								.filter(DomainGeneratorModel::validPackageName)
@@ -185,7 +185,7 @@ public final class DomainGeneratorModel {
 
 	public void saveCombined() throws IOException {
 		if (schemaTableModel.selectionModel().selectionNotEmpty().get()) {
-			DatabaseDomain domain = selectedDomain();
+			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
 				domainSource(domain, domainPackageValue.optional()
 								.filter(DomainGeneratorModel::validPackageName)
@@ -238,7 +238,7 @@ public final class DomainGeneratorModel {
 	}
 
 	private void updateDomainSource() {
-		DatabaseDomain selectedDomain = selectedDomain();
+		SchemaDomain selectedDomain = selectedDomain();
 		if (selectedDomain != null) {
 			DomainSource domainSource = domainSource(selectedDomain, domainPackageValue.optional()
 							.filter(DomainGeneratorModel::validPackageName)
@@ -254,7 +254,7 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	private DatabaseDomain selectedDomain() {
+	private SchemaDomain selectedDomain() {
 		return schemaTableModel.selectionModel().selectedItem()
 						.flatMap(SchemaRow::domain)
 						.orElse(null);

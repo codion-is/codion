@@ -18,7 +18,7 @@
  */
 package is.codion.tools.generator.model;
 
-import is.codion.framework.domain.db.DatabaseDomain;
+import is.codion.framework.domain.db.SchemaDomain;
 
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ public final class SchemaRow {
 	private final String catalog;
 	private final String schema;
 
-	private DatabaseDomain domainModel;
+	private SchemaDomain domainModel;
 
 	SchemaRow(String catalog, String schema) {
 		this.catalog = catalog;
@@ -50,11 +50,11 @@ public final class SchemaRow {
 		return domainModel != null;
 	}
 
-	Optional<DatabaseDomain> domain() {
+	Optional<SchemaDomain> domain() {
 		return Optional.ofNullable(domainModel);
 	}
 
-	void setDomain(DatabaseDomain domain) {
+	void setDomain(SchemaDomain domain) {
 		this.domainModel = domain;
 	}
 }

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 
-public final class DatabaseDomainTest {
+public final class SchemaDomainTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -33,21 +33,21 @@ public final class DatabaseDomainTest {
 	@Test
 	void petstore() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			DatabaseDomain.databaseDomain(connection, "PETSTORE");
+			SchemaDomain.schemaDomain(connection, "PETSTORE");
 		}
 	}
 
 	@Test
 	void chinook() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			DatabaseDomain.databaseDomain(connection, "CHINOOK");
+			SchemaDomain.schemaDomain(connection, "CHINOOK");
 		}
 	}
 
 	@Test
 	void world() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			DatabaseDomain.databaseDomain(connection, "WORLD");
+			SchemaDomain.schemaDomain(connection, "WORLD");
 		}
 	}
 }

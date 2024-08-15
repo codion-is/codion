@@ -21,7 +21,7 @@ package is.codion.tools.generator.domain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.db.DatabaseDomain;
+import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -67,7 +67,7 @@ import static java.util.stream.Stream.concat;
 import static javax.lang.model.element.Modifier.*;
 
 /**
- * For instances use the factory method {@link #domainSource(DatabaseDomain, String)}.
+ * For instances use the factory method {@link #domainSource(SchemaDomain, String)}.
  */
 public final class DomainSource {
 
@@ -77,16 +77,16 @@ public final class DomainSource {
 	private static final String DOMAIN = "DOMAIN";
 	private static final String LINE_SEPARATOR = System.lineSeparator();
 
-	private final DatabaseDomain databaseDomain;
+	private final SchemaDomain schemaDomain;
 	private final String api;
 	private final String implementation;
 	private final String combined;
 
-	private DomainSource(DatabaseDomain databaseDomain, String sourcePackage) {
-		this.databaseDomain = requireNonNull(databaseDomain);
+	private DomainSource(SchemaDomain schemaDomain, String sourcePackage) {
+		this.schemaDomain = requireNonNull(schemaDomain);
 		requireNonNull(sourcePackage);
-		String interfaceName = interfaceName(requireNonNull(databaseDomain).type().name(), true);
-		List<EntityDefinition> entityDefinitions = sortDefinitions(databaseDomain);
+		String interfaceName = interfaceName(requireNonNull(schemaDomain).type().name(), true);
+		List<EntityDefinition> entityDefinitions = sortDefinitions(schemaDomain);
 		this.api = toApiString(entityDefinitions, sourcePackage, interfaceName);
 		this.implementation = toImplementationString(entityDefinitions, sourcePackage, interfaceName);
 		this.combined = toCombinedString(entityDefinitions, sourcePackage, interfaceName);
@@ -120,7 +120,7 @@ public final class DomainSource {
 	 */
 	public void writeApiImpl(Path path) throws IOException {
 		requireNonNull(path);
-		String interfaceName = interfaceName(databaseDomain.type().name(), true);
+		String interfaceName = interfaceName(schemaDomain.type().name(), true);
 		Files.createDirectories(path);
 		Path filePath = path.resolve(interfaceName + ".java");
 		Files.write(filePath, singleton(api));
@@ -137,7 +137,7 @@ public final class DomainSource {
 	 */
 	public void writeCombined(Path path) throws IOException {
 		requireNonNull(path);
-		String interfaceName = interfaceName(databaseDomain.type().name(), true);
+		String interfaceName = interfaceName(schemaDomain.type().name(), true);
 		Files.createDirectories(path);
 		Files.write(path.resolve(interfaceName + ".java"), singleton(combined));
 	}
@@ -148,7 +148,7 @@ public final class DomainSource {
 	 * @param sourcePackage the source package.
 	 * @return a new {@link DomainSource} instance.
 	 */
-	public static DomainSource domainSource(DatabaseDomain domain, String sourcePackage) {
+	public static DomainSource domainSource(SchemaDomain domain, String sourcePackage) {
 		return new DomainSource(domain, sourcePackage);
 	}
 

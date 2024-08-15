@@ -44,15 +44,15 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
- * For instances use the factory method {@link #databaseDomain(Connection, String)}.
+ * For instances use the factory method {@link #schemaDomain(Connection, String)}.
  */
-public final class DatabaseDomain extends DomainModel {
+public final class SchemaDomain extends DomainModel {
 
 	private static final int MAXIMUM_COLUMN_SIZE = 2_147_483_647;
 
 	private final Map<MetaDataTable, EntityType> tableEntityTypes = new HashMap<>();
 
-	private DatabaseDomain(Connection connection, String schemaName) throws SQLException {
+	private SchemaDomain(Connection connection, String schemaName) throws SQLException {
 		super(domainType(schemaName));
 		validateForeignKeys(false);
 		new MetaDataModel(connection.getMetaData(), schemaName)
@@ -60,14 +60,14 @@ public final class DatabaseDomain extends DomainModel {
 	}
 
 	/**
-	 * Factory method for creating a new {@link DatabaseDomain} instance.
+	 * Factory method for creating a new {@link SchemaDomain} instance.
 	 * @param connection the JDBC connection
 	 * @param schemaName the schema name
-	 * @return a new {@link DatabaseDomain} instance
+	 * @return a new {@link SchemaDomain} instance
 	 */
-	public static DatabaseDomain databaseDomain(Connection connection, String schemaName) {
+	public static SchemaDomain schemaDomain(Connection connection, String schemaName) {
 		try {
-			return new DatabaseDomain(requireNonNull(connection), requireNonNull(schemaName));
+			return new SchemaDomain(requireNonNull(connection), requireNonNull(schemaName));
 		}
 		catch (SQLException e) {
 			throw new RuntimeException(e);

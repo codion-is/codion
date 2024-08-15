@@ -20,7 +20,7 @@ package is.codion.tools.generator.domain;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
-import is.codion.framework.domain.db.DatabaseDomain;
+import is.codion.framework.domain.db.SchemaDomain;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -41,8 +41,8 @@ public final class DomainSourceTest {
 	@Test
 	void petstore() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			DatabaseDomain databaseDomain = DatabaseDomain.databaseDomain(connection, "PETSTORE");
-			DomainSource domainSource = DomainSource.domainSource(databaseDomain, "is.codion.petstore.domain");
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection, "PETSTORE");
+			DomainSource domainSource = DomainSource.domainSource(schemaDomain, "is.codion.petstore.domain");
 			String petstoreApi = textFileContents(DomainSourceTest.class, "PetstoreAPI.java");
 			assertEquals(petstoreApi, domainSource.api());
 			String petstoreImpl = textFileContents(DomainSourceTest.class, "PetstoreImpl.java");
@@ -55,8 +55,8 @@ public final class DomainSourceTest {
 	@Test
 	void chinook() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			DatabaseDomain databaseDomain = DatabaseDomain.databaseDomain(connection, "CHINOOK");
-			DomainSource domainSource = DomainSource.domainSource(databaseDomain, "is.codion.chinook.domain");
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection, "CHINOOK");
+			DomainSource domainSource = DomainSource.domainSource(schemaDomain, "is.codion.chinook.domain");
 			String chinookApi = textFileContents(DomainSourceTest.class, "ChinookAPI.java");
 			assertEquals(chinookApi, domainSource.api());
 			String chinookImpl = textFileContents(DomainSourceTest.class, "ChinookImpl.java");
@@ -69,8 +69,8 @@ public final class DomainSourceTest {
 	@Test
 	void world() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			DatabaseDomain databaseDomain = DatabaseDomain.databaseDomain(connection, "WORLD");
-			DomainSource domainSource = DomainSource.domainSource(databaseDomain, "is.codion.world.domain");
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection, "WORLD");
+			DomainSource domainSource = DomainSource.domainSource(schemaDomain, "is.codion.world.domain");
 			String worldApi = textFileContents(DomainSourceTest.class, "WorldAPI.java");
 			assertEquals(worldApi, domainSource.api());
 			String worldImpl = textFileContents(DomainSourceTest.class, "WorldImpl.java");
