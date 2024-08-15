@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.domain.DomainType.domainType;
@@ -44,7 +45,9 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
- * For instances use the factory method {@link #schemaDomain(Connection, String)}.
+ * For instances use the available factory methods.
+ * @see #schemaDomain(Connection, String)
+ * @see #schemaDomain(Connection, String, SchemaSettings)
  */
 public final class SchemaDomain extends DomainModel {
 
@@ -52,8 +55,11 @@ public final class SchemaDomain extends DomainModel {
 
 	private final Map<MetaDataTable, EntityType> tableEntityTypes = new HashMap<>();
 
-	private SchemaDomain(Connection connection, String schemaName) throws SQLException {
+	private final SchemaSettings settings;
+
+	private SchemaDomain(Connection connection, String schemaName, SchemaSettings settings) throws SQLException {
 		super(domainType(schemaName));
+		this.settings = settings;
 		validateForeignKeys(false);
 		new MetaDataModel(connection.getMetaData(), schemaName)
 						.schema().tables().values().forEach(this::defineEntity);
@@ -66,8 +72,19 @@ public final class SchemaDomain extends DomainModel {
 	 * @return a new {@link SchemaDomain} instance
 	 */
 	public static SchemaDomain schemaDomain(Connection connection, String schemaName) {
+		return schemaDomain(connection, schemaName, SchemaSettings.builder().build());
+	}
+
+	/**
+	 * Factory method for creating a new {@link SchemaDomain} instance.
+	 * @param connection the JDBC connection
+	 * @param schemaName the schema name
+	 * @param settings the configuration
+	 * @return a new {@link SchemaDomain} instance
+	 */
+	public static SchemaDomain schemaDomain(Connection connection, String schemaName, SchemaSettings settings) {
 		try {
-			return new SchemaDomain(requireNonNull(connection), requireNonNull(schemaName));
+			return new SchemaDomain(requireNonNull(connection), requireNonNull(schemaName), requireNonNull(settings));
 		}
 		catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -147,12 +164,16 @@ public final class SchemaDomain extends DomainModel {
 		return foreignKey.define().foreignKey().caption(caption(referencedTable.tableName().toLowerCase()));
 	}
 
-	private static ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
+	private ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
 		String caption = caption(metadataColumn.columnName());
 		Column<?> column = column(entityType, metadataColumn);
 		ColumnDefinition.Builder<?, ?> builder;
 		if (metadataColumn.primaryKeyColumn()) {
 			builder = column.define().primaryKey(metadataColumn.primaryKeyIndex() - 1);
+		}
+		else if (isAuditColumn(column)) {
+			builder = auditColumnDefinitionBuilder(column)
+							.caption(caption);
 		}
 		else {
 			builder = column.define().column().caption(caption);
@@ -174,6 +195,46 @@ public final class SchemaDomain extends DomainModel {
 		}
 
 		return builder;
+	}
+
+	private boolean isAuditColumn(Column<?> column) {
+		return isAuditInsertUserColumn(column)
+						|| isAuditInsertTimeColumn(column)
+						|| isAuditUpdateUserColumn(column)
+						|| isAuditUpdateTimeColumn(column);
+	}
+
+	private ColumnDefinition.Builder<?, ?> auditColumnDefinitionBuilder(Column<?> column) {
+		if (isAuditInsertUserColumn(column)) {
+			return column.define().auditInsertUserColumn();
+		}
+		if (isAuditInsertTimeColumn(column)) {
+			return column.define().auditInsertTimeColumn();
+		}
+		if (isAuditUpdateUserColumn(column)) {
+			return column.define().auditUpdateUserColumn();
+		}
+		if (isAuditUpdateTimeColumn(column)) {
+			return column.define().auditUpdateTimeColumn();
+		}
+
+		throw new IllegalArgumentException("Unknown audit column type: " + column);
+	}
+
+	private boolean isAuditUpdateTimeColumn(Column<?> column) {
+		return column.name().equalsIgnoreCase(settings.auditUpdateTimeColumnName().orElse(null));
+	}
+
+	private boolean isAuditUpdateUserColumn(Column<?> column) {
+		return column.name().equalsIgnoreCase(settings.auditUpdateUserColumnName().orElse(null));
+	}
+
+	private boolean isAuditInsertTimeColumn(Column<?> column) {
+		return column.name().equalsIgnoreCase(settings.auditInsertTimeColumnName().orElse(null));
+	}
+
+	private boolean isAuditInsertUserColumn(Column<?> column) {
+		return column.name().equalsIgnoreCase(settings.auditInsertUserColumnName().orElse(null));
 	}
 
 	private static <T> Column<T> column(EntityType entityType, MetaDataColumn column) {
@@ -204,5 +265,115 @@ public final class SchemaDomain extends DomainModel {
 		return table.columns().stream()
 						.filter(MetaDataColumn::primaryKeyColumn)
 						.anyMatch(MetaDataColumn::autoIncrement);
+	}
+
+	/**
+	 * Specifies the settings used when deriving a domain model from a database schema.
+	 * @see #builder()
+	 */
+	public interface SchemaSettings {
+
+		Optional<String> auditInsertUserColumnName();
+
+		Optional<String> auditInsertTimeColumnName();
+
+		Optional<String> auditUpdateUserColumnName();
+
+		Optional<String> auditUpdateTimeColumnName();
+
+		/**
+		 * @return a new builder
+		 */
+		static Builder builder() {
+			return new DefaultSchemaSettings.DefaultBuilder();
+		}
+
+		/**
+		 * Builds a {@link SchemaSettings} instance.
+		 */
+		interface Builder {
+
+			Builder auditInsertUserColumnName(String auditInsertUserColumnName);
+
+			Builder auditInsertTimeColumnName(String auditInsertTimeColumnName);
+
+			Builder auditUpdateUserColumnName(String auditUpdateUserColumnName);
+
+			Builder auditUpdateTimeColumnName(String auditUpdateTimeColumnName);
+
+			SchemaSettings build();
+		}
+	}
+
+	private static final class DefaultSchemaSettings implements SchemaSettings {
+
+		private final String auditInsertUserColumnName;
+		private final String auditInsertTimeColumnName;
+		private final String auditUpdateUserColumnName;
+		private final String auditUpdateTimeColumnName;
+
+		private DefaultSchemaSettings(DefaultBuilder builder) {
+			this.auditInsertUserColumnName = builder.auditInsertUserColumnName;
+			this.auditInsertTimeColumnName = builder.auditInsertTimeColumnName;
+			this.auditUpdateUserColumnName = builder.auditUpdateUserColumnName;
+			this.auditUpdateTimeColumnName = builder.auditUpdateTimeColumnName;
+		}
+
+		@Override
+		public Optional<String> auditInsertUserColumnName() {
+			return Optional.ofNullable(auditInsertUserColumnName);
+		}
+
+		@Override
+		public Optional<String> auditInsertTimeColumnName() {
+			return Optional.ofNullable(auditInsertTimeColumnName);
+		}
+
+		@Override
+		public Optional<String> auditUpdateUserColumnName() {
+			return Optional.ofNullable(auditUpdateUserColumnName);
+		}
+
+		@Override
+		public Optional<String> auditUpdateTimeColumnName() {
+			return Optional.ofNullable(auditUpdateTimeColumnName);
+		}
+
+		private static final class DefaultBuilder implements Builder {
+
+			private String auditInsertUserColumnName;
+			private String auditInsertTimeColumnName;
+			private String auditUpdateUserColumnName;
+			private String auditUpdateTimeColumnName;
+
+			@Override
+			public Builder auditInsertUserColumnName(String auditInsertUserColumnName) {
+				this.auditInsertUserColumnName = requireNonNull(auditInsertUserColumnName);
+				return this;
+			}
+
+			@Override
+			public Builder auditInsertTimeColumnName(String auditInsertTimeColumnName) {
+				this.auditInsertTimeColumnName = requireNonNull(auditInsertTimeColumnName);
+				return this;
+			}
+
+			@Override
+			public Builder auditUpdateUserColumnName(String auditUpdateUserColumnName) {
+				this.auditUpdateUserColumnName = requireNonNull(auditUpdateUserColumnName);
+				return this;
+			}
+
+			@Override
+			public Builder auditUpdateTimeColumnName(String auditUpdateTimeColumnName) {
+				this.auditUpdateTimeColumnName = requireNonNull(auditUpdateTimeColumnName);
+				return this;
+			}
+
+			@Override
+			public SchemaSettings build() {
+				return new DefaultSchemaSettings(this);
+			}
+		}
 	}
 }

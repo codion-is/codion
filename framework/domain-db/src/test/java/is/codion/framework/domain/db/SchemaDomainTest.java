@@ -20,10 +20,18 @@ package is.codion.framework.domain.db;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
+import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.AuditColumn.AuditAction;
+import is.codion.framework.domain.entity.attribute.AuditColumnDefinition;
 
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class SchemaDomainTest {
 
@@ -33,7 +41,38 @@ public final class SchemaDomainTest {
 	@Test
 	void petstore() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain.schemaDomain(connection, "PETSTORE");
+			SchemaDomain petstore = SchemaDomain.schemaDomain(connection, "PETSTORE", SchemaSettings.builder()
+							.auditInsertUserColumnName("insert_user")
+							.auditInsertTimeColumnName("insert_time")
+							.auditUpdateUserColumnName("update_user")
+							.auditUpdateTimeColumnName("update_time")
+							.build());
+			List<EntityDefinition> tableEntities = petstore.entities().definitions().stream()
+							.filter(definition -> !definition.readOnly())
+							.collect(toList());
+			for (EntityDefinition entityDefinition : tableEntities) {
+				EntityDefinition.Attributes attributes = entityDefinition.attributes();
+
+				AuditColumnDefinition<String> insertUserDefinition =
+								(AuditColumnDefinition<String>) attributes.definition(attributes.<String>get("INSERT_USER"));
+				assertEquals(AuditAction.INSERT, insertUserDefinition.auditAction());
+				assertEquals("Insert user", insertUserDefinition.caption());
+
+				AuditColumnDefinition<String> insertTimeDefinition =
+								(AuditColumnDefinition<String>) attributes.definition(attributes.<String>get("INSERT_TIME"));
+				assertEquals(AuditAction.INSERT, insertTimeDefinition.auditAction());
+				assertEquals("Insert time", insertTimeDefinition.caption());
+
+				AuditColumnDefinition<String> updateUserDefinition =
+								(AuditColumnDefinition<String>) attributes.definition(attributes.<String>get("UPDATE_USER"));
+				assertEquals(AuditAction.UPDATE, updateUserDefinition.auditAction());
+				assertEquals("Update user", updateUserDefinition.caption());
+
+				AuditColumnDefinition<String> updateTimeDefinition =
+								(AuditColumnDefinition<String>) attributes.definition(attributes.<String>get("UPDATE_TIME"));
+				assertEquals(AuditAction.UPDATE, updateTimeDefinition.auditAction());
+				assertEquals("Update time", updateTimeDefinition.caption());
+			}
 		}
 	}
 

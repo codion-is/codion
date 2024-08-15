@@ -21,6 +21,7 @@ package is.codion.tools.generator.domain;
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
 import is.codion.framework.domain.db.SchemaDomain;
+import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,12 @@ public final class DomainSourceTest {
 	@Test
 	void petstore() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection, "PETSTORE");
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection, "PETSTORE", SchemaSettings.builder()
+							.auditInsertUserColumnName("insert_user")
+							.auditInsertTimeColumnName("insert_time")
+							.auditUpdateUserColumnName("update_user")
+							.auditUpdateTimeColumnName("update_time")
+							.build());
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain, "is.codion.petstore.domain");
 			String petstoreApi = textFileContents(DomainSourceTest.class, "PetstoreAPI.java");
 			assertEquals(petstoreApi, domainSource.api());

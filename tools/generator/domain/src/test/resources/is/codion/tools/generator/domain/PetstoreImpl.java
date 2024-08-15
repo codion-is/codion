@@ -64,7 +64,19 @@ public final class PetstoreImpl extends DomainModel {
 					.caption("Location"),
 				Address.IMAGE.define()
 					.column()
-					.caption("Image"))
+					.caption("Image"),
+				Address.INSERT_USER.define()
+					.auditInsertUserColumn()
+					.caption("Insert user"),
+				Address.INSERT_TIME.define()
+					.auditInsertTimeColumn()
+					.caption("Insert time"),
+				Address.UPDATE_USER.define()
+					.auditUpdateTimeColumn()
+					.caption("Update user"),
+				Address.UPDATE_TIME.define()
+					.auditUpdateUserColumn()
+					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Address")
 			.build();
@@ -87,7 +99,19 @@ public final class PetstoreImpl extends DomainModel {
 				Category.IMAGE_URL.define()
 					.column()
 					.caption("Image url")
-					.maximumLength(55))
+					.maximumLength(55),
+				Category.INSERT_USER.define()
+					.auditInsertUserColumn()
+					.caption("Insert user"),
+				Category.INSERT_TIME.define()
+					.auditInsertTimeColumn()
+					.caption("Insert time"),
+				Category.UPDATE_USER.define()
+					.auditUpdateTimeColumn()
+					.caption("Update user"),
+				Category.UPDATE_TIME.define()
+					.auditUpdateUserColumn()
+					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Category")
 			.build();
@@ -111,7 +135,19 @@ public final class PetstoreImpl extends DomainModel {
 					.column()
 					.caption("Email")
 					.nullable(false)
-					.maximumLength(24))
+					.maximumLength(24),
+				ContactInfo.INSERT_USER.define()
+					.auditInsertUserColumn()
+					.caption("Insert user"),
+				ContactInfo.INSERT_TIME.define()
+					.auditInsertTimeColumn()
+					.caption("Insert time"),
+				ContactInfo.UPDATE_USER.define()
+					.auditUpdateTimeColumn()
+					.caption("Update user"),
+				ContactInfo.UPDATE_TIME.define()
+					.auditUpdateUserColumn()
+					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Contact info")
 			.build();
@@ -138,7 +174,19 @@ public final class PetstoreImpl extends DomainModel {
 					.column()
 					.caption("Tag")
 					.nullable(false)
-					.maximumLength(30))
+					.maximumLength(30),
+				Tag.INSERT_USER.define()
+					.auditInsertUserColumn()
+					.caption("Insert user"),
+				Tag.INSERT_TIME.define()
+					.auditInsertTimeColumn()
+					.caption("Insert time"),
+				Tag.UPDATE_USER.define()
+					.auditUpdateTimeColumn()
+					.caption("Update user"),
+				Tag.UPDATE_TIME.define()
+					.auditUpdateUserColumn()
+					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Tag")
 			.build();
@@ -168,7 +216,19 @@ public final class PetstoreImpl extends DomainModel {
 				Product.IMAGE_URL.define()
 					.column()
 					.caption("Image url")
-					.maximumLength(55))
+					.maximumLength(55),
+				Product.INSERT_USER.define()
+					.auditInsertUserColumn()
+					.caption("Insert user"),
+				Product.INSERT_TIME.define()
+					.auditInsertTimeColumn()
+					.caption("Insert time"),
+				Product.UPDATE_USER.define()
+					.auditUpdateTimeColumn()
+					.caption("Update user"),
+				Product.UPDATE_TIME.define()
+					.auditUpdateUserColumn()
+					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Product")
 			.description("The available products")
@@ -230,7 +290,19 @@ public final class PetstoreImpl extends DomainModel {
 					.column()
 					.caption("Disabled")
 					.nullable(false)
-					.columnHasDefaultValue(true))
+					.columnHasDefaultValue(true),
+				Item.INSERT_USER.define()
+					.auditInsertUserColumn()
+					.caption("Insert user"),
+				Item.INSERT_TIME.define()
+					.auditInsertTimeColumn()
+					.caption("Insert time"),
+				Item.UPDATE_USER.define()
+					.auditUpdateTimeColumn()
+					.caption("Update user"),
+				Item.UPDATE_TIME.define()
+					.auditUpdateUserColumn()
+					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Item")
 			.build();
@@ -247,7 +319,19 @@ public final class PetstoreImpl extends DomainModel {
 					.primaryKey(1),
 				TagItem.ITEM_ID_FK.define()
 					.foreignKey()
-					.caption("Item"))
+					.caption("Item"),
+				TagItem.INSERT_USER.define()
+					.auditInsertUserColumn()
+					.caption("Insert user"),
+				TagItem.INSERT_TIME.define()
+					.auditInsertTimeColumn()
+					.caption("Insert time"),
+				TagItem.UPDATE_USER.define()
+					.auditUpdateTimeColumn()
+					.caption("Update user"),
+				TagItem.UPDATE_TIME.define()
+					.auditUpdateUserColumn()
+					.caption("Update time"))
 			.caption("Tag item")
 			.build();
 	}
