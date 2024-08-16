@@ -1,4 +1,4 @@
-package is.codion.chinook.domain;
+package is.codion.chinook.domain.api;
 
 import static is.codion.framework.domain.DomainType.domainType;
 

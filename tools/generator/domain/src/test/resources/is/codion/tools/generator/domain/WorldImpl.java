@@ -1,6 +1,6 @@
-package is.codion.world.domain.impl;
+package is.codion.world.domain;
 
-import static is.codion.world.domain.World.DOMAIN;
+import static is.codion.world.domain.api.World.DOMAIN;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;

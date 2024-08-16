@@ -1,6 +1,6 @@
-package is.codion.chinook.domain.impl;
+package is.codion.chinook.domain;
 
-import static is.codion.chinook.domain.Chinook.DOMAIN;
+import static is.codion.chinook.domain.api.Chinook.DOMAIN;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 
 import is.codion.framework.domain.DomainModel;

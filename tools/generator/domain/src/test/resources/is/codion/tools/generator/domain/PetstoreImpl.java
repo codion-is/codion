@@ -1,7 +1,7 @@
-package is.codion.petstore.domain.impl;
+package is.codion.petstore.domain;
 
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
-import static is.codion.petstore.domain.Petstore.DOMAIN;
+import static is.codion.petstore.domain.api.Petstore.DOMAIN;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;

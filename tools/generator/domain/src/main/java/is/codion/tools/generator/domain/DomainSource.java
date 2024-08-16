@@ -88,7 +88,7 @@ public final class DomainSource {
 		requireNonNull(sourcePackage);
 		String interfaceName = interfaceName(requireNonNull(schemaDomain).type().name(), true);
 		List<EntityDefinition> entityDefinitions = sortDefinitions(schemaDomain);
-		this.api = toApiString(entityDefinitions, sourcePackage, interfaceName);
+		this.api = toApiString(entityDefinitions, sourcePackage + ".api", interfaceName);
 		this.implementation = toImplementationString(entityDefinitions, sourcePackage, interfaceName);
 		this.combined = toCombinedString(entityDefinitions, sourcePackage, interfaceName);
 	}
@@ -178,7 +178,7 @@ public final class DomainSource {
 
 		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
 
-		String implementationPackage = sourcePackage.isEmpty() ? "" : sourcePackage + ".impl";
+		String implementationPackage = sourcePackage.isEmpty() ? "" : sourcePackage;
 
 		JavaFile.Builder fileBuilder = JavaFile.builder(implementationPackage,
 										classBuilder.addMethod(createDomainConstructor(definitionMethods))
@@ -189,7 +189,7 @@ public final class DomainSource {
 			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
 		}
 		if (!implementationPackage.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + className), DOMAIN);
+			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + ".api." + className), DOMAIN);
 		}
 
 		String sourceString = fileBuilder.build().toString();

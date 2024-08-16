@@ -1,4 +1,4 @@
-package is.codion.petstore.domain;
+package is.codion.petstore.domain.api;
 
 import static is.codion.framework.domain.DomainType.domainType;
 

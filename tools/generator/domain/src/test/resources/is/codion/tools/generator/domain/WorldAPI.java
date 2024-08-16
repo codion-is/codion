@@ -1,4 +1,4 @@
-package is.codion.world.domain;
+package is.codion.world.domain.api;
 
 import static is.codion.framework.domain.DomainType.domainType;
 
