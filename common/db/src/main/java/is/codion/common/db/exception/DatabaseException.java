@@ -20,6 +20,7 @@ package is.codion.common.db.exception;
 
 import java.io.Serial;
 import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * An exception coming from a database-layer.
@@ -107,10 +108,10 @@ public class DatabaseException extends Exception {
 	/**
 	 * Returns the sql statement causing this exception, if available, note that this is only
 	 * available when running with a local database connection.
-	 * @return the sql query which caused the exception, null if not applicable
+	 * @return the sql statement which caused the exception, an empty Optional if not avialable
 	 */
-	public final String statement() {
-		return this.statement;
+	public final Optional<String> statement() {
+		return Optional.ofNullable(this.statement);
 	}
 
 	/**
@@ -125,10 +126,10 @@ public class DatabaseException extends Exception {
 	/**
 	 * Returns the underlying sql state, note that this is only available when running with
 	 * a local database connection.
-	 * @return the underlying sql state, null if not available
+	 * @return the underlying sql state, an empty Optional if not available
 	 */
-	public final String sqlState() {
-		return sqlState;
+	public final Optional<String> sqlState() {
+		return Optional.ofNullable(sqlState);
 	}
 
 	@Override

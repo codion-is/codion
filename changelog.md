@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.10
+### is.codion.common.core
+- DatabaseException.statement() and sqlState() now return Optional.
 ### is.codion.framework.domain.db
 - Module is.codion.framework.domain.db split from is.codion.tools.generator.domain.
 - DatabaseDomain renamed SchemaDomain.
