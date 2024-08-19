@@ -15,7 +15,7 @@ dependencies {
     implementation project(":codion-framework-db-local")
     implementation project(":codion-framework-db-rmi")
 
-    api(libs.slf4j.api)
+    implementation(libs.slf4j.api)
 
     testRuntimeOnly project(":codion-plugin-hikari-pool")
     testRuntimeOnly project(":codion-dbms-h2")
