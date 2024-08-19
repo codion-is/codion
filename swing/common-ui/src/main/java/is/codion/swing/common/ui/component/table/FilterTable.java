@@ -98,7 +98,6 @@ import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.filterColumnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.*;
-import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
@@ -229,6 +228,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final FilterTableSortModel<R, C> sortModel;
 	private final TableSummaryModel<C> summaryModel;
 
+	private final TableConditionPanel.Factory<C> filterPanelFactory;
 	private final FieldFactory<C> filterFieldFactory;
 	private final Event<MouseEvent> doubleClickEvent = Event.event();
 	private final Value<Action> doubleClickAction;
@@ -239,7 +239,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private final ControlMap controlMap;
 
-	private FilterTableConditionPanel<C> filterPanel;
+	private TableConditionPanel<C> filterPanel;
 	private JTextField searchField;
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
@@ -250,6 +250,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.searchModel = new DefaultFilterTableSearchModel<>(tableModel, columnModel());
 		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
 						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
+		this.filterPanelFactory = builder.filterPanelFactory;
 		this.filterFieldFactory = builder.filterFieldFactory;
 		this.centerOnScroll = Value.builder()
 						.nonNull(CenterOnScroll.NEITHER)
@@ -346,9 +347,9 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return the filter panel
 	 */
-	public FilterTableConditionPanel<C> filterPanel() {
+	public TableConditionPanel<C> filterPanel() {
 		if (filterPanel == null) {
-			filterPanel = filterTableConditionPanel(tableModel.filterModel(), createColumnFilterPanels(),
+			filterPanel = filterPanelFactory.create(tableModel.filterModel(), createColumnFilterPanels(),
 							columnModel(), this::configureTableConditionPanel);
 		}
 
@@ -1025,6 +1026,12 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory);
 
 		/**
+		 * @param filterPanelFactory the table filter panel factory
+		 * @return this builder instance
+		 */
+		Builder<R, C> filterPanelFactory(TableConditionPanel.Factory<C> filterPanelFactory);
+
+		/**
 		 * @param filterFieldFactory the column filter field factory
 		 * @return this builder instance
 		 * @see FilterTable#filterPanel()
@@ -1158,7 +1165,8 @@ public final class FilterTable<R, C> extends JTable {
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
-		private FieldFactory<C> filterFieldFactory = new DefaultFieldFactory<>();
+		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
+		private FieldFactory<C> filterFieldFactory = new DefaultFilterFieldFactory<>();
 		private FilterTableCellRendererFactory<C> cellRendererFactory;
 		private FilterTableCellEditorFactory<C> cellEditorFactory;
 		private boolean autoStartsEdit = false;
@@ -1182,6 +1190,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory) {
 			this.summaryValuesFactory = requireNonNull(summaryValuesFactory);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> filterPanelFactory(TableConditionPanel.Factory<C> filterPanelFactory) {
+			this.filterPanelFactory = requireNonNull(filterPanelFactory);
 			return this;
 		}
 

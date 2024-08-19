@@ -241,7 +241,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	 * @return a new {@link FilterColumnConditionPanel} instance or an empty Optional in case the column type is not supported
 	 */
 	public static <C, T> FilterColumnConditionPanel<C, T> filterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel, String caption) {
-		return filterColumnConditionPanel(conditionModel, caption, new DefaultFieldFactory<>());
+		return filterColumnConditionPanel(conditionModel, caption, new DefaultFilterFieldFactory<>());
 	}
 
 	/**

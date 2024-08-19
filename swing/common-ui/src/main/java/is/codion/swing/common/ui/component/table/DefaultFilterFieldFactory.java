@@ -38,7 +38,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
 
-final class DefaultFieldFactory<C> implements FieldFactory<C> {
+final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 
 	private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
 					Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
