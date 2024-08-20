@@ -38,7 +38,7 @@ public class DepartmentEditPanelTest extends EntityEditPanelTestUnit {
 										.clientTypeId(DepartmentEditPanel.class.getName())
 										.user(UNIT_TEST_USER)
 										.build()),
-						DepartmentEditPanel.class);
+						DepartmentEditPanel::new);
 	}
 
 	@Test

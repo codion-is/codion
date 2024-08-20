@@ -37,7 +37,7 @@ public class EmployeeEditPanelTest extends EntityEditPanelTestUnit {
 										.clientTypeId(EmployeeEditPanelTest.class.getName())
 										.user(UNIT_TEST_USER)
 										.build()),
-						EmployeeEditPanel.class);
+						EmployeeEditPanel::new);
 	}
 
 	@Test
