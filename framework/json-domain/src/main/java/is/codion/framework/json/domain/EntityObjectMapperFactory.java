@@ -29,7 +29,7 @@ import static java.util.stream.StreamSupport.stream;
 
 /**
  * Provides {@link EntityObjectMapper} instances for a given domain.<br>
- * {@link DefaultEntityObjectMapperFactory} is provided for
+ * {@link DefaultEntityObjectMapperFactory} is provided for extension.
  */
 public interface EntityObjectMapperFactory {
 
