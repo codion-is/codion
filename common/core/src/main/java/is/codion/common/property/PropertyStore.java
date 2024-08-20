@@ -63,7 +63,7 @@ public interface PropertyStore {
 	 * Creates a value for the given boolean property
 	 * @param propertyName the property name
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<Boolean> booleanValue(String propertyName);
 
@@ -72,7 +72,7 @@ public interface PropertyStore {
 	 * @param propertyName the property name
 	 * @param defaultValue the default value
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<Boolean> booleanValue(String propertyName, boolean defaultValue);
 
@@ -80,7 +80,7 @@ public interface PropertyStore {
 	 * Creates a value for the given double property
 	 * @param propertyName the property name
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<Double> doubleValue(String propertyName);
 
@@ -89,7 +89,7 @@ public interface PropertyStore {
 	 * @param propertyName the property name
 	 * @param defaultValue the default value
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<Double> doubleValue(String propertyName, double defaultValue);
 
@@ -97,7 +97,7 @@ public interface PropertyStore {
 	 * Creates a value for the given integer property
 	 * @param propertyName the property name
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<Integer> integerValue(String propertyName);
 
@@ -106,7 +106,7 @@ public interface PropertyStore {
 	 * @param propertyName the property name
 	 * @param defaultValue the default value
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<Integer> integerValue(String propertyName, int defaultValue);
 
@@ -114,7 +114,7 @@ public interface PropertyStore {
 	 * Creates a value for the given long property
 	 * @param propertyName the property name
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<Long> longValue(String propertyName);
 
@@ -123,24 +123,24 @@ public interface PropertyStore {
 	 * @param propertyName the property name
 	 * @param defaultValue the default value
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<Long> longValue(String propertyName, long defaultValue);
 
 	/**
-	 * Creates a value for the given long property
+	 * Creates a value for the given character property
 	 * @param propertyName the property name
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<Character> characterValue(String propertyName);
 
 	/**
-	 * Creates a value for the given long property
+	 * Creates a value for the given character property
 	 * @param propertyName the property name
 	 * @param defaultValue the default value
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<Character> characterValue(String propertyName, char defaultValue);
 
@@ -148,7 +148,7 @@ public interface PropertyStore {
 	 * Creates a value for the given string property
 	 * @param propertyName the property name
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<String> stringValue(String propertyName);
 
@@ -157,7 +157,7 @@ public interface PropertyStore {
 	 * @param propertyName the property name
 	 * @param defaultValue the default value
 	 * @return a new {@link PropertyValue} instance
-	 * @throws NullPointerException if {@code propertyName} is null
+	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
 	PropertyValue<String> stringValue(String propertyName, String defaultValue);
 

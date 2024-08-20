@@ -59,6 +59,7 @@ public final class DefaultPropertyStoreTest {
 
 		AtomicInteger counter = new AtomicInteger();
 		PropertyValue<String> stringValue = store.stringValue("string.property", "value");
+		assertThrows(IllegalStateException.class, () -> store.stringValue("string.property", "another value"));
 		stringValue.addListener(counter::incrementAndGet);
 		assertTrue(store.containsProperty("string.property"));
 		assertEquals("value", stringValue.get());
