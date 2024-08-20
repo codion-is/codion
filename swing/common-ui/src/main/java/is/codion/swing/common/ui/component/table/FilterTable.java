@@ -53,8 +53,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.Action;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -62,15 +60,11 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -96,7 +90,6 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
-import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.filterColumnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.*;
 import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.control.Control.commandControl;
@@ -880,14 +873,14 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
-		return tableModel.filterModel()
-						.conditionModels()
-						.values()
-						.stream()
+		return tableModel.filterModel().conditionModels().values().stream()
 						.filter(conditionModel -> columnModel().containsColumn(conditionModel.identifier()))
 						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.columnClass()))
-						.map(conditionModel -> filterColumnConditionPanel(conditionModel,
-										Objects.toString(columnModel().column(conditionModel.identifier()).getHeaderValue()), filterFieldFactory))
+						.map(conditionModel -> FilterColumnConditionPanel.builder(conditionModel)
+										.fieldFactory(filterFieldFactory)
+										.tableColumn(columnModel().column(conditionModel.identifier()))
+										.caption(Objects.toString(columnModel().column(conditionModel.identifier()).getHeaderValue()))
+										.build())
 						.collect(toList());
 	}
 
@@ -898,27 +891,6 @@ public final class FilterTable<R, C> extends JTable {
 	private void configureColumnConditionPanel(ColumnConditionPanel<C, ?> conditionPanel) {
 		conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
 						focusGainedEvent.addConsumer(scrollToColumn));
-		conditionPanel.components().forEach(component ->
-						configureColumnConditionComponent(component, conditionPanel.conditionModel().identifier()));
-	}
-
-	private void configureColumnConditionComponent(JComponent component, C identifier) {
-		TableCellRenderer cellRenderer = columnModel().column(identifier).getCellRenderer();
-		if (cellRenderer instanceof DefaultTableCellRenderer) {
-			int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
-			if (component instanceof JTextField) {
-				((JTextField) component).setHorizontalAlignment(horizontalAlignment);
-			}
-			else if (component instanceof JComboBox) {
-				Component editorComponent = ((JComboBox<?>) component).getEditor().getEditorComponent();
-				if (editorComponent instanceof JTextField) {
-					((JTextField) editorComponent).setHorizontalAlignment(horizontalAlignment);
-				}
-			}
-		}
-		else if (component instanceof JCheckBox) {
-			((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
-		}
 	}
 
 	private static void addIfComponent(Collection<JComponent> components, Object object) {

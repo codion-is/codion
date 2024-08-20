@@ -59,14 +59,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.ADVANCED;
-import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.filterColumnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.commandControl;
 import static java.time.Month.DECEMBER;
@@ -164,14 +162,12 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		return conditionModel().conditionModels().values().stream()
 						.filter(conditionModel -> columnModel.containsColumn(conditionModel.identifier()))
 						.filter(conditionModel -> fieldFactory.supportsType(conditionModel.columnClass()))
-						.map(conditionModel -> createPanel(conditionModel, fieldFactory))
+						.map(conditionModel -> FilterColumnConditionPanel.builder(conditionModel)
+										.fieldFactory(fieldFactory)
+										.tableColumn(columnModel.column(conditionModel.identifier()))
+										.caption(columnModel.column(conditionModel.identifier()).getHeaderValue().toString())
+										.build())
 						.collect(toList());
-	}
-
-	private FilterColumnConditionPanel<Attribute<?>, ?> createPanel(ColumnConditionModel<Attribute<?>, ?> conditionModel,
-																																	FieldFactory<Attribute<?>> fieldFactory) {
-		return filterColumnConditionPanel(conditionModel,
-						Objects.toString(columnModel.column(conditionModel.identifier()).getHeaderValue()), fieldFactory);
 	}
 
 	private static final class SimpleConditionPanel extends JPanel {

@@ -39,13 +39,19 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -77,12 +83,10 @@ import static javax.swing.SwingConstants.CENTER;
 
 /**
  * A UI implementation for {@link ColumnConditionModel}.
- * For instances use the {@link #filterColumnConditionPanel(ColumnConditionModel, String)} or
- * {@link #filterColumnConditionPanel(ColumnConditionModel, String, FieldFactory)} factory methods.
+ * For instances use {@link #builder(ColumnConditionModel)}.
  * @param <C> the type of objects used to identify columns
  * @param <T> the column value type
- * @see #filterColumnConditionPanel(ColumnConditionModel, String)
- * @see #filterColumnConditionPanel(ColumnConditionModel, String, FieldFactory)
+ * @see #builder(ColumnConditionModel)
  */
 public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel<C, T> {
 
@@ -121,6 +125,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private final FieldFactory<C> fieldFactory;
 	private final Event<C> focusGainedEvent = Event.event();
+	private final TableColumn tableColumn;
 
 	private JToggleButton toggleEnabledButton;
 	private JComboBox<Item<Operator>> operatorCombo;
@@ -134,10 +139,10 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private boolean initialized = false;
 
-	private FilterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel,
-																		 String caption, FieldFactory<C> fieldFactory) {
-		super(conditionModel, caption);
-		this.fieldFactory = requireNonNull(fieldFactory, "fieldFactory");
+	private FilterColumnConditionPanel(DefaultBuilder<C, T> builder) {
+		super(builder.conditionModel, builder.caption);
+		this.fieldFactory = builder.fieldFactory;
+		this.tableColumn = builder.tableColumn;
 	}
 
 	@Override
@@ -233,34 +238,86 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	/**
-	 * Instantiates a new {@link FilterColumnConditionPanel}, with a default bound field factory.
-	 * @param conditionModel the condition model to base this panel on
-	 * @param caption the caption to use when presenting this condition panel
-	 * @param <C> the type of objects used to identify columns
+	 * @param columnConditionModel the column condition model
+	 * @param <C> the column identifier type
 	 * @param <T> the column value type
-	 * @return a new {@link FilterColumnConditionPanel} instance or an empty Optional in case the column type is not supported
+	 * @return a new {@link Builder}
 	 */
-	public static <C, T> FilterColumnConditionPanel<C, T> filterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel, String caption) {
-		return filterColumnConditionPanel(conditionModel, caption, new DefaultFilterFieldFactory<>());
+	public static <C, T> Builder<C, T> builder(ColumnConditionModel<C, T> columnConditionModel) {
+		return new DefaultBuilder<>(columnConditionModel);
 	}
 
 	/**
-	 * Instantiates a new {@link FilterColumnConditionPanel}.
-	 * @param <C> the type of objects used to identify columns
+	 * Builds a {@link FilterColumnConditionPanel} instance
+	 * @param <C> the column identifier type
 	 * @param <T> the column value type
-	 * @param conditionModel the condition model to base this panel on
-	 * @param caption the caption to use when presenting this condition panel
-	 * @param fieldFactory the input field factory
-	 * @return a new {@link FilterColumnConditionPanel} instance or an empty Optional in case the column type is not supported by the given bound field factory
-	 * @throws IllegalArgumentException in case the given field factory does not support the column value type
 	 */
-	public static <C, T> FilterColumnConditionPanel<C, T> filterColumnConditionPanel(ColumnConditionModel<C, T> conditionModel,
-																																									 String caption, FieldFactory<C> fieldFactory) {
-		if (requireNonNull(fieldFactory).supportsType(requireNonNull(conditionModel).columnClass())) {
-			return new FilterColumnConditionPanel<>(conditionModel, caption, fieldFactory);
+	public interface Builder<C, T> {
+
+		/**
+		 * @param caption the caption to use when presenting this condition panel
+		 * @return this builder
+		 */
+		Builder<C, T> caption(String caption);
+
+		/**
+		 * @param fieldFactory the input field factory
+		 * @return this builder
+		 * @throws IllegalArgumentException in case the given field factory does not support the column value type
+		 */
+		Builder<C, T> fieldFactory(FieldFactory<C> fieldFactory);
+
+		/**
+		 * @param tableColumn the table column this condition panel represents
+		 * @return this builder
+		 */
+		Builder<C, T> tableColumn(TableColumn tableColumn);
+
+		/**
+		 * @return a new {@link FilterColumnConditionPanel} based on this builder
+		 */
+		FilterColumnConditionPanel<C, T> build();
+	}
+
+	private static final class DefaultBuilder<C, T> implements Builder<C, T> {
+
+		private final ColumnConditionModel<C, T> conditionModel;
+
+		private String caption;
+		private FieldFactory<C> fieldFactory = new DefaultFilterFieldFactory<>();
+		private TableColumn tableColumn;
+
+		private DefaultBuilder(ColumnConditionModel<C, T> conditionModel) {
+			this.conditionModel = requireNonNull(conditionModel);
+			this.caption = conditionModel.identifier().toString();
 		}
 
-		throw new IllegalArgumentException("Field factory does not support the column value type");
+		@Override
+		public Builder<C, T> caption(String caption) {
+			this.caption = requireNonNull(caption);
+			return this;
+		}
+
+		@Override
+		public Builder<C, T> fieldFactory(FieldFactory<C> fieldFactory) {
+			if (!requireNonNull(fieldFactory).supportsType(conditionModel.columnClass())) {
+				throw new IllegalArgumentException("Field factory does not support the column value type: " + conditionModel.columnClass());
+			}
+
+			this.fieldFactory = requireNonNull(fieldFactory);
+			return this;
+		}
+
+		@Override
+		public Builder<C, T> tableColumn(TableColumn tableColumn) {
+			this.tableColumn = requireNonNull(tableColumn);
+			return this;
+		}
+
+		@Override
+		public FilterColumnConditionPanel<C, T> build() {
+			return new FilterColumnConditionPanel<>(this);
+		}
 	}
 
 	/**
@@ -371,6 +428,28 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		inField = createInField(fieldFactory);
 		operatorCombo = createOperatorComboBox(conditionModel().operators());
 		conditionModel().locked().set(modelLocked);
+		components().forEach(this::configureHorizontalAlignment);
+	}
+
+	private void configureHorizontalAlignment(JComponent component) {
+		if (component instanceof JCheckBox) {
+			((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		else if (tableColumn != null) {
+			TableCellRenderer cellRenderer = tableColumn.getCellRenderer();
+			if (cellRenderer instanceof DefaultTableCellRenderer) {
+				int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
+				if (component instanceof JTextField) {
+					((JTextField) component).setHorizontalAlignment(horizontalAlignment);
+				}
+				else if (component instanceof JComboBox) {
+					Component editorComponent = ((JComboBox<?>) component).getEditor().getEditorComponent();
+					if (editorComponent instanceof JTextField) {
+						((JTextField) editorComponent).setHorizontalAlignment(horizontalAlignment);
+					}
+				}
+			}
+		}
 	}
 
 	private void bindEvents() {

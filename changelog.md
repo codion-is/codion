@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTable.filterPanel() now returns TableConditionPanel.
 - FilterTable.Builder.filterPanelFactory added.
+- FilterColumnConditionPanel.Builder added, now configures the horizontal alignment of components according to the associated table column.
 ### is.codion.framework.domain.db
 - Module is.codion.framework.domain.db split from is.codion.tools.generator.domain.
 - DatabaseDomain renamed SchemaDomain.

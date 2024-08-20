@@ -30,18 +30,18 @@ public class FilterColumnConditionPanelTest {
 	void test() {
 		final String key = "key";
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder(key, String.class).build();
-		FilterColumnConditionPanel<?, String> panel = FilterColumnConditionPanel.filterColumnConditionPanel(model, "test");
+		FilterColumnConditionPanel<?, String> panel = FilterColumnConditionPanel.builder(model).build();
 		assertEquals(model, panel.conditionModel());
 		assertNotNull(panel.equalField());
 		assertNotNull(panel.upperBoundField());
 		assertNotNull(panel.lowerBoundField());
-		assertThrows(NullPointerException.class, () -> FilterColumnConditionPanel.<String, String>filterColumnConditionPanel(null, null));
+		assertThrows(NullPointerException.class, () -> FilterColumnConditionPanel.<String, String>builder(null));
 	}
 
 	@Test
 	void lockedModel() {
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("key", String.class).build();
 		model.locked().set(true);
-		FilterColumnConditionPanel.filterColumnConditionPanel(model, "Test");
+		FilterColumnConditionPanel.builder(model).build();
 	}
 }

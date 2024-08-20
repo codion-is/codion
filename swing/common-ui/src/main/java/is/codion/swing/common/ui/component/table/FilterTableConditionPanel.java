@@ -112,12 +112,12 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	private void initialize() {
 		if (!initialized) {
-			initialized = true;
 			setLayout(new BorderLayout());
 			Map<C, ColumnConditionPanel<C, ?>> conditionPanelMap = conditionPanels.stream()
 							.collect(toMap(panel -> panel.conditionModel().identifier(), identity()));
 			componentPanel = filterTableColumnComponentPanel(columnModel, conditionPanelMap);
 			onPanelInitialized.accept(this);
+			initialized = true;
 		}
 	}
 }

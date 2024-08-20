@@ -81,7 +81,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -91,11 +90,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -129,7 +126,6 @@ import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.ADVANCED;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.SIMPLE;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
-import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.filterColumnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.commandControl;
@@ -449,7 +445,6 @@ public class EntityTablePanel extends JPanel {
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
 	private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.get());
-
 	private final State orderQueryBySortOrder = State.state(Config.ORDER_QUERY_BY_SORT_ORDER.get());
 	private final State queryHiddenColumns = State.state(Config.QUERY_HIDDEN_COLUMNS.get());
 
@@ -1473,9 +1468,11 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private FilterColumnConditionPanel<Attribute<?>, ?> createColumnConditionPanel(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
-		return filterColumnConditionPanel(conditionModel,
-						Objects.toString(table.columnModel().column(conditionModel.identifier()).getHeaderValue()),
-						configuration.conditionFieldFactory);
+		return FilterColumnConditionPanel.builder(conditionModel)
+						.fieldFactory(configuration.conditionFieldFactory)
+						.tableColumn(table.columnModel().column(conditionModel.identifier()))
+						.caption(Objects.toString(table.columnModel().column(conditionModel.identifier()).getHeaderValue()))
+						.build();
 	}
 
 	private void configureTableConditionPanel(TableConditionPanel<Attribute<?>> tableConditionPanel) {
@@ -1485,28 +1482,7 @@ public class EntityTablePanel extends JPanel {
 	private void configureColumnConditionPanel(ColumnConditionPanel<Attribute<?>, ?> conditionPanel) {
 		conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
 						focusGainedEvent.addConsumer(scrollToColumn));
-		conditionPanel.components().forEach(component ->
-						configureColumnConditionComponent(component, conditionPanel.conditionModel().identifier()));
-	}
-
-	private void configureColumnConditionComponent(JComponent component, Attribute<?> attribute) {
-		enableConditionPanelRefreshOnEnter(component);
-		TableCellRenderer cellRenderer = table.columnModel().column(attribute).getCellRenderer();
-		if (cellRenderer instanceof DefaultTableCellRenderer) {
-			int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
-			if (component instanceof JTextField) {
-				((JTextField) component).setHorizontalAlignment(horizontalAlignment);
-			}
-			else if (component instanceof JComboBox) {
-				Component editorComponent = ((JComboBox<?>) component).getEditor().getEditorComponent();
-				if (editorComponent instanceof JTextField) {
-					((JTextField) editorComponent).setHorizontalAlignment(horizontalAlignment);
-				}
-			}
-		}
-		else if (component instanceof JCheckBox) {
-			((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
-		}
+		conditionPanel.components().forEach(this::enableConditionPanelRefreshOnEnter);
 	}
 
 	private void bindTableEvents() {
