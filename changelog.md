@@ -12,6 +12,8 @@ Codion Change Log
 - DatabaseDomain renamed SchemaDomain.
 - SchemaDomain.SchemaSettings added, audit column names can now be specified.
 - SchemaDomain.SchemaSettings.primaryKeyColumnSuffix() added for improved foreign key names.
+### is.codion.framework.server
+- LocalConnectionHandler now logs exceptions occurring when returning connection to pool.
 ### is.codion.tools.generator.domain
 - DomainSource, domain implementation now in base source package with the API in a separate api package.
 ### is.codion.swing.framework.ui.test

@@ -304,6 +304,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		if (poolEntityConnection == null || poolEntityConnection.transactionOpen()) {
 			return;
 		}
+		Exception exception = null;
 		try {
 			if (methodLogger.isEnabled()) {
 				methodLogger.enter(RETURN_CONNECTION, userDescription);
@@ -312,11 +313,12 @@ final class LocalConnectionHandler implements InvocationHandler {
 			returnConnectionToPool();
 		}
 		catch (Exception e) {
+			exception = e;
 			LOG.info("Exception while returning connection to pool", e);
 		}
 		finally {
 			if (methodLogger.isEnabled()) {
-				methodLogger.exit(RETURN_CONNECTION, null, null);
+				methodLogger.exit(RETURN_CONNECTION, exception);
 			}
 		}
 	}
