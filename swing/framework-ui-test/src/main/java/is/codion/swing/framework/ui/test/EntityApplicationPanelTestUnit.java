@@ -21,10 +21,10 @@ package is.codion.swing.framework.ui.test;
 import is.codion.common.user.User;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
-
-import javax.swing.UIManager;
+import is.codion.swing.framework.ui.EntityPanel;
 
 import static java.util.Objects.requireNonNull;
+import static javax.swing.UIManager.getCrossPlatformLookAndFeelClassName;
 
 /**
  * A class for testing {@link EntityApplicationPanel} classes
@@ -48,17 +48,27 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
 	}
 
 	/**
-	 * Instantiates the panel and initializes it
+	 * Instantiates the panel and initializes it along with all its entity panels
 	 */
 	protected final void testInitialize() {
 		EntityApplicationPanel.builder(modelClass, panelClass)
-						.lookAndFeelClassName(UIManager.getCrossPlatformLookAndFeelClassName())
+						.lookAndFeelClassName(getCrossPlatformLookAndFeelClassName())
 						.automaticLoginUser(user)
 						.saveDefaultUsername(false)
 						.setUncaughtExceptionHandler(false)
 						.displayStartupDialog(false)
 						.displayFrame(false)
-						.onApplicationStarted(applicationPanel -> applicationPanel.applicationModel().connectionProvider().close())
+						.onApplicationStarted(this::testApplicationPanel)
 						.start(false);
+	}
+
+	private void testApplicationPanel(EntityApplicationPanel<M> applicationPanel) {
+		applicationPanel.entityPanels().forEach(this::initialize);
+		applicationPanel.applicationModel().connectionProvider().close();
+	}
+
+	private void initialize(EntityPanel entityPanel) {
+		entityPanel.initialize();
+		entityPanel.detailPanels().forEach(this::initialize);
 	}
 }

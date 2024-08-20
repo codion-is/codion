@@ -16,6 +16,7 @@ Codion Change Log
 - DomainSource, domain implementation now in base source package with the API in a separate api package.
 ### is.codion.swing.framework.ui.test
 - EntityEditPanelTestUnit, createEditPanel() removed, edit panel initializer function parameter added.
+- EntityApplicationPanelTestUnit now initializes all entity panels.
 
 ## 0.18.9
 ### is.codion
