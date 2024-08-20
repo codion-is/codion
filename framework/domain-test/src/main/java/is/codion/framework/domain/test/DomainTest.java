@@ -18,10 +18,8 @@
  */
 package is.codion.framework.domain.test;
 
-import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.RecordNotFoundException;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.common.user.User;
@@ -50,24 +48,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class DomainTest {
 
-	/**
-	 * Specifies the user to use when running domain unit tests.
-	 * @see User#parse(String)
-	 */
-	public static final PropertyValue<String> USER = Configuration.stringValue("codion.test.user");
-
+	private static final String TEST_USER = "codion.test.user";
 	private static final int SELECT_LIMIT = 10;
 
 	private final EntityConnectionProvider connectionProvider;
 	private final Function<EntityConnection, EntityFactory> entityFactory;
 
 	/**
-	 * Instantiates a new DomainTest.
-	 * The default database user is based on the {@link #USER} configuration value.
+	 * Instantiates a new DomainTest, using the user specified by the 'codion.test.user' system property.
 	 * @param domain the domain model
 	 */
 	public DomainTest(Domain domain) {
-		this(domain, User.parse(USER.getOrThrow()));
+		this(domain, testUser());
 	}
 
 	/**
@@ -76,7 +68,7 @@ public class DomainTest {
 	 * @param entityFactory provides the factory used to create test entities
 	 */
 	public DomainTest(Domain domain, Function<EntityConnection, EntityFactory> entityFactory) {
-		this(domain, entityFactory, User.parse(USER.getOrThrow()));
+		this(domain, entityFactory, testUser());
 	}
 
 	/**
@@ -299,5 +291,14 @@ public class DomainTest {
 						.method("rollbackTransaction", throwException)
 						.method("close", throwException)
 						.build();
+	}
+
+	private static User testUser() {
+		String testUser = System.getProperty(TEST_USER);
+		if (testUser == null) {
+		throw new IllegalStateException("Required property '" + TEST_USER + "' not set");
+		}
+
+		return User.parse(testUser);
 	}
 }

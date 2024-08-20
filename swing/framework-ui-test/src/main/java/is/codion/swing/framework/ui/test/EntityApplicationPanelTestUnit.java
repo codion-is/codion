@@ -19,10 +19,12 @@
 package is.codion.swing.framework.ui.test;
 
 import is.codion.common.user.User;
+import is.codion.framework.domain.DomainType;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
+import static is.codion.framework.db.EntityConnectionProvider.CLIENT_DOMAIN_TYPE;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.UIManager.getCrossPlatformLookAndFeelClassName;
 
@@ -31,20 +33,47 @@ import static javax.swing.UIManager.getCrossPlatformLookAndFeelClassName;
  */
 public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationModel> {
 
+	private static final String TEST_USER = "codion.test.user";
+
 	private final Class<M> modelClass;
 	private final Class<? extends EntityApplicationPanel<M>> panelClass;
 	private final User user;
+	private final DomainType domainType;
+
+	/**
+	 * Instantiates a new entity application panel test unit,
+	 * using the User specified by the 'codion.test.user' system property.
+	 * @param modelClass the application model class
+	 * @param panelClass the application panel class
+	 */
+	protected EntityApplicationPanelTestUnit(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass) {
+		this(modelClass, panelClass, testUser());
+	}
 
 	/**
 	 * Instantiates a new entity application panel test unit
 	 * @param modelClass the application model class
 	 * @param panelClass the application panel class
-	 * @param user the user
+	 * @param user the application user
 	 */
-	protected EntityApplicationPanelTestUnit(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass, User user) {
+	protected EntityApplicationPanelTestUnit(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass,
+																					 User user) {
+		this(modelClass, panelClass, user, CLIENT_DOMAIN_TYPE.getOrThrow());
+	}
+
+	/**
+	 * Instantiates a new entity application panel test unit
+	 * @param modelClass the application model class
+	 * @param panelClass the application panel class
+	 * @param user the application user
+	 * @param domainType the application domain type
+	 */
+	protected EntityApplicationPanelTestUnit(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass,
+																					 User user, DomainType domainType) {
 		this.modelClass = requireNonNull(modelClass, "modelClass");
 		this.panelClass = requireNonNull(panelClass, "panelClass");
 		this.user = requireNonNull(user, "user");
+		this.domainType = requireNonNull(domainType, "domainType");
 	}
 
 	/**
@@ -53,6 +82,7 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
 	protected final void testInitialize() {
 		EntityApplicationPanel.builder(modelClass, panelClass)
 						.lookAndFeelClassName(getCrossPlatformLookAndFeelClassName())
+						.domainType(domainType)
 						.automaticLoginUser(user)
 						.saveDefaultUsername(false)
 						.setUncaughtExceptionHandler(false)
@@ -70,5 +100,14 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
 	private void initialize(EntityPanel entityPanel) {
 		entityPanel.initialize();
 		entityPanel.detailPanels().forEach(this::initialize);
+	}
+
+	private static User testUser() {
+		String testUser = System.getProperty(TEST_USER);
+		if (testUser == null) {
+			throw new IllegalStateException("Required property '" + TEST_USER + "' not set");
+		}
+
+		return User.parse(testUser);
 	}
 }

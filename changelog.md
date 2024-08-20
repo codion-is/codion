@@ -17,6 +17,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui.test
 - EntityEditPanelTestUnit, createEditPanel() removed, edit panel initializer function parameter added.
 - EntityApplicationPanelTestUnit now initializes all entity panels.
+- EntityApplicationPanelTestUnit, domainType constructor parameter added, related refactoring.
 
 ## 0.18.9
 ### is.codion
