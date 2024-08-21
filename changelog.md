@@ -9,6 +9,7 @@ Codion Change Log
 - FilterTable.Builder.filterPanelFactory added.
 - FilterColumnConditionPanel.Builder added, now configures the horizontal alignment of components according to the associated table column.
 - InputDialog.show() with closeDialog Predicate parameter added.
+- CalendarPanel bug fixed, no more focus flicker when day panel is reset when navigating between months by week, focus now follows day when toggled.
 ### is.codion.framework.domain.db
 - Module is.codion.framework.domain.db split from is.codion.tools.generator.domain.
 - DatabaseDomain renamed SchemaDomain.

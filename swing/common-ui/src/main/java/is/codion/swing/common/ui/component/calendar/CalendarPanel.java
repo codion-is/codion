@@ -40,7 +40,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -81,6 +80,8 @@ import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createTitledBorder;
+import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.SwingUtilities.isEventDispatchThread;
 
 /**
  * A panel presenting a calendar for date/time selection.<br><br>
@@ -97,6 +98,8 @@ public final class CalendarPanel extends JPanel {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(CalendarPanel.class, getBundle(CalendarPanel.class.getName()));
+
+	private static final FocusManager FOCUS_MANAGER = FocusManager.getCurrentManager();
 
 	/**
 	 * The available controls.
@@ -572,9 +575,8 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private void layoutDayPanel() {
-		boolean dayPanelHasFocus = dayPanelHasFocus();
-		if (dayPanelHasFocus) {//otherwise, the focus jumps to the first field (month)
-			dayGridPanel.requestFocusInWindow();
+		if (dayPanelHasFocus()) {//otherwise, the focus jumps to the first field (month)
+			FOCUS_MANAGER.clearFocusOwner();
 		}
 		dayGridPanel.removeAll();
 		int firstDayOfMonth = LocalDate.of(yearValue.get(), monthValue.get(), 1).getDayOfWeek().getValue();
@@ -594,13 +596,10 @@ public final class CalendarPanel extends JPanel {
 		}
 		validate();
 		repaint();
-		if (dayPanelHasFocus) {
-			requestCurrentDayButtonFocus();
-		}
 	}
 
 	private boolean dayPanelHasFocus() {
-		return dayGridPanel.isAncestorOf(FocusManager.getCurrentManager().getFocusOwner());
+		return dayGridPanel.isAncestorOf(FOCUS_MANAGER.getFocusOwner());
 	}
 
 	private void setYearMonthDay(LocalDate localDate) {
@@ -627,12 +626,10 @@ public final class CalendarPanel extends JPanel {
 		localDateValue.set(localDateTime.toLocalDate());
 		localDateTimeValue.set(localDateTime);
 		todaySelected.set(todaySelected());
-		if (SwingUtilities.isEventDispatchThread()) {
-			updateFormattedDate();
+		if (dayPanelHasFocus()) {
+			requestCurrentDayButtonFocus();
 		}
-		else {
-			SwingUtilities.invokeLater(this::updateFormattedDate);
-		}
+		invokeLater(this::updateFormattedDate);
 	}
 
 	private boolean todaySelected() {
@@ -640,7 +637,7 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private void selectToday() {
-		dayGridPanel.requestFocusInWindow();//prevent focus flickering
+		FOCUS_MANAGER.clearFocusOwner();//prevent focus flickering
 		LocalDate now = LocalDate.now();
 		setLocalDateTime(getLocalDateTime().withYear(now.getYear()).withMonth(now.getMonthValue()).withDayOfMonth(now.getDayOfMonth()));
 		requestCurrentDayButtonFocus();
@@ -793,11 +790,11 @@ public final class CalendarPanel extends JPanel {
 
 		@Override
 		public void run() {
-			if (SwingUtilities.isEventDispatchThread()) {
+			if (isEventDispatchThread()) {
 				layoutDayPanel();
 			}
 			else {
-				SwingUtilities.invokeLater(CalendarPanel.this::layoutDayPanel);
+				invokeLater(CalendarPanel.this::layoutDayPanel);
 			}
 		}
 	}
