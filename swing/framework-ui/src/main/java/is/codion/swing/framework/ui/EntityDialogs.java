@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.resource.MessageBundle;
@@ -30,7 +29,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.framework.model.EntityEditModel.Update;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -62,10 +60,10 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -79,6 +77,7 @@ import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -161,13 +160,6 @@ public final class EntityDialogs {
 		EditAttributeDialogBuilder<T> onException(Consumer<Exception> onException);
 
 		/**
-		 * @param updater the updater to use
-		 * @param <E> the edit model type
-		 * @return this builder
-		 */
-		<E extends SwingEntityEditModel> EditAttributeDialogBuilder<T> updater(Updater<E> updater);
-
-		/**
 		 * Displays a dialog for editing the given entity
 		 * @param entity the entity to edit
 		 */
@@ -178,22 +170,6 @@ public final class EntityDialogs {
 		 * @param entities the entities to edit
 		 */
 		void edit(Collection<Entity> entities);
-
-		/**
-		 * Handles performing the actual update when entities are edited.
-		 * @param <E> the edit model type
-		 */
-		interface Updater<E extends SwingEntityEditModel> {
-
-			/**
-			 * Updates the given entities, assuming they are all modified.
-			 * @param editModel the underlying edit model
-			 * @param entities the modified entities
-			 * @throws ValidationException in case of a validation failure
-			 * @throws DatabaseException in case of a database exception
-			 */
-			void update(E editModel, Collection<Entity> entities) throws ValidationException, DatabaseException;
-		}
 	}
 
 	/**
@@ -289,7 +265,6 @@ public final class EntityDialogs {
 		private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = new EditEntityComponentFactory<>();
 		private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
 		private Consumer<Exception> onException = new DefaultExceptionHandler();
-		private Updater<SwingEntityEditModel> updater;
 
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
 			this.editModel = requireNonNull(editModel);
@@ -315,14 +290,8 @@ public final class EntityDialogs {
 		}
 
 		@Override
-		public <E extends SwingEntityEditModel> EditAttributeDialogBuilder<T> updater(Updater<E> updater) {
-			this.updater = (Updater<SwingEntityEditModel>) requireNonNull(updater);
-			return this;
-		}
-
-		@Override
 		public void edit(Entity entity) {
-			edit(Collections.singleton(requireNonNull(entity)));
+			edit(singleton(requireNonNull(entity)));
 		}
 
 		@Override
@@ -339,32 +308,21 @@ public final class EntityDialogs {
 
 			EntityDefinition entityDefinition = editModel.entityDefinition();
 			AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
-			Collection<Entity> selectedEntities = entities.stream()
-							.map(Entity::copy)
-							.collect(toList());
 			Collection<T> values = entities.stream()
 							.map(entity -> entity.get(attribute))
 							.collect(toSet());
 			T initialValue = values.size() == 1 ? values.iterator().next() : null;
 			ComponentValue<T, ?> componentValue = editSelectedComponentValue(attribute, initialValue);
 			InputValidator<T> validator = new InputValidator<>(entityDefinition, attribute, componentValue);
-			if (updater == null) {
-				updater = new DefaultUpdater(owner, locationRelativeTo, onException);
-			}
-			boolean updatePerformed = false;
-			while (!updatePerformed) {
-				T newValue = Dialogs.inputDialog(componentValue)
-								.owner(owner)
-								.locationRelativeTo(locationRelativeTo)
-								.title(FrameworkMessages.edit())
-								.caption(attributeDefinition.caption())
-								.validator(validator)
-								.show();
-				selectedEntities.forEach(entity -> entity.put(attribute, newValue));
-				updatePerformed = update(selectedEntities.stream()
-								.filter(Entity::modified)
-								.collect(toList()));
-			}
+			Dialogs.inputDialog(componentValue)
+							.owner(owner)
+							.locationRelativeTo(locationRelativeTo)
+							.title(FrameworkMessages.edit())
+							.caption(attributeDefinition.caption())
+							.validator(validator)
+							.show(new SuccessfulUpdate(entities.stream()
+											.map(Entity::copy)
+											.collect(toList())));
 		}
 
 		private ComponentValue<T, ? extends JComponent> editSelectedComponentValue(Attribute<T> attribute, T initialValue) {
@@ -377,26 +335,56 @@ public final class EntityDialogs {
 			return componentFactory.componentValue(attribute, editModel, initialValue);
 		}
 
-		private boolean update(Collection<Entity> entities) {
-			try {
-				updater.update(editModel, entities);
+		private final class SuccessfulUpdate implements Predicate<T> {
 
-				return true;
-			}
-			catch (CancelException ignored) {/*ignored*/}
-			catch (ValidationException e) {
-				LOG.debug(e.getMessage(), e);
-				onValidationException.accept(e);
-			}
-			catch (Exception e) {
-				LOG.error(e.getMessage(), e);
-				onException.accept(e);
+			private final Collection<Entity> entities;
+
+			private SuccessfulUpdate(Collection<Entity> entities) {
+				this.entities = entities;
 			}
 
-			return false;
+			@Override
+			public boolean test(T newValue) {
+				entities.forEach(entity -> entity.put(attribute, newValue));
+				try {
+					progressWorkerDialog(editModel.createUpdate(entities.stream()
+									.filter(Entity::modified)
+									.collect(toList())).prepare()::perform)
+									.title(EDIT_PANEL_MESSAGES.getString("updating"))
+									.owner(owner)
+									.locationRelativeTo(locationRelativeTo)
+									.onException(e -> {})
+									.execute()
+									.get()
+									.handle();
+
+					return true;
+				}
+				catch (ValidationException e) {
+					LOG.debug(e.getMessage(), e);
+					onValidationException.accept(e);
+				}
+				catch (ExecutionException e) {
+					Throwable cause = e.getCause();
+					LOG.error(e.getMessage(), e);
+					if (cause instanceof Exception) {
+						onException.accept((Exception) cause);
+					}
+					else {
+						onException.accept(new RuntimeException(cause));
+					}
+				}
+				catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					throw new RuntimeException(e);
+				}
+
+				return false;
+			}
 		}
 
 		private final class DefaultExceptionHandler implements Consumer<Exception> {
+
 			@Override
 			public void accept(Exception exception) {
 				Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
@@ -416,30 +404,6 @@ public final class EntityDialogs {
 								.definition(exception.attribute())
 								.caption();
 				JOptionPane.showMessageDialog(locationRelativeTo == null ? owner : locationRelativeTo, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
-			}
-		}
-
-		private static final class DefaultUpdater implements Updater<SwingEntityEditModel> {
-
-			private final Window dialogOwner;
-			private final Component locationRelativeTo;
-			private final Consumer<Exception> exceptionHandler;
-
-			private DefaultUpdater(Window dialogOwner, Component locationRelativeTo, Consumer<Exception> exceptionHandler) {
-				this.dialogOwner = dialogOwner;
-				this.locationRelativeTo = locationRelativeTo;
-				this.exceptionHandler = exceptionHandler;
-			}
-
-			@Override
-			public void update(SwingEntityEditModel editModel, Collection<Entity> entities) throws ValidationException {
-				progressWorkerDialog(editModel.createUpdate(entities).prepare()::perform)
-								.title(EDIT_PANEL_MESSAGES.getString("updating"))
-								.owner(dialogOwner)
-								.locationRelativeTo(locationRelativeTo)
-								.onException(exceptionHandler)
-								.onResult(Update.Result::handle)
-								.execute();
 			}
 		}
 

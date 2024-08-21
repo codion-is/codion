@@ -8,6 +8,7 @@ Codion Change Log
 - FilterTable.filterPanel() now returns TableConditionPanel.
 - FilterTable.Builder.filterPanelFactory added.
 - FilterColumnConditionPanel.Builder added, now configures the horizontal alignment of components according to the associated table column.
+- InputDialog.show() with closeDialog Predicate parameter added.
 ### is.codion.framework.domain.db
 - Module is.codion.framework.domain.db split from is.codion.tools.generator.domain.
 - DatabaseDomain renamed SchemaDomain.
@@ -17,6 +18,9 @@ Codion Change Log
 - LocalConnectionHandler now logs exceptions occurring when returning connection to pool.
 ### is.codion.tools.generator.domain
 - DomainSource, domain implementation now in base source package with the API in a separate api package.
+### is.codion.swing.framework.ui
+- EntityDialogs.DefaultEditAttributeDialogBuilder, bug fixed, retrying a failed update now working again.
+- EntityDialogs.EditAttributeDialogBuilder.Updater removed.
 ### is.codion.swing.framework.ui.test
 - EntityEditPanelTestUnit, createEditPanel() removed, edit panel initializer function parameter added.
 - EntityApplicationPanelTestUnit now initializes all entity panels.

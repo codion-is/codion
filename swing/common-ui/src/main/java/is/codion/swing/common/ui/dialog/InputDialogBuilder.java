@@ -49,6 +49,13 @@ public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<
 	InputDialogBuilder<T> validator(Predicate<T> validator);
 
 	/**
+	 * Shows the input dialog and calls {@code closeDialog} with the current
+	 * input when OK is pressed, closing the dialog if the predicate returns true.
+	 * @param closeDialog called with the current input to determine if the the dialog should be closed
+	 */
+	void show(Predicate<T> closeDialog);
+
+	/**
 	 * Shows the input dialog and returns the value if the user presses OK
 	 * @return the value from the component value if the user accepts the input
 	 * @throws is.codion.common.model.CancelException in case the user cancels

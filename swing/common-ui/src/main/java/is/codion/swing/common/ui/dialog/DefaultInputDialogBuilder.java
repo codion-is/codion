@@ -37,6 +37,7 @@ import java.awt.Point;
 import java.awt.Window;
 import java.util.function.Predicate;
 
+import static is.codion.swing.common.ui.control.Control.commandControl;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
@@ -118,6 +119,19 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	public InputDialogBuilder<T> keyEvent(KeyEvents.Builder keyEventBuilder) {
 		okCancelDialogBuilder.keyEvent(keyEventBuilder);
 		return this;
+	}
+
+	@Override
+	public void show(Predicate<T> closeDialog) {
+		requireNonNull(closeDialog);
+		if (caption != null) {
+			basePanel.add(new JLabel(caption), BorderLayout.NORTH);
+		}
+		okCancelDialogBuilder.okAction(commandControl(() -> {
+			if (closeDialog.test(componentValue.get())) {
+				Utilities.parentDialog(componentValue.component()).dispose();
+			}
+		})).show();
 	}
 
 	@Override
