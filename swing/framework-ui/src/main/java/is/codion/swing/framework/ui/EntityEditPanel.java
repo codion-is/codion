@@ -847,7 +847,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		Confirmer NONE = dialogOwner -> true;
 
 		/**
-		 * Returns true if the action is confirmed, presents an OK/Cancel confirm dialog to the user if required.
+		 * Returns true if the action is confirmed, presents an confirmation dialog to the user if required.
 		 * @param dialogOwner the owner for the dialog
 		 * @return true if the action is confirmed
 		 */
@@ -858,7 +858,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * @param dialogOwner the dialog owner
 		 * @param message the dialog message
 		 * @param title the dialog title
-		 * @return true if OK was pressed
+		 * @return true if the action is confirmed
 		 */
 		default boolean confirm(JComponent dialogOwner, String message, String title) {
 			return showConfirmDialog(dialogOwner, message, title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
