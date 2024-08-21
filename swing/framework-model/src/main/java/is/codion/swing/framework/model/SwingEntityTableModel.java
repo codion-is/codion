@@ -942,17 +942,17 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 		@Override
 		public Class<?> columnClass(Attribute<?> identifier) {
-			return identifier.type().valueClass();
+			return requireNonNull(identifier).type().valueClass();
 		}
 
 		@Override
 		public Object value(Entity entity, Attribute<?> attribute) {
-			return entity.get(attribute);
+			return requireNonNull(entity).get(attribute);
 		}
 
 		@Override
 		public String string(Entity entity, Attribute<?> attribute) {
-			return entity.string(attribute);
+			return requireNonNull(entity).string(attribute);
 		}
 
 		@Override
