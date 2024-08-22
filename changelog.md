@@ -19,6 +19,8 @@ Codion Change Log
 - LocalConnectionHandler now logs exceptions occurring when returning connection to pool.
 ### is.codion.tools.generator.domain
 - DomainSource, domain implementation now in base source package with the API in a separate api package.
+### is.codion.tools.generator.model
+- DomainGeneratorModel no longer keeps a live Connection instance, now creates short lived connections on demand, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityDialogs.DefaultEditAttributeDialogBuilder, bug fixed, retrying a failed update now working again.
 - EntityDialogs.EditAttributeDialogBuilder.Updater removed.

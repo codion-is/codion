@@ -367,7 +367,6 @@ public final class DomainGeneratorPanel extends JPanel {
 						.icon(Logos.logoTransparent())
 						.menuBar(menu(createMainMenuControls()).createMenuBar())
 						.defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
-						.onClosing(windowEvent -> model.close())
 						.centerFrame(true)
 						.show();
 	}

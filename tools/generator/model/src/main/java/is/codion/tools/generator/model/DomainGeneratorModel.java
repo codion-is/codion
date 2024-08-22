@@ -47,7 +47,6 @@ import java.util.regex.Pattern;
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
-import static is.codion.framework.domain.db.SchemaDomain.schemaDomain;
 import static is.codion.tools.generator.domain.DomainSource.domainSource;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
@@ -84,7 +83,8 @@ public final class DomainGeneratorModel {
 					FilterTableModel.builder(new EntityColumns())
 									.items(new EntityItems())
 									.build();
-	private final Connection connection;
+	private final Database database;
+	private final User user;
 	private final State domainPackageSpecified = State.state();
 	private final Value<String> domainPackageValue = Value.builder()
 					.nonNull(DEFAULT_DOMAIN_PACKAGE.get())
@@ -111,7 +111,8 @@ public final class DomainGeneratorModel {
 	private final Value<String> implSearchValue = Value.value();
 
 	private DomainGeneratorModel(Database database, User user) throws DatabaseException {
-		this.connection = requireNonNull(database, "database").createConnection(user);
+		this.database = requireNonNull(database, "database");
+		this.user = requireNonNull(user, "user");
 		sourceDirectoryChanged();
 		domainPackageChanged();
 		schemaTableModel.refresh();
@@ -154,17 +155,10 @@ public final class DomainGeneratorModel {
 		return implSearchValue;
 	}
 
-	public void close() {
-		try {
-			connection.close();
-		}
-		catch (Exception ignored) {/*ignored*/}
-	}
-
 	public void populateSelected(Consumer<String> schemaNotifier) {
 		schemaTableModel.selectionModel().selectedItem().ifPresent(schema -> {
 			schemaNotifier.accept(schema.name());
-			schema.setDomain(schemaDomain(connection, schema.name()));
+			schema.setDomain(schemaDomain(schema));
 			int index = schemaTableModel.indexOf(schema);
 			schemaTableModel.fireTableRowsUpdated(index, index);
 		});
@@ -202,6 +196,15 @@ public final class DomainGeneratorModel {
 	private void bindEvents() {
 		schemaTableModel.selectionModel().selectionEvent().addListener(this::schemaSelectionChanged);
 		entityModel().selectionModel().selectedItemEvent().addConsumer(this::search);
+	}
+
+	private SchemaDomain schemaDomain(SchemaRow schema) {
+		try (Connection connection = database.createConnection(user)) {
+			return SchemaDomain.schemaDomain(connection.getMetaData(), schema.name());
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void schemaSelectionChanged() {
@@ -279,20 +282,25 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public Collection<SchemaRow> get() {
-			Collection<SchemaRow> schemaRows = new ArrayList<>();
-			try (ResultSet resultSet = connection.getMetaData().getSchemas()) {
-				while (resultSet.next()) {
-					String tableSchem = resultSet.getString("TABLE_SCHEM");
-					if (tableSchem != null) {
-						schemaRows.add(new SchemaRow(resultSet.getString("TABLE_CATALOG"), tableSchem));
-					}
-				}
-
-				return schemaRows;
+			try (Connection connection = database.createConnection(user);
+					 ResultSet resultSet = connection.getMetaData().getSchemas()) {
+				return schemaRows(resultSet);
 			}
-			catch (SQLException e) {
+			catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+		}
+
+		private Collection<SchemaRow> schemaRows(ResultSet resultSet) throws SQLException {
+			Collection<SchemaRow> schemaRows = new ArrayList<>();
+			while (resultSet.next()) {
+				String tableSchem = resultSet.getString("TABLE_SCHEM");
+				if (tableSchem != null) {
+					schemaRows.add(new SchemaRow(resultSet.getString("TABLE_CATALOG"), tableSchem));
+				}
+			}
+
+			return schemaRows;
 		}
 	}
 

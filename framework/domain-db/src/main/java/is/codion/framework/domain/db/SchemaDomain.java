@@ -27,7 +27,6 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -46,8 +45,8 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * For instances use the available factory methods.
- * @see #schemaDomain(Connection, String)
- * @see #schemaDomain(Connection, String, SchemaSettings)
+ * @see #schemaDomain(DatabaseMetaData, String)
+ * @see #schemaDomain(DatabaseMetaData, String, SchemaSettings)
  */
 public final class SchemaDomain extends DomainModel {
 
@@ -57,34 +56,34 @@ public final class SchemaDomain extends DomainModel {
 
 	private final SchemaSettings settings;
 
-	private SchemaDomain(Connection connection, String schemaName, SchemaSettings settings) throws SQLException {
+	private SchemaDomain(DatabaseMetaData metaData, String schemaName, SchemaSettings settings) throws SQLException {
 		super(domainType(schemaName));
 		this.settings = settings;
 		validateForeignKeys(false);
-		new MetaDataModel(connection.getMetaData(), schemaName)
+		new MetaDataModel(metaData, schemaName)
 						.schema().tables().values().forEach(this::defineEntity);
 	}
 
 	/**
 	 * Factory method for creating a new {@link SchemaDomain} instance.
-	 * @param connection the JDBC connection
+	 * @param metaData the database metadata
 	 * @param schemaName the schema name
 	 * @return a new {@link SchemaDomain} instance
 	 */
-	public static SchemaDomain schemaDomain(Connection connection, String schemaName) {
-		return schemaDomain(connection, schemaName, SchemaSettings.builder().build());
+	public static SchemaDomain schemaDomain(DatabaseMetaData metaData, String schemaName) {
+		return schemaDomain(metaData, schemaName, SchemaSettings.builder().build());
 	}
 
 	/**
 	 * Factory method for creating a new {@link SchemaDomain} instance.
-	 * @param connection the JDBC connection
+	 * @param metaData the database metadata
 	 * @param schemaName the schema name
 	 * @param settings the configuration
 	 * @return a new {@link SchemaDomain} instance
 	 */
-	public static SchemaDomain schemaDomain(Connection connection, String schemaName, SchemaSettings settings) {
+	public static SchemaDomain schemaDomain(DatabaseMetaData metaData, String schemaName, SchemaSettings settings) {
 		try {
-			return new SchemaDomain(requireNonNull(connection), requireNonNull(schemaName), requireNonNull(settings));
+			return new SchemaDomain(requireNonNull(metaData), requireNonNull(schemaName), requireNonNull(settings));
 		}
 		catch (SQLException e) {
 			throw new RuntimeException(e);

@@ -42,7 +42,7 @@ public final class DomainSourceTest {
 	@Test
 	void petstore() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection, "PETSTORE", SchemaSettings.builder()
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "PETSTORE", SchemaSettings.builder()
 							.primaryKeyColumnSuffix("_id")
 							.auditInsertUserColumnName("insert_user")
 							.auditInsertTimeColumnName("insert_time")
@@ -62,7 +62,7 @@ public final class DomainSourceTest {
 	@Test
 	void chinook() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection, "CHINOOK");
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "CHINOOK");
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain, "is.codion.chinook.domain");
 			String chinookApi = textFileContents(DomainSourceTest.class, "ChinookAPI.java");
 			assertEquals(chinookApi, domainSource.api());
@@ -76,7 +76,7 @@ public final class DomainSourceTest {
 	@Test
 	void world() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection, "WORLD");
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "WORLD");
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain, "is.codion.world.domain");
 			String worldApi = textFileContents(DomainSourceTest.class, "WorldAPI.java");
 			assertEquals(worldApi, domainSource.api());

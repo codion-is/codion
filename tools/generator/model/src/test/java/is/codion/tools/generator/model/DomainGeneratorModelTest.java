@@ -49,8 +49,6 @@ public final class DomainGeneratorModelTest {
 		assertNotNull(model.domainApi().get());
 		assertNotNull(model.domainImpl().get());
 		assertNotNull(model.domainCombined().get());
-
-		model.close();
 	}
 
 	@Test
@@ -68,8 +66,6 @@ public final class DomainGeneratorModelTest {
 		assertNotNull(model.domainApi().get());
 		assertNotNull(model.domainImpl().get());
 		assertNotNull(model.domainCombined().get());
-
-		model.close();
 	}
 
 	@Test
@@ -87,7 +83,5 @@ public final class DomainGeneratorModelTest {
 		assertNotNull(model.domainApi().get());
 		assertNotNull(model.domainImpl().get());
 		assertNotNull(model.domainCombined().get());
-
-		model.close();
 	}
 }

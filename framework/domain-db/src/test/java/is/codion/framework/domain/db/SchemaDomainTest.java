@@ -42,7 +42,7 @@ public final class SchemaDomainTest {
 	@Test
 	void petstore() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain petstore = SchemaDomain.schemaDomain(connection, "PETSTORE", SchemaSettings.builder()
+			SchemaDomain petstore = SchemaDomain.schemaDomain(connection.getMetaData(), "PETSTORE", SchemaSettings.builder()
 							.primaryKeyColumnSuffix("_id")
 							.auditInsertUserColumnName("insert_user")
 							.auditInsertTimeColumnName("insert_time")
@@ -83,14 +83,14 @@ public final class SchemaDomainTest {
 	@Test
 	void chinook() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain.schemaDomain(connection, "CHINOOK");
+			SchemaDomain.schemaDomain(connection.getMetaData(), "CHINOOK");
 		}
 	}
 
 	@Test
 	void world() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain.schemaDomain(connection, "WORLD");
+			SchemaDomain.schemaDomain(connection.getMetaData(), "WORLD");
 		}
 	}
 }
