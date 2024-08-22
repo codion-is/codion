@@ -19,7 +19,6 @@
 package is.codion.tools.generator.model;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -110,7 +109,7 @@ public final class DomainGeneratorModel {
 	private final Value<String> apiSearchValue = Value.value();
 	private final Value<String> implSearchValue = Value.value();
 
-	private DomainGeneratorModel(Database database, User user) throws DatabaseException {
+	private DomainGeneratorModel(Database database, User user) {
 		this.database = requireNonNull(database, "database");
 		this.user = requireNonNull(user, "user");
 		sourceDirectoryChanged();
@@ -225,9 +224,8 @@ public final class DomainGeneratorModel {
 	 * @param database the database to connect to
 	 * @param user the user to connect with
 	 * @return a new {@link DomainGeneratorModel} instance
-	 * @throws DatabaseException in case of an exception while connecting to the database
 	 */
-	public static DomainGeneratorModel domainGeneratorModel(Database database, User user) throws DatabaseException {
+	public static DomainGeneratorModel domainGeneratorModel(Database database, User user) {
 		return new DomainGeneratorModel(database, user);
 	}
 

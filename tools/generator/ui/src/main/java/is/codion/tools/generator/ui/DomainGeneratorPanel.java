@@ -19,7 +19,6 @@
 package is.codion.tools.generator.ui;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.property.PropertyValue;
@@ -501,19 +500,14 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private static void start() {
 		Database database = Database.instance();
-		try {
-			new DomainGeneratorPanel(DomainGeneratorModel.domainGeneratorModel(database,
-							Dialogs.loginDialog()
-											.icon(Logos.logoTransparent())
-											.defaultUser(DEFAULT_USER.optional()
-															.map(User::parse)
-															.orElse(null))
-											.validator(user -> database.createConnection(user).close())
-											.show()))
-							.showFrame();
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		new DomainGeneratorPanel(DomainGeneratorModel.domainGeneratorModel(database,
+						Dialogs.loginDialog()
+										.icon(Logos.logoTransparent())
+										.defaultUser(DEFAULT_USER.optional()
+														.map(User::parse)
+														.orElse(null))
+										.validator(user -> database.createConnection(user).close())
+										.show()))
+						.showFrame();
 	}
 }
