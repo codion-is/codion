@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import javax.swing.JComponent;
+import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -47,6 +48,12 @@ public interface SelectionDialogBuilder<T> extends DialogBuilder<SelectionDialog
 	 * @return this SelectionDialogBuilder instance
 	 */
 	SelectionDialogBuilder<T> allowEmptySelection(boolean allowEmptySelection);
+
+	/**
+	 * @param dialogSize the preferred dialog size
+	 * @return this SelectionDialogBuilder instance
+	 */
+	SelectionDialogBuilder<T> dialogSize(Dimension dialogSize);
 
 	/**
 	 * @return the selected value, {@link Optional#empty()} if none was selected

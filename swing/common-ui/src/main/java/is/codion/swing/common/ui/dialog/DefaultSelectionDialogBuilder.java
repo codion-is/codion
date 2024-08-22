@@ -56,6 +56,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 	private final Collection<T> values;
 	private final Collection<T> defaultSelection = new ArrayList<>();
 	private boolean allowEmptySelection = false;
+	private Dimension dialogSize;
 
 	DefaultSelectionDialogBuilder(Collection<T> values) {
 		if (requireNonNull(values).isEmpty()) {
@@ -85,17 +86,23 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 	}
 
 	@Override
+	public SelectionDialogBuilder<T> dialogSize(Dimension dialogSize) {
+		this.dialogSize = requireNonNull(dialogSize);
+		return this;
+	}
+
+	@Override
 	public Optional<T> selectSingle() {
-		return selectSingle(this);
+		return selectSingle(this, dialogSize);
 	}
 
 	@Override
 	public Collection<T> select() {
-		return select(this, false);
+		return select(this, false, dialogSize);
 	}
 
-	private static <T> Optional<T> selectSingle(DefaultSelectionDialogBuilder<T> builder) {
-		List<T> selected = select(builder, true);
+	private static <T> Optional<T> selectSingle(DefaultSelectionDialogBuilder<T> builder, Dimension dialogSize) {
+		List<T> selected = select(builder, true, dialogSize);
 		if (selected.isEmpty()) {
 			return Optional.empty();
 		}
@@ -103,7 +110,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 		return Optional.of(selected.get(0));
 	}
 
-	private static <T> List<T> select(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
+	private static <T> List<T> select(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection, Dimension dialogSize) {
 		JList<T> list = createList(builder, singleSelection);
 		Control okControl = Control.builder()
 						.command(() -> Utilities.parentDialog(list).dispose())
@@ -126,6 +133,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 						.owner(builder.owner)
 						.locationRelativeTo(builder.locationRelativeTo)
 						.title(createTitle(builder, singleSelection))
+						.size(dialogSize)
 						.okAction(okControl)
 						.onCancel(onCancel)
 						.build();

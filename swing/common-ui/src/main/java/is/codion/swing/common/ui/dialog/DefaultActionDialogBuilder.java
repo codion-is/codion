@@ -107,7 +107,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 
 	@Override
 	public final B size(Dimension size) {
-		this.size = requireNonNull(size);
+		this.size = size;
 		return self();
 	}
 
