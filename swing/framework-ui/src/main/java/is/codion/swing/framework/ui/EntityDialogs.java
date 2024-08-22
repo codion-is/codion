@@ -236,10 +236,10 @@ public final class EntityDialogs {
 	public interface SelectionDialogBuilder extends DialogBuilder<SelectionDialogBuilder> {
 
 		/**
-		 * @param preferredSize the preferred dialog size
+		 * @param dialogSize the preferred dialog size
 		 * @return this builder instance
 		 */
-		SelectionDialogBuilder preferredSize(Dimension preferredSize);
+		SelectionDialogBuilder dialogSize(Dimension dialogSize);
 
 		/**
 		 * @return a List containing the selected entities
@@ -462,28 +462,28 @@ public final class EntityDialogs {
 
 		private final SwingEntityTableModel tableModel;
 
-		private Dimension preferredSize;
+		private Dimension dialogSize;
 
 		private DefaultSelectionDialogBuilder(SwingEntityTableModel tableModel) {
 			this.tableModel = requireNonNull(tableModel);
 		}
 
 		@Override
-		public SelectionDialogBuilder preferredSize(Dimension preferredSize) {
-			this.preferredSize = requireNonNull(preferredSize);
+		public SelectionDialogBuilder dialogSize(Dimension dialogSize) {
+			this.dialogSize = requireNonNull(dialogSize);
 			return this;
 		}
 
 		@Override
 		public List<Entity> select() {
 			return new EntitySelectionDialog(tableModel, owner, locationRelativeTo,
-							title, icon, preferredSize, false).selectEntities();
+							title, icon, dialogSize, false).selectEntities();
 		}
 
 		@Override
 		public Optional<Entity> selectSingle() {
 			List<Entity> entities = new EntitySelectionDialog(tableModel, owner, locationRelativeTo,
-							title, icon, preferredSize, true).selectEntities();
+							title, icon, dialogSize, true).selectEntities();
 
 			return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
 		}
@@ -509,7 +509,7 @@ public final class EntityDialogs {
 						.build();
 
 		private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, Component locationRelativeTo,
-																	ValueObserver<String> title, ImageIcon icon, Dimension preferredSize,
+																	ValueObserver<String> title, ImageIcon icon, Dimension dialogSize,
 																	boolean singleSelection) {
 			this.dialog = new JDialog(owner, title == null ? null : title.get());
 			if (title != null) {
@@ -521,7 +521,7 @@ public final class EntityDialogs {
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.tableModel = requireNonNull(tableModel, "tableModel");
 			this.tableModel.editModel().readOnly().set(true);
-			this.entityTablePanel = createTablePanel(tableModel, preferredSize, singleSelection);
+			this.entityTablePanel = createTablePanel(tableModel, singleSelection);
 			this.cancelControl = Control.builder()
 							.command(dialog::dispose)
 							.name(Messages.cancel())
@@ -541,14 +541,18 @@ public final class EntityDialogs {
 			dialog.setLayout(new BorderLayout());
 			dialog.add(entityTablePanel, BorderLayout.CENTER);
 			dialog.add(buttonPanel, BorderLayout.SOUTH);
-			dialog.pack();
+			if (dialogSize != null) {
+				dialog.setSize(dialogSize);
+			}
+			else {
+				dialog.pack();
+			}
 			dialog.setLocationRelativeTo(locationRelativeTo);
 			dialog.setModal(true);
 			dialog.setResizable(true);
 		}
 
-		private EntityTablePanel createTablePanel(SwingEntityTableModel tableModel, Dimension preferredSize,
-																							boolean singleSelection) {
+		private EntityTablePanel createTablePanel(SwingEntityTableModel tableModel, boolean singleSelection) {
 			EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 			tablePanel.initialize();
 			tablePanel.table().doubleClickEvent().addListener(() -> {
@@ -560,10 +564,6 @@ public final class EntityDialogs {
 			tablePanel.table().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 			tablePanel.table().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
-			if (preferredSize != null) {
-				tablePanel.setPreferredSize(preferredSize);
-			}
-
 
 			return tablePanel;
 		}
