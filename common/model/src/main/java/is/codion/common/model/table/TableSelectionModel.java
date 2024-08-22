@@ -140,7 +140,7 @@ public interface TableSelectionModel<R> {
 	void setSelectedIndexes(Collection<Integer> indexes);
 
 	/**
-	 * @return the selected indexes, an empty list if selection is empty
+	 * @return an unmodifiable list containing the selected indexes, an empty list if selection is empty
 	 */
 	List<Integer> getSelectedIndexes();
 
@@ -180,7 +180,7 @@ public interface TableSelectionModel<R> {
 	void setSelectedItems(Collection<R> items);
 
 	/**
-	 * @return a list containing the selected items
+	 * @return an unmodifiable list containing the selected items
 	 */
 	List<R> getSelectedItems();
 
@@ -229,6 +229,16 @@ public interface TableSelectionModel<R> {
 	 * @return the selected item, or an empty Optional in case the selection is empty
 	 */
 	Optional<R> selectedItem();
+
+	/**
+	 * @return an unmodifiable list containing the selected items
+	 */
+	List<R> selectedItems();
+
+	/**
+	 * @return an unmodifiable list containing the selected indexes
+	 */
+	List<Integer> selectedIndexes();
 
 	/**
 	 * Clears the selection

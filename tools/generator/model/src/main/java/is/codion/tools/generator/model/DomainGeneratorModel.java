@@ -308,7 +308,7 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public Collection<EntityRow> get() {
-			return schemaTableModel.selectionModel().getSelectedItems().stream()
+			return schemaTableModel.selectionModel().selectedItems().stream()
 							.map(SchemaRow::domain)
 							.flatMap(Optional::stream)
 							.flatMap(domain -> domain.entities().definitions().stream()

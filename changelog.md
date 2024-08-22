@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.10
 ### is.codion.common.core
 - DatabaseException.statement() and sqlState() now return Optional.
+### is.codion.common.model
+- TableSelectionModel.selectedItems() and selectedIndexes() added for consistency.
 ### is.codion.swing.common.ui
 - FilterTable.filterPanel() now returns TableConditionPanel.
 - FilterTable.Builder.filterPanelFactory added.

@@ -32,8 +32,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -140,15 +139,20 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
+	public List<Integer> selectedIndexes() {
+		return getSelectedIndexes();
+	}
+
+	@Override
 	public List<Integer> getSelectedIndexes() {
 		if (isSelectionEmpty()) {
 			return emptyList();
 		}
 
-		return IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
+		return unmodifiableList(IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
 						.filter(this::isSelectedIndex)
 						.boxed()
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	@Override
@@ -187,6 +191,11 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
+	public List<R> selectedItems() {
+		return getSelectedItems();
+	}
+
+	@Override
 	public boolean isSelected(R item) {
 		requireNonNull(item);
 
@@ -195,10 +204,10 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	@Override
 	public List<R> getSelectedItems() {
-		return getSelectedIndexes().stream()
+		return unmodifiableList(selectedIndexes().stream()
 						.mapToInt(Integer::intValue)
 						.mapToObj(tableModel::itemAt)
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	@Override
@@ -277,7 +286,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 				setSelectionInterval(lastIndex, lastIndex);
 			}
 			else {
-				setSelectedIndexes(getSelectedIndexes().stream()
+				setSelectedIndexes(selectedIndexes().stream()
 								.map(index -> index == 0 ? lastIndex : index - 1)
 								.collect(toList()));
 			}
@@ -291,7 +300,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 				setSelectionInterval(0, 0);
 			}
 			else {
-				setSelectedIndexes(getSelectedIndexes().stream()
+				setSelectedIndexes(selectedIndexes().stream()
 								.map(index -> index == tableModel.visibleCount() - 1 ? 0 : index + 1)
 								.collect(toList()));
 			}
@@ -463,7 +472,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 					selectedIndexEvent.accept(selectedIndex);
 					selectedItemEvent.accept(getSelectedItem());
 				}
-				List<Integer> selectedIndexes = getSelectedIndexes();
+				List<Integer> selectedIndexes = selectedIndexes();
 				selectionEvent.run();
 				selectedIndexesEvent.accept(selectedIndexes);
 				//we don't call getSelectedItems() since that would cause another call to getSelectedIndexes()

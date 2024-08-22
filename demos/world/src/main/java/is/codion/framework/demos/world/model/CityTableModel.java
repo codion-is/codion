@@ -76,7 +76,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 	}
 
 	private void updateCitiesWithoutLocationSelected() {
-		citiesWithoutLocationSelected.set(selectionModel().getSelectedItems().stream()
+		citiesWithoutLocationSelected.set(selectionModel().selectedItems().stream()
 						.anyMatch(city -> city.isNull(City.LOCATION)));
 	}
 
@@ -86,7 +86,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 		private final Collection<Entity> cities;
 
 		private PopulateLocationTask() {
-			cities = selectionModel().getSelectedItems().stream()
+			cities = selectionModel().selectedItems().stream()
 							.filter(city -> city.isNull(City.LOCATION))
 							.collect(toList());
 		}
@@ -116,7 +116,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 				progressReporter.report(updatedCities.size());
 				displayLocationEvent.accept(singletonList(city));
 			}
-			displayLocationEvent.accept(selectionModel().getSelectedItems());
+			displayLocationEvent.accept(selectionModel().selectedItems());
 
 			return null;
 		}

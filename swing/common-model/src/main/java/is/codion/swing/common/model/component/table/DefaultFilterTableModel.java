@@ -189,7 +189,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public <T> Collection<T> selectedValues(C identifier) {
-		return (Collection<T>) columnValues(selectionModel().getSelectedIndexes().stream(),
+		return (Collection<T>) columnValues(selectionModel().selectedIndexes().stream(),
 						columns.identifiers().indexOf(identifier));
 	}
 
@@ -216,7 +216,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public void sortItems() {
 		if (comparator.isNotNull()) {
-			List<R> selectedItems = selectionModel.getSelectedItems();
+			List<R> selectedItems = selectionModel.selectedItems();
 			visibleItems.sort(comparator.get());
 			fireTableRowsUpdated(0, visibleItems.size());
 			selectionModel.setSelectedItems(selectedItems);
@@ -225,7 +225,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public void filterItems() {
-		List<R> selectedItems = selectionModel.getSelectedItems();
+		List<R> selectedItems = selectionModel.selectedItems();
 		visibleItems.addAll(filteredItems);
 		filteredItems.clear();
 		for (ListIterator<R> visibleItemsIterator = visibleItems.listIterator(); visibleItemsIterator.hasNext(); ) {
@@ -521,7 +521,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private void clearAndAdd(Collection<R> items) {
-			Collection<R> selectedItems = selectionModel.getSelectedItems();
+			Collection<R> selectedItems = selectionModel.selectedItems();
 			clear();
 			addItemsSorted(items);
 			selectionModel.setSelectedItems(selectedItems);

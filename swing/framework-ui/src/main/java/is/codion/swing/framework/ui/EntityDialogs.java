@@ -569,7 +569,7 @@ public final class EntityDialogs {
 		}
 
 		private void ok() {
-			selectedEntities.addAll(tableModel.selectionModel().getSelectedItems());
+			selectedEntities.addAll(tableModel.selectionModel().selectedItems());
 			dialog.dispose();
 		}
 

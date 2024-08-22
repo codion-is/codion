@@ -420,7 +420,7 @@ public class FilterTableTest {
 		table.sortModel().setSortOrder(0, SortOrder.DESCENDING);
 		assertEquals(4, selectionModel.getMinSelectionIndex());
 
-		assertEquals(singletonList(4), selectionModel.getSelectedIndexes());
+		assertEquals(singletonList(4), selectionModel.selectedIndexes());
 		assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
 		assertEquals(4, selectionModel.getMinSelectionIndex());
 		assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());

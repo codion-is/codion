@@ -939,7 +939,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() throws Exception {
-				searchModel.entities().set(table.model().selectionModel().getSelectedItems());
+				searchModel.entities().set(table.model().selectionModel().selectedItems());
 				disposeParentWindow(table);
 			}
 		}

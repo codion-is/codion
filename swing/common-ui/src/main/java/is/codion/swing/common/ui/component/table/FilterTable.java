@@ -308,7 +308,7 @@ public final class FilterTable<R, C> extends JTable {
 		if (!(dataModel instanceof FilterTableModel)) {
 			throw new IllegalArgumentException("FilterTable model must be a FilterTableModel instance");
 		}
-		List<R> selection = ((FilterTableModel<R, C>) dataModel).selectionModel().getSelectedItems();
+		List<R> selection = ((FilterTableModel<R, C>) dataModel).selectionModel().selectedItems();
 		super.setModel(dataModel);
 		if (!selection.isEmpty()) {
 			((FilterTableModel<R, C>) dataModel).selectionModel().setSelectedItems(selection);
@@ -1366,7 +1366,7 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public String get() {
 			List<Integer> rows = selected ?
-							tableModel.selectionModel().getSelectedIndexes() :
+							tableModel.selectionModel().selectedIndexes() :
 							IntStream.range(0, tableModel.visibleCount())
 											.boxed()
 											.collect(toList());

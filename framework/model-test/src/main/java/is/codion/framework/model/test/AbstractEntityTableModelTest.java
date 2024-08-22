@@ -93,7 +93,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		assertEquals(1, tableModel.selectionModel().selectionCount());
 
 		tableModel.select(keys);
-		List<Entity> selectedItems = tableModel.selectionModel().getSelectedItems();
+		List<Entity> selectedItems = tableModel.selectionModel().selectedItems();
 		for (Entity selected : selectedItems) {
 			assertTrue(keys.contains(selected.primaryKey()));
 		}
@@ -106,7 +106,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		tableModel.refresh();
 
 		tableModel.selectionModel().setSelectedIndexes(asList(0, 3, 5));
-		Iterator<Entity> iterator = tableModel.selectionModel().getSelectedItems().iterator();
+		Iterator<Entity> iterator = tableModel.selectionModel().selectedItems().iterator();
 		assertEquals(tableModel.visibleItems().get(0), iterator.next());
 		assertEquals(tableModel.visibleItems().get(3), iterator.next());
 		assertEquals(tableModel.visibleItems().get(5), iterator.next());

@@ -355,7 +355,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 	@Override
 	public final Collection<Entity> deleteSelected() throws DatabaseException {
-		return editModel.delete(selectionModel().getSelectedItems());
+		return editModel.delete(selectionModel().selectedItems());
 	}
 
 	@Override
