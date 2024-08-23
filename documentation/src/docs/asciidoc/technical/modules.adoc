@@ -187,8 +187,6 @@ image::modules/framework/domain/build/reports/dependency-graph/dependency-graph.
 
 Domain model generation from a database schema.
 
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/db/package-summary.html[is.codion.framework.domain.db]
-
 .Dependency graph
 [%collapsible]
 ====
