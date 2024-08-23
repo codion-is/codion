@@ -28,6 +28,7 @@ Codion Change Log
 - EntityDialogs.DefaultEditAttributeDialogBuilder, bug fixed, retrying a failed update now working again.
 - EntityDialogs.EditAttributeDialogBuilder.Updater removed.
 - EntityDialogs.SelectionDialogBuilder.preferredSize() replaced with dialogSize().
+- EntityDialogs.SelectionDialogBuilder renamed EntitySelectionDialogBuilder, implementation refactored, now uses Dialogs.actionDialog().
 ### is.codion.swing.framework.ui.test
 - EntityEditPanelTestUnit, createEditPanel() removed, edit panel initializer function parameter added.
 - EntityApplicationPanelTestUnit now initializes all entity panels.

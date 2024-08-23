@@ -27,6 +27,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import java.awt.Color;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -235,11 +236,6 @@ public final class TestDomain extends DomainModel {
 		ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
 	}
 
-	/**
-	 * Otherwise we'd depend on java.awt.Color
-	 */
-	public static final Object CYAN = new Object();
-
 	void employee() {
 		add(Employee.TYPE.define(
 										Employee.ID.define()
@@ -291,7 +287,7 @@ public final class TestDomain extends DomainModel {
 						.caption("Employee")
 						.backgroundColorProvider((entity, attribute) -> {
 							if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {
-								return CYAN;
+								return Color.CYAN;
 							}
 
 							return null;

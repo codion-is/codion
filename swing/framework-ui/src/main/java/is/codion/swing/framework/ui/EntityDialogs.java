@@ -19,7 +19,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.model.CancelException;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
@@ -29,13 +28,12 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
 import is.codion.swing.common.ui.dialog.DialogBuilder;
-import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
@@ -45,20 +43,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -72,18 +64,17 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentDialog;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
-import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.awt.event.KeyEvent.VK_ENTER;
-import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 
@@ -127,12 +118,12 @@ public final class EntityDialogs {
 	}
 
 	/**
-	 * Creates a new {@link SelectionDialogBuilder} instance for searching for and selecting one or more entities from a table model.
+	 * Creates a new {@link EntitySelectionDialogBuilder} instance for searching for and selecting one or more entities from a table model.
 	 * @param tableModel the table model on which to base the table panel
 	 * @return a new builder instance
 	 */
-	public static SelectionDialogBuilder selectionDialog(SwingEntityTableModel tableModel) {
-		return new DefaultSelectionDialogBuilder(tableModel);
+	public static EntitySelectionDialogBuilder selectionDialog(SwingEntityTableModel tableModel) {
+		return new DefaultEntitySelectionDialogBuilder(tableModel);
 	}
 
 	/**
@@ -233,23 +224,23 @@ public final class EntityDialogs {
 	/**
 	 * A builder for a selection dialog.
 	 */
-	public interface SelectionDialogBuilder extends DialogBuilder<SelectionDialogBuilder> {
+	public interface EntitySelectionDialogBuilder extends DialogBuilder<EntitySelectionDialogBuilder> {
 
 		/**
 		 * @param dialogSize the preferred dialog size
 		 * @return this builder instance
 		 */
-		SelectionDialogBuilder dialogSize(Dimension dialogSize);
+		EntitySelectionDialogBuilder dialogSize(Dimension dialogSize);
 
 		/**
-		 * @return a List containing the selected entities
-		 * @throws CancelException in case the user cancels the operation
+		 * Displays table for selecting a one or more entities
+		 * @return a List containing the selected entities or an empty list in case the selection was cancelled
 		 */
 		List<Entity> select();
 
 		/**
-		 * Displays an entity table in a dialog for selecting a single entity
-		 * @return the selected entity or {@link Optional#empty()} if none was selected
+		 * Displays table for selecting a single entity
+		 * @return the selected entity or {@link Optional#empty()} in case the selection was cancelled
 		 */
 		Optional<Entity> selectSingle();
 	}
@@ -314,7 +305,7 @@ public final class EntityDialogs {
 			T initialValue = values.size() == 1 ? values.iterator().next() : null;
 			ComponentValue<T, ?> componentValue = editSelectedComponentValue(attribute, initialValue);
 			InputValidator<T> validator = new InputValidator<>(entityDefinition, attribute, componentValue);
-			Dialogs.inputDialog(componentValue)
+			inputDialog(componentValue)
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
 							.title(FrameworkMessages.edit())
@@ -391,7 +382,7 @@ public final class EntityDialogs {
 				if (focusOwner == null) {
 					focusOwner = owner;
 				}
-				Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
+				displayExceptionDialog(exception, parentWindow(focusOwner));
 			}
 		}
 
@@ -403,7 +394,7 @@ public final class EntityDialogs {
 				String title = editModel.entityDefinition().attributes()
 								.definition(exception.attribute())
 								.caption();
-				JOptionPane.showMessageDialog(locationRelativeTo == null ? owner : locationRelativeTo, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
+				showMessageDialog(locationRelativeTo == null ? owner : locationRelativeTo, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
 			}
 		}
 
@@ -457,19 +448,19 @@ public final class EntityDialogs {
 		}
 	}
 
-	private static final class DefaultSelectionDialogBuilder extends AbstractDialogBuilder<SelectionDialogBuilder>
-					implements SelectionDialogBuilder {
+	private static final class DefaultEntitySelectionDialogBuilder extends AbstractDialogBuilder<EntitySelectionDialogBuilder>
+					implements EntitySelectionDialogBuilder {
 
 		private final SwingEntityTableModel tableModel;
 
 		private Dimension dialogSize;
 
-		private DefaultSelectionDialogBuilder(SwingEntityTableModel tableModel) {
+		private DefaultEntitySelectionDialogBuilder(SwingEntityTableModel tableModel) {
 			this.tableModel = requireNonNull(tableModel);
 		}
 
 		@Override
-		public SelectionDialogBuilder dialogSize(Dimension dialogSize) {
+		public EntitySelectionDialogBuilder dialogSize(Dimension dialogSize) {
 			this.dialogSize = requireNonNull(dialogSize);
 			return this;
 		}
@@ -491,75 +482,47 @@ public final class EntityDialogs {
 
 	private static final class EntitySelectionDialog {
 
-		private final JDialog dialog;
-		private final List<Entity> selectedEntities = new ArrayList<>();
-		private final SwingEntityTableModel tableModel;
 		private final EntityTablePanel entityTablePanel;
 
-		private final Control okControl = Control.builder()
-						.command(this::ok)
-						.name(Messages.ok())
-						.mnemonic(Messages.okMnemonic())
-						.build();
-		private final Control cancelControl;
-		private final Control searchControl = Control.builder()
+		private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, Component locationRelativeTo,
+																	ValueObserver<String> title, ImageIcon icon, Dimension dialogSize, boolean singleSelection) {
+			Control okControl = Control.builder()
+							.command(this::ok)
+							.name(Messages.ok())
+							.mnemonic(Messages.okMnemonic())
+							.enabled(tableModel.selectionModel().selectionNotEmpty())
+							.build();
+			Control cancelControl = Control.builder()
+							.command(this::cancel)
+							.name(Messages.cancel())
+							.mnemonic(Messages.cancelMnemonic())
+							.build();
+			Control searchControl = Control.builder()
 						.command(this::search)
 						.name(FrameworkMessages.searchVerb())
 						.mnemonic(FrameworkMessages.searchMnemonic())
 						.build();
-
-		private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, Component locationRelativeTo,
-																	ValueObserver<String> title, ImageIcon icon, Dimension dialogSize,
-																	boolean singleSelection) {
-			this.dialog = new JDialog(owner, title == null ? null : title.get());
-			if (title != null) {
-				title.addConsumer(dialog::setTitle);
-			}
-			if (icon != null) {
-				dialog.setIconImage(icon.getImage());
-			}
-			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			this.tableModel = requireNonNull(tableModel, "tableModel");
-			this.tableModel.editModel().readOnly().set(true);
-			this.entityTablePanel = createTablePanel(tableModel, singleSelection);
-			this.cancelControl = Control.builder()
-							.command(dialog::dispose)
-							.name(Messages.cancel())
-							.mnemonic(Messages.cancelMnemonic())
-							.build();
-			KeyEvents.builder(VK_ESCAPE)
-							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-							.action(cancelControl)
-							.enable(dialog.getRootPane());
-			JButton okButton = button(okControl).build();
-			JPanel buttonPanel = flowLayoutPanel(FlowLayout.RIGHT)
-							.add(okButton)
-							.add(button(cancelControl).build())
-							.add(button(searchControl).build())
-							.build();
-			dialog.getRootPane().setDefaultButton(okButton);
-			dialog.setLayout(new BorderLayout());
-			dialog.add(entityTablePanel, BorderLayout.CENTER);
-			dialog.add(buttonPanel, BorderLayout.SOUTH);
-			if (dialogSize != null) {
-				dialog.setSize(dialogSize);
-			}
-			else {
-				dialog.pack();
-			}
-			dialog.setLocationRelativeTo(locationRelativeTo);
-			dialog.setModal(true);
-			dialog.setResizable(true);
+			entityTablePanel = createTablePanel(tableModel, okControl, singleSelection);
+			actionDialog(borderLayoutPanel()
+											.centerComponent(entityTablePanel)
+											.border(Borders.emptyBorder())
+											.build())
+							.owner(owner)
+							.locationRelativeTo(locationRelativeTo)
+							.title(title)
+							.icon(icon)
+							.size(dialogSize)
+							.defaultAction(okControl)
+							.escapeAction(cancelControl)
+							.action(searchControl)
+							.show();
 		}
 
-		private EntityTablePanel createTablePanel(SwingEntityTableModel tableModel, boolean singleSelection) {
-			EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		private static EntityTablePanel createTablePanel(SwingEntityTableModel tableModel, Control okControl, boolean singleSelection) {
+			tableModel.editModel().readOnly().set(true);
+			EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeSouthPanel(false));
 			tablePanel.initialize();
-			tablePanel.table().doubleClickEvent().addListener(() -> {
-				if (!tableModel.selectionModel().isSelectionEmpty()) {
-					okControl.actionPerformed(null);
-				}
-			});
+			tablePanel.table().doubleClickAction().set(okControl);
 			tablePanel.conditionPanel().state().set(ConditionState.SIMPLE);
 			tablePanel.table().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
@@ -569,25 +532,29 @@ public final class EntityDialogs {
 		}
 
 		private void ok() {
-			selectedEntities.addAll(tableModel.selectionModel().selectedItems());
-			dialog.dispose();
+			parentDialog(entityTablePanel).dispose();
+		}
+
+		private void cancel() {
+			entityTablePanel.tableModel().selectionModel().clearSelection();
+			parentDialog(entityTablePanel).dispose();
 		}
 
 		private void search() {
-			tableModel.refresh();
-			if (tableModel.rowCount() > 0) {
-				tableModel.selectionModel().setSelectedIndexes(singletonList(0));
-				entityTablePanel.table().requestFocusInWindow();
-			}
-			else {
-				JOptionPane.showMessageDialog(parentWindow(entityTablePanel), FrameworkMessages.noSearchResults());
-			}
+			SwingEntityTableModel tableModel = entityTablePanel.tableModel();
+			tableModel.refreshThen(items -> {
+				if (tableModel.rowCount() > 0) {
+					tableModel.selectionModel().setSelectedIndex(0);
+					entityTablePanel.table().requestFocusInWindow();
+				}
+				else {
+					showMessageDialog(parentWindow(entityTablePanel), FrameworkMessages.noSearchResults());
+				}
+			});
 		}
 
 		private List<Entity> selectEntities() {
-			dialog.setVisible(true);
-
-			return selectedEntities;
+			return entityTablePanel.tableModel().selectionModel().selectedItems();
 		}
 	}
 
@@ -627,7 +594,7 @@ public final class EntityDialogs {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			SwingEntityEditModel editModel = editPanel.editModel();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
-			Dialogs.actionDialog(borderLayoutPanel()
+			actionDialog(borderLayoutPanel()
 											.centerComponent(editPanel)
 											.border(emptyBorder())
 											.build())
@@ -710,7 +677,7 @@ public final class EntityDialogs {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			SwingEntityEditModel editModel = editPanel.editModel();
 			initializeEditModel(editModel);
-			Dialogs.actionDialog(borderLayoutPanel()
+			actionDialog(borderLayoutPanel()
 											.centerComponent(editPanel)
 											.border(emptyBorder())
 											.build())
