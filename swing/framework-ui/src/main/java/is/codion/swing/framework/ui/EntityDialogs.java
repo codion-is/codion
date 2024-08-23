@@ -61,7 +61,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.parentDialog;
+import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
@@ -532,12 +532,12 @@ public final class EntityDialogs {
 		}
 
 		private void ok() {
-			parentDialog(entityTablePanel).dispose();
+			disposeParentWindow(entityTablePanel);
 		}
 
 		private void cancel() {
 			entityTablePanel.tableModel().selectionModel().clearSelection();
-			parentDialog(entityTablePanel).dispose();
+			disposeParentWindow(entityTablePanel);
 		}
 
 		private void search() {
@@ -810,7 +810,7 @@ public final class EntityDialogs {
 
 		@Override
 		public void run() {
-			parentDialog(editPanel).dispose();
+			disposeParentWindow(editPanel);
 		}
 	}
 
@@ -825,7 +825,7 @@ public final class EntityDialogs {
 		@Override
 		public void run() {
 			editPanel.editModel().revert();
-			parentDialog(editPanel).dispose();
+			disposeParentWindow(editPanel);
 		}
 	}
 }

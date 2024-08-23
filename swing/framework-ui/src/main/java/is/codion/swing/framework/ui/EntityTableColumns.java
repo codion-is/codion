@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Provides table columns based on an entity definition.
  */
@@ -42,7 +44,7 @@ public final class EntityTableColumns {
 	 */
 	public static List<FilterTableColumn<Attribute<?>>> entityTableColumns(EntityDefinition entityDefinition) {
 		AtomicInteger index = new AtomicInteger();
-		return entityDefinition.attributes().definitions().stream()
+		return requireNonNull(entityDefinition).attributes().definitions().stream()
 						.filter(attributeDefinition -> !attributeDefinition.hidden())
 						.map(attributeDefinition -> createColumn(attributeDefinition, index.getAndIncrement()))
 						.collect(Collectors.toList());

@@ -23,7 +23,6 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -37,6 +36,7 @@ import java.awt.Point;
 import java.awt.Window;
 import java.util.function.Predicate;
 
+import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.control.Control.commandControl;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -129,7 +129,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 		}
 		okCancelDialogBuilder.okAction(commandControl(() -> {
 			if (closeDialog.test(componentValue.get())) {
-				Utilities.parentDialog(componentValue.component()).dispose();
+				disposeParentWindow(componentValue.component());
 			}
 		})).show();
 	}
@@ -167,7 +167,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
 		@Override
 		public void run() {
-			Utilities.parentDialog(componentValue.component()).dispose();
+			disposeParentWindow(componentValue.component());
 			okPressed.set(true);
 		}
 	}
