@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.11
+
 ## 0.18.10
 ### is.codion.common.core
 - DatabaseException.statement() and sqlState() now return Optional.
