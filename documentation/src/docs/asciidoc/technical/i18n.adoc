@@ -1,5 +1,6 @@
 = Internationalization (i18n)
 :dir-source: ../../../../../demos/chinook/src/main/java
+:dir-tutorials: ../tutorials
 :url-javadoc: link:../api
 :basedir: ..
 
@@ -23,6 +24,6 @@ module is.codion.framework.demos.chinook {
 }
 ----
 
-See <<{dir-tutorials}/chinook/chinook.adoc, Chinook demo>>.
+See <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook demo>>.
 
 include::{basedir}/technical/i18n-values.adoc[leveloffset=+1]
