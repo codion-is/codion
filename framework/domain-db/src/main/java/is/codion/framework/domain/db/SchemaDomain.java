@@ -205,16 +205,16 @@ public final class SchemaDomain extends DomainModel {
 
 	private ColumnDefinition.Builder<?, ?> auditColumnDefinitionBuilder(Column<?> column) {
 		if (isAuditInsertUserColumn(column)) {
-			return column.define().auditInsertUserColumn();
+			return column.define().auditColumn().insertUser();
 		}
 		if (isAuditInsertTimeColumn(column)) {
-			return column.define().auditInsertTimeColumn();
+			return column.define().auditColumn().insertTime();
 		}
 		if (isAuditUpdateUserColumn(column)) {
-			return column.define().auditUpdateUserColumn();
+			return column.define().auditColumn().updateUser();
 		}
 		if (isAuditUpdateTimeColumn(column)) {
-			return column.define().auditUpdateTimeColumn();
+			return column.define().auditColumn().updateTime();
 		}
 
 		throw new IllegalArgumentException("Unknown audit column type: " + column);

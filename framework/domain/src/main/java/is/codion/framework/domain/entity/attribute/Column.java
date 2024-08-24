@@ -135,32 +135,9 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 																																																					 C trueValue, C falseValue);
 
 		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
+		 * @return a new {@link AuditColumnDefiner} instance
 		 */
-		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn();
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 */
-		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn();
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a row.
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 */
-		<B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn();
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a row.
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 */
-		<B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn();
+		AuditColumnDefiner<T> auditColumn();
 
 		/**
 		 * A convenience method for a {@link Converter} for boolean columns
@@ -174,6 +151,41 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		static <C> Converter<Boolean, C> booleanConverter(C trueValue, C falseValue) {
 			return new DefaultColumn.BooleanConverter<>(trueValue, falseValue);
 		}
+	}
+
+	/**
+	 * Provides {@link ColumnDefinition.Builder} instances for audit columns.
+	 * @param <T> the column type
+	 */
+	interface AuditColumnDefiner<T> {
+
+		/**
+		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
+		 * @param <B> the builder type
+		 * @return a new {@link ColumnDefinition.Builder}
+		 */
+		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> insertTime();
+
+		/**
+		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
+		 * @param <B> the builder type
+		 * @return a new {@link ColumnDefinition.Builder}
+		 */
+		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> updateTime();
+
+		/**
+		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a row.
+		 * @param <B> the builder type
+		 * @return a new {@link ColumnDefinition.Builder}
+		 */
+		<B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> insertUser();
+
+		/**
+		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a row.
+		 * @param <B> the builder type
+		 * @return a new {@link ColumnDefinition.Builder}
+		 */
+		<B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> updateUser();
 	}
 
 	/**

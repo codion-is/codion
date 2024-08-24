@@ -74,16 +74,20 @@ public final class Petstore extends DomainModel {
 					.column()
 					.caption("Image"),
 				Address.INSERT_USER.define()
-					.auditInsertUserColumn()
+					.auditColumn()
+					.insertUser()
 					.caption("Insert user"),
 				Address.INSERT_TIME.define()
-					.auditInsertTimeColumn()
+					.auditColumn()
+					.insertTime()
 					.caption("Insert time"),
 				Address.UPDATE_USER.define()
-					.auditUpdateTimeColumn()
+					.auditColumn()
+					.updateUser()
 					.caption("Update user"),
 				Address.UPDATE_TIME.define()
-					.auditUpdateUserColumn()
+					.auditColumn()
+					.updateTime()
 					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Address")
@@ -109,16 +113,20 @@ public final class Petstore extends DomainModel {
 					.caption("Image url")
 					.maximumLength(55),
 				Category.INSERT_USER.define()
-					.auditInsertUserColumn()
+					.auditColumn()
+					.insertUser()
 					.caption("Insert user"),
 				Category.INSERT_TIME.define()
-					.auditInsertTimeColumn()
+					.auditColumn()
+					.insertTime()
 					.caption("Insert time"),
 				Category.UPDATE_USER.define()
-					.auditUpdateTimeColumn()
+					.auditColumn()
+					.updateUser()
 					.caption("Update user"),
 				Category.UPDATE_TIME.define()
-					.auditUpdateUserColumn()
+					.auditColumn()
+					.updateTime()
 					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Category")
@@ -145,16 +153,20 @@ public final class Petstore extends DomainModel {
 					.nullable(false)
 					.maximumLength(24),
 				ContactInfo.INSERT_USER.define()
-					.auditInsertUserColumn()
+					.auditColumn()
+					.insertUser()
 					.caption("Insert user"),
 				ContactInfo.INSERT_TIME.define()
-					.auditInsertTimeColumn()
+					.auditColumn()
+					.insertTime()
 					.caption("Insert time"),
 				ContactInfo.UPDATE_USER.define()
-					.auditUpdateTimeColumn()
+					.auditColumn()
+					.updateUser()
 					.caption("Update user"),
 				ContactInfo.UPDATE_TIME.define()
-					.auditUpdateUserColumn()
+					.auditColumn()
+					.updateTime()
 					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Contact info")
@@ -184,16 +196,20 @@ public final class Petstore extends DomainModel {
 					.nullable(false)
 					.maximumLength(30),
 				Tag.INSERT_USER.define()
-					.auditInsertUserColumn()
+					.auditColumn()
+					.insertUser()
 					.caption("Insert user"),
 				Tag.INSERT_TIME.define()
-					.auditInsertTimeColumn()
+					.auditColumn()
+					.insertTime()
 					.caption("Insert time"),
 				Tag.UPDATE_USER.define()
-					.auditUpdateTimeColumn()
+					.auditColumn()
+					.updateUser()
 					.caption("Update user"),
 				Tag.UPDATE_TIME.define()
-					.auditUpdateUserColumn()
+					.auditColumn()
+					.updateTime()
 					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Tag")
@@ -226,16 +242,20 @@ public final class Petstore extends DomainModel {
 					.caption("Image url")
 					.maximumLength(55),
 				Product.INSERT_USER.define()
-					.auditInsertUserColumn()
+					.auditColumn()
+					.insertUser()
 					.caption("Insert user"),
 				Product.INSERT_TIME.define()
-					.auditInsertTimeColumn()
+					.auditColumn()
+					.insertTime()
 					.caption("Insert time"),
 				Product.UPDATE_USER.define()
-					.auditUpdateTimeColumn()
+					.auditColumn()
+					.updateUser()
 					.caption("Update user"),
 				Product.UPDATE_TIME.define()
-					.auditUpdateUserColumn()
+					.auditColumn()
+					.updateTime()
 					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Product")
@@ -300,16 +320,20 @@ public final class Petstore extends DomainModel {
 					.nullable(false)
 					.columnHasDefaultValue(true),
 				Item.INSERT_USER.define()
-					.auditInsertUserColumn()
+					.auditColumn()
+					.insertUser()
 					.caption("Insert user"),
 				Item.INSERT_TIME.define()
-					.auditInsertTimeColumn()
+					.auditColumn()
+					.insertTime()
 					.caption("Insert time"),
 				Item.UPDATE_USER.define()
-					.auditUpdateTimeColumn()
+					.auditColumn()
+					.updateUser()
 					.caption("Update user"),
 				Item.UPDATE_TIME.define()
-					.auditUpdateUserColumn()
+					.auditColumn()
+					.updateTime()
 					.caption("Update time"))
 			.keyGenerator(identity())
 			.caption("Item")
@@ -329,16 +353,20 @@ public final class Petstore extends DomainModel {
 					.foreignKey()
 					.caption("Item"),
 				TagItem.INSERT_USER.define()
-					.auditInsertUserColumn()
+					.auditColumn()
+					.insertUser()
 					.caption("Insert user"),
 				TagItem.INSERT_TIME.define()
-					.auditInsertTimeColumn()
+					.auditColumn()
+					.insertTime()
 					.caption("Insert time"),
 				TagItem.UPDATE_USER.define()
-					.auditUpdateTimeColumn()
+					.auditColumn()
+					.updateUser()
 					.caption("Update user"),
 				TagItem.UPDATE_TIME.define()
-					.auditUpdateUserColumn()
+					.auditColumn()
+					.updateTime()
 					.caption("Update time"))
 			.caption("Tag item")
 			.build();

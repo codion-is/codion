@@ -466,9 +466,11 @@ public final class DomainSource {
 			AuditColumnDefinition<?> auditColumnDefinition = (AuditColumnDefinition<?>) column;
 			switch (auditColumnDefinition.auditAction()) {
 				case INSERT:
-					return column.attribute().type().isString() ? "auditInsertUserColumn()" : "auditInsertTimeColumn()";
+					return new StringBuilder("auditColumn()").append(LINE_SEPARATOR)
+									.append(TRIPLE_INDENT).append(column.attribute().type().isString() ? ".insertUser()" : ".insertTime()").toString();
 				case UPDATE:
-					return column.attribute().type().isTemporal() ? "auditUpdateUserColumn()" : "auditUpdateTimeColumn()";
+					return new StringBuilder("auditColumn()").append(LINE_SEPARATOR)
+									.append(TRIPLE_INDENT).append(column.attribute().type().isString() ? ".updateUser()" : ".updateTime()").toString();
 				default:
 					throw new IllegalArgumentException("Uknown audit action: " + auditColumnDefinition.auditAction());
 			}

@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.11
+### is.codion.framework.domain.db
+- Column.AuditColumnDefiner added, related refactoring.
 
 ## 0.18.10
 ### is.codion.common.core

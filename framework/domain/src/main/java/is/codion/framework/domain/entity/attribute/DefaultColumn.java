@@ -264,8 +264,6 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 
 	private final class DefaultColumnDefiner<T> extends DefaultAttributeDefiner<T> implements Column.ColumnDefiner<T> {
 
-		private static final String COLUMN_CAPTION = "Column";
-
 		private final Column<T> column;
 
 		private DefaultColumnDefiner(Column<T> column) {
@@ -308,6 +306,22 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 							.columnClass(columnClass, (Converter<T, C>) new BooleanConverter<>(trueValue, falseValue));
 		}
 
+		@Override
+		public AuditColumnDefiner<T> auditColumn() {
+			return new DefaultAuditColumnDefiner<>(column);
+		}
+	}
+
+	private final class DefaultAuditColumnDefiner<T> implements AuditColumnDefiner<T> {
+
+		private static final String COLUMN_CAPTION = "Column";
+
+		private final Column<T> column;
+
+		private DefaultAuditColumnDefiner(Column<T> column) {
+			this.column = column;
+		}
+
 		/**
 		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
 		 * @param column the column
@@ -315,7 +329,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder}
 		 */
-		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn() {
+		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> insertTime() {
 			if (!type().isTemporal()) {
 				throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a temporal column");
 			}
@@ -330,7 +344,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder}
 		 */
-		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn() {
+		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> updateTime() {
 			if (!type().isTemporal()) {
 				throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a temporal column");
 			}
@@ -345,7 +359,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		 * @return a new {@link ColumnDefinition.Builder}
 		 * @throws IllegalArgumentException in case column is not a string attribute
 		 */
-		public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn() {
+		public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> insertUser() {
 			if (!type().isString()) {
 				throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a string column");
 			}
@@ -360,7 +374,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		 * @return a new {@link ColumnDefinition.Builder}
 		 * @throws IllegalArgumentException in case column is not a string attribute
 		 */
-		public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn() {
+		public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> updateUser() {
 			if (!type().isString()) {
 				throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a string column");
 			}
