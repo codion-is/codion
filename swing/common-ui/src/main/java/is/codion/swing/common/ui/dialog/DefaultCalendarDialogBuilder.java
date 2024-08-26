@@ -80,7 +80,7 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 						.owner(owner)
 						.locationRelativeTo(locationRelativeTo)
 						.title(title)
-						.onShown(dialog -> calendarPanel.requestCurrentDayButtonFocus())
+						.onShown(dialog -> calendarPanel.requestInputFocus())
 						.onOk(() -> okPressed.set(true))
 						.show();
 

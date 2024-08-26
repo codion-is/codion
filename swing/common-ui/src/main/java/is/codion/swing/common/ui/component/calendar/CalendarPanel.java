@@ -35,7 +35,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
@@ -43,7 +42,8 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -80,6 +80,9 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
@@ -99,8 +102,6 @@ public final class CalendarPanel extends JPanel {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(CalendarPanel.class, getBundle(CalendarPanel.class.getName()));
-
-	private static final FocusManager FOCUS_MANAGER = FocusManager.getCurrentManager();
 
 	/**
 	 * The available controls.
@@ -196,8 +197,7 @@ public final class CalendarPanel extends JPanel {
 	private final State todaySelected;
 
 	private final ControlMap controlMap;
-	private final Map<Integer, JToggleButton> dayButtons;
-	private final Map<Integer, State> dayStates;
+	private final Map<Integer, DayLabel> dayLabels;
 	private final JPanel dayGridPanel;
 	private final List<JLabel> dayFillLabels;
 	private final JLabel formattedDateLabel;
@@ -246,8 +246,7 @@ public final class CalendarPanel extends JPanel {
 		localDateValue = Value.value(createLocalDateTime().toLocalDate());
 		localDateTimeValue = Value.value(createLocalDateTime());
 		todaySelected = State.state(todaySelected());
-		dayStates = createDayStates();
-		dayButtons = createDayButtons();
+		dayLabels = createDayLabels();
 		dayFillLabels = IntStream.rangeClosed(0, MAX_DAY_FILLERS + 1).mapToObj(counter -> new JLabel()).collect(Collectors.toList());
 		dayGridPanel = new JPanel(new GridLayout(DAY_GRID_ROWS, DAYS_IN_WEEK));
 		formattedDateLabel = new JLabel("", SwingConstants.CENTER);
@@ -256,6 +255,7 @@ public final class CalendarPanel extends JPanel {
 		createControls();
 		addKeyEvents();
 		updateFormattedDate();
+		updateDayLabelBorders();
 	}
 
 	/**
@@ -295,10 +295,10 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	/**
-	 * Requests input focus for the current day button
+	 * Requests input focus for this calendar panel
 	 */
-	public void requestCurrentDayButtonFocus() {
-		dayButtons.get(dayValue.get()).requestFocusInWindow();
+	public void requestInputFocus() {
+		dayLabels.get(dayValue.get()).requestFocusInWindow();
 	}
 
 	/**
@@ -482,58 +482,26 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private void subtractOne(ChronoUnit unit) {
-		boolean dayPanelHasFocus = dayPanelHasFocus();
 		if (unit.isDateBased()) {
 			setYearMonthDay(getLocalDate().minus(1, unit));
 		}
 		else {
 			setYearMonthDayHourMinute(getLocalDateTime().minus(1, unit));
 		}
-		if (dayPanelHasFocus) {
-			requestCurrentDayButtonFocus();
-		}
 	}
 
 	private void addOne(ChronoUnit unit) {
-		boolean dayPanelHasFocus = dayPanelHasFocus();
 		if (unit.isDateBased()) {
 			setYearMonthDay(getLocalDate().plus(1, unit));
 		}
 		else {
 			setYearMonthDayHourMinute(getLocalDateTime().plus(1, unit));
 		}
-		if (dayPanelHasFocus) {
-			requestCurrentDayButtonFocus();
-		}
 	}
 
-	private Map<Integer, State> createDayStates() {
-		Map<Integer, State> states = IntStream.rangeClosed(1, MAX_DAYS_IN_MONTH).boxed()
-						.collect(Collectors.toMap(Integer::valueOf, this::createDayState));
-		State.group(states.values());
-
-		return states;
-	}
-
-	private State createDayState(int dayOfMonth) {
-		State dayState = State.state(dayValue.get().intValue() == dayOfMonth);
-		dayState.addConsumer(selected -> {
-			if (selected) {
-				dayValue.set(dayOfMonth);
-			}
-		});
-
-		return dayState;
-	}
-
-	private Map<Integer, JToggleButton> createDayButtons() {
-		Insets margin = new Insets(0, 0, 0, 0);
-
-		return dayStates.entrySet().stream()
-						.collect(Collectors.toMap(Map.Entry::getKey, entry -> toggleButton(entry.getValue())
-										.text(Integer.toString(entry.getKey()))
-										.margin(margin)
-										.build()));
+	private Map<Integer, DayLabel> createDayLabels() {
+		return IntStream.rangeClosed(1, MAX_DAYS_IN_MONTH).boxed()
+						.collect(toMap(identity(), DayLabel::new));
 	}
 
 	private void initializeUI() {
@@ -603,10 +571,7 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private void layoutDayPanel() {
-		if (dayPanelHasFocus()) {
-			//otherwise, the focus jumps to the first field (month)
-			FOCUS_MANAGER.clearFocusOwner();
-		}
+		FocusManager.getCurrentManager().clearFocusOwner();
 		dayGridPanel.removeAll();
 		int fieldCount = 0;
 		int fillerCount = 0;
@@ -617,12 +582,13 @@ public final class CalendarPanel extends JPanel {
 		}
 		YearMonth yearMonth = YearMonth.of(yearValue.get(), monthValue.get());
 		for (int dayOfMonth = 1; dayOfMonth <= yearMonth.lengthOfMonth(); dayOfMonth++) {
-			dayGridPanel.add(dayButtons.get(dayOfMonth));
+			dayGridPanel.add(dayLabels.get(dayOfMonth));
 			fieldCount++;
 		}
 		while (fieldCount++ < 42) {
 			dayGridPanel.add(dayFillLabels.get(fillerCount++));
 		}
+		requestInputFocus();
 		validate();
 		repaint();
 	}
@@ -640,10 +606,6 @@ public final class CalendarPanel extends JPanel {
 			default:
 				return 0;
 		}
-	}
-
-	private boolean dayPanelHasFocus() {
-		return dayGridPanel.isAncestorOf(FOCUS_MANAGER.getFocusOwner());
 	}
 
 	private void setYearMonthDay(LocalDate localDate) {
@@ -665,15 +627,18 @@ public final class CalendarPanel extends JPanel {
 	private void updateDateTime() {
 		//prevent illegal day values
 		YearMonth yearMonth = YearMonth.of(yearValue.get(), monthValue.get());
-		dayStates.get(dayValue.get() > yearMonth.lengthOfMonth() ? yearMonth.lengthOfMonth() : dayValue.get()).set(true);
+		dayValue.map(day -> day > yearMonth.lengthOfMonth() ? yearMonth.lengthOfMonth() : day);
 		LocalDateTime localDateTime = createLocalDateTime();
 		localDateValue.set(localDateTime.toLocalDate());
 		localDateTimeValue.set(localDateTime);
 		todaySelected.set(todaySelected());
-		if (dayPanelHasFocus()) {
-			requestCurrentDayButtonFocus();
-		}
+		updateDayLabelBorders();
+		requestInputFocus();
 		invokeLater(this::updateFormattedDate);
+	}
+
+	private void updateDayLabelBorders() {
+		dayLabels.values().forEach(DayLabel::updateBorder);
 	}
 
 	private boolean todaySelected() {
@@ -681,10 +646,9 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private void selectToday() {
-		FOCUS_MANAGER.clearFocusOwner();//prevent focus flickering
 		LocalDate now = LocalDate.now();
 		setLocalDateTime(getLocalDateTime().withYear(now.getYear()).withMonth(now.getMonthValue()).withDayOfMonth(now.getDayOfMonth()));
-		requestCurrentDayButtonFocus();
+		requestInputFocus();
 	}
 
 	private void updateFormattedDate() {
@@ -816,6 +780,36 @@ public final class CalendarPanel extends JPanel {
 		return Arrays.stream(Month.values())
 						.map(month -> Item.item(month, month.getDisplayName(TextStyle.SHORT, Locale.getDefault())))
 						.collect(Collectors.toList());
+	}
+
+	private final class DayLabel extends JLabel {
+
+		private final int day;
+
+		private DayLabel(Integer day) {
+			super(day.toString());
+			this.day = day.intValue();
+			setHorizontalAlignment(CENTER);
+			setFocusable(true);
+			addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					dayValue.set(day);
+				}
+			});
+		}
+
+		@Override
+		public void updateUI() {
+			super.updateUI();
+			if (dayValue != null) {
+				updateBorder();
+			}
+		}
+
+		private void updateBorder() {
+			setBorder(dayValue.isEqualTo(day) ? createEtchedBorder(getForeground(), getForeground()) : createEtchedBorder());
+		}
 	}
 
 	private final class LayoutDayPanelListener implements Runnable {
