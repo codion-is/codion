@@ -187,8 +187,8 @@ This clears all values and resets all operators to *EQUAL*.
 
 |kbd:[Ctrl + &#x2193;/&#x2191;]|Previous/next year
 |kbd:[Shift + &#x2193;/&#x2191;]|Previous/next month
-|kbd:[Alt + &#x2190;/&#x2192;]|Previous/next day
-|kbd:[Alt + &#x2191;/&#x2193;]|Previous/next week
+|kbd:[&#x2190;/&#x2192;]|Previous/next day
+|kbd:[&#x2191;/&#x2193;]|Previous/next week
 |kbd:[Shift + Alt + &#x2193;/&#x2191;]|Previous/next hour
 |kbd:[Ctrl + Alt + &#x2193;/&#x2191;]|Previous/next minute
 |===

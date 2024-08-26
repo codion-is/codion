@@ -8,6 +8,7 @@ Codion Change Log
 - CalendarPanel.Builder.locale() added.
 - CalendarPanel now takes the first day of week according to locale into account.
 - CalendarPanel now uses labels instead of buttons to represent days.
+- CalendarPanel, ALT modifier removed from day/week keyboard shortcut.
 
 ## 0.18.10
 ### is.codion.common.core

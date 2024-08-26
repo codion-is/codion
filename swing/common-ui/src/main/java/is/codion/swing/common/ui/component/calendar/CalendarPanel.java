@@ -92,8 +92,8 @@ import static javax.swing.SwingUtilities.isEventDispatchThread;
  * Keyboard navigation:<br><br>
  * Previous/next year: CTRL + left/right arrow or down/up arrow.<br>
  * Previous/next month: SHIFT + left/right arrow or down/up arrow.<br>
- * Previous/next week: ALT + up/down arrow.<br>
- * Previous/next day: ALT + left/right arrow.<br>
+ * Previous/next week: up/down arrow.<br>
+ * Previous/next day: left/right arrow.<br>
  * Previous/next hour: SHIFT-ALT + left/right arrow or down/up arrow.<br>
  * Previous/next minute: CTRL-ALT + left/right arrow or down/up arrow.
  * @see #builder()
@@ -130,24 +130,24 @@ public final class CalendarPanel extends JPanel {
 		public static final ControlKey<CommandControl> NEXT_MONTH = CommandControl.key("nextMonth", keyStroke(VK_UP, SHIFT_DOWN_MASK));
 		/**
 		 * Select the previous week.<br>
-		 * Default key stroke: ALT-UP ARROW
+		 * Default key stroke: UP ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_WEEK = CommandControl.key("previousWeek", keyStroke(VK_UP, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_WEEK = CommandControl.key("previousWeek", keyStroke(VK_UP));
 		/**
 		 * Select the next week.<br>
-		 * Default key stroke: ALT-DOWN ARROW
+		 * Default key stroke: DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_WEEK = CommandControl.key("nextWeek", keyStroke(VK_DOWN, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_WEEK = CommandControl.key("nextWeek", keyStroke(VK_DOWN));
 		/**
 		 * Select the previous day.<br>
-		 * Default key stroke: ALT-LEFT ARROW
+		 * Default key stroke: LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_DAY = CommandControl.key("previousDay", keyStroke(VK_LEFT, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_DAY = CommandControl.key("previousDay", keyStroke(VK_LEFT));
 		/**
 		 * Select the next day.<br>
-		 * Default key stroke: ALT-RIGHT ARROW
+		 * Default key stroke: RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_DAY = CommandControl.key("nextDay", keyStroke(VK_RIGHT, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_DAY = CommandControl.key("nextDay", keyStroke(VK_RIGHT));
 		/**
 		 * Select the previous hour.<br>
 		 * Default key stroke: SHIFT-ALT-DOWN ARROW
