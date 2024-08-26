@@ -54,6 +54,7 @@ import java.time.format.FormatStyle;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.WeekFields;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -180,7 +181,8 @@ public final class CalendarPanel extends JPanel {
 	private static final int MAX_DAY_FILLERS = 14;
 	private static final int DAY_GRID_ROWS = 6;
 
-	private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
+	private final Locale locale;
+	private final DateTimeFormatter dateFormatter;
 	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
 	private final Value<LocalDate> localDateValue;
@@ -206,6 +208,8 @@ public final class CalendarPanel extends JPanel {
 		this.includeTime = builder.includeTime;
 		this.includeTodayButton = builder.includeTodayButton;
 		this.controlMap = builder.controlMap;
+		this.locale = builder.locale;
+		this.dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale);
 		LocalDateTime dateTime = builder.initialValue == null ? LocalDateTime.now() : builder.initialValue;
 		yearValue = Value.builder()
 						.nonNull(dateTime.getYear())
@@ -331,6 +335,13 @@ public final class CalendarPanel extends JPanel {
 	public interface Builder {
 
 		/**
+		 * Specifies the locale, controlling the start of week day and the full date display format.
+		 * @param locale the locale
+		 * @return this builder instance
+		 */
+		Builder locale(Locale locale);
+
+		/**
 		 * Note that calling this method also sets {@link #includeTime(boolean)} to false.
 		 * In case of a null value {@link LocalDate#now()} is used.
 		 * @param initialValue the initial value
@@ -375,9 +386,16 @@ public final class CalendarPanel extends JPanel {
 
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
+		private Locale locale = Locale.getDefault();
 		private LocalDateTime initialValue;
 		private boolean includeTime = false;
 		private boolean includeTodayButton = false;
+
+		@Override
+		public Builder locale(Locale locale) {
+			this.locale = requireNonNull(locale);
+			return this;
+		}
 
 		@Override
 		public Builder initialValue(LocalDate initialValue) {
@@ -574,15 +592,26 @@ public final class CalendarPanel extends JPanel {
 						.build();
 	}
 
+	private JPanel createDayHeaderPanel() {
+		DayOfWeek firstDayOfWeek = WeekFields.of(locale).getFirstDayOfWeek();
+		PanelBuilder panelBuilder = gridLayoutPanel(1, DAYS_IN_WEEK);
+		IntStream.range(0, DAYS_IN_WEEK)
+						.mapToObj(firstDayOfWeek::plus)
+						.forEach(dayOfWeek -> panelBuilder.add(createDayLabel(dayOfWeek)));
+
+		return panelBuilder.build();
+	}
+
 	private void layoutDayPanel() {
-		if (dayPanelHasFocus()) {//otherwise, the focus jumps to the first field (month)
+		if (dayPanelHasFocus()) {
+			//otherwise, the focus jumps to the first field (month)
 			FOCUS_MANAGER.clearFocusOwner();
 		}
 		dayGridPanel.removeAll();
-		int firstDayOfMonth = LocalDate.of(yearValue.get(), monthValue.get(), 1).getDayOfWeek().getValue();
 		int fieldCount = 0;
 		int fillerCount = 0;
-		for (int i = 1; i < firstDayOfMonth; i++) {
+		int firstRowFillers = firstRowFillers();
+		for (int i = 1; firstRowFillers <= 7 && i < firstRowFillers; i++) {
 			dayGridPanel.add(dayFillLabels.get(fillerCount++));
 			fieldCount++;
 		}
@@ -596,6 +625,21 @@ public final class CalendarPanel extends JPanel {
 		}
 		validate();
 		repaint();
+	}
+
+	private int firstRowFillers() {
+		return LocalDate.of(yearValue.get(), monthValue.get(), 1).getDayOfWeek().getValue() + firstDayOfWeekOffset();
+	}
+
+	private int firstDayOfWeekOffset() {
+		switch (WeekFields.of(locale).getFirstDayOfWeek()) {
+			case SATURDAY:
+				return 2;
+			case SUNDAY:
+				return 1;
+			default:
+				return 0;
+		}
 	}
 
 	private boolean dayPanelHasFocus() {
@@ -759,18 +803,6 @@ public final class CalendarPanel extends JPanel {
 		inputMap.put(keyStroke(VK_RIGHT, SHIFT_DOWN_MASK), "none");
 
 		return spinner;
-	}
-
-	private static JPanel createDayHeaderPanel() {
-		return panel(new GridLayout(1, DAYS_IN_WEEK))
-						.add(createDayLabel(DayOfWeek.MONDAY))
-						.add(createDayLabel(DayOfWeek.TUESDAY))
-						.add(createDayLabel(DayOfWeek.WEDNESDAY))
-						.add(createDayLabel(DayOfWeek.THURSDAY))
-						.add(createDayLabel(DayOfWeek.FRIDAY))
-						.add(createDayLabel(DayOfWeek.SATURDAY))
-						.add(createDayLabel(DayOfWeek.SUNDAY))
-						.build();
 	}
 
 	private static JLabel createDayLabel(DayOfWeek dayOfWeek) {

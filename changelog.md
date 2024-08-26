@@ -4,6 +4,9 @@ Codion Change Log
 ## 0.18.11
 ### is.codion.framework.domain.db
 - Column.AuditColumnDefiner added, related refactoring.
+### is.codion.swing.common.ui
+- CalendarPanel.Builder.locale() added.
+- CalendarPanel now takes the first day of week according to locale into account.
 
 ## 0.18.10
 ### is.codion.common.core
