@@ -58,6 +58,7 @@ import java.time.temporal.WeekFields;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -181,8 +182,10 @@ public final class CalendarPanel extends JPanel {
 	private static final int MAX_DAYS_IN_MONTH = 31;
 	private static final int MAX_DAY_FILLERS = 14;
 	private static final int DAY_GRID_ROWS = 6;
+	private static final int DAY_GRID_CELLS = 42;
 
 	private final Locale locale;
+	private final DayOfWeek firstDayOfWeek;
 	private final DateTimeFormatter dateFormatter;
 	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -197,9 +200,10 @@ public final class CalendarPanel extends JPanel {
 	private final State todaySelected;
 
 	private final ControlMap controlMap;
+	private final List<DayOfWeek> dayColumns;
 	private final Map<Integer, DayLabel> dayLabels;
 	private final JPanel dayGridPanel;
-	private final List<JLabel> dayFillLabels;
+	private final List<JLabel> paddingLabels;
 	private final JLabel formattedDateLabel;
 	private final boolean includeTime;
 	private final boolean includeTodayButton;
@@ -209,6 +213,7 @@ public final class CalendarPanel extends JPanel {
 		this.includeTodayButton = builder.includeTodayButton;
 		this.controlMap = builder.controlMap;
 		this.locale = builder.locale;
+		this.firstDayOfWeek = builder.firstDayOfWeek;
 		this.dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale);
 		LocalDateTime dateTime = builder.initialValue == null ? LocalDateTime.now() : builder.initialValue;
 		yearValue = Value.builder()
@@ -246,8 +251,11 @@ public final class CalendarPanel extends JPanel {
 		localDateValue = Value.value(createLocalDateTime().toLocalDate());
 		localDateTimeValue = Value.value(createLocalDateTime());
 		todaySelected = State.state(todaySelected());
+		dayColumns = IntStream.range(0, DAYS_IN_WEEK)
+						.mapToObj(firstDayOfWeek::plus)
+						.collect(Collectors.toList());
 		dayLabels = createDayLabels();
-		dayFillLabels = IntStream.rangeClosed(0, MAX_DAY_FILLERS + 1).mapToObj(counter -> new JLabel()).collect(Collectors.toList());
+		paddingLabels = IntStream.range(0, MAX_DAY_FILLERS).mapToObj(counter -> new JLabel()).collect(Collectors.toList());
 		dayGridPanel = new JPanel(new GridLayout(DAY_GRID_ROWS, DAYS_IN_WEEK));
 		formattedDateLabel = new JLabel("", SwingConstants.CENTER);
 		formattedDateLabel.setBorder(emptyBorder());
@@ -336,10 +344,18 @@ public final class CalendarPanel extends JPanel {
 
 		/**
 		 * Specifies the locale, controlling the start of week day and the full date display format.
+		 * Note that setting the locale also sets {@link #firstDayOfWeek(DayOfWeek)} according to the given locale.
 		 * @param locale the locale
 		 * @return this builder instance
 		 */
 		Builder locale(Locale locale);
+
+		/**
+		 * Sets the first day of week, in case it should differ from the one specified by {@link #locale(Locale)}
+		 * @param firstDayOfWeek the first day of week
+		 * @return this builder instance
+		 */
+		Builder firstDayOfWeek(DayOfWeek firstDayOfWeek);
 
 		/**
 		 * Note that calling this method also sets {@link #includeTime(boolean)} to false.
@@ -387,6 +403,7 @@ public final class CalendarPanel extends JPanel {
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private Locale locale = Locale.getDefault();
+		private DayOfWeek firstDayOfWeek = WeekFields.of(locale).getFirstDayOfWeek();
 		private LocalDateTime initialValue;
 		private boolean includeTime = false;
 		private boolean includeTodayButton = false;
@@ -394,6 +411,12 @@ public final class CalendarPanel extends JPanel {
 		@Override
 		public Builder locale(Locale locale) {
 			this.locale = requireNonNull(locale);
+			return firstDayOfWeek(WeekFields.of(locale).getFirstDayOfWeek());
+		}
+
+		@Override
+		public Builder firstDayOfWeek(DayOfWeek firstDayOfWeek) {
+			this.firstDayOfWeek = requireNonNull(firstDayOfWeek);
 			return this;
 		}
 
@@ -561,11 +584,8 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JPanel createDayHeaderPanel() {
-		DayOfWeek firstDayOfWeek = WeekFields.of(locale).getFirstDayOfWeek();
 		PanelBuilder panelBuilder = gridLayoutPanel(1, DAYS_IN_WEEK);
-		IntStream.range(0, DAYS_IN_WEEK)
-						.mapToObj(firstDayOfWeek::plus)
-						.forEach(dayOfWeek -> panelBuilder.add(createDayLabel(dayOfWeek)));
+		dayColumns.forEach(dayOfWeek -> panelBuilder.add(createDayLabel(dayOfWeek)));
 
 		return panelBuilder.build();
 	}
@@ -580,39 +600,24 @@ public final class CalendarPanel extends JPanel {
 	private void layoutDayPanel() {
 		FocusManager.getCurrentManager().clearFocusOwner();
 		dayGridPanel.removeAll();
-		int fieldCount = 0;
-		int fillerCount = 0;
-		int firstRowFillers = firstRowFillers();
-		for (int i = 1; firstRowFillers <= 7 && i < firstRowFillers; i++) {
-			dayGridPanel.add(dayFillLabels.get(fillerCount++));
-			fieldCount++;
+		DayOfWeek dayOfWeek = localDateValue.get().withDayOfMonth(1).getDayOfWeek();
+		Iterator<JLabel> paddingIterator = paddingLabels.iterator();
+		int dayOfWeekColumn = dayColumns.indexOf(dayOfWeek);
+		for (int i = 0; i < dayOfWeekColumn; i++) {
+			dayGridPanel.add(paddingIterator.next());
 		}
+		int counter = dayOfWeekColumn + 1;
 		YearMonth yearMonth = YearMonth.of(yearValue.get(), monthValue.get());
 		for (int dayOfMonth = 1; dayOfMonth <= yearMonth.lengthOfMonth(); dayOfMonth++) {
 			dayGridPanel.add(dayLabels.get(dayOfMonth));
-			fieldCount++;
+			counter++;
 		}
-		while (fieldCount++ < 42) {
-			dayGridPanel.add(dayFillLabels.get(fillerCount++));
+		while (counter++ < DAY_GRID_CELLS) {
+			dayGridPanel.add(paddingIterator.next());
 		}
 		requestInputFocus();
 		validate();
 		repaint();
-	}
-
-	private int firstRowFillers() {
-		return LocalDate.of(yearValue.get(), monthValue.get(), 1).getDayOfWeek().getValue() + firstDayOfWeekOffset();
-	}
-
-	private int firstDayOfWeekOffset() {
-		switch (WeekFields.of(locale).getFirstDayOfWeek()) {
-			case SATURDAY:
-				return 2;
-			case SUNDAY:
-				return 1;
-			default:
-				return 0;
-		}
 	}
 
 	private void setYearMonthDay(LocalDate localDate) {

@@ -10,6 +10,7 @@ Codion Change Log
 - CalendarPanel now uses labels instead of buttons to represent days.
 - CalendarPanel, ALT modifier removed from day/week keyboard shortcut.
 - CalendarPanel bug fixed, day and month labels used default locale instead of the selected one.
+- CalendarPanel.Builder.firstDayOfWeek() added, related refactoring.
 
 ## 0.18.10
 ### is.codion.common.core
