@@ -570,6 +570,13 @@ public final class CalendarPanel extends JPanel {
 		return panelBuilder.build();
 	}
 
+	private JLabel createDayLabel(DayOfWeek dayOfWeek) {
+		return label(dayOfWeek.getDisplayName(TextStyle.SHORT, locale))
+						.horizontalAlignment(SwingConstants.CENTER)
+						.border(emptyBorder())
+						.build();
+	}
+
 	private void layoutDayPanel() {
 		FocusManager.getCurrentManager().clearFocusOwner();
 		dayGridPanel.removeAll();
@@ -738,6 +745,12 @@ public final class CalendarPanel extends JPanel {
 		return monthSpinner;
 	}
 
+	private List<Item<Month>> createMonthItems() {
+		return Arrays.stream(Month.values())
+						.map(month -> Item.item(month, month.getDisplayName(TextStyle.SHORT, locale)))
+						.collect(Collectors.toList());
+	}
+
 	private JSpinner createHourSpinner() {
 		return integerSpinner(new SpinnerNumberModel(0, 0, 23, 1), hourValue)
 						.horizontalAlignment(SwingConstants.CENTER)
@@ -767,19 +780,6 @@ public final class CalendarPanel extends JPanel {
 		inputMap.put(keyStroke(VK_RIGHT, SHIFT_DOWN_MASK), "none");
 
 		return spinner;
-	}
-
-	private static JLabel createDayLabel(DayOfWeek dayOfWeek) {
-		return label(dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()))
-						.horizontalAlignment(SwingConstants.CENTER)
-						.border(emptyBorder())
-						.build();
-	}
-
-	private static List<Item<Month>> createMonthItems() {
-		return Arrays.stream(Month.values())
-						.map(month -> Item.item(month, month.getDisplayName(TextStyle.SHORT, Locale.getDefault())))
-						.collect(Collectors.toList());
 	}
 
 	private final class DayLabel extends JLabel {
