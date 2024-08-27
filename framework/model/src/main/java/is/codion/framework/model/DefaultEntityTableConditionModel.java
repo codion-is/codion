@@ -95,7 +95,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 						(ColumnConditionModel<Attribute<?>, T>) conditionModel.conditionModels().get(attribute);
 		if (columnConditionModel != null) {
 			columnConditionModel.operator().set(Operator.EQUAL);
-			columnConditionModel.setEqualValue(value);
+			columnConditionModel.equalValue().set(value);
 			columnConditionModel.enabled().set(value != null);
 		}
 		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
@@ -111,7 +111,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 						(ColumnConditionModel<Attribute<?>, T>) conditionModel.conditionModels().get(attribute);
 		if (columnConditionModel != null) {
 			columnConditionModel.operator().set(Operator.IN);
-			columnConditionModel.setInValues(values);
+			columnConditionModel.inValues().set(values);
 			columnConditionModel.enabled().set(!values.isEmpty());
 		}
 		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
@@ -248,21 +248,21 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 			case NOT_EQUAL:
 				return notEqualCondition(conditionModel, column);
 			case LESS_THAN:
-				return column.lessThan(conditionModel.getUpperBound());
+				return column.lessThan(conditionModel.upperBoundValue().get());
 			case LESS_THAN_OR_EQUAL:
-				return column.lessThanOrEqualTo(conditionModel.getUpperBound());
+				return column.lessThanOrEqualTo(conditionModel.upperBoundValue().get());
 			case GREATER_THAN:
-				return column.greaterThan(conditionModel.getLowerBound());
+				return column.greaterThan(conditionModel.lowerBoundValue().get());
 			case GREATER_THAN_OR_EQUAL:
-				return column.greaterThanOrEqualTo(conditionModel.getLowerBound());
+				return column.greaterThanOrEqualTo(conditionModel.lowerBoundValue().get());
 			case BETWEEN_EXCLUSIVE:
-				return column.betweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+				return column.betweenExclusive(conditionModel.lowerBoundValue().get(), conditionModel.upperBoundValue().get());
 			case BETWEEN:
-				return column.between(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+				return column.between(conditionModel.lowerBoundValue().get(), conditionModel.upperBoundValue().get());
 			case NOT_BETWEEN_EXCLUSIVE:
-				return column.notBetweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+				return column.notBetweenExclusive(conditionModel.lowerBoundValue().get(), conditionModel.upperBoundValue().get());
 			case NOT_BETWEEN:
-				return column.notBetween(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+				return column.notBetween(conditionModel.lowerBoundValue().get(), conditionModel.upperBoundValue().get());
 			case IN:
 				return inCondition(conditionModel, column);
 			case NOT_IN:
@@ -274,7 +274,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	private static <T> ColumnCondition<T> equalCondition(ColumnConditionModel<?, T> conditionModel,
 																											 Column<T> column) {
-		T equalValue = conditionModel.getEqualValue();
+		T equalValue = conditionModel.equalValue().get();
 		if (equalValue == null) {
 			return column.isNull();
 		}
@@ -290,7 +290,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	private static <T> ColumnCondition<T> notEqualCondition(ColumnConditionModel<?, T> conditionModel,
 																													Column<T> column) {
-		T equalValue = conditionModel.getEqualValue();
+		T equalValue = conditionModel.equalValue().get();
 		if (equalValue == null) {
 			return column.isNotNull();
 		}
@@ -337,27 +337,27 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private static <T> ColumnCondition<T> inCondition(ColumnConditionModel<?, T> conditionModel, Column<T> column) {
 		if (column.type().isString()) {
 			Column<String> stringColumn = (Column<String>) column;
-			Collection<String> inValues = (Collection<String>) conditionModel.getInValues();
+			Collection<String> inValues = (Collection<String>) conditionModel.inValues().get();
 
 			return (ColumnCondition<T>) (conditionModel.caseSensitive().get() ?
 							stringColumn.in(inValues) :
 							stringColumn.inIgnoreCase(inValues));
 		}
 
-		return column.in(conditionModel.getInValues());
+		return column.in(conditionModel.inValues().get());
 	}
 
 	private static <T> ColumnCondition<T> notInCondition(ColumnConditionModel<?, T> conditionModel, Column<T> column) {
 		if (column.type().isString()) {
 			Column<String> stringColumn = (Column<String>) column;
-			Collection<String> inValues = (Collection<String>) conditionModel.getInValues();
+			Collection<String> inValues = (Collection<String>) conditionModel.inValues().get();
 
 			return (ColumnCondition<T>) (conditionModel.caseSensitive().get() ?
 							stringColumn.notIn(inValues) :
 							stringColumn.notInIgnoreCase(inValues));
 		}
 
-		return column.notIn(conditionModel.getInValues());
+		return column.notIn(conditionModel.inValues().get());
 	}
 
 	private static boolean containsWildcards(String value) {

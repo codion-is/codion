@@ -54,15 +54,15 @@ public class ForeignKeyConditionModelTest {
 		EntitySearchModel inSearchModel = conditionModel.inSearchModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		inSearchModel.entity().set(sales);
-		Collection<Entity> searchEntities = conditionModel.getInValues();
+		Collection<Entity> searchEntities = conditionModel.inValues().get();
 		assertEquals(1, searchEntities.size());
 		assertTrue(searchEntities.contains(sales));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		List<Entity> salesAccounting = asList(sales, accounting);
 		inSearchModel.entities().set(salesAccounting);
-		assertTrue(conditionModel.getInValues().contains(sales));
-		assertTrue(conditionModel.getInValues().contains(accounting));
-		searchEntities = conditionModel.getInValues();
+		assertTrue(conditionModel.inValues().get().contains(sales));
+		assertTrue(conditionModel.inValues().get().contains(accounting));
+		searchEntities = conditionModel.inValues().get();
 		assertEquals(2, searchEntities.size());
 		assertTrue(searchEntities.contains(sales));
 		assertTrue(searchEntities.contains(accounting));
@@ -77,23 +77,23 @@ public class ForeignKeyConditionModelTest {
 		EntitySearchModel equalSearchModel = conditionModel.equalSearchModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		equalSearchModel.entity().set(sales);
-		Entity searchEntity = conditionModel.getEqualValue();
+		Entity searchEntity = conditionModel.equalValue().get();
 		assertSame(sales, searchEntity);
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		equalSearchModel.entity().set(accounting);
-		assertSame(accounting, conditionModel.getEqualValue());
+		assertSame(accounting, conditionModel.equalValue().get());
 
 		equalSearchModel.entity().clear();
 
-		searchEntity = conditionModel.getEqualValue();
+		searchEntity = conditionModel.equalValue().get();
 		assertNull(searchEntity);
 
-		conditionModel.setEqualValue(sales);
+		conditionModel.equalValue().set(sales);
 		assertEquals("SALES", equalSearchModel.searchString().get());
 		sales.put(Department.NAME, "sales");
 		equalSearchModel.entity().set(sales);
 		sales.put(Department.NAME, "SAles");
-		conditionModel.setEqualValue(sales);
+		conditionModel.equalValue().set(sales);
 		assertEquals("SAles", equalSearchModel.searchString().get());
 	}
 }

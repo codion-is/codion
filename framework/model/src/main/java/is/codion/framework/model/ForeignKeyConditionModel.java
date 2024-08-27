@@ -29,7 +29,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.text.Format;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -123,46 +122,6 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	@Override
 	public Class<Entity> columnClass() {
 		return conditionModel.columnClass();
-	}
-
-	@Override
-	public void setEqualValue(Entity value) {
-		conditionModel.setEqualValue(value);
-	}
-
-	@Override
-	public Entity getEqualValue() {
-		return conditionModel.getEqualValue();
-	}
-
-	@Override
-	public void setInValues(Collection<Entity> values) {
-		conditionModel.setInValues(values);
-	}
-
-	@Override
-	public Collection<Entity> getInValues() {
-		return conditionModel.getInValues();
-	}
-
-	@Override
-	public void setUpperBound(Entity upper) {
-		conditionModel.setUpperBound(upper);
-	}
-
-	@Override
-	public Entity getUpperBound() {
-		return conditionModel.getUpperBound();
-	}
-
-	@Override
-	public void setLowerBound(Entity value) {
-		conditionModel.setLowerBound(value);
-	}
-
-	@Override
-	public Entity getLowerBound() {
-		return conditionModel.getLowerBound();
 	}
 
 	@Override
@@ -262,7 +221,7 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 		@Override
 		public void accept(Entity selectedEntity) {
 			if (!updatingModel) {
-				setEqualValue(selectedEntity);
+				equalValue().set(selectedEntity);
 			}
 		}
 	}
@@ -272,7 +231,7 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 		@Override
 		public void accept(Set<Entity> selectedEntities) {
 			if (!updatingModel) {
-				setInValues(selectedEntities);
+				inValues().set(selectedEntities);
 			}
 		}
 	}

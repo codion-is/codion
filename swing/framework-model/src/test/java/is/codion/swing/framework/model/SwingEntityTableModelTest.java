@@ -100,7 +100,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		testModel.refresh();
 		ColumnConditionModel<?, String> filterModel =
 						testModel.filterModel().conditionModel(Detail.STRING);
-		filterModel.setEqualValue("a");
+		filterModel.equalValue().set("a");
 		testModel.filterItems();
 		assertEquals(4, testModel.filteredItems().size());
 	}
@@ -157,7 +157,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
 		ColumnConditionModel<Attribute<?>, String> nameConditionModel =
 						employeeTableModel.conditionModel().attributeModel(Employee.NAME);
-		nameConditionModel.setEqualValue("BLAKE");
+		nameConditionModel.equalValue().set("BLAKE");
 		employeeTableModel.refresh();
 		assertEquals(Color.GREEN, employeeTableModel.backgroundColor(0, Employee.JOB));
 	}
@@ -181,7 +181,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
 		tableModel.refresh();
 		ColumnConditionModel<?, String> nameConditionModel = tableModel.conditionModel().conditionModel(Employee.NAME);
-		nameConditionModel.setEqualValue("JONES");
+		nameConditionModel.equalValue().set("JONES");
 		assertTrue(tableModel.conditionChanged().get());
 		tableModel.refresh();
 		assertFalse(tableModel.conditionChanged().get());
@@ -205,7 +205,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		tableModel.refresh();
 		assertEquals(0, tableModel.rowCount());
 		ColumnConditionModel<?, Entity> mgrConditionModel = tableModel.conditionModel().conditionModel(Employee.MGR_FK);
-		mgrConditionModel.setEqualValue(null);
+		mgrConditionModel.equalValue().set(null);
 		mgrConditionModel.enabled().set(true);
 		tableModel.refresh();
 		assertEquals(1, tableModel.rowCount());

@@ -304,8 +304,8 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			}
 
 			private void updateCondition() {
-				conditionModel().setLowerBound(lowerBound());
-				conditionModel().setUpperBound(upperBound());
+				conditionModel().lowerBoundValue().set(lowerBound());
+				conditionModel().upperBoundValue().set(upperBound());
 			}
 
 			private LocalDate lowerBound() {

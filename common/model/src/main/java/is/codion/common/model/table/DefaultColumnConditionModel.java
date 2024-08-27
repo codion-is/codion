@@ -23,19 +23,20 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.state.State;
+import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
 
 import java.text.Format;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.*;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -54,13 +55,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
-	private final Value<T> equalValue = Value.builder()
-					.<T>nullable()
-					.notify(Notify.WHEN_SET)
-					.validator(lockValidator)
-					.listener(autoEnableListener)
-					.listener(conditionChangedEvent)
-					.build();
+	private final Value<T> equalValue = new EqualValue();
 	private final Value<T> upperBoundValue = Value.builder()
 					.<T>nullable()
 					.notify(Notify.WHEN_SET)
@@ -148,46 +143,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	@Override
-	public void setEqualValue(T value) {
-		equalValue.set(value);
-	}
-
-	@Override
-	public T getEqualValue() {
-		return addAutomaticWildcard(equalValue.get());
-	}
-
-	@Override
-	public void setInValues(Collection<T> values) {
-		inValues.set(requireNonNull(values));
-	}
-
-	@Override
-	public Collection<T> getInValues() {
-		return inValues.get();
-	}
-
-	@Override
-	public void setUpperBound(T value) {
-		upperBoundValue.set(value);
-	}
-
-	@Override
-	public T getUpperBound() {
-		return upperBoundValue.get();
-	}
-
-	@Override
-	public void setLowerBound(T value) {
-		lowerBoundValue.set(value);
-	}
-
-	@Override
-	public T getLowerBound() {
-		return lowerBoundValue.get();
-	}
-
-	@Override
 	public Value<Operator> operator() {
 		return operator;
 	}
@@ -214,11 +169,11 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	@Override
 	public void clear() {
-		setEqualValue(null);
-		setUpperBound(null);
-		setLowerBound(null);
-		setInValues(emptyList());
-		operator.set(operators.get(0));
+		equalValue.clear();
+		upperBoundValue.clear();
+		lowerBoundValue.clear();
+		inValues.clear();
+		operator.clear();
 	}
 
 	@Override
@@ -286,7 +241,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isEqual(Comparable<T> comparable) {
-		T equalValue = getEqualValue();
+		T equalValue = equalValue().get();
 		if (!caseSensitive.get()) {
 			equalValue = stringOrCharacterToLowerCase(equalValue);
 		}
@@ -304,7 +259,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isNotEqual(Comparable<T> comparable) {
-		T equalValue = getEqualValue();
+		T equalValue = equalValue().get();
 		if (!caseSensitive.get()) {
 			equalValue = stringOrCharacterToLowerCase(equalValue);
 		}
@@ -322,7 +277,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isEqualWildcard(String value) {
-		String equalValue = (String) getEqualValue();
+		String equalValue = (String) equalValue().get();
 		if (equalValue == null) {
 			equalValue = "";
 		}
@@ -342,32 +297,32 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isLessThan(Comparable<T> comparable) {
-		T upperBound = getUpperBound();
+		T upperBound = upperBoundValue.get();
 
 		return upperBound == null || comparable != null && comparable.compareTo(upperBound) < 0;
 	}
 
 	private boolean isLessThanOrEqual(Comparable<T> comparable) {
-		T upperBound = getUpperBound();
+		T upperBound = upperBoundValue.get();
 
 		return upperBound == null || comparable != null && comparable.compareTo(upperBound) <= 0;
 	}
 
 	private boolean isGreaterThan(Comparable<T> comparable) {
-		T lowerBound = getLowerBound();
+		T lowerBound = lowerBoundValue.get();
 
 		return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) > 0;
 	}
 
 	private boolean isGreaterThanOrEqual(Comparable<T> comparable) {
-		T lowerBound = getLowerBound();
+		T lowerBound = lowerBoundValue.get();
 
 		return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) >= 0;
 	}
 
 	private boolean isBetweenExclusive(Comparable<T> comparable) {
-		T lowerBound = getLowerBound();
-		T upperBound = getUpperBound();
+		T lowerBound = lowerBoundValue.get();
+		T upperBound = upperBoundValue.get();
 		if (lowerBound == null && upperBound == null) {
 			return true;
 		}
@@ -391,8 +346,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isBetween(Comparable<T> comparable) {
-		T lowerBound = getLowerBound();
-		T upperBound = getUpperBound();
+		T lowerBound = lowerBoundValue.get();
+		T upperBound = upperBoundValue.get();
 		if (lowerBound == null && upperBound == null) {
 			return true;
 		}
@@ -416,8 +371,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isNotBetweenExclusive(Comparable<T> comparable) {
-		T lowerBound = getLowerBound();
-		T upperBound = getUpperBound();
+		T lowerBound = lowerBoundValue.get();
+		T upperBound = upperBoundValue.get();
 		if (lowerBound == null && upperBound == null) {
 			return true;
 		}
@@ -441,8 +396,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isNotBetween(Comparable<T> comparable) {
-		T lowerBound = getLowerBound();
-		T upperBound = getUpperBound();
+		T lowerBound = lowerBoundValue.get();
+		T upperBound = upperBoundValue.get();
 		if (lowerBound == null && upperBound == null) {
 			return true;
 		}
@@ -466,7 +421,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isIn(Comparable<T> comparable) {
-		return getInValues().contains(comparable);
+		return inValues.get().contains(comparable);
 	}
 
 	private boolean isNotIn(Comparable<T> comparable) {
@@ -554,6 +509,28 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		}
 
 		return comparable;
+	}
+
+	private final class EqualValue extends AbstractValue<T> {
+
+		private T value;
+
+		public EqualValue() {
+			super(null, Notify.WHEN_SET);
+			addValidator(lockValidator);
+			addListener(autoEnableListener);
+			addListener(conditionChangedEvent);
+		}
+
+		@Override
+		protected T getValue() {
+			return addAutomaticWildcard(value);
+		}
+
+		@Override
+		protected void setValue(T value) {
+			this.value = value;
+		}
 	}
 
 	private final class AutoEnableListener implements Runnable {

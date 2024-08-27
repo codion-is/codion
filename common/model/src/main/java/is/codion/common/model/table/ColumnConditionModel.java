@@ -27,7 +27,6 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 
 import java.text.Format;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -138,47 +137,6 @@ public interface ColumnConditionModel<C, T> {
 	Class<T> columnClass();
 
 	/**
-	 * Sets the values used when the {@link Operator#EQUAL} is enabled.
-	 * @param value the value to use as condition
-	 */
-	void setEqualValue(T value);
-
-	/**
-	 * @return the equal value, possibly null
-	 */
-	T getEqualValue();
-
-	/**
-	 * @param values the values to set, an empty Collection for none
-	 */
-	void setInValues(Collection<T> values);
-
-	/**
-	 * @return the in values, never null
-	 */
-	Collection<T> getInValues();
-
-	/**
-	 * @param upper the new upper bound
-	 */
-	void setUpperBound(T upper);
-
-	/**
-	 * @return the upper bound
-	 */
-	T getUpperBound();
-
-	/**
-	 * @param value the lower bound
-	 */
-	void setLowerBound(T value);
-
-	/**
-	 * @return the lower bound
-	 */
-	T getLowerBound();
-
-	/**
 	 * @return the operators available in this condition model
 	 */
 	List<Operator> operators();
@@ -189,35 +147,35 @@ public interface ColumnConditionModel<C, T> {
 	State enabled();
 
 	/**
-	 * Clears this condition model, that is, sets all bounds to null
-	 * and the operator to the first of the ones available.
+	 * Clears this condition model, that is, clears all operands and sets the operator to the initial one.
 	 * @see #autoEnable()
 	 * @see #operators()
+	 * @see Builder#operator(Operator)
 	 */
 	void clear();
 
 	/**
-	 * @return a Value based on the equal value of this condition model
+	 * @return a {@link Value} controlling the operand used for the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operators
 	 */
 	Value<T> equalValue();
 
 	/**
-	 * @return a ValueSet based on the in values of this condition model
+	 * @return a {@link Value} controlling the operands used for the {@link Operator#IN} operator
 	 */
 	ValueSet<T> inValues();
 
 	/**
-	 * @return a Value based on the upper bound value of this condition model
+	 * @return a {@link Value} controlling the upper bound operand used for range based operators
 	 */
 	Value<T> upperBoundValue();
 
 	/**
-	 * @return a Value based on the lower bound value of this condition model
+	 * @return a {@link Value} controlling the lower bound operand used for range based operators
 	 */
 	Value<T> lowerBoundValue();
 
 	/**
-	 * @return a Value based on the operator
+	 * @return a {@link Value} controlling on the operator
 	 */
 	Value<Operator> operator();
 

@@ -31,7 +31,6 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.text.Format;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -125,46 +124,6 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 	@Override
 	public Class<Entity> columnClass() {
 		return conditionModel.columnClass();
-	}
-
-	@Override
-	public void setEqualValue(Entity value) {
-		conditionModel.setEqualValue(value);
-	}
-
-	@Override
-	public Entity getEqualValue() {
-		return conditionModel.getEqualValue();
-	}
-
-	@Override
-	public void setInValues(Collection<Entity> values) {
-		conditionModel.setInValues(values);
-	}
-
-	@Override
-	public Collection<Entity> getInValues() {
-		return conditionModel.getInValues();
-	}
-
-	@Override
-	public void setUpperBound(Entity upper) {
-		conditionModel.setUpperBound(upper);
-	}
-
-	@Override
-	public Entity getUpperBound() {
-		return conditionModel.getUpperBound();
-	}
-
-	@Override
-	public void setLowerBound(Entity value) {
-		conditionModel.setLowerBound(value);
-	}
-
-	@Override
-	public Entity getLowerBound() {
-		return conditionModel.getLowerBound();
 	}
 
 	@Override
@@ -263,7 +222,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 		if (equalComboBoxModel != null) {
 			equalComboBoxModel.selectionEvent().addConsumer(new SetEqualValue());
 			equalValue().addConsumer(new SelectEqualValue());
-			equalComboBoxModel.refresher().refreshEvent().addListener(() -> equalComboBoxModel.setSelectedItem(getEqualValue()));
+			equalComboBoxModel.refresher().refreshEvent().addListener(() -> equalComboBoxModel.setSelectedItem(equalValue().get()));
 		}
 		if (inSearchModel != null) {
 			inSearchModel.entities().addConsumer(new SetInValues());
@@ -276,7 +235,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 		@Override
 		public void accept(Entity selectedEntity) {
 			if (!updatingModel) {
-				setEqualValue(selectedEntity);
+				equalValue().set(selectedEntity);
 			}
 		}
 	}
@@ -300,7 +259,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 		@Override
 		public void accept(Set<Entity> selectedEntities) {
 			if (!updatingModel) {
-				setInValues(selectedEntities);
+				inValues().set(selectedEntities);
 			}
 		}
 	}
