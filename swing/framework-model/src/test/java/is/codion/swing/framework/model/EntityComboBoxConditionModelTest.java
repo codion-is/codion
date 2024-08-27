@@ -62,14 +62,14 @@ public class EntityComboBoxConditionModelTest {
 		EntityComboBoxModel equalComboBoxModel = conditionModel.equalComboBoxModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		equalComboBoxModel.setSelectedItem(sales);
-		Entity searchEntity = conditionModel.equalValue().get();
+		Entity searchEntity = conditionModel.operand().equal().get();
 		assertSame(sales, searchEntity);
 		equalComboBoxModel.refresh();
 		assertEquals(sales, equalComboBoxModel.selectedValue());
 
-		conditionModel.equalValue().set(null);
+		conditionModel.operand().equal().set(null);
 		assertTrue(equalComboBoxModel.nullSelected());
-		conditionModel.equalValue().set(sales);
+		conditionModel.operand().equal().set(sales);
 		assertEquals(equalComboBoxModel.getSelectedItem(), sales);
 
 		equalComboBoxModel.setSelectedItem(null);
@@ -88,15 +88,15 @@ public class EntityComboBoxConditionModelTest {
 		EntitySearchModel inSearchModel = conditionModel.inSearchModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		inSearchModel.entity().set(sales);
-		Collection<Entity> searchEntities = conditionModel.inValues().get();
+		Collection<Entity> searchEntities = conditionModel.operand().in().get();
 		assertEquals(1, searchEntities.size());
 		assertTrue(searchEntities.contains(sales));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		List<Entity> salesAccounting = asList(sales, accounting);
 		inSearchModel.entities().set(salesAccounting);
-		assertTrue(conditionModel.inValues().get().contains(sales));
-		assertTrue(conditionModel.inValues().get().contains(accounting));
-		searchEntities = conditionModel.inValues().get();
+		assertTrue(conditionModel.operand().in().get().contains(sales));
+		assertTrue(conditionModel.operand().in().get().contains(accounting));
+		searchEntities = conditionModel.operand().in().get();
 		assertEquals(2, searchEntities.size());
 		assertTrue(searchEntities.contains(sales));
 		assertTrue(searchEntities.contains(accounting));

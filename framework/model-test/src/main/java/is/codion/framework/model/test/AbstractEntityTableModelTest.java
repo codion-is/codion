@@ -288,7 +288,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		commissionModel.enabled().set(false);
 		assertEquals(2, counter.get());
 		commissionModel.operator().set(Operator.GREATER_THAN_OR_EQUAL);
-		commissionModel.lowerBoundValue().set(1200d);
+		commissionModel.operand().lowerBound().set(1200d);
 		//automatically set enabled when upper bound is set
 		assertEquals(3, counter.get());
 		empModel.conditionChanged().removeListener(conditionChangedListener);
@@ -300,7 +300,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		assertFalse(empModel.conditionChanged().get());
 		ColumnConditionModel<Attribute<?>, String> jobModel =
 						empModel.conditionModel().attributeModel(Employee.JOB);
-		jobModel.equalValue().set("job");
+		jobModel.operand().equal().set("job");
 		assertTrue(empModel.conditionChanged().get());
 		jobModel.enabled().set(false);
 		assertFalse(empModel.conditionChanged().get());

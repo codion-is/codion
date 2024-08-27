@@ -23,7 +23,6 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -39,7 +38,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default foreign key condition model using {@link EntitySearchModel} for
- * both the {@link #equalValue()} and {@link #inValues()}.
+ * both the {@link Operator#EQUAL} and {@link Operator#IN} operands.
  * @see #builder(ForeignKey)
  */
 public final class ForeignKeyConditionModel implements ColumnConditionModel<Attribute<?>, Entity> {
@@ -140,28 +139,13 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	}
 
 	@Override
-	public Value<Entity> equalValue() {
-		return conditionModel.equalValue();
-	}
-
-	@Override
-	public ValueSet<Entity> inValues() {
-		return conditionModel.inValues();
-	}
-
-	@Override
-	public Value<Entity> upperBoundValue() {
-		return conditionModel.upperBoundValue();
-	}
-
-	@Override
-	public Value<Entity> lowerBoundValue() {
-		return conditionModel.lowerBoundValue();
-	}
-
-	@Override
 	public Value<Operator> operator() {
 		return conditionModel.operator();
+	}
+
+	@Override
+	public Operand<Entity> operand() {
+		return conditionModel.operand();
 	}
 
 	@Override
@@ -207,42 +191,42 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 
 	private void bindEvents() {
 		if (equalSearchModel != null) {
-			equalSearchModel.entity().addConsumer(new SetEqualValue());
-			equalValue().addConsumer(new SelectEqualValue());
+			equalSearchModel.entity().addConsumer(new SetEqualOperand());
+			operand().equal().addConsumer(new SelectEqualOperand());
 		}
 		if (inSearchModel != null) {
-			inSearchModel.entities().addConsumer(new SetInValues());
-			inValues().addConsumer(new SelectInValues());
+			inSearchModel.entities().addConsumer(new SetInOperands());
+			operand().in().addConsumer(new SelectInOperands());
 		}
 	}
 
-	private final class SetEqualValue implements Consumer<Entity> {
+	private final class SetEqualOperand implements Consumer<Entity> {
 
 		@Override
 		public void accept(Entity selectedEntity) {
 			if (!updatingModel) {
-				equalValue().set(selectedEntity);
+				operand().equal().set(selectedEntity);
 			}
 		}
 	}
 
-	private final class SetInValues implements Consumer<Set<Entity>> {
+	private final class SetInOperands implements Consumer<Set<Entity>> {
 
 		@Override
 		public void accept(Set<Entity> selectedEntities) {
 			if (!updatingModel) {
-				inValues().set(selectedEntities);
+				operand().in().set(selectedEntities);
 			}
 		}
 	}
 
-	private final class SelectEqualValue implements Consumer<Entity> {
+	private final class SelectEqualOperand implements Consumer<Entity> {
 
 		@Override
-		public void accept(Entity equalValue) {
+		public void accept(Entity equalOperand) {
 			updatingModel = true;
 			try {
-				equalSearchModel.entity().set(equalValue);
+				equalSearchModel.entity().set(equalOperand);
 			}
 			finally {
 				updatingModel = false;
@@ -250,13 +234,13 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 		}
 	}
 
-	private final class SelectInValues implements Consumer<Set<Entity>> {
+	private final class SelectInOperands implements Consumer<Set<Entity>> {
 
 		@Override
-		public void accept(Set<Entity> inValues) {
+		public void accept(Set<Entity> inOperands) {
 			updatingModel = true;
 			try {
-				inSearchModel.entities().set(inValues);
+				inSearchModel.entities().set(inOperands);
 			}
 			finally {
 				updatingModel = false;

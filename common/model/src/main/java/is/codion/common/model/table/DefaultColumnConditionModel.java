@@ -49,33 +49,13 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private final Event<?> conditionChangedEvent = Event.event();
 	private final State locked = State.state();
 	private final Value.Validator<Object> lockValidator = value -> checkLock();
-	private final ValueSet<T> inValues = ValueSet.<T>builder()
-					.notify(Notify.WHEN_SET)
-					.validator(lockValidator)
-					.listener(autoEnableListener)
-					.listener(conditionChangedEvent)
-					.build();
-	private final Value<T> equalValue = new EqualValue();
-	private final Value<T> upperBoundValue = Value.builder()
-					.<T>nullable()
-					.notify(Notify.WHEN_SET)
-					.validator(lockValidator)
-					.listener(autoEnableListener)
-					.listener(conditionChangedEvent)
-					.build();
-	private final Value<T> lowerBoundValue = Value.builder()
-					.<T>nullable()
-					.notify(Notify.WHEN_SET)
-					.validator(lockValidator)
-					.listener(autoEnableListener)
-					.listener(conditionChangedEvent)
-					.build();
 	private final Value<AutomaticWildcard> automaticWildcard = Value.builder()
 					.nonNull(AutomaticWildcard.NONE)
 					.listener(conditionChangedEvent)
 					.build();
 
 	private final Value<Operator> operator;
+	private final DefaultOperand operand;
 	private final State caseSensitive;
 
 	private final State autoEnable;
@@ -100,6 +80,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 						.listener(autoEnableListener)
 						.listener(conditionChangedEvent)
 						.build();
+		this.operand = new DefaultOperand();
 		this.columnClass = builder.columnClass;
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
@@ -153,6 +134,11 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	@Override
+	public Operand<T> operand() {
+		return operand;
+	}
+
+	@Override
 	public State enabled() {
 		return enabled;
 	}
@@ -169,36 +155,16 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	@Override
 	public void clear() {
-		equalValue.clear();
-		upperBoundValue.clear();
-		lowerBoundValue.clear();
-		inValues.clear();
+		operand.equal.clear();
+		operand.upperBound.clear();
+		operand.lowerBound.clear();
+		operand.in.clear();
 		operator.clear();
 	}
 
 	@Override
 	public boolean accepts(Comparable<T> columnValue) {
 		return valueAccepted(columnValue);
-	}
-
-	@Override
-	public Value<T> equalValue() {
-		return equalValue;
-	}
-
-	@Override
-	public ValueSet<T> inValues() {
-		return inValues;
-	}
-
-	@Override
-	public Value<T> lowerBoundValue() {
-		return lowerBoundValue;
-	}
-
-	@Override
-	public Value<T> upperBoundValue() {
-		return upperBoundValue;
 	}
 
 	@Override
@@ -241,88 +207,88 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isEqual(Comparable<T> comparable) {
-		T equalValue = equalValue().get();
+		T equalOperand = operand.equal().get();
 		if (!caseSensitive.get()) {
-			equalValue = stringOrCharacterToLowerCase(equalValue);
+			equalOperand = stringOrCharacterToLowerCase(equalOperand);
 		}
 		if (comparable == null) {
-			return equalValue == null;
+			return equalOperand == null;
 		}
-		if (equalValue == null) {
+		if (equalOperand == null) {
 			return comparable == null;
 		}
-		if (comparable instanceof String && ((String) equalValue).contains(WILDCARD)) {
+		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD)) {
 			return isEqualWildcard((String) comparable);
 		}
 
-		return comparable.compareTo(equalValue) == 0;
+		return comparable.compareTo(equalOperand) == 0;
 	}
 
 	private boolean isNotEqual(Comparable<T> comparable) {
-		T equalValue = equalValue().get();
+		T equalOperand = operand.equal().get();
 		if (!caseSensitive.get()) {
-			equalValue = stringOrCharacterToLowerCase(equalValue);
+			equalOperand = stringOrCharacterToLowerCase(equalOperand);
 		}
 		if (comparable == null) {
-			return equalValue != null;
+			return equalOperand != null;
 		}
-		if (equalValue == null) {
+		if (equalOperand == null) {
 			return comparable != null;
 		}
-		if (comparable instanceof String && ((String) equalValue).contains(WILDCARD)) {
+		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD)) {
 			return !isEqualWildcard((String) comparable);
 		}
 
-		return comparable.compareTo(equalValue) != 0;
+		return comparable.compareTo(equalOperand) != 0;
 	}
 
 	private boolean isEqualWildcard(String value) {
-		String equalValue = (String) equalValue().get();
-		if (equalValue == null) {
-			equalValue = "";
+		String equalOperand = (String) operand.equal().get();
+		if (equalOperand == null) {
+			equalOperand = "";
 		}
-		if (equalValue.equals(WILDCARD)) {
+		if (equalOperand.equals(WILDCARD)) {
 			return true;
 		}
 		if (!caseSensitive.get()) {
-			equalValue = equalValue.toLowerCase();
+			equalOperand = equalOperand.toLowerCase();
 		}
-		if (!equalValue.contains(WILDCARD)) {
-			return value.compareTo(equalValue) == 0;
+		if (!equalOperand.contains(WILDCARD)) {
+			return value.compareTo(equalOperand) == 0;
 		}
 
-		return Pattern.matches(Stream.of(equalValue.split(WILDCARD))
+		return Pattern.matches(Stream.of(equalOperand.split(WILDCARD))
 						.map(Pattern::quote)
-						.collect(joining(REGEX_WILDCARD, "", equalValue.endsWith(WILDCARD) ? REGEX_WILDCARD : "")), value);
+						.collect(joining(REGEX_WILDCARD, "", equalOperand.endsWith(WILDCARD) ? REGEX_WILDCARD : "")), value);
 	}
 
 	private boolean isLessThan(Comparable<T> comparable) {
-		T upperBound = upperBoundValue.get();
+		T upperBound = operand.upperBound.get();
 
 		return upperBound == null || comparable != null && comparable.compareTo(upperBound) < 0;
 	}
 
 	private boolean isLessThanOrEqual(Comparable<T> comparable) {
-		T upperBound = upperBoundValue.get();
+		T upperBound = operand.upperBound.get();
 
 		return upperBound == null || comparable != null && comparable.compareTo(upperBound) <= 0;
 	}
 
 	private boolean isGreaterThan(Comparable<T> comparable) {
-		T lowerBound = lowerBoundValue.get();
+		T lowerBound = operand.lowerBound.get();
 
 		return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) > 0;
 	}
 
 	private boolean isGreaterThanOrEqual(Comparable<T> comparable) {
-		T lowerBound = lowerBoundValue.get();
+		T lowerBound = operand.lowerBound.get();
 
 		return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) >= 0;
 	}
 
 	private boolean isBetweenExclusive(Comparable<T> comparable) {
-		T lowerBound = lowerBoundValue.get();
-		T upperBound = upperBoundValue.get();
+		T lowerBound = operand.lowerBound.get();
+		T upperBound = operand.upperBound.get();
 		if (lowerBound == null && upperBound == null) {
 			return true;
 		}
@@ -346,8 +312,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isBetween(Comparable<T> comparable) {
-		T lowerBound = lowerBoundValue.get();
-		T upperBound = upperBoundValue.get();
+		T lowerBound = operand.lowerBound.get();
+		T upperBound = operand.upperBound.get();
 		if (lowerBound == null && upperBound == null) {
 			return true;
 		}
@@ -371,8 +337,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isNotBetweenExclusive(Comparable<T> comparable) {
-		T lowerBound = lowerBoundValue.get();
-		T upperBound = upperBoundValue.get();
+		T lowerBound = operand.lowerBound.get();
+		T upperBound = operand.upperBound.get();
 		if (lowerBound == null && upperBound == null) {
 			return true;
 		}
@@ -396,8 +362,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isNotBetween(Comparable<T> comparable) {
-		T lowerBound = lowerBoundValue.get();
-		T upperBound = upperBoundValue.get();
+		T lowerBound = operand.lowerBound.get();
+		T upperBound = operand.upperBound.get();
 		if (lowerBound == null && upperBound == null) {
 			return true;
 		}
@@ -421,60 +387,60 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private boolean isIn(Comparable<T> comparable) {
-		return inValues.get().contains(comparable);
+		return operand.in.get().contains(comparable);
 	}
 
 	private boolean isNotIn(Comparable<T> comparable) {
 		return !isIn(comparable);
 	}
 
-	private T addAutomaticWildcard(T bound) {
-		if (!(bound instanceof String)) {
-			return bound;
+	private T addAutomaticWildcard(T operand) {
+		if (!(operand instanceof String)) {
+			return operand;
 		}
 		switch (operator.get()) {
 			//wildcard only used for EQUAL and NOT_EQUAL
 			case EQUAL:
 			case NOT_EQUAL:
-				return (T) addAutomaticWildcard((String) bound);
+				return (T) addAutomaticWildcard((String) operand);
 			default:
-				return bound;
+				return operand;
 		}
 	}
 
-	private String addAutomaticWildcard(String value) {
+	private String addAutomaticWildcard(String operand) {
 		switch (automaticWildcard.get()) {
 			case PREFIX:
-				value = addWildcardPrefix(value);
+				operand = addWildcardPrefix(operand);
 				break;
 			case POSTFIX:
-				value = addWildcardPostfix(value);
+				operand = addWildcardPostfix(operand);
 				break;
 			case PREFIX_AND_POSTFIX:
-				value = addWildcardPrefix(value);
-				value = addWildcardPostfix(value);
+				operand = addWildcardPrefix(operand);
+				operand = addWildcardPostfix(operand);
 				break;
 			default:
 				break;
 		}
 
-		return value;
+		return operand;
 	}
 
-	private static String addWildcardPrefix(String value) {
-		if (!value.startsWith(WILDCARD)) {
-			return WILDCARD + value;
+	private static String addWildcardPrefix(String operand) {
+		if (!operand.startsWith(WILDCARD)) {
+			return WILDCARD + operand;
 		}
 
-		return value;
+		return operand;
 	}
 
-	private static String addWildcardPostfix(String value) {
-		if (!value.endsWith(WILDCARD)) {
-			return value + WILDCARD;
+	private static String addWildcardPostfix(String operand) {
+		if (!operand.endsWith(WILDCARD)) {
+			return operand + WILDCARD;
 		}
 
-		return value;
+		return operand;
 	}
 
 	private void checkLock() {
@@ -511,11 +477,91 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		return comparable;
 	}
 
-	private final class EqualValue extends AbstractValue<T> {
+	private final class AutoEnableListener implements Runnable {
+
+		@Override
+		public void run() {
+			if (autoEnable.get()) {
+				switch (operator.get()) {
+					case EQUAL:
+					case NOT_EQUAL:
+						enabled.set(operand.equal.isNotNull());
+						break;
+					case LESS_THAN:
+					case LESS_THAN_OR_EQUAL:
+						enabled.set(operand.upperBound.isNotNull());
+						break;
+					case GREATER_THAN:
+					case GREATER_THAN_OR_EQUAL:
+						enabled.set(operand.lowerBound.isNotNull());
+						break;
+					case BETWEEN:
+					case BETWEEN_EXCLUSIVE:
+					case NOT_BETWEEN:
+					case NOT_BETWEEN_EXCLUSIVE:
+						enabled.set(operand.lowerBound.isNotNull() && operand.upperBound.isNotNull());
+						break;
+					case IN:
+					case NOT_IN:
+						enabled.set(operand.in.notEmpty());
+						break;
+					default:
+						throw new IllegalStateException("Unknown operator: " + operator.get());
+				}
+			}
+		}
+	}
+
+	private final class DefaultOperand implements Operand<T> {
+
+		private final Value<T> equal = new EqualOperand();
+		private final ValueSet<T> in = ValueSet.<T>builder()
+						.notify(Notify.WHEN_SET)
+						.validator(lockValidator)
+						.listener(autoEnableListener)
+						.listener(conditionChangedEvent)
+						.build();
+		private final Value<T> upperBound = Value.builder()
+						.<T>nullable()
+						.notify(Notify.WHEN_SET)
+						.validator(lockValidator)
+						.listener(autoEnableListener)
+						.listener(conditionChangedEvent)
+						.build();
+		private final Value<T> lowerBound = Value.builder()
+						.<T>nullable()
+						.notify(Notify.WHEN_SET)
+						.validator(lockValidator)
+						.listener(autoEnableListener)
+						.listener(conditionChangedEvent)
+						.build();
+
+		@Override
+		public Value<T> equal() {
+			return equal;
+		}
+
+		@Override
+		public ValueSet<T> in() {
+			return in;
+		}
+
+		@Override
+		public Value<T> upperBound() {
+			return upperBound;
+		}
+
+		@Override
+		public Value<T> lowerBound() {
+			return lowerBound;
+		}
+	}
+
+	private final class EqualOperand extends AbstractValue<T> {
 
 		private T value;
 
-		public EqualValue() {
+		public EqualOperand() {
 			super(null, Notify.WHEN_SET);
 			addValidator(lockValidator);
 			addListener(autoEnableListener);
@@ -530,41 +576,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		@Override
 		protected void setValue(T value) {
 			this.value = value;
-		}
-	}
-
-	private final class AutoEnableListener implements Runnable {
-
-		@Override
-		public void run() {
-			if (autoEnable.get()) {
-				switch (operator.get()) {
-					case EQUAL:
-					case NOT_EQUAL:
-						enabled.set(equalValue.isNotNull());
-						break;
-					case LESS_THAN:
-					case LESS_THAN_OR_EQUAL:
-						enabled.set(upperBoundValue.isNotNull());
-						break;
-					case GREATER_THAN:
-					case GREATER_THAN_OR_EQUAL:
-						enabled.set(lowerBoundValue.isNotNull());
-						break;
-					case BETWEEN:
-					case BETWEEN_EXCLUSIVE:
-					case NOT_BETWEEN:
-					case NOT_BETWEEN_EXCLUSIVE:
-						enabled.set(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
-						break;
-					case IN:
-					case NOT_IN:
-						enabled.set(inValues.notEmpty());
-						break;
-					default:
-						throw new IllegalStateException("Unknown operator: " + operator.get());
-				}
-			}
 		}
 	}
 

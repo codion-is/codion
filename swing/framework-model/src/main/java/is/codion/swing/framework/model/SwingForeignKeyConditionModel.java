@@ -23,7 +23,6 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -40,8 +39,8 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A condition model using a {@link EntityComboBoxModel} for the {@link #equalValue()}
- * and a {@link EntitySearchModel} for the {@link #inValues()}.
+ * A condition model using a {@link EntityComboBoxModel} for the {@link Operator#EQUAL} operand
+ * and a {@link EntitySearchModel} for the {@link Operator#IN} operands.
  * @see #builder(ForeignKey)
  */
 public final class SwingForeignKeyConditionModel implements ColumnConditionModel<Attribute<?>, Entity> {
@@ -142,28 +141,13 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 	}
 
 	@Override
-	public Value<Entity> equalValue() {
-		return conditionModel.equalValue();
-	}
-
-	@Override
-	public ValueSet<Entity> inValues() {
-		return conditionModel.inValues();
-	}
-
-	@Override
-	public Value<Entity> upperBoundValue() {
-		return conditionModel.upperBoundValue();
-	}
-
-	@Override
-	public Value<Entity> lowerBoundValue() {
-		return conditionModel.lowerBoundValue();
-	}
-
-	@Override
 	public Value<Operator> operator() {
 		return conditionModel.operator();
+	}
+
+	@Override
+	public Operand<Entity> operand() {
+		return conditionModel.operand();
 	}
 
 	@Override
@@ -221,12 +205,12 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 	private void bindEvents() {
 		if (equalComboBoxModel != null) {
 			equalComboBoxModel.selectionEvent().addConsumer(new SetEqualValue());
-			equalValue().addConsumer(new SelectEqualValue());
-			equalComboBoxModel.refresher().refreshEvent().addListener(() -> equalComboBoxModel.setSelectedItem(equalValue().get()));
+			operand().equal().addConsumer(new SelectEqualValue());
+			equalComboBoxModel.refresher().refreshEvent().addListener(() -> equalComboBoxModel.setSelectedItem(operand().equal().get()));
 		}
 		if (inSearchModel != null) {
 			inSearchModel.entities().addConsumer(new SetInValues());
-			inValues().addConsumer(new SelectInValues());
+			operand().in().addConsumer(new SelectInValues());
 		}
 	}
 
@@ -235,7 +219,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 		@Override
 		public void accept(Entity selectedEntity) {
 			if (!updatingModel) {
-				equalValue().set(selectedEntity);
+				operand().equal().set(selectedEntity);
 			}
 		}
 	}
@@ -259,7 +243,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 		@Override
 		public void accept(Set<Entity> selectedEntities) {
 			if (!updatingModel) {
-				inValues().set(selectedEntities);
+				operand().in().set(selectedEntities);
 			}
 		}
 	}

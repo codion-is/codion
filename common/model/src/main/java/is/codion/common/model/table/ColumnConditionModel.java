@@ -155,29 +155,14 @@ public interface ColumnConditionModel<C, T> {
 	void clear();
 
 	/**
-	 * @return a {@link Value} controlling the operand used for the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operators
-	 */
-	Value<T> equalValue();
-
-	/**
-	 * @return a {@link Value} controlling the operands used for the {@link Operator#IN} operator
-	 */
-	ValueSet<T> inValues();
-
-	/**
-	 * @return a {@link Value} controlling the upper bound operand used for range based operators
-	 */
-	Value<T> upperBoundValue();
-
-	/**
-	 * @return a {@link Value} controlling the lower bound operand used for range based operators
-	 */
-	Value<T> lowerBoundValue();
-
-	/**
 	 * @return a {@link Value} controlling on the operator
 	 */
 	Value<Operator> operator();
+
+	/**
+	 * @return the operand
+	 */
+	Operand<T> operand();
 
 	/**
 	 * Returns true if the given value is accepted by this models condition.
@@ -201,6 +186,33 @@ public interface ColumnConditionModel<C, T> {
 	 */
 	static <C, T> Builder<C, T> builder(C identifier, Class<T> columnClass) {
 		return new DefaultColumnConditionModel.DefaultBuilder<>(identifier, columnClass);
+	}
+
+	/**
+	 * Provides access to the operands.
+	 * @param <T> the column value type
+	 */
+	interface Operand<T> {
+
+		/**
+		 * @return a {@link Value} controlling the operand used for the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operators
+		 */
+		Value<T> equal();
+
+		/**
+		 * @return a {@link Value} controlling the operands used for the {@link Operator#IN} operator
+		 */
+		ValueSet<T> in();
+
+		/**
+		 * @return a {@link Value} controlling the upper bound operand used for range based operators
+		 */
+		Value<T> upperBound();
+
+		/**
+		 * @return a {@link Value} controlling the lower bound operand used for range based operators
+		 */
+		Value<T> lowerBound();
 	}
 
 	/**

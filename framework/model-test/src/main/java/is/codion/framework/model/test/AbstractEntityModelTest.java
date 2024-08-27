@@ -230,7 +230,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		Entity inserted = editModel.insert();
 		Entity inValue = employeeModel.tableModel().conditionModel()
 						.attributeModel(Employee.DEPARTMENT_FK)
-						.inValues().iterator().next();
+						.operand().in().iterator().next();
 		assertEquals(inserted, inValue);
 		editModel.delete();
 	}
