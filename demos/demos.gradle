@@ -17,10 +17,6 @@ javadoc {
     options.addStringOption("Xdoclint:none", "-quiet")
 }
 
-sonarqube {
-    skipProject = true
-}
-
 configurations {
     /** A configuration with a single jar file containing the application domain model
      * (and server classes), used by the Framework Server module when running the server*/

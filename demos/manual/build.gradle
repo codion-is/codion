@@ -1,8 +1,18 @@
 plugins {
     id "org.gradlex.extra-java-module-info"
 }
+apply plugin: "java"
+apply plugin: "jacoco"
 
-apply from: "../demos.gradle"
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("$jdkVersion")
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
 
 dependencies {
     implementation project(":codion-tools-loadtest-ui")
@@ -37,4 +47,10 @@ tasks.register("runNotesDemo", JavaExec) {
     group "application"
     classpath = sourceSets.main.runtimeClasspath
     mainClass.set("is.codion.framework.demos.manual.notes.NotesDemo")
+}
+
+tasks.register("runApplicationPanel", JavaExec) {
+    group "application"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass.set("is.codion.framework.demos.manual.common.demo.ApplicationPanel")
 }
