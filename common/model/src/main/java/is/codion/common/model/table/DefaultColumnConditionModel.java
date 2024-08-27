@@ -163,8 +163,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	@Override
-	public boolean accepts(Comparable<T> columnValue) {
-		return valueAccepted(columnValue);
+	public boolean accepts(Comparable<T> comparable) {
+		return valueAccepted(comparable);
 	}
 
 	@Override
@@ -394,55 +394,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		return !isIn(comparable);
 	}
 
-	private T addAutomaticWildcard(T operand) {
-		if (!(operand instanceof String)) {
-			return operand;
-		}
-		switch (operator.get()) {
-			//wildcard only used for EQUAL and NOT_EQUAL
-			case EQUAL:
-			case NOT_EQUAL:
-				return (T) addAutomaticWildcard((String) operand);
-			default:
-				return operand;
-		}
-	}
-
-	private String addAutomaticWildcard(String operand) {
-		switch (automaticWildcard.get()) {
-			case PREFIX:
-				operand = addWildcardPrefix(operand);
-				break;
-			case POSTFIX:
-				operand = addWildcardPostfix(operand);
-				break;
-			case PREFIX_AND_POSTFIX:
-				operand = addWildcardPrefix(operand);
-				operand = addWildcardPostfix(operand);
-				break;
-			default:
-				break;
-		}
-
-		return operand;
-	}
-
-	private static String addWildcardPrefix(String operand) {
-		if (!operand.startsWith(WILDCARD)) {
-			return WILDCARD + operand;
-		}
-
-		return operand;
-	}
-
-	private static String addWildcardPostfix(String operand) {
-		if (!operand.endsWith(WILDCARD)) {
-			return operand + WILDCARD;
-		}
-
-		return operand;
-	}
-
 	private void checkLock() {
 		if (locked.get()) {
 			throw new IllegalStateException("Condition model for column identified by " + identifier + " is locked");
@@ -576,6 +527,55 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		@Override
 		protected void setValue(T value) {
 			this.value = value;
+		}
+
+		private T addAutomaticWildcard(T operand) {
+			if (!(operand instanceof String)) {
+				return operand;
+			}
+			switch (operator.get()) {
+				//wildcard only used for EQUAL and NOT_EQUAL
+				case EQUAL:
+				case NOT_EQUAL:
+					return (T) addAutomaticWildcard((String) operand);
+				default:
+					return operand;
+			}
+		}
+
+		private String addAutomaticWildcard(String operand) {
+			switch (automaticWildcard.get()) {
+				case PREFIX:
+					operand = addWildcardPrefix(operand);
+					break;
+				case POSTFIX:
+					operand = addWildcardPostfix(operand);
+					break;
+				case PREFIX_AND_POSTFIX:
+					operand = addWildcardPrefix(operand);
+					operand = addWildcardPostfix(operand);
+					break;
+				default:
+					break;
+			}
+
+			return operand;
+		}
+
+		private String addWildcardPrefix(String operand) {
+			if (!operand.startsWith(WILDCARD)) {
+				return WILDCARD + operand;
+			}
+
+			return operand;
+		}
+
+		private String addWildcardPostfix(String operand) {
+			if (!operand.endsWith(WILDCARD)) {
+				return operand + WILDCARD;
+			}
+
+			return operand;
 		}
 	}
 
