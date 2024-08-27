@@ -14,6 +14,8 @@ Codion Change Log
 - CalendarPanel, ALT modifier removed from day/week keyboard shortcut.
 - CalendarPanel bug fixed, day and month labels used default locale instead of the selected one.
 - CalendarPanel.Builder.firstDayOfWeek() added, related refactoring.
+### is.codion.framework.model
+- EntityTableConditionModel.setEqualConditionValue() and setInConditionValues() renamed setEqualOperand() and setInOperands() respectively.
 
 ## 0.18.10
 ### is.codion.common.core

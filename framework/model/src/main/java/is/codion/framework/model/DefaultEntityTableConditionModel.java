@@ -88,7 +88,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
-	public <T> boolean setEqualConditionValue(Attribute<T> attribute, T value) {
+	public <T> boolean setEqualOperand(Attribute<T> attribute, T operand) {
 		requireNonNull(attribute);
 		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
 		Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
@@ -96,24 +96,24 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 						(ColumnConditionModel<Attribute<?>, T>) conditionModel.conditionModels().get(attribute);
 		if (columnConditionModel != null) {
 			columnConditionModel.operator().set(Operator.EQUAL);
-			columnConditionModel.operand().equal().set(value);
-			columnConditionModel.enabled().set(value != null);
+			columnConditionModel.operand().equal().set(operand);
+			columnConditionModel.enabled().set(operand != null);
 		}
 		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
 	}
 
 	@Override
-	public <T> boolean setInConditionValues(Attribute<T> attribute, Collection<T> values) {
+	public <T> boolean setInOperands(Attribute<T> attribute, Collection<T> operands) {
 		requireNonNull(attribute);
-		requireNonNull(values);
+		requireNonNull(operands);
 		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
 		Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
 		ColumnConditionModel<Attribute<?>, T> columnConditionModel =
 						(ColumnConditionModel<Attribute<?>, T>) conditionModel.conditionModels().get(attribute);
 		if (columnConditionModel != null) {
 			columnConditionModel.operator().set(Operator.IN);
-			columnConditionModel.operand().in().set(values);
-			columnConditionModel.enabled().set(!values.isEmpty());
+			columnConditionModel.operand().in().set(operands);
+			columnConditionModel.enabled().set(!operands.isEmpty());
 		}
 		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
 	}

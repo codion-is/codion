@@ -50,24 +50,24 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 	EntityConnectionProvider connectionProvider();
 
 	/**
-	 * Sets the EQUAL condition value of the condition model associated with {@code attribute}.
-	 * Enables the condition model in case {@code value} is non-empty or disables it if {@code values is empty}.
+	 * Sets the EQUAL condition operand of the condition model associated with {@code attribute}.
+	 * Enables the condition model in case {@code operand} is non-empty or disables it if {@code operand} is empty.
 	 * @param attribute the attribute
-	 * @param value the search condition value
-	 * @param <T> the value type
+	 * @param operand the search condition operand
+	 * @param <T> the operand type
 	 * @return true if the search state changed as a result of this method call, false otherwise
 	 */
-	<T> boolean setEqualConditionValue(Attribute<T> attribute, T value);
+	<T> boolean setEqualOperand(Attribute<T> attribute, T operand);
 
 	/**
-	 * Sets the IN condition values of the condition model associated with {@code attribute}.
-	 * Enables the condition model in case {@code value} is non-empty or disables it if {@code values is empty}.
+	 * Sets the IN condition operands of the condition model associated with {@code attribute}.
+	 * Enables the condition model in case {@code operands} is non-empty or disables it if {@code operands} is empty.
 	 * @param attribute the attribute
-	 * @param values the search condition values, an empty Collection for none
+	 * @param operands the search condition operands, an empty Collection for none
 	 * @param <T> the value type
 	 * @return true if the search state changed as a result of this method call, false otherwise
 	 */
-	<T> boolean setInConditionValues(Attribute<T> attribute, Collection<T> values);
+	<T> boolean setInOperands(Attribute<T> attribute, Collection<T> operands);
 
 	/**
 	 * Returns a WHERE condition based on enabled condition models which are based on non-aggregate function columns.

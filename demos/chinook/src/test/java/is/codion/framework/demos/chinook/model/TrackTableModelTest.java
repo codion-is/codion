@@ -44,7 +44,7 @@ public final class TrackTableModelTest {
 
 		TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);
 		trackTableModel.conditionModel()
-						.setEqualConditionValue(Track.ALBUM_FK, masterOfPuppets);
+						.setEqualOperand(Track.ALBUM_FK, masterOfPuppets);
 
 		trackTableModel.refresh();
 		assertEquals(8, trackTableModel.rowCount());
