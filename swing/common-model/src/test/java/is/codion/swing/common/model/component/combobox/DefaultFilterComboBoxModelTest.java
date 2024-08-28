@@ -160,6 +160,7 @@ public class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void filterWithSelection() {
+		testModel.filterSelectedItem().set(true);
 		testModel.setSelectedItem(BJORN);
 		testModel.includeCondition().set(item -> !item.equals(BJORN));
 		assertEquals(NULL, testModel.getSelectedItem());

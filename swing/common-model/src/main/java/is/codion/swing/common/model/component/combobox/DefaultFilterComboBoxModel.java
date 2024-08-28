@@ -57,7 +57,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final State selectionEmpty = State.state(true);
 	private final State includeNull = State.state();
 	private final Value<T> nullItem = Value.value();
-	private final State filterSelectedItem = State.state(true);
+	private final State filterSelectedItem = State.state(false);
 	private final List<T> visibleItems = new ArrayList<>();
 	private final List<T> filteredItems = new ArrayList<>();
 	private final Refresher<T> refresher;

@@ -166,12 +166,13 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	T getSelectedItem();
 
 	/**
-	 * Specifies whether filtering can change the selected item, if true then
-	 * the selected item is set to null when the currently selected item is filtered
-	 * from the model, otherwise the selected item can potentially represent a value
-	 * which is not currently visible in the model.
-	 * This is true by default.
-	 * @return the State controlling whether the selected item is changed when it is filtered
+	 * Specifies whether filtering the model affects the currently selected item.
+	 * If true, the selection is cleared when the selected item is filtered from
+	 * the model, otherwise the selected item can potentially represent a value
+	 * which is not currently visible in the model
+	 * This is false by default.
+	 * @return the State controlling whether filtering affects the selected item
+	 * @see #includeCondition()
 	 */
 	State filterSelectedItem();
 

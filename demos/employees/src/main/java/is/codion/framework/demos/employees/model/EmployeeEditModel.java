@@ -45,9 +45,6 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 			//Customize the null value caption so that it displays 'None'
 			//instead of the default '-' character
 			comboBoxModel.setNullCaption("None");
-			//we do not want filtering to remove a value that is selected
-			//and thereby change the selection, see bindEvents() below
-			comboBoxModel.filterSelectedItem().set(false);
 			//Only select the president and managers from the database
 			comboBoxModel.condition().set(() ->
 							Employee.JOB.in("Manager", "President"));
