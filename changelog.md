@@ -9,6 +9,7 @@ Codion Change Log
 - Column.AuditColumnDefiner added, related refactoring.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel.filterSelectedItem() now false by default, less confusing.
+- FilterComboBoxModel.ItemFinder.findItem() now returns Optional.
 ### is.codion.swing.common.ui
 - CalendarPanel.Builder.locale() added.
 - CalendarPanel now takes the first day of week according to locale into account.

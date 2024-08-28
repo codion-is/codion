@@ -434,7 +434,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		protected void setValue(V value) {
-			setSelectedItem(value == null ? null : itemFinder.findItem(visibleItems(), value));
+			setSelectedItem(value == null ? null : itemFinder.findItem(visibleItems(), value).orElse(null));
 		}
 	}
 

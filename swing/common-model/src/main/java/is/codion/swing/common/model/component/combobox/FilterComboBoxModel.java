@@ -29,6 +29,7 @@ import is.codion.common.value.Value;
 import javax.swing.ComboBoxModel;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -179,7 +180,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	/**
 	 * @param itemFinder responsible for finding the item to select
 	 * @param <V> the value type
-	 * @return a value linked to the selected item via the given finder instance
+	 * @return a {@link Value} linked to the selected item using the given {@link ItemFinder} instance
 	 */
 	<V> Value<V> createSelectorValue(ItemFinder<T, V> itemFinder);
 
@@ -204,16 +205,16 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	interface ItemFinder<T, V> {
 
 		/**
-		 * Returns the value from the given item to use when searching
+		 * Returns the value representing the given item
 		 * @param item the item, never null
-		 * @return the value associated with the given item
+		 * @return the value representing the given item
 		 */
 		V value(T item);
 
 		/**
-		 * Returns the {@link Predicate} to use when searching for the given value
+		 * Returns the {@link Predicate} to use when searching for an item represented by the given value
 		 * @param value the value to search for, never null
-		 * @return a {@link Predicate} based on the given value
+		 * @return a {@link Predicate} for finding the item that is represented by the given value
 		 */
 		Predicate<T> predicate(V value);
 
@@ -221,15 +222,14 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * Returns the first item in the given collection containing the given {@code value}. Only called for non-null {@code value}s.
 		 * @param items the items to search
 		 * @param value the value to search for, never null
-		 * @return the first item in the given list containing the given value, null if none is found.
+		 * @return the first item in the given list containing the given value, an empty Optional if none is found.
 		 */
-		default T findItem(Collection<T> items, V value) {
+		default Optional<T> findItem(Collection<T> items, V value) {
 			requireNonNull(value);
 
 			return requireNonNull(items).stream()
 							.filter(predicate(value))
-							.findFirst()
-							.orElse(null);
+							.findFirst();
 		}
 	}
 }
