@@ -37,9 +37,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract {@link Value} implementation handling everything except the value itself.<br><br>
- * The constructor parameter {@code notify} specifies whether this {@link Value} instance should automatically call
+ * The constructor parameter {@code notify} specifies whether this {@link Value} instance should call
  * {@link #notifyListeners()} when the value is set or changed via {@link AbstractValue#set(Object)}.
- * Some implementations may want to handle this manually.
+ * Implementations that want to handle notifications manually should use use the
+ * {@link AbstractValue#AbstractValue()} or {@link AbstractValue#AbstractValue(Object)} constructors.
  * @param <T> the value type
  */
 public abstract class AbstractValue<T> implements Value<T> {
@@ -53,12 +54,15 @@ public abstract class AbstractValue<T> implements Value<T> {
 	private Consumer<T> originalValueConsumer;
 	private ValueObserver<T> observer;
 
+	/**
+	 * Creates a {@link AbstractValue} instance, which does not notify listeners.
+	 */
 	protected AbstractValue() {
 		this(null);
 	}
 
 	/**
-	 * Creates an {@link AbstractValue} instance, which does not notify listeners.
+	 * Creates a {@link AbstractValue} instance, which does not notify listeners.
 	 * @param nullValue the value to use instead of null
 	 */
 	protected AbstractValue(T nullValue) {

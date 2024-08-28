@@ -325,7 +325,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	/**
-	 * @return the value controlling the search indicator type
+	 * @return the {@link Value} controlling the search indicator type
 	 * @see #SEARCH_INDICATOR
 	 */
 	public Value<SearchIndicator> searchIndicator() {
@@ -334,7 +334,7 @@ public final class EntitySearchField extends HintTextField {
 
 	/**
 	 * Controls the factory for the {@link Selector} responsible for selecting items from the search result.
-	 * @return the Value controlling the factory for the {@link Selector} implementation to use when presenting
+	 * @return the {@link Value} controlling the factory for the {@link Selector} implementation to use when presenting
 	 * a selection dialog to the user
 	 */
 	public Value<Function<EntitySearchModel, Selector>> selectorFactory() {
@@ -342,7 +342,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	/**
-	 * @return the State controlling whether this field should trigger a search when it loses focus
+	 * @return the {@link State} controlling whether this field should trigger a search when it loses focus
 	 */
 	public State searchOnFocusLost() {
 		return searchOnFocusLost;

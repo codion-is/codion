@@ -34,22 +34,22 @@ import java.util.function.Predicate;
 public interface TableSelectionModel<R> {
 
 	/**
-	 * @return a StateObserver indicating whether the selection is empty
+	 * @return a {@link StateObserver} indicating whether the selection is empty
 	 */
 	StateObserver selectionEmpty();
 
 	/**
-	 * @return a StateObserver indicating whether one or more items are selected
+	 * @return a {@link StateObserver} indicating whether one or more items are selected
 	 */
 	StateObserver selectionNotEmpty();
 
 	/**
-	 * @return a StateObserver indicating whether multiple rows are selected
+	 * @return a {@link StateObserver} indicating whether multiple rows are selected
 	 */
 	StateObserver multipleSelection();
 
 	/**
-	 * @return a StateObserver indicating whether a single row is selected
+	 * @return a {@link StateObserver} indicating whether a single row is selected
 	 */
 	StateObserver singleSelection();
 

@@ -100,7 +100,7 @@ public interface ColumnConditionModel<C, T> {
 	C identifier();
 
 	/**
-	 * @return the State controlling whether this model is case-sensitive, when working with strings
+	 * @return the {@link State} controlling whether this model is case-sensitive, when working with strings
 	 */
 	State caseSensitive();
 
@@ -117,7 +117,7 @@ public interface ColumnConditionModel<C, T> {
 	/**
 	 * Note that this is only applicable to string based condition models and only used for
 	 * operators {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL}
-	 * @return the Value controlling whether automatic wildcards are enabled when working with strings
+	 * @return the {@link Value} controlling whether automatic wildcards are enabled when working with strings
 	 */
 	Value<AutomaticWildcard> automaticWildcard();
 
@@ -127,7 +127,7 @@ public interface ColumnConditionModel<C, T> {
 	State autoEnable();
 
 	/**
-	 * @return the state controlling the locked status
+	 * @return the {@link State} controlling the locked status
 	 */
 	State locked();
 
@@ -200,7 +200,7 @@ public interface ColumnConditionModel<C, T> {
 		Value<T> equal();
 
 		/**
-		 * @return a {@link Value} controlling the operands used for the {@link Operator#IN} operator
+		 * @return a {@link Value} controlling the operands used for the {@link Operator#IN} and {@link Operator#NOT_IN} operator
 		 */
 		ValueSet<T> in();
 

@@ -195,32 +195,32 @@ public interface EntityEditModel {
 	 * cause an exception being thrown, it does not prevent editing.
 	 * Use {@link #insertEnabled()}, {@link #updateEnabled()} and {@link #deleteEnabled()}
 	 * to configure the enabled state of those specific actions.
-	 * @return the State controlling whether this model is read only
+	 * @return the {@link State} controlling whether this model is read only
 	 */
 	State readOnly();
 
 	/**
 	 * Disabling insert causes an exception being thrown when inserting.
-	 * @return the state controlling whether inserting is enabled via this edit model
+	 * @return the {@link State} controlling whether inserting is enabled via this edit model
 	 */
 	State insertEnabled();
 
 	/**
 	 * Disabling update causes an exception being thrown when updating.
-	 * @return the state controlling whether updating is enabled via this edit model
+	 * @return the {@link State} controlling whether updating is enabled via this edit model
 	 */
 	State updateEnabled();
 
 	/**
 	 * Disabling updating multiple entities causes an exception being thrown when
 	 * trying to update multiple entities at a time.
-	 * @return the state controlling whether updating multiple entities is enabled
+	 * @return the {@link State} controlling whether updating multiple entities is enabled
 	 */
 	State updateMultipleEnabled();
 
 	/**
 	 * Disabling delete causes an exception being thrown when deleting.
-	 * @return the state controlling whether deleting is enabled via this edit model
+	 * @return the {@link State} controlling whether deleting is enabled via this edit model
 	 */
 	State deleteEnabled();
 

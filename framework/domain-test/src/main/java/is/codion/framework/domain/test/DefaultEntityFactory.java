@@ -174,7 +174,7 @@ public class DefaultEntityFactory implements EntityFactory {
 				return (T) randomString(attributeDefinition);
 			}
 			if (attribute.type().isByteArray()) {
-				return (T) randomBlob(attributeDefinition);
+				return (T) randomByteArray(attributeDefinition);
 			}
 			if (attribute.type().isEnum()) {
 				return randomEnum(attribute);
@@ -232,17 +232,17 @@ public class DefaultEntityFactory implements EntityFactory {
 						.collect(joining());
 	}
 
-	private static byte[] randomBlob(AttributeDefinition<?> attributeDefinition) {
+	private static byte[] randomByteArray(AttributeDefinition<?> attributeDefinition) {
 		if (attributeDefinition.attribute().type().isByteArray() &&
 						attributeDefinition instanceof ColumnDefinition &&
 						!((ColumnDefinition<?>) attributeDefinition).lazy()) {
-			return randomBlob(1024);
+			return randomByteArray(1024);
 		}
 
 		return null;
 	}
 
-	private static byte[] randomBlob(int numberOfBytes) {
+	private static byte[] randomByteArray(int numberOfBytes) {
 		byte[] bytes = new byte[numberOfBytes];
 		RANDOM.nextBytes(bytes);
 

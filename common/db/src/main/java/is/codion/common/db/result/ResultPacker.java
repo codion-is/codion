@@ -34,7 +34,7 @@ public interface ResultPacker<T> {
 	/**
 	 * Iterates through the given ResultSet, packing its contents into a List using {@link #get(ResultSet)} in the order they appear.
 	 * Items are skipped if {@link #get(ResultSet)} returns null.
-	 * This method does not close or modify the ResultSet in any way.
+	 * This method does not close the ResultSet.
 	 * @param resultSet the ResultSet instance containing the query result to process
 	 * @return a List containing the data from the query result
 	 * @throws SQLException thrown if anything goes wrong during the packing

@@ -564,32 +564,32 @@ public interface EntityConnection extends AutoCloseable {
 	interface Select {
 
 		/**
-		 * @return the where condition
+		 * @return the WHERE condition
 		 */
 		Condition where();
 
 		/**
-		 * @return the having condition
+		 * @return the HAVING condition
 		 */
 		Condition having();
 
 		/**
-		 * @return the OrderBy for this condition, an empty Optional if none is specified
+		 * @return the {@link OrderBy} for this condition, an empty Optional if none is specified
 		 */
 		Optional<OrderBy> orderBy();
 
 		/**
-		 * @return the limit to use for the given condition, an empty Optional for no limit
+		 * @return the LIMIT to use for the given condition, an empty Optional for no limit
 		 */
 		OptionalInt limit();
 
 		/**
-		 * @return the offset to use for the given condition, an empty Optional for no offset
+		 * @return the OFFSET to use for the given condition, an empty Optional for no offset
 		 */
 		OptionalInt offset();
 
 		/**
-		 * @return true if this select should lock the result for update
+		 * @return true if this select should lock the result FOR UPDATE
 		 */
 		boolean forUpdate();
 
@@ -630,26 +630,26 @@ public interface EntityConnection extends AutoCloseable {
 		interface Builder {
 
 			/**
-			 * Sets the OrderBy for this condition
-			 * @param orderBy the OrderBy to use when applying this condition
+			 * Sets the {@link OrderBy} for this condition
+			 * @param orderBy the {@link OrderBy} to use when applying this condition
 			 * @return this builder instance
 			 */
 			Builder orderBy(OrderBy orderBy);
 
 			/**
-			 * @param limit the limit to use for this condition, null for no limit
+			 * @param limit the LIMIT to use for this condition, null for no limit
 			 * @return this builder instance
 			 */
 			Builder limit(Integer limit);
 
 			/**
-			 * @param offset the offset to use for this condition, null for no offset
+			 * @param offset the OFFSET to use for this condition, null for no offset
 			 * @return this builder instance
 			 */
 			Builder offset(Integer offset);
 
 			/**
-			 * Marks the Select instance as a for update query, this means the resulting rows
+			 * Marks the Select instance as a FOR UPDATE query, this means the resulting rows
 			 * will be locked by the given connection until unlocked by running another (non select for update)
 			 * query on the same connection or performing an update.
 			 * Note that marking this Select instance as for update, sets the {@link #fetchDepth()} to zero, which can
@@ -720,7 +720,7 @@ public interface EntityConnection extends AutoCloseable {
 		}
 
 		/**
-		 * @param condition the where condition
+		 * @param condition the WHERE condition
 		 * @return a new {@link Builder} instance
 		 */
 		static Builder where(Condition condition) {
@@ -736,7 +736,7 @@ public interface EntityConnection extends AutoCloseable {
 	interface Update {
 
 		/**
-		 * @return the where condition
+		 * @return the WHERE condition
 		 */
 		Condition where();
 
@@ -776,7 +776,7 @@ public interface EntityConnection extends AutoCloseable {
 		}
 
 		/**
-		 * @param condition the where condition
+		 * @param condition the WHERE condition
 		 * @return a {@link Builder} instance
 		 */
 		static Builder where(Condition condition) {
@@ -793,12 +793,12 @@ public interface EntityConnection extends AutoCloseable {
 	interface Count {
 
 		/**
-		 * @return the where condition
+		 * @return the WHERE condition
 		 */
 		Condition where();
 
 		/**
-		 * @return the having condition
+		 * @return the HAVING condition
 		 */
 		Condition having();
 
@@ -808,7 +808,7 @@ public interface EntityConnection extends AutoCloseable {
 		interface Builder {
 
 			/**
-			 * @param having the having condition
+			 * @param having the HAVING condition
 			 * @return this builder instance
 			 */
 			Builder having(Condition having);
@@ -828,7 +828,7 @@ public interface EntityConnection extends AutoCloseable {
 		}
 
 		/**
-		 * @param condition the where condition
+		 * @param condition the WHERE condition
 		 * @return a {@link Count} instance
 		 */
 		static Count where(Condition condition) {
@@ -838,7 +838,7 @@ public interface EntityConnection extends AutoCloseable {
 		}
 
 		/**
-		 * @param condition the having condition
+		 * @param condition the HAVING condition
 		 * @return a {@link Count} instance
 		 */
 		static Count having(Condition condition) {
@@ -850,7 +850,7 @@ public interface EntityConnection extends AutoCloseable {
 		}
 
 		/**
-		 * @param where the where condition
+		 * @param where the WHERE condition
 		 * @return a {@link Count.Builder} instance
 		 */
 		static Builder builder(Condition where) {

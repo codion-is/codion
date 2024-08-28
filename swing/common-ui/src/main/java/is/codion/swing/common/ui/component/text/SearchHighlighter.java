@@ -106,7 +106,7 @@ public final class SearchHighlighter {
 	}
 
 	/**
-	 * @return the state controlling whether the search is case-sensitive.
+	 * @return the {@link State} controlling whether the search is case-sensitive.
 	 */
 	public State caseSensitive() {
 		return caseSensitiveState;

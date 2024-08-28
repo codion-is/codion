@@ -85,7 +85,7 @@ public interface EntitySearchModel {
 	void reset();
 
 	/**
-	 * @return the value controlling the search result limit
+	 * @return the {@link Value} controlling the search result limit
 	 */
 	Value<Integer> limit();
 
@@ -102,25 +102,25 @@ public interface EntitySearchModel {
 	 * Sets the additional search condition supplier to use when performing the next search.
 	 * This condition is AND'ed to the actual search condition.
 	 * NOTE, this does not affect the currently selected value(s), if any.
-	 * @return the Value controlling the additional condition supplier
+	 * @return the {@link Value} controlling the additional condition supplier
 	 */
 	Value<Supplier<Condition>> condition();
 
 	/**
 	 * Note that changing this value does not change the search string accordingly.
-	 * @return the Value controlling the function providing the {@code toString()} implementation
+	 * @return the {@link Value} controlling the function providing the {@code toString()} implementation
 	 * for the entities displayed by this model
 	 * @see #reset()
 	 */
 	Value<Function<Entity, String>> stringFunction();
 
 	/**
-	 * @return a StateObserver indicating whether the search string represents the selected entities
+	 * @return a {@link StateObserver} indicating whether the search string represents the selected entities
 	 */
 	StateObserver searchStringModified();
 
 	/**
-	 * @return a StateObserver indicating whether the selection is empty
+	 * @return a {@link StateObserver} indicating whether the selection is empty
 	 */
 	StateObserver selectionEmpty();
 

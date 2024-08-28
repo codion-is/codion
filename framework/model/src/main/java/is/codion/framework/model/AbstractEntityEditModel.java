@@ -551,7 +551,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	/**
 	 * Controls the validator used by this edit model.
-	 * @return the value controlling the validator
+	 * @return the {@link Value} controlling the validator
 	 * @see #validate(Entity)
 	 */
 	protected final Value<EntityValidator> validator() {
@@ -561,7 +561,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Controls the 'modified' predicate for this edit model, which is responsible for providing
 	 * the modified state of the underlying entity.
-	 * @return the value controlling the predicate used to check if the entity is modified
+	 * @return the {@link Value} controlling the predicate used to check if the entity is modified
 	 * @see Entity#modified()
 	 * @see #modified()
 	 */
@@ -572,7 +572,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Controls the 'exists' predicate for this edit model, which is responsible for providing
 	 * the exists state of the underlying entity.
-	 * @return the value controlling the predicate used to check if the entity exists
+	 * @return the {@link Value} controlling the predicate used to check if the entity exists
 	 * @see EntityDefinition#exists()
 	 * @see Entity#exists()
 	 */

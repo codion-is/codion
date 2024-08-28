@@ -153,7 +153,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	EntityTableConditionModel conditionModel();
 
 	/**
-	 * @return the State controlling whether this table model is editable
+	 * @return the {@link State} controlling whether this table model is editable
 	 */
 	State editable();
 
@@ -183,7 +183,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	/**
 	 * Returns the Value controlling the maximum number of rows to fetch via the underlying query the next time
 	 * this table model is refreshed, a null value means all rows should be fetched
-	 * @return the value controlling the limit
+	 * @return the {@link Value} controlling the limit
 	 */
 	Value<Integer> limit();
 
@@ -191,7 +191,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * Controls the order by clause to use when selecting the data for this model.
 	 * Setting this value to null reverts back to the default order by
 	 * for the underlying entity, if one has been specified
-	 * @return the value controlling the order by clause
+	 * @return the {@link Value} controlling the order by clause
 	 * @see EntityDefinition#orderBy()
 	 */
 	Value<OrderBy> orderBy();
@@ -215,19 +215,19 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	State conditionRequired();
 
 	/**
-	 * @return the state controlling whether this table model handles entity edit events, by replacing updated entities
+	 * @return the {@link State} controlling whether this table model handles entity edit events, by replacing updated entities
 	 * @see EntityEditEvents
 	 */
 	State handleEditEvents();
 
 	/**
-	 * @return the Value controlling the action to perform when entities are inserted via the associated edit model
+	 * @return the {@link Value} controlling the action to perform when entities are inserted via the associated edit model
 	 * @see #ON_INSERT
 	 */
 	Value<OnInsert> onInsert();
 
 	/**
-	 * @return the State controlling whether entities that are deleted via the associated edit model
+	 * @return the {@link State} controlling whether entities that are deleted via the associated edit model
 	 * should be automatically removed from this table model
 	 */
 	State removeDeleted();
@@ -280,7 +280,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	TableSelectionModel<Entity> selectionModel();
 
 	/**
-	 * @return a StateObserver indicating if the search condition has changed since last refresh
+	 * @return a {@link StateObserver} indicating if the search condition has changed since last refresh
 	 */
 	StateObserver conditionChanged();
 

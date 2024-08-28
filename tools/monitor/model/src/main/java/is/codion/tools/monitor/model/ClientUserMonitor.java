@@ -150,7 +150,7 @@ public final class ClientUserMonitor {
 	}
 
 	/**
-	 * @return the value controlling the update interval
+	 * @return the {@link Value} controlling the update interval
 	 */
 	public Value<Integer> updateInterval() {
 		return updateScheduler.interval();

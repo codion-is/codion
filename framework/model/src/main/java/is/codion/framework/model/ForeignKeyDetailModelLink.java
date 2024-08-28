@@ -61,14 +61,14 @@ public interface ForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E ext
 	ForeignKey foreignKey();
 
 	/**
-	 * @return the State controlling whether the detail table model should automatically search by the inserted entity
+	 * @return the {@link State} controlling whether the detail table model should automatically search by the inserted entity
 	 * when an insert is performed in a master model
 	 * @see ForeignKeyDetailModelLink#SEARCH_BY_INSERTED_ENTITY
 	 */
 	State searchByInsertedEntity();
 
 	/**
-	 * @return the State controlling whether the detail table model should be automatically refreshed
+	 * @return the {@link State} controlling whether the detail table model should be automatically refreshed
 	 * when the foreign key condition is set according to the master model selection
 	 * @see ForeignKeyDetailModelLink#REFRESH_ON_SELECTION
 	 */
@@ -76,7 +76,7 @@ public interface ForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E ext
 
 	/**
 	 * Returns the State controlling whether the detail model should set the foreign key to null when null or no value is selected in the master model.
-	 * @return the State controlling whether a null selection should result in the foreign key being set to null
+	 * @return the {@link State} controlling whether a null selection should result in the foreign key being set to null
 	 * @see ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION
 	 */
 	State clearForeignKeyOnEmptySelection();

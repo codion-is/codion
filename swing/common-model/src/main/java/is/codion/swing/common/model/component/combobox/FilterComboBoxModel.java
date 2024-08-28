@@ -103,7 +103,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * Controls the Comparator used when sorting the visible items in this model and sorts the model accordingly.
 	 * This Comparator must take into account the null value if a null item has been set via {@link #nullItem()}.
 	 * If a null {@code comparator} is provided no sorting will be performed.
-	 * @return the Value controlling the comparator used when sorting, value may be null if the items of this model should not be sorted
+	 * @return the {@link Value} controlling the comparator used when sorting, value may be null if the items of this model should not be sorted
 	 */
 	Value<Comparator<T>> comparator();
 
@@ -111,25 +111,25 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * Provides a way for the model to prevent the addition of certain items.
 	 * Trying to add items that fail validation will result in an exception.
 	 * Note that any translation of the selected item is done before validation.
-	 * @return the Value controlling the item validator
+	 * @return the {@link Value} controlling the item validator
 	 */
 	Value<Predicate<T>> validator();
 
 	/**
 	 * Provides a way for the combo box model to translate an item when it is selected, such
 	 * as selecting the String "1" in a String based model when selected item is set to the number 1.
-	 * @return the Value controlling the selected item translator
+	 * @return the {@link Value} controlling the selected item translator
 	 */
 	Value<Function<Object, T>> selectedItemTranslator();
 
 	/**
 	 * Provides a way for the combo box model to prevent the selection of certain items.
-	 * @return the Value controlling the valid selection predicate
+	 * @return the {@link Value} controlling the valid selection predicate
 	 */
 	Value<Predicate<T>> validSelectionPredicate();
 
 	/**
-	 * @return the State controlling whether a null value is included as the first item
+	 * @return the {@link State} controlling whether a null value is included as the first item
 	 * @see #nullItem()
 	 */
 	State includeNull();
@@ -137,7 +137,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	/**
 	 * Controls the item that should represent the null value in this model.
 	 * Note that {@link #includeNull()} must be used as well to enable the null value.
-	 * @return the Value controlling the item representing null
+	 * @return the {@link Value} controlling the item representing null
 	 * @see #includeNull()
 	 */
 	Value<T> nullItem();
@@ -150,7 +150,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	boolean nullSelected();
 
 	/**
-	 * @return a StateObserver indicating whether the selection is empty or the value representing null is selected
+	 * @return a {@link StateObserver} indicating whether the selection is empty or the value representing null is selected
 	 */
 	StateObserver selectionEmpty();
 
@@ -172,7 +172,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * the model, otherwise the selected item can potentially represent a value
 	 * which is not currently visible in the model
 	 * This is false by default.
-	 * @return the State controlling whether filtering affects the selected item
+	 * @return the {@link State} controlling whether filtering affects the selected item
 	 * @see #includeCondition()
 	 */
 	State filterSelectedItem();

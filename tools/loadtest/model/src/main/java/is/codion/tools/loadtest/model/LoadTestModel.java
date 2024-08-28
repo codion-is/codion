@@ -58,12 +58,12 @@ public interface LoadTestModel<T> {
 	void setUpdateInterval(int updateInterval);
 
 	/**
-	 * @return the state controlling whether this load test collects chart data
+	 * @return the {@link State} controlling whether this load test collects chart data
 	 */
 	State collectChartData();
 
 	/**
-	 * @return the state controlling whether the applications table model is automatically refreshed
+	 * @return the {@link State} controlling whether the applications table model is automatically refreshed
 	 */
 	State autoRefreshApplications();
 

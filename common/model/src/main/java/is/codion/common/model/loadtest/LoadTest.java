@@ -107,29 +107,29 @@ public interface LoadTest<T> {
 	void addShutdownListener(Runnable listener);
 
 	/**
-	 * @return the Value controlling the number of applications to initialize per batch
+	 * @return the {@link Value} controlling the number of applications to initialize per batch
 	 */
 	Value<Integer> applicationBatchSize();
 
 	/**
-	 * @return the state controlling the paused state of this load test
+	 * @return the {@link State} controlling the paused state of this load test
 	 */
 	State paused();
 
 	/**
-	 * @return the Value controlling the maximum number of milliseconds that should pass between work requests
+	 * @return the {@link Value} controlling the maximum number of milliseconds that should pass between work requests
 	 */
 	Value<Integer> maximumThinkTime();
 
 	/**
-	 * @return the Value controlling the minimum number of milliseconds that should pass between work requests
+	 * @return the {@link Value} controlling the minimum number of milliseconds that should pass between work requests
 	 */
 	Value<Integer> minimumThinkTime();
 
 	/**
 	 * This value controls the factor with which to multiply the think time when logging in, this helps
 	 * spread the application logins when creating a batch of application.
-	 * @return the Value controlling the factor with which to multiply the think time when logging in
+	 * @return the {@link Value} controlling the factor with which to multiply the think time when logging in
 	 */
 	Value<Integer> loginDelayFactor();
 

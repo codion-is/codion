@@ -571,7 +571,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * @return the state controlling whether the summary panel is visible
+	 * @return the {@link State} controlling whether the summary panel is visible
 	 */
 	public final State summaryPanelVisible() {
 		return summaryPanelVisibleState;
@@ -580,7 +580,7 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Specifies whether the current sort order is used as a basis for the query order by clause.
 	 * Note that this only applies to column attributes.
-	 * @return the State controlling whether the current sort order should be used as a basis for the query order by clause
+	 * @return the {@link State} controlling whether the current sort order should be used as a basis for the query order by clause
 	 */
 	public final State orderQueryBySortOrder() {
 		return orderQueryBySortOrder;
@@ -588,7 +588,7 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * Returns whether the values of hidden columns are included when querying data
-	 * @return the State controlling whether the values of hidden columns are included when querying data
+	 * @return the {@link State} controlling whether the values of hidden columns are included when querying data
 	 */
 	public final State queryHiddenColumns() {
 		return queryHiddenColumns;

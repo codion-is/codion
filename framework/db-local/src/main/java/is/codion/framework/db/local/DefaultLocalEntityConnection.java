@@ -86,9 +86,6 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.*;
 
-/**
- * A default LocalEntityConnection implementation
- */
 final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
@@ -1437,8 +1434,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						.map(entry -> entity.definition().attributes().definition(entry.getKey()))
 						.filter(ColumnDefinition.class::isInstance)
 						.map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
-						.filter(columnDefinition -> columnDefinition.updatable() && !columnDefinition.lazy() &&
-										valueMissingOrModified(entity, comparison, columnDefinition.attribute()))
+						.filter(columnDefinition -> columnDefinition.updatable()
+										&& !columnDefinition.lazy()
+										&& valueMissingOrModified(entity, comparison, columnDefinition.attribute()))
 						.map(ColumnDefinition::attribute)
 						.collect(toList());
 	}

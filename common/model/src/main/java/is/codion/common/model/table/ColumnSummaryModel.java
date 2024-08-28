@@ -60,7 +60,7 @@ public interface ColumnSummaryModel {
 	List<Summary> summaries();
 
 	/**
-	 * @return the value controlling the summary
+	 * @return the {@link Value} controlling the summary
 	 */
 	Value<Summary> summary();
 

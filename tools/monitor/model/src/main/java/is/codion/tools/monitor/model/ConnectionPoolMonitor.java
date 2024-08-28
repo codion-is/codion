@@ -239,14 +239,14 @@ public final class ConnectionPoolMonitor {
 	}
 
 	/**
-	 * @return the State controlling whether snapshot statistics are collected
+	 * @return the {@link State} controlling whether snapshot statistics are collected
 	 */
 	public State collectSnapshotStatistics() {
 		return collectSnapshotStatisticsState;
 	}
 
 	/**
-	 * @return the State controlling whether checkout times are collected
+	 * @return the {@link State} controlling whether checkout times are collected
 	 */
 	public State collectCheckOutTimes() {
 		return collectCheckOutTimesState;
@@ -260,7 +260,7 @@ public final class ConnectionPoolMonitor {
 	}
 
 	/**
-	 * @return the value controlling the update interval
+	 * @return the {@link Value} controlling the update interval
 	 */
 	public Value<Integer> updateInterval() {
 		return updateScheduler.interval();

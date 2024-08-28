@@ -47,7 +47,7 @@ public interface TaskScheduler {
 	/**
 	 * Controls the task interval and when set, in case this scheduler was running, re-schedules the task.
 	 * If the scheduler was stopped it will remain so, the new interval coming into effect on next start.
-	 * @return the value controlling the interval
+	 * @return the {@link Value} controlling the interval
 	 */
 	Value<Integer> interval();
 

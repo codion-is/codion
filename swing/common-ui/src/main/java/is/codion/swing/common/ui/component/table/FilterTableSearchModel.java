@@ -32,12 +32,12 @@ import java.util.function.Predicate;
 public interface FilterTableSearchModel {
 
 	/**
-	 * @return the state controlling whether regular expressions should be used when searching
+	 * @return the {@link State} controlling whether regular expressions should be used when searching
 	 */
 	State regularExpression();
 
 	/**
-	 * @return the state controlling whether searching is case-sensitive
+	 * @return the {@link State} controlling whether searching is case-sensitive
 	 */
 	State caseSensitive();
 

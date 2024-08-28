@@ -260,7 +260,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 	/**
 	 * @param attribute the attribute
-	 * @return the Value containing the component associated with the given attribute
+	 * @return the {@link Value} containing the component associated with the given attribute
 	 */
 	protected final Value<JComponent> component(Attribute<?> attribute) {
 		ComponentBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
@@ -274,7 +274,7 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Sets the component that should receive the focus when the UI is cleared or activated.
 	 * Takes precedence over the one set via {@link #initialFocusAttribute()}
-	 * @return the Value controlling the initial focus component
+	 * @return the {@link Value} controlling the initial focus component
 	 */
 	protected final Value<JComponent> initialFocusComponent() {
 		return initialFocusComponent;
@@ -284,7 +284,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * Sets the component associated with the given attribute as the component
 	 * that should receive the initial focus in this edit panel.
 	 * This is overridden by {@link #initialFocusComponent()}.
-	 * @return the Value controlling the initial focus attribute
+	 * @return the {@link Value} controlling the initial focus attribute
 	 * @see #initialFocusComponent()
 	 */
 	protected final Value<Attribute<?>> initialFocusAttribute() {
@@ -294,7 +294,7 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Sets the component that should receive the focus after an insert has been performed.
 	 * Takes precedence over the one set via {@link #afterInsertFocusAttribute()}
-	 * @return the Value controlling the after insert focus component
+	 * @return the {@link Value} controlling the after insert focus component
 	 */
 	protected final Value<JComponent> afterInsertFocusComponent() {
 		return afterInsertFocusComponent;
@@ -304,7 +304,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * Sets the component associated with the given attribute as the component
 	 * that should receive the focus after an insert is performed in this edit panel.
 	 * This is overridden by {@link #afterInsertFocusComponent()}.
-	 * @return the Value controlling the after insert focus attribute
+	 * @return the {@link Value} controlling the after insert focus attribute
 	 * @see #afterInsertFocusComponent()
 	 */
 	protected final Value<Attribute<?>> afterInsertFocusAttribute() {
@@ -336,7 +336,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * components set via {@link #component(Attribute)} as long
 	 * as the component has a JLabel associated with its 'labeledBy' client property.
 	 * Note that changing this has no effect on components that have already been created.
-	 * @return the State controlling whether components display an indicator if the value is modified
+	 * @return the {@link State} controlling whether components display an indicator if the value is modified
 	 * @see #MODIFIED_INDICATOR
 	 * @see JLabel#setLabelFor(Component)
 	 */
@@ -347,7 +347,7 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * If set to true then components created subsequently will transfer focus on enter, otherwise not.
 	 * Note that changing this has no effect on components that have already been created.
-	 * @return the State controlling whether components transfer focus on enter
+	 * @return the {@link State} controlling whether components transfer focus on enter
 	 * @see ComponentBuilder#TRANSFER_FOCUS_ON_ENTER
 	 */
 	protected final State transferFocusOnEnter() {
@@ -1021,8 +1021,8 @@ public class EntityEditComponentPanel extends JPanel {
 						.build();
 
 		/**
-		 * Controls the default number of text field columns, -1 for not settings the columns
-		 * @return the Value controlling the default number of text field columns
+		 * Controls the default number columns in text fields, -1 for not setting the columns
+		 * @return the {@link Value} controlling the default number columns in text fields
 		 * @see #DEFAULT_TEXT_FIELD_COLUMNS
 		 * @see #createTextField(Attribute)
 		 * @see #createTextFieldPanel(Attribute)
@@ -1032,8 +1032,8 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		/**
-		 * Controls the default number of text field columns, -1 for not settings the columns
-		 * @return the Value controlling the default number of foreign key search field columns
+		 * Controls the default number of columns in text fields, -1 for not setting the columns
+		 * @return the {@link Value} controlling the default number of columns in foreign key search fields
 		 * @see #DEFAULT_TEXT_FIELD_COLUMNS
 		 * @see #createForeignKeySearchField(ForeignKey)
 		 */
@@ -1042,7 +1042,7 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		/**
-		 * @return the Value controlling the default combo box width
+		 * @return the {@link Value} controlling the default width of combo boxes
 		 * @see #createComboBox(Column)
 		 */
 		public Value<Integer> comboBoxPreferredWidth() {
@@ -1050,7 +1050,7 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		/**
-		 * @return the Value controlling the default item combo box width
+		 * @return the {@link Value} controlling the default width of item combo boxes
 		 * @see #createItemComboBox(Attribute)
 		 */
 		public Value<Integer> itemComboBoxPreferredWidth() {
@@ -1058,7 +1058,7 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		/**
-		 * @return the Value controlling the default foreign key combo box width
+		 * @return the {@link Value} controlling the default width of foreign key combo boxes
 		 * @see #createForeignKeyComboBox(ForeignKey)
 		 * @see #createForeignKeyComboBoxPanel(ForeignKey, Supplier)
 		 */
@@ -1262,7 +1262,7 @@ public class EntityEditComponentPanel extends JPanel {
 		private Color invalidBackgroundColor;
 
 		/**
-		 * Instantiates a new TextValidator
+		 * Instantiates a new ComponentValidator
 		 * @param attribute the attribute of the value to validate
 		 * @param component the component bound to the value
 		 * @param editModel the edit model handling the value editing

@@ -585,7 +585,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @return the value controlling the edit panel state, either HIDDEN, EMBEDDED or WINDOW
+	 * @return the {@link Value} controlling the edit panel state, either HIDDEN, EMBEDDED or WINDOW
 	 */
 	public final Value<PanelState> editPanelState() {
 		return editPanelState;
@@ -1549,7 +1549,7 @@ public class EntityPanel extends JPanel {
 		 * Note that the detail panel state may be shared between detail panels,
 		 * as they may be displayed in a shared window.
 		 * @param detailPanel the detail panel
-		 * @return the value controlling the state of the given detail panel
+		 * @return the {@link Value} controlling the state of the given detail panel
 		 */
 		default Value<PanelState> panelState(EntityPanel detailPanel) {
 			throw new UnsupportedOperationException("panelState() has not been implemented for detail controller: " + getClass());

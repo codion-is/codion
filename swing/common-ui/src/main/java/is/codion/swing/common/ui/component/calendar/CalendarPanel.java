@@ -63,7 +63,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -82,6 +81,7 @@ import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -184,7 +184,7 @@ public final class CalendarPanel extends JPanel {
 	private static final int DAY_GRID_ROWS = 6;
 	private static final int DAY_GRID_CELLS = 42;
 
-	private final Locale locale;
+	private final Locale selectedLocale;
 	private final DayOfWeek firstDayOfWeek;
 	private final DateTimeFormatter dateFormatter;
 	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -212,9 +212,9 @@ public final class CalendarPanel extends JPanel {
 		this.includeTime = builder.includeTime;
 		this.includeTodayButton = builder.includeTodayButton;
 		this.controlMap = builder.controlMap;
-		this.locale = builder.locale;
+		this.selectedLocale = builder.locale;
 		this.firstDayOfWeek = builder.firstDayOfWeek;
-		this.dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale);
+		this.dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(selectedLocale);
 		LocalDateTime dateTime = builder.initialValue == null ? LocalDateTime.now() : builder.initialValue;
 		yearValue = Value.builder()
 						.nonNull(dateTime.getYear())
@@ -253,9 +253,9 @@ public final class CalendarPanel extends JPanel {
 		todaySelected = State.state(todaySelected());
 		dayColumns = IntStream.range(0, DAYS_IN_WEEK)
 						.mapToObj(firstDayOfWeek::plus)
-						.collect(Collectors.toList());
+						.collect(toList());
 		dayLabels = createDayLabels();
-		paddingLabels = IntStream.range(0, MAX_DAY_FILLERS).mapToObj(counter -> new JLabel()).collect(Collectors.toList());
+		paddingLabels = IntStream.range(0, MAX_DAY_FILLERS).mapToObj(counter -> new JLabel()).collect(toList());
 		dayGridPanel = new JPanel(new GridLayout(DAY_GRID_ROWS, DAYS_IN_WEEK));
 		formattedDateLabel = new JLabel("", SwingConstants.CENTER);
 		formattedDateLabel.setBorder(emptyBorder());
@@ -591,7 +591,7 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JLabel createDayLabel(DayOfWeek dayOfWeek) {
-		return label(dayOfWeek.getDisplayName(TextStyle.SHORT, locale))
+		return label(dayOfWeek.getDisplayName(TextStyle.SHORT, selectedLocale))
 						.horizontalAlignment(SwingConstants.CENTER)
 						.border(emptyBorder())
 						.build();
@@ -752,8 +752,8 @@ public final class CalendarPanel extends JPanel {
 
 	private List<Item<Month>> createMonthItems() {
 		return Arrays.stream(Month.values())
-						.map(month -> Item.item(month, month.getDisplayName(TextStyle.SHORT, locale)))
-						.collect(Collectors.toList());
+						.map(month -> Item.item(month, month.getDisplayName(TextStyle.SHORT, selectedLocale)))
+						.collect(toList());
 	}
 
 	private JSpinner createHourSpinner() {

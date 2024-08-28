@@ -208,12 +208,12 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 
 	/**
 	 * Default {@link RefreshStrategy#CLEAR}
-	 * @return the Value controlling the refresh strategy
+	 * @return the {@link Value} controlling the refresh strategy
 	 */
 	Value<RefreshStrategy> refreshStrategy();
 
 	/**
-	 * @return the value controlling the comparator to use when sorting
+	 * @return the {@link Value} controlling the comparator to use when sorting
 	 */
 	Value<Comparator<R>> comparator();
 

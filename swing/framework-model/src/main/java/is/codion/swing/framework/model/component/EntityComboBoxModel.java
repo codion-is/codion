@@ -159,7 +159,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	/**
-	 * @return the state controlling whether this combo box model should handle entity edit events, by adding inserted items,
+	 * @return the {@link State} controlling whether this combo box model should handle entity edit events, by adding inserted items,
 	 * updating any updated items and removing deleted ones
 	 * @see EntityEditEvents
 	 */
@@ -207,7 +207,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 * Controls the order by to use when selecting entities for this model.
 	 * Note that in order for this to have an effect, you must disable sorting
 	 * by setting the sort comparator to null ({@link #comparator()}
-	 * @return the Value controlling the orderBy
+	 * @return the {@link Value} controlling the orderBy
 	 * @see #comparator()
 	 */
 	public Value<OrderBy> orderBy() {
@@ -264,7 +264,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 * When the filtering is strict only entities with the correct reference are included, that is,
 	 * entities with null values for the given foreign key are filtered.
 	 * Non-strict simply means that entities with null references are not filtered.
-	 * @return the State controlling whether foreign key filtering should be strict
+	 * @return the {@link State} controlling whether foreign key filtering should be strict
 	 * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
 	 */
 	public State strictForeignKeyFiltering() {

@@ -142,7 +142,7 @@ public interface FilterModel<T> {
 		 * the refreshed data, after the refresh has finished, such as selecting a particular item or such.
 		 * This is quite difficult to achieve with asynchronous refresh enabled, so here's a way to temporarily
 		 * disable asynchronous refresh, for a more predictable behaviour.
-		 * @return the State controlling whether asynchronous refreshing is enabled
+		 * @return the {@link State} controlling whether asynchronous refreshing is enabled
 		 * @see #ASYNC_REFRESH
 		 */
 		State async();

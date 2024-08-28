@@ -78,7 +78,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * @return the value controlling the condition panel state
+	 * @return the {@link Value} controlling the condition panel state
 	 */
 	public final Value<ConditionState> state() {
 		return conditionState;

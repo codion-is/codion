@@ -117,13 +117,13 @@ final class DefaultScenario<T> implements Scenario<T> {
 		}
 
 		@Override
-		public Builder<T> beforeRun(java.util.function.Consumer<T> beforeRun) {
+		public Builder<T> beforeRun(Consumer<T> beforeRun) {
 			this.beforeRun = requireNonNull(beforeRun);
 			return this;
 		}
 
 		@Override
-		public Builder<T> afterRun(java.util.function.Consumer<T> afterRun) {
+		public Builder<T> afterRun(Consumer<T> afterRun) {
 			this.afterRun = requireNonNull(afterRun);
 			return this;
 		}

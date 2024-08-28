@@ -37,6 +37,7 @@ import static java.util.stream.StreamSupport.stream;
  * Specifies a class responsible for providing a single {@link EntityConnection} instance.
  * {@link #connection()} is guaranteed to return a healthy connection or throw an exception.
  * A factory for EntityConnectionProviders based on system properties.
+ * @see #builder()
  */
 public interface EntityConnectionProvider extends AutoCloseable {
 
@@ -143,8 +144,9 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	Version clientVersion();
 
 	/**
-	 * @return a unconfigured {@link Builder} instance,
-	 * based on {@link EntityConnectionProvider#CLIENT_CONNECTION_TYPE} configuration value
+	 * @return an unconfigured {@link Builder} instance, based on the
+	 * {@link EntityConnectionProvider#CLIENT_CONNECTION_TYPE} configuration value
+	 * @throws IllegalStateException in case the required connection provider builder is not available on the classpath
 	 * @see EntityConnectionProvider#CLIENT_CONNECTION_TYPE
 	 */
 	static Builder<?, ?> builder() {
@@ -153,7 +155,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 			return stream(ServiceLoader.load(Builder.class).spliterator(), false)
 							.filter(builder -> builder.connectionType().equalsIgnoreCase(clientConnectionType))
 							.findFirst()
-							.orElseThrow(() -> new IllegalArgumentException("No connection provider builder available for requested client connection type: " + clientConnectionType));
+							.orElseThrow(() -> new IllegalStateException("No connection provider builder available for requested client connection type: " + clientConnectionType));
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

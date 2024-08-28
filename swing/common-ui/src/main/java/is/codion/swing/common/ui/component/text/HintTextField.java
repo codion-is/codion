@@ -76,7 +76,7 @@ public class HintTextField extends JTextField {
 	}
 
 	/**
-	 * @return the Value controlling the hint text
+	 * @return the {@link Value} controlling the hint text
 	 */
 	public final Value<String> hint() {
 		return hint;

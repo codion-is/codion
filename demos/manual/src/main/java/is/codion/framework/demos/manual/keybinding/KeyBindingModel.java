@@ -39,6 +39,7 @@ import java.util.function.Supplier;
 import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -168,7 +169,7 @@ final class KeyBindingModel {
 			WHEN_ANCESTOR_COLUMN
 		}
 
-		private static final List<Id> IDENTIFIERS = Arrays.asList(Id.values());
+		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
 
 		@Override
 		public List<Id> identifiers() {
