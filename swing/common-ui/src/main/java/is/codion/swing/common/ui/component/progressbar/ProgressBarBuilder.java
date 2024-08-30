@@ -23,6 +23,8 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import javax.swing.BoundedRangeModel;
 import javax.swing.JProgressBar;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Builds a JProgressBar.
  */
@@ -72,7 +74,7 @@ public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressB
 	 * @return a new indeterminate {@link ProgressBarBuilder} instance
 	 */
 	static ProgressBarBuilder builder() {
-		return builder(null);
+		return new DefaultProgressBarBuilder(null);
 	}
 
 	/**
@@ -80,6 +82,6 @@ public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressB
 	 * @return a new {@link ProgressBarBuilder} instance
 	 */
 	static ProgressBarBuilder builder(BoundedRangeModel boundedRangeModel) {
-		return new DefaultProgressBarBuilder(boundedRangeModel);
+		return new DefaultProgressBarBuilder(requireNonNull(boundedRangeModel));
 	}
 }
