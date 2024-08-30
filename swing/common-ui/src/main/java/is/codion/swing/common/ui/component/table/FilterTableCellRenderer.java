@@ -228,6 +228,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 
 		private Color foregroundColor;
 		private Color backgroundColor;
+		private Color alternateRowColor;
 		private Color backgroundColorShaded;
 		private Color backgroundColorAlternate;
 		private Color backgroundColorAlternateShaded;
@@ -275,7 +276,8 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		protected void updateColors() {
 			foregroundColor = UIManager.getColor("Table.foreground");
 			backgroundColor = UIManager.getColor("Table.background");
-			backgroundColorAlternate = UIManager.getColor("Table.alternateRowColor");
+			alternateRowColor = UIManager.getColor("Table.alternateRowColor");
+			backgroundColorAlternate = alternateRowColor;
 			if (backgroundColorAlternate == null) {
 				backgroundColorAlternate = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
 			}
@@ -296,8 +298,14 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
 			}
-
-			return alternateRowColor(row) ? backgroundColorAlternate : backgroundColor;
+			if (alternateRowColoring) {
+				return alternateRowColor(row) ? backgroundColorAlternate : backgroundColor;
+			}
+			if (alternateRowColor == null) {
+				return backgroundColor;
+			}
+			// If alternate row coloring is enabled outside of the framework, respect it
+			return alternateRowColor(row) ? alternateRowColor : backgroundColor;
 		}
 
 		/**
@@ -363,7 +371,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		 * @return true if the given row should use the alternate row color
 		 */
 		protected boolean alternateRowColor(int row) {
-			return alternateRowColoring && row % 2 == 0;
+			return row % 2 != 0;
 		}
 
 		private static CompoundBorder createFocusedCellBorder(Color foregroundColor, Border defaultCellBorder) {

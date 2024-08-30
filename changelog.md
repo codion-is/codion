@@ -19,6 +19,7 @@ Codion Change Log
 - CalendarPanel.Builder.firstDayOfWeek() added, related refactoring.
 - DefaultProgressBarBuilder bug fixed, no longer uses a null model for indeterminate progress bars, Look & Feels may require it.
 - FilterTableCellRenderer.Settings.backgroundColor() bug fixed, no longer returns alternate row color when alternate row coloring is disabled.
+- FilterTableCellRenderer bug fixed, now respects Table.alternateRowColor if set, even if alternate row coloring is disabled.
 ### is.codion.framework.model
 - EntityTableConditionModel.setEqualConditionValue() and setInConditionValues() renamed setEqualOperand() and setInOperands() respectively.
 ### is.codion.swing.framework.ui
