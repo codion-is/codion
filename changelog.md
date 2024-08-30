@@ -18,6 +18,7 @@ Codion Change Log
 - CalendarPanel bug fixed, day and month labels used default locale instead of the selected one.
 - CalendarPanel.Builder.firstDayOfWeek() added, related refactoring.
 - DefaultProgressBarBuilder bug fixed, no longer uses a null model for indeterminate progress bars, Look & Feels may require it.
+- FilterTableCellRenderer.Settings.backgroundColor() bug fixed, no longer returns alternate row color when alternate row coloring is disabled.
 ### is.codion.framework.model
 - EntityTableConditionModel.setEqualConditionValue() and setInConditionValues() renamed setEqualOperand() and setInOperands() respectively.
 

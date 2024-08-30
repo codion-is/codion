@@ -297,7 +297,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 				return cellBackgroundColor;
 			}
 
-			return alternateRowColor(row) ? backgroundColor : backgroundColorAlternate;
+			return alternateRowColor(row) ? backgroundColorAlternate : backgroundColor;
 		}
 
 		/**
