@@ -93,6 +93,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -2641,9 +2642,17 @@ public class EntityTablePanel extends JPanel {
 							table.summaryModel().summaryModel(column.identifier())
 											.ifPresent(columnSummaryModel ->
 															components.put(column.identifier(), columnSummaryPanel(columnSummaryModel,
-																			((FilterTableCellRenderer) column.getCellRenderer()).horizontalAlignment()))));
+																			horizontalAlignment(column.getCellRenderer())))));
 
 			return components;
+		}
+
+		private int horizontalAlignment(TableCellRenderer cellRenderer) {
+			if (cellRenderer instanceof DefaultTableCellRenderer) {
+				return ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
+			}
+
+			return SwingConstants.CENTER;
 		}
 	}
 

@@ -21,6 +21,8 @@ Codion Change Log
 - FilterTableCellRenderer.Settings.backgroundColor() bug fixed, no longer returns alternate row color when alternate row coloring is disabled.
 ### is.codion.framework.model
 - EntityTableConditionModel.setEqualConditionValue() and setInConditionValues() renamed setEqualOperand() and setInOperands() respectively.
+### is.codion.swing.framework.ui
+- EntityTablePanel.TablePanel.createColumnSummaryPanels() bug fixed, no longer assumes FilterTableCellRenderer when determining the horizontal alignment.
 
 ## 0.18.10
 ### is.codion.common.core

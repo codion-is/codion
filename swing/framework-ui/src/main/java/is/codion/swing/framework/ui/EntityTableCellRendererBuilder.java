@@ -57,8 +57,8 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		private Color backgroundColorDoubleShade;
 		private Color backgroundColorAlternateDoubleShade;
 
-		private EntitySettings(int leftPadding, int rightPadding, boolean alternateRoColoring) {
-			super(leftPadding, rightPadding, alternateRoColoring);
+		private EntitySettings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+			super(leftPadding, rightPadding, alternateRowColoring);
 		}
 
 		@Override
