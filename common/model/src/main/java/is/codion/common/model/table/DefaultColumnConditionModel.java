@@ -26,6 +26,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
+import is.codion.common.value.ValueObserver;
 import is.codion.common.value.ValueSet;
 
 import java.text.Format;
@@ -49,13 +50,9 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private final Event<?> conditionChangedEvent = Event.event();
 	private final State locked = State.state();
 	private final Value.Validator<Object> lockValidator = value -> checkLock();
-	private final Value<AutomaticWildcard> automaticWildcard = Value.builder()
-					.nonNull(AutomaticWildcard.NONE)
-					.listener(conditionChangedEvent)
-					.build();
 
 	private final Value<Operator> operator;
-	private final DefaultOperand operand;
+	private final DefaultOperand<T> operand;
 	private final State caseSensitive;
 
 	private final State autoEnable;
@@ -80,11 +77,23 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 						.listener(autoEnableListener)
 						.listener(conditionChangedEvent)
 						.build();
-		this.operand = new DefaultOperand();
+		this.operand = new DefaultOperand<>(builder.automaticWildcard, operator);
+		this.operand.equal.addValidator(lockValidator);
+		this.operand.equal.addListener(autoEnableListener);
+		this.operand.equal.addListener(conditionChangedEvent);
+		this.operand.equal.automaticWildcard.addListener(conditionChangedEvent);
+		this.operand.in.addValidator(lockValidator);
+		this.operand.in.addListener(autoEnableListener);
+		this.operand.in.addListener(conditionChangedEvent);
+		this.operand.upperBound.addValidator(lockValidator);
+		this.operand.upperBound.addListener(autoEnableListener);
+		this.operand.upperBound.addListener(conditionChangedEvent);
+		this.operand.lowerBound.addValidator(lockValidator);
+		this.operand.lowerBound.addListener(autoEnableListener);
+		this.operand.lowerBound.addListener(conditionChangedEvent);
 		this.columnClass = builder.columnClass;
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
-		this.automaticWildcard.set(builder.automaticWildcard);
 		this.caseSensitive = State.builder(builder.caseSensitive)
 						.listener(conditionChangedEvent)
 						.build();
@@ -145,7 +154,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	@Override
 	public Value<AutomaticWildcard> automaticWildcard() {
-		return automaticWildcard;
+		return operand.equal.automaticWildcard;
 	}
 
 	@Override
@@ -155,10 +164,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	@Override
 	public void clear() {
-		operand.equal.clear();
-		operand.upperBound.clear();
-		operand.lowerBound.clear();
-		operand.in.clear();
+		operand.clear();
 		operator.clear();
 	}
 
@@ -463,29 +469,24 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		}
 	}
 
-	private final class DefaultOperand implements Operand<T> {
+	private static final class DefaultOperand<T> implements Operand<T> {
 
-		private final Value<T> equal = new EqualOperand();
+		private final EqualOperand<T> equal;
 		private final ValueSet<T> in = ValueSet.<T>builder()
 						.notify(Notify.WHEN_SET)
-						.validator(lockValidator)
-						.listener(autoEnableListener)
-						.listener(conditionChangedEvent)
 						.build();
 		private final Value<T> upperBound = Value.builder()
 						.<T>nullable()
 						.notify(Notify.WHEN_SET)
-						.validator(lockValidator)
-						.listener(autoEnableListener)
-						.listener(conditionChangedEvent)
 						.build();
 		private final Value<T> lowerBound = Value.builder()
 						.<T>nullable()
 						.notify(Notify.WHEN_SET)
-						.validator(lockValidator)
-						.listener(autoEnableListener)
-						.listener(conditionChangedEvent)
 						.build();
+
+		private DefaultOperand(AutomaticWildcard automaticWildcard, ValueObserver<Operator> operatorObserver) {
+			equal = new EqualOperand<>(automaticWildcard, operatorObserver);
+		}
 
 		@Override
 		public Value<T> equal() {
@@ -506,76 +507,88 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		public Value<T> lowerBound() {
 			return lowerBound;
 		}
-	}
 
-	private final class EqualOperand extends AbstractValue<T> {
-
-		private T value;
-
-		public EqualOperand() {
-			super(null, Notify.WHEN_SET);
-			addValidator(lockValidator);
-			addListener(autoEnableListener);
-			addListener(conditionChangedEvent);
+		private void clear() {
+			equal.clear();
+			in.clear();
+			upperBound.clear();
+			lowerBound.clear();
 		}
 
-		@Override
-		protected T getValue() {
-			return addAutomaticWildcard(value);
-		}
+		private static final class EqualOperand<T> extends AbstractValue<T> {
 
-		@Override
-		protected void setValue(T value) {
-			this.value = value;
-		}
+			private final Value<AutomaticWildcard> automaticWildcard;
+			private final ValueObserver<Operator> operatorObserver;
 
-		private T addAutomaticWildcard(T operand) {
-			if (!(operand instanceof String)) {
+			private T value;
+
+			private EqualOperand(AutomaticWildcard automaticWildcard, ValueObserver<Operator> operatorObserver) {
+				super(null, Notify.WHEN_SET);
+				this.automaticWildcard = Value.builder()
+								.nonNull(automaticWildcard)
+								.build();
+				this.operatorObserver = operatorObserver;
+			}
+
+			@Override
+			protected T getValue() {
+				return addAutomaticWildcard(value);
+			}
+
+			@Override
+			protected void setValue(T value) {
+				this.value = value;
+			}
+
+			private T addAutomaticWildcard(T operand) {
+				if (!(operand instanceof String)) {
+					return operand;
+				}
+				switch (operatorObserver.get()) {
+					//wildcard only used for EQUAL and NOT_EQUAL
+					case EQUAL:
+					case NOT_EQUAL:
+						return (T) addAutomaticWildcard((String) operand);
+					default:
+						return operand;
+				}
+			}
+
+			private String addAutomaticWildcard(String operand) {
+				String operandWithWildcards = operand;
+				switch (automaticWildcard.get()) {
+					case PREFIX:
+						operandWithWildcards = addWildcardPrefix(operandWithWildcards);
+						break;
+					case POSTFIX:
+						operandWithWildcards = addWildcardPostfix(operandWithWildcards);
+						break;
+					case PREFIX_AND_POSTFIX:
+						operandWithWildcards = addWildcardPrefix(operandWithWildcards);
+						operandWithWildcards = addWildcardPostfix(operandWithWildcards);
+						break;
+					default:
+						break;
+				}
+
+				return operandWithWildcards;
+			}
+
+			private static String addWildcardPrefix(String operand) {
+				if (!operand.startsWith(WILDCARD)) {
+					return WILDCARD + operand;
+				}
+
 				return operand;
 			}
-			switch (operator.get()) {
-				//wildcard only used for EQUAL and NOT_EQUAL
-				case EQUAL:
-				case NOT_EQUAL:
-					return (T) addAutomaticWildcard((String) operand);
-				default:
-					return operand;
+
+			private static String addWildcardPostfix(String operand) {
+				if (!operand.endsWith(WILDCARD)) {
+					return operand + WILDCARD;
+				}
+
+				return operand;
 			}
-		}
-
-		private String addAutomaticWildcard(String operand) {
-			switch (automaticWildcard.get()) {
-				case PREFIX:
-					operand = addWildcardPrefix(operand);
-					break;
-				case POSTFIX:
-					operand = addWildcardPostfix(operand);
-					break;
-				case PREFIX_AND_POSTFIX:
-					operand = addWildcardPrefix(operand);
-					operand = addWildcardPostfix(operand);
-					break;
-				default:
-					break;
-			}
-
-			return operand;
-		}
-
-		private String addWildcardPrefix(String operand) {
-			if (!operand.startsWith(WILDCARD)) {
-				return WILDCARD + operand;
-			}
-
-			return operand;
-		}
-
-		private String addWildcardPostfix(String operand) {
-			if (!operand.endsWith(WILDCARD)) {
-				return operand + WILDCARD;
-			}
-
-			return operand;
 		}
 	}
 
