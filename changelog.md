@@ -6,6 +6,7 @@ Codion Change Log
 - ColumnConditionModel, bound value getters and setters removed.
 - ColumnConditionModel.operand() added.
 - DefaultColumnConditionModel refactored.
+- ColumnConditionModel.Operand renamed Operands.
 ### is.codion.framework.domain.db
 - Column.AuditColumnDefiner added, related refactoring.
 ### is.codion.swing.common.model

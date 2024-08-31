@@ -144,8 +144,8 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	}
 
 	@Override
-	public Operand<Entity> operand() {
-		return conditionModel.operand();
+	public Operands<Entity> operands() {
+		return conditionModel.operands();
 	}
 
 	@Override
@@ -192,11 +192,11 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	private void bindEvents() {
 		if (equalSearchModel != null) {
 			equalSearchModel.entity().addConsumer(new SetEqualOperand());
-			operand().equal().addConsumer(new SelectEqualOperand());
+			operands().equal().addConsumer(new SelectEqualOperand());
 		}
 		if (inSearchModel != null) {
 			inSearchModel.entities().addConsumer(new SetInOperands());
-			operand().in().addConsumer(new SelectInOperands());
+			operands().in().addConsumer(new SelectInOperands());
 		}
 	}
 
@@ -205,7 +205,7 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 		@Override
 		public void accept(Entity selectedEntity) {
 			if (!updatingModel) {
-				operand().equal().set(selectedEntity);
+				operands().equal().set(selectedEntity);
 			}
 		}
 	}
@@ -215,7 +215,7 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 		@Override
 		public void accept(Set<Entity> selectedEntities) {
 			if (!updatingModel) {
-				operand().in().set(selectedEntities);
+				operands().in().set(selectedEntities);
 			}
 		}
 	}

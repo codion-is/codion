@@ -53,7 +53,7 @@ final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 	@Override
 	public JComponent createEqualField(ColumnConditionModel<C, ?> conditionModel) {
 		return createField(conditionModel)
-						.link((Value<Object>) conditionModel.operand().equal())
+						.link((Value<Object>) conditionModel.operands().equal())
 						.build();
 	}
 
@@ -64,7 +64,7 @@ final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 		}
 
 		return Optional.of(createField(conditionModel)
-						.link((Value<Object>) conditionModel.operand().upperBound())
+						.link((Value<Object>) conditionModel.operands().upperBound())
 						.build());
 	}
 
@@ -75,14 +75,14 @@ final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 		}
 
 		return Optional.of(createField(conditionModel)
-						.link((Value<Object>) conditionModel.operand().lowerBound())
+						.link((Value<Object>) conditionModel.operands().lowerBound())
 						.build());
 	}
 
 	@Override
 	public JComponent createInField(ColumnConditionModel<C, ?> conditionModel) {
 		return listBox(createField(conditionModel).buildValue(),
-						(ValueSet<Object>) conditionModel.operand().in())
+						(ValueSet<Object>) conditionModel.operands().in())
 						.build();
 	}
 

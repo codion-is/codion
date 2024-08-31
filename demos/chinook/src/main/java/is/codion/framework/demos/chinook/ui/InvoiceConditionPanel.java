@@ -214,7 +214,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(), caption()));
 				ForeignKeyConditionModel foreignKeyConditionModel = (ForeignKeyConditionModel) conditionModel;
-				foreignKeyConditionModel.operand().in().value().link(foreignKeyConditionModel.operand().equal());
+				foreignKeyConditionModel.operands().in().value().link(foreignKeyConditionModel.operands().equal());
 				searchField = EntitySearchField.builder(foreignKeyConditionModel.inSearchModel())
 								.columns(25)
 								.build();
@@ -304,8 +304,8 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			}
 
 			private void updateCondition() {
-				conditionModel().operand().lowerBound().set(lowerBound());
-				conditionModel().operand().upperBound().set(upperBound());
+				conditionModel().operands().lowerBound().set(lowerBound());
+				conditionModel().operands().upperBound().set(upperBound());
 			}
 
 			private LocalDate lowerBound() {

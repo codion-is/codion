@@ -160,9 +160,9 @@ public interface ColumnConditionModel<C, T> {
 	Value<Operator> operator();
 
 	/**
-	 * @return the operand
+	 * @return the operands
 	 */
-	Operand<T> operand();
+	Operands<T> operands();
 
 	/**
 	 * Returns true if the given value is accepted by this models condition.
@@ -192,7 +192,7 @@ public interface ColumnConditionModel<C, T> {
 	 * Provides access to the operands.
 	 * @param <T> the column value type
 	 */
-	interface Operand<T> {
+	interface Operands<T> {
 
 		/**
 		 * @return a {@link Value} controlling the operand used for the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operators

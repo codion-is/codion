@@ -24,7 +24,7 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
-import is.codion.common.model.table.ColumnConditionModel.Operand;
+import is.codion.common.model.table.ColumnConditionModel.Operands;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -333,28 +333,28 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		boolean supportsType(Class<?> columnClass);
 
 		/**
-		 * Creates the field representing the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operand, linked to {@link Operand#equal()}
+		 * Creates the field representing the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operand, linked to {@link Operands#equal()}
 		 * @return the equal value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
 		JComponent createEqualField(ColumnConditionModel<C, ?> conditionModel);
 
 		/**
-		 * Creates the field representing the upper bound operand, linked to {@link Operand#upperBound()}
+		 * Creates the field representing the upper bound operand, linked to {@link Operands#upperBound()}
 		 * @return an upper bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
 		Optional<JComponent> createUpperBoundField(ColumnConditionModel<C, ?> conditionModel);
 
 		/**
-		 * Creates the field representing the lower bound operand, linked to {@link Operand#lowerBound()}
+		 * Creates the field representing the lower bound operand, linked to {@link Operands#lowerBound()}
 		 * @return a lower bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
 		Optional<JComponent> createLowerBoundField(ColumnConditionModel<C, ?> conditionModel);
 
 		/**
-		 * Creates the field representing the {@link Operator#IN} operands, linked to {@link Operand#in()}
+		 * Creates the field representing the {@link Operator#IN} operands, linked to {@link Operands#in()}
 		 * @return the in value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */

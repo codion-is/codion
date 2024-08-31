@@ -92,7 +92,7 @@ public class DefaultEntityTableConditionModelTest {
 		assertTrue(conditionModel.enabled(Employee.DEPARTMENT_FK));
 		ColumnConditionModel<Attribute<?>, Entity> deptModel =
 						conditionModel.attributeModel(Employee.DEPARTMENT_FK);
-		assertSame(deptModel.operand().equal().get(), sales);
+		assertSame(deptModel.operands().equal().get(), sales);
 		assertThrows(NullPointerException.class, () -> conditionModel.setEqualOperand(null, sales));
 		searchStateChanged = conditionModel.setEqualOperand(Employee.DEPARTMENT_FK, null);
 		assertTrue(searchStateChanged);
@@ -109,8 +109,8 @@ public class DefaultEntityTableConditionModelTest {
 		assertTrue(conditionModel.enabled(Employee.DEPARTMENT_FK));
 		ColumnConditionModel<Attribute<?>, Entity> deptModel =
 						conditionModel.attributeModel(Employee.DEPARTMENT_FK);
-		assertTrue(deptModel.operand().in().get().contains(sales));
-		assertTrue(deptModel.operand().in().get().contains(accounting));
+		assertTrue(deptModel.operands().in().get().contains(sales));
+		assertTrue(deptModel.operands().in().get().contains(accounting));
 		assertThrows(NullPointerException.class, () -> conditionModel.setInOperands(Employee.DEPARTMENT_FK, null));
 		assertThrows(NullPointerException.class, () -> conditionModel.setInOperands(null, emptyList()));
 		searchStateChanged = conditionModel.setInOperands(Employee.DEPARTMENT_FK, emptyList());
@@ -136,7 +136,7 @@ public class DefaultEntityTableConditionModelTest {
 		assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
 		conditionModel.setInOperands(Employee.DEPARTMENT_FK, asList(sales, accounting));
 		ColumnConditionModel<?, String> nameConditionModel = conditionModel.attributeModel(Employee.NAME);
-		nameConditionModel.operand().equal().set("SCOTT");
+		nameConditionModel.operands().equal().set("SCOTT");
 		conditionModel.additionalWhere().set(() -> Condition.custom(Employee.CONDITION_2_TYPE));
 		assertNotNull(conditionModel.additionalWhere().get());
 	}

@@ -80,7 +80,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 		}
 
 		return inputComponents.component((Attribute<Object>) conditionModel.identifier())
-						.link((Value<Object>) conditionModel.operand().equal())
+						.link((Value<Object>) conditionModel.operands().equal())
 						.build();
 	}
 
@@ -92,7 +92,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 		}
 
 		return Optional.of(inputComponents.component((Attribute<Object>) conditionModel.identifier())
-						.link((Value<Object>) conditionModel.operand().upperBound())
+						.link((Value<Object>) conditionModel.operands().upperBound())
 						.build());
 	}
 
@@ -104,7 +104,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 		}
 
 		return Optional.of(inputComponents.component((Attribute<Object>) conditionModel.identifier())
-						.link((Value<Object>) conditionModel.operand().lowerBound())
+						.link((Value<Object>) conditionModel.operands().lowerBound())
 						.build());
 	}
 
@@ -116,7 +116,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 
 		return listBox((ComponentValue<Object, JComponent>)
 						inputComponents.component(conditionModel.identifier())
-										.buildValue(), (ValueSet<Object>) conditionModel.operand().in()).build();
+										.buildValue(), (ValueSet<Object>) conditionModel.operands().in()).build();
 	}
 
 	private JComponent createEqualForeignKeyField(ColumnConditionModel<? extends Attribute<?>, ?> model) {
