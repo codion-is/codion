@@ -244,7 +244,7 @@ public class Store extends DomainModel {
                     .value(Customer.FIRST_NAME)
                     .build())
             .caption("Customer")
-			.build());
+            .build());
 
     // Use the Address.TYPE constant to define a new entity,
     // based on attributes defined using the Column and ForeignKey constants.
@@ -275,7 +275,7 @@ public class Store extends DomainModel {
                     .value(Address.CITY)
                     .build())
             .caption("Address")
-			.build());
+            .build());
   }
 }
 ----
