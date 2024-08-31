@@ -24,6 +24,7 @@ Codion Change Log
 - EntityTableConditionModel.setEqualConditionValue() and setInConditionValues() renamed setEqualOperand() and setInOperands() respectively.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.TablePanel.createColumnSummaryPanels() bug fixed, no longer assumes FilterTableCellRenderer when determining the horizontal alignment.
+- EntityTablePanel.setConditionStateHidden(), focus flicker when hiding focused condition/filter panel fixed.
 
 ## 0.18.10
 ### is.codion.common.core

@@ -100,6 +100,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -1657,10 +1658,14 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void setConditionStateHidden(JScrollPane scrollPane, Value<ConditionState> conditionState) {
-		boolean parentOfFocusOwner = parentOfType(JScrollPane.class,
-						getCurrentKeyboardFocusManager().getFocusOwner()) == scrollPane;
+		KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
+		boolean conditionPanelHasFocus = parentOfType(JScrollPane.class,
+						focusManager.getFocusOwner()) == scrollPane;
+		if (conditionPanelHasFocus) {
+			focusManager.clearFocusOwner();
+		}
 		conditionState.set(ConditionState.HIDDEN);
-		if (parentOfFocusOwner) {
+		if (conditionPanelHasFocus) {
 			table.requestFocusInWindow();
 		}
 	}
