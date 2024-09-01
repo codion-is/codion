@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.12
+
 ## 0.18.11
 ### is.codion.common.model
 - ColumnConditionModel, bound value getters and setters removed.
