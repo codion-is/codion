@@ -105,6 +105,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private boolean enabled = true;
 	private Function<C, JPopupMenu> popupMenu;
 	private T initialValue;
+	private boolean initialValueSet = false;
 	private Consumer<C> onSetVisible;
 	private TransferHandler transferHandler;
 	private boolean focusCycleRoot = false;
@@ -395,6 +396,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	@Override
 	public final B initialValue(T initialValue) {
+		this.initialValueSet = true;
 		this.initialValue = initialValue;
 		return self();
 	}
@@ -474,7 +476,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 			component.setFocusCycleRoot(true);
 		}
 		validators.forEach(validator -> componentValue(component).addValidator(validator));
-		if (linkedValues.isEmpty() && linkedValueObservers.isEmpty()) {
+		if (initialValueSet && linkedValues.isEmpty() && linkedValueObservers.isEmpty()) {
 			setInitialValue(component, initialValue);
 		}
 		linkedValues.forEach(linkedValue -> componentValue(component).link(linkedValue));

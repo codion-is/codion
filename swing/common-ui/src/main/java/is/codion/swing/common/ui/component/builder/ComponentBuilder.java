@@ -366,9 +366,9 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B consumer(Consumer<T> consumer);
 
 	/**
-	 * Sets the initial value for the component, overridden by {@link #link(Value)} or {@link #link(ValueObserver)}.
+	 * Sets the initial value for the component, unless value(s) have been linked via {@link #link(Value)}
+	 * or {@link #link(ValueObserver)}, which then control the inital value.
 	 * The initial value is set before any listeners are added, so no events are triggered.
-	 * Note that null is not explicitely set, the component is assumed to represent null right after it's been created.
 	 * @param initialValue the initial value
 	 * @return this builder instance
 	 */

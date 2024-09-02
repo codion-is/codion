@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  * An abstract {@link Value} implementation handling everything except the value itself.<br><br>
  * The constructor parameter {@code notify} specifies whether this {@link Value} instance should call
  * {@link #notifyListeners()} when the value is set or changed via {@link AbstractValue#set(Object)}.
- * Implementations that want to handle notifications manually should use use the
+ * Implementations that want to handle notifications manually should use the
  * {@link AbstractValue#AbstractValue()} or {@link AbstractValue#AbstractValue(Object)} constructors.
  * @param <T> the value type
  */
