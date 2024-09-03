@@ -51,13 +51,29 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Builds a JComponent.<br>
- * Use {@link #build} to build a JComponent instance or {@link #buildValue()} to build a {@link ComponentValue} instance.
+ * Use {@link #build} to build a JComponent instance or {@link #buildValue()} to build a {@link ComponentValue} instance.<br>
+ * The component is available via {@link ComponentValue#component()} and the associated {@link ComponentValue} instance
+ * is available via the {@link #COMPONENT_VALUE} client property.
  * @param <T> the type of the value the component represents
  * @param <C> the component type
  * @param <B> the builder type
  */
 public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> {
+
+	/**
+	 * The client property key for the associated {@link ComponentValue}
+	 * <pre>
+	 *   JTextField textField =
+	 *            Components.stringField()
+	 *                    .build();
+	 *
+	 *   ComponentValue&lt;String, JTextField&gt; componentValue =
+	 *            (ComponentValue&lt;String, JTextField&gt;)
+	 *                    textField.getClientProperty(COMPONENT_VALUE);
+	 * </pre>
+	 * @see JComponent#getClientProperty(Object)
+	 */
+	String COMPONENT_VALUE = "componentValue";
 
 	/**
 	 * Specifies whether focus should be transferred from components on enter.<br>

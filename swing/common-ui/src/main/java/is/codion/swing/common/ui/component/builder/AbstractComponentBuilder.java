@@ -488,6 +488,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	private C configureComponent(ComponentValue<T, C> componentValue) {
 		C component = componentValue.component();
+		component.putClientProperty(COMPONENT_VALUE, componentValue);
 		if (component.isFocusable() && !focusable) {
 			component.setFocusable(false);
 		}
