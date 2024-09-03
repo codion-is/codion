@@ -72,7 +72,6 @@ import java.util.function.Function;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.button.ToggleButtonType.CHECKBOX;
 import static is.codion.swing.common.ui.control.Control.commandControl;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
@@ -963,9 +962,7 @@ public class EntityPanel extends JPanel {
 	private JPanel createControlPanel(Controls controls) {
 		if (configuration.horizontalControlLayout()) {
 			return flowLayoutPanel(FlowLayout.CENTER)
-							.add(buttonPanel(controls)
-											.toggleButtonType(CHECKBOX)
-											.build())
+							.add(buttonPanel(controls).build())
 							.build();
 		}
 
@@ -974,7 +971,6 @@ public class EntityPanel extends JPanel {
 										.orientation(VERTICAL)
 										.buttonBuilder(buttonBuilder ->
 														buttonBuilder.horizontalAlignment(SwingConstants.LEADING))
-										.toggleButtonType(CHECKBOX)
 										.build())
 						.build();
 	}
