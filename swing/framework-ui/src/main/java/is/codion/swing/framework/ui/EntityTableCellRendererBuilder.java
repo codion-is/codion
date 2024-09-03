@@ -86,7 +86,7 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 				return darker(cellBackgroundColor, DARKENING_FACTOR);
 			}
 
-			return alternateRowColor(row) ?
+			return alternateRow(row) ?
 							(doubleShading ? backgroundColorAlternateDoubleShade : backgroundColorAlternateShaded()) :
 							(doubleShading ? backgroundColorDoubleShade : backgroundColorShaded());
 		}

@@ -299,13 +299,13 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 				return cellBackgroundColor;
 			}
 			if (alternateRowColoring) {
-				return alternateRowColor(row) ? backgroundColorAlternate : backgroundColor;
+				return alternateRow(row) ? backgroundColorAlternate : backgroundColor;
 			}
 			if (alternateRowColor == null) {
 				return backgroundColor;
 			}
 			// If alternate row coloring is enabled outside of the framework, respect it
-			return alternateRowColor(row) ? alternateRowColor : backgroundColor;
+			return alternateRow(row) ? alternateRowColor : backgroundColor;
 		}
 
 		/**
@@ -355,7 +355,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		}
 
 		private Color selectionBackgroundColor(int row) {
-			return alternateRowColor(row) ? selectionBackgroundAlternate : selectionBackground;
+			return alternateRow(row) ? selectionBackgroundAlternate : selectionBackground;
 		}
 
 		private Color backgroundShaded(int row, Color cellBackgroundColor) {
@@ -363,14 +363,14 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 				return darker(cellBackgroundColor, DARKENING_FACTOR);
 			}
 
-			return alternateRowColor(row) ? backgroundColorAlternateShaded : backgroundColorShaded;
+			return alternateRow(row) ? backgroundColorAlternateShaded : backgroundColorShaded;
 		}
 
 		/**
 		 * @param row the row
 		 * @return true if the given row should use the alternate row color
 		 */
-		protected static boolean alternateRowColor(int row) {
+		protected static boolean alternateRow(int row) {
 			return row % 2 != 0;
 		}
 

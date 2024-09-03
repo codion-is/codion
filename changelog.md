@@ -7,6 +7,7 @@ Codion Change Log
 - ComponentBuilder.clear() removed, AbstractComponentBuilder now always creates the associated ComponentValue, related refactoring.
 - AbstractComponentBuilder now adds the associated ComponentValue as a client property on the resulting component.
 - FilterTableCellRenderer.Settings.selectionBackgroundColor() and backgroundShaded() bug fixed alternate row coloring now correct.
+- FilterTableCellRenderer.Settings.alternateRowColor() renamed alternateRow(), now static.
 ### is.codion.swing.framework.ui
 - EntityPanel.createControlPanel() toggle button type now the default BUTTON.
 - EntityPanel, overridable controlComponent() replaced with Config.controlComponent().
