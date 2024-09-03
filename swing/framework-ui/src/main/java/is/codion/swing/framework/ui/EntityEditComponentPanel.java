@@ -824,7 +824,7 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
-	 * @return the component that should get the initial focus when the UI is initialized
+	 * @return the component that should receive the initial focus when the UI is initialized
 	 */
 	protected JComponent getInitialFocusComponent() {
 		if (initialFocusComponent.isNotNull()) {

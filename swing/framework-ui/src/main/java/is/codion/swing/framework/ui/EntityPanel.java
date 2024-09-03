@@ -455,7 +455,7 @@ public class EntityPanel extends JPanel {
 	 * @param controlKey the control key
 	 * @return the {@link Value} containing the control associated with {@code controlKey}
 	 */
-	public <T extends Control> Value<T> control(ControlKey<T> controlKey) {
+	public final <T extends Control> Value<T> control(ControlKey<T> controlKey) {
 		return configuration.controlMap.control(requireNonNull(controlKey));
 	}
 
