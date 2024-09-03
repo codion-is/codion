@@ -53,7 +53,6 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarker
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
@@ -221,16 +220,12 @@ public final class NotesDemo {
 							new NoteTablePanel(noteModel.tableModel()), config -> config
 											// No need to include the default control buttons since
 											// we added the CLEAR control button to the edit panel
-											.includeControls(false));
-		}
-
-		@Override
-		protected JPanel createEditBasePanel(EntityEditPanel editPanel) {
-			// Override to replace the default panel which uses a FlowLayout, in order
-			// to have the edit panel fill the horizontal width of the parent panel
-			return Components.borderLayoutPanel()
-							.centerComponent(editPanel)
-							.build();
+											.includeControls(false)
+											// Replace the default edit baes panel which uses a FlowLayout, in order
+											// to have the edit panel fill the horizontal width of the parent panel
+											.editBasePanel(editPanel -> Components.borderLayoutPanel()
+															.centerComponent(editPanel)
+															.build()));
 		}
 	}
 

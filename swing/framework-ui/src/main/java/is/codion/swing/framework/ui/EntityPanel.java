@@ -670,19 +670,6 @@ public class EntityPanel extends JPanel {
 	protected void setupControls() {}
 
 	/**
-	 * Creates a base panel containing the given edit panel.
-	 * The default layout is a {@link FlowLayout} with the alignment depending on {@link Config#controlComponentConstraints(String)}.
-	 * @param editPanel the initialized edit panel
-	 * @return a base panel for the edit panel
-	 * @see Config#controlComponentConstraints(String)
-	 */
-	protected JPanel createEditBasePanel(EntityEditPanel editPanel) {
-		return panel(new FlowLayout(configuration.horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
-						.add(editPanel)
-						.build();
-	}
-
-	/**
 	 * Configures the controls layout.<br>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
@@ -1204,6 +1191,7 @@ public class EntityPanel extends JPanel {
 
 		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
 		private Function<Controls, JComponent> controlComponent = new DefaultControlComponent();
+		private Function<EntityEditPanel, JPanel> editBasePanel = new DefaultEditBasePanel();
 		private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
 		private boolean toolbarControls = TOOLBAR_CONTROLS.get();
 		private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
@@ -1231,6 +1219,7 @@ public class EntityPanel extends JPanel {
 			this.enabledEditStates = new LinkedHashSet<>(config.enabledEditStates);
 			this.detailLayout = config.detailLayout;
 			this.controlComponent = config.controlComponent;
+			this.editBasePanel = config.editBasePanel;
 			this.toolbarControls = config.toolbarControls;
 			this.includeToggleEditPanelControl = config.includeToggleEditPanelControl;
 			this.controlComponentConstraints = config.controlComponentConstraints;
@@ -1303,6 +1292,18 @@ public class EntityPanel extends JPanel {
 		 */
 		public Config controlComponent(Function<Controls, JComponent> controlComponent) {
 			this.controlComponent = requireNonNull(controlComponent);
+			return this;
+		}
+
+		/**
+		 * Creates a base panel containing the given edit panel.
+		 * The default layout is a {@link FlowLayout} with the alignment depending on {@link Config#controlComponentConstraints(String)}.
+		 * @param editBasePanel creates the edit base panel
+		 * @return this Config instance
+		 * @see Config#controlComponentConstraints(String)
+		 */
+		public Config editBasePanel(Function<EntityEditPanel, JPanel> editBasePanel) {
+			this.editBasePanel = requireNonNull(editBasePanel);
 			return this;
 		}
 
@@ -1506,6 +1507,16 @@ public class EntityPanel extends JPanel {
 												.buttonBuilder(buttonBuilder ->
 																buttonBuilder.horizontalAlignment(SwingConstants.LEADING))
 												.build())
+								.build();
+			}
+		}
+
+		private final class DefaultEditBasePanel implements Function<EntityEditPanel, JPanel> {
+
+			@Override
+			public JPanel apply(EntityEditPanel editPanel) {
+				return panel(new FlowLayout(horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
+								.add(editPanel)
 								.build();
 			}
 		}

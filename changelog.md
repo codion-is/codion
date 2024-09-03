@@ -9,6 +9,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityPanel.createControlPanel() toggle button type now the default BUTTON.
 - EntityPanel, overridable controlComponent() replaced with Config.controlComponent().
+- EntityPanel, overridable editBasePanel() replaced with Config.editBasePanel().
 
 ## 0.18.11
 ### is.codion.common.model
