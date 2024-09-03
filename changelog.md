@@ -8,6 +8,7 @@ Codion Change Log
 - AbstractComponentBuilder now adds the associated ComponentValue as a client property on the resulting component.
 ### is.codion.swing.framework.ui
 - EntityPanel.createControlPanel() toggle button type now the default BUTTON.
+- EntityPanel, overridable controlComponent() replaced with Config.controlComponent().
 
 ## 0.18.11
 ### is.codion.common.model

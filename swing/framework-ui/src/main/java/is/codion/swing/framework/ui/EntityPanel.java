@@ -683,27 +683,6 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Creates the component to place next to the edit panel, containing the available controls,
-	 * such as insert, update, delete, clear and refresh.
-	 * @param controls the controls to display on the component
-	 * @return the component containing the edit and table panel controls, null if no controls are available
-	 * @see #control(ControlKey)
-	 * @see EntityEditPanel#controls()
-	 * @see #configureControls(Consumer)
-	 * @see Config#TOOLBAR_CONTROLS
-	 * @see Config#CONTROL_PANEL_CONSTRAINTS
-	 * @see Config#CONTROL_TOOLBAR_CONSTRAINTS
-	 * @see Config#includeControls(boolean)
-	 */
-	protected JComponent createControlComponent(Controls controls) {
-		if (requireNonNull(controls).empty()) {
-			return null;
-		}
-
-		return configuration.toolbarControls ? createControlToolBar(controls) : createControlPanel(controls);
-	}
-
-	/**
 	 * Configures the controls layout.<br>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
@@ -738,15 +717,18 @@ public class EntityPanel extends JPanel {
 	 */
 	protected final JPanel mainPanel() {
 		if (editPanel != null && editControlPanel.getComponents().length == 0) {
-			editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
+			editControlPanel.add(configuration.editBasePanel.apply(editPanel), BorderLayout.CENTER);
 		}
 		if (tablePanel != null && mainPanel.getComponents().length == 0) {
 			mainPanel.add(tablePanel, BorderLayout.CENTER);
 		}
 		if (configuration.includeControls && editControlPanel != null) {
-			JComponent controlComponent = createControlComponent(controlsLayout.create(configuration.controlMap));
-			if (controlComponent != null) {
-				editControlPanel.add(controlComponent, configuration.controlComponentConstraints);
+			Controls controls = controlsLayout.create(configuration.controlMap);
+			if (controls.notEmpty()) {
+				JComponent controlComponent = configuration.controlComponent.apply(controls);
+				if (controlComponent != null) {
+					editControlPanel.add(controlComponent, configuration.controlComponentConstraints);
+				}
 			}
 		}
 		if (containsEditPanel()) {
@@ -951,28 +933,6 @@ public class EntityPanel extends JPanel {
 
 	final WindowType windowType() {
 		return configuration.windowType;
-	}
-
-	private JToolBar createControlToolBar(Controls controls) {
-		return toolBar(controls)
-						.orientation(configuration.horizontalControlLayout() ? HORIZONTAL : VERTICAL)
-						.build();
-	}
-
-	private JPanel createControlPanel(Controls controls) {
-		if (configuration.horizontalControlLayout()) {
-			return flowLayoutPanel(FlowLayout.CENTER)
-							.add(buttonPanel(controls).build())
-							.build();
-		}
-
-		return borderLayoutPanel()
-						.northComponent(buttonPanel(controls)
-										.orientation(VERTICAL)
-										.buttonBuilder(buttonBuilder ->
-														buttonBuilder.horizontalAlignment(SwingConstants.LEADING))
-										.build())
-						.build();
 	}
 
 	private void setupEditAndTablePanelControls() {
@@ -1243,6 +1203,7 @@ public class EntityPanel extends JPanel {
 		private final Set<PanelState> enabledEditStates;
 
 		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
+		private Function<Controls, JComponent> controlComponent = new DefaultControlComponent();
 		private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
 		private boolean toolbarControls = TOOLBAR_CONTROLS.get();
 		private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
@@ -1269,6 +1230,7 @@ public class EntityPanel extends JPanel {
 			this.controlMap = config.controlMap.copy();
 			this.enabledEditStates = new LinkedHashSet<>(config.enabledEditStates);
 			this.detailLayout = config.detailLayout;
+			this.controlComponent = config.controlComponent;
 			this.toolbarControls = config.toolbarControls;
 			this.includeToggleEditPanelControl = config.includeToggleEditPanelControl;
 			this.controlComponentConstraints = config.controlComponentConstraints;
@@ -1327,6 +1289,25 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
+		 * Creates the component to place next to the edit panel, containing the available controls,
+		 * such as insert, update, delete, clear and refresh.
+		 * @param controlComponent creates the controls panel
+		 * @return this Config instance
+		 * @see #control(ControlKey)
+		 * @see EntityEditPanel#controls()
+		 * @see #configureControls(Consumer)
+		 * @see Config#TOOLBAR_CONTROLS
+		 * @see Config#CONTROL_PANEL_CONSTRAINTS
+		 * @see Config#CONTROL_TOOLBAR_CONSTRAINTS
+		 * @see Config#includeControls(boolean)
+		 */
+		public Config controlComponent(Function<Controls, JComponent> controlComponent) {
+			this.controlComponent = requireNonNull(controlComponent);
+			return this;
+		}
+
+		/**
+		 * Overridden by {@link #controlComponent(Function)}.
 		 * @param toolbarControls true if the edit controls should be on a toolbar instead of a button panel
 		 * @return this Config instance
 		 * @see #TOOLBAR_CONTROLS
@@ -1337,7 +1318,7 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
-		 * Sets the layout constraints to use for the control panel
+		 * Sets the layout constraints to use for the control panel.
 		 * <pre>
 		 * The default layout is as follows (BorderLayout.WEST):
 		 * __________________________________
@@ -1494,6 +1475,38 @@ public class EntityPanel extends JPanel {
 			@Override
 			public DetailLayout apply(EntityPanel entityPanel) {
 				return TabbedDetailLayout.builder(entityPanel).build();
+			}
+		}
+
+		private final class DefaultControlComponent implements Function<Controls, JComponent> {
+
+			@Override
+			public JComponent apply(Controls controls) {
+				requireNonNull(controls);
+
+				return toolbarControls ? createControlToolBar(controls) : createControlPanel(controls);
+			}
+
+			private JToolBar createControlToolBar(Controls controls) {
+				return toolBar(controls)
+								.orientation(horizontalControlLayout() ? HORIZONTAL : VERTICAL)
+								.build();
+			}
+
+			private JPanel createControlPanel(Controls controls) {
+				if (horizontalControlLayout()) {
+					return flowLayoutPanel(FlowLayout.CENTER)
+									.add(buttonPanel(controls).build())
+									.build();
+				}
+
+				return borderLayoutPanel()
+								.northComponent(buttonPanel(controls)
+												.orientation(VERTICAL)
+												.buttonBuilder(buttonBuilder ->
+																buttonBuilder.horizontalAlignment(SwingConstants.LEADING))
+												.build())
+								.build();
 			}
 		}
 	}
