@@ -431,80 +431,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		return component;
 	}
 
-	private C configureComponent(ComponentValue<T, C> componentValue) {
-		C component = componentValue.component();
-		if (component.isFocusable() && !focusable) {
-			component.setFocusable(false);
-		}
-		setSizes(component);
-		if (border != null) {
-			component.setBorder(border);
-		}
-		if (!enabled) {
-			component.setEnabled(false);
-		}
-		if (enabledObserver != null) {
-			linkToEnabledState(enabledObserver, component);
-		}
-		if (popupMenu != null) {
-			component.setComponentPopupMenu(popupMenu.apply(component));
-		}
-		if (toolTipText != null) {
-			component.setToolTipText(toolTipText);
-		}
-		if (font != null) {
-			component.setFont(font);
-		}
-		if (foreground != null) {
-			component.setForeground(foreground);
-		}
-		if (background != null) {
-			component.setBackground(background);
-		}
-		if (opaque) {
-			component.setOpaque(true);
-		}
-		component.setVisible(visible);
-		component.setComponentOrientation(componentOrientation);
-		clientProperties.forEach((key, value) -> component.putClientProperty(key, value));
-		if (onSetVisible != null) {
-			new OnSetVisible<>(component, onSetVisible);
-		}
-		if (transferFocusOnEnter) {
-			enableTransferFocusOnEnter(component);
-		}
-		if (transferHandler != null) {
-			component.setTransferHandler(transferHandler);
-		}
-		if (focusCycleRoot) {
-			component.setFocusCycleRoot(true);
-		}
-		validators.forEach(validator -> componentValue.addValidator(validator));
-		if (initialValueSet && linkedValues.isEmpty() && linkedValueObservers.isEmpty()) {
-			setInitialValue(component, initialValue);
-		}
-		linkedValues.forEach(linkedValue -> componentValue.link(linkedValue));
-		linkedValueObservers.forEach(linkedValueObserver -> componentValue.link(linkedValueObserver));
-		listeners.forEach(listener -> componentValue.addListener(listener));
-		consumers.forEach(consumer -> componentValue.addConsumer(consumer));
-		if (label != null) {
-			label.setLabelFor(component);
-		}
-		keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
-		focusListeners.forEach(focusListener -> component.addFocusListener(focusListener));
-		mouseListeners.forEach(mouseListener -> component.addMouseListener(mouseListener));
-		mouseMotionListeners.forEach(mouseMotionListener -> component.addMouseMotionListener(mouseMotionListener));
-		mouseWheelListeners.forEach(mouseWheelListener -> component.addMouseWheelListener(mouseWheelListener));
-		keyListeners.forEach(keyListener -> component.addKeyListener(keyListener));
-		componentListeners.forEach(componentListener -> component.addComponentListener(componentListener));
-		propertyChangeListeners.forEach(listener -> component.addPropertyChangeListener(listener));
-		propertyChangeListenerMap.forEach((propertyName, listener) -> component.addPropertyChangeListener(propertyName, listener));
-		buildConsumers.forEach(consumer -> consumer.accept(component));
-		buildValueConsumers.forEach(consumer -> consumer.accept(componentValue));
-
-		return component;
-	}
-
 	@Override
 	public final ComponentValue<T, C> buildValue() {
 		return buildValue(null);
@@ -556,6 +482,84 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		TransferFocusOnEnter.enable(component);
 	}
 
+	protected final B self() {
+		return (B) this;
+	}
+
+	private C configureComponent(ComponentValue<T, C> componentValue) {
+		C component = componentValue.component();
+		if (component.isFocusable() && !focusable) {
+			component.setFocusable(false);
+		}
+		setSizes(component);
+		if (border != null) {
+			component.setBorder(border);
+		}
+		if (!enabled) {
+			component.setEnabled(false);
+		}
+		if (enabledObserver != null) {
+			linkToEnabledState(enabledObserver, component);
+		}
+		if (popupMenu != null) {
+			component.setComponentPopupMenu(popupMenu.apply(component));
+		}
+		if (toolTipText != null) {
+			component.setToolTipText(toolTipText);
+		}
+		if (font != null) {
+			component.setFont(font);
+		}
+		if (foreground != null) {
+			component.setForeground(foreground);
+		}
+		if (background != null) {
+			component.setBackground(background);
+		}
+		if (opaque) {
+			component.setOpaque(true);
+		}
+		component.setVisible(visible);
+		component.setComponentOrientation(componentOrientation);
+		clientProperties.forEach(component::putClientProperty);
+		if (onSetVisible != null) {
+			new OnSetVisible<>(component, onSetVisible);
+		}
+		if (transferFocusOnEnter) {
+			enableTransferFocusOnEnter(component);
+		}
+		if (transferHandler != null) {
+			component.setTransferHandler(transferHandler);
+		}
+		if (focusCycleRoot) {
+			component.setFocusCycleRoot(true);
+		}
+		validators.forEach(componentValue::addValidator);
+		if (initialValueSet && linkedValues.isEmpty() && linkedValueObservers.isEmpty()) {
+			setInitialValue(component, initialValue);
+		}
+		linkedValues.forEach(componentValue::link);
+		linkedValueObservers.forEach(componentValue::link);
+		listeners.forEach(componentValue::addListener);
+		consumers.forEach(componentValue::addConsumer);
+		if (label != null) {
+			label.setLabelFor(component);
+		}
+		keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
+		focusListeners.forEach(component::addFocusListener);
+		mouseListeners.forEach(component::addMouseListener);
+		mouseMotionListeners.forEach(component::addMouseMotionListener);
+		mouseWheelListeners.forEach(component::addMouseWheelListener);
+		keyListeners.forEach(component::addKeyListener);
+		componentListeners.forEach(component::addComponentListener);
+		propertyChangeListeners.forEach(component::addPropertyChangeListener);
+		propertyChangeListenerMap.forEach(component::addPropertyChangeListener);
+		buildConsumers.forEach(consumer -> consumer.accept(component));
+		buildValueConsumers.forEach(consumer -> consumer.accept(componentValue));
+
+		return component;
+	}
+
 	private void setSizes(C component) {
 		if (minimumHeight != -1) {
 			setMinimumHeight(component, minimumHeight);
@@ -575,10 +579,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (preferredWidth != -1) {
 			setPreferredWidth(component, preferredWidth);
 		}
-	}
-
-	protected final B self() {
-		return (B) this;
 	}
 
 	private static int validatePositiveInteger(int value) {
