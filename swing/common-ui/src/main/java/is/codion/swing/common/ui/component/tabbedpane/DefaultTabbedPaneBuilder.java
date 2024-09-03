@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.tabbedpane;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.Icon;
@@ -93,7 +94,15 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
 
 	@Override
 	protected ComponentValue<Void, JTabbedPane> createComponentValue(JTabbedPane component) {
-		throw new UnsupportedOperationException("A ComponentValue can not be based on a JTabbedPane");
+		return new AbstractComponentValue<Void, JTabbedPane>(component) {
+			@Override
+			protected Void getComponentValue() {
+				return null;
+			}
+
+			@Override
+			protected void setComponentValue(Void value) {}
+		};
 	}
 
 	@Override

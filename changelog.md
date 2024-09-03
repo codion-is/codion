@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.12
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder bug fixed, now sets the initial component value only if an initialValue has been set, otherwise model based components (List, ComboBox etc.) clear the initial model state.
+- ComponentBuilder.clear() removed, AbstractComponentBuilder now always creates the associated ComponentValue, related refactoring.
 
 ## 0.18.11
 ### is.codion.common.model

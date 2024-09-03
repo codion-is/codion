@@ -52,8 +52,7 @@ import java.util.function.Function;
 
 /**
  * Builds a JComponent.<br>
- * Note that once {@link #build} or {@link #buildValue()} have been called they will return the same instance
- * on subsequent calls until the builder has been cleared by calling {@link #clear()}.
+ * Use {@link #build} to build a JComponent instance or {@link #buildValue()} to build a {@link ComponentValue} instance.
  * @param <T> the type of the value the component represents
  * @param <C> the component type
  * @param <B> the builder type
@@ -380,39 +379,40 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	ScrollPaneBuilder scrollPane();
 
 	/**
-	 * @param onBuild called when the component has been built, not called on subsequent calls until {@link #clear()} has been called.
+	 * @param onBuild called when the component has been built.
 	 * @return this builder instance
 	 */
 	B onBuild(Consumer<C> onBuild);
 
 	/**
-	 * @param onBuildValue called when the component value has been built, not called on subsequent calls until {@link #clear()} has been called.
+	 * @param onBuildValue called when the component value has been built.
 	 * @return this builder instance
 	 */
 	B onBuildValue(Consumer<ComponentValue<T, C>> onBuildValue);
 
 	/**
-	 * Builds and returns the component, note that subsequent calls return the same component until {@link #clear()} has been called.
+	 * Builds a new component instance.
 	 * @return the component
 	 */
 	C build();
 
 	/**
-	 * Builds and returns the component, note that subsequent calls return the same component until {@link #clear()} has been called.
-	 * @param onBuild called after the first call when the component is built, not called on subsequent calls.
+	 * Builds a new component instance.
+	 * @param onBuild called after the component is built.
 	 * @return the component
 	 */
 	C build(Consumer<C> onBuild);
 
 	/**
-	 * Clears this builder so that it builds a new instance on next call to {@link #build()} or {@link #buildValue()}.
-	 * @return this builder instance
-	 */
-	B clear();
-
-	/**
-	 * Builds and returns the component value, note that subsequent calls return the same component value until {@link #clear()} has been called.
+	 * Builds and returns the component value.
 	 * @return the component value
 	 */
 	ComponentValue<T, C> buildValue();
+
+	/**
+	 * Builds and returns the component value.
+	 * @param onBuild called after the component value is built.
+	 * @return the component value
+	 */
+	ComponentValue<T, C> buildValue(Consumer<ComponentValue<T, C>> onBuild);
 }

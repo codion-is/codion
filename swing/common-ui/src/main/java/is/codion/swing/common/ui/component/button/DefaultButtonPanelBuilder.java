@@ -72,8 +72,8 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 																 ButtonBuilder<?, ?, ?> buttonBuilder,
 																 ToggleButtonBuilder<?, ?> toggleButtonBuilder) {
 			this.panel = panel;
-			this.buttonBuilder = buttonBuilder.clear();
-			this.toggleButtonBuilder = toggleButtonBuilder.clear();
+			this.buttonBuilder = buttonBuilder;
+			this.toggleButtonBuilder = toggleButtonBuilder;
 			controls.actions().forEach(this);
 		}
 
@@ -90,7 +90,6 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 		@Override
 		void onToggleControl(ToggleControl toggleControl) {
 			panel.add(toggleButtonBuilder.toggleControl(toggleControl).build());
-			toggleButtonBuilder.clear();
 		}
 
 		@Override
@@ -103,7 +102,6 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 		@Override
 		void onAction(Action action) {
 			panel.add(buttonBuilder.action(action).build());
-			buttonBuilder.clear();
 		}
 	}
 }

@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
@@ -123,20 +124,28 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	}
 
 	@Override
-	public B checkBoxBuilder(Consumer<CheckBoxBuilder> checkBoxBuilder) {
+	public final B checkBoxBuilder(Consumer<CheckBoxBuilder> checkBoxBuilder) {
 		requireNonNull(checkBoxBuilder).accept(this.checkBoxBuilder);
 		return self();
 	}
 
 	@Override
-	public B radioButtonBuilder(Consumer<RadioButtonBuilder> radioButtonBuilder) {
+	public final B radioButtonBuilder(Consumer<RadioButtonBuilder> radioButtonBuilder) {
 		requireNonNull(radioButtonBuilder).accept(this.radioButtonBuilder);
 		return self();
 	}
 
 	@Override
 	protected final ComponentValue<Void, C> createComponentValue(C component) {
-		throw new UnsupportedOperationException("A ComponentValue can not be based on this component type");
+		return new AbstractComponentValue<Void, C>(component) {
+			@Override
+			protected Void getComponentValue() {
+				return null;
+			}
+
+			@Override
+			protected void setComponentValue(Void value) {}
+		};
 	}
 
 	@Override

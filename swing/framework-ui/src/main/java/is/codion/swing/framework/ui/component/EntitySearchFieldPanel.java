@@ -385,7 +385,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		private EntitySearchField createSearchField() {
-			return searchFieldBuilder.clear().build();
+			return searchFieldBuilder.build();
 		}
 
 		private static class EntitySearchFieldPanelValue extends AbstractComponentValue<Entity, EntitySearchFieldPanel> {

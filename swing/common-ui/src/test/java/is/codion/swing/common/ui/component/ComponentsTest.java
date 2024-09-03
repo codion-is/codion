@@ -110,55 +110,6 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void clear() {
-		Font defaultFont = new JTextField().getFont();
-
-		Value<Integer> value = Value.value(42);
-
-		NumberField.Builder<Integer> builder = Components.integerField()
-						.valueRange(0, 100)
-						.font(defaultFont.deriveFont(Font.BOLD))
-						.foreground(Color.WHITE)
-						.background(Color.BLACK)
-						.link(value);
-
-		NumberField<Integer> component = builder.build();
-		ComponentValue<Integer, NumberField<Integer>> componentValue = builder.buildValue();
-
-		assertSame(component, componentValue.component());
-
-		builder.clear();
-
-		NumberField<Integer> nextComponent = builder.build();
-		ComponentValue<Integer, NumberField<Integer>> nextComponentValue = builder.buildValue();
-
-		assertSame(nextComponent, nextComponentValue.component());
-
-		assertNotSame(component, nextComponent);
-		assertNotSame(componentValue, nextComponentValue);
-
-		value.set(20);
-
-		assertEquals(20, component.getNumber());
-		assertEquals(20, nextComponent.getNumber());
-		assertEquals(20, componentValue.get());
-		assertEquals(20, nextComponentValue.get());
-
-		nextComponentValue.set(25);
-
-		assertEquals(25, component.getNumber());
-		assertEquals(25, nextComponent.getNumber());
-		assertEquals(25, componentValue.get());
-		assertEquals(25, nextComponentValue.get());
-
-		assertTrue(component.getFont().isBold());
-		assertTrue(nextComponent.getFont().isBold());
-
-		assertEquals(Color.WHITE, component.getForeground());
-		assertEquals(Color.BLACK, component.getBackground());
-	}
-
-	@Test
 	void shortField() {
 		Value<Short> value = Value.value((short) 42);
 		ComponentValue<Short, NumberField<Short>> componentValue = Components.shortField()
@@ -650,7 +601,7 @@ public final class ComponentsTest {
 						.initialCaretPosition(InitialCaretPosition.START);
 		textArea = builder.build();
 		assertEquals(0, textArea.getCaretPosition());
-		builder.clear();
+
 		builder.initialCaretPosition(InitialCaretPosition.END);
 		textArea = builder.build();
 		assertEquals(textArea.getDocument().getLength(), textArea.getCaretPosition());
@@ -660,7 +611,7 @@ public final class ComponentsTest {
 						.initialCaretPosition(InitialCaretPosition.START);
 		textArea = builder.build();
 		assertEquals(0, textArea.getCaretPosition());
-		builder.clear();
+
 		builder.initialCaretPosition(InitialCaretPosition.END);
 		textArea = builder.build();
 		assertEquals(textArea.getDocument().getLength(), textArea.getCaretPosition());

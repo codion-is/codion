@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.splitpane;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JComponent;
@@ -105,7 +106,15 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
 
 	@Override
 	protected ComponentValue<Void, JSplitPane> createComponentValue(JSplitPane component) {
-		throw new UnsupportedOperationException("A ComponentValue can not be based on a JSplitPane");
+		return new AbstractComponentValue<Void, JSplitPane>(component) {
+			@Override
+			protected Void getComponentValue() {
+				return null;
+			}
+
+			@Override
+			protected void setComponentValue(Void value) {}
+		};
 	}
 
 	@Override

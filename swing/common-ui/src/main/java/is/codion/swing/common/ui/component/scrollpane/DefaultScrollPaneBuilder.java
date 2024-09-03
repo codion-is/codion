@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.scrollpane;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JComponent;
@@ -118,7 +119,15 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
 
 	@Override
 	protected ComponentValue<Void, JScrollPane> createComponentValue(JScrollPane component) {
-		throw new UnsupportedOperationException("A ComponentValue can not be based on a JScrollPane");
+		return new AbstractComponentValue<Void, JScrollPane>(component) {
+			@Override
+			protected Void getComponentValue() {
+				return null;
+			}
+
+			@Override
+			protected void setComponentValue(Void value) {}
+		};
 	}
 
 	@Override

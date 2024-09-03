@@ -77,8 +77,8 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 																	ButtonBuilder<?, ?, ?> buttonBuilder,
 																	ToggleButtonBuilder<?, ?> toggleButtonBuilder) {
 			this.toolBar = toolBar;
-			this.buttonBuilder = buttonBuilder.clear();
-			this.toggleButtonBuilder = toggleButtonBuilder.clear();
+			this.buttonBuilder = buttonBuilder;
+			this.toggleButtonBuilder = toggleButtonBuilder;
 			controls.actions().forEach(this);
 		}
 
@@ -97,7 +97,6 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 			toolBar.add(toggleButtonBuilder
 							.toggleControl(toggleControl)
 							.build());
-			toggleButtonBuilder.clear();
 		}
 
 		@Override
@@ -110,7 +109,6 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 			toolBar.add(buttonBuilder
 							.action(action)
 							.build());
-			buttonBuilder.clear();
 		}
 	}
 }

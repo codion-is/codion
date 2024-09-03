@@ -42,6 +42,7 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -1262,7 +1263,15 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		protected ComponentValue<Void, FilterTable<R, C>> createComponentValue(FilterTable<R, C> component) {
-			throw new UnsupportedOperationException("A ComponentValue can not be based on a FilterTable");
+			return new AbstractComponentValue<Void, FilterTable<R, C>>(component) {
+				@Override
+				protected Void getComponentValue() {
+					return null;
+				}
+
+				@Override
+				protected void setComponentValue(Void value) {}
+			};
 		}
 
 		@Override

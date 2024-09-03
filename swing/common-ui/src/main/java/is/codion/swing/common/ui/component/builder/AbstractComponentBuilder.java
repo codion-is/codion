@@ -81,9 +81,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private final List<Runnable> listeners = new ArrayList<>();
 	private final List<Consumer<T>> consumers = new ArrayList<>();
 
-	private C component;
-	private ComponentValue<T, C> componentValue;
-
 	private JLabel label;
 	private boolean focusable = true;
 	private int preferredHeight = -1;
@@ -425,10 +422,17 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	@Override
 	public final C build(Consumer<C> onBuild) {
-		if (component != null) {
-			return component;
+		ComponentValue<T, C> componentValue = createComponentValue(createComponent());
+		C component = configureComponent(componentValue);
+		if (onBuild != null) {
+			onBuild.accept(component);
 		}
-		component = createComponent();
+
+		return component;
+	}
+
+	private C configureComponent(ComponentValue<T, C> componentValue) {
+		C component = componentValue.component();
 		if (component.isFocusable() && !focusable) {
 			component.setFocusable(false);
 		}
@@ -475,14 +479,14 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (focusCycleRoot) {
 			component.setFocusCycleRoot(true);
 		}
-		validators.forEach(validator -> componentValue(component).addValidator(validator));
+		validators.forEach(validator -> componentValue.addValidator(validator));
 		if (initialValueSet && linkedValues.isEmpty() && linkedValueObservers.isEmpty()) {
 			setInitialValue(component, initialValue);
 		}
-		linkedValues.forEach(linkedValue -> componentValue(component).link(linkedValue));
-		linkedValueObservers.forEach(linkedValueObserver -> componentValue(component).link(linkedValueObserver));
-		listeners.forEach(listener -> componentValue(component).addListener(listener));
-		consumers.forEach(consumer -> componentValue(component).addConsumer(consumer));
+		linkedValues.forEach(linkedValue -> componentValue.link(linkedValue));
+		linkedValueObservers.forEach(linkedValueObserver -> componentValue.link(linkedValueObserver));
+		listeners.forEach(listener -> componentValue.addListener(listener));
+		consumers.forEach(consumer -> componentValue.addConsumer(consumer));
 		if (label != null) {
 			label.setLabelFor(component);
 		}
@@ -496,34 +500,25 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		propertyChangeListeners.forEach(listener -> component.addPropertyChangeListener(listener));
 		propertyChangeListenerMap.forEach((propertyName, listener) -> component.addPropertyChangeListener(propertyName, listener));
 		buildConsumers.forEach(consumer -> consumer.accept(component));
-		buildValueConsumers.forEach(consumer -> consumer.accept(componentValue(component)));
-		if (onBuild != null) {
-			onBuild.accept(component);
-		}
+		buildValueConsumers.forEach(consumer -> consumer.accept(componentValue));
 
 		return component;
 	}
 
 	@Override
 	public final ComponentValue<T, C> buildValue() {
-		if (componentValue != null) {
-			return componentValue;
-		}
-		build();//creates the component value if value-linking is required
-		if (componentValue == null) {
-			//create the component value if build() did not
-			componentValue = createComponentValue(component);
-		}
-
-		return componentValue;
+		return buildValue(null);
 	}
 
 	@Override
-	public final B clear() {
-		component = null;
-		componentValue = null;
+	public final ComponentValue<T, C> buildValue(Consumer<ComponentValue<T, C>> onBuild) {
+		ComponentValue<T, C> componentValue = createComponentValue(createComponent());
+		configureComponent(componentValue);
+		if (onBuild != null) {
+			onBuild.accept(componentValue);
+		}
 
-		return self();
+		return componentValue;
 	}
 
 	/**
@@ -559,14 +554,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	 */
 	protected void enableTransferFocusOnEnter(C component) {
 		TransferFocusOnEnter.enable(component);
-	}
-
-	private ComponentValue<T, C> componentValue(C component) {
-		if (componentValue == null) {
-			componentValue = createComponentValue(component);
-		}
-
-		return componentValue;
 	}
 
 	private void setSizes(C component) {

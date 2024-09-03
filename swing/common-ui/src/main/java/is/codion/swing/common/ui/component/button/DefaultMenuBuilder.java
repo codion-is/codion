@@ -193,8 +193,8 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 															 MenuItemBuilder<?, ?> menuItemBuilder,
 															 ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder) {
 			this.menu = menu;
-			this.menuItemBuilder = menuItemBuilder.clear();
-			this.toggleMenuItemBuilder = toggleMenuItemBuilder.clear();
+			this.menuItemBuilder = menuItemBuilder;
+			this.toggleMenuItemBuilder = toggleMenuItemBuilder;
 			controls.actions().forEach(this);
 		}
 
@@ -206,13 +206,11 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 		@Override
 		void onControl(Control control) {
 			menu.add(menuItemBuilder.control(control).build());
-			menuItemBuilder.clear();
 		}
 
 		@Override
 		void onToggleControl(ToggleControl toggleControl) {
 			menu.add(toggleMenuItemBuilder.toggleControl(toggleControl).build());
-			toggleMenuItemBuilder.clear();
 		}
 
 		@Override

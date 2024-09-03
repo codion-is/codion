@@ -294,7 +294,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		}
 
 		private TemporalField<T> createTemporalField() {
-			return temporalFieldBuilder.clear().build();
+			return temporalFieldBuilder.build();
 		}
 	}
 

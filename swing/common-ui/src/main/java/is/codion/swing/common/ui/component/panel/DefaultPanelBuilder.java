@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.panel;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JComponent;
@@ -100,7 +101,15 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
 	@Override
 	protected ComponentValue<Void, JPanel> createComponentValue(JPanel component) {
-		throw new UnsupportedOperationException("A ComponentValue can not be based on a JPanel");
+		return new AbstractComponentValue<Void, JPanel>(component) {
+			@Override
+			protected Void getComponentValue() {
+				return null;
+			}
+
+			@Override
+			protected void setComponentValue(Void value) {}
+		};
 	}
 
 	@Override

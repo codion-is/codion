@@ -242,7 +242,7 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 
 		private EntityComboBox createComboBox() {
-			return entityComboBoxBuilder.clear().build();
+			return entityComboBoxBuilder.build();
 		}
 
 		private static class EntityComboBoxPanelValue extends AbstractComponentValue<Entity, EntityComboBoxPanel> {
