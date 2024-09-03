@@ -10,6 +10,7 @@ Codion Change Log
 - EntityPanel.createControlPanel() toggle button type now the default BUTTON.
 - EntityPanel, overridable controlComponent() replaced with Config.controlComponent().
 - EntityPanel, overridable editBasePanel() replaced with Config.editBasePanel().
+- EntityTableCellRendererBuilder.EntitySettings.backgroundColorShaded() bug fixed, alternate row coloring now correct. 
 
 ## 0.18.11
 ### is.codion.common.model
