@@ -131,9 +131,9 @@ configure(project.frameworkModules) {
             }
         }
 
-//        signing {
-//            sign publishing.publications.mavenJava
-//        }
+        signing {
+            sign publishing.publications.mavenJava
+        }
     }
 
     if (hasSonarqubeProperties()) {
