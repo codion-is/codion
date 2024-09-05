@@ -41,17 +41,26 @@ class DefaultMenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B
 
 	@Override
 	protected final ComponentValue<Void, C> createComponentValue(C component) {
-		return new AbstractComponentValue<Void, C>(component) {
-			@Override
-			protected Void getComponentValue() {
-				return null;
-			}
-
-			@Override
-			protected void setComponentValue(Void value) {/*Not applicable*/}
-		};
+		return new MenuItemComponentValue<>(component);
 	}
 
 	@Override
 	protected final void setInitialValue(C component, Void initialValue) {/*Not applicable*/}
+
+	private static final class MenuItemComponentValue<C extends JMenuItem> extends AbstractComponentValue<Void, C> {
+
+		private MenuItemComponentValue(C component) {
+			super(component);
+		}
+
+		@Override
+		protected Void getComponentValue() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void setComponentValue(Void value) {
+			throw new UnsupportedOperationException();
+		}
+	}
 }

@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.13
+### is.codion.swing.common.ui
+- ComponentBuilder memory leaks prevented by replacing lambdas and anonymous inner classes with static classes.
 ### is.codion.swing.framework.ui
 - EntityPanel.Config.entityPanel(), EntityTablePanel.Config.entityTablePanel() type parameter added.
 

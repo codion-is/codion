@@ -94,15 +94,7 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
 
 	@Override
 	protected ComponentValue<Void, JTabbedPane> createComponentValue(JTabbedPane component) {
-		return new AbstractComponentValue<Void, JTabbedPane>(component) {
-			@Override
-			protected Void getComponentValue() {
-				return null;
-			}
-
-			@Override
-			protected void setComponentValue(Void value) {}
-		};
+		return new TabbedPaneComponentValue(component);
 	}
 
 	@Override
@@ -168,6 +160,23 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
 		@Override
 		public void accept(ChangeListener listener) {
 			tabbedPane.addChangeListener(listener);
+		}
+	}
+
+	private static final class TabbedPaneComponentValue extends AbstractComponentValue<Void, JTabbedPane> {
+
+		private TabbedPaneComponentValue(JTabbedPane component) {
+			super(component);
+		}
+
+		@Override
+		protected Void getComponentValue() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void setComponentValue(Void value) {
+			throw new UnsupportedOperationException();
 		}
 	}
 }

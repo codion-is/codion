@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -77,7 +78,7 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
 	@Override
 	public PanelBuilder addAll(Collection<? extends JComponent> components) {
-		requireNonNull(components).forEach(component -> componentConstraints.add(new ComponentConstraints(requireNonNull(component))));
+		requireNonNull(components).forEach(new AddComponents(componentConstraints));
 		return this;
 	}
 
@@ -87,29 +88,14 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 		if (layout != null) {
 			component.setLayout(layout);
 		}
-		componentConstraints.forEach(componentConstraint -> {
-			if (componentConstraint.constraints != null) {
-				component.add(componentConstraint.component, componentConstraint.constraints);
-			}
-			else {
-				component.add(componentConstraint.component);
-			}
-		});
+		componentConstraints.forEach(new AddToPanel(component));
 
 		return component;
 	}
 
 	@Override
 	protected ComponentValue<Void, JPanel> createComponentValue(JPanel component) {
-		return new AbstractComponentValue<Void, JPanel>(component) {
-			@Override
-			protected Void getComponentValue() {
-				return null;
-			}
-
-			@Override
-			protected void setComponentValue(Void value) {}
-		};
+		return new PanelComponentValue(component);
 	}
 
 	@Override
@@ -127,6 +113,56 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 		private ComponentConstraints(JComponent component, Object constraints) {
 			this.component = component;
 			this.constraints = constraints;
+		}
+	}
+
+	private static final class PanelComponentValue extends AbstractComponentValue<Void, JPanel> {
+
+		private PanelComponentValue(JPanel component) {
+			super(component);
+		}
+
+		@Override
+		protected Void getComponentValue() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void setComponentValue(Void value) {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private static final class AddComponents implements Consumer<JComponent> {
+
+		private final List<ComponentConstraints> componentConstraints;
+
+		private AddComponents(List<ComponentConstraints> componentConstraints) {
+			this.componentConstraints = componentConstraints;
+		}
+
+		@Override
+		public void accept(JComponent component) {
+			componentConstraints.add(new ComponentConstraints(requireNonNull(component)));
+		}
+	}
+
+	private static final class AddToPanel implements Consumer<ComponentConstraints> {
+
+		private final JPanel panel;
+
+		private AddToPanel(JPanel panel) {
+			this.panel = panel;
+		}
+
+		@Override
+		public void accept(ComponentConstraints componentConstraint) {
+			if (componentConstraint.constraints != null) {
+				panel.add(componentConstraint.component, componentConstraint.constraints);
+			}
+			else {
+				panel.add(componentConstraint.component);
+			}
 		}
 	}
 }

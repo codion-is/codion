@@ -96,17 +96,26 @@ final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<Voi
 
 	@Override
 	protected ComponentValue<Void, JPanel> createComponentValue(JPanel component) {
-		return new AbstractComponentValue<Void, JPanel>(component) {
-			@Override
-			protected Void getComponentValue() {
-				return null;
-			}
-
-			@Override
-			protected void setComponentValue(Void value) {}
-		};
+		return new PanelComponentValue(component);
 	}
 
 	@Override
 	protected void setInitialValue(JPanel component, Void initialValue) {}
+
+	private static final class PanelComponentValue extends AbstractComponentValue<Void, JPanel> {
+
+		private PanelComponentValue(JPanel component) {
+			super(component);
+		}
+
+		@Override
+		protected Void getComponentValue() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void setComponentValue(Void value) {
+			throw new UnsupportedOperationException();
+		}
+	}
 }

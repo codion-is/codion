@@ -82,6 +82,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -1263,15 +1264,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		protected ComponentValue<Void, FilterTable<R, C>> createComponentValue(FilterTable<R, C> component) {
-			return new AbstractComponentValue<Void, FilterTable<R, C>>(component) {
-				@Override
-				protected Void getComponentValue() {
-					return null;
-				}
-
-				@Override
-				protected void setComponentValue(Void value) {}
-			};
+			return new FilterTableComponentValue<>(component);
 		}
 
 		@Override
@@ -1279,13 +1272,21 @@ public final class FilterTable<R, C> extends JTable {
 
 		private Collection<FilterTableColumn<C>> validateIdentifiers(List<FilterTableColumn<C>> columns) {
 			if (columns.stream()
-							.map(FilterTableColumn::identifier)
+							.map(new ColumnIdentifier<>())
 							.distinct()
 							.count() != columns.size()) {
 				throw new IllegalArgumentException("Column identifiers are not unique");
 			}
 
 			return columns;
+		}
+
+		private static final class ColumnIdentifier<C> implements Function<FilterTableColumn<C>, C> {
+
+			@Override
+			public C apply(FilterTableColumn<C> column) {
+				return column.identifier();
+			}
 		}
 	}
 
@@ -1492,6 +1493,23 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public int compare(TableColumn col1, TableColumn col2) {
 			return collator.compare(String.valueOf(col1.getHeaderValue()), String.valueOf(col2.getHeaderValue()));
+		}
+	}
+
+	private static final class FilterTableComponentValue<R, C> extends AbstractComponentValue<Void, FilterTable<R, C>> {
+
+		private FilterTableComponentValue(FilterTable<R, C> table) {
+			super(table);
+		}
+
+		@Override
+		protected Void getComponentValue() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void setComponentValue(Void value) {
+			throw new UnsupportedOperationException();
 		}
 	}
 

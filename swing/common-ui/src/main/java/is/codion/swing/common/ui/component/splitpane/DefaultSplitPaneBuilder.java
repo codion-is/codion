@@ -106,17 +106,26 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
 
 	@Override
 	protected ComponentValue<Void, JSplitPane> createComponentValue(JSplitPane component) {
-		return new AbstractComponentValue<Void, JSplitPane>(component) {
-			@Override
-			protected Void getComponentValue() {
-				return null;
-			}
-
-			@Override
-			protected void setComponentValue(Void value) {}
-		};
+		return new SplitPaneComponentValue(component);
 	}
 
 	@Override
 	protected void setInitialValue(JSplitPane component, Void initialValue) {}
+
+	private static final class SplitPaneComponentValue extends AbstractComponentValue<Void, JSplitPane> {
+
+		private SplitPaneComponentValue(JSplitPane component) {
+			super(component);
+		}
+
+		@Override
+		protected Void getComponentValue() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void setComponentValue(Void value) {
+			throw new UnsupportedOperationException();
+		}
+	}
 }

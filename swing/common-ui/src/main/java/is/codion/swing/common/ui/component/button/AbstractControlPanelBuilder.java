@@ -137,15 +137,7 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
 	@Override
 	protected final ComponentValue<Void, C> createComponentValue(C component) {
-		return new AbstractComponentValue<Void, C>(component) {
-			@Override
-			protected Void getComponentValue() {
-				return null;
-			}
-
-			@Override
-			protected void setComponentValue(Void value) {}
-		};
+		return new PanelComponentValue<>(component);
 	}
 
 	@Override
@@ -173,6 +165,23 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 				return radioButtonBuilder;
 			default:
 				throw new IllegalArgumentException("Unknown toggle button type: " + toggleButtonType);
+		}
+	}
+
+	private static final class PanelComponentValue<C extends JComponent> extends AbstractComponentValue<Void, C> {
+
+		private PanelComponentValue(C component) {
+			super(component);
+		}
+
+		@Override
+		protected Void getComponentValue() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void setComponentValue(Void value) {
+			throw new UnsupportedOperationException();
 		}
 	}
 }
