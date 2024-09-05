@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.13
 ### is.codion.swing.common.ui
 - ComponentBuilder memory leaks prevented by replacing lambdas and anonymous inner classes with static classes.
+### is.codion.framework.model
+- EntityEditModel.valueEvent(attribute) removed.
 ### is.codion.swing.framework.model
 - SwingEntityEditModel.createComboBoxModel(), nullItem caption now static.
 ### is.codion.swing.framework.ui

@@ -500,16 +500,6 @@ public interface EntityEditModel {
 	<T> EventObserver<T> editEvent(Attribute<T> attribute);
 
 	/**
-	 * Returns an observer notified each time the value associated with the given attribute changes, either
-	 * via editing or when the active entity is set.
-	 * @param attribute the attribute which value observer to return
-	 * @param <T> the value type
-	 * @return an observer for the given attribute value changes
-	 * @see #set(Entity)
-	 */
-	<T> EventObserver<T> valueEvent(Attribute<T> attribute);
-
-	/**
 	 * @return an observer for attribute value changes
 	 */
 	EventObserver<Attribute<?>> valueEvent();

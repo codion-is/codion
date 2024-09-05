@@ -124,12 +124,6 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void valueEvent() {
-		assertThrows(IllegalArgumentException.class, () -> employeeEditModel.valueEvent(Department.ID));
-		assertThrows(IllegalArgumentException.class, () -> employeeEditModel.valueEvent(Department.ID));
-	}
-
-	@Test
 	void foreignKeySearchModel() {
 		EntitySearchModel model = employeeEditModel.foreignKeySearchModel(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
@@ -497,6 +491,9 @@ public final class AbstractEntityEditModelTest {
 		assertFalse(employeeEditModel.optional(Employee.MGR_FK).isPresent());
 		value.set(3);
 		assertTrue(employeeEditModel.optional(Employee.MGR).isPresent());
+
+		assertThrows(IllegalArgumentException.class, () -> employeeEditModel.value(Department.ID));
+		assertThrows(IllegalArgumentException.class, () -> employeeEditModel.value(Department.ID));
 	}
 
 	@Test
@@ -506,7 +503,7 @@ public final class AbstractEntityEditModelTest {
 		AtomicInteger derivedCounter = new AtomicInteger();
 		AtomicInteger derivedEditCounter = new AtomicInteger();
 
-		editModel.valueEvent(Detail.INT_DERIVED).addConsumer(value -> derivedCounter.incrementAndGet());
+		editModel.value(Detail.INT_DERIVED).addConsumer(value -> derivedCounter.incrementAndGet());
 		editModel.editEvent(Detail.INT_DERIVED).addConsumer(value -> derivedEditCounter.incrementAndGet());
 
 		editModel.put(Detail.INT, 1);
@@ -534,9 +531,9 @@ public final class AbstractEntityEditModelTest {
 	@Test
 	void foreignKeys() throws DatabaseException {
 		AtomicInteger deptNoChange = new AtomicInteger();
-		employeeEditModel.valueEvent(Employee.DEPARTMENT).addConsumer(value -> deptNoChange.incrementAndGet());
+		employeeEditModel.value(Employee.DEPARTMENT).addConsumer(value -> deptNoChange.incrementAndGet());
 		AtomicInteger deptChange = new AtomicInteger();
-		employeeEditModel.valueEvent(Employee.DEPARTMENT_FK).addConsumer(value -> deptChange.incrementAndGet());
+		employeeEditModel.value(Employee.DEPARTMENT_FK).addConsumer(value -> deptChange.incrementAndGet());
 		AtomicInteger deptEdit = new AtomicInteger();
 		employeeEditModel.editEvent(Employee.DEPARTMENT_FK).addConsumer(value -> deptEdit.incrementAndGet());
 
@@ -635,9 +632,9 @@ public final class AbstractEntityEditModelTest {
 		editModel.editEvent(Derived.INT4).addConsumer(value -> editedValues.put(Derived.INT4, value));
 
 		Map<Attribute<?>, Object> changedValues = new LinkedHashMap<>();
-		editModel.valueEvent(Derived.INT2).addConsumer(value -> changedValues.put(Derived.INT2, value));
-		editModel.valueEvent(Derived.INT3).addConsumer(value -> changedValues.put(Derived.INT3, value));
-		editModel.valueEvent(Derived.INT4).addConsumer(value -> changedValues.put(Derived.INT4, value));
+		editModel.value(Derived.INT2).addConsumer(value -> changedValues.put(Derived.INT2, value));
+		editModel.value(Derived.INT3).addConsumer(value -> changedValues.put(Derived.INT3, value));
+		editModel.value(Derived.INT4).addConsumer(value -> changedValues.put(Derived.INT4, value));
 
 		editModel.put(Derived.INT, 2);
 		assertTrue(editedValues.containsKey(Derived.INT2));

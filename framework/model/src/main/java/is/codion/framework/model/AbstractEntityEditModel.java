@@ -73,7 +73,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	private final Entity entity;
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
-	private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
+	private final Map<Attribute<?>, EditModelValue<?>> editModelValues = new ConcurrentHashMap<>();
 	private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
 	private final Map<Attribute<?>, Value<Supplier<?>>> defaultValues = new ConcurrentHashMap<>();
 	private final Value<EntityValidator> validator;
@@ -435,17 +435,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final <T> Value<T> value(Attribute<T> attribute) {
 		entityDefinition().attributes().definition(attribute);
-		return (Value<T>) editModelValues.computeIfAbsent(attribute, k -> new EditModelValue<>(this, attribute));
+		return (Value<T>) editModelValues.computeIfAbsent(attribute, k -> new EditModelValue<>(attribute));
 	}
 
 	@Override
 	public final <T> EventObserver<T> editEvent(Attribute<T> attribute) {
 		return events.editEvent(attribute);
-	}
-
-	@Override
-	public final <T> EventObserver<T> valueEvent(Attribute<T> attribute) {
-		return events.valueEvent(attribute);
 	}
 
 	@Override
@@ -645,8 +640,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	private void setEntity(Entity entity) {
 		Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
 		for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
-			Attribute<Object> objectAttribute = (Attribute<Object>) affectedAttribute;
-			events.notifyValueChange(objectAttribute, this.entity.get(objectAttribute));
+			events.notifyValueChange(affectedAttribute);
 		}
 		if (affectedAttributes.isEmpty()) {//otherwise notifyValueChange() triggers entity state updates
 			states.updateEntityStates();
@@ -1036,7 +1030,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Entity> entity = Event.event();
 		private final Event<Attribute<?>> valueChange = Event.event();
 		private final Map<Attribute<?>, Event<?>> editEvents = new ConcurrentHashMap<>();
-		private final Map<Attribute<?>, Event<?>> valueEvents = new ConcurrentHashMap<>();
 
 		private void bindEvents() {
 			afterInsert.addListener(insertUpdateOrDelete);
@@ -1055,13 +1048,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			return ((Event<T>) editEvents.computeIfAbsent(attribute, k -> Event.event())).observer();
 		}
 
-		private <T> EventObserver<T> valueEvent(Attribute<T> attribute) {
-			entityDefinition().attributes().definition(attribute);
-			return ((Event<T>) valueEvents.computeIfAbsent(attribute, k -> Event.event())).observer();
-		}
-
 		private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
-			notifyValueChange(attribute, value);
+			notifyValueChange(attribute);
 			Event<T> editEvent = (Event<T>) editEvents.get(attribute);
 			if (editEvent != null) {
 				editEvent.accept(value);
@@ -1074,12 +1062,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			});
 		}
 
-		private <T> void notifyValueChange(Attribute<T> attribute, T value) {
+		private void notifyValueChange(Attribute<?> attribute) {
 			states.updateEntityStates();
 			states.updateAttributeStates(attribute);
-			Event<T> valueEvent = (Event<T>) valueEvents.get(attribute);
-			if (valueEvent != null) {
-				valueEvent.accept(value);
+			EditModelValue<?> editModelValue = editModelValues.get(attribute);
+			if (editModelValue != null) {
+				editModelValue.valueChanged();
 			}
 			valueChange.accept(attribute);
 		}
@@ -1198,25 +1186,26 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private static final class EditModelValue<T> extends AbstractValue<T> {
+	private final class EditModelValue<T> extends AbstractValue<T> {
 
-		private final EntityEditModel editModel;
 		private final Attribute<T> attribute;
 
-		private EditModelValue(EntityEditModel editModel, Attribute<T> attribute) {
-			this.editModel = editModel;
+		private EditModelValue(Attribute<T> attribute) {
 			this.attribute = attribute;
-			this.editModel.valueEvent(attribute).addListener(this::notifyListeners);
 		}
 
 		@Override
 		protected T getValue() {
-			return editModel.get(attribute);
+			return entity.get(attribute);
 		}
 
 		@Override
 		protected void setValue(T value) {
-			editModel.put(attribute, value);
+			put(attribute, value);
+		}
+
+		private void valueChanged() {
+			notifyListeners();
 		}
 	}
 }
