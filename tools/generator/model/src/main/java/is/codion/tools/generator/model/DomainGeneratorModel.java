@@ -249,9 +249,9 @@ public final class DomainGeneratorModel {
 			domainCombinedValue.set(domainSource.combined());
 		}
 		else {
-			domainApiValue.set(null);
-			domainImplValue.set(null);
-			domainCombinedValue.set(null);
+			domainApiValue.clear();
+			domainImplValue.clear();
+			domainCombinedValue.clear();
 		}
 	}
 

@@ -253,8 +253,8 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	private void clearForeignKeyReferences(ForeignKey foreignKey, Collection<Entity> entities) {
 		entities.forEach(entity -> {
-			if (Objects.equals(entity, get(foreignKey))) {
-				put(foreignKey, null);
+			if (Objects.equals(entity, value(foreignKey).get())) {
+				value(foreignKey).clear();
 			}
 		});
 	}

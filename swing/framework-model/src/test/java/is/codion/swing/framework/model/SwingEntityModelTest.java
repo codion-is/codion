@@ -95,17 +95,17 @@ public final class SwingEntityModelTest
 		try {
 			departmentModel.editModel().delete();
 			assertFalse(departmentsComboBoxModel.containsItem(operations));
-			departmentModel.editModel().put(Department.ID, 99);
-			departmentModel.editModel().put(Department.NAME, "nameit");
+			departmentModel.editModel().value(Department.ID).set(99);
+			departmentModel.editModel().value(Department.NAME).set("nameit");
 			Entity inserted = departmentModel.editModel().insert();
 			assertTrue(departmentsComboBoxModel.containsItem(inserted));
 			departmentModel.tableModel().selectionModel().setSelectedItem(inserted);
-			departmentModel.editModel().put(Department.NAME, "nameitagain");
+			departmentModel.editModel().value(Department.NAME).set("nameitagain");
 			departmentModel.editModel().update();
 			assertEquals("nameitagain", departmentsComboBoxModel.find(inserted.primaryKey()).orElse(null).get(Department.NAME));
 
 			departmentModel.tableModel().select(Collections.singletonList(primaryKey.copyBuilder().with(Department.ID, 20).build()));
-			departmentModel.editModel().put(Department.NAME, "NewName");
+			departmentModel.editModel().value(Department.NAME).set("NewName");
 			departmentModel.editModel().update();
 
 			for (Entity employee : employeeModel.tableModel().items()) {

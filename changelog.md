@@ -6,6 +6,7 @@ Codion Change Log
 - ComponentBuilder memory leaks prevented by replacing lambdas and anonymous inner classes with static classes.
 ### is.codion.framework.model
 - EntityEditModel.valueEvent(attribute) removed.
+- EntityEditModel.put(), get(), remove() and optional() removed.
 ### is.codion.swing.framework.model
 - SwingEntityEditModel.createComboBoxModel(), nullItem caption now static.
 ### is.codion.swing.framework.ui
@@ -22,7 +23,7 @@ Codion Change Log
 - EntityPanel.createControlPanel() toggle button type now the default BUTTON.
 - EntityPanel, overridable controlComponent() replaced with Config.controlComponent().
 - EntityPanel, overridable editBasePanel() replaced with Config.editBasePanel().
-- EntityTableCellRendererBuilder.EntitySettings.backgroundColorShaded() bug fixed, alternate row coloring now correct. 
+- EntityTableCellRendererBuilder.EntitySettings.backgroundColorShaded() bug fixed, alternate row coloring now correct.
 
 ## 0.18.11
 ### is.codion.common.model

@@ -87,7 +87,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 		Collection<Entity> entities = ofReferencedType(insertedEntities);
 		detailModel().editModel().add(foreignKey, entities);
 		if (!entities.isEmpty()) {
-			detailModel().editModel().put(foreignKey, entities.iterator().next());
+			detailModel().editModel().value(foreignKey).set(entities.iterator().next());
 		}
 		if (detailModel().containsTableModel() &&
 						searchByInsertedEntity.get() && setForeignKeyCondition(entities)) {
@@ -120,7 +120,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 	private void setEditModelForeignKeyValue(Collection<Entity> selectedEntities) {
 		Entity foreignKeyValue = selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
 		if (detailModel().editModel().exists().not().get() && (foreignKeyValue != null || clearForeignKeyOnEmptySelection.get())) {
-			detailModel().editModel().put(foreignKey, foreignKeyValue);
+			detailModel().editModel().value(foreignKey).set(foreignKeyValue);
 		}
 	}
 

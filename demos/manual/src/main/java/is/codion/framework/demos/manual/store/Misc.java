@@ -82,17 +82,17 @@ public final class Misc {
 
 		CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
 
-		editModel.put(Customer.ID, UUID.randomUUID().toString());
-		editModel.put(Customer.FIRST_NAME, "Björn");
-		editModel.put(Customer.LAST_NAME, "Sigurðsson");
-		editModel.put(Customer.ACTIVE, true);
+		editModel.value(Customer.ID).set(UUID.randomUUID().toString());
+		editModel.value(Customer.FIRST_NAME).set("Björn");
+		editModel.value(Customer.LAST_NAME).set("Sigurðsson");
+		editModel.value(Customer.ACTIVE).set(true);
 
 		//inserts and returns the inserted entity
 		Entity customer = editModel.insert();
 
 		//modify some values
-		editModel.put(Customer.FIRST_NAME, "John");
-		editModel.put(Customer.LAST_NAME, "Doe");
+		editModel.value(Customer.FIRST_NAME).set("John");
+		editModel.value(Customer.LAST_NAME).set("Doe");
 
 		//updates and returns the updated entity
 		customer = editModel.update();

@@ -39,11 +39,11 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
  * Specifies a class for editing {@link Entity} instances.
+ * The underlying attribute values are available via {@link #value(Attribute)}.
  */
 public interface EntityEditModel {
 
@@ -138,44 +138,10 @@ public interface EntityEditModel {
 	boolean nullable(Attribute<?> attribute);
 
 	/**
-	 * Sets the given value in the underlying Entity
-	 * @param attribute the attribute to associate the given value with
-	 * @param value the value to associate with the given attribute
-	 * @param <T> the value type
-	 * @return the previous value, if any
-	 */
-	<T> T put(Attribute<T> attribute, T value);
-
-	/**
-	 * Removes the given value from the underlying Entity
+	 * Returns the {@link Value} instance representing {@code attribute} in this edit model.
 	 * @param attribute the attribute
 	 * @param <T> the value type
-	 * @return the value, if any
-	 */
-	<T> T remove(Attribute<T> attribute);
-
-	/**
-	 * Returns the value associated with the given attribute
-	 * @param attribute the attribute
-	 * @param <T> the value type
-	 * @return the value associated with the given attribute
-	 */
-	<T> T get(Attribute<T> attribute);
-
-	/**
-	 * Returns the value associated with the given attribute
-	 * @param attribute the attribute
-	 * @param <T> the value type
-	 * @return the value associated with the given attribute, an empty Optional in case it is null
-	 */
-	<T> Optional<T> optional(Attribute<T> attribute);
-
-	/**
-	 * Returns a Value based on {@code attribute} in this edit model, note that
-	 * subsequent calls for the same attribute return the same value instance.
-	 * @param attribute the attribute
-	 * @param <T> the value type
-	 * @return a Value based on the given edit model value
+	 * @return the {@link Value} representing the given attribute
 	 */
 	<T> Value<T> value(Attribute<T> attribute);
 
@@ -491,8 +457,7 @@ public interface EntityEditModel {
 
 	/**
 	 * Returns an observer notified each time the value associated with the given attribute is edited via
-	 * {@link #put(Attribute, Object)} or {@link #remove(Attribute)}, note that this event is only fired
-	 * if the value actually changes.
+	 * {@link #value(Attribute)}, note that this event is only fired if the value actually changes.
 	 * @param attribute the attribute which edit observer to return
 	 * @param <T> the value type
 	 * @return an observer for the given attribute value edits

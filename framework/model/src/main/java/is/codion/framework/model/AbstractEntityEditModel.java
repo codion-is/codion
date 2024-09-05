@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -233,41 +232,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final <T> T get(Attribute<T> attribute) {
-		return entity.get(attribute);
-	}
-
-	@Override
-	public final <T> Optional<T> optional(Attribute<T> attribute) {
-		return entity.optional(attribute);
-	}
-
-	@Override
-	public final <T> T put(Attribute<T> attribute, T value) {
-		entityDefinition().attributes().definition(attribute);
-		Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
-		T previousValue = entity.put(attribute, value);
-		if (!Objects.equals(value, previousValue)) {
-			events.notifyValueEdit(attribute, value, dependingValues);
-		}
-
-		return previousValue;
-	}
-
-	@Override
-	public final <T> T remove(Attribute<T> attribute) {
-		entityDefinition().attributes().definition(attribute);
-		T value = null;
-		if (entity.contains(attribute)) {
-			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
-			value = entity.remove(attribute);
-			events.notifyValueEdit(attribute, null, dependingValues);
-		}
-
-		return value;
-	}
-
-	@Override
 	public final void revert() {
 		entityDefinition().attributes().get().forEach(this::revert);
 	}
@@ -275,7 +239,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final <T> void revert(Attribute<T> attribute) {
 		if (modified(attribute).get()) {
-			put(attribute, entity.original(attribute));
+			value(attribute).set(entity.original(attribute));
 		}
 	}
 
@@ -537,8 +501,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		if (currentForeignKeyValue != null) {
 			for (Entity replacementValue : values) {
 				if (currentForeignKeyValue.equals(replacementValue)) {
-					put(foreignKey, null);
-					put(foreignKey, replacementValue);
+					value(foreignKey).clear();
+					value(foreignKey).set(replacementValue);
 				}
 			}
 		}
@@ -698,39 +662,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		return defaultValue(attributeDefinition.attribute()).get().get();
-	}
-
-	private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
-		return dependingValues(attribute, new LinkedHashMap<>());
-	}
-
-	private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
-		addDependingDerivedAttributes(attribute, dependingValues);
-		if (attribute instanceof Column) {
-			addDependingForeignKeys((Column<?>) attribute, dependingValues);
-		}
-		else if (attribute instanceof ForeignKey) {
-			addDependingReferencedColumns((ForeignKey) attribute, dependingValues);
-		}
-
-		return dependingValues;
-	}
-
-	private void addDependingDerivedAttributes(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
-		entityDefinition().attributes().derivedFrom(attribute).forEach(derivedAttribute -> {
-			dependingValues.put(derivedAttribute, get(derivedAttribute));
-			addDependingDerivedAttributes(derivedAttribute, dependingValues);
-		});
-	}
-
-	private void addDependingForeignKeys(Column<?> column, Map<Attribute<?>, Object> dependingValues) {
-		entityDefinition().foreignKeys().definitions(column).forEach(foreignKeyDefinition ->
-						dependingValues.put(foreignKeyDefinition.attribute(), get(foreignKeyDefinition.attribute())));
-	}
-
-	private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, Object> dependingValues) {
-		foreignKey.references().forEach(reference ->
-						dependingValues.put(reference.column(), get(reference.column())));
 	}
 
 	private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
@@ -1055,7 +986,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 				editEvent.accept(value);
 			}
 			dependingValues.forEach((dependingAttribute, previousValue) -> {
-				Object currentValue = get(dependingAttribute);
+				Object currentValue = AbstractEntityEditModel.this.entity.get(dependingAttribute);
 				if (!Objects.equals(previousValue, currentValue)) {
 					notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
 				}
@@ -1201,7 +1132,44 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		@Override
 		protected void setValue(T value) {
-			put(attribute, value);
+			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
+			T previousValue = entity.put(attribute, value);
+			if (!Objects.equals(value, previousValue)) {
+				events.notifyValueEdit(attribute, value, dependingValues);
+			}
+		}
+
+		private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
+			return dependingValues(attribute, new LinkedHashMap<>());
+		}
+
+		private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
+			addDependingDerivedAttributes(attribute, dependingValues);
+			if (attribute instanceof Column) {
+				addDependingForeignKeys((Column<?>) attribute, dependingValues);
+			}
+			else if (attribute instanceof ForeignKey) {
+				addDependingReferencedColumns((ForeignKey) attribute, dependingValues);
+			}
+
+			return dependingValues;
+		}
+
+		private void addDependingDerivedAttributes(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
+			entityDefinition().attributes().derivedFrom(attribute).forEach(derivedAttribute -> {
+				dependingValues.put(derivedAttribute, entity.get(derivedAttribute));
+				addDependingDerivedAttributes(derivedAttribute, dependingValues);
+			});
+		}
+
+		private void addDependingForeignKeys(Column<?> column, Map<Attribute<?>, Object> dependingValues) {
+			entityDefinition().foreignKeys().definitions(column).forEach(foreignKeyDefinition ->
+							dependingValues.put(foreignKeyDefinition.attribute(), entity.get(foreignKeyDefinition.attribute())));
+		}
+
+		private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, Object> dependingValues) {
+			foreignKey.references().forEach(reference ->
+							dependingValues.put(reference.column(), entity.get(reference.column())));
 		}
 
 		private void valueChanged() {
