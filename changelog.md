@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.13
+### is.codion.swing.framework.ui
+- EntityPanel.Config.entityPanel(), EntityTablePanel.Config.entityTablePanel() type parameter added.
 
 ## 0.18.12
 ### is.codion.swing.common.ui

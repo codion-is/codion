@@ -2190,10 +2190,11 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
+		 * @param <T> the table panel type
 		 * @return the table panel
 		 */
-		public EntityTablePanel tablePanel() {
-			return tablePanel;
+		public <T extends EntityTablePanel> T tablePanel() {
+			return (T) tablePanel;
 		}
 
 		/**
