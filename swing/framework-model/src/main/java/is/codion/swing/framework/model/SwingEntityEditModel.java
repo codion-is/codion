@@ -20,6 +20,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
+import is.codion.common.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -48,6 +49,8 @@ import static java.util.Objects.requireNonNull;
  * A Swing implementation of {@link EntityEditModel}.
  */
 public class SwingEntityEditModel extends AbstractEntityEditModel {
+
+	private static final NullItemCaption NULL_ITEM_CAPTION = new NullItemCaption();
 
 	private final Map<Attribute<?>, FilterComboBoxModel<?>> comboBoxModels = new HashMap<>();
 
@@ -200,7 +203,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 			comboBoxModel.includeNull().set(true);
 			if (column.type().valueClass().isInterface()) {
 				comboBoxModel.nullItem().set(ProxyBuilder.builder(column.type().valueClass())
-								.method("toString", parameters -> FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get())
+								.method("toString", (ProxyMethod<T>) NULL_ITEM_CAPTION)
 								.build());
 			}
 		}
@@ -297,6 +300,16 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 			catch (DatabaseException e) {
 				throw new RuntimeException(e);
 			}
+		}
+	}
+
+	private static final class NullItemCaption implements ProxyMethod<Object> {
+
+		private final String caption = FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get();
+
+		@Override
+		public Object invoke(Parameters<Object> parameters) throws Throwable {
+			return caption;
 		}
 	}
 }
