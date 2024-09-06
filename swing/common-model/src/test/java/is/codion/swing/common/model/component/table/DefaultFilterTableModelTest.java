@@ -183,9 +183,9 @@ public final class DefaultFilterTableModelTest {
 		Runnable successfulConsumer = done::incrementAndGet;
 		Consumer<Throwable> failedConsumer = exception -> {};
 		Runnable clearedListener = cleared::incrementAndGet;
-		tableModel.refresher().refreshEvent().addListener(successfulConsumer);
-		tableModel.refresher().refreshFailedEvent().addConsumer(failedConsumer);
-		tableModel.clearedEvent().addListener(clearedListener);
+		tableModel.refresher().success().addListener(successfulConsumer);
+		tableModel.refresher().failure().addConsumer(failedConsumer);
+		tableModel.cleared().addListener(clearedListener);
 		tableModel.refresh();
 		assertTrue(tableModel.visibleCount() > 0);
 		assertEquals(1, done.get());
@@ -198,9 +198,9 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(1, done.get());
 		assertEquals(0, cleared.get());
 
-		tableModel.refresher().refreshEvent().removeListener(successfulConsumer);
-		tableModel.refresher().refreshFailedEvent().removeConsumer(failedConsumer);
-		tableModel.clearedEvent().removeListener(clearedListener);
+		tableModel.refresher().success().removeListener(successfulConsumer);
+		tableModel.refresher().failure().removeConsumer(failedConsumer);
+		tableModel.cleared().removeListener(clearedListener);
 	}
 
 	@Test
@@ -211,7 +211,7 @@ public final class DefaultFilterTableModelTest {
 						FilterTableModel.<TestRow, Integer>builder(new TestColumns())
 										.items(() -> items)
 										.build();
-		testModel.selectionModel().selectionEvent().addListener(selectionEvents::incrementAndGet);
+		testModel.selectionModel().selectionChanged().addListener(selectionEvents::incrementAndGet);
 		testModel.refreshStrategy().set(RefreshStrategy.MERGE);
 		testModel.refresh();
 		testModel.comparator().set(Comparator.comparing(o -> o.value));
@@ -252,7 +252,7 @@ public final class DefaultFilterTableModelTest {
 	void removeItems() {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
-		tableModel.dataChangedEvent().addListener(listener);
+		tableModel.dataChanged().addListener(listener);
 		tableModel.refresh();
 		assertEquals(1, events.get());
 		tableModel.filterModel().conditionModel(0).operands().equal().set("a");
@@ -276,16 +276,16 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(8, events.get());//just a single event when removing multiple items
 		tableModel.removeItemAt(0);
 		assertEquals(9, events.get());
-		tableModel.dataChangedEvent().removeListener(listener);
+		tableModel.dataChanged().removeListener(listener);
 	}
 
 	@Test
 	void setItemAt() {
 		AtomicInteger dataChangedEvents = new AtomicInteger();
 		Runnable listener = dataChangedEvents::incrementAndGet;
-		tableModel.dataChangedEvent().addListener(listener);
+		tableModel.dataChanged().addListener(listener);
 		State selectionChangedState = State.state();
-		tableModel.selectionModel().selectedItemEvent().addConsumer((item) -> selectionChangedState.set(true));
+		tableModel.selectionModel().selectedItemChanged().addConsumer((item) -> selectionChangedState.set(true));
 		tableModel.refresh();
 		assertEquals(1, dataChangedEvents.get());
 		tableModel.selectionModel().setSelectedItem(B);
@@ -302,14 +302,14 @@ public final class DefaultFilterTableModelTest {
 		tableModel.setItemAt(tableModel.indexOf(B), newB);
 		assertFalse(selectionChangedState.get());
 		assertEquals(newB, tableModel.selectionModel().getSelectedItem());
-		tableModel.dataChangedEvent().removeListener(listener);
+		tableModel.dataChanged().removeListener(listener);
 	}
 
 	@Test
 	void removeItemsRange() {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
-		tableModel.dataChangedEvent().addListener(listener);
+		tableModel.dataChanged().addListener(listener);
 		tableModel.refresh();
 		assertEquals(1, events.get());
 		List<TestRow> removed = tableModel.removeItems(1, 3);
@@ -327,7 +327,7 @@ public final class DefaultFilterTableModelTest {
 		tableModel.refresh();
 		assertEquals(5, events.get());
 
-		tableModel.dataChangedEvent().removeListener(listener);
+		tableModel.dataChanged().removeListener(listener);
 	}
 
 	@Test
@@ -396,10 +396,10 @@ public final class DefaultFilterTableModelTest {
 		Runnable listener = events::incrementAndGet;
 		Consumer consumer = data -> listener.run();
 		FilterTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
-		selectionModel.selectedIndexEvent().addConsumer(consumer);
-		selectionModel.selectionEvent().addListener(listener);
-		selectionModel.selectedItemEvent().addConsumer(consumer);
-		selectionModel.selectedItemsEvent().addConsumer(consumer);
+		selectionModel.selectedIndexChanged().addConsumer(consumer);
+		selectionModel.selectionChanged().addListener(listener);
+		selectionModel.selectedItemChanged().addConsumer(consumer);
+		selectionModel.selectedItemsChanged().addConsumer(consumer);
 
 		assertFalse(selectionModel.singleSelection().get());
 		assertTrue(selectionModel.selectionEmpty().get());
@@ -526,10 +526,10 @@ public final class DefaultFilterTableModelTest {
 		assertNull(selectionModel.getSelectedItem());
 
 		selectionModel.clearSelection();
-		selectionModel.selectedIndexEvent().removeConsumer(consumer);
-		selectionModel.selectionEvent().removeListener(listener);
-		selectionModel.selectedItemEvent().removeConsumer(consumer);
-		selectionModel.selectedItemsEvent().removeConsumer(consumer);
+		selectionModel.selectedIndexChanged().removeConsumer(consumer);
+		selectionModel.selectionChanged().removeListener(listener);
+		selectionModel.selectedItemChanged().removeConsumer(consumer);
+		selectionModel.selectedItemsChanged().removeConsumer(consumer);
 	}
 
 	@Test

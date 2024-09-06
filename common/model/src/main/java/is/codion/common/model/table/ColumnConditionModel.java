@@ -174,7 +174,7 @@ public interface ColumnConditionModel<C, T> {
 	/**
 	 * @return an observer notified each time the condition state changes
 	 */
-	EventObserver<?> conditionChangedEvent();
+	EventObserver<?> conditionChanged();
 
 	/**
 	 * Returns a new {@link Builder} instance.

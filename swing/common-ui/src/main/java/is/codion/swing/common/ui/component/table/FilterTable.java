@@ -835,12 +835,12 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void bindEvents(boolean columnReorderingAllowed,
 													boolean columnResizingAllowed) {
-		columnModel().columnHiddenEvent().addConsumer(this::onColumnHidden);
-		tableModel.selectionModel().selectedIndexesEvent().addConsumer(new ScrollToSelected());
-		tableModel.filterModel().conditionChangedEvent().addListener(getTableHeader()::repaint);
+		columnModel().columnHidden().addConsumer(this::onColumnHidden);
+		tableModel.selectionModel().selectedIndexesChanged().addConsumer(new ScrollToSelected());
+		tableModel.filterModel().conditionChanged().addListener(getTableHeader()::repaint);
 		searchModel.currentResult().addListener(this::repaint);
-		sortModel.sortingChangedEvent().addListener(getTableHeader()::repaint);
-		sortModel.sortingChangedEvent().addListener(() ->
+		sortModel.sortingChanged().addListener(getTableHeader()::repaint);
+		sortModel.sortingChanged().addListener(() ->
 						tableModel.comparator().set(sortModel.sorted() ? sortModel.comparator() : null));
 		addMouseListener(new FilterTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener(columnReorderingAllowed, columnResizingAllowed));
@@ -1314,8 +1314,8 @@ public final class FilterTable<R, C> extends JTable {
 			this.identifier = requireNonNull(identifier);
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);
-			this.tableModel.dataChangedEvent().addListener(changeEvent);
-			this.tableModel.selectionModel().selectionEvent().addListener(changeEvent);
+			this.tableModel.dataChanged().addListener(changeEvent);
+			this.tableModel.selectionModel().selectionChanged().addListener(changeEvent);
 		}
 
 		@Override
@@ -1324,7 +1324,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public EventObserver<?> changeEvent() {
+		public EventObserver<?> valuesChanged() {
 			return changeEvent.observer();
 		}
 

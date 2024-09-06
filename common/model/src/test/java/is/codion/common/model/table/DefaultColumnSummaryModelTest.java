@@ -50,7 +50,7 @@ public class DefaultColumnSummaryModelTest {
 		}
 
 		@Override
-		public EventObserver<?> changeEvent() {
+		public EventObserver<?> valuesChanged() {
 			return Event.event().observer();
 		}
 	});
@@ -70,7 +70,7 @@ public class DefaultColumnSummaryModelTest {
 		}
 
 		@Override
-		public EventObserver<?> changeEvent() {
+		public EventObserver<?> valuesChanged() {
 			return Event.event().observer();
 		}
 	});

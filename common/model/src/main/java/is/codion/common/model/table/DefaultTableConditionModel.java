@@ -31,12 +31,12 @@ import static java.util.function.Function.identity;
 final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	private final Map<C, ColumnConditionModel<C, ?>> conditionModels;
-	private final Event<?> changeEvent = Event.event();
+	private final Event<?> conditionChanged = Event.event();
 
 	DefaultTableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
 		this.conditionModels = initializeColumnConditionModels(conditionModels);
 		this.conditionModels.values().forEach(conditionModel ->
-						conditionModel.conditionChangedEvent().addListener(changeEvent));
+						conditionModel.conditionChanged().addListener(conditionChanged));
 	}
 
 	@Override
@@ -71,8 +71,8 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public EventObserver<?> conditionChangedEvent() {
-		return changeEvent.observer();
+	public EventObserver<?> conditionChanged() {
+		return conditionChanged.observer();
 	}
 
 	private Map<C, ColumnConditionModel<C, ?>> initializeColumnConditionModels(

@@ -361,12 +361,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public EventObserver<?> dataChangedEvent() {
+	public EventObserver<?> dataChanged() {
 		return dataChangedEvent.observer();
 	}
 
 	@Override
-	public EventObserver<?> clearedEvent() {
+	public EventObserver<?> cleared() {
 		return clearedEvent.observer();
 	}
 
@@ -397,7 +397,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 		});
 		addTableModelListener(removeSelectionListener);
-		filterModel.conditionChangedEvent().addListener(this::filterItems);
+		filterModel.conditionChanged().addListener(this::filterItems);
 		comparator.addListener(this::sortItems);
 	}
 

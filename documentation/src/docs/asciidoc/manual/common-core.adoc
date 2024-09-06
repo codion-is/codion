@@ -38,7 +38,7 @@ EventObserver *-- Event
 -------------------------------------------
 
 The {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class is a synchronous event implementation used throughout the framework.
-Classes typically expose their events via public *event* accessors.
+Classes typically expose observers for their events via public accessors.
 Events are triggered by calling the *run* method in case no data is associated with the event or *accept* in case data should be propogated to listeners.
 
 The associated {url-javadoc}{common-core}/is/codion/common/event/EventObserver.html[EventObserver] instance can not trigger the event and can be safely passed around.

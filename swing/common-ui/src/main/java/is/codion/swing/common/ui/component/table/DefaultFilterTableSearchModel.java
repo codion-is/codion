@@ -194,7 +194,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 	private void bindEvents() {
 		columnModel.addColumnModelListener(new ClearSearchListener());
-		tableModel.dataChangedEvent().addListener(() -> {
+		tableModel.dataChanged().addListener(() -> {
 			clearSearchResults();
 			performSearch();
 		});

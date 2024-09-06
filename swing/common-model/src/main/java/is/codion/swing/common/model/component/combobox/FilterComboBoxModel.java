@@ -187,7 +187,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	/**
 	 * @return an observer notified each time the selection changes
 	 */
-	EventObserver<T> selectionEvent();
+	EventObserver<T> selectionChanged();
 
 	/**
 	 * @param <T> the item type

@@ -704,7 +704,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Column<T> column) {
 		FilterComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(column);
-		comboBoxModel.refresher().refreshFailedEvent().addConsumer(this::onException);
+		comboBoxModel.refresher().failure().addConsumer(this::onException);
 
 		return (ComboBoxBuilder<T, C, B>) setComponentBuilder(column, entityComponents.comboBox(column, comboBoxModel)
 						.preferredWidth(defaults.comboBoxPreferredWidth.get())
@@ -719,7 +719,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final EntityComboBox.Builder createForeignKeyComboBox(ForeignKey foreignKey) {
 		EntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
-		comboBoxModel.refresher().refreshFailedEvent().addConsumer(this::onException);
+		comboBoxModel.refresher().failure().addConsumer(this::onException);
 
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
 						.preferredWidth(defaults.foreignKeyComboBoxPreferredWidth.get())
@@ -736,7 +736,7 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final EntityComboBoxPanel.Builder createForeignKeyComboBoxPanel(ForeignKey foreignKey,
 																																						Supplier<EntityEditPanel> editPanel) {
 		EntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
-		comboBoxModel.refresher().refreshFailedEvent().addConsumer(this::onException);
+		comboBoxModel.refresher().failure().addConsumer(this::onException);
 
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanel))
 						.comboBoxPreferredWidth(defaults.foreignKeyComboBoxPreferredWidth.get())

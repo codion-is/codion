@@ -174,7 +174,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	@Override
-	public EventObserver<?> conditionChangedEvent() {
+	public EventObserver<?> conditionChanged() {
 		return conditionChangedEvent.observer();
 	}
 

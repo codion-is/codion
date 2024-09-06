@@ -62,44 +62,44 @@ public interface TableSelectionModel<R> {
 	 * To prevent a selection change, add a listener throwing a {@link is.codion.common.model.CancelException}.
 	 * @return an observer notified when the selection is about to change
 	 */
-	EventObserver<?> selectionChangingEvent();
+	EventObserver<?> selectionChanging();
 
 	/**
 	 * @return an observer notified each time the selection changes
 	 */
-	EventObserver<?> selectionEvent();
+	EventObserver<?> selectionChanged();
 
 	/**
 	 * @return an observer notified each time the selected index changes
 	 */
-	EventObserver<Integer> selectedIndexEvent();
+	EventObserver<Integer> selectedIndexChanged();
 
 	/**
 	 * @return an observer notified each time the selected indexes change
 	 */
-	EventObserver<List<Integer>> selectedIndexesEvent();
+	EventObserver<List<Integer>> selectedIndexesChanged();
 
 	/**
 	 * @return an observer notified each time the selected item changes
 	 */
-	EventObserver<R> selectedItemEvent();
+	EventObserver<R> selectedItemChanged();
 
 	/**
 	 * @return an observer notified each time the selected items change
 	 */
-	EventObserver<List<R>> selectedItemsEvent();
+	EventObserver<List<R>> selectedItemsChanged();
 
 	/**
 	 * Moves all selected indexes down one index, wraps around.
 	 * If the selection is empty the first item in this model is selected.
-	 * @see #selectionEvent()
+	 * @see #selectionChanged()
 	 */
 	void moveSelectionDown();
 
 	/**
 	 * Moves all selected indexes up one index, wraps around.
 	 * If the selection is empty the last item in this model is selected.
-	 * @see #selectionEvent()
+	 * @see #selectionChanged()
 	 */
 	void moveSelectionUp();
 
@@ -146,7 +146,7 @@ public interface TableSelectionModel<R> {
 
 	/**
 	 * Selects all visible rows
-	 * @see #selectionEvent()
+	 * @see #selectionChanged()
 	 */
 	void selectAll();
 

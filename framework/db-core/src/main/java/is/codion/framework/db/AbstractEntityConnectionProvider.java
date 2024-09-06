@@ -116,7 +116,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	}
 
 	@Override
-	public final EventObserver<EntityConnection> connectedEvent() {
+	public final EventObserver<EntityConnection> connected() {
 		return connectedEvent.observer();
 	}
 

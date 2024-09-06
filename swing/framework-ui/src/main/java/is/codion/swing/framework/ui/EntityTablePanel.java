@@ -1489,22 +1489,22 @@ public class EntityTablePanel extends JPanel {
 
 	private void bindTableEvents() {
 		Runnable setSelectAttributes = () -> tableModel.attributes().set(selectAttributes());
-		table.columnModel().columnShownEvent().addListener(setSelectAttributes);
-		table.columnModel().columnHiddenEvent().addListener(setSelectAttributes);
-		table.columnModel().columnHiddenEvent().addConsumer(this::onColumnHidden);
+		table.columnModel().columnShown().addListener(setSelectAttributes);
+		table.columnModel().columnHidden().addListener(setSelectAttributes);
+		table.columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		queryHiddenColumns.addListener(setSelectAttributes);
 		orderQueryBySortOrder.addConsumer(enabled ->
 						tableModel.orderBy().set(enabled ? orderByFromSortModel() : null));
-		table.sortModel().sortingChangedEvent().addListener(() ->
+		table.sortModel().sortingChanged().addListener(() ->
 						tableModel.orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel() : null));
 	}
 
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
-		tableModel.conditionModel().conditionChangedEvent().addListener(this::onConditionChanged);
+		tableModel.conditionModel().conditionChanged().addListener(this::onConditionChanged);
 		tableModel.refresher().observer().addConsumer(this::onRefreshingChanged);
-		tableModel.refresher().refreshFailedEvent().addConsumer(this::onException);
-		tableModel.editModel().insertUpdateOrDeleteEvent().addListener(table::repaint);
+		tableModel.refresher().failure().addConsumer(this::onException);
+		tableModel.editModel().insertUpdateOrDelete().addListener(table::repaint);
 		if (configuration.includeFilterPanel) {
 			table.filterPanel().conditionPanels().forEach(conditionPanel ->
 							conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
@@ -2735,7 +2735,7 @@ public class EntityTablePanel extends JPanel {
 			add(label, BorderLayout.CENTER);
 			tableModel.refresher().observer().addConsumer(new ConfigurePanel());
 			tableModel.selectionModel().addListSelectionListener(e -> updateStatusMessage());
-			tableModel.dataChangedEvent().addListener(this::updateStatusMessage);
+			tableModel.dataChanged().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {
 				setComponentPopupMenu(createLimitMenu());
 			}

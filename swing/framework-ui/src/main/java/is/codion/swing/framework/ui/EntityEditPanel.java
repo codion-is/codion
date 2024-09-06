@@ -608,7 +608,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void bindEvents() {
-		editModel().beforeEntityEvent().addConsumer(this::beforeEntity);
+		editModel().entityChanging().addConsumer(this::beforeEntity);
 	}
 
 	private void beforeEntity(Entity entity) {

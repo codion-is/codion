@@ -193,8 +193,8 @@ public final class DomainGeneratorModel {
 	}
 
 	private void bindEvents() {
-		schemaTableModel.selectionModel().selectionEvent().addListener(this::schemaSelectionChanged);
-		entityModel().selectionModel().selectedItemEvent().addConsumer(this::search);
+		schemaTableModel.selectionModel().selectionChanged().addListener(this::schemaSelectionChanged);
+		entityModel().selectionModel().selectedItemChanged().addConsumer(this::search);
 	}
 
 	private SchemaDomain schemaDomain(SchemaRow schema) {

@@ -395,7 +395,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final EventObserver<T> selectionEvent() {
+	public final EventObserver<T> selectionChanged() {
 		return selectionEvent.observer();
 	}
 

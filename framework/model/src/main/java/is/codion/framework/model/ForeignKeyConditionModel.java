@@ -154,8 +154,8 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	}
 
 	@Override
-	public EventObserver<?> conditionChangedEvent() {
-		return conditionModel.conditionChangedEvent();
+	public EventObserver<?> conditionChanged() {
+		return conditionModel.conditionChanged();
 	}
 
 	/**

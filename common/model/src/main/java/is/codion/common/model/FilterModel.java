@@ -122,11 +122,11 @@ public interface FilterModel<T> {
 	/**
 	 * Refreshes the data in this filter model using its {@link Refresher}.
 	 * Note that this method only throws exceptions when run synchronously off the user interface thread.
-	 * Use {@link Refresher#refreshFailedEvent()} to listen for exceptions that happen during asynchronous refresh.
+	 * Use {@link Refresher#failure()} to listen for exceptions that happen during asynchronous refresh.
 	 * @param afterRefresh called after a successful refresh, may be null
 	 * @see Refresher#observer()
-	 * @see Refresher#refreshEvent()
-	 * @see Refresher#refreshFailedEvent()
+	 * @see Refresher#success()
+	 * @see Refresher#failure()
 	 * @see Refresher#async()
 	 */
 	void refreshThen(Consumer<Collection<T>> afterRefresh);
@@ -156,19 +156,19 @@ public interface FilterModel<T> {
 		 * Refreshes the items in the associated filter model.
 		 * Note that this method only throws exceptions when run synchronously.
 		 * @throws RuntimeException in case of an exception when running synchronously.
-		 * @see #refreshFailedEvent()
+		 * @see #failure()
 		 * @see #async()
 		 */
 		void refresh();
 
 		/**
 		 * Refreshes the data in this model. Note that this method only throws exceptions when run synchronously.
-		 * Use {@link #refreshFailedEvent()} to listen for exceptions that happen during asynchronous refresh.
+		 * Use {@link #failure()} to listen for exceptions that happen during asynchronous refresh.
 		 * @param afterRefresh called after a successful refresh, may be null
 		 * @throws RuntimeException in case of an exception when running synchronously.
 		 * @see #observer()
-		 * @see #refreshEvent()
-		 * @see #refreshFailedEvent()
+		 * @see #success()
+		 * @see #failure()
 		 * @see #async()
 		 */
 		void refreshThen(Consumer<Collection<T>> afterRefresh);
@@ -179,16 +179,16 @@ public interface FilterModel<T> {
 		StateObserver observer();
 
 		/**
-		 * @return an observer notified each time this model has been successfully refreshed
+		 * @return an observer notified each time a successful refresh has been performed
 		 * @see #refresh()
 		 */
-		EventObserver<?> refreshEvent();
+		EventObserver<?> success();
 
 		/**
 		 * @return an observer notified each time an asynchronous refresh has failed
 		 * @see #refresh()
 		 */
-		EventObserver<Exception> refreshFailedEvent();
+		EventObserver<Exception> failure();
 	}
 
 	/**
@@ -243,12 +243,12 @@ public interface FilterModel<T> {
 		}
 
 		@Override
-		public final EventObserver<?> refreshEvent() {
+		public final EventObserver<?> success() {
 			return refreshEvent.observer();
 		}
 
 		@Override
-		public final EventObserver<Exception> refreshFailedEvent() {
+		public final EventObserver<Exception> failure() {
 			return refreshFailedEvent.observer();
 		}
 
@@ -262,7 +262,7 @@ public interface FilterModel<T> {
 
 		/**
 		 * Triggers the successful refresh event
-		 * @see #refreshEvent()
+		 * @see #success()
 		 */
 		protected final void notifySuccess() {
 			refreshEvent.run();
@@ -271,7 +271,7 @@ public interface FilterModel<T> {
 		/**
 		 * Triggers the refresh failed event
 		 * @param exception the refresh exception
-		 * @see #refreshFailedEvent()
+		 * @see #failure()
 		 */
 		protected final void notifyFailure(Exception exception) {
 			refreshFailedEvent.accept(exception);

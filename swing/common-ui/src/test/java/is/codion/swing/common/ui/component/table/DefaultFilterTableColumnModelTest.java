@@ -37,8 +37,8 @@ public class DefaultFilterTableColumnModelTest {
 		Collection<Object> shown = new ArrayList<>();
 		Consumer<Integer> hideConsumer = hidden::add;
 		Consumer<Integer> showConsumer = shown::add;
-		testModel.columnHiddenEvent().addConsumer(hideConsumer);
-		testModel.columnShownEvent().addConsumer(showConsumer);
+		testModel.columnHidden().addConsumer(hideConsumer);
+		testModel.columnShown().addConsumer(showConsumer);
 
 		assertEquals(1, testModel.getColumnCount());
 		assertNotNull(testModel.column(0));
@@ -49,8 +49,8 @@ public class DefaultFilterTableColumnModelTest {
 		testModel.visible(0).set(true);
 		assertEquals(1, shown.size());
 
-		testModel.columnHiddenEvent().removeConsumer(hideConsumer);
-		testModel.columnShownEvent().removeConsumer(showConsumer);
+		testModel.columnHidden().removeConsumer(hideConsumer);
+		testModel.columnShown().removeConsumer(showConsumer);
 
 		assertTrue(testModel.containsColumn(0));
 		assertFalse(testModel.containsColumn(1));

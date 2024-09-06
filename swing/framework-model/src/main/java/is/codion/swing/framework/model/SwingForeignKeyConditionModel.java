@@ -156,8 +156,8 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 	}
 
 	@Override
-	public EventObserver<?> conditionChangedEvent() {
-		return conditionModel.conditionChangedEvent();
+	public EventObserver<?> conditionChanged() {
+		return conditionModel.conditionChanged();
 	}
 
 	/**
@@ -204,9 +204,9 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 
 	private void bindEvents() {
 		if (equalComboBoxModel != null) {
-			equalComboBoxModel.selectionEvent().addConsumer(new SetEqualValue());
+			equalComboBoxModel.selectionChanged().addConsumer(new SetEqualValue());
 			operands().equal().addConsumer(new SelectEqualValue());
-			equalComboBoxModel.refresher().refreshEvent().addListener(() -> equalComboBoxModel.setSelectedItem(operands().equal().get()));
+			equalComboBoxModel.refresher().success().addListener(() -> equalComboBoxModel.setSelectedItem(operands().equal().get()));
 		}
 		if (inSearchModel != null) {
 			inSearchModel.entities().addConsumer(new SetInValues());

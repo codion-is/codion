@@ -341,7 +341,7 @@ public class FilterTableTest {
 		FilterTableModel<TestRow, Integer> tableModel = table.model();
 		AtomicInteger actionsPerformed = new AtomicInteger();
 		Consumer<Integer> consumer = identifier -> actionsPerformed.incrementAndGet();
-		table.sortModel().sortingChangedEvent().addConsumer(consumer);
+		table.sortModel().sortingChanged().addConsumer(consumer);
 
 		tableModel.refresh();
 		FilterTableSortModel<TestRow, Integer> sortModel = table.sortModel();
@@ -377,7 +377,7 @@ public class FilterTableTest {
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
 		assertEquals(tableModel.visibleCount() - 2, tableModel.indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.UNSORTED);
-		table.sortModel().sortingChangedEvent().removeConsumer(consumer);
+		table.sortModel().sortingChanged().removeConsumer(consumer);
 	}
 
 	@Test

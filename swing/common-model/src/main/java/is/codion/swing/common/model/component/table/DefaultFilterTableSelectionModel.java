@@ -308,32 +308,32 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public EventObserver<?> selectionChangingEvent() {
+	public EventObserver<?> selectionChanging() {
 		return selectionChangingEvent.observer();
 	}
 
 	@Override
-	public EventObserver<Integer> selectedIndexEvent() {
+	public EventObserver<Integer> selectedIndexChanged() {
 		return selectedIndexEvent.observer();
 	}
 
 	@Override
-	public EventObserver<List<Integer>> selectedIndexesEvent() {
+	public EventObserver<List<Integer>> selectedIndexesChanged() {
 		return selectedIndexesEvent.observer();
 	}
 
 	@Override
-	public EventObserver<?> selectionEvent() {
+	public EventObserver<?> selectionChanged() {
 		return selectionEvent.observer();
 	}
 
 	@Override
-	public EventObserver<R> selectedItemEvent() {
+	public EventObserver<R> selectedItemChanged() {
 		return selectedItemEvent.observer();
 	}
 
 	@Override
-	public EventObserver<List<R>> selectedItemsEvent() {
+	public EventObserver<List<R>> selectedItemsChanged() {
 		return selectedItemsEvent.observer();
 	}
 

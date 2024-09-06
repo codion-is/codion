@@ -287,5 +287,5 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	/**
 	 * @return an observer notified when the selection changes in the underlying selection model
 	 */
-	EventObserver<?> selectionEvent();
+	EventObserver<?> selectionChanged();
 }

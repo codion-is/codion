@@ -109,10 +109,10 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	/**
 	 * @return an observer notified each time a column is hidden
 	 */
-	EventObserver<C> columnHiddenEvent();
+	EventObserver<C> columnHidden();
 
 	/**
 	 * @return an observer notified each time a column is shown
 	 */
-	EventObserver<C> columnShownEvent();
+	EventObserver<C> columnShown();
 }

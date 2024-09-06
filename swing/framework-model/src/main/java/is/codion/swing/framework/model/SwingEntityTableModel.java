@@ -364,8 +364,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final EventObserver<?> selectionEvent() {
-		return selectionModel().selectionEvent();
+	public final EventObserver<?> selectionChanged() {
+		return selectionModel().selectionChanged();
 	}
 
 	@Override
@@ -589,13 +589,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final EventObserver<?> dataChangedEvent() {
-		return tableModel.dataChangedEvent();
+	public final EventObserver<?> dataChanged() {
+		return tableModel.dataChanged();
 	}
 
 	@Override
-	public final EventObserver<?> clearedEvent() {
-		return tableModel.clearedEvent();
+	public final EventObserver<?> cleared() {
+		return tableModel.cleared();
 	}
 
 	@Override
@@ -698,12 +698,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	private void bindEvents() {
-		conditionModel.conditionChangedEvent().addListener(() -> onConditionChanged(createSelect(conditionModel)));
-		editModel.afterInsertEvent().addConsumer(this::onInsert);
-		editModel.afterUpdateEvent().addConsumer(this::onUpdate);
-		editModel.afterDeleteEvent().addConsumer(this::onDelete);
-		editModel.entityEvent().addConsumer(this::onEntitySet);
-		selectionModel().selectedItemEvent().addConsumer(editModel::set);
+		conditionModel.conditionChanged().addListener(() -> onConditionChanged(createSelect(conditionModel)));
+		editModel.afterInsert().addConsumer(this::onInsert);
+		editModel.afterUpdate().addConsumer(this::onUpdate);
+		editModel.afterDelete().addConsumer(this::onDelete);
+		editModel.entityChanged().addConsumer(this::onEntityChanged);
+		selectionModel().selectedItemChanged().addConsumer(editModel::set);
 		addTableModelListener(this::onTableModelEvent);
 	}
 
@@ -762,7 +762,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 	}
 
-	private void onEntitySet(Entity entity) {
+	private void onEntityChanged(Entity entity) {
 		if (entity == null && !selectionModel().isSelectionEmpty()) {
 			selectionModel().clearSelection();
 		}

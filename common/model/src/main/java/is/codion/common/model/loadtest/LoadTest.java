@@ -99,7 +99,7 @@ public interface LoadTest<T> {
 	/**
 	 * @return an observer notified each time a run result is produced
 	 */
-	EventObserver<Result> resultEvent();
+	EventObserver<Result> result();
 
 	/**
 	 * @param listener a listener notified when this load test model has been shutdown.

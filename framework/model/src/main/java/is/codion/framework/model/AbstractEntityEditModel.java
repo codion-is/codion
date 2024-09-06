@@ -187,7 +187,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final void set(Entity entity) {
-		events.beforeEntity.accept(entity);
+		events.entityChanging.accept(entity);
 		setEntity(entity);
 	}
 
@@ -403,57 +403,57 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final <T> EventObserver<T> editEvent(Attribute<T> attribute) {
-		return events.editEvent(attribute);
+	public final <T> EventObserver<T> valueEdited(Attribute<T> attribute) {
+		return events.valueEdited(attribute);
 	}
 
 	@Override
-	public final EventObserver<Attribute<?>> valueEvent() {
+	public final EventObserver<Attribute<?>> valueChanged() {
 		return events.valueChange.observer();
 	}
 
 	@Override
-	public final EventObserver<Entity> entityEvent() {
-		return events.entity.observer();
+	public final EventObserver<Entity> entityChanged() {
+		return events.entityChanged.observer();
 	}
 
 	@Override
-	public final EventObserver<Entity> beforeEntityEvent() {
-		return events.beforeEntity.observer();
+	public final EventObserver<Entity> entityChanging() {
+		return events.entityChanging.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> beforeInsertEvent() {
+	public final EventObserver<Collection<Entity>> beforeInsert() {
 		return events.beforeInsert.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> afterInsertEvent() {
+	public final EventObserver<Collection<Entity>> afterInsert() {
 		return events.afterInsert.observer();
 	}
 
 	@Override
-	public final EventObserver<Map<Entity.Key, Entity>> beforeUpdateEvent() {
+	public final EventObserver<Map<Entity.Key, Entity>> beforeUpdate() {
 		return events.beforeUpdate.observer();
 	}
 
 	@Override
-	public final EventObserver<Map<Entity.Key, Entity>> afterUpdateEvent() {
+	public final EventObserver<Map<Entity.Key, Entity>> afterUpdate() {
 		return events.afterUpdate.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> beforeDeleteEvent() {
+	public final EventObserver<Collection<Entity>> beforeDelete() {
 		return events.beforeDelete.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> afterDeleteEvent() {
+	public final EventObserver<Collection<Entity>> afterDelete() {
 		return events.afterDelete.observer();
 	}
 
 	@Override
-	public final EventObserver<?> insertUpdateOrDeleteEvent() {
+	public final EventObserver<?> insertUpdateOrDelete() {
 		return events.insertUpdateOrDelete.observer();
 	}
 
@@ -550,7 +550,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that insert is about to be performed
 	 * @param entitiesToInsert the entities about to be inserted
-	 * @see #beforeInsertEvent()
+	 * @see #beforeInsert()
 	 */
 	protected final void notifyBeforeInsert(Collection<Entity> entitiesToInsert) {
 		events.beforeInsert.accept(requireNonNull(entitiesToInsert));
@@ -559,7 +559,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that insert has been performed
 	 * @param insertedEntities the inserted entities
-	 * @see #afterInsertEvent()
+	 * @see #afterInsert()
 	 */
 	protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
 		events.afterInsert.accept(requireNonNull(insertedEntities));
@@ -568,7 +568,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that update is about to be performed
 	 * @param entitiesToUpdate the entities about to be updated
-	 * @see #beforeUpdateEvent()
+	 * @see #beforeUpdate()
 	 */
 	protected final void notifyBeforeUpdate(Map<Entity.Key, Entity> entitiesToUpdate) {
 		events.beforeUpdate.accept(requireNonNull(entitiesToUpdate));
@@ -577,7 +577,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that update has been performed
 	 * @param updatedEntities the updated entities
-	 * @see #afterUpdateEvent()
+	 * @see #afterUpdate()
 	 */
 	protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
 		events.afterUpdate.accept(requireNonNull(updatedEntities));
@@ -586,7 +586,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that delete is about to be performed
 	 * @param entitiesToDelete the entities about to be deleted
-	 * @see #beforeDeleteEvent()
+	 * @see #beforeDelete()
 	 */
 	protected final void notifyBeforeDelete(Collection<Entity> entitiesToDelete) {
 		events.beforeDelete.accept(requireNonNull(entitiesToDelete));
@@ -595,7 +595,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that delete has been performed
 	 * @param deletedEntities the deleted entities
-	 * @see #afterDeleteEvent()
+	 * @see #afterDelete()
 	 */
 	protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
 		events.afterDelete.accept(requireNonNull(deletedEntities));
@@ -611,7 +611,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 		states.updateAttributeModifiedStates();
 
-		events.entity.accept(entity);
+		events.entityChanged.accept(entity);
 	}
 
 	private void configurePersistentForeignKeys() {
@@ -957,8 +957,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Collection<Entity>> beforeDelete = Event.event();
 		private final Event<Collection<Entity>> afterDelete = Event.event();
 		private final Event<?> insertUpdateOrDelete = Event.event();
-		private final Event<Entity> beforeEntity = Event.event();
-		private final Event<Entity> entity = Event.event();
+		private final Event<Entity> entityChanging = Event.event();
+		private final Event<Entity> entityChanged = Event.event();
 		private final Event<Attribute<?>> valueChange = Event.event();
 		private final Map<Attribute<?>, Event<?>> editEvents = new ConcurrentHashMap<>();
 
@@ -974,7 +974,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			existsPredicate.addListener(states::updateExistsState);
 		}
 
-		private <T> EventObserver<T> editEvent(Attribute<T> attribute) {
+		private <T> EventObserver<T> valueEdited(Attribute<T> attribute) {
 			entityDefinition().attributes().definition(attribute);
 			return ((Event<T>) editEvents.computeIfAbsent(attribute, k -> Event.event())).observer();
 		}

@@ -102,9 +102,9 @@ public interface ColumnSummaryModel {
 		boolean subset();
 
 		/**
-		 * @return an observer notified when underlying data changes, requiring a summary refresh
+		 * @return an observer notified when underlying values change, requiring a summary refresh
 		 */
-		EventObserver<?> changeEvent();
+		EventObserver<?> valuesChanged();
 
 		/**
 		 * @param <C> the column identifier type

@@ -108,7 +108,7 @@ public interface FilterTableSortModel<R, C> {
 	/**
 	 * @return an observer notified each time the sorting state changes, with the column identifier as event data
 	 */
-	EventObserver<C> sortingChangedEvent();
+	EventObserver<C> sortingChanged();
 
 	/**
 	 * Specifies a sorting state for a column.

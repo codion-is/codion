@@ -422,8 +422,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public EventObserver<Entity> selectionEvent() {
-		return comboBoxModel.selectionEvent();
+	public EventObserver<Entity> selectionChanged() {
+		return comboBoxModel.selectionChanged();
 	}
 
 	@Override
@@ -579,12 +579,12 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		else {
 			linkCondition(foreignKey, foreignKeyModel);
 		}
-		selectionEvent().addConsumer(selected -> {
+		selectionChanged().addConsumer(selected -> {
 			if (selected != null && !selected.isNull(foreignKey)) {
 				foreignKeyModel.select(selected.key(foreignKey));
 			}
 		});
-		refresher().refreshEvent().addListener(foreignKeyModel::refresh);
+		refresher().success().addListener(foreignKeyModel::refresh);
 	}
 
 	private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
@@ -592,7 +592,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		if (strictForeignKeyFiltering.get()) {
 			includeCondition().set(filterAllCondition);
 		}
-		foreignKeyModel.selectionEvent().addConsumer(selected -> {
+		foreignKeyModel.selectionChanged().addConsumer(selected -> {
 			if (selected == null && strictForeignKeyFiltering.get()) {
 				includeCondition().set(filterAllCondition);
 			}
@@ -607,7 +607,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 			conditionSupplier.set(() -> foreignKey.equalTo(selected));
 			refresh();
 		};
-		foreignKeyModel.selectionEvent().addConsumer(consumer);
+		foreignKeyModel.selectionChanged().addConsumer(consumer);
 		//initialize
 		consumer.accept(selectedValue());
 	}

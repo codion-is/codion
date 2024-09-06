@@ -65,7 +65,7 @@ public interface TableConditionModel<C> {
 	/**
 	 * @return an observer notified each time the condition changes
 	 */
-	EventObserver<?> conditionChangedEvent();
+	EventObserver<?> conditionChanged();
 
 	/**
 	 * Instantiates a new {@link TableConditionModel}

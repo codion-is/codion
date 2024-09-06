@@ -235,7 +235,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	}
 
 	@Override
-	public EventObserver<Result> resultEvent() {
+	public EventObserver<Result> result() {
 		return resultEvent.observer();
 	}
 
