@@ -144,7 +144,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		this.domain = domain;
 		this.connection = connection;
 		this.database = connection.database();
-		this.domain.configureConnection(connection);
+		this.domain.configure(connection);
 		this.selectQueries = new SelectQueries(connection.database());
 	}
 
@@ -1621,7 +1621,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		private void configure() throws DatabaseException {
 			synchronized (CONFIGURED_DATABASES) {
 				if (!CONFIGURED_DATABASES.contains(this)) {
-					domain.configureDatabase(database);
+					domain.configure(database);
 					CONFIGURED_DATABASES.add(this);
 				}
 			}

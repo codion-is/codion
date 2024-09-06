@@ -6,6 +6,8 @@ Codion Change Log
 - Event suffix removed from methods returning EventObserver, related renaming.
 ### is.codion.swing.common.ui
 - ComponentBuilder memory leaks prevented by replacing lambdas and anonymous inner classes with static classes.
+### is.codion.framework.domain
+- Domain.configureConnection() and configureDatabase() renamed configure().
 ### is.codion.framework.model
 - EntityEditModel.valueEvent(attribute) removed.
 - EntityEditModel.put(), get(), remove() and optional() removed.

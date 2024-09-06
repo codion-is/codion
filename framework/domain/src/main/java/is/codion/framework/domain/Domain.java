@@ -106,14 +106,14 @@ public interface Domain {
 	 * @param connection the connection to configure
 	 * @throws DatabaseException in case of an exception
 	 */
-	default void configureConnection(DatabaseConnection connection) throws DatabaseException {}
+	default void configure(DatabaseConnection connection) throws DatabaseException {}
 
 	/**
 	 * Configures a database, for example run migration scripts. Only called once per database instance.
 	 * @param database the database
 	 * @throws DatabaseException in case of an exception
 	 */
-	default void configureDatabase(Database database) throws DatabaseException {}
+	default void configure(Database database) throws DatabaseException {}
 
 	/**
 	 * @return a list containing all the Domains registered with {@link ServiceLoader}.

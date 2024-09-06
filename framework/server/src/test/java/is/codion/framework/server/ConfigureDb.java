@@ -48,7 +48,7 @@ public final class ConfigureDb extends DomainModel {
 	}
 
 	@Override
-	public void configureDatabase(Database database) throws DatabaseException {
+	public void configure(Database database) throws DatabaseException {
 		try {
 			database.createConnection(User.parse("sa")).createStatement()
 							.execute("create table employees.configured(id integer)");
