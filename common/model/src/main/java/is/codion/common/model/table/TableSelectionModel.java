@@ -71,9 +71,9 @@ public interface TableSelectionModel<R> {
 	Observable<Integer> selectedIndex();
 
 	/**
-	 * @return an {@link Observable} for the selected indexes
+	 * @return the SelectedIndexes
 	 */
-	Observable<List<Integer>> selectedIndexes();
+	SelectedIndexes selectedIndexes();
 
 	/**
 	 * @return an {@link Observable} for the selected item
@@ -100,24 +100,6 @@ public interface TableSelectionModel<R> {
 	void moveSelectionUp();
 
 	/**
-	 * Selects the item at {@code index}
-	 * @param index the index
-	 */
-	void addSelectedIndex(int index);
-
-	/**
-	 * Removes the item at {@code index} from the selection
-	 * @param index the index
-	 */
-	void removeSelectedIndex(int index);
-
-	/**
-	 * Removes the given indexes from the selection
-	 * @param indexes the indexes
-	 */
-	void removeSelectedIndexes(Collection<Integer> indexes);
-
-	/**
 	 * Selects all visible rows
 	 * @see #selectedIndexes()
 	 */
@@ -134,12 +116,6 @@ public interface TableSelectionModel<R> {
 	 * @param predicate the predicate
 	 */
 	void addSelectedItems(Predicate<R> predicate);
-
-	/**
-	 * Adds these indexes to the selection
-	 * @param indexes the indexes to add to the selection
-	 */
-	void addSelectedIndexes(Collection<Integer> indexes);
 
 	/**
 	 * @return the number of selected indexes in the underlying selection model.
@@ -180,4 +156,34 @@ public interface TableSelectionModel<R> {
 	 * Clears the selection
 	 */
 	void clearSelection();
+
+	/**
+	 * Controls the selected indexes.
+	 */
+	interface SelectedIndexes extends Observable<List<Integer>> {
+
+		/**
+		 * Adds the given index to the selected indexes
+		 * @param index the index
+		 */
+		void add(int index);
+
+		/**
+		 * Removes the given index from the selection
+		 * @param index the index
+		 */
+		void remove(int index);
+
+		/**
+		 * Adds these indexes to the selection
+		 * @param indexes the indexes to add to the selection
+		 */
+		void add(Collection<Integer> indexes);
+
+		/**
+		 * Removes the given indexes from the selection
+		 * @param indexes the indexes
+		 */
+		void remove(Collection<Integer> indexes);
+	}
 }

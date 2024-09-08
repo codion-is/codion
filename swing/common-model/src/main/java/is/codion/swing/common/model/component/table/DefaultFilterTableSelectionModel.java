@@ -70,26 +70,6 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public void addSelectedIndex(int index) {
-		checkIndex(index, tableModel.visibleCount());
-		addSelectionInterval(index, index);
-	}
-
-	@Override
-	public void removeSelectedIndex(int index) {
-		checkIndex(index, tableModel.visibleCount());
-		removeSelectionInterval(index, index);
-	}
-
-	@Override
-	public void removeSelectedIndexes(Collection<Integer> indexes) {
-		indexes.forEach(index -> {
-			checkIndex(index, tableModel.visibleCount());
-			removeSelectionInterval(index, index);
-		});
-	}
-
-	@Override
 	public int selectionCount() {
 		if (isSelectionEmpty()) {
 			return 0;
@@ -100,20 +80,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public void addSelectedIndexes(Collection<Integer> indexes) {
-		if (requireNonNull(indexes).isEmpty()) {
-			return;
-		}
-		checkIndexes(indexes);
-		setValueIsAdjusting(true);
-		for (Integer index : indexes) {
-			addSelectionInterval(index, index);
-		}
-		setValueIsAdjusting(false);
-	}
-
-	@Override
-	public Observable<List<Integer>> selectedIndexes() {
+	public SelectedIndexes selectedIndexes() {
 		return selectionModel.selectedIndexes;
 	}
 
@@ -134,7 +101,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	@Override
 	public void addSelectedItems(Predicate<R> predicate) {
-		addSelectedIndexes(indexesToSelect(requireNonNull(predicate)));
+		selectionModel.selectedIndexes.add(indexesToSelect(requireNonNull(predicate)));
 	}
 
 	@Override
@@ -162,7 +129,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	@Override
 	public void addSelectedItems(Collection<R> items) {
 		requireNonNull(items, "items");
-		addSelectedIndexes(items.stream()
+		selectionModel.selectedIndexes.add(items.stream()
 						.mapToInt(tableModel::indexOf)
 						.filter(index -> index >= 0)
 						.boxed()
@@ -176,7 +143,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	@Override
 	public void removeSelectedItems(Collection<R> items) {
-		requireNonNull(items).forEach(item -> removeSelectedIndex(tableModel.indexOf(item)));
+		requireNonNull(items).forEach(item -> selectionModel.selectedIndexes.remove(tableModel.indexOf(item)));
 	}
 
 	@Override
@@ -367,7 +334,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	private final class FilterListSelectionModel extends DefaultListSelectionModel {
 
 		private final SelectedIndex selectedIndex = new SelectedIndex();
-		private final SelectedIndexes selectedIndexes = new SelectedIndexes();
+		private final DefaultSelectedIndexes selectedIndexes = new DefaultSelectedIndexes();
 		private final SelectedItem selectedItem = new SelectedItem();
 		private final SelectedItems selectedItems = new SelectedItems();
 
@@ -410,7 +377,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 			}
 		}
 
-		private final class SelectedIndexes implements Observable<List<Integer>> {
+		private final class DefaultSelectedIndexes implements SelectedIndexes {
 
 			private final Event<List<Integer>> changeEvent = Event.event();
 
@@ -432,7 +399,40 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 				checkIndexes(indexes);
 				setValueIsAdjusting(true);
 				clearSelection();
-				addSelectedIndexes(indexes);
+				add(indexes);
+				setValueIsAdjusting(false);
+			}
+
+			@Override
+			public void add(int index) {
+				checkIndex(index, tableModel.visibleCount());
+				addSelectionInterval(index, index);
+			}
+
+			@Override
+			public void remove(int index) {
+				checkIndex(index, tableModel.visibleCount());
+				removeSelectionInterval(index, index);
+			}
+
+			@Override
+			public void remove(Collection<Integer> indexes) {
+				indexes.forEach(index -> {
+					checkIndex(index, tableModel.visibleCount());
+					removeSelectionInterval(index, index);
+				});
+			}
+
+			@Override
+			public void add(Collection<Integer> indexes) {
+				if (requireNonNull(indexes).isEmpty()) {
+					return;
+				}
+				checkIndexes(indexes);
+				setValueIsAdjusting(true);
+				for (Integer index : indexes) {
+					addSelectionInterval(index, index);
+				}
 				setValueIsAdjusting(false);
 			}
 

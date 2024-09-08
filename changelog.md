@@ -8,6 +8,7 @@ Codion Change Log
 - Observable added.
 ### is.codion.swing.common.model
 - TableSelectionModel, selectedIndex, selectedIndexes, selectedItem and selectedItems now Observable based.
+- TableSelectionModel.SelectedIndexes added.
 ### is.codion.swing.common.ui
 - ComponentBuilder memory leaks prevented by replacing lambdas and anonymous inner classes with static classes.
 ### is.codion.framework.domain

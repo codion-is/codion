@@ -343,7 +343,7 @@ public final class DefaultFilterTableModelTest {
 		Collection<Integer> indexes = new ArrayList<>();
 		indexes.add(1);
 		indexes.add(-1);
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().addSelectedIndexes(indexes));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndexes().add(indexes));
 	}
 
 	@Test
@@ -351,7 +351,7 @@ public final class DefaultFilterTableModelTest {
 		Collection<Integer> indexes = new ArrayList<>();
 		indexes.add(1);
 		indexes.add(10);
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().addSelectedIndexes(indexes));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndexes().add(indexes));
 	}
 
 	@Test
@@ -382,12 +382,12 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void addSelectedIndexNegative() {
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().addSelectedIndex(-1));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndexes().add(-1));
 	}
 
 	@Test
 	void addSelectedIndexOutOfBounds() {
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().addSelectedIndex(10));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndexes().add(10));
 	}
 
 	@Test
@@ -455,12 +455,12 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(0, selectionModel.selectedIndex().get());
 		assertEquals(1, selectionModel.selectionCount());
 		assertFalse(selectionModel.isSelectionEmpty());
-		selectionModel.addSelectedIndex(1);
+		selectionModel.selectedIndexes().add(1);
 		assertTrue(selectionModel.multipleSelection().get());
 		assertEquals(ITEMS.get(0), selectionModel.selectedItem().get());
 		assertEquals(asList(0, 1), selectionModel.selectedIndexes().get());
 		assertEquals(0, selectionModel.selectedIndex().get());
-		selectionModel.addSelectedIndex(4);
+		selectionModel.selectedIndexes().add(4);
 		assertTrue(selectionModel.multipleSelection().get());
 		assertEquals(asList(0, 1, 4), selectionModel.selectedIndexes().get());
 		selectionModel.removeIndexInterval(1, 4);
@@ -469,7 +469,7 @@ public final class DefaultFilterTableModelTest {
 		selectionModel.clearSelection();
 		assertEquals(new ArrayList<Integer>(), selectionModel.selectedIndexes().get());
 		assertEquals(-1, selectionModel.getMinSelectionIndex());
-		selectionModel.addSelectedIndexes(asList(0, 3, 4));
+		selectionModel.selectedIndexes().add(asList(0, 3, 4));
 		assertEquals(asList(0, 3, 4), selectionModel.selectedIndexes().get());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 		assertEquals(3, selectionModel.selectionCount());
@@ -478,24 +478,24 @@ public final class DefaultFilterTableModelTest {
 		selectionModel.removeSelectionInterval(3, 3);
 		assertEquals(4, selectionModel.getMinSelectionIndex());
 
-		selectionModel.addSelectedIndexes(asList(0, 3, 4));
+		selectionModel.selectedIndexes().add(asList(0, 3, 4));
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 		selectionModel.removeSelectionInterval(3, 3);
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 		selectionModel.clearSelection();
 		assertEquals(-1, selectionModel.getMinSelectionIndex());
 
-		selectionModel.addSelectedIndexes(asList(0, 1, 2, 3, 4));
+		selectionModel.selectedIndexes().add(asList(0, 1, 2, 3, 4));
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 		selectionModel.removeSelectionInterval(0, 0);
 		assertEquals(1, selectionModel.getMinSelectionIndex());
-		selectionModel.removeSelectedIndex(1);
+		selectionModel.selectedIndexes().remove(1);
 		assertEquals(2, selectionModel.getMinSelectionIndex());
-		selectionModel.removeSelectedIndexes(singletonList(2));
+		selectionModel.selectedIndexes().remove(singletonList(2));
 		assertEquals(3, selectionModel.getMinSelectionIndex());
 		selectionModel.removeSelectionInterval(3, 3);
 		assertEquals(4, selectionModel.getMinSelectionIndex());
-		selectionModel.removeSelectedIndex(4);
+		selectionModel.selectedIndexes().remove(4);
 		assertEquals(-1, selectionModel.getMinSelectionIndex());
 
 		selectionModel.addSelectedItem(ITEMS.get(0));
@@ -535,7 +535,7 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void selectionAndFiltering() {
 		tableModel.refresh();
-		tableModel.selectionModel().addSelectedIndexes(singletonList(3));
+		tableModel.selectionModel().selectedIndexes().add(singletonList(3));
 		assertEquals(3, tableModel.selectionModel().getMinSelectionIndex());
 
 		tableModel.filterModel().conditionModel(0).operands().equal().set("d");

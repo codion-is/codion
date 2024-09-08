@@ -91,7 +91,7 @@ public class DefaultFilterTableSelectionModelTest {
 		testModel.selectionEmpty().addListener(emptyCounter::incrementAndGet);
 		testModel.selectedIndex().set(0);
 		assertEquals(1, emptyCounter.get());
-		testModel.addSelectedIndex(1);
+		testModel.selectedIndexes().add(1);
 		assertEquals(1, emptyCounter.get());
 		testModel.selectedIndexes().set(asList(1, 2));
 		assertEquals(1, emptyCounter.get());
