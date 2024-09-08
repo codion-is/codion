@@ -24,16 +24,16 @@ final class BooleanNullableCheckBoxValue extends AbstractComponentValue<Boolean,
 
 	BooleanNullableCheckBoxValue(NullableCheckBox checkBox) {
 		super(checkBox);
-		checkBox.getNullableModel().toggleState().addListener(this::notifyListeners);
+		checkBox.model().toggleState().addListener(this::notifyListeners);
 	}
 
 	@Override
 	protected Boolean getComponentValue() {
-		return component().getState();
+		return component().model().toggleState().get();
 	}
 
 	@Override
 	protected void setComponentValue(Boolean value) {
-		component().getNullableModel().toggleState().set(value);
+		component().model().toggleState().set(value);
 	}
 }

@@ -16,6 +16,7 @@ Codion Change Log
 - NullableToggleButtonModel.toggleState() now Observable based.
 ### is.codion.swing.common.ui
 - ComponentBuilder memory leaks prevented by replacing lambdas and anonymous inner classes with static classes.
+- NullableCheckBox.getNullableModel() renamed model(), getState() removed.
 ### is.codion.framework.domain
 - Domain.configureConnection() and configureDatabase() renamed configure().
 ### is.codion.framework.model

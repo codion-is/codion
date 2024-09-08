@@ -88,7 +88,7 @@ public class BooleanValuesTest {
 						.buildValue();
 
 		NullableCheckBox checkBox = (NullableCheckBox) value.component();
-		NullableToggleButtonModel model = checkBox.getNullableModel();
+		NullableToggleButtonModel model = checkBox.model();
 
 		assertNull(value.get());
 		model.setSelected(true);

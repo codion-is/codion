@@ -96,17 +96,9 @@ public class NullableCheckBox extends JCheckBox {
 	}
 
 	/**
-	 * Returns the current state, null, false or true
-	 * @return the current state
-	 */
-	public final Boolean getState() {
-		return getNullableModel().toggleState().get();
-	}
-
-	/**
 	 * @return the underlying button model
 	 */
-	public final NullableToggleButtonModel getNullableModel() {
+	public final NullableToggleButtonModel model() {
 		return (NullableToggleButtonModel) getModel();
 	}
 
@@ -141,7 +133,7 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (isEnabled() && (e == null || notModified(e))) {
-				getNullableModel().toggleState().next();
+				model().toggleState().next();
 			}
 		}
 
@@ -159,7 +151,7 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public void paintIcon(Component component, Graphics graphics, int x, int y) {
 			icon.paintIcon(component, graphics, x, y);
-			if (getNullableModel().toggleState().get() != null) {
+			if (model().toggleState().get() != null) {
 				return;
 			}
 
