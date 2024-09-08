@@ -453,8 +453,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final EventObserver<?> insertUpdateOrDelete() {
-		return events.insertUpdateOrDelete.observer();
+	public final EventObserver<?> afterInsertUpdateOrDelete() {
+		return events.afterInsertUpdateOrDelete.observer();
 	}
 
 	/**
@@ -956,16 +956,16 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Map<Entity.Key, Entity>> afterUpdate = Event.event();
 		private final Event<Collection<Entity>> beforeDelete = Event.event();
 		private final Event<Collection<Entity>> afterDelete = Event.event();
-		private final Event<?> insertUpdateOrDelete = Event.event();
+		private final Event<?> afterInsertUpdateOrDelete = Event.event();
 		private final Event<Entity> entityChanging = Event.event();
 		private final Event<Entity> entityChanged = Event.event();
 		private final Event<Attribute<?>> valueChange = Event.event();
 		private final Map<Attribute<?>, Event<?>> editEvents = new ConcurrentHashMap<>();
 
 		private void bindEvents() {
-			afterInsert.addListener(insertUpdateOrDelete);
-			afterUpdate.addListener(insertUpdateOrDelete);
-			afterDelete.addListener(insertUpdateOrDelete);
+			afterInsert.addListener(afterInsertUpdateOrDelete);
+			afterUpdate.addListener(afterInsertUpdateOrDelete);
+			afterDelete.addListener(afterInsertUpdateOrDelete);
 			afterInsert.addConsumer(new NotifyInserted());
 			afterUpdate.addConsumer(new NotifyUpdated());
 			afterDelete.addConsumer(new NotifyDeleted());

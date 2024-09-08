@@ -514,9 +514,9 @@ public interface EntityEditModel {
 	EventObserver<Collection<Entity>> afterDelete();
 
 	/**
-	 * @return an observer notified each time one or more entities are updated, inserted or deleted via this model
+	 * @return an observer notified each time one or more entities have been inserted, updated or deleted via this model
 	 */
-	EventObserver<?> insertUpdateOrDelete();
+	EventObserver<?> afterInsertUpdateOrDelete();
 
 	/**
 	 * Represents a task for inserting entities, split up for use with a background thread.

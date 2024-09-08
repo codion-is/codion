@@ -207,7 +207,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 								.build());
 			}
 		}
-		insertUpdateOrDelete().addListener(comboBoxModel::refresh);
+		afterInsertUpdateOrDelete().addListener(comboBoxModel::refresh);
 
 		return comboBoxModel;
 	}

@@ -1504,7 +1504,7 @@ public class EntityTablePanel extends JPanel {
 		tableModel.conditionModel().conditionChanged().addListener(this::onConditionChanged);
 		tableModel.refresher().observer().addConsumer(this::onRefreshingChanged);
 		tableModel.refresher().failure().addConsumer(this::onException);
-		tableModel.editModel().insertUpdateOrDelete().addListener(table::repaint);
+		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
 		if (configuration.includeFilterPanel) {
 			table.filterPanel().conditionPanels().forEach(conditionPanel ->
 							conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->

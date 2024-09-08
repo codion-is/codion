@@ -20,6 +20,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditModel.valueEvent(attribute) removed.
 - EntityEditModel.put(), get(), remove() and optional() removed.
+- EntityEditModel.insertUpdateOrDelete() renamed afterInsertUpdateOrDelete().
 ### is.codion.swing.framework.model
 - SwingEntityEditModel.createComboBoxModel(), nullItem caption now static.
 ### is.codion.swing.framework.ui
