@@ -57,7 +57,7 @@ public final class HostMonitorPanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		model.serverAddedEvent().addConsumer(serverMonitor -> {
+		model.serverAdded().addConsumer(serverMonitor -> {
 			try {
 				addServerTab(serverMonitor);
 			}
@@ -65,7 +65,7 @@ public final class HostMonitorPanel extends JPanel {
 				throw new RuntimeException(e);
 			}
 		});
-		model.serverRemovedEvent().addConsumer(serverMonitor -> {
+		model.serverRemoved().addConsumer(serverMonitor -> {
 			for (int i = 0; i < serverPane.getTabCount(); i++) {
 				ServerMonitorPanel panel = (ServerMonitorPanel) serverPane.getComponentAt(i);
 				if (panel.model() == serverMonitor) {

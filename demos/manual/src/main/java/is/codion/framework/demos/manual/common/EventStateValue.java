@@ -187,14 +187,14 @@ public final class EventStateValue {
 		/**
 		 * @return an event observer notified each time the value changes
 		 */
-		public EventObserver<Integer> valueChangeEvent() {
+		public EventObserver<Integer> valueChanged() {
 			return value.observer();
 		}
 
 		/**
 		 * @return a state observer indicating whether the value is null
 		 */
-		public StateObserver valueNullState() {
+		public StateObserver valueNull() {
 			return valueNull.observer();
 		}
 	}

@@ -44,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ConnectionPoolMonitor {
 
-	private final Event<?> statisticsUpdatedEvent = Event.event();
+	private final Event<?> statisticsUpdated = Event.event();
 
 	private final String username;
 	private final ConnectionPoolWrapper connectionPool;
@@ -256,7 +256,7 @@ public final class ConnectionPoolMonitor {
 	 * @return an observer notified each time the statistics change
 	 */
 	public EventObserver<?> statisticsEvent() {
-		return statisticsUpdatedEvent.observer();
+		return statisticsUpdated.observer();
 	}
 
 	/**
@@ -307,6 +307,6 @@ public final class ConnectionPoolMonitor {
 		minimumPoolSizeValue.set(connectionPool.getMinimumPoolSize());
 		maximumPoolSizeValue.set(connectionPool.getMaximumPoolSize());
 		maximumCheckoutTimeValue.set(connectionPool.getMaximumCheckOutTime());
-		statisticsUpdatedEvent.run();
+		statisticsUpdated.run();
 	}
 }

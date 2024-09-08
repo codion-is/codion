@@ -225,7 +225,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private final TableConditionPanel.Factory<C> filterPanelFactory;
 	private final FieldFactory<C> filterFieldFactory;
-	private final Event<MouseEvent> doubleClickEvent = Event.event();
+	private final Event<MouseEvent> doubleClick = Event.event();
 	private final Value<Action> doubleClickAction;
 	private final State sortingEnabled;
 	private final State scrollToSelectedItem;
@@ -615,8 +615,8 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return an observer notified each time the table is double-clicked
 	 */
-	public EventObserver<MouseEvent> doubleClickEvent() {
-		return doubleClickEvent.observer();
+	public EventObserver<MouseEvent> doubleClick() {
+		return doubleClick.observer();
 	}
 
 	/**
@@ -914,7 +914,7 @@ public final class FilterTable<R, C> extends JTable {
 				if (doubleClickAction.isNotNull()) {
 					doubleClickAction.get().actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "doubleClick"));
 				}
-				doubleClickEvent.accept(e);
+				doubleClick.accept(e);
 			}
 		}
 	}
@@ -1308,14 +1308,14 @@ public final class FilterTable<R, C> extends JTable {
 		private final C identifier;
 		private final FilterTableModel<?, C> tableModel;
 		private final Format format;
-		private final Event<?> changeEvent = Event.event();
+		private final Event<?> valuesChanged = Event.event();
 
 		private DefaultSummaryValues(C identifier, FilterTableModel<?, C> tableModel, Format format) {
 			this.identifier = requireNonNull(identifier);
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);
-			this.tableModel.dataChanged().addListener(changeEvent);
-			this.tableModel.selectionModel().selectedIndexes().addListener(changeEvent);
+			this.tableModel.dataChanged().addListener(valuesChanged);
+			this.tableModel.selectionModel().selectedIndexes().addListener(valuesChanged);
 		}
 
 		@Override
@@ -1325,7 +1325,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public EventObserver<?> valuesChanged() {
-			return changeEvent.observer();
+			return valuesChanged.observer();
 		}
 
 		@Override

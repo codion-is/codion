@@ -62,8 +62,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	 */
 	static final Comparator<?> STRING_COMPARATOR = Comparator.comparing(Object::toString);
 
-	private final Event<?> dataChangedEvent = Event.event();
-	private final Event<?> clearedEvent = Event.event();
+	private final Event<?> dataChanged = Event.event();
+	private final Event<?> cleared = Event.event();
 	private final Columns<R, C> columns;
 	private final List<R> visibleItems = new ArrayList<>();
 	private final List<R> filteredItems = new ArrayList<>();
@@ -168,7 +168,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			visibleItems.clear();
 			fireTableRowsDeleted(0, size - 1);
 		}
-		clearedEvent.run();
+		cleared.run();
 	}
 
 	@Override
@@ -311,7 +311,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 		selectionModel.setValueIsAdjusting(false);
 		if (visibleItemRemoved) {
-			dataChangedEvent.run();
+			dataChanged.run();
 		}
 	}
 
@@ -319,7 +319,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	public R removeItemAt(int index) {
 		R removed = visibleItems.remove(index);
 		fireTableRowsDeleted(index, index);
-		dataChangedEvent.run();
+		dataChanged.run();
 
 		return removed;
 	}
@@ -330,7 +330,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		List<R> removedItems = new ArrayList<>(subList);
 		subList.clear();
 		fireTableRowsDeleted(fromIndex, toIndex);
-		dataChangedEvent.run();
+		dataChanged.run();
 
 		return removedItems;
 	}
@@ -362,12 +362,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public EventObserver<?> dataChanged() {
-		return dataChangedEvent.observer();
+		return dataChanged.observer();
 	}
 
 	@Override
 	public EventObserver<?> cleared() {
-		return clearedEvent.observer();
+		return cleared.observer();
 	}
 
 	@Override
@@ -393,7 +393,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			if (e.getType() != TableModelEvent.DELETE) {
 				// Removals are handled specially, in order to trigger only a single
 				// event when multiple rows are removed, see remove... methods
-				dataChangedEvent.run();
+				dataChanged.run();
 			}
 		});
 		addTableModelListener(removeSelectionListener);
@@ -450,7 +450,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			visibleItems.remove(visibleItemIndex);
 			fireTableRowsDeleted(visibleItemIndex, visibleItemIndex);
 			if (notifyDataChanged) {
-				dataChangedEvent.run();
+				dataChanged.run();
 			}
 		}
 		else {

@@ -53,33 +53,8 @@ public interface Observable<T> extends EventObserver<T> {
 	EventObserver<T> observer();
 
 	@Override
-	default boolean removeWeakConsumer(Consumer<? super T> consumer) {
-		return observer().removeWeakConsumer(consumer);
-	}
-
-	@Override
-	default boolean addWeakConsumer(Consumer<? super T> consumer) {
-		return observer().addWeakConsumer(consumer);
-	}
-
-	@Override
-	default boolean removeWeakListener(Runnable listener) {
-		return observer().removeWeakListener(listener);
-	}
-
-	@Override
-	default boolean addWeakListener(Runnable listener) {
-		return observer().addWeakListener(listener);
-	}
-
-	@Override
-	default boolean removeConsumer(Consumer<? super T> consumer) {
-		return observer().removeConsumer(consumer);
-	}
-
-	@Override
-	default boolean addConsumer(Consumer<? super T> consumer) {
-		return observer().addConsumer(consumer);
+	default boolean addListener(Runnable listener) {
+		return observer().addListener(listener);
 	}
 
 	@Override
@@ -88,7 +63,32 @@ public interface Observable<T> extends EventObserver<T> {
 	}
 
 	@Override
-	default boolean addListener(Runnable listener) {
-		return observer().addListener(listener);
+	default boolean addConsumer(Consumer<? super T> consumer) {
+		return observer().addConsumer(consumer);
+	}
+
+	@Override
+	default boolean removeConsumer(Consumer<? super T> consumer) {
+		return observer().removeConsumer(consumer);
+	}
+
+	@Override
+	default boolean addWeakListener(Runnable listener) {
+		return observer().addWeakListener(listener);
+	}
+
+	@Override
+	default boolean removeWeakListener(Runnable listener) {
+		return observer().removeWeakListener(listener);
+	}
+
+	@Override
+	default boolean addWeakConsumer(Consumer<? super T> consumer) {
+		return observer().addWeakConsumer(consumer);
+	}
+
+	@Override
+	default boolean removeWeakConsumer(Consumer<? super T> consumer) {
+		return observer().removeWeakConsumer(consumer);
 	}
 }

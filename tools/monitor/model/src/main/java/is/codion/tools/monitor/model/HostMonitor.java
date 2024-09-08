@@ -49,8 +49,8 @@ public final class HostMonitor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(HostMonitor.class);
 
-	private final Event<ServerMonitor> serverAddedEvent = Event.event();
-	private final Event<ServerMonitor> serverRemovedEvent = Event.event();
+	private final Event<ServerMonitor> serverAdded = Event.event();
+	private final Event<ServerMonitor> serverRemoved = Event.event();
 
 	private final String hostName;
 	private final int registryPort;
@@ -118,25 +118,25 @@ public final class HostMonitor {
 	/**
 	 * @return an observer notified each time a server is added
 	 */
-	public EventObserver<ServerMonitor> serverAddedEvent() {
-		return serverAddedEvent.observer();
+	public EventObserver<ServerMonitor> serverAdded() {
+		return serverAdded.observer();
 	}
 
 	/**
 	 * @return an observer notified each time a server is removed
 	 */
-	public EventObserver<ServerMonitor> serverRemovedEvent() {
-		return serverRemovedEvent.observer();
+	public EventObserver<ServerMonitor> serverRemoved() {
+		return serverRemoved.observer();
 	}
 
 	private void addServer(ServerMonitor serverMonitor) {
 		serverMonitors.add(serverMonitor);
-		serverAddedEvent.accept(serverMonitor);
+		serverAdded.accept(serverMonitor);
 	}
 
 	private void removeServer(ServerMonitor serverMonitor) {
 		serverMonitors.remove(serverMonitor);
-		serverRemovedEvent.accept(serverMonitor);
+		serverRemoved.accept(serverMonitor);
 	}
 
 	private boolean containsServerMonitor(UUID serverId) {

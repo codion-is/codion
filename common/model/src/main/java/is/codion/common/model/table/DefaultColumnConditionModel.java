@@ -47,7 +47,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private static final String REGEX_WILDCARD = ".*";
 
 	private final Runnable autoEnableListener = new AutoEnableListener();
-	private final Event<?> conditionChangedEvent = Event.event();
+	private final Event<?> conditionChanged = Event.event();
 	private final State locked = State.state();
 	private final Value.Validator<Object> lockValidator = value -> checkLock();
 
@@ -58,7 +58,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private final State autoEnable;
 	private final State enabled = State.builder()
 					.validator(lockValidator)
-					.listener(conditionChangedEvent)
+					.listener(conditionChanged)
 					.build();
 
 	private final C identifier;
@@ -75,27 +75,27 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 						.validator(lockValidator)
 						.validator(this::validateOperator)
 						.listener(autoEnableListener)
-						.listener(conditionChangedEvent)
+						.listener(conditionChanged)
 						.build();
 		this.operands = new DefaultOperands<>(builder.automaticWildcard, operator);
 		this.operands.equal.addValidator(lockValidator);
 		this.operands.equal.addListener(autoEnableListener);
-		this.operands.equal.addListener(conditionChangedEvent);
-		this.operands.equal.automaticWildcard.addListener(conditionChangedEvent);
+		this.operands.equal.addListener(conditionChanged);
+		this.operands.equal.automaticWildcard.addListener(conditionChanged);
 		this.operands.in.addValidator(lockValidator);
 		this.operands.in.addListener(autoEnableListener);
-		this.operands.in.addListener(conditionChangedEvent);
+		this.operands.in.addListener(conditionChanged);
 		this.operands.upperBound.addValidator(lockValidator);
 		this.operands.upperBound.addListener(autoEnableListener);
-		this.operands.upperBound.addListener(conditionChangedEvent);
+		this.operands.upperBound.addListener(conditionChanged);
 		this.operands.lowerBound.addValidator(lockValidator);
 		this.operands.lowerBound.addListener(autoEnableListener);
-		this.operands.lowerBound.addListener(conditionChangedEvent);
+		this.operands.lowerBound.addListener(conditionChanged);
 		this.columnClass = builder.columnClass;
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
 		this.caseSensitive = State.builder(builder.caseSensitive)
-						.listener(conditionChangedEvent)
+						.listener(conditionChanged)
 						.build();
 		this.autoEnable = State.builder(builder.autoEnable)
 						.listener(autoEnableListener)
@@ -175,7 +175,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	@Override
 	public EventObserver<?> conditionChanged() {
-		return conditionChangedEvent.observer();
+		return conditionChanged.observer();
 	}
 
 	private boolean valueAccepted(Comparable<T> comparable) {

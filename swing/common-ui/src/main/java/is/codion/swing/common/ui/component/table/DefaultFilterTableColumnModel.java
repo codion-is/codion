@@ -45,8 +45,8 @@ import static java.util.Objects.requireNonNull;
 final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C> {
 
 	private final DefaultTableColumnModel tableColumnModel = new DefaultTableColumnModel();
-	private final Event<C> columnHiddenEvent = Event.event();
-	private final Event<C> columnShownEvent = Event.event();
+	private final Event<C> columnHidden = Event.event();
+	private final Event<C> columnShown = Event.event();
 	private final Map<C, FilterTableColumn<C>> columns = new LinkedHashMap<>();
 	private final Map<Integer, C> columnIdentifiers = new HashMap<>();
 	private final Map<C, HiddenColumn> hiddenColumns = new LinkedHashMap<>();
@@ -248,12 +248,12 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 
 	@Override
 	public EventObserver<C> columnHidden() {
-		return columnHiddenEvent.observer();
+		return columnHidden.observer();
 	}
 
 	@Override
 	public EventObserver<C> columnShown() {
-		return columnShownEvent.observer();
+		return columnShown.observer();
 	}
 
 	private void initializeColumn(FilterTableColumn<C> column) {
@@ -296,7 +296,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 			hiddenColumns.remove(identifier);
 			tableColumnModel.addColumn(column.column);
 			tableColumnModel.moveColumn(getColumnCount() - 1, column.indexWhenShown());
-			columnShownEvent.accept(identifier);
+			columnShown.accept(identifier);
 		}
 	}
 
@@ -305,7 +305,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 			HiddenColumn hiddenColumn = new HiddenColumn(column(identifier));
 			hiddenColumns.put(identifier, hiddenColumn);
 			tableColumnModel.removeColumn(hiddenColumn.column);
-			columnHiddenEvent.accept(identifier);
+			columnHidden.accept(identifier);
 		}
 	}
 

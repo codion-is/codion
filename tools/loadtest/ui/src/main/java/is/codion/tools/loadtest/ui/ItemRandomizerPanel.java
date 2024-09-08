@@ -50,7 +50,7 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	private final ItemRandomizer<T> itemRandomizer;
 	private final JPanel configPanel = new JPanel(Layouts.gridLayout(0, 1));
 	private final JList<ItemRandomizer.RandomItem<T>> itemList = new JList<>(new DefaultListModel<>());
-	private final Event<List<ItemRandomizer.RandomItem<T>>> selectedItemChangedEvent = Event.event();
+	private final Event<List<ItemRandomizer.RandomItem<T>>> selectedItemChanged = Event.event();
 
 	ItemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
 		this.itemRandomizer = requireNonNull(itemRandomizer, "itemRandomizer");
@@ -67,8 +67,8 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	/**
 	 * @return an observer notified each time the selected items change
 	 */
-	public EventObserver<List<ItemRandomizer.RandomItem<T>>> selectedItemsEvent() {
-		return selectedItemChangedEvent.observer();
+	public EventObserver<List<ItemRandomizer.RandomItem<T>>> selectedItemsChanged() {
+		return selectedItemChanged.observer();
 	}
 
 	/**
@@ -82,8 +82,8 @@ final class ItemRandomizerPanel<T> extends JPanel {
 		List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(itemRandomizer.items());
 		items.sort(Comparator.comparing(item -> item.item().toString()));
 		items.forEach(((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel())::addElement);
-		itemList.addListSelectionListener(e -> selectedItemChangedEvent.accept(itemList.getSelectedValuesList()));
-		selectedItemsEvent().addConsumer(selectedItems -> {
+		itemList.addListSelectionListener(e -> selectedItemChanged.accept(itemList.getSelectedValuesList()));
+		selectedItemsChanged().addConsumer(selectedItems -> {
 			configPanel.removeAll();
 			for (ItemRandomizer.RandomItem<T> item : selectedItems) {
 				configPanel.add(createWeightPanel(item));
