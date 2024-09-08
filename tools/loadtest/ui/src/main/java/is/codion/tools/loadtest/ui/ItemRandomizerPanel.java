@@ -18,12 +18,12 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.randomizer.ItemRandomizer;
+import is.codion.common.model.randomizer.ItemRandomizer.RandomItem;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -48,9 +50,11 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	private static final int SPINNER_COLUMNS = 3;
 
 	private final ItemRandomizer<T> itemRandomizer;
-	private final JPanel configPanel = new JPanel(Layouts.gridLayout(0, 1));
-	private final JList<ItemRandomizer.RandomItem<T>> itemList = new JList<>(new DefaultListModel<>());
-	private final Event<List<ItemRandomizer.RandomItem<T>>> selectedItemChanged = Event.event();
+	private final JPanel configPanel = new JPanel(gridLayout(0, 1));
+	private final ComponentValue<List<RandomItem<T>>, JList<RandomItem<T>>> listComponentValue =
+					Components.<RandomItem<T>>list(new DefaultListModel<>())
+									.selectedItems()
+									.buildValue();
 
 	ItemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
 		this.itemRandomizer = requireNonNull(itemRandomizer, "itemRandomizer");
@@ -67,31 +71,28 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	/**
 	 * @return an observer notified each time the selected items change
 	 */
-	public EventObserver<List<ItemRandomizer.RandomItem<T>>> selectedItemsChanged() {
-		return selectedItemChanged.observer();
+	public EventObserver<List<RandomItem<T>>> selectedItemsChanged() {
+		return listComponentValue.observer();
 	}
 
 	/**
-	 * @return the currently selected item
+	 * @return the currently selected items
 	 */
-	public List<ItemRandomizer.RandomItem<T>> selectedItems() {
-		return itemList.getSelectedValuesList();
+	public List<RandomItem<T>> selectedItems() {
+		return listComponentValue.get();
 	}
 
 	private void initializeUI() {
-		List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(itemRandomizer.items());
+		List<RandomItem<T>> items = new ArrayList<>(itemRandomizer.items());
 		items.sort(Comparator.comparing(item -> item.item().toString()));
-		items.forEach(((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel())::addElement);
-		itemList.addListSelectionListener(e -> selectedItemChanged.accept(itemList.getSelectedValuesList()));
-		selectedItemsChanged().addConsumer(selectedItems -> {
+		items.forEach(((DefaultListModel<RandomItem<T>>) listComponentValue.component().getModel())::addElement);
+		listComponentValue.addConsumer(selectedItems -> {
 			configPanel.removeAll();
-			for (ItemRandomizer.RandomItem<T> item : selectedItems) {
-				configPanel.add(createWeightPanel(item));
-			}
+			selectedItems.forEach(item -> configPanel.add(createWeightPanel(item)));
 			revalidate();
 		});
-		setLayout(Layouts.borderLayout());
-		add(new JScrollPane(itemList), BorderLayout.CENTER);
+		setLayout(borderLayout());
+		add(new JScrollPane(listComponentValue.component()), BorderLayout.CENTER);
 		add(configPanel, BorderLayout.SOUTH);
 	}
 
@@ -100,8 +101,8 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	 * @param item the item for which to create a configuration panel
 	 * @return a control panel for the item weight
 	 */
-	private JPanel createWeightPanel(ItemRandomizer.RandomItem<T> item) {
-		return Components.borderLayoutPanel(Layouts.borderLayout())
+	private JPanel createWeightPanel(RandomItem<T> item) {
+		return Components.borderLayoutPanel(borderLayout())
 						.northComponent(new JLabel(item.item().toString()))
 						.westComponent(Components.checkBox(new EnabledModelValue(item.item()))
 										.text("Enabled")

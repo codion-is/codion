@@ -27,6 +27,8 @@ Codion Change Log
 - SwingEntityEditModel.createComboBoxModel(), nullItem caption now static.
 ### is.codion.swing.framework.ui
 - EntityPanel.Config.entityPanel(), EntityTablePanel.Config.entityTablePanel() type parameter added.
+### is.codion.tools.loadtest.ui
+- ItemRandomizerPanel refactored.
 
 ## 0.18.12
 ### is.codion.swing.common.ui
