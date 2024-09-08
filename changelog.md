@@ -8,6 +8,8 @@ Codion Change Log
 - Observable added.
 - Item.get() renamed value(), no longer extends Supplier.
 - Observable no longer extends Supplier.
+### is.codion.common.rmi
+- DefaultRemoteClient.withDatabaseUser() bug fixed, did not copy client host and creationTime. 
 ### is.codion.swing.common.model
 - TableSelectionModel, selectedIndex, selectedIndexes, selectedItem and selectedItems now Observable based.
 - TableSelectionModel.SelectedIndexes added.

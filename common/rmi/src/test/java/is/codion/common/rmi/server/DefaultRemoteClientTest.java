@@ -24,6 +24,7 @@ import is.codion.common.user.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public final class DefaultRemoteClientTest {
 
@@ -36,7 +37,26 @@ public final class DefaultRemoteClientTest {
 						.databaseUser(User.user("john"))
 						.build();
 		RemoteClient copy = client.copy();
+		assertNotSame(client.connectionRequest(), copy.connectionRequest());
 		assertNotSame(client.user(), copy.user());
 		assertNotSame(client.databaseUser(), copy.databaseUser());
+		assertSame(client.creationTime(), copy.creationTime());
+		assertSame(client.clientHost(), copy.clientHost());
+	}
+
+	@Test
+	void withDatabaseUser() {
+		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
+										.user(User.user("scott"))
+										.clientTypeId("DefaultRemoteClientTest")
+										.build())
+						.databaseUser(User.user("john"))
+						.build();
+		RemoteClient copy = client.withDatabaseUser(User.user("peter"));
+		assertSame(client.connectionRequest(), copy.connectionRequest());
+		assertSame(client.user(), copy.user());
+		assertNotSame(client.databaseUser(), copy.databaseUser());
+		assertSame(client.creationTime(), copy.creationTime());
+		assertSame(client.clientHost(), copy.clientHost());
 	}
 }
