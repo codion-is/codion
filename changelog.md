@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.13
 ### is.codion
 - Event suffix removed from methods returning EventObserver, related renaming.
+### is.codion.common.core
+- Observable added.
 ### is.codion.swing.common.ui
 - ComponentBuilder memory leaks prevented by replacing lambdas and anonymous inner classes with static classes.
 ### is.codion.framework.domain
