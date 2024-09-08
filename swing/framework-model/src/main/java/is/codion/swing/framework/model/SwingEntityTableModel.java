@@ -342,7 +342,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 	@Override
 	public final void select(Collection<Entity.Key> keys) {
-		selectionModel().setSelectedItems(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
+		selectionModel().selectedItems().set(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
 	}
 
 	@Override

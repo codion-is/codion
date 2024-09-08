@@ -81,9 +81,9 @@ public interface TableSelectionModel<R> {
 	Observable<R> selectedItem();
 
 	/**
-	 * @return an {@link Observable} for the selected items
+	 * @return the {@link SelectedItems}
 	 */
-	Observable<List<R>> selectedItems();
+	SelectedItems<R> selectedItems();
 
 	/**
 	 * Moves all selected indexes down one index, wraps around.
@@ -106,18 +106,6 @@ public interface TableSelectionModel<R> {
 	void selectAll();
 
 	/**
-	 * Sets the items passing the predicate test as the selection
-	 * @param predicate the predicate
-	 */
-	void setSelectedItems(Predicate<R> predicate);
-
-	/**
-	 * Adds the items passing the predicate test to the selection
-	 * @param predicate the predicate
-	 */
-	void addSelectedItems(Predicate<R> predicate);
-
-	/**
 	 * @return the number of selected indexes in the underlying selection model.
 	 */
 	int selectionCount();
@@ -127,30 +115,6 @@ public interface TableSelectionModel<R> {
 	 * @return true if the item is selected
 	 */
 	boolean isSelected(R item);
-
-	/**
-	 * Adds the given item to the selection
-	 * @param item the item to add to the selection
-	 */
-	void addSelectedItem(R item);
-
-	/**
-	 * Adds the given items to the selection
-	 * @param items the items to add to the selection
-	 */
-	void addSelectedItems(Collection<R> items);
-
-	/**
-	 * Remove the given item from the selection
-	 * @param item the item to remove from the selection
-	 */
-	void removeSelectedItem(R item);
-
-	/**
-	 * Remove the given items from the selection
-	 * @param items the items to remove from the selection
-	 */
-	void removeSelectedItems(Collection<R> items);
 
 	/**
 	 * Clears the selection
@@ -185,5 +149,48 @@ public interface TableSelectionModel<R> {
 		 * @param indexes the indexes
 		 */
 		void remove(Collection<Integer> indexes);
+	}
+
+	/**
+	 * Controls the selected items
+	 * @param <R> the item type
+	 */
+	interface SelectedItems<R> extends Observable<List<R>> {
+
+		/**
+		 * Sets the items passing the predicate test as the selection
+		 * @param predicate the predicate
+		 */
+		void set(Predicate<R> predicate);
+
+		/**
+		 * Adds the items passing the predicate test to the selection
+		 * @param predicate the predicate
+		 */
+		void add(Predicate<R> predicate);
+
+		/**
+		 * Adds the given item to the selection
+		 * @param item the item to add to the selection
+		 */
+		void add(R item);
+
+		/**
+		 * Adds the given items to the selection
+		 * @param items the items to add to the selection
+		 */
+		void add(Collection<R> items);
+
+		/**
+		 * Remove the given item from the selection
+		 * @param item the item to remove from the selection
+		 */
+		void remove(R item);
+
+		/**
+		 * Remove the given items from the selection
+		 * @param items the items to remove from the selection
+		 */
+		void remove(Collection<R> items);
 	}
 }

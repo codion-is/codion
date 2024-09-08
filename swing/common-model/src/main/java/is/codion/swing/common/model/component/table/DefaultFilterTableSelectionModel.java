@@ -95,22 +95,12 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public void setSelectedItems(Predicate<R> predicate) {
-		selectionModel.selectedIndexes.set(indexesToSelect(requireNonNull(predicate)));
-	}
-
-	@Override
-	public void addSelectedItems(Predicate<R> predicate) {
-		selectionModel.selectedIndexes.add(indexesToSelect(requireNonNull(predicate)));
-	}
-
-	@Override
 	public Observable<R> selectedItem() {
 		return selectionModel.selectedItem;
 	}
 
 	@Override
-	public Observable<List<R>> selectedItems() {
+	public SelectedItems<R> selectedItems() {
 		return selectionModel.selectedItems;
 	}
 
@@ -119,31 +109,6 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		requireNonNull(item);
 
 		return isSelectedIndex(tableModel.indexOf(item));
-	}
-
-	@Override
-	public void addSelectedItem(R item) {
-		addSelectedItems(singletonList(item));
-	}
-
-	@Override
-	public void addSelectedItems(Collection<R> items) {
-		requireNonNull(items, "items");
-		selectionModel.selectedIndexes.add(items.stream()
-						.mapToInt(tableModel::indexOf)
-						.filter(index -> index >= 0)
-						.boxed()
-						.collect(toList()));
-	}
-
-	@Override
-	public void removeSelectedItem(R item) {
-		removeSelectedItems(singletonList(requireNonNull(item)));
-	}
-
-	@Override
-	public void removeSelectedItems(Collection<R> items) {
-		requireNonNull(items).forEach(item -> selectionModel.selectedIndexes.remove(tableModel.indexOf(item)));
 	}
 
 	@Override
@@ -336,7 +301,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		private final SelectedIndex selectedIndex = new SelectedIndex();
 		private final DefaultSelectedIndexes selectedIndexes = new DefaultSelectedIndexes();
 		private final SelectedItem selectedItem = new SelectedItem();
-		private final SelectedItems selectedItems = new SelectedItems();
+		private final DefaultSelectedItems selectedItems = new DefaultSelectedItems();
 
 		@Override
 		protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
@@ -475,7 +440,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 			}
 		}
 
-		private final class SelectedItems implements Observable<List<R>> {
+		private final class DefaultSelectedItems implements SelectedItems<R> {
 
 			private final Event<List<R>> changeEvent = Event.event();
 
@@ -492,7 +457,42 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 				if (!isSelectionEmpty()) {
 					clearSelection();
 				}
-				addSelectedItems(items);
+				add(items);
+			}
+
+			@Override
+			public void set(Predicate<R> predicate) {
+				selectionModel.selectedIndexes.set(indexesToSelect(requireNonNull(predicate)));
+			}
+
+			@Override
+			public void add(Predicate<R> predicate) {
+				selectionModel.selectedIndexes.add(indexesToSelect(requireNonNull(predicate)));
+			}
+
+			@Override
+			public void add(R item) {
+				add(singletonList(item));
+			}
+
+			@Override
+			public void add(Collection<R> items) {
+				requireNonNull(items, "items");
+				selectionModel.selectedIndexes.add(items.stream()
+								.mapToInt(tableModel::indexOf)
+								.filter(index -> index >= 0)
+								.boxed()
+								.collect(toList()));
+			}
+
+			@Override
+			public void remove(R item) {
+				remove(singletonList(requireNonNull(item)));
+			}
+
+			@Override
+			public void remove(Collection<R> items) {
+				requireNonNull(items).forEach(item -> selectionModel.selectedIndexes.remove(tableModel.indexOf(item)));
 			}
 
 			@Override

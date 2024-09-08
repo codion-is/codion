@@ -498,22 +498,22 @@ public final class DefaultFilterTableModelTest {
 		selectionModel.selectedIndexes().remove(4);
 		assertEquals(-1, selectionModel.getMinSelectionIndex());
 
-		selectionModel.addSelectedItem(ITEMS.get(0));
+		selectionModel.selectedItems().add(ITEMS.get(0));
 		assertEquals(1, selectionModel.selectionCount());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		selectionModel.addSelectedItems(asList(ITEMS.get(1), ITEMS.get(2)));
+		selectionModel.selectedItems().add(asList(ITEMS.get(1), ITEMS.get(2)));
 		assertEquals(3, selectionModel.selectionCount());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		selectionModel.removeSelectedItem(ITEMS.get(1));
+		selectionModel.selectedItems().remove(ITEMS.get(1));
 		assertEquals(2, selectionModel.selectionCount());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		selectionModel.removeSelectedItem(ITEMS.get(2));
+		selectionModel.selectedItems().remove(ITEMS.get(2));
 		assertEquals(1, selectionModel.selectionCount());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		selectionModel.addSelectedItems(asList(ITEMS.get(1), ITEMS.get(2)));
+		selectionModel.selectedItems().add(asList(ITEMS.get(1), ITEMS.get(2)));
 		assertEquals(3, selectionModel.selectionCount());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		selectionModel.addSelectedItem(ITEMS.get(4));
+		selectionModel.selectedItems().add(ITEMS.get(4));
 		assertEquals(4, selectionModel.selectionCount());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 		tableModel.removeItem(ITEMS.get(0));
