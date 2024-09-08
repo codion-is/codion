@@ -39,15 +39,16 @@ import static java.util.stream.Collectors.toList;
 final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionModel<R> {
 
 	private final FilterListSelectionModel selectionModel = new FilterListSelectionModel();
-	private final Event<?> selectionChangingEvent = Event.event();
+	private final SelectedIndex selectedIndex = new SelectedIndex();
+	private final DefaultSelectedIndexes selectedIndexes = new DefaultSelectedIndexes();
+	private final SelectedItem selectedItem = new SelectedItem();
+	private final DefaultSelectedItems selectedItems = new DefaultSelectedItems();
+	private final Event<?> selectionChanging = Event.event();
 	private final State singleSelectionMode = State.state(false);
 	private final State selectionEmpty = State.state(true);
 	private final State singleSelection = State.state(false);
 	private final StateObserver multipleSelection = State.and(selectionEmpty.not(), singleSelection.not());
 
-	/**
-	 * The table model
-	 */
 	private final FilterTableModel<R, ?> tableModel;
 
 	DefaultFilterTableSelectionModel(FilterTableModel<R, ?> tableModel) {
@@ -81,12 +82,12 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	@Override
 	public SelectedIndexes selectedIndexes() {
-		return selectionModel.selectedIndexes;
+		return selectedIndexes;
 	}
 
 	@Override
 	public Observable<Integer> selectedIndex() {
-		return selectionModel.selectedIndex;
+		return selectedIndex;
 	}
 
 	@Override
@@ -96,12 +97,12 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	@Override
 	public Observable<R> selectedItem() {
-		return selectionModel.selectedItem;
+		return selectedItem;
 	}
 
 	@Override
 	public SelectedItems<R> selectedItems() {
-		return selectionModel.selectedItems;
+		return selectedItems;
 	}
 
 	@Override
@@ -113,37 +114,37 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	@Override
 	public void addSelectionInterval(int fromIndex, int toIndex) {
-		selectionChangingEvent.run();
+		selectionChanging.run();
 		selectionModel.addSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void setSelectionInterval(int fromIndex, int toIndex) {
-		selectionChangingEvent.run();
+		selectionChanging.run();
 		selectionModel.setSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void removeSelectionInterval(int fromIndex, int toIndex) {
-		selectionChangingEvent.run();
+		selectionChanging.run();
 		selectionModel.removeSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void insertIndexInterval(int fromIndex, int length, boolean before) {
-		selectionChangingEvent.run();
+		selectionChanging.run();
 		selectionModel.insertIndexInterval(fromIndex, length, before);
 	}
 
 	@Override
 	public void removeIndexInterval(int fromIndex, int toIndex) {
-		selectionChangingEvent.run();
+		selectionChanging.run();
 		selectionModel.removeIndexInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public EventObserver<?> selectionChanging() {
-		return selectionChangingEvent.observer();
+		return selectionChanging.observer();
 	}
 
 	@Override
@@ -241,26 +242,6 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 						setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
 	}
 
-	private List<Integer> indexesToSelect(Predicate<R> predicate) {
-		List<Integer> indexes = new ArrayList<>();
-		List<R> visibleItems = tableModel.visibleItems();
-		for (int i = 0; i < visibleItems.size(); i++) {
-			R item = visibleItems.get(i);
-			if (predicate.test(item)) {
-				indexes.add(i);
-			}
-		}
-
-		return indexes;
-	}
-
-	private void checkIndexes(Collection<Integer> indexes) {
-		int size = tableModel.visibleCount();
-		for (Integer index : indexes) {
-			checkIndex(index, size);
-		}
-	}
-
 	private static void checkIndex(int index, int size) {
 		if (index < 0 || index > size - 1) {
 			throw new IndexOutOfBoundsException("Index: " + index + ", size: " + size);
@@ -269,240 +250,255 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	private final class FilterListSelectionModel extends DefaultListSelectionModel {
 
-		private final SelectedIndex selectedIndex = new SelectedIndex();
-		private final DefaultSelectedIndexes selectedIndexes = new DefaultSelectedIndexes();
-		private final SelectedItem selectedItem = new SelectedItem();
-		private final DefaultSelectedItems selectedItems = new DefaultSelectedItems();
-
 		@Override
 		protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
 			super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
 			if (!isAdjusting) {
 				selectionEmpty.set(super.isSelectionEmpty());
 				singleSelection.set(selectionCount() == 1);
-				selectedIndex.changed();
-				selectedItem.changed();
-				selectedIndexes.changed();
-				selectedItems.changed();
+				selectedIndex.notifyListeners();
+				selectedItem.notifyListeners();
+				selectedIndexes.notifyListeners();
+				selectedItems.notifyListeners();
 			}
 		}
+	}
 
-		private final class SelectedIndex implements Observable<Integer> {
+	private final class SelectedIndex implements Observable<Integer> {
 
-			private final Event<Integer> changeEvent = Event.event();
+		private final Event<Integer> event = Event.event();
 
-			@Override
-			public Integer get() {
-				return selectionModel.getMinSelectionIndex();
-			}
-
-			@Override
-			public void set(Integer index) {
-				requireNonNull(index);
-				checkIndex(index, tableModel.visibleCount());
-				setSelectionInterval(index, index);
-			}
-
-			@Override
-			public EventObserver<Integer> observer() {
-				return changeEvent.observer();
-			}
-
-			private void changed() {
-				changeEvent.accept(get());
-			}
+		@Override
+		public Integer get() {
+			return getMinSelectionIndex();
 		}
 
-		private final class DefaultSelectedIndexes implements SelectedIndexes {
+		@Override
+		public void set(Integer index) {
+			requireNonNull(index);
+			checkIndex(index, tableModel.visibleCount());
+			setSelectionInterval(index, index);
+		}
 
-			private final Event<List<Integer>> changeEvent = Event.event();
+		@Override
+		public EventObserver<Integer> observer() {
+			return event.observer();
+		}
 
-			@Override
-			public List<Integer> get() {
-				if (isSelectionEmpty()) {
-					return emptyList();
-				}
+		private void notifyListeners() {
+			event.accept(get());
+		}
+	}
 
-				return unmodifiableList(IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
-								.filter(DefaultFilterTableSelectionModel.this::isSelectedIndex)
-								.boxed()
-								.collect(toList()));
+	private final class DefaultSelectedIndexes implements SelectedIndexes {
+
+		private final Event<List<Integer>> event = Event.event();
+
+		@Override
+		public List<Integer> get() {
+			if (isSelectionEmpty()) {
+				return emptyList();
 			}
 
-			@Override
-			public void set(List<Integer> indexes) {
-				requireNonNull(indexes);
-				checkIndexes(indexes);
-				setValueIsAdjusting(true);
-				clearSelection();
-				add(indexes);
-				setValueIsAdjusting(false);
-			}
+			return unmodifiableList(IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
+							.filter(DefaultFilterTableSelectionModel.this::isSelectedIndex)
+							.boxed()
+							.collect(toList()));
+		}
 
-			@Override
-			public void add(int index) {
-				checkIndex(index, tableModel.visibleCount());
-				addSelectionInterval(index, index);
-			}
+		@Override
+		public void set(List<Integer> indexes) {
+			requireNonNull(indexes);
+			checkIndexes(indexes);
+			setValueIsAdjusting(true);
+			clearSelection();
+			add(indexes);
+			setValueIsAdjusting(false);
+		}
 
-			@Override
-			public void remove(int index) {
+		@Override
+		public void add(int index) {
+			checkIndex(index, tableModel.visibleCount());
+			addSelectionInterval(index, index);
+		}
+
+		@Override
+		public void remove(int index) {
+			checkIndex(index, tableModel.visibleCount());
+			removeSelectionInterval(index, index);
+		}
+
+		@Override
+		public void remove(Collection<Integer> indexes) {
+			indexes.forEach(index -> {
 				checkIndex(index, tableModel.visibleCount());
 				removeSelectionInterval(index, index);
-			}
+			});
+		}
 
-			@Override
-			public void remove(Collection<Integer> indexes) {
-				indexes.forEach(index -> {
-					checkIndex(index, tableModel.visibleCount());
-					removeSelectionInterval(index, index);
-				});
+		@Override
+		public void add(Collection<Integer> indexes) {
+			if (requireNonNull(indexes).isEmpty()) {
+				return;
 			}
+			checkIndexes(indexes);
+			setValueIsAdjusting(true);
+			for (Integer index : indexes) {
+				addSelectionInterval(index, index);
+			}
+			setValueIsAdjusting(false);
+		}
 
-			@Override
-			public void add(Collection<Integer> indexes) {
-				if (requireNonNull(indexes).isEmpty()) {
-					return;
+		@Override
+		public void moveUp() {
+			if (tableModel.visibleCount() > 0) {
+				int lastIndex = tableModel.visibleCount() - 1;
+				if (isSelectionEmpty()) {
+					setSelectionInterval(lastIndex, lastIndex);
 				}
-				checkIndexes(indexes);
-				setValueIsAdjusting(true);
-				for (Integer index : indexes) {
-					addSelectionInterval(index, index);
+				else {
+					selectedIndexes.set(selectedIndexes.get().stream()
+									.map(index -> index == 0 ? lastIndex : index - 1)
+									.collect(toList()));
 				}
-				setValueIsAdjusting(false);
-			}
-
-			@Override
-			public void moveUp() {
-				if (tableModel.visibleCount() > 0) {
-					int lastIndex = tableModel.visibleCount() - 1;
-					if (isSelectionEmpty()) {
-						setSelectionInterval(lastIndex, lastIndex);
-					}
-					else {
-						selectionModel.selectedIndexes.set(selectionModel.selectedIndexes.get().stream()
-										.map(index -> index == 0 ? lastIndex : index - 1)
-										.collect(toList()));
-					}
-				}
-			}
-
-			@Override
-			public void moveDown() {
-				if (tableModel.visibleCount() > 0) {
-					if (isSelectionEmpty()) {
-						setSelectionInterval(0, 0);
-					}
-					else {
-						selectionModel.selectedIndexes.set(selectionModel.selectedIndexes.get().stream()
-										.map(index -> index == tableModel.visibleCount() - 1 ? 0 : index + 1)
-										.collect(toList()));
-					}
-				}
-			}
-
-			@Override
-			public EventObserver<List<Integer>> observer() {
-				return changeEvent.observer();
-			}
-
-			private void changed() {
-				changeEvent.accept(get());
 			}
 		}
 
-		private final class SelectedItem implements Observable<R> {
-
-			private final Event<R> changeEvent = Event.event();
-
-			@Override
-			public R get() {
-				int index = selectionModel.selectedIndex.get();
-				if (index >= 0 && index < tableModel.visibleCount()) {
-					return tableModel.itemAt(index);
+		@Override
+		public void moveDown() {
+			if (tableModel.visibleCount() > 0) {
+				if (isSelectionEmpty()) {
+					setSelectionInterval(0, 0);
 				}
-
-				return null;
-			}
-
-			@Override
-			public void set(R item) {
-				selectionModel.selectedItems.set(singletonList(item));
-			}
-
-			@Override
-			public EventObserver<R> observer() {
-				return changeEvent.observer();
-			}
-
-			private void changed() {
-				changeEvent.accept(get());
+				else {
+					selectedIndexes.set(selectedIndexes.get().stream()
+									.map(index -> index == tableModel.visibleCount() - 1 ? 0 : index + 1)
+									.collect(toList()));
+				}
 			}
 		}
 
-		private final class DefaultSelectedItems implements SelectedItems<R> {
+		@Override
+		public EventObserver<List<Integer>> observer() {
+			return event.observer();
+		}
 
-			private final Event<List<R>> changeEvent = Event.event();
+		private void checkIndexes(Collection<Integer> indexes) {
+			int size = tableModel.visibleCount();
+			for (Integer index : indexes) {
+				checkIndex(index, size);
+			}
+		}
 
-			@Override
-			public List<R> get() {
-				return unmodifiableList(selectionModel.selectedIndexes.get().stream()
-								.mapToInt(Integer::intValue)
-								.mapToObj(tableModel::itemAt)
-								.collect(toList()));
+		private void notifyListeners() {
+			event.accept(get());
+		}
+	}
+
+	private final class SelectedItem implements Observable<R> {
+
+		private final Event<R> event = Event.event();
+
+		@Override
+		public R get() {
+			int index = selectedIndex.get();
+			if (index >= 0 && index < tableModel.visibleCount()) {
+				return tableModel.itemAt(index);
 			}
 
-			@Override
-			public void set(List<R> items) {
-				if (!isSelectionEmpty()) {
-					clearSelection();
+			return null;
+		}
+
+		@Override
+		public void set(R item) {
+			selectedItems.set(singletonList(item));
+		}
+
+		@Override
+		public EventObserver<R> observer() {
+			return event.observer();
+		}
+
+		private void notifyListeners() {
+			event.accept(get());
+		}
+	}
+
+	private final class DefaultSelectedItems implements SelectedItems<R> {
+
+		private final Event<List<R>> event = Event.event();
+
+		@Override
+		public List<R> get() {
+			return unmodifiableList(selectedIndexes.get().stream()
+							.mapToInt(Integer::intValue)
+							.mapToObj(tableModel::itemAt)
+							.collect(toList()));
+		}
+
+		@Override
+		public void set(List<R> items) {
+			if (!isSelectionEmpty()) {
+				clearSelection();
+			}
+			add(items);
+		}
+
+		@Override
+		public void set(Predicate<R> predicate) {
+			selectedIndexes.set(indexesToSelect(requireNonNull(predicate)));
+		}
+
+		@Override
+		public void add(Predicate<R> predicate) {
+			selectedIndexes.add(indexesToSelect(requireNonNull(predicate)));
+		}
+
+		@Override
+		public void add(R item) {
+			add(singletonList(item));
+		}
+
+		@Override
+		public void add(Collection<R> items) {
+			requireNonNull(items, "items");
+			selectedIndexes.add(items.stream()
+							.mapToInt(tableModel::indexOf)
+							.filter(index -> index >= 0)
+							.boxed()
+							.collect(toList()));
+		}
+
+		@Override
+		public void remove(R item) {
+			remove(singletonList(requireNonNull(item)));
+		}
+
+		@Override
+		public void remove(Collection<R> items) {
+			requireNonNull(items).forEach(item -> selectedIndexes.remove(tableModel.indexOf(item)));
+		}
+
+		@Override
+		public EventObserver<List<R>> observer() {
+			return event.observer();
+		}
+
+		private List<Integer> indexesToSelect(Predicate<R> predicate) {
+			List<Integer> indexes = new ArrayList<>();
+			List<R> visibleItems = tableModel.visibleItems();
+			for (int i = 0; i < visibleItems.size(); i++) {
+				R item = visibleItems.get(i);
+				if (predicate.test(item)) {
+					indexes.add(i);
 				}
-				add(items);
 			}
 
-			@Override
-			public void set(Predicate<R> predicate) {
-				selectionModel.selectedIndexes.set(indexesToSelect(requireNonNull(predicate)));
-			}
+			return indexes;
+		}
 
-			@Override
-			public void add(Predicate<R> predicate) {
-				selectionModel.selectedIndexes.add(indexesToSelect(requireNonNull(predicate)));
-			}
-
-			@Override
-			public void add(R item) {
-				add(singletonList(item));
-			}
-
-			@Override
-			public void add(Collection<R> items) {
-				requireNonNull(items, "items");
-				selectionModel.selectedIndexes.add(items.stream()
-								.mapToInt(tableModel::indexOf)
-								.filter(index -> index >= 0)
-								.boxed()
-								.collect(toList()));
-			}
-
-			@Override
-			public void remove(R item) {
-				remove(singletonList(requireNonNull(item)));
-			}
-
-			@Override
-			public void remove(Collection<R> items) {
-				requireNonNull(items).forEach(item -> selectionModel.selectedIndexes.remove(tableModel.indexOf(item)));
-			}
-
-			@Override
-			public EventObserver<List<R>> observer() {
-				return changeEvent.observer();
-			}
-
-			private void changed() {
-				changeEvent.accept(get());
-			}
+		private void notifyListeners() {
+			event.accept(get());
 		}
 	}
 }
