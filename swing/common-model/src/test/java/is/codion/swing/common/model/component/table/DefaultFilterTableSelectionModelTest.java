@@ -97,7 +97,7 @@ public class DefaultFilterTableSelectionModelTest {
 		assertEquals(1, emptyCounter.get());
 		testModel.addSelectionInterval(0, 1);
 		assertEquals(1, emptyCounter.get());
-		testModel.moveSelectionDown();
+		testModel.selectedIndexes().moveDown();
 		assertEquals(1, emptyCounter.get());
 		testModel.clearSelection();
 		assertEquals(2, emptyCounter.get());

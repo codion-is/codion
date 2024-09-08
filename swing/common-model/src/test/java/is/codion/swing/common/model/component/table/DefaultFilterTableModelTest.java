@@ -413,32 +413,32 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(selectionModel.selectionEmpty().get());
 		assertFalse(selectionModel.multipleSelection().get());
 		assertEquals(2, selectionModel.selectedIndex().get());
-		selectionModel.moveSelectionDown();
+		selectionModel.selectedIndexes().moveDown();
 		assertEquals(8, events.get());
 		assertEquals(3, selectionModel.selectedIndex().get());
-		selectionModel.moveSelectionUp();
-		selectionModel.moveSelectionUp();
+		selectionModel.selectedIndexes().moveUp();
+		selectionModel.selectedIndexes().moveUp();
 		assertEquals(1, selectionModel.selectedIndex().get());
 
-		selectionModel.moveSelectionDown();
-		selectionModel.moveSelectionDown();
+		selectionModel.selectedIndexes().moveDown();
+		selectionModel.selectedIndexes().moveDown();
 
 		assertEquals(3, selectionModel.selectedIndex().get());
 
 		selectionModel.selectedIndex().set(0);
-		selectionModel.moveSelectionUp();
+		selectionModel.selectedIndexes().moveUp();
 		assertEquals(tableModel.visibleCount() - 1, selectionModel.selectedIndex().get());
 
 		selectionModel.selectedIndex().set(tableModel.visibleCount() - 1);
-		selectionModel.moveSelectionDown();
+		selectionModel.selectedIndexes().moveDown();
 		assertEquals(0, selectionModel.selectedIndex().get());
 
 		selectionModel.clearSelection();
-		selectionModel.moveSelectionUp();
+		selectionModel.selectedIndexes().moveUp();
 		assertEquals(tableModel.visibleCount() - 1, selectionModel.selectedIndex().get());
 
 		selectionModel.clearSelection();
-		selectionModel.moveSelectionDown();
+		selectionModel.selectedIndexes().moveDown();
 		assertEquals(0, selectionModel.selectedIndex().get());
 
 		selectionModel.selectAll();

@@ -86,20 +86,6 @@ public interface TableSelectionModel<R> {
 	SelectedItems<R> selectedItems();
 
 	/**
-	 * Moves all selected indexes down one index, wraps around.
-	 * If the selection is empty the first item in this model is selected.
-	 * @see #selectedIndexes()
-	 */
-	void moveSelectionDown();
-
-	/**
-	 * Moves all selected indexes up one index, wraps around.
-	 * If the selection is empty the last item in this model is selected.
-	 * @see #selectedIndexes()
-	 */
-	void moveSelectionUp();
-
-	/**
 	 * Selects all visible rows
 	 * @see #selectedIndexes()
 	 */
@@ -149,6 +135,18 @@ public interface TableSelectionModel<R> {
 		 * @param indexes the indexes
 		 */
 		void remove(Collection<Integer> indexes);
+
+		/**
+		 * Moves all selected indexes down one index, wraps around.
+		 * If the selection is empty the first item is selected.
+		 */
+		void moveDown();
+
+		/**
+		 * Moves all selected indexes up one index, wraps around.
+		 * If the selection is empty the last item is selected.
+		 */
+		void moveUp();
 	}
 
 	/**

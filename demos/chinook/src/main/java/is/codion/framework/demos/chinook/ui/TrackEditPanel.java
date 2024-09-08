@@ -123,13 +123,13 @@ public final class TrackEditPanel extends EntityEditPanel {
 
 	private void moveSelectionUp() {
 		if (readyForSelectionChange()) {
-			tableModel.selectionModel().moveSelectionUp();
+			tableModel.selectionModel().selectedIndexes().moveUp();
 		}
 	}
 
 	private void moveSelectionDown() {
 		if (readyForSelectionChange()) {
-			tableModel.selectionModel().moveSelectionDown();
+			tableModel.selectionModel().selectedIndexes().moveDown();
 		}
 	}
 

@@ -12,6 +12,7 @@ Codion Change Log
 - TableSelectionModel, selectedIndex, selectedIndexes, selectedItem and selectedItems now Observable based.
 - TableSelectionModel.SelectedIndexes added.
 - TableSelectionModel.SelectedItems added.
+- TableSelectionModel.moveSelectionDown() and moveSelectionUp() moved to SelectedIndexes and renamed moveDown() and moveUp() respectively.
 ### is.codion.swing.common.ui
 - ComponentBuilder memory leaks prevented by replacing lambdas and anonymous inner classes with static classes.
 ### is.codion.framework.domain

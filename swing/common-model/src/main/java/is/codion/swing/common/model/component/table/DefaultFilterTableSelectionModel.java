@@ -142,35 +142,6 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public void moveSelectionUp() {
-		if (tableModel.visibleCount() > 0) {
-			int lastIndex = tableModel.visibleCount() - 1;
-			if (isSelectionEmpty()) {
-				setSelectionInterval(lastIndex, lastIndex);
-			}
-			else {
-				selectionModel.selectedIndexes.set(selectionModel.selectedIndexes.get().stream()
-								.map(index -> index == 0 ? lastIndex : index - 1)
-								.collect(toList()));
-			}
-		}
-	}
-
-	@Override
-	public void moveSelectionDown() {
-		if (tableModel.visibleCount() > 0) {
-			if (isSelectionEmpty()) {
-				setSelectionInterval(0, 0);
-			}
-			else {
-				selectionModel.selectedIndexes.set(selectionModel.selectedIndexes.get().stream()
-								.map(index -> index == tableModel.visibleCount() - 1 ? 0 : index + 1)
-								.collect(toList()));
-			}
-		}
-	}
-
-	@Override
 	public EventObserver<?> selectionChanging() {
 		return selectionChangingEvent.observer();
 	}
@@ -399,6 +370,35 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 					addSelectionInterval(index, index);
 				}
 				setValueIsAdjusting(false);
+			}
+
+			@Override
+			public void moveUp() {
+				if (tableModel.visibleCount() > 0) {
+					int lastIndex = tableModel.visibleCount() - 1;
+					if (isSelectionEmpty()) {
+						setSelectionInterval(lastIndex, lastIndex);
+					}
+					else {
+						selectionModel.selectedIndexes.set(selectionModel.selectedIndexes.get().stream()
+										.map(index -> index == 0 ? lastIndex : index - 1)
+										.collect(toList()));
+					}
+				}
+			}
+
+			@Override
+			public void moveDown() {
+				if (tableModel.visibleCount() > 0) {
+					if (isSelectionEmpty()) {
+						setSelectionInterval(0, 0);
+					}
+					else {
+						selectionModel.selectedIndexes.set(selectionModel.selectedIndexes.get().stream()
+										.map(index -> index == tableModel.visibleCount() - 1 ? 0 : index + 1)
+										.collect(toList()));
+					}
+				}
 			}
 
 			@Override
