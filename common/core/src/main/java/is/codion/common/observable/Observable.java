@@ -22,13 +22,17 @@ import is.codion.common.event.EventObserver;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * A wrapper for a value, providing a change observer.
  * @param <T> the type being observed
  */
-public interface Observable<T> extends EventObserver<T>, Supplier<T> {
+public interface Observable<T> extends EventObserver<T> {
+
+	/**
+	 * @return the value
+	 */
+	T get();
 
 	/**
 	 * Sets the value
