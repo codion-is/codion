@@ -42,7 +42,7 @@ abstract class AbstractItem<T> implements Item<T> {
 	}
 
 	@Override
-	public final T get() {
+	public final T value() {
 		return value;
 	}
 
@@ -66,7 +66,7 @@ abstract class AbstractItem<T> implements Item<T> {
 
 	@Override
 	public final boolean equals(Object obj) {
-		return this == obj || obj instanceof Item && Objects.equals(value, ((Item<?>) obj).get());
+		return this == obj || obj instanceof Item && Objects.equals(value, ((Item<?>) obj).value());
 	}
 
 	@Override

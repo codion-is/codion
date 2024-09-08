@@ -69,7 +69,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 		super(linkedValue);
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		this.items = Collections.emptyList();
-		initialValue(comboBoxModel.getSelectedItem() == null ? null : comboBoxModel.getSelectedItem().get());
+		initialValue(comboBoxModel.getSelectedItem() == null ? null : comboBoxModel.getSelectedItem().value());
 		preferredHeight(preferredTextFieldHeight());
 	}
 

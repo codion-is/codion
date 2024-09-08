@@ -6,6 +6,7 @@ Codion Change Log
 - Event suffix removed from methods returning EventObserver, related renaming.
 ### is.codion.common.core
 - Observable added.
+- Item.get() renamed value(), no longer extends Supplier.
 ### is.codion.swing.common.model
 - TableSelectionModel, selectedIndex, selectedIndexes, selectedItem and selectedItems now Observable based.
 - TableSelectionModel.SelectedIndexes added.

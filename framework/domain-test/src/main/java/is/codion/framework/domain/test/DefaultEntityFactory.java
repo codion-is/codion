@@ -259,7 +259,7 @@ public class DefaultEntityFactory implements EntityFactory {
 		List<Item<T>> items = attributeDefinition.items();
 		Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
-		return item.get();
+		return item.value();
 	}
 
 	private static int randomInteger(AttributeDefinition<?> attributeDefinition) {

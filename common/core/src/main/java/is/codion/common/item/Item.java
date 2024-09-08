@@ -19,19 +19,18 @@
 package is.codion.common.item;
 
 import java.io.Serializable;
-import java.util.function.Supplier;
 
 /**
  * A class encapsulating a constant value and a caption representing the value.
  * Comparing {@link Item}s is based on their caption.
  * Factory for {@link Item} instances.
  * @param <T> the type of the value
- * @see #get()
+ * @see #value()
  * @see Item#item(Object)
  * @see Item#item(Object, String)
  * @see Item#itemI18n(Object, String, String)
  */
-public interface Item<T> extends Supplier<T>, Comparable<Item<T>>, Serializable {
+public interface Item<T> extends Comparable<Item<T>>, Serializable {
 
 	/**
 	 * @return the caption
@@ -41,7 +40,7 @@ public interface Item<T> extends Supplier<T>, Comparable<Item<T>>, Serializable 
 	/**
 	 * @return the item value
 	 */
-	T get();
+	T value();
 
 	/**
 	 * Returns an {@link Item}, with the caption as item.toString() or an empty string in case of a null value

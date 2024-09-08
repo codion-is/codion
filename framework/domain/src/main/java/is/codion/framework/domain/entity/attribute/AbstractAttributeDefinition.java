@@ -188,7 +188,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		this.dateTimeFormatter = builder.dateTimeFormatter;
 		this.items = builder.items;
 		this.itemMap = items == null ? null : items.stream()
-						.collect(toMap(Item::get, Function.identity()));
+						.collect(toMap(Item::value, Function.identity()));
 	}
 
 	@Override

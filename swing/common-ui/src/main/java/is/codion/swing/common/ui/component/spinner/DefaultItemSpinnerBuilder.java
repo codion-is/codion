@@ -43,7 +43,7 @@ final class DefaultItemSpinnerBuilder<T> extends AbstractSpinnerBuilder<T, ItemS
 		SpinnerListModel model = (SpinnerListModel) spinnerModel;
 		model.getList().stream()
 						.map(Item.class::cast)
-						.filter(item -> Objects.equals(item.get(), initialValue))
+						.filter(item -> Objects.equals(item.value(), initialValue))
 						.findFirst()
 						.ifPresent(model::setValue);
 	}

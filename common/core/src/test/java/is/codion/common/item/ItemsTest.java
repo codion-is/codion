@@ -33,7 +33,7 @@ public class ItemsTest {
 	@Test
 	void item() throws IOException, ClassNotFoundException {
 		Item<String> item = Item.item("hello", "world");
-		assertEquals("hello", item.get());
+		assertEquals("hello", item.value());
 		assertEquals("world", item.caption());
 		assertEquals("world", item.toString());
 

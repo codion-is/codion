@@ -441,7 +441,7 @@ public final class FilterTable<R, C> extends JTable {
 										.build())
 						.owner(getParent())
 						.title(MESSAGES.getString(AUTO_RESIZE))
-						.onOk(() -> setAutoResizeMode(autoResizeComboBoxModel.selectedValue().get()))
+						.onOk(() -> setAutoResizeMode(autoResizeComboBoxModel.selectedValue().value()))
 						.show();
 	}
 
@@ -815,11 +815,11 @@ public final class FilterTable<R, C> extends JTable {
 		List<ToggleControl> controls = new ArrayList<>();
 		State.Group group = State.group();
 		for (Item<Integer> resizeMode : AUTO_RESIZE_MODES) {
-			State state = State.state(resizeMode.get().equals(getAutoResizeMode()));
+			State state = State.state(resizeMode.value().equals(getAutoResizeMode()));
 			group.add(state);
 			state.addConsumer(enabled -> {
 				if (enabled) {
-					setAutoResizeMode(resizeMode.get());
+					setAutoResizeMode(resizeMode.value());
 				}
 			});
 			controls.add(Control.builder()

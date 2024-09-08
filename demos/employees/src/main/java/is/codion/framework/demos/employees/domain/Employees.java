@@ -84,7 +84,7 @@ public final class Employees extends DomainModel {
 
 		JRReportType EMPLOYEE_REPORT = JasperReports.reportType("employee_report");
 
-		List<Item<String>> JOB_VALUES = asList(
+		List<Item<String>> JOB_ITEMS = asList(
 						item("Analyst"), item("Clerk"),
 						item("Manager"), item("President"),
 						item("Salesman"));
@@ -146,7 +146,7 @@ public final class Employees extends DomainModel {
 										Employee.JOB.define()
 														.column()
 														.caption("Job")
-														.items(Employee.JOB_VALUES),
+														.items(Employee.JOB_ITEMS),
 										Employee.SALARY.define()
 														.column()
 														.caption("Salary")
