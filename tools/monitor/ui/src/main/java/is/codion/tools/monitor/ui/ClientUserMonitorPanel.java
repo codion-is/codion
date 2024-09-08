@@ -23,6 +23,7 @@ import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.tools.monitor.model.ClientUserMonitor;
+import is.codion.tools.monitor.model.ClientUserMonitor.UserHistoryColumns;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -148,25 +149,25 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.build();
 	}
 
-	private static List<FilterTableColumn<ClientUserMonitor.UserHistoryColumns.Id>> createUserHistoryColumns() {
+	private static List<FilterTableColumn<UserHistoryColumns.Id>> createUserHistoryColumns() {
 		return asList(
-						createColumn(ClientUserMonitor.UserHistoryColumns.Id.USERNAME_COLUMN, "Username"),
-						createColumn(ClientUserMonitor.UserHistoryColumns.Id.CLIENT_TYPE_COLUMN, "Client type"),
-						createColumn(ClientUserMonitor.UserHistoryColumns.Id.CLIENT_VERSION_COLUMN, "Client version"),
-						createColumn(ClientUserMonitor.UserHistoryColumns.Id.FRAMEWORK_VERSION_COLUMN, "Framework version"),
-						createColumn(ClientUserMonitor.UserHistoryColumns.Id.CLIENT_HOST_COLUMN, "Host"),
-						createColumn(ClientUserMonitor.UserHistoryColumns.Id.LAST_SEEN_COLUMN, "Last seen", new LastSeenRenderer()),
-						createColumn(ClientUserMonitor.UserHistoryColumns.Id.CONNECTION_COUNT_COLUMN, "Connections"));
+						createColumn(UserHistoryColumns.Id.USERNAME_COLUMN, "Username"),
+						createColumn(UserHistoryColumns.Id.CLIENT_TYPE_COLUMN, "Client type"),
+						createColumn(UserHistoryColumns.Id.CLIENT_VERSION_COLUMN, "Client version"),
+						createColumn(UserHistoryColumns.Id.FRAMEWORK_VERSION_COLUMN, "Framework version"),
+						createColumn(UserHistoryColumns.Id.CLIENT_HOST_COLUMN, "Host"),
+						createColumn(UserHistoryColumns.Id.LAST_SEEN_COLUMN, "Last seen", new LastSeenRenderer()),
+						createColumn(UserHistoryColumns.Id.CONNECTION_COUNT_COLUMN, "Connections"));
 	}
 
-	private static FilterTableColumn<ClientUserMonitor.UserHistoryColumns.Id> createColumn(ClientUserMonitor.UserHistoryColumns.Id identifier,
-																																												 String headerValue) {
+	private static FilterTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
+																																			 String headerValue) {
 		return createColumn(identifier, headerValue, null);
 	}
 
-	private static FilterTableColumn<ClientUserMonitor.UserHistoryColumns.Id> createColumn(ClientUserMonitor.UserHistoryColumns.Id identifier,
-																																												 String headerValue,
-																																												 TableCellRenderer cellRenderer) {
+	private static FilterTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
+																																			 String headerValue,
+																																			 TableCellRenderer cellRenderer) {
 		return FilterTableColumn.builder(identifier)
 						.headerValue(headerValue)
 						.cellRenderer(cellRenderer)

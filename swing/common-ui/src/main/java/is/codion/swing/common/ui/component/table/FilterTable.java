@@ -110,10 +110,10 @@ import static javax.swing.KeyStroke.getKeyStrokeForEvent;
 /**
  * A JTable implementation for {@link FilterTableModel}.
  * Note that for the table header to display you must add this table to a JScrollPane.
- * For instances use the builder {@link #builder(FilterTableModel, ColumnFactory)}
+ * For instances use the builder {@link #builder(FilterTableModel, List)}
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
- * @see #builder(FilterTableModel, ColumnFactory)
+ * @see #builder(FilterTableModel, List)
  */
 public final class FilterTable<R, C> extends JTable {
 
@@ -213,8 +213,7 @@ public final class FilterTable<R, C> extends JTable {
 					item(AUTO_RESIZE_NEXT_COLUMN, MESSAGES.getString("resize_next_column")),
 					item(AUTO_RESIZE_SUBSEQUENT_COLUMNS, MESSAGES.getString("resize_subsequent_columns")),
 					item(AUTO_RESIZE_LAST_COLUMN, MESSAGES.getString("resize_last_column")),
-					item(AUTO_RESIZE_ALL_COLUMNS, MESSAGES.getString("resize_all_columns"))
-	);
+					item(AUTO_RESIZE_ALL_COLUMNS, MESSAGES.getString("resize_all_columns")));
 	private static final int SEARCH_FIELD_MINIMUM_WIDTH = 100;
 	private static final int COLUMN_RESIZE_AMOUNT = 10;
 
@@ -509,7 +508,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * Copies the table data as a TAB delimited string, with header, to the clipboard.
+	 * Copies the selected table rows as a TAB delimited string, with header, to the clipboard.
 	 */
 	public void copySelectedToClipboard() {
 		Utilities.setClipboard(export()
@@ -639,10 +638,11 @@ public final class FilterTable<R, C> extends JTable {
 	 * @param <R> the type representing rows
 	 * @param <C> the type used to identify columns
 	 * @return a new {@link FilterTable.Builder} instance
+	 * @throws IllegalArgumentException in case the column identifiers are not unique
 	 */
 	public static <R, C> Builder<R, C> builder(FilterTableModel<R, C> tableModel,
 																						 List<FilterTableColumn<C>> columns) {
-		return new DefaultBuilder<>(tableModel, columns);
+		return new DefaultBuilder<>(requireNonNull(tableModel), requireNonNull(columns));
 	}
 
 	@Override
@@ -1155,7 +1155,7 @@ public final class FilterTable<R, C> extends JTable {
 		private ConditionState filterState = ConditionState.HIDDEN;
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
-			this.tableModel = requireNonNull(tableModel);
+			this.tableModel = tableModel;
 			this.columns = new ArrayList<>(validateIdentifiers(columns));
 			this.cellRendererFactory = new DefaultFilterTableCellRendererFactory<>(tableModel);
 			this.cellEditorFactory = new DefaultFilterTableCellEditorFactory<>();

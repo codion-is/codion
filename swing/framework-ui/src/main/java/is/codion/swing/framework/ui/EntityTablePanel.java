@@ -541,10 +541,11 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * @return the table
+	 * @throws IllegalStateException in case this method is called during configuration
 	 */
 	public final FilterTable<Entity, Attribute<?>> table() {
 		if (table == null) {
-			throw new IllegalStateException("The table is not initialized until after configuration has finished");
+			throw new IllegalStateException("The table is not available until configuration has finished");
 		}
 
 		return table;

@@ -28,6 +28,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.tools.monitor.model.ClientInstanceMonitor;
 import is.codion.tools.monitor.model.ClientMonitor;
+import is.codion.tools.monitor.model.ClientMonitor.RemoteClientColumns;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -54,7 +55,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 public final class ClientMonitorPanel extends JPanel {
 
 	private final ClientMonitor model;
-	private final FilterTable<RemoteClient, ClientMonitor.RemoteClientColumns.Id> clientInstanceTable;
+	private final FilterTable<RemoteClient, RemoteClientColumns.Id> clientInstanceTable;
 	private final JScrollPane filterScrollPane;
 	private final JScrollPane clientInstanceScroller;
 	private final State advancedFilterState = State.builder()
@@ -133,7 +134,7 @@ public final class ClientMonitorPanel extends JPanel {
 		add(splitPane, BorderLayout.CENTER);
 	}
 
-	private JPopupMenu createPopupMenu(FilterTable<RemoteClient, ClientMonitor.RemoteClientColumns.Id> table) {
+	private JPopupMenu createPopupMenu(FilterTable<RemoteClient, RemoteClientColumns.Id> table) {
 		return menu(Controls.builder()
 						.control(Control.builder()
 										.command(this::disconnect)
@@ -171,33 +172,33 @@ public final class ClientMonitorPanel extends JPanel {
 						.build();
 	}
 
-	private static List<FilterTableColumn<ClientMonitor.RemoteClientColumns.Id>> createColumns() {
+	private static List<FilterTableColumn<RemoteClientColumns.Id>> createColumns() {
 		return asList(
-						FilterTableColumn.builder(ClientMonitor.RemoteClientColumns.Id.USER)
+						FilterTableColumn.builder(RemoteClientColumns.Id.USER)
 										.headerValue("User")
 										.build(),
-						FilterTableColumn.builder(ClientMonitor.RemoteClientColumns.Id.CLIENT_HOST)
+						FilterTableColumn.builder(RemoteClientColumns.Id.CLIENT_HOST)
 										.headerValue("Host")
 										.build(),
-						FilterTableColumn.builder(ClientMonitor.RemoteClientColumns.Id.CLIENT_TYPE)
+						FilterTableColumn.builder(RemoteClientColumns.Id.CLIENT_TYPE)
 										.headerValue("Type")
 										.build(),
-						FilterTableColumn.builder(ClientMonitor.RemoteClientColumns.Id.CLIENT_VERSION)
+						FilterTableColumn.builder(RemoteClientColumns.Id.CLIENT_VERSION)
 										.headerValue("Version")
 										.build(),
-						FilterTableColumn.builder(ClientMonitor.RemoteClientColumns.Id.CODION_VERSION)
+						FilterTableColumn.builder(RemoteClientColumns.Id.CODION_VERSION)
 										.headerValue("Framework version")
 										.build(),
-						FilterTableColumn.builder(ClientMonitor.RemoteClientColumns.Id.CLIENT_ID)
+						FilterTableColumn.builder(RemoteClientColumns.Id.CLIENT_ID)
 										.headerValue("Id")
 										.build(),
-						FilterTableColumn.builder(ClientMonitor.RemoteClientColumns.Id.LOCALE)
+						FilterTableColumn.builder(RemoteClientColumns.Id.LOCALE)
 										.headerValue("Locale")
 										.build(),
-						FilterTableColumn.builder(ClientMonitor.RemoteClientColumns.Id.TIMEZONE)
+						FilterTableColumn.builder(RemoteClientColumns.Id.TIMEZONE)
 										.headerValue("Timezone")
 										.build(),
-						FilterTableColumn.builder(ClientMonitor.RemoteClientColumns.Id.CREATION_TIME)
+						FilterTableColumn.builder(RemoteClientColumns.Id.CREATION_TIME)
 										.headerValue("Created")
 										.build()
 		);
