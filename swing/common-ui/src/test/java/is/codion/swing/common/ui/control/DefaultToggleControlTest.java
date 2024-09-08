@@ -64,7 +64,7 @@ public class DefaultToggleControlTest {
 		nullableValue.set(false);
 		assertFalse(nullableControl.value().get());
 		nullableValue.clear();
-		assertNull(toggleButtonModel.getState());
+		assertNull(toggleButtonModel.toggleState().get());
 		assertFalse(toggleButtonModel.isSelected());
 
 		Value<Boolean> nonNullableValue = Value.builder()
@@ -137,24 +137,24 @@ public class DefaultToggleControlTest {
 						.toggleControl(toggleControl)
 						.build()
 						.getModel();
-		buttonModel.setState(null);
+		buttonModel.toggleState().set(null);
 		assertNull(value.get());
 		buttonModel.setSelected(false);
 		assertFalse(value.get());
 		buttonModel.setSelected(true);
 		assertTrue(value.get());
-		buttonModel.setState(null);
+		buttonModel.toggleState().set(null);
 		assertNull(value.get());
 
 		value.set(false);
 		assertFalse(buttonModel.isSelected());
-		assertFalse(buttonModel.getState());
+		assertFalse(buttonModel.toggleState().get());
 		value.set(true);
 		assertTrue(buttonModel.isSelected());
-		assertTrue(buttonModel.getState());
+		assertTrue(buttonModel.toggleState().get());
 		value.clear();
 		assertFalse(buttonModel.isSelected());
-		assertNull(buttonModel.getState());
+		assertNull(buttonModel.toggleState().get());
 	}
 
 	@Test

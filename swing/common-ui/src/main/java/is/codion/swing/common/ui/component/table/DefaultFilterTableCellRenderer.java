@@ -178,7 +178,7 @@ final class DefaultFilterTableCellRenderer<R, C> extends DefaultTableCellRendere
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																									 boolean hasFocus, int row, int column) {
-			getNullableModel().setState((Boolean) value);
+			getNullableModel().toggleState().set((Boolean) value);
 			setForeground(settings.foregroundColor(cellColors.foregroundColor(row, columnIdentifier, value, isSelected)));
 			setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShading, isSelected,
 							cellColors.backgroundColor(row, columnIdentifier, value, isSelected)));

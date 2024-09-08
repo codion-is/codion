@@ -100,7 +100,7 @@ public class NullableCheckBox extends JCheckBox {
 	 * @return the current state
 	 */
 	public final Boolean getState() {
-		return getNullableModel().getState();
+		return getNullableModel().toggleState().get();
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (isEnabled() && (e == null || notModified(e))) {
-				getNullableModel().nextState();
+				getNullableModel().toggleState().next();
 			}
 		}
 
@@ -159,7 +159,7 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public void paintIcon(Component component, Graphics graphics, int x, int y) {
 			icon.paintIcon(component, graphics, x, y);
-			if (getNullableModel().getState() != null) {
+			if (getNullableModel().toggleState().get() != null) {
 				return;
 			}
 
@@ -199,7 +199,7 @@ public class NullableCheckBox extends JCheckBox {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			model.nextState();
+			model.toggleState().next();
 		}
 	}
 }

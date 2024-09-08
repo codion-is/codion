@@ -44,7 +44,7 @@ public class NullableCheckBoxTest {
 		mouseListener.mouseClicked(null);
 		assertFalse(box.getState());
 
-		box.getNullableModel().setState(null);
+		box.getNullableModel().toggleState().set(null);
 		assertNull(box.getState());
 
 		assertThrows(UnsupportedOperationException.class, () -> box.setModel(new NullableToggleButtonModel()));

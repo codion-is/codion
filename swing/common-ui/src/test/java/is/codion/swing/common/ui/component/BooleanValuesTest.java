@@ -99,13 +99,13 @@ public class BooleanValuesTest {
 		value.set(true);
 		assertTrue(model.isSelected());
 		value.clear();
-		assertNull(model.getState());
+		assertNull(model.toggleState().get());
 
 		model.setSelected(false);
 		assertFalse(value.get());
 		model.setSelected(true);
 		assertTrue(value.get());
-		model.setState(null);
+		model.toggleState().set(null);
 		assertNull(value.get());
 	}
 }
