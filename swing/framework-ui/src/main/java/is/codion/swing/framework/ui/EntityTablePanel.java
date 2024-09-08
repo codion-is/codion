@@ -938,7 +938,7 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the selected entities.
 	 * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
-	 * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Exception)} is called.
+	 * the dependencies of the entities involved are displayed to the user, otherwise {@link #displayException(Exception)} is called.
 	 * @param exception the exception
 	 * @see Config#referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
 	 */

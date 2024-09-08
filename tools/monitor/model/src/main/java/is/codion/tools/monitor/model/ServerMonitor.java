@@ -418,7 +418,7 @@ public final class ServerMonitor {
 	}
 
 	/**
-	 * @return a listener notified when the log level has changed
+	 * @return a {@link Value} controlling the log level
 	 */
 	public Value<Object> logLevel() {
 		return logLevelValue;

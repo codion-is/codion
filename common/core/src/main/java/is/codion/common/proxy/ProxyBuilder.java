@@ -21,7 +21,7 @@ package is.codion.common.proxy;
 import java.util.List;
 
 /**
- * Builds a simple dynamic proxy for a single interface.
+ * Builds a dynamic proxy for a single interface.
  * Note that if the {@link Object#equals(Object)} method is not proxied the resulting proxy is equal only to itself.
  * <pre>
  * List&lt;String&gt; list = new ArrayList&lt;&gt;();

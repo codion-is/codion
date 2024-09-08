@@ -326,8 +326,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	/**
 	 * Establishes the actual client connection.
-	 * @param remoteClient the client connection info
-	 * @return a connection servicing the given client
+	 * @param remoteClient the remote client
+	 * @return a connection for the given client
 	 * @throws RemoteException in case of an exception
 	 * @throws LoginException in case of an error during the login
 	 */

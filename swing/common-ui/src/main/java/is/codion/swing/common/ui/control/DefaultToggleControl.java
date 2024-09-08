@@ -32,11 +32,6 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
 	private final Value<Boolean> value;
 
-	/**
-	 * @param value the value to toggle
-	 * @param name the name
-	 * @param enabled an observer indicating when this control should be enabled
-	 */
 	DefaultToggleControl(DefaultToggleControlBuilder builder) {
 		super(builder);
 		this.value = requireNonNull(builder.value, "value");

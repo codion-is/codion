@@ -32,8 +32,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * <p>A SwingWorker implementation. Note that instances of this class are not reusable.</p>
- * <p>Note that this class does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
- * those directly to the {@code onProgress} and {@code onPublish} handlers to run on the Event Dispatch Thread.</p>
+ * <p>Note that this implementation does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
+ * those directly to the {@code onProgress} and {@code onPublish} handlers for running on the Event Dispatch Thread.</p>
  * <pre>
  * ProgressWorker.builder(this::performTask)
  *   .onStarted(this::displayDialog)
@@ -46,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  *   .execute();
  * </pre>
  * @param <T> the type of result this {@link ProgressWorker} produces.
- * @param <V> the type of intermediate result produced by this worker
+ * @param <V> the type of intermediate result produced by this {@link ProgressWorker}
  * @see #builder(ResultTask)
  * @see #builder(ProgressResultTask)
  */

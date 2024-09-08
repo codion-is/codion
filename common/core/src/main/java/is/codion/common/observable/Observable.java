@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * A wrapper for a value, providing a change observer.
+ * A wrapper for a mutable value, providing a change observer.
  * @param <T> the type being observed
  */
 public interface Observable<T> extends EventObserver<T> {
