@@ -59,12 +59,12 @@ public class DefaultFilterTableSelectionModelTest {
 
 	@Test
 	void test() {
-		testModel.setSelectedIndex(0);
+		testModel.selectedIndex().set(0);
 		assertTrue(testModel.isSelected("A"));
-		assertTrue(testModel.selectedItem().isPresent());
+		assertNotNull(testModel.selectedItem().get());
 		testModel.clearSelection();
 		assertFalse(testModel.isSelected("A"));
-		assertFalse(testModel.selectedItem().isPresent());
+		assertNull(testModel.selectedItem().get());
 	}
 
 	@Test
@@ -89,11 +89,11 @@ public class DefaultFilterTableSelectionModelTest {
 	void events() {
 		AtomicInteger emptyCounter = new AtomicInteger();
 		testModel.selectionEmpty().addListener(emptyCounter::incrementAndGet);
-		testModel.setSelectedIndex(0);
+		testModel.selectedIndex().set(0);
 		assertEquals(1, emptyCounter.get());
 		testModel.addSelectedIndex(1);
 		assertEquals(1, emptyCounter.get());
-		testModel.setSelectedIndexes(asList(1, 2));
+		testModel.selectedIndexes().set(asList(1, 2));
 		assertEquals(1, emptyCounter.get());
 		testModel.addSelectionInterval(0, 1);
 		assertEquals(1, emptyCounter.get());

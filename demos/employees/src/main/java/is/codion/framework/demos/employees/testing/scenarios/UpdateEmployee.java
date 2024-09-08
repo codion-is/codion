@@ -45,12 +45,12 @@ public final class UpdateEmployee extends AbstractPerformer {
 			connection.startTransaction();
 			try {
 				selectRandomRow(employeeModel.tableModel());
-				Entity selected = employeeModel.tableModel().selectionModel().getSelectedItem();
+				Entity selected = employeeModel.tableModel().selectionModel().selectedItem().get();
 				entityFactory.modify(selected);
 				employeeModel.editModel().set(selected);
 				employeeModel.editModel().update();
 				selectRandomRow(employeeModel.tableModel());
-				selected = employeeModel.tableModel().selectionModel().getSelectedItem();
+				selected = employeeModel.tableModel().selectionModel().selectedItem().get();
 				entityFactory.modify(selected);
 				employeeModel.editModel().set(selected);
 				employeeModel.editModel().update();

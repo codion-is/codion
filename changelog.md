@@ -6,6 +6,8 @@ Codion Change Log
 - Event suffix removed from methods returning EventObserver, related renaming.
 ### is.codion.common.core
 - Observable added.
+### is.codion.swing.common.model
+- TableSelectionModel, selectedIndex, selectedIndexes, selectedItem and selectedItems now Observable based.
 ### is.codion.swing.common.ui
 - ComponentBuilder memory leaks prevented by replacing lambdas and anonymous inner classes with static classes.
 ### is.codion.framework.domain

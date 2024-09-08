@@ -159,25 +159,25 @@ public class FilterTableTest {
 		JTextField searchField = filterTable.searchField();
 
 		searchField.setText("d");
-		assertEquals(0, tableModel.selectionModel().getSelectedIndex());
+		assertEquals(0, tableModel.selectionModel().selectedIndex().get());
 		searchField.setText("da");
-		assertEquals(0, tableModel.selectionModel().getSelectedIndex());
+		assertEquals(0, tableModel.selectionModel().selectedIndex().get());
 		searchField.setText("dac");
-		assertEquals(1, tableModel.selectionModel().getSelectedIndex());
+		assertEquals(1, tableModel.selectionModel().selectedIndex().get());
 		searchField.setText("dar");
-		assertEquals(0, tableModel.selectionModel().getSelectedIndex());
+		assertEquals(0, tableModel.selectionModel().selectedIndex().get());
 		searchField.setText("dan");
-		assertEquals(2, tableModel.selectionModel().getSelectedIndex());
+		assertEquals(2, tableModel.selectionModel().selectedIndex().get());
 		searchField.setText("dl");
-		assertEquals(3, tableModel.selectionModel().getSelectedIndex());
+		assertEquals(3, tableModel.selectionModel().selectedIndex().get());
 		searchField.setText("darri");
-		assertEquals(0, tableModel.selectionModel().getSelectedIndex());
+		assertEquals(0, tableModel.selectionModel().selectedIndex().get());
 		searchField.setText("dac");
-		assertEquals(1, tableModel.selectionModel().getSelectedIndex());
+		assertEquals(1, tableModel.selectionModel().selectedIndex().get());
 		searchField.setText("dl");
-		assertEquals(3, tableModel.selectionModel().getSelectedIndex());
+		assertEquals(3, tableModel.selectionModel().selectedIndex().get());
 		searchField.setText("dans");
-		assertEquals(2, tableModel.selectionModel().getSelectedIndex());
+		assertEquals(2, tableModel.selectionModel().selectedIndex().get());
 		searchField.setText("dansu");
 		assertTrue(tableModel.selectionModel().isSelectionEmpty());
 
@@ -401,29 +401,29 @@ public class FilterTableTest {
 
 		//test selection and filtering together
 		FilterTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
-		tableModel.selectionModel().setSelectedIndex(3);
-		assertEquals(3, selectionModel.getSelectedIndex());
+		tableModel.selectionModel().selectedIndex().set(3);
+		assertEquals(3, selectionModel.selectedIndex().get());
 
 		tableModel.filterModel().conditionModel(0).operands().equal().set("d");
 		tableModel.filterModel().conditionModel(0).enabled().set(false);
 
-		selectionModel.setSelectedIndexes(singletonList(3));
+		selectionModel.selectedIndexes().set(singletonList(3));
 		assertEquals(3, selectionModel.getMinSelectionIndex());
-		assertEquals(ITEMS.get(2), selectionModel.getSelectedItem());
+		assertEquals(ITEMS.get(2), selectionModel.selectedItem().get());
 
 		table.sortModel().setSortOrder(0, SortOrder.ASCENDING);
-		assertEquals(ITEMS.get(2), selectionModel.getSelectedItem());
+		assertEquals(ITEMS.get(2), selectionModel.selectedItem().get());
 		assertEquals(2, selectionModel.getMinSelectionIndex());
 
-		tableModel.selectionModel().setSelectedIndexes(singletonList(0));
-		assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
+		tableModel.selectionModel().selectedIndexes().set(singletonList(0));
+		assertEquals(ITEMS.get(0), selectionModel.selectedItem().get());
 		table.sortModel().setSortOrder(0, SortOrder.DESCENDING);
 		assertEquals(4, selectionModel.getMinSelectionIndex());
 
-		assertEquals(singletonList(4), selectionModel.selectedIndexes());
-		assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
+		assertEquals(singletonList(4), selectionModel.selectedIndexes().get());
+		assertEquals(ITEMS.get(0), selectionModel.selectedItem().get());
 		assertEquals(4, selectionModel.getMinSelectionIndex());
-		assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
+		assertEquals(ITEMS.get(0), selectionModel.selectedItem().get());
 	}
 
 	@Test
@@ -447,7 +447,7 @@ public class FilterTableTest {
 						.delimiter('\t')
 						.get());
 
-		table.model().selectionModel().setSelectedIndexes(asList(0, 1, 3));
+		table.model().selectionModel().selectedIndexes().set(asList(0, 1, 3));
 
 		String selected = "a" + LINE_SEPARATOR +
 						"b" + LINE_SEPARATOR +

@@ -147,7 +147,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 			tableModel.selectionModel().addSelectedIndex(searchResult.get().row());
 		}
 		else {
-			tableModel.selectionModel().setSelectedIndex(searchResult.get().row());
+			tableModel.selectionModel().selectedIndex().set(searchResult.get().row());
 		}
 
 		return searchResult.optional();

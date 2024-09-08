@@ -440,7 +440,8 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private void viewException() {
-		model().applicationTableModel().selectionModel().selectedItem().map(LoadTestPanel::exception)
+		model().applicationTableModel().selectionModel().selectedItem().optional()
+						.map(LoadTestPanel::exception)
 						.ifPresent(this::displayException);
 	}
 

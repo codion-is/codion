@@ -83,17 +83,17 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		Entity.Key pk2 = keys.get(1);
 
 		tableModel.select(singletonList(pk1));
-		Entity selectedPK1 = tableModel.selectionModel().getSelectedItem();
+		Entity selectedPK1 = tableModel.selectionModel().selectedItem().get();
 		assertEquals(pk1, selectedPK1.primaryKey());
 		assertEquals(1, tableModel.selectionModel().selectionCount());
 
 		tableModel.select(singletonList(pk2));
-		Entity selectedPK2 = tableModel.selectionModel().getSelectedItem();
+		Entity selectedPK2 = tableModel.selectionModel().selectedItem().get();
 		assertEquals(pk2, selectedPK2.primaryKey());
 		assertEquals(1, tableModel.selectionModel().selectionCount());
 
 		tableModel.select(keys);
-		List<Entity> selectedItems = tableModel.selectionModel().selectedItems();
+		List<Entity> selectedItems = tableModel.selectionModel().selectedItems().get();
 		for (Entity selected : selectedItems) {
 			assertTrue(keys.contains(selected.primaryKey()));
 		}
@@ -105,8 +105,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.refresh();
 
-		tableModel.selectionModel().setSelectedIndexes(asList(0, 3, 5));
-		Iterator<Entity> iterator = tableModel.selectionModel().selectedItems().iterator();
+		tableModel.selectionModel().selectedIndexes().set(asList(0, 3, 5));
+		Iterator<Entity> iterator = tableModel.selectionModel().selectedItems().get().iterator();
 		assertEquals(tableModel.visibleItems().get(0), iterator.next());
 		assertEquals(tableModel.visibleItems().get(3), iterator.next());
 		assertEquals(tableModel.visibleItems().get(5), iterator.next());
@@ -165,14 +165,14 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		tableModel.connection().startTransaction();
 		try {
 			tableModel.select(singletonList(pk1));
-			tableModel.selectionModel().setSelectedIndex(0);
-			Entity selected = tableModel.selectionModel().getSelectedItem();
+			tableModel.selectionModel().selectedIndex().set(0);
+			Entity selected = tableModel.selectionModel().selectedItem().get();
 			tableModel.removeDeleted().set(true);
 			tableModel.deleteSelected();
 			assertFalse(tableModel.containsItem(selected));
 
 			tableModel.select(singletonList(pk2));
-			selected = tableModel.selectionModel().getSelectedItem();
+			selected = tableModel.selectionModel().selectedItem().get();
 			tableModel.removeDeleted().set(false);
 			assertEquals(1, tableModel.deleteSelected().size());
 			assertTrue(tableModel.containsItem(selected));
@@ -204,7 +204,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	public void deleteNotEnabled() {
 		testModel.editModel().deleteEnabled().set(false);
 		testModel.refresh();
-		testModel.selectionModel().setSelectedIndexes(singletonList(0));
+		testModel.selectionModel().selectedIndexes().set(singletonList(0));
 		assertThrows(IllegalStateException.class, testModel::deleteSelected);
 	}
 

@@ -54,7 +54,7 @@ public class CustomerTablePanel extends EntityTablePanel {
 	}
 
 	private void viewCustomerReport() throws Exception {
-		List<Entity> selectedCustomers = tableModel().selectionModel().selectedItems();
+		List<Entity> selectedCustomers = tableModel().selectionModel().selectedItems().get();
 		if (selectedCustomers.isEmpty()) {
 			return;
 		}

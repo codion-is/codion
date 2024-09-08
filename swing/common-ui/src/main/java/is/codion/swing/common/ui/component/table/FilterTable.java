@@ -310,10 +310,10 @@ public final class FilterTable<R, C> extends JTable {
 		if (!(dataModel instanceof FilterTableModel)) {
 			throw new IllegalArgumentException("FilterTable model must be a FilterTableModel instance");
 		}
-		List<R> selection = ((FilterTableModel<R, C>) dataModel).selectionModel().selectedItems();
+		List<R> selection = ((FilterTableModel<R, C>) dataModel).selectionModel().selectedItems().get();
 		super.setModel(dataModel);
 		if (!selection.isEmpty()) {
-			((FilterTableModel<R, C>) dataModel).selectionModel().setSelectedItems(selection);
+			((FilterTableModel<R, C>) dataModel).selectionModel().selectedItems().set(selection);
 		}
 	}
 
@@ -836,7 +836,7 @@ public final class FilterTable<R, C> extends JTable {
 	private void bindEvents(boolean columnReorderingAllowed,
 													boolean columnResizingAllowed) {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
-		tableModel.selectionModel().selectedIndexesChanged().addConsumer(new ScrollToSelected());
+		tableModel.selectionModel().selectedIndexes().addConsumer(new ScrollToSelected());
 		tableModel.filterModel().conditionChanged().addListener(getTableHeader()::repaint);
 		searchModel.currentResult().addListener(this::repaint);
 		sortModel.sortingChanged().addListener(getTableHeader()::repaint);
@@ -1315,7 +1315,7 @@ public final class FilterTable<R, C> extends JTable {
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);
 			this.tableModel.dataChanged().addListener(changeEvent);
-			this.tableModel.selectionModel().selectionChanged().addListener(changeEvent);
+			this.tableModel.selectionModel().selectedIndexes().addListener(changeEvent);
 		}
 
 		@Override
@@ -1376,7 +1376,7 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public String get() {
 			List<Integer> rows = selected ?
-							tableModel.selectionModel().selectedIndexes() :
+							tableModel.selectionModel().selectedIndexes().get() :
 							IntStream.range(0, tableModel.visibleCount())
 											.boxed()
 											.collect(toList());

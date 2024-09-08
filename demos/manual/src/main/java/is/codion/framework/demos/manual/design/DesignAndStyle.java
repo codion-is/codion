@@ -88,9 +88,9 @@ public final class DesignAndStyle {
 
 		connection.setOptimisticLocking(false);
 
-		List<Integer> selectedIndexes = selectionModel.selectedIndexes();
+		List<Integer> selectedIndexes = selectionModel.selectedIndexes().get();
 
-		selectionModel.setSelectedIndexes(Arrays.asList(0, 1, 2));
+		selectionModel.selectedIndexes().set(Arrays.asList(0, 1, 2));
 		//end::getters[]
 	}
 }

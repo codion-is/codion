@@ -63,7 +63,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 	private void viewEmployeeReport() throws ReportException, DatabaseException {
 		Collection<Integer> departmentNumbers =
 						Entity.distinct(Department.DEPARTMENT_NO,
-										tableModel().selectionModel().selectedItems());
+										tableModel().selectionModel().selectedItems().get());
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", departmentNumbers);
 

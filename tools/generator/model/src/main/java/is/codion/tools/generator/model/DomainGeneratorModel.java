@@ -155,7 +155,7 @@ public final class DomainGeneratorModel {
 	}
 
 	public void populateSelected(Consumer<String> schemaNotifier) {
-		schemaTableModel.selectionModel().selectedItem().ifPresent(schema -> {
+		schemaTableModel.selectionModel().selectedItem().optional().ifPresent(schema -> {
 			schemaNotifier.accept(schema.name());
 			schema.setDomain(schemaDomain(schema));
 			int index = schemaTableModel.indexOf(schema);
@@ -193,8 +193,8 @@ public final class DomainGeneratorModel {
 	}
 
 	private void bindEvents() {
-		schemaTableModel.selectionModel().selectionChanged().addListener(this::schemaSelectionChanged);
-		entityModel().selectionModel().selectedItemChanged().addConsumer(this::search);
+		schemaTableModel.selectionModel().selectedIndexes().addListener(this::schemaSelectionChanged);
+		entityModel().selectionModel().selectedItem().addConsumer(this::search);
 	}
 
 	private SchemaDomain schemaDomain(SchemaRow schema) {
@@ -209,7 +209,7 @@ public final class DomainGeneratorModel {
 	private void schemaSelectionChanged() {
 		entityTableModel.refresh();
 		updateDomainSource();
-		populatedSchemaSelected.set(schemaTableModel.selectionModel().selectedItem()
+		populatedSchemaSelected.set(schemaTableModel.selectionModel().selectedItem().optional()
 						.map(SchemaRow::populated)
 						.orElse(false));
 	}
@@ -256,7 +256,7 @@ public final class DomainGeneratorModel {
 	}
 
 	private SchemaDomain selectedDomain() {
-		return schemaTableModel.selectionModel().selectedItem()
+		return schemaTableModel.selectionModel().selectedItem().optional()
 						.flatMap(SchemaRow::domain)
 						.orElse(null);
 	}
@@ -306,7 +306,7 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public Collection<EntityRow> get() {
-			return schemaTableModel.selectionModel().selectedItems().stream()
+			return schemaTableModel.selectionModel().selectedItems().get().stream()
 							.map(SchemaRow::domain)
 							.flatMap(Optional::stream)
 							.flatMap(domain -> domain.entities().definitions().stream()

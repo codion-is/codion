@@ -544,7 +544,7 @@ public final class EntityDialogs {
 			SwingEntityTableModel tableModel = entityTablePanel.tableModel();
 			tableModel.refreshThen(items -> {
 				if (tableModel.rowCount() > 0) {
-					tableModel.selectionModel().setSelectedIndex(0);
+					tableModel.selectionModel().selectedIndex().set(0);
 					entityTablePanel.table().requestFocusInWindow();
 				}
 				else {
@@ -554,7 +554,7 @@ public final class EntityDialogs {
 		}
 
 		private List<Entity> selectEntities() {
-			return entityTablePanel.tableModel().selectionModel().selectedItems();
+			return entityTablePanel.tableModel().selectionModel().selectedItems().get();
 		}
 	}
 

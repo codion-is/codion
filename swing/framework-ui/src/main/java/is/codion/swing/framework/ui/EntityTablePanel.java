@@ -657,7 +657,7 @@ public class EntityTablePanel extends JPanel {
 		requireNonNull(attributeToEdit);
 		if (!tableModel.selectionModel().isSelectionEmpty()) {
 			editDialogBuilder(attributeToEdit)
-							.edit(tableModel.selectionModel().selectedItems());
+							.edit(tableModel.selectionModel().selectedItems().get());
 		}
 	}
 
@@ -666,7 +666,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void viewDependencies() {
 		if (!tableModel.selectionModel().isSelectionEmpty()) {
-			displayDependenciesDialog(tableModel.selectionModel().selectedItems(), tableModel.connectionProvider(), this);
+			displayDependenciesDialog(tableModel.selectionModel().selectedItems().get(), tableModel.connectionProvider(), this);
 		}
 	}
 
@@ -945,7 +945,7 @@ public class EntityTablePanel extends JPanel {
 	protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
 		requireNonNull(exception);
 		if (configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-			displayDependenciesDialog(tableModel.selectionModel().selectedItems(), tableModel.connectionProvider(),
+			displayDependenciesDialog(tableModel.selectionModel().selectedItems().get(), tableModel.connectionProvider(),
 							this, EDIT_PANEL_MESSAGES.getString("unknown_dependent_records"));
 		}
 		else {
@@ -1632,7 +1632,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void showEntityMenu() {
 		Point location = popupLocation(table);
-		tableModel.selectionModel().selectedItem().ifPresent(selected ->
+		tableModel.selectionModel().selectedItem().optional().ifPresent(selected ->
 						new EntityPopupMenu(selected.copy(), tableModel.connection()).show(table, location.x, location.y));
 	}
 
@@ -1856,7 +1856,7 @@ public class EntityTablePanel extends JPanel {
 		@Override
 		public void execute() {
 			if (confirmDelete()) {
-				List<Entity> selectedItems = tableModel().selectionModel().selectedItems();
+				List<Entity> selectedItems = tableModel().selectionModel().selectedItems().get();
 				progressWorkerDialog(tableModel().editModel().createDelete(selectedItems).prepare()::perform)
 								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 								.owner(EntityTablePanel.this)

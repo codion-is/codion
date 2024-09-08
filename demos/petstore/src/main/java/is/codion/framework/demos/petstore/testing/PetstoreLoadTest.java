@@ -79,7 +79,7 @@ public final class PetstoreLoadTest {
 
 		private static void selectRandomRow(EntityTableModel<?> tableModel) {
 			if (tableModel.rowCount() > 0) {
-				tableModel.selectionModel().setSelectedIndex(RANDOM.nextInt(tableModel.rowCount()));
+				tableModel.selectionModel().selectedIndex().set(RANDOM.nextInt(tableModel.rowCount()));
 			}
 		}
 	}

@@ -355,7 +355,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 	@Override
 	public final Collection<Entity> deleteSelected() throws DatabaseException {
-		return editModel.delete(selectionModel().selectedItems());
+		return editModel.delete(selectionModel().selectedItems().get());
 	}
 
 	@Override
@@ -365,7 +365,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 	@Override
 	public final EventObserver<?> selectionChanged() {
-		return selectionModel().selectionChanged();
+		return selectionModel().selectedIndexes().observer();
 	}
 
 	@Override
@@ -703,7 +703,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		editModel.afterUpdate().addConsumer(this::onUpdate);
 		editModel.afterDelete().addConsumer(this::onDelete);
 		editModel.entityChanged().addConsumer(this::onEntityChanged);
-		selectionModel().selectedItemChanged().addConsumer(editModel::set);
+		selectionModel().selectedItem().addConsumer(editModel::set);
 		addTableModelListener(this::onTableModelEvent);
 	}
 
@@ -770,8 +770,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 	private void onTableModelEvent(TableModelEvent tableModelEvent) {
 		//if the selected row is updated via the table model, refresh the one in the edit model
-		if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selectionModel().getSelectedIndex()) {
-			editModel.set(selectionModel().getSelectedItem());
+		if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selectionModel().selectedIndex().get().intValue()) {
+			editModel.set(selectionModel().selectedItem().get());
 		}
 	}
 

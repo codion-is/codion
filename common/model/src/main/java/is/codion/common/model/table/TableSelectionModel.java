@@ -19,12 +19,12 @@
 package is.codion.common.model.table;
 
 import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observable;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -65,49 +65,39 @@ public interface TableSelectionModel<R> {
 	EventObserver<?> selectionChanging();
 
 	/**
-	 * @return an observer notified each time the selection changes
+	 * @return an {@link Observable} for the index of the selected row, -1 if none is selected and
+	 * the minimum selected index if more than one row is selected
 	 */
-	EventObserver<?> selectionChanged();
+	Observable<Integer> selectedIndex();
 
 	/**
-	 * @return an observer notified each time the selected index changes
+	 * @return an {@link Observable} for the selected indexes
 	 */
-	EventObserver<Integer> selectedIndexChanged();
+	Observable<List<Integer>> selectedIndexes();
 
 	/**
-	 * @return an observer notified each time the selected indexes change
+	 * @return an {@link Observable} for the selected item
 	 */
-	EventObserver<List<Integer>> selectedIndexesChanged();
+	Observable<R> selectedItem();
 
 	/**
-	 * @return an observer notified each time the selected item changes
+	 * @return an {@link Observable} for the selected items
 	 */
-	EventObserver<R> selectedItemChanged();
-
-	/**
-	 * @return an observer notified each time the selected items change
-	 */
-	EventObserver<List<R>> selectedItemsChanged();
+	Observable<List<R>> selectedItems();
 
 	/**
 	 * Moves all selected indexes down one index, wraps around.
 	 * If the selection is empty the first item in this model is selected.
-	 * @see #selectionChanged()
+	 * @see #selectedIndexes()
 	 */
 	void moveSelectionDown();
 
 	/**
 	 * Moves all selected indexes up one index, wraps around.
 	 * If the selection is empty the last item in this model is selected.
-	 * @see #selectionChanged()
+	 * @see #selectedIndexes()
 	 */
 	void moveSelectionUp();
-
-	/**
-	 * @return the index of the selected row, -1 if none is selected and
-	 * the lowest index if more than one row is selected
-	 */
-	int getSelectedIndex();
 
 	/**
 	 * Selects the item at {@code index}
@@ -128,25 +118,8 @@ public interface TableSelectionModel<R> {
 	void removeSelectedIndexes(Collection<Integer> indexes);
 
 	/**
-	 * Clears the selection and selects the item at {@code index}
-	 * @param index the index
-	 */
-	void setSelectedIndex(int index);
-
-	/**
-	 * Selects the given indexes
-	 * @param indexes the indexes to select
-	 */
-	void setSelectedIndexes(Collection<Integer> indexes);
-
-	/**
-	 * @return an unmodifiable list containing the selected indexes, an empty list if selection is empty
-	 */
-	List<Integer> getSelectedIndexes();
-
-	/**
 	 * Selects all visible rows
-	 * @see #selectionChanged()
+	 * @see #selectedIndexes()
 	 */
 	void selectAll();
 
@@ -174,32 +147,10 @@ public interface TableSelectionModel<R> {
 	int selectionCount();
 
 	/**
-	 * Selects the given items
-	 * @param items the items to select
-	 */
-	void setSelectedItems(Collection<R> items);
-
-	/**
-	 * @return an unmodifiable list containing the selected items
-	 */
-	List<R> getSelectedItems();
-
-	/**
-	 * @return the item at the lowest selected index, null if none is selected
-	 */
-	R getSelectedItem();
-
-	/**
 	 * @param item the item
 	 * @return true if the item is selected
 	 */
 	boolean isSelected(R item);
-
-	/**
-	 * Sets the selected item
-	 * @param item the item to select
-	 */
-	void setSelectedItem(R item);
 
 	/**
 	 * Adds the given item to the selection
@@ -224,21 +175,6 @@ public interface TableSelectionModel<R> {
 	 * @param items the items to remove from the selection
 	 */
 	void removeSelectedItems(Collection<R> items);
-
-	/**
-	 * @return the selected item, or an empty Optional in case the selection is empty
-	 */
-	Optional<R> selectedItem();
-
-	/**
-	 * @return an unmodifiable list containing the selected items
-	 */
-	List<R> selectedItems();
-
-	/**
-	 * @return an unmodifiable list containing the selected indexes
-	 */
-	List<Integer> selectedIndexes();
 
 	/**
 	 * Clears the selection
