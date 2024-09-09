@@ -307,6 +307,11 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		}
 
 		@Override
+		public void set(Collection<Integer> indexes) {
+			set(new ArrayList<>(requireNonNull(indexes)));
+		}
+
+		@Override
 		public void set(List<Integer> indexes) {
 			requireNonNull(indexes);
 			checkIndexes(indexes);

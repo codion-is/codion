@@ -113,6 +113,11 @@ public interface TableSelectionModel<R> {
 	interface SelectedIndexes extends Observable<List<Integer>> {
 
 		/**
+		 * @param indexes the indexes to select
+		 */
+		void set(Collection<Integer> indexes);
+
+		/**
 		 * Adds the given index to the selected indexes
 		 * @param index the index
 		 */
