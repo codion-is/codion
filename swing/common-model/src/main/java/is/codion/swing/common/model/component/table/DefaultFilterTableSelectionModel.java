@@ -442,6 +442,11 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		}
 
 		@Override
+		public void set(Collection<R> items) {
+			set(new ArrayList<>(requireNonNull(items)));
+		}
+
+		@Override
 		public void set(List<R> items) {
 			if (!isSelectionEmpty()) {
 				clearSelection();

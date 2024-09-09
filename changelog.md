@@ -17,6 +17,7 @@ Codion Change Log
 - TableSelectionModel.moveSelectionDown() and moveSelectionUp() moved to SelectedIndexes and renamed moveDown() and moveUp() respectively.
 - NullableToggleButtonModel.toggleState() now Observable based.
 - TableSelectionModel.SelectedIndexes.set(Collection<Integer>) added.
+- TableSelectionModel.SelectedItems.set(Collection<R>) added.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.selectionChanged() removed, Observable based selectedItem() added.
 ### is.codion.swing.common.ui
