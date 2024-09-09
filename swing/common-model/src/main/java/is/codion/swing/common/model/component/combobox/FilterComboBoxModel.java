@@ -19,8 +19,8 @@
 package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Configuration;
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilterModel;
+import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -167,6 +167,11 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	T getSelectedItem();
 
 	/**
+	 * @return an {@link Observable} controlling the selected item
+	 */
+	Observable<T> selectedItem();
+
+	/**
 	 * Specifies whether filtering the model affects the currently selected item.
 	 * If true, the selection is cleared when the selected item is filtered from
 	 * the model, otherwise the selected item can potentially represent a value
@@ -183,11 +188,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @return a {@link Value} linked to the selected item using the given {@link ItemFinder} instance
 	 */
 	<V> Value<V> createSelectorValue(ItemFinder<T, V> itemFinder);
-
-	/**
-	 * @return an observer notified each time the selection changes
-	 */
-	EventObserver<T> selectionChanged();
 
 	/**
 	 * @param <T> the item type

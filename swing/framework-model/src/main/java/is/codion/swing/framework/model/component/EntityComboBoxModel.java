@@ -20,7 +20,7 @@ package is.codion.swing.framework.model.component;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
@@ -422,8 +422,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public EventObserver<Entity> selectionChanged() {
-		return comboBoxModel.selectionChanged();
+	public Observable<Entity> selectedItem() {
+		return comboBoxModel.selectedItem();
 	}
 
 	@Override
@@ -579,7 +579,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		else {
 			linkCondition(foreignKey, foreignKeyModel);
 		}
-		selectionChanged().addConsumer(selected -> {
+		selectedItem().addConsumer(selected -> {
 			if (selected != null && !selected.isNull(foreignKey)) {
 				foreignKeyModel.select(selected.key(foreignKey));
 			}
@@ -592,7 +592,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		if (strictForeignKeyFiltering.get()) {
 			includeCondition().set(filterAllCondition);
 		}
-		foreignKeyModel.selectionChanged().addConsumer(selected -> {
+		foreignKeyModel.selectedItem().addConsumer(selected -> {
 			if (selected == null && strictForeignKeyFiltering.get()) {
 				includeCondition().set(filterAllCondition);
 			}
@@ -607,7 +607,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 			conditionSupplier.set(() -> foreignKey.equalTo(selected));
 			refresh();
 		};
-		foreignKeyModel.selectionChanged().addConsumer(consumer);
+		foreignKeyModel.selectedItem().addConsumer(consumer);
 		//initialize
 		consumer.accept(selectedValue());
 	}

@@ -21,6 +21,7 @@ package is.codion.swing.common.model.component.combobox;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observable;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
@@ -53,7 +54,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Predicate<?> DEFAULT_VALID_SELECTION_PREDICATE = new DefaultValidSelectionPredicate<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
-	private final Event<T> selectionEvent = Event.event();
+	private final SelectedItem selectedItemObservable = new SelectedItem();
 	private final State selectionEmpty = State.state(true);
 	private final State includeNull = State.state();
 	private final Value<T> nullItem = Value.value();
@@ -347,13 +348,18 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
+	public Observable<T> selectedItem() {
+		return selectedItemObservable;
+	}
+
+	@Override
 	public final void setSelectedItem(Object item) {
 		T toSelect = selectedItemTranslator.get().apply(Objects.equals(nullItem.get(), item) ? null : item);
 		if (!Objects.equals(selectedItem, toSelect) && validSelectionPredicate.get().test(toSelect)) {
 			selectedItem = toSelect;
 			fireContentsChanged();
 			selectionEmpty.set(selectedValue() == null);
-			selectionEvent.accept(selectedItem);
+			selectedItemObservable.selectionEvent.accept(selectedItem);
 		}
 	}
 
@@ -394,11 +400,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		return new SelectorValue<>(itemFinder);
 	}
 
-	@Override
-	public final EventObserver<T> selectionChanged() {
-		return selectionEvent.observer();
-	}
-
 	private void fireContentsChanged() {
 		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
 		for (ListDataListener dataListener : listDataListeners) {
@@ -414,13 +415,33 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		return item;
 	}
 
+	private final class SelectedItem implements Observable<T> {
+
+		private final Event<T> selectionEvent = Event.event();
+
+		@Override
+		public T get() {
+			return getSelectedItem();
+		}
+
+		@Override
+		public void set(T value) {
+			setSelectedItem(value);
+		}
+
+		@Override
+		public EventObserver<T> observer() {
+			return selectionEvent.observer();
+		}
+	}
+
 	private final class SelectorValue<V> extends AbstractValue<V> {
 
 		private final ItemFinder<T, V> itemFinder;
 
 		private SelectorValue(ItemFinder<T, V> itemFinder) {
 			this.itemFinder = requireNonNull(itemFinder);
-			selectionEvent.addListener(this::notifyListeners);
+			selectedItemObservable.selectionEvent.addListener(this::notifyListeners);
 		}
 
 		@Override

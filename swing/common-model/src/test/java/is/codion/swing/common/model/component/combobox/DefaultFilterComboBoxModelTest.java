@@ -132,7 +132,7 @@ public class DefaultFilterComboBoxModelTest {
 	void testSelection() {
 		AtomicInteger selectionChangedCounter = new AtomicInteger();
 		Consumer<String> selectionConsumer = selectedItem -> selectionChangedCounter.incrementAndGet();
-		testModel.selectionChanged().addConsumer(selectionConsumer);
+		testModel.selectedItem().addConsumer(selectionConsumer);
 		testModel.setSelectedItem(BJORN);
 		assertEquals(1, selectionChangedCounter.get());
 		testModel.setSelectedItem(null);
@@ -155,7 +155,7 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.setSelectedItem(SIGGI);
 		testModel.clear();
 		assertEquals(6, selectionChangedCounter.get());
-		testModel.selectionChanged().removeConsumer(selectionConsumer);
+		testModel.selectedItem().removeConsumer(selectionConsumer);
 	}
 
 	@Test

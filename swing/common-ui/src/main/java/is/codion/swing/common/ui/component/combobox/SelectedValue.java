@@ -32,7 +32,7 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
 		super(comboBox);
 		if (comboBox.getModel() instanceof FilterComboBoxModel) {
 			//ItemListener does not get notified when null values are selected/deselected
-			((FilterComboBoxModel<T>) comboBox.getModel()).selectionChanged().addListener(this::notifyListeners);
+			((FilterComboBoxModel<T>) comboBox.getModel()).selectedItem().addListener(this::notifyListeners);
 		}
 		else {
 			comboBox.addItemListener(new NotifyOnItemSelectedListener());
