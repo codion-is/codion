@@ -161,7 +161,7 @@ public interface TableSelectionModel<R> {
 	interface SelectedItems<R> extends Observable<List<R>> {
 
 		/**
-		 * @param indexes the items to select
+		 * @param items the items to select
 		 */
 		void set(Collection<R> items);
 

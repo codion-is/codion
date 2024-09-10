@@ -34,26 +34,36 @@ import static java.util.stream.Collectors.joining;
 
 /**
  * Factory class for building functions for String representations of {@link Entity} instances.<br>
- * Given a {@link Entity} instance named entity containing the following mappings:
  * <pre>
- * attribute1 -&#62; value1
- * attribute2 -&#62; value2
- * attribute3 -&#62; value3
- * fkAttribute -&#62; {Entity instance with a single mapping refAttribute -&#62; refValue}
+ *   interface Department {
+ *       EntityType TYPE = DOMAIN.entityType("employees.department");
+ *       Column&lt;Integer&gt; ID = TYPE.integerColumn("id");
+ *       Column&lt;String&gt; NAME = TYPE.stringColumn("name");
+ *   }
  *
- * StringFactory.Builder builder = StringFactory.builder();
+ *   interface Employee {
+ *       EntityType TYPE = DOMAIN.entityType("employees.employee");
+ *       Column&lt;String&gt; NAME = TYPE.stringColumn("name");
+ *       Column&lt;Integer&gt; DEPARTMENT_ID = TYPE.integerColumn("department_id");
+ *       ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_fk", DEPARTMENT_ID, Department.ID);
+ *   }
  *
- * builder.text("attribute1=")
- *        .value(attribute1)
- *        .text(", attribute3='")
- *        .value(attribute3)
- *        .text("' foreign key value=")
- *        .value(fkAttribute, refAttribute);
+ *   Entity department = ...// With name: Accounting
+ *   Entity employee = ...// With name: John and the above department
  *
- * System.out.println(builder.build().apply(entity));
+ *   Function&lt;Entity, String&gt; stringFactory =
+ *         StringFactory.builder()
+ *             .text("Name=")
+ *             .value(Employee.NAME)
+ *             .text(", Department="')
+ *             .value(Employee.DEPARTMENT_FK, Department.NAME)
+ *             .text("'");
+ *
+ * System.out.println(stringFactory.apply(employee));
  * </pre>
- * outputs the following String:<br><br>
- * {@code attribute1=value1, attribute3='value3' foreign key value=refValue}
+ * Outputs the following String:<br><br>
+ * {@code Name=John, Department='Accounting'}<br><br>
+ * given the entities above.
  */
 public final class StringFactory {
 

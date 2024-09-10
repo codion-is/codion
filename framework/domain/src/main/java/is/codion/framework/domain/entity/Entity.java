@@ -505,9 +505,10 @@ public interface Entity extends Comparable<Entity> {
 		EntityDefinition entityDefinition();
 
 		/**
-		 * Note that the column order is undefined here, for the primary key columns
-		 * in the correct (indexed) order {@link EntityDefinition.PrimaryKey#columns()} via {@link EntityDefinition#primaryKey()}.
-		 * @return the columns comprising this key
+		 * Returns the columns comprising this key, in an unspecified order.
+		 * For the primary key columns in the correct (indexed) order use
+		 * {@link EntityDefinition.PrimaryKey#columns()} via {@link EntityDefinition#primaryKey()}.
+		 * @return the columns comprising this key in no particular order
 		 */
 		Collection<Column<?>> columns();
 
