@@ -101,6 +101,8 @@ image::https://github.com/codion-is/world/blob/main/documentation/src/docs/ascii
 
 === https://github.com/codion-is/chinook[Chinook]
 
+The *Kitchen Sink* demo, with lots of customization examples.
+
 Fully configured multi-module project, with separate client modules configured for JDBC, RMI and HTTP connection options.
 
 Includes load-test, server, and server monitor modules and jlink/jpackage configurations.
@@ -540,7 +542,7 @@ customer.put(Customer.EMAIL, "mail@email.com");
 
 customer = connection.updateSelect(customer);
 
-connection.delete(asList(addressKey, customer.primaryKey()));
+connection.delete(List.of(addressKey, customer.primaryKey()));
 
 connection.close();
 ----
@@ -604,7 +606,7 @@ See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FA
 
 *For copyright and managament overhead reasons, code contributions will not be accepted at this time*.
 
-Help with translations is very much appreciated though.
+Help with https://codion.is/doc/{version}/technical/technical.html#_values[translations] is very much appreciated though.
 
 === Bug reports
 
