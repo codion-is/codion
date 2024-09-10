@@ -460,12 +460,12 @@ public class StoreDemo {
 
     customerModel.tableModel().refresh();
     customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
-    customerPanel.initialize();
 
-    Dialogs.componentDialog(customerPanel)
-            .title("Customers")
-            .onClosed(e -> connectionProvider.close())
-            .show();
+    SwingUtilities.invokeLater(() ->
+            Dialogs.componentDialog(customerPanel.initialize())
+                    .title("Customers")
+                    .onClosed(e -> connectionProvider.close())
+                    .show());
   }
 }
 ----
@@ -473,6 +473,13 @@ public class StoreDemo {
 ...and the result, all in all around 150 lines of code.
 
 image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
+
+To run the above application, use the following Gradle task:
+
+[source,shell]
+----
+gradlew codion-demos-manual:runStoreDemo
+----
 
 == Persistance
 

@@ -33,6 +33,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
@@ -116,11 +117,11 @@ public class StoreDemo {
 
 		customerModel.tableModel().refresh();
 		customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
-		customerPanel.initialize();
 
-		Dialogs.componentDialog(customerPanel)
-						.title("Customers")
-						.onClosed(e -> connectionProvider.close())
-						.show();
+		SwingUtilities.invokeLater(() ->
+						Dialogs.componentDialog(customerPanel.initialize())
+										.title("Customers")
+										.onClosed(e -> connectionProvider.close())
+										.show());
 	}
 }

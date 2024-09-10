@@ -35,6 +35,12 @@ sonarqube {
 
 apply(from = "../../plugins/jasperreports/extra-module-info-jasperreports.gradle")
 
+tasks.register<JavaExec>("runStoreDemo") {
+    group = "application"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("is.codion.framework.demos.manual.store.minimal.ui.StoreDemo")
+}
+
 tasks.register<JavaExec>("runNotesDemo") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
