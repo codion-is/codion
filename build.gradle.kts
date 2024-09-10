@@ -229,11 +229,6 @@ configure(subprojects) {
         options.isDeprecation = true
     }
 
-    tasks.withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
-        options.isDeprecation = true
-    }
-
     tasks.withType<JacocoReport> {
         reports {
             xml.required.set(true)
