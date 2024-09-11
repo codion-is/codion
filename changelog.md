@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.14
+
 ## 0.18.13
 ### is.codion
 - Event suffix removed from methods returning EventObserver, related renaming.
