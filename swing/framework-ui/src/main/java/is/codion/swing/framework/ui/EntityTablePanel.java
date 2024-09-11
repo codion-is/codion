@@ -139,6 +139,7 @@ import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
+import static is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -2129,8 +2130,8 @@ public class EntityTablePanel extends JPanel {
 		private ColumnSelection columnSelection = COLUMN_SELECTION.get();
 		private AutoResizeModeSelection autoResizeModeSelection = AUTO_RESIZE_MODE_SELECTION.get();
 		private EditAttributeSelection editAttributeSelection = EDIT_ATTRIBUTE_SELECTION.get();
-		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling;
-		private RefreshButtonVisible refreshButtonVisible;
+		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling = REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
+		private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
 		private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
 		private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
 		private Confirmer deleteConfirmer;
@@ -2153,8 +2154,6 @@ public class EntityTablePanel extends JPanel {
 							.collect(toSet()));
 			this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
 			this.editComponentFactories = new HashMap<>();
-			this.referentialIntegrityErrorHandling = ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
-			this.refreshButtonVisible = RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE;
 			this.deleteConfirmer = new DeleteConfirmer(tablePanel.tableModel.selectionModel());
 		}
 
