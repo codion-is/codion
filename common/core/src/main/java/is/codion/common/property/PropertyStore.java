@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -254,18 +255,18 @@ public interface PropertyStore {
 	String getProperty(String propertyName);
 
 	/**
-	 * Returns the values associated with the properties with the given prefix
-	 * @param prefix the property prefix
+	 * Returns the values associated with property names fulfilling the given predicate
+	 * @param predicate the predicate for the properties which values to return
 	 * @return all values associated with the properties with the given prefix
 	 */
-	Collection<String> properties(String prefix);
+	Collection<String> properties(Predicate<String> predicate);
 
 	/**
-	 * Returns all property names with the given prefix
-	 * @param prefix the property name prefix
+	 * Returns all property names fulfilling the given predicate
+	 * @param predicate the predicate used to filter the property names to return
 	 * @return all property names with the given prefix
 	 */
-	Collection<String> propertyNames(String prefix);
+	Collection<String> propertyNames(Predicate<String> predicate);
 
 	/**
 	 * Returns true if this PropertyStore contains a value for the given property
@@ -275,11 +276,12 @@ public interface PropertyStore {
 	boolean containsProperty(String propertyName);
 
 	/**
-	 * Removes all properties with the given prefix
-	 * @param prefix the prefix
-	 * @throws IllegalArgumentException in case any of the properties with the given prefix are value bound
+	 * Removes all properties which names fulfill the given predicate.
+	 * Note that properties which are value bound cannot be removed.
+	 * @param predicate the predicate used to filter the properties to be removed
+	 * @throws IllegalArgumentException in case any of the properties to remove are value bound
 	 */
-	void removeAll(String prefix);
+	void removeAll(Predicate<String> predicate);
 
 	/**
 	 * Writes the stored properties to a file

@@ -111,12 +111,12 @@ public final class DefaultPropertyStoreTest {
 		PropertyValue<Boolean> booleanValue = store.booleanValue("boolean.property", false);
 		assertTrue(booleanValue.get());
 
-		Collection<String> intProperties = store.propertyNames("int.");
+		Collection<String> intProperties = store.propertyNames(propertyName -> propertyName.startsWith("int."));
 		assertTrue(intProperties.contains("int.property1"));
 		assertTrue(intProperties.contains("int.property2"));
 		assertTrue(intProperties.contains("int.property3"));
 
-		Collection<String> intPropertyValues = store.properties("int.");
+		Collection<String> intPropertyValues = store.properties(propertyName -> propertyName.startsWith("int."));
 		assertTrue(intPropertyValues.contains("42"));
 		assertTrue(intPropertyValues.contains("0"));
 		assertTrue(intPropertyValues.contains("44"));
@@ -214,7 +214,7 @@ public final class DefaultPropertyStoreTest {
 
 		assertThrows(IllegalArgumentException.class, () -> store.setProperty("test", "bla"));
 		assertThrows(IllegalArgumentException.class, () -> store.setProperty("testList", "bla;bla"));
-		assertThrows(IllegalArgumentException.class, () -> store.removeAll("test"));
+		assertThrows(IllegalArgumentException.class, () -> store.removeAll(propertyName -> propertyName.equals("test")));
 
 		assertThrows(IllegalArgumentException.class, () -> store.stringValue(""));
 	}

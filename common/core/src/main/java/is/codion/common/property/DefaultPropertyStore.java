@@ -38,6 +38,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -195,19 +196,19 @@ final class DefaultPropertyStore implements PropertyStore {
 	}
 
 	@Override
-	public Collection<String> properties(String prefix) {
-		requireNonNull(prefix);
+	public Collection<String> properties(Predicate<String> predicate) {
+		requireNonNull(predicate);
 		return properties.stringPropertyNames().stream()
-						.filter(propertyName -> propertyName.startsWith(prefix))
+						.filter(predicate)
 						.map(properties::getProperty)
 						.collect(toList());
 	}
 
 	@Override
-	public Collection<String> propertyNames(String prefix) {
-		requireNonNull(prefix);
+	public Collection<String> propertyNames(Predicate<String> predicate) {
+		requireNonNull(predicate);
 		return properties.stringPropertyNames().stream()
-						.filter(propertyName -> propertyName.startsWith(prefix))
+						.filter(predicate)
 						.collect(toList());
 	}
 
@@ -217,8 +218,8 @@ final class DefaultPropertyStore implements PropertyStore {
 	}
 
 	@Override
-	public void removeAll(String prefix) {
-		Collection<String> propertyKeys = propertyNames(prefix);
+	public void removeAll(Predicate<String> predicate) {
+		Collection<String> propertyKeys = propertyNames(predicate);
 		if (propertyKeys.stream().anyMatch(propertyValues::containsKey)) {
 			throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
 		}
