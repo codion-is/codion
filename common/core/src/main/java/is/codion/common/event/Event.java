@@ -18,6 +18,8 @@
  */
 package is.codion.common.event;
 
+import is.codion.common.observable.Observer;
+
 import java.util.function.Consumer;
 
 /**
@@ -25,7 +27,7 @@ import java.util.function.Consumer;
  * <pre>
  * Event&lt;Boolean&gt; event = Event.event();
  *
- * EventObserver&lt;Boolean&gt; observer = event.observer();
+ * Observer&lt;Boolean&gt; observer = event.observer();
  *
  * observer.addListener(this::doSomething);
  * observer.addConsumer(this::onBoolean);
@@ -35,7 +37,7 @@ import java.util.function.Consumer;
  * A factory for {@link Event} instances.
  * @param <T> the type of data propagated with this event
  */
-public interface Event<T> extends Runnable, Consumer<T>, EventObserver<T> {
+public interface Event<T> extends Runnable, Consumer<T>, Observer<T> {
 
 	/**
 	 * Triggers this event.
@@ -53,7 +55,7 @@ public interface Event<T> extends Runnable, Consumer<T>, EventObserver<T> {
 	/**
 	 * @return an observer notified each time this event occurs
 	 */
-	EventObserver<T> observer();
+	Observer<T> observer();
 
 	/**
 	 * Creates a new {@link Event}.

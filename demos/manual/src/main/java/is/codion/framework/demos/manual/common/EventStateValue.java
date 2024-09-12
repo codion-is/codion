@@ -19,7 +19,7 @@
 package is.codion.framework.demos.manual.common;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -41,7 +41,7 @@ public final class EventStateValue {
 
 		// an observer manages the listeners
 		// for an Event but can not trigger it
-		EventObserver<String> observer = event.observer();
+		Observer<String> observer = event.observer();
 
 		// add a listener if you're not
 		// interested in the event data
@@ -55,9 +55,9 @@ public final class EventStateValue {
 
 		event.accept("info");//output: 'Event: info'
 
-		// Event implements EventObserver so
+		// Event implements Observer so
 		// listeneres can be added directly without
-		// referring to the EventObserver
+		// referring to the Observer
 		event.addConsumer(System.out::println);
 		// end::event[]
 	}
@@ -185,9 +185,9 @@ public final class EventStateValue {
 						.build();
 
 		/**
-		 * @return an event observer notified each time the value changes
+		 * @return an observer notified each time the value changes
 		 */
-		public EventObserver<Integer> valueChanged() {
+		public Observer<Integer> valueChanged() {
 			return value.observer();
 		}
 

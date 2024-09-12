@@ -19,9 +19,9 @@
 /**
  * Common classes used throughout, such as:<br>
  * <br>
+ * {@link is.codion.common.observable.Observer}<br>
  * {@link is.codion.common.observable.Observable}<br>
  * {@link is.codion.common.event.Event}<br>
- * {@link is.codion.common.event.EventObserver}<br>
  * {@link is.codion.common.state.State}<br>
  * {@link is.codion.common.state.StateObserver}<br>
  * {@link is.codion.common.value.Value}<br>

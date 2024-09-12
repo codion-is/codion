@@ -18,8 +18,8 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.event.EventObserver;
 import is.codion.common.observable.Observable;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
@@ -62,7 +62,7 @@ public interface TableSelectionModel<R> {
 	 * To prevent a selection change, add a listener throwing a {@link is.codion.common.model.CancelException}.
 	 * @return an observer notified when the selection is about to change
 	 */
-	EventObserver<?> selectionChanging();
+	Observer<?> selectionChanging();
 
 	/**
 	 * @return an {@link Observable} for the index of the selected row, -1 if none is selected and

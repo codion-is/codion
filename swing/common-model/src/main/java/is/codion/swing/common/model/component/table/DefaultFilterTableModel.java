@@ -19,10 +19,10 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.observable.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
 
@@ -361,12 +361,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public EventObserver<?> dataChanged() {
+	public Observer<?> dataChanged() {
 		return dataChanged.observer();
 	}
 
 	@Override
-	public EventObserver<?> cleared() {
+	public Observer<?> cleared() {
 		return cleared.observer();
 	}
 

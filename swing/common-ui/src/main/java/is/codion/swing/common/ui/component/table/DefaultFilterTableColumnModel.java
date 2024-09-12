@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 
 import javax.swing.ListSelectionModel;
@@ -247,12 +247,12 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	/* TableColumnModel implementation ends */
 
 	@Override
-	public EventObserver<C> columnHidden() {
+	public Observer<C> columnHidden() {
 		return columnHidden.observer();
 	}
 
 	@Override
-	public EventObserver<C> columnShown() {
+	public Observer<C> columnShown() {
 		return columnShown.observer();
 	}
 

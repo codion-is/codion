@@ -20,9 +20,9 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -364,7 +364,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final EventObserver<?> selectionChanged() {
+	public final Observer<?> selectionChanged() {
 		return selectionModel().selectedIndexes().observer();
 	}
 
@@ -589,12 +589,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final EventObserver<?> dataChanged() {
+	public final Observer<?> dataChanged() {
 		return tableModel.dataChanged();
 	}
 
 	@Override
-	public final EventObserver<?> cleared() {
+	public final Observer<?> cleared() {
 		return tableModel.cleared();
 	}
 

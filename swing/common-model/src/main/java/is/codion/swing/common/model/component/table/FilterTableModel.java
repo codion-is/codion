@@ -18,10 +18,10 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.observable.Observer;
 import is.codion.common.value.Value;
 
 import javax.swing.table.TableModel;
@@ -68,13 +68,13 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	/**
 	 * @return an observer notified each time the table data changes
 	 */
-	EventObserver<?> dataChanged();
+	Observer<?> dataChanged();
 
 	/**
 	 * @return an observer notified each time the table model is cleared
 	 * @see #clear()
 	 */
-	EventObserver<?> cleared();
+	Observer<?> cleared();
 
 	/**
 	 * @param item the item

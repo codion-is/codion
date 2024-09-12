@@ -18,8 +18,6 @@
  */
 package is.codion.common.observable;
 
-import is.codion.common.event.EventObserver;
-
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -55,7 +53,7 @@ import java.util.function.Consumer;
  *       }
  *
  *      {@literal @}Override
- *       public EventObserver&lt;String&gt; observer() {
+ *       public Observer&lt;String&gt; observer() {
  *           return person.nameChanged.observer();
  *       }
  *  };
@@ -65,7 +63,7 @@ import java.util.function.Consumer;
  * </pre>
  * @param <T> the type of the value being observed
  */
-public interface Observable<T> extends EventObserver<T> {
+public interface Observable<T> extends Observer<T> {
 
 	/**
 	 * @return the value
@@ -86,9 +84,9 @@ public interface Observable<T> extends EventObserver<T> {
 	}
 
 	/**
-	 * @return an {@link EventObserver} notified each time the value may have changed
+	 * @return an {@link Observer} notified each time the value may have changed
 	 */
-	EventObserver<T> observer();
+	Observer<T> observer();
 
 	@Override
 	default boolean addListener(Runnable listener) {

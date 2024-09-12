@@ -21,12 +21,12 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.table.TableSummaryModel;
+import is.codion.common.observable.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -622,7 +622,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return an observer notified each time the table is double-clicked
 	 */
-	public EventObserver<MouseEvent> doubleClick() {
+	public Observer<MouseEvent> doubleClick() {
 		return doubleClick.observer();
 	}
 
@@ -1332,7 +1332,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public EventObserver<?> valuesChanged() {
+		public Observer<?> valuesChanged() {
 			return valuesChanged.observer();
 		}
 

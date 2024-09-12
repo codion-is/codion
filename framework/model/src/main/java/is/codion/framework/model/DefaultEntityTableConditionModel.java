@@ -21,10 +21,10 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.Operands;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.observable.Observer;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -170,7 +170,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
-	public EventObserver<?> conditionChanged() {
+	public Observer<?> conditionChanged() {
 		return conditionModel.conditionChanged();
 	}
 

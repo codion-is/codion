@@ -20,11 +20,11 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.model.table.ColumnConditionModel.Operands;
+import is.codion.common.observable.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -189,7 +189,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	@Override
-	public Optional<EventObserver<C>> focusGainedObserver() {
+	public Optional<Observer<C>> focusGainedObserver() {
 		return Optional.of(focusGainedEvent.observer());
 	}
 

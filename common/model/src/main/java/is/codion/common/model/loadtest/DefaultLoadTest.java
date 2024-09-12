@@ -19,9 +19,9 @@
 package is.codion.common.model.loadtest;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.model.randomizer.ItemRandomizer;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
@@ -235,7 +235,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	}
 
 	@Override
-	public EventObserver<Result> result() {
+	public Observer<Result> result() {
 		return resultEvent.observer();
 	}
 

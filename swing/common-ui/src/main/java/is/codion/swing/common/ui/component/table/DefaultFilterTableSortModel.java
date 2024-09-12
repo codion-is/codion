@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 
 import javax.swing.SortOrder;
@@ -124,7 +124,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public EventObserver<C> sortingChanged() {
+	public Observer<C> sortingChanged() {
 		return sortingChanged.observer();
 	}
 

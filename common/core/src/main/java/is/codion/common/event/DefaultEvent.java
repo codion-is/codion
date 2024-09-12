@@ -18,12 +18,15 @@
  */
 package is.codion.common.event;
 
+import is.codion.common.observable.Observer;
+
 import java.util.function.Consumer;
 
 final class DefaultEvent<T> implements Event<T> {
 
 	private final Object lock = new Object();
-	private DefaultEventObserver<T> observer;
+
+	private DefaultObserver<T> observer;
 
 	@Override
 	public void run() {
@@ -38,10 +41,10 @@ final class DefaultEvent<T> implements Event<T> {
 	}
 
 	@Override
-	public EventObserver<T> observer() {
+	public Observer<T> observer() {
 		synchronized (lock) {
 			if (observer == null) {
-				observer = new DefaultEventObserver<>();
+				observer = new DefaultObserver<>();
 			}
 
 			return observer;

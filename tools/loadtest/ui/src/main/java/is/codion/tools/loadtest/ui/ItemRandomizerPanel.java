@@ -18,9 +18,9 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.model.randomizer.ItemRandomizer.RandomItem;
+import is.codion.common.observable.Observer;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -71,7 +71,7 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	/**
 	 * @return an observer notified each time the selected items change
 	 */
-	public EventObserver<List<RandomItem<T>>> selectedItemsChanged() {
+	public Observer<List<RandomItem<T>>> selectedItemsChanged() {
 		return listComponentValue.observer();
 	}
 

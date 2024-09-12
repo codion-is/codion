@@ -19,8 +19,8 @@
 package is.codion.common.model.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
+import is.codion.common.observable.Observer;
 
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +50,7 @@ public class DefaultColumnSummaryModelTest {
 		}
 
 		@Override
-		public EventObserver<?> valuesChanged() {
+		public Observer<?> valuesChanged() {
 			return Event.event().observer();
 		}
 	});
@@ -70,7 +70,7 @@ public class DefaultColumnSummaryModelTest {
 		}
 
 		@Override
-		public EventObserver<?> valuesChanged() {
+		public Observer<?> valuesChanged() {
 			return Event.event().observer();
 		}
 	});

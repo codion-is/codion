@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 
 import javax.swing.SortOrder;
 import java.util.Comparator;
@@ -108,7 +108,7 @@ public interface FilterTableSortModel<R, C> {
 	/**
 	 * @return an observer notified each time the sorting state changes, with the column identifier as event data
 	 */
-	EventObserver<C> sortingChanged();
+	Observer<C> sortingChanged();
 
 	/**
 	 * Specifies a sorting state for a column.

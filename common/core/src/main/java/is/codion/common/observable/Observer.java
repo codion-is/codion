@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2008 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.event;
+package is.codion.common.observable;
 
 import java.util.function.Consumer;
 
@@ -24,10 +24,10 @@ import java.util.function.Consumer;
  * Manages listeners for an Event.
  * @param <T> the type of data propagated with the event.
  */
-public interface EventObserver<T> {
+public interface Observer<T> {
 
 	/**
-	 * Adds {@code listener} to this {@link EventObserver}.
+	 * Adds {@code listener} to this {@link Observer}.
 	 * Adding the same listener a second time has no effect.
 	 * @param listener the listener to add
 	 * @return true if this observer did not already contain the specified listener
@@ -36,14 +36,14 @@ public interface EventObserver<T> {
 	boolean addListener(Runnable listener);
 
 	/**
-	 * Removes {@code listener} from this {@link EventObserver}
+	 * Removes {@code listener} from this {@link Observer}
 	 * @param listener the listener to remove
 	 * @return true if this observer contained the specified listener
 	 */
 	boolean removeListener(Runnable listener);
 
 	/**
-	 * Adds {@code consumer} to this {@link EventObserver}.
+	 * Adds {@code consumer} to this {@link Observer}.
 	 * Adding the same consumer a second time has no effect.
 	 * @param consumer the consumer to add
 	 * @return true if this observer did not already contain the specified consumer
@@ -52,7 +52,7 @@ public interface EventObserver<T> {
 	boolean addConsumer(Consumer<? super T> consumer);
 
 	/**
-	 * Removes {@code consumer} from this {@link EventObserver}
+	 * Removes {@code consumer} from this {@link Observer}
 	 * @param consumer the consumer to remove
 	 * @return true if this observer contained the specified consumer
 	 */
@@ -67,7 +67,7 @@ public interface EventObserver<T> {
 	boolean addWeakListener(Runnable listener);
 
 	/**
-	 * Removes {@code listener} from this {@link EventObserver}
+	 * Removes {@code listener} from this {@link Observer}
 	 * @param listener the listener to remove
 	 * @return true if this observer contained the specified listener
 	 */
@@ -82,7 +82,7 @@ public interface EventObserver<T> {
 	boolean addWeakConsumer(Consumer<? super T> consumer);
 
 	/**
-	 * Removes {@code consumer} from this {@link EventObserver}.
+	 * Removes {@code consumer} from this {@link Observer}.
 	 * @param consumer the consumer to remove
 	 * @return true if this observer contained the specified consumer
 	 */

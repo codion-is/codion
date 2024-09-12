@@ -20,7 +20,7 @@ package is.codion.common.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -182,13 +182,13 @@ public interface FilterModel<T> {
 		 * @return an observer notified each time a successful refresh has been performed
 		 * @see #refresh()
 		 */
-		EventObserver<?> success();
+		Observer<?> success();
 
 		/**
 		 * @return an observer notified each time an asynchronous refresh has failed
 		 * @see #refresh()
 		 */
-		EventObserver<Exception> failure();
+		Observer<Exception> failure();
 	}
 
 	/**
@@ -243,12 +243,12 @@ public interface FilterModel<T> {
 		}
 
 		@Override
-		public final EventObserver<?> success() {
+		public final Observer<?> success() {
 			return refreshEvent.observer();
 		}
 
 		@Override
-		public final EventObserver<Exception> failure() {
+		public final Observer<Exception> failure() {
 			return refreshFailedEvent.observer();
 		}
 

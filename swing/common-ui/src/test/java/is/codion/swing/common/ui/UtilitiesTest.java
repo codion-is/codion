@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui;
 
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 
 import org.junit.jupiter.api.Test;
@@ -76,7 +76,7 @@ public class UtilitiesTest {
 	void propertyChangeObserver() {
 		JTextField textField = new JTextField();
 		AtomicInteger counter = new AtomicInteger();
-		EventObserver<Integer> alignmentObserver =
+		Observer<Integer> alignmentObserver =
 						Utilities.propertyChangeEvent(textField, "horizontalAlignment");
 		alignmentObserver.addListener(counter::incrementAndGet);
 		textField.setHorizontalAlignment(SwingConstants.RIGHT);

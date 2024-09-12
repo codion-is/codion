@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 
 import javax.swing.Action;
@@ -62,7 +62,7 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 	 * @param closeObserver if specified the dialog will be disposed of when and only when this observer is notified
 	 * @return this DialogBuilder instance
 	 */
-	ComponentDialogBuilder closeObserver(EventObserver<?> closeObserver);
+	ComponentDialogBuilder closeObserver(Observer<?> closeObserver);
 
 	/**
 	 * @param confirmCloseListener this listener, if specified, will be queried for confirmation before

@@ -20,7 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -462,61 +462,61 @@ public interface EntityEditModel {
 	 * @param <T> the value type
 	 * @return an observer for the given attribute value edits
 	 */
-	<T> EventObserver<T> valueEdited(Attribute<T> attribute);
+	<T> Observer<T> valueEdited(Attribute<T> attribute);
 
 	/**
 	 * @return an observer for attribute value changes
 	 */
-	EventObserver<Attribute<?>> valueChanged();
+	Observer<Attribute<?>> valueChanged();
 
 	/**
 	 * @return an observer notified each time the active entity is changed via {@link #set(Entity)} or {@link #defaults()}.
 	 * @see #set(Entity)
 	 * @see #defaults()
 	 */
-	EventObserver<Entity> entityChanged();
+	Observer<Entity> entityChanged();
 
 	/**
 	 * @return an observer notified each time the active entity is about to change
 	 * @see #set(Entity)
 	 * @see #defaults()
 	 */
-	EventObserver<Entity> entityChanging();
+	Observer<Entity> entityChanging();
 
 	/**
 	 * @return an observer notified before an insert is performed
 	 */
-	EventObserver<Collection<Entity>> beforeInsert();
+	Observer<Collection<Entity>> beforeInsert();
 
 	/**
 	 * @return an observer notified after an insert is performed
 	 */
-	EventObserver<Collection<Entity>> afterInsert();
+	Observer<Collection<Entity>> afterInsert();
 
 	/**
 	 * @return an observer notified before an update is performed
 	 */
-	EventObserver<Map<Entity.Key, Entity>> beforeUpdate();
+	Observer<Map<Entity.Key, Entity>> beforeUpdate();
 
 	/**
 	 * @return an observer notified after an update is performed
 	 */
-	EventObserver<Map<Entity.Key, Entity>> afterUpdate();
+	Observer<Map<Entity.Key, Entity>> afterUpdate();
 
 	/**
 	 * @return an observer notified before a delete is performed
 	 */
-	EventObserver<Collection<Entity>> beforeDelete();
+	Observer<Collection<Entity>> beforeDelete();
 
 	/**
 	 * @return an observer notified after a delete is performed
 	 */
-	EventObserver<Collection<Entity>> afterDelete();
+	Observer<Collection<Entity>> afterDelete();
 
 	/**
 	 * @return an observer notified each time one or more entities have been inserted, updated or deleted via this model
 	 */
-	EventObserver<?> afterInsertUpdateOrDelete();
+	Observer<?> afterInsertUpdateOrDelete();
 
 	/**
 	 * Represents a task for inserting entities, split up for use with a background thread.

@@ -19,8 +19,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.Operator;
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
@@ -154,7 +154,7 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	}
 
 	@Override
-	public EventObserver<?> conditionChanged() {
+	public Observer<?> conditionChanged() {
 		return conditionModel.conditionChanged();
 	}
 

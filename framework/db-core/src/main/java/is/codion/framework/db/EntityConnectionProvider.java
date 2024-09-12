@@ -19,7 +19,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.Configuration;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
@@ -110,7 +110,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	/**
 	 * @return an observer notified when a connection is established
 	 */
-	EventObserver<EntityConnection> connected();
+	Observer<EntityConnection> connected();
 
 	/**
 	 * Closes the underlying connection and performs cleanup if required

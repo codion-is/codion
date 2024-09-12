@@ -18,7 +18,7 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -27,7 +27,7 @@ import java.util.Optional;
  * A read only value observer
  * @param <T> the type of the value
  */
-public interface ValueObserver<T> extends EventObserver<T> {
+public interface ValueObserver<T> extends Observer<T> {
 
 	/**
 	 * @return the value

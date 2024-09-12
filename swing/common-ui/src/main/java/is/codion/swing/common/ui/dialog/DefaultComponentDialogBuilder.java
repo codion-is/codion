@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -59,7 +59,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private Consumer<JDialog> onShown;
 	private Consumer<WindowEvent> onOpened;
 	private Consumer<WindowEvent> onClosed;
-	private EventObserver<?> closeObserver;
+	private Observer<?> closeObserver;
 	private Consumer<State> confirmCloseListener;
 	private boolean disposeOnEscape = true;
 
@@ -92,7 +92,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	}
 
 	@Override
-	public ComponentDialogBuilder closeObserver(EventObserver<?> closeObserver) {
+	public ComponentDialogBuilder closeObserver(Observer<?> closeObserver) {
 		this.closeObserver = closeObserver;
 		return this;
 	}

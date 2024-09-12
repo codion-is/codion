@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
@@ -123,7 +123,7 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 * The default implementation returns an empty Optional.
 	 * @return an observer notified when a subcomponent of this condition panel receives focus or an empty Optional if none is available
 	 */
-	public Optional<EventObserver<C>> focusGainedObserver() {
+	public Optional<Observer<C>> focusGainedObserver() {
 		return Optional.empty();
 	}
 

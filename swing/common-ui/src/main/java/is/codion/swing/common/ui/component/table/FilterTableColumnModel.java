@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 
 import javax.swing.table.TableColumn;
@@ -109,10 +109,10 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	/**
 	 * @return an observer notified each time a column is hidden
 	 */
-	EventObserver<C> columnHidden();
+	Observer<C> columnHidden();
 
 	/**
 	 * @return an observer notified each time a column is shown
 	 */
-	EventObserver<C> columnShown();
+	Observer<C> columnShown();
 }

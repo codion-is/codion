@@ -19,7 +19,7 @@
 package is.codion.common.state;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 
 import java.util.function.Consumer;
 
@@ -82,42 +82,42 @@ final class DefaultStateObserver implements StateObserver {
 
 	@Override
 	public boolean addListener(Runnable listener) {
-		return eventObserver().addListener(listener);
+		return observer().addListener(listener);
 	}
 
 	@Override
 	public boolean removeListener(Runnable listener) {
-		return eventObserver().removeListener(listener);
+		return observer().removeListener(listener);
 	}
 
 	@Override
 	public boolean addConsumer(Consumer<? super Boolean> consumer) {
-		return eventObserver().addConsumer(consumer);
+		return observer().addConsumer(consumer);
 	}
 
 	@Override
 	public boolean removeConsumer(Consumer<? super Boolean> consumer) {
-		return eventObserver().removeConsumer(consumer);
+		return observer().removeConsumer(consumer);
 	}
 
 	@Override
 	public boolean addWeakListener(Runnable listener) {
-		return eventObserver().addWeakListener(listener);
+		return observer().addWeakListener(listener);
 	}
 
 	@Override
 	public boolean removeWeakListener(Runnable listener) {
-		return eventObserver().removeWeakListener(listener);
+		return observer().removeWeakListener(listener);
 	}
 
 	@Override
 	public boolean addWeakConsumer(Consumer<? super Boolean> consumer) {
-		return eventObserver().addWeakConsumer(consumer);
+		return observer().addWeakConsumer(consumer);
 	}
 
 	@Override
 	public boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {
-		return eventObserver().removeWeakConsumer(consumer);
+		return observer().removeWeakConsumer(consumer);
 	}
 
 	void notifyObservers(boolean newValue, boolean previousValue) {
@@ -133,7 +133,7 @@ final class DefaultStateObserver implements StateObserver {
 		}
 	}
 
-	private EventObserver<Boolean> eventObserver() {
+	private Observer<Boolean> observer() {
 		synchronized (lock) {
 			if (stateChangedEvent == null) {
 				stateChangedEvent = Event.event();

@@ -19,7 +19,7 @@
 package is.codion.tools.monitor.model;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;
@@ -118,14 +118,14 @@ public final class HostMonitor {
 	/**
 	 * @return an observer notified each time a server is added
 	 */
-	public EventObserver<ServerMonitor> serverAdded() {
+	public Observer<ServerMonitor> serverAdded() {
 		return serverAdded.observer();
 	}
 
 	/**
 	 * @return an observer notified each time a server is removed
 	 */
-	public EventObserver<ServerMonitor> serverRemoved() {
+	public Observer<ServerMonitor> serverRemoved() {
 		return serverRemoved.observer();
 	}
 

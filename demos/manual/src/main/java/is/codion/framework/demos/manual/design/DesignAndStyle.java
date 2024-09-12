@@ -19,7 +19,7 @@
 package is.codion.framework.demos.manual.design;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -74,7 +74,7 @@ public final class DesignAndStyle {
 		//end::builders[]
 
 		//tag::accessors[]
-		EventObserver<String> observer = event.observer();
+		Observer<String> observer = event.observer();
 
 		LocalEntityConnection connection = connectionProvider.connection();
 

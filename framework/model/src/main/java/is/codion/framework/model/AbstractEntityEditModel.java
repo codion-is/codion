@@ -20,7 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
@@ -403,57 +403,57 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final <T> EventObserver<T> valueEdited(Attribute<T> attribute) {
+	public final <T> Observer<T> valueEdited(Attribute<T> attribute) {
 		return events.valueEdited(attribute);
 	}
 
 	@Override
-	public final EventObserver<Attribute<?>> valueChanged() {
+	public final Observer<Attribute<?>> valueChanged() {
 		return events.valueChange.observer();
 	}
 
 	@Override
-	public final EventObserver<Entity> entityChanged() {
+	public final Observer<Entity> entityChanged() {
 		return events.entityChanged.observer();
 	}
 
 	@Override
-	public final EventObserver<Entity> entityChanging() {
+	public final Observer<Entity> entityChanging() {
 		return events.entityChanging.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> beforeInsert() {
+	public final Observer<Collection<Entity>> beforeInsert() {
 		return events.beforeInsert.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> afterInsert() {
+	public final Observer<Collection<Entity>> afterInsert() {
 		return events.afterInsert.observer();
 	}
 
 	@Override
-	public final EventObserver<Map<Entity.Key, Entity>> beforeUpdate() {
+	public final Observer<Map<Entity.Key, Entity>> beforeUpdate() {
 		return events.beforeUpdate.observer();
 	}
 
 	@Override
-	public final EventObserver<Map<Entity.Key, Entity>> afterUpdate() {
+	public final Observer<Map<Entity.Key, Entity>> afterUpdate() {
 		return events.afterUpdate.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> beforeDelete() {
+	public final Observer<Collection<Entity>> beforeDelete() {
 		return events.beforeDelete.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> afterDelete() {
+	public final Observer<Collection<Entity>> afterDelete() {
 		return events.afterDelete.observer();
 	}
 
 	@Override
-	public final EventObserver<?> afterInsertUpdateOrDelete() {
+	public final Observer<?> afterInsertUpdateOrDelete() {
 		return events.afterInsertUpdateOrDelete.observer();
 	}
 
@@ -974,7 +974,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			existsPredicate.addListener(states::updateExistsState);
 		}
 
-		private <T> EventObserver<T> valueEdited(Attribute<T> attribute) {
+		private <T> Observer<T> valueEdited(Attribute<T> attribute) {
 			entityDefinition().attributes().definition(attribute);
 			return ((Event<T>) editEvents.computeIfAbsent(attribute, k -> Event.event())).observer();
 		}

@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.StateObserver;
 
 import javax.swing.Action;
@@ -148,13 +148,13 @@ public final class Utilities {
 	}
 
 	/**
-	 * Returns a {@link EventObserver} notified each time the value of the given property changes in the given component.
+	 * Returns a {@link Observer} notified each time the value of the given property changes in the given component.
 	 * @param component the component
 	 * @param property the property to listen to changes for
 	 * @param <T> the property data type
-	 * @return a {@link EventObserver} notified each time the value of the given property changes
+	 * @return a {@link Observer} notified each time the value of the given property changes
 	 */
-	public static <T> EventObserver<T> propertyChangeEvent(JComponent component, String property) {
+	public static <T> Observer<T> propertyChangeEvent(JComponent component, String property) {
 		requireNonNull(component, COMPONENT);
 		requireNonNull(property, "property");
 		Event<T> event = Event.event();

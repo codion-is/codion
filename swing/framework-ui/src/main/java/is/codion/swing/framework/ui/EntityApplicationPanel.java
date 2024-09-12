@@ -21,10 +21,10 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.observable.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -300,7 +300,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return an observer notified when this application panel is initialized
 	 * @see #initialize()
 	 */
-	public final EventObserver<EntityApplicationPanel<?>> initializedEvent() {
+	public final Observer<EntityApplicationPanel<?>> initializedEvent() {
 		return onInitialized.observer();
 	}
 
@@ -764,7 +764,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * To cancel the exit add a listener throwing a {@link CancelException}.
 	 * @return an observer notified when the application is about to exit.
 	 */
-	protected final EventObserver<?> exitObserver() {
+	protected final Observer<?> exitObserver() {
 		return exitEvent.observer();
 	}
 

@@ -18,6 +18,8 @@
  */
 package is.codion.common.event;
 
+import is.codion.common.observable.Observer;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -28,7 +30,7 @@ import java.util.function.Consumer;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultEventObserver<T> implements EventObserver<T> {
+final class DefaultObserver<T> implements Observer<T> {
 
 	private static final String CONSUMER = "consumer";
 	private static final String LISTENER = "listener";

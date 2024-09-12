@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -104,7 +104,7 @@ public interface ColumnSummaryModel {
 		/**
 		 * @return an observer notified when underlying values change, requiring a summary refresh
 		 */
-		EventObserver<?> valuesChanged();
+		Observer<?> valuesChanged();
 
 		/**
 		 * @param <C> the column identifier type

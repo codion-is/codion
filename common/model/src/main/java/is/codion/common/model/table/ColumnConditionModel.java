@@ -20,7 +20,7 @@ package is.codion.common.model.table;
 
 import is.codion.common.Configuration;
 import is.codion.common.Operator;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -174,7 +174,7 @@ public interface ColumnConditionModel<C, T> {
 	/**
 	 * @return an observer notified each time the condition state changes
 	 */
-	EventObserver<?> conditionChanged();
+	Observer<?> conditionChanged();
 
 	/**
 	 * Returns a new {@link Builder} instance.

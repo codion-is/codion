@@ -19,7 +19,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.domain.DomainType;
@@ -116,7 +116,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	}
 
 	@Override
-	public final EventObserver<EntityConnection> connected() {
+	public final Observer<EntityConnection> connected() {
 		return connectedEvent.observer();
 	}
 

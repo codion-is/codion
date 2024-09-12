@@ -19,7 +19,7 @@
 package is.codion.common.model.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
+import is.codion.common.observable.Observer;
 
 import java.util.Collection;
 import java.util.Map;
@@ -71,7 +71,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public EventObserver<?> conditionChanged() {
+	public Observer<?> conditionChanged() {
 		return conditionChanged.observer();
 	}
 
