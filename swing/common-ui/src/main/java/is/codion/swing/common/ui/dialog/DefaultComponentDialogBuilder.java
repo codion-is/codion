@@ -59,7 +59,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private Consumer<JDialog> onShown;
 	private Consumer<WindowEvent> onOpened;
 	private Consumer<WindowEvent> onClosed;
-	private EventObserver<?> closeEvent;
+	private EventObserver<?> closeObserver;
 	private Consumer<State> confirmCloseListener;
 	private boolean disposeOnEscape = true;
 
@@ -92,8 +92,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	}
 
 	@Override
-	public ComponentDialogBuilder closeEvent(EventObserver<?> closeEvent) {
-		this.closeEvent = closeEvent;
+	public ComponentDialogBuilder closeObserver(EventObserver<?> closeObserver) {
+		this.closeObserver = closeObserver;
 		return this;
 	}
 
@@ -148,7 +148,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
 		Action disposeAction = new DisposeDialogAction(new DialogSupplier(dialog), confirmCloseListener);
 		dialog.addWindowListener(new DialogListener(disposeAction, onClosed, onOpened));
-		if (closeEvent == null) {
+		if (closeObserver == null) {
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			if (disposeOnEscape) {
 				KeyEvents.builder(VK_ESCAPE)
@@ -158,7 +158,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 			}
 		}
 		else {
-			closeEvent.addListener(new CloseListener(disposeAction));
+			closeObserver.addListener(new CloseListener(disposeAction));
 		}
 
 		return dialog;

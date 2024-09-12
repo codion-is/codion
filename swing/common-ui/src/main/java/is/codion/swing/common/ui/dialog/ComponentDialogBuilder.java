@@ -57,12 +57,12 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 	ComponentDialogBuilder enterAction(Action enterAction);
 
 	/**
-	 * Sets the Event which triggers the closing of the dialog, note that {@link #disposeOnEscape(boolean)}
-	 * has no effect if the closeEvent is specified.
-	 * @param closeEvent if specified the dialog will be disposed of when and only when this event occurs
+	 * Sets the Observer which triggers the closing of the dialog, note that {@link #disposeOnEscape(boolean)}
+	 * has no effect if a closeObserver is specified.
+	 * @param closeObserver if specified the dialog will be disposed of when and only when this observer is notified
 	 * @return this DialogBuilder instance
 	 */
-	ComponentDialogBuilder closeEvent(EventObserver<?> closeEvent);
+	ComponentDialogBuilder closeObserver(EventObserver<?> closeObserver);
 
 	/**
 	 * @param confirmCloseListener this listener, if specified, will be queried for confirmation before

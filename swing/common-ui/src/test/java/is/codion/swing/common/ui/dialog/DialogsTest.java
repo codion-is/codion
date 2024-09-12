@@ -49,7 +49,7 @@ public final class DialogsTest {
 						.enterAction(commandControl(() -> {}))
 						.onOpened(e -> {})
 						.onClosed(e -> {})
-						.closeEvent(Event.event())
+						.closeObserver(Event.event())
 						.confirmCloseListener(state -> {})
 						.disposeOnEscape(false)
 						.keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
