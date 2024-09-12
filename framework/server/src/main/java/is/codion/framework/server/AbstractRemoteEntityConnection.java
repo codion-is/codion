@@ -160,7 +160,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 		return connectionHandler.active();
 	}
 
-	final EventObserver<AbstractRemoteEntityConnection> closedEvent() {
+	final EventObserver<AbstractRemoteEntityConnection> closedObserver() {
 		return closedEvent.observer();
 	}
 
