@@ -50,6 +50,7 @@ import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
+import java.awt.Point;
 import java.awt.Window;
 import java.util.Collection;
 import java.util.List;
@@ -307,6 +308,7 @@ public final class EntityDialogs {
 			InputValidator<T> validator = new InputValidator<>(entityDefinition, attribute, componentValue);
 			inputDialog(componentValue)
 							.owner(owner)
+							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.title(FrameworkMessages.edit())
 							.caption(attributeDefinition.caption())
@@ -343,6 +345,7 @@ public final class EntityDialogs {
 									.collect(toList())).prepare()::perform)
 									.title(EDIT_PANEL_MESSAGES.getString("updating"))
 									.owner(owner)
+									.location(location)
 									.locationRelativeTo(locationRelativeTo)
 									.onException(e -> {})
 									.execute()
@@ -467,13 +470,13 @@ public final class EntityDialogs {
 
 		@Override
 		public List<Entity> select() {
-			return new EntitySelectionDialog(tableModel, owner, locationRelativeTo,
+			return new EntitySelectionDialog(tableModel, owner, location, locationRelativeTo,
 							title, icon, dialogSize, false).selectEntities();
 		}
 
 		@Override
 		public Optional<Entity> selectSingle() {
-			List<Entity> entities = new EntitySelectionDialog(tableModel, owner, locationRelativeTo,
+			List<Entity> entities = new EntitySelectionDialog(tableModel, owner, location, locationRelativeTo,
 							title, icon, dialogSize, true).selectEntities();
 
 			return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
@@ -484,7 +487,7 @@ public final class EntityDialogs {
 
 		private final EntityTablePanel entityTablePanel;
 
-		private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, Component locationRelativeTo,
+		private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, Point location, Component locationRelativeTo,
 																	ValueObserver<String> title, ImageIcon icon, Dimension dialogSize, boolean singleSelection) {
 			Control okControl = Control.builder()
 							.command(this::ok)
@@ -508,6 +511,7 @@ public final class EntityDialogs {
 											.border(Borders.emptyBorder())
 											.build())
 							.owner(owner)
+							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.title(title)
 							.icon(icon)
@@ -599,6 +603,7 @@ public final class EntityDialogs {
 											.border(emptyBorder())
 											.build())
 							.owner(owner)
+							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createAddControl(editPanel,
 											new InsertConsumer(disposeDialog), confirm))
@@ -682,6 +687,7 @@ public final class EntityDialogs {
 											.border(emptyBorder())
 											.build())
 							.owner(owner)
+							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createUpdateControl(editPanel,
 											new UpdateConsumer(new DisposeDialog(editPanel)), confirm))

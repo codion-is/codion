@@ -6,6 +6,7 @@ Codion Change Log
 - PropertyStore, property access now based on predicates instead of key prefixes.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, Config.SHOW_REFRESH_PROGRESS_BAR now used for default config value.
+- EntityDialogs bug fixed, now respects the location if specified.
 
 ## 0.18.13
 ### is.codion
