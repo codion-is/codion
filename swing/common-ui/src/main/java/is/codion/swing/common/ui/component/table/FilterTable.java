@@ -383,6 +383,14 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
+	 * The {@link ActionEvent} propagated when this action is performed, contains the associated {@link MouseEvent} as source.
+	 * <pre>
+	 *   public void actionPerformed(ActionEvent event) {
+	 *       MouseEvent mouseEvent = (MouseEvent) event.getSource();
+	 *       Point location = mouseEvent.getLocationOnScreen();
+	 *       // ...
+	 *   }
+	 * </pre>
 	 * @return the {@link Value} controlling the action to perform when a double click is performed on the table
 	 */
 	public Value<Action> doubleClickAction() {
@@ -912,7 +920,7 @@ public final class FilterTable<R, C> extends JTable {
 		public void mouseClicked(MouseEvent e) {
 			if (e.getClickCount() == 2) {
 				if (doubleClickAction.isNotNull()) {
-					doubleClickAction.get().actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "doubleClick"));
+					doubleClickAction.get().actionPerformed(new ActionEvent(e, ActionEvent.ACTION_PERFORMED, "doubleClick"));
 				}
 				doubleClick.accept(e);
 			}
