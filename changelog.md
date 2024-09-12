@@ -12,6 +12,7 @@ Codion Change Log
 - EntityTablePanel bug fixed, Config.SHOW_REFRESH_PROGRESS_BAR now used for default config value.
 - EntityDialogs bug fixed, now respects the location if specified.
 - EntityTablePanel, edit panel dialog location now follows mouse when displayed on double click.
+- EntityApplicationPanel.exitEvent() renamed exitObserver().
 
 ## 0.18.13
 ### is.codion
