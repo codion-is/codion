@@ -145,7 +145,7 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		return !caseSensitive() && (column().type().isString() || column().type().isCharacter());
 	}
 
-	protected void validateOperator(Operator operator) {
+	private static void validateOperator(Operator operator) {
 		switch (operator) {
 			case EQUAL:
 			case NOT_EQUAL:

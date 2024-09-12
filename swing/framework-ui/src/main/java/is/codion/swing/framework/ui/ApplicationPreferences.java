@@ -61,10 +61,6 @@ final class ApplicationPreferences {
 		this.frameMaximized = frameMaximized;
 	}
 
-	String defaultUsername() {
-		return defaultUsername;
-	}
-
 	String lookAndFeel() {
 		return lookAndFeel;
 	}

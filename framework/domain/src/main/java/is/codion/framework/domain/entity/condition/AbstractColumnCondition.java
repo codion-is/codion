@@ -94,10 +94,4 @@ abstract class AbstractColumnCondition<T> extends AbstractCondition implements C
 	 * @return a condition string based on this condition
 	 */
 	protected abstract String toString(String columnExpression);
-
-	/**
-	 * @param operator the operator
-	 * @throws IllegalArgumentException in case the operator is not supported
-	 */
-	protected abstract void validateOperator(Operator operator);
 }

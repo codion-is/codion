@@ -77,7 +77,7 @@ final class DualValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		}
 	}
 
-	protected void validateOperator(Operator operator) {
+	private static void validateOperator(Operator operator) {
 		switch (operator) {
 			case BETWEEN:
 			case NOT_BETWEEN:

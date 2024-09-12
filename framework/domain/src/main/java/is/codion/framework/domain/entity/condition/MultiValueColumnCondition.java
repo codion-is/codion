@@ -107,7 +107,7 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		return stringBuilder.toString();
 	}
 
-	protected void validateOperator(Operator operator) {
+	private static void validateOperator(Operator operator) {
 		switch (operator) {
 			case IN:
 			case NOT_IN:
