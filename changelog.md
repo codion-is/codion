@@ -10,6 +10,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, Config.SHOW_REFRESH_PROGRESS_BAR now used for default config value.
 - EntityDialogs bug fixed, now respects the location if specified.
+- EntityTablePanel, edit panel dialog location now follows mouse when displayed on double click.
 
 ## 0.18.13
 ### is.codion

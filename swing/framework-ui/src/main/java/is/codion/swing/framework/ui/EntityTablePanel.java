@@ -104,6 +104,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -1047,8 +1048,10 @@ public class EntityTablePanel extends JPanel {
 	 */
 	private CommandControl createEditControl() {
 		return Control.builder()
-						.command(() -> editEntityDialog(() -> editPanel)
+						.action(actionEvent -> editEntityDialog(() -> editPanel)
 										.owner(this)
+										.location(actionEvent.getSource() instanceof MouseEvent ?
+														((MouseEvent) actionEvent.getSource()).getLocationOnScreen() : null)
 										.show())
 						.name(FrameworkMessages.edit())
 						.mnemonic(FrameworkMessages.editMnemonic())
