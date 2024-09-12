@@ -1487,8 +1487,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void configureColumnConditionPanel(ColumnConditionPanel<Attribute<?>, ?> conditionPanel) {
-		conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
-						focusGainedEvent.addConsumer(scrollToColumn));
+		conditionPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
+						focusGainedObserver.addConsumer(scrollToColumn));
 		conditionPanel.components().forEach(this::enableConditionPanelRefreshOnEnter);
 	}
 
@@ -1512,8 +1512,8 @@ public class EntityTablePanel extends JPanel {
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
 		if (configuration.includeFilterPanel) {
 			table.filterPanel().conditionPanels().forEach(conditionPanel ->
-							conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
-											focusGainedEvent.addConsumer(scrollToColumn)));
+							conditionPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
+											focusGainedObserver.addConsumer(scrollToColumn)));
 		}
 	}
 

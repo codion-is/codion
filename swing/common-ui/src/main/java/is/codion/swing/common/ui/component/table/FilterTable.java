@@ -899,8 +899,8 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void configureColumnConditionPanel(ColumnConditionPanel<C, ?> conditionPanel) {
-		conditionPanel.focusGainedEvent().ifPresent(focusGainedEvent ->
-						focusGainedEvent.addConsumer(scrollToColumn));
+		conditionPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
+						focusGainedObserver.addConsumer(scrollToColumn));
 	}
 
 	private static void addIfComponent(Collection<JComponent> components, Object object) {

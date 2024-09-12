@@ -189,8 +189,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	@Override
-	public Optional<EventObserver<C>> focusGainedEvent() {
-		return Optional.of(focusGainedEvent);
+	public Optional<EventObserver<C>> focusGainedObserver() {
+		return Optional.of(focusGainedEvent.observer());
 	}
 
 	/**
