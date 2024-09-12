@@ -158,7 +158,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 						.control(Control.builder()
 										.toggle(lineWrapState)
 										.name("Line wrap")))
-						.createPopupMenu());
+						.buildPopupMenu());
 
 		return textArea;
 	}

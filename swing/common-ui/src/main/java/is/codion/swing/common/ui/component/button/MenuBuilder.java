@@ -19,9 +19,11 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
+import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
@@ -33,7 +35,19 @@ import static java.util.Objects.requireNonNull;
 /**
  * A builder for menus.
  */
-public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder>, MenuItemBuilder<JMenu, MenuBuilder> {
+public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> {
+
+	/**
+	 * @param action the action to add
+	 * @return this builder instance
+	 */
+	MenuBuilder action(Action action);
+
+	/**
+	 * @param control the control to add
+	 * @return this builder instance
+	 */
+	MenuBuilder control(Control control);
 
 	/**
 	 * Adds all actions from the given {@link Controls} instance
@@ -60,7 +74,7 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder>,
 	 * Has no effect if a popup menu is not created.
 	 * @param popupMenuListener the popup menu listener
 	 * @return this builder instance
-	 * @see #createPopupMenu()
+	 * @see #buildPopupMenu()
 	 * @see JPopupMenu#addPopupMenuListener(PopupMenuListener)
 	 */
 	MenuBuilder popupMenuListener(PopupMenuListener popupMenuListener);
@@ -80,12 +94,12 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder>,
 	/**
 	 * @return a new JPopupMenu based on this menu builder
 	 */
-	JPopupMenu createPopupMenu();
+	JPopupMenu buildPopupMenu();
 
 	/**
 	 * @return a new JMenuBar based on this menu builder
 	 */
-	JMenuBar createMenuBar();
+	JMenuBar buildMenuBar();
 
 	/**
 	 * @return a new MenuBuilder

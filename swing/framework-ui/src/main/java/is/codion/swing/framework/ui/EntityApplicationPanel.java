@@ -775,7 +775,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 */
 	protected Optional<JMenuBar> createMenuBar() {
 		return createMainMenuControls().filter(Controls::notEmpty)
-						.map(mainMenuControls -> menu(mainMenuControls).createMenuBar());
+						.map(mainMenuControls -> menu(mainMenuControls).buildMenuBar());
 	}
 
 	/**

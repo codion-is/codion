@@ -146,7 +146,7 @@ public final class ClientMonitorPanel extends JPanel {
 										.control(table.createToggleColumnsControls())
 										.control(table.createResetColumnsControl())
 										.control(table.createSelectAutoResizeModeControl())))
-						.createPopupMenu();
+						.buildPopupMenu();
 	}
 
 	private void disconnect() throws RemoteException {

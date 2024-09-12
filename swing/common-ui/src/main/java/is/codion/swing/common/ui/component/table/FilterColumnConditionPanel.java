@@ -419,7 +419,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 										.control(Control.builder()
 														.toggle(conditionModel().autoEnable())
 														.name(MESSAGES.getString("auto_enable"))).build())
-										.createPopupMenu())
+										.buildPopupMenu())
 						.build();
 		boolean modelLocked = conditionModel().locked().get();
 		conditionModel().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
@@ -662,7 +662,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 			if (conditionModel().columnClass().equals(String.class)) {
 				controlsBuilder.control(createAutomaticWildcardControls());
 			}
-			JPopupMenu popupMenu = menu(controlsBuilder).createPopupMenu();
+			JPopupMenu popupMenu = menu(controlsBuilder).buildPopupMenu();
 			Stream.of(equalField, lowerBoundField, upperBoundField, inField)
 							.filter(Objects::nonNull)
 							.forEach(field -> field.setComponentPopupMenu(popupMenu));

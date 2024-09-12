@@ -364,7 +364,7 @@ public final class DomainGeneratorPanel extends JPanel {
 										.build())
 						.title("Codion Domain Generator")
 						.icon(Logos.logoTransparent())
-						.menuBar(menu(createMainMenuControls()).createMenuBar())
+						.menuBar(menu(createMainMenuControls()).buildMenuBar())
 						.defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
 						.centerFrame(true)
 						.show();

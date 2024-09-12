@@ -18,6 +18,9 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
@@ -37,7 +40,7 @@ import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder> implements MenuBuilder {
+final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, MenuBuilder> implements MenuBuilder {
 
 	private final ControlsBuilder controlsBuilder;
 
@@ -47,8 +50,18 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 	private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder = CheckBoxMenuItemBuilder.builder();
 
 	DefaultMenuBuilder(Controls controls) {
-		super(controls);
 		this.controlsBuilder = controls == null ? Controls.builder() : controls.copy();
+	}
+
+	@Override
+	public MenuBuilder action(Action action) {
+		controlsBuilder.action(requireNonNull(action));
+		return this;
+	}
+
+	@Override
+	public MenuBuilder control(Control control) {
+		return action(requireNonNull(control));
 	}
 
 	@Override
@@ -88,7 +101,7 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 	}
 
 	@Override
-	public JPopupMenu createPopupMenu() {
+	public JPopupMenu buildPopupMenu() {
 		JPopupMenu popupMenu = createComponent().getPopupMenu();
 		popupMenuListeners.forEach(new AddPopupMenuListener(popupMenu));
 
@@ -96,7 +109,7 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 	}
 
 	@Override
-	public JMenuBar createMenuBar() {
+	public JMenuBar buildMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		controlsBuilder.build().actions().stream()
 						.filter(new IsControlsInstance())
@@ -108,7 +121,7 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 	}
 
 	@Override
-	protected JMenu createButton() {
+	protected JMenu createComponent() {
 		Controls controls = controlsBuilder.build();
 		JMenu menu = new JMenu(controls);
 		menuListeners.forEach(new AddMenuListener(menu));
@@ -116,6 +129,14 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 
 		return menu;
 	}
+
+	@Override
+	protected ComponentValue<Void, JMenu> createComponentValue(JMenu component) {
+		return new MenuComponentValue(component);
+	}
+
+	@Override
+	protected void setInitialValue(JMenu component, Void initialValue) {}
 
 	private static final class IsControlsInstance implements Predicate<Action> {
 
@@ -223,6 +244,23 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 		@Override
 		void onAction(Action action) {
 			menu.add(action);
+		}
+	}
+
+	private static final class MenuComponentValue extends AbstractComponentValue<Void, JMenu> {
+
+		private MenuComponentValue(JMenu component) {
+			super(component);
+		}
+
+		@Override
+		protected Void getComponentValue() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void setComponentValue(Void value) {
+			throw new UnsupportedOperationException();
 		}
 	}
 }

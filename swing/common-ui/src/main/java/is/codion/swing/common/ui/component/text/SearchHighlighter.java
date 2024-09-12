@@ -23,12 +23,9 @@ import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.key.KeyEvents;
 
-import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.text.BadLocationException;
@@ -51,6 +48,7 @@ import java.util.regex.Pattern;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
+import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.control.Control.commandControl;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
@@ -140,10 +138,12 @@ public final class SearchHighlighter {
 										.action(commandControl(this::previousSearchPosition)))
 						.keyEvent(KeyEvents.builder(VK_ESCAPE)
 										.action(commandControl(textComponent::requestFocusInWindow)))
-						.popupMenu(textField -> createPopupMenu(Control.builder()
-										.toggle(caseSensitiveState)
-										.name(MESSAGES.getString("case_sensitive"))
-										.build()))
+						.popupMenu(textField -> menu()
+										.control(Control.builder()
+														.toggle(caseSensitiveState)
+														.name(MESSAGES.getString("case_sensitive"))
+														.build())
+										.buildPopupMenu())
 						.hint(Messages.find() + "...")
 						.build();
 	}
@@ -311,15 +311,6 @@ public final class SearchHighlighter {
 						.filter(matchPosition -> matchPosition.start == startOffset)
 						.findFirst()
 						.orElseThrow(IllegalStateException::new);
-	}
-
-	private static JPopupMenu createPopupMenu(ToggleControl caseSensitiveControl) {
-		JPopupMenu popupMenu = new JPopupMenu();
-		popupMenu.add(CheckBoxMenuItemBuilder.builder()
-						.toggleControl(caseSensitiveControl)
-						.build());
-
-		return popupMenu;
 	}
 
 	/**

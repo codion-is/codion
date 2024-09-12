@@ -1620,7 +1620,7 @@ public class EntityTablePanel extends JPanel {
 				return;
 			}
 
-			JPopupMenu popupMenu = menu(popupControls).createPopupMenu();
+			JPopupMenu popupMenu = menu(popupControls).buildPopupMenu();
 			table.setComponentPopupMenu(popupMenu);
 			tableScrollPane.setComponentPopupMenu(popupMenu);
 		}
@@ -2737,7 +2737,12 @@ public class EntityTablePanel extends JPanel {
 			tableModel.selectionModel().addListSelectionListener(e -> updateStatusMessage());
 			tableModel.dataChanged().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {
-				setComponentPopupMenu(createLimitMenu());
+				setComponentPopupMenu(menu()
+								.control(Control.builder()
+												.command(this::configureLimit)
+												.name(MESSAGES.getString("row_limit"))
+												.build())
+								.buildPopupMenu());
 			}
 		}
 
@@ -2745,16 +2750,6 @@ public class EntityTablePanel extends JPanel {
 		public void updateUI() {
 			super.updateUI();
 			Utilities.updateUI(label, progressBar, progressPanel);
-		}
-
-		private JPopupMenu createLimitMenu() {
-			JPopupMenu popupMenu = new JPopupMenu();
-			popupMenu.add(Control.builder()
-							.command(this::configureLimit)
-							.name(MESSAGES.getString("row_limit"))
-							.build());
-
-			return popupMenu;
 		}
 
 		private void configureLimit() {

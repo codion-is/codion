@@ -139,7 +139,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	public void showFrame() {
 		monitorFrame = Windows.frame(this)
 						.icon(Logos.logoRed())
-						.menuBar(menu(createMainMenuControls()).createMenuBar())
+						.menuBar(menu(createMainMenuControls()).buildMenuBar())
 						.title("Codion Server Monitor")
 						.defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
 						.size(Windows.screenSizeRatio(SCREEN_SIZE_RATIO))
