@@ -31,7 +31,6 @@ import java.text.Format;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * Defines an Attribute. Factory for {@link AttributeDefinition} instances.
@@ -262,7 +261,13 @@ public interface AttributeDefinition<T> {
 	 * Supplies values, for example default ones.
 	 * @param <T> the value type
 	 */
-	interface ValueSupplier<T> extends Supplier<T>, Serializable {}
+	interface ValueSupplier<T> extends Serializable {
+
+		/**
+		 * @return the value
+		 */
+		T get();
+	}
 
 	/**
 	 * Builds a attribute definition instance

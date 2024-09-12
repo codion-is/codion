@@ -22,13 +22,17 @@ import is.codion.common.event.EventObserver;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * A read only value observer
  * @param <T> the type of the value
  */
-public interface ValueObserver<T> extends EventObserver<T>, Supplier<T> {
+public interface ValueObserver<T> extends EventObserver<T> {
+
+	/**
+	 * @return the value
+	 */
+	T get();
 
 	/**
 	 * @return an {@link Optional} wrapping this value.

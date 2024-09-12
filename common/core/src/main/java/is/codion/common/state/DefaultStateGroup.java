@@ -18,11 +18,12 @@
  */
 package is.codion.common.state;
 
+import is.codion.common.value.ValueObserver;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -80,7 +81,7 @@ final class DefaultStateGroup implements State.Group {
 		disablingStates = true;
 		members.stream()
 						.filter(state -> state != current)
-						.filter(Supplier::get)
+						.filter(ValueObserver::get)
 						.forEach(state -> state.set(false));
 		disablingStates = false;
 	}
@@ -100,7 +101,7 @@ final class DefaultStateGroup implements State.Group {
 	private State previousState(State current) {
 		return members.stream()
 						.filter(state -> state != current)
-						.filter(Supplier::get)
+						.filter(ValueObserver::get)
 						.findFirst()
 						.orElse(null);
 	}

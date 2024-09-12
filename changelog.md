@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.14
 ### is.codion.common.core
 - PropertyStore, property access now based on predicates instead of key prefixes.
+- ValueObserver and ValueSupplier no longer extend Supplier.
 ### is.codion.swing.common.ui
 - FilterTable, now propagates the associated MouseEvent as the source of the ActionEvent when doubleClickAction is performed.
 - MenuBuilder no longer extends MenuItemBuilder.
