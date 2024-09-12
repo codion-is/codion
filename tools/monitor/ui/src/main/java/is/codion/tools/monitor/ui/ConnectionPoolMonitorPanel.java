@@ -171,7 +171,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		model.statisticsEvent().addListener(this::updateView);
+		model.statisticsObserver().addListener(this::updateView);
 	}
 
 	private JPanel configurationPanel() {

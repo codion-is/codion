@@ -14,6 +14,8 @@ Codion Change Log
 - EntityDialogs bug fixed, now respects the location if specified.
 - EntityTablePanel, edit panel dialog location now follows mouse when displayed on double click.
 - EntityApplicationPanel.exitEvent() renamed exitObserver().
+### is.codion.tools.monitor.model
+- ConnectionPoolMonitor.statisticsEvent() renamed statisticsObserver().
 
 ## 0.18.13
 ### is.codion

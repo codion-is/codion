@@ -255,7 +255,7 @@ public final class ConnectionPoolMonitor {
 	/**
 	 * @return an observer notified each time the statistics change
 	 */
-	public EventObserver<?> statisticsEvent() {
+	public EventObserver<?> statisticsObserver() {
 		return statisticsUpdated.observer();
 	}
 
