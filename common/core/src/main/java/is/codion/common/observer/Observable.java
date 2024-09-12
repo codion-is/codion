@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.observable;
+package is.codion.common.observer;
 
 import java.util.Optional;
 import java.util.function.Consumer;

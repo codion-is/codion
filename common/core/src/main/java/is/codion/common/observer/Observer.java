@@ -16,13 +16,13 @@
  *
  * Copyright (c) 2008 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.observable;
+package is.codion.common.observer;
 
 import java.util.function.Consumer;
 
 /**
- * Manages listeners for an Event.
- * @param <T> the type of data propagated with the event.
+ * Manages listeners.
+ * @param <T> the type of data propagated to listeners.
  */
 public interface Observer<T> {
 

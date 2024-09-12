@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 
 import java.util.Collection;
 import java.util.Map;

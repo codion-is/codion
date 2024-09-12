@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Configuration;
 import is.codion.common.model.FilterModel;
-import is.codion.common.observable.Observable;
+import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;

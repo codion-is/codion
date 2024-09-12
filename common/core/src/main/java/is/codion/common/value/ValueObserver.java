@@ -18,7 +18,7 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 
 import java.util.Objects;
 import java.util.Optional;

@@ -6,6 +6,7 @@ Codion Change Log
 - PropertyStore, property access now based on predicates instead of key prefixes.
 - ValueObserver and ValueSupplier no longer extend Supplier.
 - EventObserver renamed Observer and moved to observable package.
+- observable package renamed observer.
 ### is.codion.swing.common.ui
 - FilterTable, now propagates the associated MouseEvent as the source of the ActionEvent when doubleClickAction is performed.
 - MenuBuilder no longer extends MenuItemBuilder.

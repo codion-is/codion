@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 
 import javax.swing.SortOrder;
 import java.util.Comparator;

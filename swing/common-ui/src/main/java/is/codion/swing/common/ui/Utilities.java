@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui;
 
 import is.codion.common.event.Event;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.common.state.StateObserver;
 
 import javax.swing.Action;

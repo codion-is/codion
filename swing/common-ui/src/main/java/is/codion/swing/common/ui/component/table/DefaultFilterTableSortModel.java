@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 
 import javax.swing.SortOrder;

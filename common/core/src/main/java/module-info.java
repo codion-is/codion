@@ -19,8 +19,8 @@
 /**
  * Common classes used throughout, such as:<br>
  * <br>
- * {@link is.codion.common.observable.Observer}<br>
- * {@link is.codion.common.observable.Observable}<br>
+ * {@link is.codion.common.observer.Observer}<br>
+ * {@link is.codion.common.observer.Observable}<br>
  * {@link is.codion.common.event.Event}<br>
  * {@link is.codion.common.state.State}<br>
  * {@link is.codion.common.state.StateObserver}<br>
@@ -38,7 +38,7 @@ module is.codion.common.core {
 	exports is.codion.common.format;
 	exports is.codion.common.item;
 	exports is.codion.common.logging;
-	exports is.codion.common.observable;
+	exports is.codion.common.observer;
 	exports is.codion.common.property;
 	exports is.codion.common.proxy;
 	exports is.codion.common.resource;

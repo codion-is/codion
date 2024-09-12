@@ -24,7 +24,7 @@ import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.model.table.ColumnConditionModel.Operands;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;

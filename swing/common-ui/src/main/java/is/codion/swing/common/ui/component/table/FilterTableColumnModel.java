@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 
 import javax.swing.table.TableColumn;
