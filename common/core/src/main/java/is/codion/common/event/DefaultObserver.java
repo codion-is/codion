@@ -80,7 +80,7 @@ final class DefaultObserver<T> implements Observer<T> {
 		synchronized (lock) {
 			List<WeakReference<Runnable>> references = initWeakListeners();
 			for (WeakReference<Runnable> reference : references) {
-				if (reference.get() == listener) {
+				if (reference.refersTo(listener)) {
 					return false;
 				}
 			}
@@ -92,7 +92,10 @@ final class DefaultObserver<T> implements Observer<T> {
 	public boolean removeWeakListener(Runnable listener) {
 		requireNonNull(listener, LISTENER);
 		synchronized (lock) {
-			return initWeakListeners().removeIf(reference -> reference.get() == null || reference.get() == listener);
+			List<WeakReference<Runnable>> references = initWeakListeners();
+			references.removeIf(reference -> reference.get() == null);
+
+			return references.removeIf(reference -> reference.refersTo(listener));
 		}
 	}
 
@@ -102,7 +105,7 @@ final class DefaultObserver<T> implements Observer<T> {
 		synchronized (lock) {
 			List<WeakReference<Consumer<? super T>>> references = initWeakConsumers();
 			for (WeakReference<Consumer<? super T>> reference : references) {
-				if (reference.get() == consumer) {
+				if (reference.refersTo(consumer)) {
 					return false;
 				}
 			}
@@ -114,7 +117,10 @@ final class DefaultObserver<T> implements Observer<T> {
 	public boolean removeWeakConsumer(Consumer<? super T> consumer) {
 		requireNonNull(consumer, CONSUMER);
 		synchronized (lock) {
-			return initWeakConsumers().removeIf(reference -> reference.get() == null || reference.get() == consumer);
+			List<WeakReference<Consumer<? super T>>> references = initWeakConsumers();
+			references.removeIf(reference -> reference.get() == null);
+
+			return references.removeIf(reference -> reference.refersTo(consumer));
 		}
 	}
 
