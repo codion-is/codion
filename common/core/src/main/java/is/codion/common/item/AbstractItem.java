@@ -29,9 +29,10 @@ abstract class AbstractItem<T> implements Item<T> {
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private final T value;
+	private static final ThreadLocal<Comparator<String>> COLLATOR =
+					ThreadLocal.withInitial(Text::collator);
 
-	private transient Comparator<String> collator;
+	private final T value;
 
 	/**
 	 * Creates a new Item.
@@ -53,7 +54,7 @@ abstract class AbstractItem<T> implements Item<T> {
 	 */
 	@Override
 	public final int compareTo(Item<T> item) {
-		return collator().compare(caption(), item.caption());
+		return COLLATOR.get().compare(caption(), item.caption());
 	}
 
 	/**
@@ -72,13 +73,5 @@ abstract class AbstractItem<T> implements Item<T> {
 	@Override
 	public final int hashCode() {
 		return value == null ? 0 : value.hashCode();
-	}
-
-	private Comparator<String> collator() {
-		if (collator == null) {
-			collator = Text.collator();
-		}
-
-		return collator;
 	}
 }
