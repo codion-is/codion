@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.tools.monitor.model.EntityServerMonitor#SERVER_MONITOR_UPDATE_RATE}
+ * Package configuration values:
+ * <li>{@link is.codion.tools.monitor.model.EntityServerMonitor#SERVER_MONITOR_UPDATE_RATE}
  */
 package is.codion.tools.monitor.model;

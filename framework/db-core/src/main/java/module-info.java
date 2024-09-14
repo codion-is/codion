@@ -17,10 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Core framework database connection classes, such as:<br>
- * <br>
- * {@link is.codion.framework.db.EntityConnection}<br>
- * {@link is.codion.framework.db.EntityConnectionProvider}<br>
+ * Core framework database connection classes, such as:
+ * <li>{@link is.codion.framework.db.EntityConnection}
+ * <li>{@link is.codion.framework.db.EntityConnectionProvider}
  * @uses is.codion.framework.db.EntityConnectionProvider.Builder
  */
 module is.codion.framework.db.core {

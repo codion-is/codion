@@ -152,8 +152,8 @@ public final class EntitySearchField extends HintTextField {
 
 	/**
 	 * Specifies the way a {@link EntitySearchField} indicates that a search is in progress.
-	 * Value type: {@link SearchIndicator}<br>
-	 * Default value: {@link SearchIndicator#WAIT_CURSOR}
+	 * <li>Value type: {@link SearchIndicator}
+	 * <li>Default value: {@link SearchIndicator#WAIT_CURSOR}
 	 */
 	public static final PropertyValue<SearchIndicator> SEARCH_INDICATOR =
 					Configuration.enumValue(EntitySearchField.class.getName() + ".searchIndicator", SearchIndicator.class, WAIT_CURSOR);

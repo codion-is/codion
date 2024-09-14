@@ -65,9 +65,9 @@ import static java.util.Objects.requireNonNull;
 public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	/**
-	 * Specifies whether entity combo box models handle entity edit events, by replacing updated entities and removing deleted ones<br>
-	 * Value type: Boolean<br>
-	 * Default value: true<br>
+	 * Specifies whether entity combo box models handle entity edit events, by replacing updated entities and removing deleted ones
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 * @see #handleEditEvents()
 	 * @see is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS
 	 */
@@ -218,8 +218,10 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 * Use this method to retrieve the default foreign key filter include condition if you
 	 * want to add a custom {@link Predicate} to this model via {@link #includeCondition()}.
 	 * <pre>
+	 * {@code
 	 *   Predicate fkCondition = model.foreignKeyIncludeCondition();
 	 *   model.includeCondition().set(item -&gt; fkCondition.test(item) &amp;&amp; ...);
+	 * }
 	 * </pre>
 	 * @return the {@link Predicate} based on the foreign key filter entities
 	 * @see #setForeignKeyFilterKeys(ForeignKey, Collection)

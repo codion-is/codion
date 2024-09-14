@@ -17,15 +17,13 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Core classes concerned with JDBC connectivity, such as:<br>
- * <br>
- * {@link is.codion.common.db.database.Database}<br>
- * {@link is.codion.common.db.database.DatabaseFactory}<br>
- * {@link is.codion.common.db.connection.DatabaseConnection}<br>
- * {@link is.codion.common.db.exception.DatabaseException}<br>
- * {@link is.codion.common.db.operation.DatabaseFunction}<br>
- * {@link is.codion.common.db.operation.DatabaseProcedure}<br>
- * <br>
+ * Core classes concerned with JDBC connectivity, such as:
+ * <li>{@link is.codion.common.db.database.Database}
+ * <li>{@link is.codion.common.db.database.DatabaseFactory}
+ * <li>{@link is.codion.common.db.connection.DatabaseConnection}
+ * <li>{@link is.codion.common.db.exception.DatabaseException}
+ * <li>{@link is.codion.common.db.operation.DatabaseFunction}
+ * <li>{@link is.codion.common.db.operation.DatabaseProcedure}
  * @uses is.codion.common.db.database.DatabaseFactory
  * @uses is.codion.common.db.pool.ConnectionPoolFactory
  */

@@ -31,23 +31,23 @@ import java.sql.Connection;
 public interface ConnectionPoolWrapper {
 
 	/**
-	 * Specifies the default maximum connection pool size.
-	 * Value type: Integer<br>
-	 * Default value: 8
+	 * Specifies the default maximum connection pool size
+	 * <li>Value type: Integer
+	 * <li>Default value: 8
 	 */
 	PropertyValue<Integer> DEFAULT_MAXIMUM_POOL_SIZE = Configuration.integerValue("codion.db.pool.defaultMaximumPoolSize", 8);
 
 	/**
-	 * Specifies the default minimum connection pool size.
-	 * Value type: Integer<br>
-	 * Default value: 4
+	 * Specifies the default minimum connection pool size
+	 * <li>Value type: Integer
+	 * <li>Default value: 4
 	 */
 	PropertyValue<Integer> DEFAULT_MINIMUM_POOL_SIZE = Configuration.integerValue("codion.db.pool.defaultMinimumPoolSize", 4);
 
 	/**
-	 * Specifies the default idle timeout in milliseconds.
-	 * Value type: Integer<br>
-	 * Default value: 60.000
+	 * Specifies the default idle timeout in milliseconds
+	 * <li>Value type: Integer
+	 * <li>Default value: 60.000
 	 */
 	PropertyValue<Integer> DEFAULT_IDLE_TIMEOUT = Configuration.integerValue("codion.db.pool.defaultIdleTimeout", 60000);
 

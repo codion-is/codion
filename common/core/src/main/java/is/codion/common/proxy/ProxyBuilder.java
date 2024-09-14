@@ -24,34 +24,36 @@ import java.util.List;
  * Builds a dynamic proxy for a single interface.
  * Note that if the {@link Object#equals(Object)} method is not proxied the resulting proxy is equal only to itself.
  * <pre>
- * List&lt;String&gt; list = new ArrayList&lt;&gt;();
+ * {@code
+ * List<String> list = new ArrayList<>();
  *
- * List&lt;String&gt; listProxy = ProxyBuilder.builder(List.class)
+ * List<String> listProxy = ProxyBuilder.builder(List.class)
  *     .delegate(list)
- *     .method("add", Object.class, parameters -&gt; {
+ *     .method("add", Object.class, parameters -> {
  *       Object item = parameters.arguments().get(0);
  *       System.out.println("Adding: " + item);
  *
  *       return parameters.delegate().add(item);
  *     })
- *     .method("remove", Object.class, parameters -&gt; {
+ *     .method("remove", Object.class, parameters -> {
  *       Object item = parameters.arguments().get(0);
  *       System.out.println("Removing: " + item);
  *
  *       return parameters.delegate().remove(item);
  *     })
- *     .method("equals", Object.class, parameters -&gt; {
+ *     .method("equals", Object.class, parameters -> {
  *       Object object = parameters.arguments().get(0);
  *       System.out.println("Equals: " + object);
  *
  *       return parameters.delegate().equals(object);
  *     })
- *     .method("size", parameters -&gt; {
+ *     .method("size", parameters -> {
  *       System.out.println("Size");
  *
  *       return parameters.delegate().size();
  *     })
  *     .build();
+ * }
  * </pre>
  * @param <T> the proxy type
  * @see #builder(Class)

@@ -17,9 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Framework Swing generator model classes, such as:<br>
- * <br>
- * {@link is.codion.tools.generator.model.DomainGeneratorModel}<br>
+ * Framework Swing generator model classes, such as:
+ * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel}
  */
 module is.codion.tools.generator.model {
 	requires transitive is.codion.tools.generator.domain;

@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 
 /**
- * Provides {@link EntityObjectMapper} instances for a given domain.<br>
+ * Provides {@link EntityObjectMapper} instances for a given domain.
  * {@link DefaultEntityObjectMapperFactory} is provided for extension.
  */
 public interface EntityObjectMapperFactory {

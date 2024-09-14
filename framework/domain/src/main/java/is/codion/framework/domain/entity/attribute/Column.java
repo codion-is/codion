@@ -80,10 +80,12 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
 		 * <pre>
+		 * {@code
 		 *   ...
 		 *   .primaryKey()
 		 *   .nullable(true)
 		 *   .updatable(true)
+		 * }
 		 * </pre>
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder} with primary key index 0
@@ -97,10 +99,12 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
 		 * <pre>
+		 * {@code
 		 *   ...
 		 *   .primaryKey()
 		 *   .nullable(true)
 		 *   .updatable(true)
+		 * }
 		 * </pre>
 		 * @param index the zero-based index of this column in the primary key
 		 * @param <B> the builder type
@@ -205,8 +209,10 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 	}
 
 	/**
-	 * Converts to and from SQL values, such as integers being used to represent booleans in a database.<br>
-	 * By default a {@link Converter} is not expected to handle null values, with null values automatically converted to/from null column values.<br>
+	 * Converts to and from SQL values, such as integers being used to represent booleans in a database.
+	 * <p>
+	 * By default a {@link Converter} is not expected to handle null values, with null values automatically converted to/from null column values.
+	 * <p>
 	 * If a {@link Converter} needs to handle null values as well as non-null values {@link #handlesNull()} must be overridden to return true.
 	 * @param <T> the type of the value
 	 * @param <C> the type of the underlying column

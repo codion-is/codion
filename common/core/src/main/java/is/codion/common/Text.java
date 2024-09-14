@@ -38,9 +38,9 @@ import static java.util.Objects.requireNonNull;
 public final class Text {
 
 	/**
-	 * Specifies the default collator locale language.<br>
-	 * Value type: String<br>
-	 * Default value: {@code Locale.getDefault().getLanguage()}.
+	 * Specifies the default collator locale language.
+	 * <li>Value type: String
+	 * <li>Default value: {@code Locale.getDefault().getLanguage()}.
 	 * @see #collator()
 	 * @see #collate(List)
 	 * @see Locale#toLanguageTag()

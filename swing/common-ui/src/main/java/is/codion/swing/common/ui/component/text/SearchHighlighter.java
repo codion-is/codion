@@ -55,7 +55,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
 /**
- * Highlights search results in a JTextComponent.<br>
+ * Highlights search results in a JTextComponent.
+ * <p>
  * Instantiate via {@link SearchHighlighter#builder(JTextComponent)}.
  */
 public final class SearchHighlighter {

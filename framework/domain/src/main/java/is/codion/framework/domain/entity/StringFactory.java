@@ -33,25 +33,27 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 /**
- * Factory class for building functions for String representations of {@link Entity} instances.<br>
+ * Factory class for building functions for String representations of {@link Entity} instances.
+ * <p>
  * <pre>
+ * {@code
  *   interface Department {
  *       EntityType TYPE = DOMAIN.entityType("employees.department");
- *       Column&lt;Integer&gt; ID = TYPE.integerColumn("id");
- *       Column&lt;String&gt; NAME = TYPE.stringColumn("name");
+ *       Column<Integer> ID = TYPE.integerColumn("id");
+ *       Column<String> NAME = TYPE.stringColumn("name");
  *   }
  *
  *   interface Employee {
  *       EntityType TYPE = DOMAIN.entityType("employees.employee");
- *       Column&lt;String&gt; NAME = TYPE.stringColumn("name");
- *       Column&lt;Integer&gt; DEPARTMENT_ID = TYPE.integerColumn("department_id");
+ *       Column<String> NAME = TYPE.stringColumn("name");
+ *       Column<Integer> DEPARTMENT_ID = TYPE.integerColumn("department_id");
  *       ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_fk", DEPARTMENT_ID, Department.ID);
  *   }
  *
  *   Entity department = ...// With name: Accounting
  *   Entity employee = ...// With name: John and the above department
  *
- *   Function&lt;Entity, String&gt; stringFactory =
+ *   Function<Entity, String> stringFactory =
  *         StringFactory.builder()
  *             .text("Name=")
  *             .value(Employee.NAME)
@@ -60,8 +62,10 @@ import static java.util.stream.Collectors.joining;
  *             .text("'");
  *
  * System.out.println(stringFactory.apply(employee));
+ * }
  * </pre>
- * Outputs the following String:<br><br>
+ * Outputs the following String:
+ * <p>
  * {@code Name=John, Department='Accounting'}<br><br>
  * given the entities above.
  */

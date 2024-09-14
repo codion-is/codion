@@ -25,9 +25,6 @@ import java.util.Iterator;
 import static java.util.Objects.requireNonNull;
 
 /**
- * User: Björn Darri<br>
- * Date: 6.4.2010<br>
- * Time: 21:26:00<br>
  * @param <T> the type of item this random item model returns
  */
 final class BoundedItemRandomizer<T> extends DefaultItemRandomizer<T> {

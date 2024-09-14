@@ -89,14 +89,15 @@ import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
 
 /**
- * A panel presenting a calendar for date/time selection.<br><br>
- * Keyboard navigation:<br><br>
- * Previous/next year: CTRL + left/right arrow or down/up arrow.<br>
- * Previous/next month: SHIFT + left/right arrow or down/up arrow.<br>
- * Previous/next week: up/down arrow.<br>
- * Previous/next day: left/right arrow.<br>
- * Previous/next hour: SHIFT-ALT + left/right arrow or down/up arrow.<br>
- * Previous/next minute: CTRL-ALT + left/right arrow or down/up arrow.
+ * A panel presenting a calendar for date/time selection.
+ * <p>
+ * Keyboard navigation:
+ * <li>Previous/next year: CTRL + left/right arrow or down/up arrow.
+ * <li>Previous/next month: SHIFT + left/right arrow or down/up arrow.
+ * <li>Previous/next week: up/down arrow.
+ * <li>Previous/next day: left/right arrow.
+ * <li>Previous/next hour: SHIFT-ALT + left/right arrow or down/up arrow.
+ * <li>Previous/next minute: CTRL-ALT + left/right arrow or down/up arrow.
  * @see #builder()
  */
 public final class CalendarPanel extends JPanel {

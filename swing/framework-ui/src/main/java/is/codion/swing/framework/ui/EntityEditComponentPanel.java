@@ -114,28 +114,28 @@ import static java.util.stream.Collectors.collectingAndThen;
 public class EntityEditComponentPanel extends JPanel {
 
 	/**
-	 * Specifies whether label text should be underlined to indicate that the associated value is modified<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether label text should be underlined to indicate that the associated value is modified
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 * @see #MODIFIED_INDICATOR_UNDERLINE_STYLE
 	 */
 	public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
 					Configuration.booleanValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicator", true);
 
 	/**
-	 * The type of underline to use to indicate a modified value<br>
-	 * Value type: Integer<br>
-	 * Default value: {@link TextAttribute#UNDERLINE_LOW_DOTTED}<br>
-	 * Valid values: {@link TextAttribute}.UNDERLINE_*
+	 * The type of underline to use to indicate a modified value
+	 * <li>Value type: Integer
+	 * <li>Default value: {@link TextAttribute#UNDERLINE_LOW_DOTTED}
+	 * <li>Valid values: {@link TextAttribute}.UNDERLINE_*
 	 * @see #MODIFIED_INDICATOR
 	 */
 	public static final PropertyValue<Integer> MODIFIED_INDICATOR_UNDERLINE_STYLE =
 					Configuration.integerValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
 
 	/**
-	 * Specifies the default number of text field columns<br>
-	 * Value type: Integer<br>
-	 * Default value: 12
+	 * Specifies the default number of text field columns
+	 * <li>Value type: Integer
+	 * <li>Default value: 12
 	 */
 	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
 					Configuration.integerValue(EntityEditComponentPanel.class.getName() + ".defaultTextFieldColumns", 12);

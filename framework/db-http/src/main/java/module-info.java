@@ -17,10 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * HTTP based database connection classes.<br>
- * <br>
- * {@link is.codion.framework.db.http.HttpEntityConnection}<br>
- * {@link is.codion.framework.db.http.HttpEntityConnectionProvider}<br>
+ * HTTP based database connection classes.
+ * <li>{@link is.codion.framework.db.http.HttpEntityConnection}
+ * <li>{@link is.codion.framework.db.http.HttpEntityConnectionProvider}
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.db.http {

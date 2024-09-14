@@ -17,17 +17,16 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Shared model classes, such as:<br>
- * <br>
- * {@link is.codion.common.model.UserPreferences}<br>
- * {@link is.codion.common.model.CancelException}<br>
- * {@link is.codion.common.model.FilterModel}<br>
- * {@link is.codion.common.model.loadtest.LoadTest}<br>
- * {@link is.codion.common.model.table.ColumnConditionModel}<br>
- * {@link is.codion.common.model.table.ColumnSummaryModel}<br>
- * {@link is.codion.common.model.table.TableSelectionModel}<br>
- * {@link is.codion.common.model.table.TableConditionModel}<br>
- * {@link is.codion.common.model.table.TableSummaryModel}<br>
+ * Shared model classes, such as:
+ * <li>{@link is.codion.common.model.UserPreferences}
+ * <li>{@link is.codion.common.model.CancelException}
+ * <li>{@link is.codion.common.model.FilterModel}
+ * <li>{@link is.codion.common.model.loadtest.LoadTest}
+ * <li>{@link is.codion.common.model.table.ColumnConditionModel}
+ * <li>{@link is.codion.common.model.table.ColumnSummaryModel}
+ * <li>{@link is.codion.common.model.table.TableSelectionModel}
+ * <li>{@link is.codion.common.model.table.TableConditionModel}
+ * <li>{@link is.codion.common.model.table.TableSummaryModel}
  */
 module is.codion.common.model {
 	requires org.slf4j;

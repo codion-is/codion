@@ -44,9 +44,9 @@ import java.util.function.Predicate;
 public interface EntityDefinition {
 
 	/**
-	 * Specifies whether optimistic locking should be enabled by default for entities<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether optimistic locking should be enabled by default for entities
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> OPTIMISTIC_LOCKING = Configuration.booleanValue("codion.domain.optimisticLocking", true);
 
@@ -316,9 +316,11 @@ public interface EntityDefinition {
 		/**
 		 * Sets the string factory, using the value of the given attribute. Shortcut for:
 		 * <pre>
+		 * {@code
 		 * stringFactory(StringFactory.builder()
 		 *           .value(attribute)
 		 *           .build())
+		 * }
 		 * </pre>
 		 * @param attribute the attribute which value to use
 		 * @return this {@link Builder} instance

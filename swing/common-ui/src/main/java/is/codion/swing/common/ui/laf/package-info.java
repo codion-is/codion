@@ -17,9 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider#CROSS_PLATFORM}
- * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider#SYSTEM}
- * {@link is.codion.swing.common.ui.laf.LookAndFeelComboBox#ENABLE_ON_SELECTION}
+ * Package configuration values:
+ * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelProvider#CROSS_PLATFORM}
+ * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelProvider#SYSTEM}
+ * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelComboBox#ENABLE_ON_SELECTION}
  */
 package is.codion.swing.common.ui.laf;

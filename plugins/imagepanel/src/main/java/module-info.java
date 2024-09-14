@@ -17,9 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Image panel.<br>
- * <br>
- * {@link is.codion.plugin.imagepanel.NavigableImagePanel}<br>
+ * Image panel.
+ * <li>{@link is.codion.plugin.imagepanel.NavigableImagePanel}
  */
 module is.codion.plugin.imagepanel {
 	requires java.desktop;

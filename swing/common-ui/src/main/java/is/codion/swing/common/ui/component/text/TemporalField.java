@@ -61,7 +61,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
 /**
- * A JFormattedTextField for Temporal types.<br>
+ * A JFormattedTextField for Temporal types.
+ * <p>
  * Use {@link #getTemporal()} and {@link #setTemporal(Temporal)} for accessing and setting the value.
  * @param <T> the temporal type
  * @see #builder(Class)

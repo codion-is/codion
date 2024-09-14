@@ -17,10 +17,10 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.framework.db.local.LocalEntityConnection#CONNECTION_LOG_SIZE}<br>
- * {@link is.codion.framework.db.local.LocalEntityConnection#QUERY_TIMEOUT_SECONDS}<br>
- * {@link is.codion.framework.db.local.LocalEntityConnection#OPTIMISTIC_LOCKING}<br>
- * {@link is.codion.framework.db.local.LocalEntityConnection#LIMIT_FOREIGN_KEY_FETCH_DEPTH}
+ * Package configuration values:
+ * <li>{@link is.codion.framework.db.local.LocalEntityConnection#CONNECTION_LOG_SIZE}
+ * <li>{@link is.codion.framework.db.local.LocalEntityConnection#QUERY_TIMEOUT_SECONDS}
+ * <li>{@link is.codion.framework.db.local.LocalEntityConnection#OPTIMISTIC_LOCKING}
+ * <li>{@link is.codion.framework.db.local.LocalEntityConnection#LIMIT_FOREIGN_KEY_FETCH_DEPTH}
  */
 package is.codion.framework.db.local;

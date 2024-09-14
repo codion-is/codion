@@ -24,8 +24,9 @@ import java.util.function.Consumer;
 /**
  * A wrapper for a mutable value, providing a change observer.
  * <pre>
+ * {@code
  *   class Person {
- *       private final Event&lt;String&gt; nameChanged = Event.event();
+ *       private final Event<String> nameChanged = Event.event();
  *
  *       private String name;
  *
@@ -41,25 +42,26 @@ import java.util.function.Consumer;
  *
  *   Person person = new Person();
  *
- *   Observable&lt;String&gt; observableName = new Observable&lt;&gt;() {
- *      {@literal @}Override
+ *   Observable<String> observableName = new Observable<>() {
+ *       @Override
  *       public String get() {
  *           return person.getName();
  *       }
  *
- *      {@literal @}Override
+ *       @Override
  *       public void set(String value) {
  *           person.setName(value);
  *       }
  *
- *      {@literal @}Override
- *       public Observer&lt;String&gt; observer() {
+ *       @Override
+ *       public Observer<String> observer() {
  *           return person.nameChanged.observer();
  *       }
  *  };
  *
- *  observableName.addConsumer(newName -&gt;
+ *  observableName.addConsumer(newName ->
  *          System.out.println("Name changed to " + newName));
+ * }
  * </pre>
  * @param <T> the type of the value being observed
  */

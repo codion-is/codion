@@ -811,12 +811,14 @@ public class EntityTablePanel extends JPanel {
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
+	 * {@code
 	 *   configureToolBar(layout -> layout.clear()
 	 *           .standard(ControlKeys.REFRESH)
 	 *           .separator()
 	 *           .control(createCustomControl())
 	 *           .separator()
 	 *           .defaults())
+	 * }
 	 * </pre>
 	 * Defaults:
 	 * <ul>
@@ -847,12 +849,14 @@ public class EntityTablePanel extends JPanel {
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
+	 * {@code
 	 *   configurePopupMenu(layout -> layout.clear()
 	 *           .standard(ControlKeys.REFRESH)
 	 *           .separator()
 	 *           .control(createCustomControl())
 	 *           .separator()
 	 *           .defaults())
+	 * }
 	 * </pre>
 	 * Defaults:
 	 * <ul>
@@ -1970,139 +1974,139 @@ public class EntityTablePanel extends JPanel {
 	public static final class Config {
 
 		/**
-		 * Specifies whether the values of hidden columns are included in the underlying query<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Specifies whether the values of hidden columns are included in the underlying query
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue(EntityTablePanel.class.getName() + ".queryHiddenColumns", true);
 
 		/**
 		 * Specifies whether the table model sort order is used as a basis for the query order by clause.
 		 * Note that this only applies to column attributes.
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
 		 */
 		public static final PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue(EntityTablePanel.class.getName() + ".orderQueryBySortOrder", false);
 
 		/**
-		 * Specifies the default initial table condition panel state<br>
-		 * Value type: {@link ConditionState}<br>
-		 * Default value: {@link ConditionState#HIDDEN}
+		 * Specifies the default initial table condition panel state
+		 * <li>Value type: {@link ConditionState}
+		 * <li>Default value: {@link ConditionState#HIDDEN}
 		 */
 		public static final PropertyValue<ConditionState> CONDITION_STATE =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".conditionState",
 										ConditionState.class, ConditionState.HIDDEN);
 
 		/**
-		 * Specifies the default initial table filter panel state<br>
-		 * Value type: {@link ConditionState}<br>
-		 * Default value: {@link ConditionState#HIDDEN}
+		 * Specifies the default initial table filter panel state
+		 * <li>Value type: {@link ConditionState}
+		 * <li>Default value: {@link ConditionState#HIDDEN}
 		 */
 		public static final PropertyValue<ConditionState> FILTER_STATE =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".filterState",
 										ConditionState.class, ConditionState.HIDDEN);
 
 		/**
-		 * Specifies whether table summary panel should be visible or not by default<br>
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * Specifies whether table summary panel should be visible or not by default
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
 		 */
 		public static final PropertyValue<Boolean> SUMMARY_PANEL_VISIBLE =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".summaryPanelVisible", false);
 
 		/**
-		 * Specifies whether to include the default popup menu on entity tables<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Specifies whether to include the default popup menu on entity tables
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_POPUP_MENU =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includePopupMenu", true);
 
 		/**
-		 * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeEntityMenu", true);
 
 		/**
-		 * Specifies whether to include a 'Clear' control in the popup menu.<br>
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * Specifies whether to include a 'Clear' control in the popup menu.
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CLEAR_CONTROL =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeClearControl", false);
 
 		/**
-		 * Specifies whether to include a condition panel.<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Specifies whether to include a condition panel.
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CONDITION_PANEL =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeConditionPanel", true);
 
 		/**
-		 * Specifies whether to include a filter panel.<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Specifies whether to include a filter panel.
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_FILTER_PANEL =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeFilterPanel", false);
 
 		/**
-		 * Specifies whether to include a summary panel.<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Specifies whether to include a summary panel.
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_SUMMARY_PANEL =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeSummaryPanel", true);
 
 		/**
-		 * Specifies whether to include a popup menu for configuring the table model limit.<br>
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * Specifies whether to include a popup menu for configuring the table model limit.
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_LIMIT_MENU =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeLimitMenu", false);
 
 		/**
-		 * Specifies whether to show an indeterminate progress bar while the model is refreshing.<br>
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * Specifies whether to show an indeterminate progress bar while the model is refreshing.
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
 		 */
 		public static final PropertyValue<Boolean> SHOW_REFRESH_PROGRESS_BAR =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".showRefreshProgressBar", false);
 
 		/**
-		 * Specifies whether the refresh button should always be visible or only when the condition panel is visible<br>
-		 * Value type: Boolean<br>
-		 * Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
+		 * Specifies whether the refresh button should always be visible or only when the condition panel is visible
+		 * <li>Value type: Boolean
+		 * <li>Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
 		 */
 		public static final PropertyValue<RefreshButtonVisible> REFRESH_BUTTON_VISIBLE =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".refreshButtonVisible",
 										RefreshButtonVisible.class, RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
 		/**
-		 * Specifies how column selection is presented to the user.<br>
-		 * Value type: {@link ColumnSelection}<br>
-		 * Default value: {@link ColumnSelection#DIALOG}
+		 * Specifies how column selection is presented to the user.
+		 * <li>Value type: {@link ColumnSelection}
+		 * <li>Default value: {@link ColumnSelection#DIALOG}
 		 */
 		public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
 
 		/**
-		 * Specifies how column selection is presented to the user.<br>
-		 * Value type: {@link AutoResizeModeSelection}<br>
-		 * Default value: {@link AutoResizeModeSelection#DIALOG}
+		 * Specifies how column selection is presented to the user.
+		 * <li>Value type: {@link AutoResizeModeSelection}
+		 * <li>Default value: {@link AutoResizeModeSelection#DIALOG}
 		 */
 		public static final PropertyValue<AutoResizeModeSelection> AUTO_RESIZE_MODE_SELECTION =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".autoResizeModeSelection", AutoResizeModeSelection.class, AutoResizeModeSelection.DIALOG);
 
 		/**
-		 * Specifies how the edit an attribute action is presented to the user.<br>
-		 * Value type: {@link EditAttributeSelection}<br>
-		 * Default value: {@link EditAttributeSelection#MENU}
+		 * Specifies how the edit an attribute action is presented to the user.
+		 * <li>Value type: {@link EditAttributeSelection}
+		 * <li>Default value: {@link EditAttributeSelection#MENU}
 		 */
 		public static final PropertyValue<EditAttributeSelection> EDIT_ATTRIBUTE_SELECTION =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".editAttributeSelection", EditAttributeSelection.class, EditAttributeSelection.MENU);
@@ -2294,7 +2298,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeEntityMenu true if a {@link EntityPopupMenu} should be available in this table, triggered with CTRL-ALT-V.<br>
+		 * @param includeEntityMenu true if a {@link EntityPopupMenu} should be available in this table, triggered with CTRL-ALT-V.
 		 * @return this Config instance
 		 */
 		public Config includeEntityMenu(boolean includeEntityMenu) {
@@ -2312,7 +2316,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeToolBar true if a toolbar should be included on the south panel<br>
+		 * @param includeToolBar true if a toolbar should be included on the south panel
 		 * @return this Config instance
 		 */
 		public Config includeToolBar(boolean includeToolBar) {
@@ -2321,7 +2325,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeAddControl true if a Add control should be included if a edit panel is available<br>
+		 * @param includeAddControl true if a Add control should be included if a edit panel is available
 		 * @return this Config instance
 		 */
 		public Config includeAddControl(boolean includeAddControl) {
@@ -2330,7 +2334,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeEditControl true if a Edit control should be included if a edit panel is available<br>
+		 * @param includeEditControl true if a Edit control should be included if a edit panel is available
 		 * @return this Config instance
 		 */
 		public Config includeEditControl(boolean includeEditControl) {
@@ -2339,7 +2343,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeEditAttributeControl true if a 'Edit' attribute control should be included<br>
+		 * @param includeEditAttributeControl true if a 'Edit' attribute control should be included
 		 * @return this Config instance
 		 * @see #editAttributeSelection(EditAttributeSelection)
 		 */

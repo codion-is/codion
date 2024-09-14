@@ -17,10 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Local JDBC based database connection classes.<br>
- * <br>
- * {@link is.codion.framework.db.local.LocalEntityConnection}<br>
- * {@link is.codion.framework.db.local.LocalEntityConnectionProvider}<br>
+ * Local JDBC based database connection classes.
+ * <li>{@link is.codion.framework.db.local.LocalEntityConnection}
+ * <li>{@link is.codion.framework.db.local.LocalEntityConnectionProvider}
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.db.local {

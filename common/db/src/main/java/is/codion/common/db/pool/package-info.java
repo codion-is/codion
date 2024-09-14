@@ -17,9 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.common.db.pool.ConnectionPoolWrapper#DEFAULT_MAXIMUM_POOL_SIZE}<br>
- * {@link is.codion.common.db.pool.ConnectionPoolWrapper#DEFAULT_MINIMUM_POOL_SIZE}<br>
- * {@link is.codion.common.db.pool.ConnectionPoolWrapper#DEFAULT_IDLE_TIMEOUT}
+ * Package configuration values:
+ * <li>{@link is.codion.common.db.pool.ConnectionPoolWrapper#DEFAULT_MAXIMUM_POOL_SIZE}
+ * <li>{@link is.codion.common.db.pool.ConnectionPoolWrapper#DEFAULT_MINIMUM_POOL_SIZE}
+ * <li>{@link is.codion.common.db.pool.ConnectionPoolWrapper#DEFAULT_IDLE_TIMEOUT}
  */
 package is.codion.common.db.pool;

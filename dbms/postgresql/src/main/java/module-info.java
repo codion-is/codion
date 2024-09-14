@@ -17,8 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * {@link is.codion.common.db.database.DatabaseFactory} implementation for PostgreSQL.<br>
- * <br>
+ * {@link is.codion.common.db.database.DatabaseFactory} implementation for PostgreSQL.
+ * <p>
  * {@link is.codion.dbms.postgresql.PostgreSQLDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */

@@ -35,9 +35,9 @@ public enum ReferentialIntegrityErrorHandling {
 	DISPLAY_DEPENDENCIES;
 
 	/**
-	 * Specifies whether to display the error message or the dependent entities in case of a referential integrity error on delete<br>
-	 * Value type: {@link ReferentialIntegrityErrorHandling}<br>
-	 * Default value: {@link ReferentialIntegrityErrorHandling#DISPLAY_ERROR}
+	 * Specifies whether to display the error message or the dependent entities in case of a referential integrity error on delete
+	 * <li>Value type: {@link ReferentialIntegrityErrorHandling}
+	 * <li>Default value: {@link ReferentialIntegrityErrorHandling#DISPLAY_ERROR}
 	 */
 	public static final PropertyValue<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING =
 					Configuration.enumValue(ReferentialIntegrityErrorHandling.class.getName() + ".referentialIntegrityErrorHandling",

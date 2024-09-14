@@ -36,9 +36,9 @@ import java.awt.Component;
 public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilder<T>> {
 
 	/**
-	 * Specifies the default horizontal alignment used in labels<br>
-	 * Value type: Integer (SwingConstants.LEFT, SwingConstants.RIGHT, SwingConstants.CENTER)<br>
-	 * Default value: {@link SwingConstants#LEADING}
+	 * Specifies the default horizontal alignment used in labels
+	 * <li>Value type: Integer (SwingConstants.LEFT, SwingConstants.RIGHT, SwingConstants.CENTER)
+	 * <li>Default value: {@link SwingConstants#LEADING}
 	 */
 	PropertyValue<Integer> HORIZONTAL_ALIGNMENT =
 					Configuration.integerValue(LabelBuilder.class.getName() + ".horizontalAlignment", SwingConstants.LEADING);

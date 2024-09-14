@@ -23,7 +23,8 @@ import is.codion.framework.domain.DomainType;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link EntityObjectMapperFactory} implementation, extend to add custom serialisers/deserializers.<br><br>
+ * A default {@link EntityObjectMapperFactory} implementation, extend to add custom serialisers/deserializers.
+ * <p>
  * Subclasses should be exposed as a service.
  */
 public class DefaultEntityObjectMapperFactory implements EntityObjectMapperFactory {

@@ -50,7 +50,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
  * operations specified by a single {@link Domain} model.
- * {@link #execute(FunctionType)}  and {@link #execute(ProcedureType)}
+ * {@link #execute(FunctionType)} and {@link #execute(ProcedureType)}
  * do not perform any transaction control whereas the select, insert, update and delete methods
  * perform a commit unless they are run within a transaction.
  * A static helper class for mass data manipulation.
@@ -88,11 +88,13 @@ public interface EntityConnection extends AutoCloseable {
 	boolean transactionOpen();
 
 	/**
-	 * Starts a transaction on this connection.<br><br>
+	 * Starts a transaction on this connection.
+	 * <p>
 	 * NOTE: A transaction should ALWAYS be used in conjunction with a try/catch block,<br>
 	 * in order for the transaction to be properly ended in case of an exception.<br>
 	 * A transaction should always be started OUTSIDE the try/catch block.
 	 * <pre>
+	 * {@code
 	 * EntityConnection connection = connectionProvider().connection();
 	 *
 	 * connection.startTransaction(); // Very important, should NOT be inside the try block
@@ -108,6 +110,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * catch (Exception e) {          // Very important to catch Exception
 	 *     connection.rollbackTransaction();
 	 *     throw new RuntimeException(e);
+	 * }
 	 * }
 	 * </pre>
 	 * @throws IllegalStateException if a transaction is already open

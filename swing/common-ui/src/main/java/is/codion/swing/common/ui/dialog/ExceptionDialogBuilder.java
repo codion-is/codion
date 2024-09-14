@@ -35,9 +35,9 @@ import static java.util.Arrays.asList;
 public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBuilder> {
 
 	/**
-	 * Specifies whether an ExceptionPanel should include system properties in the detail panel<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether an ExceptionPanel should include system properties in the detail panel
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> SYSTEM_PROPERTIES =
 					Configuration.booleanValue(ExceptionDialogBuilder.class.getName() + ".systemProperties", true);
@@ -45,9 +45,9 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 	/**
 	 * Specifies a list of exception types, which are considered wrapping exceptions, that is, exceptions that wrap a root cause.<br>
 	 * By default root cause exceptions are unwrapped before being displayed, in order to simplify the error message and stack trace.<br>
-	 * Replace with an empty list in order to disable unwrapping altogether.<br>
-	 * Value type: String list<br>
-	 * Default value: RemoteException, RuntimeException, InvocationTargetException, ExceptionInInitializerError, UndeclaredThrowableException
+	 * Replace with an empty list in order to disable unwrapping altogether.
+	 * <li>Value type: String list
+	 * <li>Default value: RemoteException, RuntimeException, InvocationTargetException, ExceptionInInitializerError, UndeclaredThrowableException
 	 */
 	PropertyValue<List<Class<? extends Throwable>>> WRAPPER_EXCEPTIONS = Configuration.listValue(ExceptionDialogBuilder.class.getName() + ".wrapperExceptions",
 					exceptionClassName -> {

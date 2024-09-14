@@ -38,17 +38,17 @@ public interface Entities {
 
 	/**
 	 * Specifies whether foreign keys are validated when defined by asserting that the referenced entity has been defined.
-	 * This can be disabled in cases where entities have circular references.<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * This can be disabled in cases where entities have circular references
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> VALIDATE_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.validateForeignKeys", true);
 
 	/**
 	 * Specifies whether strict deserialization should be used. This means that when an unknown attribute<br>
-	 * is encountered during deserialization, an exception is thrown, instead of silently dropping the associated value.<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * is encountered during deserialization, an exception is thrown, instead of silently dropping the associated value.
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> STRICT_DESERIALIZATION =
 					Configuration.booleanValue("codion.domain.strictDeserialization", true);

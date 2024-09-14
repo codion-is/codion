@@ -353,9 +353,9 @@ public final class Components {
 	/**
 	 * Creates a {@link JComboBox} based {@link ComponentValue} instance, represented by the items
 	 * in the combo box (as opposed to the selected item). The provided {@code itemValue} supplies
-	 * new items to add to the combo box.<br>
-	 * {@link java.awt.event.KeyEvent#VK_INSERT} adds the current value whereas
-	 * {@link java.awt.event.KeyEvent#VK_DELETE} deletes the selected item from the list.
+	 * new items to add to the combo box.
+	 * <li>{@link java.awt.event.KeyEvent#VK_INSERT} adds the current value whereas
+	 * <li>{@link java.awt.event.KeyEvent#VK_DELETE} deletes the selected item from the list.
 	 * @param itemValue the component value providing the items to add
 	 * @param linkedValue the value to link
 	 * @param <T> the value type

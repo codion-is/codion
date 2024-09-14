@@ -17,8 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.framework.db.EntityConnectionProvider#CLIENT_DOMAIN_TYPE}<br>
- * {@link is.codion.framework.db.EntityConnectionProvider#CLIENT_CONNECTION_TYPE}
+ * Package configuration values:
+ * <li>{@link is.codion.framework.db.EntityConnectionProvider#CLIENT_DOMAIN_TYPE}
+ * <li>{@link is.codion.framework.db.EntityConnectionProvider#CLIENT_CONNECTION_TYPE}
  */
 package is.codion.framework.db;

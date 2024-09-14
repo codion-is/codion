@@ -1,5 +1,6 @@
 = Code style and design
 :dir-manual-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
 
 == Factories and builders
 
@@ -7,7 +8,7 @@ Most concrete framework classes, which implement a public interface, are final, 
 
 === Factories
 
-Static factory methods are provided for classes with a simple initial state.
+Static factory methods are provided for classes with a simple state.
 These are usually named after the interface, which makes using static imports quite convenient.
 
 [source,java]
@@ -17,7 +18,7 @@ include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndSt
 
 === Builders
 
-For classes with a more complex initial state, a `builder` method is provided in the interface.
+For classes with a more complex state, a `builder` method is provided in the interface.
 
 [source,java]
 ----
@@ -26,20 +27,29 @@ include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndSt
 
 == Accessors
 
-Immutable fields and attributes are accessed using methods named after the field, without a `get`/`is` prefix.
+Immutable fields are accessed using methods named after the field, without a `get`/`is` prefix.
 
 [source,java]
 ----
 include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndStyle.java[tags=accessors,indent=0]
 ----
 
-A `get`/`is` prefix implies that the field is mutable and that a corresponding setter method with a `set` prefix exists.
+A `get`/`is` prefix implies that the field is mutable and that a corresponding setter method exists, with a `set` prefix.
 
 [source,java]
 ----
 include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndStyle.java[tags=getters,indent=0]
 ----
 
+=== Observables
+
+Many classes expose their internal state via the {url-javadoc}{common-core}/is/codion/common/observer/Observable.html[Observable] or {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] classes, which can be used to mutate the associated state or observe it by adding listeners or consumers.
+
+[source,java]
+----
+include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndStyle.java[tags=observables,indent=0]
+----
+
 == Exceptions
 
-There are a few exceptions to these rules, such as a `get` prefix on an accessor for a functionally immutable field, but these exceptions are usually to keep the style of a class being extended, such as Swing components and should be few and far between.
+There are of course some exceptions to these rules, such as a `get` prefix on an accessor for a functionally immutable field or a `is` prefix on an immutable boolean field, but these exceptions are usually to keep the style of a class being extended, such as Swing components and should be few and far between.

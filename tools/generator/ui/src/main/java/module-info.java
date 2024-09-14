@@ -17,9 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Framework Swing generator UI.<br>
- * <br>
- * {@link is.codion.tools.generator.ui.DomainGeneratorPanel}<br>
+ * Framework Swing generator UI.
+ * <li>{@link is.codion.tools.generator.ui.DomainGeneratorPanel}
  */
 module is.codion.tools.generator.ui {
 	requires com.formdev.flatlaf.intellijthemes;

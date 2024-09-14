@@ -39,8 +39,8 @@ public final class EntityServerMonitor {
 
 	/**
 	 * Specifies the statistics polling rate for the server monitor, in seconds.
-	 * Value type: Integer<br>
-	 * Default value: 5
+	 * <li>Value type: Integer
+	 * <li>Default value: 5
 	 */
 	public static final PropertyValue<Integer> SERVER_MONITOR_UPDATE_RATE =
 					Configuration.integerValue("codion.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);

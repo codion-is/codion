@@ -49,9 +49,9 @@ public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenu
 	}
 
 	/**
-	 * Specifies whether a menu persists after a toggle menu item has been toggled<br>
-	 * Value type: {@link PersistMenu}<br>
-	 * Default value: {@link PersistMenu#ALWAYS}
+	 * Specifies whether a menu persists after a toggle menu item has been toggled
+	 * <li>Value type: {@link PersistMenu}
+	 * <li>Default value: {@link PersistMenu#ALWAYS}
 	 */
 	PropertyValue<PersistMenu> PERSIST_MENU =
 					Configuration.enumValue(ToggleMenuItemBuilder.class.getName() + ".ToggleMenuItemBuilder.persistMenu",

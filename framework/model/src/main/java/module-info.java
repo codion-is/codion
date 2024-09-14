@@ -17,13 +17,12 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Framework application model classes, such as:<br>
- * <br>
- * {@link is.codion.framework.model.EntityModel}<br>
- * {@link is.codion.framework.model.EntityEditModel}<br>
- * {@link is.codion.framework.model.EntityTableModel}<br>
- * {@link is.codion.framework.model.EntityTableConditionModel}<br>
- * {@link is.codion.framework.model.EntityApplicationModel}<br>
+ * Framework application model classes, such as:
+ * <li>{@link is.codion.framework.model.EntityModel}
+ * <li>{@link is.codion.framework.model.EntityEditModel}
+ * <li>{@link is.codion.framework.model.EntityTableModel}
+ * <li>{@link is.codion.framework.model.EntityTableConditionModel}
+ * <li>{@link is.codion.framework.model.EntityApplicationModel}
  */
 module is.codion.framework.model {
 	requires org.slf4j;

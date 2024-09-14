@@ -17,9 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Common Swing loadtest UI.<br>
- * <br>
- * {@link is.codion.tools.loadtest.ui.LoadTestPanel}<br>
+ * Common Swing loadtest UI.
+ * <li>{@link is.codion.tools.loadtest.ui.LoadTestPanel}
  */
 module is.codion.tools.loadtest.ui {
 	requires org.jfree.jfreechart;

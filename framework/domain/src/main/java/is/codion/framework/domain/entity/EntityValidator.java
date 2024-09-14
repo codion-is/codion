@@ -34,9 +34,9 @@ public interface EntityValidator {
 	 * is being inserted (as in, when it does not exist according to {@link Entity#exists()}).
 	 * If the entity exists, only modified values are validated.
 	 * With strict validation enabled all values are validated, regardless
-	 * of whether the entity exists or not.<br>
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * of whether the entity exists or not
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
 	 */
 	PropertyValue<Boolean> STRICT_VALIDATION = Configuration.booleanValue("codion.domain.strictValidation", false);
 

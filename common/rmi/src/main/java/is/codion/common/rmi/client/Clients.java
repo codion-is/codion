@@ -52,23 +52,23 @@ public final class Clients {
 	public static final String JAVAX_NET_TRUSTSTORE_PASSWORD = "javax.net.ssl.trustStorePassword";
 
 	/**
-	 * The rmi ssl truststore to use<br>
-	 * Value type: String
-	 * Default value: null
+	 * The rmi ssl truststore to use
+	 * <li>Value type: String
+	 * <li>Default value: null
 	 */
 	public static final PropertyValue<String> TRUSTSTORE = Configuration.stringValue("codion.client.trustStore");
 
 	/**
-	 * The rmi ssl truststore password to use<br>
-	 * Value type: String
-	 * Default value: null
+	 * The rmi ssl truststore password to use
+	 * <li>Value type: String
+	 * <li>Default value: null
 	 */
 	public static final PropertyValue<String> TRUSTSTORE_PASSWORD = Configuration.stringValue("codion.client.trustStorePassword");
 
 	/**
-	 * The host on which to locate the server<br>
-	 * Value type: String<br>
-	 * Default value: localhost
+	 * The host on which to locate the server
+	 * <li>Value type: String
+	 * <li>Default value: localhost
 	 */
 	public static final PropertyValue<String> SERVER_HOSTNAME = Configuration.stringValue("codion.server.hostname", "localhost");
 

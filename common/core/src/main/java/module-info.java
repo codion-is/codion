@@ -17,18 +17,17 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Common classes used throughout, such as:<br>
- * <br>
- * {@link is.codion.common.observer.Observer}<br>
- * {@link is.codion.common.observer.Observable}<br>
- * {@link is.codion.common.event.Event}<br>
- * {@link is.codion.common.state.State}<br>
- * {@link is.codion.common.state.StateObserver}<br>
- * {@link is.codion.common.value.Value}<br>
- * {@link is.codion.common.value.ValueObserver}<br>
- * <br>
- * Configuration values:<br>
- * {@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>
+ * Common classes used throughout, such as:
+ * <li>{@link is.codion.common.observer.Observer}
+ * <li>{@link is.codion.common.observer.Observable}
+ * <li>{@link is.codion.common.event.Event}
+ * <li>{@link is.codion.common.state.State}
+ * <li>{@link is.codion.common.state.StateObserver}
+ * <li>{@link is.codion.common.value.Value}
+ * <li>{@link is.codion.common.value.ValueObserver}
+ * <p>
+ * Configuration values:
+ * <li>{@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}
  * @uses is.codion.common.logging.LoggerProxy
  * @uses is.codion.common.resource.Resources
  */

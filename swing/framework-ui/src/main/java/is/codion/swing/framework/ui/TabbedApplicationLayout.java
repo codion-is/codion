@@ -40,9 +40,9 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 public class TabbedApplicationLayout implements EntityApplicationPanel.ApplicationLayout {
 
 	/**
-	 * Specifies the tab placement<br>
-	 * Value type: Integer (SwingConstants.TOP, SwingConstants.BOTTOM, SwingConstants.LEFT, SwingConstants.RIGHT)<br>
-	 * Default value: {@link SwingConstants#TOP}
+	 * Specifies the tab placement
+	 * <li>Value type: Integer (SwingConstants.TOP, SwingConstants.BOTTOM, SwingConstants.LEFT, SwingConstants.RIGHT)
+	 * <li>Default value: {@link SwingConstants#TOP}
 	 */
 	public static final PropertyValue<Integer> TAB_PLACEMENT =
 					Configuration.integerValue(TabbedApplicationLayout.class.getName() + ".tabPlacement", SwingConstants.TOP);

@@ -17,9 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Shared i18n messages.<br>
- * <br>
- * {@link is.codion.common.i18n.Messages}<br>
+ * Shared i18n messages.
+ * <li>{@link is.codion.common.i18n.Messages}
  */
 module is.codion.common.i18n {
 	requires is.codion.common.core;

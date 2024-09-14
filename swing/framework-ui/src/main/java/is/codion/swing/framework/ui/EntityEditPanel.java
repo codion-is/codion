@@ -450,6 +450,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Initializes this EntityEditPanel UI, that is, creates and lays out the components
 	 * required for editing the underlying entity type.
 	 * <pre>
+	 * {@code
 	 *   protected void initializeUI() {
 	 *      initialFocusAttribute().set(DomainModel.USER_NAME);
 	 *
@@ -460,19 +461,23 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 *
 	 *      addInputPanel(DomainModel.USER_NAME);
 	 *      addInputPanel(DomainModel.USER_ADDRESS);
-	 *  }
+	 *   }
+	 * }
 	 * </pre>
 	 */
 	protected abstract void initializeUI();
 
 	/**
-	 * Configures the controls.<br>
+	 * Configures the controls.
+	 * <p>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
+	 * {@code
 	 *   configureControls(layout -> layout
 	 *           .separator()
 	 *           .control(createCustomControl()))
+	 * }
 	 * </pre>
 	 * Defaults:
 	 * <ul>
@@ -663,33 +668,33 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	public static final class Config {
 
 		/**
-		 * Specifies whether the add/insert button caption should be 'Save' (mnemonic S), instead of 'Add' (mnemonic A)<br>
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * Specifies whether the add/insert button caption should be 'Save' (mnemonic S), instead of 'Add' (mnemonic A)
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
 		 */
 		public static final PropertyValue<Boolean> USE_SAVE_CAPTION =
 						Configuration.booleanValue(EntityEditPanel.class.getName() + ".useSaveCaption", false);
 
 		/**
-		 * Specifies whether to include a {@link EntityPopupMenu} on this edit panel, triggered with CTRL-ALT-V by default.<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Specifies whether to include a {@link EntityPopupMenu} on this edit panel, triggered with CTRL-ALT-V by default.
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
 						Configuration.booleanValue(EntityEditPanel.class.getName() + ".includeEntityMenu", true);
 
 		/**
-		 * Specifies whether edit panels should be activated when the panel (or its parent EntityPanel) receives focus<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Specifies whether edit panels should be activated when the panel (or its parent EntityPanel) receives focus
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
 						Configuration.booleanValue(EntityEditPanel.class.getName() + ".useFocusActivation", true);
 
 		/**
-		 * Indicates whether the panel should ask for confirmation before discarding unsaved modifications<br>
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * Indicates whether the panel should ask for confirmation before discarding unsaved modifications
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
 		 */
 		public static final PropertyValue<Boolean> MODIFIED_WARNING =
 						Configuration.booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);

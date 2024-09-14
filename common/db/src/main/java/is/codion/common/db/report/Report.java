@@ -39,9 +39,9 @@ public interface Report<T, R, P> {
 	PropertyValue<String> REPORT_PATH = Configuration.stringValue("codion.report.path");
 
 	/**
-	 * Specifies whether to cache reports when loaded from disk/network, this prevents "hot deploy" of reports.<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether to cache reports when loaded from disk/network, this prevents "hot deploy" of reports
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("codion.report.cacheReports", true);
 

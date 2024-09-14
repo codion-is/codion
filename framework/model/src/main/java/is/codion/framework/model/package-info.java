@@ -17,17 +17,17 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.framework.model.EntityApplicationModel#USERNAME_PREFIX}<br>
- * {@link is.codion.framework.model.EntityApplicationModel#AUTHENTICATION_REQUIRED}<br>
- * {@link is.codion.framework.model.EntityApplicationModel#SAVE_DEFAULT_USERNAME}<br>
- * {@link is.codion.framework.model.EntityEditModel#PERSIST_FOREIGN_KEYS}<br>
- * {@link is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS}<br>
- * {@link is.codion.framework.model.EntityTableModel#ON_INSERT}<br>
- * {@link is.codion.framework.model.EntityTableModel#HANDLE_EDIT_EVENTS}<br>
- * {@link is.codion.framework.model.ForeignKeyDetailModelLink#SEARCH_BY_INSERTED_ENTITY}<br>
- * {@link is.codion.framework.model.ForeignKeyDetailModelLink#REFRESH_ON_SELECTION}<br>
- * {@link is.codion.framework.model.ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION}<br>
- * {@link is.codion.framework.model.EntitySearchModel#DEFAULT_LIMIT}<br>
+ * Package configuration values:
+ * <li>{@link is.codion.framework.model.EntityApplicationModel#USERNAME_PREFIX}
+ * <li>{@link is.codion.framework.model.EntityApplicationModel#AUTHENTICATION_REQUIRED}
+ * <li>{@link is.codion.framework.model.EntityApplicationModel#SAVE_DEFAULT_USERNAME}
+ * <li>{@link is.codion.framework.model.EntityEditModel#PERSIST_FOREIGN_KEYS}
+ * <li>{@link is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS}
+ * <li>{@link is.codion.framework.model.EntityTableModel#ON_INSERT}
+ * <li>{@link is.codion.framework.model.EntityTableModel#HANDLE_EDIT_EVENTS}
+ * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#SEARCH_BY_INSERTED_ENTITY}
+ * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#REFRESH_ON_SELECTION}
+ * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION}
+ * <li>{@link is.codion.framework.model.EntitySearchModel#DEFAULT_LIMIT}
  */
 package is.codion.framework.model;

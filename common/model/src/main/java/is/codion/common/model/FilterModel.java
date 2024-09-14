@@ -39,9 +39,9 @@ import java.util.function.Supplier;
 public interface FilterModel<T> {
 
 	/**
-	 * Specifies whether data models should refresh data asynchronously or on the EDT.<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether data models should refresh data asynchronously or on the EDT
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 * @see Refresher#async()
 	 */
 	PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);

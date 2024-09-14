@@ -24,7 +24,8 @@ import is.codion.swing.common.ui.component.Components;
 import javax.swing.JComponent;
 
 /**
- * A {@link Value} represented by an input component of some sort.<br>
+ * A {@link Value} represented by an input component of some sort.
+ * <p>
  * {@link Components} is a factory for {@link ComponentValue} implementations.
  * @param <T> the value type
  * @param <C> the component type

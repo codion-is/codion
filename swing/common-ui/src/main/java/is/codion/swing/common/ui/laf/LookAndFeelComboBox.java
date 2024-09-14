@@ -51,9 +51,9 @@ import static java.util.Objects.requireNonNull;
 public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvider>> {
 
 	/**
-	 * Specifies whether to enable the Look and Feel dynamically when selected<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether to enable the Look and Feel dynamically when selected
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	public static final PropertyValue<Boolean> ENABLE_ON_SELECTION =
 					Configuration.booleanValue(LookAndFeelComboBox.class.getName() + ".enableOnSelection", true);

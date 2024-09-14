@@ -37,33 +37,33 @@ import java.util.Map;
 public interface EntityServerConfiguration extends ServerConfiguration {
 
 	/**
-	 * Specifies maximum number of concurrent connections the server accepts<br>
+	 * Specifies maximum number of concurrent connections the server accepts
 	 * -1 indicates no limit and 0 indicates a closed server.
-	 * Value type: Integer<br>
-	 * Default value: -1
+	 * <li>Value type: Integer
+	 * <li>Default value: -1
 	 */
 	PropertyValue<Integer> CONNECTION_LIMIT = Configuration.integerValue("codion.server.connectionLimit", -1);
 
 	/**
-	 * Specifies the class name of the connection pool factory to use.<br>
-	 * Value type: String<br>
-	 * Default value: none
+	 * Specifies the class name of the connection pool factory to use.
+	 * <li>Value type: String
+	 * <li>Default value: none
 	 * @see ConnectionPoolFactory
 	 */
 	PropertyValue<String> CONNECTION_POOL_FACTORY_CLASS = Configuration.stringValue("codion.server.pooling.poolFactoryClass");
 
 	/**
 	 * Specifies the default client connection timeout (ms) in a comma separated list.
-	 * Example: is.codion.demos.employees.client.ui.EmployeesAppPanel:60000,is.codion.demos.chinook.ui.ChinookAppPanel:120000
-	 * Value type: String<br>
-	 * Default value: none
+	 * <li>Example: is.codion.demos.employees.client.ui.EmployeesAppPanel:60000,is.codion.demos.chinook.ui.ChinookAppPanel:120000
+	 * <li>Value type: String
+	 * <li>Default value: none
 	 */
 	PropertyValue<String> CLIENT_CONNECTION_TIMEOUT = Configuration.stringValue("codion.server.clientConnectionTimeout");
 
 	/**
-	 * The initial connection logging status on the server, either true (on) or false (off)<br>
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * The initial connection logging status on the server, either true (on) or false (off)
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
 	 */
 	PropertyValue<Boolean> CLIENT_LOGGING = Configuration.booleanValue("codion.server.clientLogging", false);
 

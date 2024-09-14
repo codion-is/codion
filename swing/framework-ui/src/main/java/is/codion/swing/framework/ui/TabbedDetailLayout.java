@@ -86,7 +86,7 @@ import static javax.swing.FocusManager.getCurrentManager;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 /**
- * A {@link DetailLayout} implementation based on a JTabbedPane.<br>
+ * A {@link DetailLayout} implementation based on a JTabbedPane.
  * <pre>
  * The default layout is as follows:
  * __________________________________
@@ -104,9 +104,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	/**
 	 * Specifies whether actions to hide detail panels or show them in a dialog should be available to the user,
-	 * for example in a popup menu or on a toolbar.<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * for example in a popup menu or on a toolbar.
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
 					Configuration.booleanValue(TabbedDetailLayout.class.getName() + ".includeControls", true);

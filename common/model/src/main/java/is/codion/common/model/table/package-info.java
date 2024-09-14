@@ -17,8 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.common.model.table.ColumnConditionModel#AUTOMATIC_WILDCARD}<br>
- * {@link is.codion.common.model.table.ColumnConditionModel#CASE_SENSITIVE}
+ * Package configuration values:
+ * <li>{@link is.codion.common.model.table.ColumnConditionModel#AUTOMATIC_WILDCARD}
+ * <li>{@link is.codion.common.model.table.ColumnConditionModel#CASE_SENSITIVE}
  */
 package is.codion.common.model.table;

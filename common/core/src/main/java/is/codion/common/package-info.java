@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>
+ * Package configuration values:
+ * <li>{@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}
  */
 package is.codion.common;

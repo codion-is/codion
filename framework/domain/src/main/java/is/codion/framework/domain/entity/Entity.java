@@ -80,15 +80,15 @@ public interface Entity extends Comparable<Entity> {
 
 	/**
 	 * Returns the value associated with {@code attribute}, wrapped in an {@link Optional}.
-	 * @param attribute the attribute for which to retrieve the value
+	 * @param attribute the attribute which value to retrieve
 	 * @param <T> the value type
 	 * @return the value of the given attribute, wrapped in an {@link Optional}
 	 */
 	<T> Optional<T> optional(Attribute<T> attribute);
 
 	/**
-	 * Returns the original value associated with {@code attribute}.
-	 * If the value has not been modified the current value is returned.
+	 * Returns the original value associated with {@code attribute},
+	 * or the current one if it has not been modified..
 	 * @param attribute the attribute for which to retrieve the original value
 	 * @param <T> the value type
 	 * @return the original value of the given attribute
@@ -98,7 +98,7 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * This method returns a String representation of the value associated with the given attribute,
 	 * if the associated attribute has a format it is used.
-	 * @param attribute the attribute for which to retrieve the value
+	 * @param attribute the attribute which value to retrieve
 	 * @param <T> the value type
 	 * @return a String representation of the value associated with {@code attribute}
 	 */
@@ -129,7 +129,7 @@ public interface Entity extends Comparable<Entity> {
 	void save(Attribute<?> attribute);
 
 	/**
-	 * Saves all the value modifications that have been made.
+	 * Saves all the value modifications that have been made, that is, removes all original values.
 	 * This entity will be unmodified after a call to this method.
 	 * @throws UnsupportedOperationException in case this entity is immutable
 	 * @see #modified()
@@ -310,6 +310,7 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * A builder for {@link Entity} instances.
 	 * <pre>
+	 * {@code
 	 * Store domain = new Store();
 	 *
 	 * Entities entities = domain.entities();
@@ -318,6 +319,7 @@ public interface Entity extends Comparable<Entity> {
 	 *     .with(Customer.FIRST_NAME, "John")
 	 *     .with(Customer.LAST_NAME, "Doe")
 	 *     .build();
+	 * }
 	 * </pre>
 	 * @see Entities#builder(EntityType)
 	 * @see Entity#builder(Key)

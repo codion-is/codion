@@ -33,24 +33,24 @@ public interface ForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E ext
 
 	/**
 	 * Specifies whether a detail model should automatically search by the entity inserted by the master model.
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
 	 */
 	PropertyValue<Boolean> SEARCH_BY_INSERTED_ENTITY =
 					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".searchByInsertedEntity", false);
 
 	/**
 	 * Specifies whether a detail model should be automatically refreshed when the selection in the master model changes.
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> REFRESH_ON_SELECTION =
 					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".refreshOnSelection", true);
 
 	/**
 	 * Specifies whether a detail model sets the master foreign key to null when null or no value is selected in a master model<br>
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * <li>Value type: Boolean<br>
+	 * <li>Default value: false
 	 */
 	PropertyValue<Boolean> CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION =
 					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".clearForeignKeyOnEmptySelection", false);

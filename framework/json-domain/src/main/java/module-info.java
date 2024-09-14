@@ -17,10 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * JSON serialization for domain related classes.<br>
- * <br>
- * {@link is.codion.framework.json.domain.EntityObjectMapper}<br>
- * {@link is.codion.framework.json.domain.EntityObjectMapperFactory}<br>
+ * JSON serialization for domain related classes.
+ * <li>{@link is.codion.framework.json.domain.EntityObjectMapper}
+ * <li>{@link is.codion.framework.json.domain.EntityObjectMapperFactory}
  * @uses is.codion.framework.json.domain.EntityObjectMapperFactory
  */
 module is.codion.framework.json.domain {

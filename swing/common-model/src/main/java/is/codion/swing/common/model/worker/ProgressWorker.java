@@ -35,6 +35,7 @@ import static java.util.Objects.requireNonNull;
  * <p>Note that this implementation does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
  * those directly to the {@code onProgress} and {@code onPublish} handlers for running on the Event Dispatch Thread.</p>
  * <pre>
+ * {@code
  * ProgressWorker.builder(this::performTask)
  *   .onStarted(this::displayDialog)
  *   .onDone(this::closeDialog)
@@ -44,6 +45,7 @@ import static java.util.Objects.requireNonNull;
  *   .onCancelled(this::displayCancelledMessage)
  *   .onException(this::displayException)
  *   .execute();
+ * }
  * </pre>
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result produced by this {@link ProgressWorker}

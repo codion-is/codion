@@ -23,18 +23,47 @@ import is.codion.common.observer.Observer;
 import java.util.function.Consumer;
 
 /**
- * An event class. Listeners are notified in the order they were added.
+ * An event class implementing the {@link Observer} interface.
  * <pre>
- * Event&lt;Boolean&gt; event = Event.event();
+ * {@code
+ * Event<Boolean> event = Event.event();
  *
- * Observer&lt;Boolean&gt; observer = event.observer();
+ * event.addListener(this::doSomething);
  *
- * observer.addListener(this::doSomething);
- * observer.addConsumer(this::onBoolean);
+ * event.run();
+ *
+ * event.addConsumer(this::onBoolean);
  *
  * event.accept(true);
+ * }
  * </pre>
- * A factory for {@link Event} instances.
+ * The event observer observes the event but can not trigger it.
+ * <pre>
+ * {@code
+ * Observer<Boolean> observer = event.observer();
+ *
+ * observer.addListener(this::doSomethingElse);
+ * }
+ * </pre>
+ *
+ * Listeners and Consumers can be added using a {@link java.lang.ref.WeakReference}.
+ * <pre>
+ * {@code
+ * observer.addWeakListener(this::doSomethingElse);
+ * observer.addWeakConsumer(this::onBoolean);
+ * }
+ * </pre>
+ * Any weak references that no longer refer to a listener/consumer instance
+ * are cleared when listeners are added or removed, but to manually clear these empty
+ * weak references call {@link #removeWeakListener(Runnable)} or {@link #removeWeakConsumer(Consumer)}
+ * with a listener/consumer instance which has not been registered on the observer, such as a new one.
+ * <pre>
+ * {@code
+ * observer.removeWeakListener(() -> {});
+ * observer.removeWeakConsumer(value -> {});
+ * }
+ * </pre>
+ * A factory for {@link Event} instances via {@link #event()}.
  * @param <T> the type of data propagated with this event
  */
 public interface Event<T> extends Runnable, Consumer<T>, Observer<T> {

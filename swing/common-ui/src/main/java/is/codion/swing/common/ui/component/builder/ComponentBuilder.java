@@ -63,13 +63,15 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	/**
 	 * The client property key for the associated {@link ComponentValue}
 	 * <pre>
+	 * {@code
 	 *   JTextField textField =
 	 *            Components.stringField()
 	 *                    .build();
 	 *
-	 *   ComponentValue&lt;String, JTextField&gt; componentValue =
-	 *            (ComponentValue&lt;String, JTextField&gt;)
+	 *   ComponentValue<String, JTextField> componentValue =
+	 *            (ComponentValue<String, JTextField>)
 	 *                    textField.getClientProperty(COMPONENT_VALUE);
+	 * }
 	 * </pre>
 	 * @see JComponent#getClientProperty(Object)
 	 */
@@ -77,9 +79,9 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 
 	/**
 	 * Specifies whether focus should be transferred from components on enter.<br>
-	 * Note that for JTextArea CTRL is added to move focus forward<br>
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * Note that for JTextArea CTRL is added to move focus forward
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
 	 */
 	PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER =
 					Configuration.booleanValue(ComponentBuilder.class.getName() + ".transferFocusOnEnter", false);

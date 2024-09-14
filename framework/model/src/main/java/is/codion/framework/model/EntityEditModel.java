@@ -48,16 +48,16 @@ import java.util.function.Supplier;
 public interface EntityEditModel {
 
 	/**
-	 * Specifies whether writable foreign key values should persist when the model is cleared or set to null<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether writable foreign key values should persist when the model is cleared or set to null
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = Configuration.booleanValue(EntityEditModel.class.getName() + ".persistForeignKeys", true);
 
 	/**
-	 * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}<br>
-	 * Value type: Boolean<br>
-	 * Default value: true<br>
+	 * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 * @see #postEditEvents()
 	 * @see EntityTableModel#HANDLE_EDIT_EVENTS
 	 */
@@ -521,6 +521,7 @@ public interface EntityEditModel {
 	/**
 	 * Represents a task for inserting entities, split up for use with a background thread.
 	 * <pre>
+	 * {@code
 	 *   Insert insert = editModel.createInsert();
 	 *
 	 *   Insert.Task task = insert.prepare();
@@ -528,7 +529,8 @@ public interface EntityEditModel {
 	 *   // Can safely be called in a background thread
 	 *   Insert.Result result = task.perform();
 	 *
-	 *   Collection&lt;Entity&gt; insertedEntities = result.handle();
+	 *   Collection<Entity> insertedEntities = result.handle();
+	 * }
 	 * </pre>
 	 * {@link Task#perform()} may be called on a background thread while {@link Insert#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
@@ -572,6 +574,7 @@ public interface EntityEditModel {
 	/**
 	 * Represents a task for updating entities.
 	 * <pre>
+	 * {@code
 	 *   Update update = editModel.createUpdate();
 	 *
 	 *   Update.Task task = update.prepare();
@@ -579,7 +582,8 @@ public interface EntityEditModel {
 	 *   // Can safely be called in a background thread
 	 *   Update.Result result = task.perform();
 	 *
-	 *   Collection&lt;Entity&gt; updatedEntities = result.handle();
+	 *   Collection<Entity> updatedEntities = result.handle();
+	 * }
 	 * </pre>
 	 * {@link Task#perform()} may be called on a background thread while {@link Update#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
@@ -623,6 +627,7 @@ public interface EntityEditModel {
 	/**
 	 * Represents a task for deleting entities.
 	 * <pre>
+	 * {@code
 	 *   Delete delete = editModel.createDelete();
 	 *
 	 *   Delete.Task task = delete.prepare();
@@ -630,7 +635,8 @@ public interface EntityEditModel {
 	 *   // Can safely be called in a background thread
 	 *   Delete.Result result = task.perform();
 	 *
-	 *   Collection&lt;Entity&gt; deletedEntities = result.handle();
+	 *   Collection<Entity> deletedEntities = result.handle();
+	 * }
 	 * </pre>
 	 * {@link Task#perform()} may be called on a background thread while {@link Delete#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.

@@ -31,7 +31,8 @@ import java.awt.event.FocusListener;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Selects an item in a JComboBox based on values typed on the keyboard.<br>
+ * Selects an item in a JComboBox based on values typed on the keyboard.
+ * <p>
  * Based on code originally from: <a href="http://www.orbital-computer.de/JComboBox">http://www.orbital-computer.de/JComboBox</a><br>
  * Included with permission.
  * @author Thomas Bierhance
@@ -58,12 +59,12 @@ public final class Completion {
 	}
 
 	/**
-	 * Specifies the default completion model used for comboboxes,
-	 * {@link Completion.Mode#MAXIMUM_MATCH} for maximum match,
-	 * {@link Completion.Mode#AUTOCOMPLETE} for auto-completion or
-	 * {@link Completion.Mode#NONE} for no completion.<br>
-	 * Value type:String<br>
-	 * Default value: {@link Completion.Mode#MAXIMUM_MATCH}
+	 * Specifies the default completion model used for comboboxes.
+	 * <li>{@link Completion.Mode#MAXIMUM_MATCH} for maximum match,
+	 * <li>{@link Completion.Mode#AUTOCOMPLETE} for auto-completion or
+	 * <li>{@link Completion.Mode#NONE} for no completion.
+	 * <li>Value type:String
+	 * <li>Default value: {@link Completion.Mode#MAXIMUM_MATCH}
 	 */
 	public static final PropertyValue<Mode> COMBO_BOX_COMPLETION_MODE =
 					Configuration.enumValue(Completion.class.getName() + ".completionMode", Mode.class, Mode.MAXIMUM_MATCH);

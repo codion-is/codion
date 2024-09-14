@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.swing.framework.ui.component.EntitySearchField#SEARCH_INDICATOR}<br>
+ * Package configuration values:
+ * <li>{@link is.codion.swing.framework.ui.component.EntitySearchField#SEARCH_INDICATOR}
  */
 package is.codion.swing.framework.ui.component;

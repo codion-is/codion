@@ -53,6 +53,7 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarker
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
@@ -221,7 +222,7 @@ public final class NotesDemo {
 											// No need to include the default control buttons since
 											// we added the CLEAR control button to the edit panel
 											.includeControls(false)
-											// Replace the default edit baes panel which uses a FlowLayout, in order
+											// Replace the default edit base panel which uses a FlowLayout, in order
 											// to have the edit panel fill the horizontal width of the parent panel
 											.editBasePanel(editPanel -> Components.borderLayoutPanel()
 															.centerComponent(editPanel)
@@ -245,14 +246,7 @@ public final class NotesDemo {
 	public static final class NotesApplicationPanel extends EntityApplicationPanel<NotesApplicationModel> {
 
 		public NotesApplicationPanel(NotesApplicationModel applicationModel) {
-			super(applicationModel, applicationPanel -> () ->
-							// Override the default JTabbedPane based layout,
-							// since we're only displaying a single panel
-							Components.borderLayoutPanel()
-											// Lazy initialization of UI components
-											.centerComponent(applicationPanel.entityPanel(Note.TYPE).initialize())
-											.border(BorderFactory.createEmptyBorder(5, 5, 0, 5))
-											.build());
+			super(applicationModel, NotesApplicationLayout::new);
 		}
 
 		@Override
@@ -260,6 +254,26 @@ public final class NotesDemo {
 			NoteModel noteModel = applicationModel().entityModel(Note.TYPE);
 
 			return singletonList(new NotePanel(noteModel));
+		}
+
+		// Replace the default JTabbedPane based layout,
+		// since we're only displaying a single panel
+		private static final class NotesApplicationLayout implements ApplicationLayout {
+
+			private final EntityApplicationPanel<?> applicationPanel;
+
+			private NotesApplicationLayout(EntityApplicationPanel<?> applicationPanel) {
+				this.applicationPanel = applicationPanel;
+			}
+
+			@Override
+			public JComponent layout() {
+				return Components.borderLayoutPanel()
+								// initialize() must be called to initialize the UI components
+								.centerComponent(applicationPanel.entityPanel(Note.TYPE).initialize())
+								.border(BorderFactory.createEmptyBorder(5, 5, 0, 5))
+								.build();
+			}
 		}
 	}
 

@@ -86,46 +86,46 @@ public final class EntityService implements AuxiliaryServer {
 	private static final Logger LOG = LoggerFactory.getLogger(EntityService.class);
 
 	/**
-	 * The port on which the http server is made available to clients.<br>
-	 * Value type: Integer<br>
-	 * Default value: 8080
+	 * The port on which the http server is made available to clients.
+	 * <li>Value type: Integer
+	 * <li>Default value: 8080
 	 */
 	public static final PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("codion.server.http.port", 8080);
 
 	/**
-	 * The port on which the http server is made available to clients.<br>
-	 * Value type: Integer<br>
-	 * Default value: 4443
+	 * The port on which the http server is made available to clients.
+	 * <li>Value type: Integer
+	 * <li>Default value: 4443
 	 */
 	public static final PropertyValue<Integer> HTTP_SERVER_SECURE_PORT = Configuration.integerValue("codion.server.http.securePort", 4443);
 
 	/**
-	 * Specifies whether https should be used.<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether https should be used.
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	public static final PropertyValue<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("codion.server.http.secure", true);
 
 	/**
 	 * The https keystore to use on the classpath, this will be resolved to a temporary file and set
-	 * as the codion.server.http.keyStore system property on server start<br>
-	 * Value type: String
-	 * Default value: null
+	 * as the codion.server.http.keyStore system property on server start
+	 * <li>Value type: String
+	 * <li>Default value: null
 	 */
 	public static final PropertyValue<String> HTTP_SERVER_CLASSPATH_KEYSTORE = Configuration.stringValue("codion.server.http.classpathKeyStore");
 
 	/**
-	 * Specifies the keystore to use for securing http connections.<br>
-	 * Value type: String<br>
-	 * Default value: null
+	 * Specifies the keystore to use for securing http connections.
+	 * <li>Value type: String
+	 * <li>Default value: null
 	 * @see #HTTP_SERVER_CLASSPATH_KEYSTORE
 	 */
 	public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("codion.server.http.keyStore");
 
 	/**
-	 * Specifies the password for the keystore used for securing http connections.<br>
-	 * Value type: String<br>
-	 * Default value: null
+	 * Specifies the password for the keystore used for securing http connections.
+	 * <li>Value type: String
+	 * <li>Default value: null
 	 */
 	public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD =
 					Configuration.stringValue("codion.server.http.keyStorePassword");

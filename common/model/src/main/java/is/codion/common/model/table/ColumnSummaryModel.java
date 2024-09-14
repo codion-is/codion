@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum &#38; maximum.<br>
+ * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum &#38; maximum.
+ * <p>
  * For instances use the {@link #columnSummaryModel(SummaryValues)} factory method.
  * @see #columnSummaryModel(SummaryValues)
  */

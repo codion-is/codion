@@ -39,51 +39,51 @@ import java.util.concurrent.Executor;
 public interface HttpEntityConnection extends EntityConnection {
 
 	/**
-	 * The host on which to locate the http server<br>
-	 * Value type: String<br>
-	 * Default value: localhost
+	 * The host on which to locate the http server
+	 * <li>Value type: String
+	 * <li>Default value: localhost
 	 */
 	PropertyValue<String> HOSTNAME = Configuration.stringValue("codion.client.http.hostname", "localhost");
 
 	/**
 	 * The port which the http client should use.<br>
-	 * Value type: Integer<br>
-	 * Default value: 8080
+	 * <li>Value type: Integer<br>
+	 * <li>Default value: 8080
 	 */
 	PropertyValue<Integer> PORT = Configuration.integerValue("codion.client.http.port", 8080);
 
 	/**
-	 * The port which the https client should use.<br>
-	 * Value type: Integer<br>
-	 * Default value: 4443
+	 * The port which the https client should use
+	 * <li>Value type: Integer
+	 * <li>Default value: 4443
 	 */
 	PropertyValue<Integer> SECURE_PORT = Configuration.integerValue("codion.client.http.securePort", 4443);
 
 	/**
-	 * Specifies whether https should be used.<br>
-	 * Value type: boolean<br>
-	 * Default value: true
+	 * Specifies whether https should be used
+	 * <li>Value type: boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> SECURE = Configuration.booleanValue("codion.client.http.secure", true);
 
 	/**
-	 * Specifies whether json serialization should be used.<br>
-	 * Value types: Boolean<br>
-	 * Default value: true
+	 * Specifies whether json serialization should be used
+	 * Value types: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> JSON = Configuration.booleanValue("codion.client.http.json", true);
 
 	/**
-	 * The socket timeout in milliseconds.<br>
-	 * Value type: Integer<br>
-	 * Default value: 2000 ms
+	 * The socket timeout in milliseconds
+	 * <li>Value type: Integer
+	 * <li>Default value: 2000 ms
 	 */
 	PropertyValue<Integer> SOCKET_TIMEOUT = Configuration.integerValue("codion.client.http.socketTimeout", 2000);
 
 	/**
-	 * The connect timeout in milliseconds.<br>
-	 * Value type: Integer<br>
-	 * Default value: 2000 ms
+	 * The connect timeout in milliseconds
+	 * <li>Value type: Integer
+	 * <li>Default value: 2000 ms
 	 */
 	PropertyValue<Integer> CONNECT_TIMEOUT = Configuration.integerValue("codion.client.http.connectTimeout", 2000);
 

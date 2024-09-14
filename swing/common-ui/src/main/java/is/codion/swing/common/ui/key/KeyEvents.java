@@ -34,6 +34,7 @@ import static javax.swing.KeyStroke.getKeyStroke;
 /**
  * A factory for key event builders.
  * <pre>
+ * {@code
  * JTextField textField = new JTextField();
  *
  * KeyEvents.builder(VK_DOWN)
@@ -42,6 +43,7 @@ import static javax.swing.KeyStroke.getKeyStroke;
  *          .condition(WHEN_FOCUSED)
  *          .action(new FindNextAction())
  *          .enable(textField);
+ * }
  * </pre>
  * @see #builder()
  * @see #builder(int)

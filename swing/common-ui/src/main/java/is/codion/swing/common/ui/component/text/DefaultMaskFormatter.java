@@ -64,7 +64,8 @@ final class DefaultMaskFormatter extends MaskFormatter {
 
 	/**
 	 * Somewhat of a hack to keep the current field selection and caret position when
-	 * the field gains focus, in case the content length has not changed.<br>
+	 * the field gains focus, in case the content length has not changed.
+	 * <p>
 	 * <a href="https://stackoverflow.com/a/2202073/317760">https://stackoverflow.com/a/2202073/317760</a>
 	 * @param field the field
 	 */

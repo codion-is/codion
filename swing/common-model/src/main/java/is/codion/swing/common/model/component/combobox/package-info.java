@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.swing.common.model.component.combobox.FilterComboBoxModel#COMBO_BOX_NULL_CAPTION}
+ * Package configuration values:
+ * <li>{@link is.codion.swing.common.model.component.combobox.FilterComboBoxModel#COMBO_BOX_NULL_CAPTION}
  */
 package is.codion.swing.common.model.component.combobox;

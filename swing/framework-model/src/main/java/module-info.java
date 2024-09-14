@@ -17,13 +17,12 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Framework Swing model classes, such as:<br>
- * <br>
- * {@link is.codion.swing.framework.model.SwingEntityModel}<br>
- * {@link is.codion.swing.framework.model.SwingEntityEditModel}<br>
- * {@link is.codion.swing.framework.model.SwingEntityTableModel}<br>
- * {@link is.codion.swing.framework.model.SwingEntityApplicationModel}<br>
- * {@link is.codion.swing.framework.model.component.EntityComboBoxModel}<br>
+ * Framework Swing model classes, such as:
+ * <li>{@link is.codion.swing.framework.model.SwingEntityModel}
+ * <li>{@link is.codion.swing.framework.model.SwingEntityEditModel}
+ * <li>{@link is.codion.swing.framework.model.SwingEntityTableModel}
+ * <li>{@link is.codion.swing.framework.model.SwingEntityApplicationModel}
+ * <li>{@link is.codion.swing.framework.model.component.EntityComboBoxModel}
  */
 module is.codion.swing.framework.model {
 	requires org.slf4j;

@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  * using a daemon thread by default.
  * A TaskScheduler can be stopped and restarted.
  * <pre>
+ * {@code
  * TaskScheduler scheduler = TaskScheduler.builder(() -&gt; System.out.println("Running wild..."))
  *     .interval(2)
  *     .timeUnit(TimeUnit.SECONDS)
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeUnit;
  * scheduler.interval().set(1);//task restarted using the new interval
  * ...
  * scheduler.stop();
+ * }
  * </pre>
  * @see TaskScheduler#builder(Runnable)
  */

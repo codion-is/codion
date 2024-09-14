@@ -121,17 +121,17 @@ public final class FilterTable<R, C> extends JTable {
 					messageBundle(FilterTable.class, getBundle(FilterTable.class.getName()));
 
 	/**
-	 * Specifies the default table column resize mode for tables in the application<br>
-	 * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
-	 * Default value: {@link JTable#AUTO_RESIZE_OFF}
+	 * Specifies the default table column resize mode for tables in the application
+	 * <li>Value type: Integer (JTable.AUTO_RESIZE_*)
+	 * <li>Default value: {@link JTable#AUTO_RESIZE_OFF}
 	 */
 	public static final PropertyValue<Integer> AUTO_RESIZE_MODE =
 					Configuration.integerValue(FilterTable.class.getName() + ".autoResizeMode", AUTO_RESIZE_OFF);
 
 	/**
-	 * Specifies whether columns can be rearranged in tables<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether columns can be rearranged in tables
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
 					Configuration.booleanValue(FilterTable.class.getName() + ".allowColumnReordering", true);
@@ -385,11 +385,13 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * The {@link ActionEvent} propagated when this action is performed, contains the associated {@link MouseEvent} as source.
 	 * <pre>
+	 * {@code
 	 *   public void actionPerformed(ActionEvent event) {
 	 *       MouseEvent mouseEvent = (MouseEvent) event.getSource();
 	 *       Point location = mouseEvent.getLocationOnScreen();
 	 *       // ...
 	 *   }
+	 * }
 	 * </pre>
 	 * @return the {@link Value} controlling the action to perform when a double click is performed on the table
 	 */

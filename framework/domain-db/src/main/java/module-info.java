@@ -17,9 +17,8 @@
  * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
 /**
- * Framework database domain model classes, such as:<br>
- * <br>
- * {@link is.codion.framework.domain.db.SchemaDomain}
+ * Framework database domain model classes, such as:
+ * <li>{@link is.codion.framework.domain.db.SchemaDomain}
  */
 module is.codion.framework.domain.db {
 	requires transitive is.codion.framework.domain;

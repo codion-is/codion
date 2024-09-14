@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.swing.common.ui.component.label.LabelBuilder#HORIZONTAL_ALIGNMENT}
+ * Package configuration values:
+ * <li>{@link is.codion.swing.common.ui.component.label.LabelBuilder#HORIZONTAL_ALIGNMENT}
  */
 package is.codion.swing.common.ui.component.label;

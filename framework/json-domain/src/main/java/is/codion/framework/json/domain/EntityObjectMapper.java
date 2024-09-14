@@ -45,7 +45,8 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Entity object mapper for mapping {@link Entity} and {@link Entity.Key} to and from JSON.<br><br>
+ * Entity object mapper for mapping {@link Entity} and {@link Entity.Key} to and from JSON.
+ * <p>
  * For instances use the {@link #entityObjectMapper(Entities)} factory method.
  */
 public final class EntityObjectMapper extends ObjectMapper {

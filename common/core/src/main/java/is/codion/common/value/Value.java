@@ -24,8 +24,32 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An observable wrapper for a value.
- * A factory for {@link Value} instances.
+ * <p>An observable wrapper for a value.</p>
+ * <p>Nullable integer based Value:</p>
+ * <pre>
+ * {@code
+ * Value<Integer> integer = Value.value();
+ * integer.set(42);
+ * integer.addConsumer(this::onValueChange);
+ * integer.nullable(); // true
+ * }
+ * </pre>
+ * <p>Non-null String based Value, using "none" as a null substitute:</p>
+ * <pre>
+ * {@code
+ * Value<String> string = Value.builder()
+ *         .nonNull("none")
+ *         .initialValue("hello")
+ *         .notify(Notify.WHEN_SET)
+ *         .validator(this::validateString)
+ *         .listener(this::onStringSet)
+ *         .build();
+ * string.nullable();// false
+ * string.set("hey");
+ * string.set(null); // reverts to the null substitute: "none"
+ * }
+ * </pre>
+ * <p>A factory for {@link Value} instances.</p>
  * @param <T> the type of the wrapped value
  * @see #value()
  * @see #value(Object)

@@ -17,11 +17,10 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * JasperReports implementation of {@link is.codion.common.db.report.Report}<br>
- * <br>
- * {@link is.codion.plugin.jasperreports.JasperReports}<br>
- * {@link is.codion.plugin.jasperreports.JRReport}<br>
- * {@link is.codion.plugin.jasperreports.JRReportType}<br>
+ * JasperReports implementation of {@link is.codion.common.db.report.Report}.
+ * <li>{@link is.codion.plugin.jasperreports.JasperReports}
+ * <li>{@link is.codion.plugin.jasperreports.JRReport}
+ * <li>{@link is.codion.plugin.jasperreports.JRReportType}
  */
 module is.codion.plugin.jasperreports {
 	requires net.sf.jasperreports.core;

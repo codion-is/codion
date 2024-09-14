@@ -38,16 +38,16 @@ public interface Icons {
 	int DEFAULT_ICON_SIZE = 16;
 
 	/**
-	 * The icon size, note that this will affect the size of buttons<br>
-	 * Value type: Integer<br>
-	 * Default value: 16
+	 * The icon size, note that this will affect the size of buttons
+	 * <li>Value type: Integer
+	 * <li>Default value: 16
 	 */
 	PropertyValue<Integer> ICON_SIZE = Configuration.integerValue(Icons.class.getName() + ".iconSize", DEFAULT_ICON_SIZE);
 
 	/**
-	 * The icon color<br>
-	 * Value type: Color<br>
-	 * Default value: UIManager.getColor("Button.foreground")
+	 * The icon color
+	 * <li>Value type: Color
+	 * <li>Default value: UIManager.getColor("Button.foreground")
 	 */
 	PropertyValue<Color> ICON_COLOR = Configuration.value(Icons.class.getName() + ".iconColor", Color::decode, UIManager.getColor("Button.foreground"));
 

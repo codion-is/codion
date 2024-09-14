@@ -42,25 +42,25 @@ public interface AttributeDefinition<T> {
 
 	/**
 	 * Specifies the default maximum number of fraction digits for double property values<br>
-	 * Note that values are rounded when set.<br>
-	 * Value type: Integer<br>
-	 * Default value: 10
+	 * Note that values are rounded when set.
+	 * <li>Value type: Integer
+	 * <li>Default value: 10
 	 */
 	PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("codion.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
 
 	/**
-	 * Specifies the default rounding mode used for decimal property values<br>
-	 * Value type: {@link RoundingMode}<br>
-	 * Default value: {@link RoundingMode#HALF_EVEN}<br>
+	 * Specifies the default rounding mode used for decimal property values
+	 * <li>Value type: {@link RoundingMode}
+	 * <li>Default value: {@link RoundingMode#HALF_EVEN}
 	 * @see #MAXIMUM_FRACTION_DIGITS
 	 * @see Builder#decimalRoundingMode(RoundingMode)
 	 */
 	PropertyValue<RoundingMode> DECIMAL_ROUNDING_MODE = Configuration.enumValue("codion.domain.decimalRoundingMode", RoundingMode.class, RoundingMode.HALF_EVEN);
 
 	/**
-	 * The default date format pattern to use when showing time values in tables and when creating default time input fields<br>
-	 * Value type: String<br>
-	 * Default value: HH:mm
+	 * The default date format pattern to use when showing time values in tables and when creating default time input fields
+	 * <li>Value type: String
+	 * <li>Default value: HH:mm
 	 */
 	PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", LocaleDateTimePattern.builder()
 					.hoursMinutes()
@@ -69,9 +69,9 @@ public interface AttributeDefinition<T> {
 					.orElseThrow(IllegalStateException::new));
 
 	/**
-	 * The default date/time format pattern to use when showing date/time values in tables and when creating default date/time input fields<br>
-	 * Value type: String<br>
-	 * Default value: dd-MM-yyyy HH:mm [month/day order is locale specific]
+	 * The default date/time format pattern to use when showing date/time values in tables and when creating default date/time input fields
+	 * <li>Value type: String
+	 * <li>Default value: dd-MM-yyyy HH:mm [month/day order is locale specific]
 	 */
 	PropertyValue<String> DATE_TIME_FORMAT = Configuration.stringValue("codion.domain.dateTimeFormat", LocaleDateTimePattern.builder()
 					.delimiterDash()
@@ -81,9 +81,9 @@ public interface AttributeDefinition<T> {
 					.dateTimePattern());
 
 	/**
-	 * The default date format pattern to use when showing date values in tables and when creating default date input fields<br>
-	 * Value type: String<br>
-	 * Default value: dd-MM-yyyy [month/day order is locale specific]
+	 * The default date format pattern to use when showing date values in tables and when creating default date input fields
+	 * <li>Value type: String
+	 * <li>Default value: dd-MM-yyyy [month/day order is locale specific]
 	 */
 	PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", LocaleDateTimePattern.builder()
 					.delimiterDash()
@@ -92,32 +92,32 @@ public interface AttributeDefinition<T> {
 					.datePattern());
 
 	/**
-	 * Specifies whether number format grouping is used by default<br>
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * Specifies whether number format grouping is used by default
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
 	 */
 	PropertyValue<Boolean> NUMBER_FORMAT_GROUPING = Configuration.booleanValue("codion.domain.numberFormatGrouping", false);
 
 	/**
-	 * Specifies the default number grouping separator.<br>
-	 * Value type: Character<br>
-	 * Default value: The grouping separator for the default locale
+	 * Specifies the default number grouping separator
+	 * <li>Value type: Character
+	 * <li>Default value: The grouping separator for the default locale
 	 */
 	PropertyValue<Character> GROUPING_SEPARATOR = Configuration.characterValue("codion.domain.groupingSeparator",
 					DecimalFormatSymbols.getInstance().getGroupingSeparator());
 
 	/**
-	 * Specifies the default number decimal separator.<br>
-	 * Value type: Character<br>
-	 * Default value: The decimal separator for the default locale
+	 * Specifies the default number decimal separator.
+	 * <li>Value type: Character
+	 * <li>Default value: The decimal separator for the default locale
 	 */
 	PropertyValue<Character> DECIMAL_SEPARATOR = Configuration.characterValue("codion.domain.decimalSeparator",
 					DecimalFormatSymbols.getInstance().getDecimalSeparator());
 
 	/**
-	 * Specifies whether String values should use a lexical comparator by default<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether String values should use a lexical comparator by default
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> USE_LEXICAL_STRING_COMPARATOR = Configuration.booleanValue("codion.domain.useLexicalStringComparator", true);
 

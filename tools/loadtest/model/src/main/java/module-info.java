@@ -17,9 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Common Swing loadtest model<br>
- * <br>
- * {@link is.codion.tools.loadtest.model.LoadTestModel}
+ * Common Swing loadtest model.
+ * <li>{@link is.codion.tools.loadtest.model.LoadTestModel}
  */
 module is.codion.tools.loadtest.model {
 	requires org.jfree.jfreechart;

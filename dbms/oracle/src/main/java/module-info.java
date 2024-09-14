@@ -17,8 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * {@link is.codion.common.db.database.DatabaseFactory} implementation for Oracle.<br>
- * <br>
+ * {@link is.codion.common.db.database.DatabaseFactory} implementation for Oracle.
+ * <p>
  * {@link is.codion.dbms.oracle.OracleDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */

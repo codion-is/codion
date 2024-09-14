@@ -17,8 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * {@link is.codion.common.db.database.DatabaseFactory} implementation for Db2.<br>
- * <br>
+ * {@link is.codion.common.db.database.DatabaseFactory} implementation for Db2.
+ * <p>
  * {@link is.codion.dbms.db2.Db2DatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */

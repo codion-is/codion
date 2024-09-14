@@ -24,6 +24,7 @@ import java.util.Collection;
  * ItemRandomizer provides a way to randomly choose an item based on a weight value.
  *
  * <pre>
+ * {@code
  * Object one = new Object();
  * Object two = new Object();
  * Object three = new Object();
@@ -36,6 +37,7 @@ import java.util.Collection;
  *
  * //10% chance of getting 'one', 60% chance of getting 'two' and 30% chance of getting 'three'.
  * Object random = model.randomItem();
+ * }
  * </pre>
  * For instances use the following factory functions: {@link #itemRandomizer(Collection)},
  * {@link #boundedItemRandomizer(Collection)}, {@link #boundedItemRandomizer(Collection, int)}
@@ -118,7 +120,8 @@ public interface ItemRandomizer<T> {
 	/**
 	 * Instantiates a new {@link ItemRandomizer} with the added constraint that the total item weights can not exceed a defined maximum.
 	 * When the weight of one item is incremented the weight of another is decremented in a round-robin kind of fashion
-	 * and when an item weight is decremented the weight of another is incremented.<br>
+	 * and when an item weight is decremented the weight of another is incremented.
+	 * <p>
 	 * Instantiates a new {@link ItemRandomizer} with the maximum total weights as 100.
 	 * @param <T> the item type
 	 * @param items the items
@@ -131,7 +134,7 @@ public interface ItemRandomizer<T> {
 	/**
 	 * Instantiates a new {@link ItemRandomizer} with the added constraint that the total item weights can not exceed a defined maximum.
 	 * When the weight of one item is incremented the weight of another is decremented in a round-robin kind of fashion
-	 * and when an item weight is decremented the weight of another is incremented.<br>
+	 * and when an item weight is decremented the weight of another is incremented.
 	 * @param <T> the item type
 	 * @param items the items
 	 * @param maximumTotalWeights the maximum total weights

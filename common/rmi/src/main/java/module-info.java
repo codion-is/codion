@@ -17,14 +17,13 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * RMI client/server classes, such as:<br>
- * <br>
- * {@link is.codion.common.rmi.client.ConnectionRequest}<br>
- * {@link is.codion.common.rmi.server.Server}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration}<br>
- * {@link is.codion.common.rmi.server.Authenticator}<br>
- * {@link is.codion.common.rmi.server.RemoteClient}<br>
- * {@link is.codion.common.rmi.server.ObjectInputFilterFactory}<br>
+ * RMI client/server classes, such as:
+ * <li>{@link is.codion.common.rmi.client.ConnectionRequest}
+ * <li>{@link is.codion.common.rmi.server.Server}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration}
+ * <li>{@link is.codion.common.rmi.server.Authenticator}
+ * <li>{@link is.codion.common.rmi.server.RemoteClient}
+ * <li>{@link is.codion.common.rmi.server.ObjectInputFilterFactory}
  * @uses is.codion.common.rmi.server.AuxiliaryServerFactory
  * @uses is.codion.common.rmi.server.Authenticator
  * @uses is.codion.common.rmi.server.ObjectInputFilterFactory

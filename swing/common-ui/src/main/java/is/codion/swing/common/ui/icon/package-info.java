@@ -17,8 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.swing.common.ui.icon.Icons#ICON_SIZE}<br>
- * {@link is.codion.swing.common.ui.icon.Icons#ICON_COLOR}<br>
+ * Package configuration values:
+ * <li>{@link is.codion.swing.common.ui.icon.Icons#ICON_SIZE}
+ * <li>{@link is.codion.swing.common.ui.icon.Icons#ICON_COLOR}
  */
 package is.codion.swing.common.ui.icon;

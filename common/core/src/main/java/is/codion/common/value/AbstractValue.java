@@ -36,7 +36,8 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An abstract {@link Value} implementation handling everything except the value itself.<br><br>
+ * An abstract {@link Value} implementation handling everything except the value itself.
+ * <p>
  * The constructor parameter {@code notify} specifies whether this {@link Value} instance should call
  * {@link #notifyListeners()} when the value is set or changed via {@link AbstractValue#set(Object)}.
  * Implementations that want to handle notifications manually should use the

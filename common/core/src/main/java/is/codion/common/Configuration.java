@@ -34,9 +34,11 @@ import static java.util.Collections.emptyList;
 
 /**
  * A utility class for central configuration values.
- * Parses a property file on class load, specified by the {@link #CONFIGURATION_FILE} system property.<br>
- * Note that if {@link #CONFIGURATION_FILE_REQUIRED} is true and the file referenced by {@link #CONFIGURATION_FILE}<br>
- * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded.<br>
+ * <p>
+ * Parses a property file on class load, specified by the {@link #CONFIGURATION_FILE} system property.
+ * <p>
+ * Note that if {@link #CONFIGURATION_FILE_REQUIRED} is true and the file referenced by {@link #CONFIGURATION_FILE}
+ * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded.
  * @see #CONFIGURATION_FILE_REQUIRED
  */
 public final class Configuration {
@@ -44,17 +46,17 @@ public final class Configuration {
 	/**
 	 * Specifies the main configuration file.<br>
 	 * Prefix with 'classpath:' to indicate that the configuration file is on the classpath.
-	 * Value type: String<br>
-	 * Default value: null
+	 * <li>Value type: String
+	 * <li>Default value: null
 	 */
 	public static final String CONFIGURATION_FILE = "codion.configurationFile";
 
 	/**
 	 * Specifies whether the application requires a configuration file to run.<br>
 	 * If this is set to true and the file referenced by {@link #CONFIGURATION_FILE}<br>
-	 * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded.<br>
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded.
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
 	 */
 	public static final String CONFIGURATION_FILE_REQUIRED = "codion.configurationFileRequired";
 

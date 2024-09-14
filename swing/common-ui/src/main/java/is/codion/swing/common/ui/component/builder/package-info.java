@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.swing.common.ui.component.builder.ComponentBuilder#TRANSFER_FOCUS_ON_ENTER}<br>
+ * Package configuration values:
+ * <li>{@link is.codion.swing.common.ui.component.builder.ComponentBuilder#TRANSFER_FOCUS_ON_ENTER}
  */
 package is.codion.swing.common.ui.component.builder;

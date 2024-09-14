@@ -28,16 +28,19 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
+import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.TemporalField;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.event.Event.event;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
+import static java.util.Arrays.asList;
 import static javax.swing.BorderFactory.createTitledBorder;
 
 public final class DesignAndStyle {
@@ -46,6 +49,8 @@ public final class DesignAndStyle {
 		LocalEntityConnectionProvider connectionProvider = null;
 		Entity entity = null;
 		FilterTableSelectionModel<List<String>> selectionModel = null;
+		FilterTableModel<List<String>, Integer> tableModel = null;
+		FilterTable<List<String>, Integer> table = null;
 
 		//tag::factories[]
 		Event<String> event = event(); // Event.event()
@@ -87,10 +92,18 @@ public final class DesignAndStyle {
 		boolean optimisticLocking = connection.isOptimisticLocking();
 
 		connection.setOptimisticLocking(false);
+		//end::getters[]
 
+		//tag::observables[]
 		List<Integer> selectedIndexes = selectionModel.selectedIndexes().get();
 
-		selectionModel.selectedIndexes().set(Arrays.asList(0, 1, 2));
-		//end::getters[]
+		selectionModel.selectedIndexes().set(asList(0, 1, 2));
+
+		selectionModel.selectedItems().addListener(() -> System.out.println("Selected items changed"));
+
+		tableModel.comparator().set(Comparator.comparing(row -> row.get(0)));
+
+		table.sortingEnabled().set(false);
+		//end::observables[]
 	}
 }

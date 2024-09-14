@@ -25,10 +25,11 @@ import java.util.Optional;
 /**
  * Specifies a locale sensitive numerical date format pattern.
  * Note that the time part is 24 hour based and is not locale sensitive.
- * <br>
+ * <p>
  * Orders the year and month parts according to locale,
  * with two-digit month and day parts and two or four digit year.
  * <pre>
+ * {@code
  * LocaleDateTimePattern pattern = LocaleDateTimePattern.builder()
  *     .delimiterDash()
  *     .yearFourDigits()
@@ -43,6 +44,7 @@ import java.util.Optional;
  *
  * pattern.dateTimePattern(iceland);// "dd-MM-yyyy HH:mm"
  * pattern.dateTimePattern(us)     ;// "MM-dd-yyyy HH:mm"
+ * }
  * </pre>
  * @see #builder()
  */

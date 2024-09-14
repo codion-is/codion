@@ -17,9 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * JSON serialization for db related classes.<br>
- * <br>
- * {@link is.codion.framework.json.db.DatabaseObjectMapper}<br>
+ * JSON serialization for db related classes.
+ * <li>{@link is.codion.framework.json.db.DatabaseObjectMapper}
  */
 module is.codion.framework.json.db {
 	requires transitive com.fasterxml.jackson.databind;

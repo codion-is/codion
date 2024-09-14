@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.swing.common.ui.dialog.ExceptionDialogBuilder#SYSTEM_PROPERTIES}
+ * Package configuration values:
+ * <li>{@link is.codion.swing.common.ui.dialog.ExceptionDialogBuilder#SYSTEM_PROPERTIES}
  */
 package is.codion.swing.common.ui.dialog;

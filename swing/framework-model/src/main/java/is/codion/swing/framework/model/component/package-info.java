@@ -17,7 +17,7 @@
  * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.swing.framework.model.component.EntityComboBoxModel#HANDLE_EDIT_EVENTS}<br>
+ * Package configuration values:
+ * <li>{@link is.codion.swing.framework.model.component.EntityComboBoxModel#HANDLE_EDIT_EVENTS}
  */
 package is.codion.swing.framework.model.component;

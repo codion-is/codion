@@ -17,13 +17,13 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.common.db.database.Database#DATABASE_URL}<br>
- * {@link is.codion.common.db.database.Database#DATABASE_INIT_SCRIPTS}<br>
- * {@link is.codion.common.db.database.Database#COUNT_QUERIES}<br>
- * {@link is.codion.common.db.database.Database#SELECT_FOR_UPDATE_NOWAIT}<br>
- * {@link is.codion.common.db.database.Database#LOGIN_TIMEOUT}<br>
- * {@link is.codion.common.db.database.Database#TRANSACTION_ISOLATION}<br>
- * {@link is.codion.common.db.database.Database#CONNECTION_VALIDITY_CHECK_TIMEOUT}
+ * Package configuration values:
+ * <li>{@link is.codion.common.db.database.Database#DATABASE_URL}
+ * <li>{@link is.codion.common.db.database.Database#DATABASE_INIT_SCRIPTS}
+ * <li>{@link is.codion.common.db.database.Database#COUNT_QUERIES}
+ * <li>{@link is.codion.common.db.database.Database#SELECT_FOR_UPDATE_NOWAIT}
+ * <li>{@link is.codion.common.db.database.Database#LOGIN_TIMEOUT}
+ * <li>{@link is.codion.common.db.database.Database#TRANSACTION_ISOLATION}
+ * <li>{@link is.codion.common.db.database.Database#CONNECTION_VALIDITY_CHECK_TIMEOUT}
  */
 package is.codion.common.db.database;

@@ -17,15 +17,15 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#TABLE_CELL_LEFT_PADDING}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#TABLE_CELL_RIGHT_PADDING}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#NUMERICAL_HORIZONTAL_ALIGNMENT}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#TEMPORAL_HORIZONTAL_ALIGNMENT}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#BOOLEAN_HORIZONTAL_ALIGNMENT}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#HORIZONTAL_ALIGNMENT}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#ALTERNATE_ROW_COLORING}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTable#ALLOW_COLUMN_REORDERING}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTable#AUTO_RESIZE_MODE}<br>
+ * Package configuration values:
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#TABLE_CELL_LEFT_PADDING}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#TABLE_CELL_RIGHT_PADDING}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#NUMERICAL_HORIZONTAL_ALIGNMENT}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#TEMPORAL_HORIZONTAL_ALIGNMENT}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#BOOLEAN_HORIZONTAL_ALIGNMENT}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#HORIZONTAL_ALIGNMENT}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#ALTERNATE_ROW_COLORING}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#ALLOW_COLUMN_REORDERING}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#AUTO_RESIZE_MODE}
  */
 package is.codion.swing.common.ui.component.table;

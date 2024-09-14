@@ -17,11 +17,10 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * RMI application server.<br>
- * <br>
- * {@link is.codion.framework.server.EntityServer}<br>
- * {@link is.codion.framework.server.EntityServerAdmin}<br>
- * {@link is.codion.framework.server.EntityServerConfiguration}<br>
+ * RMI application server.
+ * <li>{@link is.codion.framework.server.EntityServer}
+ * <li>{@link is.codion.framework.server.EntityServerAdmin}
+ * <li>{@link is.codion.framework.server.EntityServerConfiguration}
  */
 module is.codion.framework.server {
 	requires org.slf4j;

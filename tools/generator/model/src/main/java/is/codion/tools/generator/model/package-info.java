@@ -17,8 +17,8 @@
  * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.tools.generator.model.DomainGeneratorModel#DEFAULT_DOMAIN_PACKAGE}
- * {@link is.codion.tools.generator.model.DomainGeneratorModel#DEFAULT_SOURCE_DIRECTORY}
+ * Package configuration values:
+ * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel#DEFAULT_DOMAIN_PACKAGE}
+ * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel#DEFAULT_SOURCE_DIRECTORY}
  */
 package is.codion.tools.generator.model;

@@ -17,10 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Servlet AuxiliaryServer implementation for EntityServer, based on <a href="https://javalin.io">Javalin</a>.<br>
- * <br>
- * {@link is.codion.framework.servlet.EntityService}<br>
- * {@link is.codion.framework.servlet.EntityServiceFactory}<br>
+ * Servlet AuxiliaryServer implementation for EntityServer, based on <a href="https://javalin.io">Javalin</a>.
+ * <li>{@link is.codion.framework.servlet.EntityService}
+ * <li>{@link is.codion.framework.servlet.EntityServiceFactory}
  * @provides is.codion.common.rmi.server.AuxiliaryServerFactory
  */
 module is.codion.framework.servlet {

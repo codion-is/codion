@@ -17,9 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Framework domain source generator model classes, such as:<br>
- * <br>
- * {@link is.codion.tools.generator.domain.DomainSource}
+ * Framework domain source generator model classes, such as:
+ * <li>{@link is.codion.tools.generator.domain.DomainSource}
  */
 module is.codion.tools.generator.domain {
 	requires java.compiler;

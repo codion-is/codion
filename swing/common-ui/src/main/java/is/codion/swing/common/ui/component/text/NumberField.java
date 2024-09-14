@@ -49,8 +49,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * Specifies whether NumberFields should convert a grouping separator symbol
 	 * to a decimal separator symbol when typed. This solves the problem of locale
 	 * controlling whether the numpad comma acts as a decimal symbol, which is usually what we want.
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	public static final PropertyValue<Boolean> CONVERT_GROUPING_TO_DECIMAL_SEPARATOR =
 					Configuration.booleanValue(NumberField.class.getName() + ".convertGroupingToDecimalSeparator", true);

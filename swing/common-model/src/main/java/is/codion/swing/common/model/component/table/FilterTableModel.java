@@ -385,7 +385,8 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		}
 
 		/**
-		 * Returns a Comparable instance for the given row and column.<br>
+		 * Returns a Comparable instance for the given row and column.
+		 * <p>
 		 * Null is returned if the underlying column value is not a {@link Comparable} instance.
 		 * @param <T> the column value type
 		 * @param row the object representing a given row

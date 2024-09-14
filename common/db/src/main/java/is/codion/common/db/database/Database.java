@@ -76,37 +76,37 @@ public interface Database extends ConnectionFactory {
 
 	/**
 	 * Specifies the timeout (in seconds) to use when checking if database connections are valid.
-	 * Value type: Integer<br>
-	 * Default value: 2
+	 * <li>Value type: Integer
+	 * <li>Default value: 2
 	 */
 	PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("codion.db.validityCheckTimeout", 2);
 
 	/**
-	 * Specifies whether database queries should be counted for collecting statistics.<br>
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * Specifies whether database queries should be counted for collecting statistics.
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
 	 */
 	PropertyValue<Boolean> COUNT_QUERIES = Configuration.booleanValue("codion.db.countQueries", false);
 
 	/**
 	 * Specifies whether 'select for update' should be NOWAIT, if supported by the database.<br>
-	 * A database implementation may disregard this.<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * A database implementation may disregard this.
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> SELECT_FOR_UPDATE_NOWAIT = Configuration.booleanValue("codion.db.selectForUpdateNowait", true);
 
 	/**
-	 * Specifies the default login timeout (in seconds).<br>
-	 * Value type: Integer<br>
-	 * Default value: 2
+	 * Specifies the default login timeout (in seconds).
+	 * <li>Value type: Integer
+	 * <li>Default value: 2
 	 */
 	PropertyValue<Integer> LOGIN_TIMEOUT = Configuration.integerValue("codion.db.loginTimeout", 2);
 
 	/**
-	 * Specifies the transaction isolation to set for created connections.<br>
-	 * Value type: Integer<br>
-	 * Default value: null
+	 * Specifies the transaction isolation to set for created connections
+	 * <li>Value type: Integer
+	 * <li>Default value: null
 	 * @see java.sql.Connection#setTransactionIsolation(int)
 	 */
 	PropertyValue<Integer> TRANSACTION_ISOLATION = Configuration.integerValue("codion.db.transactionIsolation");

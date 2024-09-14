@@ -17,9 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.common.rmi.client.Clients#SERVER_HOSTNAME}<br>
- * {@link is.codion.common.rmi.client.Clients#TRUSTSTORE}<br>
- * {@link is.codion.common.rmi.client.Clients#TRUSTSTORE_PASSWORD}<br>
+ * Package configuration values:
+ * <li>{@link is.codion.common.rmi.client.Clients#SERVER_HOSTNAME}
+ * <li>{@link is.codion.common.rmi.client.Clients#TRUSTSTORE}
+ * <li>{@link is.codion.common.rmi.client.Clients#TRUSTSTORE_PASSWORD}
  */
 package is.codion.common.rmi.client;

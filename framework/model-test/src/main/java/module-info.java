@@ -17,11 +17,10 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Base classes for unit testing framework application model classes:<br>
- * <br>
- * {@link is.codion.framework.model.test.AbstractEntityModelTest}<br>
- * {@link is.codion.framework.model.test.AbstractEntityTableModelTest}<br>
- * {@link is.codion.framework.model.test.AbstractEntityApplicationModelTest}<br>
+ * Base classes for unit testing framework application model classes:
+ * <li>{@link is.codion.framework.model.test.AbstractEntityModelTest}
+ * <li>{@link is.codion.framework.model.test.AbstractEntityTableModelTest}
+ * <li>{@link is.codion.framework.model.test.AbstractEntityApplicationModelTest}
  */
 module is.codion.framework.model.test {
 	requires org.junit.jupiter.api;

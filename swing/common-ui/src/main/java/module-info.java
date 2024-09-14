@@ -17,22 +17,21 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Common Swing UI classes, such as:<br>
- * <br>
- * {@link is.codion.swing.common.ui.component.Components}<br>
- * {@link is.codion.swing.common.ui.component.builder.ComponentBuilder}<br>
- * {@link is.codion.swing.common.ui.component.builder.AbstractComponentBuilder}<br>
- * {@link is.codion.swing.common.ui.component.value.ComponentValue}<br>
- * {@link is.codion.swing.common.ui.component.value.AbstractComponentValue}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTable}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableColumn}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableColumnModel}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableSearchModel}<br>
- * {@link is.codion.swing.common.ui.component.table.FilterTableSortModel}<br>
- * {@link is.codion.swing.common.ui.dialog.Dialogs}<br>
- * {@link is.codion.swing.common.ui.key.KeyEvents}<br>
- * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider}<br>
- * {@link is.codion.swing.common.ui.layout.Layouts}<br>
+ * Common Swing UI classes, such as:
+ * <li>{@link is.codion.swing.common.ui.component.Components}
+ * <li>{@link is.codion.swing.common.ui.component.builder.ComponentBuilder}
+ * <li>{@link is.codion.swing.common.ui.component.builder.AbstractComponentBuilder}
+ * <li>{@link is.codion.swing.common.ui.component.value.ComponentValue}
+ * <li>{@link is.codion.swing.common.ui.component.value.AbstractComponentValue}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTable}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableColumn}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableColumnModel}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableSearchModel}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableSortModel}
+ * <li>{@link is.codion.swing.common.ui.dialog.Dialogs}
+ * <li>{@link is.codion.swing.common.ui.key.KeyEvents}
+ * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelProvider}
+ * <li>{@link is.codion.swing.common.ui.layout.Layouts}
  */
 module is.codion.swing.common.ui {
 	requires java.rmi;

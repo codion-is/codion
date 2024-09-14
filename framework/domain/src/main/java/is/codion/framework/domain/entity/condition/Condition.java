@@ -162,7 +162,7 @@ public interface Condition {
 	}
 
 	/**
-	 * Returns a new {@link Combination} instance, combining the given condition with AND.
+	 * Returns a new {@link Combination} instance, combining the given conditions using the AND conjunction.
 	 * @param conditions the conditions to combine
 	 * @return a new conditions combination
 	 */
@@ -171,7 +171,7 @@ public interface Condition {
 	}
 
 	/**
-	 * Returns a new {@link Combination} instance, combining the given conditions with AND.
+	 * Returns a new {@link Combination} instance, combining the given conditions using the AND conjunction.
 	 * @param conditions the conditions to combine
 	 * @return a new conditions combination
 	 */
@@ -180,7 +180,7 @@ public interface Condition {
 	}
 
 	/**
-	 * Returns a new {@link Combination} instance, combining the given condition with OR.
+	 * Returns a new {@link Combination} instance, combining the given conditions using the OR conjunction.
 	 * @param conditions the conditions to combine
 	 * @return a new conditions combination
 	 */
@@ -189,7 +189,7 @@ public interface Condition {
 	}
 
 	/**
-	 * Returns a new {@link Combination} instance, combining the given conditions with OR.
+	 * Returns a new {@link Combination} instance, combining the given conditions using the OR conjunction.
 	 * @param conditions the conditions to combine
 	 * @return a new conditions combination
 	 */
@@ -234,7 +234,7 @@ public interface Condition {
 	 * Creates a new {@link CustomCondition} based on the condition of the given type
 	 * @param conditionType the condition type
 	 * @param columns the columns representing the values used by this condition, in the same order as their respective values
-	 * @param values the values used by this condition string
+	 * @param values the values used by this condition string in the same order as their respective columns
 	 * @return a new {@link CustomCondition} instance
 	 * @throws NullPointerException in case any of the parameters are null
 	 * @see EntityDefinition.Builder#condition(ConditionType, ConditionProvider)

@@ -17,13 +17,12 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Common Swing model classes, such as:<br>
- * <br>
- * {@link is.codion.swing.common.model.component.combobox.FilterComboBoxModel}<br>
- * {@link is.codion.swing.common.model.component.combobox.ItemComboBoxModel}<br>
- * {@link is.codion.swing.common.model.component.table.FilterTableModel}<br>
- * {@link is.codion.swing.common.model.component.table.FilterTableSelectionModel}<br>
- * {@link is.codion.swing.common.model.worker.ProgressWorker}<br>
+ * Common Swing model classes, such as:
+ * <li>{@link is.codion.swing.common.model.component.combobox.FilterComboBoxModel}
+ * <li>{@link is.codion.swing.common.model.component.combobox.ItemComboBoxModel}
+ * <li>{@link is.codion.swing.common.model.component.table.FilterTableModel}
+ * <li>{@link is.codion.swing.common.model.component.table.FilterTableSelectionModel}
+ * <li>{@link is.codion.swing.common.model.worker.ProgressWorker}
  */
 module is.codion.swing.common.model {
 	requires transitive java.desktop;

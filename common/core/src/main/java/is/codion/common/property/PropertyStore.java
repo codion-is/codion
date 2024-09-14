@@ -39,12 +39,13 @@ import static java.util.stream.Collectors.joining;
  * If no value is found in a configuration file or in a system property, the default property value is used as the inital value.
  * When the value is set to null via {@link is.codion.common.value.Value#set(Object)} the default value is used, if one has been specified.
  * <pre>
+ * {@code
  * Path configurationFile = Path.of(System.getProperty("user.home") + "/app.properties");
  *
  * PropertyStore store = PropertyStore.propertyStore(configurationFile);
  *
- * Value&lt;Boolean&gt; featureEnabled = store.booleanValue("feature.enabled", false);
- * Value&lt;String&gt; defaultUsername = store.stringValue("default.username", System.getProperty("user.name"));
+ * Value<Boolean> featureEnabled = store.booleanValue("feature.enabled", false);
+ * Value<String> defaultUsername = store.stringValue("default.username", System.getProperty("user.name"));
  *
  * featureEnabled.set(true);
  * defaultUsername.set("scott");
@@ -56,6 +57,7 @@ import static java.util.stream.Collectors.joining;
  * defaultUsername.set(null);
  *
  * String isFeatureEnabled = System.getProperty("feature.enabled"); // "false"
+ * }
  * </pre>
  */
 public interface PropertyStore {

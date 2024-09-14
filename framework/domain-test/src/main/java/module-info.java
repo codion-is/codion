@@ -17,10 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Domain model unit test classes.<br>
- * <br>
- * {@link is.codion.framework.domain.test.DomainTest}<br>
- * {@link is.codion.framework.domain.test.DefaultEntityFactory}<br>
+ * Domain model unit test classes.
+ * <li>{@link is.codion.framework.domain.test.DomainTest}
+ * <li>{@link is.codion.framework.domain.test.DefaultEntityFactory}
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.domain.test {

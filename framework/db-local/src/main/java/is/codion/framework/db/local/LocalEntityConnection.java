@@ -35,12 +35,14 @@ import java.sql.Connection;
 /**
  * EntityConnection implementation based on a local JDBC connection.
  * <pre>
+ * {@code
  * Domain domain = new Domain();
  * Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:file:/path/to/database");
  * User user = User.parse("scott:tiger");
  *
  * try (EntityConnection connection = LocalEntityConnection.localEntityConnection(database, domain, user)) {
- *   List&lt;Entity&gt; customers = connection.select(all(Customer.TYPE));
+ *   List<Entity> customers = connection.select(Condition.all(Customer.TYPE));
+ * }
  * }
  * </pre>
  * A factory for LocalEntityConnection instances.
@@ -50,32 +52,32 @@ public interface LocalEntityConnection extends EntityConnection {
 	int DEFAULT_CONNECTION_LOG_SIZE = 40;
 
 	/**
-	 * Specifies the size of the (circular) log that is kept in memory for each connection<br>
-	 * Value type: Integer<br>
-	 * Default value: 40
+	 * Specifies the size of the (circular) log that is kept in memory for each connection
+	 * <li>Value type: Integer
+	 * <li>Default value: 40
 	 */
 	PropertyValue<Integer> CONNECTION_LOG_SIZE = Configuration.integerValue("codion.db.connectionLogSize", DEFAULT_CONNECTION_LOG_SIZE);
 
 	/**
-	 * Specifies the query timeout in seconds<br>
-	 * Value type: Integer<br>
-	 * Default value: 120
+	 * Specifies the query timeout in seconds
+	 * <li>Value type: Integer
+	 * <li>Default value: 120
 	 */
 	PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = Configuration.integerValue("codion.db.queryTimeoutSeconds", DEFAULT_QUERY_TIMEOUT_SECONDS);
 
 	/**
 	 * Specifies whether optimistic locking should be performed, that is, if entities should
-	 * be selected for update and checked for modification before being updated<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * be selected for update and checked for modification before being updated
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> OPTIMISTIC_LOCKING = Configuration.booleanValue("codion.db.optimisticLocking", true);
 
 	/**
 	 * Specifies whether the foreign key value graph should be fully populated instead of
-	 * being limited by the foreign key fetch depth setting.<br>
-	 * Value type: Boolean<br>
-	 * Default value: true<br>
+	 * being limited by the foreign key fetch depth setting
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("codion.db.limitForeignKeyFetchDepth", true);
 

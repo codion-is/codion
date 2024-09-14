@@ -99,6 +99,7 @@ import static javax.swing.SwingConstants.VERTICAL;
 /**
  * A panel representing an Entity via a EntityModel, which facilitates browsing and editing of records.
  * <pre>
+ * {@code
  *   EntityType entityType = ...;
  *   EntityConnectionProvider connectionProvider = ...;
  *   SwingEntityModel entityModel = new SwingEntityModel(entityType, connectionProvider);
@@ -108,6 +109,7 @@ import static javax.swing.SwingConstants.VERTICAL;
  *   frame.add(entityPanel);
  *   frame.pack();
  *   frame.setVisible(true);
+ * }
  * </pre>
  */
 public class EntityPanel extends JPanel {
@@ -674,9 +676,11 @@ public class EntityPanel extends JPanel {
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
+	 * {@code
 	 *   configureControls(layout -> layout
 	 *           .separator()
 	 *           .control(createCustomControl()))
+	 * }
 	 * </pre>
 	 * Defaults:
 	 * <ul>
@@ -1112,75 +1116,75 @@ public class EntityPanel extends JPanel {
 	public static final class Config {
 
 		/**
-		 * Indicates whether keyboard navigation will be enabled<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Indicates whether keyboard navigation will be enabled
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION =
 						Configuration.booleanValue(EntityPanel.class.getName() + ".useKeyboardNavigation", true);
 
 		/**
-		 * Indicates whether entity edit panel dialogs should be closed on escape<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Indicates whether entity edit panel dialogs should be closed on escape
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE =
 						Configuration.booleanValue(EntityPanel.class.getName() + ".disposeEditDialogOnEscape", true);
 
 		/**
-		 * Specifies whether a control for toggling the edit panel is available to the user<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Specifies whether a control for toggling the edit panel is available to the user
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_TOGGLE_EDIT_PANEL_CONTROL =
 						Configuration.booleanValue(EntityPanel.class.getName() + ".includeToggleEditPanelControl", true);
 
 		/**
-		 * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel<br>
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
 		 */
 		public static final PropertyValue<Boolean> TOOLBAR_CONTROLS =
 						Configuration.booleanValue(EntityPanel.class.getName() + ".toolbarControls", false);
 
 		/**
-		 * Specifies how detail and edit panels should be displayed.<br>
-		 * Value type: {@link WindowType}<br>
-		 * Default value: {@link WindowType#DIALOG}
+		 * Specifies how detail and edit panels should be displayed.
+		 * <li>Value type: {@link WindowType}
+		 * <li>Default value: {@link WindowType#DIALOG}
 		 */
 		public static final PropertyValue<WindowType> WINDOW_TYPE =
 						Configuration.enumValue(EntityPanel.class.getName() + ".windowType", WindowType.class, DIALOG);
 
 		/**
-		 * Specifies where the control panel should be placed in a BorderLayout<br>
-		 * Value type: String<br>
-		 * Default value: {@link BorderLayout#EAST}
+		 * Specifies where the control panel should be placed in a BorderLayout
+		 * <li>Value type: String
+		 * <li>Default value: {@link BorderLayout#EAST}
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_PANEL_CONSTRAINTS =
 						Configuration.stringValue(EntityPanel.class.getName() + ".controlPanelConstraints", BorderLayout.EAST);
 
 		/**
-		 * Specifies where the control toolbar should be placed in a BorderLayout<br>
-		 * Value type: String<br>
-		 * Default value: BorderLayout.WEST
+		 * Specifies where the control toolbar should be placed in a BorderLayout
+		 * <li>Value type: String
+		 * <li>Default value: BorderLayout.WEST
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_TOOLBAR_CONSTRAINTS =
 						Configuration.stringValue(EntityPanel.class.getName() + ".controlToolBarConstraints", BorderLayout.WEST);
 
 		/**
-		 * Specifies where the edit panel should be placed in a BorderLayout<br>
-		 * Value type: Boolean<br>
-		 * Default value: BorderLayout.NORTH
+		 * Specifies where the edit panel should be placed in a BorderLayout
+		 * <li>Value type: Boolean
+		 * <li>Default value: BorderLayout.NORTH
 		 */
 		public static final PropertyValue<String> EDIT_PANEL_CONSTRAINTS =
 						Configuration.stringValue(EntityPanel.class.getName() + ".editPanelConstraints", BorderLayout.NORTH);
 
 		/**
-		 * Specifies whether entity panels should include controls by default<br>
-		 * Value type: Boolean<br>
-		 * Default value: true
+		 * Specifies whether entity panels should include controls by default
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
 						Configuration.booleanValue(EntityPanel.class.getName() + ".includeControls", true);

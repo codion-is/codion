@@ -17,10 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * RMI based database connection classes.<br>
- * <br>
- * {@link is.codion.framework.db.rmi.RemoteEntityConnection}<br>
- * {@link is.codion.framework.db.rmi.RemoteEntityConnectionProvider}<br>
+ * RMI based database connection classes.
+ * <li>{@link is.codion.framework.db.rmi.RemoteEntityConnection}
+ * <li>{@link is.codion.framework.db.rmi.RemoteEntityConnectionProvider}
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.db.rmi {

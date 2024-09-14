@@ -41,16 +41,16 @@ import static java.util.Objects.requireNonNull;
 public interface LookAndFeelProvider {
 
 	/**
-	 * Specifies whether the cross platform Look and Feel should be available for selection.<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether the cross platform Look and Feel should be available for selection.
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> CROSS_PLATFORM = Configuration.booleanValue(LookAndFeelProvider.class.getName() + ".crossPlatform", true);
 
 	/**
-	 * Specifies whether the cross platform Look and Feel should be available for selection.<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether the cross platform Look and Feel should be available for selection.
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> SYSTEM = Configuration.booleanValue(LookAndFeelProvider.class.getName() + ".system", true);
 

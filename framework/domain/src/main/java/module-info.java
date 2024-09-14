@@ -17,20 +17,19 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Framework domain model classes, such as:<br>
- * <br>
- * {@link is.codion.framework.domain.Domain}<br>
- * {@link is.codion.framework.domain.entity.Entity}<br>
- * {@link is.codion.framework.domain.entity.EntityDefinition}<br>
- * {@link is.codion.framework.domain.entity.attribute.Attribute}<br>
- * {@link is.codion.framework.domain.entity.attribute.AttributeDefinition}<br>
- * {@link is.codion.framework.domain.entity.attribute.Column}<br>
- * {@link is.codion.framework.domain.entity.attribute.ColumnDefinition}<br>
- * {@link is.codion.framework.domain.entity.attribute.ForeignKey}<br>
- * {@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition}<br>
- * {@link is.codion.framework.domain.entity.condition.Condition}<br>
- * {@link is.codion.framework.domain.entity.condition.ColumnCondition}<br>
- * {@link is.codion.framework.domain.entity.condition.ForeignKeyCondition}<br>
+ * Framework domain model classes, such as:
+ * <li>{@link is.codion.framework.domain.Domain}
+ * <li>{@link is.codion.framework.domain.entity.Entity}
+ * <li>{@link is.codion.framework.domain.entity.EntityDefinition}
+ * <li>{@link is.codion.framework.domain.entity.attribute.Attribute}
+ * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition}
+ * <li>{@link is.codion.framework.domain.entity.attribute.Column}
+ * <li>{@link is.codion.framework.domain.entity.attribute.ColumnDefinition}
+ * <li>{@link is.codion.framework.domain.entity.attribute.ForeignKey}
+ * <li>{@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition}
+ * <li>{@link is.codion.framework.domain.entity.condition.Condition}
+ * <li>{@link is.codion.framework.domain.entity.condition.ColumnCondition}
+ * <li>{@link is.codion.framework.domain.entity.condition.ForeignKeyCondition}
  * @uses is.codion.framework.domain.Domain
  */
 module is.codion.framework.domain {

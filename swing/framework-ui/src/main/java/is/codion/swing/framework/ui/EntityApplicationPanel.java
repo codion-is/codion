@@ -120,9 +120,9 @@ import static javax.swing.UIManager.getLookAndFeel;
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel> extends JPanel {
 
 	/**
-	 * Specifies whether the client should save and apply user preferences<br>
-	 * Value type: Boolean<br>
-	 * Default value: true<br>
+	 * Specifies whether the client should save and apply user preferences
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 * @see #savePreferences()
 	 */
 	public static final PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
@@ -143,33 +143,33 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
 	/**
-	 * Specifies the URL to the application help<br>
-	 * Value type: String<br>
-	 * Default value: https://codion.is/doc/{version}/help/client.html
+	 * Specifies the URL to the application help
+	 * <li>Value type: String
+	 * <li>Default value: https://codion.is/doc/{version}/help/client.html
 	 */
 	public static final PropertyValue<String> HELP_URL = Configuration.stringValue(EntityApplicationPanel.class.getName() + ".helpUrl",
 					"https://codion.is/doc/" + Version.versionString() + "/help/client.html");
 
 	/**
-	 * Indicates whether the application should ask for confirmation when exiting<br>
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * Indicates whether the application should ask for confirmation when exiting
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
 	 */
 	public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".confirmExit", false);
 
 	/**
-	 * Specifies whether a startup dialog should be shown<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether a startup dialog should be shown
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".showStartupDialog", true);
 
 	/**
 	 * Specifies whether EntityPanels displayed via {@link EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)}
 	 * or {@link EntityApplicationPanel#displayEntityPanelFrame(EntityPanel)} should be cached,
-	 * instead of being created each time the dialog/frame is shown.<br>
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * instead of being created each time the dialog/frame is shown.
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
 	 * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)
 	 * @see EntityApplicationPanel#displayEntityPanelFrame(EntityPanel)
 	 */

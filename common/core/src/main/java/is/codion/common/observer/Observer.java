@@ -21,7 +21,7 @@ package is.codion.common.observer;
 import java.util.function.Consumer;
 
 /**
- * Manages listeners.
+ * Manages event listeners. Implemented by {@link is.codion.common.event.Event}.
  * @param <T> the type of data propagated to listeners.
  */
 public interface Observer<T> {

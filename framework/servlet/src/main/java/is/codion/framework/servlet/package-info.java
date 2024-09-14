@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.framework.servlet.EntityService#HTTP_SERVER_PORT}<br>
+ * Package configuration values:
+ * <li>{@link is.codion.framework.servlet.EntityService#HTTP_SERVER_PORT}
  */
 package is.codion.framework.servlet;

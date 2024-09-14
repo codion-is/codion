@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 /**
  * A class encapsulating a constant value and a caption representing the value.
- * Comparing {@link Item}s is based on their caption.
+ * Comparing {@link Item}s is based on their caption while their equality is based on their values.
  * Factory for {@link Item} instances.
  * @param <T> the type of the value
  * @see #value()

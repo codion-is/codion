@@ -43,18 +43,18 @@ import static java.util.ResourceBundle.getBundle;
 public interface ColumnConditionModel<C, T> {
 
 	/**
-	 * Specifies whether wildcards are automatically added to string conditions by default<br>
-	 * Value type: {@link AutomaticWildcard}<br>
-	 * Default value: {@link AutomaticWildcard#POSTFIX}
+	 * Specifies whether wildcards are automatically added to string conditions by default
+	 * <li>Value type: {@link AutomaticWildcard}
+	 * <li>Default value: {@link AutomaticWildcard#POSTFIX}
 	 */
 	PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD =
 					Configuration.enumValue(ColumnConditionModel.class.getName() + ".automaticWildard",
 									AutomaticWildcard.class, AutomaticWildcard.POSTFIX);
 
 	/**
-	 * Specifies whether string based conditions are case-sensitive or not by default<br>
-	 * Value type: Boolean<br>
-	 * Default value: false
+	 * Specifies whether string based conditions are case-sensitive or not by default
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
 	 */
 	PropertyValue<Boolean> CASE_SENSITIVE =
 					Configuration.booleanValue(ColumnConditionModel.class.getName() + ".caseSensitive", false);

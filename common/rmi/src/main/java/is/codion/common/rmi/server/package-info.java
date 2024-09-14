@@ -17,20 +17,20 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#RMI_SERVER_HOSTNAME}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#SERVER_NAME_PREFIX}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#SERVER_PORT}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#REGISTRY_PORT}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#KEYSTORE}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#KEYSTORE_PASSWORD}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#ADMIN_PORT}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#ADMIN_USER}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#SSL_ENABLED}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#IDLE_CONNECTION_TIMEOUT}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#AUXILIARY_SERVER_FACTORY_CLASS_NAMES}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME}<br>
- * {@link is.codion.common.rmi.server.WhitelistInputFilterFactory#SERIALIZATION_FILTER_WHITELIST}<br>
- * {@link is.codion.common.rmi.server.WhitelistInputFilterFactory#SERIALIZATION_FILTER_DRYRUN}<br>
+ * Package configuration values:
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#RMI_SERVER_HOSTNAME}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#SERVER_NAME_PREFIX}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#SERVER_PORT}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#REGISTRY_PORT}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#KEYSTORE}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#KEYSTORE_PASSWORD}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#ADMIN_PORT}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#ADMIN_USER}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#SSL_ENABLED}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#IDLE_CONNECTION_TIMEOUT}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#AUXILIARY_SERVER_FACTORY_CLASS_NAMES}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME}
+ * <li>{@link is.codion.common.rmi.server.WhitelistInputFilterFactory#SERIALIZATION_FILTER_WHITELIST}
+ * <li>{@link is.codion.common.rmi.server.WhitelistInputFilterFactory#SERIALIZATION_FILTER_DRYRUN}
  */
 package is.codion.common.rmi.server;

@@ -39,24 +39,24 @@ import java.util.Optional;
 public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
 	/**
-	 * Specifies a string to prepend to the username field in the login dialog<br>
-	 * Value type: String<br>
-	 * Default value: [empty string]
+	 * Specifies a string to prepend to the username field in the login dialog
+	 * <li>Value type: String
+	 * <li>Default value: [empty string]
 	 */
 	PropertyValue<String> USERNAME_PREFIX = Configuration.stringValue("codion.client.usernamePrefix", "");
 
 	/**
-	 * Specifies whether user authentication is required<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether user authentication is required
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("codion.client.authenticationRequired", true);
 
 	/**
-	 * Specifies whether the client saves the last successful login username,<br>
-	 * which is then displayed as the default username the next time the application is started<br>
-	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Specifies whether the client saves the last successful login username,
+	 * which is then displayed as the default username the next time the application is started
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
 	 */
 	PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("codion.client.saveDefaultUsername", true);
 
