@@ -547,7 +547,7 @@ public final class DomainSource {
 	}
 
 	public static String apiSearchString(EntityDefinition definition) {
-		return "interface " + interfaceName(definition.tableName(), true) + " ";
+		return "interface " + interfaceName(definition.tableName(), true);
 	}
 
 	public static String implSearchString(EntityDefinition definition) {

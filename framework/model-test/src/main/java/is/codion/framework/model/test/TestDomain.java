@@ -297,7 +297,7 @@ public final class TestDomain extends DomainModel {
 	public interface Derived {
 		EntityType TYPE = DOMAIN.entityType("derived");
 
-		Column<Integer> INT = TYPE.integerColumn("int");
+		Column<Integer> INT1 = TYPE.integerColumn("int1");
 		Column<Integer> INT2 = TYPE.integerColumn("int2");
 		Column<Integer> INT3 = TYPE.integerColumn("int3");
 		Column<Integer> INT4 = TYPE.integerColumn("int4");
@@ -305,12 +305,12 @@ public final class TestDomain extends DomainModel {
 
 	EntityDefinition derived() {
 		return Derived.TYPE.define(
-										Derived.INT.define()
+										Derived.INT1.define()
 														.column(),
 										Derived.INT2.define()
-														.derived(sourceValues -> sourceValues.optional(Derived.INT)
+														.derived(sourceValues -> sourceValues.optional(Derived.INT1)
 																		.map(value -> value + 1)
-																		.orElse(null), Derived.INT),
+																		.orElse(null), Derived.INT1),
 										Derived.INT3.define()
 														.derived(sourceValues -> sourceValues.optional(Derived.INT2)
 																		.map(value -> value + 1)

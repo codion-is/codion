@@ -138,7 +138,7 @@ public interface DatabaseConnection extends AutoCloseable {
 	/**
 	 * Constructs a new DatabaseConnection instance, based on the given Database and User
 	 * @param database the database
-	 * @param user the user for the db-connection
+	 * @param user the user to use when establishing a connection
 	 * @return a new DatabaseConnection instance
 	 * @throws DatabaseException in case there is a problem connecting to the database
 	 */

@@ -205,7 +205,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		this(applicationModel, TabbedApplicationLayout::new);
 	}
 
-	public EntityApplicationPanel(M applicationModel, Function<EntityApplicationPanel<?>, ApplicationLayout> applicationLayout) {
+	public EntityApplicationPanel(M applicationModel, Function<EntityApplicationPanel<M>, ApplicationLayout> applicationLayout) {
 		this.applicationModel = requireNonNull(applicationModel);
 		this.applicationLayout = requireNonNull(applicationLayout).apply(this);
 		//initialize button captions, not in a static initializer since applications may set the locale in main()

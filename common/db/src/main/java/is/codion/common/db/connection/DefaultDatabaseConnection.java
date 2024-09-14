@@ -100,7 +100,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			}
 		}
 		catch (SQLException ex) {
-			System.err.println("DefaultDatabaseConnection.close(), connection invalid");
+			System.err.println("DefaultDatabaseConnection.close(), connection invalid: " + ex.getMessage());
 		}
 		try {
 			if (connection != null) {
@@ -141,11 +141,10 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
 	@Override
 	public void startTransaction() {
-		verifyOpenConnection();
 		if (transactionOpen) {
 			throw new IllegalStateException("Transaction already open");
 		}
-
+		verifyOpenConnection();
 		logEntry("startTransaction");
 		transactionOpen = true;
 		logExit("startTransaction", null);
@@ -153,14 +152,13 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
 	@Override
 	public void rollbackTransaction() {
+		if (!transactionOpen) {
+			throw new IllegalStateException("Transaction is not open");
+		}
 		verifyOpenConnection();
+		logEntry("rollbackTransaction");
 		SQLException exception = null;
 		try {
-			if (!transactionOpen) {
-				throw new IllegalStateException("Transaction is not open");
-			}
-
-			logEntry("rollbackTransaction");
 			connection.rollback();
 		}
 		catch (SQLException e) {
@@ -174,14 +172,13 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
 	@Override
 	public void commitTransaction() {
+		if (!transactionOpen) {
+			throw new IllegalStateException("Transaction is not open");
+		}
 		verifyOpenConnection();
+		logEntry("commitTransaction");
 		SQLException exception = null;
 		try {
-			if (!transactionOpen) {
-				throw new IllegalStateException("Transaction is not open");
-			}
-
-			logEntry("commitTransaction");
 			connection.commit();
 		}
 		catch (SQLException e) {
@@ -200,14 +197,13 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
 	@Override
 	public void commit() throws SQLException {
-		verifyOpenConnection();
 		if (transactionOpen) {
 			throw new IllegalStateException("Can not perform a commit during an open transaction, use 'commitTransaction()'");
 		}
-
+		verifyOpenConnection();
+		logEntry("commit");
 		SQLException exception = null;
 		try {
-			logEntry("commit");
 			connection.commit();
 		}
 		catch (SQLException e) {
@@ -222,11 +218,10 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
 	@Override
 	public void rollback() throws SQLException {
-		verifyOpenConnection();
 		if (transactionOpen) {
 			throw new IllegalStateException("Can not perform a rollback during an open transaction, use 'rollbackTransaction()'");
 		}
-
+		verifyOpenConnection();
 		logEntry("rollback");
 		SQLException exception = null;
 		try {

@@ -32,6 +32,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.test.TestDomain;
@@ -47,7 +48,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -214,7 +214,7 @@ public final class AbstractEntityEditModelTest {
 		assertTrue(primaryKeyNullState.get());
 		assertFalse(entityExistsState.get());
 
-		Consumer consumer = data -> {};
+		Consumer<Object> consumer = data -> {};
 		employeeEditModel.afterDelete().addConsumer(consumer);
 		employeeEditModel.afterInsert().addConsumer(consumer);
 		employeeEditModel.afterUpdate().addConsumer(consumer);
@@ -254,12 +254,12 @@ public final class AbstractEntityEditModelTest {
 		employeeEditModel.defaults();
 		assertFalse(entityExistsState.get());
 
-		Double originalCommission = employeeEditModel.value(Employee.COMMISSION).get();
-		final double commission = 1500.5;
+   	Double originalCommission = employeeEditModel.value(Employee.COMMISSION).get();
+		double commission = 1500.5;
 		LocalDate originalHiredate = employeeEditModel.value(Employee.HIREDATE).get();
 		LocalDate hiredate = LocalDate.now();
 		String originalName = employeeEditModel.value(Employee.NAME).get();
-		final String name = "Mr. Mr";
+		String name = "Mr. Mr";
 
 		employeeEditModel.value(Employee.COMMISSION).set(commission);
 		assertTrue(employeeEditModel.modified().get());
@@ -617,48 +617,31 @@ public final class AbstractEntityEditModelTest {
 	@Test
 	public void derivedValues() {
 		EntityEditModel editModel = new TestEntityEditModel(Derived.TYPE, CONNECTION_PROVIDER);
-		assertNull(editModel.value(Derived.INT).get());
-		assertNull(editModel.value(Derived.INT2).get());
-		assertNull(editModel.value(Derived.INT3).get());
 
-		editModel.value(Derived.INT).set(1);
-		assertEquals(1, editModel.value(Derived.INT).get());
+		List<Attribute<?>> changed = new ArrayList<>();
+		editModel.value(Derived.INT1).addListener(() -> changed.add(Derived.INT1));
+		editModel.value(Derived.INT2).addListener(() -> changed.add(Derived.INT2));
+		editModel.value(Derived.INT3).addListener(() -> changed.add(Derived.INT3));
+		editModel.value(Derived.INT4).addListener(() -> changed.add(Derived.INT4));
+
+		List<Attribute<?>> edited = new ArrayList<>();
+		editModel.valueEdited(Derived.INT1).addListener(() -> edited.add(Derived.INT1));
+		editModel.valueEdited(Derived.INT2).addListener(() -> edited.add(Derived.INT2));
+		editModel.valueEdited(Derived.INT3).addListener(() -> edited.add(Derived.INT3));
+		editModel.valueEdited(Derived.INT4).addListener(() -> edited.add(Derived.INT4));
+
+		// INT2 is derived from INT1, INT3 from INT2 etc.,
+		// each adding one to the value it is derived from
+		editModel.value(Derived.INT1).set(1);
+		assertEquals(1, editModel.value(Derived.INT1).get());
 		assertEquals(2, editModel.value(Derived.INT2).get());
 		assertEquals(3, editModel.value(Derived.INT3).get());
+		assertEquals(4, editModel.value(Derived.INT4).get());
 
-		Map<Attribute<?>, Object> editedValues = new LinkedHashMap<>();
-		editModel.valueEdited(Derived.INT2).addConsumer(value -> editedValues.put(Derived.INT2, value));
-		editModel.valueEdited(Derived.INT3).addConsumer(value -> editedValues.put(Derived.INT3, value));
-		editModel.valueEdited(Derived.INT4).addConsumer(value -> editedValues.put(Derived.INT4, value));
-
-		Map<Attribute<?>, Object> changedValues = new LinkedHashMap<>();
-		editModel.value(Derived.INT2).addConsumer(value -> changedValues.put(Derived.INT2, value));
-		editModel.value(Derived.INT3).addConsumer(value -> changedValues.put(Derived.INT3, value));
-		editModel.value(Derived.INT4).addConsumer(value -> changedValues.put(Derived.INT4, value));
-
-		editModel.value(Derived.INT).set(2);
-		assertTrue(editedValues.containsKey(Derived.INT2));
-		assertEquals(3, editedValues.get(Derived.INT2));
-		assertTrue(changedValues.containsKey(Derived.INT2));
-		assertEquals(3, changedValues.get(Derived.INT2));
-		assertTrue(editedValues.containsKey(Derived.INT3));
-		assertEquals(4, editedValues.get(Derived.INT3));
-		assertTrue(changedValues.containsKey(Derived.INT3));
-		assertEquals(4, changedValues.get(Derived.INT3));
-		assertTrue(editedValues.containsKey(Derived.INT4));
-		assertEquals(5, editedValues.get(Derived.INT4));
-		assertTrue(changedValues.containsKey(Derived.INT4));
-		assertEquals(5, changedValues.get(Derived.INT4));
-
-		List<Attribute<?>> attributes = new ArrayList<>(editedValues.keySet());
-		assertEquals(Derived.INT2, attributes.get(0));
-		assertEquals(Derived.INT3, attributes.get(1));
-		assertEquals(Derived.INT4, attributes.get(2));
-
-		attributes = new ArrayList<>(changedValues.keySet());
-		assertEquals(Derived.INT2, attributes.get(0));
-		assertEquals(Derived.INT3, attributes.get(1));
-		assertEquals(Derived.INT4, attributes.get(2));
+		// Assert the order in which change/edit events are received
+		List<Column<Integer>> expected = Arrays.asList(Derived.INT1, Derived.INT2, Derived.INT3, Derived.INT4);
+		assertEquals(expected, changed);
+		assertEquals(expected, edited);
 	}
 
 	@Test
