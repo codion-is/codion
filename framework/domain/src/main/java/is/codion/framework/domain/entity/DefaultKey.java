@@ -86,17 +86,6 @@ class DefaultKey implements Entity.Key, Serializable {
 	EntityDefinition definition;
 
 	/**
-	 * Instantiates a new DefaultKey based on the given attributes, with the associated values as null
-	 * @param definition the entity definition
-	 * @param columns the attributes comprising this key
-	 * @param primaryKey true if this key represents a primary key
-	 */
-	DefaultKey(EntityDefinition definition, List<Column<?>> columns, boolean primaryKey) {
-		this(definition, createNullValueMap(columns), primaryKey);
-		this.hashCodeDirty = false;
-	}
-
-	/**
 	 * Instantiates a new DefaultKey for the given entity type, assuming it is a single value key
 	 * @param definition the entity definition
 	 * @param column the column
@@ -252,7 +241,7 @@ class DefaultKey implements Entity.Key, Serializable {
 
 	@Override
 	public boolean isNull(Column<?> column) {
-		return values.get(column) == null;
+		return get(column) == null;
 	}
 
 	@Override

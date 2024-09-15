@@ -19,6 +19,8 @@ Codion Change Log
 - EntityDialogs bug fixed, now respects the location if specified.
 - EntityTablePanel, edit panel dialog location now follows mouse when displayed on double click.
 - EntityApplicationPanel.exitEvent() renamed exitObserver().
+### is.codion.framework.domain
+- DefaultKey.isNull(column) now throws exception in case the column is not part of the key.
 ### is.codion.framework.server
 - AbstractRemoteEntityConnection.closedEvent() renamed closedObserver().
 ### is.codion.tools.monitor.model
