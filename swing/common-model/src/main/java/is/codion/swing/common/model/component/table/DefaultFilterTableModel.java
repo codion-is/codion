@@ -22,6 +22,7 @@ import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
@@ -65,6 +66,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final Event<?> dataChanged = Event.event();
 	private final Event<?> cleared = Event.event();
 	private final Columns<R, C> columns;
+	private final Items items = new Items();
 	private final List<R> visibleItems = new ArrayList<>();
 	private final List<R> filteredItems = new ArrayList<>();
 	private final FilterTableSelectionModel<R> selectionModel;
@@ -84,7 +86,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
 		this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
-		this.refresher = new DefaultRefresher(builder.items == null ? this::items : builder.items);
+		this.refresher = new DefaultRefresher(builder.items == null ? items::get : builder.items);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
 		this.validator = builder.validator;
@@ -93,11 +95,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Collection<R> items() {
-		List<R> items = new ArrayList<>(visibleItems);
-		items.addAll(filteredItems);
-
-		return unmodifiableList(items);
+	public Observable<Collection<R>> items() {
+		return items;
 	}
 
 	@Override
@@ -500,11 +499,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			else {
 				clearAndAdd(items);
 			}
+			DefaultFilterTableModel.this.items.event.accept(items);
 		}
 
 		private void merge(Collection<R> items) {
 			Set<R> itemSet = new HashSet<>(items);
-			DefaultFilterTableModel.this.items().stream()
+			DefaultFilterTableModel.this.items().get().stream()
 							.filter(item -> !itemSet.contains(item))
 							.forEach(DefaultFilterTableModel.this::removeItem);
 			items.forEach(this::merge);
@@ -538,6 +538,29 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 
 			return Optional.empty();
+		}
+	}
+
+	private final class Items implements Observable<Collection<R>> {
+
+		private final Event<Collection<R>> event = Event.event();
+
+		@Override
+		public Collection<R> get() {
+			List<R> entities = new ArrayList<>(visibleItems());
+			entities.addAll(filteredItems);
+
+			return unmodifiableList(entities);
+		}
+
+		@Override
+		public void set(Collection<R> items) {
+			refresher.processResult(requireNonNull(items));
+		}
+
+		@Override
+		public Observer<Collection<R>> observer() {
+			return event.observer();
 		}
 	}
 

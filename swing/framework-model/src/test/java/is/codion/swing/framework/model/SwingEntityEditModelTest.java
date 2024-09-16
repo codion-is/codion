@@ -75,13 +75,13 @@ public class SwingEntityEditModelTest {
 		EntityComboBoxModel model = employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
 		assertTrue(model.cleared());
-		assertTrue(model.items().isEmpty());
+		assertTrue(model.items().get().isEmpty());
 		employeeEditModel.refreshComboBoxModels();
 		assertFalse(model.cleared());
-		assertFalse(model.items().isEmpty());
+		assertFalse(model.items().get().isEmpty());
 		employeeEditModel.clearComboBoxModels();
 		assertTrue(model.cleared());
-		assertTrue(model.items().isEmpty());
+		assertTrue(model.items().get().isEmpty());
 		assertSame(model, employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK));
 	}
 
@@ -90,12 +90,12 @@ public class SwingEntityEditModelTest {
 		EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
 		assertTrue(model.cleared());
-		assertTrue(model.items().isEmpty());
+		assertTrue(model.items().get().isEmpty());
 		ForeignKeyDefinition deptForeignKey = employeeEditModel.entities()
 						.definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK);
 		assertEquals(deptForeignKey.attribute().referencedType(), model.entityType());
 		model.refresh();
-		for (Entity department : model.items()) {
+		for (Entity department : model.items().get()) {
 			assertTrue(department.contains(Department.ID));
 			assertTrue(department.contains(Department.NAME));
 			assertFalse(department.contains(Department.LOCATION));

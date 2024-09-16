@@ -173,7 +173,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 */
 	public Optional<Entity> find(Entity.Key primaryKey) {
 		requireNonNull(primaryKey);
-		return items().stream()
+		return items().get().stream()
 						.filter(Objects::nonNull)
 						.filter(entity -> entity.primaryKey().equals(primaryKey))
 						.findFirst();
@@ -339,11 +339,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public void setItems(Collection<Entity> items) {
-		comboBoxModel.setItems(items);
-	}
-
-	@Override
 	public void add(Entity item) {
 		comboBoxModel.add(item);
 	}
@@ -439,7 +434,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public Collection<Entity> items() {
+	public Observable<Collection<Entity>> items() {
 		return comboBoxModel.items();
 	}
 

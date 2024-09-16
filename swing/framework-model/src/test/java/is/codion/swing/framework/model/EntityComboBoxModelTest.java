@@ -179,7 +179,7 @@ public final class EntityComboBoxModelTest {
 			assertEquals(item.entity(Employee.DEPARTMENT_FK), accounting);
 			assertEquals(item.entity(Employee.MGR_FK), blake);
 		}
-		comboBoxModel.items().stream()
+		comboBoxModel.items().get().stream()
 						.filter(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(accounting))
 						.findFirst()
 						.ifPresent(comboBoxModel::setSelectedItem);
@@ -246,7 +246,7 @@ public final class EntityComboBoxModelTest {
 		comboBoxModel.attributes().set(selectAttributes);
 		assertTrue(comboBoxModel.attributes().containsAll(selectAttributes));
 		comboBoxModel.refresh();
-		for (Entity emp : comboBoxModel.items()) {
+		for (Entity emp : comboBoxModel.items().get()) {
 			assertTrue(emp.contains(Employee.ID));
 			assertTrue(emp.contains(Employee.NAME));
 			assertTrue(emp.contains(Employee.DEPARTMENT));
@@ -259,7 +259,7 @@ public final class EntityComboBoxModelTest {
 		}
 		comboBoxModel.attributes().set(emptyList());
 		comboBoxModel.refresh();
-		for (Entity emp : comboBoxModel.items()) {
+		for (Entity emp : comboBoxModel.items().get()) {
 			assertTrue(emp.contains(Employee.ID));
 			assertTrue(emp.contains(Employee.NAME));
 			assertTrue(emp.contains(Employee.DEPARTMENT));

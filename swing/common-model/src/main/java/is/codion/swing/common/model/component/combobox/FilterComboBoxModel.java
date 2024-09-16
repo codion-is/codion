@@ -61,15 +61,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	boolean cleared();
 
 	/**
-	 * Resets the items of this model using the values found in {@code items}.
-	 * @param items the items to display in this combo box model
-	 * @throws IllegalArgumentException in case an item fails validation
-	 * @see #cleared()
-	 * @see #validator()
-	 */
-	void setItems(Collection<T> items);
-
-	/**
 	 * Adds the given item to this model, respecting the sorting order if specified.
 	 * If this model already contains the item, calling this method has no effect.
 	 * Note that if the item does not satisfy the include condition, it will be filtered right away.

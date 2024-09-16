@@ -165,7 +165,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 
 	private static FilterComboBoxModel<Item<LookAndFeelProvider>> createLookAndFeelComboBoxModel() {
 		FilterComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel = filterComboBoxModel();
-		comboBoxModel.setItems(initializeAvailableLookAndFeels());
+		comboBoxModel.items().set(initializeAvailableLookAndFeels());
 		currentLookAndFeel(comboBoxModel).ifPresent(comboBoxModel::setSelectedItem);
 
 		return comboBoxModel;
@@ -181,7 +181,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 	private static Optional<Item<LookAndFeelProvider>> currentLookAndFeel(FilterComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel) {
 		String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
-		return comboBoxModel.items().stream()
+		return comboBoxModel.items().get().stream()
 						.filter(item -> item.value().lookAndFeelInfo().getClassName().equals(currentLookAndFeelClassName))
 						.findFirst();
 	}

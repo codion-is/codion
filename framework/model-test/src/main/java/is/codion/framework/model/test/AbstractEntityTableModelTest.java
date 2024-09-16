@@ -247,7 +247,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		tableModel.attributes().addAll(Employee.NAME, Employee.HIREDATE);
 		tableModel.refresh();
 		assertTrue(tableModel.rowCount() > 0);
-		tableModel.items().forEach(employee -> {
+		tableModel.items().get().forEach(employee -> {
 			assertFalse(employee.contains(Employee.COMMISSION));
 			assertFalse(employee.contains(Employee.DEPARTMENT));
 			assertTrue(employee.contains(Employee.NAME));

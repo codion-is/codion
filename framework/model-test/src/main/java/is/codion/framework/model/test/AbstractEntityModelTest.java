@@ -188,7 +188,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		assertFalse(salesEmployees.isEmpty());
 		departmentModel.tableModel().selectionModel().selectedItem().set(department);
 		Collection<Entity> employeesFromDetailModel =
-						departmentModel.detailModel(Employee.TYPE).tableModel().items();
+						departmentModel.detailModel(Employee.TYPE).tableModel().items().get();
 		assertTrue(salesEmployees.containsAll(employeesFromDetailModel), "Filtered list should contain all employees for department");
 	}
 

@@ -59,6 +59,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final State includeNull = State.state();
 	private final Value<T> nullItem = Value.value();
 	private final State filterSelectedItem = State.state(false);
+	private final Items items = new Items();
 	private final List<T> visibleItems = new ArrayList<>();
 	private final List<T> filteredItems = new ArrayList<>();
 	private final Refresher<T> refresher;
@@ -95,7 +96,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	protected DefaultFilterComboBoxModel() {
 		this.refresher = new DefaultRefresher(new DefaultItems());
 		includeCondition.addListener(this::filterItems);
-		validator.addValidator(validator -> items().stream()
+		validator.addValidator(validator -> items.get().stream()
 						.filter(Objects::nonNull)
 						.forEach(validator::test));
 		comparator.addListener(this::sortItems);
@@ -133,27 +134,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	@Override
 	public final void clear() {
 		setSelectedItem(null);
-		setItems(emptyList());
+		items.set(emptyList());
 	}
 
 	@Override
 	public final boolean cleared() {
 		return cleared;
-	}
-
-	@Override
-	public final void setItems(Collection<T> items) {
-		requireNonNull(items);
-		filteredItems.clear();
-		visibleItems.clear();
-		if (includeNull.get()) {
-			visibleItems.add(0, null);
-		}
-		visibleItems.addAll(items.stream()
-						.map(this::validate)
-						.collect(toList()));
-		filterItems();
-		cleared = items.isEmpty();
 	}
 
 	@Override
@@ -200,11 +186,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final Collection<T> items() {
-		List<T> entities = new ArrayList<>(visibleItems());
-		entities.addAll(filteredItems);
-
-		return unmodifiableList(entities);
+	public final Observable<Collection<T>> items() {
+		return items;
 	}
 
 	@Override
@@ -415,6 +398,40 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		return item;
 	}
 
+	private final class Items implements Observable<Collection<T>> {
+
+		private final Event<Collection<T>> event = Event.event();
+
+		@Override
+		public Collection<T> get() {
+			List<T> entities = new ArrayList<>(visibleItems());
+			entities.addAll(filteredItems);
+
+			return unmodifiableList(entities);
+		}
+
+		@Override
+		public void set(Collection<T> items) {
+			requireNonNull(items);
+			filteredItems.clear();
+			visibleItems.clear();
+			if (includeNull.get()) {
+				visibleItems.add(0, null);
+			}
+			visibleItems.addAll(items.stream()
+							.map(DefaultFilterComboBoxModel.this::validate)
+							.collect(toList()));
+			filterItems();
+			cleared = items.isEmpty();
+			event.accept(items);
+		}
+
+		@Override
+		public Observer<Collection<T>> observer() {
+			return event.observer();
+		}
+	}
+
 	private final class SelectedItem implements Observable<T> {
 
 		private final Event<T> selectionEvent = Event.event();
@@ -467,7 +484,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		protected void processResult(Collection<T> items) {
-			setItems(items);
+			DefaultFilterComboBoxModel.this.items.set(items);
 		}
 	}
 
@@ -491,7 +508,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public Collection<T> get() {
-			return items();
+			return items.get();
 		}
 	}
 

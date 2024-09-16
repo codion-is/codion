@@ -598,7 +598,7 @@ public final class DefaultFilterTableModelTest {
 
 		assertFalse(tableModel.visibleItems().isEmpty());
 		assertFalse(tableModel.filteredItems().isEmpty());
-		assertFalse(tableModel.items().isEmpty());
+		assertFalse(tableModel.items().get().isEmpty());
 
 		tableModel.filterModel().conditionModel(0).enabled().set(false);
 		assertFalse(tableModel.filterModel().conditionModel(0).enabled().get());

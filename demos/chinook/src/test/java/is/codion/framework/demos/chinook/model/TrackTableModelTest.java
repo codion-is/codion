@@ -52,7 +52,7 @@ public final class TrackTableModelTest {
 		trackTableModel.selectionModel().selectAll();
 		trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
 
-		trackTableModel.items().forEach(track ->
+		trackTableModel.items().get().forEach(track ->
 						assertEquals(BigDecimal.valueOf(1.99), track.get(Track.UNITPRICE)));
 	}
 

@@ -40,7 +40,7 @@ public final class DomainGeneratorModelTest {
 		model.schemaModel().refresh();
 		model.schemaModel().comparator().set(comparing(SchemaRow::name));
 
-		List<SchemaRow> schema = model.schemaModel().items().stream()
+		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("PETSTORE"))
 						.collect(toList());
 		model.schemaModel().selectionModel().selectedIndex().set(model.schemaModel().indexOf(schema.get(0)));
@@ -57,7 +57,7 @@ public final class DomainGeneratorModelTest {
 		model.schemaModel().refresh();
 		model.schemaModel().comparator().set(comparing(SchemaRow::name));
 
-		List<SchemaRow> schema = model.schemaModel().items().stream()
+		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("CHINOOK"))
 						.collect(toList());
 		model.schemaModel().selectionModel().selectedIndex().set(model.schemaModel().indexOf(schema.get(0)));
@@ -74,7 +74,7 @@ public final class DomainGeneratorModelTest {
 		model.schemaModel().refresh();
 		model.schemaModel().comparator().set(comparing(SchemaRow::name));
 
-		List<SchemaRow> schema = model.schemaModel().items().stream()
+		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("WORLD"))
 						.collect(toList());
 		model.schemaModel().selectionModel().selectedIndex().set(model.schemaModel().indexOf(schema.get(0)));

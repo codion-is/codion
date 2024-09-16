@@ -69,7 +69,7 @@ public final class SwingEntityModelTest
 		EntityComboBoxModel comboBoxModel = employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
 		new EntityComboBoxModelValue(comboBoxModel).link(employeeEditModel.value(Employee.MGR_FK));
 		employeeTableModel.refresh();
-		for (Entity employee : employeeTableModel.items()) {
+		for (Entity employee : employeeTableModel.items().get()) {
 			employeeTableModel.selectionModel().selectedItem().set(employee);
 			assertFalse(employeeEditModel.modified().get());
 		}
@@ -108,7 +108,7 @@ public final class SwingEntityModelTest
 			departmentModel.editModel().value(Department.NAME).set("NewName");
 			departmentModel.editModel().update();
 
-			for (Entity employee : employeeModel.tableModel().items()) {
+			for (Entity employee : employeeModel.tableModel().items().get()) {
 				Entity dept = employee.entity(Employee.DEPARTMENT_FK);
 				assertEquals("NewName", dept.get(Department.NAME));
 			}

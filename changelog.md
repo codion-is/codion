@@ -9,6 +9,8 @@ Codion Change Log
 - observable package renamed observer.
 - DefaultObserver.removeWeakListener() and removeWeakConsumer() bug fixed, could possibly return true even if the listener was not removed, due to a null weak reference being removed.
 - AbstractItem collator now ThreadLocal based.
+### is.codion.common.model
+- FilterModel.items() now Observable based, related refactoring.
 ### is.codion.swing.common.ui
 - FilterTable, now propagates the associated MouseEvent as the source of the ActionEvent when doubleClickAction is performed.
 - MenuBuilder no longer extends MenuItemBuilder.
