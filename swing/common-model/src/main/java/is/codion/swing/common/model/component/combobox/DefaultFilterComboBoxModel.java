@@ -54,8 +54,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Predicate<?> DEFAULT_VALID_SELECTION_PREDICATE = new DefaultValidSelectionPredicate<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
-	private final SelectedItem selectedItemObservable = new SelectedItem();
-	private final State selectionEmpty = State.state(true);
+	private final Selected selected = new Selected();
 	private final State includeNull = State.state();
 	private final Value<T> nullItem = Value.value();
 	private final State filterSelectedItem = State.state(false);
@@ -67,12 +66,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final Value<Predicate<T>> validator = Value.builder()
 					.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)
 					.build();
-	private final Value<Function<Object, T>> selectedItemTranslator = Value.builder()
-					.nonNull((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR)
-					.build();
-	private final Value<Predicate<T>> validSelectionPredicate = Value.builder()
-					.nonNull((Predicate<T>) DEFAULT_VALID_SELECTION_PREDICATE)
-					.build();
 	private final Value<Comparator<T>> comparator = Value.builder()
 					.nullable((Comparator<T>) DEFAULT_COMPARATOR)
 					.build();
@@ -81,7 +74,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	 * set during setItems()
 	 */
 	private boolean cleared = true;
-	private T selectedItem = null;
 
 	/**
 	 * Due to a java.util.ConcurrentModificationException in OSX
@@ -100,11 +92,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						.filter(Objects::nonNull)
 						.forEach(validator::test));
 		comparator.addListener(this::sortItems);
-		validSelectionPredicate.addValidator(predicate -> {
-			if (predicate != null && !predicate.test(selectedItem)) {
-				throw new IllegalArgumentException("The current selected item does not satisfy the valid selection predicate");
-			}
-		});
 		includeNull.addConsumer(value -> {
 			if (value && !visibleItems.contains(null)) {
 				visibleItems.add(0, null);
@@ -156,12 +143,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 		}
 		sortItems();
-		if (selectedItem != null && visibleItems.contains(selectedItem)) {
+		if (selected.item != null && visibleItems.contains(selected.item)) {
 			//update the selected item since the underlying data could have changed
-			selectedItem = visibleItems.get(visibleItems.indexOf(selectedItem));
+			selected.item = visibleItems.get(visibleItems.indexOf(selected.item));
 		}
-		if (selectedItem != null && !visibleItems.contains(selectedItem) && filterSelectedItem.get()) {
-			setSelectedItem(null);
+		if (selected.item != null && !visibleItems.contains(selected.item) && filterSelectedItem.get()) {
+			selected.setItem(null);
 		}
 		else {
 			fireContentsChanged();
@@ -247,9 +234,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		validate(replacement);
 		remove(item);
 		add(replacement);
-		if (Objects.equals(selectedItem, item)) {
-			selectedItem = selectedItemTranslator.get().apply(null);
-			setSelectedItem(replacement);
+		if (Objects.equals(selected.item, item)) {
+			selected.replaceWith(item);
 		}
 	}
 
@@ -284,12 +270,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final Value<Function<Object, T>> selectedItemTranslator() {
-		return selectedItemTranslator;
+		return selected.translator;
 	}
 
 	@Override
 	public final Value<Predicate<T>> validSelectionPredicate() {
-		return validSelectionPredicate;
+		return selected.validSelection;
 	}
 
 	@Override
@@ -304,12 +290,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final boolean nullSelected() {
-		return includeNull.get() && selectedItem == null;
+		return includeNull.get() && selected.item == null;
 	}
 
 	@Override
 	public final StateObserver selectionEmpty() {
-		return selectionEmpty.observer();
+		return selected.selectionEmpty.observer();
 	}
 
 	@Override
@@ -318,32 +304,22 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return null;
 		}
 
-		return selectedItem;
+		return selected.item;
 	}
 
 	@Override
 	public final T getSelectedItem() {
-		if (selectedItem == null && nullItem.isNotNull()) {
-			return nullItem.get();
-		}
-
-		return selectedItem;
+		return selected.get();
 	}
 
 	@Override
 	public Observable<T> selectedItem() {
-		return selectedItemObservable;
+		return selected;
 	}
 
 	@Override
 	public final void setSelectedItem(Object item) {
-		T toSelect = selectedItemTranslator.get().apply(Objects.equals(nullItem.get(), item) ? null : item);
-		if (!Objects.equals(selectedItem, toSelect) && validSelectionPredicate.get().test(toSelect)) {
-			selectedItem = toSelect;
-			fireContentsChanged();
-			selectionEmpty.set(selectedValue() == null);
-			selectedItemObservable.selectionEvent.accept(selectedItem);
-		}
+		selected.setItem(item);
 	}
 
 	@Override
@@ -432,23 +408,58 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class SelectedItem implements Observable<T> {
+	private final class Selected implements Observable<T> {
 
-		private final Event<T> selectionEvent = Event.event();
+		private final Event<T> event = Event.event();
+		private final State selectionEmpty = State.state(true);
+		private final Value<Function<Object, T>> translator = Value.builder()
+						.nonNull((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR)
+						.build();
+		private final Value<Predicate<T>> validSelection = Value.builder()
+						.nonNull((Predicate<T>) DEFAULT_VALID_SELECTION_PREDICATE)
+						.build();
 
-		@Override
-		public T get() {
-			return getSelectedItem();
+		private T item = null;
+
+		private Selected() {
+			validSelection.addValidator(predicate -> {
+				if (predicate != null && !predicate.test(item)) {
+					throw new IllegalArgumentException("The current selected item does not satisfy the valid selection predicate");
+				}
+			});
 		}
 
 		@Override
-		public void set(T value) {
-			setSelectedItem(value);
+		public T get() {
+			if (item == null && nullItem.isNotNull()) {
+				return nullItem.get();
+			}
+
+			return item;
+		}
+
+		@Override
+		public void set(T item) {
+			if (!Objects.equals(this.item, item) && validSelection.get().test(item)) {
+				this.item = item;
+				fireContentsChanged();
+				selectionEmpty.set(selectedValue() == null);
+				event.accept(item);
+			}
 		}
 
 		@Override
 		public Observer<T> observer() {
-			return selectionEvent.observer();
+			return event.observer();
+		}
+
+		private void setItem(Object item) {
+			set(translator.get().apply(Objects.equals(nullItem.get(), item) ? null : item));
+		}
+
+		private void replaceWith(T replacement) {
+			selected.item = selected.translator.get().apply(null);
+			selected.set(replacement);
 		}
 	}
 
@@ -458,12 +469,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private SelectorValue(ItemFinder<T, V> itemFinder) {
 			this.itemFinder = requireNonNull(itemFinder);
-			selectedItemObservable.selectionEvent.addListener(this::notifyListeners);
+			selected.event.addListener(this::notifyListeners);
 		}
 
 		@Override
 		protected V getValue() {
-			if (selectionEmpty.get()) {
+			if (selected.selectionEmpty.get()) {
 				return null;
 			}
 

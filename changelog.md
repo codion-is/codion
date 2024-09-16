@@ -11,6 +11,8 @@ Codion Change Log
 - AbstractItem collator now ThreadLocal based.
 ### is.codion.common.model
 - FilterModel.items() now Observable based, related refactoring.
+### is.codion.swing.common.model
+- DefaultFilterComboBoxModel refactored.
 ### is.codion.swing.common.ui
 - FilterTable, now propagates the associated MouseEvent as the source of the ActionEvent when doubleClickAction is performed.
 - MenuBuilder no longer extends MenuItemBuilder.
