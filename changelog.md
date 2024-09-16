@@ -18,6 +18,8 @@ Codion Change Log
 - MenuBuilder no longer extends MenuItemBuilder.
 - ComponentDialogBuilder.closeEvent() renamed closeObserver().
 - ColumnConditionPanel.focusGainedEvent() renamed focusGainedObserver().
+### is.codion.framework.model
+- EntityEditModel.valueEdited() renamed edited().
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, Config.SHOW_REFRESH_PROGRESS_BAR now used for default config value.
 - EntityDialogs bug fixed, now respects the location if specified.

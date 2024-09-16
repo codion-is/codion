@@ -403,8 +403,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final <T> Observer<T> valueEdited(Attribute<T> attribute) {
-		return events.valueEdited(attribute);
+	public final <T> Observer<T> edited(Attribute<T> attribute) {
+		return events.edited(attribute);
 	}
 
 	@Override
@@ -974,7 +974,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			existsPredicate.addListener(states::updateExistsState);
 		}
 
-		private <T> Observer<T> valueEdited(Attribute<T> attribute) {
+		private <T> Observer<T> edited(Attribute<T> attribute) {
 			entityDefinition().attributes().definition(attribute);
 			return ((Event<T>) editEvents.computeIfAbsent(attribute, k -> Event.event())).observer();
 		}

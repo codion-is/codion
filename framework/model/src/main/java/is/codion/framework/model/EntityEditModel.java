@@ -424,7 +424,7 @@ public interface EntityEditModel {
 	StateObserver valid(Attribute<?> attribute);
 
 	/**
-	 * Returns a {@link StateObserver} indicating when and if any values in the underlying Entity have been modified.
+	 * Returns a {@link StateObserver} indicating whether any values in the underlying Entity have been modified.
 	 * @return a {@link StateObserver} indicating the modified state of this edit model
 	 */
 	StateObserver modified();
@@ -444,7 +444,7 @@ public interface EntityEditModel {
 	StateObserver exists();
 
 	/**
-	 * @return a {@link StateObserver} indicating whether the active entity exists and is modified
+	 * @return a {@link StateObserver} indicating whether the active entity is being edited, that is, exists and is modified
 	 * @see #modified()
 	 * @see #exists()
 	 */
@@ -456,16 +456,23 @@ public interface EntityEditModel {
 	StateObserver primaryKeyNull();
 
 	/**
-	 * Returns an observer notified each time the value associated with the given attribute is edited via
-	 * {@link #value(Attribute)}, note that this event is only fired if the value actually changes.
+	 * Returns an observer notified each time the value associated with the given attribute
+	 * is edited via its associated {@link Value} instance ({@link #value(Attribute)}).
+	 * <p>
+	 * This event is not triggered when an attribute value changes due to the entity being set
+	 * via {@link #set(Entity)} or {@link #defaults()}.
+	 * <p>
+	 * Note that this event is only triggered if the value actually changes.
 	 * @param attribute the attribute which edit observer to return
 	 * @param <T> the value type
-	 * @return an observer for the given attribute value edits
+	 * @return an observer notified when the given attribute value is edited
 	 */
-	<T> Observer<T> valueEdited(Attribute<T> attribute);
+	<T> Observer<T> edited(Attribute<T> attribute);
 
 	/**
-	 * @return an observer for attribute value changes
+	 * Returns an observer notified each time a value changes, either via its associated {@link Value}
+	 * instance or when the entity is set via via {@link #set(Entity)} or {@link #defaults()}.
+	 * @return an observer notified each time a value changes
 	 */
 	Observer<Attribute<?>> valueChanged();
 

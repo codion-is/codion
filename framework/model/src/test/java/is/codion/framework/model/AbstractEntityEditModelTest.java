@@ -504,7 +504,7 @@ public final class AbstractEntityEditModelTest {
 		AtomicInteger derivedEditCounter = new AtomicInteger();
 
 		editModel.value(Detail.INT_DERIVED).addConsumer(value -> derivedCounter.incrementAndGet());
-		editModel.valueEdited(Detail.INT_DERIVED).addConsumer(value -> derivedEditCounter.incrementAndGet());
+		editModel.edited(Detail.INT_DERIVED).addConsumer(value -> derivedEditCounter.incrementAndGet());
 
 		editModel.value(Detail.INT).set(1);
 		assertEquals(1, derivedCounter.get());
@@ -535,7 +535,7 @@ public final class AbstractEntityEditModelTest {
 		AtomicInteger deptChange = new AtomicInteger();
 		employeeEditModel.value(Employee.DEPARTMENT_FK).addConsumer(value -> deptChange.incrementAndGet());
 		AtomicInteger deptEdit = new AtomicInteger();
-		employeeEditModel.valueEdited(Employee.DEPARTMENT_FK).addConsumer(value -> deptEdit.incrementAndGet());
+		employeeEditModel.edited(Employee.DEPARTMENT_FK).addConsumer(value -> deptEdit.incrementAndGet());
 
 		Entity dept = employeeEditModel.connection().selectSingle(Department.ID.equalTo(10));
 		employeeEditModel.value(Employee.DEPARTMENT_FK).set(dept);
@@ -625,10 +625,10 @@ public final class AbstractEntityEditModelTest {
 		editModel.value(Derived.INT4).addListener(() -> changed.add(Derived.INT4));
 
 		List<Attribute<?>> edited = new ArrayList<>();
-		editModel.valueEdited(Derived.INT1).addListener(() -> edited.add(Derived.INT1));
-		editModel.valueEdited(Derived.INT2).addListener(() -> edited.add(Derived.INT2));
-		editModel.valueEdited(Derived.INT3).addListener(() -> edited.add(Derived.INT3));
-		editModel.valueEdited(Derived.INT4).addListener(() -> edited.add(Derived.INT4));
+		editModel.edited(Derived.INT1).addListener(() -> edited.add(Derived.INT1));
+		editModel.edited(Derived.INT2).addListener(() -> edited.add(Derived.INT2));
+		editModel.edited(Derived.INT3).addListener(() -> edited.add(Derived.INT3));
+		editModel.edited(Derived.INT4).addListener(() -> edited.add(Derived.INT4));
 
 		// INT2 is derived from INT1, INT3 from INT2 etc.,
 		// each adding one to the value it is derived from
