@@ -28,7 +28,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -306,15 +305,6 @@ class DefaultKey implements Entity.Key, Serializable {
 	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
-	}
-
-	private static Map<Column<?>, Object> createNullValueMap(List<Column<?>> columns) {
-		Map<Column<?>, Object> values = new HashMap<>(columns.size());
-		for (Column<?> column : columns) {
-			values.put(column, null);
-		}
-
-		return values;
 	}
 
 	static void setSerializer(String domainName, EntitySerializer serializer) {
