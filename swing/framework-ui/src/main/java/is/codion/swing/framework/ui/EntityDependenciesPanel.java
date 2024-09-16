@@ -62,7 +62,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
  * Displays the given dependencies in a tabbed pane.
  * @see #displayDependenciesDialog(Collection, EntityConnectionProvider, JComponent)
  */
-public final class EntityDependenciesPanel extends JPanel {
+final class EntityDependenciesPanel extends JPanel {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityDependenciesPanel.class, getBundle(EntityDependenciesPanel.class.getName()));
@@ -70,7 +70,7 @@ public final class EntityDependenciesPanel extends JPanel {
 	/**
 	 * The dependencies panel controls.
 	 */
-	public static final class ControlKeys {
+	static final class ControlKeys {
 
 		/**
 		 * Navigates to the dependencies panel on the left (with wrap-around).<br>
@@ -113,8 +113,8 @@ public final class EntityDependenciesPanel extends JPanel {
 	 * @param connectionProvider the connection provider
 	 * @param dialogParent the dialog parent
 	 */
-	public static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
-																							 JComponent dialogParent) {
+	static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
+																				JComponent dialogParent) {
 		displayDependenciesDialog(entities, connectionProvider, dialogParent, MESSAGES.getString("no_dependencies"));
 	}
 
@@ -125,8 +125,8 @@ public final class EntityDependenciesPanel extends JPanel {
 	 * @param dialogParent the dialog parent
 	 * @param noDependenciesMessage the message to show in case of no dependencies
 	 */
-	public static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
-																							 JComponent dialogParent, String noDependenciesMessage) {
+	static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
+																				JComponent dialogParent, String noDependenciesMessage) {
 		requireNonNull(entities);
 		requireNonNull(connectionProvider);
 		requireNonNull(dialogParent);
