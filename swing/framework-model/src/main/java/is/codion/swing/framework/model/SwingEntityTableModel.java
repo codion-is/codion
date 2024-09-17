@@ -380,7 +380,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public Observable<Collection<Entity>> items() {
+	public final Observable<Collection<Entity>> items() {
 		return tableModel.items();
 	}
 
