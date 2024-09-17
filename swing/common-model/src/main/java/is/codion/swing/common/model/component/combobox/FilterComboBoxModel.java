@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Configuration;
 import is.codion.common.model.FilterModel;
-import is.codion.common.observer.Observable;
+import is.codion.common.observer.Mutable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -158,9 +158,9 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	T getSelectedItem();
 
 	/**
-	 * @return an {@link Observable} controlling the selected item
+	 * @return a {@link Mutable} controlling the selected item
 	 */
-	Observable<T> selectedItem();
+	Mutable<T> selectedItem();
 
 	/**
 	 * Specifies whether filtering the model affects the currently selected item.

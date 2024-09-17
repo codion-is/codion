@@ -94,7 +94,7 @@ public final class DesignAndStyle {
 		connection.setOptimisticLocking(false);
 		//end::getters[]
 
-		//tag::observables[]
+		//tag::mutable[]
 		List<Integer> selectedIndexes = selectionModel.selectedIndexes().get();
 
 		selectionModel.selectedIndexes().set(asList(0, 1, 2));
@@ -104,6 +104,6 @@ public final class DesignAndStyle {
 		tableModel.comparator().set(Comparator.comparing(row -> row.get(0)));
 
 		table.sortingEnabled().set(false);
-		//end::observables[]
+		//end::mutable[]
 	}
 }

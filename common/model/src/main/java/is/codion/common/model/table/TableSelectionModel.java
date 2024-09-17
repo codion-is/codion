@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.observer.Observable;
+import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -65,10 +65,10 @@ public interface TableSelectionModel<R> {
 	Observer<?> selectionChanging();
 
 	/**
-	 * @return an {@link Observable} for the index of the selected row, -1 if none is selected and
+	 * @return a {@link Mutable} for the index of the selected row, -1 if none is selected and
 	 * the minimum selected index if more than one row is selected
 	 */
-	Observable<Integer> selectedIndex();
+	Mutable<Integer> selectedIndex();
 
 	/**
 	 * @return the SelectedIndexes
@@ -76,9 +76,9 @@ public interface TableSelectionModel<R> {
 	SelectedIndexes selectedIndexes();
 
 	/**
-	 * @return an {@link Observable} for the selected item
+	 * @return a {@link Mutable} for the selected item
 	 */
-	Observable<R> selectedItem();
+	Mutable<R> selectedItem();
 
 	/**
 	 * @return the {@link SelectedItems}
@@ -110,7 +110,7 @@ public interface TableSelectionModel<R> {
 	/**
 	 * Controls the selected indexes.
 	 */
-	interface SelectedIndexes extends Observable<List<Integer>> {
+	interface SelectedIndexes extends Mutable<List<Integer>> {
 
 		/**
 		 * @param indexes the indexes to select
@@ -158,7 +158,7 @@ public interface TableSelectionModel<R> {
 	 * Controls the selected items
 	 * @param <R> the item type
 	 */
-	interface SelectedItems<R> extends Observable<List<R>> {
+	interface SelectedItems<R> extends Mutable<List<R>> {
 
 		/**
 		 * @param items the items to select

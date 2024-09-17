@@ -22,7 +22,7 @@ import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
-import is.codion.common.observer.Observable;
+import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
@@ -95,7 +95,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Observable<Collection<R>> items() {
+	public Mutable<Collection<R>> items() {
 		return items;
 	}
 
@@ -541,7 +541,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class Items implements Observable<Collection<R>> {
+	private final class Items implements Mutable<Collection<R>> {
 
 		private final Event<Collection<R>> event = Event.event();
 

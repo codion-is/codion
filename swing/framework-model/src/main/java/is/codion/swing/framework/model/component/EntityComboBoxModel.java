@@ -20,7 +20,7 @@ package is.codion.swing.framework.model.component;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.observer.Observable;
+import is.codion.common.observer.Mutable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
@@ -419,7 +419,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public Observable<Entity> selectedItem() {
+	public Mutable<Entity> selectedItem() {
 		return comboBoxModel.selectedItem();
 	}
 
@@ -434,7 +434,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public Observable<Collection<Entity>> items() {
+	public Mutable<Collection<Entity>> items() {
 		return comboBoxModel.items();
 	}
 

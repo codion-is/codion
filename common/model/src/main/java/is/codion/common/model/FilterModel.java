@@ -20,7 +20,7 @@ package is.codion.common.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
-import is.codion.common.observer.Observable;
+import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -61,11 +61,11 @@ public interface FilterModel<T> {
 	Value<Predicate<T>> includeCondition();
 
 	/**
-	 * @return an {@link Observable} controlling the items in this model
+	 * @return a {@link Mutable} controlling the items in this model
 	 * @see #visibleItems()
 	 * @see #filteredItems()
 	 */
-	Observable<Collection<T>> items();
+	Mutable<Collection<T>> items();
 
 	/**
 	 * @return an unmodifiable view of the visible items, in the order they appear in the model

@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.observer.Observable;
+import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -86,7 +86,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public Observable<Integer> selectedIndex() {
+	public Mutable<Integer> selectedIndex() {
 		return selectedIndex;
 	}
 
@@ -96,7 +96,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public Observable<R> selectedItem() {
+	public Mutable<R> selectedItem() {
 		return selectedItem;
 	}
 
@@ -264,7 +264,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		}
 	}
 
-	private final class SelectedIndex implements Observable<Integer> {
+	private final class SelectedIndex implements Mutable<Integer> {
 
 		private final Event<Integer> event = Event.event();
 
@@ -400,7 +400,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		}
 	}
 
-	private final class SelectedItem implements Observable<R> {
+	private final class SelectedItem implements Mutable<R> {
 
 		private final Event<R> event = Event.event();
 

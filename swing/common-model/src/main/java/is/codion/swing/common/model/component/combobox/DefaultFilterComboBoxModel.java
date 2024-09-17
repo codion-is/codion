@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.observer.Observable;
+import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -173,7 +173,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final Observable<Collection<T>> items() {
+	public final Mutable<Collection<T>> items() {
 		return items;
 	}
 
@@ -313,7 +313,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public Observable<T> selectedItem() {
+	public Mutable<T> selectedItem() {
 		return selected;
 	}
 
@@ -374,7 +374,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		return item;
 	}
 
-	private final class Items implements Observable<Collection<T>> {
+	private final class Items implements Mutable<Collection<T>> {
 
 		private final Event<Collection<T>> event = Event.event();
 
@@ -408,7 +408,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class Selected implements Observable<T> {
+	private final class Selected implements Mutable<T> {
 
 		private final Event<T> event = Event.event();
 		private final State selectionEmpty = State.state(true);

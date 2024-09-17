@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * A wrapper for a mutable value, providing a change observer.
+ * A wrapper for a value, providing a change observer.
  * <pre>
  * {@code
  *   class Person {
@@ -49,11 +49,6 @@ import java.util.function.Consumer;
  *       }
  *
  *       @Override
- *       public void set(String value) {
- *           person.setName(value);
- *       }
- *
- *       @Override
  *       public Observer<String> observer() {
  *           return person.nameChanged.observer();
  *       }
@@ -63,7 +58,7 @@ import java.util.function.Consumer;
  *          System.out.println("Name changed to " + newName));
  * }
  * </pre>
- * @param <T> the type of the value being observed
+ * @param <T> the value type
  */
 public interface Observable<T> extends Observer<T> {
 
@@ -71,12 +66,6 @@ public interface Observable<T> extends Observer<T> {
 	 * @return the value
 	 */
 	T get();
-
-	/**
-	 * Sets the value
-	 * @param value the value to set
-	 */
-	void set(T value);
 
 	/**
 	 * @return an Optional based on the current value

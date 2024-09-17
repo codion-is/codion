@@ -43,11 +43,11 @@ include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndSt
 
 === Observables
 
-Many classes expose their internal state via the {url-javadoc}{common-core}/is/codion/common/observer/Observable.html[Observable] or {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] classes, which can be used to mutate the associated state or observe it by adding listeners or consumers.
+Many classes expose their internal state via the {url-javadoc}{common-core}/is/codion/common/observer/Mutable.html[Mutable] or {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] classes, which can be used to mutate the associated state or observe it by adding listeners or consumers.
 
 [source,java]
 ----
-include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndStyle.java[tags=observables,indent=0]
+include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndStyle.java[tags=mutable,indent=0]
 ----
 
 == Exceptions
