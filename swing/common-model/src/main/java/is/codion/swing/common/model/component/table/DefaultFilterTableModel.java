@@ -47,6 +47,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -483,6 +484,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final class DefaultRefresher extends AbstractFilterModelRefresher<R> {
 
+		private final Event<Collection<R>> event = Event.event();
 		private final Value<RefreshStrategy> refreshStrategy = Value.builder()
 						.nonNull(RefreshStrategy.CLEAR)
 						.build();
@@ -499,7 +501,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			else {
 				clearAndAdd(items);
 			}
-			DefaultFilterTableModel.this.items.event.accept(items);
+			event.accept(unmodifiableCollection(items));
 		}
 
 		private void merge(Collection<R> items) {
@@ -543,8 +545,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final class Items implements Mutable<Collection<R>> {
 
-		private final Event<Collection<R>> event = Event.event();
-
 		@Override
 		public Collection<R> get() {
 			List<R> entities = new ArrayList<>(visibleItems());
@@ -560,7 +560,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public Observer<Collection<R>> observer() {
-			return event.observer();
+			return refresher.event.observer();
 		}
 	}
 
