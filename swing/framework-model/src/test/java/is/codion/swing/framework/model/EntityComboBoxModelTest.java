@@ -154,7 +154,7 @@ public final class EntityComboBoxModelTest {
 	void setForeignKeyFilterEntities() throws Exception {
 		comboBoxModel.refresh();
 		Entity blake = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
-		comboBoxModel.setForeignKeyFilterKeys(Employee.MGR_FK, singletonList(blake.primaryKey()));
+		comboBoxModel.filterByForeignKey(Employee.MGR_FK, singletonList(blake.primaryKey()));
 		assertEquals(5, comboBoxModel.getSize());
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
 			Entity item = comboBoxModel.getElementAt(i);
@@ -162,7 +162,7 @@ public final class EntityComboBoxModelTest {
 		}
 
 		Entity sales = comboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
-		comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
+		comboBoxModel.filterByForeignKey(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
 		assertEquals(2, comboBoxModel.getSize());
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
 			Entity item = comboBoxModel.getElementAt(i);
@@ -187,7 +187,7 @@ public final class EntityComboBoxModelTest {
 
 		//non strict filtering
 		comboBoxModel.strictForeignKeyFiltering().set(false);
-		comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, emptyList());
+		comboBoxModel.filterByForeignKey(Employee.DEPARTMENT_FK, emptyList());
 		assertEquals(6, comboBoxModel.getSize());
 		boolean kingFound = false;
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
@@ -293,7 +293,7 @@ public final class EntityComboBoxModelTest {
 		assertEquals(0, comboBoxModel.getSize());
 
 		comboBoxModel.condition().set(() -> Condition.custom(Employee.CONDITION_3_TYPE));
-		comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, emptyList());
+		comboBoxModel.filterByForeignKey(Employee.DEPARTMENT_FK, emptyList());
 
 		comboBoxModel.refresh();
 		assertEquals(1, comboBoxModel.getSize());

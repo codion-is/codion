@@ -218,23 +218,25 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 * want to add a custom {@link Predicate} to this model via {@link #visiblePredicate()}.
 	 * <pre>
 	 * {@code
-	 *   Predicate fkCondition = model.foreignKeyVisiblePredicate();
-	 *   model.visiblePredicate().set(item -&gt; fkCondition.test(item) &amp;&amp; ...);
+	 *   Predicate fkPredicate = model.foreignKeyVisiblePredicate();
+	 *   model.visiblePredicate().set(item -&gt; fkPredicate.test(item) &amp;&amp; ...);
 	 * }
 	 * </pre>
 	 * @return the {@link Predicate} based on the foreign key filter entities
-	 * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
+	 * @see #filterByForeignKey(ForeignKey, Collection)
 	 */
 	public Predicate<Entity> foreignKeyVisiblePredicate() {
 		return foreignKeyVisiblePredicate;
 	}
 
 	/**
-	 * Filters this combo box model so that only items referencing the given keys via the given foreign key are shown.
+	 * Filters this combo box model so that only items referencing the given keys via the given foreign key are visible.
+	 * Note that this uses the {@link #visiblePredicate()} and replaces any previously set prediate.
 	 * @param foreignKey the foreign key
-	 * @param keys the keys, an empty Collection for none
+	 * @param keys the keys, an empty Collection to clear the filter
+	 * @see #visiblePredicate()
 	 */
-	public void setForeignKeyFilterKeys(ForeignKey foreignKey, Collection<Entity.Key> keys) {
+	public void filterByForeignKey(ForeignKey foreignKey, Collection<Entity.Key> keys) {
 		requireNonNull(foreignKey);
 		requireNonNull(keys);
 		if (keys.isEmpty()) {
@@ -250,8 +252,9 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	/**
 	 * @param foreignKey the foreign key
 	 * @return the keys currently used to filter the items of this model by foreign key, an empty collection for none
+	 * @see #filterByForeignKey(ForeignKey, Collection)
 	 */
-	public Collection<Entity.Key> getForeignKeyFilterKeys(ForeignKey foreignKey) {
+	public Collection<Entity.Key> foreignKeyFilterKeys(ForeignKey foreignKey) {
 		requireNonNull(foreignKey);
 		if (foreignKeyFilterKeys.containsKey(foreignKey)) {
 			return unmodifiableCollection(new ArrayList<>(foreignKeyFilterKeys.get(foreignKey)));
@@ -266,7 +269,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 * entities with null values for the given foreign key are filtered.
 	 * Non-strict simply means that entities with null references are not filtered.
 	 * @return the {@link State} controlling whether foreign key filtering should be strict
-	 * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
+	 * @see #filterByForeignKey(ForeignKey, Collection)
 	 */
 	public State strictForeignKeyFiltering() {
 		return strictForeignKeyFiltering;
@@ -525,7 +528,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 							+ ", should be: " + foreignKey.referencedType());
 		}
 		//if foreign key filter keys have been set previously, initialize with one of those
-		Collection<Entity.Key> filterKeys = getForeignKeyFilterKeys(foreignKey);
+		Collection<Entity.Key> filterKeys = foreignKeyFilterKeys(foreignKey);
 		if (!filterKeys.isEmpty()) {
 			foreignKeyModel.select(filterKeys.iterator().next());
 		}
@@ -553,7 +556,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 				visiblePredicate().set(filterAllCondition);
 			}
 			else {
-				setForeignKeyFilterKeys(foreignKey, selected == null ? emptyList() : singletonList(selected.primaryKey()));
+				filterByForeignKey(foreignKey, selected == null ? emptyList() : singletonList(selected.primaryKey()));
 			}
 		});
 	}

@@ -295,11 +295,11 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	private Control.Command createForeignKeyFilterCommand(ForeignKey foreignKey) {
 		return () -> {
-			Collection<Entity.Key> currentFilterKeys = getModel().getForeignKeyFilterKeys(foreignKey);
+			Collection<Entity.Key> currentFilterKeys = getModel().foreignKeyFilterKeys(foreignKey);
 			Dialogs.okCancelDialog(createForeignKeyFilterComboBox(foreignKey).build())
 							.owner(this)
 							.title(MESSAGES.getString("filter_by"))
-							.onCancel(() -> getModel().setForeignKeyFilterKeys(foreignKey, currentFilterKeys))
+							.onCancel(() -> getModel().filterByForeignKey(foreignKey, currentFilterKeys))
 							.show();
 		};
 	}

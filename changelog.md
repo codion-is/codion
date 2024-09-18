@@ -28,6 +28,8 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditModel.valueEdited() renamed edited().
 - EntityEditModel.entity() now Mutable based.
+### is.codion.swing.framework.model
+- EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, Config.SHOW_REFRESH_PROGRESS_BAR now used for default config value.
 - EntityDialogs bug fixed, now respects the location if specified.
