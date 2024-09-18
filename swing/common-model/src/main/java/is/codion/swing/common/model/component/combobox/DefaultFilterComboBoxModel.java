@@ -21,6 +21,7 @@ package is.codion.swing.common.model.component.combobox;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -42,8 +43,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -58,9 +58,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final State includeNull = State.state();
 	private final Value<T> nullItem = Value.value();
 	private final State filterSelectedItem = State.state(false);
-	private final Items items = new Items();
-	private final List<T> visibleItems = new ArrayList<>();
-	private final List<T> filteredItems = new ArrayList<>();
+	private final DefaultItems modelItems = new DefaultItems();
 	private final Refresher<T> refresher;
 	private final Value<Predicate<T>> includeCondition = Value.value();
 	private final Value<Predicate<T>> validator = Value.builder()
@@ -86,18 +84,18 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	 * To prevent sorting set the comparator to null via {@link #comparator()} before adding items.
 	 */
 	protected DefaultFilterComboBoxModel() {
-		this.refresher = new DefaultRefresher(new DefaultItems());
+		refresher = new DefaultRefresher(new DefaultItemsSupplier());
 		includeCondition.addListener(this::filterItems);
-		validator.addValidator(validator -> items.get().stream()
+		validator.addValidator(validator -> modelItems.get().stream()
 						.filter(Objects::nonNull)
 						.forEach(validator::test));
 		comparator.addListener(this::sortItems);
 		includeNull.addConsumer(value -> {
-			if (value && !visibleItems.contains(null)) {
-				visibleItems.add(0, null);
+			if (value && !modelItems.visible.items.contains(null)) {
+				modelItems.visible.items.add(0, null);
 			}
 			else {
-				visibleItems.remove(null);
+				modelItems.visible.items.remove(null);
 			}
 		});
 		nullItem.addValidator(this::validate);
@@ -121,7 +119,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	@Override
 	public final void clear() {
 		setSelectedItem(null);
-		items.set(emptyList());
+		modelItems.set(emptyList());
 	}
 
 	@Override
@@ -131,50 +129,35 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final void filterItems() {
-		visibleItems.addAll(filteredItems);
-		filteredItems.clear();
+		modelItems.visible.items.addAll(modelItems.filtered.items);
+		modelItems.filtered.items.clear();
 		if (includeCondition.isNotNull()) {
-			for (Iterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
+			for (Iterator<T> iterator = modelItems.visible.items.listIterator(); iterator.hasNext(); ) {
 				T item = iterator.next();
 				if (item != null && !includeCondition.get().test(item)) {
-					filteredItems.add(item);
+					modelItems.filtered.items.add(item);
 					iterator.remove();
 				}
 			}
 		}
 		sortItems();
-		if (selected.item != null && visibleItems.contains(selected.item)) {
+		if (selected.item != null && modelItems.visible.items.contains(selected.item)) {
 			//update the selected item since the underlying data could have changed
-			selected.item = visibleItems.get(visibleItems.indexOf(selected.item));
+			selected.item = modelItems.visible.items.get(modelItems.visible.items.indexOf(selected.item));
 		}
-		if (selected.item != null && !visibleItems.contains(selected.item) && filterSelectedItem.get()) {
+		if (selected.item != null && !modelItems.visible.items.contains(selected.item) && filterSelectedItem.get()) {
 			selected.setItem(null);
 		}
 		else {
 			fireContentsChanged();
 		}
+		modelItems.visible.notifyChanges();
+		modelItems.filtered.notifyChanges();
 	}
 
 	@Override
-	public final List<T> visibleItems() {
-		if (visibleItems.isEmpty()) {
-			return emptyList();
-		}
-		if (!includeNull.get()) {
-			return unmodifiableList(visibleItems);
-		}
-
-		return unmodifiableList(visibleItems.subList(1, getSize()));
-	}
-
-	@Override
-	public final Collection<T> filteredItems() {
-		return unmodifiableList(filteredItems);
-	}
-
-	@Override
-	public final Mutable<Collection<T>> items() {
-		return items;
+	public final Items<T> items() {
+		return modelItems;
 	}
 
 	@Override
@@ -184,12 +167,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final int filteredCount() {
-		return filteredItems.size();
+		return modelItems.filtered.items.size();
 	}
 
 	@Override
 	public final int visibleCount() {
-		return visibleItems.size();
+		return modelItems.visible.items.size();
 	}
 
 	@Override
@@ -198,34 +181,38 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return includeNull.get();
 		}
 
-		return visibleItems.contains(item);
+		return modelItems.visible.items.contains(item);
 	}
 
 	@Override
 	public final boolean filtered(T item) {
-		return filteredItems.contains(item);
+		return modelItems.filtered.items.contains(item);
 	}
 
 	@Override
 	public final void add(T item) {
 		validate(item);
 		if (includeCondition.isNull() || includeCondition.get().test(item)) {
-			if (!visibleItems.contains(item)) {
-				visibleItems.add(item);
+			if (!modelItems.visible.items.contains(item)) {
+				modelItems.visible.items.add(item);
 				sortItems();
 			}
 		}
-		else if (!filteredItems.contains(item)) {
-			filteredItems.add(item);
+		else if (!modelItems.filtered.items.contains(item)) {
+			modelItems.filtered.items.add(item);
+			modelItems.filtered.notifyChanges();
 		}
 	}
 
 	@Override
 	public final void remove(T item) {
 		requireNonNull(item);
-		filteredItems.remove(item);
-		if (visibleItems.remove(item)) {
+		if (modelItems.filtered.items.remove(item)) {
+			modelItems.filtered.notifyChanges();
+		}
+		if (modelItems.visible.items.remove(item)) {
 			fireContentsChanged();
+			modelItems.visible.notifyChanges();
 		}
 	}
 
@@ -241,21 +228,22 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final void sortItems() {
-		if (comparator.isNotNull() && !visibleItems.isEmpty()) {
+		if (comparator.isNotNull() && !modelItems.visible.items.isEmpty()) {
 			if (includeNull.get()) {
-				visibleItems.remove(0);
+				modelItems.visible.items.remove(0);
 			}
-			visibleItems.sort(comparator.get());
+			modelItems.visible.items.sort(comparator.get());
 			if (includeNull.get()) {
-				visibleItems.add(0, null);
+				modelItems.visible.items.add(0, null);
 			}
 			fireContentsChanged();
+			modelItems.visible.notifyChanges();
 		}
 	}
 
 	@Override
 	public final boolean containsItem(T item) {
-		return visibleItems.contains(item) || filteredItems.contains(item);
+		return modelItems.visible.items.contains(item) || modelItems.filtered.items.contains(item);
 	}
 
 	@Override
@@ -341,7 +329,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final T getElementAt(int index) {
-		T element = visibleItems.get(index);
+		T element = modelItems.visible.items.get(index);
 		if (element == null) {
 			return nullItem.get();
 		}
@@ -351,7 +339,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final int getSize() {
-		return visibleItems.size();
+		return modelItems.visible.items.size();
 	}
 
 	@Override
@@ -374,14 +362,17 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		return item;
 	}
 
-	private final class Items implements Mutable<Collection<T>> {
+	private final class DefaultItems implements Items<T>, Mutable<Collection<T>> {
+
+		private final VisibleItems visible = new VisibleItems();
+		private final FilteredItems filtered = new FilteredItems();
 
 		private final Event<Collection<T>> event = Event.event();
 
 		@Override
 		public Collection<T> get() {
-			List<T> entities = new ArrayList<>(visibleItems());
-			entities.addAll(filteredItems);
+			List<T> entities = new ArrayList<>(visible.get());
+			entities.addAll(filtered.items);
 
 			return unmodifiableList(entities);
 		}
@@ -389,14 +380,15 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public void set(Collection<T> items) {
 			requireNonNull(items);
-			filteredItems.clear();
-			visibleItems.clear();
+			filtered.items.clear();
+			visible.items.clear();
 			if (includeNull.get()) {
-				visibleItems.add(0, null);
+				visible.items.add(0, null);
 			}
-			visibleItems.addAll(items.stream()
+			visible.items.addAll(items.stream()
 							.map(DefaultFilterComboBoxModel.this::validate)
 							.collect(toList()));
+			// Notifies both visible and filtered
 			filterItems();
 			cleared = items.isEmpty();
 			event.accept(items);
@@ -405,6 +397,63 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Observer<Collection<T>> observer() {
 			return event.observer();
+		}
+
+		@Override
+		public Observable<List<T>> visible() {
+			return visible;
+		}
+
+		@Override
+		public Observable<Collection<T>> filtered() {
+			return filtered;
+		}
+	}
+
+	private final class VisibleItems implements Observable<List<T>> {
+
+		private final List<T> items = new ArrayList<>();
+		private final Event<List<T>> event = Event.event();
+
+		@Override
+		public List<T> get() {
+			if (items.isEmpty()) {
+				return emptyList();
+			}
+			if (!includeNull.get()) {
+				return unmodifiableList(items);
+			}
+
+			return unmodifiableList(items.subList(1, getSize()));
+		}
+
+		@Override
+		public Observer<List<T>> observer() {
+			return event.observer();
+		}
+
+		private void notifyChanges() {
+			event.accept(get());
+		}
+	}
+
+	private final class FilteredItems implements Observable<Collection<T>> {
+
+		private final List<T> items = new ArrayList<>();
+		private final Event<Collection<T>> event = Event.event();
+
+		@Override
+		public Collection<T> get() {
+			return unmodifiableCollection(items);
+		}
+
+		@Override
+		public Observer<Collection<T>> observer() {
+			return event.observer();
+		}
+
+		private void notifyChanges() {
+			event.accept(get());
 		}
 	}
 
@@ -483,7 +532,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		protected void setValue(V value) {
-			setSelectedItem(value == null ? null : itemFinder.findItem(visibleItems(), value).orElse(null));
+			setSelectedItem(value == null ? null : itemFinder.findItem(modelItems.visible.get(), value).orElse(null));
 		}
 	}
 
@@ -495,7 +544,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		protected void processResult(Collection<T> items) {
-			DefaultFilterComboBoxModel.this.items.set(items);
+			modelItems.set(items);
 		}
 	}
 
@@ -515,11 +564,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class DefaultItems implements Supplier<Collection<T>> {
+	private final class DefaultItemsSupplier implements Supplier<Collection<T>> {
 
 		@Override
 		public Collection<T> get() {
-			return items.get();
+			return modelItems.get();
 		}
 	}
 

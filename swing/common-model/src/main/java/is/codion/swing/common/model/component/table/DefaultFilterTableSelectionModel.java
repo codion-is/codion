@@ -496,7 +496,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		private List<Integer> indexesToSelect(Predicate<R> predicate) {
 			List<Integer> indexes = new ArrayList<>();
-			List<R> visibleItems = tableModel.visibleItems();
+			List<R> visibleItems = tableModel.items().visible().get();
 			for (int i = 0; i < visibleItems.size(); i++) {
 				R item = visibleItems.get(i);
 				if (predicate.test(item)) {

@@ -125,7 +125,7 @@ public final class EntityComboBoxModelTest {
 		Entity.Key salesKey = connectionProvider.entities().primaryKey(Department.TYPE, 30);
 		deptBox.select(salesKey);
 		assertEquals(5, empBox.getSize());
-		empBox.setSelectedItem(empBox.visibleItems().get(1));
+		empBox.setSelectedItem(empBox.items().visible().get().get(1));
 		empBox.setSelectedItem(null);
 	}
 
@@ -146,7 +146,7 @@ public final class EntityComboBoxModelTest {
 		Entity.Key salesKey = connectionProvider.entities().primaryKey(Department.TYPE, 30);
 		deptBox.select(salesKey);
 		assertEquals(5, empBox.getSize());
-		empBox.setSelectedItem(empBox.visibleItems().get(1));
+		empBox.setSelectedItem(empBox.items().visible().get().get(1));
 		empBox.setSelectedItem(null);
 	}
 

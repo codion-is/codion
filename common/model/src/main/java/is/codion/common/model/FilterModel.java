@@ -21,6 +21,7 @@ package is.codion.common.model;
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
 import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -61,21 +62,9 @@ public interface FilterModel<T> {
 	Value<Predicate<T>> includeCondition();
 
 	/**
-	 * @return a {@link Mutable} controlling the items in this model
-	 * @see #visibleItems()
-	 * @see #filteredItems()
+	 * @return the model items
 	 */
-	Mutable<Collection<T>> items();
-
-	/**
-	 * @return an unmodifiable view of the visible items, in the order they appear in the model
-	 */
-	List<T> visibleItems();
-
-	/**
-	 * @return an unmodifiable view of the filtered items
-	 */
-	Collection<T> filteredItems();
+	Items<T> items();
 
 	/**
 	 * @return the number of currently visible items
@@ -131,6 +120,23 @@ public interface FilterModel<T> {
 	 * @see Refresher#async()
 	 */
 	void refreshThen(Consumer<Collection<T>> afterRefresh);
+
+	/**
+	 * A {@link Mutable} controlling the items in a {@link FilterModel}
+	 * @param <T> the item type
+	 */
+	interface Items<T> extends Mutable<Collection<T>> {
+
+		/**
+		 * @return an {@link Observable} providing an unmodifiable view of the visible items, in the order they appear in the model
+		 */
+		Observable<List<T>> visible();
+
+		/**
+		 * @return an {@link Observable} providing an unmodifiable view of the filtered items
+		 */
+		Observable<Collection<T>> filtered();
+	}
 
 	/**
 	 * Handles refreshing data for a {@link FilterModel}.

@@ -166,7 +166,7 @@ public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<
 		}
 
 		private Item<T> findItem(Item<T> item) {
-			int index = visibleItems().indexOf(item);
+			int index = items().visible().get().indexOf(item);
 			if (index >= 0) {
 				return getElementAt(index);
 			}

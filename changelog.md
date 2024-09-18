@@ -12,8 +12,10 @@ Codion Change Log
 - Mutable split from Observable.
 ### is.codion.common.model
 - FilterModel.items() now Observable based, related refactoring.
+- FilterModel.Items added, related refactoring.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
+- FilterTableModel.dataChanged() removed.
 ### is.codion.swing.common.ui
 - FilterTable, now propagates the associated MouseEvent as the source of the ActionEvent when doubleClickAction is performed.
 - MenuBuilder no longer extends MenuItemBuilder.

@@ -22,7 +22,6 @@ import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
-import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -294,7 +293,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	@Override
 	public final Optional<Entity> find(Entity.Key primaryKey) {
 		requireNonNull(primaryKey);
-		return visibleItems().stream()
+		return items().visible().get().stream()
 						.filter(entity -> entity.primaryKey().equals(primaryKey))
 						.findFirst();
 	}
@@ -326,13 +325,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		requireNonNull(foreignKey, "foreignKey");
 		requireNonNull(foreignKeyValues, "foreignKeyValues");
 		entityDefinition().foreignKeys().definition(foreignKey);
-		for (Entity entity : filteredItems()) {
+		for (Entity entity : items().filtered().get()) {
 			for (Entity foreignKeyValue : foreignKeyValues) {
 				replace(foreignKey, entity, foreignKeyValue);
 			}
 		}
-		for (int i = 0; i < visibleItems().size(); i++) {
-			Entity entity = visibleItems().get(i);
+		List<Entity> visibleItems = items().visible().get();
+		for (int i = 0; i < visibleItems.size(); i++) {
+			Entity entity = visibleItems.get(i);
 			for (Entity foreignKeyValue : foreignKeyValues) {
 				if (replace(foreignKey, entity, foreignKeyValue)) {
 					fireTableRowsUpdated(i, i);
@@ -380,18 +380,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final Mutable<Collection<Entity>> items() {
+	public final Items<Entity> items() {
 		return tableModel.items();
-	}
-
-	@Override
-	public final List<Entity> visibleItems() {
-		return tableModel.visibleItems();
-	}
-
-	@Override
-	public final Collection<Entity> filteredItems() {
-		return tableModel.filteredItems();
 	}
 
 	@Override
@@ -590,11 +580,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final Observer<?> dataChanged() {
-		return tableModel.dataChanged();
-	}
-
-	@Override
 	public final Observer<?> cleared() {
 		return tableModel.cleared();
 	}
@@ -789,7 +774,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		Map<Entity.Key, Integer> keyIndexes = keyIndexes(new HashSet<>(entitiesByKey.keySet()));
 		keyIndexes.forEach((key, index) -> tableModel.setItemAt(index, entitiesByKey.remove(key)));
 		if (!entitiesByKey.isEmpty()) {
-			filteredItems().forEach(item -> {
+			items().filtered().get().forEach(item -> {
 				Entity replacement = entitiesByKey.remove(item.primaryKey());
 				if (replacement != null) {
 					item.set(replacement);
@@ -799,7 +784,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	private Map<Entity.Key, Integer> keyIndexes(Set<Entity.Key> keys) {
-		List<Entity> visibleItems = visibleItems();
+		List<Entity> visibleItems = items().visible().get();
 		Map<Entity.Key, Integer> keyIndexes = new HashMap<>();
 		for (int index = 0; index < visibleItems.size(); index++) {
 			Entity.Key primaryKey = visibleItems.get(index).primaryKey();

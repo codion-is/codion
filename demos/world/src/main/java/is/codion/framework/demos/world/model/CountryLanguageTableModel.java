@@ -41,7 +41,7 @@ public final class CountryLanguageTableModel extends SwingEntityTableModel {
 
 	private void refreshChartDataset() {
 		chartDataset.clear();
-		visibleItems().forEach(countryLanguage ->
+		items().visible().get().forEach(countryLanguage ->
 						chartDataset.setValue(countryLanguage.get(CountryLanguage.LANGUAGE),
 										countryLanguage.get(CountryLanguage.NO_OF_SPEAKERS)));
 	}

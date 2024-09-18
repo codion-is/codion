@@ -23,6 +23,7 @@ import is.codion.common.model.FilterModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
@@ -64,12 +65,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	 */
 	static final Comparator<?> STRING_COMPARATOR = Comparator.comparing(Object::toString);
 
-	private final Event<?> dataChanged = Event.event();
 	private final Event<?> cleared = Event.event();
 	private final Columns<R, C> columns;
-	private final Items items = new Items();
-	private final List<R> visibleItems = new ArrayList<>();
-	private final List<R> filteredItems = new ArrayList<>();
+	private final DefaultItems modelItems = new DefaultItems();
 	private final FilterTableSelectionModel<R> selectionModel;
 	private final TableConditionModel<C> filterModel;
 	private final CombinedIncludeCondition combinedIncludeCondition;
@@ -87,7 +85,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
 		this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
-		this.refresher = new DefaultRefresher(builder.items == null ? items::get : builder.items);
+		this.refresher = new DefaultRefresher(builder.items == null ? modelItems::get : builder.items);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
 		this.validator = builder.validator;
@@ -96,18 +94,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Mutable<Collection<R>> items() {
-		return items;
-	}
-
-	@Override
-	public List<R> visibleItems() {
-		return unmodifiableList(visibleItems);
-	}
-
-	@Override
-	public Collection<R> filteredItems() {
-		return unmodifiableList(filteredItems);
+	public Items<R> items() {
+		return modelItems;
 	}
 
 	@Override
@@ -117,7 +105,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public int filteredCount() {
-		return filteredItems.size();
+		return modelItems.filtered.items.size();
 	}
 
 	@Override
@@ -127,7 +115,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public int getRowCount() {
-		return visibleItems.size();
+		return modelItems.visible.items.size();
 	}
 
 	@Override
@@ -137,12 +125,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public boolean visible(R item) {
-		return visibleItems.contains(item);
+		return modelItems.visible.items.contains(item);
 	}
 
 	@Override
 	public boolean filtered(R item) {
-		return filteredItems.contains(item);
+		return modelItems.filtered.items.contains(item);
 	}
 
 	@Override
@@ -162,11 +150,18 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public void clear() {
-		filteredItems.clear();
-		int size = visibleItems.size();
-		if (size > 0) {
-			visibleItems.clear();
-			fireTableRowsDeleted(0, size - 1);
+		int filteredSize = modelItems.filtered.items.size();
+		modelItems.filtered.items.clear();
+		int visibleSize = modelItems.visible.items.size();
+		modelItems.visible.items.clear();
+		if (visibleSize > 0) {
+			fireTableRowsDeleted(0, visibleSize - 1);
+		}
+		if (filteredSize != 0) {
+			modelItems.filtered.notifyChanges();
+		}
+		if (visibleSize != 0) {
+			modelItems.visible.notifyChanges();
 		}
 		cleared.run();
 	}
@@ -200,12 +195,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public R itemAt(int rowIndex) {
-		return visibleItems.get(rowIndex);
+		return modelItems.visible.items.get(rowIndex);
 	}
 
 	@Override
 	public int indexOf(R item) {
-		return visibleItems.indexOf(item);
+		return modelItems.visible.items.indexOf(item);
 	}
 
 	@Override
@@ -217,8 +212,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	public void sortItems() {
 		if (comparator.isNotNull()) {
 			List<R> selectedItems = selectionModel.selectedItems().get();
-			visibleItems.sort(comparator.get());
-			fireTableRowsUpdated(0, visibleItems.size());
+			modelItems.visible.items.sort(comparator.get());
+			fireTableRowsUpdated(0, modelItems.visible.items.size());
 			selectionModel.selectedItems().set(selectedItems);
 		}
 	}
@@ -226,19 +221,20 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public void filterItems() {
 		List<R> selectedItems = selectionModel.selectedItems().get();
-		visibleItems.addAll(filteredItems);
-		filteredItems.clear();
-		for (ListIterator<R> visibleItemsIterator = visibleItems.listIterator(); visibleItemsIterator.hasNext(); ) {
+		modelItems.visible.items.addAll(modelItems.filtered.items);
+		modelItems.filtered.items.clear();
+		for (ListIterator<R> visibleItemsIterator = modelItems.visible.items.listIterator(); visibleItemsIterator.hasNext(); ) {
 			R item = visibleItemsIterator.next();
 			if (!include(item)) {
 				visibleItemsIterator.remove();
-				filteredItems.add(item);
+				modelItems.filtered.items.add(item);
 			}
 		}
 		if (comparator.isNotNull()) {
-			visibleItems.sort(comparator.get());
+			modelItems.visible.items.sort(comparator.get());
 		}
 		fireTableDataChanged();
+		modelItems.filtered.notifyChanges();
 		selectionModel.selectedItems().set(selectedItems);
 	}
 
@@ -249,12 +245,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public void addItems(Collection<R> items) {
-		addItemsAt(visibleItems.size(), items);
+		addItemsAt(this.modelItems.visible.items.size(), items);
 	}
 
 	@Override
 	public void addItemsSorted(Collection<R> items) {
-		addItemsAtSorted(visibleItems.size(), items);
+		addItemsAtSorted(this.modelItems.visible.items.size(), items);
 	}
 
 	@Override
@@ -265,7 +261,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public void addItemsAtSorted(int index, Collection<R> items) {
 		if (addItemsAtInternal(index, items) && comparator.isNotNull()) {
-			visibleItems.sort(comparator.get());
+			modelItems.visible.items.sort(comparator.get());
 			fireTableDataChanged();
 		}
 	}
@@ -283,7 +279,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public void addItemSorted(R item) {
 		if (addItemInternal(item) && comparator.isNotNull()) {
-			visibleItems.sort(comparator.get());
+			this.modelItems.visible.items.sort(comparator.get());
 			fireTableDataChanged();
 		}
 	}
@@ -292,7 +288,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	public void setItemAt(int index, R item) {
 		validate(item);
 		if (include(item)) {
-			visibleItems.set(index, item);
+			modelItems.visible.items.set(index, item);
 			fireTableRowsUpdated(index, index);
 		}
 	}
@@ -311,26 +307,26 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 		selectionModel.setValueIsAdjusting(false);
 		if (visibleItemRemoved) {
-			dataChanged.run();
+			this.modelItems.visible.notifyChanges();
 		}
 	}
 
 	@Override
 	public R removeItemAt(int index) {
-		R removed = visibleItems.remove(index);
+		R removed = modelItems.visible.items.remove(index);
 		fireTableRowsDeleted(index, index);
-		dataChanged.run();
+		modelItems.visible.notifyChanges();
 
 		return removed;
 	}
 
 	@Override
 	public List<R> removeItems(int fromIndex, int toIndex) {
-		List<R> subList = visibleItems.subList(fromIndex, toIndex);
+		List<R> subList = modelItems.visible.items.subList(fromIndex, toIndex);
 		List<R> removedItems = new ArrayList<>(subList);
 		subList.clear();
 		fireTableRowsDeleted(fromIndex, toIndex);
-		dataChanged.run();
+		modelItems.visible.notifyChanges();
 
 		return removedItems;
 	}
@@ -361,11 +357,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Observer<?> dataChanged() {
-		return dataChanged.observer();
-	}
-
-	@Override
 	public Observer<?> cleared() {
 		return cleared.observer();
 	}
@@ -393,7 +384,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			if (e.getType() != TableModelEvent.DELETE) {
 				// Removals are handled specially, in order to trigger only a single
 				// event when multiple rows are removed, see remove... methods
-				dataChanged.run();
+				modelItems.visible.notifyChanges();
 			}
 		});
 		addTableModelListener(removeSelectionListener);
@@ -412,51 +403,56 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private boolean addItemAtInternal(int index, R item) {
 		validate(item);
 		if (include(item)) {
-			visibleItems.add(index, item);
+			modelItems.visible.items.add(index, item);
 			fireTableRowsInserted(index, index);
 
 			return true;
 		}
-		filteredItems.add(item);
+		modelItems.filtered.items.add(item);
+		modelItems.filtered.notifyChanges();
 
 		return false;
 	}
 
 	private boolean addItemsAtInternal(int index, Collection<R> items) {
 		requireNonNull(items);
-		Collection<R> visible = new ArrayList<>(items.size());
-		Collection<R> filtered = new ArrayList<>(items.size());
+		Collection<R> visibleItems = new ArrayList<>(items.size());
+		Collection<R> filteredItems = new ArrayList<>(items.size());
 		for (R item : items) {
 			validate(item);
 			if (include(item)) {
-				visible.add(item);
+				visibleItems.add(item);
 			}
 			else {
-				filtered.add(item);
+				filteredItems.add(item);
 			}
 		}
-		if (!visible.isEmpty()) {
-			visibleItems.addAll(index, visible);
-			fireTableRowsInserted(index, index + visible.size());
+		if (!visibleItems.isEmpty()) {
+			this.modelItems.visible.items.addAll(index, visibleItems);
+			fireTableRowsInserted(index, index + visibleItems.size());
 		}
-		filteredItems.addAll(filtered);
+		if (!filteredItems.isEmpty()) {
+			modelItems.filtered.items.addAll(filteredItems);
+			modelItems.filtered.notifyChanges();
+		}
 
-		return !visible.isEmpty();
+		return !visibleItems.isEmpty();
 	}
 
 	private boolean removeItemInternal(R item, boolean notifyDataChanged) {
-		int visibleItemIndex = visibleItems.indexOf(item);
+		int visibleItemIndex = modelItems.visible.items.indexOf(item);
 		if (visibleItemIndex >= 0) {
-			visibleItems.remove(visibleItemIndex);
+			modelItems.visible.items.remove(visibleItemIndex);
 			fireTableRowsDeleted(visibleItemIndex, visibleItemIndex);
 			if (notifyDataChanged) {
-				dataChanged.run();
+				modelItems.visible.notifyChanges();
 			}
 		}
 		else {
-			int filteredIndex = filteredItems.indexOf(item);
+			int filteredIndex = modelItems.filtered.items.indexOf(item);
 			if (filteredIndex >= 0) {
-				filteredItems.remove(item);
+				modelItems.filtered.items.remove(item);
+				modelItems.filtered.notifyChanges();
 			}
 		}
 
@@ -506,7 +502,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private void merge(Collection<R> items) {
 			Set<R> itemSet = new HashSet<>(items);
-			DefaultFilterTableModel.this.items().get().stream()
+			modelItems.get().stream()
 							.filter(item -> !itemSet.contains(item))
 							.forEach(DefaultFilterTableModel.this::removeItem);
 			items.forEach(this::merge);
@@ -543,12 +539,15 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class Items implements Mutable<Collection<R>> {
+	private final class DefaultItems implements Items<R>, Mutable<Collection<R>> {
+
+		private final VisibleItems visible = new VisibleItems();
+		private final FilteredItems filtered = new FilteredItems();
 
 		@Override
 		public Collection<R> get() {
-			List<R> entities = new ArrayList<>(visibleItems());
-			entities.addAll(filteredItems);
+			List<R> entities = new ArrayList<>(modelItems.visible.items);
+			entities.addAll(modelItems.filtered.items);
 
 			return unmodifiableList(entities);
 		}
@@ -561,6 +560,56 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public Observer<Collection<R>> observer() {
 			return refresher.event.observer();
+		}
+
+		@Override
+		public Observable<List<R>> visible() {
+			return visible;
+		}
+
+		@Override
+		public Observable<Collection<R>> filtered() {
+			return filtered;
+		}
+	}
+
+	private final class VisibleItems implements Observable<List<R>> {
+
+		private final List<R> items = new ArrayList<>();
+		private final Event<List<R>> event = Event.event();
+
+		@Override
+		public List<R> get() {
+			return unmodifiableList(items);
+		}
+
+		@Override
+		public Observer<List<R>> observer() {
+			return event.observer();
+		}
+
+		private void notifyChanges() {
+			event.accept(get());
+		}
+	}
+
+	private final class FilteredItems implements Observable<Collection<R>> {
+
+		private final List<R> items = new ArrayList<>();
+		private final Event<Collection<R>> event = Event.event();
+
+		@Override
+		public Collection<R> get() {
+			return unmodifiableCollection(items);
+		}
+
+		@Override
+		public Observer<Collection<R>> observer() {
+			return event.observer();
+		}
+
+		private void notifyChanges() {
+			event.accept(get());
 		}
 	}
 

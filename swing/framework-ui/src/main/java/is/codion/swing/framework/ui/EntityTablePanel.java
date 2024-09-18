@@ -2741,8 +2741,8 @@ public class EntityTablePanel extends JPanel {
 			super(new BorderLayout());
 			add(label, BorderLayout.CENTER);
 			tableModel.refresher().observer().addConsumer(new ConfigurePanel());
-			tableModel.selectionModel().addListSelectionListener(e -> updateStatusMessage());
-			tableModel.dataChanged().addListener(this::updateStatusMessage);
+			tableModel.selectionModel().selectedIndexes().addListener(this::updateStatusMessage);
+			tableModel.items().visible().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {
 				setComponentPopupMenu(menu()
 								.control(Control.builder()

@@ -252,7 +252,7 @@ public final class DefaultFilterTableModelTest {
 	void removeItems() {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
-		tableModel.dataChanged().addListener(listener);
+		tableModel.items().visible().addListener(listener);
 		tableModel.refresh();
 		assertEquals(1, events.get());
 		tableModel.filterModel().conditionModel(0).operands().equal().set("a");
@@ -270,20 +270,20 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.filtered(D));
 		assertFalse(tableModel.filtered(E));
 		tableModel.filterModel().conditionModel(0).operands().equal().set(null);
-		tableModel.refresh();
-		assertEquals(7, events.get());
+		tableModel.refresh();//two events, clear and add
+		assertEquals(8, events.get());
 		tableModel.removeItems(0, 2);
-		assertEquals(8, events.get());//just a single event when removing multiple items
+		assertEquals(9, events.get());//just a single event when removing multiple items
 		tableModel.removeItemAt(0);
-		assertEquals(9, events.get());
-		tableModel.dataChanged().removeListener(listener);
+		assertEquals(10, events.get());
+		tableModel.items().visible().removeListener(listener);
 	}
 
 	@Test
 	void setItemAt() {
 		AtomicInteger dataChangedEvents = new AtomicInteger();
 		Runnable listener = dataChangedEvents::incrementAndGet;
-		tableModel.dataChanged().addListener(listener);
+		tableModel.items().visible().addListener(listener);
 		State selectionChangedState = State.state();
 		tableModel.selectionModel().selectedItem().addConsumer((item) -> selectionChangedState.set(true));
 		tableModel.refresh();
@@ -302,14 +302,14 @@ public final class DefaultFilterTableModelTest {
 		tableModel.setItemAt(tableModel.indexOf(B), newB);
 		assertFalse(selectionChangedState.get());
 		assertEquals(newB, tableModel.selectionModel().selectedItem().get());
-		tableModel.dataChanged().removeListener(listener);
+		tableModel.items().visible().removeListener(listener);
 	}
 
 	@Test
 	void removeItemsRange() {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
-		tableModel.dataChanged().addListener(listener);
+		tableModel.items().visible().addListener(listener);
 		tableModel.refresh();
 		assertEquals(1, events.get());
 		List<TestRow> removed = tableModel.removeItems(1, 3);
@@ -327,7 +327,7 @@ public final class DefaultFilterTableModelTest {
 		tableModel.refresh();
 		assertEquals(5, events.get());
 
-		tableModel.dataChanged().removeListener(listener);
+		tableModel.items().visible().removeListener(listener);
 	}
 
 	@Test
@@ -596,8 +596,8 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 
-		assertFalse(tableModel.visibleItems().isEmpty());
-		assertFalse(tableModel.filteredItems().isEmpty());
+		assertFalse(tableModel.items().visible().get().isEmpty());
+		assertFalse(tableModel.items().filtered().get().isEmpty());
 		assertFalse(tableModel.items().get().isEmpty());
 
 		tableModel.filterModel().conditionModel(0).enabled().set(false);

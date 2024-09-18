@@ -66,11 +66,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	}
 
 	/**
-	 * @return an observer notified each time the table data changes
-	 */
-	Observer<?> dataChanged();
-
-	/**
 	 * @return an observer notified each time the table model is cleared
 	 * @see #clear()
 	 */

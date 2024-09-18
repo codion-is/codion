@@ -71,7 +71,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 
 	private void refreshChartDataset() {
 		chartDataset.clear();
-		visibleItems().forEach(city ->
+		items().visible().get().forEach(city ->
 						chartDataset.setValue(city.get(City.NAME), city.get(City.POPULATION)));
 	}
 

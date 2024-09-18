@@ -1324,7 +1324,7 @@ public final class FilterTable<R, C> extends JTable {
 			this.identifier = requireNonNull(identifier);
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);
-			this.tableModel.dataChanged().addListener(valuesChanged);
+			this.tableModel.items().visible().addListener(valuesChanged);
 			this.tableModel.selectionModel().selectedIndexes().addListener(valuesChanged);
 		}
 

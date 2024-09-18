@@ -44,7 +44,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -434,18 +433,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public Mutable<Collection<Entity>> items() {
+	public Items<Entity> items() {
 		return comboBoxModel.items();
-	}
-
-	@Override
-	public List<Entity> visibleItems() {
-		return comboBoxModel.visibleItems();
-	}
-
-	@Override
-	public Collection<Entity> filteredItems() {
-		return comboBoxModel.filteredItems();
 	}
 
 	@Override
@@ -544,7 +533,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	private Optional<Entity> filteredEntity(Entity.Key primaryKey) {
-		return filteredItems().stream()
+		return items().filtered().get().stream()
 						.filter(entity -> entity.primaryKey().equals(primaryKey))
 						.findFirst();
 	}
@@ -642,7 +631,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 			}
 			String itemToString = itemToSelect.toString();
 
-			return visibleItems().stream()
+			return items().visible().get().stream()
 							.filter(visibleItem -> visibleItem != null && itemToString.equals(visibleItem.toString()))
 							.findFirst()
 							//item not found, select null value

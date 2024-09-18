@@ -181,14 +181,14 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void bindEvents() {
-		tableModel().dataChanged().addListener(this::displayCityLocations);
+		tableModel().items().visible().addListener(this::displayCityLocations);
 		tableModel().selectionModel().selectedIndexes().addListener(this::displayCityLocations);
 	}
 
 	private void displayCityLocations() {
 		if (mapKit.isShowing()) {
 			Collection<Entity> entities = tableModel().selectionModel().isSelectionEmpty() ?
-							tableModel().visibleItems() :
+							tableModel().items().visible().get() :
 							tableModel().selectionModel().selectedItems().get();
 			Maps.paintWaypoints(entities.stream()
 							.map(entity -> entity.optional(Lookup.CITY_LOCATION))
