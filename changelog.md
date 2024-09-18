@@ -11,6 +11,7 @@ Codion Change Log
 - AbstractItem collator now ThreadLocal based.
 - Mutable split from Observable.
 - MethodLogger.Entry.hasChildEntries() removed.
+- Item no longer Serializable, only the implementations.
 ### is.codion.common.model
 - FilterModel.items() now Observable based, related refactoring.
 - FilterModel.Items added, related refactoring.

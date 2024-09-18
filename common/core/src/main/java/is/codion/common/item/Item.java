@@ -18,8 +18,6 @@
  */
 package is.codion.common.item;
 
-import java.io.Serializable;
-
 /**
  * A class encapsulating a constant value and a caption representing the value.
  * Comparing {@link Item}s is based on their caption while their equality is based on their values.
@@ -30,7 +28,7 @@ import java.io.Serializable;
  * @see Item#item(Object, String)
  * @see Item#itemI18n(Object, String, String)
  */
-public interface Item<T> extends Comparable<Item<T>>, Serializable {
+public interface Item<T> extends Comparable<Item<T>> {
 
 	/**
 	 * @return the caption

@@ -21,10 +21,11 @@ package is.codion.common.item;
 import is.codion.common.Text;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
-abstract class AbstractItem<T> implements Item<T> {
+abstract class AbstractItem<T> implements Item<T>, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;

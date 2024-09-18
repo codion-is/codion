@@ -19,10 +19,11 @@
 package is.codion.common.item;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultItem<T> extends AbstractItem<T> {
+final class DefaultItem<T> extends AbstractItem<T> implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
