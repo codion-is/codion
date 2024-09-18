@@ -103,11 +103,6 @@ public interface MethodLogger {
 	interface Entry {
 
 		/**
-		 * @return true if this log entry contains child log entries
-		 */
-		boolean hasChildEntries();
-
-		/**
 		 * @return the child log entries
 		 */
 		List<Entry> childEntries();

@@ -35,7 +35,7 @@ import java.util.Collection;
  *
  * state.set(true);
  * state.set(false);
- * state.clear(); //translates to false
+ * state.set(null); //translates to false
  * }
  * </pre>
  * A factory for {@link State} instances.

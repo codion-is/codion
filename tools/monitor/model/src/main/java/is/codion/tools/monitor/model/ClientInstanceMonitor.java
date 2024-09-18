@@ -92,9 +92,7 @@ public final class ClientInstanceMonitor {
 				for (MethodLogger.Entry entry : log.entries()) {
 					entry.appendTo(logBuilder);
 					DefaultMutableTreeNode entryNode = new DefaultMutableTreeNode(entryString(entry));
-					if (entry.hasChildEntries()) {
-						addChildEntries(entryNode, entry.childEntries());
-					}
+					addChildEntries(entryNode, entry.childEntries());
 					logRootNode.add(entryNode);
 				}
 				logDocument.insertString(0, logBuilder.toString(), null);
@@ -144,9 +142,7 @@ public final class ClientInstanceMonitor {
 	private static void addChildEntries(DefaultMutableTreeNode entryNode, List<MethodLogger.Entry> childEntries) {
 		for (MethodLogger.Entry entry : childEntries) {
 			DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(entryString(entry));
-			if (entry.hasChildEntries()) {
-				addChildEntries(subEntry, entry.childEntries());
-			}
+			addChildEntries(subEntry, entry.childEntries());
 			entryNode.add(subEntry);
 		}
 	}

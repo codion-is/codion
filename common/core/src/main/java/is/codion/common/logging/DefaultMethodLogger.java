@@ -28,13 +28,15 @@ import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.System.currentTimeMillis;
+import static java.lang.System.nanoTime;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -100,7 +102,7 @@ final class DefaultMethodLogger implements MethodLogger {
 			entries.addLast(entry);
 		}
 		else {
-			callStack.peek().addChildEntry(entry);
+			callStack.peek().childEntries.addLast(entry);
 		}
 
 		return entry;
@@ -124,7 +126,7 @@ final class DefaultMethodLogger implements MethodLogger {
 
 	@Override
 	public synchronized List<Entry> entries() {
-		return Collections.unmodifiableList(entries);
+		return unmodifiableList(entries);
 	}
 
 	private static final class DefaultEntry implements Entry, Serializable {
@@ -153,7 +155,7 @@ final class DefaultMethodLogger implements MethodLogger {
 		 * @param enterMessage the message associated with entering the method
 		 */
 		private DefaultEntry(String method, String enterMessage) {
-			this(method, enterMessage, System.currentTimeMillis(), System.nanoTime());
+			this(method, enterMessage, currentTimeMillis(), nanoTime());
 		}
 
 		/**
@@ -171,13 +173,8 @@ final class DefaultMethodLogger implements MethodLogger {
 		}
 
 		@Override
-		public boolean hasChildEntries() {
-			return !childEntries.isEmpty();
-		}
-
-		@Override
 		public List<Entry> childEntries() {
-			return Collections.unmodifiableList(childEntries);
+			return unmodifiableList(childEntries);
 		}
 
 		@Override
@@ -236,19 +233,11 @@ final class DefaultMethodLogger implements MethodLogger {
 		}
 
 		/**
-		 * Adds a child entry to this log entry
-		 * @param childEntry the child entry to add
-		 */
-		private void addChildEntry(Entry childEntry) {
-			childEntries.addLast(childEntry);
-		}
-
-		/**
 		 * Sets the exit time as the current time
 		 */
 		private void setExitTime() {
-			exitTime = System.currentTimeMillis();
-			exitTimeNano = System.nanoTime();
+			exitTime = currentTimeMillis();
+			exitTimeNano = nanoTime();
 		}
 
 		/**

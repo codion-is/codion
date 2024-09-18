@@ -10,6 +10,7 @@ Codion Change Log
 - DefaultObserver.removeWeakListener() and removeWeakConsumer() bug fixed, could possibly return true even if the listener was not removed, due to a null weak reference being removed.
 - AbstractItem collator now ThreadLocal based.
 - Mutable split from Observable.
+- MethodLogger.Entry.hasChildEntries() removed.
 ### is.codion.common.model
 - FilterModel.items() now Observable based, related refactoring.
 - FilterModel.Items added, related refactoring.
