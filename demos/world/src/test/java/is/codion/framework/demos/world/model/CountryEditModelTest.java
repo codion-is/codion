@@ -39,10 +39,10 @@ public class CountryEditModelTest {
 	void averageCityPopulation() throws DatabaseException {
 		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
 			CountryEditModel countryEditModel = new CountryEditModel(connectionProvider);
-			countryEditModel.set(connectionProvider.connection().selectSingle(
+			countryEditModel.entity().set(connectionProvider.connection().selectSingle(
 							Country.NAME.equalTo("Afghanistan")));
 			assertEquals(583_025, countryEditModel.averageCityPopulation().get());
-			countryEditModel.set(null);
+			countryEditModel.defaults();
 			assertNull(countryEditModel.averageCityPopulation().get());
 		}
 	}

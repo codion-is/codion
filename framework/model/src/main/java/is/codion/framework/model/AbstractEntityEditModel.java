@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
+import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -69,7 +70,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
 
-	private final Entity entity;
+	private final EditEntity editEntity;
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
 	private final Map<Attribute<?>, EditModelValue<?>> editModelValues = new ConcurrentHashMap<>();
@@ -88,7 +89,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param connectionProvider the {@link EntityConnectionProvider} instance
 	 */
 	protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
+		this.editEntity = new EditEntity(requireNonNull(connectionProvider).entities().entity(entityType));
 		this.connectionProvider = connectionProvider;
 		this.validator = Value.builder()
 						.nonNull(entityDefinition().validator())
@@ -102,7 +103,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		this.states.readOnly.set(entityDefinition().readOnly());
 		this.events.bindEvents();
 		configurePersistentForeignKeys();
-		setEntity(createEntity(AttributeDefinition::defaultValue));
+		editEntity.set(createEntity(AttributeDefinition::defaultValue));
 	}
 
 	@Override
@@ -112,12 +113,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final EntityDefinition entityDefinition() {
-		return entity.definition();
+		return editEntity.entity.definition();
 	}
 
 	@Override
 	public final String toString() {
-		return getClass() + ", " + entity.entityType();
+		return getClass() + ", " + editEntity.entity.entityType();
 	}
 
 	@Override
@@ -186,19 +187,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final void set(Entity entity) {
-		events.entityChanging.accept(entity);
-		setEntity(entity);
-	}
-
-	@Override
 	public final void defaults() {
-		setEntity(null);
+		editEntity.set(null);
 	}
 
 	@Override
 	public final EntityType entityType() {
-		return entity.entityType();
+		return editEntity.entity.entityType();
 	}
 
 	@Override
@@ -217,8 +212,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Entity entity() {
-		return entity.immutable();
+	public final Mutable<Entity> entity() {
+		return editEntity;
 	}
 
 	@Override
@@ -239,13 +234,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final <T> void revert(Attribute<T> attribute) {
 		if (modified(attribute).get()) {
-			value(attribute).set(entity.original(attribute));
+			value(attribute).set(editEntity.entity.original(attribute));
 		}
 	}
 
 	@Override
 	public final boolean nullable(Attribute<?> attribute) {
-		return validator.get().nullable(entity, attribute);
+		return validator.get().nullable(editEntity.entity, attribute);
 	}
 
 	@Override
@@ -270,12 +265,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final void validate(Attribute<?> attribute) throws ValidationException {
-		validator.get().validate(entity, attribute);
+		validator.get().validate(editEntity.entity, attribute);
 	}
 
 	@Override
 	public final void validate() throws ValidationException {
-		validate(entity);
+		validate(editEntity.entity);
 	}
 
 	@Override
@@ -359,7 +354,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	public final void refresh() {
 		try {
 			if (states.entityExists.get()) {
-				set(connection().select(entity.primaryKey()));
+				editEntity.set(connection().select(editEntity.entity.primaryKey()));
 			}
 		}
 		catch (DatabaseException e) {
@@ -413,13 +408,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Observer<Entity> entityChanged() {
-		return events.entityChanged.observer();
-	}
-
-	@Override
 	public final Observer<Entity> entityChanging() {
-		return events.entityChanging.observer();
+		return editEntity.changing.observer();
 	}
 
 	@Override
@@ -497,7 +487,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param values the foreign key entities
 	 */
 	protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> values) {
-		Entity currentForeignKeyValue = entity.entity(foreignKey);
+		Entity currentForeignKeyValue = editEntity.entity.entity(foreignKey);
 		if (currentForeignKeyValue != null) {
 			for (Entity replacementValue : values) {
 				if (currentForeignKeyValue.equals(replacementValue)) {
@@ -601,19 +591,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		events.afterDelete.accept(requireNonNull(deletedEntities));
 	}
 
-	private void setEntity(Entity entity) {
-		Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
-		for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
-			events.notifyValueChange(affectedAttribute);
-		}
-		if (affectedAttributes.isEmpty()) {//otherwise notifyValueChange() triggers entity state updates
-			states.updateEntityStates();
-		}
-		states.updateAttributeModifiedStates();
-
-		events.entityChanged.accept(entity);
-	}
-
 	private void configurePersistentForeignKeys() {
 		if (EntityEditModel.PERSIST_FOREIGN_KEYS.get()) {
 			entityDefinition().foreignKeys().get().forEach(foreignKey ->
@@ -655,10 +632,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
 		if (persist(attributeDefinition.attribute()).get()) {
 			if (attributeDefinition instanceof ForeignKeyDefinition) {
-				return (T) entity.entity((ForeignKey) attributeDefinition.attribute());
+				return (T) editEntity.entity.entity((ForeignKey) attributeDefinition.attribute());
 			}
 
-			return entity.get(attributeDefinition.attribute());
+			return editEntity.entity.get(attributeDefinition.attribute());
 		}
 
 		return defaultValue(attributeDefinition.attribute()).get().get();
@@ -718,7 +695,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	private static Collection<Entity> entityForInsert(AbstractEntityEditModel editModel) {
-		Entity toInsert = editModel.entity.copy();
+		Entity toInsert = editModel.editEntity.entity.copy();
 		if (toInsert.definition().primaryKey().generated()) {
 			toInsert.clearPrimaryKey();
 		}
@@ -783,7 +760,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			public Collection<Entity> handle() {
 				notifyAfterInsert(insertedEntities);
 				if (activeEntity) {
-					setEntity(insertedEntities.iterator().next());
+					editEntity.set(insertedEntities.iterator().next());
 				}
 
 				return insertedEntities;
@@ -796,7 +773,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Collection<Entity> entities;
 
 		private DefaultUpdate() throws ValidationException {
-			this.entities = singleton(entity.copy());
+			this.entities = singleton(editEntity.entity.copy());
 			states.verifyUpdateEnabled(entities.size());
 			validate(entities);
 			verifyModified(entities);
@@ -845,11 +822,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			@Override
 			public Collection<Entity> handle() {
 				notifyAfterUpdate(originalPrimaryKeyMap(entities, updatedEntities));
-				Entity activeEntity = entity();
+				Entity activeEntity = editEntity.get();
 				updatedEntities.stream()
 								.filter(updatedEntity -> updatedEntity.equals(activeEntity))
 								.findFirst()
-								.ifPresent(AbstractEntityEditModel.this::setEntity);
+								.ifPresent(AbstractEntityEditModel.this.editEntity::set);
 
 				return updatedEntities;
 			}
@@ -881,7 +858,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private Entity activeEntity() {
-			Entity copy = entity.copy();
+			Entity copy = editEntity.entity.copy();
 			copy.revert();
 
 			return copy;
@@ -957,8 +934,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Collection<Entity>> beforeDelete = Event.event();
 		private final Event<Collection<Entity>> afterDelete = Event.event();
 		private final Event<?> afterInsertUpdateOrDelete = Event.event();
-		private final Event<Entity> entityChanging = Event.event();
-		private final Event<Entity> entityChanged = Event.event();
 		private final Event<Attribute<?>> valueChange = Event.event();
 		private final Map<Attribute<?>, Event<?>> editEvents = new ConcurrentHashMap<>();
 
@@ -986,7 +961,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 				editEvent.accept(value);
 			}
 			dependingValues.forEach((dependingAttribute, previousValue) -> {
-				Object currentValue = AbstractEntityEditModel.this.entity.get(dependingAttribute);
+				Object currentValue = editEntity.entity.get(dependingAttribute);
 				if (!Objects.equals(previousValue, currentValue)) {
 					notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
 				}
@@ -1024,13 +999,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private StateObserver modifiedObserver(Attribute<?> attribute) {
 			entityDefinition().attributes().definition(attribute);
 			return attributeModifiedMap.computeIfAbsent(attribute, k ->
-							State.state(entityExists.get() && entity.modified(attribute))).observer();
+							State.state(entityExists.get() && editEntity.entity.modified(attribute))).observer();
 		}
 
 		private StateObserver nullObserver(Attribute<?> attribute) {
 			entityDefinition().attributes().definition(attribute);
 			return attributeNullMap.computeIfAbsent(attribute, k ->
-							State.state(entity.isNull(attribute))).observer();
+							State.state(editEntity.entity.isNull(attribute))).observer();
 		}
 
 		private StateObserver validObserver(Attribute<?> attribute) {
@@ -1047,25 +1022,25 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private void updateExistsState() {
-			entityExists.set(existsPredicate.get().test(entity));
+			entityExists.set(existsPredicate.get().test(editEntity.entity));
 		}
 
 		private void updateModifiedState() {
-			entityModified.set(modifiedPredicate.get().test(entity));
+			entityModified.set(modifiedPredicate.get().test(editEntity.entity));
 		}
 
 		private void updateValidState() {
-			entityValid.set(validator.get().valid(entity));
+			entityValid.set(validator.get().valid(editEntity.entity));
 		}
 
 		private void updatePrimaryKeyNullState() {
-			primaryKeyNull.set(entity.primaryKey().isNull());
+			primaryKeyNull.set(editEntity.entity.primaryKey().isNull());
 		}
 
 		private <T> void updateAttributeStates(Attribute<T> attribute) {
 			State nullState = attributeNullMap.get(attribute);
 			if (nullState != null) {
-				nullState.set(entity.isNull(attribute));
+				nullState.set(editEntity.entity.isNull(attribute));
 			}
 			State validState = attributeValidMap.get(attribute);
 			if (validState != null) {
@@ -1092,7 +1067,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
-			modifiedState.set(existsPredicate.get().test(entity) && entity.modified(attribute));
+			modifiedState.set(existsPredicate.get().test(editEntity.entity) && editEntity.entity.modified(attribute));
 		}
 
 		private void verifyInsertEnabled() {
@@ -1117,6 +1092,47 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 	}
 
+	private final class EditEntity implements Mutable<Entity> {
+
+		private final Event<Entity> changing = Event.event();
+		private final Event<Entity> changed = Event.event();
+
+		private final Entity entity;
+
+		private EditEntity(Entity entity) {
+			this.entity = entity;
+		}
+
+		@Override
+		public void set(Entity entity) {
+			changing.accept(entity);
+			setEntity(entity);
+		}
+
+		@Override
+		public Entity get() {
+			return entity.immutable();
+		}
+
+		@Override
+		public Observer<Entity> observer() {
+			return changed.observer();
+		}
+
+		private void setEntity(Entity entity) {
+			Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(AbstractEntityEditModel.this::defaultValue) : entity);
+			for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
+				events.notifyValueChange(affectedAttribute);
+			}
+			if (affectedAttributes.isEmpty()) {//otherwise notifyValueChange() triggers entity state updates
+				states.updateEntityStates();
+			}
+			states.updateAttributeModifiedStates();
+
+			changed.accept(entity);
+		}
+	}
+
 	private final class EditModelValue<T> extends AbstractValue<T> {
 
 		private final Attribute<T> attribute;
@@ -1127,13 +1143,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		@Override
 		protected T getValue() {
-			return entity.get(attribute);
+			return editEntity.entity.get(attribute);
 		}
 
 		@Override
 		protected void setValue(T value) {
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
-			T previousValue = entity.put(attribute, value);
+			T previousValue = editEntity.entity.put(attribute, value);
 			if (!Objects.equals(value, previousValue)) {
 				events.notifyValueEdit(attribute, value, dependingValues);
 			}
@@ -1157,19 +1173,19 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private void addDependingDerivedAttributes(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
 			entityDefinition().attributes().derivedFrom(attribute).forEach(derivedAttribute -> {
-				dependingValues.put(derivedAttribute, entity.get(derivedAttribute));
+				dependingValues.put(derivedAttribute, editEntity.entity.get(derivedAttribute));
 				addDependingDerivedAttributes(derivedAttribute, dependingValues);
 			});
 		}
 
 		private void addDependingForeignKeys(Column<?> column, Map<Attribute<?>, Object> dependingValues) {
 			entityDefinition().foreignKeys().definitions(column).forEach(foreignKeyDefinition ->
-							dependingValues.put(foreignKeyDefinition.attribute(), entity.get(foreignKeyDefinition.attribute())));
+							dependingValues.put(foreignKeyDefinition.attribute(), editEntity.entity.get(foreignKeyDefinition.attribute())));
 		}
 
 		private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, Object> dependingValues) {
 			foreignKey.references().forEach(reference ->
-							dependingValues.put(reference.column(), entity.get(reference.column())));
+							dependingValues.put(reference.column(), editEntity.entity.get(reference.column())));
 		}
 
 		private void valueChanged() {

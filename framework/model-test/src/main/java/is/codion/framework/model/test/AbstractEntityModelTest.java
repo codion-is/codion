@@ -93,7 +93,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		deptTableModel.includeCondition().set(item ->
 						!Objects.equals(80, item.get(Department.ID)));
 
-		deptEditModel.set(operations);
+		deptEditModel.entity().set(operations);
 		deptEditModel.value(Department.ID).set(40);
 		deptEditModel.update();
 

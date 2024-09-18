@@ -246,7 +246,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 			return emptyList();
 		}
 
-		return singletonList(editModel.entity());
+		return singletonList(editModel.entity().get());
 	}
 
 	private void bindEventsInternal() {
@@ -257,7 +257,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 			tableModel.selectionChanged().addListener(this::onMasterSelectionChanged);
 		}
 		else {
-			editModel.entityChanged().addListener(this::onMasterSelectionChanged);
+			editModel.entity().addListener(this::onMasterSelectionChanged);
 		}
 	}
 

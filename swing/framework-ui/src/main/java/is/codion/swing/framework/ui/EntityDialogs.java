@@ -700,7 +700,7 @@ public final class EntityDialogs {
 
 		private void initializeEditModel(SwingEntityEditModel editModel) {
 			if (entity != null) {
-				editModel.set(entity.get());
+				editModel.entity().set(entity.get());
 			}
 			else {
 				editModel.revert();

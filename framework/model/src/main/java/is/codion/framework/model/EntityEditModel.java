@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -88,26 +89,22 @@ public interface EntityEditModel {
 	void defaults();
 
 	/**
-	 * Copies the values from the given {@link Entity} into the underlying
-	 * {@link Entity} being edited by this edit model. If {@code entity} is null
-	 * the effect is the same as calling {@link #defaults()}.
-	 * @param entity the entity
-	 * @see #defaults()
-	 * @see #entityChanging()
-	 */
-	void set(Entity entity);
-
-	/**
 	 * Refreshes the active Entity from the database, discarding all changes.
 	 * If the active Entity is new then calling this method has no effect.
 	 */
 	void refresh();
 
 	/**
-	 * @return an immutable version of the {@link Entity} instance being edited
+	 * Returns a {@link Mutable} wrapping the entity being edited. {@link Mutable#get()} returns
+	 * an immutable version of the {@link Entity} instance being edited, while {@link Mutable#set(Object)}
+	 * copies the values from the given {@link Entity} into the underlying
+	 * {@link Entity} being edited by this edit model. If {@code entity} is null
+	 * the effect is the same as calling {@link #defaults()}.
+	 * Note that value changes must go through the {@link Value} accessible via {@link #value(Attribute)}.
+	 * @return a {@link Mutable} wrapping the {@link Entity} instance being edited
 	 * @see Entity#immutable()
 	 */
-	Entity entity();
+	Mutable<Entity> entity();
 
 	/**
 	 * @param attribute the attribute
@@ -208,7 +205,7 @@ public interface EntityEditModel {
 
 	/**
 	 * Returns the {@link Value} instance controlling the default value supplier for the given attribute.
-	 * Used when the underlying value is not persistent. Use {@link #defaults()} or {@link #set(Entity)}
+	 * Used when the underlying value is not persistent. Use {@link #defaults()} or {@link Mutable#set(Object)}
 	 * with a null parameter to populate the model with the default values.
 	 * @param attribute the attribute
 	 * @param <S> the value supplier type
@@ -460,7 +457,7 @@ public interface EntityEditModel {
 	 * is edited via its associated {@link Value} instance ({@link #value(Attribute)}).
 	 * <p>
 	 * This event is not triggered when an attribute value changes due to the entity being set
-	 * via {@link #set(Entity)} or {@link #defaults()}.
+	 * via {@link Mutable#set(Object)} or {@link #defaults()}.
 	 * <p>
 	 * Note that this event is only triggered if the value actually changes.
 	 * @param attribute the attribute which edit observer to return
@@ -471,21 +468,14 @@ public interface EntityEditModel {
 
 	/**
 	 * Returns an observer notified each time a value changes, either via its associated {@link Value}
-	 * instance or when the entity is set via via {@link #set(Entity)} or {@link #defaults()}.
+	 * instance or when the entity is set via via {@link Mutable#set(Object)} or {@link #defaults()}.
 	 * @return an observer notified each time a value changes
 	 */
 	Observer<Attribute<?>> valueChanged();
 
 	/**
-	 * @return an observer notified each time the active entity is changed via {@link #set(Entity)} or {@link #defaults()}.
-	 * @see #set(Entity)
-	 * @see #defaults()
-	 */
-	Observer<Entity> entityChanged();
-
-	/**
 	 * @return an observer notified each time the active entity is about to change
-	 * @see #set(Entity)
+	 * @see #entity()
 	 * @see #defaults()
 	 */
 	Observer<Entity> entityChanging();

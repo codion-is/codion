@@ -703,8 +703,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		editModel.afterInsert().addConsumer(this::onInsert);
 		editModel.afterUpdate().addConsumer(this::onUpdate);
 		editModel.afterDelete().addConsumer(this::onDelete);
-		editModel.entityChanged().addConsumer(this::onEntityChanged);
-		selectionModel().selectedItem().addConsumer(editModel::set);
+		editModel.entity().addConsumer(this::onEntityChanged);
+		selectionModel().selectedItem().addConsumer(editModel.entity()::set);
 		addTableModelListener(this::onTableModelEvent);
 	}
 
@@ -772,7 +772,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	private void onTableModelEvent(TableModelEvent tableModelEvent) {
 		//if the selected row is updated via the table model, refresh the one in the edit model
 		if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selectionModel().selectedIndex().get().intValue()) {
-			editModel.set(selectionModel().selectedItem().get());
+			editModel.entity().set(selectionModel().selectedItem().get());
 		}
 	}
 

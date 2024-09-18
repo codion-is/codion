@@ -104,7 +104,7 @@ public final class AbstractEntityEditModelTest {
 		connection.startTransaction();
 		try {
 			Entity jones = connection.selectSingle(Employee.NAME.equalTo("JONES"));
-			employeeEditModel.set(jones);
+			employeeEditModel.entity().set(jones);
 			assertTrue(employeeEditModel.value(Employee.NAME).set("Noname"));
 			employeeEditModel.insert();
 			assertEquals(1, insertEvents.get());
@@ -144,7 +144,7 @@ public final class AbstractEntityEditModelTest {
 		try {
 			Entity employee = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
 			employeeEditModel.refresh();
-			employeeEditModel.set(employee);
+			employeeEditModel.entity().set(employee);
 			employee.put(Employee.NAME, "NOONE");
 			connection.update(employee);
 			employeeEditModel.refresh();
@@ -159,8 +159,8 @@ public final class AbstractEntityEditModelTest {
 	void entityCopy() throws DatabaseException {
 		Entity employee = employeeEditModel.connection().selectSingle(
 						Employee.NAME.equalTo("MARTIN"));
-		employeeEditModel.set(employee);
-		Entity copyWithPrimaryKeyValue = employeeEditModel.entity();
+		employeeEditModel.entity().set(employee);
+		Entity copyWithPrimaryKeyValue = employeeEditModel.entity().get();
 		assertEquals(employee, copyWithPrimaryKeyValue);
 		assertTrue(copyWithPrimaryKeyValue.primaryKey().isNotNull());
 	}
@@ -179,15 +179,15 @@ public final class AbstractEntityEditModelTest {
 	void defaultForeignKeyValue() throws DatabaseException {
 		Entity employee = employeeEditModel.connection().selectSingle(
 						Employee.NAME.equalTo("MARTIN"));
-		employeeEditModel.set(employee);
+		employeeEditModel.entity().set(employee);
 		//clear the department foreign key value
-		Entity dept = employeeEditModel.entity().entity(Employee.DEPARTMENT_FK);
+		Entity dept = employeeEditModel.entity().get().entity(Employee.DEPARTMENT_FK);
 		employeeEditModel.value(Employee.DEPARTMENT_FK).clear();
 		//set the reference key attribute value
 		assertTrue(employeeEditModel.isNull(Employee.DEPARTMENT_FK).get());
 		assertFalse(employeeEditModel.isNotNull(Employee.DEPARTMENT_FK).get());
 		employeeEditModel.value(Employee.DEPARTMENT).set(dept.get(Department.ID));
-		assertNull(employeeEditModel.entity().get(Employee.DEPARTMENT_FK));
+		assertNull(employeeEditModel.entity().get().get(Employee.DEPARTMENT_FK));
 		dept = employeeEditModel.value(Employee.DEPARTMENT_FK).get();
 		assertNull(dept);
 		employeeEditModel.defaults();
@@ -230,20 +230,20 @@ public final class AbstractEntityEditModelTest {
 		assertFalse(employeeEditModel.modified().get());
 
 		Entity employee = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
-		employeeEditModel.set(employee);
+		employeeEditModel.entity().set(employee);
 		assertFalse(primaryKeyNullState.get());
 		assertTrue(entityExistsState.get());
 
-		assertTrue(employeeEditModel.entity().equalValues(employee), "Active entity is not equal to the entity just set");
+		assertTrue(employeeEditModel.entity().get().equalValues(employee), "Active entity is not equal to the entity just set");
 		assertTrue(employeeEditModel.exists().get(), "Active entity exists after an entity is set");
 		assertFalse(employeeEditModel.modified().get());
 		employeeEditModel.defaults();
 		assertFalse(employeeEditModel.exists().get(), "Active entity exists after entity is set to null");
 		assertFalse(employeeEditModel.modified().get());
-		assertTrue(employeeEditModel.entity().primaryKey().isNull(), "Active entity primary key is not null after entity is set to null");
+		assertTrue(employeeEditModel.entity().get().primaryKey().isNull(), "Active entity primary key is not null after entity is set to null");
 
-		employeeEditModel.set(employee);
-		assertTrue(employeeEditModel.entity().primaryKey().isNotNull(), "Active entity primary key is null after entity is set");
+		employeeEditModel.entity().set(employee);
+		assertTrue(employeeEditModel.entity().get().primaryKey().isNotNull(), "Active entity primary key is null after entity is set");
 
 		Integer originalEmployeeId = employeeEditModel.value(Employee.ID).get();
 		employeeEditModel.value(Employee.ID).clear();
@@ -297,7 +297,7 @@ public final class AbstractEntityEditModelTest {
 		}
 
 		employeeEditModel.defaults();
-		assertTrue(employeeEditModel.entity().primaryKey().isNull(), "Active entity is not null after model is cleared");
+		assertTrue(employeeEditModel.entity().get().primaryKey().isNull(), "Active entity is not null after model is cleared");
 
 		employeeEditModel.afterDelete().removeConsumer(consumer);
 		employeeEditModel.afterInsert().removeConsumer(consumer);
@@ -358,7 +358,7 @@ public final class AbstractEntityEditModelTest {
 
 			employeeEditModel.insert();
 			assertTrue(employeeEditModel.exists().get());
-			Entity entityCopy = employeeEditModel.entity();
+			Entity entityCopy = employeeEditModel.entity().get();
 			assertTrue(entityCopy.primaryKey().isNotNull());
 			assertEquals(entityCopy.primaryKey(), entityCopy.originalPrimaryKey());
 
@@ -381,9 +381,9 @@ public final class AbstractEntityEditModelTest {
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
 		try {
-			employeeEditModel.set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
+			employeeEditModel.entity().set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
 			employeeEditModel.value(Employee.NAME).set("BJORN");
-			List<Entity> toUpdate = singletonList(employeeEditModel.entity());
+			List<Entity> toUpdate = singletonList(employeeEditModel.entity().get());
 			Consumer<Map<Entity.Key, Entity>> consumer = updatedEntities ->
 							assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
 			employeeEditModel.afterUpdate().addConsumer(consumer);
@@ -417,8 +417,8 @@ public final class AbstractEntityEditModelTest {
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
 		try {
-			employeeEditModel.set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
-			List<Entity> toDelete = singletonList(employeeEditModel.entity());
+			employeeEditModel.entity().set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
+			List<Entity> toDelete = singletonList(employeeEditModel.entity().get());
 			employeeEditModel.afterDelete().addConsumer(deletedEntities -> assertTrue(toDelete.containsAll(deletedEntities)));
 			employeeEditModel.deleteEnabled().set(false);
 			assertFalse(employeeEditModel.deleteEnabled().get());
@@ -437,27 +437,27 @@ public final class AbstractEntityEditModelTest {
 	void setEntity() throws Exception {
 		Entity martin = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
-		employeeEditModel.set(king);
+		employeeEditModel.entity().set(king);
 		employeeEditModel.value(Employee.MGR_FK).set(martin);
 		employeeEditModel.defaults();
 		king.put(Employee.MGR_FK, null);
-		employeeEditModel.set(king);
+		employeeEditModel.entity().set(king);
 		assertNull(employeeEditModel.value(Employee.MGR_FK).get());
 		employeeEditModel.defaults();
 		assertEquals(LocalDate.now(), employeeEditModel.value(Employee.HIREDATE).get());
-		assertFalse(employeeEditModel.entity().modified(Employee.HIREDATE));
-		assertFalse(employeeEditModel.entity().modified());
+		assertFalse(employeeEditModel.entity().get().modified(Employee.HIREDATE));
+		assertFalse(employeeEditModel.entity().get().modified());
 	}
 
 	@Test
 	void persist() throws Exception {
 		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
-		employeeEditModel.set(king);
+		employeeEditModel.entity().set(king);
 		assertNotNull(employeeEditModel.value(Employee.JOB).get());
 		employeeEditModel.persist(Employee.JOB).set(true);
 		employeeEditModel.defaults();
 		assertNotNull(employeeEditModel.value(Employee.JOB).get());
-		employeeEditModel.set(king);
+		employeeEditModel.entity().set(king);
 		employeeEditModel.persist(Employee.JOB).set(false);
 		employeeEditModel.defaults();
 		assertNull(employeeEditModel.value(Employee.JOB).get());
@@ -469,13 +469,13 @@ public final class AbstractEntityEditModelTest {
 	void replace() throws DatabaseException {
 		Entity james = employeeEditModel.connection()
 						.selectSingle(Employee.NAME.equalTo("JAMES"));
-		employeeEditModel.set(james);
-		assertTrue(employeeEditModel.entity().entity(Employee.MGR_FK).isNull(Employee.COMMISSION));
+		employeeEditModel.entity().set(james);
+		assertTrue(employeeEditModel.entity().get().entity(Employee.MGR_FK).isNull(Employee.COMMISSION));
 		Entity blake = employeeEditModel.connection()
 						.selectSingle(Employee.NAME.equalTo("BLAKE"));
 		blake.put(Employee.COMMISSION, 100d);
 		employeeEditModel.replace(Employee.MGR_FK, singletonList(blake));
-		assertEquals(100d, employeeEditModel.entity().entity(Employee.MGR_FK).get(Employee.COMMISSION));
+		assertEquals(100d, employeeEditModel.entity().get().entity(Employee.MGR_FK).get(Employee.COMMISSION));
 	}
 
 	@Test
@@ -517,7 +517,7 @@ public final class AbstractEntityEditModelTest {
 		Entity detail = ENTITIES.builder(Detail.TYPE)
 						.with(Detail.INT, 3)
 						.build();
-		editModel.set(detail);
+		editModel.entity().set(detail);
 		assertEquals(3, derivedCounter.get());
 		assertEquals(2, derivedEditCounter.get());
 	}
@@ -572,7 +572,7 @@ public final class AbstractEntityEditModelTest {
 		//only modified when the entity is not new
 		assertFalse(employeeEditModel.modified(Employee.NAME).get());
 		Entity martin = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
-		employeeEditModel.set(martin);
+		employeeEditModel.entity().set(martin);
 		State modifiedState = State.state();
 		State nullState = State.state();
 		StateObserver nameModifiedObserver = employeeEditModel.modified(Employee.NAME);
@@ -589,7 +589,7 @@ public final class AbstractEntityEditModelTest {
 		assertTrue(nameIsNull.get());
 		assertTrue(nullState.get());
 		assertTrue(nullState.get());
-		employeeEditModel.set(martin);
+		employeeEditModel.entity().set(martin);
 		assertFalse(nameModifiedObserver.get());
 		assertFalse(modifiedState.get());
 		assertFalse(nameIsNull.get());
@@ -601,7 +601,7 @@ public final class AbstractEntityEditModelTest {
 		EntityConnection connection = employeeEditModel.connection();
 		StateObserver nameModifiedObserver = employeeEditModel.modified(Employee.NAME);
 		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
-		employeeEditModel.set(martin);
+		employeeEditModel.entity().set(martin);
 		employeeEditModel.value(Employee.NAME).set("MARTINEZ");
 		assertTrue(nameModifiedObserver.get());
 		connection.startTransaction();
@@ -649,7 +649,7 @@ public final class AbstractEntityEditModelTest {
 		EntityEditModel editModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
 		EntityConnection connection = employeeEditModel.connection();
 		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
-		editModel.set(martin);
+		editModel.entity().set(martin);
 
 		editModel.value(Employee.NAME).set("newname");
 		assertTrue(editModel.modified().get());

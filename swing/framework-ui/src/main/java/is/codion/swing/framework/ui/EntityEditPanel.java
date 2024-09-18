@@ -416,7 +416,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
 		requireNonNull(exception);
 		if (exception.operation() == Operation.DELETE && configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-			displayDependenciesDialog(singletonList(editModel().entity()), editModel().connectionProvider(),
+			displayDependenciesDialog(singletonList(editModel().entity().get()), editModel().connectionProvider(),
 							this, MESSAGES.getString("unknown_dependent_records"));
 		}
 		else {
@@ -643,7 +643,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void showEntityMenu() {
-		new EntityPopupMenu(editModel().entity(), editModel().connection()).show(this, 0, 0);
+		new EntityPopupMenu(editModel().entity().get(), editModel().connection()).show(this, 0, 0);
 	}
 
 	private Config configure(Consumer<Config> configuration) {
