@@ -36,7 +36,7 @@ import java.util.function.Supplier;
 
 /**
  * Specifies a data model that can be filtered to hide some or all of the items it contains.
- * @param <T> the type of data in the model.
+ * @param <T> the type of items in the model.
  */
 public interface FilterModel<T> {
 
@@ -47,14 +47,6 @@ public interface FilterModel<T> {
 	 * @see Refresher#async()
 	 */
 	PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);
-
-	/**
-	 * Filters this model according to the condition specified by {@link #includeCondition()}.
-	 * If no include condition is specified this method does nothing.
-	 * This method does not interfere with the internal ordering of the visible items.
-	 * @see #includeCondition()
-	 */
-	void filterItems();
 
 	/**
 	 * @return the include condition value
@@ -126,6 +118,14 @@ public interface FilterModel<T> {
 		 * @return true if the given item is filtered
 		 */
 		boolean filtered(T item);
+
+		/**
+		 * Filters the items according to the condition specified by {@link #includeCondition()}.
+		 * If no include condition is specified this method does nothing.
+		 * This method does not interfere with the internal ordering of the visible items.
+		 * @see #includeCondition()
+		 */
+		void filter();
 	}
 
 	/**

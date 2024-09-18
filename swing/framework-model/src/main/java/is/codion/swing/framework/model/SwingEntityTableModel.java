@@ -370,11 +370,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final void filterItems() {
-		tableModel.filterItems();
-	}
-
-	@Override
 	public final Value<Predicate<Entity>> includeCondition() {
 		return tableModel.includeCondition();
 	}

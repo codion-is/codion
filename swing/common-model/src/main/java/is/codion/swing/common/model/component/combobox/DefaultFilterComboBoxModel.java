@@ -85,7 +85,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	 */
 	protected DefaultFilterComboBoxModel() {
 		refresher = new DefaultRefresher(new DefaultItemsSupplier());
-		includeCondition.addListener(this::filterItems);
+		includeCondition.addListener(modelItems::filter);
 		validator.addValidator(validator -> modelItems.get().stream()
 						.filter(Objects::nonNull)
 						.forEach(validator::test));
@@ -125,34 +125,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	@Override
 	public final boolean cleared() {
 		return cleared;
-	}
-
-	@Override
-	public final void filterItems() {
-		modelItems.visible.items.addAll(modelItems.filtered.items);
-		modelItems.filtered.items.clear();
-		if (includeCondition.isNotNull()) {
-			for (Iterator<T> iterator = modelItems.visible.items.listIterator(); iterator.hasNext(); ) {
-				T item = iterator.next();
-				if (item != null && !includeCondition.get().test(item)) {
-					modelItems.filtered.items.add(item);
-					iterator.remove();
-				}
-			}
-		}
-		sortItems();
-		if (selected.item != null && modelItems.visible.items.contains(selected.item)) {
-			//update the selected item since the underlying data could have changed
-			selected.item = modelItems.visible.items.get(modelItems.visible.items.indexOf(selected.item));
-		}
-		if (selected.item != null && !modelItems.visible.items.contains(selected.item) && filterSelectedItem.get()) {
-			selected.setItem(null);
-		}
-		else {
-			fireContentsChanged();
-		}
-		modelItems.visible.notifyChanges();
-		modelItems.filtered.notifyChanges();
 	}
 
 	@Override
@@ -362,7 +334,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 							.map(DefaultFilterComboBoxModel.this::validate)
 							.collect(toList()));
 			// Notifies both visible and filtered
-			filterItems();
+			filter();
 			cleared = items.isEmpty();
 			event.accept(items);
 		}
@@ -399,6 +371,34 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean filtered(T item) {
 			return filtered.items.contains(item);
+		}
+
+		@Override
+		public void filter() {
+			visible.items.addAll(filtered.items);
+			filtered.items.clear();
+			if (includeCondition.isNotNull()) {
+				for (Iterator<T> iterator = visible.items.listIterator(); iterator.hasNext(); ) {
+					T item = iterator.next();
+					if (item != null && !includeCondition.get().test(item)) {
+						filtered.items.add(item);
+						iterator.remove();
+					}
+				}
+			}
+			sortItems();
+			if (selected.item != null && visible.items.contains(selected.item)) {
+				//update the selected item since the underlying data could have changed
+				selected.item = visible.items.get(visible.items.indexOf(selected.item));
+			}
+			if (selected.item != null && !visible.items.contains(selected.item) && filterSelectedItem.get()) {
+				selected.setItem(null);
+			}
+			else {
+				fireContentsChanged();
+			}
+			visible.notifyChanges();
+			filtered.notifyChanges();
 		}
 	}
 

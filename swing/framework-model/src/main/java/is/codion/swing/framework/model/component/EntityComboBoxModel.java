@@ -244,7 +244,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 			foreignKeyFilterKeys.put(foreignKey, new HashSet<>(keys));
 		}
 		includeCondition().set(foreignKeyIncludeCondition);
-		filterItems();
+		items().filter();
 	}
 
 	/**
@@ -420,11 +420,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	@Override
 	public Mutable<Entity> selectedItem() {
 		return comboBoxModel.selectedItem();
-	}
-
-	@Override
-	public void filterItems() {
-		comboBoxModel.filterItems();
 	}
 
 	@Override

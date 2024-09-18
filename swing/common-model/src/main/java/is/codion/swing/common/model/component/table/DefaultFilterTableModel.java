@@ -194,26 +194,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public void filterItems() {
-		List<R> selectedItems = selectionModel.selectedItems().get();
-		modelItems.visible.items.addAll(modelItems.filtered.items);
-		modelItems.filtered.items.clear();
-		for (ListIterator<R> visibleItemsIterator = modelItems.visible.items.listIterator(); visibleItemsIterator.hasNext(); ) {
-			R item = visibleItemsIterator.next();
-			if (!include(item)) {
-				visibleItemsIterator.remove();
-				modelItems.filtered.items.add(item);
-			}
-		}
-		if (comparator.isNotNull()) {
-			modelItems.visible.items.sort(comparator.get());
-		}
-		fireTableDataChanged();
-		modelItems.filtered.notifyChanges();
-		selectionModel.selectedItems().set(selectedItems);
-	}
-
-	@Override
 	public Value<Predicate<R>> includeCondition() {
 		return combinedIncludeCondition.includeCondition;
 	}
@@ -363,7 +343,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 		});
 		addTableModelListener(removeSelectionListener);
-		filterModel.conditionChanged().addListener(this::filterItems);
+		filterModel.conditionChanged().addListener(modelItems::filter);
 		comparator.addListener(this::sortItems);
 	}
 
@@ -562,6 +542,26 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		public boolean filtered(R item) {
 			return filtered.items.contains(item);
 		}
+
+		@Override
+		public void filter() {
+			List<R> selectedItems = selectionModel.selectedItems().get();
+			visible.items.addAll(filtered.items);
+			filtered.items.clear();
+			for (ListIterator<R> visibleItemsIterator = visible.items.listIterator(); visibleItemsIterator.hasNext(); ) {
+				R item = visibleItemsIterator.next();
+				if (!include(item)) {
+					visibleItemsIterator.remove();
+					filtered.items.add(item);
+				}
+			}
+			if (comparator.isNotNull()) {
+				visible.items.sort(comparator.get());
+			}
+			fireTableDataChanged();
+			filtered.notifyChanges();
+			selectionModel.selectedItems().set(selectedItems);
+		}
 	}
 
 	private final class VisibleItems implements Observable<List<R>> {
@@ -612,7 +612,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private CombinedIncludeCondition(Collection<ColumnConditionModel<C, ?>> columnFilters) {
 			this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
-			this.includeCondition.addListener(DefaultFilterTableModel.this::filterItems);
+			this.includeCondition.addListener(modelItems::filter);
 		}
 
 		@Override
