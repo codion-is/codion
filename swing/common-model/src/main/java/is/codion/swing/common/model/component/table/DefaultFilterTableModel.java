@@ -501,6 +501,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public Collection<R> get() {
+			if (filtered.items.isEmpty()) {
+				return unmodifiableCollection(new ArrayList<>(visible.items));
+			}
 			List<R> entities = new ArrayList<>(visible.items.size() + filtered.items.size());
 			entities.addAll(visible.items);
 			entities.addAll(filtered.items);

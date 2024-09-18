@@ -315,6 +315,9 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Collection<T> get() {
 			List<T> visibleItems = visible.get();
+			if (filtered.items.isEmpty()) {
+				return unmodifiableCollection(new ArrayList<>(visibleItems));
+			}
 			List<T> entities = new ArrayList<>(visibleItems.size() + filtered.items.size());
 			entities.addAll(visibleItems);
 			entities.addAll(filtered.items);

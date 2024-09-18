@@ -41,7 +41,7 @@ import java.util.function.Supplier;
 public interface FilterModel<T> {
 
 	/**
-	 * Specifies whether data models should refresh data asynchronously or on the EDT
+	 * Specifies whether data models should refresh data asynchronously or on the UI thread
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * @see Refresher#async()
