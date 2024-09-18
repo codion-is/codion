@@ -91,7 +91,7 @@ public abstract class AbstractFilterModelRefresher<T> extends FilterModel.Abstra
 		if (afterRefresh != null) {
 			afterRefresh.accept(items);
 		}
-		notifySuccess();
+		notifySuccess(items);
 	}
 
 	private void cancelCurrentRefresh() {

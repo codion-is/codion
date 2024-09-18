@@ -43,7 +43,7 @@ public final class ContinentModel extends SwingEntityModel {
 
 	ContinentModel(EntityConnectionProvider connectionProvider) {
 		super(Continent.TYPE, connectionProvider);
-		tableModel().refresher().success().addListener(this::refreshChartDatasets);
+		tableModel().refresher().success().addConsumer(this::refreshChartDatasets);
 		CountryModel countryModel = new CountryModel(connectionProvider);
 		addDetailModel(new CountryModelLink(countryModel)).active().set(true);
 	}
@@ -64,12 +64,12 @@ public final class ContinentModel extends SwingEntityModel {
 		return lifeExpectancyDataset;
 	}
 
-	private void refreshChartDatasets() {
+	private void refreshChartDatasets(Collection<Entity> continents) {
 		populationDataset.clear();
 		surfaceAreaDataset.clear();
 		gnpDataset.clear();
 		lifeExpectancyDataset.clear();
-		tableModel().items().get().forEach(continent -> {
+		continents.forEach(continent -> {
 			String contientName = continent.get(Continent.NAME);
 			populationDataset.setValue(contientName, continent.get(Continent.POPULATION));
 			surfaceAreaDataset.setValue(contientName, continent.get(Continent.SURFACE_AREA));

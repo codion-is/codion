@@ -179,7 +179,7 @@ public interface FilterModel<T> {
 		 * @return an observer notified each time a successful refresh has been performed
 		 * @see #refresh()
 		 */
-		Observer<?> success();
+		Observer<Collection<T>> success();
 
 		/**
 		 * @return an observer notified each time an asynchronous refresh has failed
@@ -194,7 +194,7 @@ public interface FilterModel<T> {
 	 */
 	abstract class AbstractRefresher<T> implements Refresher<T> {
 
-		private final Event<?> refreshEvent = Event.event();
+		private final Event<Collection<T>> refreshEvent = Event.event();
 		private final Event<Exception> refreshFailedEvent = Event.event();
 		private final State refreshingState = State.state();
 		private final Value<Supplier<Collection<T>>> items;
@@ -240,7 +240,7 @@ public interface FilterModel<T> {
 		}
 
 		@Override
-		public final Observer<?> success() {
+		public final Observer<Collection<T>> success() {
 			return refreshEvent.observer();
 		}
 
@@ -258,11 +258,12 @@ public interface FilterModel<T> {
 		}
 
 		/**
-		 * Triggers the successful refresh event
+		 * Triggers the successful refresh event with the given items
+		 * @param items the refresh result
 		 * @see #success()
 		 */
-		protected final void notifySuccess() {
-			refreshEvent.run();
+		protected final void notifySuccess(Collection<T> items) {
+			refreshEvent.accept(items);
 		}
 
 		/**

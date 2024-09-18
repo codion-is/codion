@@ -50,7 +50,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 		super(new CityEditModel(connectionProvider));
 		selectionModel().selectedItems().addConsumer(displayLocationEvent);
 		selectionModel().selectedIndexes().addListener(this::updateCitiesWithoutLocationSelected);
-		refresher().success().addListener(this::refreshChartDataset);
+		refresher().success().addConsumer(this::refreshChartDataset);
 	}
 
 	public PieDataset<String> chartDataset() {
@@ -69,10 +69,9 @@ public final class CityTableModel extends SwingEntityTableModel {
 		return citiesWithoutLocationSelected.observer();
 	}
 
-	private void refreshChartDataset() {
+	private void refreshChartDataset(Collection<Entity> cities) {
 		chartDataset.clear();
-		items().visible().get().forEach(city ->
-						chartDataset.setValue(city.get(City.NAME), city.get(City.POPULATION)));
+		cities.forEach(city -> chartDataset.setValue(city.get(City.NAME), city.get(City.POPULATION)));
 	}
 
 	private void updateCitiesWithoutLocationSelected() {

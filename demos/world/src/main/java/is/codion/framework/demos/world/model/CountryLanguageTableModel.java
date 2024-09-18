@@ -20,10 +20,13 @@ package is.codion.framework.demos.world.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
+
+import java.util.Collection;
 
 public final class CountryLanguageTableModel extends SwingEntityTableModel {
 
@@ -32,16 +35,16 @@ public final class CountryLanguageTableModel extends SwingEntityTableModel {
 	CountryLanguageTableModel(EntityConnectionProvider connectionProvider) {
 		super(CountryLanguage.TYPE, connectionProvider);
 		editModel().initializeComboBoxModels(CountryLanguage.COUNTRY_FK);
-		refresher().success().addListener(this::refreshChartDataset);
+		refresher().success().addConsumer(this::refreshChartDataset);
 	}
 
 	public PieDataset<String> chartDataset() {
 		return chartDataset;
 	}
 
-	private void refreshChartDataset() {
+	private void refreshChartDataset(Collection<Entity> countryLanguages) {
 		chartDataset.clear();
-		items().visible().get().forEach(countryLanguage ->
+		countryLanguages.forEach(countryLanguage ->
 						chartDataset.setValue(countryLanguage.get(CountryLanguage.LANGUAGE),
 										countryLanguage.get(CountryLanguage.NO_OF_SPEAKERS)));
 	}
