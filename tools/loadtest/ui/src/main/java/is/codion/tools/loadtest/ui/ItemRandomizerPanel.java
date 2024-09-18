@@ -20,6 +20,7 @@ package is.codion.tools.loadtest.ui;
 
 import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.model.randomizer.ItemRandomizer.RandomItem;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.ui.component.Components;
@@ -50,6 +51,7 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	private static final int SPINNER_COLUMNS = 3;
 
 	private final ItemRandomizer<T> itemRandomizer;
+	private final SelectedItems selectedItems = new SelectedItems();
 	private final JPanel configPanel = new JPanel(gridLayout(0, 1));
 	private final ComponentValue<List<RandomItem<T>>, JList<RandomItem<T>>> listComponentValue =
 					Components.<RandomItem<T>>list(new DefaultListModel<>())
@@ -69,26 +71,19 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	}
 
 	/**
-	 * @return an observer notified each time the selected items change
+	 * @return the selected items
 	 */
-	public Observer<List<RandomItem<T>>> selectedItemsChanged() {
-		return listComponentValue.observer();
-	}
-
-	/**
-	 * @return the currently selected items
-	 */
-	public List<RandomItem<T>> selectedItems() {
-		return listComponentValue.get();
+	public Observable<List<RandomItem<T>>> selectedItems() {
+		return selectedItems;
 	}
 
 	private void initializeUI() {
 		List<RandomItem<T>> items = new ArrayList<>(itemRandomizer.items());
 		items.sort(Comparator.comparing(item -> item.item().toString()));
 		items.forEach(((DefaultListModel<RandomItem<T>>) listComponentValue.component().getModel())::addElement);
-		listComponentValue.addConsumer(selectedItems -> {
+		listComponentValue.addConsumer(selected -> {
 			configPanel.removeAll();
-			selectedItems.forEach(item -> configPanel.add(createWeightPanel(item)));
+			selected.forEach(item -> configPanel.add(createWeightPanel(item)));
 			revalidate();
 		});
 		setLayout(borderLayout());
@@ -155,6 +150,19 @@ final class ItemRandomizerPanel<T> extends JPanel {
 		@Override
 		protected void setValue(Integer value) {
 			itemRandomizer.setWeight(item, value);
+		}
+	}
+
+	private final class SelectedItems implements Observable<List<RandomItem<T>>> {
+
+		@Override
+		public List<RandomItem<T>> get() {
+			return listComponentValue.get();
+		}
+
+		@Override
+		public Observer<List<RandomItem<T>>> observer() {
+			return listComponentValue.observer();
 		}
 	}
 }

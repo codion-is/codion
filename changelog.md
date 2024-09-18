@@ -35,6 +35,8 @@ Codion Change Log
 ### is.codion.tools.monitor.model
 - ConnectionPoolMonitor.statisticsEvent() renamed statisticsObserver().
 - ConnectionPoolMonitor.statisticsObserver() renamed statisticsUpdated().
+### is.codion.tools.loadtest.ui
+- ItemRandomizerPanel.selectedItems() now Observable based.
 
 ## 0.18.13
 ### is.codion

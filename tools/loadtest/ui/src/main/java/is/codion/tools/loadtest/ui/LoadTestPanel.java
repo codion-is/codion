@@ -193,7 +193,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private ItemRandomizerPanel<Scenario<T>> createScenarioPanel() {
 		ItemRandomizerPanel<Scenario<T>> panel = new ItemRandomizerPanel<>(loadTest.scenarioChooser());
 		panel.setBorder(createTitledBorder("Usage scenarios"));
-		panel.selectedItemsChanged().addConsumer(this::onScenarioSelectionChanged);
+		panel.selectedItems().addConsumer(this::onScenarioSelectionChanged);
 
 		return panel;
 	}
