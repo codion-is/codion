@@ -49,9 +49,9 @@ public interface FilterModel<T> {
 	PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);
 
 	/**
-	 * @return the include condition value
+	 * @return the {@link Value} controlling the predicate specifying which items should be visible in this model
 	 */
-	Value<Predicate<T>> includeCondition();
+	Value<Predicate<T>> visiblePredicate();
 
 	/**
 	 * @return the model items
@@ -120,10 +120,10 @@ public interface FilterModel<T> {
 		boolean filtered(T item);
 
 		/**
-		 * Filters the items according to the condition specified by {@link #includeCondition()}.
+		 * Filters the items according to the condition specified by {@link #visiblePredicate()}.
 		 * If no include condition is specified this method does nothing.
 		 * This method does not interfere with the internal ordering of the visible items.
-		 * @see #includeCondition()
+		 * @see #visiblePredicate()
 		 */
 		void filter();
 	}

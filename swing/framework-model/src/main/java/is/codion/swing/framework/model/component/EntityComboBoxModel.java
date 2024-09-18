@@ -83,7 +83,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	private final Entities entities;
 	private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
-	private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
+	private final Predicate<Entity> foreignKeyVisiblePredicate = new ForeignKeyVisiblePredicate();
 	private final Value<Supplier<Condition>> conditionSupplier;
 	private final State handleEditEvents = State.builder()
 					.consumer(new HandleEditEventsChanged())
@@ -108,7 +108,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		comboBoxModel.selectedItemTranslator().set(new SelectedItemTranslator());
 		comboBoxModel.refresher().items().set(this::performQuery);
 		comboBoxModel.validator().set(new ItemValidator());
-		comboBoxModel.includeCondition().set(foreignKeyIncludeCondition);
+		comboBoxModel.visiblePredicate().set(foreignKeyVisiblePredicate);
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
 
@@ -214,19 +214,19 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	/**
-	 * Use this method to retrieve the default foreign key filter include condition if you
-	 * want to add a custom {@link Predicate} to this model via {@link #includeCondition()}.
+	 * Use this method to retrieve the default foreign key filter visible predicate if you
+	 * want to add a custom {@link Predicate} to this model via {@link #visiblePredicate()}.
 	 * <pre>
 	 * {@code
-	 *   Predicate fkCondition = model.foreignKeyIncludeCondition();
-	 *   model.includeCondition().set(item -&gt; fkCondition.test(item) &amp;&amp; ...);
+	 *   Predicate fkCondition = model.foreignKeyVisiblePredicate();
+	 *   model.visiblePredicate().set(item -&gt; fkCondition.test(item) &amp;&amp; ...);
 	 * }
 	 * </pre>
 	 * @return the {@link Predicate} based on the foreign key filter entities
 	 * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
 	 */
-	public Predicate<Entity> foreignKeyIncludeCondition() {
-		return foreignKeyIncludeCondition;
+	public Predicate<Entity> foreignKeyVisiblePredicate() {
+		return foreignKeyVisiblePredicate;
 	}
 
 	/**
@@ -243,7 +243,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		else {
 			foreignKeyFilterKeys.put(foreignKey, new HashSet<>(keys));
 		}
-		includeCondition().set(foreignKeyIncludeCondition);
+		visiblePredicate().set(foreignKeyVisiblePredicate);
 		items().filter();
 	}
 
@@ -423,8 +423,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public Value<Predicate<Entity>> includeCondition() {
-		return comboBoxModel.includeCondition();
+	public Value<Predicate<Entity>> visiblePredicate() {
+		return comboBoxModel.visiblePredicate();
 	}
 
 	@Override
@@ -546,11 +546,11 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
 		Predicate<Entity> filterAllCondition = item -> false;
 		if (strictForeignKeyFiltering.get()) {
-			includeCondition().set(filterAllCondition);
+			visiblePredicate().set(filterAllCondition);
 		}
 		foreignKeyModel.selectedItem().addConsumer(selected -> {
 			if (selected == null && strictForeignKeyFiltering.get()) {
-				includeCondition().set(filterAllCondition);
+				visiblePredicate().set(filterAllCondition);
 			}
 			else {
 				setForeignKeyFilterKeys(foreignKey, selected == null ? emptyList() : singletonList(selected.primaryKey()));
@@ -658,7 +658,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		}
 	}
 
-	private final class ForeignKeyIncludeCondition implements Predicate<Entity> {
+	private final class ForeignKeyVisiblePredicate implements Predicate<Entity> {
 
 		@Override
 		public boolean test(Entity item) {

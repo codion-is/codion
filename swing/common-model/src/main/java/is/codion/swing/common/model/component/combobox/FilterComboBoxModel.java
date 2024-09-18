@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  * A combo box model based on {@link FilterModel}.
  * @param <T> the type of values in this combo box model
  * @see #filterComboBoxModel()
- * @see #includeCondition()
+ * @see #visiblePredicate()
  */
 public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T> {
 
@@ -63,10 +63,10 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	/**
 	 * Adds the given item to this model, respecting the sorting order if specified.
 	 * If this model already contains the item, calling this method has no effect.
-	 * Note that if the item does not satisfy the include condition, it will be filtered right away.
+	 * Note that if the item does not fulfill the visible predicate, it will be filtered right away.
 	 * @param item the item to add
 	 * @throws IllegalArgumentException in case the item fails validation
-	 * @see #includeCondition()
+	 * @see #visiblePredicate()
 	 */
 	void add(T item);
 
@@ -85,16 +85,17 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	void replace(T item, T replacement);
 
 	/**
-	 * Sorts the items in this model
+	 * Sorts the visible items in this model
 	 * @see #comparator()
 	 */
 	void sortItems();
 
 	/**
-	 * Controls the Comparator used when sorting the visible items in this model and sorts the model accordingly.
-	 * This Comparator must take into account the null value if a null item has been set via {@link #nullItem()}.
+	 * Controls the {@link Comparator} used when sorting the visible items in this model and sorts the model accordingly when set.
+	 * This {@link Comparator} must take into account the null value if a null item has been set via {@link #nullItem()}.
 	 * If a null {@code comparator} is provided no sorting will be performed.
-	 * @return the {@link Value} controlling the comparator used when sorting, value may be null if the items of this model should not be sorted
+	 * @return the {@link Value} controlling the {@link Comparator} used when sorting, value may be null if the items of this model should not be sorted
+	 * @see #sortItems()
 	 */
 	Value<Comparator<T>> comparator();
 
@@ -169,7 +170,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * which is not currently visible in the model
 	 * This is false by default.
 	 * @return the {@link State} controlling whether filtering affects the selected item
-	 * @see #includeCondition()
+	 * @see #visiblePredicate()
 	 */
 	State filterSelectedItem();
 

@@ -60,7 +60,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final State filterSelectedItem = State.state(false);
 	private final DefaultItems modelItems = new DefaultItems();
 	private final Refresher<T> refresher;
-	private final Value<Predicate<T>> includeCondition = Value.value();
+	private final Value<Predicate<T>> visiblePredicate = Value.value();
 	private final Value<Predicate<T>> validator = Value.builder()
 					.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)
 					.build();
@@ -85,7 +85,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	 */
 	protected DefaultFilterComboBoxModel() {
 		refresher = new DefaultRefresher(new DefaultItemsSupplier());
-		includeCondition.addListener(modelItems::filter);
+		visiblePredicate.addListener(modelItems::filter);
 		validator.addValidator(validator -> modelItems.get().stream()
 						.filter(Objects::nonNull)
 						.forEach(validator::test));
@@ -133,14 +133,14 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final Value<Predicate<T>> includeCondition() {
-		return includeCondition;
+	public final Value<Predicate<T>> visiblePredicate() {
+		return visiblePredicate;
 	}
 
 	@Override
 	public final void add(T item) {
 		validate(item);
-		if (includeCondition.isNull() || includeCondition.get().test(item)) {
+		if (visiblePredicate.isNull() || visiblePredicate.get().test(item)) {
 			if (!modelItems.visible.items.contains(item)) {
 				modelItems.visible.items.add(item);
 				sortItems();
@@ -380,10 +380,10 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void filter() {
 			visible.items.addAll(filtered.items);
 			filtered.items.clear();
-			if (includeCondition.isNotNull()) {
+			if (visiblePredicate.isNotNull()) {
 				for (Iterator<T> iterator = visible.items.listIterator(); iterator.hasNext(); ) {
 					T item = iterator.next();
-					if (item != null && !includeCondition.get().test(item)) {
+					if (item != null && !visiblePredicate.get().test(item)) {
 						filtered.items.add(item);
 						iterator.remove();
 					}

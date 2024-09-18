@@ -148,7 +148,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 * If the item should be filtered calling this method has no effect.
 	 * @param index the index
 	 * @param item the item
-	 * @see #includeCondition()
+	 * @see #visiblePredicate()
 	 */
 	void setItemAt(int index, R item);
 

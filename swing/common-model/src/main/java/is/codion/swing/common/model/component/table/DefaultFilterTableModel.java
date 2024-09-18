@@ -70,7 +70,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final DefaultItems modelItems = new DefaultItems();
 	private final FilterTableSelectionModel<R> selectionModel;
 	private final TableConditionModel<C> filterModel;
-	private final CombinedIncludeCondition combinedIncludeCondition;
+	private final CombinedVisiblePredicate combinedVisiblePredicate;
 	private final Predicate<R> validator;
 	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
@@ -84,7 +84,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.selectionModel = new DefaultFilterTableSelectionModel<>(this);
 		this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
-		this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
+		this.combinedVisiblePredicate = new CombinedVisiblePredicate(filterModel.conditionModels().values());
 		this.refresher = new DefaultRefresher(builder.items == null ? modelItems::get : builder.items);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
@@ -194,8 +194,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Value<Predicate<R>> includeCondition() {
-		return combinedIncludeCondition.includeCondition;
+	public Value<Predicate<R>> visiblePredicate() {
+		return combinedVisiblePredicate.visiblePredicate;
 	}
 
 	@Override
@@ -422,7 +422,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	private boolean include(R item) {
-		return combinedIncludeCondition.test(item);
+		return combinedVisiblePredicate.test(item);
 	}
 
 	private Collection<ColumnConditionModel<C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
@@ -607,20 +607,20 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class CombinedIncludeCondition implements Predicate<R> {
+	private final class CombinedVisiblePredicate implements Predicate<R> {
 
 		private final List<ColumnConditionModel<C, ?>> columnFilters;
 
-		private final Value<Predicate<R>> includeCondition = Value.value();
+		private final Value<Predicate<R>> visiblePredicate = Value.value();
 
-		private CombinedIncludeCondition(Collection<ColumnConditionModel<C, ?>> columnFilters) {
+		private CombinedVisiblePredicate(Collection<ColumnConditionModel<C, ?>> columnFilters) {
 			this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
-			this.includeCondition.addListener(modelItems::filter);
+			this.visiblePredicate.addListener(modelItems::filter);
 		}
 
 		@Override
 		public boolean test(R item) {
-			if (includeCondition.isNotNull() && !includeCondition.get().test(item)) {
+			if (visiblePredicate.isNotNull() && !visiblePredicate.get().test(item)) {
 				return false;
 			}
 
