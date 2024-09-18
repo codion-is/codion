@@ -67,37 +67,6 @@ public interface FilterModel<T> {
 	Items<T> items();
 
 	/**
-	 * @return the number of currently visible items
-	 */
-	int visibleCount();
-
-	/**
-	 * @return the number of currently filtered items
-	 */
-	int filteredCount();
-
-	/**
-	 * Returns true if this model contains the given item, visible or filtered.
-	 * @param item the item
-	 * @return true if this model contains the item
-	 */
-	boolean containsItem(T item);
-
-	/**
-	 * Returns true if this model contains the given item, and it is visible, that is, not filtered
-	 * @param item the item
-	 * @return true if the given item is visible
-	 */
-	boolean visible(T item);
-
-	/**
-	 * Returns true if this model contains the given item, and it is filtered, that is, is not visible
-	 * @param item the item
-	 * @return true if the given item is filtered
-	 */
-	boolean filtered(T item);
-
-	/**
 	 * @return this models Refresher instance
 	 */
 	Refresher<T> refresher();
@@ -136,6 +105,27 @@ public interface FilterModel<T> {
 		 * @return an {@link Observable} providing an unmodifiable view of the filtered items
 		 */
 		Observable<Collection<T>> filtered();
+
+		/**
+		 * Returns true if these items contain the given item, visible or filtered.
+		 * @param item the item
+		 * @return true if this model contains the item
+		 */
+		boolean contains(T item);
+
+		/**
+		 * Returns true if these items contain the given item, and it is visible, that is, not filtered
+		 * @param item the item
+		 * @return true if the given item is visible
+		 */
+		boolean visible(T item);
+
+		/**
+		 * Returns true if these items contain the given item, and it is filtered, that is, is not visible
+		 * @param item the item
+		 * @return true if the given item is filtered
+		 */
+		boolean filtered(T item);
 	}
 
 	/**

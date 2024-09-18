@@ -76,7 +76,7 @@ public final class EntityComboBoxModelTest {
 						.build();
 
 		EntityEditEvents.inserted(singletonList(temp));
-		assertTrue(comboBoxModel.visible(temp));
+		assertTrue(comboBoxModel.items().visible(temp));
 
 		temp.put(Employee.NAME, "Newname");
 		temp.save(Employee.NAME);
@@ -88,12 +88,12 @@ public final class EntityComboBoxModelTest {
 		assertEquals("Newname", comboBoxModel.find(temp.primaryKey()).orElse(null).get(Employee.NAME));
 
 		EntityEditEvents.deleted(singletonList(temp));
-		assertFalse(comboBoxModel.visible(temp));
+		assertFalse(comboBoxModel.items().visible(temp));
 
 		comboBoxModel.handleEditEvents().set(false);
 
 		EntityEditEvents.inserted(singletonList(temp));
-		assertFalse(comboBoxModel.visible(temp));
+		assertFalse(comboBoxModel.items().visible(temp));
 
 		comboBoxModel.refresh();
 	}
@@ -342,13 +342,13 @@ public final class EntityComboBoxModelTest {
 	@Test
 	void nullCaption() {
 		comboBoxModel.refresh();
-		assertFalse(comboBoxModel.containsItem(null));
+		assertFalse(comboBoxModel.items().contains(null));
 		comboBoxModel.setNullCaption("-");
-		assertTrue(comboBoxModel.containsItem(null));
+		assertTrue(comboBoxModel.items().contains(null));
 		assertEquals("-", comboBoxModel.getSelectedItem().toString());
 		assertNull(comboBoxModel.selectedValue());
 		comboBoxModel.includeNull().set(false);
-		assertFalse(comboBoxModel.containsItem(null));
+		assertFalse(comboBoxModel.items().contains(null));
 	}
 
 	@Test

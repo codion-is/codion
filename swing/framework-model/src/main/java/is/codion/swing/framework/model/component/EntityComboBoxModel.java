@@ -438,31 +438,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public int visibleCount() {
-		return comboBoxModel.visibleCount();
-	}
-
-	@Override
-	public int filteredCount() {
-		return comboBoxModel.filteredCount();
-	}
-
-	@Override
-	public boolean containsItem(Entity item) {
-		return comboBoxModel.containsItem(item);
-	}
-
-	@Override
-	public boolean visible(Entity item) {
-		return comboBoxModel.visible(item);
-	}
-
-	@Override
-	public boolean filtered(Entity item) {
-		return comboBoxModel.filtered(item);
-	}
-
-	@Override
 	public Refresher<Entity> refresher() {
 		return comboBoxModel.refresher();
 	}

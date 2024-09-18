@@ -166,30 +166,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final int filteredCount() {
-		return modelItems.filtered.items.size();
-	}
-
-	@Override
-	public final int visibleCount() {
-		return modelItems.visible.items.size();
-	}
-
-	@Override
-	public final boolean visible(T item) {
-		if (item == null) {
-			return includeNull.get();
-		}
-
-		return modelItems.visible.items.contains(item);
-	}
-
-	@Override
-	public final boolean filtered(T item) {
-		return modelItems.filtered.items.contains(item);
-	}
-
-	@Override
 	public final void add(T item) {
 		validate(item);
 		if (includeCondition.isNull() || includeCondition.get().test(item)) {
@@ -239,11 +215,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			fireContentsChanged();
 			modelItems.visible.notifyChanges();
 		}
-	}
-
-	@Override
-	public final boolean containsItem(T item) {
-		return modelItems.visible.items.contains(item) || modelItems.filtered.items.contains(item);
 	}
 
 	@Override
@@ -371,7 +342,9 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public Collection<T> get() {
-			List<T> entities = new ArrayList<>(visible.get());
+			List<T> visibleItems = visible.get();
+			List<T> entities = new ArrayList<>(visibleItems.size() + filtered.items.size());
+			entities.addAll(visibleItems);
 			entities.addAll(filtered.items);
 
 			return unmodifiableList(entities);
@@ -407,6 +380,25 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Observable<Collection<T>> filtered() {
 			return filtered;
+		}
+
+		@Override
+		public boolean contains(T item) {
+			return visible.items.contains(item) || filtered.items.contains(item);
+		}
+
+		@Override
+		public boolean visible(T item) {
+			if (item == null) {
+				return includeNull.get();
+			}
+
+			return visible.items.contains(item);
+		}
+
+		@Override
+		public boolean filtered(T item) {
+			return filtered.items.contains(item);
 		}
 	}
 

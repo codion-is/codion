@@ -230,7 +230,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 			EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
 			Entity selectedEntity = comboBoxModel.selectedValue();
 			entities.forEach(comboBoxModel::remove);
-			if (comboBoxModel.visible(selectedEntity)) {
+			if (comboBoxModel.items().visible(selectedEntity)) {
 				comboBoxModel.setSelectedItem(selectedEntity);
 			}//if the null value is selected we're fine, otherwise select topmost item
 			else if (!comboBoxModel.nullSelected() && comboBoxModel.getSize() > 0) {

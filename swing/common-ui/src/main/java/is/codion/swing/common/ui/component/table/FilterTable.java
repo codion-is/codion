@@ -1348,7 +1348,7 @@ public final class FilterTable<R, C> extends JTable {
 			FilterTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
 
 			return tableSelectionModel.selectionNotEmpty().get() &&
-							tableSelectionModel.selectionCount() != tableModel.visibleCount();
+							tableSelectionModel.selectionCount() != tableModel.items().visible().get().size();
 		}
 	}
 
@@ -1387,7 +1387,7 @@ public final class FilterTable<R, C> extends JTable {
 		public String get() {
 			List<Integer> rows = selected ?
 							tableModel.selectionModel().selectedIndexes().get() :
-							IntStream.range(0, tableModel.visibleCount())
+							IntStream.range(0, tableModel.items().visible().get().size())
 											.boxed()
 											.collect(toList());
 

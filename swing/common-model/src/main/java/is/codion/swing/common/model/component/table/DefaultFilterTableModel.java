@@ -99,16 +99,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public int visibleCount() {
-		return getRowCount();
-	}
-
-	@Override
-	public int filteredCount() {
-		return modelItems.filtered.items.size();
-	}
-
-	@Override
 	public int getColumnCount() {
 		return columns.identifiers().size();
 	}
@@ -116,21 +106,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public int getRowCount() {
 		return modelItems.visible.items.size();
-	}
-
-	@Override
-	public boolean containsItem(R item) {
-		return visible(item) || filtered(item);
-	}
-
-	@Override
-	public boolean visible(R item) {
-		return modelItems.visible.items.contains(item);
-	}
-
-	@Override
-	public boolean filtered(R item) {
-		return modelItems.filtered.items.contains(item);
 	}
 
 	@Override
@@ -178,7 +153,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public <T> Collection<T> values(C identifier) {
-		return (Collection<T>) columnValues(IntStream.range(0, visibleCount()).boxed(),
+		return (Collection<T>) columnValues(IntStream.range(0, modelItems.visible().get().size()).boxed(),
 						columns.identifiers().indexOf(identifier));
 	}
 
@@ -397,7 +372,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	private boolean addItemInternal(R item) {
-		return addItemAtInternal(visibleCount(), item);
+		return addItemAtInternal(modelItems.visible().get().size(), item);
 	}
 
 	private boolean addItemAtInternal(int index, R item) {
@@ -546,8 +521,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public Collection<R> get() {
-			List<R> entities = new ArrayList<>(modelItems.visible.items);
-			entities.addAll(modelItems.filtered.items);
+			List<R> entities = new ArrayList<>(visible.items.size() + filtered.items.size());
+			entities.addAll(visible.items);
+			entities.addAll(filtered.items);
 
 			return unmodifiableList(entities);
 		}
@@ -570,6 +546,21 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public Observable<Collection<R>> filtered() {
 			return filtered;
+		}
+
+		@Override
+		public boolean contains(R item) {
+			return visible(item) || filtered(item);
+		}
+
+		@Override
+		public boolean visible(R item) {
+			return visible.items.contains(item);
+		}
+
+		@Override
+		public boolean filtered(R item) {
+			return filtered.items.contains(item);
 		}
 	}
 

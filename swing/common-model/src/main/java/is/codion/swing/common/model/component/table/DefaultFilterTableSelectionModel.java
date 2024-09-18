@@ -92,7 +92,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	@Override
 	public void selectAll() {
-		setSelectionInterval(0, tableModel.visibleCount() - 1);
+		setSelectionInterval(0, tableModel.items().visible().get().size() - 1);
 	}
 
 	@Override
@@ -276,7 +276,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		@Override
 		public void set(Integer index) {
 			requireNonNull(index);
-			checkIndex(index, tableModel.visibleCount());
+			checkIndex(index, tableModel.items().visible().get().size());
 			setSelectionInterval(index, index);
 		}
 
@@ -323,20 +323,20 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		@Override
 		public void add(int index) {
-			checkIndex(index, tableModel.visibleCount());
+			checkIndex(index, tableModel.items().visible().get().size());
 			addSelectionInterval(index, index);
 		}
 
 		@Override
 		public void remove(int index) {
-			checkIndex(index, tableModel.visibleCount());
+			checkIndex(index, tableModel.items().visible().get().size());
 			removeSelectionInterval(index, index);
 		}
 
 		@Override
 		public void remove(Collection<Integer> indexes) {
 			indexes.forEach(index -> {
-				checkIndex(index, tableModel.visibleCount());
+				checkIndex(index, tableModel.items().visible().get().size());
 				removeSelectionInterval(index, index);
 			});
 		}
@@ -356,8 +356,9 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		@Override
 		public void moveUp() {
-			if (tableModel.visibleCount() > 0) {
-				int lastIndex = tableModel.visibleCount() - 1;
+			int visibleSize = tableModel.items().visible().get().size();
+			if (visibleSize > 0) {
+				int lastIndex = visibleSize - 1;
 				if (isSelectionEmpty()) {
 					setSelectionInterval(lastIndex, lastIndex);
 				}
@@ -371,13 +372,14 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		@Override
 		public void moveDown() {
-			if (tableModel.visibleCount() > 0) {
+			int filteredSize = tableModel.items().visible().get().size();
+			if (filteredSize > 0) {
 				if (isSelectionEmpty()) {
 					setSelectionInterval(0, 0);
 				}
 				else {
 					selectedIndexes.set(selectedIndexes.get().stream()
-									.map(index -> index == tableModel.visibleCount() - 1 ? 0 : index + 1)
+									.map(index -> index == filteredSize - 1 ? 0 : index + 1)
 									.collect(toList()));
 				}
 			}
@@ -389,7 +391,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		}
 
 		private void checkIndexes(Collection<Integer> indexes) {
-			int size = tableModel.visibleCount();
+			int size = tableModel.items().visible().get().size();
 			for (Integer index : indexes) {
 				checkIndex(index, size);
 			}
@@ -407,7 +409,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		@Override
 		public R get() {
 			int index = selectedIndex.get();
-			if (index >= 0 && index < tableModel.visibleCount()) {
+			if (index >= 0 && index < tableModel.items().visible().get().size()) {
 				return tableModel.itemAt(index);
 			}
 

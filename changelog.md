@@ -13,6 +13,7 @@ Codion Change Log
 ### is.codion.common.model
 - FilterModel.items() now Observable based, related refactoring.
 - FilterModel.Items added, related refactoring.
+- FilterModel.containsItem(), visible() and filtered() moved to Items, containsItem() renamed contains().
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.
