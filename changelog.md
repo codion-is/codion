@@ -34,6 +34,7 @@ Codion Change Log
 - AbstractRemoteEntityConnection.closedEvent() renamed closedObserver().
 ### is.codion.tools.monitor.model
 - ConnectionPoolMonitor.statisticsEvent() renamed statisticsObserver().
+- ConnectionPoolMonitor.statisticsObserver() renamed statisticsUpdated().
 
 ## 0.18.13
 ### is.codion
