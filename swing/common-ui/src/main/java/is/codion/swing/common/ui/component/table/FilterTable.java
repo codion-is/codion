@@ -609,7 +609,7 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.command(this::copySelectedCell)
 						.name(MESSAGES.getString("copy_cell"))
-						.enabled(tableModel.selectionModel().selectionNotEmpty())
+						.enabled(tableModel.selectionModel().selectionEmpty().not())
 						.build();
 	}
 
@@ -1347,7 +1347,7 @@ public final class FilterTable<R, C> extends JTable {
 		public boolean subset() {
 			FilterTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
 
-			return tableSelectionModel.selectionNotEmpty().get() &&
+			return tableSelectionModel.selectionEmpty().not().get() &&
 							tableSelectionModel.selectionCount() != tableModel.items().visible().get().size();
 		}
 	}

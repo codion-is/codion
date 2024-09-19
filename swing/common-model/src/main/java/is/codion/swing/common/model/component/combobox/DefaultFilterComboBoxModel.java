@@ -443,11 +443,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public StateObserver selectionNotEmpty() {
-			return selected.selectionEmpty.observer().not();
-		}
-
-		@Override
 		public Observer<?> selectionChanging() {
 			return selected.changing;
 		}

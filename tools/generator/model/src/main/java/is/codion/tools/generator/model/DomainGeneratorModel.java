@@ -165,7 +165,7 @@ public final class DomainGeneratorModel {
 	}
 
 	public void saveApiImpl() throws IOException {
-		if (schemaTableModel.selectionModel().selectionNotEmpty().get()) {
+		if (schemaTableModel.selectionModel().selectionEmpty().not().get()) {
 			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
 				domainSource(domain, domainPackageValue.optional()
@@ -177,7 +177,7 @@ public final class DomainGeneratorModel {
 	}
 
 	public void saveCombined() throws IOException {
-		if (schemaTableModel.selectionModel().selectionNotEmpty().get()) {
+		if (schemaTableModel.selectionModel().selectionEmpty().not().get()) {
 			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
 				domainSource(domain, domainPackageValue.optional()

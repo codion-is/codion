@@ -61,7 +61,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.control(Control.builder()
 										.command(this::raisePriceOfSelected)
 										.name(BUNDLE.getString("raise_price") + "...")
-										.enabled(tableModel().selectionModel().selectionNotEmpty()))
+										.enabled(tableModel().selectionModel().selectionEmpty().not()))
 						.separator()
 						.defaults());
 	}

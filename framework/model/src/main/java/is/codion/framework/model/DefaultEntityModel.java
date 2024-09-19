@@ -239,7 +239,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	}
 
 	private List<Entity> activeEntities() {
-		if (tableModel != null && tableModel.selectionModel().selectionNotEmpty().get()) {
+		if (tableModel != null && tableModel.selectionModel().selectionEmpty().not().get()) {
 			return tableModel.selectionModel().selectedItems().get();
 		}
 		else if (editModel.exists().not().get()) {

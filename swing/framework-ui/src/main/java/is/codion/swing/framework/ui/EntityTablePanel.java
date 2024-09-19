@@ -1111,7 +1111,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private StateObserver createEditSelectedEnabledObserver() {
-		StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmpty();
+		StateObserver selectionNotEmpty = tableModel.selectionModel().selectionEmpty().not();
 		StateObserver updateEnabled = tableModel.editModel().updateEnabled();
 		StateObserver updateMultipleEnabledOrSingleSelection =
 						State.or(tableModel.editModel().updateMultipleEnabled(),
@@ -1127,7 +1127,7 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(this::viewDependencies)
 						.name(FrameworkMessages.dependencies())
-						.enabled(tableModel.selectionModel().selectionNotEmpty())
+						.enabled(tableModel.selectionModel().selectionEmpty().not())
 						.description(FrameworkMessages.dependenciesTip())
 						.smallIcon(ICONS.dependencies())
 						.build();
@@ -1143,7 +1143,7 @@ public class EntityTablePanel extends JPanel {
 						.name(FrameworkMessages.delete())
 						.enabled(State.and(
 										tableModel.editModel().deleteEnabled(),
-										tableModel.selectionModel().selectionNotEmpty()))
+										tableModel.selectionModel().selectionEmpty().not()))
 						.description(FrameworkMessages.deleteSelectedTip())
 						.smallIcon(ICONS.delete())
 						.build();
@@ -1322,7 +1322,7 @@ public class EntityTablePanel extends JPanel {
 	private CommandControl createClearSelectionControl() {
 		return Control.builder()
 						.command(tableModel.selectionModel()::clearSelection)
-						.enabled(tableModel.selectionModel().selectionNotEmpty())
+						.enabled(tableModel.selectionModel().selectionEmpty().not())
 						.smallIcon(ICONS.clearSelection())
 						.description(MESSAGES.getString("clear_selection_tip"))
 						.build();

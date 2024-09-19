@@ -49,7 +49,7 @@ public class CustomerTablePanel extends EntityTablePanel {
 						.command(this::viewCustomerReport)
 						.name("Customer report")
 						.smallIcon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selectionModel().selectionNotEmpty())
+						.enabled(tableModel().selectionModel().selectionEmpty().not())
 						.build());
 	}
 

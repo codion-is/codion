@@ -347,11 +347,6 @@ public interface FilterModel<T> {
 		StateObserver selectionEmpty();
 
 		/**
-		 * @return a {@link StateObserver} indicating whether the selection is not empty
-		 */
-		StateObserver selectionNotEmpty();
-
-		/**
 		 * To prevent a selection change, add a listener throwing a {@link CancelException}.
 		 * @return an observer notified when the selection is about to change
 		 */

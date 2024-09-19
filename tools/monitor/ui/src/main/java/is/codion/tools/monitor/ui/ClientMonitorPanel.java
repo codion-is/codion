@@ -139,7 +139,7 @@ public final class ClientMonitorPanel extends JPanel {
 						.control(Control.builder()
 										.command(this::disconnect)
 										.name("Disconnect")
-										.enabled(model.clientInstanceTableModel().selectionModel().selectionNotEmpty()))
+										.enabled(model.clientInstanceTableModel().selectionModel().selectionEmpty().not()))
 						.separator()
 						.control(Controls.builder()
 										.name("Columns")

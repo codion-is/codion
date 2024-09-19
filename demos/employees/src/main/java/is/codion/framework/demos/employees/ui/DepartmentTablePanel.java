@@ -54,7 +54,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 						.command(this::viewEmployeeReport)
 						.name("Employee Report")
 						.smallIcon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selectionModel().selectionNotEmpty())
+						.enabled(tableModel().selectionModel().selectionEmpty().not())
 						.build());
 	}
 	// end::setupControls[]

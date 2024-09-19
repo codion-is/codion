@@ -493,7 +493,7 @@ public final class EntityDialogs {
 							.command(this::ok)
 							.name(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
-							.enabled(tableModel.selectionModel().selectionNotEmpty())
+							.enabled(tableModel.selectionModel().selectionEmpty().not())
 							.build();
 			Control cancelControl = Control.builder()
 							.command(this::cancel)

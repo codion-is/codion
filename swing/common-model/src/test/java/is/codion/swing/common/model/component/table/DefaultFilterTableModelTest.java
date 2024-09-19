@@ -396,7 +396,6 @@ public final class DefaultFilterTableModelTest {
 
 		assertFalse(selectionModel.singleSelection().get());
 		assertTrue(selectionModel.selectionEmpty().get());
-		assertFalse(selectionModel.selectionNotEmpty().get());
 		assertFalse(selectionModel.multipleSelection().get());
 
 		tableModel.refresh();
@@ -515,7 +514,6 @@ public final class DefaultFilterTableModelTest {
 
 		tableModel.clear();
 		assertTrue(selectionModel.selectionEmpty().get());
-		assertFalse(selectionModel.selectionNotEmpty().get());
 		assertNull(selectionModel.selectedItem().get());
 
 		selectionModel.clearSelection();

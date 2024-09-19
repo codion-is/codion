@@ -163,11 +163,6 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public StateObserver selectionNotEmpty() {
-		return selectionEmpty.not();
-	}
-
-	@Override
 	public int getMinSelectionIndex() {
 		return selectionModel.getMinSelectionIndex();
 	}

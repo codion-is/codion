@@ -81,7 +81,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		Entity.Key operationsKey = deptEditModel.entities().primaryKey(Department.TYPE, 40);//operations
 		deptTableModel.select(singletonList(operationsKey));
 
-		assertTrue(deptTableModel.selectionModel().selectionNotEmpty().get());
+		assertTrue(deptTableModel.selectionModel().selectionEmpty().not().get());
 		deptEditModel.value(Department.ID).set(80);
 		assertFalse(deptTableModel.selectionModel().selectionEmpty().get());
 		deptEditModel.update();
@@ -146,7 +146,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		}
 		departmentModel.tableModel().refresh();
 		departmentModel.tableModel().selectionModel().selectedIndexes().set(asList(1, 2, 3));
-		assertTrue(departmentModel.tableModel().selectionModel().selectionNotEmpty().get());
+		assertFalse(departmentModel.tableModel().selectionModel().selectionEmpty().get());
 		assertTrue(departmentModel.editModel().exists().get());
 		departmentModel.editModel().defaults();
 		assertTrue(departmentModel.tableModel().selectionModel().selectionEmpty().get());
