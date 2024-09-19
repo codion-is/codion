@@ -132,7 +132,7 @@ public class DefaultFilterComboBoxModelTest {
 	void testSelection() {
 		AtomicInteger selectionChangedCounter = new AtomicInteger();
 		Consumer<String> selectionConsumer = selectedItem -> selectionChangedCounter.incrementAndGet();
-		testModel.selectedItem().addConsumer(selectionConsumer);
+		testModel.selectionModel().selectedItem().addConsumer(selectionConsumer);
 		testModel.setSelectedItem(BJORN);
 		assertEquals(1, selectionChangedCounter.get());
 		testModel.setSelectedItem(null);
@@ -142,20 +142,20 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.setSelectedItem(BJORN);
 		assertEquals(3, selectionChangedCounter.get());
 		assertEquals(BJORN, testModel.getSelectedItem());
-		assertEquals(BJORN, testModel.selectedValue());
-		assertFalse(testModel.selectionEmpty().get());
-		assertFalse(testModel.nullSelected());
+		assertEquals(BJORN, testModel.selectionModel().selectedValue());
+		assertFalse(testModel.selectionModel().selectionEmpty().get());
+		assertFalse(testModel.selectionModel().nullSelected());
 		testModel.setSelectedItem(null);
-		assertTrue(testModel.selectionEmpty().get());
+		assertTrue(testModel.selectionModel().selectionEmpty().get());
 		assertEquals(4, selectionChangedCounter.get());
 		assertEquals(NULL, testModel.getSelectedItem());
-		assertTrue(testModel.nullSelected());
-		assertTrue(testModel.selectionEmpty().get());
-		assertNull(testModel.selectedValue());
+		assertTrue(testModel.selectionModel().nullSelected());
+		assertTrue(testModel.selectionModel().selectionEmpty().get());
+		assertNull(testModel.selectionModel().selectedValue());
 		testModel.setSelectedItem(SIGGI);
 		testModel.clear();
 		assertEquals(6, selectionChangedCounter.get());
-		testModel.selectedItem().removeConsumer(selectionConsumer);
+		testModel.selectionModel().selectedItem().removeConsumer(selectionConsumer);
 	}
 
 	@Test
@@ -164,7 +164,7 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.setSelectedItem(BJORN);
 		testModel.visiblePredicate().set(item -> !item.equals(BJORN));
 		assertEquals(NULL, testModel.getSelectedItem());
-		assertNull(testModel.selectedValue());
+		assertNull(testModel.selectionModel().selectedValue());
 
 		testModel.visiblePredicate().clear();
 		testModel.filterSelectedItem().set(false);
@@ -172,7 +172,7 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.setSelectedItem(BJORN);
 		testModel.visiblePredicate().set(item -> !item.equals(BJORN));
 		assertNotNull(testModel.getSelectedItem());
-		assertEquals(BJORN, testModel.selectedValue());
+		assertEquals(BJORN, testModel.selectionModel().selectedValue());
 	}
 
 	@Test
@@ -242,8 +242,8 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(testModel.getElementAt(0), NULL);
 		testModel.setSelectedItem(null);
 		assertEquals(testModel.getSelectedItem(), NULL);
-		assertTrue(testModel.nullSelected());
-		assertNull(testModel.selectedValue());
+		assertTrue(testModel.selectionModel().nullSelected());
+		assertNull(testModel.selectionModel().selectedValue());
 		testModel.setSelectedItem(NULL);
 		assertEquals(NULL, testModel.getElementAt(0));
 		assertEquals(ANNA, testModel.getElementAt(1));
@@ -262,7 +262,7 @@ public class DefaultFilterComboBoxModelTest {
 		assertTrue(model.items().contains(null));
 		assertEquals("-", model.getSelectedItem());
 		model.setSelectedItem("-");
-		assertTrue(model.nullSelected());
+		assertTrue(model.selectionModel().nullSelected());
 	}
 
 	@Test
@@ -284,7 +284,7 @@ public class DefaultFilterComboBoxModelTest {
 		selectorValue.set('k');
 		assertEquals(KALLI, testModel.getSelectedItem());
 		selectorValue.clear();
-		assertTrue(testModel.nullSelected());
+		assertTrue(testModel.selectionModel().nullSelected());
 		testModel.setSelectedItem(BJORN);
 		assertEquals('b', selectorValue.get());
 		testModel.setSelectedItem(null);
@@ -319,12 +319,12 @@ public class DefaultFilterComboBoxModelTest {
 		FilterComboBoxModel<Data> model = new DefaultFilterComboBoxModel<>();
 		model.items().set(items);
 		model.setSelectedItem(items.get(1));
-		assertEquals("2", model.selectedValue().data);
+		assertEquals("2", model.selectionModel().selectedValue().data);
 
 		items = asList(new Data(1, "1"), new Data(2, "22"), new Data(3, "3"));
 
 		model.items().set(items);
-		assertEquals("22", model.selectedValue().data);
+		assertEquals("22", model.selectionModel().selectedValue().data);
 	}
 
 	@Test

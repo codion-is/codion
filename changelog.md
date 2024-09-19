@@ -19,6 +19,7 @@ Codion Change Log
 - FilterModel.filterItems() moved to Items, renamed filter().
 - FilterModel.Refresher.success() now includes the refresh result.
 - FilterModel.includeCondition() renamed visiblePredicate().
+- TableSelectionModel moved to FilterModel and split into SingleSelectionModel and SelectionModel.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.

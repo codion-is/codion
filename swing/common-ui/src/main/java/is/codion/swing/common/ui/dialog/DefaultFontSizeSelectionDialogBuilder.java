@@ -104,7 +104,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 		}
 
 		private int selectedFontSize() {
-			return fontSizeComboBoxModel.selectedValue().value();
+			return fontSizeComboBoxModel.selectionModel().selectedValue().value();
 		}
 
 		private static List<Item<Integer>> initializeValues() {

@@ -21,10 +21,11 @@
  * <li>{@link is.codion.common.model.UserPreferences}
  * <li>{@link is.codion.common.model.CancelException}
  * <li>{@link is.codion.common.model.FilterModel}
+ * <li>{@link is.codion.common.model.FilterModel.SingleSelectionModel}
+ * <li>{@link is.codion.common.model.FilterModel.SelectionModel}
  * <li>{@link is.codion.common.model.loadtest.LoadTest}
  * <li>{@link is.codion.common.model.table.ColumnConditionModel}
  * <li>{@link is.codion.common.model.table.ColumnSummaryModel}
- * <li>{@link is.codion.common.model.table.TableSelectionModel}
  * <li>{@link is.codion.common.model.table.TableConditionModel}
  * <li>{@link is.codion.common.model.table.TableSummaryModel}
  */

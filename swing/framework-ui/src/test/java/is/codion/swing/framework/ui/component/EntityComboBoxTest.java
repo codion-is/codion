@@ -84,8 +84,8 @@ public class EntityComboBoxTest {
 		comboBoxModel.setSelectedItem(null);
 		assertNull(empIdValue.getNumber());
 		empIdValue.setNumber(10);
-		assertEquals("ADAMS", comboBoxModel.selectedValue().get(Employee.NAME));
+		assertEquals("ADAMS", comboBoxModel.selectionModel().selectedValue().get(Employee.NAME));
 		empIdValue.setNumber(null);
-		assertNull(comboBoxModel.selectedValue());
+		assertNull(comboBoxModel.selectionModel().selectedValue());
 	}
 }

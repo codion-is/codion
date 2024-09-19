@@ -21,7 +21,6 @@ package is.codion.framework.model;
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.table.TableSelectionModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -275,9 +274,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	int rowCount();
 
 	/**
-	 * @return the {@link TableSelectionModel}
+	 * @return the {@link SelectionModel}
 	 */
-	TableSelectionModel<Entity> selectionModel();
+	SelectionModel<Entity> selectionModel();
 
 	/**
 	 * @return a {@link StateObserver} indicating if the search condition has changed since last refresh

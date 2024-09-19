@@ -55,9 +55,9 @@ public final class EntityComboBoxPanelTest {
 		model.setSelectedItem(sales);
 		assertEquals(sales, value.get());
 		value.clear();
-		Entity entity = model.selectedValue();
+		Entity entity = model.selectionModel().selectedValue();
 		assertNull(entity);
 		value.set(sales);
-		assertEquals(sales, model.selectedValue());
+		assertEquals(sales, model.selectionModel().selectedValue());
 	}
 }

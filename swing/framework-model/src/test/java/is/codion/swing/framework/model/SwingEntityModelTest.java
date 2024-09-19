@@ -139,7 +139,7 @@ public final class SwingEntityModelTest
 			deptComboBoxModel.setSelectedItem(department);
 			departmentModel.tableModel().deleteSelected();
 			assertEquals(3, employeeModel.editModel().foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).getSize());
-			assertNotNull(employeeModel.editModel().foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).selectedValue());
+			assertNotNull(employeeModel.editModel().foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).selectionModel().selectedValue());
 		}
 		finally {
 			connection.rollbackTransaction();
@@ -183,7 +183,7 @@ public final class SwingEntityModelTest
 
 		public EntityComboBoxModelValue(EntityComboBoxModel comboBoxModel) {
 			this.comboBoxModel = comboBoxModel;
-			comboBoxModel.selectedItem().addListener(this::notifyListeners);
+			comboBoxModel.selectionModel().selectedItem().addListener(this::notifyListeners);
 		}
 
 		@Override
@@ -193,7 +193,7 @@ public final class SwingEntityModelTest
 
 		@Override
 		protected Entity getValue() {
-			return comboBoxModel.selectedValue();
+			return comboBoxModel.selectionModel().selectedValue();
 		}
 	}
 }

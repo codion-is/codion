@@ -20,10 +20,8 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Configuration;
 import is.codion.common.model.FilterModel;
-import is.codion.common.observer.Mutable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 
 import javax.swing.ComboBoxModel;
@@ -123,34 +121,14 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 */
 	Value<T> nullItem();
 
-	/**
-	 * Returns true if this model contains null and it is selected.
-	 * @return true if this model contains null and it is selected, false otherwise
-	 * @see #includeNull()
-	 */
-	boolean nullSelected();
-
-	/**
-	 * @return a {@link StateObserver} indicating whether the selection is empty or the value representing null is selected
-	 */
-	StateObserver selectionEmpty();
-
-	/**
-	 * @return the selected value, null in case the value representing null is selected
-	 * @see #nullSelected()
-	 */
-	T selectedValue();
+	@Override
+	FilterComboBoxSelectionModel<T> selectionModel();
 
 	/**
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-	 * via {@link #nullItem()}, {@link #selectedValue()} is usually what you want
+	 * via {@link #nullItem()}, {@link FilterComboBoxSelectionModel#selectedValue()} is usually what you want
 	 */
 	T getSelectedItem();
-
-	/**
-	 * @return a {@link Mutable} controlling the selected item
-	 */
-	Mutable<T> selectedItem();
 
 	/**
 	 * Specifies whether filtering the model affects the currently selected item.
@@ -176,6 +154,25 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 */
 	static <T> FilterComboBoxModel<T> filterComboBoxModel() {
 		return new DefaultFilterComboBoxModel<>();
+	}
+
+	/**
+	 * @param <T> the item type
+	 */
+	interface FilterComboBoxSelectionModel<T> extends SingleSelectionModel<T> {
+
+		/**
+		 * @return the selected value, null in case the value representing null is selected
+		 * @see #nullSelected()
+		 */
+		T selectedValue();
+
+		/**
+		 * Returns true if this model contains null and it is selected.
+		 * @return true if this model contains null and it is selected, false otherwise
+		 * @see #includeNull()
+		 */
+		boolean nullSelected();
 	}
 
 	/**

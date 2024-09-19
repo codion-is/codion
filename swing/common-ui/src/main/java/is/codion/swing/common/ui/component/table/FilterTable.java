@@ -450,7 +450,7 @@ public final class FilterTable<R, C> extends JTable {
 										.build())
 						.owner(getParent())
 						.title(MESSAGES.getString(AUTO_RESIZE))
-						.onOk(() -> setAutoResizeMode(autoResizeComboBoxModel.selectedValue().value()))
+						.onOk(() -> setAutoResizeMode(autoResizeComboBoxModel.selectionModel().selectedValue().value()))
 						.show();
 	}
 

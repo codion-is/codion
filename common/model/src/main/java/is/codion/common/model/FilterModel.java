@@ -114,6 +114,11 @@ public interface FilterModel<T> {
 	void refreshThen(Consumer<Collection<T>> afterRefresh);
 
 	/**
+	 * @return the selection model
+	 */
+	SingleSelectionModel<T> selectionModel();
+
+	/**
 	 * A {@link Mutable} controlling the items in a {@link FilterModel}
 	 * @param <T> the item type
 	 */
@@ -328,5 +333,188 @@ public interface FilterModel<T> {
 		 * @param items the items resulting from the refresh operation
 		 */
 		protected abstract void processResult(Collection<T> items);
+	}
+
+	/**
+	 * A selection model, managing a single selected item
+	 * @param <R> the item type
+	 */
+	interface SingleSelectionModel<R> {
+
+		/**
+		 * @return a {@link StateObserver} indicating whether the selection is empty
+		 */
+		StateObserver selectionEmpty();
+
+		/**
+		 * @return a {@link StateObserver} indicating whether the selection is not empty
+		 */
+		StateObserver selectionNotEmpty();
+
+		/**
+		 * To prevent a selection change, add a listener throwing a {@link CancelException}.
+		 * @return an observer notified when the selection is about to change
+		 */
+		Observer<?> selectionChanging();
+
+		/**
+		 * @return a {@link Mutable} controlling the selected item
+		 */
+		Mutable<R> selectedItem();
+
+		/**
+		 * Clears the selection
+		 */
+		void clearSelection();
+	}
+
+	/**
+	 * A selection model
+	 * @param <R> the type of items
+	 */
+	interface SelectionModel<R> extends SingleSelectionModel<R> {
+
+		/**
+		 * @return a {@link StateObserver} indicating whether multiple items are selected
+		 */
+		StateObserver multipleSelection();
+
+		/**
+		 * @return a {@link StateObserver} indicating whether a single item is selected
+		 */
+		StateObserver singleSelection();
+
+		/**
+		 * @return a State controlling the single selection mode of this selection model
+		 */
+		State singleSelectionMode();
+
+		/**
+		 * @return a {@link Mutable} for the index of the selected row, -1 if none is selected and
+		 * the minimum selected index if more than one row is selected
+		 */
+		Mutable<Integer> selectedIndex();
+
+		/**
+		 * @return the SelectedIndexes
+		 */
+		SelectedIndexes selectedIndexes();
+
+		/**
+		 * @return the {@link SelectedItems}
+		 */
+		SelectedItems<R> selectedItems();
+
+		/**
+		 * Selects all visible items
+		 * @see #selectedIndexes()
+		 */
+		void selectAll();
+
+		/**
+		 * @return the number of selected items.
+		 */
+		int selectionCount();
+
+		/**
+		 * @param item the item
+		 * @return true if the item is selected
+		 */
+		boolean isSelected(R item);
+
+		/**
+		 * Controls the selected indexes.
+		 */
+		interface SelectedIndexes extends Mutable<List<Integer>> {
+
+			/**
+			 * @param indexes the indexes to select
+			 */
+			void set(Collection<Integer> indexes);
+
+			/**
+			 * Adds the given index to the selected indexes
+			 * @param index the index
+			 */
+			void add(int index);
+
+			/**
+			 * Removes the given index from the selection
+			 * @param index the index
+			 */
+			void remove(int index);
+
+			/**
+			 * Adds these indexes to the selection
+			 * @param indexes the indexes to add to the selection
+			 */
+			void add(Collection<Integer> indexes);
+
+			/**
+			 * Removes the given indexes from the selection
+			 * @param indexes the indexes
+			 */
+			void remove(Collection<Integer> indexes);
+
+			/**
+			 * Moves all selected indexes down one index, wraps around.
+			 * If the selection is empty the first item is selected.
+			 */
+			void moveDown();
+
+			/**
+			 * Moves all selected indexes up one index, wraps around.
+			 * If the selection is empty the last item is selected.
+			 */
+			void moveUp();
+		}
+
+		/**
+		 * Controls the selected items
+		 * @param <R> the item type
+		 */
+		interface SelectedItems<R> extends Mutable<List<R>> {
+
+			/**
+			 * @param items the items to select
+			 */
+			void set(Collection<R> items);
+
+			/**
+			 * Sets the items passing the predicate test as the selection
+			 * @param predicate the predicate
+			 */
+			void set(Predicate<R> predicate);
+
+			/**
+			 * Adds the items passing the predicate test to the selection
+			 * @param predicate the predicate
+			 */
+			void add(Predicate<R> predicate);
+
+			/**
+			 * Adds the given item to the selection
+			 * @param item the item to add to the selection
+			 */
+			void add(R item);
+
+			/**
+			 * Adds the given items to the selection
+			 * @param items the items to add to the selection
+			 */
+			void add(Collection<R> items);
+
+			/**
+			 * Remove the given item from the selection
+			 * @param item the item to remove from the selection
+			 */
+			void remove(R item);
+
+			/**
+			 * Remove the given items from the selection
+			 * @param items the items to remove from the selection
+			 */
+			void remove(Collection<R> items);
+		}
 	}
 }

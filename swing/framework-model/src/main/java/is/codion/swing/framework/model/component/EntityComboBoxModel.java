@@ -20,11 +20,9 @@ package is.codion.swing.framework.model.component;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.observer.Mutable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -391,18 +389,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public boolean nullSelected() {
-		return comboBoxModel.nullSelected();
-	}
-
-	@Override
-	public StateObserver selectionEmpty() {
-		return comboBoxModel.selectionEmpty();
-	}
-
-	@Override
-	public Entity selectedValue() {
-		return comboBoxModel.selectedValue();
+	public FilterComboBoxSelectionModel<Entity> selectionModel() {
+		return comboBoxModel.selectionModel();
 	}
 
 	@Override
@@ -418,11 +406,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	@Override
 	public <V> Value<V> createSelectorValue(ItemFinder<Entity, V> itemFinder) {
 		return comboBoxModel.createSelectorValue(itemFinder);
-	}
-
-	@Override
-	public Mutable<Entity> selectedItem() {
-		return comboBoxModel.selectedItem();
 	}
 
 	@Override
@@ -538,7 +521,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		else {
 			linkCondition(foreignKey, foreignKeyModel);
 		}
-		selectedItem().addConsumer(selected -> {
+		selectionModel().selectedItem().addConsumer(selected -> {
 			if (selected != null && !selected.isNull(foreignKey)) {
 				foreignKeyModel.select(selected.key(foreignKey));
 			}
@@ -551,7 +534,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		if (strictForeignKeyFiltering.get()) {
 			visiblePredicate().set(filterAllCondition);
 		}
-		foreignKeyModel.selectedItem().addConsumer(selected -> {
+		foreignKeyModel.selectionModel().selectedItem().addConsumer(selected -> {
 			if (selected == null && strictForeignKeyFiltering.get()) {
 				visiblePredicate().set(filterAllCondition);
 			}
@@ -566,9 +549,9 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 			conditionSupplier.set(() -> foreignKey.equalTo(selected));
 			refresh();
 		};
-		foreignKeyModel.selectedItem().addConsumer(consumer);
+		foreignKeyModel.selectionModel().selectedItem().addConsumer(consumer);
 		//initialize
-		consumer.accept(selectedValue());
+		consumer.accept(selectionModel().selectedValue());
 	}
 
 	private final class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {

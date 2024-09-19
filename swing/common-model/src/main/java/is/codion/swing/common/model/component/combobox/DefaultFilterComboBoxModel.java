@@ -54,7 +54,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Predicate<?> DEFAULT_VALID_SELECTION_PREDICATE = new DefaultValidSelectionPredicate<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
-	private final Selected selected = new Selected();
+	private final DefaultFilterComboBoxSelectionModel selectionModel = new DefaultFilterComboBoxSelectionModel();
 	private final State includeNull = State.state();
 	private final Value<T> nullItem = Value.value();
 	private final State filterSelectedItem = State.state(false);
@@ -169,8 +169,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		validate(replacement);
 		removeItem(item);
 		addItem(replacement);
-		if (Objects.equals(selected.item, item)) {
-			selected.replaceWith(item);
+		if (Objects.equals(selectionModel.selected.item, item)) {
+			selectionModel.selected.replaceWith(item);
 		}
 	}
 
@@ -201,12 +201,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final Value<Function<Object, T>> selectedItemTranslator() {
-		return selected.translator;
+		return selectionModel.selected.translator;
 	}
 
 	@Override
 	public final Value<Predicate<T>> validSelectionPredicate() {
-		return selected.validSelection;
+		return selectionModel.selected.validSelection;
 	}
 
 	@Override
@@ -220,37 +220,18 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final boolean nullSelected() {
-		return includeNull.get() && selected.item == null;
-	}
-
-	@Override
-	public final StateObserver selectionEmpty() {
-		return selected.selectionEmpty.observer();
-	}
-
-	@Override
-	public final T selectedValue() {
-		if (nullSelected()) {
-			return null;
-		}
-
-		return selected.item;
+	public final FilterComboBoxSelectionModel<T> selectionModel() {
+		return selectionModel;
 	}
 
 	@Override
 	public final T getSelectedItem() {
-		return selected.get();
-	}
-
-	@Override
-	public Mutable<T> selectedItem() {
-		return selected;
+		return selectionModel.selected.get();
 	}
 
 	@Override
 	public final void setSelectedItem(Object item) {
-		selected.setItem(item);
+		selectionModel.selected.setItem(item);
 	}
 
 	@Override
@@ -390,12 +371,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				}
 			}
 			sortItems();
-			if (selected.item != null && visible.items.contains(selected.item)) {
+			if (selectionModel.selected.item != null && visible.items.contains(selectionModel.selected.item)) {
 				//update the selected item since the underlying data could have changed
-				selected.item = visible.items.get(visible.items.indexOf(selected.item));
+				selectionModel.selected.item = visible.items.get(visible.items.indexOf(selectionModel.selected.item));
 			}
-			if (selected.item != null && !visible.items.contains(selected.item) && filterSelectedItem.get()) {
-				selected.setItem(null);
+			if (selectionModel.selected.item != null && !visible.items.contains(selectionModel.selected.item) && filterSelectedItem.get()) {
+				selectionModel.selected.setItem(null);
 			}
 			else {
 				fireContentsChanged();
@@ -452,8 +433,53 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
+	private final class DefaultFilterComboBoxSelectionModel implements FilterComboBoxSelectionModel<T> {
+
+		private final Selected selected = new Selected();
+
+		@Override
+		public StateObserver selectionEmpty() {
+			return selected.selectionEmpty.observer();
+		}
+
+		@Override
+		public StateObserver selectionNotEmpty() {
+			return selected.selectionEmpty.observer().not();
+		}
+
+		@Override
+		public Observer<?> selectionChanging() {
+			return selected.changing;
+		}
+
+		@Override
+		public Mutable<T> selectedItem() {
+			return selected;
+		}
+
+		@Override
+		public T selectedValue() {
+			if (nullSelected()) {
+				return null;
+			}
+
+			return selected.item;
+		}
+
+		@Override
+		public boolean nullSelected() {
+			return includeNull.get() && selected.item == null;
+		}
+
+		@Override
+		public void clearSelection() {
+			selected.set(null);
+		}
+	}
+
 	private final class Selected implements Mutable<T> {
 
+		private final Event<T> changing = Event.event();
 		private final Event<T> event = Event.event();
 		private final State selectionEmpty = State.state(true);
 		private final Value<Function<Object, T>> translator = Value.builder()
@@ -485,9 +511,10 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public void set(T item) {
 			if (!Objects.equals(this.item, item) && validSelection.get().test(item)) {
+				changing.accept(item);
 				this.item = item;
 				fireContentsChanged();
-				selectionEmpty.set(selectedValue() == null);
+				selectionEmpty.set(selectionModel.selectedValue() == null);
 				event.accept(item);
 			}
 		}
@@ -502,8 +529,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		private void replaceWith(T replacement) {
-			selected.item = selected.translator.get().apply(null);
-			selected.set(replacement);
+			selectionModel.selected.item = selectionModel.selected.translator.get().apply(null);
+			selectionModel.selected.set(replacement);
 		}
 	}
 
@@ -513,16 +540,16 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private SelectorValue(ItemFinder<T, V> itemFinder) {
 			this.itemFinder = requireNonNull(itemFinder);
-			selected.event.addListener(this::notifyListeners);
+			selectionModel.selected.event.addListener(this::notifyListeners);
 		}
 
 		@Override
 		protected V getValue() {
-			if (selected.selectionEmpty.get()) {
+			if (selectionModel.selected.selectionEmpty.get()) {
 				return null;
 			}
 
-			return itemFinder.value(selectedValue());
+			return itemFinder.value(selectionModel.selectedValue());
 		}
 
 		@Override
