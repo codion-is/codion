@@ -51,11 +51,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
 
 	/**
-	 * Clears all items from this combo box model, including the null item and sets the selected item to null
-	 */
-	void clear();
-
-	/**
 	 * @return true if the model data has been cleared and needs to be refreshed
 	 */
 	boolean cleared();
@@ -68,13 +63,13 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @throws IllegalArgumentException in case the item fails validation
 	 * @see #visiblePredicate()
 	 */
-	void add(T item);
+	void addItem(T item);
 
 	/**
 	 * Removes the given item from this model
 	 * @param item the item to remove
 	 */
-	void remove(T item);
+	void removeItem(T item);
 
 	/**
 	 * Replaces the given item in this combo box model
@@ -83,12 +78,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @throws IllegalArgumentException in case the replacement item fails validation
 	 */
 	void replace(T item, T replacement);
-
-	/**
-	 * Sorts the visible items in this model
-	 * @see #comparator()
-	 */
-	void sortItems();
 
 	/**
 	 * Controls the {@link Comparator} used when sorting the visible items in this model and sorts the model accordingly when set.

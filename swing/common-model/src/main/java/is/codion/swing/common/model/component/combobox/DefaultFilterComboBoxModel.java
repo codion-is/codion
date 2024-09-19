@@ -138,7 +138,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final void add(T item) {
+	public final void addItem(T item) {
 		validate(item);
 		if (visiblePredicate.isNull() || visiblePredicate.get().test(item)) {
 			if (!modelItems.visible.items.contains(item)) {
@@ -153,7 +153,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final void remove(T item) {
+	public final void removeItem(T item) {
 		requireNonNull(item);
 		if (modelItems.filtered.items.remove(item)) {
 			modelItems.filtered.notifyChanges();
@@ -167,8 +167,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	@Override
 	public final void replace(T item, T replacement) {
 		validate(replacement);
-		remove(item);
-		add(replacement);
+		removeItem(item);
+		addItem(replacement);
 		if (Objects.equals(selected.item, item)) {
 			selected.replaceWith(item);
 		}

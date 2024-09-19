@@ -65,7 +65,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	 */
 	static final Comparator<?> STRING_COMPARATOR = Comparator.comparing(Object::toString);
 
-	private final Event<?> cleared = Event.event();
 	private final Columns<R, C> columns;
 	private final DefaultItems modelItems = new DefaultItems();
 	private final FilterTableSelectionModel<R> selectionModel;
@@ -138,7 +137,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		if (visibleSize != 0) {
 			modelItems.visible.notifyChanges();
 		}
-		cleared.run();
 	}
 
 	@Override
@@ -309,11 +307,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public String getStringAt(int rowIndex, C identifier) {
 		return columns.string(itemAt(rowIndex), requireNonNull(identifier));
-	}
-
-	@Override
-	public Observer<?> cleared() {
-		return cleared.observer();
 	}
 
 	@Override

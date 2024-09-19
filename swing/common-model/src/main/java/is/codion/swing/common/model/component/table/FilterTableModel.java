@@ -21,7 +21,6 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
-import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 
 import javax.swing.table.TableModel;
@@ -64,12 +63,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 */
 		MERGE
 	}
-
-	/**
-	 * @return an observer notified each time the table model is cleared
-	 * @see #clear()
-	 */
-	Observer<?> cleared();
 
 	/**
 	 * @param item the item
@@ -125,12 +118,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	void addItemsAtSorted(int index, Collection<R> items);
 
 	/**
-	 * Adds the given item to the bottom of this table model.
-	 * @param item the item to add
-	 */
-	void addItem(R item);
-
-	/**
 	 * @param index the index
 	 * @param item the item to add
 	 */
@@ -157,12 +144,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 * @param items the items to remove from the model
 	 */
 	void removeItems(Collection<R> items);
-
-	/**
-	 * Removes the given item from this table model
-	 * @param item the item to remove from the model
-	 */
-	void removeItem(R item);
 
 	/**
 	 * Removes from this table model the visible element whose index is between index
@@ -209,18 +190,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	Value<RefreshStrategy> refreshStrategy();
 
 	/**
-	 * @return the {@link Value} controlling the comparator to use when sorting
-	 */
-	Value<Comparator<R>> comparator();
-
-	/**
-	 * Sorts the visible items according to {@link #comparator()}, keeping the selected items.
-	 * Calling this method when no comparator is specified has no effect.
-	 * @see #comparator()
-	 */
-	void sortItems();
-
-	/**
 	 * @return the selection model used by this table model
 	 */
 	FilterTableSelectionModel<R> selectionModel();
@@ -255,11 +224,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 */
 	@Override
 	void refreshThen(Consumer<Collection<R>> afterRefresh);
-
-	/**
-	 * Clears all items from this table model
-	 */
-	void clear();
 
 	/**
 	 * Notifies all listeners that all cell values in the table's rows may have changed.

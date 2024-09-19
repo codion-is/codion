@@ -359,11 +359,11 @@ public final class EntityComboBoxModelTest {
 						.with(Department.NAME, "dept")
 						.build();
 
-		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.add(dept));
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.addItem(dept));
 		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.replace(comboBoxModel.getElementAt(2), dept));
 		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.nullItem().set(dept));
 
-		assertThrows(NullPointerException.class, () -> comboBoxModel.add(null));
+		assertThrows(NullPointerException.class, () -> comboBoxModel.addItem(null));
 		assertThrows(NullPointerException.class, () -> comboBoxModel.replace(comboBoxModel.getElementAt(2), null));
 		assertThrows(NullPointerException.class, () -> comboBoxModel.nullItem().clear());
 	}

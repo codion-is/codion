@@ -29,6 +29,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -62,6 +63,36 @@ public interface FilterModel<T> {
 	 * @return this models Refresher instance
 	 */
 	Refresher<T> refresher();
+
+	/**
+	 * Adds the given item to this model.
+	 * Note that if the item does not fulfill the visible predicate, it will be filtered right away.
+	 * @param item the item to add
+	 */
+	void addItem(T item);
+
+	/**
+	 * Removes the given item from this model
+	 * @param item the item to remove from the model
+	 */
+	void removeItem(T item);
+
+	/**
+	 * Clears all items from this model
+	 */
+	void clear();
+
+	/**
+	 * Sorts the visible items according to {@link #comparator()}, preserving the selection.
+	 * Calling this method when no comparator is specified has no effect.
+	 * @see #comparator()
+	 */
+	void sortItems();
+
+	/**
+	 * @return the {@link Value} controlling the comparator to use when sorting
+	 */
+	Value<Comparator<T>> comparator();
 
 	/**
 	 * Refreshes the items in this filtered model using its {@link Refresher}.

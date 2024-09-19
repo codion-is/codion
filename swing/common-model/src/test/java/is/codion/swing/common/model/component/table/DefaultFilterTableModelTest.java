@@ -179,28 +179,21 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void refreshEvents() {
 		AtomicInteger done = new AtomicInteger();
-		AtomicInteger cleared = new AtomicInteger();
 		Runnable successfulListener = done::incrementAndGet;
 		Consumer<Throwable> failedConsumer = exception -> {};
-		Runnable clearedListener = cleared::incrementAndGet;
 		tableModel.refresher().success().addListener(successfulListener);
 		tableModel.refresher().failure().addConsumer(failedConsumer);
-		tableModel.cleared().addListener(clearedListener);
 		tableModel.refresh();
 		assertFalse(tableModel.items().visible().get().isEmpty());
 		assertEquals(1, done.get());
-		assertEquals(1, cleared.get());
 
 		done.set(0);
-		cleared.set(0);
 		tableModel.refreshStrategy().set(RefreshStrategy.MERGE);
 		tableModel.refresh();
 		assertEquals(1, done.get());
-		assertEquals(0, cleared.get());
 
 		tableModel.refresher().success().removeListener(successfulListener);
 		tableModel.refresher().failure().removeConsumer(failedConsumer);
-		tableModel.cleared().removeListener(clearedListener);
 	}
 
 	@Test

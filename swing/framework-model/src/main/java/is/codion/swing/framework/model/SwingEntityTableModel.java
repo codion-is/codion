@@ -550,11 +550,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final Observer<?> cleared() {
-		return tableModel.cleared();
-	}
-
-	@Override
 	public final void addTableModelListener(TableModelListener listener) {
 		tableModel.addTableModelListener(listener);
 	}
