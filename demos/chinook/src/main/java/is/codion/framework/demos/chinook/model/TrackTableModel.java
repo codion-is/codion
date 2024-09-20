@@ -58,9 +58,9 @@ public final class TrackTableModel extends SwingEntityTableModel {
 	}
 
 	private void configureLimit() {
-		limit().set(DEFAULT_LIMIT);
-		limit().addListener(this::refresh);
-		limit().addValidator(new LimitValidator());
+		queryModel().limit().set(DEFAULT_LIMIT);
+		queryModel().limit().addListener(this::refresh);
+		queryModel().limit().addValidator(new LimitValidator());
 	}
 
 	private static final class LimitValidator implements Validator<Integer> {

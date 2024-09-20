@@ -243,8 +243,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	@Test
 	public void attributes() {
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
-		assertTrue(tableModel.attributes().get().isEmpty());
-		tableModel.attributes().addAll(Employee.NAME, Employee.HIREDATE);
+		assertTrue(tableModel.queryModel().attributes().get().isEmpty());
+		tableModel.queryModel().attributes().addAll(Employee.NAME, Employee.HIREDATE);
 		tableModel.refresh();
 		assertTrue(tableModel.rowCount() > 0);
 		tableModel.items().get().forEach(employee -> {
@@ -253,24 +253,24 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 			assertTrue(employee.contains(Employee.NAME));
 			assertTrue(employee.contains(Employee.HIREDATE));
 		});
-		assertThrows(IllegalArgumentException.class, () -> tableModel.attributes().add(Department.NAME));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.queryModel().attributes().add(Department.NAME));
 	}
 
 	@Test
 	public void limit() {
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
-		tableModel.limit().set(6);
+		tableModel.queryModel().limit().set(6);
 		tableModel.refresh();
 		assertEquals(6, tableModel.rowCount());
 		ColumnConditionModel<?, Double> commissionConditionModel =
-						tableModel.conditionModel().attributeModel(Employee.COMMISSION);
+						tableModel.queryModel().conditionModel().attributeModel(Employee.COMMISSION);
 		commissionConditionModel.operator().set(Operator.EQUAL);
 		commissionConditionModel.enabled().set(true);
 		tableModel.refresh();
 		commissionConditionModel.enabled().set(false);
 		tableModel.refresh();
 		assertEquals(6, tableModel.rowCount());
-		tableModel.limit().clear();
+		tableModel.queryModel().limit().clear();
 		tableModel.refresh();
 		assertEquals(16, tableModel.rowCount());
 	}
@@ -280,9 +280,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
 		AtomicInteger counter = new AtomicInteger();
 		Runnable conditionChangedListener = counter::incrementAndGet;
-		empModel.conditionChanged().addListener(conditionChangedListener);
+		empModel.queryModel().conditionChanged().addListener(conditionChangedListener);
 		ColumnConditionModel<Attribute<?>, Double> commissionModel =
-						empModel.conditionModel().attributeModel(Employee.COMMISSION);
+						empModel.queryModel().conditionModel().attributeModel(Employee.COMMISSION);
 		commissionModel.enabled().set(true);
 		assertEquals(1, counter.get());
 		commissionModel.enabled().set(false);
@@ -291,23 +291,23 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		commissionModel.operands().lowerBound().set(1200d);
 		//automatically set enabled when upper bound is set
 		assertEquals(3, counter.get());
-		empModel.conditionChanged().removeListener(conditionChangedListener);
+		empModel.queryModel().conditionChanged().removeListener(conditionChangedListener);
 	}
 
 	@Test
 	public void testSearchState() {
 		TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
-		assertFalse(empModel.conditionChanged().get());
+		assertFalse(empModel.queryModel().conditionChanged().get());
 		ColumnConditionModel<Attribute<?>, String> jobModel =
-						empModel.conditionModel().attributeModel(Employee.JOB);
+						empModel.queryModel().conditionModel().attributeModel(Employee.JOB);
 		jobModel.operands().equal().set("job");
-		assertTrue(empModel.conditionChanged().get());
+		assertTrue(empModel.queryModel().conditionChanged().get());
 		jobModel.enabled().set(false);
-		assertFalse(empModel.conditionChanged().get());
+		assertFalse(empModel.queryModel().conditionChanged().get());
 		jobModel.enabled().set(true);
-		assertTrue(empModel.conditionChanged().get());
+		assertTrue(empModel.queryModel().conditionChanged().get());
 		empModel.refresh();
-		assertFalse(empModel.conditionChanged().get());
+		assertFalse(empModel.queryModel().conditionChanged().get());
 	}
 
 	protected final EntityConnectionProvider connectionProvider() {

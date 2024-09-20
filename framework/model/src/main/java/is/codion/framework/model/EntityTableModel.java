@@ -24,9 +24,7 @@ import is.codion.common.model.FilterModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.ColorProvider;
@@ -34,7 +32,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -147,11 +144,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	void refresh(Collection<Entity.Key> keys);
 
 	/**
-	 * @return the {@link EntityTableConditionModel} instance used by this table model
-	 */
-	EntityTableConditionModel conditionModel();
-
-	/**
 	 * @return the {@link State} controlling whether this table model is editable
 	 */
 	State editable();
@@ -173,29 +165,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	Object foregroundColor(int row, Attribute<?> attribute);
 
 	/**
-	 * Returns the ValueSet controlling which attributes are included when selecting entities to populate this model.
-	 * Note that an empty ValueSet indicates that the default select attributes should be used.
-	 * @return the ValueSet controlling the selected attributes
-	 */
-	ValueSet<Attribute<?>> attributes();
-
-	/**
-	 * Returns the Value controlling the maximum number of rows to fetch via the underlying query the next time
-	 * this table model is refreshed, a null value means all rows should be fetched
-	 * @return the {@link Value} controlling the limit
-	 */
-	Value<Integer> limit();
-
-	/**
-	 * Controls the order by clause to use when selecting the data for this model.
-	 * Setting this value to null reverts back to the default order by
-	 * for the underlying entity, if one has been specified
-	 * @return the {@link Value} controlling the order by clause
-	 * @see EntityDefinition#orderBy()
-	 */
-	Value<OrderBy> orderBy();
-
-	/**
 	 * Deletes the selected entities
 	 * @return the deleted entities
 	 * @throws DatabaseException in case of a database exception
@@ -203,15 +172,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow deleting
 	 */
 	Collection<Entity> deleteSelected() throws DatabaseException;
-
-	/**
-	 * Returns a State controlling whether this table model should display all underlying entities
-	 * when no query condition has been set. Setting this value to 'true' prevents all rows from
-	 * being fetched by accident, when no condition has been set, which is recommended for tables
-	 * with a large underlying dataset.
-	 * @return a State specifying whether this table model requires a query condition
-	 */
-	State conditionRequired();
 
 	/**
 	 * @return the {@link State} controlling whether this table model handles entity edit events, by replacing updated entities
@@ -268,12 +228,12 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	SelectionModel<Entity> selectionModel();
 
 	/**
-	 * @return a {@link StateObserver} indicating if the search condition has changed since last refresh
-	 */
-	StateObserver conditionChanged();
-
-	/**
 	 * @return an observer notified when the selection changes in the underlying selection model
 	 */
 	Observer<?> selectionChanged();
+
+	/**
+	 * @return the underlying query model
+	 */
+	EntityQueryModel queryModel();
 }

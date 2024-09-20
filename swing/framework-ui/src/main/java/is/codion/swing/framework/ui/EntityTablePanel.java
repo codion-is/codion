@@ -1243,7 +1243,7 @@ public class EntityTablePanel extends JPanel {
 			builder.separator();
 		}
 		builder.control(Control.builder()
-						.toggle(tableModel.conditionRequired())
+						.toggle(tableModel.queryModel().conditionRequired())
 						.name(MESSAGES.getString("require_query_condition"))
 						.description(MESSAGES.getString("require_query_condition_description"))
 						.build());
@@ -1433,7 +1433,7 @@ public class EntityTablePanel extends JPanel {
 	private Control createConditionRefreshControl() {
 		return Control.builder()
 						.command(tableModel::refresh)
-						.enabled(tableModel.conditionChanged())
+						.enabled(tableModel.queryModel().conditionChanged())
 						.smallIcon(ICONS.refreshRequired())
 						.build();
 	}
@@ -1456,7 +1456,7 @@ public class EntityTablePanel extends JPanel {
 	private TableConditionPanel<Attribute<?>> createTableConditionPanel() {
 		if (configuration.includeConditionPanel) {
 			TableConditionPanel<Attribute<?>> conditionPanel = configuration.tableConditionPanelFactory
-							.create(tableModel.conditionModel(), createColumnConditionPanels(),
+							.create(tableModel.queryModel().conditionModel(), createColumnConditionPanels(),
 											table.getColumnModel(), this::configureTableConditionPanel);
 			KeyEvents.builder(VK_ENTER)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1471,7 +1471,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createColumnConditionPanels() {
-		return tableModel.conditionModel().conditionModels().values().stream()
+		return tableModel.queryModel().conditionModel().conditionModels().values().stream()
 						.filter(conditionModel -> table.columnModel().containsColumn(conditionModel.identifier()))
 						.filter(conditionModel -> configuration.conditionFieldFactory.supportsType(conditionModel.columnClass()))
 						.map(this::createColumnConditionPanel)
@@ -1497,20 +1497,20 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void bindTableEvents() {
-		Runnable setSelectAttributes = () -> tableModel.attributes().set(selectAttributes());
+		Runnable setSelectAttributes = () -> tableModel.queryModel().attributes().set(selectAttributes());
 		table.columnModel().columnShown().addListener(setSelectAttributes);
 		table.columnModel().columnHidden().addListener(setSelectAttributes);
 		table.columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		queryHiddenColumns.addListener(setSelectAttributes);
 		orderQueryBySortOrder.addConsumer(enabled ->
-						tableModel.orderBy().set(enabled ? orderByFromSortModel() : null));
+						tableModel.queryModel().orderBy().set(enabled ? orderByFromSortModel() : null));
 		table.sortModel().sortingChanged().addListener(() ->
-						tableModel.orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel() : null));
+						tableModel.queryModel().orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel() : null));
 	}
 
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
-		tableModel.conditionModel().conditionChanged().addListener(this::onConditionChanged);
+		tableModel.queryModel().conditionModel().conditionChanged().addListener(this::onConditionChanged);
 		tableModel.refresher().observer().addConsumer(this::onRefreshingChanged);
 		tableModel.refresher().failure().addConsumer(this::onException);
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
@@ -1702,7 +1702,7 @@ public class EntityTablePanel extends JPanel {
 	private Map<Attribute<?>, ConditionPreferences> createConditionPreferences() {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			ColumnConditionModel<?, ?> columnConditionModel = tableModel.conditionModel().conditionModels().get(attribute);
+			ColumnConditionModel<?, ?> columnConditionModel = tableModel.queryModel().conditionModel().conditionModels().get(attribute);
 			if (columnConditionModel != null) {
 				conditionPreferencesMap.put(attribute, ConditionPreferences.conditionPreferences(attribute,
 								columnConditionModel.autoEnable().get(),
@@ -1766,7 +1766,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void onColumnHidden(Attribute<?> attribute) {
 		//disable the condition model for the column to be hidden, to prevent confusion
-		ColumnConditionModel<?, ?> columnConditionModel = tableModel.conditionModel().conditionModels().get(attribute);
+		ColumnConditionModel<?, ?> columnConditionModel = tableModel.queryModel().conditionModel().conditionModels().get(attribute);
 		if (columnConditionModel != null && !columnConditionModel.locked().get()) {
 			columnConditionModel.enabled().set(false);
 		}
@@ -1931,7 +1931,7 @@ public class EntityTablePanel extends JPanel {
 			TableCellRenderer renderer = tableColumn.getCellRenderer();
 			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
 							&& ((FilterTableCellRenderer) renderer).columnShading()
-							&& tableModel.conditionModel().enabled(tableColumn.identifier()).get();
+							&& tableModel.queryModel().conditionModel().enabled(tableColumn.identifier()).get();
 			Font defaultFont = component.getFont();
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
@@ -2546,7 +2546,7 @@ public class EntityTablePanel extends JPanel {
 			}
 			int selectionCount = tableModel.selectionModel().selectionCount();
 			StringBuilder builder = new StringBuilder();
-			if (tableModel.limit().isEqualTo(tableModel.rowCount())) {
+			if (tableModel.queryModel().limit().isEqualTo(tableModel.rowCount())) {
 				builder.append(MESSAGES.getString("limited_to")).append(" ");
 			}
 			builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));
@@ -2761,12 +2761,12 @@ public class EntityTablePanel extends JPanel {
 
 		private void configureLimit() {
 			ComponentValue<Integer, NumberField<Integer>> limitValue = Components.integerField()
-							.initialValue(tableModel.limit().get())
+							.initialValue(tableModel.queryModel().limit().get())
 							.groupingUsed(true)
 							.minimumValue(0)
 							.columns(6)
 							.buildValue();
-			tableModel.limit().set(Dialogs.inputDialog(limitValue)
+			tableModel.queryModel().limit().set(Dialogs.inputDialog(limitValue)
 							.title(MESSAGES.getString("row_limit"))
 							.owner(EntityTablePanel.this)
 							.validator(new LimitValidator())
@@ -2795,7 +2795,7 @@ public class EntityTablePanel extends JPanel {
 			@Override
 			public boolean test(Integer limit) {
 				try {
-					tableModel.limit().validate(limit);
+					tableModel.queryModel().limit().validate(limit);
 					return true;
 				}
 				catch (IllegalArgumentException e) {

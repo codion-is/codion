@@ -38,6 +38,7 @@ Codion Change Log
 - EntityEditModel.valueEdited() renamed edited().
 - EntityEditModel.entity() now Mutable based.
 - EntityTableConditionModel.enabled() now StateObserver based.
+- EntityQueryModel split from EntityTableModel.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.

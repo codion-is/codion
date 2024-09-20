@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -85,7 +85,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
 		assertEquals(0, employeeTableModel.rowCount());
 		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
-		employeeTableModel.conditionModel().setInOperands(Employee.DEPARTMENT_FK, singletonList(accounting));
+		employeeTableModel.queryModel().conditionModel().setInOperands(Employee.DEPARTMENT_FK, singletonList(accounting));
 		employeeTableModel.refresh();
 		assertEquals(7, employeeTableModel.rowCount());
 	}
@@ -156,7 +156,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	void backgroundColor() {
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
 		ColumnConditionModel<Attribute<?>, String> nameConditionModel =
-						employeeTableModel.conditionModel().attributeModel(Employee.NAME);
+						employeeTableModel.queryModel().conditionModel().attributeModel(Employee.NAME);
 		nameConditionModel.operands().equal().set("BLAKE");
 		employeeTableModel.refresh();
 		assertEquals(Color.GREEN, employeeTableModel.backgroundColor(0, Employee.JOB));
@@ -180,31 +180,28 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	void conditionChanged() {
 		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
 		tableModel.refresh();
-		ColumnConditionModel<?, String> nameConditionModel = tableModel.conditionModel().conditionModel(Employee.NAME);
+		ColumnConditionModel<?, String> nameConditionModel = tableModel.queryModel().conditionModel().conditionModel(Employee.NAME);
 		nameConditionModel.operands().equal().set("JONES");
-		assertTrue(tableModel.conditionChanged().get());
+		assertTrue(tableModel.queryModel().conditionChanged().get());
 		tableModel.refresh();
-		assertFalse(tableModel.conditionChanged().get());
+		assertFalse(tableModel.queryModel().conditionChanged().get());
 		nameConditionModel.enabled().set(false);
-		assertTrue(tableModel.conditionChanged().get());
+		assertTrue(tableModel.queryModel().conditionChanged().get());
 		nameConditionModel.enabled().set(true);
-		assertFalse(tableModel.conditionChanged().get());
+		assertFalse(tableModel.queryModel().conditionChanged().get());
 	}
 
 	@Test
 	void isConditionEnabled() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider()) {
-			@Override
-			protected boolean conditionEnabled(EntityTableConditionModel conditionModel) {
-				return conditionModel.enabled(Employee.MGR_FK).get();
-			}
-		};
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
+		EntityQueryModel queryModel = tableModel.queryModel();
+		queryModel.conditionEnabled().set(queryModel.conditionModel().enabled(Employee.MGR_FK));
 		tableModel.refresh();
 		assertEquals(16, tableModel.rowCount());
-		tableModel.conditionRequired().set(true);
+		queryModel.conditionRequired().set(true);
 		tableModel.refresh();
 		assertEquals(0, tableModel.rowCount());
-		ColumnConditionModel<?, Entity> mgrConditionModel = tableModel.conditionModel().conditionModel(Employee.MGR_FK);
+		ColumnConditionModel<?, Entity> mgrConditionModel = queryModel.conditionModel().conditionModel(Employee.MGR_FK);
 		mgrConditionModel.operands().equal().set(null);
 		mgrConditionModel.enabled().set(true);
 		tableModel.refresh();

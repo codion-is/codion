@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractEntityTableModel;
+import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
@@ -47,6 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
@@ -78,7 +80,16 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param conditionModel the table condition model
 	 */
 	public SwingEntityTableModel(EntityTableConditionModel conditionModel) {
-		this(new SwingEntityEditModel(requireNonNull(conditionModel).entityType(), conditionModel.connectionProvider()), conditionModel);
+		this(entityQueryModel(conditionModel));
+	}
+
+	/**
+	 * Instantiates a new SwingEntityTableModel.
+	 * @param queryModel the table query model
+	 */
+	public SwingEntityTableModel(EntityQueryModel queryModel) {
+		this(new SwingEntityEditModel(requireNonNull(queryModel).entityType(),
+						queryModel.conditionModel().connectionProvider()), queryModel);
 	}
 
 	/**
@@ -86,22 +97,19 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param editModel the edit model
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
-		this(editModel, entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
-						new SwingEntityConditionModelFactory(editModel.connectionProvider())));
+		this(editModel, entityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
+						new SwingEntityConditionModelFactory(editModel.connectionProvider()))));
 	}
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param editModel the edit model
-	 * @param conditionModel the table condition model
+	 * @param queryModel the table query model
 	 * @throws IllegalArgumentException in case the edit model and condition model entity type is not the same
 	 */
-	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel conditionModel) {
-		super(requireNonNull(editModel), requireNonNull(conditionModel), SwingEntityTableModel::createTableModel);
-		if (!editModel.entityType().equals(conditionModel.entityType())) {
-			throw new IllegalArgumentException("Entity type mismatch, edit model: " + editModel.entities()
-							+ ", condition model: " + conditionModel.entityType());
-		}
+	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityQueryModel queryModel) {
+		super(requireNonNull(editModel), requireNonNull(queryModel),
+						items -> createTableModel(editModel.entityDefinition(), items));
 		addTableModelListener(this::onTableModelEvent);
 	}
 
@@ -383,11 +391,12 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 	}
 
-	private static FilterTableModel<Entity, Attribute<?>> createTableModel(AbstractEntityTableModel<?> tableModel) {
-		return FilterTableModel.builder(new EntityTableColumns(tableModel.entityDefinition()))
-						.filterModelFactory(new EntityFilterModelFactory(tableModel.entityDefinition()))
-						.items(new EntityItems(tableModel))
-						.validator(new EntityItemValidator(tableModel.entityDefinition().entityType()))
+	private static FilterTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition definition,
+																																				 Supplier<Collection<Entity>> items) {
+		return FilterTableModel.builder(new EntityTableColumns(definition))
+						.filterModelFactory(new EntityFilterModelFactory(definition))
+						.items(items)
+						.validator(new EntityItemValidator(definition.entityType()))
 						.build();
 	}
 
@@ -477,20 +486,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 			return attribute.type().isEntity() || // entities
 							!attributeDefinition.items().isEmpty() || // items
 							!Comparable.class.isAssignableFrom(attribute.type().valueClass()); // non-comparables
-		}
-	}
-
-	private static final class EntityItems implements Supplier<Collection<Entity>> {
-
-		private final SwingEntityTableModel tableModel;
-
-		private EntityItems(AbstractEntityTableModel<?> tableModel) {
-			this.tableModel = (SwingEntityTableModel) requireNonNull(tableModel);
-		}
-
-		@Override
-		public Collection<Entity> get() {
-			return tableModel.refreshItems();
 		}
 	}
 

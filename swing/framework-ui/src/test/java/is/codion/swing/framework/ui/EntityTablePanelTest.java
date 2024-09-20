@@ -146,7 +146,7 @@ public class EntityTablePanelTest {
 		column = columnModel.getColumn(5);
 		column.setWidth(170);//entity_ref
 		ColumnConditionModel<Attribute<?>, String> conditionModel =
-						testModel.conditionModel().attributeModel(Detail.STRING);
+						testModel.queryModel().conditionModel().attributeModel(Detail.STRING);
 		conditionModel.autoEnable().set(false);
 		conditionModel.automaticWildcard().set(AutomaticWildcard.PREFIX);
 		conditionModel.caseSensitive().set(false);
@@ -164,7 +164,7 @@ public class EntityTablePanelTest {
 
 		column = columnModel.getColumn(5);
 		assertEquals(170, column.getPreferredWidth());
-		conditionModel = testModel.conditionModel().attributeModel(Detail.STRING);
+		conditionModel = testModel.queryModel().conditionModel().attributeModel(Detail.STRING);
 		assertFalse(conditionModel.autoEnable().get());
 		assertEquals(conditionModel.automaticWildcard().get(), AutomaticWildcard.PREFIX);
 		assertFalse(conditionModel.caseSensitive().get());
@@ -176,7 +176,7 @@ public class EntityTablePanelTest {
 	@Test
 	void orderQueryBySortOrder() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		OrderBy orderBy = tableModel.orderBy().get();
+		OrderBy orderBy = tableModel.queryModel().orderBy().get();
 		//default order by for entity
 		assertEquals(2, orderBy.orderByColumns().size());
 		assertTrue(orderBy.orderByColumns().get(0).ascending());
@@ -187,7 +187,7 @@ public class EntityTablePanelTest {
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		tablePanel.table().sortModel().setSortOrder(Employee.NAME, SortOrder.ASCENDING);
 
-		orderBy = tableModel.orderBy().get();
+		orderBy = tableModel.queryModel().orderBy().get();
 		//still default order by for entity
 		assertEquals(2, orderBy.orderByColumns().size());
 		assertTrue(orderBy.orderByColumns().get(0).ascending());
@@ -196,7 +196,7 @@ public class EntityTablePanelTest {
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
 		tablePanel.orderQueryBySortOrder().set(true);
-		orderBy = tableModel.orderBy().get();
+		orderBy = tableModel.queryModel().orderBy().get();
 		assertEquals(1, orderBy.orderByColumns().size());
 		assertTrue(orderBy.orderByColumns().get(0).ascending());
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(0).column());
@@ -204,7 +204,7 @@ public class EntityTablePanelTest {
 		tablePanel.table().sortModel().setSortOrder(Employee.HIREDATE, SortOrder.DESCENDING);
 		tablePanel.table().sortModel().addSortOrder(Employee.NAME, SortOrder.ASCENDING);
 
-		orderBy = tableModel.orderBy().get();
+		orderBy = tableModel.queryModel().orderBy().get();
 		assertEquals(2, orderBy.orderByColumns().size());
 		assertFalse(orderBy.orderByColumns().get(0).ascending());
 		assertEquals(Employee.HIREDATE, orderBy.orderByColumns().get(0).column());
@@ -212,7 +212,7 @@ public class EntityTablePanelTest {
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
 		tablePanel.table().sortModel().clear();
-		orderBy = tableModel.orderBy().get();
+		orderBy = tableModel.queryModel().orderBy().get();
 		//back to default order by for entity
 		assertEquals(2, orderBy.orderByColumns().size());
 		assertTrue(orderBy.orderByColumns().get(0).ascending());

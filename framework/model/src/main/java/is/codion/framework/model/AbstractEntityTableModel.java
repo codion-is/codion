@@ -23,16 +23,13 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.FilterModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -42,15 +39,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -59,38 +55,34 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 
 	private final FilterModel<Entity> tableModel;
 	private final E editModel;
-	private final EntityTableConditionModel conditionModel;
-	private final ValueSet<Attribute<?>> attributes = ValueSet.<Attribute<?>>builder()
-					.validator(new AttributeValidator())
-					.build();
-	private final State conditionRequired = State.state();
+	private final Supplier<Collection<Entity>> items = new EntityItems();
+	private final EntityQueryModel queryModel;
 	private final State handleEditEvents = State.builder()
 					.consumer(new HandleEditEventsChanged())
 					.build();
 	private final State editable = State.state();
-	private final Value<Integer> limit = Value.value();
-	private final Value<OrderBy> orderBy;
 	private final State removeDeleted = State.state(true);
 	private final Value<OnInsert> onInsert = Value.builder()
 					.nonNull(EntityTableModel.ON_INSERT.get())
 					.build();
 
-	private final State conditionChanged = State.state();
 	private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
-	private EntityConnection.Select refreshCondition;
-
-	protected AbstractEntityTableModel(E editModel, EntityTableConditionModel conditionModel,
-																		 Function<AbstractEntityTableModel<E>, FilterModel<Entity>> tableModel) {
+	/**
+	 * @param editModel the edit model
+	 * @param queryModel the table query model
+	 * @param tableModel initializes the data model this table model is based on
+	 * @throws IllegalArgumentException in case the edit model and condition model entity type is not the same
+	 */
+	protected AbstractEntityTableModel(E editModel, EntityQueryModel queryModel,
+																		 Function<Supplier<Collection<Entity>>, FilterModel<Entity>> tableModel) {
 		this.editModel = requireNonNull(editModel);
-		this.conditionModel = requireNonNull(conditionModel);
-		if (!editModel.entityType().equals(conditionModel.entityType())) {
+		if (!editModel.entityType().equals(requireNonNull(queryModel).entityType())) {
 			throw new IllegalArgumentException("Entity type mismatch, edit model: " + editModel.entities()
-							+ ", condition model: " + conditionModel.entityType());
+							+ ", condition model: " + queryModel.entityType());
 		}
-		this.tableModel = tableModel.apply(this);
-		this.orderBy = createOrderBy();
-		this.refreshCondition = createSelect(conditionModel);
+		this.queryModel = queryModel;
+		this.tableModel = tableModel.apply(items);
 		bindEvents();
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
@@ -108,26 +100,6 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	@Override
 	public final String toString() {
 		return getClass().getSimpleName() + ": " + editModel.entityType();
-	}
-
-	@Override
-	public final ValueSet<Attribute<?>> attributes() {
-		return attributes;
-	}
-
-	@Override
-	public final Value<Integer> limit() {
-		return limit;
-	}
-
-	@Override
-	public final Value<OrderBy> orderBy() {
-		return orderBy;
-	}
-
-	@Override
-	public final State conditionRequired() {
-		return conditionRequired;
 	}
 
 	@Override
@@ -151,11 +123,6 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	}
 
 	@Override
-	public final EntityTableConditionModel conditionModel() {
-		return conditionModel;
-	}
-
-	@Override
 	public final <C extends E> C editModel() {
 		return (C) editModel;
 	}
@@ -168,6 +135,11 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	@Override
 	public final EntityConnection connection() {
 		return editModel.connection();
+	}
+
+	@Override
+	public final EntityQueryModel queryModel() {
+		return queryModel;
 	}
 
 	@Override
@@ -231,11 +203,6 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	@Override
 	public final Collection<Entity> deleteSelected() throws DatabaseException {
 		return editModel().delete(selectionModel().selectedItems().get());
-	}
-
-	@Override
-	public final StateObserver conditionChanged() {
-		return conditionChanged.observer();
 	}
 
 	@Override
@@ -305,17 +272,17 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	 * Queries the data used to populate this EntityTableModel when it is refreshed.
 	 * This method should take into account the where and having conditions
 	 * ({@link EntityTableConditionModel#where(Conjunction)}, {@link EntityTableConditionModel#having(Conjunction)}),
-	 * order by clause ({@link #orderBy()}), the limit ({@link #limit()}) and select attributes
-	 * ({@link #attributes()}) when querying.
+	 * order by clause ({@link EntityQueryModel#orderBy()}), the limit ({@link EntityQueryModel#limit()}) and select attributes
+	 * ({@link EntityQueryModel#attributes()}) when querying.
 	 * @return entities selected from the database according to the query condition.
-	 * @see #conditionRequired()
-	 * @see #conditionEnabled(EntityTableConditionModel)
+	 * @see EntityQueryModel#conditionRequired()
+	 * @see EntityQueryModel#conditionEnabled()
 	 * @see EntityTableConditionModel#where(Conjunction)
 	 * @see EntityTableConditionModel#having(Conjunction)
 	 */
 	protected Collection<Entity> refreshItems() {
 		try {
-			return queryItems();
+			return queryModel.query();
 		}
 		catch (DatabaseException e) {
 			throw new RuntimeException(e);
@@ -329,44 +296,12 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	 */
 	protected abstract void onRowsUpdated(int fromIndex, int toIndex);
 
-	/**
-	 * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
-	 * This can be done by enabling the {@link #conditionRequired()}, which prevents a refresh as long as this
-	 * method returns {@code false}. This default implementation simply returns {@link EntityTableConditionModel#enabled()}.
-	 * Override for a more fine grained control, such as requiring a specific column condition to be enabled.
-	 * @param conditionModel the table condition model
-	 * @return true if enough conditions are enabled for a safe refresh
-	 * @see #conditionRequired()
-	 */
-	protected boolean conditionEnabled(EntityTableConditionModel conditionModel) {
-		return conditionModel.enabled().get();
-	}
-
 	private void bindEvents() {
 		editModel().afterInsert().addConsumer(this::onInsert);
 		editModel().afterUpdate().addConsumer(this::onUpdate);
 		editModel().afterDelete().addConsumer(this::onDelete);
 		editModel().entity().addConsumer(this::onEntityChanged);
 		selectionModel().selectedItem().addConsumer(editModel().entity()::set);
-		conditionModel.conditionChanged().addListener(this::onConditionChanged);
-	}
-
-	private List<Entity> queryItems() throws DatabaseException {
-		EntityConnection.Select select = createSelect(conditionModel);
-		if (conditionRequired.get() && !conditionEnabled(conditionModel)) {
-			updateRefreshSelect(select);
-
-			return emptyList();
-		}
-		List<Entity> items = connection().select(select);
-		updateRefreshSelect(select);
-
-		return items;
-	}
-
-	private void updateRefreshSelect(EntityConnection.Select select) {
-		refreshCondition = select;
-		conditionChanged.set(false);
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {
@@ -412,10 +347,6 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 		}
 	}
 
-	private void onConditionChanged() {
-		conditionChanged.set(!Objects.equals(refreshCondition, createSelect(conditionModel)));
-	}
-
 	/**
 	 * Replace the entities identified by the Entity.Key map keys with their respective value.
 	 * Note that this does not trigger {@link #filterItems()}, that must be done explicitly.
@@ -450,23 +381,6 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 		return keyIndexes;
 	}
 
-	private EntityConnection.Select createSelect(EntityTableConditionModel conditionModel) {
-		return EntityConnection.Select.where(conditionModel.where(Conjunction.AND))
-						.having(conditionModel.having(Conjunction.AND))
-						.attributes(attributes().get())
-						.limit(limit().get())
-						.orderBy(orderBy.get())
-						.build();
-	}
-
-	private Value<OrderBy> createOrderBy() {
-		return entityDefinition().orderBy()
-						.map(entityOrderBy -> Value.builder()
-										.nonNull(entityOrderBy)
-										.build())
-						.orElse(Value.value());
-	}
-
 	private static boolean replace(ForeignKey foreignKey, Entity entity, Entity foreignKeyValue) {
 		Entity currentForeignKeyValue = entity.entity(foreignKey);
 		if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
@@ -476,18 +390,6 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 		}
 
 		return false;
-	}
-
-	private class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {
-
-		@Override
-		public void validate(Set<Attribute<?>> attributes) {
-			for (Attribute<?> attribute : attributes) {
-				if (!attribute.entityType().equals(entityType())) {
-					throw new IllegalArgumentException(attribute + " is not part of entity:  " + entityType());
-				}
-			}
-		}
 	}
 
 	private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
@@ -525,6 +427,14 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 		private Stream<EntityType> entityTypes() {
 			return Stream.concat(entityDefinition().foreignKeys().get().stream()
 							.map(ForeignKey::referencedType), Stream.of(entityType()));
+		}
+	}
+
+	private final class EntityItems implements Supplier<Collection<Entity>> {
+
+		@Override
+		public Collection<Entity> get() {
+			return refreshItems();
 		}
 	}
 
