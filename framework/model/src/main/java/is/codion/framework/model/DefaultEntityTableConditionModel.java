@@ -25,6 +25,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.Operands;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -160,12 +161,12 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
-	public boolean enabled() {
+	public StateObserver enabled() {
 		return conditionModel.enabled();
 	}
 
 	@Override
-	public boolean enabled(Attribute<?> identifier) {
+	public StateObserver enabled(Attribute<?> identifier) {
 		return conditionModel.enabled(identifier);
 	}
 

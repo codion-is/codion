@@ -20,21 +20,30 @@ package is.codion.common.model.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 
 final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
+	private static final StateObserver DISABLED = State.state().observer();
+
 	private final Map<C, ColumnConditionModel<C, ?>> conditionModels;
+	private final StateObserver enabled;
 	private final Event<?> conditionChanged = Event.event();
 
 	DefaultTableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
 		this.conditionModels = initializeColumnConditionModels(conditionModels);
+		this.enabled = State.or(conditionModels.stream()
+						.map(ColumnConditionModel::enabled)
+						.collect(Collectors.toList()));
 		this.conditionModels.values().forEach(conditionModel ->
 						conditionModel.conditionChanged().addListener(conditionChanged));
 	}
@@ -45,14 +54,15 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public boolean enabled() {
-		return conditionModels.values().stream()
-						.anyMatch(model -> model.enabled().get());
+	public StateObserver enabled() {
+		return enabled;
 	}
 
 	@Override
-	public boolean enabled(C identifier) {
-		return conditionModels.containsKey(identifier) && conditionModels.get(identifier).enabled().get();
+	public StateObserver enabled(C identifier) {
+		ColumnConditionModel<C, ?> conditionModel = conditionModels.get(requireNonNull(identifier));
+
+		return conditionModel == null ? DISABLED : conditionModel.enabled();
 	}
 
 	@Override

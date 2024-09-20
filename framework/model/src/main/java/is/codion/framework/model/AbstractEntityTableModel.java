@@ -339,7 +339,7 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	 * @see #conditionRequired()
 	 */
 	protected boolean conditionEnabled(EntityTableConditionModel conditionModel) {
-		return conditionModel.enabled();
+		return conditionModel.enabled().get();
 	}
 
 	private void bindEvents() {

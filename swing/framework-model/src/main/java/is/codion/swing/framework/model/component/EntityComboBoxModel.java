@@ -214,11 +214,11 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	/**
 	 * Use this method to retrieve the default foreign key filter visible predicate if you
-	 * want to add a custom {@link Predicate} to this model via {@link #visiblePredicate()}.
+	 * want to add a custom {@link Predicate} to this model via {@link Items#visiblePredicate()}.
 	 * <pre>
 	 * {@code
 	 *   Predicate fkPredicate = model.foreignKeyVisiblePredicate();
-	 *   model.visiblePredicate().set(item -&gt; fkPredicate.test(item) &amp;&amp; ...);
+	 *   model.items().visiblePredicate().set(item -&gt; fkPredicate.test(item) &amp;&amp; ...);
 	 * }
 	 * </pre>
 	 * @return the {@link Predicate} based on the foreign key filter entities
@@ -230,10 +230,10 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	/**
 	 * Filters this combo box model so that only items referencing the given keys via the given foreign key are visible.
-	 * Note that this uses the {@link #visiblePredicate()} and replaces any previously set prediate.
+	 * Note that this uses the {@link Items#visiblePredicate()} and replaces any previously set prediate.
 	 * @param foreignKey the foreign key
 	 * @param keys the keys, an empty Collection to clear the filter
-	 * @see #visiblePredicate()
+	 * @see Items#visiblePredicate()
 	 */
 	public void filterByForeignKey(ForeignKey foreignKey, Collection<Entity.Key> keys) {
 		requireNonNull(foreignKey);

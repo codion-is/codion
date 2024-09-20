@@ -615,11 +615,11 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void clearFilterModels() {
-		assertFalse(tableModel.filterModel().enabled(0));
+		assertFalse(tableModel.filterModel().enabled(0).get());
 		tableModel.filterModel().conditionModel(0).operands().equal().set("SCOTT");
-		assertTrue(tableModel.filterModel().enabled(0));
+		assertTrue(tableModel.filterModel().enabled(0).get());
 		tableModel.filterModel().clear();
-		assertFalse(tableModel.filterModel().enabled(0));
+		assertFalse(tableModel.filterModel().enabled(0).get());
 	}
 
 	@Test

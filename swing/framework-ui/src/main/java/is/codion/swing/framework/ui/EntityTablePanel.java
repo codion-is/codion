@@ -1931,7 +1931,7 @@ public class EntityTablePanel extends JPanel {
 			TableCellRenderer renderer = tableColumn.getCellRenderer();
 			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
 							&& ((FilterTableCellRenderer) renderer).columnShading()
-							&& tableModel.conditionModel().enabled(tableColumn.identifier());
+							&& tableModel.conditionModel().enabled(tableColumn.identifier()).get();
 			Font defaultFont = component.getFont();
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 

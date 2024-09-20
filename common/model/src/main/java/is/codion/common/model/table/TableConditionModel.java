@@ -19,6 +19,7 @@
 package is.codion.common.model.table;
 
 import is.codion.common.observer.Observer;
+import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.Map;
@@ -52,15 +53,16 @@ public interface TableConditionModel<C> {
 	void clear();
 
 	/**
-	 * @return true if any of the underlying condition models are enabled
+	 * @return a {@link StateObserver} enabled when any of the underlying condition models are enabled
 	 */
-	boolean enabled();
+	StateObserver enabled();
 
 	/**
+	 * Note that this method returns a disabled {@link StateObserver} in case no condition model is available for the given column
 	 * @param identifier the column identifier
-	 * @return true if the condition model behind column identified by {@code identifier} is enabled
+	 * @return a {@link StateObserver} enabled if the condition model behind column identified by {@code identifier} is enabled
 	 */
-	boolean enabled(C identifier);
+	StateObserver enabled(C identifier);
 
 	/**
 	 * @return an observer notified each time the condition changes
