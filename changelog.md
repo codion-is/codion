@@ -21,6 +21,7 @@ Codion Change Log
 - FilterModel.includeCondition() renamed visiblePredicate().
 - TableSelectionModel moved to FilterModel and split into SingleSelectionModel and SelectionModel.
 - SingleSelectionModel.selectionNotEmpty() removed.
+- FilterModel.Items.VisibleItems and FilteredItems added, Items.visible(), filtered(), indexOf() and itemAt() moved.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.

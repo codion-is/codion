@@ -21,7 +21,6 @@ package is.codion.swing.common.model.component.combobox;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.observer.Mutable;
-import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -338,8 +337,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final class DefaultItems implements Items<T>, Mutable<Collection<T>> {
 
-		private final VisibleItems visible = new VisibleItems();
-		private final FilteredItems filtered = new FilteredItems();
+		private final DefaultVisibleItems visible = new DefaultVisibleItems();
+		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 
 		private final Event<Collection<T>> event = Event.event();
 
@@ -379,32 +378,18 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Observable<List<T>> visible() {
+		public VisibleItems<T> visible() {
 			return visible;
 		}
 
 		@Override
-		public Observable<Collection<T>> filtered() {
+		public FilteredItems<T> filtered() {
 			return filtered;
 		}
 
 		@Override
 		public boolean contains(T item) {
 			return visible.items.contains(item) || filtered.items.contains(item);
-		}
-
-		@Override
-		public boolean visible(T item) {
-			if (item == null) {
-				return includeNull.get();
-			}
-
-			return visible.items.contains(item);
-		}
-
-		@Override
-		public boolean filtered(T item) {
-			return filtered.items.contains(item);
 		}
 
 		@Override
@@ -434,19 +419,9 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			visible.notifyChanges();
 			filtered.notifyChanges();
 		}
-
-		@Override
-		public T itemAt(int index) {
-			return visible.items.get(index);
-		}
-
-		@Override
-		public int indexOf(T item) {
-			return visible.items.indexOf(item);
-		}
 	}
 
-	private final class VisibleItems implements Observable<List<T>> {
+	private final class DefaultVisibleItems implements Items.VisibleItems<T> {
 
 		private final List<T> items = new ArrayList<>();
 		private final Event<List<T>> event = Event.event();
@@ -468,12 +443,31 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return event.observer();
 		}
 
+		@Override
+		public boolean contains(T item) {
+			if (item == null) {
+				return includeNull.get();
+			}
+
+			return items.contains(item);
+		}
+
+		@Override
+		public int indexOf(T item) {
+			return items.indexOf(item);
+		}
+
+		@Override
+		public T itemAt(int rowIndex) {
+			return items.get(rowIndex);
+		}
+
 		private void notifyChanges() {
 			event.accept(get());
 		}
 	}
 
-	private final class FilteredItems implements Observable<Collection<T>> {
+	private final class DefaultFilteredItems implements Items.FilteredItems<T> {
 
 		private final List<T> items = new ArrayList<>();
 		private final Event<Collection<T>> event = Event.event();
@@ -486,6 +480,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Observer<Collection<T>> observer() {
 			return event.observer();
+		}
+
+		@Override
+		public boolean contains(T item) {
+			return items.contains(item);
 		}
 
 		private void notifyChanges() {

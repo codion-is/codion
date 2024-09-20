@@ -135,7 +135,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertThrows(IllegalStateException.class, () -> tableModel.setValueAt("newname", 0, 1));
 		tableModel.editable().set(true);
 		tableModel.setValueAt("newname", 0, 1);
-		Entity entity = tableModel.items().itemAt(0);
+		Entity entity = tableModel.items().visible().itemAt(0);
 		assertEquals("newname", entity.get(Employee.NAME));
 		assertThrows(RuntimeException.class, () -> tableModel.setValueAt("newname", 0, 0));
 	}
@@ -219,7 +219,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		tableModel.refresh();
 		SwingEntityEditModel employeeEditModel = new SwingEntityEditModel(Employee.TYPE, testModel.connectionProvider());
-		employeeEditModel.entity().set(tableModel.items().itemAt(0));
+		employeeEditModel.entity().set(tableModel.items().visible().itemAt(0));
 		String newName = "new name";
 		employeeEditModel.value(Employee.NAME).set(newName);
 		SwingEntityEditModel departmentEditModel = new SwingEntityEditModel(Department.TYPE, testModel.connectionProvider());
@@ -229,9 +229,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		connection.startTransaction();
 		try {
 			employeeEditModel.update();
-			assertEquals(newName, tableModel.items().itemAt(0).get(Employee.NAME));
+			assertEquals(newName, tableModel.items().visible().itemAt(0).get(Employee.NAME));
 			departmentEditModel.update();
-			assertEquals(newName, tableModel.items().itemAt(0).get(Employee.DEPARTMENT_FK).get(Department.NAME));
+			assertEquals(newName, tableModel.items().visible().itemAt(0).get(Employee.DEPARTMENT_FK).get(Department.NAME));
 		}
 		finally {
 			connection.rollbackTransaction();

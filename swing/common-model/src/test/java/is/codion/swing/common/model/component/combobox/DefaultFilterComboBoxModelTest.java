@@ -185,11 +185,11 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(6, testModel.getSize());
 		testModel.visiblePredicate().set(item -> !item.equals(ANNA));
 		assertEquals(5, testModel.getSize());
-		assertFalse(testModel.items().visible(ANNA));
-		assertTrue(testModel.items().filtered(ANNA));
+		assertFalse(testModel.items().visible().contains(ANNA));
+		assertTrue(testModel.items().filtered().contains(ANNA));
 		testModel.visiblePredicate().set(item -> item.equals(ANNA));
 		assertEquals(2, testModel.getSize());
-		assertTrue(testModel.items().visible(ANNA));
+		assertTrue(testModel.items().visible().contains(ANNA));
 
 		assertEquals(1, testModel.items().visible().get().size());
 		assertEquals(4, testModel.items().filtered().get().size());
@@ -199,7 +199,7 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.addItem(BJORN);//already contained
 		assertEquals(4, testModel.items().filtered().get().size());
 
-		assertFalse(testModel.items().visible(BJORN));
+		assertFalse(testModel.items().visible().contains(BJORN));
 		assertTrue(testModel.items().contains(BJORN));
 
 		testModel.removeListDataListener(listDataListener);
@@ -211,11 +211,11 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.visiblePredicate().set(item -> !item.equals(BJORN));
 		testModel.removeItem(BJORN);
 		testModel.visiblePredicate().clear();
-		assertFalse(testModel.items().visible(BJORN));
+		assertFalse(testModel.items().visible().contains(BJORN));
 
 		//remove visible item
 		testModel.removeItem(KALLI);
-		assertFalse(testModel.items().visible(KALLI));
+		assertFalse(testModel.items().visible().contains(KALLI));
 	}
 
 	@Test
@@ -224,19 +224,19 @@ public class DefaultFilterComboBoxModelTest {
 		//add filtered item
 		testModel.visiblePredicate().set(item -> !item.equals(BJORN));
 		testModel.addItem(BJORN);
-		assertFalse(testModel.items().visible(BJORN));
+		assertFalse(testModel.items().visible().contains(BJORN));
 
 		//add visible item
 		testModel.addItem(KALLI);
-		assertTrue(testModel.items().visible(KALLI));
+		assertTrue(testModel.items().visible().contains(KALLI));
 
 		testModel.visiblePredicate().clear();
-		assertTrue(testModel.items().visible(BJORN));
+		assertTrue(testModel.items().visible().contains(BJORN));
 	}
 
 	@Test
 	void setNullValueString() {
-		assertTrue(testModel.items().visible(null));
+		assertTrue(testModel.items().visible().contains(null));
 		testModel.refresh();
 		assertEquals(5, testModel.items().visible().get().size());
 		assertEquals(testModel.getElementAt(0), NULL);

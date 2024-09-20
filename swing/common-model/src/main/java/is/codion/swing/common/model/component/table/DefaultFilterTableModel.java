@@ -23,7 +23,6 @@ import is.codion.common.model.FilterModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.observer.Mutable;
-import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
@@ -286,7 +285,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return columns.value(modelItems.itemAt(rowIndex), columns.identifier(columnIndex));
+		return columns.value(modelItems.visible.itemAt(rowIndex), columns.identifier(columnIndex));
 	}
 
 	@Override
@@ -296,7 +295,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public String getStringAt(int rowIndex, C identifier) {
-		return columns.string(modelItems.itemAt(rowIndex), requireNonNull(identifier));
+		return columns.string(modelItems.visible.itemAt(rowIndex), requireNonNull(identifier));
 	}
 
 	@Override
@@ -447,7 +446,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private void merge(R item) {
-			int index = modelItems.indexOf(item);
+			int index = modelItems.visible.indexOf(item);
 			if (index == -1) {
 				addItemInternal(item);
 			}
@@ -479,8 +478,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final class DefaultItems implements Items<R>, Mutable<Collection<R>> {
 
-		private final VisibleItems visible = new VisibleItems();
-		private final FilteredItems filtered = new FilteredItems();
+		private final DefaultVisibleItems visible = new DefaultVisibleItems();
+		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 
 		@Override
 		public Collection<R> get() {
@@ -505,38 +504,18 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Observable<List<R>> visible() {
+		public VisibleItems<R> visible() {
 			return visible;
 		}
 
 		@Override
-		public Observable<Collection<R>> filtered() {
+		public FilteredItems<R> filtered() {
 			return filtered;
 		}
 
 		@Override
 		public boolean contains(R item) {
-			return visible(item) || filtered(item);
-		}
-
-		@Override
-		public boolean visible(R item) {
-			return visible.items.contains(item);
-		}
-
-		@Override
-		public boolean filtered(R item) {
-			return filtered.items.contains(item);
-		}
-
-		@Override
-		public R itemAt(int index) {
-			return visible.items.get(index);
-		}
-
-		@Override
-		public int indexOf(R item) {
-			return visible.items.indexOf(item);
+			return visible.contains(item) || filtered.contains(item);
 		}
 
 		@Override
@@ -560,7 +539,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class VisibleItems implements Observable<List<R>> {
+	private final class DefaultVisibleItems implements Items.VisibleItems<R> {
 
 		private final List<R> items = new ArrayList<>();
 		private final Event<List<R>> event = Event.event();
@@ -575,12 +554,27 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			return event.observer();
 		}
 
+		@Override
+		public boolean contains(R item) {
+			return items.contains(item);
+		}
+
+		@Override
+		public int indexOf(R item) {
+			return items.indexOf(item);
+		}
+
+		@Override
+		public R itemAt(int rowIndex) {
+			return items.get(rowIndex);
+		}
+
 		private void notifyChanges() {
 			event.accept(get());
 		}
 	}
 
-	private final class FilteredItems implements Observable<Collection<R>> {
+	private final class DefaultFilteredItems implements Items.FilteredItems<R> {
 
 		private final List<R> items = new ArrayList<>();
 		private final Event<Collection<R>> event = Event.event();
@@ -593,6 +587,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public Observer<Collection<R>> observer() {
 			return event.observer();
+		}
+
+		@Override
+		public boolean contains(R item) {
+			return items.contains(item);
 		}
 
 		private void notifyChanges() {

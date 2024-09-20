@@ -198,14 +198,14 @@ public interface FilterModel<T> {
 	interface Items<T> extends Mutable<Collection<T>> {
 
 		/**
-		 * @return an {@link Observable} providing an unmodifiable view of the visible items, in the order they appear in the model
+		 * @return a {@link VisibleItems} providing an unmodifiable view of the visible items, in the order they appear in the model
 		 */
-		Observable<List<T>> visible();
+		VisibleItems<T> visible();
 
 		/**
-		 * @return an {@link Observable} providing an unmodifiable view of the filtered items
+		 * @return a {@link FilteredItems} providing an unmodifiable view of the filtered items
 		 */
-		Observable<Collection<T>> filtered();
+		FilteredItems<T> filtered();
 
 		/**
 		 * Returns true if these items contain the given item, visible or filtered.
@@ -215,38 +215,50 @@ public interface FilterModel<T> {
 		boolean contains(T item);
 
 		/**
-		 * Returns true if these items contain the given item, and it is visible, that is, not filtered
-		 * @param item the item
-		 * @return true if the given item is visible
-		 */
-		boolean visible(T item);
-
-		/**
-		 * Returns true if these items contain the given item, and it is filtered, that is, is not visible
-		 * @param item the item
-		 * @return true if the given item is filtered
-		 */
-		boolean filtered(T item);
-
-		/**
-		 * @param item the item
-		 * @return the index of the item in this model
-		 */
-		int indexOf(T item);
-
-		/**
-		 * @param rowIndex the row index
-		 * @return the item at the given index in this model
-		 */
-		T itemAt(int rowIndex);
-
-		/**
 		 * Filters the items according to the condition specified by {@link #visiblePredicate()}.
 		 * If no include condition is specified this method does nothing.
 		 * This method does not interfere with the internal ordering of the visible items.
 		 * @see #visiblePredicate()
 		 */
 		void filter();
+
+		/**
+		 * @param <T> the item type
+		 */
+		interface VisibleItems<T> extends Observable<List<T>> {
+
+			/**
+			 * Returns true if the given item is visible
+			 * @param item the item
+			 * @return true if the item is visible
+			 */
+			boolean contains(T item);
+
+			/**
+			 * @param item the item
+			 * @return the index of the item in this model
+			 */
+			int indexOf(T item);
+
+			/**
+			 * @param rowIndex the row index
+			 * @return the item at the given index in this model
+			 */
+			T itemAt(int rowIndex);
+		}
+
+		/**
+		 * @param <T> the item type
+		 */
+		interface FilteredItems<T> extends Observable<Collection<T>> {
+
+			/**
+			 * Returns true if the given item is filtered.
+			 * @param item the item
+			 * @return true if the item is filtered
+			 */
+			boolean contains(T item);
+		}
 	}
 
 	/**

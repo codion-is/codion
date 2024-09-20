@@ -347,35 +347,35 @@ public class FilterTableTest {
 		FilterTableSortModel<TestRow, Integer> sortModel = table.sortModel();
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
 		assertEquals(SortOrder.DESCENDING, sortModel.sortOrder(0));
-		assertEquals(E, tableModel.items().itemAt(0));
+		assertEquals(E, tableModel.items().visible().itemAt(0));
 		assertEquals(1, actionsPerformed.get());
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
 		assertEquals(SortOrder.ASCENDING, sortModel.sortOrder(0));
-		assertEquals(A, tableModel.items().itemAt(0));
+		assertEquals(A, tableModel.items().visible().itemAt(0));
 		assertEquals(0, sortModel.columnSortOrder().get(0).identifier());
 		assertEquals(2, actionsPerformed.get());
 
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
 		tableModel.refresh();
-		assertEquals(A, tableModel.items().itemAt(4));
-		assertEquals(E, tableModel.items().itemAt(0));
+		assertEquals(A, tableModel.items().visible().itemAt(4));
+		assertEquals(E, tableModel.items().visible().itemAt(0));
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
 
 		List<TestRow> items = new ArrayList<>();
 		items.add(NULL);
 		tableModel.addItemsAt(0, items);
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
-		assertEquals(0, tableModel.items().indexOf(NULL));
+		assertEquals(0, tableModel.items().visible().indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
-		assertEquals(tableModel.items().visible().get().size() - 1, tableModel.items().indexOf(NULL));
+		assertEquals(tableModel.items().visible().get().size() - 1, tableModel.items().visible().indexOf(NULL));
 
 		tableModel.refresh();
 		items.add(NULL);
 		tableModel.addItemsAt(0, items);
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
-		assertEquals(0, tableModel.items().indexOf(NULL));
+		assertEquals(0, tableModel.items().visible().indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
-		assertEquals(tableModel.items().visible().get().size() - 2, tableModel.items().indexOf(NULL));
+		assertEquals(tableModel.items().visible().get().size() - 2, tableModel.items().visible().indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.UNSORTED);
 		table.sortModel().sortingChanged().removeConsumer(consumer);
 	}
@@ -387,9 +387,9 @@ public class FilterTableTest {
 		tableModel.refresh();
 		FilterTableSortModel<TestRow, Integer> sortModel = table.sortModel();
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
-		assertEquals(E, tableModel.items().itemAt(0));
+		assertEquals(E, tableModel.items().visible().itemAt(0));
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
-		assertEquals(A, tableModel.items().itemAt(0));
+		assertEquals(A, tableModel.items().visible().itemAt(0));
 	}
 
 	@Test
@@ -492,7 +492,7 @@ public class FilterTableTest {
 					return false;
 				}
 			}
-			else if (!model.items().visible(row)) {
+			else if (!model.items().visible().contains(row)) {
 				return false;
 			}
 		}

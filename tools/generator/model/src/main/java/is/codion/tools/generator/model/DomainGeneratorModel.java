@@ -158,7 +158,7 @@ public final class DomainGeneratorModel {
 		schemaTableModel.selectionModel().selectedItem().optional().ifPresent(schema -> {
 			schemaNotifier.accept(schema.name());
 			schema.setDomain(schemaDomain(schema));
-			int index = schemaTableModel.items().indexOf(schema);
+			int index = schemaTableModel.items().visible().indexOf(schema);
 			schemaTableModel.fireTableRowsUpdated(index, index);
 		});
 		schemaSelectionChanged();

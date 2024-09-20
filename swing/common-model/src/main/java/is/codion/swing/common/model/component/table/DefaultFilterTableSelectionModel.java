@@ -110,7 +110,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	public boolean isSelected(R item) {
 		requireNonNull(item);
 
-		return isSelectedIndex(items.indexOf(item));
+		return isSelectedIndex(items.visible().indexOf(item));
 	}
 
 	@Override
@@ -406,7 +406,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		public R get() {
 			int index = selectedIndex.get();
 			if (index >= 0 && index < items.visible().get().size()) {
-				return items.itemAt(index);
+				return items.visible().itemAt(index);
 			}
 
 			return null;
@@ -435,7 +435,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		public List<R> get() {
 			return unmodifiableList(selectedIndexes.get().stream()
 							.mapToInt(Integer::intValue)
-							.mapToObj(items::itemAt)
+							.mapToObj(items.visible()::itemAt)
 							.collect(toList()));
 		}
 
@@ -471,7 +471,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		public void add(Collection<R> items) {
 			requireNonNull(items, "items");
 			selectedIndexes.add(items.stream()
-							.mapToInt(DefaultFilterTableSelectionModel.this.items::indexOf)
+							.mapToInt(DefaultFilterTableSelectionModel.this.items.visible()::indexOf)
 							.filter(index -> index >= 0)
 							.boxed()
 							.collect(toList()));
@@ -484,7 +484,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		@Override
 		public void remove(Collection<R> items) {
-			requireNonNull(items).forEach(item -> selectedIndexes.remove(DefaultFilterTableSelectionModel.this.items.indexOf(item)));
+			requireNonNull(items).forEach(item -> selectedIndexes.remove(DefaultFilterTableSelectionModel.this.items.visible().indexOf(item)));
 		}
 
 		@Override

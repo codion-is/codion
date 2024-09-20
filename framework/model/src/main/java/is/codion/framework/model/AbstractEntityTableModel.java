@@ -177,12 +177,12 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 
 	@Override
 	public Object backgroundColor(int row, Attribute<?> attribute) {
-		return entityDefinition().backgroundColorProvider().color(tableModel.items().itemAt(row), requireNonNull(attribute));
+		return entityDefinition().backgroundColorProvider().color(tableModel.items().visible().itemAt(row), requireNonNull(attribute));
 	}
 
 	@Override
 	public Object foregroundColor(int row, Attribute<?> attribute) {
-		return entityDefinition().foregroundColorProvider().color(tableModel.items().itemAt(row), requireNonNull(attribute));
+		return entityDefinition().foregroundColorProvider().color(tableModel.items().visible().itemAt(row), requireNonNull(attribute));
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	@Override
 	public final int indexOf(Entity.Key primaryKey) {
 		return find(primaryKey)
-						.map(items()::indexOf)
+						.map(items().visible()::indexOf)
 						.orElse(-1);
 	}
 
