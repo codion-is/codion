@@ -275,7 +275,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final void setSelectedItem(Object item) {
-		selectionModel.selected.setItem(item);
+		selectionModel.selected.setSelectedItem(item);
 	}
 
 	@Override
@@ -416,7 +416,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				selectionModel.selected.item = visible.items.get(visible.items.indexOf(selectionModel.selected.item));
 			}
 			if (selectionModel.selected.item != null && !visible.items.contains(selectionModel.selected.item) && filterSelectedItem.get()) {
-				selectionModel.selected.setItem(null);
+				selectionModel.selected.setSelectedItem(null);
 			}
 			else {
 				fireContentsChanged();
@@ -564,13 +564,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void set(T item) {
-			if (!Objects.equals(this.item, item) && validSelection.get().test(item)) {
-				changing.accept(item);
-				this.item = item;
-				fireContentsChanged();
-				selectionEmpty.set(selectionModel.selectedValue() == null);
-				event.accept(item);
-			}
+			setSelectedItem(item);
 		}
 
 		@Override
@@ -578,8 +572,15 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return event.observer();
 		}
 
-		private void setItem(Object item) {
-			set(translator.get().apply(Objects.equals(nullItem.get(), item) ? null : item));
+		private void setSelectedItem(Object item) {
+			T toSelect = translator.get().apply(Objects.equals(nullItem.get(), item) ? null : item);
+			if (!Objects.equals(this.item, toSelect) && validSelection.get().test(toSelect)) {
+				changing.accept(toSelect);
+				this.item = toSelect;
+				fireContentsChanged();
+				selectionEmpty.set(selectionModel.selectedValue() == null);
+				event.accept(this.item);
+			}
 		}
 
 		private void replaceWith(T replacement) {
