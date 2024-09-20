@@ -156,6 +156,18 @@ public interface FilterModel<T> {
 		boolean filtered(T item);
 
 		/**
+		 * @param item the item
+		 * @return the index of the item in this model
+		 */
+		int indexOf(T item);
+
+		/**
+		 * @param rowIndex the row index
+		 * @return the item at the given index in this model
+		 */
+		T itemAt(int rowIndex);
+
+		/**
 		 * Filters the items according to the condition specified by {@link #visiblePredicate()}.
 		 * If no include condition is specified this method does nothing.
 		 * This method does not interfere with the internal ordering of the visible items.

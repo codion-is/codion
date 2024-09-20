@@ -80,7 +80,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = requireNonNull(builder.columns);
-		this.selectionModel = new DefaultFilterTableSelectionModel<>(this);
+		this.selectionModel = new DefaultFilterTableSelectionModel<>(modelItems);
 		this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
 		this.combinedVisiblePredicate = new CombinedVisiblePredicate(filterModel.conditionModels().values());
@@ -164,16 +164,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public Value<RefreshStrategy> refreshStrategy() {
 		return refresher.refreshStrategy;
-	}
-
-	@Override
-	public R itemAt(int rowIndex) {
-		return modelItems.visible.items.get(rowIndex);
-	}
-
-	@Override
-	public int indexOf(R item) {
-		return modelItems.visible.items.indexOf(item);
 	}
 
 	@Override
@@ -296,7 +286,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return columns.value(itemAt(rowIndex), columns.identifier(columnIndex));
+		return columns.value(modelItems.itemAt(rowIndex), columns.identifier(columnIndex));
 	}
 
 	@Override
@@ -306,7 +296,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public String getStringAt(int rowIndex, C identifier) {
-		return columns.string(itemAt(rowIndex), requireNonNull(identifier));
+		return columns.string(modelItems.itemAt(rowIndex), requireNonNull(identifier));
 	}
 
 	@Override
@@ -376,7 +366,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 		}
 		if (!visibleItems.isEmpty()) {
-			this.modelItems.visible.items.addAll(index, visibleItems);
+			modelItems.visible.items.addAll(index, visibleItems);
 			fireTableRowsInserted(index, index + visibleItems.size());
 		}
 		if (!filteredItems.isEmpty()) {
@@ -457,7 +447,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private void merge(R item) {
-			int index = indexOf(item);
+			int index = modelItems.indexOf(item);
 			if (index == -1) {
 				addItemInternal(item);
 			}
@@ -537,6 +527,16 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public boolean filtered(R item) {
 			return filtered.items.contains(item);
+		}
+
+		@Override
+		public R itemAt(int index) {
+			return visible.items.get(index);
+		}
+
+		@Override
+		public int indexOf(R item) {
+			return visible.items.indexOf(item);
 		}
 
 		@Override

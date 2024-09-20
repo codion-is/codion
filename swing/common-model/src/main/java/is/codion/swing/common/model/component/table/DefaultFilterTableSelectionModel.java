@@ -19,6 +19,7 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
+import is.codion.common.model.FilterModel;
 import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
@@ -49,10 +50,10 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	private final State singleSelection = State.state(false);
 	private final StateObserver multipleSelection = State.and(selectionEmpty.not(), singleSelection.not());
 
-	private final FilterTableModel<R, ?> tableModel;
+	private final FilterModel.Items<R> items;
 
-	DefaultFilterTableSelectionModel(FilterTableModel<R, ?> tableModel) {
-		this.tableModel = requireNonNull(tableModel, "tableModel");
+	DefaultFilterTableSelectionModel(FilterModel.Items<R> items) {
+		this.items = requireNonNull(items, "items");
 		bindEvents();
 	}
 
@@ -92,7 +93,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	@Override
 	public void selectAll() {
-		setSelectionInterval(0, tableModel.items().visible().get().size() - 1);
+		setSelectionInterval(0, items.visible().get().size() - 1);
 	}
 
 	@Override
@@ -109,7 +110,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	public boolean isSelected(R item) {
 		requireNonNull(item);
 
-		return isSelectedIndex(tableModel.indexOf(item));
+		return isSelectedIndex(items.indexOf(item));
 	}
 
 	@Override
@@ -271,7 +272,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		@Override
 		public void set(Integer index) {
 			requireNonNull(index);
-			checkIndex(index, tableModel.items().visible().get().size());
+			checkIndex(index, items.visible().get().size());
 			setSelectionInterval(index, index);
 		}
 
@@ -318,20 +319,20 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		@Override
 		public void add(int index) {
-			checkIndex(index, tableModel.items().visible().get().size());
+			checkIndex(index, items.visible().get().size());
 			addSelectionInterval(index, index);
 		}
 
 		@Override
 		public void remove(int index) {
-			checkIndex(index, tableModel.items().visible().get().size());
+			checkIndex(index, items.visible().get().size());
 			removeSelectionInterval(index, index);
 		}
 
 		@Override
 		public void remove(Collection<Integer> indexes) {
 			indexes.forEach(index -> {
-				checkIndex(index, tableModel.items().visible().get().size());
+				checkIndex(index, items.visible().get().size());
 				removeSelectionInterval(index, index);
 			});
 		}
@@ -351,7 +352,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		@Override
 		public void moveUp() {
-			int visibleSize = tableModel.items().visible().get().size();
+			int visibleSize = items.visible().get().size();
 			if (visibleSize > 0) {
 				int lastIndex = visibleSize - 1;
 				if (isSelectionEmpty()) {
@@ -367,7 +368,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		@Override
 		public void moveDown() {
-			int filteredSize = tableModel.items().visible().get().size();
+			int filteredSize = items.visible().get().size();
 			if (filteredSize > 0) {
 				if (isSelectionEmpty()) {
 					setSelectionInterval(0, 0);
@@ -386,7 +387,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		}
 
 		private void checkIndexes(Collection<Integer> indexes) {
-			int size = tableModel.items().visible().get().size();
+			int size = items.visible().get().size();
 			for (Integer index : indexes) {
 				checkIndex(index, size);
 			}
@@ -404,8 +405,8 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		@Override
 		public R get() {
 			int index = selectedIndex.get();
-			if (index >= 0 && index < tableModel.items().visible().get().size()) {
-				return tableModel.itemAt(index);
+			if (index >= 0 && index < items.visible().get().size()) {
+				return items.itemAt(index);
 			}
 
 			return null;
@@ -434,7 +435,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		public List<R> get() {
 			return unmodifiableList(selectedIndexes.get().stream()
 							.mapToInt(Integer::intValue)
-							.mapToObj(tableModel::itemAt)
+							.mapToObj(items::itemAt)
 							.collect(toList()));
 		}
 
@@ -470,7 +471,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		public void add(Collection<R> items) {
 			requireNonNull(items, "items");
 			selectedIndexes.add(items.stream()
-							.mapToInt(tableModel::indexOf)
+							.mapToInt(DefaultFilterTableSelectionModel.this.items::indexOf)
 							.filter(index -> index >= 0)
 							.boxed()
 							.collect(toList()));
@@ -483,7 +484,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		@Override
 		public void remove(Collection<R> items) {
-			requireNonNull(items).forEach(item -> selectedIndexes.remove(tableModel.indexOf(item)));
+			requireNonNull(items).forEach(item -> selectedIndexes.remove(DefaultFilterTableSelectionModel.this.items.indexOf(item)));
 		}
 
 		@Override
@@ -493,7 +494,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		private List<Integer> indexesToSelect(Predicate<R> predicate) {
 			List<Integer> indexes = new ArrayList<>();
-			List<R> visibleItems = tableModel.items().visible().get();
+			List<R> visibleItems = items.visible().get();
 			for (int i = 0; i < visibleItems.size(); i++) {
 				R item = visibleItems.get(i);
 				if (predicate.test(item)) {

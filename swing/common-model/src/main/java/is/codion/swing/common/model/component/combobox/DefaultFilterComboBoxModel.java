@@ -384,6 +384,16 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			visible.notifyChanges();
 			filtered.notifyChanges();
 		}
+
+		@Override
+		public T itemAt(int index) {
+			return visible.items.get(index);
+		}
+
+		@Override
+		public int indexOf(T item) {
+			return visible.items.indexOf(item);
+		}
 	}
 
 	private final class VisibleItems implements Observable<List<T>> {

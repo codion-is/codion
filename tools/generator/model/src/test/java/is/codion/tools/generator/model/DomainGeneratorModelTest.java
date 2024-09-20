@@ -43,7 +43,7 @@ public final class DomainGeneratorModelTest {
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("PETSTORE"))
 						.collect(toList());
-		model.schemaModel().selectionModel().selectedIndex().set(model.schemaModel().indexOf(schema.get(0)));
+		model.schemaModel().selectionModel().selectedIndex().set(model.schemaModel().items().indexOf(schema.get(0)));
 		model.populateSelected(s -> {});
 		model.domainPackage().set("is.codion.petstore.domain");
 		assertNotNull(model.domainApi().get());
@@ -60,7 +60,7 @@ public final class DomainGeneratorModelTest {
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("CHINOOK"))
 						.collect(toList());
-		model.schemaModel().selectionModel().selectedIndex().set(model.schemaModel().indexOf(schema.get(0)));
+		model.schemaModel().selectionModel().selectedIndex().set(model.schemaModel().items().indexOf(schema.get(0)));
 		model.populateSelected(s -> {});
 		model.domainPackage().set("is.codion.chinook.domain");
 		assertNotNull(model.domainApi().get());
@@ -77,7 +77,7 @@ public final class DomainGeneratorModelTest {
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("WORLD"))
 						.collect(toList());
-		model.schemaModel().selectionModel().selectedIndex().set(model.schemaModel().indexOf(schema.get(0)));
+		model.schemaModel().selectionModel().selectedIndex().set(model.schemaModel().items().indexOf(schema.get(0)));
 		model.populateSelected(s -> {});
 		model.domainPackage().set("is.codion.world.domain");
 		assertNotNull(model.domainApi().get());

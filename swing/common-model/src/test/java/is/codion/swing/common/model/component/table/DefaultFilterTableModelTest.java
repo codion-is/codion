@@ -145,9 +145,9 @@ public final class DefaultFilterTableModelTest {
 	void addItemsAt() {
 		tableModel.refresh();
 		tableModel.addItemsAt(2, asList(F, G));
-		assertEquals(2, tableModel.indexOf(F));
-		assertEquals(3, tableModel.indexOf(G));
-		assertEquals(4, tableModel.indexOf(C));
+		assertEquals(2, tableModel.items().indexOf(F));
+		assertEquals(3, tableModel.items().indexOf(G));
+		assertEquals(4, tableModel.items().indexOf(C));
 	}
 
 	@Test
@@ -283,16 +283,16 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(1, dataChangedEvents.get());
 		tableModel.selectionModel().selectedItem().set(B);
 		TestRow h = new TestRow("h");
-		tableModel.setItemAt(tableModel.indexOf(B), h);
+		tableModel.setItemAt(tableModel.items().indexOf(B), h);
 		assertEquals(2, dataChangedEvents.get());
 		assertEquals(h, tableModel.selectionModel().selectedItem().get());
 		assertTrue(selectionChangedState.get());
-		tableModel.setItemAt(tableModel.indexOf(h), B);
+		tableModel.setItemAt(tableModel.items().indexOf(h), B);
 		assertEquals(3, dataChangedEvents.get());
 
 		selectionChangedState.set(false);
 		TestRow newB = new TestRow("b");
-		tableModel.setItemAt(tableModel.indexOf(B), newB);
+		tableModel.setItemAt(tableModel.items().indexOf(B), newB);
 		assertFalse(selectionChangedState.get());
 		assertEquals(newB, tableModel.selectionModel().selectedItem().get());
 		tableModel.items().visible().removeListener(listener);

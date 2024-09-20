@@ -65,18 +65,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	}
 
 	/**
-	 * @param item the item
-	 * @return the index of the item in the table model
-	 */
-	int indexOf(R item);
-
-	/**
-	 * @param rowIndex the row index
-	 * @return the item at the given row index in the table model
-	 */
-	R itemAt(int rowIndex);
-
-	/**
 	 * @return the table columns
 	 */
 	Columns<R, C> columns();

@@ -262,7 +262,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		if (!editable.get() || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
 			throw new IllegalStateException("This table model is readOnly or has disabled update");
 		}
-		Entity entity = itemAt(rowIndex).copy();
+		Entity entity = items().itemAt(rowIndex).copy();
 		entity.put((Attribute<Object>) columns().identifier(modelColumnIndex), value);
 		try {
 			if (entity.modified()) {
@@ -277,7 +277,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	@Override
 	public Color backgroundColor(int row, Attribute<?> attribute) {
 		requireNonNull(attribute);
-		Object color = entityDefinition().backgroundColorProvider().color(itemAt(row), attribute);
+		Object color = entityDefinition().backgroundColorProvider().color(items().itemAt(row), attribute);
 
 		return color == null ? null : toColor(color);
 	}
@@ -285,7 +285,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	@Override
 	public Color foregroundColor(int row, Attribute<?> attribute) {
 		requireNonNull(attribute);
-		Object color = entityDefinition().foregroundColorProvider().color(itemAt(row), attribute);
+		Object color = entityDefinition().foregroundColorProvider().color(items().itemAt(row), attribute);
 
 		return color == null ? null : toColor(color);
 	}
@@ -301,7 +301,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	@Override
 	public final int indexOf(Entity.Key primaryKey) {
 		return find(primaryKey)
-						.map(this::indexOf)
+						.map(items()::indexOf)
 						.orElse(-1);
 	}
 
@@ -407,16 +407,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	@Override
 	public final int getRowCount() {
 		return tableModel.getRowCount();
-	}
-
-	@Override
-	public final int indexOf(Entity item) {
-		return tableModel.indexOf(item);
-	}
-
-	@Override
-	public final Entity itemAt(int rowIndex) {
-		return tableModel.itemAt(rowIndex);
 	}
 
 	@Override

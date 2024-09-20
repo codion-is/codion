@@ -25,6 +25,7 @@ Codion Change Log
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.
 - FilterTableModel, a few methods moved to FilterModel.
+- FilterTableModel.indexOf() and itemAt() moved to FilterModel.Items.
 ### is.codion.swing.common.ui
 - FilterTable, now propagates the associated MouseEvent as the source of the ActionEvent when doubleClickAction is performed.
 - MenuBuilder no longer extends MenuItemBuilder.
