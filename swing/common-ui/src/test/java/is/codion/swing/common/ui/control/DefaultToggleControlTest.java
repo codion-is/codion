@@ -137,13 +137,13 @@ public class DefaultToggleControlTest {
 						.toggleControl(toggleControl)
 						.build()
 						.getModel();
-		buttonModel.toggleState().set(null);
+		buttonModel.toggleState().clear();
 		assertNull(value.get());
 		buttonModel.setSelected(false);
 		assertFalse(value.get());
 		buttonModel.setSelected(true);
 		assertTrue(value.get());
-		buttonModel.toggleState().set(null);
+		buttonModel.toggleState().clear();
 		assertNull(value.get());
 
 		value.set(false);

@@ -453,11 +453,6 @@ public interface FilterModel<T> {
 		 * @return a {@link Mutable} controlling the selected item
 		 */
 		Mutable<R> selectedItem();
-
-		/**
-		 * Clears the selection
-		 */
-		void clearSelection();
 	}
 
 	/**
@@ -502,6 +497,11 @@ public interface FilterModel<T> {
 		 * @see #selectedIndexes()
 		 */
 		void selectAll();
+
+		/**
+		 * Clears the selection
+		 */
+		void clearSelection();
 
 		/**
 		 * @return the number of selected items.

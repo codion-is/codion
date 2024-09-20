@@ -12,6 +12,7 @@ Codion Change Log
 - Mutable split from Observable.
 - MethodLogger.Entry.hasChildEntries() removed.
 - Item no longer Serializable, only the implementations.
+- Mutable.clear() added.
 ### is.codion.common.model
 - FilterModel.items() now Observable based, related refactoring.
 - FilterModel.Items added, related refactoring.

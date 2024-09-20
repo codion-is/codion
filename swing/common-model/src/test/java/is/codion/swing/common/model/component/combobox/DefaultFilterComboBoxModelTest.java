@@ -342,7 +342,7 @@ public class DefaultFilterComboBoxModelTest {
 		FilterComboBoxModel<Integer> model = new DefaultFilterComboBoxModel<>();
 		model.validator().set(item -> item > 0);
 		assertThrows(IllegalArgumentException.class, () -> model.items().set(asList(1, 2, 3, 4, 5, 0)));
-		assertThrows(NullPointerException.class, () -> model.items().set(null));
+		assertThrows(NullPointerException.class, () -> model.items().clear());
 	}
 
 	@Test

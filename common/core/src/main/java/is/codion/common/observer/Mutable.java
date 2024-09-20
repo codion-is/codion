@@ -69,4 +69,11 @@ public interface Mutable<T> extends Observable<T> {
 	 * @param value the value to set
 	 */
 	void set(T value);
+
+	/**
+	 * Clears this {@link Mutable} instance by setting the value to null
+	 */
+	default void clear() {
+		set(null);
+	}
 }

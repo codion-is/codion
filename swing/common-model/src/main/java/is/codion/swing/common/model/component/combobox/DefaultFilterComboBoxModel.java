@@ -20,6 +20,8 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Text;
 import is.codion.common.event.Event;
+import is.codion.common.model.FilterModel.Items.FilteredItems;
+import is.codion.common.model.FilterModel.Items.VisibleItems;
 import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
@@ -328,7 +330,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		return item;
 	}
 
-	private final class DefaultItems implements Items<T>, Mutable<Collection<T>> {
+	private final class DefaultItems implements Items<T> {
 
 		private final Value<Predicate<T>> visiblePredicate = Value.builder()
 						.<Predicate<T>>nullable()
@@ -424,7 +426,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class DefaultVisibleItems implements Items.VisibleItems<T> {
+	private final class DefaultVisibleItems implements VisibleItems<T> {
 
 		private final List<T> items = new ArrayList<>();
 		private final Event<List<T>> event = Event.event();
@@ -470,7 +472,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class DefaultFilteredItems implements Items.FilteredItems<T> {
+	private final class DefaultFilteredItems implements FilteredItems<T> {
 
 		private final List<T> items = new ArrayList<>();
 		private final Event<Collection<T>> event = Event.event();
@@ -526,11 +528,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean nullSelected() {
 			return includeNull.get() && selected.item == null;
-		}
-
-		@Override
-		public void clearSelection() {
-			selected.set(null);
 		}
 	}
 

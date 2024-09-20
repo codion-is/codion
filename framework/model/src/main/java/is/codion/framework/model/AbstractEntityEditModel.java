@@ -188,7 +188,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final void defaults() {
-		editEntity.set(null);
+		editEntity.clear();
 	}
 
 	@Override

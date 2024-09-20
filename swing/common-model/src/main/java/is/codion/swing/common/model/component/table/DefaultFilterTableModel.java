@@ -20,9 +20,10 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
+import is.codion.common.model.FilterModel.Items.FilteredItems;
+import is.codion.common.model.FilterModel.Items.VisibleItems;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
-import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
@@ -471,7 +472,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class DefaultItems implements Items<R>, Mutable<Collection<R>> {
+	private final class DefaultItems implements Items<R> {
 
 		private final DefaultVisibleItems visible = new DefaultVisibleItems();
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
@@ -539,7 +540,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class DefaultVisibleItems implements Items.VisibleItems<R> {
+	private final class DefaultVisibleItems implements VisibleItems<R> {
 
 		private final List<R> items = new ArrayList<>();
 		private final Event<List<R>> event = Event.event();
@@ -574,7 +575,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class DefaultFilteredItems implements Items.FilteredItems<R> {
+	private final class DefaultFilteredItems implements FilteredItems<R> {
 
 		private final List<R> items = new ArrayList<>();
 		private final Event<Collection<R>> event = Event.event();

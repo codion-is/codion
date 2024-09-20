@@ -44,7 +44,7 @@ public class NullableToggleButtonModelTest {
 		NullableToggleButtonModel model = new NullableToggleButtonModel(true);
 		assertTrue(model.toggleState().get());
 		assertTrue(model.isSelected());
-		model.toggleState().set(null);
+		model.toggleState().clear();
 		assertNull(model.toggleState().get());
 		assertFalse(model.isSelected());
 	}
@@ -57,7 +57,7 @@ public class NullableToggleButtonModelTest {
 		assertTrue(model.isSelected());
 		model.setSelected(false);
 		assertFalse(model.isSelected());
-		model.toggleState().set(null);
+		model.toggleState().clear();
 		assertFalse(model.isSelected());
 	}
 }
