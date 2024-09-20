@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -344,8 +345,58 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
+	public void addItemSorted(Entity item) {
+		comboBoxModel.addItemSorted(item);
+	}
+
+	@Override
+	public void addItemAt(int index, Entity item) {
+		comboBoxModel.addItemAt(index, item);
+	}
+
+	@Override
+	public void addItems(Collection<Entity> items) {
+		comboBoxModel.addItems(items);
+	}
+
+	@Override
+	public void addItemsSorted(Collection<Entity> items) {
+		comboBoxModel.addItemsSorted(items);
+	}
+
+	@Override
+	public void addItemsAt(int index, Collection<Entity> items) {
+		comboBoxModel.addItemsAt(index, items);
+	}
+
+	@Override
+	public void addItemsAtSorted(int index, Collection<Entity> items) {
+		comboBoxModel.addItemsAtSorted(index, items);
+	}
+
+	@Override
 	public void removeItem(Entity item) {
 		comboBoxModel.removeItem(item);
+	}
+
+	@Override
+	public Entity removeItemAt(int index) {
+		return comboBoxModel.removeItemAt(index);
+	}
+
+	@Override
+	public void removeItems(Collection<Entity> items) {
+		comboBoxModel.removeItems(items);
+	}
+
+	@Override
+	public List<Entity> removeItems(int fromIndex, int toIndex) {
+		return comboBoxModel.removeItems(fromIndex, toIndex);
+	}
+
+	@Override
+	public void setItemAt(int index, Entity item) {
+		comboBoxModel.setItemAt(index, item);
 	}
 
 	@Override

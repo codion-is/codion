@@ -153,6 +153,36 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
+	public void addItemSorted(T item) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void addItemAt(int index, T item) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void addItems(Collection<T> items) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void addItemsSorted(Collection<T> items) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void addItemsAt(int index, Collection<T> items) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void addItemsAtSorted(int index, Collection<T> items) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public final void removeItem(T item) {
 		requireNonNull(item);
 		if (modelItems.filtered.items.remove(item)) {
@@ -162,6 +192,26 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			fireContentsChanged();
 			modelItems.visible.notifyChanges();
 		}
+	}
+
+	@Override
+	public T removeItemAt(int index) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void removeItems(Collection<T> items) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<T> removeItems(int fromIndex, int toIndex) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setItemAt(int index, T item) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

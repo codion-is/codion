@@ -26,6 +26,7 @@ Codion Change Log
 - FilterTableModel.dataChanged() removed.
 - FilterTableModel, a few methods moved to FilterModel.
 - FilterTableModel.indexOf() and itemAt() moved to FilterModel.Items.
+- FilterTableModel, methods for adding and removing items moved to FilterModel.
 ### is.codion.swing.common.ui
 - FilterTable, now propagates the associated MouseEvent as the source of the ActionEvent when doubleClickAction is performed.
 - MenuBuilder no longer extends MenuItemBuilder.
@@ -36,6 +37,7 @@ Codion Change Log
 - EntityEditModel.entity() now Mutable based.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
+- AbstractEntityTableModel extracted from SwingEntityTableModel.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, Config.SHOW_REFRESH_PROGRESS_BAR now used for default config value.
 - EntityDialogs bug fixed, now respects the location if specified.

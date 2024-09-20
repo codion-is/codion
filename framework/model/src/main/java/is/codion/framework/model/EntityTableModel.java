@@ -258,17 +258,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	int indexOf(Entity.Key primaryKey);
 
 	/**
-	 * Refreshes the items in this table model, according to the underlying condition
-	 * @see #conditionModel()
-	 */
-	void refresh();
-
-	/**
-	 * Clears all items from this table model
-	 */
-	void clear();
-
-	/**
 	 * @return the number of visible rows in this table model
 	 */
 	int rowCount();
