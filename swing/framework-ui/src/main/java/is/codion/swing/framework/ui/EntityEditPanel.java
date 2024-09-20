@@ -524,7 +524,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 				throw new IllegalStateException("Controls must be configured before the panel is initialized");
 			}
 		};
- 		ControlMap controlMap = configuration.controlMap;
+		ControlMap controlMap = configuration.controlMap;
 		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
 		if (!editModel().readOnly().get()) {
 			if (editModel().insertEnabled().get()) {

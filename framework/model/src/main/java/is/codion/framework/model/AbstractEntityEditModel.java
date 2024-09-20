@@ -826,7 +826,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 				updatedEntities.stream()
 								.filter(updatedEntity -> updatedEntity.equals(activeEntity))
 								.findFirst()
-								.ifPresent(AbstractEntityEditModel.this.editEntity::set);
+								.ifPresent(AbstractEntityEditModel.this.editEntity::setEntity);
 
 				return updatedEntities;
 			}
