@@ -181,11 +181,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Value<Predicate<R>> visiblePredicate() {
-		return combinedVisiblePredicate.visiblePredicate;
-	}
-
-	@Override
 	public void addItems(Collection<R> items) {
 		addItemsAt(this.modelItems.visible.items.size(), items);
 	}
@@ -504,6 +499,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
+		public Value<Predicate<R>> visiblePredicate() {
+			return combinedVisiblePredicate.visiblePredicate;
+		}
+
+		@Override
 		public VisibleItems<R> visible() {
 			return visible;
 		}
@@ -603,11 +603,13 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private final List<ColumnConditionModel<C, ?>> columnFilters;
 
-		private final Value<Predicate<R>> visiblePredicate = Value.value();
+		private final Value<Predicate<R>> visiblePredicate = Value.builder()
+						.<Predicate<R>>nullable()
+						.listener(modelItems::filter)
+						.build();
 
 		private CombinedVisiblePredicate(Collection<ColumnConditionModel<C, ?>> columnFilters) {
 			this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
-			this.visiblePredicate.addListener(modelItems::filter);
 		}
 
 		@Override

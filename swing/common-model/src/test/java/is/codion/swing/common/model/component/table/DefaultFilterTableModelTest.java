@@ -119,13 +119,13 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void filterItems() {
 		tableModel.refresh();
-		tableModel.visiblePredicate().set(item -> !item.equals(B) && !item.equals(F));
+		tableModel.items().visiblePredicate().set(item -> !item.equals(B) && !item.equals(F));
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().contains(B));
 		tableModel.addItemsAt(0, Collections.singletonList(F));
 		assertFalse(tableModel.items().visible().contains(F));
 		assertTrue(tableModel.items().contains(F));
-		tableModel.visiblePredicate().clear();
+		tableModel.items().visiblePredicate().clear();
 		assertTrue(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().visible().contains(F));
 	}
@@ -226,7 +226,7 @@ public final class DefaultFilterTableModelTest {
 		testModel.selectionModel().selectedItem().set(E);
 		assertEquals(3, selectionEvents.get());
 
-		testModel.visiblePredicate().set(item -> !item.equals(E));
+		testModel.items().visiblePredicate().set(item -> !item.equals(E));
 		assertEquals(4, selectionEvents.get());
 
 		items.add(B);
@@ -540,7 +540,7 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void visiblePredicate() {
 		tableModel.refresh();
-		tableModel.visiblePredicate().set(item -> false);
+		tableModel.items().visiblePredicate().set(item -> false);
 		assertEquals(0, tableModel.items().visible().get().size());
 	}
 
@@ -564,7 +564,7 @@ public final class DefaultFilterTableModelTest {
 	void filtering() {
 		tableModel.refresh();
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
-		assertTrue(tableModel.visiblePredicate().isNull());
+		assertTrue(tableModel.items().visiblePredicate().isNull());
 
 		//test filters
 		assertNotNull(tableModel.filterModel().conditionModel(0));
@@ -574,10 +574,10 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().filtered().contains(D));
 
-		tableModel.visiblePredicate().set(strings -> !strings.equals(A));
-		assertTrue(tableModel.visiblePredicate().isNotNull());
+		tableModel.items().visiblePredicate().set(strings -> !strings.equals(A));
+		assertTrue(tableModel.items().visiblePredicate().isNotNull());
 		assertFalse(tableModel.items().visible().contains(A));
-		tableModel.visiblePredicate().clear();
+		tableModel.items().visiblePredicate().clear();
 		assertTrue(tableModel.items().visible().contains(A));
 
 		assertFalse(tableModel.items().visible().contains(B));

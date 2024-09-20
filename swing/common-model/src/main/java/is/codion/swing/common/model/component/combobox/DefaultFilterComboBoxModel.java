@@ -59,7 +59,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final State filterSelectedItem = State.state(false);
 	private final DefaultItems modelItems = new DefaultItems();
 	private final Refresher<T> refresher;
-	private final Value<Predicate<T>> visiblePredicate = Value.value();
 	private final Value<Predicate<T>> validator = Value.builder()
 					.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)
 					.build();
@@ -84,7 +83,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	 */
 	protected DefaultFilterComboBoxModel() {
 		refresher = new DefaultRefresher(new DefaultItemsSupplier());
-		visiblePredicate.addListener(modelItems::filter);
 		validator.addValidator(validator -> modelItems.get().stream()
 						.filter(Objects::nonNull)
 						.forEach(validator::test));
@@ -132,14 +130,9 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final Value<Predicate<T>> visiblePredicate() {
-		return visiblePredicate;
-	}
-
-	@Override
 	public final void addItem(T item) {
 		validate(item);
-		if (visiblePredicate.isNull() || visiblePredicate.get().test(item)) {
+		if (modelItems.visiblePredicate.isNull() || modelItems.visiblePredicate.get().test(item)) {
 			if (!modelItems.visible.items.contains(item)) {
 				modelItems.visible.items.add(item);
 				sortItems();
@@ -337,6 +330,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final class DefaultItems implements Items<T>, Mutable<Collection<T>> {
 
+		private final Value<Predicate<T>> visiblePredicate = Value.builder()
+						.<Predicate<T>>nullable()
+						.listener(this::filter)
+						.build();
+
 		private final DefaultVisibleItems visible = new DefaultVisibleItems();
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 
@@ -390,6 +388,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean contains(T item) {
 			return visible.items.contains(item) || filtered.items.contains(item);
+		}
+
+		@Override
+		public Value<Predicate<T>> visiblePredicate() {
+			return visiblePredicate;
 		}
 
 		@Override

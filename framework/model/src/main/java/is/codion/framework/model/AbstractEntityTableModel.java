@@ -244,11 +244,6 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	}
 
 	@Override
-	public final Value<Predicate<Entity>> visiblePredicate() {
-		return tableModel.visiblePredicate();
-	}
-
-	@Override
 	public final Items<Entity> items() {
 		return tableModel.items();
 	}

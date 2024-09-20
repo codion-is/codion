@@ -50,11 +50,6 @@ public interface FilterModel<T> {
 	PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);
 
 	/**
-	 * @return the {@link Value} controlling the predicate specifying which items should be visible in this model
-	 */
-	Value<Predicate<T>> visiblePredicate();
-
-	/**
 	 * @return the model items
 	 */
 	Items<T> items();
@@ -117,7 +112,7 @@ public interface FilterModel<T> {
 	 * If the item should be filtered calling this method has no effect.
 	 * @param index the index
 	 * @param item the item
-	 * @see #visiblePredicate()
+	 * @see Items#visiblePredicate()
 	 */
 	void setItemAt(int index, T item);
 
@@ -196,6 +191,11 @@ public interface FilterModel<T> {
 	 * @param <T> the item type
 	 */
 	interface Items<T> extends Mutable<Collection<T>> {
+
+		/**
+		 * @return the {@link Value} controlling the predicate specifying which items should be visible
+		 */
+		Value<Predicate<T>> visiblePredicate();
 
 		/**
 		 * @return a {@link VisibleItems} providing an unmodifiable view of the visible items, in the order they appear in the model

@@ -210,7 +210,7 @@ public final class EntityComboBoxModelTest {
 		assertEquals(clark, comboBoxModel.selectionModel().selectedValue());
 		comboBoxModel.setSelectedItem(null);
 		assertNull(comboBoxModel.selectionModel().selectedValue());
-		comboBoxModel.visiblePredicate().set(entity -> false);
+		comboBoxModel.items().visiblePredicate().set(entity -> false);
 		comboBoxModel.select(clark.primaryKey());
 		assertEquals(clark, comboBoxModel.selectionModel().selectedValue());
 		Entity.Key nobodyPK = ENTITIES.primaryKey(Employee.TYPE, -1);

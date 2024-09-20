@@ -107,7 +107,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		comboBoxModel.selectedItemTranslator().set(new SelectedItemTranslator());
 		comboBoxModel.refresher().items().set(this::performQuery);
 		comboBoxModel.validator().set(new ItemValidator());
-		comboBoxModel.visiblePredicate().set(foreignKeyVisiblePredicate);
+		comboBoxModel.items().visiblePredicate().set(foreignKeyVisiblePredicate);
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
 
@@ -244,7 +244,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		else {
 			foreignKeyFilterKeys.put(foreignKey, new HashSet<>(keys));
 		}
-		visiblePredicate().set(foreignKeyVisiblePredicate);
+		items().visiblePredicate().set(foreignKeyVisiblePredicate);
 		items().filter();
 	}
 
@@ -460,11 +460,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public Value<Predicate<Entity>> visiblePredicate() {
-		return comboBoxModel.visiblePredicate();
-	}
-
-	@Override
 	public Items<Entity> items() {
 		return comboBoxModel.items();
 	}
@@ -583,11 +578,11 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
 		Predicate<Entity> filterAllCondition = item -> false;
 		if (strictForeignKeyFiltering.get()) {
-			visiblePredicate().set(filterAllCondition);
+			items().visiblePredicate().set(filterAllCondition);
 		}
 		foreignKeyModel.selectionModel().selectedItem().addConsumer(selected -> {
 			if (selected == null && strictForeignKeyFiltering.get()) {
-				visiblePredicate().set(filterAllCondition);
+				items().visiblePredicate().set(filterAllCondition);
 			}
 			else {
 				filterByForeignKey(foreignKey, selected == null ? emptyList() : singletonList(selected.primaryKey()));
