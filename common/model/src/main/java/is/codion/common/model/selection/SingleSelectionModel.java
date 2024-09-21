@@ -32,16 +32,16 @@ public interface SingleSelectionModel<R> {
 	/**
 	 * @return a {@link StateObserver} indicating whether the selection is empty
 	 */
-	StateObserver selectionEmpty();
+	StateObserver empty();
 
 	/**
 	 * To prevent a selection change, add a listener throwing a {@link CancelException}.
 	 * @return an observer notified when the selection is about to change
 	 */
-	Observer<?> selectionChanging();
+	Observer<?> changing();
 
 	/**
 	 * @return a {@link Mutable} controlling the selected item
 	 */
-	Mutable<R> selectedItem();
+	Mutable<R> item();
 }

@@ -49,12 +49,12 @@ public class CustomerTablePanel extends EntityTablePanel {
 						.command(this::viewCustomerReport)
 						.name("Customer report")
 						.smallIcon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selectionModel().selectionEmpty().not())
+						.enabled(tableModel().selection().empty().not())
 						.build());
 	}
 
 	private void viewCustomerReport() throws Exception {
-		List<Entity> selectedCustomers = tableModel().selectionModel().selectedItems().get();
+		List<Entity> selectedCustomers = tableModel().selection().items().get();
 		if (selectedCustomers.isEmpty()) {
 			return;
 		}

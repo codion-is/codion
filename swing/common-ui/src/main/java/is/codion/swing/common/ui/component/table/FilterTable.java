@@ -238,7 +238,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
 		super(builder.tableModel, new DefaultFilterTableColumnModel<>(builder.columns),
-						builder.tableModel.selectionModel());
+						builder.tableModel.selection());
 		this.tableModel = builder.tableModel;
 		this.sortModel = new DefaultFilterTableSortModel<>(tableModel.columns());
 		this.searchModel = new DefaultFilterTableSearchModel<>(tableModel, columnModel());
@@ -309,10 +309,10 @@ public final class FilterTable<R, C> extends JTable {
 		if (!(dataModel instanceof FilterTableModel)) {
 			throw new IllegalArgumentException("FilterTable model must be a FilterTableModel instance");
 		}
-		List<R> selection = ((FilterTableModel<R, C>) dataModel).selectionModel().selectedItems().get();
+		List<R> selection = ((FilterTableModel<R, C>) dataModel).selection().items().get();
 		super.setModel(dataModel);
 		if (!selection.isEmpty()) {
-			((FilterTableModel<R, C>) dataModel).selectionModel().selectedItems().set(selection);
+			((FilterTableModel<R, C>) dataModel).selection().items().set(selection);
 		}
 	}
 
@@ -423,7 +423,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	@Override
 	public void setSelectionMode(int selectionMode) {
-		tableModel.selectionModel().setSelectionMode(selectionMode);
+		tableModel.selection().setSelectionMode(selectionMode);
 	}
 
 	/**
@@ -450,7 +450,7 @@ public final class FilterTable<R, C> extends JTable {
 										.build())
 						.owner(getParent())
 						.title(MESSAGES.getString(AUTO_RESIZE))
-						.onOk(() -> setAutoResizeMode(autoResizeComboBoxModel.selectionModel().selectedValue().value()))
+						.onOk(() -> setAutoResizeMode(autoResizeComboBoxModel.selection().value().value()))
 						.show();
 	}
 
@@ -585,7 +585,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return Controls containing {@link ToggleControl}s for choosing the auto resize mode.
 	 */
-	public Controls createToggleAutoResizeModelControls() {
+	public Controls createToggleAutoResizeModeControls() {
 		return Controls.builder()
 						.name(MESSAGES.getString(AUTO_RESIZE))
 						.controls(createAutoResizeModeControls())
@@ -597,7 +597,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public ToggleControl createSingleSelectionModeControl() {
 		return Control.builder()
-						.toggle(tableModel.selectionModel().singleSelectionMode())
+						.toggle(tableModel.selection().singleSelection())
 						.name(MESSAGES.getString(SINGLE_SELECTION_MODE))
 						.build();
 	}
@@ -609,7 +609,7 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.command(this::copySelectedCell)
 						.name(MESSAGES.getString("copy_cell"))
-						.enabled(tableModel.selectionModel().selectionEmpty().not())
+						.enabled(tableModel.selection().empty().not())
 						.build();
 	}
 
@@ -846,7 +846,7 @@ public final class FilterTable<R, C> extends JTable {
 	private void bindEvents(boolean columnReorderingAllowed,
 													boolean columnResizingAllowed) {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
-		tableModel.selectionModel().selectedIndexes().addConsumer(new ScrollToSelected());
+		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
 		tableModel.filterModel().conditionChanged().addListener(getTableHeader()::repaint);
 		searchModel.currentResult().addListener(this::repaint);
 		sortModel.sortingChanged().addListener(getTableHeader()::repaint);
@@ -1325,7 +1325,7 @@ public final class FilterTable<R, C> extends JTable {
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);
 			this.tableModel.items().visible().addListener(valuesChanged);
-			this.tableModel.selectionModel().selectedIndexes().addListener(valuesChanged);
+			this.tableModel.selection().indexes().addListener(valuesChanged);
 		}
 
 		@Override
@@ -1345,10 +1345,10 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public boolean subset() {
-			FilterTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
+			FilterTableSelectionModel<?> tableSelectionModel = tableModel.selection();
 
-			return tableSelectionModel.selectionEmpty().not().get() &&
-							tableSelectionModel.selectionCount() != tableModel.items().visible().size();
+			return tableSelectionModel.empty().not().get() &&
+							tableSelectionModel.count() != tableModel.items().visible().size();
 		}
 	}
 
@@ -1386,7 +1386,7 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public String get() {
 			List<Integer> rows = selected ?
-							tableModel.selectionModel().selectedIndexes().get() :
+							tableModel.selection().indexes().get() :
 							IntStream.range(0, tableModel.items().visible().size())
 											.boxed()
 											.collect(toList());

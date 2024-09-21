@@ -49,7 +49,7 @@ public final class TrackTableModelTest {
 		trackTableModel.refresh();
 		assertEquals(8, trackTableModel.rowCount());
 
-		trackTableModel.selectionModel().selectAll();
+		trackTableModel.selection().selectAll();
 		trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
 
 		trackTableModel.items().get().forEach(track ->

@@ -440,8 +440,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public FilterComboBoxSelectionModel<Entity> selectionModel() {
-		return comboBoxModel.selectionModel();
+	public FilterComboBoxSelectionModel<Entity> selection() {
+		return comboBoxModel.selection();
 	}
 
 	@Override
@@ -567,7 +567,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		else {
 			linkCondition(foreignKey, foreignKeyModel);
 		}
-		selectionModel().selectedItem().addConsumer(selected -> {
+		selection().item().addConsumer(selected -> {
 			if (selected != null && !selected.isNull(foreignKey)) {
 				foreignKeyModel.select(selected.key(foreignKey));
 			}
@@ -580,7 +580,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		if (strictForeignKeyFiltering.get()) {
 			items().visiblePredicate().set(filterAllCondition);
 		}
-		foreignKeyModel.selectionModel().selectedItem().addConsumer(selected -> {
+		foreignKeyModel.selection().item().addConsumer(selected -> {
 			if (selected == null && strictForeignKeyFiltering.get()) {
 				items().visiblePredicate().set(filterAllCondition);
 			}
@@ -595,9 +595,9 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 			conditionSupplier.set(() -> foreignKey.equalTo(selected));
 			refresh();
 		};
-		foreignKeyModel.selectionModel().selectedItem().addConsumer(consumer);
+		foreignKeyModel.selection().item().addConsumer(consumer);
 		//initialize
-		consumer.accept(selectionModel().selectedValue());
+		consumer.accept(selection().value());
 	}
 
 	private final class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {

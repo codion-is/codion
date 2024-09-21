@@ -124,7 +124,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	@Override
 	public void removeSelectedApplications() {
-		applicationTableModel.selectionModel().selectedItems().get().stream()
+		applicationTableModel.selection().items().get().stream()
 						.map(DefaultApplicationRow.class::cast)
 						.forEach(application -> loadTest.stop(application.applicationRunner));
 	}

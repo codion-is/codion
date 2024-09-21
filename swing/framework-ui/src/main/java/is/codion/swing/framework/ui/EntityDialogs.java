@@ -493,7 +493,7 @@ public final class EntityDialogs {
 							.command(this::ok)
 							.name(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
-							.enabled(tableModel.selectionModel().selectionEmpty().not())
+							.enabled(tableModel.selection().empty().not())
 							.build();
 			Control cancelControl = Control.builder()
 							.command(this::cancel)
@@ -540,7 +540,7 @@ public final class EntityDialogs {
 		}
 
 		private void cancel() {
-			entityTablePanel.tableModel().selectionModel().clearSelection();
+			entityTablePanel.tableModel().selection().clear();
 			disposeParentWindow(entityTablePanel);
 		}
 
@@ -548,7 +548,7 @@ public final class EntityDialogs {
 			SwingEntityTableModel tableModel = entityTablePanel.tableModel();
 			tableModel.refreshThen(items -> {
 				if (tableModel.rowCount() > 0) {
-					tableModel.selectionModel().selectedIndex().set(0);
+					tableModel.selection().index().set(0);
 					entityTablePanel.table().requestFocusInWindow();
 				}
 				else {
@@ -558,7 +558,7 @@ public final class EntityDialogs {
 		}
 
 		private List<Entity> selectEntities() {
-			return entityTablePanel.tableModel().selectionModel().selectedItems().get();
+			return entityTablePanel.tableModel().selection().items().get();
 		}
 	}
 

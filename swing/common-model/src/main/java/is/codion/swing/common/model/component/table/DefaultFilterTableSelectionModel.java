@@ -41,9 +41,9 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	private final FilterListSelectionModel selectionModel = new FilterListSelectionModel();
 	private final SelectedIndex selectedIndex = new SelectedIndex();
-	private final DefaultSelectedIndexes selectedIndexes = new DefaultSelectedIndexes();
+	private final DefaultIndexes selectedIndexes = new DefaultIndexes();
 	private final SelectedItem selectedItem = new SelectedItem();
-	private final DefaultSelectedItems selectedItems = new DefaultSelectedItems();
+	private final DefaultItems selectedItems = new DefaultItems();
 	private final Event<?> selectionChanging = Event.event();
 	private final State singleSelectionMode = State.state(false);
 	private final State selectionEmpty = State.state(true);
@@ -60,19 +60,19 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	@Override
 	public void setSelectionMode(int selectionMode) {
 		if (getSelectionMode() != selectionMode) {
-			clearSelection();
+			clear();
 			selectionModel.setSelectionMode(selectionMode);
 			singleSelectionMode.set(selectionMode == SINGLE_SELECTION);
 		}
 	}
 
 	@Override
-	public State singleSelectionMode() {
+	public State singleSelection() {
 		return singleSelectionMode;
 	}
 
 	@Override
-	public int selectionCount() {
+	public int count() {
 		if (isSelectionEmpty()) {
 			return 0;
 		}
@@ -82,12 +82,12 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public SelectedIndexes selectedIndexes() {
+	public Indexes indexes() {
 		return selectedIndexes;
 	}
 
 	@Override
-	public Mutable<Integer> selectedIndex() {
+	public Mutable<Integer> index() {
 		return selectedIndex;
 	}
 
@@ -97,12 +97,12 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public Mutable<R> selectedItem() {
+	public Mutable<R> item() {
 		return selectedItem;
 	}
 
 	@Override
-	public SelectedItems<R> selectedItems() {
+	public Items<R> items() {
 		return selectedItems;
 	}
 
@@ -137,22 +137,22 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public Observer<?> selectionChanging() {
+	public Observer<?> changing() {
 		return selectionChanging.observer();
 	}
 
 	@Override
-	public StateObserver multipleSelection() {
+	public StateObserver multiple() {
 		return multipleSelection;
 	}
 
 	@Override
-	public StateObserver singleSelection() {
+	public StateObserver single() {
 		return singleSelection.observer();
 	}
 
 	@Override
-	public StateObserver selectionEmpty() {
+	public StateObserver empty() {
 		return selectionEmpty.observer();
 	}
 
@@ -189,6 +189,11 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	@Override
 	public void setLeadSelectionIndex(int index) {
 		selectionModel.setLeadSelectionIndex(index);
+	}
+
+	@Override
+	public void clear() {
+		clearSelection();
 	}
 
 	@Override
@@ -244,7 +249,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 			super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
 			if (!isAdjusting) {
 				selectionEmpty.set(super.isSelectionEmpty());
-				singleSelection.set(selectionCount() == 1);
+				singleSelection.set(count() == 1);
 				selectedIndex.notifyListeners();
 				selectedItem.notifyListeners();
 				selectedIndexes.notifyListeners();
@@ -279,7 +284,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		}
 	}
 
-	private final class DefaultSelectedIndexes implements SelectedIndexes {
+	private final class DefaultIndexes implements Indexes {
 
 		private final Event<List<Integer>> event = Event.event();
 
@@ -305,7 +310,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 			requireNonNull(indexes);
 			checkIndexes(indexes);
 			setValueIsAdjusting(true);
-			clearSelection();
+			DefaultFilterTableSelectionModel.this.clear();
 			add(indexes);
 			setValueIsAdjusting(false);
 		}
@@ -425,7 +430,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		}
 	}
 
-	private final class DefaultSelectedItems implements SelectedItems<R> {
+	private final class DefaultItems implements Items<R> {
 
 		private final Event<List<R>> event = Event.event();
 
@@ -445,7 +450,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		@Override
 		public void set(List<R> items) {
 			if (!isSelectionEmpty()) {
-				clearSelection();
+				DefaultFilterTableSelectionModel.this.clear();
 			}
 			add(items);
 		}

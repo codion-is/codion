@@ -54,50 +54,50 @@ public class DefaultFilterTableSelectionModelTest {
 										.build();
 		tableModel.refresh();
 
-		testModel = tableModel.selectionModel();
+		testModel = tableModel.selection();
 	}
 
 	@Test
 	void test() {
-		testModel.selectedIndex().set(0);
-		assertTrue(testModel.selectedItems().contains("A"));
-		assertNotNull(testModel.selectedItem().get());
+		testModel.index().set(0);
+		assertTrue(testModel.items().contains("A"));
+		assertNotNull(testModel.item().get());
 		testModel.clearSelection();
-		assertFalse(testModel.selectedItems().contains("A"));
-		assertNull(testModel.selectedItem().get());
+		assertFalse(testModel.items().contains("A"));
+		assertNull(testModel.item().get());
 	}
 
 	@Test
 	void selectionMode() {
-		assertFalse(testModel.singleSelectionMode().get());
+		assertFalse(testModel.singleSelection().get());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelectionMode().get());
+		assertTrue(testModel.singleSelection().get());
 		testModel.setSelectionMode(SINGLE_INTERVAL_SELECTION);
-		assertFalse(testModel.singleSelectionMode().get());
+		assertFalse(testModel.singleSelection().get());
 		testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
-		assertFalse(testModel.singleSelectionMode().get());
+		assertFalse(testModel.singleSelection().get());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelectionMode().get());
-		testModel.singleSelectionMode().set(false);
+		assertTrue(testModel.singleSelection().get());
+		testModel.singleSelection().set(false);
 		assertEquals(MULTIPLE_INTERVAL_SELECTION, testModel.getSelectionMode());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelectionMode().get());
+		assertTrue(testModel.singleSelection().get());
 		assertEquals(SINGLE_SELECTION, testModel.getSelectionMode());
 	}
 
 	@Test
 	void events() {
 		AtomicInteger emptyCounter = new AtomicInteger();
-		testModel.selectionEmpty().addListener(emptyCounter::incrementAndGet);
-		testModel.selectedIndex().set(0);
+		testModel.empty().addListener(emptyCounter::incrementAndGet);
+		testModel.index().set(0);
 		assertEquals(1, emptyCounter.get());
-		testModel.selectedIndexes().add(1);
+		testModel.indexes().add(1);
 		assertEquals(1, emptyCounter.get());
-		testModel.selectedIndexes().set(asList(1, 2));
+		testModel.indexes().set(asList(1, 2));
 		assertEquals(1, emptyCounter.get());
 		testModel.addSelectionInterval(0, 1);
 		assertEquals(1, emptyCounter.get());
-		testModel.selectedIndexes().moveDown();
+		testModel.indexes().moveDown();
 		assertEquals(1, emptyCounter.get());
 		testModel.clearSelection();
 		assertEquals(2, emptyCounter.get());

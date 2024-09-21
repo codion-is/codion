@@ -193,7 +193,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final void select(Collection<Entity.Key> keys) {
-		selectionModel().selectedItems().set(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
+		selection().items().set(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
 	}
 
 	@Override
@@ -206,12 +206,12 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final Collection<Entity> deleteSelected() throws DatabaseException {
-		return editModel.delete(selectionModel().selectedItems().get());
+		return editModel.delete(selection().items().get());
 	}
 
 	@Override
 	public final Observer<?> selectionChanged() {
-		return selectionModel().selectedIndexes().observer();
+		return selection().indexes().observer();
 	}
 
 	@Override
@@ -284,7 +284,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		editModel.afterUpdate().addConsumer(this::onUpdate);
 		editModel.afterDelete().addConsumer(this::onDelete);
 		editModel.entity().addConsumer(this::onEntityChanged);
-		selectionModel().selectedItem().addConsumer(editModel.entity()::set);
+		selection().item().addConsumer(editModel.entity()::set);
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {
@@ -292,8 +292,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 						.filter(entity -> entity.entityType().equals(entityType()))
 						.collect(toList());
 		if (!onInsert.isEqualTo(OnInsert.DO_NOTHING) && !entitiesToAdd.isEmpty()) {
-			if (!selectionModel().selectionEmpty().get()) {
-				selectionModel().clearSelection();
+			if (!selection().empty().get()) {
+				selection().clear();
 			}
 			switch (onInsert.get()) {
 				case ADD_TOP:
@@ -325,8 +325,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	private void onEntityChanged(Entity entity) {
-		if (entity == null && selectionModel().selectionEmpty().not().get()) {
-			selectionModel().clearSelection();
+		if (entity == null && selection().empty().not().get()) {
+			selection().clear();
 		}
 	}
 

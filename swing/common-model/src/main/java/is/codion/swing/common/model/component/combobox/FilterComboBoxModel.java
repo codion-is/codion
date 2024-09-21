@@ -123,11 +123,11 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	Value<T> nullItem();
 
 	@Override
-	FilterComboBoxSelectionModel<T> selectionModel();
+	FilterComboBoxSelectionModel<T> selection();
 
 	/**
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-	 * via {@link #nullItem()}, {@link FilterComboBoxSelectionModel#selectedValue()} is usually what you want
+	 * via {@link #nullItem()}, {@link FilterComboBoxSelectionModel#value()} is usually what you want
 	 */
 	T getSelectedItem();
 
@@ -166,7 +166,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @return the selected value, null in case the value representing null is selected
 		 * @see #nullSelected()
 		 */
-		T selectedValue();
+		T value();
 
 		/**
 		 * Returns true if this model contains null and it is selected.

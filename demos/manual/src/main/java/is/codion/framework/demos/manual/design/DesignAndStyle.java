@@ -95,11 +95,11 @@ public final class DesignAndStyle {
 		//end::getters[]
 
 		//tag::mutable[]
-		List<Integer> selectedIndexes = selectionModel.selectedIndexes().get();
+		List<Integer> selectedIndexes = selectionModel.indexes().get();
 
-		selectionModel.selectedIndexes().set(asList(0, 1, 2));
+		selectionModel.indexes().set(asList(0, 1, 2));
 
-		selectionModel.selectedItems().addListener(() -> System.out.println("Selected items changed"));
+		selectionModel.items().addListener(() -> System.out.println("Selected items changed"));
 
 		tableModel.comparator().set(Comparator.comparing(row -> row.get(0)));
 

@@ -57,12 +57,12 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	private Control viewCoverControl() {
 		return Control.builder()
 						.command(this::viewSelectedCover)
-						.enabled(tableModel().selectionModel().singleSelection())
+						.enabled(tableModel().selection().single())
 						.build();
 	}
 
 	private void viewSelectedCover() {
-		tableModel().selectionModel().selectedItem().optional()
+		tableModel().selection().item().optional()
 						.filter(album -> album.isNotNull(Album.COVER))
 						.ifPresent(album -> displayImage(album.get(Album.TITLE), album.get(Album.COVER)));
 	}

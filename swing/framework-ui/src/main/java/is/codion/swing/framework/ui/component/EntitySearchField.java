@@ -652,7 +652,7 @@ public final class EntitySearchField extends HintTextField {
 			}
 			JPanel columnBasePanel = columnBasePanelBuilder.build();
 			if (columnComboBoxModel.getSize() > 0) {
-				columnComboBoxModel.selectionModel().selectedItem().addConsumer(selected ->
+				columnComboBoxModel.selection().item().addConsumer(selected ->
 								cardLayout.show(columnBasePanel, selected.value().name()));
 				columnComboBoxModel.setSelectedItem(columnComboBoxModel.getElementAt(0));
 			}
@@ -941,7 +941,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() throws Exception {
-				searchModel.entities().set(table.model().selectionModel().selectedItems().get());
+				searchModel.entities().set(table.model().selection().items().get());
 				disposeParentWindow(table);
 			}
 		}

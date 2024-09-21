@@ -204,15 +204,15 @@ public final class DefaultFilterTableModelTest {
 						FilterTableModel.<TestRow, Integer>builder(new TestColumns())
 										.items(() -> items)
 										.build();
-		testModel.selectionModel().selectedIndexes().addListener(selectionEvents::incrementAndGet);
+		testModel.selection().indexes().addListener(selectionEvents::incrementAndGet);
 		testModel.refreshStrategy().set(RefreshStrategy.MERGE);
 		testModel.refresh();
 		testModel.comparator().set(Comparator.comparing(o -> o.value));
 //		testModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
-		testModel.selectionModel().selectedIndex().set(1);//b
+		testModel.selection().index().set(1);//b
 
 		assertEquals(1, selectionEvents.get());
-		assertSame(B, testModel.selectionModel().selectedItem().get());
+		assertSame(B, testModel.selection().item().get());
 
 		items.remove(C);
 		testModel.refresh();
@@ -220,10 +220,10 @@ public final class DefaultFilterTableModelTest {
 
 		items.remove(B);
 		testModel.refresh();
-		assertTrue(testModel.selectionModel().isSelectionEmpty());
+		assertTrue(testModel.selection().isSelectionEmpty());
 		assertEquals(2, selectionEvents.get());
 
-		testModel.selectionModel().selectedItem().set(E);
+		testModel.selection().item().set(E);
 		assertEquals(3, selectionEvents.get());
 
 		testModel.items().visiblePredicate().set(item -> !item.equals(E));
@@ -235,10 +235,10 @@ public final class DefaultFilterTableModelTest {
 		//merge does not sort new items
 		testModel.sortItems();
 
-		testModel.selectionModel().selectedIndex().set(1);//b
+		testModel.selection().index().set(1);//b
 
 		assertEquals(5, selectionEvents.get());
-		assertSame(B, testModel.selectionModel().selectedItem().get());
+		assertSame(B, testModel.selection().item().get());
 	}
 
 	@Test
@@ -278,14 +278,14 @@ public final class DefaultFilterTableModelTest {
 		Runnable listener = dataChangedEvents::incrementAndGet;
 		tableModel.items().visible().addListener(listener);
 		State selectionChangedState = State.state();
-		tableModel.selectionModel().selectedItem().addConsumer((item) -> selectionChangedState.set(true));
+		tableModel.selection().item().addConsumer((item) -> selectionChangedState.set(true));
 		tableModel.refresh();
 		assertEquals(1, dataChangedEvents.get());
-		tableModel.selectionModel().selectedItem().set(B);
+		tableModel.selection().item().set(B);
 		TestRow h = new TestRow("h");
 		tableModel.setItemAt(tableModel.items().visible().indexOf(B), h);
 		assertEquals(2, dataChangedEvents.get());
-		assertEquals(h, tableModel.selectionModel().selectedItem().get());
+		assertEquals(h, tableModel.selection().item().get());
 		assertTrue(selectionChangedState.get());
 		tableModel.setItemAt(tableModel.items().visible().indexOf(h), B);
 		assertEquals(3, dataChangedEvents.get());
@@ -294,7 +294,7 @@ public final class DefaultFilterTableModelTest {
 		TestRow newB = new TestRow("b");
 		tableModel.setItemAt(tableModel.items().visible().indexOf(B), newB);
 		assertFalse(selectionChangedState.get());
-		assertEquals(newB, tableModel.selectionModel().selectedItem().get());
+		assertEquals(newB, tableModel.selection().item().get());
 		tableModel.items().visible().removeListener(listener);
 	}
 
@@ -336,7 +336,7 @@ public final class DefaultFilterTableModelTest {
 		Collection<Integer> indexes = new ArrayList<>();
 		indexes.add(1);
 		indexes.add(-1);
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndexes().add(indexes));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().add(indexes));
 	}
 
 	@Test
@@ -344,7 +344,7 @@ public final class DefaultFilterTableModelTest {
 		Collection<Integer> indexes = new ArrayList<>();
 		indexes.add(1);
 		indexes.add(10);
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndexes().add(indexes));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().add(indexes));
 	}
 
 	@Test
@@ -352,7 +352,7 @@ public final class DefaultFilterTableModelTest {
 		List<Integer> indexes = new ArrayList<>();
 		indexes.add(1);
 		indexes.add(-1);
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndexes().set(indexes));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().set(indexes));
 	}
 
 	@Test
@@ -360,27 +360,27 @@ public final class DefaultFilterTableModelTest {
 		List<Integer> indexes = new ArrayList<>();
 		indexes.add(1);
 		indexes.add(10);
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndexes().set(indexes));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().set(indexes));
 	}
 
 	@Test
 	void setSelectedIndexNegative() {
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndex().set(-1));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().index().set(-1));
 	}
 
 	@Test
 	void setSelectedIndexOutOfBounds() {
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndex().set(10));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().index().set(10));
 	}
 
 	@Test
 	void addSelectedIndexNegative() {
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndexes().add(-1));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().add(-1));
 	}
 
 	@Test
 	void addSelectedIndexOutOfBounds() {
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selectionModel().selectedIndexes().add(10));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().add(10));
 	}
 
 	@Test
@@ -388,153 +388,153 @@ public final class DefaultFilterTableModelTest {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
 		Consumer consumer = data -> listener.run();
-		FilterTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
-		selectionModel.selectedIndex().addConsumer(consumer);
-		selectionModel.selectedIndexes().addListener(listener);
-		selectionModel.selectedItem().addConsumer(consumer);
-		selectionModel.selectedItems().addConsumer(consumer);
+		FilterTableSelectionModel<TestRow> selectionModel = tableModel.selection();
+		selectionModel.index().addConsumer(consumer);
+		selectionModel.indexes().addListener(listener);
+		selectionModel.item().addConsumer(consumer);
+		selectionModel.items().addConsumer(consumer);
 
-		assertFalse(selectionModel.singleSelection().get());
-		assertTrue(selectionModel.selectionEmpty().get());
-		assertFalse(selectionModel.multipleSelection().get());
+		assertFalse(selectionModel.single().get());
+		assertTrue(selectionModel.empty().get());
+		assertFalse(selectionModel.multiple().get());
 
 		tableModel.refresh();
-		selectionModel.selectedIndex().set(2);
+		selectionModel.index().set(2);
 		assertEquals(4, events.get());
-		assertTrue(selectionModel.singleSelection().get());
-		assertFalse(selectionModel.selectionEmpty().get());
-		assertFalse(selectionModel.multipleSelection().get());
-		assertEquals(2, selectionModel.selectedIndex().get());
-		selectionModel.selectedIndexes().moveDown();
+		assertTrue(selectionModel.single().get());
+		assertFalse(selectionModel.empty().get());
+		assertFalse(selectionModel.multiple().get());
+		assertEquals(2, selectionModel.index().get());
+		selectionModel.indexes().moveDown();
 		assertEquals(8, events.get());
-		assertEquals(3, selectionModel.selectedIndex().get());
-		selectionModel.selectedIndexes().moveUp();
-		selectionModel.selectedIndexes().moveUp();
-		assertEquals(1, selectionModel.selectedIndex().get());
+		assertEquals(3, selectionModel.index().get());
+		selectionModel.indexes().moveUp();
+		selectionModel.indexes().moveUp();
+		assertEquals(1, selectionModel.index().get());
 
-		selectionModel.selectedIndexes().moveDown();
-		selectionModel.selectedIndexes().moveDown();
+		selectionModel.indexes().moveDown();
+		selectionModel.indexes().moveDown();
 
-		assertEquals(3, selectionModel.selectedIndex().get());
+		assertEquals(3, selectionModel.index().get());
 
-		selectionModel.selectedIndex().set(0);
-		selectionModel.selectedIndexes().moveUp();
-		assertEquals(tableModel.items().visible().size() - 1, selectionModel.selectedIndex().get());
+		selectionModel.index().set(0);
+		selectionModel.indexes().moveUp();
+		assertEquals(tableModel.items().visible().size() - 1, selectionModel.index().get());
 
-		selectionModel.selectedIndex().set(tableModel.items().visible().size() - 1);
-		selectionModel.selectedIndexes().moveDown();
-		assertEquals(0, selectionModel.selectedIndex().get());
-
-		selectionModel.clearSelection();
-		selectionModel.selectedIndexes().moveUp();
-		assertEquals(tableModel.items().visible().size() - 1, selectionModel.selectedIndex().get());
+		selectionModel.index().set(tableModel.items().visible().size() - 1);
+		selectionModel.indexes().moveDown();
+		assertEquals(0, selectionModel.index().get());
 
 		selectionModel.clearSelection();
-		selectionModel.selectedIndexes().moveDown();
-		assertEquals(0, selectionModel.selectedIndex().get());
+		selectionModel.indexes().moveUp();
+		assertEquals(tableModel.items().visible().size() - 1, selectionModel.index().get());
+
+		selectionModel.clearSelection();
+		selectionModel.indexes().moveDown();
+		assertEquals(0, selectionModel.index().get());
 
 		selectionModel.selectAll();
-		assertEquals(5, selectionModel.selectedItems().get().size());
+		assertEquals(5, selectionModel.items().get().size());
 		selectionModel.clearSelection();
-		assertFalse(selectionModel.singleSelection().get());
-		assertTrue(selectionModel.selectionEmpty().get());
-		assertFalse(selectionModel.multipleSelection().get());
-		assertEquals(0, selectionModel.selectedItems().get().size());
+		assertFalse(selectionModel.single().get());
+		assertTrue(selectionModel.empty().get());
+		assertFalse(selectionModel.multiple().get());
+		assertEquals(0, selectionModel.items().get().size());
 
-		selectionModel.selectedItem().set(ITEMS.get(0));
-		assertFalse(selectionModel.multipleSelection().get());
-		assertEquals(ITEMS.get(0), selectionModel.selectedItem().get());
-		assertEquals(0, selectionModel.selectedIndex().get());
-		assertEquals(1, selectionModel.selectionCount());
+		selectionModel.item().set(ITEMS.get(0));
+		assertFalse(selectionModel.multiple().get());
+		assertEquals(ITEMS.get(0), selectionModel.item().get());
+		assertEquals(0, selectionModel.index().get());
+		assertEquals(1, selectionModel.count());
 		assertFalse(selectionModel.isSelectionEmpty());
-		selectionModel.selectedIndexes().add(1);
-		assertTrue(selectionModel.multipleSelection().get());
-		assertEquals(ITEMS.get(0), selectionModel.selectedItem().get());
-		assertEquals(asList(0, 1), selectionModel.selectedIndexes().get());
-		assertEquals(0, selectionModel.selectedIndex().get());
-		selectionModel.selectedIndexes().add(4);
-		assertTrue(selectionModel.multipleSelection().get());
-		assertEquals(asList(0, 1, 4), selectionModel.selectedIndexes().get());
+		selectionModel.indexes().add(1);
+		assertTrue(selectionModel.multiple().get());
+		assertEquals(ITEMS.get(0), selectionModel.item().get());
+		assertEquals(asList(0, 1), selectionModel.indexes().get());
+		assertEquals(0, selectionModel.index().get());
+		selectionModel.indexes().add(4);
+		assertTrue(selectionModel.multiple().get());
+		assertEquals(asList(0, 1, 4), selectionModel.indexes().get());
 		selectionModel.removeIndexInterval(1, 4);
-		assertEquals(singletonList(0), selectionModel.selectedIndexes().get());
-		assertEquals(0, selectionModel.selectedIndex().get());
+		assertEquals(singletonList(0), selectionModel.indexes().get());
+		assertEquals(0, selectionModel.index().get());
 		selectionModel.clearSelection();
-		assertEquals(new ArrayList<Integer>(), selectionModel.selectedIndexes().get());
+		assertEquals(new ArrayList<Integer>(), selectionModel.indexes().get());
 		assertEquals(-1, selectionModel.getMinSelectionIndex());
-		selectionModel.selectedIndexes().add(asList(0, 3, 4));
-		assertEquals(asList(0, 3, 4), selectionModel.selectedIndexes().get());
+		selectionModel.indexes().add(asList(0, 3, 4));
+		assertEquals(asList(0, 3, 4), selectionModel.indexes().get());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		assertEquals(3, selectionModel.selectionCount());
+		assertEquals(3, selectionModel.count());
 		selectionModel.removeSelectionInterval(0, 0);
 		assertEquals(3, selectionModel.getMinSelectionIndex());
 		selectionModel.removeSelectionInterval(3, 3);
 		assertEquals(4, selectionModel.getMinSelectionIndex());
 
-		selectionModel.selectedIndexes().add(asList(0, 3, 4));
+		selectionModel.indexes().add(asList(0, 3, 4));
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 		selectionModel.removeSelectionInterval(3, 3);
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 		selectionModel.clearSelection();
 		assertEquals(-1, selectionModel.getMinSelectionIndex());
 
-		selectionModel.selectedIndexes().add(asList(0, 1, 2, 3, 4));
+		selectionModel.indexes().add(asList(0, 1, 2, 3, 4));
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 		selectionModel.removeSelectionInterval(0, 0);
 		assertEquals(1, selectionModel.getMinSelectionIndex());
-		selectionModel.selectedIndexes().remove(1);
+		selectionModel.indexes().remove(1);
 		assertEquals(2, selectionModel.getMinSelectionIndex());
-		selectionModel.selectedIndexes().remove(singletonList(2));
+		selectionModel.indexes().remove(singletonList(2));
 		assertEquals(3, selectionModel.getMinSelectionIndex());
 		selectionModel.removeSelectionInterval(3, 3);
 		assertEquals(4, selectionModel.getMinSelectionIndex());
-		selectionModel.selectedIndexes().remove(4);
+		selectionModel.indexes().remove(4);
 		assertEquals(-1, selectionModel.getMinSelectionIndex());
 
-		selectionModel.selectedItems().add(ITEMS.get(0));
-		assertEquals(1, selectionModel.selectionCount());
+		selectionModel.items().add(ITEMS.get(0));
+		assertEquals(1, selectionModel.count());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		selectionModel.selectedItems().add(asList(ITEMS.get(1), ITEMS.get(2)));
-		assertEquals(3, selectionModel.selectionCount());
+		selectionModel.items().add(asList(ITEMS.get(1), ITEMS.get(2)));
+		assertEquals(3, selectionModel.count());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		selectionModel.selectedItems().remove(ITEMS.get(1));
-		assertEquals(2, selectionModel.selectionCount());
+		selectionModel.items().remove(ITEMS.get(1));
+		assertEquals(2, selectionModel.count());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		selectionModel.selectedItems().remove(ITEMS.get(2));
-		assertEquals(1, selectionModel.selectionCount());
+		selectionModel.items().remove(ITEMS.get(2));
+		assertEquals(1, selectionModel.count());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		selectionModel.selectedItems().add(asList(ITEMS.get(1), ITEMS.get(2)));
-		assertEquals(3, selectionModel.selectionCount());
+		selectionModel.items().add(asList(ITEMS.get(1), ITEMS.get(2)));
+		assertEquals(3, selectionModel.count());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		selectionModel.selectedItems().add(ITEMS.get(4));
-		assertEquals(4, selectionModel.selectionCount());
+		selectionModel.items().add(ITEMS.get(4));
+		assertEquals(4, selectionModel.count());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 		tableModel.removeItem(ITEMS.get(0));
-		assertEquals(3, selectionModel.selectionCount());
+		assertEquals(3, selectionModel.count());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 
 		tableModel.clear();
-		assertTrue(selectionModel.selectionEmpty().get());
-		assertNull(selectionModel.selectedItem().get());
+		assertTrue(selectionModel.empty().get());
+		assertNull(selectionModel.item().get());
 
 		selectionModel.clearSelection();
-		selectionModel.selectedIndex().removeConsumer(consumer);
-		selectionModel.selectedIndexes().removeListener(listener);
-		selectionModel.selectedItem().removeConsumer(consumer);
-		selectionModel.selectedItems().removeConsumer(consumer);
+		selectionModel.index().removeConsumer(consumer);
+		selectionModel.indexes().removeListener(listener);
+		selectionModel.item().removeConsumer(consumer);
+		selectionModel.items().removeConsumer(consumer);
 	}
 
 	@Test
 	void selectionAndFiltering() {
 		tableModel.refresh();
-		tableModel.selectionModel().selectedIndexes().add(singletonList(3));
-		assertEquals(3, tableModel.selectionModel().getMinSelectionIndex());
+		tableModel.selection().indexes().add(singletonList(3));
+		assertEquals(3, tableModel.selection().getMinSelectionIndex());
 
 		tableModel.filterModel().conditionModel(0).operands().equal().set("d");
-		assertEquals(0, tableModel.selectionModel().getMinSelectionIndex());
-		assertEquals(singletonList(0), tableModel.selectionModel().selectedIndexes().get());
+		assertEquals(0, tableModel.selection().getMinSelectionIndex());
+		assertEquals(singletonList(0), tableModel.selection().indexes().get());
 		tableModel.filterModel().conditionModel(0).enabled().set(false);
-		assertEquals(0, tableModel.selectionModel().getMinSelectionIndex());
-		assertEquals(ITEMS.get(3), tableModel.selectionModel().selectedItem().get());
+		assertEquals(0, tableModel.selection().getMinSelectionIndex());
+		assertEquals(ITEMS.get(3), tableModel.selection().item().get());
 	}
 
 	@Test
@@ -625,7 +625,7 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void values() {
 		tableModel.refresh();
-		tableModel.selectionModel().selectedIndexes().set(asList(0, 2));
+		tableModel.selection().indexes().set(asList(0, 2));
 		Collection<String> values = tableModel.selectedValues(0);
 		assertEquals(2, values.size());
 		assertTrue(values.contains("a"));

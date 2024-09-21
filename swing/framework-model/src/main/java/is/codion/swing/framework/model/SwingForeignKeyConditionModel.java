@@ -204,7 +204,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 
 	private void bindEvents() {
 		if (equalComboBoxModel != null) {
-			equalComboBoxModel.selectionModel().selectedItem().addConsumer(new SetEqualValue());
+			equalComboBoxModel.selection().item().addConsumer(new SetEqualValue());
 			operands().equal().addConsumer(new SelectEqualValue());
 			equalComboBoxModel.refresher().success().addListener(() -> equalComboBoxModel.setSelectedItem(operands().equal().get()));
 		}

@@ -113,8 +113,8 @@ public final class FilterTableModelDemo {
 		tableModel.refresh();
 
 		// Select the first row
-		FilterTableSelectionModel<Row> selectionModel = tableModel.selectionModel();
-		selectionModel.selectedIndex().set(0);
+		FilterTableSelectionModel<Row> selection = tableModel.selection();
+		selection.index().set(0);
 
 		// With async refresh enabled
 		// tableModel.refreshThen(items ->

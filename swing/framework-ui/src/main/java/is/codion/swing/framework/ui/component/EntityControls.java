@@ -109,9 +109,9 @@ final class EntityControls {
 		return createEditControl(() -> editEntityDialog(editPanel)
 						.owner(comboBox)
 						.confirm(confirm)
-						.entity(() -> comboBox.getModel().selectionModel().selectedValue())
+						.entity(() -> comboBox.getModel().selection().value())
 						.onUpdate(new EntityComboBoxOnUpdate(comboBox.getModel()))
-						.show(), comboBox, comboBox.getModel().selectionModel().selectionEmpty().not(), keyStroke);
+						.show(), comboBox, comboBox.getModel().selection().empty().not(), keyStroke);
 	}
 
 	/**
@@ -244,7 +244,7 @@ final class EntityControls {
 
 		@Override
 		public void accept(Entity updated) {
-			comboBoxModel.replace(comboBoxModel.selectionModel().selectedValue(), updated);
+			comboBoxModel.replace(comboBoxModel.selection().value(), updated);
 			comboBoxModel.setSelectedItem(updated);
 		}
 	}

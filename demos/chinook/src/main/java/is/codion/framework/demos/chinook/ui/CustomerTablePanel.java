@@ -55,7 +55,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 						.command(this::viewCustomerReport)
 						.name(BUNDLE.getString("customer_report"))
 						.smallIcon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selectionModel().selectionEmpty().not())
+						.enabled(tableModel().selection().empty().not())
 						.build());
 	}
 
@@ -69,7 +69,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 
 	private JasperPrint fillCustomerReport() throws DatabaseException, ReportException {
 		Collection<Long> customerIDs = Entity.values(Customer.ID,
-						tableModel().selectionModel().selectedItems().get());
+						tableModel().selection().items().get());
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", customerIDs);
 

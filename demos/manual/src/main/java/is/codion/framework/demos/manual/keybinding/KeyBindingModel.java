@@ -74,8 +74,8 @@ final class KeyBindingModel {
 
 	private void bindEvents(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
 		componentComboBoxModel.refresher().success().addListener(tableModel::refresh);
-		componentComboBoxModel.selectionModel().selectedItem().addListener(tableModel::refresh);
-		lookAndFeelComboBoxModel.selectionModel().selectedItem().addListener(componentComboBoxModel::refresh);
+		componentComboBoxModel.selection().item().addListener(tableModel::refresh);
+		lookAndFeelComboBoxModel.selection().item().addListener(componentComboBoxModel::refresh);
 	}
 
 	private static String className(String componentName) {

@@ -54,7 +54,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 						.command(this::viewEmployeeReport)
 						.name("Employee Report")
 						.smallIcon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selectionModel().selectionEmpty().not())
+						.enabled(tableModel().selection().empty().not())
 						.build());
 	}
 	// end::setupControls[]
@@ -63,7 +63,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 	private void viewEmployeeReport() throws ReportException, DatabaseException {
 		Collection<Integer> departmentNumbers =
 						Entity.distinct(Department.DEPARTMENT_NO,
-										tableModel().selectionModel().selectedItems().get());
+										tableModel().selection().items().get());
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", departmentNumbers);
 

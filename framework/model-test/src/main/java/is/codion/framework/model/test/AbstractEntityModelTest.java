@@ -81,13 +81,13 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		Entity.Key operationsKey = deptEditModel.entities().primaryKey(Department.TYPE, 40);//operations
 		deptTableModel.select(singletonList(operationsKey));
 
-		assertTrue(deptTableModel.selectionModel().selectionEmpty().not().get());
+		assertTrue(deptTableModel.selection().empty().not().get());
 		deptEditModel.value(Department.ID).set(80);
-		assertFalse(deptTableModel.selectionModel().selectionEmpty().get());
+		assertFalse(deptTableModel.selection().empty().get());
 		deptEditModel.update();
 
-		assertFalse(deptTableModel.selectionModel().selectionEmpty().get());
-		Entity operations = deptTableModel.selectionModel().selectedItem().get();
+		assertFalse(deptTableModel.selection().empty().get());
+		Entity operations = deptTableModel.selection().item().get();
 		assertEquals(80, operations.get(Department.ID));
 
 		deptTableModel.items().visiblePredicate().set(item ->
@@ -145,11 +145,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 			return;
 		}
 		departmentModel.tableModel().refresh();
-		departmentModel.tableModel().selectionModel().selectedIndexes().set(asList(1, 2, 3));
-		assertFalse(departmentModel.tableModel().selectionModel().selectionEmpty().get());
+		departmentModel.tableModel().selection().indexes().set(asList(1, 2, 3));
+		assertFalse(departmentModel.tableModel().selection().empty().get());
 		assertTrue(departmentModel.editModel().exists().get());
 		departmentModel.editModel().defaults();
-		assertTrue(departmentModel.tableModel().selectionModel().selectionEmpty().get());
+		assertTrue(departmentModel.tableModel().selection().empty().get());
 	}
 
 	@Test
@@ -182,11 +182,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		EntityConnection connection = departmentModel.connection();
 		Entity department = connection.selectSingle(Department.NAME.equalTo("SALES"));
 
-		departmentModel.tableModel().selectionModel().selectedItem().set(department);
+		departmentModel.tableModel().selection().item().set(department);
 
 		List<Entity> salesEmployees = connection.select(Employee.DEPARTMENT_FK.equalTo(department));
 		assertFalse(salesEmployees.isEmpty());
-		departmentModel.tableModel().selectionModel().selectedItem().set(department);
+		departmentModel.tableModel().selection().item().set(department);
 		Collection<Entity> employeesFromDetailModel =
 						departmentModel.detailModel(Employee.TYPE).tableModel().items().get();
 		assertTrue(salesEmployees.containsAll(employeesFromDetailModel), "Filtered list should contain all employees for department");
@@ -249,23 +249,23 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		Entity dept = employeeModel.connection().selectSingle(Department.ID.equalTo(10));
 
 		departmentModel.tableModel().refresh();
-		departmentModel.tableModel().selectionModel().selectedItem().set(dept);
+		departmentModel.tableModel().selection().item().set(dept);
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
 
-		departmentModel.tableModel().selectionModel().clearSelection();
+		departmentModel.tableModel().selection().clear();
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
 
 		link.clearForeignKeyOnEmptySelection().set(true);
 
-		departmentModel.tableModel().selectionModel().selectedItem().set(dept);
+		departmentModel.tableModel().selection().item().set(dept);
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
 
-		departmentModel.tableModel().selectionModel().clearSelection();
+		departmentModel.tableModel().selection().clear();
 		assertTrue(employeeEditModel.isNull(Employee.DEPARTMENT_FK).get());
 
 		link.clearForeignKeyOnEmptySelection().set(false);
 
-		departmentModel.tableModel().selectionModel().selectedItem().set(dept);
+		departmentModel.tableModel().selection().item().set(dept);
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
 	}
 
@@ -283,11 +283,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		Entity dept = employeeModel.connection().selectSingle(Department.ID.equalTo(10));
 
 		departmentModel.tableModel().refresh();
-		departmentModel.tableModel().selectionModel().selectedItem().set(dept);
+		departmentModel.tableModel().selection().item().set(dept);
 		assertEquals(0, employeeTableModel.rowCount());
 
 		link.refreshOnSelection().set(true);
-		departmentModel.tableModel().selectionModel().selectedItem().set(dept);
+		departmentModel.tableModel().selection().item().set(dept);
 		assertNotEquals(0, employeeTableModel.rowCount());
 	}
 

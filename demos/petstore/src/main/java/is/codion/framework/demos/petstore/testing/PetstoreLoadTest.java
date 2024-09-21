@@ -70,7 +70,7 @@ public final class PetstoreLoadTest {
 		@Override
 		public void perform(PetstoreAppModel application) throws Exception {
 			SwingEntityModel categoryModel = application.entityModels().iterator().next();
-			categoryModel.tableModel().selectionModel().clearSelection();
+			categoryModel.tableModel().selection().clear();
 			categoryModel.tableModel().refresh();
 			selectRandomRow(categoryModel.tableModel());
 			selectRandomRow(categoryModel.detailModels().iterator().next().tableModel());
@@ -79,7 +79,7 @@ public final class PetstoreLoadTest {
 
 		private static void selectRandomRow(EntityTableModel<?> tableModel) {
 			if (tableModel.rowCount() > 0) {
-				tableModel.selectionModel().selectedIndex().set(RANDOM.nextInt(tableModel.rowCount()));
+				tableModel.selection().index().set(RANDOM.nextInt(tableModel.rowCount()));
 			}
 		}
 	}

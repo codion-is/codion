@@ -65,10 +65,10 @@ public class EntityComboBoxConditionModelTest {
 		Entity searchEntity = conditionModel.operands().equal().get();
 		assertSame(sales, searchEntity);
 		equalComboBoxModel.refresh();
-		assertEquals(sales, equalComboBoxModel.selectionModel().selectedValue());
+		assertEquals(sales, equalComboBoxModel.selection().value());
 
 		conditionModel.operands().equal().set(null);
-		assertTrue(equalComboBoxModel.selectionModel().nullSelected());
+		assertTrue(equalComboBoxModel.selection().nullSelected());
 		conditionModel.operands().equal().set(sales);
 		assertEquals(equalComboBoxModel.getSelectedItem(), sales);
 

@@ -123,19 +123,19 @@ public final class TrackEditPanel extends EntityEditPanel {
 
 	private void moveSelectionUp() {
 		if (readyForSelectionChange()) {
-			tableModel.selectionModel().selectedIndexes().moveUp();
+			tableModel.selection().indexes().moveUp();
 		}
 	}
 
 	private void moveSelectionDown() {
 		if (readyForSelectionChange()) {
-			tableModel.selectionModel().selectedIndexes().moveDown();
+			tableModel.selection().indexes().moveDown();
 		}
 	}
 
 	private boolean readyForSelectionChange() {
 		// If the selection is empty
-		if (tableModel.selectionModel().isSelectionEmpty()) {
+		if (tableModel.selection().isSelectionEmpty()) {
 			return true;
 		}
 		// If the current item is not modified

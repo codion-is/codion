@@ -155,7 +155,7 @@ public final class DomainGeneratorModel {
 	}
 
 	public void populateSelected(Consumer<String> schemaNotifier) {
-		schemaTableModel.selectionModel().selectedItem().optional().ifPresent(schema -> {
+		schemaTableModel.selection().item().optional().ifPresent(schema -> {
 			schemaNotifier.accept(schema.name());
 			schema.setDomain(schemaDomain(schema));
 			int index = schemaTableModel.items().visible().indexOf(schema);
@@ -165,7 +165,7 @@ public final class DomainGeneratorModel {
 	}
 
 	public void saveApiImpl() throws IOException {
-		if (schemaTableModel.selectionModel().selectionEmpty().not().get()) {
+		if (schemaTableModel.selection().empty().not().get()) {
 			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
 				domainSource(domain, domainPackageValue.optional()
@@ -177,7 +177,7 @@ public final class DomainGeneratorModel {
 	}
 
 	public void saveCombined() throws IOException {
-		if (schemaTableModel.selectionModel().selectionEmpty().not().get()) {
+		if (schemaTableModel.selection().empty().not().get()) {
 			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
 				domainSource(domain, domainPackageValue.optional()
@@ -193,8 +193,8 @@ public final class DomainGeneratorModel {
 	}
 
 	private void bindEvents() {
-		schemaTableModel.selectionModel().selectedIndexes().addListener(this::schemaSelectionChanged);
-		entityModel().selectionModel().selectedItem().addConsumer(this::search);
+		schemaTableModel.selection().indexes().addListener(this::schemaSelectionChanged);
+		entityModel().selection().item().addConsumer(this::search);
 	}
 
 	private SchemaDomain schemaDomain(SchemaRow schema) {
@@ -209,7 +209,7 @@ public final class DomainGeneratorModel {
 	private void schemaSelectionChanged() {
 		entityTableModel.refresh();
 		updateDomainSource();
-		populatedSchemaSelected.set(schemaTableModel.selectionModel().selectedItem().optional()
+		populatedSchemaSelected.set(schemaTableModel.selection().item().optional()
 						.map(SchemaRow::populated)
 						.orElse(false));
 	}
@@ -256,7 +256,7 @@ public final class DomainGeneratorModel {
 	}
 
 	private SchemaDomain selectedDomain() {
-		return schemaTableModel.selectionModel().selectedItem().optional()
+		return schemaTableModel.selection().item().optional()
 						.flatMap(SchemaRow::domain)
 						.orElse(null);
 	}
@@ -306,7 +306,7 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public Collection<EntityRow> get() {
-			return schemaTableModel.selectionModel().selectedItems().get().stream()
+			return schemaTableModel.selection().items().get().stream()
 							.map(SchemaRow::domain)
 							.flatMap(Optional::stream)
 							.flatMap(domain -> domain.entities().definitions().stream()

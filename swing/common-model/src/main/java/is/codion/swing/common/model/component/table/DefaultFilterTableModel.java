@@ -140,7 +140,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public FilterTableSelectionModel<R> selectionModel() {
+	public FilterTableSelectionModel<R> selection() {
 		return selectionModel;
 	}
 
@@ -157,7 +157,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public <T> Collection<T> selectedValues(C identifier) {
-		return (Collection<T>) columnValues(selectionModel().selectedIndexes().get().stream(),
+		return (Collection<T>) columnValues(selection().indexes().get().stream(),
 						columns.identifiers().indexOf(identifier));
 	}
 
@@ -174,10 +174,10 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public void sortItems() {
 		if (comparator.isNotNull()) {
-			List<R> selectedItems = selectionModel.selectedItems().get();
+			List<R> selectedItems = selectionModel.items().get();
 			modelItems.visible.items.sort(comparator.get());
 			fireTableRowsUpdated(0, modelItems.visible.items.size());
-			selectionModel.selectedItems().set(selectedItems);
+			selectionModel.items().set(selectedItems);
 		}
 	}
 
@@ -452,10 +452,10 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private void clearAndAdd(Collection<R> items) {
-			List<R> selectedItems = selectionModel.selectedItems().get();
+			List<R> selectedItems = selectionModel.items().get();
 			clear();
 			addItemsSorted(items);
-			selectionModel.selectedItems().set(selectedItems);
+			selectionModel.items().set(selectedItems);
 		}
 	}
 
@@ -521,7 +521,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public void filter() {
-			List<R> selectedItems = selectionModel.selectedItems().get();
+			List<R> selectedItems = selectionModel.items().get();
 			visible.items.addAll(filtered.items);
 			filtered.items.clear();
 			for (ListIterator<R> visibleItemsIterator = visible.items.listIterator(); visibleItemsIterator.hasNext(); ) {
@@ -536,7 +536,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 			fireTableDataChanged();
 			filtered.notifyChanges();
-			selectionModel.selectedItems().set(selectedItems);
+			selectionModel.items().set(selectedItems);
 		}
 	}
 

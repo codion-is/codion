@@ -658,9 +658,9 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void editSelected(Attribute<?> attributeToEdit) {
 		requireNonNull(attributeToEdit);
-		if (!tableModel.selectionModel().isSelectionEmpty()) {
+		if (!tableModel.selection().empty().get()) {
 			editDialogBuilder(attributeToEdit)
-							.edit(tableModel.selectionModel().selectedItems().get());
+							.edit(tableModel.selection().items().get());
 		}
 	}
 
@@ -668,8 +668,8 @@ public class EntityTablePanel extends JPanel {
 	 * Displays a dialog containing tables of entities depending on the selected entities via non-soft foreign keys
 	 */
 	public final void viewDependencies() {
-		if (!tableModel.selectionModel().isSelectionEmpty()) {
-			displayDependenciesDialog(tableModel.selectionModel().selectedItems().get(), tableModel.connectionProvider(), this);
+		if (!tableModel.selection().empty().get()) {
+			displayDependenciesDialog(tableModel.selection().items().get(), tableModel.connectionProvider(), this);
 		}
 	}
 
@@ -952,7 +952,7 @@ public class EntityTablePanel extends JPanel {
 	protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
 		requireNonNull(exception);
 		if (configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-			displayDependenciesDialog(tableModel.selectionModel().selectedItems().get(), tableModel.connectionProvider(),
+			displayDependenciesDialog(tableModel.selection().items().get(), tableModel.connectionProvider(),
 							this, EDIT_PANEL_MESSAGES.getString("unknown_dependent_records"));
 		}
 		else {
@@ -1060,7 +1060,7 @@ public class EntityTablePanel extends JPanel {
 						.name(FrameworkMessages.edit())
 						.mnemonic(FrameworkMessages.editMnemonic())
 						.smallIcon(ICONS.edit())
-						.enabled(tableModel().selectionModel().singleSelection())
+						.enabled(tableModel().selection().single())
 						.build();
 	}
 
@@ -1111,11 +1111,11 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private StateObserver createEditSelectedEnabledObserver() {
-		StateObserver selectionNotEmpty = tableModel.selectionModel().selectionEmpty().not();
+		StateObserver selectionNotEmpty = tableModel.selection().empty().not();
 		StateObserver updateEnabled = tableModel.editModel().updateEnabled();
 		StateObserver updateMultipleEnabledOrSingleSelection =
 						State.or(tableModel.editModel().updateMultipleEnabled(),
-										tableModel.selectionModel().singleSelection());
+										tableModel.selection().single());
 
 		return State.and(selectionNotEmpty, updateEnabled, updateMultipleEnabledOrSingleSelection);
 	}
@@ -1127,7 +1127,7 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(this::viewDependencies)
 						.name(FrameworkMessages.dependencies())
-						.enabled(tableModel.selectionModel().selectionEmpty().not())
+						.enabled(tableModel.selection().empty().not())
 						.description(FrameworkMessages.dependenciesTip())
 						.smallIcon(ICONS.dependencies())
 						.build();
@@ -1143,7 +1143,7 @@ public class EntityTablePanel extends JPanel {
 						.name(FrameworkMessages.delete())
 						.enabled(State.and(
 										tableModel.editModel().deleteEnabled(),
-										tableModel.selectionModel().selectionEmpty().not()))
+										tableModel.selection().empty().not()))
 						.description(FrameworkMessages.deleteSelectedTip())
 						.smallIcon(ICONS.delete())
 						.build();
@@ -1321,8 +1321,8 @@ public class EntityTablePanel extends JPanel {
 
 	private CommandControl createClearSelectionControl() {
 		return Control.builder()
-						.command(tableModel.selectionModel()::clearSelection)
-						.enabled(tableModel.selectionModel().selectionEmpty().not())
+						.command(tableModel.selection()::clear)
+						.enabled(tableModel.selection().empty().not())
 						.smallIcon(ICONS.clearSelection())
 						.description(MESSAGES.getString("clear_selection_tip"))
 						.build();
@@ -1330,7 +1330,7 @@ public class EntityTablePanel extends JPanel {
 
 	private CommandControl createMoveSelectionDownControl() {
 		return Control.builder()
-						.command(tableModel.selectionModel().selectedIndexes()::moveDown)
+						.command(tableModel.selection().indexes()::moveDown)
 						.smallIcon(ICONS.down())
 						.description(MESSAGES.getString("selection_down_tip"))
 						.build();
@@ -1338,7 +1338,7 @@ public class EntityTablePanel extends JPanel {
 
 	private CommandControl createMoveSelectionUpControl() {
 		return Control.builder()
-						.command(tableModel.selectionModel().selectedIndexes()::moveUp)
+						.command(tableModel.selection().indexes()::moveUp)
 						.smallIcon(ICONS.up())
 						.description(MESSAGES.getString("selection_up_tip"))
 						.build();
@@ -1573,7 +1573,7 @@ public class EntityTablePanel extends JPanel {
 		controlMap.control(TOGGLE_COLUMN_CONTROLS).set(table.createToggleColumnsControls());
 		controlMap.control(RESET_COLUMNS).set(table.createResetColumnsControl());
 		controlMap.control(SELECT_AUTO_RESIZE_MODE).set(table.createSelectAutoResizeModeControl());
-		controlMap.control(TOGGLE_AUTO_RESIZE_MODE_CONTROLS).set(table.createToggleAutoResizeModelControls());
+		controlMap.control(TOGGLE_AUTO_RESIZE_MODE_CONTROLS).set(table.createToggleAutoResizeModeControls());
 		if (includeViewDependenciesControl()) {
 			controlMap.control(VIEW_DEPENDENCIES).set(createViewDependenciesControl());
 		}
@@ -1641,7 +1641,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void showEntityMenu() {
 		Point location = popupLocation(table);
-		tableModel.selectionModel().selectedItem().optional().ifPresent(selected ->
+		tableModel.selection().item().optional().ifPresent(selected ->
 						new EntityPopupMenu(selected.copy(), tableModel.connection()).show(table, location.x, location.y));
 	}
 
@@ -1865,7 +1865,7 @@ public class EntityTablePanel extends JPanel {
 		@Override
 		public void execute() {
 			if (confirmDelete()) {
-				List<Entity> selectedItems = tableModel().selectionModel().selectedItems().get();
+				List<Entity> selectedItems = tableModel().selection().items().get();
 				progressWorkerDialog(tableModel().editModel().createDelete(selectedItems).prepare()::perform)
 								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 								.owner(EntityTablePanel.this)
@@ -1950,7 +1950,7 @@ public class EntityTablePanel extends JPanel {
 		@Override
 		public boolean confirm(JComponent dialogOwner) {
 			return confirm(dialogOwner, FrameworkMessages.confirmDelete(
-							selectionModel.selectionCount()), FrameworkMessages.delete());
+							selectionModel.count()), FrameworkMessages.delete());
 		}
 	}
 
@@ -2161,7 +2161,7 @@ public class EntityTablePanel extends JPanel {
 							.collect(toSet()));
 			this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
 			this.editComponentFactories = new HashMap<>();
-			this.deleteConfirmer = new DeleteConfirmer(tablePanel.tableModel.selectionModel());
+			this.deleteConfirmer = new DeleteConfirmer(tablePanel.tableModel.selection());
 		}
 
 		private Config(Config config) {
@@ -2544,7 +2544,7 @@ public class EntityTablePanel extends JPanel {
 			if (rowCount == 0 && filteredCount == 0) {
 				return "";
 			}
-			int selectionCount = tableModel.selectionModel().selectionCount();
+			int selectionCount = tableModel.selection().count();
 			StringBuilder builder = new StringBuilder();
 			if (tableModel.queryModel().limit().isEqualTo(tableModel.rowCount())) {
 				builder.append(MESSAGES.getString("limited_to")).append(" ");
@@ -2741,7 +2741,7 @@ public class EntityTablePanel extends JPanel {
 			super(new BorderLayout());
 			add(label, BorderLayout.CENTER);
 			tableModel.refresher().observer().addConsumer(new ConfigurePanel());
-			tableModel.selectionModel().selectedIndexes().addListener(this::updateStatusMessage);
+			tableModel.selection().indexes().addListener(this::updateStatusMessage);
 			tableModel.items().visible().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {
 				setComponentPopupMenu(menu()

@@ -574,7 +574,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 						.maximumRowCount(operators.size())
 						.mouseWheelScrollingWithWrapAround(true)
 						.toolTipText(conditionModel().operator().get().description())
-						.onBuild(comboBox -> operatorComboBoxModel.selectionModel().selectedItem().addConsumer(selectedOperator ->
+						.onBuild(comboBox -> operatorComboBoxModel.selection().item().addConsumer(selectedOperator ->
 										comboBox.setToolTipText(selectedOperator.value().description())))
 						.build();
 	}

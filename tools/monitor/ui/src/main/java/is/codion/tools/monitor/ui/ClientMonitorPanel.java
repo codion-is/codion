@@ -116,7 +116,7 @@ public final class ClientMonitorPanel extends JPanel {
 						.rightComponent(clientInstancePanel)
 						.build();
 
-		model.clientInstanceTableModel().selectionModel().selectedItem().addConsumer(remoteClient -> {
+		model.clientInstanceTableModel().selection().item().addConsumer(remoteClient -> {
 			clientInstancePanel.removeAll();
 			try {
 				if (model != null && remoteClient != null) {
@@ -139,7 +139,7 @@ public final class ClientMonitorPanel extends JPanel {
 						.control(Control.builder()
 										.command(this::disconnect)
 										.name("Disconnect")
-										.enabled(model.clientInstanceTableModel().selectionModel().selectionEmpty().not()))
+										.enabled(model.clientInstanceTableModel().selection().empty().not()))
 						.separator()
 						.control(Controls.builder()
 										.name("Columns")
@@ -150,7 +150,7 @@ public final class ClientMonitorPanel extends JPanel {
 	}
 
 	private void disconnect() throws RemoteException {
-		for (RemoteClient remoteClient : model.clientInstanceTableModel().selectionModel().selectedItems().get()) {
+		for (RemoteClient remoteClient : model.clientInstanceTableModel().selection().items().get()) {
 			model.server().disconnect(remoteClient.clientId());
 			model.clientInstanceTableModel().removeItem(remoteClient);
 		}

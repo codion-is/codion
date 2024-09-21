@@ -226,7 +226,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	/**
 	 * @return the {@link SelectionModel}
 	 */
-	SelectionModel<Entity> selectionModel();
+	SelectionModel<Entity> selection();
 
 	/**
 	 * @return an observer notified when the selection changes in the underlying selection model

@@ -35,54 +35,54 @@ public interface SelectionModel<R> extends SingleSelectionModel<R> {
 	/**
 	 * @return a {@link StateObserver} indicating whether multiple items are selected
 	 */
-	StateObserver multipleSelection();
+	StateObserver multiple();
 
 	/**
 	 * @return a {@link StateObserver} indicating whether a single item is selected
 	 */
-	StateObserver singleSelection();
+	StateObserver single();
 
 	/**
 	 * @return a State controlling the single selection mode of this selection model
 	 */
-	State singleSelectionMode();
+	State singleSelection();
 
 	/**
 	 * @return a {@link Mutable} for the index of the selected item, -1 if none is selected and
 	 * the minimum selected index if more than one item is selected
 	 */
-	Mutable<Integer> selectedIndex();
+	Mutable<Integer> index();
 
 	/**
-	 * @return the SelectedIndexes
+	 * @return the seleted {@link Indexes}
 	 */
-	SelectedIndexes selectedIndexes();
+	Indexes indexes();
 
 	/**
-	 * @return the {@link SelectedItems}
+	 * @return the selected {@link Items}
 	 */
-	SelectedItems<R> selectedItems();
+	Items<R> items();
 
 	/**
-	 * Selects all visible items
-	 * @see #selectedIndexes()
+	 * Selects all items
+	 * @see #indexes()
 	 */
 	void selectAll();
 
 	/**
 	 * Clears the selection
 	 */
-	void clearSelection();
+	void clear();
 
 	/**
 	 * @return the number of selected items.
 	 */
-	int selectionCount();
+	int count();
 
 	/**
 	 * Controls the selected indexes.
 	 */
-	interface SelectedIndexes extends Mutable<List<Integer>> {
+	interface Indexes extends Mutable<List<Integer>> {
 
 		/**
 		 * @param indexes the indexes to select
@@ -136,7 +136,7 @@ public interface SelectionModel<R> extends SingleSelectionModel<R> {
 	 * Controls the selected items
 	 * @param <R> the item type
 	 */
-	interface SelectedItems<R> extends Mutable<List<R>> {
+	interface Items<R> extends Mutable<List<R>> {
 
 		/**
 		 * @param items the items to select

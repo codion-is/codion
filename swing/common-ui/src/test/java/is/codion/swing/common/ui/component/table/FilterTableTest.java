@@ -159,27 +159,27 @@ public class FilterTableTest {
 		JTextField searchField = filterTable.searchField();
 
 		searchField.setText("d");
-		assertEquals(0, tableModel.selectionModel().selectedIndex().get());
+		assertEquals(0, tableModel.selection().index().get());
 		searchField.setText("da");
-		assertEquals(0, tableModel.selectionModel().selectedIndex().get());
+		assertEquals(0, tableModel.selection().index().get());
 		searchField.setText("dac");
-		assertEquals(1, tableModel.selectionModel().selectedIndex().get());
+		assertEquals(1, tableModel.selection().index().get());
 		searchField.setText("dar");
-		assertEquals(0, tableModel.selectionModel().selectedIndex().get());
+		assertEquals(0, tableModel.selection().index().get());
 		searchField.setText("dan");
-		assertEquals(2, tableModel.selectionModel().selectedIndex().get());
+		assertEquals(2, tableModel.selection().index().get());
 		searchField.setText("dl");
-		assertEquals(3, tableModel.selectionModel().selectedIndex().get());
+		assertEquals(3, tableModel.selection().index().get());
 		searchField.setText("darri");
-		assertEquals(0, tableModel.selectionModel().selectedIndex().get());
+		assertEquals(0, tableModel.selection().index().get());
 		searchField.setText("dac");
-		assertEquals(1, tableModel.selectionModel().selectedIndex().get());
+		assertEquals(1, tableModel.selection().index().get());
 		searchField.setText("dl");
-		assertEquals(3, tableModel.selectionModel().selectedIndex().get());
+		assertEquals(3, tableModel.selection().index().get());
 		searchField.setText("dans");
-		assertEquals(2, tableModel.selectionModel().selectedIndex().get());
+		assertEquals(2, tableModel.selection().index().get());
 		searchField.setText("dansu");
-		assertTrue(tableModel.selectionModel().isSelectionEmpty());
+		assertTrue(tableModel.selection().isSelectionEmpty());
 
 		searchField.setText("");
 	}
@@ -318,7 +318,7 @@ public class FilterTableTest {
 		rowColumn = searchModel.selectPreviousResult().orElse(null);
 		assertEquals(new DefaultRowColumn(0, 0), rowColumn);
 
-		assertEquals(2, testModel.selectionModel().selectionCount());
+		assertEquals(2, testModel.selection().count());
 
 		searchModel.selectPreviousResult();
 		searchModel.selectNextResult();
@@ -400,30 +400,30 @@ public class FilterTableTest {
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
 		//test selection and filtering together
-		FilterTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
-		tableModel.selectionModel().selectedIndex().set(3);
-		assertEquals(3, selectionModel.selectedIndex().get());
+		FilterTableSelectionModel<TestRow> selectionModel = tableModel.selection();
+		tableModel.selection().index().set(3);
+		assertEquals(3, selectionModel.index().get());
 
 		tableModel.filterModel().conditionModel(0).operands().equal().set("d");
 		tableModel.filterModel().conditionModel(0).enabled().set(false);
 
-		selectionModel.selectedIndexes().set(singletonList(3));
+		selectionModel.indexes().set(singletonList(3));
 		assertEquals(3, selectionModel.getMinSelectionIndex());
-		assertEquals(ITEMS.get(2), selectionModel.selectedItem().get());
+		assertEquals(ITEMS.get(2), selectionModel.item().get());
 
 		table.sortModel().setSortOrder(0, SortOrder.ASCENDING);
-		assertEquals(ITEMS.get(2), selectionModel.selectedItem().get());
+		assertEquals(ITEMS.get(2), selectionModel.item().get());
 		assertEquals(2, selectionModel.getMinSelectionIndex());
 
-		tableModel.selectionModel().selectedIndexes().set(singletonList(0));
-		assertEquals(ITEMS.get(0), selectionModel.selectedItem().get());
+		tableModel.selection().indexes().set(singletonList(0));
+		assertEquals(ITEMS.get(0), selectionModel.item().get());
 		table.sortModel().setSortOrder(0, SortOrder.DESCENDING);
 		assertEquals(4, selectionModel.getMinSelectionIndex());
 
-		assertEquals(singletonList(4), selectionModel.selectedIndexes().get());
-		assertEquals(ITEMS.get(0), selectionModel.selectedItem().get());
+		assertEquals(singletonList(4), selectionModel.indexes().get());
+		assertEquals(ITEMS.get(0), selectionModel.item().get());
 		assertEquals(4, selectionModel.getMinSelectionIndex());
-		assertEquals(ITEMS.get(0), selectionModel.selectedItem().get());
+		assertEquals(ITEMS.get(0), selectionModel.item().get());
 	}
 
 	@Test
@@ -447,7 +447,7 @@ public class FilterTableTest {
 						.delimiter('\t')
 						.get());
 
-		table.model().selectionModel().selectedIndexes().set(asList(0, 1, 3));
+		table.model().selection().indexes().set(asList(0, 1, 3));
 
 		String selected = "a" + LINE_SEPARATOR +
 						"b" + LINE_SEPARATOR +

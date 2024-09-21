@@ -27,6 +27,8 @@ Codion Change Log
 - FilterModel.VisibleItems and FilteredItems.size() added.
 - FilterModel.SelectionModel.isSelected() removed, SelectedItems and SelectedIndexes.contains() added.
 - FilterModel.SingleSelectionModel and SelectionModel moved to common.model.selection package.
+- FilterModel.selectionModel() renamed selection().
+- SelectionModel, most methods renamed.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.

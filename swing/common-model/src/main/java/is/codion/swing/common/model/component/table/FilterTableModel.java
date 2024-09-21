@@ -50,7 +50,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * Clear the table model before populating it with the refreshed data.
 		 * This causes an empty selection event to be triggered, since the
 		 * selection is cleared when the table model is cleared.
-		 * @see FilterTableSelectionModel#selectedIndexes()
+		 * @see FilterTableSelectionModel#indexes()
 		 */
 		CLEAR,
 		/**
@@ -107,7 +107,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	/**
 	 * @return the selection model used by this table model
 	 */
-	FilterTableSelectionModel<R> selectionModel();
+	FilterTableSelectionModel<R> selection();
 
 	/**
 	 * @return the filter model used by this table model

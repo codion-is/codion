@@ -144,10 +144,10 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 	private Optional<RowColumn> selectResult(boolean addToSelection) {
 		if (addToSelection) {
-			tableModel.selectionModel().selectedIndexes().add(searchResult.get().row());
+			tableModel.selection().indexes().add(searchResult.get().row());
 		}
 		else {
-			tableModel.selectionModel().selectedIndex().set(searchResult.get().row());
+			tableModel.selection().index().set(searchResult.get().row());
 		}
 
 		return searchResult.optional();
@@ -155,7 +155,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 	private Optional<RowColumn> emptyResult(boolean addToSelection) {
 		if (!addToSelection) {
-			tableModel.selectionModel().clearSelection();
+			tableModel.selection().clearSelection();
 		}
 
 		return Optional.empty();

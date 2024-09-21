@@ -48,14 +48,14 @@ final class CountryTablePanel extends EntityTablePanel {
 						.command(this::viewCountryReport)
 						.name("Country report")
 						.smallIcon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selectionModel().selectionEmpty().not())
+						.enabled(tableModel().selection().empty().not())
 						.build());
 	}
 
 	private void viewCountryReport() {
 		Dialogs.progressWorkerDialog(this::fillCountryReport)
 						.owner(this)
-						.maximumProgress(tableModel().selectionModel().selectionCount())
+						.maximumProgress(tableModel().selection().count())
 						.stringPainted(true)
 						.onResult(this::viewReport)
 						.execute();

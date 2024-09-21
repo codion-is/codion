@@ -185,7 +185,7 @@ public interface FilterModel<T> {
 	/**
 	 * @return the selection model
 	 */
-	SingleSelectionModel<T> selectionModel();
+	SingleSelectionModel<T> selection();
 
 	/**
 	 * A {@link Mutable} controlling the items in a {@link FilterModel}

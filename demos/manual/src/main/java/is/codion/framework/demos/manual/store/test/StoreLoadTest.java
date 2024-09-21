@@ -69,7 +69,7 @@ public class StoreLoadTest {
 
 		private static void selectRandomRow(EntityTableModel<?> tableModel) {
 			if (tableModel.rowCount() > 0) {
-				tableModel.selectionModel().selectedIndex().set(RANDOM.nextInt(tableModel.rowCount()));
+				tableModel.selection().index().set(RANDOM.nextInt(tableModel.rowCount()));
 			}
 		}
 	}

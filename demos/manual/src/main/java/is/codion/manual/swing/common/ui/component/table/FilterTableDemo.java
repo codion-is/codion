@@ -49,7 +49,7 @@ final class FilterTableDemo {
 
 		FilterTable<Row, Column> filterTable = FilterTable.builder(tableModel, columns)
 						.doubleClickAction(commandControl(() ->
-										tableModel.selectionModel().selectedItem().optional()
+										tableModel.selection().item().optional()
 														.ifPresent(System.out::println)))
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.build();
