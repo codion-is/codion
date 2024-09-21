@@ -110,21 +110,6 @@ public class EntityTablePanelTest {
 	}
 
 	@Test
-	void indexOf() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		tableModel.refresh();
-		tablePanel.table().sortModel().setSortOrder(Employee.NAME, SortOrder.ASCENDING);
-		assertEquals(SortOrder.ASCENDING, tablePanel.table().sortModel().sortOrder(Employee.NAME));
-
-		Entity.Key pk1 = CONNECTION_PROVIDER.entities().primaryKey(Employee.TYPE, 10);//ADAMS
-		assertEquals(0, tableModel.indexOf(pk1));
-
-		Entity.Key pk2 = CONNECTION_PROVIDER.entities().primaryKey(Employee.TYPE, -66);
-		assertEquals(-1, tableModel.indexOf(pk2));
-	}
-
-	@Test
 	void preferences() throws Exception {
 		List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
 		SwingEntityTableModel testModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);

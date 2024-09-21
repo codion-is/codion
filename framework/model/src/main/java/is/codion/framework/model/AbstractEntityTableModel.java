@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -161,27 +160,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
-	public final Optional<Entity> find(Entity.Key primaryKey) {
-		requireNonNull(primaryKey);
-		return items().get().stream()
-						.filter(entity -> entity.primaryKey().equals(primaryKey))
-						.findFirst();
-	}
-
-	@Override
-	public final int indexOf(Entity.Key primaryKey) {
-		requireNonNull(primaryKey);
-		List<Entity> visible = items().visible().get();
-		for (int i = 0; i < visible.size(); i++) {
-			if (primaryKey.equals(visible.get(i).primaryKey())) {
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
 	public final void replace(Collection<Entity> entities) {
 		replaceEntitiesByKey(Entity.primaryKeyMap(entities));
 	}
@@ -199,14 +177,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	@Override
 	public final void select(Collection<Entity.Key> keys) {
 		selection().items().set(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
-	}
-
-	@Override
-	public final Collection<Entity> find(Collection<Entity.Key> keys) {
-		requireNonNull(keys, "keys");
-		return items().get().stream()
-						.filter(entity -> keys.contains(entity.primaryKey()))
-						.collect(toList());
 	}
 
 	@Override

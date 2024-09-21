@@ -38,7 +38,6 @@ import is.codion.framework.model.test.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -183,19 +182,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	}
 
 	@Test
-	public void findSingle() {
-		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
-		tableModel.refresh();
-
-		Entities entities = tableModel.entities();
-		Entity.Key pk1 = entities.primaryKey(Employee.TYPE, 1);
-		assertTrue(tableModel.find(pk1).isPresent());
-
-		Entity.Key pk2 = entities.primaryKey(Employee.TYPE, -66);
-		assertFalse(tableModel.find(pk2).isPresent());
-	}
-
-	@Test
 	public void entityType() {
 		assertEquals(Detail.TYPE, testModel.entityType());
 	}
@@ -214,30 +200,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		assertNotNull(testModel.editModel());
 		assertFalse(testModel.editModel().readOnly().get());
 		testModel.refresh();
-	}
-
-	@Test
-	public void findMultiple() {
-		testModel.refresh();
-		Entities entities = testModel.entities();
-		Entity tmpEnt = entities.builder(Detail.TYPE)
-						.with(Detail.ID, 3L)
-						.build();
-		assertEquals("c", testModel.find(tmpEnt.primaryKey())
-						.orElseThrow(RuntimeException::new).get(Detail.STRING));
-		List<Entity.Key> keys = new ArrayList<>();
-		keys.add(tmpEnt.primaryKey());
-		tmpEnt = entities.builder(Detail.TYPE)
-						.with(Detail.ID, 2L)
-						.build();
-		keys.add(tmpEnt.primaryKey());
-		tmpEnt = entities.builder(Detail.TYPE)
-						.with(Detail.ID, 1L)
-						.build();
-		keys.add(tmpEnt.primaryKey());
-
-		Collection<Entity> entitiesByKey = testModel.find(keys);
-		assertEquals(3, entitiesByKey.size());
 	}
 
 	@Test

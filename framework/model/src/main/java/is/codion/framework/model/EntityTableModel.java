@@ -36,7 +36,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * Specifies a table model containing {@link Entity} instances.
@@ -192,30 +191,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	State removeDeleted();
 
 	/**
-	 * Finds entities in this table model according to the values in {@code keys}
-	 * @param keys the primary key values to use as condition
-	 * @return the entities from this table model having the primary key values as in {@code keys}
-	 */
-	Collection<Entity> find(Collection<Entity.Key> keys);
-
-	/**
 	 * Selects entities according to the primary keys in {@code primaryKeys}
 	 * @param keys the primary keys of the entities to select
 	 */
 	void select(Collection<Entity.Key> keys);
-
-	/**
-	 * Finds the entity in this table model having the given primary key
-	 * @param primaryKey the primary key to search by
-	 * @return the entity with the given primary key from the table model, an empty Optional if not found
-	 */
-	Optional<Entity> find(Entity.Key primaryKey);
-
-	/**
-	 * @param primaryKey the primary key
-	 * @return the row index of the entity with the given primary key, -1 if not found
-	 */
-	int indexOf(Entity.Key primaryKey);
 
 	/**
 	 * @return the number of visible rows in this table model
