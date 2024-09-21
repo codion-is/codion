@@ -30,15 +30,16 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
- * Handles querying entities.
+ * Provides entities fetched from a database.
  * @see #entityQueryModel(EntityTableConditionModel)
  */
-public interface EntityQueryModel {
+public interface EntityQueryModel extends Supplier<List<Entity>> {
 
 	/**
-	 * @return the type of the entity this table query model is based on
+	 * @return the type of the entity this query model is based on
 	 */
 	EntityType entityType();
 
@@ -46,10 +47,11 @@ public interface EntityQueryModel {
 	 * Performs a query and returns the result.
 	 * Note that if a query condition is required ({@link #conditionRequired()})
 	 * and the condition is not enabled ({@link #conditionEnabled()}) an empty list is returned.
-	 * @return the query result
+	 * @return entities selected from the database according to the query condition.
 	 * @throws DatabaseException in case of an exception
 	 */
-	List<Entity> query() throws DatabaseException;
+	@Override
+	List<Entity> get();
 
 	/**
 	 * @return the {@link EntityTableConditionModel} instance used by this query model

@@ -183,7 +183,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param items supplies the items
 		 * @return this builder instance
 		 */
-		Builder<R, C> items(Supplier<Collection<R>> items);
+		Builder<R, C> items(Supplier<? extends Collection<R>> items);
 
 		/**
 		 * Items failing validation can not be added to the model.

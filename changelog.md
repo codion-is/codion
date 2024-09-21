@@ -46,6 +46,7 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.
+- SwingEntityTableModel.tableModel() factory method replaced with constructor overloads, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, Config.SHOW_REFRESH_PROGRESS_BAR now used for default config value.
 - EntityDialogs bug fixed, now respects the location if specified.

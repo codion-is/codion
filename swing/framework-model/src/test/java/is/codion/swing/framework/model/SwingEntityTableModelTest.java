@@ -37,7 +37,6 @@ import org.junit.jupiter.api.Test;
 import java.awt.Color;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Comparator;
 
 import static java.util.Collections.singletonList;
@@ -47,14 +46,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 	@Override
 	protected SwingEntityTableModel createTestTableModel() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, connectionProvider()) {
-			@Override
-			protected Collection<Entity> refreshItems() {
-				return testEntities;
-			}
-		};
-
-		return tableModel;
+		return new SwingEntityTableModel(Detail.TYPE, testEntities, connectionProvider());
 	}
 
 	@Override

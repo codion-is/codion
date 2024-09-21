@@ -76,6 +76,27 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	/**
+	 * Instantiates a new SwingEntityTableModel containing the given entites.
+	 * @param entities the entities to populate with model with
+	 * @param connectionProvider the connection provider
+	 * @throws IllegalArgumentException in case {@code entities} is empty
+	 */
+	public SwingEntityTableModel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
+		this(entityType(entities), entities, connectionProvider);
+	}
+
+	/**
+	 * Instantiates a new SwingEntityTableModel containing the given entites.
+	 * @param entityType the entity type
+	 * @param entities the entities to populate with model with
+	 * @param connectionProvider the connection provider
+	 * @throws IllegalArgumentException in case {@code entities} is empty
+	 */
+	public SwingEntityTableModel(EntityType entityType, Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
+		this(new SwingEntityEditModel(entityType, connectionProvider), requireNonNull(entities));
+	}
+
+	/**
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param conditionModel the table condition model
 	 */
@@ -108,9 +129,13 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @throws IllegalArgumentException in case the edit model and condition model entity type is not the same
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityQueryModel queryModel) {
-		super(requireNonNull(editModel), requireNonNull(queryModel),
-						items -> createTableModel(editModel.entityDefinition(), items));
+		super(requireNonNull(editModel), createFilterTableModel(editModel.entityDefinition(), queryModel), requireNonNull(queryModel));
 		addTableModelListener(this::onTableModelEvent);
+	}
+
+	private SwingEntityTableModel(SwingEntityEditModel editModel, Collection<Entity> items) {
+		super(requireNonNull(editModel), createFilterTableModel(editModel.entityDefinition(), () -> items));
+		refresh();
 	}
 
 	/**
@@ -328,28 +353,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	/**
-	 * @param entities the entities to display
-	 * @param connectionProvider the connection provider
-	 * @return a static {@link SwingEntityTableModel} instance containing the given entities
-	 * @throws IllegalArgumentException in case {@code entities} is empty
-	 */
-	public static SwingEntityTableModel tableModel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
-		if (requireNonNull(entities).isEmpty()) {
-			throw new IllegalArgumentException("One or more entities is required for a static table model");
-		}
-
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(entities.iterator().next().entityType(), connectionProvider) {
-			@Override
-			protected Collection<Entity> refreshItems() {
-				return entities;
-			}
-		};
-		tableModel.refresh();
-
-		return tableModel;
-	}
-
-	/**
 	 * Returns a {@link java.awt.Color} instance from the given Object.
 	 * {@link java.awt.Color} instances are returned as-is, but instances of
 	 * {@link java.lang.String} are assumed to be in HEX format (f.ex: #ffff00" or #00ff00)
@@ -391,13 +394,21 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 	}
 
-	private static FilterTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition definition,
-																																				 Supplier<Collection<Entity>> items) {
+	private static FilterTableModel<Entity, Attribute<?>> createFilterTableModel(EntityDefinition definition,
+																																							 Supplier<? extends Collection<Entity>> items) {
 		return FilterTableModel.builder(new EntityTableColumns(definition))
 						.filterModelFactory(new EntityFilterModelFactory(definition))
 						.items(items)
 						.validator(new EntityItemValidator(definition.entityType()))
 						.build();
+	}
+
+	private static EntityType entityType(Collection<Entity> entities) {
+		if (requireNonNull(entities).isEmpty()) {
+			throw new IllegalArgumentException("One or more entities is required to base a table model on");
+		}
+
+		return entities.iterator().next().entityType();
 	}
 
 	private static final class EntityTableColumns implements Columns<Entity, Attribute<?>> {

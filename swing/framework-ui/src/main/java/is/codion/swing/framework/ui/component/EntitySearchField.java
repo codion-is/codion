@@ -904,7 +904,8 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private FilterTable<Entity, Attribute<?>> createTable() {
-			SwingEntityTableModel tableModel = new DefaultTableModel();
+			SwingEntityTableModel tableModel =
+							new SwingEntityTableModel(searchModel.entityType(), emptyList(), searchModel.connectionProvider());
 
 			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder(tableModel,
 											entityTableColumns(tableModel.entityDefinition()))
@@ -942,18 +943,6 @@ public final class EntitySearchField extends HintTextField {
 			public void execute() throws Exception {
 				searchModel.entities().set(table.model().selectionModel().selectedItems().get());
 				disposeParentWindow(table);
-			}
-		}
-
-		private final class DefaultTableModel extends SwingEntityTableModel {
-
-			private DefaultTableModel() {
-				super(searchModel.entityType(), searchModel.connectionProvider());
-			}
-
-			@Override
-			protected Collection<Entity> refreshItems() {
-				return emptyList();
 			}
 		}
 	}

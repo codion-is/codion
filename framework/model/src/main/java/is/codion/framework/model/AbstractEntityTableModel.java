@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.FilterModel;
 import is.codion.common.observer.Observer;
@@ -42,20 +41,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
-public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel> implements EntityTableModel<E> {
+public abstract class AbstractEntityTableModel<E extends EntityEditModel> implements EntityTableModel<E> {
 
 	private final FilterModel<Entity> tableModel;
 	private final E editModel;
-	private final Supplier<Collection<Entity>> items = new EntityItems();
 	private final EntityQueryModel queryModel;
 	private final State handleEditEvents = State.builder()
 					.consumer(new HandleEditEventsChanged())
@@ -70,19 +67,26 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 
 	/**
 	 * @param editModel the edit model
-	 * @param queryModel the table query model
-	 * @param tableModel initializes the data model this table model is based on
-	 * @throws IllegalArgumentException in case the edit model and condition model entity type is not the same
+	 * @param tableModel the filter model
 	 */
-	protected AbstractEntityTableModel(E editModel, EntityQueryModel queryModel,
-																		 Function<Supplier<Collection<Entity>>, FilterModel<Entity>> tableModel) {
+	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> tableModel) {
+		this(editModel, tableModel, new DefaultEntityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider())));
+	}
+
+	/**
+	 * @param editModel the edit model
+	 * @param tableModel the filter model
+	 * @param queryModel the table query model, may be null
+	 * @throws IllegalArgumentException in case the edit and query model entity types do not match
+	 */
+	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> tableModel, EntityQueryModel queryModel) {
 		this.editModel = requireNonNull(editModel);
-		if (!editModel.entityType().equals(requireNonNull(queryModel).entityType())) {
-			throw new IllegalArgumentException("Entity type mismatch, edit model: " + editModel.entities()
-							+ ", condition model: " + queryModel.entityType());
+		this.queryModel = requireNonNull(queryModel);
+		this.tableModel = requireNonNull(tableModel);
+		if (queryModel != null && !editModel.entityType().equals(queryModel.entityType())) {
+			throw new IllegalArgumentException("Entity type mismatch, edit model: " +
+							editModel.entities() + ", query model: " + queryModel.entityType());
 		}
-		this.queryModel = queryModel;
-		this.tableModel = tableModel.apply(items);
 		bindEvents();
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
@@ -202,7 +206,7 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 
 	@Override
 	public final Collection<Entity> deleteSelected() throws DatabaseException {
-		return editModel().delete(selectionModel().selectedItems().get());
+		return editModel.delete(selectionModel().selectedItems().get());
 	}
 
 	@Override
@@ -269,27 +273,6 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	}
 
 	/**
-	 * Queries the data used to populate this EntityTableModel when it is refreshed.
-	 * This method should take into account the where and having conditions
-	 * ({@link EntityTableConditionModel#where(Conjunction)}, {@link EntityTableConditionModel#having(Conjunction)}),
-	 * order by clause ({@link EntityQueryModel#orderBy()}), the limit ({@link EntityQueryModel#limit()}) and select attributes
-	 * ({@link EntityQueryModel#attributes()}) when querying.
-	 * @return entities selected from the database according to the query condition.
-	 * @see EntityQueryModel#conditionRequired()
-	 * @see EntityQueryModel#conditionEnabled()
-	 * @see EntityTableConditionModel#where(Conjunction)
-	 * @see EntityTableConditionModel#having(Conjunction)
-	 */
-	protected Collection<Entity> refreshItems() {
-		try {
-			return queryModel.query();
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
 	 * Notifies all listeners that the given rows have changed
 	 * @param fromIndex the from index
 	 * @param toIndex the to index
@@ -297,11 +280,11 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 	protected abstract void onRowsUpdated(int fromIndex, int toIndex);
 
 	private void bindEvents() {
-		editModel().afterInsert().addConsumer(this::onInsert);
-		editModel().afterUpdate().addConsumer(this::onUpdate);
-		editModel().afterDelete().addConsumer(this::onDelete);
-		editModel().entity().addConsumer(this::onEntityChanged);
-		selectionModel().selectedItem().addConsumer(editModel().entity()::set);
+		editModel.afterInsert().addConsumer(this::onInsert);
+		editModel.afterUpdate().addConsumer(this::onUpdate);
+		editModel.afterDelete().addConsumer(this::onDelete);
+		editModel.entity().addConsumer(this::onEntityChanged);
+		selectionModel().selectedItem().addConsumer(editModel.entity()::set);
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {
@@ -427,14 +410,6 @@ public abstract class AbstractEntityTableModel<E extends AbstractEntityEditModel
 		private Stream<EntityType> entityTypes() {
 			return Stream.concat(entityDefinition().foreignKeys().get().stream()
 							.map(ForeignKey::referencedType), Stream.of(entityType()));
-		}
-	}
-
-	private final class EntityItems implements Supplier<Collection<Entity>> {
-
-		@Override
-		public Collection<Entity> get() {
-			return refreshItems();
 		}
 	}
 

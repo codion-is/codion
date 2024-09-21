@@ -84,7 +84,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
 		this.combinedVisiblePredicate = new CombinedVisiblePredicate(filterModel.conditionModels().values());
-		this.refresher = new DefaultRefresher(builder.items == null ? modelItems::get : builder.items);
+		this.refresher = new DefaultRefresher(builder.items == null ? modelItems::get : (Supplier<Collection<R>>) builder.items);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
 		this.validator = builder.validator;
@@ -649,7 +649,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private final Columns<R, C> columns;
 
-		private Supplier<Collection<R>> items;
+		private Supplier<? extends Collection<R>> items;
 		private Predicate<R> validator = new ValidPredicate<>();
 		private ColumnConditionModel.Factory<C> filterModelFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
@@ -669,7 +669,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> items(Supplier<Collection<R>> items) {
+		public Builder<R, C> items(Supplier<? extends Collection<R>> items) {
 			this.items = requireNonNull(items);
 			return this;
 		}

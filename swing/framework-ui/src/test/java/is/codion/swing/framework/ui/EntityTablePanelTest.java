@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Test;
 import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -128,12 +127,7 @@ public class EntityTablePanelTest {
 	@Test
 	void preferences() throws Exception {
 		List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
-		SwingEntityTableModel testModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER) {
-			@Override
-			protected Collection<Entity> refreshItems() {
-				return testEntities;
-			}
-		};
+		SwingEntityTableModel testModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);
 		EntityTablePanel tablePanel = new EntityTablePanel(testModel);
 		tablePanel.clearPreferences();
 		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();

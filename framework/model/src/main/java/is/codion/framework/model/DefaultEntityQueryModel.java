@@ -68,17 +68,13 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public List<Entity> query() throws DatabaseException {
-		EntityConnection.Select select = createSelect(conditionModel);
-		if (conditionRequired.get() && !conditionEnabled.get().get()) {
-			updateRefreshSelect(select);
-
-			return emptyList();
+	public List<Entity> get() {
+		try {
+			return select();
 		}
-		List<Entity> items = conditionModel.connectionProvider().connection().select(select);
-		updateRefreshSelect(select);
-
-		return items;
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -114,6 +110,19 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	@Override
 	public Value<StateObserver> conditionEnabled() {
 		return conditionEnabled;
+	}
+
+	private List<Entity> select() throws DatabaseException {
+		EntityConnection.Select select = createSelect(conditionModel);
+		if (conditionRequired.get() && !conditionEnabled.get().get()) {
+			updateRefreshSelect(select);
+
+			return emptyList();
+		}
+		List<Entity> items = conditionModel.connectionProvider().connection().select(select);
+		updateRefreshSelect(select);
+
+		return items;
 	}
 
 	private void updateRefreshSelect(EntityConnection.Select select) {
