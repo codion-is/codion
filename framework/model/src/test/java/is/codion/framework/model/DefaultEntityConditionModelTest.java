@@ -37,7 +37,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultEntityTableConditionModelTest {
+public class DefaultEntityConditionModelTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -47,8 +47,8 @@ public class DefaultEntityTableConditionModelTest {
 					.user(UNIT_TEST_USER)
 					.build();
 
-	private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(Employee.TYPE,
-					CONNECTION_PROVIDER, new EntityConditionModelFactory(CONNECTION_PROVIDER));
+	private final EntityConditionModel conditionModel = new DefaultEntityConditionModel(Employee.TYPE,
+					CONNECTION_PROVIDER, new EntityColumnConditionModelFactory(CONNECTION_PROVIDER));
 
 	@Test
 	void test() {
@@ -64,8 +64,8 @@ public class DefaultEntityTableConditionModelTest {
 
 	@Test
 	void noSearchColumnsDefined() {
-		EntityTableConditionModel model = new DefaultEntityTableConditionModel(Detail.TYPE,
-						CONNECTION_PROVIDER, new EntityConditionModelFactory(CONNECTION_PROVIDER));
+		EntityConditionModel model = new DefaultEntityConditionModel(Detail.TYPE,
+						CONNECTION_PROVIDER, new EntityColumnConditionModelFactory(CONNECTION_PROVIDER));
 		//no search columns defined for master entity
 		ColumnConditionModel<Attribute<?>, Entity> masterModel =
 						model.attributeModel(Detail.MASTER_FK);

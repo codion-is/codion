@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityQueryModel implements EntityQueryModel {
 
-	private final EntityTableConditionModel conditionModel;
+	private final EntityConditionModel conditionModel;
 	private final Value<StateObserver> conditionEnabled;
 	private final State conditionRequired = State.state();
 	private final State conditionChanged = State.state();
@@ -52,7 +52,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	private EntityConnection.Select refreshCondition;
 
-	DefaultEntityQueryModel(EntityTableConditionModel conditionModel) {
+	DefaultEntityQueryModel(EntityConditionModel conditionModel) {
 		this.conditionModel = requireNonNull(conditionModel);
 		this.conditionEnabled = Value.builder()
 						.nonNull(conditionModel.enabled())
@@ -78,7 +78,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public EntityTableConditionModel conditionModel() {
+	public EntityConditionModel conditionModel() {
 		return conditionModel;
 	}
 
@@ -130,7 +130,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		conditionChanged.set(false);
 	}
 
-	private EntityConnection.Select createSelect(EntityTableConditionModel conditionModel) {
+	private EntityConnection.Select createSelect(EntityConditionModel conditionModel) {
 		return EntityConnection.Select.where(conditionModel.where(Conjunction.AND))
 						.having(conditionModel.having(Conjunction.AND))
 						.attributes(attributes.get())

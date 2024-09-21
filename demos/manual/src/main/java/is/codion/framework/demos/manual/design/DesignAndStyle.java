@@ -27,7 +27,7 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.framework.model.EntityConditionModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.event.Event.event;
-import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
+import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
 import static java.util.Arrays.asList;
 import static javax.swing.BorderFactory.createTitledBorder;
 
@@ -59,8 +59,8 @@ public final class DesignAndStyle {
 
 		State state = State.state(true);
 
-		EntityTableConditionModel conditionModel =
-						entityTableConditionModel(Customer.TYPE, connectionProvider);
+		EntityConditionModel conditionModel =
+						entityConditionModel(Customer.TYPE, connectionProvider);
 		//end::factories[]
 
 		//tag::builders[]

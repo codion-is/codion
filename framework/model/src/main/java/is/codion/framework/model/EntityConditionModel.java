@@ -34,10 +34,10 @@ import java.util.function.Supplier;
  * This interface defines filtering functionality, which refers to showing/hiding entities already available
  * in a table model and searching functionality, which refers to configuring the underlying query,
  * which then needs to be re-run.
- * Factory for {@link EntityTableConditionModel} instances via
- * {@link EntityTableConditionModel#entityTableConditionModel(EntityType, EntityConnectionProvider, ColumnConditionModel.Factory)}
+ * Factory for {@link EntityConditionModel} instances via
+ * {@link EntityConditionModel#entityConditionModel(EntityType, EntityConnectionProvider, ColumnConditionModel.Factory)}
  */
-public interface EntityTableConditionModel extends TableConditionModel<Attribute<?>> {
+public interface EntityConditionModel extends TableConditionModel<Attribute<?>> {
 
 	/**
 	 * @return the type of the entity this table condition model is based on
@@ -107,24 +107,24 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 	<T> ColumnConditionModel<Attribute<?>, T> attributeModel(Attribute<T> attribute);
 
 	/**
-	 * Creates a new {@link EntityTableConditionModel}
+	 * Creates a new {@link EntityConditionModel}
 	 * @param entityType the underlying entity type
 	 * @param connectionProvider a EntityConnectionProvider instance
-	 * @return a new {@link EntityTableConditionModel} instance
+	 * @return a new {@link EntityConditionModel} instance
 	 */
-	static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return entityTableConditionModel(entityType, connectionProvider, new EntityConditionModelFactory(connectionProvider));
+	static EntityConditionModel entityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		return entityConditionModel(entityType, connectionProvider, new EntityColumnConditionModelFactory(connectionProvider));
 	}
 
 	/**
-	 * Creates a new {@link EntityTableConditionModel}
+	 * Creates a new {@link EntityConditionModel}
 	 * @param entityType the underlying entity type
 	 * @param connectionProvider a EntityConnectionProvider instance
 	 * @param conditionModelFactory provides the column condition models for this table condition model
-	 * @return a new {@link EntityTableConditionModel} instance
+	 * @return a new {@link EntityConditionModel} instance
 	 */
-	static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-																														 ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
-		return new DefaultEntityTableConditionModel(entityType, connectionProvider, conditionModelFactory);
+	static EntityConditionModel entityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+																									 ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+		return new DefaultEntityConditionModel(entityType, connectionProvider, conditionModelFactory);
 	}
 }

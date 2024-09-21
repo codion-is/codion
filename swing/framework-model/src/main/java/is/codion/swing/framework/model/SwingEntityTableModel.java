@@ -30,8 +30,8 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractEntityTableModel;
+import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityQueryModel;
-import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
@@ -48,8 +48,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
-import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -100,7 +100,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param conditionModel the table condition model
 	 */
-	public SwingEntityTableModel(EntityTableConditionModel conditionModel) {
+	public SwingEntityTableModel(EntityConditionModel conditionModel) {
 		this(entityQueryModel(conditionModel));
 	}
 
@@ -118,7 +118,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param editModel the edit model
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
-		this(editModel, entityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
+		this(editModel, entityQueryModel(entityConditionModel(editModel.entityType(), editModel.connectionProvider(),
 						new SwingEntityConditionModelFactory(editModel.connectionProvider()))));
 	}
 

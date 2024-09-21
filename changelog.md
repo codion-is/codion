@@ -43,6 +43,8 @@ Codion Change Log
 - EntityTableConditionModel.enabled() now StateObserver based.
 - EntityQueryModel split from EntityTableModel.
 - AbstractEntityEditModel.DefaultUpdate.UpdateResult.handle() bug fixed, no longer triggers EntityEditPanel.beforeEntity().
+- EntityTableConditionModel renamed EntityConditionModel.
+- EntityConditionModelFactory renamed EntityColumnConditionModelFactory.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.

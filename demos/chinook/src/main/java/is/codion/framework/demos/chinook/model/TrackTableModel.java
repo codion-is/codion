@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;
-import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
+import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
 
 public final class TrackTableModel extends SwingEntityTableModel {
 
@@ -42,7 +42,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 	private static final int MAXIMUM_LIMIT = 10_000;
 
 	public TrackTableModel(EntityConnectionProvider connectionProvider) {
-		super(entityTableConditionModel(Track.TYPE, connectionProvider,
+		super(entityConditionModel(Track.TYPE, connectionProvider,
 						new TrackConditionModelFactory(connectionProvider)));
 		editable().set(true);
 		configureLimit();

@@ -22,7 +22,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.EntityConditionModelFactory;
+import is.codion.framework.model.EntityColumnConditionModelFactory;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
@@ -33,7 +33,7 @@ import static is.codion.swing.framework.model.component.EntityComboBoxModel.enti
 /**
  * A Swing {@link ColumnConditionModel.Factory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
-public class SwingEntityConditionModelFactory extends EntityConditionModelFactory {
+public class SwingEntityConditionModelFactory extends EntityColumnConditionModelFactory {
 
 	/**
 	 * Instantiates a new {@link SwingEntityConditionModelFactory}.

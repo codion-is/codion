@@ -73,12 +73,12 @@ image::technical/world-client.png[Client UI,720]
 ||+----------------------------+|                      | | |
 |||EntityTableModel            ||                      | | |
 |||+-------------------------+ ||                      | | |
-||||EntityTableConditionModel| ||                      | | |
+||||EntityeConditionModel    | ||                      | | |
 ||||                         | ||                      | | |
 |||+-------------------------+ ||                      | | |
 |||                            ||                      | | |
 |||+-------------------------+ ||                      | | |
-||||EntityTableSelectionModel| ||                      | | |
+||||FilterTableSelectionModel| ||                      | | |
 ||||                         | ||                      | | |
 |||+-------------------------+ ||                      | | |
 ||+----------------------------++----------------------+ | |

@@ -32,17 +32,17 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link ColumnConditionModel.Factory} implementation for creating condition models.
+ * A default {@link ColumnConditionModel.Factory} implementation for creating Entity based column condition models.
  */
-public class EntityConditionModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+public class EntityColumnConditionModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
 
 	private final EntityConnectionProvider connectionProvider;
 
 	/**
-	 * Instantiates a new {@link EntityConditionModelFactory}.
+	 * Instantiates a new {@link EntityColumnConditionModelFactory}.
 	 * @param connectionProvider the connection provider
 	 */
-	public EntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
+	public EntityColumnConditionModelFactory(EntityConnectionProvider connectionProvider) {
 		this.connectionProvider = requireNonNull(connectionProvider);
 	}
 
