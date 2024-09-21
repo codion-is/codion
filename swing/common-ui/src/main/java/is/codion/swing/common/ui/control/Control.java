@@ -37,10 +37,10 @@ import java.util.OptionalInt;
 
 /**
  * A beefed up Action.
- * @see #commandControl(Command)
- * @see #actionControl(ActionCommand)
- * @see #toggleControl(Value)
- * @see #toggleControl(State)
+ * @see #command(Command)
+ * @see #action(ActionCommand)
+ * @see #toggle(Value)
+ * @see #toggle(State)
  * @see #builder()
  */
 public interface Control extends Action {
@@ -147,7 +147,7 @@ public interface Control extends Action {
 	 * @param command the {@link Control.Command} on which to base the control
 	 * @return a Control for calling the given {@link Control.Command}
 	 */
-	static CommandControl commandControl(Command command) {
+	static CommandControl command(Command command) {
 		return builder().command(command).build();
 	}
 
@@ -156,7 +156,7 @@ public interface Control extends Action {
 	 * @param actionCommand the {@link Control.ActionCommand} on which to base the control
 	 * @return a Control for calling the given {@link Control.Command}
 	 */
-	static CommandControl actionControl(ActionCommand actionCommand) {
+	static CommandControl action(ActionCommand actionCommand) {
 		return builder().action(actionCommand).build();
 	}
 
@@ -165,7 +165,7 @@ public interface Control extends Action {
 	 * @param value the value
 	 * @return a new ToggleControl
 	 */
-	static ToggleControl toggleControl(Value<Boolean> value) {
+	static ToggleControl toggle(Value<Boolean> value) {
 		return builder().toggle(value).build();
 	}
 
@@ -174,7 +174,7 @@ public interface Control extends Action {
 	 * @param state the state
 	 * @return a new ToggleControl
 	 */
-	static ToggleControl toggleControl(State state) {
+	static ToggleControl toggle(State state) {
 		return builder().toggle(state).build();
 	}
 
@@ -183,6 +183,36 @@ public interface Control extends Action {
 	 */
 	static BuilderFactory builder() {
 		return new DefaultControlBuilderFactory();
+	}
+
+	/**
+	 * Provides control builders.
+	 */
+	interface BuilderFactory {
+
+		/**
+		 * @param command the command to execute
+		 * @return a new {@link CommandControlBuilder} instance
+		 */
+		CommandControlBuilder command(Command command);
+
+		/**
+		 * @param actionCommand the action command to execute
+		 * @return a new {@link CommandControlBuilder} instance
+		 */
+		CommandControlBuilder action(ActionCommand actionCommand);
+
+		/**
+		 * @param value the value to toggle
+		 * @return a new {@link ToggleControlBuilder} instance
+		 */
+		ToggleControlBuilder toggle(Value<Boolean> value);
+
+		/**
+		 * @param state the state to toggle
+		 * @return a new {@link ToggleControlBuilder} instance
+		 */
+		ToggleControlBuilder toggle(State state);
 	}
 
 	/**
@@ -268,35 +298,5 @@ public interface Control extends Action {
 		 * @throws IllegalStateException in case no command has been set
 		 */
 		C build();
-	}
-
-	/**
-	 * Provides control builders.
-	 */
-	interface BuilderFactory {
-
-		/**
-		 * @param command the command to execute
-		 * @return a new {@link CommandControlBuilder} instance
-		 */
-		CommandControlBuilder command(Command command);
-
-		/**
-		 * @param actionCommand the action command to execute
-		 * @return a new {@link CommandControlBuilder} instance
-		 */
-		CommandControlBuilder action(ActionCommand actionCommand);
-
-		/**
-		 * @param value the value to toggle
-		 * @return a new {@link ToggleControlBuilder} instance
-		 */
-		ToggleControlBuilder toggle(Value<Boolean> value);
-
-		/**
-		 * @param state the state to toggle
-		 * @return a new {@link ToggleControlBuilder} instance
-		 */
-		ToggleControlBuilder toggle(State state);
 	}
 }

@@ -69,7 +69,7 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.calendar.CalendarPanel.ControlKeys.*;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -569,7 +569,7 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JButton createSelectTodayButton() {
-		return button(commandControl(this::selectToday))
+		return button(command(this::selectToday))
 						.text(MESSAGES.getString("today"))
 						.mnemonic(MESSAGES.getString("today_mnemonic").charAt(0))
 						.enabled(todaySelected.not())
@@ -669,18 +669,18 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private void createControls() {
-		controlMap.control(PREVIOUS_YEAR).set(commandControl(this::previousYear));
-		controlMap.control(NEXT_YEAR).set(commandControl(this::nextYear));
-		controlMap.control(PREVIOUS_MONTH).set(commandControl(this::previousMonth));
-		controlMap.control(NEXT_MONTH).set(commandControl(this::nextMonth));
-		controlMap.control(PREVIOUS_WEEK).set(commandControl(this::previousWeek));
-		controlMap.control(NEXT_WEEK).set(commandControl(this::nextWeek));
-		controlMap.control(PREVIOUS_DAY).set(commandControl(this::previousDay));
-		controlMap.control(NEXT_DAY).set(commandControl(this::nextDay));
-		controlMap.control(PREVIOUS_HOUR).set(commandControl(this::previousHour));
-		controlMap.control(NEXT_HOUR).set(commandControl(this::nextHour));
-		controlMap.control(PREVIOUS_MINUTE).set(commandControl(this::previousMinute));
-		controlMap.control(NEXT_MINUTE).set(commandControl(this::nextMinute));
+		controlMap.control(PREVIOUS_YEAR).set(command(this::previousYear));
+		controlMap.control(NEXT_YEAR).set(command(this::nextYear));
+		controlMap.control(PREVIOUS_MONTH).set(command(this::previousMonth));
+		controlMap.control(NEXT_MONTH).set(command(this::nextMonth));
+		controlMap.control(PREVIOUS_WEEK).set(command(this::previousWeek));
+		controlMap.control(NEXT_WEEK).set(command(this::nextWeek));
+		controlMap.control(PREVIOUS_DAY).set(command(this::previousDay));
+		controlMap.control(NEXT_DAY).set(command(this::nextDay));
+		controlMap.control(PREVIOUS_HOUR).set(command(this::previousHour));
+		controlMap.control(NEXT_HOUR).set(command(this::nextHour));
+		controlMap.control(PREVIOUS_MINUTE).set(command(this::previousMinute));
+		controlMap.control(NEXT_MINUTE).set(command(this::nextMinute));
 	}
 
 	private void addKeyEvents() {

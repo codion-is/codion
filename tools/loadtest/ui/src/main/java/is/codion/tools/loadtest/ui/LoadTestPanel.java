@@ -68,7 +68,7 @@ import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.Windows.frame;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
@@ -388,7 +388,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private FilterTable<ApplicationRow, ColumnId> createApplicationsTable() {
 		return FilterTable.builder(model().applicationTableModel(), createApplicationTableModelColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.doubleClickAction(commandControl(this::viewException))
+						.doubleClickAction(command(this::viewException))
 						.scrollToSelectedItem(false)
 						.cellRendererFactory(new ApplicationTableCellRendererFactory())
 						.popupMenuControls(table -> Controls.builder()

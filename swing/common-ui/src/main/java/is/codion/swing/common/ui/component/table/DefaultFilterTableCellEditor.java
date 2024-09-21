@@ -34,7 +34,7 @@ import java.awt.event.MouseEvent;
 import java.util.EventObject;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implements FilterTableCellEditor<T> {
@@ -84,7 +84,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 			((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
 		}
 		if (editorComponent instanceof JComboBox) {
-			new ComboBoxEnterPressedAction((JComboBox<?>) editorComponent, commandControl(this::stopCellEditing));
+			new ComboBoxEnterPressedAction((JComboBox<?>) editorComponent, command(this::stopCellEditing));
 		}
 
 		return value;

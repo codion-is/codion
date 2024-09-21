@@ -30,7 +30,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -77,7 +77,7 @@ public final class DatabaseMonitorPanel extends JPanel {
 										.columns(SPINNER_COLUMNS)
 										.editable(false)
 										.build())
-						.add(button(commandControl(model::clearStatistics))
+						.add(button(command(model::clearStatistics))
 										.text("Clear")
 										.build())
 						.build();

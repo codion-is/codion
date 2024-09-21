@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.awt.event.KeyEvent.VK_INSERT;
@@ -54,14 +54,14 @@ final class ListComboBox<T> extends JComboBox<T> {
 		this.linkedValue = linkedValue;
 		this.linkedValue.link(new ListBoxItemValue<>(itemValue, comboBoxModel));
 		KeyEvents.builder(VK_INSERT)
-						.action(commandControl(this::addItem))
+						.action(command(this::addItem))
 						.enable(itemValue.component());
 		KeyEvents.builder(VK_DELETE)
-						.action(commandControl(this::removeItem))
+						.action(command(this::removeItem))
 						.enable(itemValue.component());
 		KeyEvents.builder(VK_DELETE)
 						.modifiers(CTRL_DOWN_MASK)
-						.action(commandControl(this::clear))
+						.action(command(this::clear))
 						.enable(itemValue.component());
 	}
 

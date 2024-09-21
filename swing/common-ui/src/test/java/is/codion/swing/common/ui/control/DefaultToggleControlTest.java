@@ -84,7 +84,7 @@ public class DefaultToggleControlTest {
 		assertFalse(nonNullableControl.value().get());
 
 		State state = State.state(true);
-		ToggleControl toggleControl = Control.toggleControl(state);
+		ToggleControl toggleControl = Control.toggle(state);
 		assertTrue(toggleControl.value().get());
 		JToggleButton toggleButton = ToggleButtonBuilder.builder()
 						.toggleControl(toggleControl)

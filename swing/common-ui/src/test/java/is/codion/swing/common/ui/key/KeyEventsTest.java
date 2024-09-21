@@ -26,7 +26,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,7 +47,7 @@ public class KeyEventsTest {
 	@Test
 	void addKeyEventWithoutName() {
 		JComboBox<String> comboBox = new JComboBox<>();
-		KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(commandControl(() -> {})).onKeyRelease(true);
+		KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(command(() -> {})).onKeyRelease(true);
 		builder.enable(comboBox);
 		builder.disable(comboBox);
 	}

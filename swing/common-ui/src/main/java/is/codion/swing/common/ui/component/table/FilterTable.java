@@ -94,7 +94,7 @@ import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.*;
 import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.InputEvent.*;
@@ -665,11 +665,11 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return a search field
 	 */
 	private JTextField createSearchField() {
-		Control nextResult = commandControl(() -> selectSearchResult(false, true));
-		Control selectNextResult = commandControl(() -> selectSearchResult(true, true));
-		Control previousResult = commandControl(() -> selectSearchResult(false, false));
-		Control selectPreviousResult = commandControl(() -> selectSearchResult(true, false));
-		Control requestTableFocus = commandControl(this::requestFocusInWindow);
+		Control nextResult = command(() -> selectSearchResult(false, true));
+		Control selectNextResult = command(() -> selectSearchResult(true, true));
+		Control previousResult = command(() -> selectSearchResult(false, false));
+		Control selectPreviousResult = command(() -> selectSearchResult(true, false));
+		Control requestTableFocus = command(this::requestFocusInWindow);
 
 		return Components.stringField(searchModel.searchString())
 						.minimumWidth(SEARCH_FIELD_MINIMUM_WIDTH)
@@ -697,7 +697,7 @@ public final class FilterTable<R, C> extends JTable {
 						.onTextChanged(this::onSearchTextChanged)
 						.onBuild(field -> KeyEvents.builder(VK_F)
 										.modifiers(CTRL_DOWN_MASK)
-										.action(commandControl(field::requestFocusInWindow))
+										.action(command(field::requestFocusInWindow))
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this))
 						.build();
@@ -868,11 +868,11 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private CommandControl createToggleSortColumnAddControl() {
-		return commandControl(() -> toggleColumnSorting(getSelectedColumn(), true));
+		return command(() -> toggleColumnSorting(getSelectedColumn(), true));
 	}
 
 	private CommandControl createToggleSortColumnControl() {
-		return commandControl(() -> toggleColumnSorting(getSelectedColumn(), false));
+		return command(() -> toggleColumnSorting(getSelectedColumn(), false));
 	}
 
 	private static Stream<JComponent> columnComponents(FilterTableColumn<?> column) {
@@ -913,7 +913,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	/**
 	 * A MouseListener for handling double click, which invokes the action returned by {@link #getDoubleClickAction()}
-	 * with this table as the ActionEvent source as well as triggering the {@link #addDoubleClickListener(Consumer)} event.
+	 * with the associated MouseEvent as the ActionEvent source as well as triggering the {@link #addDoubleClickListener(Consumer)} event.
 	 * @see #getDoubleClickAction()
 	 */
 	private final class FilterTableMouseListener extends MouseAdapter {

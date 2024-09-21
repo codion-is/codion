@@ -55,7 +55,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
@@ -149,7 +149,7 @@ public final class ServerMonitorPanel extends JPanel {
 		JPanel northPanel = borderLayoutPanel()
 						.border(createTitledBorder("Server"))
 						.centerComponent(serverPanel)
-						.eastComponent(button(commandControl(this::shutdownServer))
+						.eastComponent(button(command(this::shutdownServer))
 										.text("Shutdown")
 										.build())
 						.build();
@@ -178,7 +178,7 @@ public final class ServerMonitorPanel extends JPanel {
 
 		JPanel chartsPanel = borderLayoutPanel()
 						.centerComponent(intervalPanel)
-						.eastComponent(button(commandControl(model::clearStatistics))
+						.eastComponent(button(command(model::clearStatistics))
 										.text("Clear")
 										.build())
 						.build();
@@ -187,7 +187,7 @@ public final class ServerMonitorPanel extends JPanel {
 						.centerComponent(checkBox(synchronizedZoomState)
 										.text("Synchronize zoom")
 										.build())
-						.eastComponent(button(commandControl(this::resetZoom))
+						.eastComponent(button(command(this::resetZoom))
 										.text("Reset zoom")
 										.build())
 						.build();
@@ -244,7 +244,7 @@ public final class ServerMonitorPanel extends JPanel {
 										.build();
 
 		JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
-						.add(button(commandControl(model::refreshOperationList))
+						.add(button(command(model::refreshOperationList))
 										.text("Refresh")
 										.build())
 						.build();
@@ -262,10 +262,10 @@ public final class ServerMonitorPanel extends JPanel {
 										.build();
 
 		JPanel clearCacheAndRefreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
-						.add(button(commandControl(model::clearReportCache))
+						.add(button(command(model::clearReportCache))
 										.text("Clear Cache")
 										.build())
-						.add(button(commandControl(model::refreshReportList))
+						.add(button(command(model::refreshReportList))
 										.text("Refresh")
 										.build())
 						.build();
@@ -283,7 +283,7 @@ public final class ServerMonitorPanel extends JPanel {
 										.build();
 
 		JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
-						.add(button(commandControl(model::refreshDomainList))
+						.add(button(command(model::refreshDomainList))
 										.text("Refresh")
 										.build())
 						.build();

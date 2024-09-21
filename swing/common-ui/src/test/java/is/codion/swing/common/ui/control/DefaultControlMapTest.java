@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.control;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -39,7 +39,7 @@ public final class DefaultControlMapTest {
 	@Test
 	void test() {
 		ControlMap controlMap = new DefaultControlMap(ControlKeys.class);
-		controlMap.control(ControlKeys.COMMAND_CONTROL).set(commandControl(this::test));
+		controlMap.control(ControlKeys.COMMAND_CONTROL).set(command(this::test));
 		assertNull(controlMap.control(ControlKeys.CONTROLS).get());
 		assertNull(controlMap.control(ControlKeys.TOGGLE_CONTROL).get());
 		ControlKey<CommandControl> test = CommandControl.key("test");

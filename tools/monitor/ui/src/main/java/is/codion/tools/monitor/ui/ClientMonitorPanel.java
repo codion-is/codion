@@ -43,7 +43,7 @@ import java.util.List;
 
 import static is.codion.swing.common.ui.Utilities.linkBoundedRangeModels;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Arrays.asList;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
@@ -99,7 +99,7 @@ public final class ClientMonitorPanel extends JPanel {
 																		.add(checkBox(advancedFilterState)
 																						.text("Advanced filters")
 																						.build())
-																		.add(button(commandControl(this::refresh))
+																		.add(button(command(this::refresh))
 																						.text("Refresh")
 																						.build())
 																		.build())

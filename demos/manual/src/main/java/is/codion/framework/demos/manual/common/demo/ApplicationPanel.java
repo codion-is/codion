@@ -133,7 +133,7 @@ public final class ApplicationPanel extends JPanel {
 						.transferHandler(new FilePathTransferHandler())
 						.keyEvent(KeyEvents.builder(VK_SPACE)
 										.modifiers(CTRL_DOWN_MASK)
-										.action(Control.actionControl(actionEvent ->
+										.action(Control.action(actionEvent ->
 														((JTextArea) actionEvent.getSource()).append("SPACE"))))
 						.label(label("Text (3)")
 										.displayedMnemonic('3')

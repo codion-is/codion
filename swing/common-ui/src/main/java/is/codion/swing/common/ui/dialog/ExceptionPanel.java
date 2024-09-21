@@ -52,7 +52,7 @@ import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
@@ -162,7 +162,7 @@ final class ExceptionPanel extends JPanel {
 	private void bindEvents() {
 		KeyEvents.builder(VK_ESCAPE)
 						.condition(WHEN_IN_FOCUSED_WINDOW)
-						.action(commandControl(this::closeDialog))
+						.action(command(this::closeDialog))
 						.enable(this);
 	}
 

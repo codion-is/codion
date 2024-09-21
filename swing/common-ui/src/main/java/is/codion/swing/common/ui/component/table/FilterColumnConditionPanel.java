@@ -71,7 +71,7 @@ import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.ControlKeys.*;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
@@ -465,15 +465,15 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 						.collect(toList());
 		TOGGLE_ENABLED.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
-										.action(commandControl(this::toggleEnabled))
+										.action(command(this::toggleEnabled))
 										.enable(fields));
 		PREVIOUS_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
-										.action(commandControl(this::selectPreviousOperator))
+										.action(command(this::selectPreviousOperator))
 										.enable(fields));
 		NEXT_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
-										.action(commandControl(this::selectNextOperator))
+										.action(command(this::selectNextOperator))
 										.enable(fields));
 	}
 

@@ -56,7 +56,7 @@ public final class ClientUI {
 		Value<String> artistNameEditModelValue = editModel.value(Artist.NAME);
 
 		// create a Control for inserting a new Artist
-		Control insertControl = Control.actionControl(actionEvent -> {
+		Control insertControl = Control.action(actionEvent -> {
 			try {
 				// insert the entity
 				editModel.insert();
@@ -120,7 +120,7 @@ public final class ClientUI {
 		Value<String> editModelTitleValue = editModel.value(Album.TITLE);
 
 		// create a Control for inserting a new Album row
-		Control insertControl = Control.actionControl(actionEvent -> {
+		Control insertControl = Control.action(actionEvent -> {
 			try {
 				// insert the entity
 				editModel.insert();

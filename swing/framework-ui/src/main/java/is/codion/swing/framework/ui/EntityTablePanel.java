@@ -131,7 +131,7 @@ import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.Con
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.ColumnPreferences.columnPreferences;
@@ -1227,7 +1227,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createSelectConditionPanelControl() {
-		return commandControl(() -> conditionPanel().selectConditionPanel(this));
+		return command(() -> conditionPanel().selectConditionPanel(this));
 	}
 
 	private Controls createConditionControls() {
@@ -1262,7 +1262,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createSelectFilterPanelControl() {
-		return commandControl(() -> table.filterPanel().selectConditionPanel(this));
+		return command(() -> table.filterPanel().selectConditionPanel(this));
 	}
 
 	private void toggleConditionPanel() {
@@ -1345,11 +1345,11 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createRequestTableFocusControl() {
-		return commandControl(table::requestFocus);
+		return command(table::requestFocus);
 	}
 
 	private CommandControl createRequestSearchFieldFocusControl() {
-		return commandControl(table.searchField()::requestFocusInWindow);
+		return command(table.searchField()::requestFocusInWindow);
 	}
 
 	private Controls createColumnControls() {
@@ -1594,10 +1594,10 @@ public class EntityTablePanel extends JPanel {
 		controlMap.control(COPY_CELL).set(table.createCopyCellControl());
 		controlMap.control(COPY_ROWS).set(createCopyRowsControl());
 		if (configuration.includeEntityMenu) {
-			controlMap.control(DISPLAY_ENTITY_MENU).set(commandControl(this::showEntityMenu));
+			controlMap.control(DISPLAY_ENTITY_MENU).set(command(this::showEntityMenu));
 		}
 		if (configuration.includePopupMenu) {
-			controlMap.control(DISPLAY_POPUP_MENU).set(commandControl(this::showPopupMenu));
+			controlMap.control(DISPLAY_POPUP_MENU).set(command(this::showPopupMenu));
 		}
 		if (configuration.includeSelectionModeControl) {
 			controlMap.control(SELECTION_MODE).set(table.createSingleSelectionModeControl());

@@ -66,7 +66,7 @@ import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.ADVANCED;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
 import static java.util.Arrays.asList;
@@ -252,10 +252,10 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 							.columns(3)
 							.keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
 											.modifiers(InputEvent.CTRL_DOWN_MASK)
-											.action(commandControl(this::incrementYear)))
+											.action(command(this::incrementYear)))
 							.keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
 											.modifiers(InputEvent.CTRL_DOWN_MASK)
-											.action(commandControl(this::decrementYear)))
+											.action(command(this::decrementYear)))
 							.buildValue();
 
 			private DateConditionPanel(ColumnConditionModel<Attribute<?>, LocalDate> conditionModel, EntityDefinition invoiceDefinition) {

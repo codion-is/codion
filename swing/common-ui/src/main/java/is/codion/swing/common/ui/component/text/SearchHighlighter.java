@@ -49,7 +49,7 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.menu;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -134,11 +134,11 @@ public final class SearchHighlighter {
 		return new DefaultTextFieldBuilder<>(String.class, searchStringValue)
 						.selectAllOnFocusGained(true)
 						.keyEvent(KeyEvents.builder(VK_DOWN)
-										.action(commandControl(this::nextSearchPosition)))
+										.action(command(this::nextSearchPosition)))
 						.keyEvent(KeyEvents.builder(VK_UP)
-										.action(commandControl(this::previousSearchPosition)))
+										.action(command(this::previousSearchPosition)))
 						.keyEvent(KeyEvents.builder(VK_ESCAPE)
-										.action(commandControl(textComponent::requestFocusInWindow)))
+										.action(command(textComponent::requestFocusInWindow)))
 						.popupMenu(textField -> menu()
 										.control(Control.builder()
 														.toggle(caseSensitiveState)

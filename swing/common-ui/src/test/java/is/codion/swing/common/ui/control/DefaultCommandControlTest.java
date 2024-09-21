@@ -96,7 +96,7 @@ public final class DefaultCommandControlTest {
 	@Test
 	void actionCommand() {
 		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "test");
-		Control test = Control.actionControl(actionEvent -> {
+		Control test = Control.action(actionEvent -> {
 			assertSame(this, actionEvent.getSource());
 			assertEquals(actionEvent.getActionCommand(), "test");
 			assertEquals(actionEvent.getID(), ActionEvent.ACTION_PERFORMED);
@@ -121,25 +121,25 @@ public final class DefaultCommandControlTest {
 
 	@Test
 	void setEnabledViaMethod() {
-		Control test = Control.commandControl(this::doNothing);
+		Control test = Control.command(this::doNothing);
 		assertThrows(UnsupportedOperationException.class, () -> test.setEnabled(true));
 	}
 
 	@Test
 	void exceptionOnExecute() {
-		Control control = Control.commandControl(this::errorMethod);
+		Control control = Control.command(this::errorMethod);
 		assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
 	}
 
 	@Test
 	void runtimeExceptionOnExecute() {
-		Control control = Control.commandControl(this::runtimeErrorMethod);
+		Control control = Control.command(this::runtimeErrorMethod);
 		assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
 	}
 
 	@Test
 	void cancelOnExecute() {
-		Control control = Control.commandControl(this::cancelMethod);
+		Control control = Control.command(this::cancelMethod);
 		control.actionPerformed(null);
 	}
 

@@ -72,7 +72,7 @@ import java.util.function.Function;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -817,7 +817,7 @@ public class EntityPanel extends JPanel {
 	 * @return a Control instance for requesting edit panel focus
 	 */
 	private CommandControl createRequestEditPanelFocusControl() {
-		return commandControl(this::requestEditPanelFocus);
+		return command(this::requestEditPanelFocus);
 	}
 
 	/**
@@ -862,7 +862,7 @@ public class EntityPanel extends JPanel {
 		if (tablePanel != null) {
 			tablePanel.initialize();
 			if (tablePanel.table().doubleClickAction().isNull()) {
-				tablePanel.table().doubleClickAction().set(commandControl(new ShowHiddenEditPanel()));
+				tablePanel.table().doubleClickAction().set(command(new ShowHiddenEditPanel()));
 			}
 		}
 	}
@@ -1043,10 +1043,10 @@ public class EntityPanel extends JPanel {
 		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
 		controlMap.control(REQUEST_EDIT_PANEL_FOCUS).set(createRequestEditPanelFocusControl());
 		controlMap.control(TOGGLE_EDIT_PANEL).set(createToggleEditPanelControl());
-		controlMap.control(NAVIGATE_UP).set(commandControl(new Navigate(UP)));
-		controlMap.control(NAVIGATE_DOWN).set(commandControl(new Navigate(DOWN)));
-		controlMap.control(NAVIGATE_LEFT).set(commandControl(new Navigate(LEFT)));
-		controlMap.control(NAVIGATE_RIGHT).set(commandControl(new Navigate(RIGHT)));
+		controlMap.control(NAVIGATE_UP).set(command(new Navigate(UP)));
+		controlMap.control(NAVIGATE_DOWN).set(command(new Navigate(DOWN)));
+		controlMap.control(NAVIGATE_LEFT).set(command(new Navigate(LEFT)));
+		controlMap.control(NAVIGATE_RIGHT).set(command(new Navigate(RIGHT)));
 		if (containsTablePanel()) {
 			controlMap.control(REFRESH).set(createRefreshTableControl());
 		}

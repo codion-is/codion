@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
 import static java.util.ResourceBundle.getBundle;
@@ -123,11 +123,11 @@ final class ColumnSelectionPanel<C> extends JPanel {
 		List<JCheckBox> selectCheckBoxes = Arrays.asList(selectAllBox, selectNoneBox);
 		KeyEvents.builder(VK_UP)
 						.condition(WHEN_FOCUSED)
-						.action(commandControl(new TransferFocusCommand(selectCheckBoxes, false)))
+						.action(command(new TransferFocusCommand(selectCheckBoxes, false)))
 						.enable(selectAllBox, selectNoneBox);
 		KeyEvents.builder(VK_DOWN)
 						.condition(WHEN_FOCUSED)
-						.action(commandControl(new TransferFocusCommand(selectCheckBoxes, true)))
+						.action(command(new TransferFocusCommand(selectCheckBoxes, true)))
 						.enable(selectAllBox, selectNoneBox);
 
 		return gridLayoutPanel(2, 1)
@@ -150,10 +150,10 @@ final class ColumnSelectionPanel<C> extends JPanel {
 						.build();
 		KeyEvents.Builder upEventBuilder = KeyEvents.builder(VK_UP)
 						.condition(WHEN_FOCUSED)
-						.action(commandControl(new TransferFocusCommand(checkBoxes, false)));
+						.action(command(new TransferFocusCommand(checkBoxes, false)));
 		KeyEvents.Builder downEventBuilder = KeyEvents.builder(VK_DOWN)
 						.condition(WHEN_FOCUSED)
-						.action(commandControl(new TransferFocusCommand(checkBoxes, true)));
+						.action(command(new TransferFocusCommand(checkBoxes, true)));
 		checkBoxes.forEach(checkBox -> {
 			upEventBuilder.enable(checkBox);
 			downEventBuilder.enable(checkBox);

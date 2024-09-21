@@ -45,7 +45,7 @@ import java.util.Map;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
-import static is.codion.swing.common.ui.control.Control.commandControl;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_LEFT;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_RIGHT;
@@ -98,12 +98,12 @@ final class EntityDependenciesPanel extends JPanel {
 		NAVIGATE_RIGHT.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.action(commandControl(new NavigateRightCommand()))
+										.action(command(new NavigateRightCommand()))
 										.enable(tabPane));
 		NAVIGATE_LEFT.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.action(commandControl(new NavigateLeftCommand()))
+										.action(command(new NavigateLeftCommand()))
 										.enable(tabPane));
 	}
 
