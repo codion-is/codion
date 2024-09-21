@@ -70,11 +70,6 @@ public interface SelectionModel<R> extends SingleSelectionModel<R> {
 	void selectAll();
 
 	/**
-	 * Clears the selection
-	 */
-	void clear();
-
-	/**
 	 * @return the number of selected items.
 	 */
 	int count();

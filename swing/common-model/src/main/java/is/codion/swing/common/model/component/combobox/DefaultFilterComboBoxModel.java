@@ -546,6 +546,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public boolean nullSelected() {
 			return includeNull.get() && selected.item == null;
 		}
+
+		@Override
+		public void clear() {
+			selected.clear();
+		}
 	}
 
 	private final class Selected implements Mutable<T> {

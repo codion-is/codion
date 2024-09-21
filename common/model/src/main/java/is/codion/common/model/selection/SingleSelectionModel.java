@@ -44,4 +44,9 @@ public interface SingleSelectionModel<R> {
 	 * @return a {@link Mutable} controlling the selected item
 	 */
 	Mutable<R> item();
+
+	/**
+	 * Clears the selection
+	 */
+	void clear();
 }
