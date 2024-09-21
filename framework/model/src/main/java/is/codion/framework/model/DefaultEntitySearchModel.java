@@ -61,18 +61,13 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private final EntityType entityType;
 	private final Collection<Column<String>> columns;
-	private final ValueSet<Entity> entities = ValueSet.<Entity>builder()
-					.notify(Notify.WHEN_SET)
-					.validator(new EntityValidator())
-					.listener(this::reset)
-					.consumer(selectedEntities -> selectionEmpty.set(selectedEntities.isEmpty()))
-					.build();
+	private final DefaultSelection selection = new DefaultSelection();
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<Column<String>, Settings> settings;
 	private final Value<String> searchString = Value.builder()
 					.nonNull("")
 					.notify(Notify.WHEN_SET)
-					.listener(() -> searchStringModified.set(!searchStringRepresentsSelection()))
+					.listener(() -> searchStringModified.set(!selection.searchStringRepresentsSelection()))
 					.build();
 	private final Value<String> separator = Value.builder()
 					.nonNull(DEFAULT_SEPARATOR)
@@ -122,13 +117,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
-	public Value<Entity> entity() {
-		return entities.value();
-	}
-
-	@Override
-	public ValueSet<Entity> entities() {
-		return entities;
+	public Selection selection() {
+		return selection;
 	}
 
 	@Override
@@ -153,7 +143,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	@Override
 	public void reset() {
-		searchString.set(entitiesToString());
+		searchString.set(selection.entitiesToString());
 	}
 
 	@Override
@@ -187,11 +177,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	@Override
 	public StateObserver searchStringModified() {
 		return searchStringModified.observer();
-	}
-
-	@Override
-	public StateObserver selectionEmpty() {
-		return selectionEmpty.observer();
 	}
 
 	/**
@@ -239,11 +224,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 						((wildcardPrefix ? WILDCARD_MULTIPLE : "") + rawSearchString.trim() + (wildcardPostfix ? WILDCARD_MULTIPLE : ""));
 	}
 
-	private boolean searchStringRepresentsSelection() {
-		return (entities.get().isEmpty() && searchString.get().isEmpty()) ||
-						(!entities.get().isEmpty() && entitiesToString().equals(searchString.get()));
-	}
-
 	private String createDescription() {
 		EntityDefinition definition = connectionProvider.entities().definition(entityType);
 
@@ -252,15 +232,50 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 						.collect(joining(", "));
 	}
 
-	private String entitiesToString() {
-		return entities.get().stream()
-						.map(stringFunction.get())
-						.collect(joining(separator.get()));
-	}
-
 	private void validateType(Entity entity) {
 		if (!entity.entityType().equals(entityType)) {
 			throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.entityType());
+		}
+	}
+
+	private final class DefaultSelection implements Selection {
+
+		private final ValueSet<Entity> entities = ValueSet.<Entity>builder()
+						.notify(Notify.WHEN_SET)
+						.validator(new EntityValidator())
+						.listener(DefaultEntitySearchModel.this::reset)
+						.consumer(selectedEntities -> selectionEmpty.set(selectedEntities.isEmpty()))
+						.build();
+
+		@Override
+		public Value<Entity> entity() {
+			return entities.value();
+		}
+
+		@Override
+		public ValueSet<Entity> entities() {
+			return entities;
+		}
+
+		@Override
+		public StateObserver empty() {
+			return selectionEmpty.observer();
+		}
+
+		@Override
+		public void clear() {
+			entities.clear();
+		}
+
+		private boolean searchStringRepresentsSelection() {
+			return (entities.get().isEmpty() && searchString.get().isEmpty()) ||
+							(!entities.get().isEmpty() && entitiesToString().equals(searchString.get()));
+		}
+
+		private String entitiesToString() {
+			return entities.get().stream()
+							.map(stringFunction.get())
+							.collect(joining(separator.get()));
 		}
 	}
 

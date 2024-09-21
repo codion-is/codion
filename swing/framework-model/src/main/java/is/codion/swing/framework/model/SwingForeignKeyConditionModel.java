@@ -209,7 +209,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 			equalComboBoxModel.refresher().success().addListener(() -> equalComboBoxModel.setSelectedItem(operands().equal().get()));
 		}
 		if (inSearchModel != null) {
-			inSearchModel.entities().addConsumer(new SetInValues());
+			inSearchModel.selection().entities().addConsumer(new SetInValues());
 			operands().in().addConsumer(new SelectInValues());
 		}
 	}
@@ -254,7 +254,7 @@ public final class SwingForeignKeyConditionModel implements ColumnConditionModel
 		public void accept(Set<Entity> inValues) {
 			updatingModel = true;
 			try {
-				inSearchModel.entities().set(inValues);
+				inSearchModel.selection().entities().set(inValues);
 			}
 			finally {
 				updatingModel = false;

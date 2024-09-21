@@ -60,14 +60,9 @@ public interface EntitySearchModel {
 	EntityConnectionProvider connectionProvider();
 
 	/**
-	 * @return a Value controlling the selected entity
+	 * @return the selection
 	 */
-	Value<Entity> entity();
-
-	/**
-	 * @return a Value controlling the selected entities
-	 */
-	ValueSet<Entity> entities();
+	Selection selection();
 
 	/**
 	 * @return a string describing this search model, by default a comma separated list of search column names
@@ -120,11 +115,6 @@ public interface EntitySearchModel {
 	StateObserver searchStringModified();
 
 	/**
-	 * @return a {@link StateObserver} indicating whether the selection is empty
-	 */
-	StateObserver selectionEmpty();
-
-	/**
 	 * @return the settings associated with each search column
 	 */
 	Map<Column<String>, Settings> settings();
@@ -143,6 +133,32 @@ public interface EntitySearchModel {
 	 * @return true if single selection is enabled
 	 */
 	boolean singleSelection();
+
+	/**
+	 * Controls the selection
+	 */
+	interface Selection {
+
+		/**
+		 * @return a {@link Value} controlling the selected entity
+		 */
+		Value<Entity> entity();
+
+		/**
+		 * @return a {@link Value} controlling the selected entities
+		 */
+		ValueSet<Entity> entities();
+
+		/**
+		 * @return a {@link StateObserver} indicating whether the selection is empty
+		 */
+		StateObserver empty();
+
+		/**
+		 * Clears the selection
+		 */
+		void clear();
+	}
 
 	/**
 	 * Column search settings

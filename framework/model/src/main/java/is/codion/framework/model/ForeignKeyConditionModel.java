@@ -191,11 +191,11 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 
 	private void bindEvents() {
 		if (equalSearchModel != null) {
-			equalSearchModel.entity().addConsumer(new SetEqualOperand());
+			equalSearchModel.selection().entity().addConsumer(new SetEqualOperand());
 			operands().equal().addConsumer(new SelectEqualOperand());
 		}
 		if (inSearchModel != null) {
-			inSearchModel.entities().addConsumer(new SetInOperands());
+			inSearchModel.selection().entities().addConsumer(new SetInOperands());
 			operands().in().addConsumer(new SelectInOperands());
 		}
 	}
@@ -226,7 +226,7 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 		public void accept(Entity equalOperand) {
 			updatingModel = true;
 			try {
-				equalSearchModel.entity().set(equalOperand);
+				equalSearchModel.selection().entity().set(equalOperand);
 			}
 			finally {
 				updatingModel = false;
@@ -240,7 +240,7 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 		public void accept(Set<Entity> inOperands) {
 			updatingModel = true;
 			try {
-				inSearchModel.entities().set(inOperands);
+				inSearchModel.selection().entities().set(inOperands);
 			}
 			finally {
 				updatingModel = false;

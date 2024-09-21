@@ -128,9 +128,9 @@ final class EntityControls {
 		return createEditControl(() -> editEntityDialog(editPanel)
 						.owner(searchField)
 						.confirm(confirm)
-						.entity(() -> searchField.model().entity().get())
+						.entity(() -> searchField.model().selection().entity().get())
 						.onUpdate(new EntitySearchFieldOnUpdate(searchField.model()))
-						.show(), searchField, searchField.model().selectionEmpty().not(), keyStroke);
+						.show(), searchField, searchField.model().selection().empty().not(), keyStroke);
 	}
 
 	static String validateButtonLocation(String buttonLocation) {
@@ -230,7 +230,7 @@ final class EntityControls {
 
 		@Override
 		public void accept(Entity inserted) {
-			searchModel.entity().set(inserted);
+			searchModel.selection().entity().set(inserted);
 		}
 	}
 
@@ -259,7 +259,7 @@ final class EntityControls {
 
 		@Override
 		public void accept(Entity updated) {
-			searchModel.entity().set(updated);
+			searchModel.selection().entity().set(updated);
 		}
 	}
 }

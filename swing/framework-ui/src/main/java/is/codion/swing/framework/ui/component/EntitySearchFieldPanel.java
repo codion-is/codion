@@ -381,7 +381,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 
 		@Override
 		protected void setInitialValue(EntitySearchFieldPanel component, Entity initialValue) {
-			component.searchField.model().entity().set(initialValue);
+			component.searchField.model().selection().entity().set(initialValue);
 		}
 
 		private EntitySearchField createSearchField() {
@@ -392,17 +392,17 @@ public final class EntitySearchFieldPanel extends JPanel {
 
 			private EntitySearchFieldPanelValue(EntitySearchFieldPanel component) {
 				super(component);
-				component.searchField.model().entity().addListener(this::notifyListeners);
+				component.searchField.model().selection().entity().addListener(this::notifyListeners);
 			}
 
 			@Override
 			protected Entity getComponentValue() {
-				return component().searchField.model().entity().get();
+				return component().searchField.model().selection().entity().get();
 			}
 
 			@Override
 			protected void setComponentValue(Entity entity) {
-				component().searchField.model().entity().set(entity);
+				component().searchField.model().selection().entity().set(entity);
 			}
 		}
 	}

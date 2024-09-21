@@ -482,7 +482,7 @@ public final class EntitySearchField extends HintTextField {
 	private void bindEvents() {
 		new SearchStringValue(this).link(model.searchString());
 		model.searchString().addListener(this::updateColors);
-		model.entities().addListener(() -> setCaretPosition(0));
+		model.selection().entities().addListener(() -> setCaretPosition(0));
 		addFocusListener(new SearchFocusListener());
 		addKeyListener(new EnterEscapeListener());
 		linkToEnabledState(model.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
@@ -524,7 +524,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private void performSearch(boolean promptUser) {
 		if (nullOrEmpty(model.searchString().get())) {
-			model.entities().clear();
+			model.selection().clear();
 		}
 		else if (model.searchStringModified().get()) {
 			cancelCurrentSearch();
@@ -548,7 +548,7 @@ public final class EntitySearchField extends HintTextField {
 	private void handleResult(List<Entity> searchResult, boolean promptUser) {
 		endSearch();
 		if (searchResult.size() == 1) {
-			model.entities().set(searchResult);
+			model.selection().entities().set(searchResult);
 		}
 		else if (promptUser) {
 			promptUser(searchResult);
@@ -829,7 +829,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() {
-				searchModel.entities().set(list.getSelectedValuesList());
+				searchModel.selection().entities().set(list.getSelectedValuesList());
 				disposeParentWindow(list);
 			}
 		}
@@ -941,7 +941,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() throws Exception {
-				searchModel.entities().set(table.model().selection().items().get());
+				searchModel.selection().entities().set(table.model().selection().items().get());
 				disposeParentWindow(table);
 			}
 		}
@@ -960,17 +960,17 @@ public final class EntitySearchField extends HintTextField {
 
 		private SingleSelectionValue(EntitySearchField searchField) {
 			super(searchField);
-			searchField.model().entity().addListener(this::notifyListeners);
+			searchField.model().selection().entity().addListener(this::notifyListeners);
 		}
 
 		@Override
 		protected Entity getComponentValue() {
-			return component().model().entity().get();
+			return component().model().selection().entity().get();
 		}
 
 		@Override
 		protected void setComponentValue(Entity value) {
-			component().model().entity().set(value);
+			component().model().selection().entity().set(value);
 		}
 	}
 
@@ -978,17 +978,17 @@ public final class EntitySearchField extends HintTextField {
 
 		private MultiSelectionValue(EntitySearchField searchField) {
 			super(searchField);
-			searchField.model().entities().addListener(this::notifyListeners);
+			searchField.model().selection().entities().addListener(this::notifyListeners);
 		}
 
 		@Override
 		protected Collection<Entity> getComponentValue() {
-			return component().model().entities().get();
+			return component().model().selection().entities().get();
 		}
 
 		@Override
 		protected void setComponentValue(Collection<Entity> value) {
-			component().model().entities().set(value);
+			component().model().selection().entities().set(value);
 		}
 	}
 
@@ -1003,7 +1003,7 @@ public final class EntitySearchField extends HintTextField {
 		public void focusLost(FocusEvent e) {
 			if (!e.isTemporary()) {
 				if (getText().isEmpty()) {
-					model().entities().clear();
+					model().selection().clear();
 				}
 				else if (shouldPerformSearch()) {
 					performSearch(false);
@@ -1202,7 +1202,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		protected void setInitialValue(EntitySearchField component, Entity initialValue) {
-			component.model().entity().set(initialValue);
+			component.model().selection().entity().set(initialValue);
 		}
 
 		@Override

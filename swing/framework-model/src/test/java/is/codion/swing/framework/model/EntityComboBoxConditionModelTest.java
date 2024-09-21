@@ -87,13 +87,13 @@ public class EntityComboBoxConditionModelTest {
 										.build();
 		EntitySearchModel inSearchModel = conditionModel.inSearchModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
-		inSearchModel.entity().set(sales);
+		inSearchModel.selection().entity().set(sales);
 		Collection<Entity> searchEntities = conditionModel.operands().in().get();
 		assertEquals(1, searchEntities.size());
 		assertTrue(searchEntities.contains(sales));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		List<Entity> salesAccounting = asList(sales, accounting);
-		inSearchModel.entities().set(salesAccounting);
+		inSearchModel.selection().entities().set(salesAccounting);
 		assertTrue(conditionModel.operands().in().get().contains(sales));
 		assertTrue(conditionModel.operands().in().get().contains(accounting));
 		searchEntities = conditionModel.operands().in().get();

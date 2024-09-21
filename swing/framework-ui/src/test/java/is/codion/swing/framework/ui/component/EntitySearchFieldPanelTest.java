@@ -49,13 +49,13 @@ public final class EntitySearchFieldPanelTest {
 						.buildValue();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
 						Department.NAME.equalTo("SALES"));
-		model.entity().set(sales);
+		model.selection().entity().set(sales);
 		assertEquals(sales, value.get());
 		value.clear();
-		Entity entity = model.entity().get();
+		Entity entity = model.selection().entity().get();
 		assertNull(entity);
 		value.set(sales);
-		assertEquals(sales, model.entity().get());
+		assertEquals(sales, model.selection().entity().get());
 
 		assertThrows(IllegalStateException.class, () -> EntitySearchFieldPanel.builder(model)
 						.includeAddButton(true));
