@@ -163,16 +163,22 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	@Override
 	public final Optional<Entity> find(Entity.Key primaryKey) {
 		requireNonNull(primaryKey);
-		return items().visible().get().stream()
+		return items().get().stream()
 						.filter(entity -> entity.primaryKey().equals(primaryKey))
 						.findFirst();
 	}
 
 	@Override
 	public final int indexOf(Entity.Key primaryKey) {
-		return find(primaryKey)
-						.map(items().visible()::indexOf)
-						.orElse(-1);
+		requireNonNull(primaryKey);
+		List<Entity> visible = items().visible().get();
+		for (int i = 0; i < visible.size(); i++) {
+			if (primaryKey.equals(visible.get(i).primaryKey())) {
+				return i;
+			}
+		}
+
+		return -1;
 	}
 
 	@Override

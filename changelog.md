@@ -54,6 +54,8 @@ Codion Change Log
 - EntityQueryModel.query() added for overriding the default query mechanism.
 - EntityTableModel.selectionChanged() removed.
 - EntitySearchModel.Selection added.
+- AbstractEntityTableModel.find() bug fixed, now searches through all items, not just visible.
+- AbstractEntityTableModel.indexOf() now loop based.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.
