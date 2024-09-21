@@ -20,8 +20,8 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.FilterModel.Items.FilteredItems;
-import is.codion.common.model.FilterModel.Items.VisibleItems;
+import is.codion.common.model.FilterModel.Items.Filtered;
+import is.codion.common.model.FilterModel.Items.Visible;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.observer.Observer;
@@ -474,8 +474,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final class DefaultItems implements Items<R> {
 
-		private final DefaultVisibleItems visible = new DefaultVisibleItems();
-		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
+		private final VisibleItems visible = new VisibleItems();
+		private final FilteredItems filtered = new FilteredItems();
 
 		@Override
 		public Collection<R> get() {
@@ -505,12 +505,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public VisibleItems<R> visible() {
+		public Visible<R> visible() {
 			return visible;
 		}
 
 		@Override
-		public FilteredItems<R> filtered() {
+		public Filtered<R> filtered() {
 			return filtered;
 		}
 
@@ -540,7 +540,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class DefaultVisibleItems implements VisibleItems<R> {
+	private final class VisibleItems implements Visible<R> {
 
 		private final List<R> items = new ArrayList<>();
 		private final Event<List<R>> event = Event.event();
@@ -580,7 +580,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class DefaultFilteredItems implements FilteredItems<R> {
+	private final class FilteredItems implements Filtered<R> {
 
 		private final List<R> items = new ArrayList<>();
 		private final Event<Collection<R>> event = Event.event();

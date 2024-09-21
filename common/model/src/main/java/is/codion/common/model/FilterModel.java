@@ -199,14 +199,14 @@ public interface FilterModel<T> {
 		Value<Predicate<T>> visiblePredicate();
 
 		/**
-		 * @return a {@link VisibleItems} providing an unmodifiable view of the visible items, in the order they appear in the model
+		 * @return a {@link Visible} providing an unmodifiable view of the visible items, in the order they appear in the model
 		 */
-		VisibleItems<T> visible();
+		Visible<T> visible();
 
 		/**
-		 * @return a {@link FilteredItems} providing an unmodifiable view of the filtered items
+		 * @return a {@link Filtered} providing an unmodifiable view of the filtered items
 		 */
-		FilteredItems<T> filtered();
+		Filtered<T> filtered();
 
 		/**
 		 * Returns true if these items contain the given item, visible or filtered.
@@ -226,7 +226,7 @@ public interface FilterModel<T> {
 		/**
 		 * @param <T> the item type
 		 */
-		interface VisibleItems<T> extends Observable<List<T>> {
+		interface Visible<T> extends Observable<List<T>> {
 
 			/**
 			 * Returns true if the given item is visible
@@ -256,7 +256,7 @@ public interface FilterModel<T> {
 		/**
 		 * @param <T> the item type
 		 */
-		interface FilteredItems<T> extends Observable<Collection<T>> {
+		interface Filtered<T> extends Observable<Collection<T>> {
 
 			/**
 			 * Returns true if the given item is filtered.
