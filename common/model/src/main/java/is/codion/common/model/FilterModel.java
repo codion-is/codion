@@ -245,6 +245,11 @@ public interface FilterModel<T> {
 			 * @return the item at the given index in this model
 			 */
 			T itemAt(int rowIndex);
+
+			/**
+			 * @return the number of visible items
+			 */
+			int size();
 		}
 
 		/**
@@ -258,6 +263,11 @@ public interface FilterModel<T> {
 			 * @return true if the item is filtered
 			 */
 			boolean contains(T item);
+
+			/**
+			 * @return the number of filtered items
+			 */
+			int size();
 		}
 	}
 

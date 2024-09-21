@@ -133,11 +133,11 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void filterModel() {
 		tableModel.refresh();
-		assertEquals(5, tableModel.items().visible().get().size());
+		assertEquals(5, tableModel.items().visible().size());
 		tableModel.filterModel().conditionModel(0).operands().equal().set("a");
-		assertEquals(1, tableModel.items().visible().get().size());
+		assertEquals(1, tableModel.items().visible().size());
 		tableModel.filterModel().conditionModel(0).operands().equal().set("b");
-		assertEquals(1, tableModel.items().visible().get().size());
+		assertEquals(1, tableModel.items().visible().size());
 		tableModel.filterModel().conditionModel(0).clear();
 	}
 
@@ -326,9 +326,9 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void clear() {
 		tableModel.refresh();
-		assertTrue(tableModel.items().visible().get().size() > 0);
+		assertTrue(tableModel.items().visible().size() > 0);
 		tableModel.clear();
-		assertEquals(0, tableModel.items().visible().get().size());
+		assertEquals(0, tableModel.items().visible().size());
 	}
 
 	@Test
@@ -419,15 +419,15 @@ public final class DefaultFilterTableModelTest {
 
 		selectionModel.selectedIndex().set(0);
 		selectionModel.selectedIndexes().moveUp();
-		assertEquals(tableModel.items().visible().get().size() - 1, selectionModel.selectedIndex().get());
+		assertEquals(tableModel.items().visible().size() - 1, selectionModel.selectedIndex().get());
 
-		selectionModel.selectedIndex().set(tableModel.items().visible().get().size() - 1);
+		selectionModel.selectedIndex().set(tableModel.items().visible().size() - 1);
 		selectionModel.selectedIndexes().moveDown();
 		assertEquals(0, selectionModel.selectedIndex().get());
 
 		selectionModel.clearSelection();
 		selectionModel.selectedIndexes().moveUp();
-		assertEquals(tableModel.items().visible().get().size() - 1, selectionModel.selectedIndex().get());
+		assertEquals(tableModel.items().visible().size() - 1, selectionModel.selectedIndex().get());
 
 		selectionModel.clearSelection();
 		selectionModel.selectedIndexes().moveDown();
@@ -541,7 +541,7 @@ public final class DefaultFilterTableModelTest {
 	void visiblePredicate() {
 		tableModel.refresh();
 		tableModel.items().visiblePredicate().set(item -> false);
-		assertEquals(0, tableModel.items().visible().get().size());
+		assertEquals(0, tableModel.items().visible().size());
 	}
 
 	@Test
@@ -583,7 +583,7 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().contains(B));
 		assertTrue(tableModel.filterModel().conditionModel(0).enabled().get());
-		assertEquals(4, tableModel.items().filtered().get().size());
+		assertEquals(4, tableModel.items().filtered().size());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 
@@ -598,7 +598,7 @@ public final class DefaultFilterTableModelTest {
 
 		tableModel.filterModel().conditionModel(0).operands().equal().set("t"); // ekki til
 		assertTrue(tableModel.filterModel().conditionModel(0).enabled().get());
-		assertEquals(5, tableModel.items().filtered().get().size());
+		assertEquals(5, tableModel.items().filtered().size());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 		tableModel.filterModel().conditionModel(0).enabled().set(false);
@@ -606,9 +606,9 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.filterModel().conditionModel(0).enabled().get());
 
 		tableModel.filterModel().conditionModel(0).operands().equal().set("b");
-		int rowCount = tableModel.items().visible().get().size();
+		int rowCount = tableModel.items().visible().size();
 		tableModel.addItemsAt(0, singletonList(new TestRow("x")));
-		assertEquals(rowCount, tableModel.items().visible().get().size());
+		assertEquals(rowCount, tableModel.items().visible().size());
 
 		assertThrows(IllegalArgumentException.class, () -> tableModel.filterModel().conditionModel(1));
 	}

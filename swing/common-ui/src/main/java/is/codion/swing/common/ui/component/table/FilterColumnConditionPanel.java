@@ -583,7 +583,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		ItemComboBoxModel<Operator> itemComboBoxModel = (ItemComboBoxModel<Operator>) operatorCombo.getModel();
 		List<Item<Operator>> visibleItems = itemComboBoxModel.items().visible().get();
 		int index = visibleItems.indexOf(itemComboBoxModel.getSelectedItem());
-		if (index < itemComboBoxModel.items().visible().get().size() - 1) {
+		if (index < itemComboBoxModel.items().visible().size() - 1) {
 			itemComboBoxModel.setSelectedItem(visibleItems.get(index + 1));
 		}
 		else {

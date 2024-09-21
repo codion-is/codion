@@ -467,6 +467,18 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return items.get(rowIndex);
 		}
 
+		@Override
+		public int size() {
+			if (items.isEmpty()) {
+				return 0;
+			}
+			if (!includeNull.get()) {
+				return items.size();
+			}
+
+			return items.size() - 1;
+		}
+
 		private void notifyChanges() {
 			event.accept(get());
 		}
@@ -490,6 +502,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean contains(T item) {
 			return items.contains(item);
+		}
+
+		@Override
+		public int size() {
+			return items.size();
 		}
 
 		private void notifyChanges() {

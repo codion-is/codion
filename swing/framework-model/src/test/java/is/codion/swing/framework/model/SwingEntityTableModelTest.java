@@ -94,7 +94,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 						testModel.filterModel().conditionModel(Detail.STRING);
 		filterModel.operands().equal().set("a");
 		testModel.items().filter();
-		assertEquals(4, testModel.items().filtered().get().size());
+		assertEquals(4, testModel.items().filtered().size());
 	}
 
 	@Test
