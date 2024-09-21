@@ -107,13 +107,6 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public boolean isSelected(R item) {
-		requireNonNull(item);
-
-		return isSelectedIndex(items.visible().indexOf(item));
-	}
-
-	@Override
 	public void addSelectionInterval(int fromIndex, int toIndex) {
 		selectionChanging.run();
 		selectionModel.addSelectionInterval(fromIndex, toIndex);
@@ -351,6 +344,11 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		}
 
 		@Override
+		public boolean contains(int index) {
+			return isSelectedIndex(index);
+		}
+
+		@Override
 		public void moveUp() {
 			int visibleSize = items.visible().size();
 			if (visibleSize > 0) {
@@ -485,6 +483,13 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		@Override
 		public void remove(Collection<R> items) {
 			requireNonNull(items).forEach(item -> selectedIndexes.remove(DefaultFilterTableSelectionModel.this.items.visible().indexOf(item)));
+		}
+
+		@Override
+		public boolean contains(R item) {
+			requireNonNull(item);
+
+			return isSelectedIndex(items.visible().indexOf(item));
 		}
 
 		@Override

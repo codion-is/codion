@@ -60,10 +60,10 @@ public class DefaultFilterTableSelectionModelTest {
 	@Test
 	void test() {
 		testModel.selectedIndex().set(0);
-		assertTrue(testModel.isSelected("A"));
+		assertTrue(testModel.selectedItems().contains("A"));
 		assertNotNull(testModel.selectedItem().get());
 		testModel.clearSelection();
-		assertFalse(testModel.isSelected("A"));
+		assertFalse(testModel.selectedItems().contains("A"));
 		assertNull(testModel.selectedItem().get());
 	}
 

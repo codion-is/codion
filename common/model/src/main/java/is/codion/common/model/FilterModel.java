@@ -519,12 +519,6 @@ public interface FilterModel<T> {
 		int selectionCount();
 
 		/**
-		 * @param item the item
-		 * @return true if the item is selected
-		 */
-		boolean isSelected(R item);
-
-		/**
 		 * Controls the selected indexes.
 		 */
 		interface SelectedIndexes extends Mutable<List<Integer>> {
@@ -559,14 +553,20 @@ public interface FilterModel<T> {
 			void remove(Collection<Integer> indexes);
 
 			/**
+			 * @param index the index
+			 * @return true if the given index is selected
+			 */
+			boolean contains(int index);
+
+			/**
 			 * Moves all selected indexes down one index, wraps around.
-			 * If the selection is empty the first item is selected.
+			 * If the selection is empty the first index is selected.
 			 */
 			void moveDown();
 
 			/**
 			 * Moves all selected indexes up one index, wraps around.
-			 * If the selection is empty the last item is selected.
+			 * If the selection is empty the last index is selected.
 			 */
 			void moveUp();
 		}
@@ -617,6 +617,12 @@ public interface FilterModel<T> {
 			 * @param items the items to remove from the selection
 			 */
 			void remove(Collection<R> items);
+
+			/**
+			 * @param item the item
+			 * @return true if the given item is selected
+			 */
+			boolean contains(R item);
 		}
 	}
 }
