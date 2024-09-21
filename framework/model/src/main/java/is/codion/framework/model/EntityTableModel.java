@@ -21,6 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.FilterModel;
+import is.codion.common.model.selection.SelectionModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;

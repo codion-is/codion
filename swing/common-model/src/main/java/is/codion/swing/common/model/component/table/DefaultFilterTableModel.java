@@ -566,8 +566,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public R itemAt(int rowIndex) {
-			return items.get(rowIndex);
+		public R itemAt(int index) {
+			return items.get(index);
 		}
 
 		@Override

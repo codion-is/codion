@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.model.FilterModel;
+import is.codion.common.model.selection.SelectionModel;
 
 import javax.swing.ListSelectionModel;
 
@@ -26,4 +26,4 @@ import javax.swing.ListSelectionModel;
  * A selection model for a {@link FilterTableModel}.
  * @param <R> the type of rows
  */
-public interface FilterTableSelectionModel<R> extends ListSelectionModel, FilterModel.SelectionModel<R> {}
+public interface FilterTableSelectionModel<R> extends ListSelectionModel, SelectionModel<R> {}

@@ -463,8 +463,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public T itemAt(int rowIndex) {
-			return items.get(rowIndex);
+		public T itemAt(int index) {
+			return items.get(index);
 		}
 
 		@Override

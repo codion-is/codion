@@ -26,6 +26,7 @@ Codion Change Log
 - FilterModel.visiblePredicate() moved to Items.
 - FilterModel.VisibleItems and FilteredItems.size() added.
 - FilterModel.SelectionModel.isSelected() removed, SelectedItems and SelectedIndexes.contains() added.
+- FilterModel.SingleSelectionModel and SelectionModel moved to common.model.selection package.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.

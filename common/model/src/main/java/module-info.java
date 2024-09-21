@@ -21,8 +21,8 @@
  * <li>{@link is.codion.common.model.UserPreferences}
  * <li>{@link is.codion.common.model.CancelException}
  * <li>{@link is.codion.common.model.FilterModel}
- * <li>{@link is.codion.common.model.FilterModel.SingleSelectionModel}
- * <li>{@link is.codion.common.model.FilterModel.SelectionModel}
+ * <li>{@link is.codion.common.model.selection.SingleSelectionModel}
+ * <li>{@link is.codion.common.model.selection.SelectionModel}
  * <li>{@link is.codion.common.model.loadtest.LoadTest}
  * <li>{@link is.codion.common.model.table.ColumnConditionModel}
  * <li>{@link is.codion.common.model.table.ColumnSummaryModel}
@@ -37,5 +37,6 @@ module is.codion.common.model {
 	exports is.codion.common.model;
 	exports is.codion.common.model.loadtest;
 	exports is.codion.common.model.randomizer;
+	exports is.codion.common.model.selection;
 	exports is.codion.common.model.table;
 }
