@@ -67,7 +67,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 	}
 
 	@Override
-	public State singleSelection() {
+	public State singleSelectionMode() {
 		return singleSelectionMode;
 	}
 

@@ -51,6 +51,7 @@ Codion Change Log
 - EntityTableConditionModel renamed EntityConditionModel.
 - EntityConditionModelFactory renamed EntityColumnConditionModelFactory.
 - EntityQueryModel.query() added for overriding the default query mechanism.
+- EntityTableModel.selectionChanged() removed.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.

@@ -45,7 +45,7 @@ public interface SelectionModel<R> extends SingleSelectionModel<R> {
 	/**
 	 * @return a State controlling the single selection mode of this selection model
 	 */
-	State singleSelection();
+	State singleSelectionMode();
 
 	/**
 	 * @return a {@link Mutable} for the index of the selected item, -1 if none is selected and

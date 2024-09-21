@@ -20,7 +20,6 @@ package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.FilterModel;
-import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
@@ -207,11 +206,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	@Override
 	public final Collection<Entity> deleteSelected() throws DatabaseException {
 		return editModel.delete(selection().items().get());
-	}
-
-	@Override
-	public final Observer<?> selectionChanged() {
-		return selection().indexes().observer();
 	}
 
 	@Override

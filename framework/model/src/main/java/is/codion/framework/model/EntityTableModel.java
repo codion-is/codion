@@ -22,7 +22,6 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.selection.SelectionModel;
-import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -227,11 +226,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * @return the {@link SelectionModel}
 	 */
 	SelectionModel<Entity> selection();
-
-	/**
-	 * @return an observer notified when the selection changes in the underlying selection model
-	 */
-	Observer<?> selectionChanged();
 
 	/**
 	 * @return the underlying query model

@@ -254,7 +254,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 		editModel.afterUpdate().addConsumer(this::onUpdate);
 		editModel.afterDelete().addConsumer(this::onDelete);
 		if (containsTableModel()) {
-			tableModel.selectionChanged().addListener(this::onMasterSelectionChanged);
+			tableModel.selection().indexes().addListener(this::onMasterSelectionChanged);
 		}
 		else {
 			editModel.entity().addListener(this::onMasterSelectionChanged);

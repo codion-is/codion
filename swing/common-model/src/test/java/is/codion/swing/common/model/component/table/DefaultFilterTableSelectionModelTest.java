@@ -69,19 +69,19 @@ public class DefaultFilterTableSelectionModelTest {
 
 	@Test
 	void selectionMode() {
-		assertFalse(testModel.singleSelection().get());
+		assertFalse(testModel.singleSelectionMode().get());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelection().get());
+		assertTrue(testModel.singleSelectionMode().get());
 		testModel.setSelectionMode(SINGLE_INTERVAL_SELECTION);
-		assertFalse(testModel.singleSelection().get());
+		assertFalse(testModel.singleSelectionMode().get());
 		testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
-		assertFalse(testModel.singleSelection().get());
+		assertFalse(testModel.singleSelectionMode().get());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelection().get());
-		testModel.singleSelection().set(false);
+		assertTrue(testModel.singleSelectionMode().get());
+		testModel.singleSelectionMode().set(false);
 		assertEquals(MULTIPLE_INTERVAL_SELECTION, testModel.getSelectionMode());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelection().get());
+		assertTrue(testModel.singleSelectionMode().get());
 		assertEquals(SINGLE_SELECTION, testModel.getSelectionMode());
 	}
 

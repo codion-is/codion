@@ -597,7 +597,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public ToggleControl createSingleSelectionModeControl() {
 		return Control.builder()
-						.toggle(tableModel.selection().singleSelection())
+						.toggle(tableModel.selection().singleSelectionMode())
 						.name(MESSAGES.getString(SINGLE_SELECTION_MODE))
 						.build();
 	}
