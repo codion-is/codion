@@ -219,11 +219,9 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 			List<Action> actions = trimSeparators(new ArrayList<>(controls.actions()));
 			for (int i = 0; i < actions.size(); i++) {
 				Action action = actions.get(i);
-				if (action == Controls.SEPARATOR) {
-					// Prevent multiple separators
-					if (i > 0 && actions.get(i - 1) == Controls.SEPARATOR) {
-						continue;
-					}
+				// Prevent multiple separators
+				if (action == Controls.SEPARATOR && i > 0 && actions.get(i - 1) == Controls.SEPARATOR) {
+					continue;
 				}
 				accept(action);
 			}
