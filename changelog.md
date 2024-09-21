@@ -36,6 +36,7 @@ Codion Change Log
 - MenuBuilder no longer extends MenuItemBuilder.
 - ComponentDialogBuilder.closeEvent() renamed closeObserver().
 - ColumnConditionPanel.focusGainedEvent() renamed focusGainedObserver().
+- DefaultMenuBuilder bug fixed, now trims and prevents multiple separators.
 ### is.codion.framework.model
 - EntityEditModel.valueEdited() renamed edited().
 - EntityEditModel.entity() now Mutable based.
