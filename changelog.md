@@ -45,6 +45,7 @@ Codion Change Log
 - AbstractEntityEditModel.DefaultUpdate.UpdateResult.handle() bug fixed, no longer triggers EntityEditPanel.beforeEntity().
 - EntityTableConditionModel renamed EntityConditionModel.
 - EntityConditionModelFactory renamed EntityColumnConditionModelFactory.
+- EntityQueryModel.query() added for overriding the default query mechanism.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.

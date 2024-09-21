@@ -23,6 +23,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -30,10 +31,27 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * Provides entities fetched from a database.
+ * The default query mechanism can be overridden by using {@link #query()}.
+ * <pre>
+ * {@code
+ * Function<EntityQueryModel, List<Entity>> query = queryModel -> {
+ *     EntityConnection connection = queryModel.connectionProvider().connection();
+ *     try {
+ *         return connection.select(Employee.NAME.equalTo("John"));
+ *     }
+ *     catch (DatabaseException e) {
+ *         throw new RuntimeException(e);
+ *     }
+ * };
+ *
+ * tableModel.queryModel().query().set(query);
+ * }
+ * </pre>
  * @see #entityQueryModel(EntityConditionModel)
  */
 public interface EntityQueryModel extends Supplier<List<Entity>> {
@@ -42,6 +60,11 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	 * @return the type of the entity this query model is based on
 	 */
 	EntityType entityType();
+
+	/**
+	 * @return the connection provider
+	 */
+	EntityConnectionProvider connectionProvider();
 
 	/**
 	 * Performs a query and returns the result.
@@ -69,9 +92,16 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	State conditionRequired();
 
 	/**
-	 * @return a {@link StateObserver} indicating if the search condition has changed since last query
+	 * When using the default query mechanism, the {@link #conditionChanged()} state is reset after each successful query.
+	 * @return a {@link StateObserver} indicating if the search condition has changed since last reset
+	 * @see #resetConditionChanged()
 	 */
 	StateObserver conditionChanged();
+
+	/**
+	 * Resets the {@link #conditionChanged()} state, using the current condition.
+	 */
+	void resetConditionChanged();
 
 	/**
 	 * Returns the {@link ValueSet} controlling which attributes are included when querying entities.
@@ -104,6 +134,12 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	 * @see #conditionRequired()
 	 */
 	Value<StateObserver> conditionEnabled();
+
+	/**
+	 * A {@link Value} controlling the override query. Use this to replace the default query.
+	 * @return the {@link Value} controlling the query override
+	 */
+	Value<Function<EntityQueryModel, List<Entity>>> query();
 
 	/**
 	 * @param conditionModel the condition model

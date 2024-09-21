@@ -24,7 +24,8 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
-import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Select;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -34,6 +35,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -49,8 +51,11 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 					.build();
 	private final Value<OrderBy> orderBy;
 	private final Value<Integer> limit = Value.value();
+	private final Value<Function<EntityQueryModel, List<Entity>>> query = Value.builder()
+					.<Function<EntityQueryModel, List<Entity>>>nonNull(new DefaultQuery())
+					.build();
 
-	private EntityConnection.Select refreshCondition;
+	private Select refreshCondition;
 
 	DefaultEntityQueryModel(EntityConditionModel conditionModel) {
 		this.conditionModel = requireNonNull(conditionModel);
@@ -58,7 +63,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 						.nonNull(conditionModel.enabled())
 						.build();
 		this.orderBy = createOrderBy();
-		this.refreshCondition = createSelect(conditionModel);
+		this.refreshCondition = createSelect();
 		conditionModel.conditionChanged().addListener(this::onConditionChanged);
 	}
 
@@ -68,13 +73,13 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
+	public EntityConnectionProvider connectionProvider() {
+		return conditionModel.connectionProvider();
+	}
+
+	@Override
 	public List<Entity> get() {
-		try {
-			return select();
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		return query.get().apply(this);
 	}
 
 	@Override
@@ -108,30 +113,27 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
+	public void resetConditionChanged() {
+		resetConditionChanged(createSelect());
+	}
+
+	@Override
 	public Value<StateObserver> conditionEnabled() {
 		return conditionEnabled;
 	}
 
-	private List<Entity> select() throws DatabaseException {
-		EntityConnection.Select select = createSelect(conditionModel);
-		if (conditionRequired.get() && !conditionEnabled.get().get()) {
-			updateRefreshSelect(select);
-
-			return emptyList();
-		}
-		List<Entity> items = conditionModel.connectionProvider().connection().select(select);
-		updateRefreshSelect(select);
-
-		return items;
+	@Override
+	public Value<Function<EntityQueryModel, List<Entity>>> query() {
+		return query;
 	}
 
-	private void updateRefreshSelect(EntityConnection.Select select) {
+	private void resetConditionChanged(Select select) {
 		refreshCondition = select;
 		conditionChanged.set(false);
 	}
 
-	private EntityConnection.Select createSelect(EntityConditionModel conditionModel) {
-		return EntityConnection.Select.where(conditionModel.where(Conjunction.AND))
+	private Select createSelect() {
+		return Select.where(conditionModel.where(Conjunction.AND))
 						.having(conditionModel.having(Conjunction.AND))
 						.attributes(attributes.get())
 						.limit(limit.get())
@@ -149,7 +151,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	private void onConditionChanged() {
-		conditionChanged.set(!Objects.equals(refreshCondition, createSelect(conditionModel)));
+		conditionChanged.set(!Objects.equals(refreshCondition, createSelect()));
 	}
 
 	private class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {
@@ -161,6 +163,32 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 					throw new IllegalArgumentException(attribute + " is not part of entity:  " + conditionModel.entityType());
 				}
 			}
+		}
+	}
+
+	private final class DefaultQuery implements Function<EntityQueryModel, List<Entity>> {
+
+		@Override
+		public List<Entity> apply(EntityQueryModel queryModel) {
+			try {
+				return select();
+			}
+			catch (DatabaseException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		private List<Entity> select() throws DatabaseException {
+			Select select = createSelect();
+			if (conditionRequired.get() && !conditionEnabled.get().get()) {
+				resetConditionChanged(select);
+
+				return emptyList();
+			}
+			List<Entity> items = conditionModel.connectionProvider().connection().select(select);
+			resetConditionChanged(select);
+
+			return items;
 		}
 	}
 }
