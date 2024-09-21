@@ -156,7 +156,7 @@ public interface FilterModel<T> {
 	 * Calling this method when no comparator is specified has no effect.
 	 * @see #comparator()
 	 */
-	void sortItems();
+ 	void sort();
 
 	/**
 	 * @return the {@link Value} controlling the comparator to use when sorting

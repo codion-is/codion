@@ -30,6 +30,7 @@ Codion Change Log
 - FilterModel.selectionModel() renamed selection().
 - SelectionModel, most methods renamed.
 - SelectionModel.clear() moved to SingleSelectionModel.
+- FilterModel.sortItems() renamed sort().
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.

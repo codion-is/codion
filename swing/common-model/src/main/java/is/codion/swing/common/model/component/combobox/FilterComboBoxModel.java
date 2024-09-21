@@ -83,7 +83,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * This {@link Comparator} must take into account the null value if a null item has been set via {@link #nullItem()}.
 	 * If a null {@code comparator} is provided no sorting will be performed.
 	 * @return the {@link Value} controlling the {@link Comparator} used when sorting, value may be null if the items of this model should not be sorted
-	 * @see #sortItems()
+	 * @see #sort()
 	 */
 	Value<Comparator<T>> comparator();
 

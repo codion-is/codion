@@ -405,8 +405,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public void sortItems() {
-		comboBoxModel.sortItems();
+	public void sort() {
+		comboBoxModel.sort();
 	}
 
 	@Override

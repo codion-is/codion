@@ -35,7 +35,7 @@ public class DomainGeneratorPanelTest {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		new DomainGeneratorPanel(model);
 		model.schemaModel().refresh();
-		model.schemaModel().sortItems();
+		model.schemaModel().sort();
 		model.schemaModel().selection().index().set(1);
 		model.populateSelected(schema -> {});
 		model.entityModel().selection().index().set(0);

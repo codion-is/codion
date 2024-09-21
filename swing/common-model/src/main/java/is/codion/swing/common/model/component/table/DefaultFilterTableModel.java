@@ -172,7 +172,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public void sortItems() {
+	public void sort() {
 		if (comparator.isNotNull()) {
 			List<R> selectedItems = selectionModel.items().get();
 			modelItems.visible.items.sort(comparator.get());
@@ -322,7 +322,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		});
 		addTableModelListener(removeSelectionListener);
 		filterModel.conditionChanged().addListener(modelItems::filter);
-		comparator.addListener(this::sortItems);
+		comparator.addListener(this::sort);
 	}
 
 	private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {

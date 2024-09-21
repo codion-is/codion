@@ -303,8 +303,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final void sortItems() {
-		tableModel().sortItems();
+	public final void sort() {
+		tableModel().sort();
 	}
 
 	@Override
