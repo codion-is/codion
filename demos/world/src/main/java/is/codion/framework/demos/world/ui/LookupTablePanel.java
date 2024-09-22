@@ -59,7 +59,6 @@ import static is.codion.framework.demos.world.ui.LookupTablePanel.ExportFormat.J
 import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
@@ -257,7 +256,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		Collection<Entity> entities = tableModel().selection().empty().get() ?
 						tableModel().items().get() :
 						tableModel().selection().items().get();
-		Files.write(file.toPath(), objectMapper.writeValueAsString(entities).getBytes(UTF_8));
+		Files.writeString(file.toPath(), objectMapper.writeValueAsString(entities));
 	}
 
 	private void importJSON() throws IOException {

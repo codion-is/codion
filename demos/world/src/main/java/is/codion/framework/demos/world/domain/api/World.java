@@ -143,49 +143,11 @@ public interface World {
 	}
 
 	// tag::customTypeClass[]
-	final class Location implements Serializable {
-
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		private final double latitude;
-		private final double longitude;
-
-		public Location(double latitude, double longitude) {
-			this.latitude = latitude;
-			this.longitude = longitude;
-		}
-
-		public double latitude() {
-			return latitude;
-		}
-
-		public double longitude() {
-			return longitude;
-		}
+	record Location(double latitude, double longitude) implements Serializable {
 
 		@Override
 		public String toString() {
-			return "[" + latitude + ", " + longitude + "]";
-		}
-
-		@Override
-		public boolean equals(Object other) {
-			if (this == other) {
-				return true;
-			}
-			if (other == null || getClass() != other.getClass()) {
-				return false;
-			}
-			Location location = (Location) other;
-
-			return Double.compare(location.latitude, latitude) == 0
-							&& Double.compare(location.longitude, longitude) == 0;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(latitude, longitude);
+			return "[" + latitude + "," + longitude + "]";
 		}
 	}
 	// end::customTypeClass[]

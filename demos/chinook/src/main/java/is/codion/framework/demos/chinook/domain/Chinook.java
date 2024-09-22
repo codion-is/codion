@@ -165,25 +165,11 @@ public interface Chinook {
 
 		ConditionType NOT_IN_PLAYLIST = TYPE.conditionType("not_in_playlist");
 
-		final class RaisePriceParameters implements Serializable {
+		record RaisePriceParameters(Collection<Long> trackIds, BigDecimal priceIncrease) implements Serializable {
 
-			@Serial
-			private static final long serialVersionUID = 1;
-
-			private final Collection<Long> trackIds;
-			private final BigDecimal priceIncrease;
-
-			public RaisePriceParameters(Collection<Long> trackIds, BigDecimal priceIncrease) {
-				this.trackIds = requireNonNull(trackIds);
-				this.priceIncrease = requireNonNull(priceIncrease);
-			}
-
-			public Collection<Long> trackIds() {
-				return trackIds;
-			}
-
-			public BigDecimal priceIncrease() {
-				return priceIncrease;
+			public RaisePriceParameters {
+				requireNonNull(trackIds);
+				requireNonNull(priceIncrease);
 			}
 		}
 	}
@@ -231,33 +217,7 @@ public interface Chinook {
 
 		FunctionType<EntityConnection, RandomPlaylistParameters, Entity> RANDOM_PLAYLIST = functionType("chinook.random_playlist");
 
-		final class RandomPlaylistParameters implements Serializable {
-
-			@Serial
-			private static final long serialVersionUID = 1;
-
-			private final String playlistName;
-			private final Integer noOfTracks;
-			private final Collection<Entity> genres;
-
-			public RandomPlaylistParameters(String playlistName, Integer noOfTracks, Collection<Entity> genres) {
-				this.playlistName = playlistName;
-				this.noOfTracks = noOfTracks;
-				this.genres = requireNonNull(genres);
-			}
-
-			public String playlistName() {
-				return playlistName;
-			}
-
-			public Integer noOfTracks() {
-				return noOfTracks;
-			}
-
-			public Collection<Entity> genres() {
-				return genres;
-			}
-		}
+		record RandomPlaylistParameters(String playlistName, Integer noOfTracks, Collection<Entity> genres) implements Serializable {}
 	}
 
 	interface PlaylistTrack {

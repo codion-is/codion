@@ -37,14 +37,11 @@ public final class ChinookResources implements Resources {
 	@Override
 	public String getString(String baseBundleName, String key, String defaultString) {
 		if (english && baseBundleName.equals(FRAMEWORK_MESSAGES)) {
-			switch (key) {
-				case "insert":
-					return "Insert";
-				case "insert_mnemonic":
-					return "I";
-				default:
-					return defaultString;
-			}
+			return switch (key) {
+				case "insert" -> "Insert";
+				case "insert_mnemonic" -> "I";
+				default -> defaultString;
+			};
 		}
 
 		return defaultString;
