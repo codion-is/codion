@@ -34,6 +34,7 @@ Codion Change Log
 - FilterModel.Items.count() added, Items.Visible and Filtered.size() renamed count().
 - TableConditionModel and ColumnConditionModel moved to condition package.
 - TableSummaryModel and ColumnSummaryModel moved to package summary.
+- TableConditionModel.conditionModel() renamed condition().
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.
@@ -51,6 +52,7 @@ Codion Change Log
 - DefaultMenuBuilder bug fixed, now trims and prevents multiple separators.
 - Control.commandControl(), actionControl() and toggleControl() renamed command(), action() and toggle() respectively.
 - FilterTable.filterPanel() renamed conditionPanel().
+- ColumnConditionPanel.conditionModel() renamed condition().
 ### is.codion.framework.model
 - EntityEditModel.valueEdited() renamed edited().
 - EntityEditModel.entity() now Mutable based.

@@ -31,7 +31,7 @@ public class FilterColumnConditionPanelTest {
 		final String key = "key";
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder(key, String.class).build();
 		FilterColumnConditionPanel<?, String> panel = FilterColumnConditionPanel.builder(model).build();
-		assertEquals(model, panel.conditionModel());
+		assertEquals(model, panel.condition());
 		assertNotNull(panel.equalField());
 		assertNotNull(panel.upperBoundField());
 		assertNotNull(panel.lowerBoundField());

@@ -162,7 +162,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	@Override
 	public void requestInputFocus() {
-		switch (conditionModel().operator().get()) {
+		switch (condition().operator().get()) {
 			case EQUAL:
 			case NOT_EQUAL:
 				equalField().ifPresent(JComponent::requestFocusInWindow);
@@ -184,7 +184,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 				inField().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			default:
-				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel().operator().get());
+				throw new IllegalArgumentException(UNKNOWN_OPERATOR + condition().operator().get());
 		}
 	}
 
@@ -362,39 +362,39 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private JComponent createEqualField(FieldFactory<C> fieldFactory) {
-		return equalFieldRequired() ? fieldFactory.createEqualField(conditionModel()) : null;
+		return equalFieldRequired() ? fieldFactory.createEqualField(condition()) : null;
 	}
 
 	private JComponent createUpperBoundField(FieldFactory<C> fieldFactory) {
-		return upperBoundFieldRequired() ? fieldFactory.createUpperBoundField(conditionModel()).orElse(null) : null;
+		return upperBoundFieldRequired() ? fieldFactory.createUpperBoundField(condition()).orElse(null) : null;
 	}
 
 	private JComponent createLowerBoundField(FieldFactory<C> fieldFactory) {
-		return lowerBoundFieldRequired() ? fieldFactory.createLowerBoundField(conditionModel()).orElse(null) : null;
+		return lowerBoundFieldRequired() ? fieldFactory.createLowerBoundField(condition()).orElse(null) : null;
 	}
 
 	private JComponent createInField(FieldFactory<C> fieldFactory) {
-		return inFieldRequired() ? fieldFactory.createInField(conditionModel()) : null;
+		return inFieldRequired() ? fieldFactory.createInField(condition()) : null;
 	}
 
 	private boolean equalFieldRequired() {
-		return conditionModel().operators().contains(EQUAL) ||
-						conditionModel().operators().contains(NOT_EQUAL);
+		return condition().operators().contains(EQUAL) ||
+						condition().operators().contains(NOT_EQUAL);
 	}
 
 	private boolean upperBoundFieldRequired() {
-		return conditionModel().operators().stream()
+		return condition().operators().stream()
 						.anyMatch(UPPER_BOUND_OPERATORS::contains);
 	}
 
 	private boolean lowerBoundFieldRequired() {
-		return conditionModel().operators().stream()
+		return condition().operators().stream()
 						.anyMatch(LOWER_BOUND_OPERATORS::contains);
 	}
 
 	private boolean inFieldRequired() {
-		return conditionModel().operators().contains(IN) ||
-						conditionModel().operators().contains(NOT_IN);
+		return condition().operators().contains(IN) ||
+						condition().operators().contains(NOT_IN);
 	}
 
 	private void initialize() {
@@ -404,7 +404,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 			bindEvents();
 			controlPanel.add(operatorCombo, BorderLayout.CENTER);
 			addStringConfigurationPopupMenu();
-			onOperatorChanged(conditionModel().operator().get());
+			onOperatorChanged(condition().operator().get());
 			initialized = true;
 		}
 	}
@@ -413,22 +413,22 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		controlPanel = new JPanel(new BorderLayout());
 		inputPanel = new JPanel(new BorderLayout());
 		rangePanel = new JPanel(new GridLayout(1, 2));
-		toggleEnabledButton = radioButton(conditionModel().enabled())
+		toggleEnabledButton = radioButton(condition().enabled())
 						.horizontalAlignment(CENTER)
 						.popupMenu(radioButton -> menu(Controls.builder()
 										.control(Control.builder()
-														.toggle(conditionModel().autoEnable())
+														.toggle(condition().autoEnable())
 														.name(MESSAGES.getString("auto_enable"))).build())
 										.buildPopupMenu())
 						.build();
-		boolean modelLocked = conditionModel().locked().get();
-		conditionModel().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
+		boolean modelLocked = condition().locked().get();
+		condition().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
 		equalField = createEqualField(fieldFactory);
 		upperBoundField = createUpperBoundField(fieldFactory);
 		lowerBoundField = createLowerBoundField(fieldFactory);
 		inField = createInField(fieldFactory);
-		operatorCombo = createOperatorComboBox(conditionModel().operators());
-		conditionModel().locked().set(modelLocked);
+		operatorCombo = createOperatorComboBox(condition().operators());
+		condition().locked().set(modelLocked);
 		components().forEach(this::configureHorizontalAlignment);
 	}
 
@@ -454,11 +454,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private void bindEvents() {
-		conditionModel().operator().addConsumer(this::onOperatorChanged);
-		linkToEnabledState(conditionModel().locked().not(),
+		condition().operator().addConsumer(this::onOperatorChanged);
+		linkToEnabledState(condition().locked().not(),
 						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
 		components().forEach(component ->
-						component.addFocusListener(new FocusGained(conditionModel().identifier())));
+						component.addFocusListener(new FocusGained(condition().identifier())));
 
 		Collection<JComponent> fields = Stream.of(operatorCombo, toggleEnabledButton, equalField, upperBoundField, lowerBoundField, inField)
 						.filter(Objects::nonNull)
@@ -502,7 +502,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 				singleValuePanel(inField);
 				break;
 			default:
-				throw new IllegalArgumentException(UNKNOWN_OPERATOR + conditionModel().operator().get());
+				throw new IllegalArgumentException(UNKNOWN_OPERATOR + condition().operator().get());
 		}
 		revalidate();
 		repaint();
@@ -568,12 +568,12 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 						.map(operator -> Item.item(operator, caption(operator)))
 						.collect(toList()));
 
-		return itemComboBox(operatorComboBoxModel, conditionModel().operator())
+		return itemComboBox(operatorComboBoxModel, condition().operator())
 						.completionMode(Completion.Mode.NONE)
 						.renderer(new OperatorComboBoxRenderer())
 						.maximumRowCount(operators.size())
 						.mouseWheelScrollingWithWrapAround(true)
-						.toolTipText(conditionModel().operator().get().description())
+						.toolTipText(condition().operator().get().description())
 						.onBuild(comboBox -> operatorComboBoxModel.selection().item().addConsumer(selectedOperator ->
 										comboBox.setToolTipText(selectedOperator.value().description())))
 						.build();
@@ -592,7 +592,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private void toggleEnabled() {
-		conditionModel().enabled().set(!conditionModel().enabled().get());
+		condition().enabled().set(!condition().enabled().get());
 	}
 
 	private void selectPreviousOperator() {
@@ -657,9 +657,9 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		if (isStringOrCharacter()) {
 			ControlsBuilder controlsBuilder = Controls.builder();
 			controlsBuilder.control(Control.builder()
-							.toggle(conditionModel().caseSensitive())
+							.toggle(condition().caseSensitive())
 							.name(MESSAGES.getString("case_sensitive")));
-			if (conditionModel().columnClass().equals(String.class)) {
+			if (condition().columnClass().equals(String.class)) {
 				controlsBuilder.control(createAutomaticWildcardControls());
 			}
 			JPopupMenu popupMenu = menu(controlsBuilder).buildPopupMenu();
@@ -670,11 +670,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private boolean isStringOrCharacter() {
-		return conditionModel().columnClass().equals(String.class) || conditionModel().columnClass().equals(Character.class);
+		return condition().columnClass().equals(String.class) || condition().columnClass().equals(Character.class);
 	}
 
 	private Controls createAutomaticWildcardControls() {
-		Value<AutomaticWildcard> automaticWildcardValue = conditionModel().automaticWildcard();
+		Value<AutomaticWildcard> automaticWildcardValue = condition().automaticWildcard();
 		AutomaticWildcard automaticWildcard = automaticWildcardValue.get();
 
 		State automaticWildcardNoneState = State.state(automaticWildcard.equals(AutomaticWildcard.NONE));

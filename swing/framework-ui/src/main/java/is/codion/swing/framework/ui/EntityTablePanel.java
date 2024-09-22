@@ -1471,18 +1471,18 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createColumnConditionPanels() {
-		return tableModel.queryModel().conditionModel().conditionModels().values().stream()
-						.filter(conditionModel -> table.columnModel().containsColumn(conditionModel.identifier()))
-						.filter(conditionModel -> configuration.conditionFieldFactory.supportsType(conditionModel.columnClass()))
+		return tableModel.queryModel().conditionModel().conditions().values().stream()
+						.filter(condition -> table.columnModel().containsColumn(condition.identifier()))
+						.filter(condition -> configuration.conditionFieldFactory.supportsType(condition.columnClass()))
 						.map(this::createColumnConditionPanel)
 						.collect(toList());
 	}
 
-	private FilterColumnConditionPanel<Attribute<?>, ?> createColumnConditionPanel(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
-		return FilterColumnConditionPanel.builder(conditionModel)
+	private FilterColumnConditionPanel<Attribute<?>, ?> createColumnConditionPanel(ColumnConditionModel<Attribute<?>, ?> condition) {
+		return FilterColumnConditionPanel.builder(condition)
 						.fieldFactory(configuration.conditionFieldFactory)
-						.tableColumn(table.columnModel().column(conditionModel.identifier()))
-						.caption(Objects.toString(table.columnModel().column(conditionModel.identifier()).getHeaderValue()))
+						.tableColumn(table.columnModel().column(condition.identifier()))
+						.caption(Objects.toString(table.columnModel().column(condition.identifier()).getHeaderValue()))
 						.build();
 	}
 
@@ -1702,7 +1702,7 @@ public class EntityTablePanel extends JPanel {
 	private Map<Attribute<?>, ConditionPreferences> createConditionPreferences() {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			ColumnConditionModel<?, ?> columnConditionModel = tableModel.queryModel().conditionModel().conditionModels().get(attribute);
+			ColumnConditionModel<?, ?> columnConditionModel = tableModel.queryModel().conditionModel().conditions().get(attribute);
 			if (columnConditionModel != null) {
 				conditionPreferencesMap.put(attribute, ConditionPreferences.conditionPreferences(attribute,
 								columnConditionModel.autoEnable().get(),
@@ -1766,7 +1766,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void onColumnHidden(Attribute<?> attribute) {
 		//disable the condition model for the column to be hidden, to prevent confusion
-		ColumnConditionModel<?, ?> columnConditionModel = tableModel.queryModel().conditionModel().conditionModels().get(attribute);
+		ColumnConditionModel<?, ?> columnConditionModel = tableModel.queryModel().conditionModel().conditions().get(attribute);
 		if (columnConditionModel != null && !columnConditionModel.locked().get()) {
 			columnConditionModel.enabled().set(false);
 		}

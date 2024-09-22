@@ -27,24 +27,24 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 /**
- * @param <C> the column identifier type
+ * @param <C> the condition identifier type
  * @see #tableConditionModel(Collection)
  */
 public interface TableConditionModel<C> {
 
 	/**
-	 * @return an unmodifiable map containing the condition models available in this table condition model, mapped to their respective column identifiers
+	 * @return an unmodifiable map containing the condition models available in this table condition model, mapped to their respective identifiers
 	 */
-	Map<C, ColumnConditionModel<C, ?>> conditionModels();
+	Map<C, ColumnConditionModel<C, ?>> conditions();
 
 	/**
-	 * The condition model associated with the column identified by {@code identifier}
-	 * @param <T> the column value type
-	 * @param identifier the column identifier for which to retrieve the {@link ColumnConditionModel}
+	 * The condition model associated with {@code identifier}
+	 * @param <T> the condition value type
+	 * @param identifier the identifier for which to retrieve the {@link ColumnConditionModel}
 	 * @return the {@link ColumnConditionModel} for the {@code identifier}
-	 * @throws IllegalArgumentException in case no condition model exists for the given column identifier
+	 * @throws IllegalArgumentException in case no condition model exists for the given identifier
 	 */
-	<T> ColumnConditionModel<C, T> conditionModel(C identifier);
+	<T> ColumnConditionModel<C, T> condition(C identifier);
 
 	/**
 	 * Clears the search state of all the condition models, disables them and
@@ -58,9 +58,9 @@ public interface TableConditionModel<C> {
 	StateObserver enabled();
 
 	/**
-	 * Note that this method returns a disabled {@link StateObserver} in case no condition model is available for the given column
-	 * @param identifier the column identifier
-	 * @return a {@link StateObserver} enabled if the condition model behind column identified by {@code identifier} is enabled
+	 * Note that this method returns a disabled {@link StateObserver} in case no condition model is available for the given identifier
+	 * @param identifier the condition identifier
+	 * @return a {@link StateObserver} enabled when the condition model identified by {@code identifier} is enabled
 	 */
 	StateObserver enabled(C identifier);
 
@@ -71,8 +71,8 @@ public interface TableConditionModel<C> {
 
 	/**
 	 * Instantiates a new {@link TableConditionModel}
-	 * @param conditionModels the column condition models
-	 * @param <C> the column identifier type
+	 * @param conditionModels the condition models
+	 * @param <C> the condition identifier type
 	 * @return a new {@link TableConditionModel}
 	 */
 	static <C> TableConditionModel<C> tableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {

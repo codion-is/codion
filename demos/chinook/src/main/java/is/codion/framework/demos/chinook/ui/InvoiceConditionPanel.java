@@ -119,13 +119,13 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 	public <T extends ColumnConditionPanel<Attribute<?>, ?>> T conditionPanel(Attribute<?> attribute) {
 		if (state().isNotEqualTo(ADVANCED)) {
 			return (T) simpleConditionPanel.conditionPanels().stream()
-							.filter(panel -> panel.conditionModel().identifier().equals(attribute))
+							.filter(panel -> panel.condition().identifier().equals(attribute))
 							.findFirst()
 							.orElseThrow(IllegalArgumentException::new);
 		}
 
 		return (T) advancedConditionPanel.conditionPanels().stream()
-						.filter(panel -> panel.conditionModel().identifier().equals(attribute))
+						.filter(panel -> panel.condition().identifier().equals(attribute))
 						.findFirst()
 						.orElseThrow(IllegalArgumentException::new);
 	}
@@ -159,13 +159,13 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 	}
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(FieldFactory<Attribute<?>> fieldFactory) {
-		return conditionModel().conditionModels().values().stream()
-						.filter(conditionModel -> columnModel.containsColumn(conditionModel.identifier()))
-						.filter(conditionModel -> fieldFactory.supportsType(conditionModel.columnClass()))
-						.map(conditionModel -> FilterColumnConditionPanel.builder(conditionModel)
+		return conditionModel().conditions().values().stream()
+						.filter(condition -> columnModel.containsColumn(condition.identifier()))
+						.filter(condition -> fieldFactory.supportsType(condition.columnClass()))
+						.map(condition -> FilterColumnConditionPanel.builder(condition)
 										.fieldFactory(fieldFactory)
-										.tableColumn(columnModel.column(conditionModel.identifier()))
-										.caption(columnModel.column(conditionModel.identifier()).getHeaderValue().toString())
+										.tableColumn(columnModel.column(condition.identifier()))
+										.caption(columnModel.column(condition.identifier()).getHeaderValue().toString())
 										.build())
 						.collect(toList());
 	}
@@ -179,8 +179,8 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 																 EntityDefinition invoiceDefinition, Runnable onDateChanged) {
 			super(new BorderLayout());
 			setBorder(createEmptyBorder(5, 5, 5, 5));
-			customerConditionPanel = new CustomerConditionPanel(conditionModel.conditionModel(Invoice.CUSTOMER_FK), invoiceDefinition);
-			dateConditionPanel = new DateConditionPanel(conditionModel.conditionModel(Invoice.DATE), invoiceDefinition);
+			customerConditionPanel = new CustomerConditionPanel(conditionModel.condition(Invoice.CUSTOMER_FK), invoiceDefinition);
+			dateConditionPanel = new DateConditionPanel(conditionModel.condition(Invoice.DATE), invoiceDefinition);
 			dateConditionPanel.yearValue.addListener(onDateChanged);
 			dateConditionPanel.monthValue.addListener(onDateChanged);
 			initializeUI();
@@ -200,8 +200,8 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		}
 
 		private void activate() {
-			customerConditionPanel.conditionModel().operator().set(Operator.IN);
-			dateConditionPanel.conditionModel().operator().set(Operator.BETWEEN);
+			customerConditionPanel.condition().operator().set(Operator.IN);
+			dateConditionPanel.condition().operator().set(Operator.BETWEEN);
 			customerConditionPanel.requestInputFocus();
 		}
 
@@ -261,7 +261,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			private DateConditionPanel(ColumnConditionModel<Attribute<?>, LocalDate> conditionModel, EntityDefinition invoiceDefinition) {
 				super(conditionModel, invoiceDefinition.attributes().definition(conditionModel.identifier()).caption());
 				setLayout(new BorderLayout());
-				conditionModel().operator().set(Operator.BETWEEN);
+				condition().operator().set(Operator.BETWEEN);
 				updateCondition();
 				initializeUI();
 			}
@@ -304,8 +304,8 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			}
 
 			private void updateCondition() {
-				conditionModel().operands().lowerBound().set(lowerBound());
-				conditionModel().operands().upperBound().set(upperBound());
+				condition().operands().lowerBound().set(lowerBound());
+				condition().operands().upperBound().set(upperBound());
 			}
 
 			private LocalDate lowerBound() {

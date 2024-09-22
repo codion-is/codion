@@ -861,7 +861,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void onColumnHidden(C identifier) {
 		//disable the filter model for the column to be hidden, to prevent confusion
-		ColumnConditionModel<?, ?> filterModel = tableModel.conditionModel().conditionModels().get(identifier);
+		ColumnConditionModel<?, ?> filterModel = tableModel.conditionModel().conditions().get(identifier);
 		if (filterModel != null && !filterModel.locked().get()) {
 			filterModel.enabled().set(false);
 		}
@@ -885,7 +885,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
-		return tableModel.conditionModel().conditionModels().values().stream()
+		return tableModel.conditionModel().conditions().values().stream()
 						.filter(conditionModel -> columnModel().containsColumn(conditionModel.identifier()))
 						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.columnClass()))
 						.map(conditionModel -> FilterColumnConditionPanel.builder(conditionModel)

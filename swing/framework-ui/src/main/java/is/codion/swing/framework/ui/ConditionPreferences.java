@@ -149,12 +149,12 @@ final class ConditionPreferences {
 		for (Attribute<?> attribute : columnAttributes) {
 			ConditionPreferences preferences = conditionPreferences.get(attribute);
 			if (preferences != null) {
-				ColumnConditionModel<? extends Attribute<?>, Object> conditionModel =
-								tableModel.queryModel().conditionModel().conditionModel(attribute);
-				if (conditionModel != null) {
-					conditionModel.caseSensitive().set(preferences.caseSensitive());
-					conditionModel.autoEnable().set(preferences.autoEnable());
-					conditionModel.automaticWildcard().set(preferences.automaticWildcard());
+				ColumnConditionModel<? extends Attribute<?>, Object> condition =
+								tableModel.queryModel().conditionModel().condition(attribute);
+				if (condition != null) {
+					condition.caseSensitive().set(preferences.caseSensitive());
+					condition.autoEnable().set(preferences.autoEnable());
+					condition.automaticWildcard().set(preferences.automaticWildcard());
 				}
 			}
 		}

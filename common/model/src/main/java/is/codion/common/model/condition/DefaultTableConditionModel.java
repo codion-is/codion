@@ -35,22 +35,22 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	private static final StateObserver DISABLED = State.state().observer();
 
-	private final Map<C, ColumnConditionModel<C, ?>> conditionModels;
+	private final Map<C, ColumnConditionModel<C, ?>> conditions;
 	private final StateObserver enabled;
 	private final Event<?> conditionChanged = Event.event();
 
-	DefaultTableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
-		this.conditionModels = initializeColumnConditionModels(conditionModels);
-		this.enabled = State.or(conditionModels.stream()
+	DefaultTableConditionModel(Collection<ColumnConditionModel<C, ?>> conditions) {
+		this.conditions = initializeColumnConditions(conditions);
+		this.enabled = State.or(conditions.stream()
 						.map(ColumnConditionModel::enabled)
 						.collect(Collectors.toList()));
-		this.conditionModels.values().forEach(conditionModel ->
-						conditionModel.conditionChanged().addListener(conditionChanged));
+		this.conditions.values().forEach(condition ->
+						condition.conditionChanged().addListener(conditionChanged));
 	}
 
 	@Override
 	public void clear() {
-		conditionModels.values().forEach(ColumnConditionModel::clear);
+		conditions.values().forEach(ColumnConditionModel::clear);
 	}
 
 	@Override
@@ -60,24 +60,24 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	@Override
 	public StateObserver enabled(C identifier) {
-		ColumnConditionModel<C, ?> conditionModel = conditionModels.get(requireNonNull(identifier));
+		ColumnConditionModel<C, ?> condition = conditions.get(requireNonNull(identifier));
 
-		return conditionModel == null ? DISABLED : conditionModel.enabled();
+		return condition == null ? DISABLED : condition.enabled();
 	}
 
 	@Override
-	public Map<C, ColumnConditionModel<C, ?>> conditionModels() {
-		return conditionModels;
+	public Map<C, ColumnConditionModel<C, ?>> conditions() {
+		return conditions;
 	}
 
 	@Override
-	public <T> ColumnConditionModel<C, T> conditionModel(C identifier) {
-		ColumnConditionModel<C, T> conditionModel = (ColumnConditionModel<C, T>) conditionModels.get(identifier);
-		if (conditionModel == null) {
-			throw new IllegalArgumentException("No condition model available for column: " + identifier);
+	public <T> ColumnConditionModel<C, T> condition(C identifier) {
+		ColumnConditionModel<C, T> condition = (ColumnConditionModel<C, T>) conditions.get(identifier);
+		if (condition == null) {
+			throw new IllegalArgumentException("No condition available for column: " + identifier);
 		}
 
-		return conditionModel;
+		return condition;
 	}
 
 	@Override
@@ -85,9 +85,9 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 		return conditionChanged.observer();
 	}
 
-	private Map<C, ColumnConditionModel<C, ?>> initializeColumnConditionModels(
-					Collection<ColumnConditionModel<C, ?>> conditionModels) {
-		return unmodifiableMap(conditionModels.stream()
+	private Map<C, ColumnConditionModel<C, ?>> initializeColumnConditions(
+					Collection<ColumnConditionModel<C, ?>> conditions) {
+		return unmodifiableMap(conditions.stream()
 						.collect(Collectors.toMap(ColumnConditionModel::identifier, identity())));
 	}
 }

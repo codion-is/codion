@@ -104,7 +104,7 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	 * @return the {@link ColumnConditionModel} associated with {@code attribute}
 	 * @throws IllegalArgumentException in case no condition model exists for the given attribute
 	 */
-	<T> ColumnConditionModel<Attribute<?>, T> attributeModel(Attribute<T> attribute);
+	<T> ColumnConditionModel<Attribute<?>, T> attributeCondition(Attribute<T> attribute);
 
 	/**
 	 * Creates a new {@link EntityConditionModel}
