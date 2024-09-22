@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -181,7 +181,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 	private void clearConditions() {
 		conditionModel.conditions().values()
-						.forEach(ColumnConditionModel::clear);
+						.forEach(ConditionModel::clear);
 	}
 
 	/**

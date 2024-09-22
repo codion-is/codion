@@ -22,7 +22,7 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.UserPreferences;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.summary.ColumnSummaryModel;
 import is.codion.common.property.PropertyValue;
@@ -1478,7 +1478,7 @@ public class EntityTablePanel extends JPanel {
 						.collect(toList());
 	}
 
-	private FilterColumnConditionPanel<Attribute<?>, ?> createColumnConditionPanel(ColumnConditionModel<Attribute<?>, ?> condition) {
+	private FilterColumnConditionPanel<Attribute<?>, ?> createColumnConditionPanel(ConditionModel<Attribute<?>, ?> condition) {
 		return FilterColumnConditionPanel.builder(condition)
 						.fieldFactory(configuration.conditionFieldFactory)
 						.tableColumn(table.columnModel().column(condition.identifier()))
@@ -1702,12 +1702,12 @@ public class EntityTablePanel extends JPanel {
 	private Map<Attribute<?>, ConditionPreferences> createConditionPreferences() {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			ColumnConditionModel<?, ?> columnConditionModel = tableModel.queryModel().conditionModel().conditions().get(attribute);
-			if (columnConditionModel != null) {
+			ConditionModel<?, ?> conditionModel = tableModel.queryModel().conditionModel().conditions().get(attribute);
+			if (conditionModel != null) {
 				conditionPreferencesMap.put(attribute, ConditionPreferences.conditionPreferences(attribute,
-								columnConditionModel.autoEnable().get(),
-								columnConditionModel.caseSensitive().get(),
-								columnConditionModel.automaticWildcard().get()));
+								conditionModel.autoEnable().get(),
+								conditionModel.caseSensitive().get(),
+								conditionModel.automaticWildcard().get()));
 			}
 		}
 
@@ -1766,9 +1766,9 @@ public class EntityTablePanel extends JPanel {
 
 	private void onColumnHidden(Attribute<?> attribute) {
 		//disable the condition model for the column to be hidden, to prevent confusion
-		ColumnConditionModel<?, ?> columnConditionModel = tableModel.queryModel().conditionModel().conditions().get(attribute);
-		if (columnConditionModel != null && !columnConditionModel.locked().get()) {
-			columnConditionModel.enabled().set(false);
+		ConditionModel<?, ?> conditionModel = tableModel.queryModel().conditionModel().conditions().get(attribute);
+		if (conditionModel != null && !conditionModel.locked().get()) {
+			conditionModel.enabled().set(false);
 		}
 	}
 

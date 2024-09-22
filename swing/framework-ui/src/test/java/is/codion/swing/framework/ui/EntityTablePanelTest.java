@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.UserPreferences;
-import is.codion.common.model.condition.ColumnConditionModel;
-import is.codion.common.model.condition.ColumnConditionModel.AutomaticWildcard;
+import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.ConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -124,7 +124,7 @@ public class EntityTablePanelTest {
 		column.setWidth(150);//timestamp
 		column = columnModel.getColumn(5);
 		column.setWidth(170);//entity_ref
-		ColumnConditionModel<Attribute<?>, String> conditionModel =
+		ConditionModel<Attribute<?>, String> conditionModel =
 						testModel.queryModel().conditionModel().attributeCondition(Detail.STRING);
 		conditionModel.autoEnable().set(false);
 		conditionModel.automaticWildcard().set(AutomaticWildcard.PREFIX);

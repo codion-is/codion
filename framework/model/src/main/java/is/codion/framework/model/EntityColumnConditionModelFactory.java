@@ -18,7 +18,7 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -32,9 +32,9 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link ColumnConditionModel.Factory} implementation for creating Entity based column condition models.
+ * A default {@link ConditionModel.Factory} implementation for creating Entity based column condition models.
  */
-public class EntityColumnConditionModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+public class EntityColumnConditionModelFactory implements ConditionModel.Factory<Attribute<?>> {
 
 	private final EntityConnectionProvider connectionProvider;
 
@@ -47,7 +47,7 @@ public class EntityColumnConditionModelFactory implements ColumnConditionModel.F
 	}
 
 	@Override
-	public Optional<ColumnConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+	public Optional<ConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			return Optional.of(ForeignKeyConditionModel.builder(foreignKey)
@@ -57,12 +57,12 @@ public class EntityColumnConditionModelFactory implements ColumnConditionModel.F
 		}
 
 		ColumnDefinition<?> column = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
-		ColumnConditionModel<?, ?> model = ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+		ConditionModel<?, ?> model = ConditionModel.builder(attribute, attribute.type().valueClass())
 						.format(column.format())
 						.dateTimePattern(column.dateTimePattern())
 						.build();
 
-		return Optional.of((ColumnConditionModel<Attribute<?>, ?>) model);
+		return Optional.of((ConditionModel<Attribute<?>, ?>) model);
 	}
 
 	/**

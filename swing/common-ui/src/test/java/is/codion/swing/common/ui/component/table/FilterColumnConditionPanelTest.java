@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +29,7 @@ public class FilterColumnConditionPanelTest {
 	@Test
 	void test() {
 		final String key = "key";
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder(key, String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder(key, String.class).build();
 		FilterColumnConditionPanel<?, String> panel = FilterColumnConditionPanel.builder(model).build();
 		assertEquals(model, panel.condition());
 		assertNotNull(panel.equalField());
@@ -40,7 +40,7 @@ public class FilterColumnConditionPanelTest {
 
 	@Test
 	void lockedModel() {
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("key", String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder("key", String.class).build();
 		model.locked().set(true);
 		FilterColumnConditionPanel.builder(model).build();
 	}

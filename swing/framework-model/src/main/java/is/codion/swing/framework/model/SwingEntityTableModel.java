@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -119,7 +119,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
 		this(editModel, entityQueryModel(entityConditionModel(editModel.entityType(), editModel.connectionProvider(),
-						new SwingEntityColumnConditionModelFactory(editModel.connectionProvider()))));
+						new SwingEntityConditionModelFactory(editModel.connectionProvider()))));
 	}
 
 	/**
@@ -454,7 +454,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 	}
 
-	private static final class EntityFilterModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+	private static final class EntityFilterModelFactory implements ConditionModel.Factory<Attribute<?>> {
 
 		private final EntityDefinition entityDefinition;
 
@@ -463,25 +463,25 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 
 		@Override
-		public Optional<ColumnConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+		public Optional<ConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
 			if (!include(attribute)) {
 				return Optional.empty();
 			}
 
 			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-			ColumnConditionModel<?, ?> model;
+			ConditionModel<?, ?> model;
 			if (useStringCondition(attribute, attributeDefinition)) {
-				model = ColumnConditionModel.builder(attribute, String.class).build();
+				model = ConditionModel.builder(attribute, String.class).build();
 
-				return Optional.of((ColumnConditionModel<Attribute<?>, ?>) model);
+				return Optional.of((ConditionModel<Attribute<?>, ?>) model);
 			}
 
-			model = ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+			model = ConditionModel.builder(attribute, attribute.type().valueClass())
 							.format(attributeDefinition.format())
 							.dateTimePattern(attributeDefinition.dateTimePattern())
 							.build();
 
-			return Optional.of((ColumnConditionModel<Attribute<?>, ?>) model);
+			return Optional.of((ConditionModel<Attribute<?>, ?>) model);
 		}
 
 		private boolean include(Attribute<?> attribute) {

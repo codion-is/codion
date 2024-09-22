@@ -20,7 +20,7 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.Operator;
 import is.codion.common.item.Item;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
@@ -209,7 +209,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 			private final EntitySearchField searchField;
 
-			private CustomerConditionPanel(ColumnConditionModel<Attribute<?>, Entity> conditionModel, EntityDefinition invoiceDefinition) {
+			private CustomerConditionPanel(ConditionModel<Attribute<?>, Entity> conditionModel, EntityDefinition invoiceDefinition) {
 				super(conditionModel, invoiceDefinition.attributes().definition(conditionModel.identifier()).caption());
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(), caption()));
@@ -258,7 +258,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 											.action(command(this::decrementYear)))
 							.buildValue();
 
-			private DateConditionPanel(ColumnConditionModel<Attribute<?>, LocalDate> conditionModel, EntityDefinition invoiceDefinition) {
+			private DateConditionPanel(ConditionModel<Attribute<?>, LocalDate> conditionModel, EntityDefinition invoiceDefinition) {
 				super(conditionModel, invoiceDefinition.attributes().definition(conditionModel.identifier()).caption());
 				setLayout(new BorderLayout());
 				condition().operator().set(Operator.BETWEEN);

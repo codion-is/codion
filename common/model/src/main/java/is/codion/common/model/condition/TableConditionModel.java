@@ -35,16 +35,16 @@ public interface TableConditionModel<C> {
 	/**
 	 * @return an unmodifiable map containing the condition models available in this table condition model, mapped to their respective identifiers
 	 */
-	Map<C, ColumnConditionModel<C, ?>> conditions();
+	Map<C, ConditionModel<C, ?>> conditions();
 
 	/**
 	 * The condition model associated with {@code identifier}
 	 * @param <T> the condition value type
-	 * @param identifier the identifier for which to retrieve the {@link ColumnConditionModel}
-	 * @return the {@link ColumnConditionModel} for the {@code identifier}
+	 * @param identifier the identifier for which to retrieve the {@link ConditionModel}
+	 * @return the {@link ConditionModel} for the {@code identifier}
 	 * @throws IllegalArgumentException in case no condition model exists for the given identifier
 	 */
-	<T> ColumnConditionModel<C, T> condition(C identifier);
+	<T> ConditionModel<C, T> condition(C identifier);
 
 	/**
 	 * Clears the search state of all the condition models, disables them and
@@ -75,7 +75,7 @@ public interface TableConditionModel<C> {
 	 * @param <C> the condition identifier type
 	 * @return a new {@link TableConditionModel}
 	 */
-	static <C> TableConditionModel<C> tableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
+	static <C> TableConditionModel<C> tableConditionModel(Collection<ConditionModel<C, ?>> conditionModels) {
 		return new DefaultTableConditionModel<>(requireNonNull(conditionModels));
 	}
 }

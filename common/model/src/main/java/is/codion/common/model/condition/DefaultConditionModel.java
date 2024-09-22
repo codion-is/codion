@@ -41,7 +41,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C, T> {
+final class DefaultConditionModel<C, T> implements ConditionModel<C, T> {
 
 	private static final String WILDCARD = "%";
 	private static final String REGEX_WILDCARD = ".*";
@@ -67,7 +67,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private final String dateTimePattern;
 	private final List<Operator> operators;
 
-	private DefaultColumnConditionModel(DefaultBuilder<C, T> builder) {
+	private DefaultConditionModel(DefaultBuilder<C, T> builder) {
 		this.identifier = builder.identifier;
 		this.operators = unmodifiableList(builder.operators);
 		this.operator = Value.builder()
@@ -608,7 +608,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 						.hoursMinutesSeconds()
 						.build()
 						.dateTimePattern();
-		private AutomaticWildcard automaticWildcard = ColumnConditionModel.AUTOMATIC_WILDCARD.get();
+		private AutomaticWildcard automaticWildcard = ConditionModel.AUTOMATIC_WILDCARD.get();
 		private boolean caseSensitive = CASE_SENSITIVE.get();
 		private boolean autoEnable = true;
 
@@ -666,8 +666,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		}
 
 		@Override
-		public ColumnConditionModel<C, T> build() {
-			return new DefaultColumnConditionModel<>(this);
+		public ConditionModel<C, T> build() {
+			return new DefaultConditionModel<>(this);
 		}
 
 		private static void validateOperators(List<Operator> operators, Operator operator) {

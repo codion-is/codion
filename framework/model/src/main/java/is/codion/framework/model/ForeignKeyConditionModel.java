@@ -19,7 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Operator;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -41,16 +41,16 @@ import static java.util.Objects.requireNonNull;
  * both the {@link Operator#EQUAL} and {@link Operator#IN} operands.
  * @see #builder(ForeignKey)
  */
-public final class ForeignKeyConditionModel implements ColumnConditionModel<Attribute<?>, Entity> {
+public final class ForeignKeyConditionModel implements ConditionModel<Attribute<?>, Entity> {
 
-	private final ColumnConditionModel<ForeignKey, Entity> conditionModel;
+	private final ConditionModel<ForeignKey, Entity> conditionModel;
 	private final EntitySearchModel equalSearchModel;
 	private final EntitySearchModel inSearchModel;
 
 	private boolean updatingModel = false;
 
 	private ForeignKeyConditionModel(DefaultBuilder builder) {
-		this.conditionModel = ColumnConditionModel.builder(builder.foreignKey, Entity.class)
+		this.conditionModel = ConditionModel.builder(builder.foreignKey, Entity.class)
 						.operators(builder.operators())
 						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
 						.build();

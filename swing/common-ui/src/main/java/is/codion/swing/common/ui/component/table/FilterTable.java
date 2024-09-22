@@ -23,7 +23,7 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.summary.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.summary.TableSummaryModel;
 import is.codion.common.observer.Observer;
@@ -861,7 +861,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void onColumnHidden(C identifier) {
 		//disable the filter model for the column to be hidden, to prevent confusion
-		ColumnConditionModel<?, ?> filterModel = tableModel.conditionModel().conditions().get(identifier);
+		ConditionModel<?, ?> filterModel = tableModel.conditionModel().conditions().get(identifier);
 		if (filterModel != null && !filterModel.locked().get()) {
 			filterModel.enabled().set(false);
 		}

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -31,20 +31,20 @@ import java.util.Optional;
 import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 
 /**
- * A Swing {@link ColumnConditionModel.Factory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
+ * A Swing {@link ConditionModel.Factory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
-public class SwingEntityColumnConditionModelFactory extends EntityColumnConditionModelFactory {
+public class SwingEntityConditionModelFactory extends EntityColumnConditionModelFactory {
 
 	/**
-	 * Instantiates a new {@link SwingEntityColumnConditionModelFactory}.
+	 * Instantiates a new {@link SwingEntityConditionModelFactory}.
 	 * @param connectionProvider the connection provider
 	 */
-	public SwingEntityColumnConditionModelFactory(EntityConnectionProvider connectionProvider) {
+	public SwingEntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
 		super(connectionProvider);
 	}
 
 	@Override
-	public Optional<ColumnConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+	public Optional<ConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			if (definition(foreignKey.referencedType()).smallDataset()) {

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -33,13 +33,13 @@ import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.Con
 import static java.util.Objects.requireNonNull;
 
 /**
- * A base class for a UI component based on a {@link ColumnConditionModel}.
+ * A base class for a UI component based on a {@link ConditionModel}.
  * @param <C> the type identifying the table columns
  * @param <T> the condition value type
  */
 public abstract class ColumnConditionPanel<C, T> extends JPanel {
 
-	private final ColumnConditionModel<C, T> condition;
+	private final ConditionModel<C, T> condition;
 	private final Value<ConditionState> conditionState = Value.builder()
 					.nonNull(HIDDEN)
 					.consumer(this::onStateChanged)
@@ -73,7 +73,7 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 * identifier as caption.
 	 * @param condition the condition model
 	 */
-	protected ColumnConditionPanel(ColumnConditionModel<C, T> condition) {
+	protected ColumnConditionPanel(ConditionModel<C, T> condition) {
 		this(requireNonNull(condition), condition.identifier().toString());
 		configureStates();
 	}
@@ -83,7 +83,7 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 * @param condition the condition model
 	 * @param caption the caption to use when presenting this condition panel
 	 */
-	protected ColumnConditionPanel(ColumnConditionModel<C, T> condition, String caption) {
+	protected ColumnConditionPanel(ConditionModel<C, T> condition, String caption) {
 		this.condition = requireNonNull(condition);
 		this.caption = requireNonNull(caption);
 	}
@@ -91,7 +91,7 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	/**
 	 * @return the condition model this panel is based on
 	 */
-	public final ColumnConditionModel<C, T> condition() {
+	public final ConditionModel<C, T> condition() {
 		return condition;
 	}
 

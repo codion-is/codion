@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
@@ -74,7 +74,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 	}
 
 	@Override
-	public JComponent createEqualField(ColumnConditionModel<Attribute<?>, ?> condition) {
+	public JComponent createEqualField(ConditionModel<Attribute<?>, ?> condition) {
 		if (condition.identifier() instanceof ForeignKey) {
 			return createEqualForeignKeyField(condition);
 		}
@@ -85,7 +85,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 	}
 
 	@Override
-	public Optional<JComponent> createUpperBoundField(ColumnConditionModel<Attribute<?>, ?> condition) {
+	public Optional<JComponent> createUpperBoundField(ConditionModel<Attribute<?>, ?> condition) {
 		Class<?> columnClass = condition.valueClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no upper bound field required for booleans or entities
@@ -97,7 +97,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 	}
 
 	@Override
-	public Optional<JComponent> createLowerBoundField(ColumnConditionModel<Attribute<?>, ?> condition) {
+	public Optional<JComponent> createLowerBoundField(ConditionModel<Attribute<?>, ?> condition) {
 		Class<?> columnClass = condition.valueClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no lower bound field required for booleans or entities
@@ -109,7 +109,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 	}
 
 	@Override
-	public JComponent createInField(ColumnConditionModel<Attribute<?>, ?> condition) {
+	public JComponent createInField(ConditionModel<Attribute<?>, ?> condition) {
 		if (condition.identifier() instanceof ForeignKey) {
 			return createInForeignKeyField(condition);
 		}
@@ -119,7 +119,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 										.buildValue(), (ValueSet<Object>) condition.operands().in()).build();
 	}
 
-	private JComponent createEqualForeignKeyField(ColumnConditionModel<? extends Attribute<?>, ?> model) {
+	private JComponent createEqualForeignKeyField(ConditionModel<? extends Attribute<?>, ?> model) {
 		if (model instanceof ForeignKeyConditionModel) {
 			EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).equalSearchModel();
 
@@ -137,7 +137,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 		throw new IllegalArgumentException("Unknown foreign key condition model type: " + model);
 	}
 
-	private JComponent createInForeignKeyField(ColumnConditionModel<? extends Attribute<?>, ?> model) {
+	private JComponent createInForeignKeyField(ConditionModel<? extends Attribute<?>, ?> model) {
 		if (model instanceof ForeignKeyConditionModel) {
 			EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).inSearchModel();
 

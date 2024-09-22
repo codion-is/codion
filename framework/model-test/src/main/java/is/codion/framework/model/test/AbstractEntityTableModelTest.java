@@ -20,7 +20,7 @@ package is.codion.framework.model.test;
 
 import is.codion.common.Operator;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -224,7 +224,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		tableModel.queryModel().limit().set(6);
 		tableModel.refresh();
 		assertEquals(6, tableModel.rowCount());
-		ColumnConditionModel<?, Double> commissionConditionModel =
+		ConditionModel<?, Double> commissionConditionModel =
 						tableModel.queryModel().conditionModel().attributeCondition(Employee.COMMISSION);
 		commissionConditionModel.operator().set(Operator.EQUAL);
 		commissionConditionModel.enabled().set(true);
@@ -243,7 +243,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		AtomicInteger counter = new AtomicInteger();
 		Runnable conditionChangedListener = counter::incrementAndGet;
 		empModel.queryModel().conditionChanged().addListener(conditionChangedListener);
-		ColumnConditionModel<Attribute<?>, Double> commissionModel =
+		ConditionModel<Attribute<?>, Double> commissionModel =
 						empModel.queryModel().conditionModel().attributeCondition(Employee.COMMISSION);
 		commissionModel.enabled().set(true);
 		assertEquals(1, counter.get());
@@ -260,7 +260,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	public void testSearchState() {
 		TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
 		assertFalse(empModel.queryModel().conditionChanged().get());
-		ColumnConditionModel<Attribute<?>, String> jobModel =
+		ConditionModel<Attribute<?>, String> jobModel =
 						empModel.queryModel().conditionModel().attributeCondition(Employee.JOB);
 		jobModel.operands().equal().set("job");
 		assertTrue(empModel.queryModel().conditionChanged().get());

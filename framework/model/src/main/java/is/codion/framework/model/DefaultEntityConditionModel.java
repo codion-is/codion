@@ -21,8 +21,8 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
-import is.codion.common.model.condition.ColumnConditionModel;
-import is.codion.common.model.condition.ColumnConditionModel.Operands;
+import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.StateObserver;
@@ -71,7 +71,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	private final AggregatePredicate aggregatePredicate = new AggregatePredicate();
 
 	DefaultEntityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-															ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+															ConditionModel.Factory<Attribute<?>> conditionModelFactory) {
 		this.entityDefinition = connectionProvider.entities().definition(requireNonNull(entityType, "entityType"));
 		this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
 		this.tableConditionModel = tableConditionModel(createConditionModels(entityType, conditionModelFactory));
@@ -93,12 +93,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		requireNonNull(attribute);
 		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
 		Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
-		ColumnConditionModel<Attribute<?>, T> columnConditionModel =
-						(ColumnConditionModel<Attribute<?>, T>) tableConditionModel.conditions().get(attribute);
-		if (columnConditionModel != null) {
-			columnConditionModel.operator().set(Operator.EQUAL);
-			columnConditionModel.operands().equal().set(operand);
-			columnConditionModel.enabled().set(operand != null);
+		ConditionModel<Attribute<?>, T> conditionModel =
+						(ConditionModel<Attribute<?>, T>) tableConditionModel.conditions().get(attribute);
+		if (conditionModel != null) {
+			conditionModel.operator().set(Operator.EQUAL);
+			conditionModel.operands().equal().set(operand);
+			conditionModel.enabled().set(operand != null);
 		}
 		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
 	}
@@ -109,12 +109,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		requireNonNull(operands);
 		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
 		Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
-		ColumnConditionModel<Attribute<?>, T> columnConditionModel =
-						(ColumnConditionModel<Attribute<?>, T>) tableConditionModel.conditions().get(attribute);
-		if (columnConditionModel != null) {
-			columnConditionModel.operator().set(Operator.IN);
-			columnConditionModel.operands().in().set(operands);
-			columnConditionModel.enabled().set(!operands.isEmpty());
+		ConditionModel<Attribute<?>, T> conditionModel =
+						(ConditionModel<Attribute<?>, T>) tableConditionModel.conditions().get(attribute);
+		if (conditionModel != null) {
+			conditionModel.operator().set(Operator.IN);
+			conditionModel.operands().in().set(operands);
+			conditionModel.enabled().set(!operands.isEmpty());
 		}
 		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
 	}
@@ -146,17 +146,17 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	@Override
-	public Map<Attribute<?>, ColumnConditionModel<Attribute<?>, ?>> conditions() {
+	public Map<Attribute<?>, ConditionModel<Attribute<?>, ?>> conditions() {
 		return tableConditionModel.conditions();
 	}
 
 	@Override
-	public <T> ColumnConditionModel<Attribute<?>, T> condition(Attribute<?> identifier) {
+	public <T> ConditionModel<Attribute<?>, T> condition(Attribute<?> identifier) {
 		return tableConditionModel.condition(identifier);
 	}
 
 	@Override
-	public <T> ColumnConditionModel<Attribute<?>, T> attributeCondition(Attribute<T> attribute) {
+	public <T> ConditionModel<Attribute<?>, T> attributeCondition(Attribute<T> attribute) {
 		return condition(attribute);
 	}
 
@@ -180,7 +180,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		tableConditionModel.clear();
 	}
 
-	private Collection<Condition> conditions(Predicate<ColumnConditionModel<?, ?>> conditionModelTypePredicate, Condition additionalCondition) {
+	private Collection<Condition> conditions(Predicate<ConditionModel<?, ?>> conditionModelTypePredicate, Condition additionalCondition) {
 		List<Condition> conditions = tableConditionModel.conditions().values().stream()
 						.filter(model -> model.enabled().get())
 						.filter(conditionModelTypePredicate)
@@ -200,9 +200,9 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		additionalHaving.addListener(conditionChangedEvent);
 	}
 
-	private Collection<ColumnConditionModel<Attribute<?>, ?>> createConditionModels(EntityType entityType,
-																																									ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
-		Collection<ColumnConditionModel<Attribute<?>, ?>> models = new ArrayList<>();
+	private Collection<ConditionModel<Attribute<?>, ?>> createConditionModels(EntityType entityType,
+																																						ConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+		Collection<ConditionModel<Attribute<?>, ?>> models = new ArrayList<>();
 		EntityDefinition definition = connectionProvider.entities().definition(entityType);
 		definition.columns().definitions().forEach(columnDefinition ->
 						conditionModelFactory.createConditionModel(columnDefinition.attribute())
@@ -212,19 +212,19 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 										.ifPresent(models::add));
 
 		return models.stream()
-						.map(model -> (ColumnConditionModel<Attribute<?>, ?>) model)
+						.map(model -> (ConditionModel<Attribute<?>, ?>) model)
 						.collect(Collectors.toList());
 	}
 
-	private static Condition condition(ColumnConditionModel<?, ?> conditionModel) {
+	private static Condition condition(ConditionModel<?, ?> conditionModel) {
 		if (conditionModel.identifier() instanceof ForeignKey) {
-			return foreignKeyCondition((ColumnConditionModel<?, Entity>) conditionModel);
+			return foreignKeyCondition((ConditionModel<?, Entity>) conditionModel);
 		}
 
 		return columnCondition(conditionModel);
 	}
 
-	private static Condition foreignKeyCondition(ColumnConditionModel<?, Entity> conditionModel) {
+	private static Condition foreignKeyCondition(ConditionModel<?, Entity> conditionModel) {
 		ForeignKey foreignKey = (ForeignKey) conditionModel.identifier();
 		Entity equalOperand = conditionModel.operands().equal().get();
 		Collection<Entity> inOperands = conditionModel.operands().in().get();
@@ -242,7 +242,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		}
 	}
 
-	private static <T> ColumnCondition<T> columnCondition(ColumnConditionModel<?, T> conditionModel) {
+	private static <T> ColumnCondition<T> columnCondition(ConditionModel<?, T> conditionModel) {
 		Column<T> column = (Column<T>) conditionModel.identifier();
 		Operands<T> operands = conditionModel.operands();
 		switch (conditionModel.operator().get()) {
@@ -275,7 +275,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		}
 	}
 
-	private static <T> ColumnCondition<T> equalCondition(ColumnConditionModel<?, T> conditionModel,
+	private static <T> ColumnCondition<T> equalCondition(ConditionModel<?, T> conditionModel,
 																											 Column<T> column) {
 		T equalOperand = conditionModel.operands().equal().get();
 		if (equalOperand == null) {
@@ -291,7 +291,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return column.equalTo(equalOperand);
 	}
 
-	private static <T> ColumnCondition<T> notEqualCondition(ColumnConditionModel<?, T> conditionModel,
+	private static <T> ColumnCondition<T> notEqualCondition(ConditionModel<?, T> conditionModel,
 																													Column<T> column) {
 		T equalOperand = conditionModel.operands().equal().get();
 		if (equalOperand == null) {
@@ -307,7 +307,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return column.notEqualTo(equalOperand);
 	}
 
-	private static <T> ColumnCondition<T> singleStringEqualCondition(ColumnConditionModel<?, T> conditionModel,
+	private static <T> ColumnCondition<T> singleStringEqualCondition(ConditionModel<?, T> conditionModel,
 																																	 Column<T> column, String value) {
 		boolean caseSensitive = conditionModel.caseSensitive().get();
 		if (containsWildcards(value)) {
@@ -317,12 +317,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return caseSensitive ? column.equalTo((T) value) : (ColumnCondition<T>) column.equalToIgnoreCase(value);
 	}
 
-	private static <T> ColumnCondition<T> singleCharacterEqualCondition(ColumnConditionModel<?, T> conditionModel,
+	private static <T> ColumnCondition<T> singleCharacterEqualCondition(ConditionModel<?, T> conditionModel,
 																																			Column<T> column, Character value) {
 		return conditionModel.caseSensitive().get() ? column.equalTo((T) value) : (ColumnCondition<T>) column.equalToIgnoreCase(value);
 	}
 
-	private static <T> ColumnCondition<T> singleStringNotEqualCondition(ColumnConditionModel<?, T> conditionModel,
+	private static <T> ColumnCondition<T> singleStringNotEqualCondition(ConditionModel<?, T> conditionModel,
 																																			Column<T> column, String value) {
 		boolean caseSensitive = conditionModel.caseSensitive().get();
 		if (containsWildcards(value)) {
@@ -332,12 +332,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return caseSensitive ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
 	}
 
-	private static <T> ColumnCondition<T> singleCharacterNotEqualCondition(ColumnConditionModel<?, T> conditionModel,
+	private static <T> ColumnCondition<T> singleCharacterNotEqualCondition(ConditionModel<?, T> conditionModel,
 																																				 Column<T> column, Character value) {
 		return conditionModel.caseSensitive().get() ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
 	}
 
-	private static <T> ColumnCondition<T> inCondition(ColumnConditionModel<?, T> conditionModel, Column<T> column) {
+	private static <T> ColumnCondition<T> inCondition(ConditionModel<?, T> conditionModel, Column<T> column) {
 		if (column.type().isString()) {
 			Column<String> stringColumn = (Column<String>) column;
 			Collection<String> inOperands = (Collection<String>) conditionModel.operands().in().get();
@@ -350,7 +350,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return column.in(conditionModel.operands().in().get());
 	}
 
-	private static <T> ColumnCondition<T> notInCondition(ColumnConditionModel<?, T> conditionModel, Column<T> column) {
+	private static <T> ColumnCondition<T> notInCondition(ConditionModel<?, T> conditionModel, Column<T> column) {
 		if (column.type().isString()) {
 			Column<String> stringColumn = (Column<String>) column;
 			Collection<String> inOperands = (Collection<String>) conditionModel.operands().in().get();
@@ -367,19 +367,19 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return value != null && (value.contains("%") || value.contains("_"));
 	}
 
-	private final class AggregatePredicate implements Predicate<ColumnConditionModel<?, ?>> {
+	private final class AggregatePredicate implements Predicate<ConditionModel<?, ?>> {
 
 		@Override
-		public boolean test(ColumnConditionModel<?, ?> conditionModel) {
+		public boolean test(ConditionModel<?, ?> conditionModel) {
 			return (conditionModel.identifier() instanceof Column) &&
 							entityDefinition.columns().definition((Column<?>) conditionModel.identifier()).aggregate();
 		}
 	}
 
-	private final class NoneAggregatePredicate implements Predicate<ColumnConditionModel<?, ?>> {
+	private final class NoneAggregatePredicate implements Predicate<ConditionModel<?, ?>> {
 
 		@Override
-		public boolean test(ColumnConditionModel<?, ?> conditionModel) {
+		public boolean test(ConditionModel<?, ?> conditionModel) {
 			return !(conditionModel.identifier() instanceof Column) ||
 							!entityDefinition.columns().definition((Column<?>) conditionModel.identifier()).aggregate();
 		}

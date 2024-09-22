@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.value.Value;
 
@@ -177,7 +177,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param filterModelFactory the column filter model factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> filterModelFactory(ColumnConditionModel.Factory<C> filterModelFactory);
+		Builder<R, C> filterModelFactory(ConditionModel.Factory<C> filterModelFactory);
 
 		/**
 		 * @param items supplies the items

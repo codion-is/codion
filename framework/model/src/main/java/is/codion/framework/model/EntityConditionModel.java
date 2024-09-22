@@ -19,7 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -35,7 +35,7 @@ import java.util.function.Supplier;
  * in a table model and searching functionality, which refers to configuring the underlying query,
  * which then needs to be re-run.
  * Factory for {@link EntityConditionModel} instances via
- * {@link EntityConditionModel#entityConditionModel(EntityType, EntityConnectionProvider, ColumnConditionModel.Factory)}
+ * {@link EntityConditionModel#entityConditionModel(EntityType, EntityConnectionProvider, ConditionModel.Factory)}
  */
 public interface EntityConditionModel extends TableConditionModel<Attribute<?>> {
 
@@ -98,13 +98,13 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	Value<Supplier<Condition>> additionalHaving();
 
 	/**
-	 * Returns the {@link ColumnConditionModel} associated with the given attribute.
+	 * Returns the {@link ConditionModel} associated with the given attribute.
 	 * @param <T> the column value type
-	 * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
-	 * @return the {@link ColumnConditionModel} associated with {@code attribute}
+	 * @param attribute the attribute for which to retrieve the {@link ConditionModel}
+	 * @return the {@link ConditionModel} associated with {@code attribute}
 	 * @throws IllegalArgumentException in case no condition model exists for the given attribute
 	 */
-	<T> ColumnConditionModel<Attribute<?>, T> attributeCondition(Attribute<T> attribute);
+	<T> ConditionModel<Attribute<?>, T> attributeCondition(Attribute<T> attribute);
 
 	/**
 	 * Creates a new {@link EntityConditionModel}
@@ -124,7 +124,7 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	 * @return a new {@link EntityConditionModel} instance
 	 */
 	static EntityConditionModel entityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-																									 ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+																									 ConditionModel.Factory<Attribute<?>> conditionModelFactory) {
 		return new DefaultEntityConditionModel(entityType, connectionProvider, conditionModelFactory);
 	}
 }

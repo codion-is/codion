@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Configuration;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 
@@ -317,7 +317,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		 * @return a shaded background color
 		 */
 		protected Color backgroundColorShaded(FilterTableModel<?, C> tableModel, int row, C identifier, Color cellBackgroundColor) {
-			ColumnConditionModel<?, ?> filterModel = tableModel.conditionModel().conditions().get(identifier);
+			ConditionModel<?, ?> filterModel = tableModel.conditionModel().conditions().get(identifier);
 			boolean filterEnabled = filterModel != null && filterModel.enabled().get();
 			if (filterEnabled) {
 				return backgroundShaded(row, cellBackgroundColor);

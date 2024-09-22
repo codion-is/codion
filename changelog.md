@@ -36,6 +36,7 @@ Codion Change Log
 - TableSummaryModel and ColumnSummaryModel moved to package summary.
 - TableConditionModel.conditionModel() renamed condition().
 - ColumnConditionModel.columnClass() renamed valueClass().
+- ColumnConditionModel renamed ConditionModel.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.
@@ -73,6 +74,7 @@ Codion Change Log
 - AbstractEntityTableModel extracted from SwingEntityTableModel.
 - SwingEntityTableModel.tableModel() factory method replaced with constructor overloads, related refactoring.
 - SwingEntityConditionModelFactory renamed SwingEntityColumnConditionModelFactory.
+- SwingEntityColumnConditionModelFactory renamed back to SwingEntityConditionModelFactory
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, Config.SHOW_REFRESH_PROGRESS_BAR now used for default config value.
 - EntityDialogs bug fixed, now respects the location if specified.

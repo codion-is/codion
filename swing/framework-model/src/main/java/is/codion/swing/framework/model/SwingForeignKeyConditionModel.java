@@ -19,7 +19,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.Operator;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -43,16 +43,16 @@ import static java.util.Objects.requireNonNull;
  * and a {@link EntitySearchModel} for the {@link Operator#IN} operands.
  * @see #builder(ForeignKey)
  */
-public final class SwingForeignKeyConditionModel implements ColumnConditionModel<Attribute<?>, Entity> {
+public final class SwingForeignKeyConditionModel implements ConditionModel<Attribute<?>, Entity> {
 
-	private final ColumnConditionModel<ForeignKey, Entity> condition;
+	private final ConditionModel<ForeignKey, Entity> condition;
 	private final EntityComboBoxModel equalComboBoxModel;
 	private final EntitySearchModel inSearchModel;
 
 	private boolean updatingModel = false;
 
 	private SwingForeignKeyConditionModel(DefaultBuilder builder) {
-		this.condition = ColumnConditionModel.builder(builder.foreignKey, Entity.class)
+		this.condition = ConditionModel.builder(builder.foreignKey, Entity.class)
 						.operators(builder.operators())
 						.operator(defaultOperator(builder))
 						.build();

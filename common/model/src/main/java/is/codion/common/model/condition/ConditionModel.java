@@ -40,7 +40,7 @@ import static java.util.ResourceBundle.getBundle;
  * @param <C> the type used to identify columns
  * @param <T> the column value type
  */
-public interface ColumnConditionModel<C, T> {
+public interface ConditionModel<C, T> {
 
 	/**
 	 * Specifies whether wildcards are automatically added to string conditions by default
@@ -48,7 +48,7 @@ public interface ColumnConditionModel<C, T> {
 	 * <li>Default value: {@link AutomaticWildcard#POSTFIX}
 	 */
 	PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD =
-					Configuration.enumValue(ColumnConditionModel.class.getName() + ".automaticWildard",
+					Configuration.enumValue(ConditionModel.class.getName() + ".automaticWildard",
 									AutomaticWildcard.class, AutomaticWildcard.POSTFIX);
 
 	/**
@@ -57,7 +57,7 @@ public interface ColumnConditionModel<C, T> {
 	 * <li>Default value: false
 	 */
 	PropertyValue<Boolean> CASE_SENSITIVE =
-					Configuration.booleanValue(ColumnConditionModel.class.getName() + ".caseSensitive", false);
+					Configuration.booleanValue(ConditionModel.class.getName() + ".caseSensitive", false);
 
 	/**
 	 * The possible automatic wildcard types
@@ -185,7 +185,7 @@ public interface ColumnConditionModel<C, T> {
 	 * @return a new {@link Builder} instance
 	 */
 	static <C, T> Builder<C, T> builder(C identifier, Class<T> valueClass) {
-		return new DefaultColumnConditionModel.DefaultBuilder<>(identifier, valueClass);
+		return new DefaultConditionModel.DefaultBuilder<>(identifier, valueClass);
 	}
 
 	/**
@@ -216,20 +216,20 @@ public interface ColumnConditionModel<C, T> {
 	}
 
 	/**
-	 * Responsible for creating {@link ColumnConditionModel} instances.
+	 * Responsible for creating {@link ConditionModel} instances.
 	 */
 	interface Factory<C> {
 
 		/**
-		 * Creates a {@link ColumnConditionModel} for a given column
-		 * @param identifier the identifier of the column for which to create a {@link ColumnConditionModel}
-		 * @return a {@link ColumnConditionModel} for the given column or an empty optional if none is available
+		 * Creates a {@link ConditionModel} for a given column
+		 * @param identifier the identifier of the column for which to create a {@link ConditionModel}
+		 * @return a {@link ConditionModel} for the given column or an empty optional if none is available
 		 */
-		Optional<ColumnConditionModel<C, ?>> createConditionModel(C identifier);
+		Optional<ConditionModel<C, ?>> createConditionModel(C identifier);
 	}
 
 	/**
-	 * Builds a {@link ColumnConditionModel} instance.
+	 * Builds a {@link ConditionModel} instance.
 	 */
 	interface Builder<C, T> {
 
@@ -280,8 +280,8 @@ public interface ColumnConditionModel<C, T> {
 		Builder<C, T> autoEnable(boolean autoEnable);
 
 		/**
-		 * @return a new {@link ColumnConditionModel} instance based on this builder
+		 * @return a new {@link ConditionModel} instance based on this builder
 		 */
-		ColumnConditionModel<C, T> build();
+		ConditionModel<C, T> build();
 	}
 }

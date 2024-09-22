@@ -19,13 +19,13 @@
 package is.codion.framework.demos.chinook.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.value.Value.Validator;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.framework.model.SwingEntityColumnConditionModelFactory;
+import is.codion.swing.framework.model.SwingEntityConditionModelFactory;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 
@@ -74,14 +74,14 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		}
 	}
 
-	private static class TrackConditionModelFactory extends SwingEntityColumnConditionModelFactory {
+	private static class TrackConditionModelFactory extends SwingEntityConditionModelFactory {
 
 		private TrackConditionModelFactory(EntityConnectionProvider connectionProvider) {
 			super(connectionProvider);
 		}
 
 		@Override
-		public Optional<ColumnConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+		public Optional<ConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
 			if (attribute.equals(Track.MEDIATYPE_FK)) {
 				return Optional.of(SwingForeignKeyConditionModel.builder(Track.MEDIATYPE_FK)
 								.includeEqualOperators(createEqualComboBoxModel(Track.MEDIATYPE_FK))

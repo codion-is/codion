@@ -19,8 +19,8 @@
 package is.codion.common.model.condition;
 
 import is.codion.common.Operator;
-import is.codion.common.model.condition.ColumnConditionModel.AutomaticWildcard;
-import is.codion.common.model.condition.ColumnConditionModel.Operands;
+import is.codion.common.model.condition.ConditionModel.AutomaticWildcard;
+import is.codion.common.model.condition.ConditionModel.Operands;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultColumnConditionModelTest {
+public class DefaultConditionModelTest {
 
 	final AtomicInteger equalCounter = new AtomicInteger();
 	final AtomicInteger inCounter = new AtomicInteger();
@@ -54,7 +54,7 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void testOperands() {
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
 		model.caseSensitive().set(false);
 		model.automaticWildcard().set(AutomaticWildcard.NONE);
 
@@ -103,7 +103,7 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void testMisc() {
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
 		assertEquals("test", model.identifier());
 
 		model.operator().set(Operator.EQUAL);
@@ -114,14 +114,14 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void testOperator() {
-		assertThrows(IllegalArgumentException.class, () -> ColumnConditionModel.builder("test", String.class)
+		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder("test", String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN))
 						.operator(Operator.IN));
-		assertThrows(IllegalArgumentException.class, () -> ColumnConditionModel.builder("test", String.class)
+		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder("test", String.class)
 						.operator(Operator.IN)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN)));
 
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class)
+		ConditionModel<String, String> model = ConditionModel.builder("test", String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.LESS_THAN_OR_EQUAL, Operator.NOT_BETWEEN))
 						.build();
 		model.operator().addConsumer(operatorConsumer);
@@ -142,7 +142,7 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void test() {
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
 		assertTrue(model.autoEnable().get());
 		model.operands().equal().set("test");
 		assertTrue(model.enabled().get());
@@ -169,42 +169,42 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void setUpperBoundLocked() {
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().upperBound().set("test"));
 	}
 
 	@Test
 	void setLowerBoundLocked() {
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().lowerBound().set("test"));
 	}
 
 	@Test
 	void setEqualOperandLocked() {
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().equal().set("test"));
 	}
 
 	@Test
 	void setInOperandsLocked() {
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().in().set(Collections.singletonList("test")));
 	}
 
 	@Test
 	void setEnabledLocked() {
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.enabled().set(true));
 	}
 
 	@Test
 	void setOperatorLocked() {
-		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operator().set(Operator.NOT_EQUAL));
 		assertThrows(IllegalStateException.class, () -> model.operator().set(Operator.NOT_EQUAL));
@@ -212,7 +212,7 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void multiConditionString() {
-		ColumnConditionModel<String, String> conditionModel = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> conditionModel = ConditionModel.builder("test", String.class).build();
 		conditionModel.caseSensitive().set(false);
 		conditionModel.automaticWildcard().set(AutomaticWildcard.NONE);
 
@@ -224,7 +224,7 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void autoEnable() {
-		ColumnConditionModel<String, Integer> conditionModel = ColumnConditionModel.builder("test", Integer.class).build();
+		ConditionModel<String, Integer> conditionModel = ConditionModel.builder("test", Integer.class).build();
 
 		conditionModel.operator().set(Operator.EQUAL);
 		assertFalse(conditionModel.enabled().get());
@@ -360,13 +360,13 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void noOperators() {
-		assertThrows(IllegalArgumentException.class, () -> ColumnConditionModel.builder("test", String.class)
+		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder("test", String.class)
 						.operators(Collections.emptyList()));
 	}
 
 	@Test
 	void includeInteger() {
-		ColumnConditionModel<String, Integer> conditionModel = ColumnConditionModel.builder("test", Integer.class).build();
+		ConditionModel<String, Integer> conditionModel = ConditionModel.builder("test", Integer.class).build();
 		conditionModel.autoEnable().set(false);
 		conditionModel.enabled().set(true);
 		conditionModel.operator().set(Operator.EQUAL);
@@ -492,7 +492,7 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void acceptsString() {
-		ColumnConditionModel<String, String> conditionModel = ColumnConditionModel.builder("test", String.class).build();
+		ConditionModel<String, String> conditionModel = ConditionModel.builder("test", String.class).build();
 		conditionModel.autoEnable().set(false);
 		conditionModel.enabled().set(true);
 
@@ -548,7 +548,7 @@ public class DefaultColumnConditionModelTest {
 
 	@Test
 	void acceptCharacter() {
-		ColumnConditionModel<String, Character> conditionModel = ColumnConditionModel.builder("test", Character.class).build();
+		ConditionModel<String, Character> conditionModel = ConditionModel.builder("test", Character.class).build();
 		conditionModel.autoEnable().set(false);
 		conditionModel.enabled().set(true);
 

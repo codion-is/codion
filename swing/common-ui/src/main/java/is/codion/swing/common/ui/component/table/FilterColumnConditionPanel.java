@@ -21,9 +21,9 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.item.Item;
-import is.codion.common.model.condition.ColumnConditionModel;
-import is.codion.common.model.condition.ColumnConditionModel.AutomaticWildcard;
-import is.codion.common.model.condition.ColumnConditionModel.Operands;
+import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.ConditionModel.AutomaticWildcard;
+import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.observer.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -83,11 +83,11 @@ import static javax.swing.FocusManager.getCurrentManager;
 import static javax.swing.SwingConstants.CENTER;
 
 /**
- * A UI implementation for {@link ColumnConditionModel}.
- * For instances use {@link #builder(ColumnConditionModel)}.
+ * A UI implementation for {@link ConditionModel}.
+ * For instances use {@link #builder(ConditionModel)}.
  * @param <C> the type of objects used to identify columns
  * @param <T> the column value type
- * @see #builder(ColumnConditionModel)
+ * @see #builder(ConditionModel)
  */
 public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel<C, T> {
 
@@ -239,13 +239,13 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	/**
-	 * @param columnConditionModel the column condition model
+	 * @param conditionModel the column condition model
 	 * @param <C> the column identifier type
 	 * @param <T> the column value type
 	 * @return a new {@link Builder}
 	 */
-	public static <C, T> Builder<C, T> builder(ColumnConditionModel<C, T> columnConditionModel) {
-		return new DefaultBuilder<>(columnConditionModel);
+	public static <C, T> Builder<C, T> builder(ConditionModel<C, T> conditionModel) {
+		return new DefaultBuilder<>(conditionModel);
 	}
 
 	/**
@@ -282,13 +282,13 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private static final class DefaultBuilder<C, T> implements Builder<C, T> {
 
-		private final ColumnConditionModel<C, T> conditionModel;
+		private final ConditionModel<C, T> conditionModel;
 
 		private String caption;
 		private FieldFactory<C> fieldFactory = new DefaultFilterFieldFactory<>();
 		private TableColumn tableColumn;
 
-		private DefaultBuilder(ColumnConditionModel<C, T> conditionModel) {
+		private DefaultBuilder(ConditionModel<C, T> conditionModel) {
 			this.conditionModel = requireNonNull(conditionModel);
 			this.caption = conditionModel.identifier().toString();
 		}
@@ -337,28 +337,28 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		 * @return the equal value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		JComponent createEqualField(ColumnConditionModel<C, ?> condition);
+		JComponent createEqualField(ConditionModel<C, ?> condition);
 
 		/**
 		 * Creates the field representing the upper bound operand, linked to {@link Operands#upperBound()}
 		 * @return an upper bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		Optional<JComponent> createUpperBoundField(ColumnConditionModel<C, ?> condition);
+		Optional<JComponent> createUpperBoundField(ConditionModel<C, ?> condition);
 
 		/**
 		 * Creates the field representing the lower bound operand, linked to {@link Operands#lowerBound()}
 		 * @return a lower bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		Optional<JComponent> createLowerBoundField(ColumnConditionModel<C, ?> condition);
+		Optional<JComponent> createLowerBoundField(ConditionModel<C, ?> condition);
 
 		/**
 		 * Creates the field representing the {@link Operator#IN} operands, linked to {@link Operands#in()}
 		 * @return the in value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		JComponent createInField(ColumnConditionModel<C, ?> condition);
+		JComponent createInField(ConditionModel<C, ?> condition);
 	}
 
 	private JComponent createEqualField(FieldFactory<C> fieldFactory) {
