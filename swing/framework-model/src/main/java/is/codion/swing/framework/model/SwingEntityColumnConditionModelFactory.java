@@ -33,13 +33,13 @@ import static is.codion.swing.framework.model.component.EntityComboBoxModel.enti
 /**
  * A Swing {@link ColumnConditionModel.Factory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
-public class SwingEntityConditionModelFactory extends EntityColumnConditionModelFactory {
+public class SwingEntityColumnConditionModelFactory extends EntityColumnConditionModelFactory {
 
 	/**
-	 * Instantiates a new {@link SwingEntityConditionModelFactory}.
+	 * Instantiates a new {@link SwingEntityColumnConditionModelFactory}.
 	 * @param connectionProvider the connection provider
 	 */
-	public SwingEntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
+	public SwingEntityColumnConditionModelFactory(EntityConnectionProvider connectionProvider) {
 		super(connectionProvider);
 	}
 

@@ -92,7 +92,7 @@ public class EntityServerMonitorTest {
 		ClientUserMonitor clientUserMonitor = serverMonitor.clientMonitor();
 		ClientMonitor clientMonitor = clientUserMonitor.clientMonitor();
 		clientMonitor.clientInstanceTableModel().refresh();
-		assertEquals(1, clientMonitor.clientInstanceTableModel().items().visible().size());
+		assertEquals(1, clientMonitor.clientInstanceTableModel().items().visible().count());
 		RemoteClient remoteClient = clientMonitor.clientInstanceTableModel().items().visible().itemAt(0);
 		assertEquals(connectionProvider.clientId(), remoteClient.clientId());
 		assertEquals(UNIT_TEST_USER, remoteClient.user());
@@ -100,7 +100,7 @@ public class EntityServerMonitorTest {
 		clientMonitor.server().disconnect(remoteClient.clientId());//disconnects the client
 
 		clientMonitor.refresh();
-		assertEquals(0, clientMonitor.clientInstanceTableModel().items().visible().size());
+		assertEquals(0, clientMonitor.clientInstanceTableModel().items().visible().count());
 
 		serverMonitor.shutdown();
 	}

@@ -151,7 +151,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public <T> Collection<T> values(C identifier) {
-		return (Collection<T>) columnValues(IntStream.range(0, modelItems.visible().size()).boxed(),
+		return (Collection<T>) columnValues(IntStream.range(0, modelItems.visible().count()).boxed(),
 						columns.identifiers().indexOf(identifier));
 	}
 
@@ -330,7 +330,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	private boolean addItemInternal(R item) {
-		return addItemAtInternal(modelItems.visible().size(), item);
+		return addItemAtInternal(modelItems.visible().count(), item);
 	}
 
 	private boolean addItemAtInternal(int index, R item) {
@@ -520,6 +520,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
+		public int count() {
+			return visible.count() + filtered.count();
+		}
+
+		@Override
 		public void filter() {
 			List<R> selectedItems = selectionModel.items().get();
 			visible.items.addAll(filtered.items);
@@ -571,7 +576,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public int size() {
+		public int count() {
 			return items.size();
 		}
 
@@ -601,7 +606,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public int size() {
+		public int count() {
 			return items.size();
 		}
 

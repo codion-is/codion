@@ -393,6 +393,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
+		public int count() {
+			return visible.count() + filtered.count();
+		}
+
+		@Override
 		public Value<Predicate<T>> visiblePredicate() {
 			return visiblePredicate;
 		}
@@ -468,7 +473,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public int size() {
+		public int count() {
 			if (items.isEmpty()) {
 				return 0;
 			}
@@ -505,7 +510,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public int size() {
+		public int count() {
 			return items.size();
 		}
 

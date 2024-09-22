@@ -211,7 +211,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final int rowCount() {
-		return tableModel.items().visible().size();
+		return tableModel.items().visible().count();
 	}
 
 	@Override
@@ -273,10 +273,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 					addItemsAtSorted(0, entitiesToAdd);
 					break;
 				case ADD_BOTTOM:
-					addItemsAt(items().visible().size(), entitiesToAdd);
+					addItemsAt(items().visible().count(), entitiesToAdd);
 					break;
 				case ADD_BOTTOM_SORTED:
-					addItemsAtSorted(items().visible().size(), entitiesToAdd);
+					addItemsAtSorted(items().visible().count(), entitiesToAdd);
 					break;
 				default:
 					break;

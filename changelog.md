@@ -31,6 +31,7 @@ Codion Change Log
 - SelectionModel, most methods renamed.
 - SelectionModel.clear() moved to SingleSelectionModel.
 - FilterModel.sortItems() renamed sort().
+- FilterModel.Items.count() added, Items.Visible and Filtered.size() renamed count().
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.
@@ -64,6 +65,7 @@ Codion Change Log
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.
 - SwingEntityTableModel.tableModel() factory method replaced with constructor overloads, related refactoring.
+- SwingEntityConditionModelFactory renamed SwingEntityColumnConditionModelFactory.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, Config.SHOW_REFRESH_PROGRESS_BAR now used for default config value.
 - EntityDialogs bug fixed, now respects the location if specified.

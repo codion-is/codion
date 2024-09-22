@@ -25,7 +25,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.framework.model.SwingEntityConditionModelFactory;
+import is.codion.swing.framework.model.SwingEntityColumnConditionModelFactory;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 
@@ -74,7 +74,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		}
 	}
 
-	private static class TrackConditionModelFactory extends SwingEntityConditionModelFactory {
+	private static class TrackConditionModelFactory extends SwingEntityColumnConditionModelFactory {
 
 		private TrackConditionModelFactory(EntityConnectionProvider connectionProvider) {
 			super(connectionProvider);

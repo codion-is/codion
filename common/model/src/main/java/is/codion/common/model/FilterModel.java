@@ -156,7 +156,7 @@ public interface FilterModel<T> {
 	 * Calling this method when no comparator is specified has no effect.
 	 * @see #comparator()
 	 */
- 	void sort();
+	void sort();
 
 	/**
 	 * @return the {@link Value} controlling the comparator to use when sorting
@@ -216,6 +216,11 @@ public interface FilterModel<T> {
 		boolean contains(T item);
 
 		/**
+		 * @return the total number of items, visible and filtered
+		 */
+		int count();
+
+		/**
 		 * Filters the items according to the condition specified by {@link #visiblePredicate()}.
 		 * If no include condition is specified this method does nothing.
 		 * This method does not interfere with the internal ordering of the visible items.
@@ -250,7 +255,7 @@ public interface FilterModel<T> {
 			/**
 			 * @return the number of visible items
 			 */
-			int size();
+			int count();
 		}
 
 		/**
@@ -268,7 +273,7 @@ public interface FilterModel<T> {
 			/**
 			 * @return the number of filtered items
 			 */
-			int size();
+			int count();
 		}
 	}
 

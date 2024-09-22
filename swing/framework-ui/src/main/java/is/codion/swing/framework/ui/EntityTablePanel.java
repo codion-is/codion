@@ -2540,7 +2540,7 @@ public class EntityTablePanel extends JPanel {
 		@Override
 		public String apply(SwingEntityTableModel tableModel) {
 			int rowCount = tableModel.rowCount();
-			int filteredCount = tableModel.items().filtered().size();
+			int filteredCount = tableModel.items().filtered().count();
 			if (rowCount == 0 && filteredCount == 0) {
 				return "";
 			}
