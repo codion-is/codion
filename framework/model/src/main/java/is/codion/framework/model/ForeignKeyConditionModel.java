@@ -154,8 +154,8 @@ public final class ForeignKeyConditionModel implements ConditionModel<Attribute<
 	}
 
 	@Override
-	public Observer<?> conditionChanged() {
-		return condition.conditionChanged();
+	public Observer<?> changed() {
+		return condition.changed();
 	}
 
 	/**

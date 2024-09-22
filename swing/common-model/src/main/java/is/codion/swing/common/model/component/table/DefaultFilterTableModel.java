@@ -321,7 +321,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 		});
 		addTableModelListener(removeSelectionListener);
-		conditionModel.conditionChanged().addListener(modelItems::filter);
+		conditionModel.changed().addListener(modelItems::filter);
 		comparator.addListener(this::sort);
 	}
 

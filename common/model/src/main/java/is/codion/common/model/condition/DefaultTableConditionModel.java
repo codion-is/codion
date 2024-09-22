@@ -37,7 +37,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	private final Map<C, ConditionModel<C, ?>> conditions;
 	private final StateObserver enabled;
-	private final Event<?> conditionChanged = Event.event();
+	private final Event<?> changed = Event.event();
 
 	DefaultTableConditionModel(Collection<ConditionModel<C, ?>> conditions) {
 		this.conditions = initializeColumnConditions(conditions);
@@ -45,7 +45,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 						.map(ConditionModel::enabled)
 						.collect(Collectors.toList()));
 		this.conditions.values().forEach(condition ->
-						condition.conditionChanged().addListener(conditionChanged));
+						condition.changed().addListener(changed));
 	}
 
 	@Override
@@ -81,8 +81,8 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public Observer<?> conditionChanged() {
-		return conditionChanged.observer();
+	public Observer<?> changed() {
+		return changed.observer();
 	}
 
 	private Map<C, ConditionModel<C, ?>> initializeColumnConditions(

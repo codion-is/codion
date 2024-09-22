@@ -174,7 +174,7 @@ final class DefaultConditionModel<C, T> implements ConditionModel<C, T> {
 	}
 
 	@Override
-	public Observer<?> conditionChanged() {
+	public Observer<?> changed() {
 		return conditionChanged.observer();
 	}
 

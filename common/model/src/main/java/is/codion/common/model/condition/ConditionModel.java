@@ -174,7 +174,7 @@ public interface ConditionModel<C, T> {
 	/**
 	 * @return an observer notified each time the condition state changes
 	 */
-	Observer<?> conditionChanged();
+	Observer<?> changed();
 
 	/**
 	 * Returns a new {@link Builder} instance.

@@ -847,7 +847,7 @@ public final class FilterTable<R, C> extends JTable {
 													boolean columnResizingAllowed) {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
-		tableModel.conditionModel().conditionChanged().addListener(getTableHeader()::repaint);
+		tableModel.conditionModel().changed().addListener(getTableHeader()::repaint);
 		searchModel.currentResult().addListener(this::repaint);
 		sortModel.sortingChanged().addListener(getTableHeader()::repaint);
 		sortModel.sortingChanged().addListener(() ->

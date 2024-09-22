@@ -64,7 +64,7 @@ public class DefaultConditionModelTest {
 		operands.in().addConsumer(inConsumer);
 		operands.upperBound().addConsumer(upperBoundConsumer);
 		operands.lowerBound().addConsumer(lowerBoundConsumer);
-		model.conditionChanged().addListener(conditionChangedListener);
+		model.changed().addListener(conditionChangedListener);
 
 		operands.upperBound().set("hello");
 		assertEquals(1, conditionChangedCounter.get());
@@ -98,7 +98,7 @@ public class DefaultConditionModelTest {
 		operands.in().removeConsumer(inConsumer);
 		operands.upperBound().removeConsumer(upperBoundConsumer);
 		operands.lowerBound().removeConsumer(lowerBoundConsumer);
-		model.conditionChanged().removeListener(conditionChangedListener);
+		model.changed().removeListener(conditionChangedListener);
 	}
 
 	@Test

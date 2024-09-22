@@ -37,6 +37,7 @@ Codion Change Log
 - TableConditionModel.conditionModel() renamed condition().
 - ColumnConditionModel.columnClass() renamed valueClass().
 - ColumnConditionModel renamed ConditionModel.
+- TableConditionModel and ConditionModel.conditionChanged() renamed changed().
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.

@@ -171,8 +171,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	@Override
-	public Observer<?> conditionChanged() {
-		return tableConditionModel.conditionChanged();
+	public Observer<?> changed() {
+		return tableConditionModel.changed();
 	}
 
 	@Override
@@ -195,7 +195,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	private void bindEvents() {
 		tableConditionModel.conditions().values().forEach(columnConditionModel ->
-						columnConditionModel.conditionChanged().addListener(conditionChangedEvent));
+						columnConditionModel.changed().addListener(conditionChangedEvent));
 		additionalWhere.addListener(conditionChangedEvent);
 		additionalHaving.addListener(conditionChangedEvent);
 	}

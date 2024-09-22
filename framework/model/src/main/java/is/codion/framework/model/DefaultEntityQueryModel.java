@@ -64,7 +64,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 						.build();
 		this.orderBy = createOrderBy();
 		this.refreshCondition = createSelect();
-		conditionModel.conditionChanged().addListener(this::onConditionChanged);
+		conditionModel.changed().addListener(this::onConditionChanged);
 	}
 
 	@Override
