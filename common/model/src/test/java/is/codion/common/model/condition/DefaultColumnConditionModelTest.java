@@ -149,7 +149,7 @@ public class DefaultColumnConditionModelTest {
 		model.caseSensitive().set(false);
 		assertFalse(model.caseSensitive().get());
 		assertEquals("test", model.identifier());
-		assertEquals(String.class, model.columnClass());
+		assertEquals(String.class, model.valueClass());
 
 		model.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
 		assertEquals(AutomaticWildcard.PREFIX_AND_POSTFIX, model.automaticWildcard().get());

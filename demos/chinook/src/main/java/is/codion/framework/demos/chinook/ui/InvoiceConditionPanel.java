@@ -161,7 +161,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(FieldFactory<Attribute<?>> fieldFactory) {
 		return conditionModel().conditions().values().stream()
 						.filter(condition -> columnModel.containsColumn(condition.identifier()))
-						.filter(condition -> fieldFactory.supportsType(condition.columnClass()))
+						.filter(condition -> fieldFactory.supportsType(condition.valueClass()))
 						.map(condition -> FilterColumnConditionPanel.builder(condition)
 										.fieldFactory(fieldFactory)
 										.tableColumn(columnModel.column(condition.identifier()))

@@ -887,7 +887,7 @@ public final class FilterTable<R, C> extends JTable {
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
 		return tableModel.conditionModel().conditions().values().stream()
 						.filter(conditionModel -> columnModel().containsColumn(conditionModel.identifier()))
-						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.columnClass()))
+						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.valueClass()))
 						.map(conditionModel -> FilterColumnConditionPanel.builder(conditionModel)
 										.fieldFactory(filterFieldFactory)
 										.tableColumn(columnModel().column(conditionModel.identifier()))

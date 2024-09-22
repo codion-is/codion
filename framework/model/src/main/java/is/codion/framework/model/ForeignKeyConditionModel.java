@@ -119,8 +119,8 @@ public final class ForeignKeyConditionModel implements ColumnConditionModel<Attr
 	}
 
 	@Override
-	public Class<Entity> columnClass() {
-		return conditionModel.columnClass();
+	public Class<Entity> valueClass() {
+		return conditionModel.valueClass();
 	}
 
 	@Override

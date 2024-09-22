@@ -301,8 +301,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 		@Override
 		public Builder<C, T> fieldFactory(FieldFactory<C> fieldFactory) {
-			if (!requireNonNull(fieldFactory).supportsType(conditionModel.columnClass())) {
-				throw new IllegalArgumentException("Field factory does not support the column value type: " + conditionModel.columnClass());
+			if (!requireNonNull(fieldFactory).supportsType(conditionModel.valueClass())) {
+				throw new IllegalArgumentException("Field factory does not support the value type: " + conditionModel.valueClass());
 			}
 
 			this.fieldFactory = requireNonNull(fieldFactory);
@@ -327,38 +327,38 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	public interface FieldFactory<C> {
 
 		/**
-		 * @param columnClass the column class
+		 * @param valueClass the value class
 		 * @return true if the type is supported
 		 */
-		boolean supportsType(Class<?> columnClass);
+		boolean supportsType(Class<?> valueClass);
 
 		/**
 		 * Creates the field representing the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operand, linked to {@link Operands#equal()}
 		 * @return the equal value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		JComponent createEqualField(ColumnConditionModel<C, ?> conditionModel);
+		JComponent createEqualField(ColumnConditionModel<C, ?> condition);
 
 		/**
 		 * Creates the field representing the upper bound operand, linked to {@link Operands#upperBound()}
 		 * @return an upper bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		Optional<JComponent> createUpperBoundField(ColumnConditionModel<C, ?> conditionModel);
+		Optional<JComponent> createUpperBoundField(ColumnConditionModel<C, ?> condition);
 
 		/**
 		 * Creates the field representing the lower bound operand, linked to {@link Operands#lowerBound()}
 		 * @return a lower bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		Optional<JComponent> createLowerBoundField(ColumnConditionModel<C, ?> conditionModel);
+		Optional<JComponent> createLowerBoundField(ColumnConditionModel<C, ?> condition);
 
 		/**
 		 * Creates the field representing the {@link Operator#IN} operands, linked to {@link Operands#in()}
 		 * @return the in value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		JComponent createInField(ColumnConditionModel<C, ?> conditionModel);
+		JComponent createInField(ColumnConditionModel<C, ?> condition);
 	}
 
 	private JComponent createEqualField(FieldFactory<C> fieldFactory) {
@@ -659,7 +659,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 			controlsBuilder.control(Control.builder()
 							.toggle(condition().caseSensitive())
 							.name(MESSAGES.getString("case_sensitive")));
-			if (condition().columnClass().equals(String.class)) {
+			if (condition().valueClass().equals(String.class)) {
 				controlsBuilder.control(createAutomaticWildcardControls());
 			}
 			JPopupMenu popupMenu = menu(controlsBuilder).buildPopupMenu();
@@ -670,7 +670,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private boolean isStringOrCharacter() {
-		return condition().columnClass().equals(String.class) || condition().columnClass().equals(Character.class);
+		return condition().valueClass().equals(String.class) || condition().valueClass().equals(Character.class);
 	}
 
 	private Controls createAutomaticWildcardControls() {

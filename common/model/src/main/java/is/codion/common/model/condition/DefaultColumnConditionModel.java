@@ -62,7 +62,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 					.build();
 
 	private final C identifier;
-	private final Class<T> columnClass;
+	private final Class<T> valueClass;
 	private final Format format;
 	private final String dateTimePattern;
 	private final List<Operator> operators;
@@ -91,7 +91,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		this.operands.lowerBound.addValidator(lockValidator);
 		this.operands.lowerBound.addListener(autoEnableListener);
 		this.operands.lowerBound.addListener(conditionChanged);
-		this.columnClass = builder.columnClass;
+		this.valueClass = builder.valueClass;
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
 		this.caseSensitive = State.builder(builder.caseSensitive)
@@ -128,8 +128,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	@Override
-	public Class<T> columnClass() {
-		return columnClass;
+	public Class<T> valueClass() {
+		return valueClass;
 	}
 
 	@Override
@@ -597,7 +597,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		private static final List<Operator> DEFAULT_OPERATORS = asList(Operator.values());
 
 		private final C identifier;
-		private final Class<T> columnClass;
+		private final Class<T> valueClass;
 
 		private List<Operator> operators;
 		private Operator operator = Operator.EQUAL;
@@ -612,10 +612,10 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		private boolean caseSensitive = CASE_SENSITIVE.get();
 		private boolean autoEnable = true;
 
-		DefaultBuilder(C identifier, Class<T> columnClass) {
+		DefaultBuilder(C identifier, Class<T> valueClass) {
 			this.identifier = requireNonNull(identifier);
-			this.columnClass = requireNonNull(columnClass);
-			this.operators = columnClass.equals(Boolean.class) ? singletonList(Operator.EQUAL) : DEFAULT_OPERATORS;
+			this.valueClass = requireNonNull(valueClass);
+			this.operators = valueClass.equals(Boolean.class) ? singletonList(Operator.EQUAL) : DEFAULT_OPERATORS;
 		}
 
 		@Override

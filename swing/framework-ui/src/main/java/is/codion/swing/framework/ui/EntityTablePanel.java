@@ -1473,7 +1473,7 @@ public class EntityTablePanel extends JPanel {
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createColumnConditionPanels() {
 		return tableModel.queryModel().conditionModel().conditions().values().stream()
 						.filter(condition -> table.columnModel().containsColumn(condition.identifier()))
-						.filter(condition -> configuration.conditionFieldFactory.supportsType(condition.columnClass()))
+						.filter(condition -> configuration.conditionFieldFactory.supportsType(condition.valueClass()))
 						.map(this::createColumnConditionPanel)
 						.collect(toList());
 	}

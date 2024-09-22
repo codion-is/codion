@@ -132,9 +132,9 @@ public interface ColumnConditionModel<C, T> {
 	State locked();
 
 	/**
-	 * @return the column class this condition model is based on
+	 * @return the value class this condition model is based on
 	 */
-	Class<T> columnClass();
+	Class<T> valueClass();
 
 	/**
 	 * @return the operators available in this condition model
@@ -178,14 +178,14 @@ public interface ColumnConditionModel<C, T> {
 
 	/**
 	 * Returns a new {@link Builder} instance.
-	 * @param identifier the column identifier
-	 * @param columnClass the column class
-	 * @param <C> the column identifier type
-	 * @param <T> the column value type
+	 * @param identifier the condition identifier
+	 * @param valueClass the value class
+	 * @param <C> the condition identifier type
+	 * @param <T> the condition value type
 	 * @return a new {@link Builder} instance
 	 */
-	static <C, T> Builder<C, T> builder(C identifier, Class<T> columnClass) {
-		return new DefaultColumnConditionModel.DefaultBuilder<>(identifier, columnClass);
+	static <C, T> Builder<C, T> builder(C identifier, Class<T> valueClass) {
+		return new DefaultColumnConditionModel.DefaultBuilder<>(identifier, valueClass);
 	}
 
 	/**

@@ -46,48 +46,48 @@ final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 					LocalDateTime.class, OffsetDateTime.class);
 
 	@Override
-	public boolean supportsType(Class<?> columnClass) {
-		return SUPPORTED_TYPES.contains(requireNonNull(columnClass));
+	public boolean supportsType(Class<?> valueClass) {
+		return SUPPORTED_TYPES.contains(requireNonNull(valueClass));
 	}
 
 	@Override
-	public JComponent createEqualField(ColumnConditionModel<C, ?> conditionModel) {
-		return createField(conditionModel)
-						.link((Value<Object>) conditionModel.operands().equal())
+	public JComponent createEqualField(ColumnConditionModel<C, ?> condition) {
+		return createField(condition)
+						.link((Value<Object>) condition.operands().equal())
 						.build();
 	}
 
 	@Override
-	public Optional<JComponent> createUpperBoundField(ColumnConditionModel<C, ?> conditionModel) {
-		if (conditionModel.columnClass().equals(Boolean.class)) {
+	public Optional<JComponent> createUpperBoundField(ColumnConditionModel<C, ?> condition) {
+		if (condition.valueClass().equals(Boolean.class)) {
 			return Optional.empty();//no upper bound field required for boolean values
 		}
 
-		return Optional.of(createField(conditionModel)
-						.link((Value<Object>) conditionModel.operands().upperBound())
+		return Optional.of(createField(condition)
+						.link((Value<Object>) condition.operands().upperBound())
 						.build());
 	}
 
 	@Override
-	public Optional<JComponent> createLowerBoundField(ColumnConditionModel<C, ?> conditionModel) {
-		if (conditionModel.columnClass().equals(Boolean.class)) {
+	public Optional<JComponent> createLowerBoundField(ColumnConditionModel<C, ?> condition) {
+		if (condition.valueClass().equals(Boolean.class)) {
 			return Optional.empty();//no lower bound field required for boolean values
 		}
 
-		return Optional.of(createField(conditionModel)
-						.link((Value<Object>) conditionModel.operands().lowerBound())
+		return Optional.of(createField(condition)
+						.link((Value<Object>) condition.operands().lowerBound())
 						.build());
 	}
 
 	@Override
-	public JComponent createInField(ColumnConditionModel<C, ?> conditionModel) {
-		return listBox(createField(conditionModel).buildValue(),
-						(ValueSet<Object>) conditionModel.operands().in())
+	public JComponent createInField(ColumnConditionModel<C, ?> condition) {
+		return listBox(createField(condition).buildValue(),
+						(ValueSet<Object>) condition.operands().in())
 						.build();
 	}
 
 	private static <T> ComponentBuilder<T, ? extends JComponent, ?> createField(ColumnConditionModel<?, ?> columnConditionModel) {
-		Class<?> columnClass = columnConditionModel.columnClass();
+		Class<?> columnClass = columnConditionModel.valueClass();
 		if (columnClass.equals(Boolean.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) checkBox()
 							.nullable(true)

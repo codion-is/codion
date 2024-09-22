@@ -635,18 +635,18 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 
 			return columnFilters.stream()
-							.filter(conditionModel -> conditionModel.enabled().get())
-							.allMatch(conditionModel -> accepts(item, conditionModel, columns));
+							.filter(condition -> condition.enabled().get())
+							.allMatch(condition -> accepts(item, condition, columns));
 		}
 
-		private boolean accepts(R item, ColumnConditionModel<C, ?> conditionModel, Columns<R, C> columns) {
-			if (conditionModel.columnClass().equals(String.class)) {
-				String stringValue = columns.string(item, conditionModel.identifier());
+		private boolean accepts(R item, ColumnConditionModel<C, ?> condition, Columns<R, C> columns) {
+			if (condition.valueClass().equals(String.class)) {
+				String stringValue = columns.string(item, condition.identifier());
 
-				return ((ColumnConditionModel<?, String>) conditionModel).accepts(stringValue.isEmpty() ? null : stringValue);
+				return ((ColumnConditionModel<?, String>) condition).accepts(stringValue.isEmpty() ? null : stringValue);
 			}
 
-			return conditionModel.accepts(columns.comparable(item, conditionModel.identifier()));
+			return condition.accepts(columns.comparable(item, condition.identifier()));
 		}
 	}
 

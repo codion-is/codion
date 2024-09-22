@@ -69,54 +69,54 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 	}
 
 	@Override
-	public boolean supportsType(Class<?> columnClass) {
-		return SUPPORTED_TYPES.contains(requireNonNull(columnClass));
+	public boolean supportsType(Class<?> valueClass) {
+		return SUPPORTED_TYPES.contains(requireNonNull(valueClass));
 	}
 
 	@Override
-	public JComponent createEqualField(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
-		if (conditionModel.identifier() instanceof ForeignKey) {
-			return createEqualForeignKeyField(conditionModel);
+	public JComponent createEqualField(ColumnConditionModel<Attribute<?>, ?> condition) {
+		if (condition.identifier() instanceof ForeignKey) {
+			return createEqualForeignKeyField(condition);
 		}
 
-		return inputComponents.component((Attribute<Object>) conditionModel.identifier())
-						.link((Value<Object>) conditionModel.operands().equal())
+		return inputComponents.component((Attribute<Object>) condition.identifier())
+						.link((Value<Object>) condition.operands().equal())
 						.build();
 	}
 
 	@Override
-	public Optional<JComponent> createUpperBoundField(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
-		Class<?> columnClass = conditionModel.columnClass();
+	public Optional<JComponent> createUpperBoundField(ColumnConditionModel<Attribute<?>, ?> condition) {
+		Class<?> columnClass = condition.valueClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no upper bound field required for booleans or entities
 		}
 
-		return Optional.of(inputComponents.component((Attribute<Object>) conditionModel.identifier())
-						.link((Value<Object>) conditionModel.operands().upperBound())
+		return Optional.of(inputComponents.component((Attribute<Object>) condition.identifier())
+						.link((Value<Object>) condition.operands().upperBound())
 						.build());
 	}
 
 	@Override
-	public Optional<JComponent> createLowerBoundField(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
-		Class<?> columnClass = conditionModel.columnClass();
+	public Optional<JComponent> createLowerBoundField(ColumnConditionModel<Attribute<?>, ?> condition) {
+		Class<?> columnClass = condition.valueClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no lower bound field required for booleans or entities
 		}
 
-		return Optional.of(inputComponents.component((Attribute<Object>) conditionModel.identifier())
-						.link((Value<Object>) conditionModel.operands().lowerBound())
+		return Optional.of(inputComponents.component((Attribute<Object>) condition.identifier())
+						.link((Value<Object>) condition.operands().lowerBound())
 						.build());
 	}
 
 	@Override
-	public JComponent createInField(ColumnConditionModel<Attribute<?>, ?> conditionModel) {
-		if (conditionModel.identifier() instanceof ForeignKey) {
-			return createInForeignKeyField(conditionModel);
+	public JComponent createInField(ColumnConditionModel<Attribute<?>, ?> condition) {
+		if (condition.identifier() instanceof ForeignKey) {
+			return createInForeignKeyField(condition);
 		}
 
 		return listBox((ComponentValue<Object, JComponent>)
-						inputComponents.component(conditionModel.identifier())
-										.buildValue(), (ValueSet<Object>) conditionModel.operands().in()).build();
+						inputComponents.component(condition.identifier())
+										.buildValue(), (ValueSet<Object>) condition.operands().in()).build();
 	}
 
 	private JComponent createEqualForeignKeyField(ColumnConditionModel<? extends Attribute<?>, ?> model) {

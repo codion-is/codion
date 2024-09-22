@@ -35,6 +35,7 @@ Codion Change Log
 - TableConditionModel and ColumnConditionModel moved to condition package.
 - TableSummaryModel and ColumnSummaryModel moved to package summary.
 - TableConditionModel.conditionModel() renamed condition().
+- ColumnConditionModel.columnClass() renamed valueClass().
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.
