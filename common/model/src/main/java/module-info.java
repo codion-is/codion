@@ -26,8 +26,8 @@
  * <li>{@link is.codion.common.model.loadtest.LoadTest}
  * <li>{@link is.codion.common.model.condition.ColumnConditionModel}
  * <li>{@link is.codion.common.model.condition.TableConditionModel}
- * <li>{@link is.codion.common.model.table.ColumnSummaryModel}
- * <li>{@link is.codion.common.model.table.TableSummaryModel}
+ * <li>{@link is.codion.common.model.summary.ColumnSummaryModel}
+ * <li>{@link is.codion.common.model.summary.TableSummaryModel}
  */
 module is.codion.common.model {
 	requires org.slf4j;
@@ -39,5 +39,5 @@ module is.codion.common.model {
 	exports is.codion.common.model.loadtest;
 	exports is.codion.common.model.randomizer;
 	exports is.codion.common.model.selection;
-	exports is.codion.common.model.table;
+	exports is.codion.common.model.summary;
 }

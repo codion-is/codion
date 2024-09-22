@@ -16,9 +16,9 @@
  *
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.table;
+package is.codion.common.model.summary;
 
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
+import is.codion.common.model.summary.ColumnSummaryModel.SummaryValues;
 
 import java.text.Format;
 import java.text.NumberFormat;

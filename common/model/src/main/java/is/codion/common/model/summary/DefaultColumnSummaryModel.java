@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2009 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.table;
+package is.codion.common.model.summary;
 
 import is.codion.common.state.State;
 import is.codion.common.value.Value;

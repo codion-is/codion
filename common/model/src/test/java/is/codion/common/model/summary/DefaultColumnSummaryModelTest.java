@@ -16,10 +16,10 @@
  *
  * Copyright (c) 2009 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.table;
+package is.codion.common.model.summary;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
+import is.codion.common.model.summary.ColumnSummaryModel.SummaryValues;
 import is.codion.common.observer.Observer;
 
 import org.junit.jupiter.api.Test;
