@@ -120,7 +120,7 @@ State -|> StateObserver
 -------------------------------------------
 
 The {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver].
-A *State* implements *Value<Boolean>* and is non-nullable .
+A *State* implements *Value<Boolean>* and is non-nullable with null translating to false.
 
 States are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class.
 

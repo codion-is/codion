@@ -21,7 +21,7 @@ There are multiple ways to aquire a Database instance.
 include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=systemProperty]
 ----
 
-* By setting the JDBC url configuration value directly.
+* By setting the JDBC url configuration value directly (which also sets the system property).
 
 [source,java,indent=0]
 ----
@@ -51,7 +51,7 @@ include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=
 
 === DatabaseConnection
 
-The {url-javadoc}{common-db}/is/codion/common/db/connection/DatabaseConnection.html[DatabaseConnection] class represents a connection to a database instance and is a wrapper around an actual *java.sql.Connection* instance.
+The {url-javadoc}{common-db}/is/codion/common/db/connection/DatabaseConnection.html[DatabaseConnection] class represents a connection to a database instance and is a wrapper around a *java.sql.Connection* instance and provides transaction control.
 
 A *DatabaseConnection* instance is created via the *databaseConnection* factory methods.
 

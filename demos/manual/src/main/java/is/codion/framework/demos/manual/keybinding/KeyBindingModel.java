@@ -39,7 +39,6 @@ import java.util.function.Supplier;
 import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -169,7 +168,7 @@ final class KeyBindingModel {
 			WHEN_ANCESTOR_COLUMN
 		}
 
-		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
+		private static final List<Id> IDENTIFIERS = List.of(Id.values());
 
 		@Override
 		public List<Id> identifiers() {
@@ -183,18 +182,12 @@ final class KeyBindingModel {
 
 		@Override
 		public Object value(KeyBinding keyBinding, Id identifier) {
-			switch (identifier) {
-				case ACTION_COLUMN:
-					return keyBinding.action;
-				case WHEN_FOCUSED_COLUMN:
-					return keyBinding.whenFocused;
-				case WHEN_IN_FOCUSED_WINDOW_COLUMN:
-					return keyBinding.whenInFocusedWindow;
-				case WHEN_ANCESTOR_COLUMN:
-					return keyBinding.whenAncestor;
-				default:
-					throw new IllegalArgumentException("Unknown identifier: " + identifier);
-			}
+			return switch (identifier) {
+				case ACTION_COLUMN -> keyBinding.action;
+				case WHEN_FOCUSED_COLUMN -> keyBinding.whenFocused;
+				case WHEN_IN_FOCUSED_WINDOW_COLUMN -> keyBinding.whenInFocusedWindow;
+				case WHEN_ANCESTOR_COLUMN -> keyBinding.whenAncestor;
+			};
 		}
 	}
 

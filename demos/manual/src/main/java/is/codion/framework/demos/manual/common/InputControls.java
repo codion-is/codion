@@ -94,7 +94,9 @@ public final class InputControls {
 						.mnemonic('C')
 						.build();
 
-		Value<Boolean> booleanValue = Value.value();
+		Value<Boolean> booleanValue = Value.builder()
+						.nonNull(false)
+						.build();
 
 		ToggleControl toggleValueControl = Control.builder()
 						.toggle(booleanValue)

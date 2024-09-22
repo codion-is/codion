@@ -18,8 +18,8 @@
  */
 package is.codion.manual.swing.common.ui.component.table;
 
-import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Column;
-import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Row;
+import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Person;
+import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.PersonColumn;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
@@ -30,24 +30,23 @@ import javax.swing.JTable;
 import java.util.List;
 
 import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.createFilterTableModel;
-import static java.util.Arrays.asList;
 
 final class FilterTableDemo {
 
 	static void demo() {
 		// tag::filterTable[]
 		// See FilterTableModel example
-		FilterTableModel<Row, Column> tableModel = createFilterTableModel();
+		FilterTableModel<Person, PersonColumn> tableModel = createFilterTableModel();
 
-		List<FilterTableColumn<Column>> columns = asList(
-						FilterTableColumn.builder(Column.STRING)
-										.headerValue("String")
+		List<FilterTableColumn<PersonColumn>> columns = List.of(
+						FilterTableColumn.builder(PersonColumn.NAME)
+										.headerValue("Name")
 										.build(),
-						FilterTableColumn.builder(Column.INTEGER)
-										.headerValue("Integer")
+						FilterTableColumn.builder(PersonColumn.AGE)
+										.headerValue("Age")
 										.build());
 
-		FilterTable<Row, Column> filterTable = FilterTable.builder(tableModel, columns)
+		FilterTable<Person, PersonColumn> filterTable = FilterTable.builder(tableModel, columns)
 						.doubleClickAction(Control.command(() ->
 										tableModel.selection().item().optional()
 														.ifPresent(System.out::println)))

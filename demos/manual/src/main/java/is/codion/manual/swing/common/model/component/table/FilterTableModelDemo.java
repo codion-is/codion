@@ -20,105 +20,68 @@ package is.codion.manual.swing.common.model.component.table;
 
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
-import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
-
 public final class FilterTableModelDemo {
 	// tag::filterTableModel[]
-	// Define a enum denoting the columns
-	public enum Column {
-		INTEGER,
-		STRING
+	// Define a record representing the table rows
+	public record Person(String name, int age) {}
+
+	// Define an enum identifying the table columns
+	public enum PersonColumn {
+		NAME,
+		AGE
 	}
 
-	// Define a class representing the table rows
-	public static final class Row {
+	// Implement Columns, specifying the table columns
+	public static final class PersonColumns implements Columns<Person, PersonColumn> {
 
-		private final String stringValue;
-		private final Integer integerValue;
+		private static final List<PersonColumn> COLUMNS = List.of(PersonColumn.values());
 
-		Row(String stringValue, Integer integerValue) {
-			this.stringValue = stringValue;
-			this.integerValue = integerValue;
+		@Override
+		public List<PersonColumn> identifiers() {
+			return COLUMNS;
 		}
 
-		String stringValue() {
-			return stringValue;
+		@Override
+		public Class<?> columnClass(PersonColumn column) {
+			return switch (column) {
+				case NAME -> String.class;
+				case AGE -> Integer.class;
+			};
 		}
 
-		Integer integerValue() {
-			return integerValue;
+		@Override
+		public Object value(Person person, PersonColumn column) {
+			return switch (column) {
+				case NAME -> person.name();
+				case AGE -> person.age();
+			};
 		}
 	}
 
-	public static FilterTableModel<Row, Column> createFilterTableModel() {
-		List<Column> columnIdentifiers =
-						unmodifiableList(asList(Column.values()));
-
-		// Implement Columns, providing the table column configuration
-		Columns<Row, Column> columns = new Columns<Row, Column>() {
-
-			@Override
-			public List<Column> identifiers() {
-				return columnIdentifiers;
-			}
-
-			@Override
-			public Class<?> columnClass(Column identifier) {
-				switch (identifier) {
-					case STRING:
-						return String.class;
-					case INTEGER:
-						return Integer.class;
-					default:
-						throw new IllegalArgumentException();
-				}
-			}
-
-			@Override
-			public Object value(Row row, Column identifier) {
-				switch (identifier) {
-					case STRING:
-						return row.stringValue();
-					case INTEGER:
-						return row.integerValue();
-					default:
-						throw new IllegalArgumentException();
-				}
-			}
-		};
-
-		// Implement a item supplier responsible for supplying the table row items,
-		// without one the table can be populated by adding items manually
-		Supplier<Collection<Row>> items = () -> asList(
-						new Row("A string", 42),
-						new Row("Another string", 43));
+	public static FilterTableModel<Person, PersonColumn> createFilterTableModel() {
+		// Implement an item supplier responsible for supplying
+		// the table items when the table data is refreshed.
+		// Without one the table can be populated by adding items manually
+		Supplier<Collection<Person>> items = () -> List.of(
+						new Person("John", 42),
+						new Person("Mary", 43));
 
 		// Create the table model
-		FilterTableModel<Row, Column> tableModel =
-						FilterTableModel.builder(columns)
+		FilterTableModel<Person, PersonColumn> tableModel =
+						FilterTableModel.builder(new PersonColumns())
 										.items(items)
-										// if true then the item supplier is called in a
-										// background thread when the model is refreshed
-										.asyncRefresh(false)
 										.build();
 
 		// Populate the model
 		tableModel.refresh();
 
 		// Select the first row
-		FilterTableSelectionModel<Row> selection = tableModel.selection();
-		selection.index().set(0);
-
-		// With async refresh enabled
-		// tableModel.refreshThen(items ->
-		//        selectionModel.setSelectedIndex(0));
+		tableModel.selection().index().set(0);
 
 		return tableModel;
 	}

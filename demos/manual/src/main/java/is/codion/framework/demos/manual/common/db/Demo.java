@@ -88,7 +88,22 @@ public final class Demo {
 		DatabaseConnection databaseConnection =
 						DatabaseConnection.databaseConnection(database, user);
 
-		java.sql.Connection connection = databaseConnection.getConnection();
+		databaseConnection.startTransaction();
+		try {
+			java.sql.Connection connection = databaseConnection.getConnection();
+			connection.createStatement().execute("select 1");
+			databaseConnection.commitTransaction();
+		}
+		catch (SQLException e) {
+			databaseConnection.rollbackTransaction();
+			throw new DatabaseException(e);
+		}
+		catch (Exception e) {
+			databaseConnection.rollbackTransaction();
+			throw new RuntimeException(e);
+		}
+
+		databaseConnection.close();
 		// end::databaseConnection[]
 	}
 }

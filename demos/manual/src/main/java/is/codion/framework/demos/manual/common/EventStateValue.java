@@ -69,7 +69,8 @@ public final class EventStateValue {
 
 		// an observer manages the listeners for a State but can not modify it
 		StateObserver observer = state.observer();
-		// a not observer is always available
+		// a not observer is always available, which is
+		// always the reverse of the original state
 		StateObserver not = state.not();
 
 		// add a listener notified each time the state changes
@@ -79,7 +80,7 @@ public final class EventStateValue {
 
 		observer.addConsumer(value -> System.out.println("State: " + value));
 
-		state.set(false);//output: 'State: false'
+		state.set(null);//output: 'State: false'
 
 		// State extends StateObserver so listeners can be added
 		// directly without referring to the StateObserver
@@ -133,7 +134,7 @@ public final class EventStateValue {
 
 		value.set(4);
 
-		// a non-null value using 0 as null
+ 		// a non-null value using 0 as null replacement
 		Value<Integer> otherValue =
 						Value.builder()
 										.nonNull(0)
@@ -169,33 +170,47 @@ public final class EventStateValue {
 
 		System.out.println(value.get());// output: 42
 
-		value.clear();
+		value.set(null); //or value.clear();
 
 		System.out.println(value.get());//output: 0
 		// end::nullValue[]
 	}
 
 	// tag::observers[]
-	private static final class Counter {
+	private static final class IntegerValue {
 
-		private final State valueNull = State.state(true);
-		private final Value<Integer> value = Value.builder()
-						.<Integer>nullable()
-						.consumer(integer -> valueNull.set(integer == null))
+		private final State negative = State.state(false);
+		private final Value<Integer> integer = Value.builder()
+						.nonNull(0)
+						.consumer(value -> negative.set(value < 0))
 						.build();
+
+		/**
+		 * Increment the value by one
+		 */
+		public void increment() {
+			integer.map(value -> value + 1);
+		}
+
+		/**
+		 * Decrement the value by one
+		 */
+		public void decrement() {
+			integer.map(value -> value - 1);
+		}
 
 		/**
 		 * @return an observer notified each time the value changes
 		 */
-		public Observer<Integer> valueChanged() {
-			return value.observer();
+		public Observer<Integer> changed() {
+			return integer.observer();
 		}
 
 		/**
-		 * @return a state observer indicating whether the value is null
+		 * @return a state observer indicating whether the value is negative
 		 */
-		public StateObserver valueNull() {
-			return valueNull.observer();
+		public StateObserver negative() {
+			return negative.observer();
 		}
 	}
 	// end::observers[]
