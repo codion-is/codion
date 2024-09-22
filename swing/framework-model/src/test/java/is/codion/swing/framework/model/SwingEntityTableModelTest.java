@@ -91,7 +91,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	void testFiltering() {
 		testModel.refresh();
 		ColumnConditionModel<?, String> filterModel =
-						testModel.filterModel().conditionModel(Detail.STRING);
+						testModel.conditionModel().conditionModel(Detail.STRING);
 		filterModel.operands().equal().set("a");
 		testModel.items().filter();
 		assertEquals(4, testModel.items().filtered().count());

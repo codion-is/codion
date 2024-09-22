@@ -232,7 +232,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		EntityPanel entityPanel = createPanel(model);
 		if (entityPanel.containsTablePanel()) {
 			entityPanel.tablePanel().conditionPanel().state().set(conditionState);
-			entityPanel.tablePanel().table().filterPanel().state().set(filterState);
+			entityPanel.tablePanel().table().conditionPanel().state().set(filterState);
 		}
 		if (!detailPanelBuilders.isEmpty()) {
 			for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {

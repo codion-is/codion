@@ -1262,7 +1262,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createSelectFilterPanelControl() {
-		return command(() -> table.filterPanel().selectConditionPanel(this));
+		return command(() -> table.conditionPanel().selectConditionPanel(this));
 	}
 
 	private void toggleConditionPanel() {
@@ -1281,7 +1281,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void toggleFilterPanel() {
-		Value<ConditionState> conditionState = table.filterPanel().state();
+		Value<ConditionState> conditionState = table.conditionPanel().state();
 		switch (conditionState.get()) {
 			case HIDDEN:
 				conditionState.set(SIMPLE);
@@ -1302,7 +1302,7 @@ public class EntityTablePanel extends JPanel {
 		ControlsBuilder builder = Controls.builder()
 						.name(FrameworkMessages.filterNoun())
 						.smallIcon(ICONS.filter());
-		Controls filterPanelControls = table.filterPanel().controls();
+		Controls filterPanelControls = table.conditionPanel().controls();
 		if (filterPanelControls.notEmpty()) {
 			builder.actions(filterPanelControls.actions());
 		}
@@ -1515,7 +1515,7 @@ public class EntityTablePanel extends JPanel {
 		tableModel.refresher().failure().addConsumer(this::onException);
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
 		if (configuration.includeFilterPanel) {
-			table.filterPanel().conditionPanels().forEach(conditionPanel ->
+			table.conditionPanel().conditionPanels().forEach(conditionPanel ->
 							conditionPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
 											focusGainedObserver.addConsumer(scrollToColumn)));
 		}
@@ -2588,9 +2588,9 @@ public class EntityTablePanel extends JPanel {
 				}
 			}
 			if (configuration.includeFilterPanel) {
-				filterPanelScrollPane = createLinkedScrollPane(table.filterPanel());
-				table.filterPanel().state().addConsumer(this::filterPanelStateChanged);
-				if (table.filterPanel().state().isNotEqualTo(ConditionState.HIDDEN)) {
+				filterPanelScrollPane = createLinkedScrollPane(table.conditionPanel());
+				table.conditionPanel().state().addConsumer(this::filterPanelStateChanged);
+				if (table.conditionPanel().state().isNotEqualTo(ConditionState.HIDDEN)) {
 					tableSouthPanel.add(filterPanelScrollPane, BorderLayout.SOUTH);
 				}
 			}

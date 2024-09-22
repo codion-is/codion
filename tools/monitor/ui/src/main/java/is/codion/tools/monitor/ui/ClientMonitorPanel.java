@@ -71,12 +71,12 @@ public final class ClientMonitorPanel extends JPanel {
 		clientInstanceTable = FilterTable.builder(model.clientInstanceTableModel(), createColumns())
 						.popupMenu(this::createPopupMenu)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.filterState(ConditionState.SIMPLE)
+						.conditionState(ConditionState.SIMPLE)
 						.build();
 		clientInstanceScroller = scrollPane(clientInstanceTable)
 						.border(BorderFactory.createTitledBorder("Clients"))
 						.build();
-		filterScrollPane = createLinkedScrollPane(clientInstanceScroller, clientInstanceTable.filterPanel());
+		filterScrollPane = createLinkedScrollPane(clientInstanceScroller, clientInstanceTable.conditionPanel());
 		initializeUI();
 	}
 
@@ -157,7 +157,7 @@ public final class ClientMonitorPanel extends JPanel {
 	}
 
 	private void toggleAdvancedFilters(boolean advanced) {
-		clientInstanceTable.filterPanel().state().set(advanced ?
+		clientInstanceTable.conditionPanel().state().set(advanced ?
 						ConditionState.ADVANCED : ConditionState.SIMPLE);
 		revalidate();
 	}

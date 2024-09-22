@@ -404,8 +404,8 @@ public class FilterTableTest {
 		tableModel.selection().index().set(3);
 		assertEquals(3, selectionModel.index().get());
 
-		tableModel.filterModel().conditionModel(0).operands().equal().set("d");
-		tableModel.filterModel().conditionModel(0).enabled().set(false);
+		tableModel.conditionModel().conditionModel(0).operands().equal().set("d");
+		tableModel.conditionModel().conditionModel(0).enabled().set(false);
 
 		selectionModel.indexes().set(singletonList(3));
 		assertEquals(3, selectionModel.getMinSelectionIndex());

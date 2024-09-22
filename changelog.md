@@ -40,6 +40,7 @@ Codion Change Log
 - FilterTableModel, methods for adding and removing items moved to FilterModel.
 - DefaultFilterComboBoxModel.Selected bug fixed, refactoring mistake.
 - FilterModel.Items.VisibleItems and FilteredItems renamed Visible and Filtered respectively.
+- FilterTableModel.filterModel() renamed conditionModel().
 ### is.codion.swing.common.ui
 - FilterTable, now propagates the associated MouseEvent as the source of the ActionEvent when doubleClickAction is performed.
 - MenuBuilder no longer extends MenuItemBuilder.
@@ -47,6 +48,7 @@ Codion Change Log
 - ColumnConditionPanel.focusGainedEvent() renamed focusGainedObserver().
 - DefaultMenuBuilder bug fixed, now trims and prevents multiple separators.
 - Control.commandControl(), actionControl() and toggleControl() renamed command(), action() and toggle() respectively.
+- FilterTable.filterPanel() renamed conditionPanel().
 ### is.codion.framework.model
 - EntityEditModel.valueEdited() renamed edited().
 - EntityEditModel.entity() now Mutable based.

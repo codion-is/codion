@@ -68,7 +68,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final Columns<R, C> columns;
 	private final DefaultItems modelItems = new DefaultItems();
 	private final FilterTableSelectionModel<R> selectionModel;
-	private final TableConditionModel<C> filterModel;
+	private final TableConditionModel<C> conditionModel;
 	private final CombinedVisiblePredicate combinedVisiblePredicate;
 	private final Predicate<R> validator;
 	private final DefaultRefresher refresher;
@@ -81,9 +81,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = requireNonNull(builder.columns);
 		this.selectionModel = new DefaultFilterTableSelectionModel<>(modelItems);
-		this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
+		this.conditionModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
-		this.combinedVisiblePredicate = new CombinedVisiblePredicate(filterModel.conditionModels().values());
+		this.combinedVisiblePredicate = new CombinedVisiblePredicate(conditionModel.conditionModels().values());
 		this.refresher = new DefaultRefresher(builder.items == null ? modelItems::get : (Supplier<Collection<R>>) builder.items);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
@@ -145,8 +145,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public TableConditionModel<C> filterModel() {
-		return filterModel;
+	public TableConditionModel<C> conditionModel() {
+		return conditionModel;
 	}
 
 	@Override
@@ -321,7 +321,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 		});
 		addTableModelListener(removeSelectionListener);
-		filterModel.conditionChanged().addListener(modelItems::filter);
+		conditionModel.conditionChanged().addListener(modelItems::filter);
 		comparator.addListener(this::sort);
 	}
 

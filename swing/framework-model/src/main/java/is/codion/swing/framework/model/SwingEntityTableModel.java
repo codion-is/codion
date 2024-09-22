@@ -313,8 +313,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final TableConditionModel<Attribute<?>> filterModel() {
-		return tableModel().filterModel();
+	public final TableConditionModel<Attribute<?>> conditionModel() {
+		return tableModel().conditionModel();
 	}
 
 	@Override

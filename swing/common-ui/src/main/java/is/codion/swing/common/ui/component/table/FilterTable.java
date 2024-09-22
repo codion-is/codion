@@ -257,8 +257,8 @@ public final class FilterTable<R, C> extends JTable {
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
 		this.controlMap.control(TOGGLE_SORT_COLUMN).set(createToggleSortColumnControl());
 		this.controlMap.control(TOGGLE_SORT_COLUMN_ADD).set(createToggleSortColumnAddControl());
-		if (builder.filterState != ConditionState.HIDDEN) {
-			filterPanel().state().set(builder.filterState);
+		if (builder.conditionState != ConditionState.HIDDEN) {
+			conditionPanel().state().set(builder.conditionState);
 		}
 		autoStartsEdit(builder.autoStartsEdit);
 		setSelectionMode(builder.selectionMode);
@@ -339,11 +339,11 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * @return the filter panel
+	 * @return the filter condition panel
 	 */
-	public TableConditionPanel<C> filterPanel() {
+	public TableConditionPanel<C> conditionPanel() {
 		if (filterPanel == null) {
-			filterPanel = filterPanelFactory.create(tableModel.filterModel(), createColumnFilterPanels(),
+			filterPanel = filterPanelFactory.create(tableModel.conditionModel(), createColumnFilterPanels(),
 							columnModel(), this::configureTableConditionPanel);
 		}
 
@@ -847,7 +847,7 @@ public final class FilterTable<R, C> extends JTable {
 													boolean columnResizingAllowed) {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
-		tableModel.filterModel().conditionChanged().addListener(getTableHeader()::repaint);
+		tableModel.conditionModel().conditionChanged().addListener(getTableHeader()::repaint);
 		searchModel.currentResult().addListener(this::repaint);
 		sortModel.sortingChanged().addListener(getTableHeader()::repaint);
 		sortModel.sortingChanged().addListener(() ->
@@ -861,7 +861,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void onColumnHidden(C identifier) {
 		//disable the filter model for the column to be hidden, to prevent confusion
-		ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(identifier);
+		ColumnConditionModel<?, ?> filterModel = tableModel.conditionModel().conditionModels().get(identifier);
 		if (filterModel != null && !filterModel.locked().get()) {
 			filterModel.enabled().set(false);
 		}
@@ -885,7 +885,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
-		return tableModel.filterModel().conditionModels().values().stream()
+		return tableModel.conditionModel().conditionModels().values().stream()
 						.filter(conditionModel -> columnModel().containsColumn(conditionModel.identifier()))
 						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.columnClass()))
 						.map(conditionModel -> FilterColumnConditionPanel.builder(conditionModel)
@@ -1018,7 +1018,7 @@ public final class FilterTable<R, C> extends JTable {
 		/**
 		 * @param filterFieldFactory the column filter field factory
 		 * @return this builder instance
-		 * @see FilterTable#filterPanel()
+		 * @see FilterTable#conditionPanel()
 		 */
 		Builder<R, C> filterFieldFactory(FieldFactory<C> filterFieldFactory);
 
@@ -1092,10 +1092,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> autoResizeMode(int autoResizeMode);
 
 		/**
-		 * @param filterState the initial filter panel state
+		 * @param conditionState the initial filter condition panel state
 		 * @return this builder instance
 		 */
-		Builder<R, C> filterState(ConditionState filterState);
+		Builder<R, C> conditionState(ConditionState conditionState);
 
 		/**
 		 * @param controlKey the control key
@@ -1162,7 +1162,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean columnReorderingAllowed = ALLOW_COLUMN_REORDERING.get();
 		private boolean columnResizingAllowed = true;
 		private int autoResizeMode = AUTO_RESIZE_MODE.get();
-		private ConditionState filterState = ConditionState.HIDDEN;
+		private ConditionState conditionState = ConditionState.HIDDEN;
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = tableModel;
@@ -1256,8 +1256,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> filterState(ConditionState filterState) {
-			this.filterState = requireNonNull(filterState);
+		public Builder<R, C> conditionState(ConditionState conditionState) {
+			this.conditionState = requireNonNull(conditionState);
 			return this;
 		}
 

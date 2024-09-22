@@ -110,9 +110,9 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	FilterTableSelectionModel<R> selection();
 
 	/**
-	 * @return the filter model used by this table model
+	 * @return the filter condition model used by this table model
 	 */
-	TableConditionModel<C> filterModel();
+	TableConditionModel<C> conditionModel();
 
 	/**
 	 * {@inheritDoc}
