@@ -151,8 +151,8 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Attri
 	}
 
 	@Override
-	public boolean accepts(Comparable<Entity> columnValue) {
-		return condition.accepts(columnValue);
+	public boolean accepts(Comparable<Entity> value) {
+		return condition.accepts(value);
 	}
 
 	@Override

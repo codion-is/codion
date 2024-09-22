@@ -149,8 +149,8 @@ public final class ForeignKeyConditionModel implements ConditionModel<Attribute<
 	}
 
 	@Override
-	public boolean accepts(Comparable<Entity> columnValue) {
-		return condition.accepts(columnValue);
+	public boolean accepts(Comparable<Entity> value) {
+		return condition.accepts(value);
 	}
 
 	@Override

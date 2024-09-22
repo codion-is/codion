@@ -169,8 +169,8 @@ final class DefaultConditionModel<C, T> implements ConditionModel<C, T> {
 	}
 
 	@Override
-	public boolean accepts(Comparable<T> comparable) {
-		return valueAccepted(comparable);
+	public boolean accepts(Comparable<T> value) {
+		return valueAccepted(value);
 	}
 
 	@Override

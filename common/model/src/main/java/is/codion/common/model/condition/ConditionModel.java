@@ -34,11 +34,10 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
 /**
- * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
- * as well as relevant events and states.
+ * Specifies a condition with an operator and operands as well as relevant events and states.
  * For instances create a {@link Builder} via {@link #builder(Object, Class)}.
- * @param <C> the type used to identify columns
- * @param <T> the column value type
+ * @param <C> the type used to identify the condition
+ * @param <T> the condition value type
  */
 public interface ConditionModel<C, T> {
 
@@ -95,7 +94,7 @@ public interface ConditionModel<C, T> {
 	}
 
 	/**
-	 * @return the column identifier
+	 * @return the condition identifier
 	 */
 	C identifier();
 
@@ -166,10 +165,10 @@ public interface ConditionModel<C, T> {
 
 	/**
 	 * Returns true if the given value is accepted by this models condition.
-	 * @param columnValue the column value
+	 * @param value the value
 	 * @return true if the given value is accepted by this models condition
 	 */
-	boolean accepts(Comparable<T> columnValue);
+	boolean accepts(Comparable<T> value);
 
 	/**
 	 * @return an observer notified each time the condition state changes
@@ -190,7 +189,7 @@ public interface ConditionModel<C, T> {
 
 	/**
 	 * Provides access to the operands.
-	 * @param <T> the column value type
+	 * @param <T> the value type
 	 */
 	interface Operands<T> {
 
@@ -221,9 +220,9 @@ public interface ConditionModel<C, T> {
 	interface Factory<C> {
 
 		/**
-		 * Creates a {@link ConditionModel} for a given column
-		 * @param identifier the identifier of the column for which to create a {@link ConditionModel}
-		 * @return a {@link ConditionModel} for the given column or an empty optional if none is available
+		 * Creates a {@link ConditionModel} for a given identifier
+		 * @param identifier the identifier for which to create a {@link ConditionModel}
+		 * @return a {@link ConditionModel} for the given identifier or an empty optional if none is provided
 		 */
 		Optional<ConditionModel<C, ?>> createConditionModel(C identifier);
 	}
@@ -256,7 +255,7 @@ public interface ConditionModel<C, T> {
 		Builder<C, T> format(Format format);
 
 		/**
-		 * @param dateTimePattern the date/time format pattern to use in case of a date/time column
+		 * @param dateTimePattern the date/time format pattern to use in case of a date/time value
 		 * @return this builder instance
 		 */
 		Builder<C, T> dateTimePattern(String dateTimePattern);
