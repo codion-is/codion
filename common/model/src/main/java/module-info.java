@@ -24,9 +24,9 @@
  * <li>{@link is.codion.common.model.selection.SingleSelectionModel}
  * <li>{@link is.codion.common.model.selection.SelectionModel}
  * <li>{@link is.codion.common.model.loadtest.LoadTest}
- * <li>{@link is.codion.common.model.table.ColumnConditionModel}
+ * <li>{@link is.codion.common.model.condition.ColumnConditionModel}
+ * <li>{@link is.codion.common.model.condition.TableConditionModel}
  * <li>{@link is.codion.common.model.table.ColumnSummaryModel}
- * <li>{@link is.codion.common.model.table.TableConditionModel}
  * <li>{@link is.codion.common.model.table.TableSummaryModel}
  */
 module is.codion.common.model {
@@ -35,6 +35,7 @@ module is.codion.common.model {
 	requires transitive is.codion.common.core;
 
 	exports is.codion.common.model;
+	exports is.codion.common.model.condition;
 	exports is.codion.common.model.loadtest;
 	exports is.codion.common.model.randomizer;
 	exports is.codion.common.model.selection;

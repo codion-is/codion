@@ -18,7 +18,7 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.condition.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;

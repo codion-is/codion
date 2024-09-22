@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.condition.ColumnConditionModel;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;

@@ -18,8 +18,8 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;

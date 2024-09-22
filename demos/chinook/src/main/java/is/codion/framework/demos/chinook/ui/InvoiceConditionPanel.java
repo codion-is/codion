@@ -20,8 +20,8 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.Operator;
 import is.codion.common.item.Item;
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;

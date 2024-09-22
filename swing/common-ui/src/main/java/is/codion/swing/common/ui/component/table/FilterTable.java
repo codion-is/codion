@@ -23,7 +23,7 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.condition.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.observer.Observer;

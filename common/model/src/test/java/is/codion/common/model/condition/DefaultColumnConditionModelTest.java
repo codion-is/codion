@@ -16,11 +16,11 @@
  *
  * Copyright (c) 2010 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.table;
+package is.codion.common.model.condition;
 
 import is.codion.common.Operator;
-import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
-import is.codion.common.model.table.ColumnConditionModel.Operands;
+import is.codion.common.model.condition.ColumnConditionModel.AutomaticWildcard;
+import is.codion.common.model.condition.ColumnConditionModel.Operands;
 
 import org.junit.jupiter.api.Test;
 

@@ -19,7 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Operator;
-import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.condition.ColumnConditionModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;

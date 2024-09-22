@@ -32,6 +32,7 @@ Codion Change Log
 - SelectionModel.clear() moved to SingleSelectionModel.
 - FilterModel.sortItems() renamed sort().
 - FilterModel.Items.count() added, Items.Visible and Filtered.size() renamed count().
+- TableConditionModel and ColumnConditionModel moved to condition package.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.

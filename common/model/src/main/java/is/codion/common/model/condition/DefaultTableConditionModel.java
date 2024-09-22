@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.table;
+package is.codion.common.model.condition;
 
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;

@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.UserPreferences;
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
+import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;

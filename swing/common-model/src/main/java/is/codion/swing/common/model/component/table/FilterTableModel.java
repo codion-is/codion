@@ -19,8 +19,8 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.model.condition.ColumnConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.value.Value;
 
 import javax.swing.table.TableModel;

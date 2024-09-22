@@ -19,7 +19,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.condition.ColumnConditionModel;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;

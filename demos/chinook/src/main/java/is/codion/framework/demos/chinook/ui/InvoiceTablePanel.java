@@ -18,7 +18,7 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
