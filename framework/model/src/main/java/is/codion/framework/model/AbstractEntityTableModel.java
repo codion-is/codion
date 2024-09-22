@@ -49,7 +49,7 @@ import static java.util.stream.Collectors.toList;
 
 public abstract class AbstractEntityTableModel<E extends EntityEditModel> implements EntityTableModel<E> {
 
-	private final FilterModel<Entity> tableModel;
+	private final FilterModel<Entity> filterModel;
 	private final E editModel;
 	private final EntityQueryModel queryModel;
 	private final State handleEditEvents = State.builder()
@@ -65,22 +65,22 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	/**
 	 * @param editModel the edit model
-	 * @param tableModel the filter model
+	 * @param filterModel the filter model
 	 */
-	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> tableModel) {
-		this(editModel, tableModel, new DefaultEntityQueryModel(entityConditionModel(editModel.entityType(), editModel.connectionProvider())));
+	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel) {
+		this(editModel, filterModel, new DefaultEntityQueryModel(entityConditionModel(editModel.entityType(), editModel.connectionProvider())));
 	}
 
 	/**
 	 * @param editModel the edit model
-	 * @param tableModel the filter model
+	 * @param filterModel the filter model
 	 * @param queryModel the table query model, may be null
 	 * @throws IllegalArgumentException in case the edit and query model entity types do not match
 	 */
-	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> tableModel, EntityQueryModel queryModel) {
+	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel, EntityQueryModel queryModel) {
 		this.editModel = requireNonNull(editModel);
 		this.queryModel = requireNonNull(queryModel);
-		this.tableModel = requireNonNull(tableModel);
+		this.filterModel = requireNonNull(filterModel);
 		if (queryModel != null && !editModel.entityType().equals(queryModel.entityType())) {
 			throw new IllegalArgumentException("Entity type mismatch, edit model: " +
 							editModel.entities() + ", query model: " + queryModel.entityType());
@@ -151,12 +151,12 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public Object backgroundColor(int row, Attribute<?> attribute) {
-		return entityDefinition().backgroundColorProvider().color(tableModel.items().visible().itemAt(row), requireNonNull(attribute));
+		return entityDefinition().backgroundColorProvider().color(filterModel.items().visible().itemAt(row), requireNonNull(attribute));
 	}
 
 	@Override
 	public Object foregroundColor(int row, Attribute<?> attribute) {
-		return entityDefinition().foregroundColorProvider().color(tableModel.items().visible().itemAt(row), requireNonNull(attribute));
+		return entityDefinition().foregroundColorProvider().color(filterModel.items().visible().itemAt(row), requireNonNull(attribute));
 	}
 
 	@Override
@@ -186,32 +186,32 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final Items<Entity> items() {
-		return tableModel.items();
+		return filterModel.items();
 	}
 
 	@Override
 	public final Refresher<Entity> refresher() {
-		return tableModel.refresher();
+		return filterModel.refresher();
 	}
 
 	@Override
 	public final void refresh() {
-		tableModel.refresh();
+		filterModel.refresh();
 	}
 
 	@Override
 	public final void refreshThen(Consumer<Collection<Entity>> afterRefresh) {
-		tableModel.refreshThen(afterRefresh);
+		filterModel.refreshThen(afterRefresh);
 	}
 
 	@Override
 	public final void clear() {
-		tableModel.clear();
+		filterModel.clear();
 	}
 
 	@Override
 	public final int rowCount() {
-		return tableModel.items().visible().count();
+		return filterModel.items().visible().count();
 	}
 
 	@Override
@@ -236,10 +236,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	/**
-	 * @return the underlying table model
+	 * @return the underlying filter model
 	 */
-	protected FilterModel<Entity> tableModel() {
-		return tableModel;
+	protected FilterModel<Entity> filterModel() {
+		return filterModel;
 	}
 
 	/**

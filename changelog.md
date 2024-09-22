@@ -70,6 +70,7 @@ Codion Change Log
 - AbstractEntityTableModel.find() bug fixed, now searches through all items, not just visible.
 - AbstractEntityTableModel.indexOf() now loop based.
 - EntityTableModel.find() and indexOf() removed.
+- AbstractEntityTableModel.tableModel() renamed filterModel().
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.

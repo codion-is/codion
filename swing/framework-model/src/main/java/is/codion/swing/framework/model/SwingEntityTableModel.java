@@ -199,157 +199,157 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 	@Override
 	public final int getRowCount() {
-		return tableModel().getRowCount();
+		return filterModel().getRowCount();
 	}
 
 	@Override
 	public final Object getValueAt(int rowIndex, int columnIndex) {
-		return tableModel().getValueAt(rowIndex, columnIndex);
+		return filterModel().getValueAt(rowIndex, columnIndex);
 	}
 
 	@Override
 	public final String getStringAt(int rowIndex, Attribute<?> attribute) {
-		return tableModel().getStringAt(rowIndex, attribute);
+		return filterModel().getStringAt(rowIndex, attribute);
 	}
 
 	@Override
 	public final void addItems(Collection<Entity> items) {
-		tableModel().addItems(items);
+		filterModel().addItems(items);
 	}
 
 	@Override
 	public final void addItemsSorted(Collection<Entity> items) {
-		tableModel().addItemsSorted(items);
+		filterModel().addItemsSorted(items);
 	}
 
 	@Override
 	public final void addItemsAt(int index, Collection<Entity> items) {
-		tableModel().addItemsAt(index, items);
+		filterModel().addItemsAt(index, items);
 	}
 
 	@Override
 	public final void addItemsAtSorted(int index, Collection<Entity> items) {
-		tableModel().addItemsAtSorted(index, items);
+		filterModel().addItemsAtSorted(index, items);
 	}
 
 	@Override
 	public final void addItem(Entity item) {
-		tableModel().addItem(item);
+		filterModel().addItem(item);
 	}
 
 	@Override
 	public final void addItemAt(int index, Entity item) {
-		tableModel().addItemAt(index, item);
+		filterModel().addItemAt(index, item);
 	}
 
 	@Override
 	public final void addItemSorted(Entity item) {
-		tableModel().addItemSorted(item);
+		filterModel().addItemSorted(item);
 	}
 
 	@Override
 	public final void setItemAt(int index, Entity item) {
-		tableModel().setItemAt(index, item);
+		filterModel().setItemAt(index, item);
 	}
 
 	@Override
 	public final void removeItems(Collection<Entity> items) {
-		tableModel().removeItems(items);
+		filterModel().removeItems(items);
 	}
 
 	@Override
 	public final void removeItem(Entity item) {
-		tableModel().removeItem(item);
+		filterModel().removeItem(item);
 	}
 
 	@Override
 	public final Entity removeItemAt(int index) {
-		return tableModel().removeItemAt(index);
+		return filterModel().removeItemAt(index);
 	}
 
 	@Override
 	public final List<Entity> removeItems(int fromIndex, int toIndex) {
-		return tableModel().removeItems(fromIndex, toIndex);
+		return filterModel().removeItems(fromIndex, toIndex);
 	}
 
 	@Override
 	public final void fireTableDataChanged() {
-		tableModel().fireTableDataChanged();
+		filterModel().fireTableDataChanged();
 	}
 
 	@Override
 	public final void fireTableRowsUpdated(int fromIndex, int toIndex) {
-		tableModel().fireTableRowsUpdated(fromIndex, toIndex);
+		filterModel().fireTableRowsUpdated(fromIndex, toIndex);
 	}
 
 	@Override
 	public final <T> Collection<T> values(Attribute<?> attribute) {
-		return tableModel().values(attribute);
+		return filterModel().values(attribute);
 	}
 
 	@Override
 	public final Class<?> getColumnClass(Attribute<?> attribute) {
-		return tableModel().getColumnClass(attribute);
+		return filterModel().getColumnClass(attribute);
 	}
 
 	@Override
 	public final <T> Collection<T> selectedValues(Attribute<?> attribute) {
-		return tableModel().selectedValues(attribute);
+		return filterModel().selectedValues(attribute);
 	}
 
 	@Override
 	public final Value<RefreshStrategy> refreshStrategy() {
-		return tableModel().refreshStrategy();
+		return filterModel().refreshStrategy();
 	}
 
 	@Override
 	public final void sort() {
-		tableModel().sort();
+		filterModel().sort();
 	}
 
 	@Override
 	public final FilterTableSelectionModel<Entity> selection() {
-		return tableModel().selection();
+		return filterModel().selection();
 	}
 
 	@Override
 	public final TableConditionModel<Attribute<?>> conditionModel() {
-		return tableModel().conditionModel();
+		return filterModel().conditionModel();
 	}
 
 	@Override
 	public final int getColumnCount() {
-		return tableModel().getColumnCount();
+		return filterModel().getColumnCount();
 	}
 
 	@Override
 	public final String getColumnName(int columnIndex) {
-		return tableModel().getColumnName(columnIndex);
+		return filterModel().getColumnName(columnIndex);
 	}
 
 	@Override
 	public final Class<?> getColumnClass(int columnIndex) {
-		return tableModel().getColumnClass(columnIndex);
+		return filterModel().getColumnClass(columnIndex);
 	}
 
 	@Override
 	public final void addTableModelListener(TableModelListener listener) {
-		tableModel().addTableModelListener(listener);
+		filterModel().addTableModelListener(listener);
 	}
 
 	@Override
 	public final void removeTableModelListener(TableModelListener listener) {
-		tableModel().removeTableModelListener(listener);
+		filterModel().removeTableModelListener(listener);
 	}
 
 	@Override
 	public final Columns<Entity, Attribute<?>> columns() {
-		return tableModel().columns();
+		return filterModel().columns();
 	}
 
 	@Override
 	public final Value<Comparator<Entity>> comparator() {
-		return tableModel().comparator();
+		return filterModel().comparator();
 	}
 
 	/**
@@ -376,8 +376,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	protected final FilterTableModel<Entity, Attribute<?>> tableModel() {
-		return (FilterTableModel<Entity, Attribute<?>>) super.tableModel();
+	protected final FilterTableModel<Entity, Attribute<?>> filterModel() {
+		return (FilterTableModel<Entity, Attribute<?>>) super.filterModel();
 	}
 
 	@Override
