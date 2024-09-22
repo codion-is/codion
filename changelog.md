@@ -71,6 +71,7 @@ Codion Change Log
 - AbstractEntityTableModel.indexOf() now loop based.
 - EntityTableModel.find() and indexOf() removed.
 - AbstractEntityTableModel.tableModel() renamed filterModel().
+- EntityEditEvents.addListener() methods replaced with observer() methods.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.

@@ -74,7 +74,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	public <T> ConditionModel<C, T> condition(C identifier) {
 		ConditionModel<C, T> condition = (ConditionModel<C, T>) conditions.get(identifier);
 		if (condition == null) {
-			throw new IllegalArgumentException("No condition available for column: " + identifier);
+			throw new IllegalArgumentException("No condition available for identifier: " + identifier);
 		}
 
 		return condition;

@@ -678,15 +678,15 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		}
 
 		private void addEditListeners() {
-			EntityEditEvents.addInsertListener(entityType, insertListener);
-			EntityEditEvents.addUpdateListener(entityType, updateListener);
-			EntityEditEvents.addDeleteListener(entityType, deleteListener);
+			EntityEditEvents.insertObserver(entityType).addWeakConsumer(insertListener);
+			EntityEditEvents.updateObserver(entityType).addWeakConsumer(updateListener);
+			EntityEditEvents.deleteObserver(entityType).addWeakConsumer(deleteListener);
 		}
 
 		private void removeEditListeners() {
-			EntityEditEvents.removeInsertListener(entityType, insertListener);
-			EntityEditEvents.removeUpdateListener(entityType, updateListener);
-			EntityEditEvents.removeDeleteListener(entityType, deleteListener);
+			EntityEditEvents.insertObserver(entityType).removeWeakConsumer(insertListener);
+			EntityEditEvents.updateObserver(entityType).removeWeakConsumer(updateListener);
+			EntityEditEvents.deleteObserver(entityType).removeWeakConsumer(deleteListener);
 		}
 	}
 

@@ -74,7 +74,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	/**
 	 * @param editModel the edit model
 	 * @param filterModel the filter model
-	 * @param queryModel the table query model, may be null
+	 * @param queryModel the table query model
 	 * @throws IllegalArgumentException in case the edit and query model entity types do not match
 	 */
 	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel, EntityQueryModel queryModel) {
@@ -369,11 +369,11 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		public void accept(Boolean handleEditEvents) {
 			if (handleEditEvents) {
 				entityTypes().forEach(entityType ->
-								EntityEditEvents.addUpdateListener(entityType, updateListener));
+								EntityEditEvents.updateObserver(entityType).addWeakConsumer(updateListener));
 			}
 			else {
 				entityTypes().forEach(entityType ->
-								EntityEditEvents.removeUpdateListener(entityType, updateListener));
+								EntityEditEvents.updateObserver(entityType).removeWeakConsumer(updateListener));
 			}
 		}
 
