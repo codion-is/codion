@@ -54,22 +54,22 @@ public class EntityComboBoxConditionModelTest {
 		EntityComboBoxModel comboBoxModel = entityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
 		comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
-		SwingForeignKeyConditionModel conditionModel =
+		SwingForeignKeyConditionModel condition =
 						SwingForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
 										.includeEqualOperators(comboBoxModel)
 										.includeInOperators(searchModel)
 										.build();
-		EntityComboBoxModel equalComboBoxModel = conditionModel.equalComboBoxModel();
+		EntityComboBoxModel equalComboBoxModel = condition.equalComboBoxModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		equalComboBoxModel.setSelectedItem(sales);
-		Entity searchEntity = conditionModel.operands().equal().get();
+		Entity searchEntity = condition.operands().equal().get();
 		assertSame(sales, searchEntity);
 		equalComboBoxModel.refresh();
 		assertEquals(sales, equalComboBoxModel.selection().value());
 
-		conditionModel.operands().equal().set(null);
+		condition.operands().equal().set(null);
 		assertTrue(equalComboBoxModel.selection().nullSelected());
-		conditionModel.operands().equal().set(sales);
+		condition.operands().equal().set(sales);
 		assertEquals(equalComboBoxModel.getSelectedItem(), sales);
 
 		equalComboBoxModel.setSelectedItem(null);

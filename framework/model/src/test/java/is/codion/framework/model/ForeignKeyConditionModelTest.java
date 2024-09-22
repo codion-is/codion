@@ -47,22 +47,22 @@ public class ForeignKeyConditionModelTest {
 
 	@Test
 	void inSearchModel() throws DatabaseException {
-		ForeignKeyConditionModel conditionModel = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
 						.includeEqualOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.includeInOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.build();
-		EntitySearchModel inSearchModel = conditionModel.inSearchModel();
+		EntitySearchModel inSearchModel = condition.inSearchModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		inSearchModel.selection().entity().set(sales);
-		Collection<Entity> searchEntities = conditionModel.operands().in().get();
+		Collection<Entity> searchEntities = condition.operands().in().get();
 		assertEquals(1, searchEntities.size());
 		assertTrue(searchEntities.contains(sales));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		List<Entity> salesAccounting = asList(sales, accounting);
 		inSearchModel.selection().entities().set(salesAccounting);
-		assertTrue(conditionModel.operands().in().get().contains(sales));
-		assertTrue(conditionModel.operands().in().get().contains(accounting));
-		searchEntities = conditionModel.operands().in().get();
+		assertTrue(condition.operands().in().get().contains(sales));
+		assertTrue(condition.operands().in().get().contains(accounting));
+		searchEntities = condition.operands().in().get();
 		assertEquals(2, searchEntities.size());
 		assertTrue(searchEntities.contains(sales));
 		assertTrue(searchEntities.contains(accounting));
@@ -70,30 +70,30 @@ public class ForeignKeyConditionModelTest {
 
 	@Test
 	void equalSearchModel() throws DatabaseException {
-		ForeignKeyConditionModel conditionModel = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
 						.includeEqualOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.includeInOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.build();
-		EntitySearchModel equalSearchModel = conditionModel.equalSearchModel();
+		EntitySearchModel equalSearchModel = condition.equalSearchModel();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		equalSearchModel.selection().entity().set(sales);
-		Entity searchEntity = conditionModel.operands().equal().get();
+		Entity searchEntity = condition.operands().equal().get();
 		assertSame(sales, searchEntity);
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		equalSearchModel.selection().entity().set(accounting);
-		assertSame(accounting, conditionModel.operands().equal().get());
+		assertSame(accounting, condition.operands().equal().get());
 
 		equalSearchModel.selection().entity().clear();
 
-		searchEntity = conditionModel.operands().equal().get();
+		searchEntity = condition.operands().equal().get();
 		assertNull(searchEntity);
 
-		conditionModel.operands().equal().set(sales);
+		condition.operands().equal().set(sales);
 		assertEquals("SALES", equalSearchModel.searchString().get());
 		sales.put(Department.NAME, "sales");
 		equalSearchModel.selection().entity().set(sales);
 		sales.put(Department.NAME, "SAles");
-		conditionModel.operands().equal().set(sales);
+		condition.operands().equal().set(sales);
 		assertEquals("SAles", equalSearchModel.searchString().get());
 	}
 }

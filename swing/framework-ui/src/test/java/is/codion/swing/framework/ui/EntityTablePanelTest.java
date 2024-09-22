@@ -124,11 +124,11 @@ public class EntityTablePanelTest {
 		column.setWidth(150);//timestamp
 		column = columnModel.getColumn(5);
 		column.setWidth(170);//entity_ref
-		ConditionModel<Attribute<?>, String> conditionModel =
+		ConditionModel<Attribute<?>, String> condition =
 						testModel.queryModel().conditionModel().attributeCondition(Detail.STRING);
-		conditionModel.autoEnable().set(false);
-		conditionModel.automaticWildcard().set(AutomaticWildcard.PREFIX);
-		conditionModel.caseSensitive().set(false);
+		condition.autoEnable().set(false);
+		condition.automaticWildcard().set(AutomaticWildcard.PREFIX);
+		condition.caseSensitive().set(false);
 
 		tablePanel.savePreferences();
 
@@ -143,10 +143,10 @@ public class EntityTablePanelTest {
 
 		column = columnModel.getColumn(5);
 		assertEquals(170, column.getPreferredWidth());
-		conditionModel = testModel.queryModel().conditionModel().attributeCondition(Detail.STRING);
-		assertFalse(conditionModel.autoEnable().get());
-		assertEquals(conditionModel.automaticWildcard().get(), AutomaticWildcard.PREFIX);
-		assertFalse(conditionModel.caseSensitive().get());
+		condition = testModel.queryModel().conditionModel().attributeCondition(Detail.STRING);
+		assertFalse(condition.autoEnable().get());
+		assertEquals(condition.automaticWildcard().get(), AutomaticWildcard.PREFIX);
+		assertFalse(condition.caseSensitive().get());
 
 		tablePanel.clearPreferences();
 		UserPreferences.flushUserPreferences();

@@ -886,12 +886,12 @@ public final class FilterTable<R, C> extends JTable {
 
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
 		return tableModel.conditionModel().conditions().values().stream()
-						.filter(conditionModel -> columnModel().containsColumn(conditionModel.identifier()))
-						.filter(conditionModel -> filterFieldFactory.supportsType(conditionModel.valueClass()))
-						.map(conditionModel -> FilterColumnConditionPanel.builder(conditionModel)
+						.filter(condition -> columnModel().containsColumn(condition.identifier()))
+						.filter(condition -> filterFieldFactory.supportsType(condition.valueClass()))
+						.map(condition -> FilterColumnConditionPanel.builder(condition)
 										.fieldFactory(filterFieldFactory)
-										.tableColumn(columnModel().column(conditionModel.identifier()))
-										.caption(Objects.toString(columnModel().column(conditionModel.identifier()).getHeaderValue()))
+										.tableColumn(columnModel().column(condition.identifier()))
+										.caption(Objects.toString(columnModel().column(condition.identifier()).getHeaderValue()))
 										.build())
 						.collect(toList());
 	}

@@ -212,148 +212,148 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void multiConditionString() {
-		ConditionModel<String, String> conditionModel = ConditionModel.builder("test", String.class).build();
-		conditionModel.caseSensitive().set(false);
-		conditionModel.automaticWildcard().set(AutomaticWildcard.NONE);
+		ConditionModel<String, String> condition = ConditionModel.builder("test", String.class).build();
+		condition.caseSensitive().set(false);
+		condition.automaticWildcard().set(AutomaticWildcard.NONE);
 
 		Collection<String> strings = asList("abc", "def");
-		conditionModel.operands().in().set(strings);
+		condition.operands().in().set(strings);
 
-		assertTrue(conditionModel.operands().in().get().containsAll(strings));
+		assertTrue(condition.operands().in().get().containsAll(strings));
 	}
 
 	@Test
 	void autoEnable() {
-		ConditionModel<String, Integer> conditionModel = ConditionModel.builder("test", Integer.class).build();
+		ConditionModel<String, Integer> condition = ConditionModel.builder("test", Integer.class).build();
 
-		conditionModel.operator().set(Operator.EQUAL);
-		assertFalse(conditionModel.enabled().get());
-		Operands<Integer> operands = conditionModel.operands();
+		condition.operator().set(Operator.EQUAL);
+		assertFalse(condition.enabled().get());
+		Operands<Integer> operands = condition.operands();
 		operands.equal().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.equal().set(null);
-		assertFalse(conditionModel.enabled().get());
-		conditionModel.enabled().set(false);
+		assertFalse(condition.enabled().get());
+		condition.enabled().set(false);
 		operands.upperBound().set(1);
 		operands.lowerBound().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(null);
 		operands.lowerBound().set(null);
 
-		conditionModel.operator().set(Operator.NOT_EQUAL);
-		assertFalse(conditionModel.enabled().get());
+		condition.operator().set(Operator.NOT_EQUAL);
+		assertFalse(condition.enabled().get());
 		operands.equal().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.equal().set(null);
-		assertFalse(conditionModel.enabled().get());
-		conditionModel.enabled().set(false);
+		assertFalse(condition.enabled().get());
+		condition.enabled().set(false);
 		operands.upperBound().set(1);
 		operands.lowerBound().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(null);
 		operands.lowerBound().set(null);
 
-		conditionModel.operator().set(Operator.LESS_THAN);
-		assertFalse(conditionModel.enabled().get());
+		condition.operator().set(Operator.LESS_THAN);
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.upperBound().set(null);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.lowerBound().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.lowerBound().set(null);
 
-		conditionModel.operator().set(Operator.LESS_THAN_OR_EQUAL);
-		assertFalse(conditionModel.enabled().get());
+		condition.operator().set(Operator.LESS_THAN_OR_EQUAL);
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.upperBound().set(null);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.lowerBound().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.lowerBound().set(null);
 
-		conditionModel.operator().set(Operator.GREATER_THAN);
-		assertFalse(conditionModel.enabled().get());
+		condition.operator().set(Operator.GREATER_THAN);
+		assertFalse(condition.enabled().get());
 		operands.lowerBound().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.lowerBound().set(null);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(null);
 
-		conditionModel.operator().set(Operator.GREATER_THAN_OR_EQUAL);
-		assertFalse(conditionModel.enabled().get());
+		condition.operator().set(Operator.GREATER_THAN_OR_EQUAL);
+		assertFalse(condition.enabled().get());
 		operands.lowerBound().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.lowerBound().set(null);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(null);
 
-		conditionModel.operator().set(Operator.BETWEEN);
-		assertFalse(conditionModel.enabled().get());
+		condition.operator().set(Operator.BETWEEN);
+		assertFalse(condition.enabled().get());
 		operands.equal().set(1);
-		assertFalse(conditionModel.enabled().get());
-		operands.equal().set(null);
-		operands.lowerBound().set(1);
-		assertFalse(conditionModel.enabled().get());
-		operands.upperBound().set(1);
-		assertTrue(conditionModel.enabled().get());
-		operands.lowerBound().set(null);
-		assertFalse(conditionModel.enabled().get());
-		operands.lowerBound().set(1);
-		assertTrue(conditionModel.enabled().get());
-		operands.lowerBound().set(null);
-		operands.upperBound().set(null);
-
-		conditionModel.operator().set(Operator.BETWEEN_EXCLUSIVE);
-		assertFalse(conditionModel.enabled().get());
-		operands.equal().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.equal().set(null);
 		operands.lowerBound().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.lowerBound().set(null);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.lowerBound().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.lowerBound().set(null);
 		operands.upperBound().set(null);
 
-		conditionModel.operator().set(Operator.NOT_BETWEEN);
-		assertFalse(conditionModel.enabled().get());
+		condition.operator().set(Operator.BETWEEN_EXCLUSIVE);
+		assertFalse(condition.enabled().get());
 		operands.equal().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.equal().set(null);
 		operands.lowerBound().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.lowerBound().set(null);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.lowerBound().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.lowerBound().set(null);
 		operands.upperBound().set(null);
 
-		conditionModel.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
-		assertFalse(conditionModel.enabled().get());
+		condition.operator().set(Operator.NOT_BETWEEN);
+		assertFalse(condition.enabled().get());
 		operands.equal().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.equal().set(null);
 		operands.lowerBound().set(1);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.upperBound().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
 		operands.lowerBound().set(null);
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(condition.enabled().get());
 		operands.lowerBound().set(1);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(condition.enabled().get());
+		operands.lowerBound().set(null);
+		operands.upperBound().set(null);
+
+		condition.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
+		assertFalse(condition.enabled().get());
+		operands.equal().set(1);
+		assertFalse(condition.enabled().get());
+		operands.equal().set(null);
+		operands.lowerBound().set(1);
+		assertFalse(condition.enabled().get());
+		operands.upperBound().set(1);
+		assertTrue(condition.enabled().get());
+		operands.lowerBound().set(null);
+		assertFalse(condition.enabled().get());
+		operands.lowerBound().set(1);
+		assertTrue(condition.enabled().get());
 		operands.lowerBound().set(null);
 		operands.upperBound().set(null);
 	}
@@ -366,199 +366,199 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void includeInteger() {
-		ConditionModel<String, Integer> conditionModel = ConditionModel.builder("test", Integer.class).build();
-		conditionModel.autoEnable().set(false);
-		conditionModel.enabled().set(true);
-		conditionModel.operator().set(Operator.EQUAL);
+		ConditionModel<String, Integer> condition = ConditionModel.builder("test", Integer.class).build();
+		condition.autoEnable().set(false);
+		condition.enabled().set(true);
+		condition.operator().set(Operator.EQUAL);
 
-		Operands<Integer> operands = conditionModel.operands();
+		Operands<Integer> operands = condition.operands();
 		operands.equal().set(null);
-		assertTrue(conditionModel.accepts(null));
-		assertFalse(conditionModel.accepts(1));
+		assertTrue(condition.accepts(null));
+		assertFalse(condition.accepts(1));
 
-		conditionModel.operator().set(Operator.NOT_EQUAL);
-		assertFalse(conditionModel.accepts(null));
-		assertTrue(conditionModel.accepts(1));
+		condition.operator().set(Operator.NOT_EQUAL);
+		assertFalse(condition.accepts(null));
+		assertTrue(condition.accepts(1));
 
-		conditionModel.operator().set(Operator.EQUAL);
+		condition.operator().set(Operator.EQUAL);
 
 		operands.equal().set(10);
-		assertFalse(conditionModel.accepts(null));
-		assertFalse(conditionModel.accepts(9));
-		assertTrue(conditionModel.accepts(10));
-		assertFalse(conditionModel.accepts(11));
+		assertFalse(condition.accepts(null));
+		assertFalse(condition.accepts(9));
+		assertTrue(condition.accepts(10));
+		assertFalse(condition.accepts(11));
 
-		conditionModel.operator().set(Operator.NOT_EQUAL);
-		assertTrue(conditionModel.accepts(null));
-		assertTrue(conditionModel.accepts(9));
-		assertFalse(conditionModel.accepts(10));
-		assertTrue(conditionModel.accepts(11));
+		condition.operator().set(Operator.NOT_EQUAL);
+		assertTrue(condition.accepts(null));
+		assertTrue(condition.accepts(9));
+		assertFalse(condition.accepts(10));
+		assertTrue(condition.accepts(11));
 
 		operands.lowerBound().set(10);
-		conditionModel.operator().set(Operator.GREATER_THAN_OR_EQUAL);
-		assertFalse(conditionModel.accepts(null));
-		assertFalse(conditionModel.accepts(9));
-		assertTrue(conditionModel.accepts(10));
-		assertTrue(conditionModel.accepts(11));
-		conditionModel.operator().set(Operator.GREATER_THAN);
-		assertFalse(conditionModel.accepts(null));
-		assertFalse(conditionModel.accepts(9));
-		assertFalse(conditionModel.accepts(10));
-		assertTrue(conditionModel.accepts(11));
+		condition.operator().set(Operator.GREATER_THAN_OR_EQUAL);
+		assertFalse(condition.accepts(null));
+		assertFalse(condition.accepts(9));
+		assertTrue(condition.accepts(10));
+		assertTrue(condition.accepts(11));
+		condition.operator().set(Operator.GREATER_THAN);
+		assertFalse(condition.accepts(null));
+		assertFalse(condition.accepts(9));
+		assertFalse(condition.accepts(10));
+		assertTrue(condition.accepts(11));
 
 		operands.upperBound().set(10);
-		conditionModel.operator().set(Operator.LESS_THAN_OR_EQUAL);
-		assertFalse(conditionModel.accepts(null));
-		assertTrue(conditionModel.accepts(9));
-		assertTrue(conditionModel.accepts(10));
-		assertFalse(conditionModel.accepts(11));
-		conditionModel.operator().set(Operator.LESS_THAN);
-		assertFalse(conditionModel.accepts(null));
-		assertTrue(conditionModel.accepts(9));
-		assertFalse(conditionModel.accepts(10));
-		assertFalse(conditionModel.accepts(11));
+		condition.operator().set(Operator.LESS_THAN_OR_EQUAL);
+		assertFalse(condition.accepts(null));
+		assertTrue(condition.accepts(9));
+		assertTrue(condition.accepts(10));
+		assertFalse(condition.accepts(11));
+		condition.operator().set(Operator.LESS_THAN);
+		assertFalse(condition.accepts(null));
+		assertTrue(condition.accepts(9));
+		assertFalse(condition.accepts(10));
+		assertFalse(condition.accepts(11));
 
 		operands.lowerBound().set(6);
-		conditionModel.operator().set(Operator.BETWEEN);
-		assertFalse(conditionModel.accepts(null));
-		assertTrue(conditionModel.accepts(6));
-		assertTrue(conditionModel.accepts(7));
-		assertTrue(conditionModel.accepts(9));
-		assertTrue(conditionModel.accepts(10));
-		assertFalse(conditionModel.accepts(11));
-		assertFalse(conditionModel.accepts(5));
-		conditionModel.operator().set(Operator.BETWEEN_EXCLUSIVE);
-		assertFalse(conditionModel.accepts(null));
-		assertFalse(conditionModel.accepts(6));
-		assertTrue(conditionModel.accepts(7));
-		assertTrue(conditionModel.accepts(9));
-		assertFalse(conditionModel.accepts(10));
-		assertFalse(conditionModel.accepts(11));
-		assertFalse(conditionModel.accepts(5));
+		condition.operator().set(Operator.BETWEEN);
+		assertFalse(condition.accepts(null));
+		assertTrue(condition.accepts(6));
+		assertTrue(condition.accepts(7));
+		assertTrue(condition.accepts(9));
+		assertTrue(condition.accepts(10));
+		assertFalse(condition.accepts(11));
+		assertFalse(condition.accepts(5));
+		condition.operator().set(Operator.BETWEEN_EXCLUSIVE);
+		assertFalse(condition.accepts(null));
+		assertFalse(condition.accepts(6));
+		assertTrue(condition.accepts(7));
+		assertTrue(condition.accepts(9));
+		assertFalse(condition.accepts(10));
+		assertFalse(condition.accepts(11));
+		assertFalse(condition.accepts(5));
 
-		conditionModel.operator().set(Operator.NOT_BETWEEN);
-		assertFalse(conditionModel.accepts(null));
-		assertTrue(conditionModel.accepts(6));
-		assertFalse(conditionModel.accepts(7));
-		assertFalse(conditionModel.accepts(9));
-		assertTrue(conditionModel.accepts(10));
-		assertTrue(conditionModel.accepts(11));
-		assertTrue(conditionModel.accepts(5));
-		conditionModel.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
-		assertFalse(conditionModel.accepts(null));
-		assertFalse(conditionModel.accepts(6));
-		assertFalse(conditionModel.accepts(7));
-		assertFalse(conditionModel.accepts(9));
-		assertFalse(conditionModel.accepts(10));
-		assertTrue(conditionModel.accepts(11));
-		assertTrue(conditionModel.accepts(5));
+		condition.operator().set(Operator.NOT_BETWEEN);
+		assertFalse(condition.accepts(null));
+		assertTrue(condition.accepts(6));
+		assertFalse(condition.accepts(7));
+		assertFalse(condition.accepts(9));
+		assertTrue(condition.accepts(10));
+		assertTrue(condition.accepts(11));
+		assertTrue(condition.accepts(5));
+		condition.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
+		assertFalse(condition.accepts(null));
+		assertFalse(condition.accepts(6));
+		assertFalse(condition.accepts(7));
+		assertFalse(condition.accepts(9));
+		assertFalse(condition.accepts(10));
+		assertTrue(condition.accepts(11));
+		assertTrue(condition.accepts(5));
 
 		operands.upperBound().set(null);
 		operands.lowerBound().set(null);
-		conditionModel.operator().set(Operator.BETWEEN);
-		assertTrue(conditionModel.accepts(1));
-		assertTrue(conditionModel.accepts(8));
-		assertTrue(conditionModel.accepts(11));
-		conditionModel.operator().set(Operator.BETWEEN_EXCLUSIVE);
-		assertTrue(conditionModel.accepts(1));
-		assertTrue(conditionModel.accepts(8));
-		assertTrue(conditionModel.accepts(11));
-		conditionModel.operator().set(Operator.NOT_BETWEEN);
-		assertTrue(conditionModel.accepts(1));
-		assertTrue(conditionModel.accepts(8));
-		assertTrue(conditionModel.accepts(11));
-		conditionModel.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
-		assertTrue(conditionModel.accepts(1));
-		assertTrue(conditionModel.accepts(8));
-		assertTrue(conditionModel.accepts(11));
+		condition.operator().set(Operator.BETWEEN);
+		assertTrue(condition.accepts(1));
+		assertTrue(condition.accepts(8));
+		assertTrue(condition.accepts(11));
+		condition.operator().set(Operator.BETWEEN_EXCLUSIVE);
+		assertTrue(condition.accepts(1));
+		assertTrue(condition.accepts(8));
+		assertTrue(condition.accepts(11));
+		condition.operator().set(Operator.NOT_BETWEEN);
+		assertTrue(condition.accepts(1));
+		assertTrue(condition.accepts(8));
+		assertTrue(condition.accepts(11));
+		condition.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
+		assertTrue(condition.accepts(1));
+		assertTrue(condition.accepts(8));
+		assertTrue(condition.accepts(11));
 
-		assertTrue(conditionModel.accepts(null));
-		assertTrue(conditionModel.accepts(5));
-		assertTrue(conditionModel.accepts(6));
-		assertTrue(conditionModel.accepts(7));
+		assertTrue(condition.accepts(null));
+		assertTrue(condition.accepts(5));
+		assertTrue(condition.accepts(6));
+		assertTrue(condition.accepts(7));
 
-		conditionModel.operator().set(Operator.IN);
+		condition.operator().set(Operator.IN);
 		operands.in().set(asList(1, 2, 3));
-		assertTrue(conditionModel.accepts(1));
-		assertTrue(conditionModel.accepts(2));
-		assertTrue(conditionModel.accepts(3));
-		assertFalse(conditionModel.accepts(4));
-		conditionModel.operator().set(Operator.NOT_IN);
-		assertFalse(conditionModel.accepts(1));
-		assertFalse(conditionModel.accepts(2));
-		assertFalse(conditionModel.accepts(3));
-		assertTrue(conditionModel.accepts(4));
+		assertTrue(condition.accepts(1));
+		assertTrue(condition.accepts(2));
+		assertTrue(condition.accepts(3));
+		assertFalse(condition.accepts(4));
+		condition.operator().set(Operator.NOT_IN);
+		assertFalse(condition.accepts(1));
+		assertFalse(condition.accepts(2));
+		assertFalse(condition.accepts(3));
+		assertTrue(condition.accepts(4));
 	}
 
 	@Test
 	void acceptsString() {
-		ConditionModel<String, String> conditionModel = ConditionModel.builder("test", String.class).build();
-		conditionModel.autoEnable().set(false);
-		conditionModel.enabled().set(true);
+		ConditionModel<String, String> condition = ConditionModel.builder("test", String.class).build();
+		condition.autoEnable().set(false);
+		condition.enabled().set(true);
 
-		conditionModel.operator().set(Operator.EQUAL);
-		Operands<String> operands = conditionModel.operands();
+		condition.operator().set(Operator.EQUAL);
+		Operands<String> operands = condition.operands();
 		operands.equal().set("hello");
-		assertTrue(conditionModel.accepts("hello"));
+		assertTrue(condition.accepts("hello"));
 		operands.equal().set("hell%");
-		assertTrue(conditionModel.accepts("hello"));
-		assertFalse(conditionModel.accepts("helo"));
+		assertTrue(condition.accepts("hello"));
+		assertFalse(condition.accepts("helo"));
 		operands.equal().set("%ell%");
-		assertTrue(conditionModel.accepts("hello"));
-		assertFalse(conditionModel.accepts("helo"));
+		assertTrue(condition.accepts("hello"));
+		assertFalse(condition.accepts("helo"));
 
-		conditionModel.caseSensitive().set(false);
-		assertTrue(conditionModel.accepts("HELlo"));
-		assertFalse(conditionModel.accepts("heLo"));
-		assertFalse(conditionModel.accepts(null));
+		condition.caseSensitive().set(false);
+		assertTrue(condition.accepts("HELlo"));
+		assertFalse(condition.accepts("heLo"));
+		assertFalse(condition.accepts(null));
 
 		operands.equal().set("%");
-		assertTrue(conditionModel.accepts("hello"));
-		assertTrue(conditionModel.accepts("helo"));
+		assertTrue(condition.accepts("hello"));
+		assertTrue(condition.accepts("helo"));
 
-		conditionModel.caseSensitive().set(true);
+		condition.caseSensitive().set(true);
 		operands.equal().set("hello");
-		conditionModel.operator().set(Operator.NOT_EQUAL);
-		assertFalse(conditionModel.accepts("hello"));
+		condition.operator().set(Operator.NOT_EQUAL);
+		assertFalse(condition.accepts("hello"));
 		operands.equal().set("hell%");
-		assertFalse(conditionModel.accepts("hello"));
-		assertTrue(conditionModel.accepts("helo"));
+		assertFalse(condition.accepts("hello"));
+		assertTrue(condition.accepts("helo"));
 		operands.equal().set("%ell%");
-		assertFalse(conditionModel.accepts("hello"));
-		assertTrue(conditionModel.accepts("helo"));
+		assertFalse(condition.accepts("hello"));
+		assertTrue(condition.accepts("helo"));
 
-		conditionModel.caseSensitive().set(false);
-		assertFalse(conditionModel.accepts("HELlo"));
-		assertTrue(conditionModel.accepts("heLo"));
-		assertTrue(conditionModel.accepts(null));
+		condition.caseSensitive().set(false);
+		assertFalse(condition.accepts("HELlo"));
+		assertTrue(condition.accepts("heLo"));
+		assertTrue(condition.accepts(null));
 
 		operands.equal().set("%");
-		assertFalse(conditionModel.accepts("hello"));
-		assertFalse(conditionModel.accepts("helo"));
+		assertFalse(condition.accepts("hello"));
+		assertFalse(condition.accepts("helo"));
 
 		operands.equal().set("hell");
-		conditionModel.operator().set(Operator.EQUAL);
-		conditionModel.automaticWildcard().set(AutomaticWildcard.NONE);
-		assertTrue(conditionModel.accepts("HELl"));
-		assertTrue(conditionModel.accepts("hElL"));
-		conditionModel.operator().set(Operator.NOT_EQUAL);
-		assertFalse(conditionModel.accepts("HELl"));
-		assertFalse(conditionModel.accepts("hElL"));
+		condition.operator().set(Operator.EQUAL);
+		condition.automaticWildcard().set(AutomaticWildcard.NONE);
+		assertTrue(condition.accepts("HELl"));
+		assertTrue(condition.accepts("hElL"));
+		condition.operator().set(Operator.NOT_EQUAL);
+		assertFalse(condition.accepts("HELl"));
+		assertFalse(condition.accepts("hElL"));
 	}
 
 	@Test
 	void acceptCharacter() {
-		ConditionModel<String, Character> conditionModel = ConditionModel.builder("test", Character.class).build();
-		conditionModel.autoEnable().set(false);
-		conditionModel.enabled().set(true);
+		ConditionModel<String, Character> condition = ConditionModel.builder("test", Character.class).build();
+		condition.autoEnable().set(false);
+		condition.enabled().set(true);
 
-		conditionModel.caseSensitive().set(true);
-		conditionModel.operator().set(Operator.EQUAL);
-		conditionModel.operands().equal().set('h');
-		assertTrue(conditionModel.accepts('h'));
-		assertFalse(conditionModel.accepts('H'));
+		condition.caseSensitive().set(true);
+		condition.operator().set(Operator.EQUAL);
+		condition.operands().equal().set('h');
+		assertTrue(condition.accepts('h'));
+		assertFalse(condition.accepts('H'));
 
-		conditionModel.caseSensitive().set(false);
-		assertTrue(conditionModel.accepts('H'));
+		condition.caseSensitive().set(false);
+		assertTrue(condition.accepts('H'));
 	}
 }

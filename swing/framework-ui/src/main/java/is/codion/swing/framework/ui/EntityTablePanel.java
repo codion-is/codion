@@ -1702,12 +1702,12 @@ public class EntityTablePanel extends JPanel {
 	private Map<Attribute<?>, ConditionPreferences> createConditionPreferences() {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			ConditionModel<?, ?> conditionModel = tableModel.queryModel().conditionModel().conditions().get(attribute);
-			if (conditionModel != null) {
+			ConditionModel<?, ?> condition = tableModel.queryModel().conditionModel().conditions().get(attribute);
+			if (condition != null) {
 				conditionPreferencesMap.put(attribute, ConditionPreferences.conditionPreferences(attribute,
-								conditionModel.autoEnable().get(),
-								conditionModel.caseSensitive().get(),
-								conditionModel.automaticWildcard().get()));
+								condition.autoEnable().get(),
+								condition.caseSensitive().get(),
+								condition.automaticWildcard().get()));
 			}
 		}
 
@@ -1765,10 +1765,10 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void onColumnHidden(Attribute<?> attribute) {
-		//disable the condition model for the column to be hidden, to prevent confusion
-		ConditionModel<?, ?> conditionModel = tableModel.queryModel().conditionModel().conditions().get(attribute);
-		if (conditionModel != null && !conditionModel.locked().get()) {
-			conditionModel.enabled().set(false);
+		//disable the condition for the column to be hidden, to prevent confusion
+		ConditionModel<?, ?> condition = tableModel.queryModel().conditionModel().conditions().get(attribute);
+		if (condition != null && !condition.locked().get()) {
+			condition.enabled().set(false);
 		}
 	}
 

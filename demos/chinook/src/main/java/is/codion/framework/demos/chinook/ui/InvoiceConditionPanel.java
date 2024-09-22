@@ -209,13 +209,13 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 			private final EntitySearchField searchField;
 
-			private CustomerConditionPanel(ConditionModel<Attribute<?>, Entity> conditionModel, EntityDefinition invoiceDefinition) {
-				super(conditionModel, invoiceDefinition.attributes().definition(conditionModel.identifier()).caption());
+			private CustomerConditionPanel(ConditionModel<Attribute<?>, Entity> condition, EntityDefinition invoiceDefinition) {
+				super(condition, invoiceDefinition.attributes().definition(condition.identifier()).caption());
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(), caption()));
-				ForeignKeyConditionModel foreignKeyConditionModel = (ForeignKeyConditionModel) conditionModel;
-				foreignKeyConditionModel.operands().in().value().link(foreignKeyConditionModel.operands().equal());
-				searchField = EntitySearchField.builder(foreignKeyConditionModel.inSearchModel())
+				ForeignKeyConditionModel foreignKeyCondition = (ForeignKeyConditionModel) condition;
+				foreignKeyCondition.operands().in().value().link(foreignKeyCondition.operands().equal());
+				searchField = EntitySearchField.builder(foreignKeyCondition.inSearchModel())
 								.columns(25)
 								.build();
 				add(searchField, BorderLayout.CENTER);

@@ -141,7 +141,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	private boolean initialized = false;
 
 	private FilterColumnConditionPanel(DefaultBuilder<C, T> builder) {
-		super(builder.conditionModel, builder.caption);
+		super(builder.condition, builder.caption);
 		this.fieldFactory = builder.fieldFactory;
 		this.tableColumn = builder.tableColumn;
 	}
@@ -239,13 +239,13 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	/**
-	 * @param conditionModel the column condition model
-	 * @param <C> the column identifier type
-	 * @param <T> the column value type
+	 * @param condition the condition model
+	 * @param <C> the condition identifier type
+	 * @param <T> the condition value type
 	 * @return a new {@link Builder}
 	 */
-	public static <C, T> Builder<C, T> builder(ConditionModel<C, T> conditionModel) {
-		return new DefaultBuilder<>(conditionModel);
+	public static <C, T> Builder<C, T> builder(ConditionModel<C, T> condition) {
+		return new DefaultBuilder<>(condition);
 	}
 
 	/**
@@ -282,15 +282,15 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private static final class DefaultBuilder<C, T> implements Builder<C, T> {
 
-		private final ConditionModel<C, T> conditionModel;
+		private final ConditionModel<C, T> condition;
 
 		private String caption;
 		private FieldFactory<C> fieldFactory = new DefaultFilterFieldFactory<>();
 		private TableColumn tableColumn;
 
-		private DefaultBuilder(ConditionModel<C, T> conditionModel) {
-			this.conditionModel = requireNonNull(conditionModel);
-			this.caption = conditionModel.identifier().toString();
+		private DefaultBuilder(ConditionModel<C, T> condition) {
+			this.condition = requireNonNull(condition);
+			this.caption = condition.identifier().toString();
 		}
 
 		@Override
@@ -301,8 +301,8 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 		@Override
 		public Builder<C, T> fieldFactory(FieldFactory<C> fieldFactory) {
-			if (!requireNonNull(fieldFactory).supportsType(conditionModel.valueClass())) {
-				throw new IllegalArgumentException("Field factory does not support the value type: " + conditionModel.valueClass());
+			if (!requireNonNull(fieldFactory).supportsType(condition.valueClass())) {
+				throw new IllegalArgumentException("Field factory does not support the value type: " + condition.valueClass());
 			}
 
 			this.fieldFactory = requireNonNull(fieldFactory);

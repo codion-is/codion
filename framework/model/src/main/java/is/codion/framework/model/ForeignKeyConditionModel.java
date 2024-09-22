@@ -43,14 +43,14 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ForeignKeyConditionModel implements ConditionModel<Attribute<?>, Entity> {
 
-	private final ConditionModel<ForeignKey, Entity> conditionModel;
+	private final ConditionModel<ForeignKey, Entity> condition;
 	private final EntitySearchModel equalSearchModel;
 	private final EntitySearchModel inSearchModel;
 
 	private boolean updatingModel = false;
 
 	private ForeignKeyConditionModel(DefaultBuilder builder) {
-		this.conditionModel = ConditionModel.builder(builder.foreignKey, Entity.class)
+		this.condition = ConditionModel.builder(builder.foreignKey, Entity.class)
 						.operators(builder.operators())
 						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
 						.build();
@@ -85,77 +85,77 @@ public final class ForeignKeyConditionModel implements ConditionModel<Attribute<
 
 	@Override
 	public Attribute<?> identifier() {
-		return conditionModel.identifier();
+		return condition.identifier();
 	}
 
 	@Override
 	public State caseSensitive() {
-		return conditionModel.caseSensitive();
+		return condition.caseSensitive();
 	}
 
 	@Override
 	public Optional<Format> format() {
-		return conditionModel.format();
+		return condition.format();
 	}
 
 	@Override
 	public String dateTimePattern() {
-		return conditionModel.dateTimePattern();
+		return condition.dateTimePattern();
 	}
 
 	@Override
 	public Value<AutomaticWildcard> automaticWildcard() {
-		return conditionModel.automaticWildcard();
+		return condition.automaticWildcard();
 	}
 
 	@Override
 	public State autoEnable() {
-		return conditionModel.autoEnable();
+		return condition.autoEnable();
 	}
 
 	@Override
 	public State locked() {
-		return conditionModel.locked();
+		return condition.locked();
 	}
 
 	@Override
 	public Class<Entity> valueClass() {
-		return conditionModel.valueClass();
+		return condition.valueClass();
 	}
 
 	@Override
 	public List<Operator> operators() {
-		return conditionModel.operators();
+		return condition.operators();
 	}
 
 	@Override
 	public State enabled() {
-		return conditionModel.enabled();
+		return condition.enabled();
 	}
 
 	@Override
 	public void clear() {
-		conditionModel.clear();
+		condition.clear();
 	}
 
 	@Override
 	public Value<Operator> operator() {
-		return conditionModel.operator();
+		return condition.operator();
 	}
 
 	@Override
 	public Operands<Entity> operands() {
-		return conditionModel.operands();
+		return condition.operands();
 	}
 
 	@Override
 	public boolean accepts(Comparable<Entity> columnValue) {
-		return conditionModel.accepts(columnValue);
+		return condition.accepts(columnValue);
 	}
 
 	@Override
 	public Observer<?> conditionChanged() {
-		return conditionModel.conditionChanged();
+		return condition.conditionChanged();
 	}
 
 	/**

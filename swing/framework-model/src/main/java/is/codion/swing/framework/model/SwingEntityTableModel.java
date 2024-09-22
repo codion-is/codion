@@ -98,7 +98,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
-	 * @param conditionModel the table condition model
+	 * @param conditionModel the entity condition model
 	 */
 	public SwingEntityTableModel(EntityConditionModel conditionModel) {
 		this(entityQueryModel(conditionModel));

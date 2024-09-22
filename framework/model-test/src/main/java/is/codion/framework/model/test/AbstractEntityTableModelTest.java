@@ -224,12 +224,12 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		tableModel.queryModel().limit().set(6);
 		tableModel.refresh();
 		assertEquals(6, tableModel.rowCount());
-		ConditionModel<?, Double> commissionConditionModel =
+		ConditionModel<?, Double> commissionCondition =
 						tableModel.queryModel().conditionModel().attributeCondition(Employee.COMMISSION);
-		commissionConditionModel.operator().set(Operator.EQUAL);
-		commissionConditionModel.enabled().set(true);
+		commissionCondition.operator().set(Operator.EQUAL);
+		commissionCondition.enabled().set(true);
 		tableModel.refresh();
-		commissionConditionModel.enabled().set(false);
+		commissionCondition.enabled().set(false);
 		tableModel.refresh();
 		assertEquals(6, tableModel.rowCount());
 		tableModel.queryModel().limit().clear();
