@@ -1456,7 +1456,7 @@ public class EntityTablePanel extends JPanel {
 	private TableConditionPanel<Attribute<?>> createTableConditionPanel() {
 		if (configuration.includeConditionPanel) {
 			TableConditionPanel<Attribute<?>> conditionPanel = configuration.tableConditionPanelFactory
-							.create(tableModel.queryModel().conditionModel(), createColumnConditionPanels(),
+							.create(tableModel.queryModel().conditions(), createColumnConditionPanels(),
 											table.getColumnModel(), this::configureTableConditionPanel);
 			KeyEvents.builder(VK_ENTER)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1471,7 +1471,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createColumnConditionPanels() {
-		return tableModel.queryModel().conditionModel().conditions().values().stream()
+		return tableModel.queryModel().conditions().identifiers().stream()
+						.map(identifier -> tableModel.queryModel().conditions().get(identifier))
 						.filter(condition -> table.columnModel().containsColumn(condition.identifier()))
 						.filter(condition -> configuration.conditionFieldFactory.supportsType(condition.valueClass()))
 						.map(this::createColumnConditionPanel)
@@ -1510,7 +1511,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
-		tableModel.queryModel().conditionModel().changed().addListener(this::onConditionChanged);
+		tableModel.queryModel().conditions().changed().addListener(this::onConditionChanged);
 		tableModel.refresher().observer().addConsumer(this::onRefreshingChanged);
 		tableModel.refresher().failure().addConsumer(this::onException);
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
@@ -1702,13 +1703,11 @@ public class EntityTablePanel extends JPanel {
 	private Map<Attribute<?>, ConditionPreferences> createConditionPreferences() {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			ConditionModel<?, ?> condition = tableModel.queryModel().conditionModel().conditions().get(attribute);
-			if (condition != null) {
-				conditionPreferencesMap.put(attribute, ConditionPreferences.conditionPreferences(attribute,
-								condition.autoEnable().get(),
-								condition.caseSensitive().get(),
-								condition.automaticWildcard().get()));
-			}
+			tableModel.queryModel().conditions().optional(attribute)
+							.ifPresent(condition -> conditionPreferencesMap.put(attribute, ConditionPreferences.conditionPreferences(attribute,
+											condition.autoEnable().get(),
+											condition.caseSensitive().get(),
+											condition.automaticWildcard().get())));
 		}
 
 		return conditionPreferencesMap;
@@ -1766,10 +1765,8 @@ public class EntityTablePanel extends JPanel {
 
 	private void onColumnHidden(Attribute<?> attribute) {
 		//disable the condition for the column to be hidden, to prevent confusion
-		ConditionModel<?, ?> condition = tableModel.queryModel().conditionModel().conditions().get(attribute);
-		if (condition != null && !condition.locked().get()) {
-			condition.enabled().set(false);
-		}
+		tableModel.conditions().optional(attribute)
+						.ifPresent(condition -> condition.enabled().set(false));
 	}
 
 	private void applyPreferences() {
@@ -1931,7 +1928,8 @@ public class EntityTablePanel extends JPanel {
 			TableCellRenderer renderer = tableColumn.getCellRenderer();
 			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
 							&& ((FilterTableCellRenderer) renderer).columnShading()
-							&& tableModel.queryModel().conditionModel().enabled(tableColumn.identifier()).get();
+							&& tableModel.queryModel().conditions().optional(tableColumn.identifier())
+							.map(conditionModel -> conditionModel.enabled().get()).orElse(false);
 			Font defaultFont = component.getFont();
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 

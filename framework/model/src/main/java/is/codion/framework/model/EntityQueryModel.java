@@ -79,7 +79,7 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	/**
 	 * @return the {@link EntityConditionModel} instance used by this query model
 	 */
-	EntityConditionModel conditionModel();
+	EntityConditionModel conditions();
 
 	/**
 	 * Returns a {@link State} controlling whether this query model should query all underlying entities

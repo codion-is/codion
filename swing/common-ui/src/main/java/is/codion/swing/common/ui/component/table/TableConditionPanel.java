@@ -180,7 +180,8 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	private void clearConditions() {
-		conditionModel.conditions().values()
+		conditionModel.identifiers().stream()
+						.map(conditionModel::get)
 						.forEach(ConditionModel::clear);
 	}
 

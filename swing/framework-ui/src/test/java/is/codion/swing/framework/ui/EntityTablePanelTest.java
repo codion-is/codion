@@ -125,7 +125,7 @@ public class EntityTablePanelTest {
 		column = columnModel.getColumn(5);
 		column.setWidth(170);//entity_ref
 		ConditionModel<Attribute<?>, String> condition =
-						testModel.queryModel().conditionModel().attributeCondition(Detail.STRING);
+						testModel.queryModel().conditions().attribute(Detail.STRING);
 		condition.autoEnable().set(false);
 		condition.automaticWildcard().set(AutomaticWildcard.PREFIX);
 		condition.caseSensitive().set(false);
@@ -143,7 +143,7 @@ public class EntityTablePanelTest {
 
 		column = columnModel.getColumn(5);
 		assertEquals(170, column.getPreferredWidth());
-		condition = testModel.queryModel().conditionModel().attributeCondition(Detail.STRING);
+		condition = testModel.queryModel().conditions().attribute(Detail.STRING);
 		assertFalse(condition.autoEnable().get());
 		assertEquals(condition.automaticWildcard().get(), AutomaticWildcard.PREFIX);
 		assertFalse(condition.caseSensitive().get());

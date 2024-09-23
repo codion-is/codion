@@ -125,7 +125,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 	}
 
 	private boolean setForeignKeyCondition(Collection<Entity> selectedEntities) {
-		return detailModel().tableModel().queryModel().conditionModel()
+		return detailModel().tableModel().queryModel().conditions()
 						.setInOperands(foreignKey, selectedEntities);
 	}
 }

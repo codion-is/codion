@@ -44,6 +44,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -83,7 +84,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.selectionModel = new DefaultFilterTableSelectionModel<>(modelItems);
 		this.conditionModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
-		this.combinedVisiblePredicate = new CombinedVisiblePredicate(conditionModel.conditions().values());
+		this.combinedVisiblePredicate = new CombinedVisiblePredicate(conditionModel.identifiers().stream()
+						.map(conditionModel::get)
+						.collect(Collectors.toList()));
 		this.refresher = new DefaultRefresher(builder.items == null ? modelItems::get : (Supplier<Collection<R>>) builder.items);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
@@ -145,7 +148,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public TableConditionModel<C> conditionModel() {
+	public TableConditionModel<C> conditions() {
 		return conditionModel;
 	}
 

@@ -40,7 +40,7 @@ import is.codion.framework.domain.entity.condition.Condition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -93,13 +93,13 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		requireNonNull(attribute);
 		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
 		Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
-		ConditionModel<Attribute<?>, T> conditionModel =
-						(ConditionModel<Attribute<?>, T>) tableConditionModel.conditions().get(attribute);
-		if (conditionModel != null) {
-			conditionModel.operator().set(Operator.EQUAL);
-			conditionModel.operands().equal().set(operand);
-			conditionModel.enabled().set(operand != null);
-		}
+		tableConditionModel.optional(attribute)
+						.ifPresent(conditionModel -> {
+							conditionModel.operator().set(Operator.EQUAL);
+							conditionModel.operands().equal().set(operand);
+							conditionModel.enabled().set(operand != null);
+						});
+
 		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
 	}
 
@@ -109,13 +109,14 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		requireNonNull(operands);
 		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
 		Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
-		ConditionModel<Attribute<?>, T> conditionModel =
-						(ConditionModel<Attribute<?>, T>) tableConditionModel.conditions().get(attribute);
-		if (conditionModel != null) {
-			conditionModel.operator().set(Operator.IN);
-			conditionModel.operands().in().set(operands);
-			conditionModel.enabled().set(!operands.isEmpty());
-		}
+		tableConditionModel.optional(attribute)
+						.map(conditionModel -> (ConditionModel<Attribute<?>, T>) conditionModel)
+						.ifPresent(conditionModel -> {
+							conditionModel.operator().set(Operator.IN);
+							conditionModel.operands().in().set(operands);
+							conditionModel.enabled().set(!operands.isEmpty());
+						});
+
 		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
 	}
 
@@ -146,28 +147,28 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	@Override
-	public Map<Attribute<?>, ConditionModel<Attribute<?>, ?>> conditions() {
-		return tableConditionModel.conditions();
+	public Collection<Attribute<?>> identifiers() {
+		return tableConditionModel.identifiers();
 	}
 
 	@Override
-	public <T> ConditionModel<Attribute<?>, T> condition(Attribute<?> identifier) {
-		return tableConditionModel.condition(identifier);
+	public <T> ConditionModel<Attribute<?>, T> get(Attribute<?> identifier) {
+		return tableConditionModel.get(identifier);
 	}
 
 	@Override
-	public <T> ConditionModel<Attribute<?>, T> attributeCondition(Attribute<T> attribute) {
-		return condition(attribute);
+	public <T> Optional<ConditionModel<Attribute<?>, T>> optional(Attribute<?> identifier) {
+		return tableConditionModel.optional(identifier);
+	}
+
+	@Override
+	public <T> ConditionModel<Attribute<?>, T> attribute(Attribute<T> attribute) {
+		return get(attribute);
 	}
 
 	@Override
 	public StateObserver enabled() {
 		return tableConditionModel.enabled();
-	}
-
-	@Override
-	public StateObserver enabled(Attribute<?> identifier) {
-		return tableConditionModel.enabled(identifier);
 	}
 
 	@Override
@@ -181,7 +182,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	private Collection<Condition> conditions(Predicate<ConditionModel<?, ?>> conditionModelTypePredicate, Condition additionalCondition) {
-		List<Condition> conditions = tableConditionModel.conditions().values().stream()
+		List<Condition> conditions = tableConditionModel.identifiers().stream()
+						.map(tableConditionModel::get)
 						.filter(model -> model.enabled().get())
 						.filter(conditionModelTypePredicate)
 						.map(DefaultEntityConditionModel::condition)
@@ -194,8 +196,9 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	private void bindEvents() {
-		tableConditionModel.conditions().values().forEach(columnConditionModel ->
-						columnConditionModel.changed().addListener(conditionChangedEvent));
+		tableConditionModel.identifiers().stream()
+						.map(tableConditionModel::get)
+						.forEach(conditionModel -> conditionModel.changed().addListener(conditionChangedEvent));
 		additionalWhere.addListener(conditionChangedEvent);
 		additionalHaving.addListener(conditionChangedEvent);
 	}

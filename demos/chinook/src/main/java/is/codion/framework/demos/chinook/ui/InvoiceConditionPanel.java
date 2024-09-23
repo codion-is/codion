@@ -159,8 +159,9 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 	}
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(FieldFactory<Attribute<?>> fieldFactory) {
-		return conditionModel().conditions().values().stream()
-						.filter(condition -> columnModel.containsColumn(condition.identifier()))
+		return conditionModel().identifiers().stream()
+						.filter(columnModel::containsColumn)
+						.map(identifier -> conditionModel().get(identifier))
 						.filter(condition -> fieldFactory.supportsType(condition.valueClass()))
 						.map(condition -> FilterColumnConditionPanel.builder(condition)
 										.fieldFactory(fieldFactory)
@@ -179,8 +180,8 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 																 EntityDefinition invoiceDefinition, Runnable onDateChanged) {
 			super(new BorderLayout());
 			setBorder(createEmptyBorder(5, 5, 5, 5));
-			customerConditionPanel = new CustomerConditionPanel(conditionModel.condition(Invoice.CUSTOMER_FK), invoiceDefinition);
-			dateConditionPanel = new DateConditionPanel(conditionModel.condition(Invoice.DATE), invoiceDefinition);
+			customerConditionPanel = new CustomerConditionPanel(conditionModel.get(Invoice.CUSTOMER_FK), invoiceDefinition);
+			dateConditionPanel = new DateConditionPanel(conditionModel.get(Invoice.DATE), invoiceDefinition);
 			dateConditionPanel.yearValue.addListener(onDateChanged);
 			dateConditionPanel.monthValue.addListener(onDateChanged);
 			initializeUI();

@@ -110,7 +110,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 */
 	public SwingEntityTableModel(EntityQueryModel queryModel) {
 		this(new SwingEntityEditModel(requireNonNull(queryModel).entityType(),
-						queryModel.conditionModel().connectionProvider()), queryModel);
+						queryModel.conditions().connectionProvider()), queryModel);
 	}
 
 	/**
@@ -313,8 +313,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final TableConditionModel<Attribute<?>> conditionModel() {
-		return filterModel().conditionModel();
+	public final TableConditionModel<Attribute<?>> conditions() {
+		return filterModel().conditions();
 	}
 
 	@Override

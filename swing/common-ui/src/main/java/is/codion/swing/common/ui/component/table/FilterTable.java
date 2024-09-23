@@ -23,7 +23,6 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.summary.ColumnSummaryModel.SummaryValues;
 import is.codion.common.model.summary.TableSummaryModel;
 import is.codion.common.observer.Observer;
@@ -343,7 +342,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public TableConditionPanel<C> conditionPanel() {
 		if (filterPanel == null) {
-			filterPanel = filterPanelFactory.create(tableModel.conditionModel(), createColumnFilterPanels(),
+			filterPanel = filterPanelFactory.create(tableModel.conditions(), createColumnFilterPanels(),
 							columnModel(), this::configureTableConditionPanel);
 		}
 
@@ -847,7 +846,7 @@ public final class FilterTable<R, C> extends JTable {
 													boolean columnResizingAllowed) {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
-		tableModel.conditionModel().changed().addListener(getTableHeader()::repaint);
+		tableModel.conditions().changed().addListener(getTableHeader()::repaint);
 		searchModel.currentResult().addListener(this::repaint);
 		sortModel.sortingChanged().addListener(getTableHeader()::repaint);
 		sortModel.sortingChanged().addListener(() ->
@@ -859,12 +858,10 @@ public final class FilterTable<R, C> extends JTable {
 		controlMap.keyEvent(TOGGLE_SORT_COLUMN).ifPresent(keyEvent -> keyEvent.enable(this));
 	}
 
-	private void onColumnHidden(C identifier) {
+	private void onColumnHidden(C columnIdentifier) {
 		//disable the filter model for the column to be hidden, to prevent confusion
-		ConditionModel<?, ?> filterModel = tableModel.conditionModel().conditions().get(identifier);
-		if (filterModel != null && !filterModel.locked().get()) {
-			filterModel.enabled().set(false);
-		}
+		tableModel.conditions().optional(columnIdentifier)
+						.ifPresent(condition -> condition.enabled().set(false));
 	}
 
 	private CommandControl createToggleSortColumnAddControl() {
@@ -885,7 +882,8 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
-		return tableModel.conditionModel().conditions().values().stream()
+		return tableModel.conditions().identifiers().stream()
+						.map(tableModel.conditions()::get)
 						.filter(condition -> columnModel().containsColumn(condition.identifier()))
 						.filter(condition -> filterFieldFactory.supportsType(condition.valueClass()))
 						.map(condition -> FilterColumnConditionPanel.builder(condition)

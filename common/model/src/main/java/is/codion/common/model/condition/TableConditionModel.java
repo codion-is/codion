@@ -22,7 +22,7 @@ import is.codion.common.observer.Observer;
 import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -33,9 +33,9 @@ import static java.util.Objects.requireNonNull;
 public interface TableConditionModel<C> {
 
 	/**
-	 * @return an unmodifiable map containing the condition models available in this table condition model, mapped to their respective identifiers
+	 * @return the available condition model identifiers
 	 */
-	Map<C, ConditionModel<C, ?>> conditions();
+	Collection<C> identifiers();
 
 	/**
 	 * The condition model associated with {@code identifier}
@@ -44,7 +44,15 @@ public interface TableConditionModel<C> {
 	 * @return the {@link ConditionModel} for the {@code identifier}
 	 * @throws IllegalArgumentException in case no condition model exists for the given identifier
 	 */
-	<T> ConditionModel<C, T> condition(C identifier);
+	<T> ConditionModel<C, T> get(C identifier);
+
+		/**
+	 * The condition model associated with {@code identifier}
+	 * @param <T> the condition value type
+	 * @param identifier the identifier for which to retrieve the {@link ConditionModel}
+	 * @return the {@link ConditionModel} for the {@code identifier} or an empty Optional in case one is not available
+	 */
+	<T> Optional<ConditionModel<C, T>> optional(C identifier);
 
 	/**
 	 * Clears the search state of all the condition models, disables them and
@@ -56,13 +64,6 @@ public interface TableConditionModel<C> {
 	 * @return a {@link StateObserver} enabled when any of the underlying condition models are enabled
 	 */
 	StateObserver enabled();
-
-	/**
-	 * Note that this method returns a disabled {@link StateObserver} in case no condition model is available for the given identifier
-	 * @param identifier the condition identifier
-	 * @return a {@link StateObserver} enabled when the condition model identified by {@code identifier} is enabled
-	 */
-	StateObserver enabled(C identifier);
 
 	/**
 	 * @return an observer notified each time the condition changes

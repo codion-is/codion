@@ -38,6 +38,7 @@ Codion Change Log
 - ColumnConditionModel.columnClass() renamed valueClass().
 - ColumnConditionModel renamed ConditionModel.
 - TableConditionModel and ConditionModel.conditionChanged() renamed changed().
+- TableConditionModel.conditions() and enabled(identifier) removed, condition() renamed get(), optional() added.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel refactored.
 - FilterTableModel.dataChanged() removed.
@@ -47,6 +48,7 @@ Codion Change Log
 - DefaultFilterComboBoxModel.Selected bug fixed, refactoring mistake.
 - FilterModel.Items.VisibleItems and FilteredItems renamed Visible and Filtered respectively.
 - FilterTableModel.filterModel() renamed conditionModel().
+- FilterTableModel.conditionModel() renamed conditions().
 ### is.codion.swing.common.ui
 - FilterTable, now propagates the associated MouseEvent as the source of the ActionEvent when doubleClickAction is performed.
 - MenuBuilder no longer extends MenuItemBuilder.
@@ -72,6 +74,8 @@ Codion Change Log
 - EntityTableModel.find() and indexOf() removed.
 - AbstractEntityTableModel.tableModel() renamed filterModel().
 - EntityEditEvents.addListener() methods replaced with observer() methods.
+- EntityConditionModel.attributeCondition() renamed attribute() added.
+- EntityQueryModel.conditionModel() renamed conditions().
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.

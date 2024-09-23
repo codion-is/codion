@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.AutomaticWildcard;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityTableModel;
@@ -149,13 +148,12 @@ final class ConditionPreferences {
 		for (Attribute<?> attribute : columnAttributes) {
 			ConditionPreferences preferences = conditionPreferences.get(attribute);
 			if (preferences != null) {
-				ConditionModel<? extends Attribute<?>, Object> condition =
-								tableModel.queryModel().conditionModel().condition(attribute);
-				if (condition != null) {
-					condition.caseSensitive().set(preferences.caseSensitive());
-					condition.autoEnable().set(preferences.autoEnable());
-					condition.automaticWildcard().set(preferences.automaticWildcard());
-				}
+				tableModel.queryModel().conditions().optional(attribute)
+								.ifPresent(condition -> {
+									condition.caseSensitive().set(preferences.caseSensitive());
+									condition.autoEnable().set(preferences.autoEnable());
+									condition.automaticWildcard().set(preferences.automaticWildcard());
+								});
 			}
 		}
 	}

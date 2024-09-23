@@ -77,7 +77,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
 		assertEquals(0, employeeTableModel.rowCount());
 		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
-		employeeTableModel.queryModel().conditionModel().setInOperands(Employee.DEPARTMENT_FK, singletonList(accounting));
+		employeeTableModel.queryModel().conditions().setInOperands(Employee.DEPARTMENT_FK, singletonList(accounting));
 		employeeTableModel.refresh();
 		assertEquals(7, employeeTableModel.rowCount());
 	}
@@ -91,7 +91,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	void testFiltering() {
 		testModel.refresh();
 		ConditionModel<?, String> filterModel =
-						testModel.conditionModel().condition(Detail.STRING);
+						testModel.conditions().get(Detail.STRING);
 		filterModel.operands().equal().set("a");
 		testModel.items().filter();
 		assertEquals(4, testModel.items().filtered().count());
@@ -148,7 +148,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	void backgroundColor() {
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
 		ConditionModel<Attribute<?>, String> nameCondition =
-						employeeTableModel.queryModel().conditionModel().attributeCondition(Employee.NAME);
+						employeeTableModel.queryModel().conditions().attribute(Employee.NAME);
 		nameCondition.operands().equal().set("BLAKE");
 		employeeTableModel.refresh();
 		assertEquals(Color.GREEN, employeeTableModel.backgroundColor(0, Employee.JOB));
@@ -172,7 +172,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	void conditionChanged() {
 		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
 		tableModel.refresh();
-		ConditionModel<?, String> nameCondition = tableModel.queryModel().conditionModel().condition(Employee.NAME);
+		ConditionModel<?, String> nameCondition = tableModel.queryModel().conditions().get(Employee.NAME);
 		nameCondition.operands().equal().set("JONES");
 		assertTrue(tableModel.queryModel().conditionChanged().get());
 		tableModel.refresh();
@@ -187,13 +187,13 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	void isConditionEnabled() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		EntityQueryModel queryModel = tableModel.queryModel();
-		queryModel.conditionEnabled().set(queryModel.conditionModel().enabled(Employee.MGR_FK));
+		queryModel.conditionEnabled().set(queryModel.conditions().get(Employee.MGR_FK).enabled());
 		tableModel.refresh();
 		assertEquals(16, tableModel.rowCount());
 		queryModel.conditionRequired().set(true);
 		tableModel.refresh();
 		assertEquals(0, tableModel.rowCount());
-		ConditionModel<?, Entity> mgrCondition = queryModel.conditionModel().condition(Employee.MGR_FK);
+		ConditionModel<?, Entity> mgrCondition = queryModel.conditions().get(Employee.MGR_FK);
 		mgrCondition.operands().equal().set(null);
 		mgrCondition.enabled().set(true);
 		tableModel.refresh();
