@@ -50,7 +50,7 @@ public class DefaultFilterTableSelectionModelTest {
 												return data.get(identifier);
 											}
 										})
-										.items(() -> data)
+										.supplier(() -> data)
 										.build();
 		tableModel.refresh();
 

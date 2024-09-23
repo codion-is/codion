@@ -103,7 +103,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 						.nonNull((Supplier<Condition>) new DefaultConditionSupplier())
 						.build();
 		comboBoxModel.selectedItemTranslator().set(new SelectedItemTranslator());
-		comboBoxModel.refresher().items().set(this::performQuery);
+		comboBoxModel.refresher().supplier().set(this::performQuery);
 		comboBoxModel.validator().set(new ItemValidator());
 		comboBoxModel.items().visible().predicate().set(foreignKeyVisiblePredicate);
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());

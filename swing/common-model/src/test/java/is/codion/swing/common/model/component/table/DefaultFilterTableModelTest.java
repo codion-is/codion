@@ -82,7 +82,7 @@ public final class DefaultFilterTableModelTest {
 
 	private static FilterTableModel<TestRow, Integer> createTestModel() {
 		return FilterTableModel.<TestRow, Integer>builder(new TestColumns())
-						.items(() -> ITEMS)
+						.supplier(() -> ITEMS)
 						.build();
 	}
 
@@ -202,7 +202,7 @@ public final class DefaultFilterTableModelTest {
 		List<TestRow> items = new ArrayList<>(ITEMS);
 		FilterTableModel<TestRow, Integer> testModel =
 						FilterTableModel.<TestRow, Integer>builder(new TestColumns())
-										.items(() -> items)
+										.supplier(() -> items)
 										.build();
 		testModel.selection().indexes().addListener(selectionEvents::incrementAndGet);
 		testModel.refreshStrategy().set(RefreshStrategy.MERGE);

@@ -35,10 +35,10 @@ public abstract class AbstractFilterModelRefresher<T> extends FilterModel.Abstra
 	private ProgressWorker<Collection<T>, ?> refreshWorker;
 
 	/**
-	 * @param items the supplies the items
+	 * @param supplier supplies the items
 	 */
-	protected AbstractFilterModelRefresher(Supplier<Collection<T>> items) {
-		super(items);
+	protected AbstractFilterModelRefresher(Supplier<Collection<T>> supplier) {
+		super(supplier);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public abstract class AbstractFilterModelRefresher<T> extends FilterModel.Abstra
 
 	protected final void refreshAsync(Consumer<Collection<T>> afterRefresh) {
 		cancelCurrentRefresh();
-		refreshWorker = ProgressWorker.builder(items().get()::get)
+		refreshWorker = ProgressWorker.builder(supplier().get()::get)
 						.onStarted(this::onRefreshStarted)
 						.onResult(items -> onRefreshResult(items, afterRefresh))
 						.onException(this::onRefreshFailedAsync)
@@ -58,7 +58,7 @@ public abstract class AbstractFilterModelRefresher<T> extends FilterModel.Abstra
 	protected final void refreshSync(Consumer<Collection<T>> afterRefresh) {
 		onRefreshStarted();
 		try {
-			onRefreshResult(items().get().get(), afterRefresh);
+			onRefreshResult(supplier().get().get(), afterRefresh);
 		}
 		catch (Exception e) {
 			onRefreshFailedSync(e);

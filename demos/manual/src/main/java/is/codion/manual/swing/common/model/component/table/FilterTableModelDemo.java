@@ -67,14 +67,14 @@ public final class FilterTableModelDemo {
 		// Implement an item supplier responsible for supplying
 		// the table items when the table data is refreshed.
 		// Without one the table can be populated by adding items manually
-		Supplier<Collection<Person>> items = () -> List.of(
+		Supplier<Collection<Person>> supplier = () -> List.of(
 						new Person("John", 42),
 						new Person("Mary", 43));
 
 		// Create the table model
 		FilterTableModel<Person, PersonColumn> tableModel =
 						FilterTableModel.builder(new PersonColumns())
-										.items(items)
+										.supplier(supplier)
 										.build();
 
 		// Populate the model

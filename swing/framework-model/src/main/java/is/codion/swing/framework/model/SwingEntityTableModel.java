@@ -345,10 +345,10 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	private static FilterTableModel<Entity, Attribute<?>> createFilterTableModel(EntityDefinition definition,
-																																							 Supplier<? extends Collection<Entity>> items) {
+																																							 Supplier<? extends Collection<Entity>> supplier) {
 		return FilterTableModel.builder(new EntityTableColumns(definition))
 						.filterModelFactory(new EntityFilterModelFactory(definition))
-						.items(items)
+						.supplier(supplier)
 						.validator(new EntityItemValidator(definition.entityType()))
 						.build();
 	}

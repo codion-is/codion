@@ -42,7 +42,7 @@ public final class ClientMonitor {
 
 	private final FilterTableModel<RemoteClient, RemoteClientColumns.Id> clientInstanceTableModel =
 					FilterTableModel.builder(new RemoteClientColumns())
-									.items(new RemoteClientItems())
+									.supplier(new RemoteClientItems())
 									.build();
 
 	/**

@@ -261,7 +261,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	private <T> FilterComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
 		FilterComboBoxModel<T> comboBoxModel = filterComboBoxModel();
-		comboBoxModel.refresher().items().set(column.type().isEnum() ?
+		comboBoxModel.refresher().supplier().set(column.type().isEnum() ?
 						new EnumAttributeItems<>(column) :
 						new ColumnItems<>(connectionProvider(), column));
 

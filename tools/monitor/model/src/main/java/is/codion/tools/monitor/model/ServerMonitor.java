@@ -93,15 +93,15 @@ public final class ServerMonitor {
 	private final Value<String> memoryUsageValue = Value.value("");
 	private final FilterTableModel<DomainEntityDefinition, DomainColumns.Id> domainTableModel =
 					FilterTableModel.builder(new DomainColumns())
-									.items(new DomainTableItems())
+									.supplier(new DomainTableItems())
 									.build();
 	private final FilterTableModel<DomainReport, ReportColumns.Id> reportTableModel =
 					FilterTableModel.builder(new ReportColumns())
-									.items(new ReportTableItems())
+									.supplier(new ReportTableItems())
 									.build();
 	private final FilterTableModel<DomainOperation, OperationColumns.Id> operationTableModel =
 					FilterTableModel.builder(new OperationColumns())
-									.items(new OperationTableItems())
+									.supplier(new OperationTableItems())
 									.build();
 	private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
 	private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();

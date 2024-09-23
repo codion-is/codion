@@ -58,7 +58,7 @@ final class KeyBindingModel {
 		this.componentComboBoxModel = createComponentComboBoxModel(lookAndFeelComboBoxModel);
 		this.componentComboBoxModel.refresh();
 		this.tableModel = FilterTableModel.builder(new KeyBindingColumns())
-						.items(new KeyBindingItems())
+						.supplier(new KeyBindingItems())
 						.build();
 		bindEvents(lookAndFeelComboBoxModel);
 	}
@@ -194,7 +194,7 @@ final class KeyBindingModel {
 	private static FilterComboBoxModel<String> createComponentComboBoxModel(
 					FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
 		FilterComboBoxModel<String> comboBoxModel = filterComboBoxModel();
-		comboBoxModel.refresher().items().set(new ComponentItems(lookAndFeelComboBoxModel));
+		comboBoxModel.refresher().supplier().set(new ComponentItems(lookAndFeelComboBoxModel));
 
 		return comboBoxModel;
 	}

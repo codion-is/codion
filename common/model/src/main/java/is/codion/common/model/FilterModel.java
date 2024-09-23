@@ -279,9 +279,9 @@ public interface FilterModel<T> {
 		State async();
 
 		/**
-		 * @return a Value controlling the item supplier for this refresher instance
+		 * @return a {@link Value} controlling the item supplier for this refresher instance
 		 */
-		Value<Supplier<Collection<T>>> items();
+		Value<Supplier<Collection<T>>> supplier();
 
 		/**
 		 * Refreshes the items in the associated filter model.
@@ -331,15 +331,15 @@ public interface FilterModel<T> {
 		private final Event<Collection<T>> refreshEvent = Event.event();
 		private final Event<Exception> refreshFailedEvent = Event.event();
 		private final State refreshingState = State.state();
-		private final Value<Supplier<Collection<T>>> items;
+		private final Value<Supplier<Collection<T>>> supplier;
 		private final State async = State.state(ASYNC_REFRESH.get());
 
 		/**
-		 * @param items supplies the items
+		 * @param supplier supplies the items
 		 */
-		protected AbstractRefresher(Supplier<Collection<T>> items) {
-			this.items = Value.builder()
-							.nonNull(items)
+		protected AbstractRefresher(Supplier<Collection<T>> supplier) {
+			this.supplier = Value.builder()
+							.nonNull(supplier)
 							.build();
 		}
 
@@ -349,8 +349,8 @@ public interface FilterModel<T> {
 		}
 
 		@Override
-		public final Value<Supplier<Collection<T>>> items() {
-			return items;
+		public final Value<Supplier<Collection<T>>> supplier() {
+			return supplier;
 		}
 
 		@Override

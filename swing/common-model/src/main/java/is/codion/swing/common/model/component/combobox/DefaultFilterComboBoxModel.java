@@ -635,8 +635,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final class DefaultRefresher extends AbstractFilterModelRefresher<T> {
 
-		private DefaultRefresher(Supplier<Collection<T>> items) {
-			super(items);
+		private DefaultRefresher(Supplier<Collection<T>> supplier) {
+			super(supplier);
 		}
 
 		@Override

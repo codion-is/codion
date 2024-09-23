@@ -180,10 +180,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> filterModelFactory(ConditionModel.Factory<C> filterModelFactory);
 
 		/**
-		 * @param items supplies the items
+		 * @param supplier supplies the items
 		 * @return this builder instance
 		 */
-		Builder<R, C> items(Supplier<? extends Collection<R>> items);
+		Builder<R, C> supplier(Supplier<? extends Collection<R>> supplier);
 
 		/**
 		 * Items failing validation can not be added to the model.

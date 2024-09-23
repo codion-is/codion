@@ -58,7 +58,7 @@ public final class ClientUserMonitor {
 	private final ClientMonitor clientMonitor;
 	private final FilterTableModel<UserInfo, UserHistoryColumns.Id> userHistoryTableModel =
 					FilterTableModel.builder(new UserHistoryColumns())
-									.items(new UserHistoryItems())
+									.supplier(new UserHistoryItems())
 									.refreshStrategy(MERGE)
 									.build();
 
