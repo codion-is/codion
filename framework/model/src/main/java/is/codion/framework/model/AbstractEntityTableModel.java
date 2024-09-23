@@ -270,13 +270,17 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 					addItemsAt(0, entitiesToAdd);
 					break;
 				case ADD_TOP_SORTED:
-					addItemsAtSorted(0, entitiesToAdd);
+					if (addItemsAt(0, entitiesToAdd)) {
+						sort();
+					}
 					break;
 				case ADD_BOTTOM:
 					addItemsAt(items().visible().count(), entitiesToAdd);
 					break;
 				case ADD_BOTTOM_SORTED:
-					addItemsAtSorted(items().visible().count(), entitiesToAdd);
+					if (addItemsAt(items().visible().count(), entitiesToAdd)) {
+						sort();
+					}
 					break;
 				default:
 					break;

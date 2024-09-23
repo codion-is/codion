@@ -213,53 +213,38 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final void addItems(Collection<Entity> items) {
-		filterModel().addItems(items);
+	public final boolean addItems(Collection<Entity> items) {
+		return filterModel().addItems(items);
 	}
 
 	@Override
-	public final void addItemsSorted(Collection<Entity> items) {
-		filterModel().addItemsSorted(items);
+	public final boolean addItemsAt(int index, Collection<Entity> items) {
+		return filterModel().addItemsAt(index, items);
 	}
 
 	@Override
-	public final void addItemsAt(int index, Collection<Entity> items) {
-		filterModel().addItemsAt(index, items);
+	public final boolean addItem(Entity item) {
+		return filterModel().addItem(item);
 	}
 
 	@Override
-	public final void addItemsAtSorted(int index, Collection<Entity> items) {
-		filterModel().addItemsAtSorted(index, items);
+	public final boolean addItemAt(int index, Entity item) {
+		return filterModel().addItemAt(index, item);
 	}
 
 	@Override
-	public final void addItem(Entity item) {
-		filterModel().addItem(item);
+	public final boolean setItemAt(int index, Entity item) {
+		return filterModel().setItemAt(index, item);
 	}
 
 	@Override
-	public final void addItemAt(int index, Entity item) {
-		filterModel().addItemAt(index, item);
+	public final boolean removeItems(Collection<Entity> items) {
+		return filterModel().removeItems(items);
 	}
 
 	@Override
-	public final void addItemSorted(Entity item) {
-		filterModel().addItemSorted(item);
-	}
-
-	@Override
-	public final void setItemAt(int index, Entity item) {
-		filterModel().setItemAt(index, item);
-	}
-
-	@Override
-	public final void removeItems(Collection<Entity> items) {
-		filterModel().removeItems(items);
-	}
-
-	@Override
-	public final void removeItem(Entity item) {
-		filterModel().removeItem(item);
+	public final boolean removeItem(Entity item) {
+		return filterModel().removeItem(item);
 	}
 
 	@Override

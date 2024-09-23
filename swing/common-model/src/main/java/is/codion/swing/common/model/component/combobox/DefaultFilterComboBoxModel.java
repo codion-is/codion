@@ -132,52 +132,41 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final void addItem(T item) {
+	public final boolean addItem(T item) {
 		validate(item);
 		if (modelItems.visiblePredicate.isNull() || modelItems.visiblePredicate.get().test(item)) {
 			if (!modelItems.visible.items.contains(item)) {
 				modelItems.visible.items.add(item);
 				sort();
+
+				return true;
 			}
 		}
 		else if (!modelItems.filtered.items.contains(item)) {
 			modelItems.filtered.items.add(item);
 			modelItems.filtered.notifyChanges();
 		}
+
+		return false;
 	}
 
 	@Override
-	public void addItemSorted(T item) {
+	public boolean addItemAt(int index, T item) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void addItemAt(int index, T item) {
+	public boolean addItems(Collection<T> items) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void addItems(Collection<T> items) {
+	public boolean addItemsAt(int index, Collection<T> items) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void addItemsSorted(Collection<T> items) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void addItemsAt(int index, Collection<T> items) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void addItemsAtSorted(int index, Collection<T> items) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final void removeItem(T item) {
+	public final boolean removeItem(T item) {
 		requireNonNull(item);
 		if (modelItems.filtered.items.remove(item)) {
 			modelItems.filtered.notifyChanges();
@@ -185,7 +174,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		if (modelItems.visible.items.remove(item)) {
 			fireContentsChanged();
 			modelItems.visible.notifyChanges();
+
+			return true;
 		}
+
+		return false;
 	}
 
 	@Override
@@ -194,7 +187,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public void removeItems(Collection<T> items) {
+	public boolean removeItems(Collection<T> items) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -204,7 +197,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public void setItemAt(int index, T item) {
+	public boolean setItemAt(int index, T item) {
 		throw new UnsupportedOperationException();
 	}
 

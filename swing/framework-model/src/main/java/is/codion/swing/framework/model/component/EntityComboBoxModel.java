@@ -340,43 +340,28 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public void addItem(Entity item) {
-		comboBoxModel.addItem(item);
+	public boolean addItem(Entity item) {
+		return comboBoxModel.addItem(item);
 	}
 
 	@Override
-	public void addItemSorted(Entity item) {
-		comboBoxModel.addItemSorted(item);
+	public boolean addItemAt(int index, Entity item) {
+		return comboBoxModel.addItemAt(index, item);
 	}
 
 	@Override
-	public void addItemAt(int index, Entity item) {
-		comboBoxModel.addItemAt(index, item);
+	public boolean addItems(Collection<Entity> items) {
+		return comboBoxModel.addItems(items);
 	}
 
 	@Override
-	public void addItems(Collection<Entity> items) {
-		comboBoxModel.addItems(items);
+	public boolean addItemsAt(int index, Collection<Entity> items) {
+		return comboBoxModel.addItemsAt(index, items);
 	}
 
 	@Override
-	public void addItemsSorted(Collection<Entity> items) {
-		comboBoxModel.addItemsSorted(items);
-	}
-
-	@Override
-	public void addItemsAt(int index, Collection<Entity> items) {
-		comboBoxModel.addItemsAt(index, items);
-	}
-
-	@Override
-	public void addItemsAtSorted(int index, Collection<Entity> items) {
-		comboBoxModel.addItemsAtSorted(index, items);
-	}
-
-	@Override
-	public void removeItem(Entity item) {
-		comboBoxModel.removeItem(item);
+	public boolean removeItem(Entity item) {
+		return comboBoxModel.removeItem(item);
 	}
 
 	@Override
@@ -385,8 +370,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public void removeItems(Collection<Entity> items) {
-		comboBoxModel.removeItems(items);
+	public boolean removeItems(Collection<Entity> items) {
+		return comboBoxModel.removeItems(items);
 	}
 
 	@Override
@@ -395,8 +380,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public void setItemAt(int index, Entity item) {
-		comboBoxModel.setItemAt(index, item);
+	public boolean setItemAt(int index, Entity item) {
+		return comboBoxModel.setItemAt(index, item);
 	}
 
 	@Override

@@ -64,49 +64,31 @@ public interface FilterModel<T> {
 	 * Adds the given item to this model.
 	 * Note that if the item does not fulfill the visible predicate, it will be filtered right away.
 	 * @param item the item to add
+	 * @return true if the item is visible
 	 */
-	void addItem(T item);
+	boolean addItem(T item);
 
 	/**
 	 * @param index the index
 	 * @param item the item to add
+	 * @return true if the item is visible
 	 */
-	void addItemAt(int index, T item);
+	boolean addItemAt(int index, T item);
 
 	/**
 	 * Adds the given items to the bottom of this table model.
 	 * @param items the items to add
+	 * @return true if one or more of the items are visible
 	 */
-	void addItems(Collection<T> items);
-
-	/**
-	 * Adds the given item to the bottom of this table model.
-	 * If sorting is enabled this model is sorted after the item has been added.
-	 * @param item the item to add
-	 */
-	void addItemSorted(T item);
+	boolean addItems(Collection<T> items);
 
 	/**
 	 * Adds the given items to this table model, non-filtered items are added at the given index.
 	 * @param index the index at which to add the items
 	 * @param items the items to add
+	 * @return true if one or more of the items are visible
 	 */
-	void addItemsAt(int index, Collection<T> items);
-
-	/**
-	 * Adds the given items to the bottom of this table model.
-	 * If sorting is enabled this model is sorted after the items have been added.
-	 * @param items the items to add
-	 */
-	void addItemsSorted(Collection<T> items);
-
-	/**
-	 * Adds the given items to this table model, non-filtered items are added at the given index.
-	 * If a {@link #comparator()} is specified this model is sorted after the items have been added.
-	 * @param index the index at which to add the items
-	 * @param items the items to add
-	 */
-	void addItemsAtSorted(int index, Collection<T> items);
+	boolean addItemsAt(int index, Collection<T> items);
 
 	/**
 	 * Sets the item at the given index.
@@ -114,28 +96,31 @@ public interface FilterModel<T> {
 	 * @param index the index
 	 * @param item the item
 	 * @see Items.Visible#predicate()
+	 * @return true if the item is visible
 	 */
-	void setItemAt(int index, T item);
+	boolean setItemAt(int index, T item);
 
 	/**
 	 * Removes the given item from this model
 	 * @param item the item to remove from the model
+	 * @return true if the item was visible
 	 */
-	void removeItem(T item);
+	boolean removeItem(T item);
 
 	/**
 	 * Removes from this table model the visible element whose index is between index
 	 * @param index the index of the row to be removed
 	 * @return the removed item
-	 * @throws IndexOutOfBoundsException in case the indexe is out of bounds
+	 * @throws IndexOutOfBoundsException in case the index is out of bounds
 	 */
 	T removeItemAt(int index);
 
 	/**
 	 * Removes the given items from this table model
 	 * @param items the items to remove from the model
+	 * @return true if one or more of the items were visible
 	 */
-	void removeItems(Collection<T> items);
+	boolean removeItems(Collection<T> items);
 
 	/**
 	 * Removes from this table model all visible elements whose index is between fromIndex, inclusive and toIndex, exclusive

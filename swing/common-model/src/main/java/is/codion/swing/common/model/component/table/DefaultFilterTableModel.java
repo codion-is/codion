@@ -185,62 +185,45 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public void addItems(Collection<R> items) {
-		addItemsAt(this.modelItems.visible.items.size(), items);
+	public boolean addItems(Collection<R> items) {
+		return addItemsAtInternal(modelItems.visible.items.size(), items);
 	}
 
 	@Override
-	public void addItemsSorted(Collection<R> items) {
-		addItemsAtSorted(this.modelItems.visible.items.size(), items);
+	public boolean addItemsAt(int index, Collection<R> items) {
+		return addItemsAtInternal(index, items);
 	}
 
 	@Override
-	public void addItemsAt(int index, Collection<R> items) {
-		addItemsAtInternal(index, items);
+	public boolean addItem(R item) {
+		return addItemInternal(item);
 	}
 
 	@Override
-	public void addItemsAtSorted(int index, Collection<R> items) {
-		if (addItemsAtInternal(index, items) && comparator.isNotNull()) {
-			modelItems.visible.items.sort(comparator.get());
-			fireTableDataChanged();
-		}
+	public boolean addItemAt(int index, R item) {
+		return addItemAtInternal(index, item);
 	}
 
 	@Override
-	public void addItem(R item) {
-		addItemInternal(item);
-	}
-
-	@Override
-	public void addItemAt(int index, R item) {
-		addItemAtInternal(index, item);
-	}
-
-	@Override
-	public void addItemSorted(R item) {
-		if (addItemInternal(item) && comparator.isNotNull()) {
-			this.modelItems.visible.items.sort(comparator.get());
-			fireTableDataChanged();
-		}
-	}
-
-	@Override
-	public void setItemAt(int index, R item) {
+	public boolean setItemAt(int index, R item) {
 		validate(item);
 		if (include(item)) {
 			modelItems.visible.items.set(index, item);
 			fireTableRowsUpdated(index, index);
+
+			return true;
 		}
+
+		return false;
 	}
 
 	@Override
-	public void removeItem(R item) {
-		removeItemInternal(item, true);
+	public boolean removeItem(R item) {
+		return removeItemInternal(item, true);
 	}
 
 	@Override
-	public void removeItems(Collection<R> items) {
+	public boolean removeItems(Collection<R> items) {
 		selectionModel.setValueIsAdjusting(true);
 		boolean visibleItemRemoved = false;
 		for (R item : requireNonNull(items)) {
@@ -248,8 +231,10 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 		selectionModel.setValueIsAdjusting(false);
 		if (visibleItemRemoved) {
-			this.modelItems.visible.notifyChanges();
+			modelItems.visible.notifyChanges();
 		}
+
+		return visibleItemRemoved;
 	}
 
 	@Override
@@ -457,7 +442,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private void clearAndAdd(Collection<R> items) {
 			List<R> selectedItems = selectionModel.items().get();
 			clear();
-			addItemsSorted(items);
+			if (addItems(items)) {
+				sort();
+			}
 			selectionModel.items().set(selectedItems);
 		}
 	}

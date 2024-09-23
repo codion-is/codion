@@ -884,7 +884,9 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void select(JComponent dialogOwner, List<Entity> entities) {
-			table.model().addItemsAtSorted(0, requireNonNull(entities));
+			if (table.model().addItemsAt(0, requireNonNull(entities))) {
+				table.model().sort();
+			}
 			table.scrollRectToVisible(table.getCellRect(0, 0, true));
 			initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
 

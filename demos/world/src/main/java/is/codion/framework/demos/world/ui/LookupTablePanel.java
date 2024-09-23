@@ -270,7 +270,8 @@ final class LookupTablePanel extends EntityTablePanel {
 		List<Entity> entities = objectMapper.deserializeEntities(
 						String.join("\n", Files.readAllLines(file.toPath())));
 		clearTableAndConditions();
-		tableModel().addItemsAtSorted(0, entities);
+		tableModel().addItemsAt(0, entities);
+		tableModel().sort();
 	}
 
 	private JToolBar createColumnSelectionToolBar() {
