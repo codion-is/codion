@@ -162,15 +162,15 @@ public class DefaultFilterComboBoxModelTest {
 	void filterWithSelection() {
 		testModel.filterSelectedItem().set(true);
 		testModel.setSelectedItem(BJORN);
-		testModel.items().visiblePredicate().set(item -> !item.equals(BJORN));
+		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
 		assertEquals(NULL, testModel.getSelectedItem());
 		assertNull(testModel.selection().value());
 
-		testModel.items().visiblePredicate().clear();
+		testModel.items().visible().predicate().clear();
 		testModel.filterSelectedItem().set(false);
 		assertFalse(testModel.filterSelectedItem().get());
 		testModel.setSelectedItem(BJORN);
-		testModel.items().visiblePredicate().set(item -> !item.equals(BJORN));
+		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
 		assertNotNull(testModel.getSelectedItem());
 		assertEquals(BJORN, testModel.selection().value());
 	}
@@ -179,15 +179,15 @@ public class DefaultFilterComboBoxModelTest {
 	void visiblePredicate() {
 		testModel.addListDataListener(listDataListener);
 
-		testModel.items().visiblePredicate().set(item -> false);
+		testModel.items().visible().predicate().set(item -> false);
 		assertEquals(1, testModel.getSize());
-		testModel.items().visiblePredicate().set(item -> true);
+		testModel.items().visible().predicate().set(item -> true);
 		assertEquals(6, testModel.getSize());
-		testModel.items().visiblePredicate().set(item -> !item.equals(ANNA));
+		testModel.items().visible().predicate().set(item -> !item.equals(ANNA));
 		assertEquals(5, testModel.getSize());
 		assertFalse(testModel.items().visible().contains(ANNA));
 		assertTrue(testModel.items().filtered().contains(ANNA));
-		testModel.items().visiblePredicate().set(item -> item.equals(ANNA));
+		testModel.items().visible().predicate().set(item -> item.equals(ANNA));
 		assertEquals(2, testModel.getSize());
 		assertTrue(testModel.items().visible().contains(ANNA));
 
@@ -208,9 +208,9 @@ public class DefaultFilterComboBoxModelTest {
 	@Test
 	void remove() {
 		//remove filtered item
-		testModel.items().visiblePredicate().set(item -> !item.equals(BJORN));
+		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
 		testModel.removeItem(BJORN);
-		testModel.items().visiblePredicate().clear();
+		testModel.items().visible().predicate().clear();
 		assertFalse(testModel.items().visible().contains(BJORN));
 
 		//remove visible item
@@ -222,7 +222,7 @@ public class DefaultFilterComboBoxModelTest {
 	void add() {
 		testModel.clear();
 		//add filtered item
-		testModel.items().visiblePredicate().set(item -> !item.equals(BJORN));
+		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
 		testModel.addItem(BJORN);
 		assertFalse(testModel.items().visible().contains(BJORN));
 
@@ -230,7 +230,7 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.addItem(KALLI);
 		assertTrue(testModel.items().visible().contains(KALLI));
 
-		testModel.items().visiblePredicate().clear();
+		testModel.items().visible().predicate().clear();
 		assertTrue(testModel.items().visible().contains(BJORN));
 	}
 

@@ -65,7 +65,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 		value(Employee.DEPARTMENT_FK).addConsumer(department -> {
 			//only show managers from the same department as the selected employee and hide the currently
 			//selected employee to prevent an employee from being made her own manager
-			foreignKeyComboBoxModel(Employee.MANAGER_FK).items().visiblePredicate().set(manager ->
+			foreignKeyComboBoxModel(Employee.MANAGER_FK).items().visible().predicate().set(manager ->
 							Objects.equals(manager.entity(Employee.DEPARTMENT_FK), department)
 											&& !Objects.equals(manager, entity()));
 		});

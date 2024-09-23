@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.15
+### is.codion.common.model
+- FilterModel.Items.visiblePredicate() moved to Items.Visible and renamed predicate().
 
 ## 0.18.14
 ### is.codion.common.core

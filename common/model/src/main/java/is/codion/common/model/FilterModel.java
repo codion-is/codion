@@ -113,7 +113,7 @@ public interface FilterModel<T> {
 	 * If the item should be filtered calling this method has no effect.
 	 * @param index the index
 	 * @param item the item
-	 * @see Items#visiblePredicate()
+	 * @see Items.Visible#predicate()
 	 */
 	void setItemAt(int index, T item);
 
@@ -164,8 +164,8 @@ public interface FilterModel<T> {
 	Value<Comparator<T>> comparator();
 
 	/**
-	 * Refreshes the items in this filtered model using its {@link Refresher}.
-	 * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the user interface thread
+	 * Refreshes the items in this model using its {@link Refresher}.
+	 * @throws RuntimeException in case of an exception when running refresh synchronously
 	 * @see Refresher#refresh()
 	 */
 	void refresh();
@@ -194,22 +194,17 @@ public interface FilterModel<T> {
 	interface Items<T> extends Mutable<Collection<T>> {
 
 		/**
-		 * @return the {@link Value} controlling the predicate specifying which items should be visible
-		 */
-		Value<Predicate<T>> visiblePredicate();
-
-		/**
-		 * @return a {@link Visible} providing an unmodifiable view of the visible items, in the order they appear in the model
+		 * @return a {@link Visible} providing access to the visible items, in the order they appear in the model
 		 */
 		Visible<T> visible();
 
 		/**
-		 * @return a {@link Filtered} providing an unmodifiable view of the filtered items
+		 * @return a {@link Filtered} providing access to the filtered items
 		 */
 		Filtered<T> filtered();
 
 		/**
-		 * Returns true if these items contain the given item, visible or filtered.
+		 * Returns true if the model contain the given item, as visible or filtered.
 		 * @param item the item
 		 * @return true if this model contains the item
 		 */
@@ -221,10 +216,10 @@ public interface FilterModel<T> {
 		int count();
 
 		/**
-		 * Filters the items according to the condition specified by {@link #visiblePredicate()}.
-		 * If no include condition is specified this method does nothing.
+		 * Filters the items according to the predicate specified by {@link Visible#predicate()}.
+		 * If no visible predicate is specified this method does nothing.
 		 * This method does not interfere with the internal ordering of the visible items.
-		 * @see #visiblePredicate()
+		 * @see Visible#predicate()
 		 */
 		void filter();
 
@@ -232,6 +227,11 @@ public interface FilterModel<T> {
 		 * @param <T> the item type
 		 */
 		interface Visible<T> extends Observable<List<T>> {
+
+			/**
+			 * @return the {@link Value} controlling the predicate specifying which items should be visible
+			 */
+			Value<Predicate<T>> predicate();
 
 			/**
 			 * Returns true if the given item is visible

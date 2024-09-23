@@ -107,7 +107,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		comboBoxModel.selectedItemTranslator().set(new SelectedItemTranslator());
 		comboBoxModel.refresher().items().set(this::performQuery);
 		comboBoxModel.validator().set(new ItemValidator());
-		comboBoxModel.items().visiblePredicate().set(foreignKeyVisiblePredicate);
+		comboBoxModel.items().visible().predicate().set(foreignKeyVisiblePredicate);
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
 
@@ -214,7 +214,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	/**
 	 * Use this method to retrieve the default foreign key filter visible predicate if you
-	 * want to add a custom {@link Predicate} to this model via {@link Items#visiblePredicate()}.
+	 * want to add a custom {@link Predicate} to this model via {@link Items.Visible#predicate()}.
 	 * <pre>
 	 * {@code
 	 *   Predicate fkPredicate = model.foreignKeyVisiblePredicate();
@@ -230,10 +230,10 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	/**
 	 * Filters this combo box model so that only items referencing the given keys via the given foreign key are visible.
-	 * Note that this uses the {@link Items#visiblePredicate()} and replaces any previously set prediate.
+	 * Note that this uses the {@link Items.Visible#predicate()} and replaces any previously set prediate.
 	 * @param foreignKey the foreign key
 	 * @param keys the keys, an empty Collection to clear the filter
-	 * @see Items#visiblePredicate()
+	 * @see Items.Visible#predicate()
 	 */
 	public void filterByForeignKey(ForeignKey foreignKey, Collection<Entity.Key> keys) {
 		requireNonNull(foreignKey);
@@ -244,7 +244,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		else {
 			foreignKeyFilterKeys.put(foreignKey, new HashSet<>(keys));
 		}
-		items().visiblePredicate().set(foreignKeyVisiblePredicate);
+		items().visible().predicate().set(foreignKeyVisiblePredicate);
 		items().filter();
 	}
 
@@ -578,11 +578,11 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
 		Predicate<Entity> filterAllCondition = item -> false;
 		if (strictForeignKeyFiltering.get()) {
-			items().visiblePredicate().set(filterAllCondition);
+			items().visible().predicate().set(filterAllCondition);
 		}
 		foreignKeyModel.selection().item().addConsumer(selected -> {
 			if (selected == null && strictForeignKeyFiltering.get()) {
-				items().visiblePredicate().set(filterAllCondition);
+				items().visible().predicate().set(filterAllCondition);
 			}
 			else {
 				filterByForeignKey(foreignKey, selected == null ? emptyList() : singletonList(selected.primaryKey()));

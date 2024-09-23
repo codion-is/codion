@@ -503,11 +503,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Value<Predicate<R>> visiblePredicate() {
-			return combinedVisiblePredicate.visiblePredicate;
-		}
-
-		@Override
 		public Visible<R> visible() {
 			return visible;
 		}
@@ -552,6 +547,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private final List<R> items = new ArrayList<>();
 		private final Event<List<R>> event = Event.event();
+
+		@Override
+		public Value<Predicate<R>> predicate() {
+			return combinedVisiblePredicate.predicate;
+		}
 
 		@Override
 		public List<R> get() {
@@ -622,7 +622,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private final List<ConditionModel<C, ?>> columnFilters;
 
-		private final Value<Predicate<R>> visiblePredicate = Value.builder()
+		private final Value<Predicate<R>> predicate = Value.builder()
 						.<Predicate<R>>nullable()
 						.listener(modelItems::filter)
 						.build();
@@ -633,7 +633,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public boolean test(R item) {
-			if (visiblePredicate.isNotNull() && !visiblePredicate.get().test(item)) {
+			if (predicate.isNotNull() && !predicate.get().test(item)) {
 				return false;
 			}
 

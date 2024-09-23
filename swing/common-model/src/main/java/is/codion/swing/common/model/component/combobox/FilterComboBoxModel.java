@@ -38,7 +38,7 @@ import static java.util.Objects.requireNonNull;
  * A combo box model based on {@link FilterModel}.
  * @param <T> the type of values in this combo box model
  * @see #filterComboBoxModel()
- * @see Items#visiblePredicate()
+ * @see Items.Visible#predicate()
  */
 public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T> {
 
@@ -60,7 +60,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * Note that if the item does not fulfill the visible predicate, it will be filtered right away.
 	 * @param item the item to add
 	 * @throws IllegalArgumentException in case the item fails validation
-	 * @see Items#visiblePredicate()
+	 * @see Items.Visible#predicate()
 	 */
 	void addItem(T item);
 
@@ -138,7 +138,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * which is not currently visible in the model
 	 * This is false by default.
 	 * @return the {@link State} controlling whether filtering affects the selected item
-	 * @see Items#visiblePredicate()
+	 * @see Items.Visible#predicate()
 	 */
 	State filterSelectedItem();
 

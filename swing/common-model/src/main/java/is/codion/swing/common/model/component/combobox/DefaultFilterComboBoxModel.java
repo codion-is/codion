@@ -398,18 +398,13 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Value<Predicate<T>> visiblePredicate() {
-			return visiblePredicate;
-		}
-
-		@Override
 		public void filter() {
 			visible.items.addAll(filtered.items);
 			filtered.items.clear();
-			if (visiblePredicate.isNotNull()) {
+			if (modelItems.visiblePredicate.isNotNull()) {
 				for (Iterator<T> iterator = visible.items.listIterator(); iterator.hasNext(); ) {
 					T item = iterator.next();
-					if (item != null && !visiblePredicate.get().test(item)) {
+					if (item != null && !modelItems.visiblePredicate.get().test(item)) {
 						filtered.items.add(item);
 						iterator.remove();
 					}
@@ -435,6 +430,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final List<T> items = new ArrayList<>();
 		private final Event<List<T>> event = Event.event();
+
+		@Override
+		public Value<Predicate<T>> predicate() {
+			return modelItems.visiblePredicate;
+		}
 
 		@Override
 		public List<T> get() {

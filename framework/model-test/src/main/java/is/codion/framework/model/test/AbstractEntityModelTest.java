@@ -90,7 +90,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		Entity operations = deptTableModel.selection().item().get();
 		assertEquals(80, operations.get(Department.ID));
 
-		deptTableModel.items().visiblePredicate().set(item ->
+		deptTableModel.items().visible().predicate().set(item ->
 						!Objects.equals(80, item.get(Department.ID)));
 
 		deptEditModel.entity().set(operations);
