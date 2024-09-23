@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.15
+
 ## 0.18.14
 ### is.codion.common.core
 - PropertyStore, property access now based on predicates instead of key prefixes.
