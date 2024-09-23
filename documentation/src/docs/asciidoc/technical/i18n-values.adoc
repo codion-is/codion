@@ -69,12 +69,12 @@ is/codion/common/i18n/Messages_is_IS.properties
 
 == codion-common-model
 
-=== is/codion/common/model/table/ColumnConditionModel$AutomaticWildcard.java
+=== is/codion/common/model/condition/ConditionModel$AutomaticWildcard.java
 
 [source]
 ----
-is/codion/common/model/table/ColumnConditionModel$AutomaticWildcard.properties
-is/codion/common/model/table/ColumnConditionModel$AutomaticWildcard_is_IS.properties
+is/codion/common/model/condition/ConditionModel$AutomaticWildcard.properties
+is/codion/common/model/condition/ConditionModel$AutomaticWildcard_is_IS.properties
 ----
 
 [cols="1,1,1"]
@@ -87,12 +87,12 @@ is/codion/common/model/table/ColumnConditionModel$AutomaticWildcard_is_IS.proper
 |PREFIX_AND_POSTFIX|Prefix and postfix|Að framan og aftan
 |===
 
-=== is/codion/common/model/table/ColumnSummary.java
+=== is/codion/common/model/summary/ColumnSummary.java
 
 [source]
 ----
-is/codion/common/model/table/ColumnSummary.properties
-is/codion/common/model/table/ColumnSummary_is_IS.properties
+is/codion/common/model/summary/ColumnSummary.properties
+is/codion/common/model/summary/ColumnSummary_is_IS.properties
 ----
 
 [cols="1,1,1"]

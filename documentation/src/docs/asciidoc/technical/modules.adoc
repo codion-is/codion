@@ -38,7 +38,7 @@ image::modules/common/db/build/reports/dependency-graph/dependency-graph.svg[opt
 
 Common model classes.
 
-* {url-javadoc}{common-model}/is/codion/common/model/table/package-summary.html[is.codion.common.model.condition]
+* {url-javadoc}{common-model}/is/codion/common/model/condition/package-summary.html[is.codion.common.model.condition]
 
 .Dependency graph
 [%collapsible]
