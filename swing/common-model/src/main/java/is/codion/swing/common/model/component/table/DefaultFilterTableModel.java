@@ -307,12 +307,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 				modelItems.visible.notifyChanges();
 			}
 		}
-		else {
-			int filteredIndex = modelItems.filtered.items.indexOf(item);
-			if (filteredIndex >= 0) {
-				modelItems.filtered.items.remove(item);
-				modelItems.filtered.notifyChanges();
-			}
+		else if (modelItems.filtered.items.remove(item)) {
+			modelItems.filtered.notifyChanges();
 		}
 
 		return visibleItemIndex >= 0;
