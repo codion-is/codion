@@ -64,9 +64,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final Value<Predicate<T>> validator = Value.builder()
 					.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)
 					.build();
-	private final Value<Comparator<T>> comparator = Value.builder()
-					.nullable((Comparator<T>) DEFAULT_COMPARATOR)
-					.build();
 
 	/**
 	 * set during setItems()
@@ -88,7 +85,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		validator.addValidator(validator -> modelItems.get().stream()
 						.filter(Objects::nonNull)
 						.forEach(validator::test));
-		comparator.addListener(this::sort);
+		modelItems.visible.comparator.addListener(modelItems.visible::sort);
 		includeNull.addConsumer(value -> {
 			if (value && !modelItems.visible.items.contains(null)) {
 				modelItems.visible.items.add(0, null);
@@ -137,7 +134,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		if (modelItems.visiblePredicate.isNull() || modelItems.visiblePredicate.get().test(item)) {
 			if (!modelItems.visible.items.contains(item)) {
 				modelItems.visible.items.add(item);
-				sort();
+				modelItems.visible.sort();
 
 				return true;
 			}
@@ -184,26 +181,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		if (Objects.equals(selectionModel.selected.item, item)) {
 			selectionModel.selected.replaceWith(item);
 		}
-	}
-
-	@Override
-	public final void sort() {
-		if (comparator.isNotNull() && !modelItems.visible.items.isEmpty()) {
-			if (includeNull.get()) {
-				modelItems.visible.items.remove(0);
-			}
-			modelItems.visible.items.sort(comparator.get());
-			if (includeNull.get()) {
-				modelItems.visible.items.add(0, null);
-			}
-			fireContentsChanged();
-			modelItems.visible.notifyChanges();
-		}
-	}
-
-	@Override
-	public final Value<Comparator<T>> comparator() {
-		return comparator;
 	}
 
 	@Override
@@ -378,7 +355,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					}
 				}
 			}
-			sort();
+			visible.sort();
 			if (selectionModel.selected.item != null && visible.items.contains(selectionModel.selected.item)) {
 				//update the selected item since the underlying data could have changed
 				selectionModel.selected.item = visible.items.get(visible.items.indexOf(selectionModel.selected.item));
@@ -396,6 +373,9 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final class VisibleItems implements Visible<T> {
 
+		private final Value<Comparator<T>> comparator = Value.builder()
+						.nullable((Comparator<T>) DEFAULT_COMPARATOR)
+						.build();
 		private final List<T> items = new ArrayList<>();
 		private final Event<List<T>> event = Event.event();
 
@@ -475,6 +455,26 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			return items.size() - 1;
+		}
+
+		@Override
+		public Value<Comparator<T>> comparator() {
+			return comparator;
+		}
+
+		@Override
+		public void sort() {
+			if (comparator.isNotNull() && !items.isEmpty()) {
+				if (includeNull.get()) {
+					items.remove(0);
+				}
+				items.sort(comparator.get());
+				if (includeNull.get()) {
+					items.add(0, null);
+				}
+				fireContentsChanged();
+				notifyChanges();
+			}
 		}
 
 		private void notifyChanges() {

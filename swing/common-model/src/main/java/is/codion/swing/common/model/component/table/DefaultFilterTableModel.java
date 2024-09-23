@@ -74,10 +74,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final Predicate<R> validator;
 	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
-	private final Value<Comparator<R>> comparator = Value.builder()
-					.<Comparator<R>>nullable()
-					.notify(Value.Notify.WHEN_SET)
-					.build();
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = requireNonNull(builder.columns);
@@ -170,21 +166,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Value<Comparator<R>> comparator() {
-		return comparator;
-	}
-
-	@Override
-	public void sort() {
-		if (comparator.isNotNull()) {
-			List<R> selectedItems = selectionModel.items().get();
-			modelItems.visible.items.sort(comparator.get());
-			fireTableRowsUpdated(0, modelItems.visible.items.size());
-			selectionModel.items().set(selectedItems);
-		}
-	}
-
-	@Override
 	public boolean addItems(Collection<R> items) {
 		return addItemsAtInternal(modelItems.visible.items.size(), items);
 	}
@@ -267,7 +248,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		});
 		addTableModelListener(removeSelectionListener);
 		conditionModel.changed().addListener(modelItems::filter);
-		comparator.addListener(this::sort);
+		modelItems.visible.comparator.addListener(modelItems.visible::sort);
 	}
 
 	private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
@@ -400,7 +381,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			List<R> selectedItems = selectionModel.items().get();
 			clear();
 			if (addItems(items)) {
-				sort();
+				modelItems.visible.sort();
 			}
 			selectionModel.items().set(selectedItems);
 		}
@@ -478,8 +459,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 					filtered.items.add(item);
 				}
 			}
-			if (comparator.isNotNull()) {
-				visible.items.sort(comparator.get());
+			if (visible.comparator.isNotNull()) {
+				visible.items.sort(visible.comparator.get());
 			}
 			fireTableDataChanged();
 			filtered.notifyChanges();
@@ -488,6 +469,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	private final class VisibleItems implements Visible<R> {
+
+		private final Value<Comparator<R>> comparator = Value.builder()
+						.<Comparator<R>>nullable()
+						.notify(Value.Notify.WHEN_SET)
+						.build();
 
 		private final List<R> items = new ArrayList<>();
 		private final Event<List<R>> event = Event.event();
@@ -568,6 +554,21 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public int count() {
 			return items.size();
+		}
+
+		@Override
+		public Value<Comparator<R>> comparator() {
+			return comparator;
+		}
+
+		@Override
+		public void sort() {
+			if (comparator.isNotNull()) {
+				List<R> selectedItems = selectionModel.items().get();
+				items.sort(comparator.get());
+				fireTableRowsUpdated(0, items.size());
+				selectionModel.items().set(selectedItems);
+			}
 		}
 
 		private void notifyChanges() {

@@ -48,7 +48,7 @@ public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<
 
 	private ItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
 		selectedItemTranslator().set(new SelectedItemTranslator());
-		comparator().set(comparator);
+		items().visible().comparator().set(comparator);
 		items().set(items);
 		if (items().contains(Item.item(null))) {
 			setSelectedItem(null);

@@ -207,7 +207,7 @@ public final class DefaultFilterTableModelTest {
 		testModel.selection().indexes().addListener(selectionEvents::incrementAndGet);
 		testModel.refreshStrategy().set(RefreshStrategy.MERGE);
 		testModel.refresh();
-		testModel.comparator().set(Comparator.comparing(o -> o.value));
+		testModel.items().visible().comparator().set(Comparator.comparing(o -> o.value));
 //		testModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
 		testModel.selection().index().set(1);//b
 
@@ -233,7 +233,7 @@ public final class DefaultFilterTableModelTest {
 
 		testModel.refresh();
 		//merge does not sort new items
-		testModel.sort();
+		testModel.items().visible().sort();
 
 		testModel.selection().index().set(1);//b
 

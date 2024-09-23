@@ -39,7 +39,6 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -203,9 +202,9 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	/**
 	 * Controls the order by to use when selecting entities for this model.
 	 * Note that in order for this to have an effect, you must disable sorting
-	 * by setting the sort comparator to null ({@link #comparator()}
-	 * @return the {@link Value} controlling the orderBy
-	 * @see #comparator()
+	 * by setting the sort comparator to null via {@link Items.Visible#comparator()}
+	 * @return the {@link Value} controlling the {@link OrderBy}
+	 * @see Items.Visible#comparator()
 	 */
 	public Value<OrderBy> orderBy() {
 		return orderBy;
@@ -361,16 +360,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	@Override
 	public void replace(Entity item, Entity replacement) {
 		comboBoxModel.replace(item, replacement);
-	}
-
-	@Override
-	public void sort() {
-		comboBoxModel.sort();
-	}
-
-	@Override
-	public Value<Comparator<Entity>> comparator() {
-		return comboBoxModel.comparator();
 	}
 
 	@Override

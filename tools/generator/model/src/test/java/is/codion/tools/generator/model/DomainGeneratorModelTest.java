@@ -38,7 +38,7 @@ public final class DomainGeneratorModelTest {
 	void petstore() throws Exception {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().refresh();
-		model.schemaModel().comparator().set(comparing(SchemaRow::name));
+		model.schemaModel().items().visible().comparator().set(comparing(SchemaRow::name));
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("PETSTORE"))
@@ -55,7 +55,7 @@ public final class DomainGeneratorModelTest {
 	void chinook() throws Exception {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().refresh();
-		model.schemaModel().comparator().set(comparing(SchemaRow::name));
+		model.schemaModel().items().visible().comparator().set(comparing(SchemaRow::name));
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("CHINOOK"))
@@ -72,7 +72,7 @@ public final class DomainGeneratorModelTest {
 	void world() throws Exception {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().refresh();
-		model.schemaModel().comparator().set(comparing(SchemaRow::name));
+		model.schemaModel().items().visible().comparator().set(comparing(SchemaRow::name));
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("WORLD"))

@@ -263,11 +263,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final void sort() {
-		filterModel().sort();
-	}
-
-	@Override
 	public final FilterTableSelectionModel<Entity> selection() {
 		return filterModel().selection();
 	}
@@ -305,11 +300,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	@Override
 	public final Columns<Entity, Attribute<?>> columns() {
 		return filterModel().columns();
-	}
-
-	@Override
-	public final Value<Comparator<Entity>> comparator() {
-		return filterModel().comparator();
 	}
 
 	/**

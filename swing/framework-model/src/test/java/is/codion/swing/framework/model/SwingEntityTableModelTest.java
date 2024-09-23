@@ -52,7 +52,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Override
 	protected SwingEntityTableModel createDepartmentTableModel() {
 		SwingEntityTableModel deptModel = createTableModel(Department.TYPE, testModel.connectionProvider());
-		deptModel.comparator().set(Comparator.comparing(department -> department.get(Department.NAME)));
+		deptModel.items().visible().comparator().set(Comparator.comparing(department -> department.get(Department.NAME)));
 
 		return deptModel;
 	}

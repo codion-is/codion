@@ -101,7 +101,7 @@ public final class DesignAndStyle {
 
 		selectionModel.items().addListener(() -> System.out.println("Selected items changed"));
 
-		tableModel.comparator().set(Comparator.comparing(row -> row.get(0)));
+		tableModel.items().visible().comparator().set(Comparator.comparing(row -> row.get(0)));
 
 		table.sortingEnabled().set(false);
 		//end::mutable[]

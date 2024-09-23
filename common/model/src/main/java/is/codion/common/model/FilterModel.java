@@ -95,18 +95,6 @@ public interface FilterModel<T> {
 	void clear();
 
 	/**
-	 * Sorts the visible items according to {@link #comparator()}, preserving the selection.
-	 * Calling this method when no comparator is specified has no effect.
-	 * @see #comparator()
-	 */
-	void sort();
-
-	/**
-	 * @return the {@link Value} controlling the comparator to use when sorting
-	 */
-	Value<Comparator<T>> comparator();
-
-	/**
 	 * Refreshes the items in this model using its {@link Refresher}.
 	 * @throws RuntimeException in case of an exception when running refresh synchronously
 	 * @see Refresher#refresh()
@@ -241,6 +229,18 @@ public interface FilterModel<T> {
 			 * @return the number of visible items
 			 */
 			int count();
+
+			/**
+			 * Sorts the visible items according to {@link #comparator()}, preserving the selection.
+			 * Calling this method when no comparator is specified has no effect.
+			 * @see #comparator()
+			 */
+			void sort();
+
+			/**
+			 * @return the {@link Value} controlling the comparator to use when sorting
+			 */
+			Value<Comparator<T>> comparator();
 		}
 
 		/**

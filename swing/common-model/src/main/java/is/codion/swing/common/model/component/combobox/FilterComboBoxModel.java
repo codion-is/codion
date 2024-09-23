@@ -27,7 +27,6 @@ import is.codion.common.value.Value;
 
 import javax.swing.ComboBoxModel;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -79,15 +78,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @throws IllegalArgumentException in case the replacement item fails validation
 	 */
 	void replace(T item, T replacement);
-
-	/**
-	 * Controls the {@link Comparator} used when sorting the visible items in this model and sorts the model accordingly when set.
-	 * This {@link Comparator} must take into account the null value if a null item has been set via {@link #nullItem()}.
-	 * If a null {@code comparator} is provided no sorting will be performed.
-	 * @return the {@link Value} controlling the {@link Comparator} used when sorting, value may be null if the items of this model should not be sorted
-	 * @see #sort()
-	 */
-	Value<Comparator<T>> comparator();
 
 	/**
 	 * Provides a way for the model to prevent the addition of certain items.
