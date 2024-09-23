@@ -122,7 +122,7 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().visible().predicate().set(item -> !item.equals(B) && !item.equals(F));
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().contains(B));
-		assertFalse(tableModel.addItemsAt(0, Collections.singletonList(F)));
+		assertFalse(tableModel.items().visible().addItemsAt(0, Collections.singletonList(F)));
 		assertFalse(tableModel.items().visible().contains(F));
 		assertTrue(tableModel.items().contains(F));
 		tableModel.items().visible().predicate().clear();
@@ -144,7 +144,7 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void addItemsAt() {
 		tableModel.refresh();
-		assertTrue(tableModel.addItemsAt(2, asList(F, G)));
+		assertTrue(tableModel.items().visible().addItemsAt(2, asList(F, G)));
 		assertEquals(2, tableModel.items().visible().indexOf(F));
 		assertEquals(3, tableModel.items().visible().indexOf(G));
 		assertEquals(4, tableModel.items().visible().indexOf(C));
@@ -265,9 +265,9 @@ public final class DefaultFilterTableModelTest {
 		tableModel.conditions().get(0).operands().equal().set(null);
 		tableModel.refresh();//two events, clear and add
 		assertEquals(8, events.get());
-		tableModel.removeItems(0, 2);
+		tableModel.items().visible().removeItems(0, 2);
 		assertEquals(9, events.get());//just a single event when removing multiple items
-		tableModel.removeItemAt(0);
+		tableModel.items().visible().removeItemAt(0);
 		assertEquals(10, events.get());
 		tableModel.items().visible().removeListener(listener);
 	}
@@ -283,16 +283,16 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(1, dataChangedEvents.get());
 		tableModel.selection().item().set(B);
 		TestRow h = new TestRow("h");
-		tableModel.setItemAt(tableModel.items().visible().indexOf(B), h);
+		tableModel.items().visible().setItemAt(tableModel.items().visible().indexOf(B), h);
 		assertEquals(2, dataChangedEvents.get());
 		assertEquals(h, tableModel.selection().item().get());
 		assertTrue(selectionChangedState.get());
-		tableModel.setItemAt(tableModel.items().visible().indexOf(h), B);
+		tableModel.items().visible().setItemAt(tableModel.items().visible().indexOf(h), B);
 		assertEquals(3, dataChangedEvents.get());
 
 		selectionChangedState.set(false);
 		TestRow newB = new TestRow("b");
-		tableModel.setItemAt(tableModel.items().visible().indexOf(B), newB);
+		tableModel.items().visible().setItemAt(tableModel.items().visible().indexOf(B), newB);
 		assertFalse(selectionChangedState.get());
 		assertEquals(newB, tableModel.selection().item().get());
 		tableModel.items().visible().removeListener(listener);
@@ -305,7 +305,7 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().visible().addListener(listener);
 		tableModel.refresh();
 		assertEquals(1, events.get());
-		List<TestRow> removed = tableModel.removeItems(1, 3);
+		List<TestRow> removed = tableModel.items().visible().removeItems(1, 3);
 		assertEquals(2, events.get());
 		assertTrue(tableModel.items().contains(A));
 		assertFalse(tableModel.items().contains(B));
@@ -607,7 +607,7 @@ public final class DefaultFilterTableModelTest {
 
 		tableModel.conditions().get(0).operands().equal().set("b");
 		int rowCount = tableModel.items().visible().count();
-		tableModel.addItemsAt(0, singletonList(new TestRow("x")));
+		tableModel.items().visible().addItemsAt(0, singletonList(new TestRow("x")));
 		assertEquals(rowCount, tableModel.items().visible().count());
 
 		assertThrows(IllegalArgumentException.class, () -> tableModel.conditions().get(1));

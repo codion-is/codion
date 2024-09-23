@@ -151,17 +151,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public boolean addItemAt(int index, T item) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public boolean addItems(Collection<T> items) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean addItemsAt(int index, Collection<T> items) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -182,22 +172,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public T removeItemAt(int index) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public boolean removeItems(Collection<T> items) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<T> removeItems(int fromIndex, int toIndex) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean setItemAt(int index, T item) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -463,6 +438,31 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public T itemAt(int index) {
 			return items.get(index);
+		}
+
+		@Override
+		public boolean addItemAt(int index, T item) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean addItemsAt(int index, Collection<T> items) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public T removeItemAt(int index) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public List<T> removeItems(int fromIndex, int toIndex) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean setItemAt(int index, T item) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override

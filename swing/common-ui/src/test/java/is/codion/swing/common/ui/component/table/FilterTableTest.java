@@ -363,7 +363,7 @@ public class FilterTableTest {
 
 		List<TestRow> items = new ArrayList<>();
 		items.add(NULL);
-		tableModel.addItemsAt(0, items);
+		tableModel.items().visible().addItemsAt(0, items);
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
 		assertEquals(0, tableModel.items().visible().indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
@@ -371,7 +371,7 @@ public class FilterTableTest {
 
 		tableModel.refresh();
 		items.add(NULL);
-		tableModel.addItemsAt(0, items);
+		tableModel.items().visible().addItemsAt(0, items);
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
 		assertEquals(0, tableModel.items().visible().indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);

@@ -190,34 +190,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public boolean addItemsAt(int index, Collection<R> items) {
-		return addItemsAtInternal(index, items);
-	}
-
-	@Override
-	public boolean addItem(R item) {
-		return addItemInternal(item);
-	}
-
-	@Override
-	public boolean addItemAt(int index, R item) {
-		return addItemAtInternal(index, item);
-	}
-
-	@Override
-	public boolean setItemAt(int index, R item) {
-		validate(item);
-		if (include(item)) {
-			modelItems.visible.items.set(index, item);
-			fireTableRowsUpdated(index, index);
-
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
 	public boolean removeItem(R item) {
 		return removeItemInternal(item, true);
 	}
@@ -238,23 +210,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public R removeItemAt(int index) {
-		R removed = modelItems.visible.items.remove(index);
-		fireTableRowsDeleted(index, index);
-		modelItems.visible.notifyChanges();
-
-		return removed;
-	}
-
-	@Override
-	public List<R> removeItems(int fromIndex, int toIndex) {
-		List<R> subList = modelItems.visible.items.subList(fromIndex, toIndex);
-		List<R> removedItems = new ArrayList<>(subList);
-		subList.clear();
-		fireTableRowsDeleted(fromIndex, toIndex);
-		modelItems.visible.notifyChanges();
-
-		return removedItems;
+	public boolean addItem(R item) {
+		return addItemInternal(item);
 	}
 
 	@Override
@@ -435,7 +392,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 				addItemInternal(item);
 			}
 			else {
-				setItemAt(index, item);
+				modelItems.visible.setItemAt(index, item);
 			}
 		}
 
@@ -563,6 +520,49 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public R itemAt(int index) {
 			return items.get(index);
+		}
+
+		@Override
+		public boolean addItemsAt(int index, Collection<R> items) {
+			return addItemsAtInternal(index, items);
+		}
+
+		@Override
+		public boolean addItemAt(int index, R item) {
+			return addItemAtInternal(index, item);
+		}
+
+		@Override
+		public boolean setItemAt(int index, R item) {
+			validate(item);
+			if (include(item)) {
+				items.set(index, item);
+				fireTableRowsUpdated(index, index);
+
+				return true;
+			}
+
+			return false;
+		}
+
+		@Override
+		public R removeItemAt(int index) {
+			R removed = items.remove(index);
+			fireTableRowsDeleted(index, index);
+			notifyChanges();
+
+			return removed;
+		}
+
+		@Override
+		public List<R> removeItems(int fromIndex, int toIndex) {
+			List<R> subList = items.subList(fromIndex, toIndex);
+			List<R> removedItems = new ArrayList<>(subList);
+			subList.clear();
+			fireTableRowsDeleted(fromIndex, toIndex);
+			notifyChanges();
+
+			return removedItems;
 		}
 
 		@Override

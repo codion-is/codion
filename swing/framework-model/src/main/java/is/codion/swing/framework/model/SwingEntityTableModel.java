@@ -218,23 +218,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final boolean addItemsAt(int index, Collection<Entity> items) {
-		return filterModel().addItemsAt(index, items);
-	}
-
-	@Override
 	public final boolean addItem(Entity item) {
 		return filterModel().addItem(item);
-	}
-
-	@Override
-	public final boolean addItemAt(int index, Entity item) {
-		return filterModel().addItemAt(index, item);
-	}
-
-	@Override
-	public final boolean setItemAt(int index, Entity item) {
-		return filterModel().setItemAt(index, item);
 	}
 
 	@Override
@@ -245,16 +230,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	@Override
 	public final boolean removeItem(Entity item) {
 		return filterModel().removeItem(item);
-	}
-
-	@Override
-	public final Entity removeItemAt(int index) {
-		return filterModel().removeItemAt(index);
-	}
-
-	@Override
-	public final List<Entity> removeItems(int fromIndex, int toIndex) {
-		return filterModel().removeItems(fromIndex, toIndex);
 	}
 
 	@Override

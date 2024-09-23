@@ -36,7 +36,7 @@ public final class PlaylistTableModel extends SwingEntityTableModel {
 
 	public void createRandomPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
 		Entity randomPlaylist = createPlaylist(parameters);
-		addItemsAt(0, Collections.singletonList(randomPlaylist));
+		items().visible().addItemsAt(0, Collections.singletonList(randomPlaylist));
 		selection().item().set(randomPlaylist);
 	}
 

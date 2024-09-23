@@ -42,7 +42,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -345,18 +344,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public boolean addItemAt(int index, Entity item) {
-		return comboBoxModel.addItemAt(index, item);
-	}
-
-	@Override
 	public boolean addItems(Collection<Entity> items) {
 		return comboBoxModel.addItems(items);
-	}
-
-	@Override
-	public boolean addItemsAt(int index, Collection<Entity> items) {
-		return comboBoxModel.addItemsAt(index, items);
 	}
 
 	@Override
@@ -365,23 +354,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public Entity removeItemAt(int index) {
-		return comboBoxModel.removeItemAt(index);
-	}
-
-	@Override
 	public boolean removeItems(Collection<Entity> items) {
 		return comboBoxModel.removeItems(items);
-	}
-
-	@Override
-	public List<Entity> removeItems(int fromIndex, int toIndex) {
-		return comboBoxModel.removeItems(fromIndex, toIndex);
-	}
-
-	@Override
-	public boolean setItemAt(int index, Entity item) {
-		return comboBoxModel.setItemAt(index, item);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ Codion Change Log
 - FilterModel.Items.visiblePredicate() moved to Items.Visible and renamed predicate().
 - FilterModel, methods for adding and removing items now return true if the items are/were visible.
 - FilterModel, addSorted() methods removed.
+- FilterModel, index based add and remove methods moved to Items.Visible.
 
 ## 0.18.14
 ### is.codion.common.core

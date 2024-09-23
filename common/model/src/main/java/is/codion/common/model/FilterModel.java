@@ -69,36 +69,11 @@ public interface FilterModel<T> {
 	boolean addItem(T item);
 
 	/**
-	 * @param index the index
-	 * @param item the item to add
-	 * @return true if the item is visible
-	 */
-	boolean addItemAt(int index, T item);
-
-	/**
 	 * Adds the given items to the bottom of this table model.
 	 * @param items the items to add
 	 * @return true if one or more of the items are visible
 	 */
 	boolean addItems(Collection<T> items);
-
-	/**
-	 * Adds the given items to this table model, non-filtered items are added at the given index.
-	 * @param index the index at which to add the items
-	 * @param items the items to add
-	 * @return true if one or more of the items are visible
-	 */
-	boolean addItemsAt(int index, Collection<T> items);
-
-	/**
-	 * Sets the item at the given index.
-	 * If the item should be filtered calling this method has no effect.
-	 * @param index the index
-	 * @param item the item
-	 * @see Items.Visible#predicate()
-	 * @return true if the item is visible
-	 */
-	boolean setItemAt(int index, T item);
 
 	/**
 	 * Removes the given item from this model
@@ -108,28 +83,11 @@ public interface FilterModel<T> {
 	boolean removeItem(T item);
 
 	/**
-	 * Removes from this table model the visible element whose index is between index
-	 * @param index the index of the row to be removed
-	 * @return the removed item
-	 * @throws IndexOutOfBoundsException in case the index is out of bounds
-	 */
-	T removeItemAt(int index);
-
-	/**
 	 * Removes the given items from this table model
 	 * @param items the items to remove from the model
 	 * @return true if one or more of the items were visible
 	 */
 	boolean removeItems(Collection<T> items);
-
-	/**
-	 * Removes from this table model all visible elements whose index is between fromIndex, inclusive and toIndex, exclusive
-	 * @param fromIndex index of first row to be removed
-	 * @param toIndex index after last row to be removed
-	 * @return the removed items
-	 * @throws IndexOutOfBoundsException in case the indexes are out of bounds
-	 */
-	List<T> removeItems(int fromIndex, int toIndex);
 
 	/**
 	 * Clears all items from this model
@@ -236,6 +194,48 @@ public interface FilterModel<T> {
 			 * @return the item at the given index in this model
 			 */
 			T itemAt(int index);
+
+			/**
+			 * @param index the index
+			 * @param item the item to add
+			 * @return true if the item is visible
+			 */
+			boolean addItemAt(int index, T item);
+
+			/**
+			 * Adds the given items to this table model, non-filtered items are added at the given index.
+			 * @param index the index at which to add the items
+			 * @param items the items to add
+			 * @return true if one or more of the items are visible
+			 */
+			boolean addItemsAt(int index, Collection<T> items);
+
+			/**
+			 * Sets the item at the given index.
+			 * If the item should be filtered calling this method has no effect.
+			 * @param index the index
+			 * @param item the item
+			 * @return true if the item is visible
+			 * @see Items.Visible#predicate()
+			 */
+			boolean setItemAt(int index, T item);
+
+			/**
+			 * Removes from this table model the visible element whose index is between index
+			 * @param index the index of the row to be removed
+			 * @return the removed item
+			 * @throws IndexOutOfBoundsException in case the index is out of bounds
+			 */
+			T removeItemAt(int index);
+
+			/**
+			 * Removes from this table model all visible elements whose index is between fromIndex, inclusive and toIndex, exclusive
+			 * @param fromIndex index of first row to be removed
+			 * @param toIndex index after last row to be removed
+			 * @return the removed items
+			 * @throws IndexOutOfBoundsException in case the indexes are out of bounds
+			 */
+			List<T> removeItems(int fromIndex, int toIndex);
 
 			/**
 			 * @return the number of visible items
