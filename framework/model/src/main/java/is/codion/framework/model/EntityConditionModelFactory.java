@@ -34,15 +34,15 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default {@link ConditionModel.Factory} implementation for creating Entity based column condition models.
  */
-public class EntityColumnConditionModelFactory implements ConditionModel.Factory<Attribute<?>> {
+public class EntityConditionModelFactory implements ConditionModel.Factory<Attribute<?>> {
 
 	private final EntityConnectionProvider connectionProvider;
 
 	/**
-	 * Instantiates a new {@link EntityColumnConditionModelFactory}.
+	 * Instantiates a new {@link EntityConditionModelFactory}.
 	 * @param connectionProvider the connection provider
 	 */
-	public EntityColumnConditionModelFactory(EntityConnectionProvider connectionProvider) {
+	public EntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
 		this.connectionProvider = requireNonNull(connectionProvider);
 	}
 

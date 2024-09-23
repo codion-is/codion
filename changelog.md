@@ -76,6 +76,7 @@ Codion Change Log
 - EntityEditEvents.addListener() methods replaced with observer() methods.
 - EntityConditionModel.attributeCondition() renamed attribute() added.
 - EntityQueryModel.conditionModel() renamed conditions().
+- EntityColumnConditionModelFactory renamed back to EntityConditionModelFactory.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.setForeignKeyFilterKeys() renamed filterByForeignKey(), getForeignKeyFilterKeys() renamed foreignKeyFilterKeys().
 - AbstractEntityTableModel extracted from SwingEntityTableModel.
