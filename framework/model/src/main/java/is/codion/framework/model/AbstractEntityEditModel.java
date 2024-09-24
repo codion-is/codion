@@ -508,10 +508,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				notifyAfterInsert(insertedEntities);
 				if (activeEntity) {
-					editable.set(insertedEntities.iterator().next());
+					editable.setEntity(insertedEntities.iterator().next());
 				}
+				notifyAfterInsert(insertedEntities);
 
 				return insertedEntities;
 			}
@@ -571,12 +571,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				notifyAfterUpdate(originalPrimaryKeyMap(entities, updatedEntities));
 				Entity entity = editable.get();
 				updatedEntities.stream()
 								.filter(updatedEntity -> updatedEntity.equals(entity))
 								.findFirst()
-								.ifPresent(editable::set);
+								.ifPresent(editable::setEntity);
+				notifyAfterUpdate(originalPrimaryKeyMap(entities, updatedEntities));
 
 				return updatedEntities;
 			}
@@ -635,10 +635,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				notifyAfterDelete(deletedEntities);
 				if (activeEntity) {
-					editable.defaults();
+					editable.setEntity(null);
 				}
+				notifyAfterDelete(deletedEntities);
 
 				return deletedEntities;
 			}

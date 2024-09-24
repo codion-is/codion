@@ -16,6 +16,7 @@ Codion Change Log
 - ForeignKeyDetailModelLink, configuration values renamed for clarity, a couple more added along with tests.
 - EntityEditModel.EditableEntity and EditableValue added, related refactoring.
 - AbstractEntityEditModel.validate(Entity) now final.
+- AbstractEntityEditModel bug fixed, inserting, updating and deleting modified entities no longer trigger modification warnings.
 ### is.codion.swing.framework.ui
 - EntityPanel.Config.description now initialized with entity description.
 
