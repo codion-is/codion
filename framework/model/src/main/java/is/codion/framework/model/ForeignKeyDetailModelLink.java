@@ -32,12 +32,20 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 public interface ForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> extends DetailModelLink<M, E, T> {
 
 	/**
+	 * Specifies whether a detail model should automatically set the foreign key value to the entity inserted by the master model.
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 */
+	PropertyValue<Boolean> SET_FOREIGN_KEY_VALUE_ON_INSERT =
+					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".setForeignKeyValueOnInsert", true);
+
+	/**
 	 * Specifies whether a detail model should automatically search by the entity inserted by the master model.
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 */
-	PropertyValue<Boolean> SEARCH_BY_INSERTED_ENTITY =
-					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".searchByInsertedEntity", false);
+	PropertyValue<Boolean> SET_FOREIGN_KEY_CONDITION_ON_INSERT =
+					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".setForeignKeyConditionOnInsert", false);
 
 	/**
 	 * Specifies whether a detail model should be automatically refreshed when the selection in the master model changes.
@@ -48,12 +56,20 @@ public interface ForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E ext
 					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".refreshOnSelection", true);
 
 	/**
-	 * Specifies whether a detail model sets the master foreign key to null when null or no value is selected in a master model<br>
+	 * Specifies whether a detail model sets the master foreign key value to null when null or no value is selected in a master model<br>
 	 * <li>Value type: Boolean<br>
 	 * <li>Default value: false
 	 */
-	PropertyValue<Boolean> CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION =
-					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".clearForeignKeyOnEmptySelection", false);
+	PropertyValue<Boolean> CLEAR_FOREIGN_KEY_VALUE_ON_EMPTY_SELECTION =
+					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".clearForeignKeyValueOnEmptySelection", false);
+
+	/**
+	 * Specifies whether a detail model clears the foreign key search condition when null or no value is selected in a master model<br>
+	 * <li>Value type: Boolean<br>
+	 * <li>Default value: true
+	 */
+	PropertyValue<Boolean> CLEAR_FOREIGN_KEY_CONDITION_ON_EMPTY_SELECTION =
+					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".clearForeignKeyConditionOnEmptySelection", true);
 
 	/**
 	 * @return the foreign key representing this detail model
@@ -63,9 +79,15 @@ public interface ForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E ext
 	/**
 	 * @return the {@link State} controlling whether the detail table model should automatically search by the inserted entity
 	 * when an insert is performed in a master model
-	 * @see ForeignKeyDetailModelLink#SEARCH_BY_INSERTED_ENTITY
+	 * @see ForeignKeyDetailModelLink#SET_FOREIGN_KEY_CONDITION_ON_INSERT
 	 */
-	State searchByInsertedEntity();
+	State setForeignKeyConditionOnInsert();
+
+	/**
+	 * @return the {@link State} controlling whether the detail edit model should automatically set the foreign key value to the inserted entity
+	 * @see ForeignKeyDetailModelLink#SET_FOREIGN_KEY_VALUE_ON_INSERT
+	 */
+	State setForeignKeyValueOnInsert();
 
 	/**
 	 * @return the {@link State} controlling whether the detail table model should be automatically refreshed
@@ -75,9 +97,16 @@ public interface ForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E ext
 	State refreshOnSelection();
 
 	/**
-	 * Returns the State controlling whether the detail model should set the foreign key to null when null or no value is selected in the master model.
+	 * Returns the {@link State} controlling whether the detail model should set the foreign key to null when null or no value is selected in the master model.
 	 * @return the {@link State} controlling whether a null selection should result in the foreign key being set to null
-	 * @see ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION
+	 * @see ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_VALUE_ON_EMPTY_SELECTION
 	 */
-	State clearForeignKeyOnEmptySelection();
+	State clearForeignKeyValueOnEmptySelection();
+
+	/**
+	 * Returns the {@link State} controlling whether the detail table model should clear the foreign key search condition when no value is selected in the master model
+	 * @return the {@link State} controlling whether an empty selection should result in the foreign key search condition being cleared
+	 * @see ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_CONDITION_ON_EMPTY_SELECTION
+	 */
+	State clearForeignKeyConditionOnEmptySelection();
 }

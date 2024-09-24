@@ -19,11 +19,14 @@
 package is.codion.framework.model.test;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.user.User;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.DefaultEntityModel;
@@ -37,10 +40,12 @@ import is.codion.framework.model.test.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -215,14 +220,138 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
+	public void foreignKeyDetailModelLink() throws ValidationException, DatabaseException {
+		if (!departmentModel.containsTableModel()) {
+			return;
+		}
+		EntityConnection connection = connectionProvider.connection();
+		Model employeeModel = departmentModel.detailModel(Employee.TYPE);
+		ForeignKeyDetailModelLink<Model, EditModel, TableModel> detailModelLink = departmentModel.detailModelLink(employeeModel);
+
+		TableModel deptTableModel = departmentModel.tableModel();
+		EditModel deptEditModel = departmentModel.editModel();
+
+		TableModel empTableModel = employeeModel.tableModel();
+		EditModel empEditModel = employeeModel.editModel();
+		Value<Entity> departmentEditModelValue = empEditModel.value(Employee.DEPARTMENT_FK);
+		ConditionModel<Attribute<?>, Entity> deptCondition = empTableModel.queryModel()
+						.conditions()
+						.get(Employee.DEPARTMENT_FK);
+
+		// setForeignKeyConditionOnInsert()
+		connection.startTransaction();
+		try {
+			detailModelLink.setForeignKeyConditionOnInsert().set(true);
+
+			deptEditModel.value(Department.ID).set(-10);
+			deptEditModel.value(Department.NAME).set("New dept");
+			Entity inserted = deptEditModel.insert();
+
+			assertEquals(deptCondition.operands().in().get(), singleton(inserted));
+
+			detailModelLink.setForeignKeyConditionOnInsert().set(false);
+			deptCondition.clear();
+
+			deptEditModel.value(Department.ID).set(-11);
+			deptEditModel.value(Department.NAME).set("New dept2");
+
+			deptEditModel.insert();
+			assertTrue(deptCondition.operands().in().get().isEmpty());
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+
+		// setForeignKeyValueOnInsert()
+		connection.startTransaction();
+		try {
+			detailModelLink.setForeignKeyValueOnInsert().set(true);
+			deptEditModel.value(Department.ID).set(-10);
+			deptEditModel.value(Department.NAME).set("New dept");
+			Entity inserted = deptEditModel.insert();
+
+			assertEquals(departmentEditModelValue.get(), inserted);
+
+			// but not when an existing entity is active
+			empTableModel.queryModel().conditionRequired().set(false);
+			empTableModel.refresh();
+			empTableModel.selection().index().set(0);// select existing
+
+			Entity currentDept = departmentEditModelValue.get();
+
+			deptEditModel.value(Department.ID).set(-12);
+			deptEditModel.value(Department.NAME).set("New dept3");
+			deptEditModel.insert();
+
+			assertSame(currentDept, departmentEditModelValue.get());
+
+			detailModelLink.setForeignKeyValueOnInsert().set(false);
+			empTableModel.selection().clear();
+			departmentEditModelValue.clear();
+
+			deptEditModel.value(Department.ID).set(-11);
+			deptEditModel.value(Department.NAME).set("New dept2");
+
+			deptEditModel.insert();
+			assertTrue(departmentEditModelValue.isNull());
+
+
+			detailModelLink.setForeignKeyValueOnInsert().set(true);
+
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+
+		// clearForeignKeyValueOnEmptySelection()
+		detailModelLink.clearForeignKeyValueOnEmptySelection().set(false);
+		deptTableModel.refresh();
+		deptTableModel.selection().index().set(0);
+		Entity selected = deptTableModel.selection().item().get();
+		assertSame(selected, departmentEditModelValue.get());
+		deptTableModel.selection().clear();
+		assertSame(selected, departmentEditModelValue.get());
+
+		detailModelLink.clearForeignKeyValueOnEmptySelection().set(true);
+		deptTableModel.selection().index().set(0);
+		deptTableModel.selection().clear();
+		assertTrue(departmentEditModelValue.isNull());
+
+		// but not when an existing entity is active
+		deptTableModel.selection().index().set(0);
+
+		empTableModel.refresh();
+		empTableModel.selection().index().set(0);// select existing
+
+		deptTableModel.selection().clear();
+		assertFalse(departmentEditModelValue.isNull());
+
+		// clearForeignKeyConditionOnEmptySelection()
+		detailModelLink.clearForeignKeyConditionOnEmptySelection().set(false);
+		deptTableModel.refresh();
+		deptTableModel.selection().indexes().set(asList(0, 1));
+		List<Entity> selectedEntities = deptTableModel.selection().items().get();
+		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
+		deptTableModel.selection().clear();
+		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
+
+		detailModelLink.clearForeignKeyConditionOnEmptySelection().set(true);
+		deptTableModel.selection().indexes().set(asList(2, 3));
+		selectedEntities = deptTableModel.selection().items().get();
+		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
+		deptTableModel.selection().clear();
+		assertTrue(deptCondition.operands().in().get().isEmpty());
+	}
+
+	@Test
 	public void searchByInsertedEntity() throws DatabaseException, ValidationException {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
 		Model employeeModel = departmentModel.detailModel(Employee.TYPE);
 		ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModelLink(employeeModel);
-		link.searchByInsertedEntity().set(true);
-		assertTrue(link.searchByInsertedEntity().get());
+		link.setForeignKeyConditionOnInsert().set(true);
+		assertTrue(link.setForeignKeyConditionOnInsert().get());
 		EntityEditModel editModel = departmentModel.editModel();
 		editModel.value(Department.ID).set(100);
 		editModel.value(Department.NAME).set("Name");
@@ -244,7 +373,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		EditModel employeeEditModel = employeeModel.editModel();
 
 		ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModelLink(employeeModel);
-		link.clearForeignKeyOnEmptySelection().set(false);
+		link.clearForeignKeyValueOnEmptySelection().set(false);
 
 		Entity dept = employeeModel.connection().selectSingle(Department.ID.equalTo(10));
 
@@ -255,7 +384,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		departmentModel.tableModel().selection().clear();
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
 
-		link.clearForeignKeyOnEmptySelection().set(true);
+		link.clearForeignKeyValueOnEmptySelection().set(true);
 
 		departmentModel.tableModel().selection().item().set(dept);
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
@@ -263,7 +392,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		departmentModel.tableModel().selection().clear();
 		assertTrue(employeeEditModel.isNull(Employee.DEPARTMENT_FK).get());
 
-		link.clearForeignKeyOnEmptySelection().set(false);
+		link.clearForeignKeyValueOnEmptySelection().set(false);
 
 		departmentModel.tableModel().selection().item().set(dept);
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());

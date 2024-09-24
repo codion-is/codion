@@ -33,7 +33,7 @@ public final class InvoiceModel extends SwingEntityModel {
 
 		SwingEntityModel invoiceLineModel = new SwingEntityModel(invoiceLineEditModel);
 		ForeignKeyDetailModelLink<?, ?, ?> detailModelLink = addDetailModel(invoiceLineModel);
-		detailModelLink.clearForeignKeyOnEmptySelection().set(true);
+		detailModelLink.clearForeignKeyValueOnEmptySelection().set(true);
 		detailModelLink.active().set(true);
 
 		invoiceLineEditModel.addTotalsUpdatedConsumer(updatedInvoices ->
