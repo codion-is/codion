@@ -132,13 +132,14 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 
 	private void setForeignKeyValueOnSelection(Collection<Entity> entities) {
 		Entity foreignKeyValue = entities.isEmpty() ? null : entities.iterator().next();
-		if (detailModel().editModel().exists().not().get() && (foreignKeyValue != null || clearForeignKeyValueOnEmptySelection.get())) {
+		if (detailModel().editModel().entity().exists().not().get()
+						&& (foreignKeyValue != null || clearForeignKeyValueOnEmptySelection.get())) {
 			detailModel().editModel().value(foreignKey).set(foreignKeyValue);
 		}
 	}
 
 	private void setForeignKeyValueOnInsert(Entity foreignKeyValue) {
-		if (detailModel().editModel().exists().not().get() && setForeignKeyValueOnInsert.get()) {
+		if (detailModel().editModel().entity().exists().not().get() && setForeignKeyValueOnInsert.get()) {
 			detailModel().editModel().value(foreignKey).set(foreignKeyValue);
 		}
 	}

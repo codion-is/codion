@@ -69,7 +69,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void checkBox() {
-		editModel.defaults();
+		editModel.entity().defaults();
 		ComponentValue<Boolean, JCheckBox> componentValue =
 						entityComponents.checkBox(Detail.BOOLEAN)
 										.transferFocusOnEnter(true)
@@ -90,7 +90,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void toggleButton() {
-		editModel.defaults();
+		editModel.entity().defaults();
 		ComponentValue<Boolean, JToggleButton> componentValue =
 						entityComponents.toggleButton(Detail.BOOLEAN)
 										.transferFocusOnEnter(true)
@@ -111,7 +111,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void nullableCheckBox() {
-		editModel.defaults();
+		editModel.entity().defaults();
 		ComponentValue<Boolean, JCheckBox> componentValue =
 						entityComponents.checkBox(Detail.BOOLEAN_NULLABLE)
 										.transferFocusOnEnter(true)
@@ -133,7 +133,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void booleanComboBox() {
-		editModel.defaults();
+		editModel.entity().defaults();
 		editModel.value(Detail.BOOLEAN).set(true);
 		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
 						entityComponents.booleanComboBox(Detail.BOOLEAN)

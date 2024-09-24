@@ -14,6 +14,7 @@ Codion Change Log
 - FilterModel.refreshThen() and Refresher.refreshThen() renamed refresh().
 ### is.codion.framework.model
 - ForeignKeyDetailModelLink, configuration values renamed for clarity, a couple more added along with tests.
+- EntityEditModel.EditableEntity and EditableValue added, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityPanel.Config.description now initialized with entity description.
 

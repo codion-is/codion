@@ -29,12 +29,12 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 
 	public InvoiceEditModel(EntityConnectionProvider connectionProvider) {
 		super(Invoice.TYPE, connectionProvider);
-		persist(Invoice.CUSTOMER_FK).set(false);
-		edited(Invoice.CUSTOMER_FK).addConsumer(this::setAddress);
+		value(Invoice.CUSTOMER_FK).persist().set(false);
+		value(Invoice.CUSTOMER_FK).edited().addConsumer(this::setAddress);
 	}
 
 	private void setAddress(Entity customer) {
-		if (exists().not().get()) {
+		if (entity().exists().not().get()) {
 			if (customer == null) {
 				value(Invoice.BILLINGADDRESS).clear();
 				value(Invoice.BILLINGCITY).clear();

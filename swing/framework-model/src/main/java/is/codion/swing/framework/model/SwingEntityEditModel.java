@@ -181,7 +181,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeys().definition(foreignKey);
 		EntityComboBoxModel comboBoxModel = entityComboBoxModel(foreignKey.referencedType(), connectionProvider());
 		comboBoxModel.attributes().set(foreignKeyDefinition.attributes());
-		if (nullable(foreignKey)) {
+		if (entity().nullable(foreignKey)) {
 			comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 		}
 
@@ -199,7 +199,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	public <T> FilterComboBoxModel<T> createComboBoxModel(Column<T> column) {
 		requireNonNull(column, "column");
 		FilterComboBoxModel<T> comboBoxModel = createColumnComboBoxModel(column);
-		if (nullable(column)) {
+		if (entity().nullable(column)) {
 			comboBoxModel.includeNull().set(true);
 			if (column.type().valueClass().isInterface()) {
 				comboBoxModel.nullItem().set(ProxyBuilder.builder(column.type().valueClass())

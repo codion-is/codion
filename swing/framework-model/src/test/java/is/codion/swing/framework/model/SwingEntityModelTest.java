@@ -71,7 +71,7 @@ public final class SwingEntityModelTest
 		employeeTableModel.refresh();
 		for (Entity employee : employeeTableModel.items().get()) {
 			employeeTableModel.selection().item().set(employee);
-			assertFalse(employeeEditModel.modified().get());
+			assertFalse(employeeEditModel.entity().modified().get());
 		}
 	}
 

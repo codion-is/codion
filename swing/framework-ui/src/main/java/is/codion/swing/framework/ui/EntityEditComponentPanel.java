@@ -1132,7 +1132,7 @@ public class EntityEditComponentPanel extends JPanel {
 		@Override
 		public void accept(JComponent component) {
 			if (modifiedIndicator.get() && attribute.entityType().equals(editModel.entityType())) {
-				editModel.modified(attribute).addConsumer(new ModifiedIndicator(component));
+				editModel.value(attribute).modified().addConsumer(new ModifiedIndicator(component));
 			}
 		}
 	}
@@ -1226,11 +1226,11 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		protected final boolean nullable() {
-			return editModel.nullable(attribute);
+			return editModel.entity().nullable(attribute);
 		}
 
 		protected final boolean isNull() {
-			return editModel.isNull(attribute).get();
+			return editModel.entity().isNull(attribute).get();
 		}
 
 		/**

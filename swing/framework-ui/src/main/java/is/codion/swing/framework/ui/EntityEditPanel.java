@@ -168,8 +168,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		createControls();
 		setupFocusActivation();
 		setupKeyboardActions();
-		if (editModel.exists().not().get()) {
-			editModel.defaults();
+		if (editModel.entity().exists().not().get()) {
+			editModel.entity().defaults();
 		}
 	}
 
@@ -187,11 +187,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * Clears the underlying edit model and requests the initial focus.
-	 * @see EntityEditModel#defaults()
+	 * @see EntityEditModel.EditableEntity#defaults()
 	 * @see #requestInitialFocus()
 	 */
 	public final void clearAndRequestFocus() {
-		editModel().defaults();
+		editModel().entity().defaults();
 		requestInitialFocus();
 	}
 
@@ -240,7 +240,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		try {
 			editModel().insert();
 			if (configuration.clearAfterInsert) {
-				editModel().defaults();
+				editModel().entity().defaults();
 			}
 			if (configuration.requestFocusAfterInsert) {
 				requestAfterInsertFocus();
@@ -552,7 +552,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.name(FrameworkMessages.delete())
 						.enabled(State.and(active,
 										editModel().deleteEnabled(),
-										editModel().exists()))
+										editModel().entity().exists()))
 						.description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
 						.mnemonic(FrameworkMessages.deleteMnemonic())
 						.smallIcon(ICONS.delete())
@@ -587,7 +587,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.name(FrameworkMessages.update())
 						.enabled(State.and(active,
 										editModel().updateEnabled(),
-										editModel().editing()))
+										editModel().entity().edited()))
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
 						.smallIcon(ICONS.update())
@@ -613,12 +613,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void bindEvents() {
-		editModel().entityChanging().addConsumer(this::beforeEntity);
+		editModel().entity().changing().addConsumer(this::beforeEntity);
 	}
 
 	private void beforeEntity(Entity entity) {
 		if (configuration.modifiedWarning
-						&& editModel().editing().get()
+						&& editModel().entity().edited().get()
 						&& !Objects.equals(editModel().entity(), entity)
 						&& showConfirmDialog(this,
 						FrameworkMessages.modifiedWarning(), FrameworkMessages.modifiedWarningTitle(),
@@ -805,7 +805,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * @param modifiedWarning specifies whether this edit panel presents a warning before discarding unsaved modifications
 		 * @see #MODIFIED_WARNING
-		 * @see EntityEditModel#editing()
+		 * @see EntityEditModel.EditableEntity#edited()
 		 */
 		public Config modifiedWarning(boolean modifiedWarning) {
 			this.modifiedWarning = modifiedWarning;
@@ -964,7 +964,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private void handleResult(Insert.Result result) {
 			onInsert.accept(result.handle());
 			if (configuration.clearAfterInsert) {
-				editModel().defaults();
+				editModel().entity().defaults();
 			}
 			if (configuration.requestFocusAfterInsert) {
 				requestAfterInsertFocus();

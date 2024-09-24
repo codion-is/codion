@@ -32,7 +32,7 @@ public final class PlaylistTrackEditModel extends SwingEntityEditModel {
 
 	public PlaylistTrackEditModel(EntityConnectionProvider connectionProvider) {
 		super(PlaylistTrack.TYPE, connectionProvider);
-		persist(PlaylistTrack.TRACK_FK).set(false);
+		value(PlaylistTrack.TRACK_FK).persist().set(false);
 		// Filter out tracks already in the current playlist
 		value(PlaylistTrack.PLAYLIST_FK).addConsumer(this::filterPlaylistTracks);
 	}

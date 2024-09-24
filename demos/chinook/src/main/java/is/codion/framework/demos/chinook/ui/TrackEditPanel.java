@@ -138,8 +138,8 @@ public final class TrackEditPanel extends EntityEditPanel {
 		if (tableModel.selection().isSelectionEmpty()) {
 			return true;
 		}
-		// If the current item is not modified
-		if (!editModel().modified().get()) {
+		// If the entity is not modified
+		if (!editModel().entity().modified().get()) {
 			return true;
 		}
 		// If the current item was modified and

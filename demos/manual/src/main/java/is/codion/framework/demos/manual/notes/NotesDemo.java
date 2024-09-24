@@ -33,6 +33,7 @@ import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.model.EntityEditModel.EditableEntity;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
@@ -159,12 +160,13 @@ public final class NotesDemo {
 		}
 
 		private void insertDeleteOrUpdate() {
-			if (editModel().exists().not().get() && editModel().isNotNull(Note.NOTE).get()) {
+			EditableEntity entity = editModel().entity();
+			if (entity.exists().not().get() && entity.isNotNull(Note.NOTE).get()) {
 				// A new note with a non-empty text
 				insert();
 			}
-			else if (editModel().modified().get()) {
-				if (editModel().isNull(Note.NOTE).get()) {
+			else if (entity.modified().get()) {
+				if (entity.isNull(Note.NOTE).get()) {
 					// An existing note with empty text
 					deleteWithConfirmation();
 				}

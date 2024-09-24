@@ -40,6 +40,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -82,65 +83,22 @@ public interface EntityEditModel {
 	EntityConnection connection();
 
 	/**
-	 * Populates this edit model with default values for all attributes.
-	 * @see #defaultValue(Attribute)
-	 * @see AttributeDefinition#defaultValue()
-	 */
-	void defaults();
-
-	/**
-	 * Refreshes the active Entity from the database, discarding all changes.
-	 * If the active Entity is new then calling this method has no effect.
-	 */
-	void refresh();
-
-	/**
-	 * Returns a {@link Mutable} wrapping the entity being edited. {@link Mutable#get()} returns
-	 * an immutable version of the {@link Entity} instance being edited, while {@link Mutable#set(Object)}
-	 * copies the values from the given {@link Entity} into the underlying
-	 * {@link Entity} being edited by this edit model. If {@code entity} is null
-	 * the effect is the same as calling {@link #defaults()}.
-	 * Note that value changes must go through the {@link Value} accessible via {@link #value(Attribute)}.
-	 * @return a {@link Mutable} wrapping the {@link Entity} instance being edited
+	 * Returns a {@link EditableEntity} wrapping the entity being edited. {@link EditableEntity#get()} returns
+	 * an immutable copy of the {@link Entity} instance being edited, while {@link EditableEntity#set(Object)}
+	 * copies the values from the given {@link Entity} into the underlying {@link Entity}.
+	 * Note that value changes must go through the {@link EditableValue} accessible via {@link #value(Attribute)}.
+	 * @return the {@link EditableEntity} wrapping the {@link Entity} instance being edited
 	 * @see Entity#immutable()
 	 */
-	Mutable<Entity> entity();
+	EditableEntity entity();
 
 	/**
-	 * @param attribute the attribute
-	 * @return a {@link StateObserver} indicating whether the value of the given attribute is null
-	 */
-	StateObserver isNull(Attribute<?> attribute);
-
-	/**
-	 * @param attribute the attribute
-	 * @return a {@link StateObserver} indicating whether the value of the given attribute is not null
-	 */
-	StateObserver isNotNull(Attribute<?> attribute);
-
-	/**
-	 * Reverts all attribute value changes.
-	 */
-	void revert();
-
-	/**
-	 * @param attribute the attribute to revert
-	 */
-	<T> void revert(Attribute<T> attribute);
-
-	/**
-	 * @param attribute the attribute
-	 * @return true if this value is allowed to be null in the underlying entity
-	 */
-	boolean nullable(Attribute<?> attribute);
-
-	/**
-	 * Returns the {@link Value} instance representing {@code attribute} in this edit model.
+	 * Returns the {@link EditableValue} instance representing {@code attribute} in this edit model.
 	 * @param attribute the attribute
 	 * @param <T> the value type
-	 * @return the {@link Value} representing the given attribute
+	 * @return the {@link EditableValue} representing the given attribute
 	 */
-	<T> Value<T> value(Attribute<T> attribute);
+	<T> EditableValue<T> value(Attribute<T> attribute);
 
 	/**
 	 * @return the underlying domain entities
@@ -204,31 +162,11 @@ public interface EntityEditModel {
 	EntitySearchModel foreignKeySearchModel(ForeignKey foreignKey);
 
 	/**
-	 * Returns the {@link Value} instance controlling the default value supplier for the given attribute.
-	 * Used when the underlying value is not persistent. Use {@link #defaults()} or {@link Mutable#set(Object)}
-	 * with a null parameter to populate the model with the default values.
-	 * @param attribute the attribute
-	 * @param <S> the value supplier type
-	 * @param <T> the value type
-	 * @return the {@link Value} instance controlling the default value supplier
-	 * @see #persist(Attribute)
-	 */
-	<S extends Supplier<T>, T> Value<S> defaultValue(Attribute<T> attribute);
-
-	/**
 	 * @return a state controlling whether this edit model posts insert, update and delete events
 	 * on the {@link EntityEditEvents} event bus.
 	 * @see #POST_EDIT_EVENTS
 	 */
 	State postEditEvents();
-
-	/**
-	 * Returns a State controlling whether the last used value for this attribute should persist when the model is cleared.
-	 * @param attribute the attribute
-	 * @return a State controlling whether the given attribute value should persist when the model is cleared
-	 * @see EntityEditModel#PERSIST_FOREIGN_KEYS
-	 */
-	State persist(Attribute<?> attribute);
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -382,12 +320,6 @@ public interface EntityEditModel {
 	void validate(Attribute<?> attribute) throws ValidationException;
 
 	/**
-	 * Validates the current state of the entity
-	 * @throws ValidationException in case the entity is invalid
-	 */
-	void validate() throws ValidationException;
-
-	/**
 	 * Validates the given entities, using the underlying validator.
 	 * For entities of a type other than this edit model is based on,
 	 * their respective validators are used.
@@ -406,79 +338,6 @@ public interface EntityEditModel {
 	 * @throws NullPointerException in case the entity is null
 	 */
 	void validate(Entity entity) throws ValidationException;
-
-	/**
-	 * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
-	 * @see #validate(Attribute)
-	 * @see EntityValidator#validate(Entity)
-	 */
-	StateObserver valid();
-
-	/**
-	 * @param attribute the attribute
-	 * @return a {@link StateObserver} indicating the valid status of the given attribute.
-	 */
-	StateObserver valid(Attribute<?> attribute);
-
-	/**
-	 * Returns a {@link StateObserver} indicating whether any values in the underlying Entity have been modified.
-	 * @return a {@link StateObserver} indicating the modified state of this edit model
-	 */
-	StateObserver modified();
-
-	/**
-	 * Returns a {@link StateObserver} instance indicating whether the value of the given attribute has been modified.
-	 * @param attribute the attribute
-	 * @return a {@link StateObserver} indicating the modified state of the value of the given attribute
-	 * @throws IllegalArgumentException in case attribute is not part of the underlying entity
-	 * @see #modified()
-	 */
-	StateObserver modified(Attribute<?> attribute);
-
-	/**
-	 * @return a {@link StateObserver} indicating whether the active entity exists in the database
-	 */
-	StateObserver exists();
-
-	/**
-	 * @return a {@link StateObserver} indicating whether the active entity is being edited, that is, exists and is modified
-	 * @see #modified()
-	 * @see #exists()
-	 */
-	StateObserver editing();
-
-	/**
-	 * @return a {@link StateObserver} indicating whether the primary key of the active entity is null
-	 */
-	StateObserver primaryKeyNull();
-
-	/**
-	 * Returns an observer notified each time the value associated with the given attribute
-	 * is edited via its associated {@link Value} instance ({@link #value(Attribute)}).
-	 * <p>
-	 * This event is not triggered when an attribute value changes due to the entity being set
-	 * via {@link Mutable#set(Object)} or {@link #defaults()}.
-	 * <p>
-	 * Note that this event is only triggered if the value actually changes.
-	 * @param attribute the attribute which edit observer to return
-	 * @param <T> the value type
-	 * @return an observer notified when the given attribute value is edited
-	 */
-	<T> Observer<T> edited(Attribute<T> attribute);
-
-	/**
-	 * Returns an observer notified each time a value changes, either via its associated {@link Value}
-	 * instance or when the entity is set via via {@link Mutable#set(Object)} or {@link #defaults()}.
-	 * @return an observer notified each time a value changes
-	 */
-	Observer<Attribute<?>> valueChanged();
-
-	/**
-	 * @return an observer notified each time the active entity is about to change
-	 * @see #entity()
-	 * @see #defaults()
-	 */
-	Observer<Entity> entityChanging();
 
 	/**
 	 * @return an observer notified before an insert is performed
@@ -514,6 +373,206 @@ public interface EntityEditModel {
 	 * @return an observer notified each time one or more entities have been inserted, updated or deleted via this model
 	 */
 	Observer<?> afterInsertUpdateOrDelete();
+
+	/**
+	 * Provides access to the active entity being edited.
+	 */
+	interface EditableEntity extends Mutable<Entity> {
+
+		/**
+		 * Populates this edit model with default values for all attributes.
+		 * @see EditableValue#defaultValue()
+		 * @see AttributeDefinition#defaultValue()
+		 */
+		void defaults();
+
+		/**
+		 * Refreshes the active Entity from the database, discarding all changes.
+		 * If the active Entity is new then calling this method has no effect.
+		 */
+		void refresh();
+
+		/**
+		 * Reverts all attribute value changes.
+		 */
+		void revert();
+
+		/**
+		 * @return a {@link StateObserver} indicating whether the entity exists in the database
+		 * @see Exists#predicate()
+		 */
+		Exists exists();
+
+		/**
+		 * Returns a {@link StateObserver} indicating whether any values have been modified.
+		 * @return a {@link StateObserver} indicating the modified state of this entity
+		 * @see Modified#predicate()
+		 */
+		Modified modified();
+
+		/**
+		 * @return a {@link StateObserver} indicating whether the entity has been edited, that is, exists and is modified
+		 * @see #modified()
+		 * @see #exists()
+		 */
+		StateObserver edited();
+
+		/**
+		 * @return an observer notified each time the entity is about to be changed
+		 * via {@link EditableEntity#set(Object)} or {@link EditableEntity#defaults()}
+		 * @see EditableEntity#set(Object)
+		 * @see #defaults()
+		 */
+		Observer<Entity> changing();
+
+		/**
+		 * Returns an observer notified each time a value changes, either via its associated {@link EditableValue}
+		 * instance or when the entity is set via {@link EditableEntity#set(Object)} or {@link EditableEntity#defaults()}.
+		 * @return an observer notified each time a value changes
+		 */
+		Observer<Attribute<?>> changed();
+
+		/**
+		 * @param attribute the attribute
+		 * @return a {@link StateObserver} indicating whether the value of the given attribute is null
+		 */
+		StateObserver isNull(Attribute<?> attribute);
+
+		/**
+		 * @param attribute the attribute
+		 * @return a {@link StateObserver} indicating whether the value of the given attribute is not null
+		 */
+		StateObserver isNotNull(Attribute<?> attribute);
+
+		/**
+		 * @return a {@link StateObserver} indicating whether the primary key of the entity is null
+		 */
+		StateObserver primaryKeyNull();
+
+		/**
+		 * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
+		 * @see #validate(Attribute)
+		 * @see EntityValidator#validate(Entity)
+		 */
+		StateObserver valid();
+
+		/**
+		 * Controls the validator used by this edit model.
+		 * @return the {@link Value} controlling the validator
+		 * @see #validate(Entity)
+		 */
+		Value<EntityValidator> validator();
+
+		/**
+		 * Validates the current state of the entity
+		 * @throws ValidationException in case the entity is invalid
+		 */
+		void validate() throws ValidationException;
+
+		/**
+		 * @param attribute the attribute
+		 * @return true if this value is allowed to be null according to the validator
+		 * @see #validator()
+		 */
+		boolean nullable(Attribute<?> attribute);
+
+		/**
+		 * Returns the {@link EditableValue} instance representing {@code attribute} in this {@link EditableEntity}.
+		 * @param attribute the attribute
+		 * @param <T> the value type
+		 * @return the {@link EditableValue} representing the given attribute
+		 */
+		<T> EditableValue<T> value(Attribute<T> attribute);
+
+		/**
+		 * Indicates whether the active entity exists in the database.
+		 * @see #predicate()
+		 */
+		interface Exists extends StateObserver {
+
+			/**
+			 * Controls the 'exists' predicate for this {@link Exists} instance, which is responsible for providing
+			 * the exists state of the underlying entity.
+			 * @return the {@link Value} controlling the predicate used to check if the entity exists
+			 * @see EntityDefinition#exists()
+			 * @see Entity#exists()
+			 */
+			Value<Predicate<Entity>> predicate();
+		}
+
+		/**
+		 * Indicates whether the active entity is modified.
+		 * @see #predicate()
+		 */
+		interface Modified extends StateObserver {
+
+			/**
+			 * Controls the 'modified' predicate for this {@link Modified} instance, which is responsible for providing
+			 * the modified state of the underlying entity.
+			 * @return the {@link Value} controlling the predicate used to check if the entity is modified
+			 * @see Entity#modified()
+			 */
+			Value<Predicate<Entity>> predicate();
+
+			/**
+			 * Refreshes the modified state
+			 */
+			void refresh();
+		}
+	}
+
+	/**
+	 * Provides access the an {@link Attribute} value in the entity being edited.
+	 * @param <T> the value type
+	 */
+	interface EditableValue<T> extends Value<T> {
+
+		/**
+		 * Reverts to the original value if modified
+		 */
+		void revert();
+
+		/**
+		 * Returns a State controlling whether the last used value for this attribute should persist when the model is cleared.
+		 * @return a State controlling whether the given attribute value should persist when the model is cleared
+		 * @see EditableEntity#defaults()
+		 * @see EntityEditModel#PERSIST_FOREIGN_KEYS
+		 */
+		State persist();
+
+		/**
+		 * @return a {@link StateObserver} indicating the valid status of this attribute value.
+		 */
+		StateObserver valid();
+
+		/**
+		 * Returns a {@link StateObserver} instance indicating whether the value of the given attribute has been modified.
+		 * @return a {@link StateObserver} indicating the modified state of the value of the given attribute
+		 * @see EditableEntity#modified()
+		 */
+		StateObserver modified();
+
+		/**
+		 * Returns an observer notified each time this value is edited via {@link EditableValue#set(Object)}.
+		 * <p>
+		 * This event is not triggered when the value changes due to the entity being set
+		 * via {@link EditableValue#set(Object)} or {@link EditableEntity#defaults()}.
+		 * <p>
+		 * Note that this event is only triggered if the value actually changes.
+		 * @return an observer notified when the given attribute value is edited
+		 */
+		Observer<T> edited();
+
+		/**
+		 * Returns the {@link Value} instance controlling the default value supplier for the given attribute.
+		 * Used when the underlying value is not persistent.
+		 * Use {@link EditableEntity#defaults()} to populate the model with the default values.
+		 * @param <S> the value supplier type
+		 * @return the {@link Value} instance controlling the default value supplier
+		 * @see #persist()
+		 */
+		<S extends Supplier<T>> Value<S> defaultValue();
+	}
 
 	/**
 	 * Represents a task for inserting entities, split up for use with a background thread.

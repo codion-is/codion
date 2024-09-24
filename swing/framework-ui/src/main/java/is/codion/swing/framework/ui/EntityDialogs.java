@@ -703,7 +703,7 @@ public final class EntityDialogs {
 				editModel.entity().set(entity.get());
 			}
 			else {
-				editModel.revert();
+				editModel.entity().revert();
 			}
 		}
 
@@ -733,7 +733,7 @@ public final class EntityDialogs {
 							.name(FrameworkMessages.update())
 							.mnemonic(FrameworkMessages.updateMnemonic())
 							.onException(new EditPanelExceptionHandler(editPanel))
-							.enabled(editPanel.editModel().modified())
+							.enabled(editPanel.editModel().entity().modified())
 							.build();
 		}
 	}
@@ -830,7 +830,7 @@ public final class EntityDialogs {
 
 		@Override
 		public void run() {
-			editPanel.editModel().revert();
+			editPanel.editModel().entity().revert();
 			disposeParentWindow(editPanel);
 		}
 	}
