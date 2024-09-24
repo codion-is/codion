@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.15
+### is.codion.common.core
+- StateObserver.isNull(), isNotNull() and nullable() now have default implementations.
 ### is.codion.common.model
 - FilterModel.Items.visiblePredicate() moved to Items.Visible and renamed predicate().
 - FilterModel, methods for adding and removing items now return true if the items are/were visible.

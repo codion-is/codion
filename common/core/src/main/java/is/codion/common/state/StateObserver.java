@@ -26,6 +26,30 @@ import is.codion.common.value.ValueObserver;
 public interface StateObserver extends ValueObserver<Boolean> {
 
 	/**
+	 * @return false
+	 */
+	@Override
+	default boolean isNull() {
+		return false;
+	}
+
+	/**
+	 * @return true
+	 */
+	@Override
+	default boolean isNotNull() {
+		return true;
+	}
+
+	/**
+	 * @return false
+	 */
+	@Override
+	default boolean nullable() {
+		return false;
+	}
+
+	/**
 	 * @return A {@link StateObserver} instance that is always the reverse of this {@link StateObserver} instance
 	 */
 	StateObserver not();

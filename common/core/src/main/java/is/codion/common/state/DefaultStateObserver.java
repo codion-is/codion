@@ -52,21 +52,6 @@ final class DefaultStateObserver implements StateObserver {
 	}
 
 	@Override
-	public boolean isNull() {
-		return false;
-	}
-
-	@Override
-	public boolean isNotNull() {
-		return true;
-	}
-
-	@Override
-	public boolean nullable() {
-		return false;
-	}
-
-	@Override
 	public StateObserver not() {
 		if (not) {
 			return observedState;

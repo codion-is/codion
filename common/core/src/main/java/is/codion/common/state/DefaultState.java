@@ -117,21 +117,6 @@ final class DefaultState implements State {
 	}
 
 	@Override
-	public boolean isNull() {
-		return false;
-	}
-
-	@Override
-	public boolean isNotNull() {
-		return true;
-	}
-
-	@Override
-	public boolean nullable() {
-		return false;
-	}
-
-	@Override
 	public boolean addListener(Runnable listener) {
 		return observer().addListener(listener);
 	}
