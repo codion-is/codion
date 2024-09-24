@@ -21,6 +21,7 @@ package is.codion.framework.demos.petclinic.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
+import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -35,22 +36,26 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 		initializeComboBoxModels(VetSpecialty.VET_FK, VetSpecialty.SPECIALTY_FK);
 		value(VetSpecialty.VET_FK).persist().set(false);
 		value(VetSpecialty.SPECIALTY_FK).persist().set(false);
+		entity().validator().set(new VetSpecialtyValidator());
 	}
 
-	@Override
-	public void validate(Entity entity) throws ValidationException {
-		super.validate(entity);
-		try {
-			int rowCount = connection().count(where(and(
-							VetSpecialty.SPECIALTY.equalTo(entity.get(VetSpecialty.SPECIALTY)),
-							VetSpecialty.VET.equalTo(entity.get(VetSpecialty.VET)))));
-			if (rowCount > 0) {
-				throw new ValidationException(VetSpecialty.SPECIALTY_FK,
-								entity.get(VetSpecialty.SPECIALTY_FK), "Vet/specialty combination already exists");
+	private final class VetSpecialtyValidator extends DefaultEntityValidator {
+
+		@Override
+		public void validate(Entity entity) throws ValidationException {
+			super.validate(entity);
+			try {
+				int rowCount = connection().count(where(and(
+								VetSpecialty.SPECIALTY.equalTo(entity.get(VetSpecialty.SPECIALTY)),
+								VetSpecialty.VET.equalTo(entity.get(VetSpecialty.VET)))));
+				if (rowCount > 0) {
+					throw new ValidationException(VetSpecialty.SPECIALTY_FK,
+									entity.get(VetSpecialty.SPECIALTY_FK), "Vet/specialty combination already exists");
+				}
 			}
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
+			catch (DatabaseException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 }

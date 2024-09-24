@@ -176,7 +176,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public void validate(Entity entity) throws ValidationException {
+	public final void validate(Entity entity) throws ValidationException {
 		if (entity.entityType().equals(entityType())) {
 			editable.validator.get().validate(entity);
 		}
@@ -1171,7 +1171,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			@Override
 			public void revert() {
 				if (modified().get()) {
-					set(entity.original(attribute));
+					super.set(entity.original(attribute));
 				}
 			}
 
