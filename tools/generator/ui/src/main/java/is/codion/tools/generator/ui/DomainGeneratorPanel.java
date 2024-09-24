@@ -380,7 +380,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.owner(this)
 						.title("Populating")
 						.northPanel(northPanel)
-						.onResult(model.entityModel()::refresh)
+						.onResult(() -> model.entityModel().refresh())
 						.execute();
 	}
 

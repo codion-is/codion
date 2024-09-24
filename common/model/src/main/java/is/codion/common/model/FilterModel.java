@@ -105,13 +105,13 @@ public interface FilterModel<T> {
 	 * Refreshes the data in this filter model using its {@link Refresher}.
 	 * Note that this method only throws exceptions when run synchronously off the user interface thread.
 	 * Use {@link Refresher#failure()} to listen for exceptions that happen during asynchronous refresh.
-	 * @param afterRefresh called after a successful refresh, may be null
+	 * @param onRefresh called after a successful refresh, may be null
 	 * @see Refresher#observer()
 	 * @see Refresher#success()
 	 * @see Refresher#failure()
 	 * @see Refresher#async()
 	 */
-	void refreshThen(Consumer<Collection<T>> afterRefresh);
+	void refresh(Consumer<Collection<T>> onRefresh);
 
 	/**
 	 * @return the selection model
@@ -295,14 +295,14 @@ public interface FilterModel<T> {
 		/**
 		 * Refreshes the data in this model. Note that this method only throws exceptions when run synchronously.
 		 * Use {@link #failure()} to listen for exceptions that happen during asynchronous refresh.
-		 * @param afterRefresh called after a successful refresh, may be null
+		 * @param onRefresh called after a successful refresh, may be null
 		 * @throws RuntimeException in case of an exception when running synchronously.
 		 * @see #observer()
 		 * @see #success()
 		 * @see #failure()
 		 * @see #async()
 		 */
-		void refreshThen(Consumer<Collection<T>> afterRefresh);
+		void refresh(Consumer<Collection<T>> onRefresh);
 
 		/**
 		 * @return an observer active while a refresh is in progress
@@ -355,16 +355,16 @@ public interface FilterModel<T> {
 
 		@Override
 		public final void refresh() {
-			refreshThen(null);
+			refresh(null);
 		}
 
 		@Override
-		public final void refreshThen(Consumer<Collection<T>> afterRefresh) {
+		public final void refresh(Consumer<Collection<T>> onRefresh) {
 			if (async.get() && supportsAsyncRefresh()) {
-				refreshAsync(afterRefresh);
+				refreshAsync(onRefresh);
 			}
 			else {
-				refreshSync(afterRefresh);
+				refreshSync(onRefresh);
 			}
 		}
 
@@ -416,15 +416,15 @@ public interface FilterModel<T> {
 
 		/**
 		 * Performes an async refresh
-		 * @param afterRefresh if specified will be called after a successful refresh
+		 * @param onRefresh if specified will be called after a successful refresh
 		 */
-		protected abstract void refreshAsync(Consumer<Collection<T>> afterRefresh);
+		protected abstract void refreshAsync(Consumer<Collection<T>> onRefresh);
 
 		/**
 		 * Performs a sync refresh
-		 * @param afterRefresh if specified will be called after a successful refresh
+		 * @param onRefresh if specified will be called after a successful refresh
 		 */
-		protected abstract void refreshSync(Consumer<Collection<T>> afterRefresh);
+		protected abstract void refreshSync(Consumer<Collection<T>> onRefresh);
 
 		/**
 		 * Processes the refresh result, by replacing the current model items by the result items.

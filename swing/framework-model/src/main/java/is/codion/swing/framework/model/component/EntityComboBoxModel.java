@@ -423,8 +423,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public void refreshThen(Consumer<Collection<Entity>> afterRefresh) {
-		comboBoxModel.refreshThen(afterRefresh);
+	public void refresh(Consumer<Collection<Entity>> onRefresh) {
+		comboBoxModel.refresh(onRefresh);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ Codion Change Log
 - FilterModel, index based add and remove methods moved to Items.Visible.
 - FilterModel.comparator() and sort() moved to Items.Visible.
 - FilterModel.Refresher.items() renamed supplier().
+- FilterModel.refreshThen() and Refresher.refreshThen() renamed refresh().
 
 ## 0.18.14
 ### is.codion.common.core

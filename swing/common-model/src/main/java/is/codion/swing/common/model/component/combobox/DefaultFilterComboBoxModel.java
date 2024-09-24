@@ -104,12 +104,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final void refresh() {
-		refreshThen(null);
+		refresh(null);
 	}
 
 	@Override
-	public final void refreshThen(Consumer<Collection<T>> afterRefresh) {
-		refresher.refreshThen(afterRefresh);
+	public final void refresh(Consumer<Collection<T>> onRefresh) {
+		refresher.refresh(onRefresh);
 	}
 
 	@Override

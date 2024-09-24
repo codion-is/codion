@@ -138,7 +138,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 * @see RefreshStrategy
 	 */
 	@Override
-	void refreshThen(Consumer<Collection<R>> afterRefresh);
+	void refresh(Consumer<Collection<R>> onRefresh);
 
 	/**
 	 * Notifies all listeners that all cell values in the table's rows may have changed.

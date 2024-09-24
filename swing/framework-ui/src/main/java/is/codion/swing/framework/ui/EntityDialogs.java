@@ -546,7 +546,7 @@ public final class EntityDialogs {
 
 		private void search() {
 			SwingEntityTableModel tableModel = entityTablePanel.tableModel();
-			tableModel.refreshThen(items -> {
+			tableModel.refresh(items -> {
 				if (tableModel.rowCount() > 0) {
 					tableModel.selection().index().set(0);
 					entityTablePanel.table().requestFocusInWindow();

@@ -201,8 +201,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
-	public final void refreshThen(Consumer<Collection<Entity>> afterRefresh) {
-		filterModel.refreshThen(afterRefresh);
+	public final void refresh(Consumer<Collection<Entity>> onRefresh) {
+		filterModel.refresh(onRefresh);
 	}
 
 	@Override
