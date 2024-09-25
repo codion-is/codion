@@ -35,6 +35,10 @@ sonarqube {
 
 apply(from = "../../plugins/jasperreports/extra-module-info-jasperreports.gradle")
 
+tasks.withType<Test>().configureEach {
+    systemProperty("codion.db.initScripts", "src/main/sql/create_schema.sql")
+}
+
 tasks.register<JavaExec>("runStoreDemo") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath

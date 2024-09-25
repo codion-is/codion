@@ -180,23 +180,6 @@ configure(frameworkModules()) {
         }
     }
 
-    testing {
-        suites {
-            val test by getting(JvmTestSuite::class) {
-                useJUnitJupiter()
-                targets {
-                    all {
-                        testTask.configure {
-                            systemProperty("codion.db.url", "jdbc:h2:mem:h2db")
-                            systemProperty("codion.db.initScripts", "src/test/sql/create_h2_db.sql")
-                            systemProperty("codion.test.user", "scott:tiger")
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     tasks.named("test") {
         dependsOn(tasks.named("createServerKeystore"))
         finalizedBy(tasks.named("jacocoTestReport"))
@@ -215,6 +198,23 @@ configure(subprojects) {
         format("javaMisc") {
             target("src/**/package-info.java", "src/**/module-info.java")
             licenseHeaderFile("${rootDir}/documentation/src/misc/license_header", "\\/\\*\\*").yearSeparator(" - ")
+        }
+    }
+
+    testing {
+        suites {
+            val test by getting(JvmTestSuite::class) {
+                useJUnitJupiter()
+                targets {
+                    all {
+                        testTask.configure {
+                            systemProperty("codion.db.url", "jdbc:h2:mem:h2db")
+                            systemProperty("codion.db.initScripts", "src/test/sql/create_h2_db.sql")
+                            systemProperty("codion.test.user", "scott:tiger")
+                        }
+                    }
+                }
+            }
         }
     }
 
