@@ -43,9 +43,7 @@ import java.util.List;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
-import static java.util.Arrays.asList;
 
 /**
  * When running this make sure the chinook demo module directory is the
@@ -83,9 +81,8 @@ public final class EntitiesTutorial {
 
 		public Chinook() {
 			super(DOMAIN);
-			// Note that the below demo code is unusual since the builders are exposed
-			// for illustration purposes, the builders are usually hidden within
-			// a fluent call chain.
+			// Note that the below demo code is unusual since the
+			// builders are exposed for illustration purposes.
 
 			// create columns for the table 'chinook.artist'
 			ColumnDefinition.Builder<Long, ?> artistId =
@@ -205,50 +202,40 @@ public final class EntitiesTutorial {
 	private static void modifyingEntities(EntityConnectionProvider connectionProvider) throws DatabaseException {
 		EntityConnection connection = connectionProvider.connection();
 
-		//this Entities object serves as a factory for Entity instances
+		//this Entities instance serves as a factory for Entity instances
 		Entities entities = connectionProvider.entities();
 
-		// let's create a new band
-		Entity myBand = entities.entity(Artist.TYPE);
+		// we create a new band
+		Entity myBand = entities.builder(Artist.TYPE)
+						// and give the band a name
+						.with(Artist.NAME, "My band name")
+						.build();
 
-		// and give the band a name
-		myBand.put(Artist.NAME, "My band name");
-
-		// we start a transaction
-		connection.startTransaction();
-
-		// we insert the Entity
+		// and insert the band
 		myBand = connection.insertSelect(myBand);
 
 		// now for our first album
-		Entity album = entities.entity(Album.TYPE);
-
-		// set the album artist by setting the artist foreign key to my band
-		album.put(Album.ARTIST_FK, myBand);
-
-		// and set the title
-		album.put(Album.TITLE, "My first album");
+		Entity album = entities.builder(Album.TYPE)
+						// set the album artist to my band
+						.with(Album.ARTIST_FK, myBand)
+						// and set the title
+						.with(Album.TITLE, "My first album")
+						.build();
 
 		// and insert the album
 		album = connection.insertSelect(album);
 
-		// and finally we commit
-		connection.commitTransaction();
-
 		// let's rename our album and our band as well
-		myBand.put(Artist.NAME, "A proper name");
+		myBand.put(Artist.NAME, "A proper bandname");
 		album.put(Album.TITLE, "A proper title");
 
-		// and perform the update, note that we only have to use transactions
-		// when we're performing multiple insert/update or delete calls,
-		// here we're just doing one so this call automatically happens within
-		// a single transaction
-		connection.update(asList(myBand, album));
+		// and perform the update
+		connection.update(List.of(myBand, album));
 
 		// finally, we clean up after ourselves by deleting our imaginary band and album,
 		// note that the order of the entities matters, since we can't delete
 		// the artist before the album.
-		connection.delete(primaryKeys(asList(album, myBand)));
+		connection.delete(Entity.primaryKeys(List.of(album, myBand)));
 	}
 
 	public static void main(String[] args) throws DatabaseException {
