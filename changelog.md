@@ -21,6 +21,8 @@ Codion Change Log
 - EntityEditModel.EditableEntity.clear() overridden, now clears all values from the entity as opposed to setting defaults.
 ### is.codion.swing.framework.ui
 - EntityPanel.Config.description now initialized with entity description.
+### is.codion.tools.generator.domain
+- DomainSource.apiSearchString() bug fixed, space added after interface name, since table names can have common prefixes.
 
 ## 0.18.14
 ### is.codion.common.core
