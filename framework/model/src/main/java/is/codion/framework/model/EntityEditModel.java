@@ -381,6 +381,19 @@ public interface EntityEditModel {
 	interface EditableEntity extends Mutable<Entity> {
 
 		/**
+		 * Sets the given entity or defaults if null. Use {@link #clear()} in order to clear the entity of all values.
+		 * @param entity the entity to set, if null, then defaults are set
+		 */
+		@Override
+		void set(Entity entity);
+
+		/**
+		 * Clears all values from the underlying entity, disregarding the {@link EditableValue#persist()} directive.
+		 */
+		@Override
+		void clear();
+
+		/**
 		 * Populates this edit model with default values for all attributes.
 		 * @see EditableValue#defaultValue()
 		 * @see EditableValue#persist()

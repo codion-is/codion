@@ -508,7 +508,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			@Override
 			public Collection<Entity> handle() {
 				if (activeEntity) {
-					editable.setEntity(insertedEntities.iterator().next());
+					editable.setOrDefaults(insertedEntities.iterator().next());
 				}
 				notifyAfterInsert(insertedEntities);
 
@@ -574,7 +574,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 				updatedEntities.stream()
 								.filter(updatedEntity -> updatedEntity.equals(entity))
 								.findFirst()
-								.ifPresent(editable::setEntity);
+								.ifPresent(editable::setOrDefaults);
 				notifyAfterUpdate(originalPrimaryKeyMap(entities, updatedEntities));
 
 				return updatedEntities;
@@ -635,7 +635,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			@Override
 			public Collection<Entity> handle() {
 				if (activeEntity) {
-					editable.setEntity(null);
+					editable.setOrDefaults(null);
 				}
 				notifyAfterDelete(deletedEntities);
 
@@ -752,12 +752,17 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		@Override
 		public void set(Entity entity) {
 			changing.accept(entity);
-			setEntity(entity);
+			setOrDefaults(entity);
 		}
 
 		@Override
 		public Entity get() {
 			return entity.immutable();
+		}
+
+		@Override
+		public void clear() {
+			set(entityDefinition.entity());
 		}
 
 		@Override
@@ -767,7 +772,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		@Override
 		public void defaults() {
-			clear();
+			set(null);
 		}
 
 		@Override
@@ -819,14 +824,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		@Override
 		public StateObserver isNull(Attribute<?> attribute) {
-			return attributeNull.computeIfAbsent(attribute, k ->
-							State.state(entity.isNull(attribute))).observer();
+			return attributeNull.computeIfAbsent(attribute,
+							k -> State.state(entity.isNull(attribute))).observer();
 		}
 
 		@Override
 		public StateObserver isNotNull(Attribute<?> attribute) {
-			return attributeNull.computeIfAbsent(attribute, k ->
-							State.state(entity.isNull(attribute))).observer().not();
+			return attributeNull.computeIfAbsent(attribute,
+							k -> State.state(entity.isNull(attribute))).observer().not();
 		}
 
 		@Override
@@ -856,7 +861,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			return (EditableValue<T>) editableValues.computeIfAbsent(attribute, k -> new DefaultEditableValue<>(attribute));
 		}
 
-		private void setEntity(Entity entity) {
+		private void setOrDefaults(Entity entity) {
 			Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
 			for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
 				notifyValueChange(affectedAttribute);
@@ -1185,14 +1190,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public StateObserver valid() {
-				return attributeValid.computeIfAbsent(attribute, k ->
-								State.state(isValid(attribute))).observer();
+				return attributeValid.computeIfAbsent(attribute,
+								k -> State.state(isValid(attribute))).observer();
 			}
 
 			@Override
 			public StateObserver modified() {
-				return attributeModified.computeIfAbsent(attribute, k ->
-								State.state(exists.get() && entity.modified(attribute))).observer();
+				return attributeModified.computeIfAbsent(attribute,
+								k -> State.state(exists.get() && entity.modified(attribute))).observer();
 			}
 
 			@Override

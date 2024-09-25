@@ -210,6 +210,19 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
+	void clear() throws DatabaseException {
+		Entity employee = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
+		employeeEditModel.entity().set(employee);
+		employeeEditModel.entity().defaults();
+		assertTrue(employeeEditModel.entity().isNotNull(Employee.DEPARTMENT_FK).get());//persists
+		assertTrue(employeeEditModel.entity().isNull(Employee.NAME).get());
+		employeeEditModel.entity().set(employee);
+		employeeEditModel.entity().clear();
+		assertTrue(employeeEditModel.entity().isNull(Employee.DEPARTMENT_FK).get());//should not persist on clear
+		assertTrue(employeeEditModel.entity().isNull(Employee.NAME).get());
+	}
+
+	@Test
 	void test() throws Exception {
 		EditableEntity entity = employeeEditModel.entity();
 

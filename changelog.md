@@ -17,6 +17,7 @@ Codion Change Log
 - EntityEditModel.EditableEntity and EditableValue added, related refactoring.
 - AbstractEntityEditModel.validate(Entity) now final.
 - AbstractEntityEditModel bug fixed, inserting, updating and deleting modified entities no longer trigger modification warnings.
+- EntityEditModel.EditableEntity.clear() overridden, now clears all values from the entity as opposed to setting defaults.
 ### is.codion.swing.framework.ui
 - EntityPanel.Config.description now initialized with entity description.
 
