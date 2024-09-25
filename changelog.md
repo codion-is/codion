@@ -13,6 +13,8 @@ Codion Change Log
 - FilterModel.Refresher.items() renamed supplier().
 - FilterModel.refreshThen() and Refresher.refreshThen() renamed refresh().
 - FilterModel.addItem(), addItems(), removeItem() and removeItems() moved to FilterModel.Items.
+### is.codion.swing.common.ui
+- FilterTableCellRenderer now caches the filter condition models to reduce memory churn during repaint.
 ### is.codion.framework.model
 - ForeignKeyDetailModelLink, configuration values renamed for clarity, a couple more added along with tests.
 - EntityEditModel.EditableEntity and EditableValue added, related refactoring.
@@ -21,6 +23,7 @@ Codion Change Log
 - EntityEditModel.EditableEntity.clear() overridden, now clears all values from the entity as opposed to setting defaults.
 ### is.codion.swing.framework.ui
 - EntityPanel.Config.description now initialized with entity description.
+- EntityTableCellRenderer now caches the query condition models to reduce memory churn during repaint.
 ### is.codion.tools.generator.domain
 - DomainSource.apiSearchString() bug fixed, space added after interface name, since table names can have common prefixes.
 

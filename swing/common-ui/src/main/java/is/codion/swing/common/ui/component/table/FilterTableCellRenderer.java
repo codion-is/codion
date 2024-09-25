@@ -29,6 +29,8 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Colors.darker;
@@ -226,6 +228,8 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		private final int rightPadding;
 		private final boolean alternateRowColoring;
 
+		private final Map<C, ConditionModel<C, ?>> conditionModelCache = new HashMap<>();
+
 		private Color foregroundColor;
 		private Color backgroundColor;
 		private Color alternateRowColor;
@@ -317,7 +321,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		 * @return a shaded background color
 		 */
 		protected Color backgroundColorShaded(FilterTableModel<?, C> tableModel, int row, C identifier, Color cellBackgroundColor) {
-			ConditionModel<?, ?> filterModel = tableModel.conditions().optional(identifier).orElse(null);
+			ConditionModel<?, ?> filterModel = conditionModel(tableModel, identifier);
 			boolean filterEnabled = filterModel != null && filterModel.enabled().get();
 			if (filterEnabled) {
 				return backgroundShaded(row, cellBackgroundColor);
@@ -340,6 +344,17 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 
 		protected final Color backgroundColorAlternateShaded() {
 			return backgroundColorAlternateShaded;
+		}
+
+		/**
+		 * A filter {@link ConditionModel} cache.
+		 * @param tableModel the table model
+		 * @param identifier the identifier
+		 * @return the filter {@link ConditionModel} associated with the given column, or null if none exists
+		 */
+		protected final ConditionModel<?, ?> conditionModel(FilterTableModel<?, C> tableModel, C identifier) {
+			return conditionModelCache.computeIfAbsent(identifier,
+							k -> tableModel.conditions().optional(identifier).orElse(null));
 		}
 
 		private Color backgroundColor(Color cellBackgroundColor, int row, boolean selected) {
