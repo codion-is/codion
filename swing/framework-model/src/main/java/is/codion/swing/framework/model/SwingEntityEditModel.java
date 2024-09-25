@@ -217,7 +217,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		requireNonNull(foreignKey);
 		requireNonNull(entities);
 		if (comboBoxModels.containsKey(foreignKey)) {
-			entities.forEach(foreignKeyComboBoxModel(foreignKey)::addItem);
+			entities.forEach(foreignKeyComboBoxModel(foreignKey).items()::addItem);
 		}
 	}
 
@@ -229,7 +229,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		if (comboBoxModels.containsKey(foreignKey)) {
 			EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
 			Entity selectedEntity = comboBoxModel.selection().value();
-			entities.forEach(comboBoxModel::removeItem);
+			entities.forEach(comboBoxModel.items()::removeItem);
 			if (comboBoxModel.items().visible().contains(selectedEntity)) {
 				comboBoxModel.setSelectedItem(selectedEntity);
 			}//if the null value is selected we're fine, otherwise select topmost item

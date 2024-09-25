@@ -296,7 +296,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	private void onDelete(Collection<Entity> deletedEntities) {
 		if (removeDeleted.get()) {
-			removeItems(deletedEntities);
+			items().removeItems(deletedEntities);
 		}
 	}
 

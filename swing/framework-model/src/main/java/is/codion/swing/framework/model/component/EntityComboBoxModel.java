@@ -338,26 +338,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public boolean addItem(Entity item) {
-		return comboBoxModel.addItem(item);
-	}
-
-	@Override
-	public boolean addItems(Collection<Entity> items) {
-		return comboBoxModel.addItems(items);
-	}
-
-	@Override
-	public boolean removeItem(Entity item) {
-		return comboBoxModel.removeItem(item);
-	}
-
-	@Override
-	public boolean removeItems(Collection<Entity> items) {
-		return comboBoxModel.removeItems(items);
-	}
-
-	@Override
 	public void replace(Entity item, Entity replacement) {
 		comboBoxModel.replace(item, replacement);
 	}
@@ -593,7 +573,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 		@Override
 		public void accept(Collection<Entity> inserted) {
-			inserted.forEach(EntityComboBoxModel.this::addItem);
+			inserted.forEach(items()::addItem);
 		}
 	}
 
@@ -609,7 +589,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 		@Override
 		public void accept(Collection<Entity> deleted) {
-			deleted.forEach(EntityComboBoxModel.this::removeItem);
+			deleted.forEach(items()::removeItem);
 		}
 	}
 

@@ -166,36 +166,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public boolean addItems(Collection<R> items) {
-		return addItemsAtInternal(modelItems.visible.items.size(), items);
-	}
-
-	@Override
-	public boolean removeItem(R item) {
-		return removeItemInternal(item, true);
-	}
-
-	@Override
-	public boolean removeItems(Collection<R> items) {
-		selectionModel.setValueIsAdjusting(true);
-		boolean visibleItemRemoved = false;
-		for (R item : requireNonNull(items)) {
-			visibleItemRemoved = removeItemInternal(item, false) || visibleItemRemoved;
-		}
-		selectionModel.setValueIsAdjusting(false);
-		if (visibleItemRemoved) {
-			modelItems.visible.notifyChanges();
-		}
-
-		return visibleItemRemoved;
-	}
-
-	@Override
-	public boolean addItem(R item) {
-		return addItemInternal(item);
-	}
-
-	@Override
 	public Class<?> getColumnClass(C identifier) {
 		return columns.columnClass(requireNonNull(identifier));
 	}
@@ -359,7 +329,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			Set<R> itemSet = new HashSet<>(items);
 			modelItems.get().stream()
 							.filter(item -> !itemSet.contains(item))
-							.forEach(DefaultFilterTableModel.this::removeItem);
+							.forEach(items()::removeItem);
 			items.forEach(this::merge);
 		}
 
@@ -376,7 +346,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private void clearAndAdd(Collection<R> items) {
 			List<R> selectedItems = selectionModel.items().get();
 			clear();
-			if (addItems(items)) {
+			if (items().addItems(items)) {
 				modelItems.visible.sort();
 			}
 			selectionModel.items().set(selectedItems);
@@ -416,6 +386,36 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public void set(Collection<R> items) {
 			refresher.processResult(requireNonNull(items));
+		}
+
+		@Override
+		public boolean addItems(Collection<R> items) {
+			return addItemsAtInternal(modelItems.visible.items.size(), items);
+		}
+
+		@Override
+		public boolean removeItem(R item) {
+			return removeItemInternal(item, true);
+		}
+
+		@Override
+		public boolean removeItems(Collection<R> items) {
+			selectionModel.setValueIsAdjusting(true);
+			boolean visibleItemRemoved = false;
+			for (R item : requireNonNull(items)) {
+				visibleItemRemoved = removeItemInternal(item, false) || visibleItemRemoved;
+			}
+			selectionModel.setValueIsAdjusting(false);
+			if (visibleItemRemoved) {
+				modelItems.visible.notifyChanges();
+			}
+
+			return visibleItemRemoved;
+		}
+
+		@Override
+		public boolean addItem(R item) {
+			return addItemInternal(item);
 		}
 
 		@Override

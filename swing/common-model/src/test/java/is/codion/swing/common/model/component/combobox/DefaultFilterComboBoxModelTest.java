@@ -102,7 +102,7 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.items().visible().comparator().set(comparator);
 		names.remove(SIGGI);
 		testModel.items().set(names);
-		testModel.addItem(SIGGI);
+		testModel.items().addItem(SIGGI);
 
 		assertEquals(ANNA, testModel.getElementAt(1));
 		assertEquals(BJORN, testModel.getElementAt(2));
@@ -196,7 +196,7 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(1, testModel.items().visible().count());
 		assertEquals(5, testModel.items().get().size());
 
-		testModel.addItem(BJORN);//already contained
+		testModel.items().addItem(BJORN);//already contained
 		assertEquals(4, testModel.items().filtered().count());
 
 		assertFalse(testModel.items().visible().contains(BJORN));
@@ -209,12 +209,12 @@ public class DefaultFilterComboBoxModelTest {
 	void remove() {
 		//remove filtered item
 		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
-		testModel.removeItem(BJORN);
+		testModel.items().removeItem(BJORN);
 		testModel.items().visible().predicate().clear();
 		assertFalse(testModel.items().visible().contains(BJORN));
 
 		//remove visible item
-		testModel.removeItem(KALLI);
+		testModel.items().removeItem(KALLI);
 		assertFalse(testModel.items().visible().contains(KALLI));
 	}
 
@@ -223,11 +223,11 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.clear();
 		//add filtered item
 		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
-		testModel.addItem(BJORN);
+		testModel.items().addItem(BJORN);
 		assertFalse(testModel.items().visible().contains(BJORN));
 
 		//add visible item
-		testModel.addItem(KALLI);
+		testModel.items().addItem(KALLI);
 		assertTrue(testModel.items().visible().contains(KALLI));
 
 		testModel.items().visible().predicate().clear();

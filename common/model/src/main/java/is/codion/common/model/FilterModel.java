@@ -61,35 +61,6 @@ public interface FilterModel<T> {
 	Refresher<T> refresher();
 
 	/**
-	 * Adds the given item to this model.
-	 * Note that if the item does not fulfill the visible predicate, it will be filtered right away.
-	 * @param item the item to add
-	 * @return true if the item is visible
-	 */
-	boolean addItem(T item);
-
-	/**
-	 * Adds the given items to the bottom of this table model.
-	 * @param items the items to add
-	 * @return true if one or more of the items are visible
-	 */
-	boolean addItems(Collection<T> items);
-
-	/**
-	 * Removes the given item from this model
-	 * @param item the item to remove from the model
-	 * @return true if the item was visible
-	 */
-	boolean removeItem(T item);
-
-	/**
-	 * Removes the given items from this table model
-	 * @param items the items to remove from the model
-	 * @return true if one or more of the items were visible
-	 */
-	boolean removeItems(Collection<T> items);
-
-	/**
 	 * Clears all items from this model
 	 */
 	void clear();
@@ -123,6 +94,36 @@ public interface FilterModel<T> {
 	 * @param <T> the item type
 	 */
 	interface Items<T> extends Mutable<Collection<T>> {
+
+		/**
+		 * Adds the given item to this model.
+		 * Note that if the item does not pass the {@link #visible()} predicate, it will be filtered right away.
+		 * @param item the item to add
+		 * @return true if the item was added, false if filtered
+		 */
+		boolean addItem(T item);
+
+		/**
+		 * Adds the given items to the bottom of this table model.
+		 * Note that if an item does not pass the {@link #visible()} predicate, it will be filtered right away.
+		 * @param items the items to add
+		 * @return false if none of the given items passed the {@link #visible()} predicate and were filtered right away
+		 */
+		boolean addItems(Collection<T> items);
+
+		/**
+		 * Removes the given item from this model
+		 * @param item the item to remove from the model
+		 * @return true if the item was visible
+		 */
+		boolean removeItem(T item);
+
+		/**
+		 * Removes the given items from this table model
+		 * @param items the items to remove from the model
+		 * @return true if one or more of the items were visible
+		 */
+		boolean removeItems(Collection<T> items);
 
 		/**
 		 * @return a {@link Visible} providing access to the visible items, in the order they appear in the model

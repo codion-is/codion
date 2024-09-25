@@ -129,55 +129,10 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final boolean addItem(T item) {
-		validate(item);
-		if (modelItems.visiblePredicate.isNull() || modelItems.visiblePredicate.get().test(item)) {
-			if (!modelItems.visible.items.contains(item)) {
-				modelItems.visible.items.add(item);
-				modelItems.visible.sort();
-
-				return true;
-			}
-		}
-		else if (!modelItems.filtered.items.contains(item)) {
-			modelItems.filtered.items.add(item);
-			modelItems.filtered.notifyChanges();
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean addItems(Collection<T> items) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final boolean removeItem(T item) {
-		requireNonNull(item);
-		if (modelItems.filtered.items.remove(item)) {
-			modelItems.filtered.notifyChanges();
-		}
-		if (modelItems.visible.items.remove(item)) {
-			fireContentsChanged();
-			modelItems.visible.notifyChanges();
-
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean removeItems(Collection<T> items) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public final void replace(T item, T replacement) {
 		validate(replacement);
-		removeItem(item);
-		addItem(replacement);
+		items().removeItem(item);
+		items().addItem(replacement);
 		if (Objects.equals(selectionModel.selected.item, item)) {
 			selectionModel.selected.replaceWith(item);
 		}
@@ -315,6 +270,51 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			filter();
 			cleared = items.isEmpty();
 			event.accept(items);
+		}
+
+		@Override
+		public boolean addItem(T item) {
+			validate(item);
+			if (modelItems.visiblePredicate.isNull() || modelItems.visiblePredicate.get().test(item)) {
+				if (!modelItems.visible.items.contains(item)) {
+					modelItems.visible.items.add(item);
+					modelItems.visible.sort();
+
+					return true;
+				}
+			}
+			else if (!modelItems.filtered.items.contains(item)) {
+				modelItems.filtered.items.add(item);
+				modelItems.filtered.notifyChanges();
+			}
+
+			return false;
+		}
+
+		@Override
+		public boolean addItems(Collection<T> items) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean removeItem(T item) {
+			requireNonNull(item);
+			if (modelItems.filtered.items.remove(item)) {
+				modelItems.filtered.notifyChanges();
+			}
+			if (modelItems.visible.items.remove(item)) {
+				fireContentsChanged();
+				modelItems.visible.notifyChanges();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeItems(Collection<T> items) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override

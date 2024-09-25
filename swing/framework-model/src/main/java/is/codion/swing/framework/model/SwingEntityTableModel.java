@@ -213,26 +213,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final boolean addItems(Collection<Entity> items) {
-		return filterModel().addItems(items);
-	}
-
-	@Override
-	public final boolean addItem(Entity item) {
-		return filterModel().addItem(item);
-	}
-
-	@Override
-	public final boolean removeItems(Collection<Entity> items) {
-		return filterModel().removeItems(items);
-	}
-
-	@Override
-	public final boolean removeItem(Entity item) {
-		return filterModel().removeItem(item);
-	}
-
-	@Override
 	public final void fireTableDataChanged() {
 		filterModel().fireTableDataChanged();
 	}

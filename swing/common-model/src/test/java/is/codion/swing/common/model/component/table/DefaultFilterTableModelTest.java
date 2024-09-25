@@ -249,14 +249,14 @@ public final class DefaultFilterTableModelTest {
 		tableModel.refresh();
 		assertEquals(1, events.get());
 		tableModel.conditions().get(0).operands().equal().set("a");
-		assertFalse(tableModel.removeItem(B));
+		assertFalse(tableModel.items().removeItem(B));
 		assertEquals(3, events.get());
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().contains(A));
-		assertTrue(tableModel.removeItem(A));
+		assertTrue(tableModel.items().removeItem(A));
 		assertEquals(4, events.get());
 		assertFalse(tableModel.items().contains(A));
-		assertFalse(tableModel.removeItems(asList(D, E)));
+		assertFalse(tableModel.items().removeItems(asList(D, E)));
 		assertEquals(4, events.get());//no change event when removing filtered items
 		assertFalse(tableModel.items().visible().contains(D));
 		assertFalse(tableModel.items().visible().contains(E));
@@ -508,7 +508,7 @@ public final class DefaultFilterTableModelTest {
 		selectionModel.items().add(ITEMS.get(4));
 		assertEquals(4, selectionModel.count());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
-		tableModel.removeItem(ITEMS.get(0));
+		tableModel.items().removeItem(ITEMS.get(0));
 		assertEquals(3, selectionModel.count());
 		assertEquals(0, selectionModel.getMinSelectionIndex());
 
@@ -554,9 +554,9 @@ public final class DefaultFilterTableModelTest {
 		tableModel.refresh();
 		tableModel.conditions().get(0).operands().equal().set("a");
 		assertTrue(tableModel.items().contains(B));
-		assertFalse(tableModel.removeItem(B));
+		assertFalse(tableModel.items().removeItem(B));
 		assertFalse(tableModel.items().contains(B));
-		assertTrue(tableModel.removeItem(A));
+		assertTrue(tableModel.items().removeItem(A));
 		assertFalse(tableModel.items().contains(A));
 	}
 

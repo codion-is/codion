@@ -12,6 +12,7 @@ Codion Change Log
 - FilterModel.comparator() and sort() moved to Items.Visible.
 - FilterModel.Refresher.items() renamed supplier().
 - FilterModel.refreshThen() and Refresher.refreshThen() renamed refresh().
+- FilterModel.addItem(), addItems(), removeItem() and removeItems() moved to FilterModel.Items.
 ### is.codion.framework.model
 - ForeignKeyDetailModelLink, configuration values renamed for clarity, a couple more added along with tests.
 - EntityEditModel.EditableEntity and EditableValue added, related refactoring.

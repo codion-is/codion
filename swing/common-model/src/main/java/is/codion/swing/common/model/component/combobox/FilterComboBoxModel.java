@@ -54,24 +54,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	boolean cleared();
 
 	/**
-	 * Adds the given item to this model, respecting the sorting order if specified.
-	 * If this model already contains the item, calling this method has no effect.
-	 * Note that if the item does not fulfill the visible predicate, it will be filtered right away.
-	 * @param item the item to add
-	 * @return true if the item is visible
-	 * @throws IllegalArgumentException in case the item fails validation
-	 * @see Items.Visible#predicate()
-	 */
-	boolean addItem(T item);
-
-	/**
-	 * Removes the given item from this model
-	 * @param item the item to remove
-	 * @return true if the item was visible
-	 */
-	boolean removeItem(T item);
-
-	/**
 	 * Replaces the given item in this combo box model
 	 * @param item the item to replace
 	 * @param replacement the replacement item

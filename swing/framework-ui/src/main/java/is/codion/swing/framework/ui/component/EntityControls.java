@@ -215,7 +215,7 @@ final class EntityControls {
 
 		@Override
 		public void accept(Entity inserted) {
-			comboBoxModel.addItem(inserted);
+			comboBoxModel.items().addItem(inserted);
 			comboBoxModel.setSelectedItem(inserted);
 		}
 	}

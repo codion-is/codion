@@ -161,10 +161,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 						.with(Department.ID, 1)
 						.with(Department.NAME, "dept")
 						.build();
-		assertThrows(IllegalArgumentException.class, () -> tableModel.addItems(singletonList(dept)));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.items().addItems(singletonList(dept)));
 		assertThrows(IllegalArgumentException.class, () -> tableModel.items().visible().addItemsAt(0, singletonList(dept)));
 
-		assertThrows(NullPointerException.class, () -> tableModel.addItems(singletonList(null)));
+		assertThrows(NullPointerException.class, () -> tableModel.items().addItems(singletonList(null)));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemsAt(0, singletonList(null)));
 	}
 
