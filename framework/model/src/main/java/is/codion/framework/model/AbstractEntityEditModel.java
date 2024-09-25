@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -701,7 +700,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 				throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
 			}
 			if (entityCount > 1 && !updateMultipleEnabled.get()) {
-				throw new IllegalStateException("Batch update of entities is not enabled");
+				throw new IllegalStateException("Updating multiple entities is not enabled");
 			}
 		}
 
@@ -714,14 +713,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	private static final class DefaultEditableEntity implements EditableEntity {
 
-		private final Map<Attribute<?>, Event<?>> editEvents = new ConcurrentHashMap<>();
+		private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
 		private final Event<Attribute<?>> valueChange = Event.event();
 		private final Event<Entity> changing = Event.event();
 		private final Event<Entity> changed = Event.event();
 
-		private final Map<Attribute<?>, DefaultEditableValue<?>> editableValues = new ConcurrentHashMap<>();
-		private final Map<Attribute<?>, Value<Supplier<?>>> defaultValues = new ConcurrentHashMap<>();
-		private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
+		private final Map<Attribute<?>, DefaultEditableValue<?>> editableValues = new HashMap<>();
+		private final Map<Attribute<?>, State> persistValues = new HashMap<>();
 		private final Map<Attribute<?>, State> attributeModified = new HashMap<>();
 		private final Map<Attribute<?>, State> attributeNull = new HashMap<>();
 		private final Map<Attribute<?>, State> attributeValid = new HashMap<>();
@@ -908,8 +906,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private void updateStates() {
-			exists.refresh();
-			modified.refresh();
+			exists.update();
+			modified.update();
 			updateValidState();
 			updatePrimaryKeyNullState();
 		}
@@ -1027,7 +1025,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			private DefaultExists(EntityDefinition definition) {
 				predicate = Value.builder()
 								.nonNull(definition.exists())
-								.listener(this::refresh)
+								.listener(this::update)
 								.build();
 			}
 
@@ -1086,7 +1084,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 				return exists.removeWeakConsumer(consumer);
 			}
 
-			private void refresh() {
+			private void update() {
 				exists.set(predicate.get().test(entity));
 			}
 		}
@@ -1096,7 +1094,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			private final State modified = State.state();
 			private final Value<Predicate<Entity>> predicate = Value.builder()
 							.nonNull((Predicate<Entity>) Entity::modified)
-							.listener(this::refresh)
+							.listener(this::update)
 							.build();
 
 			@Override
@@ -1115,7 +1113,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 
 			@Override
-			public void refresh() {
+			public void update() {
 				modified.set(predicate.get().test(entity));
 			}
 
@@ -1163,9 +1161,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final class DefaultEditableValue<T> extends AbstractValue<T> implements EditableValue<T> {
 
 			private final Attribute<T> attribute;
+			private final Value<Supplier<T>> defaultValue;
 
 			private DefaultEditableValue(Attribute<T> attribute) {
 				this.attribute = attribute;
+				this.defaultValue = Value.builder()
+									.nonNull((Supplier<T>) entityDefinition.attributes().definition(attribute)::defaultValue)
+									.build();
 			}
 
 			@Override
@@ -1199,17 +1201,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 
 			@Override
-			public <S extends Supplier<T>> Value<S> defaultValue() {
-				if (defaultValues.containsKey(attribute)) {
-					return (Value<S>) defaultValues.get(attribute);
-				}
-
-				AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
-				defaultValues.put(attribute, (Value<Supplier<?>>) Value.builder()
-								.nonNull((S) (Supplier<T>) attributeDefinition::defaultValue)
-								.build());
-
-				return (Value<S>) defaultValues.get(attribute);
+			public Value<Supplier<T>> defaultValue() {
+				return defaultValue;
 			}
 
 			@Override

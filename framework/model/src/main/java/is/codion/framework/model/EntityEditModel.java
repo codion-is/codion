@@ -50,9 +50,10 @@ import java.util.function.Supplier;
 public interface EntityEditModel {
 
 	/**
-	 * Specifies whether writable foreign key values should persist when the model is cleared or set to null
+	 * Specifies whether foreign key values should persist by default when defaults are set
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * @see EditableEntity#defaults()
 	 */
 	PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = Configuration.booleanValue(EntityEditModel.class.getName() + ".persistForeignKeys", true);
 
@@ -382,6 +383,7 @@ public interface EntityEditModel {
 		/**
 		 * Populates this edit model with default values for all attributes.
 		 * @see EditableValue#defaultValue()
+		 * @see EditableValue#persist()
 		 * @see AttributeDefinition#defaultValue()
 		 */
 		void defaults();
@@ -515,9 +517,9 @@ public interface EntityEditModel {
 			Value<Predicate<Entity>> predicate();
 
 			/**
-			 * Refreshes the modified state
+			 * Updates the modified state
 			 */
-			void refresh();
+			void update();
 		}
 	}
 
@@ -533,8 +535,8 @@ public interface EntityEditModel {
 		void revert();
 
 		/**
-		 * Returns a State controlling whether the last used value for this attribute should persist when the model is cleared.
-		 * @return a State controlling whether the given attribute value should persist when the model is cleared
+		 * Returns a {@link State} controlling whether the last used value for this attribute should persist when defaults are set.
+		 * @return a {@link State} controlling whether the given attribute value should persist when defaults are set
 		 * @see EditableEntity#defaults()
 		 * @see EntityEditModel#PERSIST_FOREIGN_KEYS
 		 */
@@ -571,7 +573,7 @@ public interface EntityEditModel {
 		 * @return the {@link Value} instance controlling the default value supplier
 		 * @see #persist()
 		 */
-		<S extends Supplier<T>> Value<S> defaultValue();
+		Value<Supplier<T>> defaultValue();
 	}
 
 	/**
