@@ -41,7 +41,6 @@ import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.JTable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
@@ -78,7 +77,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
 		schemaModel.tableModel().refresh();
 
-		return Collections.singletonList(schemaPanel);
+		return List.of(schemaPanel);
 	}
 
 	public static void main(String[] args) {

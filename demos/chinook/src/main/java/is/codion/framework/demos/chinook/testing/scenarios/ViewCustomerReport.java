@@ -25,8 +25,8 @@ import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomCustomerId;
@@ -37,7 +37,7 @@ public final class ViewCustomerReport implements Performer<EntityConnectionProvi
 	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
 		EntityConnection connection = connectionProvider.connection();
 		Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
-		Collection<Long> customerIDs = Collections.singletonList(customer.primaryKey().get());
+		Collection<Long> customerIDs = List.of(customer.primaryKey().get());
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", customerIDs);
 		connection.report(Customer.REPORT, reportParameters);

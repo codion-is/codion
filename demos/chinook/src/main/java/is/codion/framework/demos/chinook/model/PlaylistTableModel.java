@@ -26,8 +26,6 @@ import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistP
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
-import java.util.Collections;
-
 public final class PlaylistTableModel extends SwingEntityTableModel {
 
 	public PlaylistTableModel(EntityConnectionProvider connectionProvider) {
@@ -36,7 +34,7 @@ public final class PlaylistTableModel extends SwingEntityTableModel {
 
 	public void createRandomPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
 		Entity randomPlaylist = createPlaylist(parameters);
-		items().visible().addItemsAt(0, Collections.singletonList(randomPlaylist));
+		items().visible().addItemAt(0, randomPlaylist);
 		selection().item().set(randomPlaylist);
 	}
 

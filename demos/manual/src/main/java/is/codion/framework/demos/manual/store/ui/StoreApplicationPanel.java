@@ -30,7 +30,6 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -56,7 +55,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 
 		customerPanel.addDetailPanel(customerAddressPanel);
 
-		return Collections.singletonList(customerPanel);
+		return List.of(customerPanel);
 	}
 
 	// tag::createSupportEntityPanelBuilders[]
@@ -66,7 +65,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 						EntityPanel.builder(Address.TYPE)
 										.editPanel(AddressEditPanel.class);
 
-		return Collections.singletonList(addressPanelBuilder);
+		return List.of(addressPanelBuilder);
 	}
 	// end::createSupportEntityPanelBuilders[]
 

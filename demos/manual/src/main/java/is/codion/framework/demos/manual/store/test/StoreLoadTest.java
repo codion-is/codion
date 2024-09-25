@@ -29,13 +29,13 @@ import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
+import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
 import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
 import static is.codion.tools.loadtest.ui.LoadTestPanel.loadTestPanel;
-import static java.util.Collections.singletonList;
 
 // tag::storeLoadTest[]
 public class StoreLoadTest {
@@ -79,7 +79,7 @@ public class StoreLoadTest {
 						LoadTest.builder(new StoreApplicationModelFactory(),
 														application -> application.connectionProvider().close())
 										.user(User.parse("scott:tiger"))
-										.scenarios(singletonList(scenario(new StoreScenarioPerformer())))
+										.scenarios(List.of(scenario(new StoreScenarioPerformer())))
 										.name("Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
 										.build();
 		loadTestPanel(loadTestModel(loadTest)).run();

@@ -59,7 +59,6 @@ import static is.codion.framework.demos.world.ui.LookupTablePanel.ExportFormat.J
 import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 
@@ -246,7 +245,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void exportCSV(File file) throws IOException {
-		Files.write(file.toPath(), singletonList(table().export()
+		Files.write(file.toPath(), List.of(table().export()
 						.delimiter(',')
 						.selected(true)
 						.get()));

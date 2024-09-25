@@ -69,7 +69,6 @@ import java.util.List;
 
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.CLEAR;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 // tag::notes[]
 public final class NotesDemo {
@@ -255,7 +254,7 @@ public final class NotesDemo {
 		protected List<EntityPanel> createEntityPanels() {
 			NoteModel noteModel = applicationModel().entityModel(Note.TYPE);
 
-			return singletonList(new NotePanel(noteModel));
+			return List.of(new NotePanel(noteModel));
 		}
 
 		// Replace the default JTabbedPane based layout,

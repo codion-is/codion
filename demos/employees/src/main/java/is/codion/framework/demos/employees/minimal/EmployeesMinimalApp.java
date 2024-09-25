@@ -36,7 +36,6 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -291,7 +290,7 @@ public final class EmployeesMinimalApp {
 							new DepartmentEditPanel(departmentModel.editModel()));
 			departmentPanel.addDetailPanel(employeePanel);
 
-			return Collections.singletonList(departmentPanel);
+			return List.of(departmentPanel);
 		}
 	}
 

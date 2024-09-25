@@ -35,10 +35,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.joining;
 
 public final class CityEditModel extends SwingEntityEditModel {
@@ -62,7 +62,7 @@ public final class CityEditModel extends SwingEntityEditModel {
 	void populateLocation(Entity city) throws IOException, DatabaseException, ValidationException {
 		lookupLocation(city).ifPresent(location -> city.put(City.LOCATION, location));
 		if (city.modified()) {
-			update(singletonList(city));
+			update(List.of(city));
 		}
 	}
 

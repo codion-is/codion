@@ -37,7 +37,6 @@ import java.util.List;
 
 import static is.codion.common.user.User.parse;
 import static is.codion.framework.domain.entity.condition.Condition.all;
-import static java.util.Collections.singletonList;
 
 public final class ClientServer {
 
@@ -52,7 +51,7 @@ public final class ClientServer {
 										"src/main/sql/create_schema.sql");
 
 		EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-						.domainClassNames(singletonList(Store.class.getName()))
+						.domainClassNames(List.of(Store.class.getName()))
 						.database(database)
 						.sslEnabled(false)
 						.build();
@@ -88,10 +87,10 @@ public final class ClientServer {
 		EntityService.HTTP_SERVER_PORT.set(HTTP_PORT);
 
 		EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-						.domainClassNames(singletonList(Store.class.getName()))
+						.domainClassNames(List.of(Store.class.getName()))
 						.database(database)
 						.sslEnabled(false)
-						.auxiliaryServerFactoryClassNames(singletonList(EntityServiceFactory.class.getName()))
+						.auxiliaryServerFactoryClassNames(List.of(EntityServiceFactory.class.getName()))
 						.build();
 
 		EntityServer server = EntityServer.startServer(configuration);

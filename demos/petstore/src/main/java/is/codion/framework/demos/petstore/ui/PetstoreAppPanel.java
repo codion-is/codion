@@ -26,7 +26,6 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -70,7 +69,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 		productPanel.addDetailPanel(itemPanel);
 		itemPanel.addDetailPanels(tagItemPanel);
 
-		return Collections.singletonList(categoryPanel);
+		return List.of(categoryPanel);
 	}
 
 	@Override

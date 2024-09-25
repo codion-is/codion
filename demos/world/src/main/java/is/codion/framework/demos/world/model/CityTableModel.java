@@ -35,9 +35,9 @@ import org.jfree.data.general.PieDataset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Consumer;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 public final class CityTableModel extends SwingEntityTableModel {
@@ -113,7 +113,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 				editModel.populateLocation(city);
 				updatedCities.add(city);
 				progressReporter.report(updatedCities.size());
-				displayLocationEvent.accept(singletonList(city));
+				displayLocationEvent.accept(List.of(city));
 			}
 			displayLocationEvent.accept(selection().items().get());
 

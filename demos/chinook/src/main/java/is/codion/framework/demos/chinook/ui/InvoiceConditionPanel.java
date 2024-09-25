@@ -70,7 +70,6 @@ import static is.codion.swing.common.ui.control.Control.command;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -224,7 +223,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 			@Override
 			public Collection<JComponent> components() {
-				return singletonList(searchField);
+				return List.of(searchField);
 			}
 
 			@Override

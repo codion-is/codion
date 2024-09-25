@@ -36,7 +36,6 @@ import java.util.stream.IntStream;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomCustomerId;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomTrackId;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toSet;
 
 public final class InsertDeleteInvoice implements Performer<EntityConnectionProvider> {
@@ -69,7 +68,7 @@ public final class InsertDeleteInvoice implements Performer<EntityConnectionProv
 								.with(InvoiceLine.QUANTITY, 1)
 								.with(InvoiceLine.UNITPRICE, track.get(Track.UNITPRICE))
 								.build()));
-				connection.execute(Invoice.UPDATE_TOTALS, singletonList(invoice.get(Invoice.ID)));
+				connection.execute(Invoice.UPDATE_TOTALS, List.of(invoice.get(Invoice.ID)));
 				connection.commitTransaction();
 			}
 			catch (Exception e) {

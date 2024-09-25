@@ -51,7 +51,6 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.INSERT;
-import static java.util.Collections.singletonList;
 
 /**
  * When running this make sure the chinook demo module directory is the
@@ -188,7 +187,7 @@ public final class ClientTutorial {
 			EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.editModel()));
 			artistPanel.addDetailPanel(albumPanel);
 
-			return singletonList(artistPanel);
+			return List.of(artistPanel);
 		}
 	}
 

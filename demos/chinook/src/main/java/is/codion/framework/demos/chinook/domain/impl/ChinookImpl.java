@@ -406,7 +406,8 @@ public final class ChinookImpl extends DomainModel {
 														.nullable(false),
 										// tag::fetchDepth0[]
 										InvoiceLine.INVOICE_FK.define()
-														.foreignKey(0),
+														.foreignKey(0)
+														.hidden(true),
 										// end::fetchDepth0[]
 										InvoiceLine.TRACK_ID.define()
 														.column()

@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
-import static java.util.Collections.singletonList;
 
 // tag::createEntityPanels[]
 public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel> {
@@ -72,7 +71,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 										.build()));
 		departmentPanel.addDetailPanel(employeePanel);
 
-		return singletonList(departmentPanel);
+		return List.of(departmentPanel);
 	}
 	// end::createEntityPanels[]
 

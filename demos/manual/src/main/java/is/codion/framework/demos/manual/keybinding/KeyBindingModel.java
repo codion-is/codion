@@ -38,7 +38,6 @@ import java.util.function.Supplier;
 
 import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -137,7 +136,7 @@ final class KeyBindingModel {
 		public Collection<KeyBinding> get() {
 			String componentName = componentComboBoxModel.getSelectedItem();
 			if (componentName == null) {
-				return emptyList();
+				return List.of();
 			}
 			String componentClassName = className(componentName);
 			try {
@@ -145,7 +144,7 @@ final class KeyBindingModel {
 				ActionMap actionMap = component.getActionMap();
 				Object[] allKeys = actionMap.allKeys();
 				if (allKeys == null) {
-					return emptyList();
+					return List.of();
 				}
 
 				return Arrays.stream(allKeys)
@@ -211,7 +210,7 @@ final class KeyBindingModel {
 		public Collection<String> get() {
 			Item<LookAndFeelProvider> selectedItem = lookAndFeelComboBoxModel.getSelectedItem();
 			if (selectedItem == null) {
-				return emptyList();
+				return List.of();
 			}
 
 			LookAndFeelProvider lookAndFeelProvider = selectedItem.value();

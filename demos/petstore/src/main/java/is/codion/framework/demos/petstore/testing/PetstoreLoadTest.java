@@ -28,12 +28,12 @@ import is.codion.framework.demos.petstore.model.PetstoreAppModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
+import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
 import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
 import static is.codion.tools.loadtest.ui.LoadTestPanel.loadTestPanel;
-import static java.util.Collections.singletonList;
 
 public final class PetstoreLoadTest {
 
@@ -89,7 +89,7 @@ public final class PetstoreLoadTest {
 						LoadTest.builder(new PetstoreAppModelFactory(),
 														application -> application.connectionProvider().close())
 										.user(UNIT_TEST_USER)
-										.scenarios(singletonList(Scenario.builder(new PetstoreUsageScenario())
+										.scenarios(List.of(Scenario.builder(new PetstoreUsageScenario())
 														.name("selectRecords")
 														.build()))
 										.name("Petstore LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())

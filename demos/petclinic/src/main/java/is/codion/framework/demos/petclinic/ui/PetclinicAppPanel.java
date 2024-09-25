@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 
@@ -69,7 +68,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 		ownersPanel.addDetailPanel(petsPanel);
 		petsPanel.addDetailPanel(visitsPanel);
 
-		return singletonList(ownersPanel);
+		return List.of(ownersPanel);
 	}
 
 	@Override
