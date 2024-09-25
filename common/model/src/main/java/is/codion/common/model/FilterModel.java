@@ -184,26 +184,29 @@ public interface FilterModel<T> {
 			T itemAt(int index);
 
 			/**
+			 * Adds the given item at the given index.
+			 * Note that if the item does not pass the {@link #visible()} predicate it is filtered right away and the method returns false.
 			 * @param index the index
 			 * @param item the item to add
-			 * @return true if the item is visible
+			 * @return true if the item was added, false if filtered
 			 */
 			boolean addItemAt(int index, T item);
 
 			/**
-			 * Adds the given items to this table model, non-filtered items are added at the given index.
+			 * Adds the given items at the last index.
+			 * Note that if an item does not pass the {@link #visible()} predicate it is filtered right away.
 			 * @param index the index at which to add the items
 			 * @param items the items to add
-			 * @return true if one or more of the items are visible
+			 * @return false if none of the given items passed the {@link #visible()} predicate and were filtered right away
 			 */
 			boolean addItemsAt(int index, Collection<T> items);
 
 			/**
 			 * Sets the item at the given index.
-			 * If the item should be filtered calling this method has no effect.
+			 * Note that if the item does not pass the {@link #visible()} predicate it is filtered right away and this method has no effect.
 			 * @param index the index
 			 * @param item the item
-			 * @return true if the item is visible
+			 * @return true if the item was set, false if it did not pass the {@link #visible()} predicate
 			 * @see Items.Visible#predicate()
 			 */
 			boolean setItemAt(int index, T item);

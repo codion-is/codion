@@ -582,7 +582,6 @@ public interface EntityEditModel {
 		 * Returns the {@link Value} instance controlling the default value supplier for the given attribute.
 		 * Used when the underlying value is not persistent.
 		 * Use {@link EditableEntity#defaults()} to populate the model with the default values.
-		 * @param <S> the value supplier type
 		 * @return the {@link Value} instance controlling the default value supplier
 		 * @see #persist()
 		 */
