@@ -275,17 +275,17 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean addItem(T item) {
 			validate(item);
-			if (modelItems.visiblePredicate.isNull() || modelItems.visiblePredicate.get().test(item)) {
-				if (!modelItems.visible.items.contains(item)) {
-					modelItems.visible.items.add(item);
-					modelItems.visible.sort();
+			if (visiblePredicate.isNull() || visiblePredicate.get().test(item)) {
+				if (!visible.items.contains(item)) {
+					visible.items.add(item);
+					visible.sort();
 
 					return true;
 				}
 			}
-			else if (!modelItems.filtered.items.contains(item)) {
-				modelItems.filtered.items.add(item);
-				modelItems.filtered.notifyChanges();
+			else if (!filtered.items.contains(item)) {
+				filtered.items.add(item);
+				filtered.notifyChanges();
 			}
 
 			return false;
@@ -299,12 +299,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean removeItem(T item) {
 			requireNonNull(item);
-			if (modelItems.filtered.items.remove(item)) {
-				modelItems.filtered.notifyChanges();
+			if (filtered.items.remove(item)) {
+				filtered.notifyChanges();
 			}
-			if (modelItems.visible.items.remove(item)) {
+			if (visible.items.remove(item)) {
 				fireContentsChanged();
-				modelItems.visible.notifyChanges();
+				visible.notifyChanges();
 
 				return true;
 			}
@@ -346,10 +346,10 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void filter() {
 			visible.items.addAll(filtered.items);
 			filtered.items.clear();
-			if (modelItems.visiblePredicate.isNotNull()) {
+			if (visiblePredicate.isNotNull()) {
 				for (Iterator<T> iterator = visible.items.listIterator(); iterator.hasNext(); ) {
 					T item = iterator.next();
-					if (item != null && !modelItems.visiblePredicate.get().test(item)) {
+					if (item != null && !visiblePredicate.get().test(item)) {
 						filtered.items.add(item);
 						iterator.remove();
 					}

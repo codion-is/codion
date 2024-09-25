@@ -20,8 +20,6 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.FilterModel.Items.Filtered;
-import is.codion.common.model.FilterModel.Items.Visible;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.observer.Observer;
@@ -34,7 +32,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +41,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -67,28 +63,27 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	static final Comparator<?> STRING_COMPARATOR = Comparator.comparing(Object::toString);
 
 	private final Columns<R, C> columns;
-	private final DefaultItems modelItems = new DefaultItems();
+	private final DefaultItems modelItems;
 	private final FilterTableSelectionModel<R> selectionModel;
 	private final TableConditionModel<C> conditionModel;
-	private final CombinedVisiblePredicate combinedVisiblePredicate;
-	private final Predicate<R> validator;
+	private final VisiblePredicate visiblePredicate;
 	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = requireNonNull(builder.columns);
+		this.modelItems = new DefaultItems(builder.validator);
 		this.selectionModel = new DefaultFilterTableSelectionModel<>(modelItems);
 		this.conditionModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
-		this.combinedVisiblePredicate = new CombinedVisiblePredicate(conditionModel.identifiers().stream()
+		this.visiblePredicate = new VisiblePredicate(conditionModel.identifiers().stream()
 						.map(conditionModel::get)
-						.collect(Collectors.toList()));
+						.collect(toList()));
 		this.refresher = new DefaultRefresher(builder.supplier == null ? modelItems::get : (Supplier<Collection<R>>) builder.supplier);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
-		this.validator = builder.validator;
 		this.removeSelectionListener = new RemoveSelectionListener();
-		bindEventsInternal();
+		bindEvents();
 	}
 
 	@Override
@@ -208,91 +203,13 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private void bindEventsInternal() {
-		addTableModelListener(e -> {
-			if (e.getType() != TableModelEvent.DELETE) {
-				// Removals are handled specially, in order to trigger only a single
-				// event when multiple rows are removed, see remove... methods
-				modelItems.visible.notifyChanges();
-			}
-		});
+	private void bindEvents() {
 		addTableModelListener(removeSelectionListener);
 		conditionModel.changed().addListener(modelItems::filter);
-		modelItems.visible.comparator.addListener(modelItems.visible::sort);
 	}
 
 	private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
 		return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
-	}
-
-	private boolean addItemInternal(R item) {
-		return addItemAtInternal(modelItems.visible().count(), item);
-	}
-
-	private boolean addItemAtInternal(int index, R item) {
-		validate(item);
-		if (include(item)) {
-			modelItems.visible.items.add(index, item);
-			fireTableRowsInserted(index, index);
-
-			return true;
-		}
-		modelItems.filtered.items.add(item);
-		modelItems.filtered.notifyChanges();
-
-		return false;
-	}
-
-	private boolean addItemsAtInternal(int index, Collection<R> items) {
-		requireNonNull(items);
-		Collection<R> visibleItems = new ArrayList<>(items.size());
-		Collection<R> filteredItems = new ArrayList<>(items.size());
-		for (R item : items) {
-			validate(item);
-			if (include(item)) {
-				visibleItems.add(item);
-			}
-			else {
-				filteredItems.add(item);
-			}
-		}
-		if (!visibleItems.isEmpty()) {
-			modelItems.visible.items.addAll(index, visibleItems);
-			fireTableRowsInserted(index, index + visibleItems.size());
-		}
-		if (!filteredItems.isEmpty()) {
-			modelItems.filtered.items.addAll(filteredItems);
-			modelItems.filtered.notifyChanges();
-		}
-
-		return !visibleItems.isEmpty();
-	}
-
-	private boolean removeItemInternal(R item, boolean notifyDataChanged) {
-		int visibleItemIndex = modelItems.visible.items.indexOf(item);
-		if (visibleItemIndex >= 0) {
-			modelItems.visible.items.remove(visibleItemIndex);
-			fireTableRowsDeleted(visibleItemIndex, visibleItemIndex);
-			if (notifyDataChanged) {
-				modelItems.visible.notifyChanges();
-			}
-		}
-		else if (modelItems.filtered.items.remove(item)) {
-			modelItems.filtered.notifyChanges();
-		}
-
-		return visibleItemIndex >= 0;
-	}
-
-	private void validate(R item) {
-		requireNonNull(item);
-		if (!validator.test(item)) {
-			throw new IllegalArgumentException("Invalid item: " + item);
-		}
-	}
-
-	private boolean include(R item) {
-		return combinedVisiblePredicate.test(item);
 	}
 
 	private Collection<ConditionModel<C, ?>> createColumnFilterModels(ConditionModel.Factory<C> filterModelFactory) {
@@ -336,7 +253,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private void merge(R item) {
 			int index = modelItems.visible.indexOf(item);
 			if (index == -1) {
-				addItemInternal(item);
+				modelItems.addItemInternal(item);
 			}
 			else {
 				modelItems.visible.setItemAt(index, item);
@@ -368,8 +285,13 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final class DefaultItems implements Items<R> {
 
+		private final Predicate<R> validator;
 		private final VisibleItems visible = new VisibleItems();
 		private final FilteredItems filtered = new FilteredItems();
+
+		private DefaultItems(Predicate<R> validator) {
+			this.validator = validator;
+		}
 
 		@Override
 		public Collection<R> get() {
@@ -390,7 +312,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public boolean addItems(Collection<R> items) {
-			return addItemsAtInternal(modelItems.visible.items.size(), items);
+			return addItemsAtInternal(visible.items.size(), items);
 		}
 
 		@Override
@@ -450,7 +372,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			filtered.items.clear();
 			for (ListIterator<R> visibleItemsIterator = visible.items.listIterator(); visibleItemsIterator.hasNext(); ) {
 				R item = visibleItemsIterator.next();
-				if (!include(item)) {
+				if (!visiblePredicate.test(item)) {
 					visibleItemsIterator.remove();
 					filtered.items.add(item);
 				}
@@ -462,147 +384,224 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			filtered.notifyChanges();
 			selectionModel.items().set(selectedItems);
 		}
-	}
 
-	private final class VisibleItems implements Visible<R> {
-
-		private final Value<Comparator<R>> comparator = Value.builder()
-						.<Comparator<R>>nullable()
-						.notify(Value.Notify.WHEN_SET)
-						.build();
-
-		private final List<R> items = new ArrayList<>();
-		private final Event<List<R>> event = Event.event();
-
-		@Override
-		public Value<Predicate<R>> predicate() {
-			return combinedVisiblePredicate.predicate;
+		private boolean addItemInternal(R item) {
+			return addItemAtInternal(visible.count(), item);
 		}
 
-		@Override
-		public List<R> get() {
-			return unmodifiableList(items);
-		}
-
-		@Override
-		public Observer<List<R>> observer() {
-			return event.observer();
-		}
-
-		@Override
-		public boolean contains(R item) {
-			return items.contains(item);
-		}
-
-		@Override
-		public int indexOf(R item) {
-			return items.indexOf(item);
-		}
-
-		@Override
-		public R itemAt(int index) {
-			return items.get(index);
-		}
-
-		@Override
-		public boolean addItemsAt(int index, Collection<R> items) {
-			return addItemsAtInternal(index, items);
-		}
-
-		@Override
-		public boolean addItemAt(int index, R item) {
-			return addItemAtInternal(index, item);
-		}
-
-		@Override
-		public boolean setItemAt(int index, R item) {
+		private boolean addItemAtInternal(int index, R item) {
 			validate(item);
-			if (include(item)) {
-				items.set(index, item);
-				fireTableRowsUpdated(index, index);
+			if (visiblePredicate.test(item)) {
+				visible.items.add(index, item);
+				fireTableRowsInserted(index, index);
 
 				return true;
 			}
+			filtered.items.add(item);
+			filtered.notifyChanges();
 
 			return false;
 		}
 
-		@Override
-		public R removeItemAt(int index) {
-			R removed = items.remove(index);
-			fireTableRowsDeleted(index, index);
-			notifyChanges();
+		private boolean addItemsAtInternal(int index, Collection<R> items) {
+			requireNonNull(items);
+			Collection<R> visibleItems = new ArrayList<>(items.size());
+			Collection<R> filteredItems = new ArrayList<>(items.size());
+			for (R item : items) {
+				validate(item);
+				if (visiblePredicate.test(item)) {
+					visibleItems.add(item);
+				}
+				else {
+					filteredItems.add(item);
+				}
+			}
+			if (!visibleItems.isEmpty()) {
+				visible.items.addAll(index, visibleItems);
+				fireTableRowsInserted(index, index + visibleItems.size());
+			}
+			if (!filteredItems.isEmpty()) {
+				filtered.items.addAll(filteredItems);
+				filtered.notifyChanges();
+			}
 
-			return removed;
+			return !visibleItems.isEmpty();
 		}
 
-		@Override
-		public List<R> removeItems(int fromIndex, int toIndex) {
-			List<R> subList = items.subList(fromIndex, toIndex);
-			List<R> removedItems = new ArrayList<>(subList);
-			subList.clear();
-			fireTableRowsDeleted(fromIndex, toIndex);
-			notifyChanges();
+		private boolean removeItemInternal(R item, boolean notifyDataChanged) {
+			int visibleItemIndex = visible.items.indexOf(item);
+			if (visibleItemIndex >= 0) {
+				visible.items.remove(visibleItemIndex);
+				fireTableRowsDeleted(visibleItemIndex, visibleItemIndex);
+				if (notifyDataChanged) {
+					visible.notifyChanges();
+				}
+			}
+			else if (filtered.items.remove(item)) {
+				filtered.notifyChanges();
+			}
 
-			return removedItems;
+			return visibleItemIndex >= 0;
 		}
 
-		@Override
-		public int count() {
-			return items.size();
-		}
-
-		@Override
-		public Value<Comparator<R>> comparator() {
-			return comparator;
-		}
-
-		@Override
-		public void sort() {
-			if (comparator.isNotNull()) {
-				List<R> selectedItems = selectionModel.items().get();
-				items.sort(comparator.get());
-				fireTableRowsUpdated(0, items.size());
-				selectionModel.items().set(selectedItems);
+		private void validate(R item) {
+			requireNonNull(item);
+			if (!validator.test(item)) {
+				throw new IllegalArgumentException("Invalid item: " + item);
 			}
 		}
 
-		private void notifyChanges() {
-			event.accept(get());
+		private final class VisibleItems implements Visible<R> {
+
+			private final Value<Comparator<R>> comparator = Value.builder()
+							.<Comparator<R>>nullable()
+							.notify(Value.Notify.WHEN_SET)
+							.listener(this::sort)
+							.build();
+
+			private final List<R> items = new ArrayList<>();
+			private final Event<List<R>> event = Event.event();
+
+			private VisibleItems() {
+				addTableModelListener(e -> {
+					if (e.getType() != TableModelEvent.DELETE) {
+						// Deletions are handled differently, in order to trigger only a single
+						// event when multiple visible items are removed, see removeItems()
+						notifyChanges();
+					}
+				});
+			}
+
+			@Override
+			public Value<Predicate<R>> predicate() {
+				return visiblePredicate.predicate;
+			}
+
+			@Override
+			public List<R> get() {
+				return unmodifiableList(items);
+			}
+
+			@Override
+			public Observer<List<R>> observer() {
+				return event.observer();
+			}
+
+			@Override
+			public boolean contains(R item) {
+				return items.contains(item);
+			}
+
+			@Override
+			public int indexOf(R item) {
+				return items.indexOf(item);
+			}
+
+			@Override
+			public R itemAt(int index) {
+				return items.get(index);
+			}
+
+			@Override
+			public boolean addItemsAt(int index, Collection<R> items) {
+				return addItemsAtInternal(index, items);
+			}
+
+			@Override
+			public boolean addItemAt(int index, R item) {
+				return addItemAtInternal(index, item);
+			}
+
+			@Override
+			public boolean setItemAt(int index, R item) {
+				validate(item);
+				if (visiblePredicate.test(item)) {
+					items.set(index, item);
+					fireTableRowsUpdated(index, index);
+
+					return true;
+				}
+
+				return false;
+			}
+
+			@Override
+			public R removeItemAt(int index) {
+				R removed = items.remove(index);
+				fireTableRowsDeleted(index, index);
+				notifyChanges();
+
+				return removed;
+			}
+
+			@Override
+			public List<R> removeItems(int fromIndex, int toIndex) {
+				List<R> subList = items.subList(fromIndex, toIndex);
+				List<R> removedItems = new ArrayList<>(subList);
+				subList.clear();
+				fireTableRowsDeleted(fromIndex, toIndex);
+				notifyChanges();
+
+				return removedItems;
+			}
+
+			@Override
+			public int count() {
+				return items.size();
+			}
+
+			@Override
+			public Value<Comparator<R>> comparator() {
+				return comparator;
+			}
+
+			@Override
+			public void sort() {
+				if (comparator.isNotNull()) {
+					List<R> selectedItems = selectionModel.items().get();
+					items.sort(comparator.get());
+					fireTableRowsUpdated(0, items.size());
+					selectionModel.items().set(selectedItems);
+				}
+			}
+
+			private void notifyChanges() {
+				event.accept(get());
+			}
+		}
+
+		private final class FilteredItems implements Filtered<R> {
+
+			private final List<R> items = new ArrayList<>();
+			private final Event<Collection<R>> event = Event.event();
+
+			@Override
+			public Collection<R> get() {
+				return unmodifiableCollection(items);
+			}
+
+			@Override
+			public Observer<Collection<R>> observer() {
+				return event.observer();
+			}
+
+			@Override
+			public boolean contains(R item) {
+				return items.contains(item);
+			}
+
+			@Override
+			public int count() {
+				return items.size();
+			}
+
+			private void notifyChanges() {
+				event.accept(get());
+			}
 		}
 	}
 
-	private final class FilteredItems implements Filtered<R> {
-
-		private final List<R> items = new ArrayList<>();
-		private final Event<Collection<R>> event = Event.event();
-
-		@Override
-		public Collection<R> get() {
-			return unmodifiableCollection(items);
-		}
-
-		@Override
-		public Observer<Collection<R>> observer() {
-			return event.observer();
-		}
-
-		@Override
-		public boolean contains(R item) {
-			return items.contains(item);
-		}
-
-		@Override
-		public int count() {
-			return items.size();
-		}
-
-		private void notifyChanges() {
-			event.accept(get());
-		}
-	}
-
-	private final class CombinedVisiblePredicate implements Predicate<R> {
+	private final class VisiblePredicate implements Predicate<R> {
 
 		private final List<ConditionModel<C, ?>> columnFilters;
 
@@ -611,8 +610,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 						.listener(modelItems::filter)
 						.build();
 
-		private CombinedVisiblePredicate(Collection<ConditionModel<C, ?>> columnFilters) {
-			this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
+		private VisiblePredicate(List<ConditionModel<C, ?>> columnFilters) {
+			this.columnFilters = columnFilters;
 		}
 
 		@Override
@@ -628,9 +627,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private boolean accepts(R item, ConditionModel<C, ?> condition, Columns<R, C> columns) {
 			if (condition.valueClass().equals(String.class)) {
-				String stringValue = columns.string(item, condition.identifier());
+				String string = columns.string(item, condition.identifier());
 
-				return ((ConditionModel<?, String>) condition).accepts(stringValue.isEmpty() ? null : stringValue);
+				return ((ConditionModel<?, String>) condition).accepts(string.isEmpty() ? null : string);
 			}
 
 			return condition.accepts(columns.comparable(item, condition.identifier()));
