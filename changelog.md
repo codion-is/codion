@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.16
+
 ## 0.18.15
 ### is.codion.common.core
 - StateObserver.isNull(), isNotNull() and nullable() now have default implementations.
