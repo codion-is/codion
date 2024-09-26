@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.16
+### is.codion.swing.framework.model
+- SwingEntityTableModel bug fixed, constructor used refresh, which could be async, instead of adding items directly to the model.
 
 ## 0.18.15
 ### is.codion.common.core

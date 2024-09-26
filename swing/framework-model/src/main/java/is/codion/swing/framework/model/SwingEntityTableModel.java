@@ -46,7 +46,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
@@ -126,16 +125,18 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param editModel the edit model
 	 * @param queryModel the table query model
-	 * @throws IllegalArgumentException in case the edit model and condition model entity type is not the same
+	 * @throws IllegalArgumentException in case the edit model and query model entity type is not the same
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityQueryModel queryModel) {
-		super(requireNonNull(editModel), createFilterTableModel(editModel.entityDefinition(), queryModel), requireNonNull(queryModel));
+		super(requireNonNull(editModel), tableModelBuilder(editModel.entityDefinition())
+						.supplier(requireNonNull(queryModel))
+						.build(), queryModel);
 		addTableModelListener(this::onTableModelEvent);
 	}
 
 	private SwingEntityTableModel(SwingEntityEditModel editModel, Collection<Entity> items) {
-		super(requireNonNull(editModel), createFilterTableModel(editModel.entityDefinition(), () -> items));
-		refresh();
+		super(requireNonNull(editModel), tableModelBuilder(editModel.entityDefinition()).build());
+		items().addItems(requireNonNull(items));
 	}
 
 	/**
@@ -324,13 +325,10 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 	}
 
-	private static FilterTableModel<Entity, Attribute<?>> createFilterTableModel(EntityDefinition definition,
-																																							 Supplier<? extends Collection<Entity>> supplier) {
+	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(EntityDefinition definition) {
 		return FilterTableModel.builder(new EntityTableColumns(definition))
 						.filterModelFactory(new EntityFilterModelFactory(definition))
-						.supplier(supplier)
-						.validator(new EntityItemValidator(definition.entityType()))
-						.build();
+						.validator(new EntityItemValidator(definition.entityType()));
 	}
 
 	private static EntityType entityType(Collection<Entity> entities) {
