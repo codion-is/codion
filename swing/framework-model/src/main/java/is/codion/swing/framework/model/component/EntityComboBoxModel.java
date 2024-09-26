@@ -273,24 +273,32 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	/**
-	 * Returns a combo box model for selecting a foreign key value for filtering this model.
 	 * @param foreignKey the foreign key
-	 * @return a combo box model for selecting a filtering value for this combo box model
-	 * @see #linkForeignKeyFilterComboBoxModel(ForeignKey, EntityComboBoxModel)
+	 * @return a new {@link ForeignKeyComboBoxModelFactory}
 	 */
-	public EntityComboBoxModel createForeignKeyFilterComboBoxModel(ForeignKey foreignKey) {
-		return createForeignKeyComboBoxModel(foreignKey, true);
+	public ForeignKeyComboBoxModelFactory foreignKeyComboBoxModel(ForeignKey foreignKey) {
+		return new DefaultForeignKeyComboBoxModelFactory(foreignKey);
 	}
 
 	/**
-	 * Returns a combo box model for selecting a foreign key value for using as a query condition in this model.
-	 * Note that each time the selection changes in the resulting model this model is refreshed.
-	 * @param foreignKey the foreign key
-	 * @return a combo box model for selecting a condition query value for this combo box model
-	 * @see #linkForeignKeyConditionComboBoxModel(ForeignKey, EntityComboBoxModel)
+	 * Provides a combo box for filtering this combo box instance, either by filter predicate or query condition.
 	 */
-	public EntityComboBoxModel createForeignKeyConditionComboBoxModel(ForeignKey foreignKey) {
-		return createForeignKeyComboBoxModel(foreignKey, false);
+	public interface ForeignKeyComboBoxModelFactory {
+
+		/**
+		 * Returns a combo box model for selecting a foreign key value for filtering this model.
+		 * @return a combo box model for selecting a filtering value for this combo box model
+		 * @see #linkForeignKeyFilterComboBoxModel(ForeignKey, EntityComboBoxModel)
+		 */
+		EntityComboBoxModel filter();
+
+		/**
+		 * Returns a combo box model for selecting a foreign key value for using as a query condition in this model.
+		 * Note that each time the selection changes in the resulting model this model is refreshed.
+		 * @return a combo box model for selecting a condition query value for this combo box model
+		 * @see #linkForeignKeyConditionComboBoxModel(ForeignKey, EntityComboBoxModel)
+		 */
+		EntityComboBoxModel condition();
 	}
 
 	/**
@@ -468,14 +476,33 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 						.findFirst();
 	}
 
-	private EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
-		entities.definition(entityType).foreignKeys().definition(foreignKey);
-		EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider);
-		foreignKeyModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
-		foreignKeyModel.refresh();
-		linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
+	private final class DefaultForeignKeyComboBoxModelFactory implements ForeignKeyComboBoxModelFactory {
 
-		return foreignKeyModel;
+		private final ForeignKey foreignKey;
+
+		private DefaultForeignKeyComboBoxModelFactory(ForeignKey foreignKey) {
+			this.foreignKey = foreignKey;
+		}
+
+		@Override
+		public EntityComboBoxModel filter() {
+			return createForeignKeyComboBoxModel(foreignKey, true);
+		}
+
+		@Override
+		public EntityComboBoxModel condition() {
+			return createForeignKeyComboBoxModel(foreignKey, false);
+		}
+
+		private EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
+			entities.definition(entityType).foreignKeys().definition(foreignKey);
+			EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider);
+			foreignKeyModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+			foreignKeyModel.refresh();
+			linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
+
+			return foreignKeyModel;
+		}
 	}
 
 	private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel, boolean filter) {

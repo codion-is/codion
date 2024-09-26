@@ -21,9 +21,11 @@ Codion Change Log
 - AbstractEntityEditModel.validate(Entity) now final.
 - AbstractEntityEditModel bug fixed, inserting, updating and deleting modified entities no longer trigger modification warnings.
 - EntityEditModel.EditableEntity.clear() overridden, now clears all values from the entity as opposed to setting defaults.
+- EntityComboBoxModel.createForeignKeyFilterComboBoxModel() and createForeignKeyConditionComboBoxModel() replaced with foreignKeyComboBoxModel() returning a ForeignKeyComboBoxModelFactory.
 ### is.codion.swing.framework.ui
 - EntityPanel.Config.description now initialized with entity description.
 - EntityTableCellRenderer now caches the query condition models to reduce memory churn during repaint.
+- EntityComboBox.createForeignKeyFilterComboBox() replaced with foreignKeyComboBox() returning a ForeignKeyComboBoxFactory.
 ### is.codion.tools.generator.domain
 - DomainSource.apiSearchString() bug fixed, space added after interface name, since table names can have common prefixes.
 

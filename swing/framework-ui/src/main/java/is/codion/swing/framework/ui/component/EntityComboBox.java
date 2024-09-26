@@ -164,15 +164,11 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	/**
-	 * Creates a {@link ComboBoxBuilder} returning a combo box for filtering this combo box via a foreign key
-	 * @param foreignKey the foreign key on which to filter
-	 * @param <B> the builder type
-	 * @return a {@link ComboBoxBuilder} for a foreign key filter combo box
+	 * @param foreignKey the foreign key
+	 * @return a new {@link ForeignKeyComboBoxFactory}
 	 */
-	public <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyFilterComboBox(
-					ForeignKey foreignKey) {
-		return (B) builder(getModel().createForeignKeyFilterComboBoxModel(requireNonNull(foreignKey)))
-						.completionMode(Completion.Mode.MAXIMUM_MATCH);
+	public ForeignKeyComboBoxFactory foreignKeyComboBox(ForeignKey foreignKey) {
+		return new DefaultForeignKeyComboBoxFactory(foreignKey);
 	}
 
 	/**
@@ -251,6 +247,26 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	/**
+	 * Provides builders for creating a combo box filtering this combo box instance, either by filter predicate or query condition.
+	 */
+	public interface ForeignKeyComboBoxFactory {
+
+		/**
+		 * Creates a {@link ComboBoxBuilder} returning a combo box using a filter predicate for filtering this combo box via a foreign key
+		 * @param <B> the builder type
+		 * @return a {@link ComboBoxBuilder} for a filter predicate based foreign key filter combo box
+		 */
+		<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> filter();
+
+		/**
+		 * Creates a {@link ComboBoxBuilder} returning a combo box for using a query condition to filter this combo box via a foreign key
+		 * @param <B> the builder type
+		 * @return a {@link ComboBoxBuilder} for a query condition based foreign key filter combo box
+		 */
+		<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> condition();
+	}
+
+	/**
 	 * Builds a {@link EntityComboBox} instance.
 	 * @see Builder#editPanel(Supplier)
 	 */
@@ -296,7 +312,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	private Control.Command createForeignKeyFilterCommand(ForeignKey foreignKey) {
 		return () -> {
 			Collection<Entity.Key> currentFilterKeys = getModel().foreignKeyFilterKeys(foreignKey);
-			Dialogs.okCancelDialog(createForeignKeyFilterComboBox(foreignKey).build())
+			Dialogs.okCancelDialog(foreignKeyComboBox(foreignKey).filter().build())
 							.owner(this)
 							.title(MESSAGES.getString("filter_by"))
 							.onCancel(() -> getModel().filterByForeignKey(foreignKey, currentFilterKeys))
@@ -310,6 +326,29 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		}
 		else {
 			setCursor(Cursors.DEFAULT);
+		}
+	}
+
+	private final class DefaultForeignKeyComboBoxFactory implements ForeignKeyComboBoxFactory {
+
+		private final ForeignKey foreignKey;
+
+		private DefaultForeignKeyComboBoxFactory(ForeignKey foreignKey) {
+			this.foreignKey = foreignKey;
+		}
+
+		@Override
+		public <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> filter() {
+			return (B) builder(getModel().foreignKeyComboBoxModel(requireNonNull(foreignKey))
+							.filter())
+							.completionMode(Completion.Mode.MAXIMUM_MATCH);
+		}
+
+		@Override
+		public <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> condition() {
+			return (B) builder(getModel().foreignKeyComboBoxModel(requireNonNull(foreignKey))
+							.condition())
+							.completionMode(Completion.Mode.MAXIMUM_MATCH);
 		}
 	}
 
