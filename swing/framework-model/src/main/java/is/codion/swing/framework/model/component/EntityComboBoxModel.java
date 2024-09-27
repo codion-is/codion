@@ -357,11 +357,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public State filterSelectedItem() {
-		return comboBoxModel.filterSelectedItem();
-	}
-
-	@Override
 	public <V> Value<V> createSelectorValue(ItemFinder<Entity, V> itemFinder) {
 		return comboBoxModel.createSelectorValue(itemFinder);
 	}

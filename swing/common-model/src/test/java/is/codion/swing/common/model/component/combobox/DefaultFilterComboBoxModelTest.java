@@ -160,15 +160,15 @@ public class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void filterWithSelection() {
-		testModel.filterSelectedItem().set(true);
+		testModel.selection().filterSelected().set(true);
 		testModel.setSelectedItem(BJORN);
 		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
 		assertEquals(NULL, testModel.getSelectedItem());
 		assertNull(testModel.selection().value());
 
 		testModel.items().visible().predicate().clear();
-		testModel.filterSelectedItem().set(false);
-		assertFalse(testModel.filterSelectedItem().get());
+		testModel.selection().filterSelected().set(false);
+		assertFalse(testModel.selection().filterSelected().get());
 		testModel.setSelectedItem(BJORN);
 		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
 		assertNotNull(testModel.getSelectedItem());

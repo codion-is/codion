@@ -63,17 +63,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	T getSelectedItem();
 
 	/**
-	 * Specifies whether filtering the model affects the currently selected item.
-	 * If true, the selection is cleared when the selected item is filtered from
-	 * the model, otherwise the selected item can potentially represent a value
-	 * which is not currently visible in the model
-	 * This is false by default.
-	 * @return the {@link State} controlling whether filtering affects the selected item
-	 * @see Items.Visible#predicate()
-	 */
-	State filterSelectedItem();
-
-	/**
 	 * @param itemFinder responsible for finding the item to select
 	 * @param <V> the value type
 	 * @return a {@link Value} linked to the selected item using the given {@link ItemFinder} instance
@@ -162,6 +151,17 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @return the {@link Value} controlling the valid selection predicate
 		 */
 		Value<Predicate<T>> validPredicate();
+
+		/**
+		 * Specifies whether filtering the model affects the currently selected item.
+		 * If true, the selection is cleared when the selected item is filtered from
+		 * the model, otherwise the selected item can potentially represent a value
+		 * which is not currently visible in the model
+		 * This is false by default.
+		 * @return the {@link State} controlling whether filtering affects the selected item
+		 * @see Items.Visible#predicate()
+		 */
+		State filterSelected();
 	}
 
 	/**

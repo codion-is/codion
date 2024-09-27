@@ -56,7 +56,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
 	private final DefaultFilterComboBoxSelectionModel selectionModel = new DefaultFilterComboBoxSelectionModel();
-	private final State filterSelectedItem = State.state(false);
 	private final DefaultItems modelItems = new DefaultItems();
 	private final Refresher<T> refresher;
 
@@ -72,7 +71,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	 */
 	protected DefaultFilterComboBoxModel() {
 		refresher = new DefaultRefresher(new DefaultItemsSupplier());
-		modelItems.visible.comparator.addListener(modelItems.visible::sort);
 	}
 
 	@Override
@@ -114,11 +112,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	@Override
 	public final void setSelectedItem(Object item) {
 		selectionModel.selected.setSelectedItem(item);
-	}
-
-	@Override
-	public final State filterSelectedItem() {
-		return filterSelectedItem;
 	}
 
 	@Override
@@ -214,9 +207,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final Event<Collection<T>> event = Event.event();
 
-		/**
-		 * set during setItems()
-		 */
 		private boolean cleared = true;
 
 		private DefaultItems() {
@@ -224,6 +214,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 							.filter(Objects::nonNull)
 							.forEach(validator::test));
 			nullItem.item.addValidator(this::validate);
+			visible.comparator.addListener(visible::sort);
 		}
 
 		@Override
@@ -344,7 +335,9 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				//update the selected item since the underlying data could have changed
 				selectionModel.selected.item = visible.items.get(visible.items.indexOf(selectionModel.selected.item));
 			}
-			if (selectionModel.selected.item != null && !visible.items.contains(selectionModel.selected.item) && filterSelectedItem.get()) {
+			if (selectionModel.selected.item != null
+							&& !visible.items.contains(selectionModel.selected.item)
+							&& selectionModel.filterSelectedItem.get()) {
 				selectionModel.selected.setSelectedItem(null);
 			}
 			else {
@@ -532,6 +525,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final class DefaultFilterComboBoxSelectionModel implements FilterComboBoxSelectionModel<T> {
 
 		private final Selected selected = new Selected();
+		private final State filterSelectedItem = State.state(false);
 
 		@Override
 		public StateObserver empty() {
@@ -575,6 +569,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Value<Predicate<T>> validPredicate() {
 			return selected.valid;
+		}
+
+		@Override
+		public State filterSelected() {
+			return filterSelectedItem;
 		}
 	}
 
