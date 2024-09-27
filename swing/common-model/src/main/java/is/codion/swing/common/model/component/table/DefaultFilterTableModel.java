@@ -113,7 +113,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public void refresh(Consumer<Collection<R>> onRefresh) {
-		refresher.refresh(onRefresh);
+		refresher.doRefresh(onRefresh);
 	}
 
 	@Override
@@ -250,6 +250,10 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 				modelItems.visible.sort();
 			}
 			selection.items().set(selectedItems);
+		}
+
+		private void doRefresh(Consumer<Collection<R>> onRefresh) {
+			super.refresh(onRefresh);
 		}
 	}
 

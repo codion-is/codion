@@ -326,7 +326,7 @@ public class EntityTablePanel extends JPanel {
 		public static final ControlKey<ToggleControl> SELECTION_MODE = ToggleControl.key("selectionMode");
 		/**
 		 * A {@link Control} for clearing the data from the table.
-		 * @see SwingEntityTableModel#clear()
+		 * @see FilterTableModel.Items#clear()
 		 */
 		public static final ControlKey<CommandControl> CLEAR = CommandControl.key("clear");
 		/**

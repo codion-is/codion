@@ -57,7 +57,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final DefaultComboBoxSelection selectionModel = new DefaultComboBoxSelection();
 	private final DefaultComboBoxItems modelItems = new DefaultComboBoxItems();
-	private final Refresher<T> refresher;
+	private final DefaultRefresher refresher;
 
 	/**
 	 * Due to a java.util.ConcurrentModificationException in OSX
@@ -85,7 +85,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public final void refresh(Consumer<Collection<T>> onRefresh) {
-		refresher.refresh(onRefresh);
+		refresher.doRefresh(onRefresh);
 	}
 
 	@Override
@@ -668,6 +668,10 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		protected void processResult(Collection<T> items) {
 			modelItems.set(items);
+		}
+
+		private void doRefresh(Consumer<Collection<T>> onRefresh) {
+			super.refresh(onRefresh);
 		}
 	}
 

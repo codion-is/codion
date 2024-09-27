@@ -339,7 +339,7 @@ public class DefaultFilterComboBoxModelTest {
 		List<Integer> values = asList(0, 1, 2);
 		FilterComboBoxModel<Integer> model = new DefaultFilterComboBoxModel<>();
 		model.refresher().supplier().set(() -> values);
-		model.refresher().refresh();
+		model.refresh();
 		assertEquals(values.size(), model.items().get().size());
 		assertTrue(values.containsAll(model.items().get()));
 	}

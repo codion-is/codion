@@ -283,40 +283,17 @@ public interface FilterModel<T> {
 		Value<Supplier<Collection<T>>> supplier();
 
 		/**
-		 * Refreshes the items in the associated filter model.
-		 * Note that this method only throws exceptions when run synchronously.
-		 * @throws RuntimeException in case of an exception when running synchronously.
-		 * @see #failure()
-		 * @see #async()
-		 */
-		void refresh();
-
-		/**
-		 * Refreshes the data in this model. Note that this method only throws exceptions when run synchronously.
-		 * Use {@link #failure()} to listen for exceptions that happen during asynchronous refresh.
-		 * @param onRefresh called after a successful refresh, may be null
-		 * @throws RuntimeException in case of an exception when running synchronously.
-		 * @see #observer()
-		 * @see #success()
-		 * @see #failure()
-		 * @see #async()
-		 */
-		void refresh(Consumer<Collection<T>> onRefresh);
-
-		/**
 		 * @return an observer active while a refresh is in progress
 		 */
 		StateObserver observer();
 
 		/**
 		 * @return an observer notified each time a successful refresh has been performed
-		 * @see #refresh()
 		 */
 		Observer<Collection<T>> success();
 
 		/**
 		 * @return an observer notified each time an asynchronous refresh has failed
-		 * @see #refresh()
 		 */
 		Observer<Exception> failure();
 	}
@@ -353,21 +330,6 @@ public interface FilterModel<T> {
 		}
 
 		@Override
-		public final void refresh() {
-			refresh(null);
-		}
-
-		@Override
-		public final void refresh(Consumer<Collection<T>> onRefresh) {
-			if (async.get() && supportsAsyncRefresh()) {
-				refreshAsync(onRefresh);
-			}
-			else {
-				refreshSync(onRefresh);
-			}
-		}
-
-		@Override
 		public final StateObserver observer() {
 			return refreshingState.observer();
 		}
@@ -380,6 +342,25 @@ public interface FilterModel<T> {
 		@Override
 		public final Observer<Exception> failure() {
 			return refreshFailedEvent.observer();
+		}
+
+		/**
+		 * Refreshes the data. Note that this method only throws exceptions when run synchronously.
+		 * Use {@link #failure()} to listen for exceptions that happen during asynchronous refresh.
+		 * @param onRefresh called after a successful refresh, may be null
+		 * @throws RuntimeException in case of an exception when running synchronously.
+		 * @see #observer()
+		 * @see #success()
+		 * @see #failure()
+		 * @see #async()
+		 */
+		protected final void refresh(Consumer<Collection<T>> onRefresh) {
+			if (async.get() && supportsAsyncRefresh()) {
+				refreshAsync(onRefresh);
+			}
+			else {
+				refreshSync(onRefresh);
+			}
 		}
 
 		/**

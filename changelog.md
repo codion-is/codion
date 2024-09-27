@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.model
 - SingleSelectionModel and SelectionModel renamed SingleSelection and Selection respectively.
 - FilterModel.clear() moved to Items.
+- FilterModel.Refresher.refresh() removed, refresh() now protected in AbstractRefresher.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.includeNull() and nullItem() moved to NullItem.
 - FilterComboBoxModel.replace() moved to FilterComboBoxModelItems.
