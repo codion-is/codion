@@ -101,7 +101,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 	}
 
 	private void clear() {
-		getModel().clear();
+		getModel().items().clear();
 	}
 
 	private static final class ListBoxItemValue<T> extends AbstractValue<Set<T>> {
@@ -127,7 +127,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 
 		@Override
 		protected void setValue(Set<T> value) {
-			comboBoxModel.clear();
+			comboBoxModel.items().clear();
 			value.forEach(comboBoxModel.items()::addItem);
 		}
 

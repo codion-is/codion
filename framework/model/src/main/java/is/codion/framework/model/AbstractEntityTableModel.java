@@ -206,11 +206,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
-	public final void clear() {
-		filterModel.clear();
-	}
-
-	@Override
 	public final void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
 		requireNonNull(foreignKey, "foreignKey");
 		requireNonNull(foreignKeyValues, "foreignKeyValues");

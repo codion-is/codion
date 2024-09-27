@@ -139,7 +139,7 @@ public final class ClientUserMonitor {
 	 * Resets the user connection history
 	 */
 	public void resetHistory() {
-		userHistoryTableModel.clear();
+		userHistoryTableModel.items().clear();
 	}
 
 	/**

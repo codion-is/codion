@@ -114,7 +114,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	public final void clearComboBoxModels() {
 		synchronized (comboBoxModels) {
 			for (FilterComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
-				comboBoxModel.clear();
+				comboBoxModel.items().clear();
 			}
 		}
 	}

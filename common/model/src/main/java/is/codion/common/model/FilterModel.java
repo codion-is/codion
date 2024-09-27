@@ -61,11 +61,6 @@ public interface FilterModel<T> {
 	Refresher<T> refresher();
 
 	/**
-	 * Clears all items from this model
-	 */
-	void clear();
-
-	/**
 	 * Refreshes the items in this model using its {@link Refresher}.
 	 * @throws RuntimeException in case of an exception when running refresh synchronously
 	 * @see Refresher#refresh()
@@ -154,6 +149,11 @@ public interface FilterModel<T> {
 		 * @see Visible#predicate()
 		 */
 		void filter();
+
+		/**
+		 * Clears all items from this model
+		 */
+		void clear();
 
 		/**
 		 * @param <T> the item type

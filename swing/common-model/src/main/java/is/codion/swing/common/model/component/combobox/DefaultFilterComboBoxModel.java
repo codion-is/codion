@@ -89,12 +89,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final void clear() {
-		setSelectedItem(null);
-		modelItems.set(emptyList());
-	}
-
-	@Override
 	public final FilterComboBoxItems<T> items() {
 		return modelItems;
 	}
@@ -345,6 +339,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 			visible.notifyChanges();
 			filtered.notifyChanges();
+		}
+
+		@Override
+		public void clear() {
+			setSelectedItem(null);
+			set(emptyList());
 		}
 
 		@Override

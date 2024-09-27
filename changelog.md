@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.16
 ### is.codion.common.model
 - SingleSelectionModel and SelectionModel renamed SingleSelection and Selection respectively.
+- FilterModel.clear() moved to Items.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.includeNull() and nullItem() moved to NullItem.
 - FilterComboBoxModel.replace() moved to FilterComboBoxModelItems.

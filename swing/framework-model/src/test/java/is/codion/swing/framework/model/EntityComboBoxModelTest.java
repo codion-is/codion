@@ -289,7 +289,7 @@ public final class EntityComboBoxModelTest {
 		comboBoxModel.setSelectedItem(clark);
 		assertEquals(clark, comboBoxModel.selection().value());
 
-		comboBoxModel.clear();
+		comboBoxModel.items().clear();
 		assertEquals(0, comboBoxModel.getSize());
 
 		comboBoxModel.condition().set(() -> Condition.custom(Employee.CONDITION_3_TYPE));

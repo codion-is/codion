@@ -1168,7 +1168,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	private CommandControl createClearControl() {
 		return Control.builder()
-						.command(tableModel::clear)
+						.command(tableModel.items()::clear)
 						.name(Messages.clear())
 						.description(Messages.clearTip())
 						.mnemonic(Messages.clearMnemonic())

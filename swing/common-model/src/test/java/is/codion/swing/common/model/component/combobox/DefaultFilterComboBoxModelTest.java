@@ -63,7 +63,7 @@ public class DefaultFilterComboBoxModelTest {
 	void testRefreshClear() {
 		testModel.refresh();
 		assertEquals(5, testModel.items().visible().count());
-		testModel.clear();
+		testModel.items().clear();
 		assertEquals(1, testModel.getSize());//null item
 		assertTrue(testModel.items().cleared());
 	}
@@ -153,7 +153,7 @@ public class DefaultFilterComboBoxModelTest {
 		assertTrue(testModel.selection().empty().get());
 		assertNull(testModel.selection().value());
 		testModel.setSelectedItem(SIGGI);
-		testModel.clear();
+		testModel.items().clear();
 		assertEquals(6, selectionChangedCounter.get());
 		testModel.selection().item().removeConsumer(selectionConsumer);
 	}
@@ -220,7 +220,7 @@ public class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void add() {
-		testModel.clear();
+		testModel.items().clear();
 		//add filtered item
 		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
 		testModel.items().addItem(BJORN);
@@ -332,7 +332,6 @@ public class DefaultFilterComboBoxModelTest {
 		FilterComboBoxModel<Integer> model = new DefaultFilterComboBoxModel<>();
 		model.items().validator().set(item -> item > 0);
 		assertThrows(IllegalArgumentException.class, () -> model.items().set(asList(1, 2, 3, 4, 5, 0)));
-		assertThrows(NullPointerException.class, () -> model.items().clear());
 	}
 
 	@Test

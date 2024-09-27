@@ -328,7 +328,7 @@ public final class DefaultFilterTableModelTest {
 	void clear() {
 		tableModel.refresh();
 		assertTrue(tableModel.items().visible().count() > 0);
-		tableModel.clear();
+		tableModel.items().clear();
 		assertEquals(0, tableModel.items().visible().count());
 	}
 
@@ -513,7 +513,7 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(3, selection.count());
 		assertEquals(0, selection.getMinSelectionIndex());
 
-		tableModel.clear();
+		tableModel.items().clear();
 		assertTrue(selection.empty().get());
 		assertNull(selection.item().get());
 

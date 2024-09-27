@@ -84,7 +84,7 @@ final class DefaultListBoxBuilder<T>
 	@Override
 	protected void setInitialValue(JComboBox<T> comboBox, Set<T> initialValue) {
 		FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) comboBox.getModel();
-		comboBoxModel.clear();
+		comboBoxModel.items().clear();
 		if (initialValue != null) {
 			initialValue.forEach(comboBoxModel.items()::addItem);
 		}
@@ -173,7 +173,7 @@ final class DefaultListBoxBuilder<T>
 		protected void setComponentValue(Set<T> value) {
 			ListComboBox<T> comboBox = (ListComboBox<T>) component();
 			FilterComboBoxModel<T> comboBoxModel = comboBox.getModel();
-			comboBoxModel.clear();
+			comboBoxModel.items().clear();
 			value.forEach(comboBoxModel.items()::addItem);
 		}
 	}

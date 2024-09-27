@@ -898,7 +898,7 @@ public final class EntitySearchField extends HintTextField {
 							.okAction(selectControl)
 							.show();
 
-			table.model().clear();
+			table.model().items().clear();
 			table.searchField().setText("");
 		}
 

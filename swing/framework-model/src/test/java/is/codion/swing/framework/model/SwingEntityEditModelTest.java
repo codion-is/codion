@@ -66,7 +66,7 @@ public class SwingEntityEditModelTest {
 		employeeEditModel.clearComboBoxModels();
 		assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).items().cleared());
 		employeeEditModel.refreshComboBoxModels();
-		employeeEditModel.comboBoxModel(Employee.JOB).clear();
+		employeeEditModel.comboBoxModel(Employee.JOB).items().clear();
 		assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).items().cleared());
 	}
 

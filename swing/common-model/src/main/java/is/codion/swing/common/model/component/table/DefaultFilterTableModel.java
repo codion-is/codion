@@ -117,23 +117,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public void clear() {
-		int filteredSize = modelItems.filtered.items.size();
-		modelItems.filtered.items.clear();
-		int visibleSize = modelItems.visible.items.size();
-		modelItems.visible.items.clear();
-		if (visibleSize > 0) {
-			fireTableRowsDeleted(0, visibleSize - 1);
-		}
-		if (filteredSize != 0) {
-			modelItems.filtered.notifyChanges();
-		}
-		if (visibleSize != 0) {
-			modelItems.visible.notifyChanges();
-		}
-	}
-
-	@Override
 	public TableSelection<R> selection() {
 		return selection;
 	}
@@ -262,7 +245,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private void clearAndAdd(Collection<R> items) {
 			List<R> selectedItems = selection.items().get();
-			clear();
+			modelItems.clear();
 			if (items().addItems(items)) {
 				modelItems.visible.sort();
 			}
@@ -383,6 +366,23 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			fireTableDataChanged();
 			filtered.notifyChanges();
 			selection.items().set(selectedItems);
+		}
+
+		@Override
+		public void clear() {
+			int filteredSize = filtered.items.size();
+			filtered.items.clear();
+			int visibleSize = visible.items.size();
+			visible.items.clear();
+			if (visibleSize > 0) {
+				fireTableRowsDeleted(0, visibleSize - 1);
+			}
+			if (filteredSize != 0) {
+				filtered.notifyChanges();
+			}
+			if (visibleSize != 0) {
+				visible.notifyChanges();
+			}
 		}
 
 		private boolean addItemInternal(R item) {

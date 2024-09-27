@@ -342,11 +342,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public void clear() {
-		comboBoxModel.clear();
-	}
-
-	@Override
 	public ComboBoxSelection<Entity> selection() {
 		return comboBoxModel.selection();
 	}
