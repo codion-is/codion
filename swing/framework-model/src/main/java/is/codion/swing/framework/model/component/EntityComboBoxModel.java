@@ -281,6 +281,14 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	/**
+	 * @param foreignKey the foreign key
+	 * @return a new {@link ForeignKeyComboBoxModelLinker}
+	 */
+	public ForeignKeyComboBoxModelLinker foreignKeyComboBoxModelLinker(ForeignKey foreignKey) {
+		return new DefaultForeignKeyComboBoxModelLinker(foreignKey);
+	}
+
+	/**
 	 * Provides a combo box for filtering this combo box instance, either by filter predicate or query condition.
 	 */
 	public interface ForeignKeyComboBoxModelFactory {
@@ -288,7 +296,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		/**
 		 * Returns a combo box model for selecting a foreign key value for filtering this model.
 		 * @return a combo box model for selecting a filtering value for this combo box model
-		 * @see #linkForeignKeyFilterComboBoxModel(ForeignKey, EntityComboBoxModel)
+		 * @see #foreignKeyComboBoxModelLinker(ForeignKey)
 		 */
 		EntityComboBoxModel filter();
 
@@ -296,29 +304,28 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		 * Returns a combo box model for selecting a foreign key value for using as a query condition in this model.
 		 * Note that each time the selection changes in the resulting model this model is refreshed.
 		 * @return a combo box model for selecting a condition query value for this combo box model
-		 * @see #linkForeignKeyConditionComboBoxModel(ForeignKey, EntityComboBoxModel)
+		 * @see #foreignKeyComboBoxModelLinker(ForeignKey)
 		 */
 		EntityComboBoxModel condition();
 	}
 
 	/**
-	 * Links the given combo box model representing master entities to this combo box model
-	 * so that selection in the master model filters this model according to the selected master entity
-	 * @param foreignKey the foreign key attribute
-	 * @param foreignKeyModel the combo box model to link
+	 * Links a given combo box model representing master entities to this combo box model
+	 * so that selection in the master model filters this model, either filter predicate or query condition
 	 */
-	public void linkForeignKeyFilterComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
-		linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, true);
-	}
+	public interface ForeignKeyComboBoxModelLinker {
 
-	/**
-	 * Links the given combo box model representing master entities to this combo box model
-	 * so that selection in the master model refreshes this model with the selected master entity as condition
-	 * @param foreignKey the foreign key attribute
-	 * @param foreignKeyModel the combo box model to link
-	 */
-	public void linkForeignKeyConditionComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
-		linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, false);
+		/**
+		 * Links the given foreign key combo box model via filter predicate
+		 * @param foreignKeyModel the combo box model to link
+		 */
+		void filter(EntityComboBoxModel foreignKeyModel);
+
+		/**
+		 * Links the given foreign key combo box model via query condition
+		 * @param foreignKeyModel the combo box model to link
+		 */
+		void condition(EntityComboBoxModel foreignKeyModel);
 	}
 
 	/**
@@ -499,60 +506,85 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 			EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider);
 			foreignKeyModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 			foreignKeyModel.refresh();
-			linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
+			ForeignKeyComboBoxModelLinker modelLinker = foreignKeyComboBoxModelLinker(foreignKey);
+			if (filter) {
+				modelLinker.filter(foreignKeyModel);
+			}
+			else {
+				modelLinker.condition(foreignKeyModel);
+			}
 
 			return foreignKeyModel;
 		}
 	}
 
-	private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel, boolean filter) {
-		entities.definition(entityType).foreignKeys().definition(foreignKey);
-		if (!foreignKey.referencedType().equals(foreignKeyModel.entityType())) {
-			throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.entityType()
-							+ ", should be: " + foreignKey.referencedType());
-		}
-		//if foreign key filter keys have been set previously, initialize with one of those
-		Collection<Entity.Key> filterKeys = foreignKeyFilterKeys(foreignKey);
-		if (!filterKeys.isEmpty()) {
-			foreignKeyModel.select(filterKeys.iterator().next());
-		}
-		if (filter) {
-			linkFilter(foreignKey, foreignKeyModel);
-		}
-		else {
-			linkCondition(foreignKey, foreignKeyModel);
-		}
-		selection().item().addConsumer(selected -> {
-			if (selected != null && !selected.isNull(foreignKey)) {
-				foreignKeyModel.select(selected.key(foreignKey));
-			}
-		});
-		refresher().success().addListener(foreignKeyModel::refresh);
-	}
+	private final class DefaultForeignKeyComboBoxModelLinker implements ForeignKeyComboBoxModelLinker {
 
-	private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
-		Predicate<Entity> filterAllCondition = item -> false;
-		if (strictForeignKeyFiltering.get()) {
-			items().visible().predicate().set(filterAllCondition);
+		private final ForeignKey foreignKey;
+
+		private DefaultForeignKeyComboBoxModelLinker(ForeignKey foreignKey) {
+			this.foreignKey = foreignKey;
 		}
-		foreignKeyModel.selection().item().addConsumer(selected -> {
-			if (selected == null && strictForeignKeyFiltering.get()) {
-				items().visible().predicate().set(filterAllCondition);
+
+		@Override
+		public void filter(EntityComboBoxModel foreignKeyModel) {
+			linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, true);
+		}
+
+		@Override
+		public void condition(EntityComboBoxModel foreignKeyModel) {
+			linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, false);
+		}
+
+		private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel, boolean filter) {
+			entities.definition(entityType).foreignKeys().definition(foreignKey);
+			if (!foreignKey.referencedType().equals(foreignKeyModel.entityType())) {
+				throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.entityType()
+								+ ", should be: " + foreignKey.referencedType());
+			}
+			//if foreign key filter keys have been set previously, initialize with one of those
+			Collection<Entity.Key> filterKeys = foreignKeyFilterKeys(foreignKey);
+			if (!filterKeys.isEmpty()) {
+				foreignKeyModel.select(filterKeys.iterator().next());
+			}
+			if (filter) {
+				linkFilter(foreignKey, foreignKeyModel);
 			}
 			else {
-				filterByForeignKey(foreignKey, selected == null ? emptyList() : singletonList(selected.primaryKey()));
+				linkCondition(foreignKey, foreignKeyModel);
 			}
-		});
-	}
+			selection().item().addConsumer(selected -> {
+				if (selected != null && !selected.isNull(foreignKey)) {
+					foreignKeyModel.select(selected.key(foreignKey));
+				}
+			});
+			refresher().success().addListener(foreignKeyModel::refresh);
+		}
 
-	private void linkCondition(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
-		Consumer<Entity> consumer = selected -> {
-			conditionSupplier.set(() -> foreignKey.equalTo(selected));
-			refresh();
-		};
-		foreignKeyModel.selection().item().addConsumer(consumer);
-		//initialize
-		consumer.accept(selection().value());
+		private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
+			Predicate<Entity> filterAllCondition = item -> false;
+			if (strictForeignKeyFiltering.get()) {
+				items().visible().predicate().set(filterAllCondition);
+			}
+			foreignKeyModel.selection().item().addConsumer(selected -> {
+				if (selected == null && strictForeignKeyFiltering.get()) {
+					items().visible().predicate().set(filterAllCondition);
+				}
+				else {
+					filterByForeignKey(foreignKey, selected == null ? emptyList() : singletonList(selected.primaryKey()));
+				}
+			});
+		}
+
+		private void linkCondition(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
+			Consumer<Entity> consumer = selected -> {
+				conditionSupplier.set(() -> foreignKey.equalTo(selected));
+				refresh();
+			};
+			foreignKeyModel.selection().item().addConsumer(consumer);
+			//initialize
+			consumer.accept(selection().value());
+		}
 	}
 
 	private final class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {

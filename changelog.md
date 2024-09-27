@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.16
+### is.codion.framework.model
+- EntityComboBoxModel.linkForeignKeyFilterComboBoxModel() and linkForeignKeyConditionComboBoxModel() replaced with foreignKeyComboBoxModelLinker() returning a ForeignKeyComboBoxModelLinker.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel bug fixed, constructor used refresh, which could be async, instead of adding items directly to the model.
 
