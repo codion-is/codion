@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.summary;
 
-import is.codion.common.model.summary.ColumnSummaryModel.SummaryValues;
+import is.codion.common.model.summary.SummaryModel.SummaryValues;
 
 import java.util.Optional;
 
@@ -28,11 +28,11 @@ import java.util.Optional;
 public interface TableSummaryModel<C> {
 
 	/**
-	 * Returns the {@link ColumnSummaryModel} associated with the column identified by {@code identifier}
+	 * Returns the {@link SummaryModel} associated with the column identified by {@code identifier}
 	 * @param identifier the column identifier
 	 * @return the ColumnSummaryModel for the column identified by the given identifier, an empty Optional if none is available
 	 */
-	Optional<ColumnSummaryModel> summaryModel(C identifier);
+	Optional<SummaryModel> summaryModel(C identifier);
 
 	/**
 	 * @param summaryModelFactory the summary model factory

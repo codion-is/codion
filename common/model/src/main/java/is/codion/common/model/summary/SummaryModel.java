@@ -31,10 +31,10 @@ import java.util.Optional;
 /**
  * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum &#38; maximum.
  * <p>
- * For instances use the {@link #columnSummaryModel(SummaryValues)} factory method.
- * @see #columnSummaryModel(SummaryValues)
+ * For instances use the {@link #summaryModel(SummaryValues)} factory method.
+ * @see #summaryModel(SummaryValues)
  */
-public interface ColumnSummaryModel {
+public interface SummaryModel {
 
 	/**
 	 * Specifies a summary provider
@@ -71,13 +71,13 @@ public interface ColumnSummaryModel {
 	ValueObserver<String> summaryText();
 
 	/**
-	 * Instantiates a new {@link ColumnSummaryModel}
+	 * Instantiates a new {@link SummaryModel}
 	 * @param summaryValues the summary values
 	 * @param <T> the value type
-	 * @return a new {@link ColumnSummaryModel} instance
+	 * @return a new {@link SummaryModel} instance
 	 */
-	static <T extends Number> ColumnSummaryModel columnSummaryModel(SummaryValues<T> summaryValues) {
-		return new DefaultColumnSummaryModel<>(summaryValues);
+	static <T extends Number> SummaryModel summaryModel(SummaryValues<T> summaryValues) {
+		return new DefaultSummaryModel<>(summaryValues);
 	}
 
 	/**

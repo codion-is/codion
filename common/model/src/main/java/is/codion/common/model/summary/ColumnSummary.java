@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.summary;
 
-import is.codion.common.model.summary.ColumnSummaryModel.SummaryValues;
+import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.resource.MessageBundle;
 
 import java.util.Collection;
@@ -31,7 +31,7 @@ import static java.util.ResourceBundle.getBundle;
 /**
  * The summary types available to the default summary model
  */
-public enum ColumnSummary implements ColumnSummaryModel.Summary {
+public enum ColumnSummary implements SummaryModel.Summary {
 	NONE {
 		@Override
 		public String toString() {

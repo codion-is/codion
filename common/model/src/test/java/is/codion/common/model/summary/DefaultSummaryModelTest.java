@@ -19,7 +19,7 @@
 package is.codion.common.model.summary;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.summary.ColumnSummaryModel.SummaryValues;
+import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.observer.Observer;
 
 import org.junit.jupiter.api.Test;
@@ -31,11 +31,11 @@ import java.util.Collection;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultColumnSummaryModelTest {
+public class DefaultSummaryModelTest {
 
 	private final Format numberFormat = NumberFormat.getInstance();
 
-	final ColumnSummaryModel testIntModel = new DefaultColumnSummaryModel<>(new SummaryValues<Integer>() {
+	final SummaryModel testIntModel = new DefaultSummaryModel<>(new SummaryValues<Integer>() {
 		@Override
 		public String format(Object value) {return numberFormat.format(value);}
 
@@ -55,7 +55,7 @@ public class DefaultColumnSummaryModelTest {
 		}
 	});
 
-	final ColumnSummaryModel testDoubleModel = new DefaultColumnSummaryModel<>(new SummaryValues<Double>() {
+	final SummaryModel testDoubleModel = new DefaultSummaryModel<>(new SummaryValues<Double>() {
 		@Override
 		public String format(Object value) {return numberFormat.format(value);}
 

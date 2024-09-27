@@ -24,7 +24,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.summary.ColumnSummaryModel;
+import is.codion.common.model.summary.SummaryModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -2492,7 +2492,7 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private static final class EntitySummaryValuesFactory implements ColumnSummaryModel.SummaryValues.Factory<Attribute<?>> {
+	private static final class EntitySummaryValuesFactory implements SummaryModel.SummaryValues.Factory<Attribute<?>> {
 
 		private final EntityDefinition entityDefinition;
 		private final FilterTableModel<?, Attribute<?>> tableModel;
@@ -2503,7 +2503,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		@Override
-		public <T extends Number> Optional<ColumnSummaryModel.SummaryValues<T>> createSummaryValues(Attribute<?> identifier, Format format) {
+		public <T extends Number> Optional<SummaryModel.SummaryValues<T>> createSummaryValues(Attribute<?> identifier, Format format) {
 			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(identifier);
 			if (identifier.type().isNumerical() && attributeDefinition.items().isEmpty()) {
 				return Optional.of(FilterTable.summaryValues(identifier, tableModel, format));

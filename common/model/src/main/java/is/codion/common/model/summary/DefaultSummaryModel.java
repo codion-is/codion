@@ -28,10 +28,10 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default ColumnSummaryModel implementation.
+ * A default {@link SummaryModel} implementation.
  * @param <T> the column type
  */
-final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel {
+final class DefaultSummaryModel<T extends Number> implements SummaryModel {
 
 	private final Value<? extends Summary> summary = Value.builder()
 					.nonNull(ColumnSummary.NONE)
@@ -42,7 +42,7 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
 	private final SummaryValues<T> summaryValues;
 	private final List<Summary> summaries = asList(ColumnSummary.values());
 
-	DefaultColumnSummaryModel(SummaryValues<T> summaryValues) {
+	DefaultSummaryModel(SummaryValues<T> summaryValues) {
 		this.summaryValues = requireNonNull(summaryValues);
 		this.summary.addValidator(summary -> {
 			if (locked.get()) {

@@ -23,7 +23,7 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.summary.ColumnSummaryModel.SummaryValues;
+import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.model.summary.TableSummaryModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;

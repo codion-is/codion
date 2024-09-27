@@ -26,7 +26,7 @@
  * <li>{@link is.codion.common.model.loadtest.LoadTest}
  * <li>{@link is.codion.common.model.condition.ConditionModel}
  * <li>{@link is.codion.common.model.condition.TableConditionModel}
- * <li>{@link is.codion.common.model.summary.ColumnSummaryModel}
+ * <li>{@link is.codion.common.model.summary.SummaryModel}
  * <li>{@link is.codion.common.model.summary.TableSummaryModel}
  */
 module is.codion.common.model {

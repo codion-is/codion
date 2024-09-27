@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.summary.ColumnSummaryModel;
+import is.codion.common.model.summary.SummaryModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 
@@ -35,25 +35,25 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A panel that shows a summary value for a numerical column property.
- * For instances use the {@link #columnSummaryPanel(ColumnSummaryModel, int)} factory method.
+ * For instances use the {@link #columnSummaryPanel(SummaryModel, int)} factory method.
  */
 public final class ColumnSummaryPanel extends JPanel {
 
-	private ColumnSummaryPanel(ColumnSummaryModel model, int horizontalAlignment) {
+	private ColumnSummaryPanel(SummaryModel model, int horizontalAlignment) {
 		setLayout(new BorderLayout());
 		add(createSummaryField(requireNonNull(model, "model"), horizontalAlignment), BorderLayout.CENTER);
 	}
 
 	/**
-	 * @param columnSummaryModel the {@link ColumnSummaryModel} instance
+	 * @param summaryModel the {@link SummaryModel} instance
 	 * @param horizontalAlignment the horizontal alignment
 	 * @return a new {@link ColumnSummaryPanel} instance.
 	 */
-	public static ColumnSummaryPanel columnSummaryPanel(ColumnSummaryModel columnSummaryModel, int horizontalAlignment) {
-		return new ColumnSummaryPanel(columnSummaryModel, horizontalAlignment);
+	public static ColumnSummaryPanel columnSummaryPanel(SummaryModel summaryModel, int horizontalAlignment) {
+		return new ColumnSummaryPanel(summaryModel, horizontalAlignment);
 	}
 
-	private static JTextField createSummaryField(ColumnSummaryModel model, int horizontalAlignment) {
+	private static JTextField createSummaryField(SummaryModel model, int horizontalAlignment) {
 		JPopupMenu popupMenu = createPopupMenu(model);
 		return Components.stringField()
 						.link(model.summaryText())
@@ -72,10 +72,10 @@ public final class ColumnSummaryPanel extends JPanel {
 						.build();
 	}
 
-	private static JPopupMenu createPopupMenu(ColumnSummaryModel model) {
+	private static JPopupMenu createPopupMenu(SummaryModel model) {
 		JPopupMenu popupMenu = new JPopupMenu();
 		ButtonGroup group = new ButtonGroup();
-		for (ColumnSummaryModel.Summary summary : model.summaries()) {
+		for (SummaryModel.Summary summary : model.summaries()) {
 			JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder()
 							.command(() -> model.summary().set(summary))
 							.name(summary.toString())
