@@ -197,11 +197,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	void select(Collection<Entity.Key> keys);
 
 	/**
-	 * @return the number of visible rows in this table model
-	 */
-	int rowCount();
-
-	/**
 	 * @return the {@link Selection} instance
 	 */
 	Selection<Entity> selection();

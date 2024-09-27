@@ -19,6 +19,7 @@ Codion Change Log
 - FilterTableSearchModel.searchPredicate() renamed predicate().
 ### is.codion.framework.model
 - EntityComboBoxModel.linkForeignKeyFilterComboBoxModel() and linkForeignKeyConditionComboBoxModel() replaced with foreignKeyComboBoxModelLinker() returning a ForeignKeyComboBoxModelLinker.
+- EntityTableModel.rowCount() removed.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel bug fixed, constructor used refresh, which could be async, instead of adding items directly to the model.
 

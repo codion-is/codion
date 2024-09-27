@@ -123,10 +123,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 						.with(Department.LOCATION, "Nowhere1")
 						.with(Department.NAME, "HELLO")
 						.build();
-		int count = deptModel.rowCount();
+		int count = deptModel.items().visible().count();
 		deptModel.editModel().insert(singletonList(dept));
-		assertEquals(count + 1, deptModel.rowCount());
-		assertEquals(dept, deptModel.items().visible().get().get(deptModel.rowCount() - 1));
+		assertEquals(count + 1, deptModel.items().visible().count());
+		assertEquals(dept, deptModel.items().visible().get().get(deptModel.items().visible().count() - 1));
 
 		deptModel.onInsert().set(EntityTableModel.OnInsert.ADD_TOP_SORTED);
 		Entity dept2 = entities.builder(Department.TYPE)
@@ -135,7 +135,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 						.with(Department.NAME, "NONAME")
 						.build();
 		deptModel.editModel().insert(singletonList(dept2));
-		assertEquals(count + 2, deptModel.rowCount());
+		assertEquals(count + 2, deptModel.items().visible().count());
 		assertEquals(dept2, deptModel.items().visible().get().get(2));
 
 		deptModel.onInsert().set(EntityTableModel.OnInsert.DO_NOTHING);
@@ -145,10 +145,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 						.with(Department.NAME, "NONAME2")
 						.build();
 		deptModel.editModel().insert(singletonList(dept3));
-		assertEquals(count + 2, deptModel.rowCount());
+		assertEquals(count + 2, deptModel.items().visible().count());
 
 		deptModel.refresh();
-		assertEquals(count + 3, deptModel.rowCount());
+		assertEquals(count + 3, deptModel.items().visible().count());
 
 		deptModel.editModel().delete(asList(dept, dept2, dept3));
 	}
@@ -208,7 +208,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		assertTrue(tableModel.queryModel().attributes().get().isEmpty());
 		tableModel.queryModel().attributes().addAll(Employee.NAME, Employee.HIREDATE);
 		tableModel.refresh();
-		assertTrue(tableModel.rowCount() > 0);
+		assertTrue(tableModel.items().visible().count() > 0);
 		tableModel.items().get().forEach(employee -> {
 			assertFalse(employee.contains(Employee.COMMISSION));
 			assertFalse(employee.contains(Employee.DEPARTMENT));
@@ -223,7 +223,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.queryModel().limit().set(6);
 		tableModel.refresh();
-		assertEquals(6, tableModel.rowCount());
+		assertEquals(6, tableModel.items().visible().count());
 		ConditionModel<?, Double> commissionCondition =
 						tableModel.queryModel().conditions().attribute(Employee.COMMISSION);
 		commissionCondition.operator().set(Operator.EQUAL);
@@ -231,10 +231,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		tableModel.refresh();
 		commissionCondition.enabled().set(false);
 		tableModel.refresh();
-		assertEquals(6, tableModel.rowCount());
+		assertEquals(6, tableModel.items().visible().count());
 		tableModel.queryModel().limit().clear();
 		tableModel.refresh();
-		assertEquals(16, tableModel.rowCount());
+		assertEquals(16, tableModel.items().visible().count());
 	}
 
 	@Test

@@ -29,8 +29,8 @@ abstract class AbstractPerformer implements Performer<EmployeesAppModel> {
 	private static final Random RANDOM = new Random();
 
 	protected static void selectRandomRow(EntityTableModel<?> tableModel) {
-		if (tableModel.rowCount() > 0) {
-			tableModel.selection().index().set(RANDOM.nextInt(tableModel.rowCount()));
+		if (tableModel.items().visible().count() > 0) {
+			tableModel.selection().index().set(RANDOM.nextInt(tableModel.items().visible().count()));
 		}
 	}
 }

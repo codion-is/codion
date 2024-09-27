@@ -126,17 +126,17 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 			return;
 		}
 		departmentModel.tableModel().refresh();
-		assertTrue(departmentModel.tableModel().rowCount() > 0);
+		assertTrue(departmentModel.tableModel().items().visible().count() > 0);
 
 		Model employeeModel = departmentModel.detailModel(Employee.TYPE);
 		employeeModel.tableModel().refresh();
-		assertTrue(employeeModel.tableModel().rowCount() > 0);
+		assertTrue(employeeModel.tableModel().items().visible().count() > 0);
 
 		departmentModel.detailModels().forEach(detailModel -> detailModel.tableModel().clear());
-		assertEquals(0, employeeModel.tableModel().rowCount());
+		assertEquals(0, employeeModel.tableModel().items().visible().count());
 
 		departmentModel.tableModel().clear();
-		assertEquals(0, departmentModel.tableModel().rowCount());
+		assertEquals(0, departmentModel.tableModel().items().visible().count());
 	}
 
 	@Test
@@ -182,7 +182,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 		departmentModel.tableModel().refresh();
 		departmentModel.detailModel(Employee.TYPE).tableModel().refresh();
-		assertTrue(departmentModel.detailModel(Employee.TYPE).tableModel().rowCount() > 0);
+		assertTrue(departmentModel.detailModel(Employee.TYPE).tableModel().items().visible().count() > 0);
 
 		EntityConnection connection = departmentModel.connection();
 		Entity department = connection.selectSingle(Department.NAME.equalTo("SALES"));
@@ -413,11 +413,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 		departmentModel.tableModel().refresh();
 		departmentModel.tableModel().selection().item().set(dept);
-		assertEquals(0, employeeTableModel.rowCount());
+		assertEquals(0, employeeTableModel.items().visible().count());
 
 		link.refreshOnSelection().set(true);
 		departmentModel.tableModel().selection().item().set(dept);
-		assertNotEquals(0, employeeTableModel.rowCount());
+		assertNotEquals(0, employeeTableModel.items().visible().count());
 	}
 
 	@Test

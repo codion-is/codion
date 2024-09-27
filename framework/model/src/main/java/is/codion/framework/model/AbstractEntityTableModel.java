@@ -211,11 +211,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
-	public final int rowCount() {
-		return filterModel.items().visible().count();
-	}
-
-	@Override
 	public final void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
 		requireNonNull(foreignKey, "foreignKey");
 		requireNonNull(foreignKeyValues, "foreignKeyValues");

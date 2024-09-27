@@ -75,11 +75,11 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
-		assertEquals(0, employeeTableModel.rowCount());
+		assertEquals(0, employeeTableModel.items().visible().count());
 		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
 		employeeTableModel.queryModel().conditions().setInOperands(Employee.DEPARTMENT_FK, singletonList(accounting));
 		employeeTableModel.refresh();
-		assertEquals(7, employeeTableModel.rowCount());
+		assertEquals(7, employeeTableModel.items().visible().count());
 	}
 
 	@Test
@@ -189,18 +189,18 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		EntityQueryModel queryModel = tableModel.queryModel();
 		queryModel.conditionEnabled().set(queryModel.conditions().get(Employee.MGR_FK).enabled());
 		tableModel.refresh();
-		assertEquals(16, tableModel.rowCount());
+		assertEquals(16, tableModel.items().visible().count());
 		queryModel.conditionRequired().set(true);
 		tableModel.refresh();
-		assertEquals(0, tableModel.rowCount());
+		assertEquals(0, tableModel.items().visible().count());
 		ConditionModel<?, Entity> mgrCondition = queryModel.conditions().get(Employee.MGR_FK);
 		mgrCondition.operands().equal().set(null);
 		mgrCondition.enabled().set(true);
 		tableModel.refresh();
-		assertEquals(1, tableModel.rowCount());
+		assertEquals(1, tableModel.items().visible().count());
 		mgrCondition.enabled().set(false);
 		tableModel.refresh();
-		assertEquals(0, tableModel.rowCount());
+		assertEquals(0, tableModel.items().visible().count());
 	}
 
 	@Test

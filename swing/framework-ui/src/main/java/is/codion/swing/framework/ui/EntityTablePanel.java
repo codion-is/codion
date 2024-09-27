@@ -2537,14 +2537,14 @@ public class EntityTablePanel extends JPanel {
 
 		@Override
 		public String apply(SwingEntityTableModel tableModel) {
-			int rowCount = tableModel.rowCount();
+			int rowCount = tableModel.items().visible().count();
 			int filteredCount = tableModel.items().filtered().count();
 			if (rowCount == 0 && filteredCount == 0) {
 				return "";
 			}
 			int selectionCount = tableModel.selection().count();
 			StringBuilder builder = new StringBuilder();
-			if (tableModel.queryModel().limit().isEqualTo(tableModel.rowCount())) {
+			if (tableModel.queryModel().limit().isEqualTo(rowCount)) {
 				builder.append(MESSAGES.getString("limited_to")).append(" ");
 			}
 			builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));
