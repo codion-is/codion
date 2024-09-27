@@ -97,7 +97,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final FilterComboBoxModelItems<T> items() {
+	public final FilterComboBoxItems<T> items() {
 		return modelItems;
 	}
 
@@ -204,7 +204,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class DefaultItems implements FilterComboBoxModelItems<T> {
+	private final class DefaultItems implements FilterComboBoxItems<T> {
 
 		private final Value<Predicate<T>> validator = Value.builder()
 						.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)

@@ -46,7 +46,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * Specifies the caption used by default to represent the null item in combo box models.
 	 * <li>Value type: String
 	 * <li>Default value: -
-	 * @see FilterComboBoxModelItems#nullItem()
+	 * @see FilterComboBoxItems#nullItem()
 	 */
 	PropertyValue<String> NULL_CAPTION = Configuration.stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
 
@@ -57,14 +57,14 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	Value<Predicate<T>> validSelectionPredicate();
 
 	@Override
-	FilterComboBoxModelItems<T> items();
+	FilterComboBoxItems<T> items();
 
 	@Override
 	FilterComboBoxSelectionModel<T> selection();
 
 	/**
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-	 * via {@link FilterComboBoxModelItems#nullItem()}, {@link FilterComboBoxSelectionModel#value()} is usually what you want
+	 * via {@link FilterComboBoxItems#nullItem()}, {@link FilterComboBoxSelectionModel#value()} is usually what you want
 	 */
 	T getSelectedItem();
 
@@ -109,7 +109,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	/**
 	 * @param <T> the item type
 	 */
-	interface FilterComboBoxModelItems<T> extends Items<T> {
+	interface FilterComboBoxItems<T> extends Items<T> {
 
 		/**
 		 * Provides a way for the model to prevent the addition of certain items.
@@ -152,7 +152,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		/**
 		 * Returns true if this model contains null and it is selected.
 		 * @return true if this model contains null and it is selected, false otherwise
-		 * @see FilterComboBoxModelItems#nullItem()
+		 * @see FilterComboBoxItems#nullItem()
 		 */
 		boolean nullSelected();
 
