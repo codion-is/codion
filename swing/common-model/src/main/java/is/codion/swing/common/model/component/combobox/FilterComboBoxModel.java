@@ -21,6 +21,7 @@ package is.codion.swing.common.model.component.combobox;
 import is.codion.common.Configuration;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.selection.SingleSelectionModel;
+import is.codion.common.observer.Mutable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -42,11 +43,12 @@ import static java.util.Objects.requireNonNull;
 public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T> {
 
 	/**
-	 * Specifies the caption used by default to represent null in combo box models.
+	 * Specifies the caption used by default to represent the null item in combo box models.
 	 * <li>Value type: String
 	 * <li>Default value: -
+	 * @see FilterComboBoxModelItems#nullItem()
 	 */
-	PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
+	PropertyValue<String> NULL_CAPTION = Configuration.stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
 
 	/**
 	 * @return true if the model data has been cleared and needs to be refreshed
@@ -82,26 +84,15 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 */
 	Value<Predicate<T>> validSelectionPredicate();
 
-	/**
-	 * @return the {@link State} controlling whether a null value is included as the first item
-	 * @see #nullItem()
-	 */
-	State includeNull();
-
-	/**
-	 * Controls the item that should represent the null value in this model.
-	 * Note that {@link #includeNull()} must be used as well to enable the null value.
-	 * @return the {@link Value} controlling the item representing null
-	 * @see #includeNull()
-	 */
-	Value<T> nullItem();
+	@Override
+	FilterComboBoxModelItems<T> items();
 
 	@Override
 	FilterComboBoxSelectionModel<T> selection();
 
 	/**
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-	 * via {@link #nullItem()}, {@link FilterComboBoxSelectionModel#value()} is usually what you want
+	 * via {@link FilterComboBoxModelItems#nullItem()}, {@link FilterComboBoxSelectionModel#value()} is usually what you want
 	 */
 	T getSelectedItem();
 
@@ -132,6 +123,29 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	}
 
 	/**
+	 * Specifies the item that should represent null for providing a caption.
+	 * @param <T> the item type
+	 */
+	interface NullItem<T> extends Mutable<T> {
+
+		/**
+		 * @return the {@link State} controlling whether a null value is included as the first item
+		 */
+		State include();
+	}
+
+	/**
+	 * @param <T> the item type
+	 */
+	interface FilterComboBoxModelItems<T> extends Items<T> {
+
+		/**
+		 * @return the null item
+		 */
+		NullItem<T> nullItem();
+	}
+
+	/**
 	 * @param <T> the item type
 	 */
 	interface FilterComboBoxSelectionModel<T> extends SingleSelectionModel<T> {
@@ -145,7 +159,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		/**
 		 * Returns true if this model contains null and it is selected.
 		 * @return true if this model contains null and it is selected, false otherwise
-		 * @see #includeNull()
+		 * @see FilterComboBoxModelItems#nullItem()
 		 */
 		boolean nullSelected();
 	}

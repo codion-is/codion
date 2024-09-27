@@ -191,7 +191,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	}
 
 	private ItemComboBoxModel<T> initializeItemComboBoxModel() {
-		Item<T> nullItem = Item.item(null, FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+		Item<T> nullItem = Item.item(null, FilterComboBoxModel.NULL_CAPTION.get());
 		if (comboBoxModel == null) {
 			List<Item<T>> modelItems = new ArrayList<>(items);
 			if (nullable && !modelItems.contains(nullItem)) {

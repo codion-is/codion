@@ -56,14 +56,9 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
 	private final DefaultFilterComboBoxSelectionModel selectionModel = new DefaultFilterComboBoxSelectionModel();
-	private final State includeNull = State.state();
-	private final Value<T> nullItem = Value.value();
 	private final State filterSelectedItem = State.state(false);
 	private final DefaultItems modelItems = new DefaultItems();
 	private final Refresher<T> refresher;
-	private final Value<Predicate<T>> validator = Value.builder()
-					.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)
-					.build();
 
 	/**
 	 * set during setItems()
@@ -82,19 +77,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	 */
 	protected DefaultFilterComboBoxModel() {
 		refresher = new DefaultRefresher(new DefaultItemsSupplier());
-		validator.addValidator(validator -> modelItems.get().stream()
-						.filter(Objects::nonNull)
-						.forEach(validator::test));
 		modelItems.visible.comparator.addListener(modelItems.visible::sort);
-		includeNull.addConsumer(value -> {
-			if (value && !modelItems.visible.items.contains(null)) {
-				modelItems.visible.items.add(0, null);
-			}
-			else {
-				modelItems.visible.items.remove(null);
-			}
-		});
-		nullItem.addValidator(this::validate);
 	}
 
 	@Override
@@ -124,23 +107,18 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final Items<T> items() {
+	public final FilterComboBoxModelItems<T> items() {
 		return modelItems;
 	}
 
 	@Override
 	public final void replace(T item, T replacement) {
-		validate(replacement);
-		items().removeItem(item);
-		items().addItem(replacement);
-		if (Objects.equals(selectionModel.selected.item, item)) {
-			selectionModel.selected.replaceWith(item);
-		}
+		modelItems.replace(item, replacement);
 	}
 
 	@Override
 	public final Value<Predicate<T>> validator() {
-		return validator;
+		return modelItems.validator;
 	}
 
 	@Override
@@ -151,16 +129,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	@Override
 	public final Value<Predicate<T>> validSelectionPredicate() {
 		return selectionModel.selected.valid;
-	}
-
-	@Override
-	public final State includeNull() {
-		return includeNull;
-	}
-
-	@Override
-	public final Value<T> nullItem() {
-		return nullItem;
 	}
 
 	@Override
@@ -199,7 +167,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	public final T getElementAt(int index) {
 		T element = modelItems.visible.items.get(index);
 		if (element == null) {
-			return nullItem.get();
+			return modelItems.nullItem.get();
 		}
 
 		return element;
@@ -222,25 +190,66 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private T validate(T item) {
-		if (!validator.get().test(item)) {
-			throw new IllegalArgumentException("Invalid item: " + item);
+	private final class DefaultNullItem implements NullItem<T> {
+
+		private final State include = State.builder()
+						.consumer(this::includeNullItem)
+						.build();
+		private final Value<T> item = Value.builder()
+						.<T>nullable()
+						.build();
+
+		@Override
+		public State include() {
+			return include;
 		}
 
-		return item;
+		@Override
+		public void set(T value) {
+			item.set(value);
+		}
+
+		@Override
+		public T get() {
+			return item.get();
+		}
+
+		@Override
+		public Observer<T> observer() {
+			return item.observer();
+		}
+
+		private void includeNullItem(boolean includeNull) {
+			if (includeNull && !modelItems.visible.items.contains(null)) {
+				modelItems.visible.items.add(0, null);
+			}
+			else {
+				modelItems.visible.items.remove(null);
+			}
+		}
 	}
 
-	private final class DefaultItems implements Items<T> {
+	private final class DefaultItems implements FilterComboBoxModelItems<T> {
 
+		private final Value<Predicate<T>> validator = Value.builder()
+						.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)
+						.build();
 		private final Value<Predicate<T>> visiblePredicate = Value.builder()
 						.<Predicate<T>>nullable()
 						.listener(this::filter)
 						.build();
-
 		private final VisibleItems visible = new VisibleItems();
 		private final FilteredItems filtered = new FilteredItems();
+		private final DefaultNullItem nullItem = new DefaultNullItem();
 
 		private final Event<Collection<T>> event = Event.event();
+
+		private DefaultItems() {
+			validator.addValidator(validator -> get().stream()
+							.filter(Objects::nonNull)
+							.forEach(validator::test));
+			nullItem.item.addValidator(this::validate);
+		}
 
 		@Override
 		public Collection<T> get() {
@@ -260,11 +269,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			requireNonNull(items);
 			filtered.items.clear();
 			visible.items.clear();
-			if (includeNull.get()) {
+			if (nullItem.include.get()) {
 				visible.items.add(0, null);
 			}
 			visible.items.addAll(items.stream()
-							.map(DefaultFilterComboBoxModel.this::validate)
+							.map(this::validate)
 							.collect(toList()));
 			// Notifies both visible and filtered
 			filter();
@@ -369,6 +378,28 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			visible.notifyChanges();
 			filtered.notifyChanges();
 		}
+
+		@Override
+		public NullItem<T> nullItem() {
+			return nullItem;
+		}
+
+		private void replace(T item, T replacement) {
+			validate(replacement);
+			removeItem(item);
+			addItem(replacement);
+			if (Objects.equals(selectionModel.selected.item, item)) {
+				selectionModel.selected.replaceWith(item);
+			}
+		}
+
+		private T validate(T item) {
+			if (!validator.get().test(item)) {
+				throw new IllegalArgumentException("Invalid item: " + item);
+			}
+
+			return item;
+		}
 	}
 
 	private final class VisibleItems implements Visible<T> {
@@ -389,7 +420,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (items.isEmpty()) {
 				return emptyList();
 			}
-			if (!includeNull.get()) {
+			if (!modelItems.nullItem.include.get()) {
 				return unmodifiableList(items);
 			}
 
@@ -404,7 +435,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean contains(T item) {
 			if (item == null) {
-				return includeNull.get();
+				return modelItems.nullItem.include.get();
 			}
 
 			return items.contains(item);
@@ -450,7 +481,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (items.isEmpty()) {
 				return 0;
 			}
-			if (!includeNull.get()) {
+			if (!modelItems.nullItem.include.get()) {
 				return items.size();
 			}
 
@@ -465,11 +496,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public void sort() {
 			if (comparator.isNotNull() && !items.isEmpty()) {
-				if (includeNull.get()) {
+				if (modelItems.nullItem.include.get()) {
 					items.remove(0);
 				}
 				items.sort(comparator.get());
-				if (includeNull.get()) {
+				if (modelItems.nullItem.include.get()) {
 					items.add(0, null);
 				}
 				fireContentsChanged();
@@ -542,7 +573,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public boolean nullSelected() {
-			return includeNull.get() && selected.item == null;
+			return modelItems.nullItem.include.get() && selected.item == null;
 		}
 
 		@Override
@@ -575,8 +606,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public T get() {
-			if (item == null && nullItem.isNotNull()) {
-				return nullItem.get();
+			if (item == null) {
+				return modelItems.nullItem.get();
 			}
 
 			return item;
@@ -593,7 +624,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		private void setSelectedItem(Object item) {
-			T toSelect = translator.get().apply(Objects.equals(nullItem.get(), item) ? null : item);
+			T toSelect = translator.get().apply(Objects.equals(modelItems.nullItem.get(), item) ? null : item);
 			if (!Objects.equals(this.item, toSelect) && valid.get().test(toSelect)) {
 				changing.accept(toSelect);
 				this.item = toSelect;

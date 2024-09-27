@@ -52,7 +52,7 @@ public class EntityComboBoxConditionModelTest {
 	@Test
 	void searchEntitiesComboBoxModel() throws DatabaseException {
 		EntityComboBoxModel comboBoxModel = entityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
-		comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+		comboBoxModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
 		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		SwingForeignKeyConditionModel condition =
 						SwingForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
@@ -78,7 +78,7 @@ public class EntityComboBoxConditionModelTest {
 	@Test
 	void inSearchModel() throws DatabaseException {
 		EntityComboBoxModel comboBoxModel = entityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
-		comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+		comboBoxModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
 		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		SwingForeignKeyConditionModel conditionModel =
 						SwingForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)

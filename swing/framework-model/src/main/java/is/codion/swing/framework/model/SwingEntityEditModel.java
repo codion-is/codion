@@ -172,7 +172,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 * If the foreign key has select attributes defined, those are set in the combo box model.
 	 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
 	 * @return a {@link EntityComboBoxModel} for the given foreign key
-	 * @see FilterComboBoxModel#COMBO_BOX_NULL_CAPTION
+	 * @see FilterComboBoxModel#NULL_CAPTION
 	 * @see AttributeDefinition#nullable()
 	 * @see EntityComboBoxModel#attributes()
 	 * @see ForeignKeyDefinition#attributes()
@@ -182,7 +182,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		EntityComboBoxModel comboBoxModel = entityComboBoxModel(foreignKey.referencedType(), connectionProvider());
 		comboBoxModel.attributes().set(foreignKeyDefinition.attributes());
 		if (entity().nullable(foreignKey)) {
-			comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+			comboBoxModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
 		}
 
 		return comboBoxModel;
@@ -200,9 +200,9 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		requireNonNull(column, "column");
 		FilterComboBoxModel<T> comboBoxModel = createColumnComboBoxModel(column);
 		if (entity().nullable(column)) {
-			comboBoxModel.includeNull().set(true);
+			comboBoxModel.items().nullItem().include().set(true);
 			if (column.type().valueClass().isInterface()) {
-				comboBoxModel.nullItem().set(ProxyBuilder.builder(column.type().valueClass())
+				comboBoxModel.items().nullItem().set(ProxyBuilder.builder(column.type().valueClass())
 								.method("toString", (ProxyMethod<T>) NULL_ITEM_CAPTION)
 								.build());
 			}
@@ -305,7 +305,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	private static final class NullItemCaption implements ProxyMethod<Object> {
 
-		private final String caption = FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get();
+		private final String caption = FilterComboBoxModel.NULL_CAPTION.get();
 
 		@Override
 		public Object invoke(Parameters<Object> parameters) throws Throwable {

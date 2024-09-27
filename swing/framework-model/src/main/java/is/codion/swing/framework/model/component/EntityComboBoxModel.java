@@ -132,13 +132,12 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 * Enables the null item and sets the null item caption.
 	 * @param nullCaption the null item caption
 	 * @throws NullPointerException in case {@code nullCaption} is null
-	 * @see #includeNull()
-	 * @see #nullItem()
+	 * @see FilterComboBoxModelItems#nullItem()
 	 */
 	public void setNullCaption(String nullCaption) {
 		requireNonNull(nullCaption, "nullCaption");
-		includeNull().set(true);
-		nullItem().set(ProxyBuilder.builder(Entity.class)
+		items().nullItem().include().set(true);
+		items().nullItem().set(ProxyBuilder.builder(Entity.class)
 						.delegate(entities.entity(entityType))
 						.method("toString", parameters -> nullCaption)
 						.build());
@@ -148,7 +147,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 * Controls the attributes to include when selecting the entities to populate this model with.
 	 * Note that the primary key attribute values are always included.
 	 * An empty Collection indicates that all attributes should be selected.
-	 * @return the ValueSet controlling the attributes to select, an empty ValueSet indicating all available attributes
+	 * @return the {@link ValueSet} controlling the attributes to select, an empty {@link ValueSet} indicating all available attributes
 	 */
 	public ValueSet<Attribute<?>> attributes() {
 		return attributes;
@@ -373,16 +372,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public State includeNull() {
-		return comboBoxModel.includeNull();
-	}
-
-	@Override
-	public Value<Entity> nullItem() {
-		return comboBoxModel.nullItem();
-	}
-
-	@Override
 	public FilterComboBoxSelectionModel<Entity> selection() {
 		return comboBoxModel.selection();
 	}
@@ -403,7 +392,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public Items<Entity> items() {
+	public FilterComboBoxModelItems<Entity> items() {
 		return comboBoxModel.items();
 	}
 
@@ -504,7 +493,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		private EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
 			entities.definition(entityType).foreignKeys().definition(foreignKey);
 			EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider);
-			foreignKeyModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+			foreignKeyModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
 			foreignKeyModel.refresh();
 			ForeignKeyComboBoxModelLinker modelLinker = foreignKeyComboBoxModelLinker(foreignKey);
 			if (filter) {

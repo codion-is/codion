@@ -347,7 +347,7 @@ public final class EntityComboBoxModelTest {
 		assertTrue(comboBoxModel.items().contains(null));
 		assertEquals("-", comboBoxModel.getSelectedItem().toString());
 		assertNull(comboBoxModel.selection().value());
-		comboBoxModel.includeNull().set(false);
+		comboBoxModel.items().nullItem().include().set(false);
 		assertFalse(comboBoxModel.items().contains(null));
 	}
 
@@ -361,10 +361,10 @@ public final class EntityComboBoxModelTest {
 
 		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().addItem(dept));
 		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.replace(comboBoxModel.getElementAt(2), dept));
-		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.nullItem().set(dept));
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().nullItem().set(dept));
 
 		assertThrows(NullPointerException.class, () -> comboBoxModel.items().addItem(null));
 		assertThrows(NullPointerException.class, () -> comboBoxModel.replace(comboBoxModel.getElementAt(2), null));
-		assertThrows(NullPointerException.class, () -> comboBoxModel.nullItem().clear());
+		assertThrows(NullPointerException.class, () -> comboBoxModel.items().nullItem().clear());
 	}
 }

@@ -64,7 +64,7 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
 	 */
 	protected EntityComboBoxModel createEqualComboBoxModel(ForeignKey foreignKey) {
 		EntityComboBoxModel comboBoxModel = entityComboBoxModel(foreignKey.referencedType(), connectionProvider());
-		comboBoxModel.setNullCaption(FilterComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+		comboBoxModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
 
 		return comboBoxModel;
 	}

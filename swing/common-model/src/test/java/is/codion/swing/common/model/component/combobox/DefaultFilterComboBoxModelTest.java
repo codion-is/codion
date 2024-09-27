@@ -253,12 +253,12 @@ public class DefaultFilterComboBoxModelTest {
 	void nullItem() {
 		FilterComboBoxModel<String> model = new DefaultFilterComboBoxModel<>();
 		assertFalse(model.items().contains(null));
-		model.includeNull().set(true);
+		model.items().nullItem().include().set(true);
 		assertTrue(model.items().contains(null));
-		model.includeNull().set(false);
+		model.items().nullItem().include().set(false);
 		assertFalse(model.items().contains(null));
-		model.includeNull().set(true);
-		model.nullItem().set("-");
+		model.items().nullItem().include().set(true);
+		model.items().nullItem().set("-");
 		assertTrue(model.items().contains(null));
 		assertEquals("-", model.getSelectedItem());
 		model.setSelectedItem("-");
@@ -328,16 +328,6 @@ public class DefaultFilterComboBoxModelTest {
 	}
 
 	@Test
-	void includeNull() {
-		FilterComboBoxModel<Integer> model = new DefaultFilterComboBoxModel<>();
-		model.items().set(asList(1, 2, 3, 4, 5));
-		model.includeNull().set(true);
-		model.includeNull().set(true);
-		assertTrue(model.includeNull().get());
-		model.refresh();
-	}
-
-	@Test
 	void validator() {
 		FilterComboBoxModel<Integer> model = new DefaultFilterComboBoxModel<>();
 		model.validator().set(item -> item > 0);
@@ -370,8 +360,8 @@ public class DefaultFilterComboBoxModelTest {
 	@BeforeEach
 	void setUp() {
 		testModel = new DefaultFilterComboBoxModel<>();
-		testModel.includeNull().set(true);
-		testModel.nullItem().set(NULL);
+		testModel.items().nullItem().include().set(true);
+		testModel.items().nullItem().set(NULL);
 		List<String> names = new ArrayList<>();
 		names.add(ANNA);
 		names.add(KALLI);
