@@ -56,14 +56,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	boolean cleared();
 
 	/**
-	 * Provides a way for the model to prevent the addition of certain items.
-	 * Trying to add items that fail validation will result in an exception.
-	 * Note that any translation of the selected item is done before validation.
-	 * @return the {@link Value} controlling the item validator
-	 */
-	Value<Predicate<T>> validator();
-
-	/**
 	 * Provides a way for the combo box model to translate an item when it is selected, such
 	 * as selecting the String "1" in a String based model when selected item is set to the number 1.
 	 * @return the {@link Value} controlling the selected item translator
@@ -130,6 +122,14 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @param <T> the item type
 	 */
 	interface FilterComboBoxModelItems<T> extends Items<T> {
+
+		/**
+		 * Provides a way for the model to prevent the addition of certain items.
+		 * Trying to add items that fail validation will result in an exception.
+		 * Note that any translation of the selected item is done before validation.
+		 * @return the {@link Value} controlling the item validator
+		 */
+		Value<Predicate<T>> validator();
 
 		/**
 		 * Replaces the given item in this combo box model

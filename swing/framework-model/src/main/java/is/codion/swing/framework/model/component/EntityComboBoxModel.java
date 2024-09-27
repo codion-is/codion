@@ -104,7 +104,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 						.build();
 		comboBoxModel.selectedItemTranslator().set(new SelectedItemTranslator());
 		comboBoxModel.refresher().supplier().set(this::performQuery);
-		comboBoxModel.validator().set(new ItemValidator());
+		comboBoxModel.items().validator().set(new ItemValidator());
 		comboBoxModel.items().visible().predicate().set(foreignKeyVisiblePredicate);
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
@@ -349,11 +349,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	@Override
 	public boolean cleared() {
 		return comboBoxModel.cleared();
-	}
-
-	@Override
-	public Value<Predicate<Entity>> validator() {
-		return comboBoxModel.validator();
 	}
 
 	@Override

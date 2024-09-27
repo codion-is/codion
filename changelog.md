@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - FilterComboBoxModel.includeNull() and nullItem() moved to NullItem.
 - FilterComboBoxModel.replace() moved to FilterComboBoxModelItems.
+- FilterComboBoxModel.validator() moved to FilterComboBoxModelItems.
 ### is.codion.framework.model
 - EntityComboBoxModel.linkForeignKeyFilterComboBoxModel() and linkForeignKeyConditionComboBoxModel() replaced with foreignKeyComboBoxModelLinker() returning a ForeignKeyComboBoxModelLinker.
 ### is.codion.swing.framework.model
