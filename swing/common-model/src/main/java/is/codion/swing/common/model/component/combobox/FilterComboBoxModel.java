@@ -50,12 +50,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 */
 	PropertyValue<String> NULL_CAPTION = Configuration.stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
 
-	/**
-	 * Provides a way for the combo box model to prevent the selection of certain items.
-	 * @return the {@link Value} controlling the valid selection predicate
-	 */
-	Value<Predicate<T>> validSelectionPredicate();
-
 	@Override
 	FilterComboBoxItems<T> items();
 
@@ -162,6 +156,12 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @return the {@link Value} controlling the selected item translator
 		 */
 		Value<Function<Object, T>> translator();
+
+		/**
+		 * Provides a way for the combo box model to prevent the selection of certain items.
+		 * @return the {@link Value} controlling the valid selection predicate
+		 */
+		Value<Predicate<T>> validPredicate();
 	}
 
 	/**

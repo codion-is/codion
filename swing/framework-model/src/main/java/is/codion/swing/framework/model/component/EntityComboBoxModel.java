@@ -347,11 +347,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public Value<Predicate<Entity>> validSelectionPredicate() {
-		return comboBoxModel.validSelectionPredicate();
-	}
-
-	@Override
 	public FilterComboBoxSelectionModel<Entity> selection() {
 		return comboBoxModel.selection();
 	}

@@ -102,11 +102,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final Value<Predicate<T>> validSelectionPredicate() {
-		return selectionModel.selected.valid;
-	}
-
-	@Override
 	public final FilterComboBoxSelectionModel<T> selection() {
 		return selectionModel;
 	}
@@ -575,6 +570,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Value<Function<Object, T>> translator() {
 			return selected.translator;
+		}
+
+		@Override
+		public Value<Predicate<T>> validPredicate() {
+			return selected.valid;
 		}
 	}
 

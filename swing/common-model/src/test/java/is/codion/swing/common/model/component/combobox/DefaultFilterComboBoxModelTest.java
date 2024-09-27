@@ -350,9 +350,9 @@ public class DefaultFilterComboBoxModelTest {
 		FilterComboBoxModel<Integer> model = new DefaultFilterComboBoxModel<>();
 		model.items().set(asList(0, 1, 2));
 		model.setSelectedItem(0);
-		assertThrows(IllegalArgumentException.class, () -> model.validSelectionPredicate().set(item -> item > 0));
+		assertThrows(IllegalArgumentException.class, () -> model.selection().validPredicate().set(item -> item > 0));
 		model.setSelectedItem(1);
-		model.validSelectionPredicate().set(item -> item > 0);
+		model.selection().validPredicate().set(item -> item > 0);
 		model.setSelectedItem(0);
 		assertEquals(1, model.getSelectedItem());
 	}
