@@ -18,6 +18,7 @@ Codion Change Log
 - FilterTableSelectionModel moved to FilterTableModel and renamed TableSelection.
 - FilterComboBoxModel.FilterComboBoxSelectionModel renamed ComboBoxSelection.
 - FilterComboBoxModel.FilterComboBoxItems renamed ComboBoxItems.
+- DefaultFilterComboBoxModel.Selected bug fixed, selection empty state now set before fireContentsChanged() is called.
 ### is.codion.swing.common.ui
 - FilterTableSearchModel.searchPredicate() renamed predicate().
 ### is.codion.framework.model

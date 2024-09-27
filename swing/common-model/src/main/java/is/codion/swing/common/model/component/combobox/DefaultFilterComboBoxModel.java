@@ -623,8 +623,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (!Objects.equals(this.item, toSelect) && valid.get().test(toSelect)) {
 				changing.accept(toSelect);
 				this.item = toSelect;
-				fireContentsChanged();
 				empty.set(selectionModel.value() == null);
+				fireContentsChanged();
 				event.accept(this.item);
 			}
 		}
