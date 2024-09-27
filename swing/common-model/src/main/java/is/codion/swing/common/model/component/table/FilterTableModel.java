@@ -21,8 +21,10 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.selection.Selection;
 import is.codion.common.value.Value;
 
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableModel;
 import java.util.Collection;
 import java.util.Comparator;
@@ -50,7 +52,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * Clear the table model before populating it with the refreshed data.
 		 * This causes an empty selection event to be triggered, since the
 		 * selection is cleared when the table model is cleared.
-		 * @see FilterTableSelectionModel#indexes()
+		 * @see TableSelection#indexes()
 		 */
 		CLEAR,
 		/**
@@ -105,9 +107,9 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	Value<RefreshStrategy> refreshStrategy();
 
 	/**
-	 * @return the selection model used by this table model
+	 * @return the {@link TableSelection} instance used by this table model
 	 */
-	FilterTableSelectionModel<R> selection();
+	TableSelection<R> selection();
 
 	/**
 	 * @return the filter condition model used by this table model
@@ -289,4 +291,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 			return STRING_COMPARATOR;
 		}
 	}
+
+	/**
+	 * A selection model for a {@link FilterTableModel}.
+	 * @param <R> the type of rows
+	 */
+	interface TableSelection<R> extends ListSelectionModel, Selection<R> {}
 }

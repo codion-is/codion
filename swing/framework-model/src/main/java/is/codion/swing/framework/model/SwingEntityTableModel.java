@@ -34,7 +34,6 @@ import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -244,7 +243,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final FilterTableSelectionModel<Entity> selection() {
+	public final TableSelection<Entity> selection() {
 		return filterModel().selection();
 	}
 

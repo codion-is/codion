@@ -347,7 +347,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public FilterComboBoxSelectionModel<Entity> selection() {
+	public ComboBoxSelection<Entity> selection() {
 		return comboBoxModel.selection();
 	}
 

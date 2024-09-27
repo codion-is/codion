@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,11 +29,11 @@ import static java.util.Arrays.asList;
 import static javax.swing.ListSelectionModel.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultFilterTableSelectionModelTest {
+public class DefaultTableSelectionTest {
 
-	private final FilterTableSelectionModel<String> testModel;
+	private final TableSelection<String> testModel;
 
-	public DefaultFilterTableSelectionModelTest() {
+	public DefaultTableSelectionTest() {
 		List<String> data = asList("A", "B", "C");
 		FilterTableModel<String, Integer> tableModel =
 						FilterTableModel.<String, Integer>builder(new FilterTableModel.Columns<String, Integer>() {

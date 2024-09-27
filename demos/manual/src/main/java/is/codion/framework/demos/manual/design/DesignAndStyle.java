@@ -29,7 +29,7 @@ import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.TemporalField;
 
@@ -48,7 +48,6 @@ public final class DesignAndStyle {
 	public static void main(String[] args) {
 		LocalEntityConnectionProvider connectionProvider = null;
 		Entity entity = null;
-		FilterTableSelectionModel<List<String>> selectionModel = null;
 		FilterTableModel<List<String>, Integer> tableModel = null;
 		FilterTable<List<String>, Integer> table = null;
 
@@ -95,11 +94,13 @@ public final class DesignAndStyle {
 		//end::getters[]
 
 		//tag::mutable[]
-		List<Integer> selectedIndexes = selectionModel.indexes().get();
+		TableSelection<List<String>> selection = tableModel.selection();
 
-		selectionModel.indexes().set(asList(0, 1, 2));
+		List<Integer> selectedIndexes = selection.indexes().get();
 
-		selectionModel.items().addListener(() -> System.out.println("Selected items changed"));
+		selection.indexes().set(asList(0, 1, 2));
+
+		selection.items().addListener(() -> System.out.println("Selected items changed"));
 
 		tableModel.items().visible().comparator().set(Comparator.comparing(row -> row.get(0)));
 

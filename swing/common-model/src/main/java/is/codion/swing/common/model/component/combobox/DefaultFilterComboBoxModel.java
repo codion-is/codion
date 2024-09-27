@@ -55,7 +55,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Predicate<?> DEFAULT_VALID_SELECTION_PREDICATE = new DefaultValidSelectionPredicate<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
-	private final DefaultFilterComboBoxSelectionModel selectionModel = new DefaultFilterComboBoxSelectionModel();
+	private final DefaultComboBoxSelection selectionModel = new DefaultComboBoxSelection();
 	private final DefaultItems modelItems = new DefaultItems();
 	private final Refresher<T> refresher;
 
@@ -100,7 +100,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final FilterComboBoxSelectionModel<T> selection() {
+	public final ComboBoxSelection<T> selection() {
 		return selectionModel;
 	}
 
@@ -522,7 +522,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class DefaultFilterComboBoxSelectionModel implements FilterComboBoxSelectionModel<T> {
+	private final class DefaultComboBoxSelection implements ComboBoxSelection<T> {
 
 		private final Selected selected = new Selected();
 		private final State filterSelectedItem = State.state(false);

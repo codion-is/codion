@@ -44,7 +44,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.Delete;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -1939,16 +1939,16 @@ public class EntityTablePanel extends JPanel {
 
 	private static final class DeleteConfirmer implements Confirmer {
 
-		private final FilterTableSelectionModel<?> selectionModel;
+		private final TableSelection<?> selection;
 
-		private DeleteConfirmer(FilterTableSelectionModel<?> selectionModel) {
-			this.selectionModel = selectionModel;
+		private DeleteConfirmer(TableSelection<?> selection) {
+			this.selection = selection;
 		}
 
 		@Override
 		public boolean confirm(JComponent dialogOwner) {
 			return confirm(dialogOwner, FrameworkMessages.confirmDelete(
-							selectionModel.count()), FrameworkMessages.delete());
+							selection.count()), FrameworkMessages.delete());
 		}
 	}
 

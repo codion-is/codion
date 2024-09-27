@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Configuration;
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.selection.SingleSelectionModel;
+import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.observer.Mutable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -54,11 +54,11 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	FilterComboBoxItems<T> items();
 
 	@Override
-	FilterComboBoxSelectionModel<T> selection();
+	ComboBoxSelection<T> selection();
 
 	/**
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-	 * via {@link FilterComboBoxItems#nullItem()}, {@link FilterComboBoxSelectionModel#value()} is usually what you want
+	 * via {@link FilterComboBoxItems#nullItem()}, {@link ComboBoxSelection#value()} is usually what you want
 	 */
 	T getSelectedItem();
 
@@ -124,7 +124,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	/**
 	 * @param <T> the item type
 	 */
-	interface FilterComboBoxSelectionModel<T> extends SingleSelectionModel<T> {
+	interface ComboBoxSelection<T> extends SingleSelection<T> {
 
 		/**
 		 * @return the selected value, null in case the value representing null is selected

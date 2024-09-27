@@ -32,7 +32,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableSelectionModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
@@ -331,8 +331,8 @@ public final class FilterTable<R, C> extends JTable {
 		if (this.selectionModel != null) {
 			throw new IllegalStateException("Selection model has already been set");
 		}
-		if (!(selectionModel instanceof FilterTableSelectionModel)) {
-			throw new IllegalArgumentException("FilterTable selection model must be a FilterTableSelectionModel instance");
+		if (!(selectionModel instanceof TableSelection)) {
+			throw new IllegalArgumentException("FilterTable selection model must be a TableSelection instance");
 		}
 		super.setSelectionModel(selectionModel);
 	}
@@ -1343,10 +1343,10 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public boolean subset() {
-			FilterTableSelectionModel<?> tableSelectionModel = tableModel.selection();
+			TableSelection<?> selection = tableModel.selection();
 
-			return tableSelectionModel.empty().not().get() &&
-							tableSelectionModel.count() != tableModel.items().visible().count();
+			return selection.empty().not().get() &&
+							selection.count() != tableModel.items().visible().count();
 		}
 	}
 

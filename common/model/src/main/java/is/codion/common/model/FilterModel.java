@@ -20,7 +20,7 @@ package is.codion.common.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
-import is.codion.common.model.selection.SingleSelectionModel;
+import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
@@ -85,9 +85,9 @@ public interface FilterModel<T> {
 	void refresh(Consumer<Collection<T>> onRefresh);
 
 	/**
-	 * @return the selection model
+	 * @return the {@link SingleSelection} instance used by this filter model
 	 */
-	SingleSelectionModel<T> selection();
+	SingleSelection<T> selection();
 
 	/**
 	 * A {@link Mutable} controlling the items in a {@link FilterModel}

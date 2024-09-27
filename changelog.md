@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.16
+### is.codion.common.model
+- SingleSelectionModel and SelectionModel renamed SingleSelection and Selection respectively.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.includeNull() and nullItem() moved to NullItem.
 - FilterComboBoxModel.replace() moved to FilterComboBoxModelItems.
@@ -11,6 +13,8 @@ Codion Change Log
 - FilterComboBoxModel.FilterComboBoxModelItems renamed FilterComboBoxItems.
 - FilterComboBoxModel.validSelectionPredicate() moved to FilterComboBoxSelectionModel and renamed validPredicate().
 - FilterComboBoxModel.filterSelectedItem() moved to FilterComboBoxSelectionModel and renamed filterSelected().
+- FilterTableSelectionModel moved to FilterTableModel and renamed TableSelection.
+- FilterComboBoxModel.FilterComboBoxSelectionModel renamed ComboBoxSelection.
 ### is.codion.swing.common.ui
 - FilterTableSearchModel.searchPredicate() renamed predicate().
 ### is.codion.framework.model

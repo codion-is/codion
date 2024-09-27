@@ -64,7 +64,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final Columns<R, C> columns;
 	private final DefaultItems modelItems;
-	private final FilterTableSelectionModel<R> selectionModel;
+	private final TableSelection<R> selection;
 	private final TableConditionModel<C> conditionModel;
 	private final VisiblePredicate visiblePredicate;
 	private final DefaultRefresher refresher;
@@ -73,7 +73,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = requireNonNull(builder.columns);
 		this.modelItems = new DefaultItems(builder.validator);
-		this.selectionModel = new DefaultFilterTableSelectionModel<>(modelItems);
+		this.selection = new DefaultFilterTableSelection<>(modelItems);
 		this.conditionModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
 		this.visiblePredicate = new VisiblePredicate(conditionModel.identifiers().stream()
@@ -134,8 +134,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public FilterTableSelectionModel<R> selection() {
-		return selectionModel;
+	public TableSelection<R> selection() {
+		return selection;
 	}
 
 	@Override
@@ -261,12 +261,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private void clearAndAdd(Collection<R> items) {
-			List<R> selectedItems = selectionModel.items().get();
+			List<R> selectedItems = selection.items().get();
 			clear();
 			if (items().addItems(items)) {
 				modelItems.visible.sort();
 			}
-			selectionModel.items().set(selectedItems);
+			selection.items().set(selectedItems);
 		}
 	}
 
@@ -322,12 +322,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public boolean removeItems(Collection<R> items) {
-			selectionModel.setValueIsAdjusting(true);
+			selection.setValueIsAdjusting(true);
 			boolean visibleItemRemoved = false;
 			for (R item : requireNonNull(items)) {
 				visibleItemRemoved = removeItemInternal(item, false) || visibleItemRemoved;
 			}
-			selectionModel.setValueIsAdjusting(false);
+			selection.setValueIsAdjusting(false);
 			if (visibleItemRemoved) {
 				modelItems.visible.notifyChanges();
 			}
@@ -367,7 +367,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public void filter() {
-			List<R> selectedItems = selectionModel.items().get();
+			List<R> selectedItems = selection.items().get();
 			visible.items.addAll(filtered.items);
 			filtered.items.clear();
 			for (ListIterator<R> visibleItemsIterator = visible.items.listIterator(); visibleItemsIterator.hasNext(); ) {
@@ -382,7 +382,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 			fireTableDataChanged();
 			filtered.notifyChanges();
-			selectionModel.items().set(selectedItems);
+			selection.items().set(selectedItems);
 		}
 
 		private boolean addItemInternal(R item) {
@@ -558,10 +558,10 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			@Override
 			public void sort() {
 				if (comparator.isNotNull()) {
-					List<R> selectedItems = selectionModel.items().get();
+					List<R> selectedItems = selection.items().get();
 					items.sort(comparator.get());
 					fireTableRowsUpdated(0, items.size());
-					selectionModel.items().set(selectedItems);
+					selection.items().set(selectedItems);
 				}
 			}
 
@@ -641,7 +641,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public void tableChanged(TableModelEvent e) {
 			if (e.getType() == TableModelEvent.DELETE) {
-				selectionModel.removeIndexInterval(e.getFirstRow(), e.getLastRow());
+				selection.removeIndexInterval(e.getFirstRow(), e.getLastRow());
 			}
 		}
 	}

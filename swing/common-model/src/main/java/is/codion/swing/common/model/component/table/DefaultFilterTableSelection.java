@@ -24,6 +24,7 @@ import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.event.ListSelectionListener;
@@ -37,7 +38,7 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionModel<R> {
+final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 
 	private final FilterListSelectionModel selectionModel = new FilterListSelectionModel();
 	private final SelectedIndex selectedIndex = new SelectedIndex();
@@ -52,7 +53,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 	private final FilterModel.Items<R> items;
 
-	DefaultFilterTableSelectionModel(FilterModel.Items<R> items) {
+	DefaultFilterTableSelection(FilterModel.Items<R> items) {
 		this.items = requireNonNull(items, "items");
 		bindEvents();
 	}
@@ -295,7 +296,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 			}
 
 			return unmodifiableList(IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
-							.filter(DefaultFilterTableSelectionModel.this::isSelectedIndex)
+							.filter(DefaultFilterTableSelection.this::isSelectedIndex)
 							.boxed()
 							.collect(toList()));
 		}
@@ -310,7 +311,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 			requireNonNull(indexes);
 			checkIndexes(indexes);
 			setValueIsAdjusting(true);
-			DefaultFilterTableSelectionModel.this.clear();
+			DefaultFilterTableSelection.this.clear();
 			add(indexes);
 			setValueIsAdjusting(false);
 		}
@@ -450,7 +451,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		@Override
 		public void set(List<R> items) {
 			if (!isSelectionEmpty()) {
-				DefaultFilterTableSelectionModel.this.clear();
+				DefaultFilterTableSelection.this.clear();
 			}
 			add(items);
 		}
@@ -474,7 +475,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 		public void add(Collection<R> items) {
 			requireNonNull(items, "items");
 			selectedIndexes.add(items.stream()
-							.mapToInt(DefaultFilterTableSelectionModel.this.items.visible()::indexOf)
+							.mapToInt(DefaultFilterTableSelection.this.items.visible()::indexOf)
 							.filter(index -> index >= 0)
 							.boxed()
 							.collect(toList()));
@@ -487,7 +488,7 @@ final class DefaultFilterTableSelectionModel<R> implements FilterTableSelectionM
 
 		@Override
 		public void remove(Collection<R> items) {
-			requireNonNull(items).forEach(item -> selectedIndexes.remove(DefaultFilterTableSelectionModel.this.items.visible().indexOf(item)));
+			requireNonNull(items).forEach(item -> selectedIndexes.remove(DefaultFilterTableSelection.this.items.visible().indexOf(item)));
 		}
 
 		@Override
