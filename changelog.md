@@ -16,6 +16,7 @@ Codion Change Log
 - FilterComboBoxModel.filterSelectedItem() moved to FilterComboBoxSelectionModel and renamed filterSelected().
 - FilterTableSelectionModel moved to FilterTableModel and renamed TableSelection.
 - FilterComboBoxModel.FilterComboBoxSelectionModel renamed ComboBoxSelection.
+- FilterComboBoxModel.FilterComboBoxItems renamed ComboBoxItems.
 ### is.codion.swing.common.ui
 - FilterTableSearchModel.searchPredicate() renamed predicate().
 ### is.codion.framework.model

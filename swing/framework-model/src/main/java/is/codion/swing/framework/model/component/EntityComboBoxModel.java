@@ -132,7 +132,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 * Enables the null item and sets the null item caption.
 	 * @param nullCaption the null item caption
 	 * @throws NullPointerException in case {@code nullCaption} is null
-	 * @see FilterComboBoxItems#nullItem()
+	 * @see ComboBoxItems#nullItem()
 	 */
 	public void setNullCaption(String nullCaption) {
 		requireNonNull(nullCaption, "nullCaption");
@@ -357,7 +357,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public FilterComboBoxItems<Entity> items() {
+	public ComboBoxItems<Entity> items() {
 		return comboBoxModel.items();
 	}
 

@@ -56,7 +56,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
 	private final DefaultComboBoxSelection selectionModel = new DefaultComboBoxSelection();
-	private final DefaultItems modelItems = new DefaultItems();
+	private final DefaultComboBoxItems modelItems = new DefaultComboBoxItems();
 	private final Refresher<T> refresher;
 
 	/**
@@ -89,7 +89,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final FilterComboBoxItems<T> items() {
+	public final ComboBoxItems<T> items() {
 		return modelItems;
 	}
 
@@ -186,7 +186,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class DefaultItems implements FilterComboBoxItems<T> {
+	private final class DefaultComboBoxItems implements ComboBoxItems<T> {
 
 		private final Value<Predicate<T>> validator = Value.builder()
 						.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)
@@ -203,7 +203,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private boolean cleared = true;
 
-		private DefaultItems() {
+		private DefaultComboBoxItems() {
 			validator.addValidator(validator -> get().stream()
 							.filter(Objects::nonNull)
 							.forEach(validator::test));

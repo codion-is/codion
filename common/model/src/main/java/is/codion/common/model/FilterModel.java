@@ -151,11 +151,6 @@ public interface FilterModel<T> {
 		void filter();
 
 		/**
-		 * Clears all items from this model
-		 */
-		void clear();
-
-		/**
 		 * @param <T> the item type
 		 */
 		interface Visible<T> extends Observable<List<T>> {
