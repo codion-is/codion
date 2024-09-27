@@ -222,7 +222,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		Builder initialDetailState(PanelState initialState);
 
 		/**
-		 * Sets the enabled detail panel states, with the first being the initial one.
+		 * Sets the enabled detail panel states.
 		 * Note that {@link PanelState#WINDOW} is not supported as the initial state.
 		 * @param panelStates the enabled detail panel states
 		 * @return this builder instance

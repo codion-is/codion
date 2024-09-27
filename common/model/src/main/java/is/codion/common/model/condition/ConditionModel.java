@@ -51,7 +51,7 @@ public interface ConditionModel<C, T> {
 									AutomaticWildcard.class, AutomaticWildcard.POSTFIX);
 
 	/**
-	 * Specifies whether string based conditions are case-sensitive or not by default
+	 * Specifies whether string based conditions are case-sensitive by default
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 */

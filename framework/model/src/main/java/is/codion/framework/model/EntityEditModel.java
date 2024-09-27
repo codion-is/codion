@@ -445,7 +445,7 @@ public interface EntityEditModel {
 		 * instance or when the entity is set via {@link EditableEntity#set(Object)} or {@link EditableEntity#defaults()}.
 		 * @return an observer notified each time a value changes
 		 */
-		Observer<Attribute<?>> changed();
+		Observer<Attribute<?>> valueChanged();
 
 		/**
 		 * @param attribute the attribute

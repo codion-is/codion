@@ -714,7 +714,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	private static final class DefaultEditableEntity implements EditableEntity {
 
 		private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
-		private final Event<Attribute<?>> valueChange = Event.event();
+		private final Event<Attribute<?>> valueChanged = Event.event();
 		private final Event<Entity> changing = Event.event();
 		private final Event<Entity> changed = Event.event();
 
@@ -813,8 +813,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public Observer<Attribute<?>> changed() {
-			return valueChange.observer();
+		public Observer<Attribute<?>> valueChanged() {
+			return valueChanged.observer();
 		}
 
 		@Override
@@ -907,7 +907,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			if (editModelValue != null) {
 				editModelValue.valueChanged();
 			}
-			valueChange.accept(attribute);
+			valueChanged.accept(attribute);
 		}
 
 		private void updateStates() {

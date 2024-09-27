@@ -24,6 +24,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityComboBoxModel.linkForeignKeyFilterComboBoxModel() and linkForeignKeyConditionComboBoxModel() replaced with foreignKeyComboBoxModelLinker() returning a ForeignKeyComboBoxModelLinker.
 - EntityTableModel.rowCount() removed.
+- EntityEditModel.EditableEntity.changed() renamed valueChanged().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel bug fixed, constructor used refresh, which could be async, instead of adding items directly to the model.
 
