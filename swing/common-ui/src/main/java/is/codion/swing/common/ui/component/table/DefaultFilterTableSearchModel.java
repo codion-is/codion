@@ -47,13 +47,13 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 					.listener(this::performSearch)
 					.build();
 	private final List<RowColumn> searchResults = new ArrayList<>();
-	private final Value<Predicate<String>> searchPredicate = Value.builder()
+	private final Value<Predicate<String>> predicate = Value.builder()
 					.<Predicate<String>>nullable()
 					.listener(this::performSearch)
 					.build();
 	private final Value<String> searchString = Value.builder()
 					.nonNull("")
-					.consumer(searchText -> searchPredicate.set(createSearchPredicate(searchText)))
+					.consumer(searchText -> predicate.set(predicate(searchText)))
 					.build();
 	private final State regularExpression = State.builder()
 					.listener(searchString::clear)
@@ -86,8 +86,8 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 	}
 
 	@Override
-	public Value<Predicate<String>> searchPredicate() {
-		return searchPredicate;
+	public Value<Predicate<String>> predicate() {
+		return predicate;
 	}
 
 	@Override
@@ -171,10 +171,10 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 	private void performSearch() {
 		clearSearchResults();
-		if (searchPredicate.isNull() || tableModel.items().visible().count() == 0 || tableModel.getColumnCount() == 0) {
+		if (predicate.isNull() || tableModel.items().visible().count() == 0 || tableModel.getColumnCount() == 0) {
 			return;
 		}
-		Predicate<String> predicate = searchPredicate.get();
+		Predicate<String> predicate = this.predicate.get();
 		List<FilterTableColumn<C>> visibleColumns = columnModel.visible();
 		for (int row = 0; row < tableModel.items().visible().count(); row++) {
 			for (int columnIndex = 0; columnIndex < visibleColumns.size(); columnIndex++) {
@@ -200,7 +200,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 		});
 	}
 
-	private Predicate<String> createSearchPredicate(String searchText) {
+	private Predicate<String> predicate(String searchText) {
 		if (searchText.isEmpty()) {
 			return null;
 		}

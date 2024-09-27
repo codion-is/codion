@@ -47,9 +47,9 @@ public interface FilterTableSearchModel {
 	Value<String> searchString();
 
 	/**
-	 * @return the value for the search predicate
+	 * @return the {@link Value} controlling the search predicate
 	 */
-	Value<Predicate<String>> searchPredicate();
+	Value<Predicate<String>> predicate();
 
 	/**
 	 * Finds the next value and selects the row, if none is found the selection is cleared
@@ -81,7 +81,7 @@ public interface FilterTableSearchModel {
 	List<RowColumn> searchResults();
 
 	/**
-	 * Returns the Value holding the selected search result row/column if available, otherwise one with row: -1 and column: -1
+	 * Returns the {@link ValueObserver} notified of the selected search result row/column if available, otherwise one with row: -1 and column: -1
 	 * @return an observer notified each time the current search result changes
 	 * @see #nextResult()
 	 * @see #previousResult()

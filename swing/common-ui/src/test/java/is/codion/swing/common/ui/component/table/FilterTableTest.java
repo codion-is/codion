@@ -268,7 +268,7 @@ public class FilterTableTest {
 
 		Predicate<String> predicate = item -> item.equals("b") || item.equals("e");
 
-		searchModel.searchPredicate().set(predicate);
+		searchModel.predicate().set(predicate);
 		rowColumn = searchModel.selectPreviousResult().orElse(null);
 		assertEquals(new DefaultRowColumn(3, 1), rowColumn);
 		rowColumn = searchModel.selectPreviousResult().orElse(null);
@@ -312,7 +312,7 @@ public class FilterTableTest {
 
 		predicate = item -> item.equals("b") || item.equals("e");
 
-		searchModel.searchPredicate().set(predicate);
+		searchModel.predicate().set(predicate);
 		rowColumn = searchModel.selectPreviousResult().orElse(null);
 		assertEquals(new DefaultRowColumn(3, 0), rowColumn);
 		rowColumn = searchModel.selectPreviousResult().orElse(null);
