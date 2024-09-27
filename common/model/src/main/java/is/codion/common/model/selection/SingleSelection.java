@@ -25,9 +25,9 @@ import is.codion.common.state.StateObserver;
 
 /**
  * A selection model, managing a single selected item
- * @param <R> the item type
+ * @param <T> the item type
  */
-public interface SingleSelection<R> {
+public interface SingleSelection<T> {
 
 	/**
 	 * @return a {@link StateObserver} indicating whether the selection is empty
@@ -43,7 +43,7 @@ public interface SingleSelection<R> {
 	/**
 	 * @return a {@link Mutable} controlling the selected item
 	 */
-	Mutable<R> item();
+	Mutable<T> item();
 
 	/**
 	 * Clears the selection
