@@ -283,7 +283,7 @@ public final class EntityComboBoxModelTest {
 		assertNull(comboBoxModel.getSelectedItem());
 		comboBoxModel.refresh();
 		assertTrue(comboBoxModel.getSize() > 0);
-		assertFalse(comboBoxModel.cleared());
+		assertFalse(comboBoxModel.items().cleared());
 
 		Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("CLARK"));
 		comboBoxModel.setSelectedItem(clark);

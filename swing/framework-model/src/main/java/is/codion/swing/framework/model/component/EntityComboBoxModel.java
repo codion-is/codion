@@ -347,11 +347,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public boolean cleared() {
-		return comboBoxModel.cleared();
-	}
-
-	@Override
 	public Value<Function<Object, Entity>> selectedItemTranslator() {
 		return comboBoxModel.selectedItemTranslator();
 	}

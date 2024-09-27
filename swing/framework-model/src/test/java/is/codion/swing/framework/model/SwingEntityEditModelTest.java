@@ -64,23 +64,23 @@ public class SwingEntityEditModelTest {
 		assertEquals(model, employeeEditModel.comboBoxModel(Employee.JOB));
 		employeeEditModel.refreshComboBoxModels();
 		employeeEditModel.clearComboBoxModels();
-		assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).cleared());
+		assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).items().cleared());
 		employeeEditModel.refreshComboBoxModels();
 		employeeEditModel.comboBoxModel(Employee.JOB).clear();
-		assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).cleared());
+		assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).items().cleared());
 	}
 
 	@Test
 	void foreignKeyComboBoxModel() {
 		EntityComboBoxModel model = employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
-		assertTrue(model.cleared());
+		assertTrue(model.items().cleared());
 		assertTrue(model.items().get().isEmpty());
 		employeeEditModel.refreshComboBoxModels();
-		assertFalse(model.cleared());
+		assertFalse(model.items().cleared());
 		assertFalse(model.items().get().isEmpty());
 		employeeEditModel.clearComboBoxModels();
-		assertTrue(model.cleared());
+		assertTrue(model.items().cleared());
 		assertTrue(model.items().get().isEmpty());
 		assertSame(model, employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK));
 	}
@@ -89,7 +89,7 @@ public class SwingEntityEditModelTest {
 	void createForeignKeyComboBoxModel() {
 		EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
-		assertTrue(model.cleared());
+		assertTrue(model.items().cleared());
 		assertTrue(model.items().get().isEmpty());
 		ForeignKeyDefinition deptForeignKey = employeeEditModel.entities()
 						.definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK);
@@ -118,9 +118,9 @@ public class SwingEntityEditModelTest {
 	@Test
 	void initializeComboBoxModels() {
 		employeeEditModel.initializeComboBoxModels(Employee.DEPARTMENT_FK, Employee.MGR_FK, Employee.JOB);
-		assertFalse(employeeEditModel.comboBoxModel(Employee.JOB).cleared());
-		assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).cleared());
-		assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK).cleared());
+		assertFalse(employeeEditModel.comboBoxModel(Employee.JOB).items().cleared());
+		assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).items().cleared());
+		assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK).items().cleared());
 	}
 
 	@Test

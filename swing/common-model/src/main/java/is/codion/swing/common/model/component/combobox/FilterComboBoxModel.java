@@ -51,11 +51,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	PropertyValue<String> NULL_CAPTION = Configuration.stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
 
 	/**
-	 * @return true if the model data has been cleared and needs to be refreshed
-	 */
-	boolean cleared();
-
-	/**
 	 * Provides a way for the combo box model to translate an item when it is selected, such
 	 * as selecting the String "1" in a String based model when selected item is set to the number 1.
 	 * @return the {@link Value} controlling the selected item translator
@@ -138,6 +133,11 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @throws IllegalArgumentException in case the replacement item fails validation
 		 */
 		void replace(T item, T replacement);
+
+		/**
+		 * @return true if the items have been cleared and need to be refreshed
+		 */
+		boolean cleared();
 
 		/**
 		 * @return the null item

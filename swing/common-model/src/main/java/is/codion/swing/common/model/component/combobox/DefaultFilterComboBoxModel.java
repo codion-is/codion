@@ -61,11 +61,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final Refresher<T> refresher;
 
 	/**
-	 * set during setItems()
-	 */
-	private boolean cleared = true;
-
-	/**
 	 * Due to a java.util.ConcurrentModificationException in OSX
 	 */
 	private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
@@ -99,11 +94,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	public final void clear() {
 		setSelectedItem(null);
 		modelItems.set(emptyList());
-	}
-
-	@Override
-	public final boolean cleared() {
-		return cleared;
 	}
 
 	@Override
@@ -233,6 +223,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final DefaultNullItem nullItem = new DefaultNullItem();
 
 		private final Event<Collection<T>> event = Event.event();
+
+		/**
+		 * set during setItems()
+		 */
+		private boolean cleared = true;
 
 		private DefaultItems() {
 			validator.addValidator(validator -> get().stream()
@@ -387,6 +382,11 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (Objects.equals(selectionModel.selected.item, item)) {
 				selectionModel.selected.replaceWith(item);
 			}
+		}
+
+		@Override
+		public boolean cleared() {
+			return cleared;
 		}
 
 		private T validate(T item) {

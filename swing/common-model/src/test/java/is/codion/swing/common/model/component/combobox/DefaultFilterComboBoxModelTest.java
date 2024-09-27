@@ -65,7 +65,7 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(5, testModel.items().visible().count());
 		testModel.clear();
 		assertEquals(1, testModel.getSize());//null item
-		assertTrue(testModel.cleared());
+		assertTrue(testModel.items().cleared());
 	}
 
 	@Test

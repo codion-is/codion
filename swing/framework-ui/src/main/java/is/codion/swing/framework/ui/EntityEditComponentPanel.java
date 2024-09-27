@@ -983,7 +983,7 @@ public class EntityEditComponentPanel extends JPanel {
 		ComboBoxModel<?> model = comboBox.getModel();
 		if (model instanceof FilterComboBoxModel) {
 			FilterComboBoxModel<?> comboBoxModel = (FilterComboBoxModel<?>) model;
-			if (comboBoxModel.cleared()) {
+			if (comboBoxModel.items().cleared()) {
 				comboBoxModel.refresh();
 			}
 		}
