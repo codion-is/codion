@@ -102,7 +102,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		this.conditionSupplier = Value.builder()
 						.nonNull((Supplier<Condition>) new DefaultConditionSupplier())
 						.build();
-		comboBoxModel.selectedItemTranslator().set(new SelectedItemTranslator());
+		comboBoxModel.selection().translator().set(new SelectedItemTranslator());
 		comboBoxModel.refresher().supplier().set(this::performQuery);
 		comboBoxModel.items().validator().set(new ItemValidator());
 		comboBoxModel.items().visible().predicate().set(foreignKeyVisiblePredicate);
@@ -344,11 +344,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	@Override
 	public void clear() {
 		comboBoxModel.clear();
-	}
-
-	@Override
-	public Value<Function<Object, Entity>> selectedItemTranslator() {
-		return comboBoxModel.selectedItemTranslator();
 	}
 
 	@Override

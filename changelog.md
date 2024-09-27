@@ -7,6 +7,7 @@ Codion Change Log
 - FilterComboBoxModel.replace() moved to FilterComboBoxModelItems.
 - FilterComboBoxModel.validator() moved to FilterComboBoxModelItems.
 - FilterComboBoxModel.cleared() moved to FilterComboBoxModelItems.
+- FilterComboBoxModel.selectedItemTranslator() moved to FilterComboBoxSelectionModel and renamed translator().
 ### is.codion.framework.model
 - EntityComboBoxModel.linkForeignKeyFilterComboBoxModel() and linkForeignKeyConditionComboBoxModel() replaced with foreignKeyComboBoxModelLinker() returning a ForeignKeyComboBoxModelLinker.
 ### is.codion.swing.framework.model

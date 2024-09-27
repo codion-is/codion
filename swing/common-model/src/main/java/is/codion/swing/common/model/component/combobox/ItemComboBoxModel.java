@@ -42,12 +42,12 @@ import static java.util.Objects.requireNonNull;
 public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<T>> {
 
 	private ItemComboBoxModel(List<Item<T>> items) {
-		selectedItemTranslator().set(new SelectedItemTranslator());
+		selection().translator().set(new SelectedItemTranslator());
 		items().set(items);
 	}
 
 	private ItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
-		selectedItemTranslator().set(new SelectedItemTranslator());
+		selection().translator().set(new SelectedItemTranslator());
 		items().visible().comparator().set(comparator);
 		items().set(items);
 		if (items().contains(Item.item(null))) {
