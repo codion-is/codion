@@ -360,11 +360,11 @@ public final class EntityComboBoxModelTest {
 						.build();
 
 		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().addItem(dept));
-		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.replace(comboBoxModel.getElementAt(2), dept));
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().replace(comboBoxModel.getElementAt(2), dept));
 		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().nullItem().set(dept));
 
 		assertThrows(NullPointerException.class, () -> comboBoxModel.items().addItem(null));
-		assertThrows(NullPointerException.class, () -> comboBoxModel.replace(comboBoxModel.getElementAt(2), null));
+		assertThrows(NullPointerException.class, () -> comboBoxModel.items().replace(comboBoxModel.getElementAt(2), null));
 		assertThrows(NullPointerException.class, () -> comboBoxModel.items().nullItem().clear());
 	}
 }

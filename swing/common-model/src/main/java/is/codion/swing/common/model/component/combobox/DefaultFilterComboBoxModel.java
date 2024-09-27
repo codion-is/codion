@@ -112,11 +112,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final void replace(T item, T replacement) {
-		modelItems.replace(item, replacement);
-	}
-
-	@Override
 	public final Value<Predicate<T>> validator() {
 		return modelItems.validator;
 	}
@@ -384,7 +379,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return nullItem;
 		}
 
-		private void replace(T item, T replacement) {
+		@Override
+		public void replace(T item, T replacement) {
 			validate(replacement);
 			removeItem(item);
 			addItem(replacement);

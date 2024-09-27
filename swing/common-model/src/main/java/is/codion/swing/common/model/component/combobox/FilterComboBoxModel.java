@@ -56,14 +56,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	boolean cleared();
 
 	/**
-	 * Replaces the given item in this combo box model
-	 * @param item the item to replace
-	 * @param replacement the replacement item
-	 * @throws IllegalArgumentException in case the replacement item fails validation
-	 */
-	void replace(T item, T replacement);
-
-	/**
 	 * Provides a way for the model to prevent the addition of certain items.
 	 * Trying to add items that fail validation will result in an exception.
 	 * Note that any translation of the selected item is done before validation.
@@ -138,6 +130,14 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @param <T> the item type
 	 */
 	interface FilterComboBoxModelItems<T> extends Items<T> {
+
+		/**
+		 * Replaces the given item in this combo box model
+		 * @param item the item to replace
+		 * @param replacement the replacement item
+		 * @throws IllegalArgumentException in case the replacement item fails validation
+		 */
+		void replace(T item, T replacement);
 
 		/**
 		 * @return the null item

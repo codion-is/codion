@@ -352,11 +352,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	}
 
 	@Override
-	public void replace(Entity item, Entity replacement) {
-		comboBoxModel.replace(item, replacement);
-	}
-
-	@Override
 	public Value<Predicate<Entity>> validator() {
 		return comboBoxModel.validator();
 	}
@@ -629,7 +624,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 		@Override
 		public void accept(Map<Entity.Key, Entity> updated) {
-			updated.forEach((key, entity) -> replace(Entity.entity(key), entity));
+			updated.forEach((key, entity) -> items().replace(Entity.entity(key), entity));
 		}
 	}
 

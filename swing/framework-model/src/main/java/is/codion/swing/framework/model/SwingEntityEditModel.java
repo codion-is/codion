@@ -247,7 +247,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		super.replaceForeignKey(foreignKey, entities);
 		if (comboBoxModels.containsKey(foreignKey)) {
 			EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
-			entities.forEach(foreignKeyValue -> comboBoxModel.replace(foreignKeyValue, foreignKeyValue));
+			entities.forEach(foreignKeyValue -> comboBoxModel.items().replace(foreignKeyValue, foreignKeyValue));
 		}
 	}
 

@@ -244,7 +244,7 @@ final class EntityControls {
 
 		@Override
 		public void accept(Entity updated) {
-			comboBoxModel.replace(comboBoxModel.selection().value(), updated);
+			comboBoxModel.items().replace(comboBoxModel.selection().value(), updated);
 			comboBoxModel.setSelectedItem(updated);
 		}
 	}
