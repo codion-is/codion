@@ -56,11 +56,11 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
@@ -334,13 +334,9 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				}
 
 				private static List<Item<Month>> createMonthsList() {
-					List<Item<Month>> months = Arrays.stream(Month.values())
-									.map(month -> Item.item(month, month.getDisplayName(TextStyle.SHORT, Locale.getDefault())))
-									.collect(toList());
-					months.add(0, Item.item(null, ""));
-					Collections.reverse(months);
-
-					return months;
+					return Stream.concat(Stream.of(Item.<Month>item(null, "")), Arrays.stream(Month.values())
+													.map(month -> Item.item(month, month.getDisplayName(TextStyle.SHORT, Locale.getDefault()))))
+									.toList();
 				}
 			}
 		}
