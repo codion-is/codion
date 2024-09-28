@@ -24,6 +24,7 @@ Codion Change Log
 - DefaultFilterComboBoxModel.Selected bug fixed, selection empty state now set before fireContentsChanged() is called.
 ### is.codion.swing.common.ui
 - FilterTableSearchModel.searchPredicate() renamed predicate().
+- FileInputPanel.Builder now Path based.
 ### is.codion.framework.model
 - EntityComboBoxModel.linkForeignKeyFilterComboBoxModel() and linkForeignKeyConditionComboBoxModel() replaced with foreignKeyComboBoxModelLinker() returning a ForeignKeyComboBoxModelLinker.
 - EntityTableModel.rowCount() removed.

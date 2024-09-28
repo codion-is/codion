@@ -35,8 +35,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.util.Objects.requireNonNull;
@@ -100,9 +98,9 @@ public final class FileInputPanel extends JPanel {
 	/**
 	 * Builds a {@link FileInputPanel}
 	 */
-	public interface Builder extends ComponentBuilder<byte[], FileInputPanel, Builder> {}
+	public interface Builder extends ComponentBuilder<Path, FileInputPanel, Builder> {}
 
-	private static final class DefaultFileInputPanelBuilder extends AbstractComponentBuilder<byte[], FileInputPanel, Builder> implements Builder {
+	private static final class DefaultFileInputPanelBuilder extends AbstractComponentBuilder<Path, FileInputPanel, Builder> implements Builder {
 
 		private final JTextField filePathField;
 
@@ -116,15 +114,15 @@ public final class FileInputPanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<byte[], FileInputPanel> createComponentValue(FileInputPanel component) {
+		protected ComponentValue<Path, FileInputPanel> createComponentValue(FileInputPanel component) {
 			return new FileInputPanelValue(component);
 		}
 
 		@Override
-		protected void setInitialValue(FileInputPanel component, byte[] initialValue) {}
+		protected void setInitialValue(FileInputPanel component, Path initialValue) {}
 	}
 
-	private static final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInputPanel> {
+	private static final class FileInputPanelValue extends AbstractComponentValue<Path, FileInputPanel> {
 
 		private FileInputPanelValue(FileInputPanel fileInputPanel) {
 			super(fileInputPanel);
@@ -132,22 +130,18 @@ public final class FileInputPanel extends JPanel {
 		}
 
 		@Override
-		protected byte[] getComponentValue() {
+		protected Path getComponentValue() {
 			String filePath = component().filePathField().getText();
 			if (filePath.isEmpty()) {
 				return null;
 			}
-			try {
-				return Files.readAllBytes(Path.of(filePath));
-			}
-			catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+
+			return Path.of(filePath);
 		}
 
 		@Override
-		protected void setComponentValue(byte[] value) {
-			throw new UnsupportedOperationException();
+		protected void setComponentValue(Path path) {
+			component().filePathField.setText(path == null ? "" : path.toString());
 		}
 	}
 }
