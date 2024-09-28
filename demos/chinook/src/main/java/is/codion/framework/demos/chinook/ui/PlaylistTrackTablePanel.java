@@ -33,7 +33,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 	public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()), config -> config
-						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory())
+						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory(PlaylistTrack.TRACK_FK))
 						// Skip confirmation when deleting
 						.deleteConfirmer(Confirmer.NONE)
 						.includeEditControl(false));
