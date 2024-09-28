@@ -21,10 +21,6 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.TestDomain;
 import is.codion.swing.framework.ui.TestDomain.Detail;
@@ -45,12 +41,10 @@ public final class DefaultEntityComponentFactoryTest {
 
 	@Test
 	void test() {
-		EntityComponentFactory<Entity, ForeignKey, EntitySearchField> foreignKeyComponentFactory = new DefaultEntityComponentFactory<>();
-		foreignKeyComponentFactory.componentValue(Detail.MASTER_FK, editModel, null);
-		foreignKeyComponentFactory.componentValue(Detail.DETAIL_FK, editModel, null);
+		new DefaultEntityComponentFactory<>(Detail.MASTER_FK).componentValue(editModel, null);
+		new DefaultEntityComponentFactory<>(Detail.DETAIL_FK).componentValue(editModel, null);
 
-		EntityComponentFactory<Integer, Attribute<Integer>, NumberField<Integer>> integerComponentFactory = new DefaultEntityComponentFactory<>();
-		integerComponentFactory.componentValue(Detail.INT, editModel, null);
-		integerComponentFactory.componentValue(Detail.INT_DERIVED, editModel, null);
+		new DefaultEntityComponentFactory<>(Detail.INT).componentValue(editModel, null);
+		new DefaultEntityComponentFactory<>(Detail.INT_DERIVED).componentValue(editModel, null);
 	}
 }

@@ -37,6 +37,7 @@ Codion Change Log
 - SwingEntityTableModel bug fixed, constructor used refresh, which could be async, instead of adding items directly to the model.
 ### is.codion.swing.framework.ui
 - EntityComponentFactory.caption() added, related refactoring.
+- EntityComponentFactory, Attribute type parameter removed, DefaultEntityComponentFactory refactored accordingly. 
 
 ## 0.18.15
 ### is.codion.common.core

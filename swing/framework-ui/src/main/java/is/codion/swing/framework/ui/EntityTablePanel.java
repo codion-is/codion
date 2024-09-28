@@ -982,7 +982,7 @@ public class EntityTablePanel extends JPanel {
 	protected <T> EntityDialogs.EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
 		return EntityDialogs.editAttributeDialog(tableModel.editModel(), attribute)
 						.owner(this)
-						.componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) configuration.editComponentFactories.get(attribute));
+						.componentFactory((EntityComponentFactory<T, ?>) configuration.editComponentFactories.get(attribute));
 	}
 
 	/**
@@ -2114,7 +2114,7 @@ public class EntityTablePanel extends JPanel {
 		private final EntityTablePanel tablePanel;
 		private final EntityDefinition entityDefinition;
 		private final ValueSet<Attribute<?>> editable;
-		private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories;
+		private final Map<Attribute<?>, EntityComponentFactory<?, ?>> editComponentFactories;
 		private final FilterTable.Builder<Entity, Attribute<?>> tableBuilder;
 
 		private TableConditionPanel.Factory<Attribute<?>> tableConditionPanelFactory = new DefaultTableConditionPanelFactory();
@@ -2415,7 +2415,7 @@ public class EntityTablePanel extends JPanel {
 		 * @return this Config instance
 		 */
 		public <T, A extends Attribute<T>, C extends JComponent> Config editComponentFactory(A attribute,
-																																												 EntityComponentFactory<T, A, C> componentFactory) {
+																																												 EntityComponentFactory<T, C> componentFactory) {
 			entityDefinition.attributes().definition(attribute);
 			editComponentFactories.put(attribute, requireNonNull(componentFactory));
 			return this;

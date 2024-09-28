@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
@@ -28,21 +27,17 @@ import java.util.Optional;
 /**
  * A factory for {@link ComponentValue} instances.
  * @param <T> the value type
- * @param <A> the attribute type
  * @param <C> the component type
  */
-public interface EntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> {
+public interface EntityComponentFactory<T, C extends JComponent> {
 
 	/**
-	 * Provides an input {@link ComponentValue} for editing a single attribute value
-	 * for one or more entities, override to supply a specific {@link ComponentValue}
-	 * implementations for attributes.
-	 * @param attribute the attribute for which to create the {@link ComponentValue}
+	 * Provides an input {@link ComponentValue} for editing a single attribute value for one or more entities.
 	 * @param editModel the edit model used to create foreign key input models
 	 * @param initialValue the initial value to display
 	 * @return a new {@link ComponentValue} instance handling input for {@code attribute}
 	 */
-	ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue);
+	ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T initialValue);
 
 	/**
 	 * Provides a way to override the default attribute caption, when presenting the component to the user.

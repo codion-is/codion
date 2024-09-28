@@ -19,7 +19,6 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
@@ -92,11 +91,10 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	}
 
 	private static final class TagEditComponentFactory
-					implements EntityComponentFactory<List<String>, Attribute<List<String>>, AlbumTagPanel> {
+					implements EntityComponentFactory<List<String>, AlbumTagPanel> {
 
 		@Override
-		public ComponentValue<List<String>, AlbumTagPanel> componentValue(Attribute<List<String>> attribute,
-																																			SwingEntityEditModel editModel,
+		public ComponentValue<List<String>, AlbumTagPanel> componentValue(SwingEntityEditModel editModel,
 																																			List<String> initialValue) {
 			return new TagComponentValue(initialValue);
 		}

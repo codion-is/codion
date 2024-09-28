@@ -137,7 +137,7 @@ public final class EntityDialogs {
 		 * @param componentFactory the component factory, if null then the default is used
 		 * @return this builder
 		 */
-		EditAttributeDialogBuilder<T> componentFactory(EntityComponentFactory<T, Attribute<T>, ?> componentFactory);
+		EditAttributeDialogBuilder<T> componentFactory(EntityComponentFactory<T, ?> componentFactory);
 
 		/**
 		 * @param onValidationException called on validation exception
@@ -251,23 +251,22 @@ public final class EntityDialogs {
 
 		private static final Logger LOG = LoggerFactory.getLogger(DefaultEditAttributeDialogBuilder.class);
 
-		private static final EntityComponentFactory<?, ?, ?> DEFAULT_COMPONENT_FACTORY = new EditEntityComponentFactory<>();
-
 		private final SwingEntityEditModel editModel;
 		private final Attribute<T> attribute;
 
-		private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = (EntityComponentFactory<T, Attribute<T>, ?>) DEFAULT_COMPONENT_FACTORY;
+		private EntityComponentFactory<T, ?> componentFactory;
 		private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
 		private Consumer<Exception> onException = new DefaultExceptionHandler();
 
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
 			this.editModel = requireNonNull(editModel);
 			this.attribute = requireNonNull(attribute);
+			this.componentFactory = new EditEntityComponentFactory<>(attribute);
 		}
 
 		@Override
-		public EditAttributeDialogBuilder<T> componentFactory(EntityComponentFactory<T, Attribute<T>, ?> componentFactory) {
-			this.componentFactory = componentFactory == null ? (EntityComponentFactory<T, Attribute<T>, ?>) DEFAULT_COMPONENT_FACTORY : componentFactory;
+		public EditAttributeDialogBuilder<T> componentFactory(EntityComponentFactory<T, ?> componentFactory) {
+			this.componentFactory = componentFactory == null ? new EditEntityComponentFactory<>(attribute) : componentFactory;
 			return this;
 		}
 
@@ -306,7 +305,7 @@ public final class EntityDialogs {
 							.map(entity -> entity.get(attribute))
 							.collect(toSet());
 			T initialValue = values.size() == 1 ? values.iterator().next() : null;
-			ComponentValue<T, ?> componentValue = componentFactory.componentValue(attribute, editModel, initialValue);
+			ComponentValue<T, ?> componentValue = componentFactory.componentValue(editModel, initialValue);
 			InputValidator<T> validator = new InputValidator<>(entityDefinition, attribute, componentValue);
 			inputDialog(componentValue)
 							.owner(owner)
@@ -422,24 +421,28 @@ public final class EntityDialogs {
 		}
 	}
 
-	private static final class EditEntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> extends DefaultEntityComponentFactory<T, A, C> {
+	private static final class EditEntityComponentFactory<T, C extends JComponent> extends DefaultEntityComponentFactory<T, C> {
 
 		private static final int TEXT_INPUT_PANEL_COLUMNS = 20;
 
+		private EditEntityComponentFactory(Attribute<T> attribute) {
+			super(attribute);
+		}
+
 		@Override
-		public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
+		public ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T initialValue) {
 			AttributeDefinition<T> attributeDefinition = editModel.entityDefinition()
-							.attributes().definition(attribute);
-			if (attributeDefinition.items().isEmpty() && attribute.type().isString()) {
+							.attributes().definition(attribute());
+			if (attributeDefinition.items().isEmpty() && attribute().type().isString()) {
 				//special handling for non-item based String attributes, text field panel instead of a text field
 				return (ComponentValue<T, C>) entityComponents(editModel.entityDefinition())
-								.textFieldPanel((Attribute<String>) attribute)
+								.textFieldPanel((Attribute<String>) attribute())
 								.initialValue((String) initialValue)
 								.columns(TEXT_INPUT_PANEL_COLUMNS)
 								.buildValue();
 			}
 
-			return super.componentValue(attribute, editModel, initialValue);
+			return super.componentValue(editModel, initialValue);
 		}
 	}
 

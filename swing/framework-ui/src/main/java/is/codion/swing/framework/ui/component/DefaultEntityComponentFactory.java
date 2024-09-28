@@ -34,12 +34,22 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link EntityComponentFactory} implementation.
+ * @param <T> the attribute type
+ * @param <C> the component type
  */
-public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> implements EntityComponentFactory<T, A, C> {
+public class DefaultEntityComponentFactory<T, C extends JComponent> implements EntityComponentFactory<T, C> {
+
+	private final Attribute<T> attribute;
+
+	/**
+	 * @param attribute the attribute for which this factory creates a {@link ComponentValue}
+	 */
+	public DefaultEntityComponentFactory(Attribute<T> attribute) {
+		this.attribute = requireNonNull(attribute);
+	}
 
 	@Override
-	public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
-		requireNonNull(attribute, "attribute");
+	public ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T initialValue) {
 		requireNonNull(editModel, "editModel");
 		EntityComponents inputComponents = entityComponents(editModel.entityDefinition());
 		if (attribute instanceof ForeignKey) {
@@ -56,6 +66,13 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
 		return (ComponentValue<T, C>) inputComponents.component(attribute)
 						.initialValue(initialValue)
 						.buildValue();
+	}
+
+	/**
+	 * @return the attribute
+	 */
+	protected final Attribute<T> attribute() {
+		return attribute;
 	}
 
 	private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel,

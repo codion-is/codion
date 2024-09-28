@@ -40,7 +40,6 @@ import static java.util.Objects.requireNonNull;
 public class EntityTableCellEditorFactory implements FilterTableCellEditorFactory<Attribute<?>> {
 
 	private final SwingEntityEditModel editModel;
-	private final EntityComponentFactory<Object, Attribute<Object>, JComponent> componentFactory = new DefaultEntityComponentFactory<>();
 
 	/**
 	 * @param editModel the edit model
@@ -55,8 +54,11 @@ public class EntityTableCellEditorFactory implements FilterTableCellEditorFactor
 			return Optional.empty();
 		}
 
+		EntityComponentFactory<Object, JComponent> componentFactory =
+						new DefaultEntityComponentFactory<>((Attribute<Object>) column.identifier());
+
 		return Optional.of(filterTableCellEditor(() ->
-						componentFactory.componentValue((Attribute<Object>) column.identifier(), editModel, null)));
+						componentFactory.componentValue(editModel, null)));
 	}
 
 	private boolean nonUpdatableForeignKey(Attribute<?> attribute) {
