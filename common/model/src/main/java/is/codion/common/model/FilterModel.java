@@ -92,43 +92,43 @@ public interface FilterModel<T> {
 
 		/**
 		 * Adds the given item to this model.
-		 * Note that if the item does not pass the {@link #visible()} predicate, it will be filtered right away.
+		 * Note that if the item does not pass the {@link VisibleItems#predicate()}, it will be filtered right away.
 		 * @param item the item to add
-		 * @return true if the item was added, false if filtered
+		 * @return true if the item was added to the visible items
 		 */
 		boolean addItem(T item);
 
 		/**
 		 * Adds the given items to the bottom of this table model.
-		 * Note that if an item does not pass the {@link #visible()} predicate, it will be filtered right away.
+		 * Note that if an item does not pass the {@link VisibleItems#predicate()}, it will be filtered right away.
 		 * @param items the items to add
-		 * @return false if none of the given items passed the {@link #visible()} predicate and were filtered right away
+		 * @return true if one or more of the items was added to the visible items
 		 */
 		boolean addItems(Collection<T> items);
 
 		/**
 		 * Removes the given item from this model
 		 * @param item the item to remove from the model
-		 * @return true if the item was visible
+		 * @return true if the item was removed from the visible items
 		 */
 		boolean removeItem(T item);
 
 		/**
 		 * Removes the given items from this table model
 		 * @param items the items to remove from the model
-		 * @return true if one or more of the items were visible
+		 * @return true if one or more of the items were removed from the visible items
 		 */
 		boolean removeItems(Collection<T> items);
 
 		/**
-		 * @return a {@link Visible} providing access to the visible items, in the order they appear in the model
+		 * @return a {@link VisibleItems} providing access to the visible items, in the order they appear in the model
 		 */
-		Visible<T> visible();
+		VisibleItems<T> visible();
 
 		/**
-		 * @return a {@link Filtered} providing access to the filtered items
+		 * @return a {@link FilteredItems} providing access to the filtered items
 		 */
-		Filtered<T> filtered();
+		FilteredItems<T> filtered();
 
 		/**
 		 * Returns true if the model contain the given item, as visible or filtered.
@@ -143,122 +143,122 @@ public interface FilterModel<T> {
 		int count();
 
 		/**
-		 * Filters the items according to the predicate specified by {@link Visible#predicate()}.
+		 * Filters the items according to the predicate specified by {@link VisibleItems#predicate()}.
 		 * If no visible predicate is specified this method does nothing.
 		 * This method does not interfere with the internal ordering of the visible items.
-		 * @see Visible#predicate()
+		 * @see VisibleItems#predicate()
 		 */
 		void filter();
+	}
+
+	/**
+	 * @param <T> the item type
+	 */
+	interface VisibleItems<T> extends Observable<List<T>> {
 
 		/**
-		 * @param <T> the item type
+		 * @return the {@link Value} controlling the predicate specifying which items should be visible
 		 */
-		interface Visible<T> extends Observable<List<T>> {
-
-			/**
-			 * @return the {@link Value} controlling the predicate specifying which items should be visible
-			 */
-			Value<Predicate<T>> predicate();
-
-			/**
-			 * Returns true if the given item is visible
-			 * @param item the item
-			 * @return true if the item is visible
-			 */
-			boolean contains(T item);
-
-			/**
-			 * @param item the item
-			 * @return the index of the item in this model
-			 */
-			int indexOf(T item);
-
-			/**
-			 * @param index the row index
-			 * @return the item at the given index in this model
-			 */
-			T itemAt(int index);
-
-			/**
-			 * Adds the given item at the given index.
-			 * Note that if the item does not pass the {@link #visible()} predicate it is filtered right away and the method returns false.
-			 * @param index the index
-			 * @param item the item to add
-			 * @return true if the item was added, false if filtered
-			 */
-			boolean addItemAt(int index, T item);
-
-			/**
-			 * Adds the given items at the last index.
-			 * Note that if an item does not pass the {@link #visible()} predicate it is filtered right away.
-			 * @param index the index at which to add the items
-			 * @param items the items to add
-			 * @return false if none of the given items passed the {@link #visible()} predicate and were filtered right away
-			 */
-			boolean addItemsAt(int index, Collection<T> items);
-
-			/**
-			 * Sets the item at the given index.
-			 * Note that if the item does not pass the {@link #visible()} predicate it is filtered right away and this method has no effect.
-			 * @param index the index
-			 * @param item the item
-			 * @return true if the item was set, false if it did not pass the {@link #visible()} predicate
-			 * @see Items.Visible#predicate()
-			 */
-			boolean setItemAt(int index, T item);
-
-			/**
-			 * Removes from this table model the visible element whose index is between index
-			 * @param index the index of the row to be removed
-			 * @return the removed item
-			 * @throws IndexOutOfBoundsException in case the index is out of bounds
-			 */
-			T removeItemAt(int index);
-
-			/**
-			 * Removes from this table model all visible elements whose index is between fromIndex, inclusive and toIndex, exclusive
-			 * @param fromIndex index of first row to be removed
-			 * @param toIndex index after last row to be removed
-			 * @return the removed items
-			 * @throws IndexOutOfBoundsException in case the indexes are out of bounds
-			 */
-			List<T> removeItems(int fromIndex, int toIndex);
-
-			/**
-			 * @return the number of visible items
-			 */
-			int count();
-
-			/**
-			 * Sorts the visible items according to {@link #comparator()}, preserving the selection.
-			 * Calling this method when no comparator is specified has no effect.
-			 * @see #comparator()
-			 */
-			void sort();
-
-			/**
-			 * @return the {@link Value} controlling the comparator to use when sorting
-			 */
-			Value<Comparator<T>> comparator();
-		}
+		Value<Predicate<T>> predicate();
 
 		/**
-		 * @param <T> the item type
+		 * Returns true if the given item is visible
+		 * @param item the item
+		 * @return true if the item is visible
 		 */
-		interface Filtered<T> extends Observable<Collection<T>> {
+		boolean contains(T item);
 
-			/**
-			 * Returns true if the given item is filtered.
-			 * @param item the item
-			 * @return true if the item is filtered
-			 */
-			boolean contains(T item);
+		/**
+		 * @param item the item
+		 * @return the index of the item in this model
+		 */
+		int indexOf(T item);
 
-			/**
-			 * @return the number of filtered items
-			 */
-			int count();
-		}
+		/**
+		 * @param index the row index
+		 * @return the item at the given index in this model
+		 */
+		T itemAt(int index);
+
+		/**
+		 * Adds the given item at the given index.
+		 * Note that if the item does not pass the visible {@link #predicate()} it is filtered right away and the method returns false.
+		 * @param index the index
+		 * @param item the item to add
+		 * @return true if the item was added to the visible items
+		 */
+		boolean addItemAt(int index, T item);
+
+		/**
+		 * Adds the given items at the last index.
+		 * Note that if an item does not pass the visible {@link #predicate()} it is filtered right away.
+		 * @param index the index at which to add the items
+		 * @param items the items to add
+		 * @return true if one or more of the items was added to the visible items
+		 */
+		boolean addItemsAt(int index, Collection<T> items);
+
+		/**
+		 * Sets the item at the given index.
+		 * Note that if the item does not pass the visible {@link #predicate()} this method has no effect.
+		 * @param index the index
+		 * @param item the item
+		 * @return true if the item was set, false if it did not pass the visible {@link #predicate()}
+		 * @see VisibleItems#predicate()
+		 */
+		boolean setItemAt(int index, T item);
+
+		/**
+		 * Removes from this table model the visible element whose index is between index
+		 * @param index the index of the row to be removed
+		 * @return the removed item
+		 * @throws IndexOutOfBoundsException in case the index is out of bounds
+		 */
+		T removeItemAt(int index);
+
+		/**
+		 * Removes from this table model all visible elements whose index is between fromIndex, inclusive and toIndex, exclusive
+		 * @param fromIndex index of first row to be removed
+		 * @param toIndex index after last row to be removed
+		 * @return the removed items
+		 * @throws IndexOutOfBoundsException in case the indexes are out of bounds
+		 */
+		List<T> removeItems(int fromIndex, int toIndex);
+
+		/**
+		 * @return the number of visible items
+		 */
+		int count();
+
+		/**
+		 * Sorts the visible items according to {@link #comparator()}, preserving the selection.
+		 * Calling this method when no comparator is specified has no effect.
+		 * @see #comparator()
+		 */
+		void sort();
+
+		/**
+		 * @return the {@link Value} controlling the comparator to use when sorting
+		 */
+		Value<Comparator<T>> comparator();
+	}
+
+	/**
+	 * @param <T> the item type
+	 */
+	interface FilteredItems<T> extends Observable<Collection<T>> {
+
+		/**
+		 * Returns true if the given item is filtered.
+		 * @param item the item
+		 * @return true if the item is filtered
+		 */
+		boolean contains(T item);
+
+		/**
+		 * @return the number of filtered items
+		 */
+		int count();
 	}
 
 	/**

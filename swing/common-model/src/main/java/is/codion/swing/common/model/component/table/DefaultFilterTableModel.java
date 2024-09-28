@@ -273,8 +273,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final class DefaultItems implements Items<R> {
 
 		private final Predicate<R> validator;
-		private final VisibleItems visible = new VisibleItems();
-		private final FilteredItems filtered = new FilteredItems();
+		private final DefaultVisibleItems visible = new DefaultVisibleItems();
+		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 
 		private DefaultItems(Predicate<R> validator) {
 			this.validator = validator;
@@ -333,12 +333,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Visible<R> visible() {
+		public VisibleItems<R> visible() {
 			return visible;
 		}
 
 		@Override
-		public Filtered<R> filtered() {
+		public FilteredItems<R> filtered() {
 			return filtered;
 		}
 
@@ -455,7 +455,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 		}
 
-		private final class VisibleItems implements Visible<R> {
+		private final class DefaultVisibleItems implements VisibleItems<R> {
 
 			private final Value<Comparator<R>> comparator = Value.builder()
 							.<Comparator<R>>nullable()
@@ -466,7 +466,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			private final List<R> items = new ArrayList<>();
 			private final Event<List<R>> event = Event.event();
 
-			private VisibleItems() {
+			private DefaultVisibleItems() {
 				addTableModelListener(e -> {
 					if (e.getType() != TableModelEvent.DELETE) {
 						// Deletions are handled differently, in order to trigger only a single
@@ -574,7 +574,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 		}
 
-		private final class FilteredItems implements Filtered<R> {
+		private final class DefaultFilteredItems implements FilteredItems<R> {
 
 			private final List<R> items = new ArrayList<>();
 			private final Event<Collection<R>> event = Event.event();

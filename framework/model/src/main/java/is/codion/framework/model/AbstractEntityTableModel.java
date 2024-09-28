@@ -20,7 +20,6 @@ package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.FilterModel.Items.Visible;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
@@ -256,7 +255,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 			if (!selection().empty().get()) {
 				selection().clear();
 			}
-			Visible<Entity> visibleItems = items().visible();
+			VisibleItems<Entity> visibleItems = items().visible();
 			switch (onInsert.get()) {
 				case ADD_TOP:
 					visibleItems.addItemsAt(0, entitiesToAdd);

@@ -201,9 +201,9 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	/**
 	 * Controls the order by to use when selecting entities for this model.
 	 * Note that in order for this to have an effect, you must disable sorting
-	 * by setting the sort comparator to null via {@link Items.Visible#comparator()}
+	 * by setting the sort comparator to null via {@link VisibleItems#comparator()}
 	 * @return the {@link Value} controlling the {@link OrderBy}
-	 * @see Items.Visible#comparator()
+	 * @see VisibleItems#comparator()
 	 */
 	public Value<OrderBy> orderBy() {
 		return orderBy;
@@ -211,7 +211,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	/**
 	 * Use this method to retrieve the default foreign key filter visible predicate if you
-	 * want to add a custom {@link Predicate} to this model via {@link Items.Visible#predicate()}.
+	 * want to add a custom {@link Predicate} to this model via {@link VisibleItems#predicate()}.
 	 * <pre>
 	 * {@code
 	 *   Predicate fkPredicate = model.foreignKeyVisiblePredicate();
@@ -227,10 +227,10 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	/**
 	 * Filters this combo box model so that only items referencing the given keys via the given foreign key are visible.
-	 * Note that this uses the {@link Items.Visible#predicate()} and replaces any previously set prediate.
+	 * Note that this uses the {@link VisibleItems#predicate()} and replaces any previously set prediate.
 	 * @param foreignKey the foreign key
 	 * @param keys the keys, an empty Collection to clear the filter
-	 * @see Items.Visible#predicate()
+	 * @see VisibleItems#predicate()
 	 */
 	public void filterByForeignKey(ForeignKey foreignKey, Collection<Entity.Key> keys) {
 		requireNonNull(foreignKey);

@@ -21,7 +21,7 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.Configuration;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.FilterModel.Items.Visible;
+import is.codion.common.model.FilterModel.VisibleItems;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -885,7 +885,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void select(JComponent dialogOwner, List<Entity> entities) {
-			Visible<Entity> visibleItems = table.model().items().visible();
+			VisibleItems<Entity> visibleItems = table.model().items().visible();
 			if (visibleItems.addItemsAt(0, requireNonNull(entities))) {
 				visibleItems.sort();
 			}

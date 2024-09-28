@@ -20,8 +20,6 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.model.FilterModel.Items.Filtered;
-import is.codion.common.model.FilterModel.Items.Visible;
 import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
@@ -195,8 +193,8 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						.<Predicate<T>>nullable()
 						.listener(this::filter)
 						.build();
-		private final VisibleItems visible = new VisibleItems();
-		private final FilteredItems filtered = new FilteredItems();
+		private final DefaultVisibleItems visible = new DefaultVisibleItems();
+		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 		private final DefaultNullItem nullItem = new DefaultNullItem();
 
 		private final Event<Collection<T>> event = Event.event();
@@ -292,12 +290,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Visible<T> visible() {
+		public VisibleItems<T> visible() {
 			return visible;
 		}
 
 		@Override
-		public Filtered<T> filtered() {
+		public FilteredItems<T> filtered() {
 			return filtered;
 		}
 
@@ -381,7 +379,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class VisibleItems implements Visible<T> {
+	private final class DefaultVisibleItems implements VisibleItems<T> {
 
 		private final Value<Comparator<T>> comparator = Value.builder()
 						.nullable((Comparator<T>) DEFAULT_COMPARATOR)
@@ -492,7 +490,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class FilteredItems implements Filtered<T> {
+	private final class DefaultFilteredItems implements FilteredItems<T> {
 
 		private final List<T> items = new ArrayList<>();
 		private final Event<Collection<T>> event = Event.event();
