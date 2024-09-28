@@ -8,7 +8,8 @@ Codion Change Log
 - FilterModel.Refresher.refresh() removed, refresh() now protected in AbstractRefresher.
 - ColumnSummaryModel renamed SummaryModel.
 - SingleSelection and Selection renamed SingleItemSelection and MultiItemSelection respectively.
-- FilterModel.Items.Visible and Filtered moved to FilterModel and renamed VisibleItems and FilteredItems respectively. 
+- FilterModel.Items.Visible and Filtered moved to FilterModel and renamed VisibleItems and FilteredItems respectively.
+- common.model.loadtest and randomizer packages moved to codion-loadtest-core module.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.includeNull() and nullItem() moved to NullItem.
 - FilterComboBoxModel.replace() moved to FilterComboBoxModelItems.

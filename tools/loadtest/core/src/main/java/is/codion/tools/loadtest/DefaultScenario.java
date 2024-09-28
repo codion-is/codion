@@ -16,9 +16,9 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.loadtest;
+package is.codion.tools.loadtest;
 
-import is.codion.common.model.loadtest.LoadTest.Scenario;
+import is.codion.tools.loadtest.LoadTest.Scenario;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;

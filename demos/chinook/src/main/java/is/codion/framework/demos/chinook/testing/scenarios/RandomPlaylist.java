@@ -19,7 +19,6 @@
 package is.codion.framework.demos.chinook.testing.scenarios;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Genre;
@@ -27,6 +26,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
 
 import java.util.Collection;
 import java.util.List;

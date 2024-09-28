@@ -16,16 +16,16 @@
  *
  * Copyright (c) 2008 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.loadtest;
+package is.codion.tools.loadtest;
 
-import is.codion.common.model.loadtest.DefaultScenario.DefaultRunResult;
-import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
-import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.tools.loadtest.DefaultScenario.DefaultRunResult;
+import is.codion.tools.loadtest.LoadTest.Scenario.Result;
+import is.codion.tools.loadtest.randomizer.ItemRandomizer;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

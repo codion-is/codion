@@ -18,13 +18,13 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.model.randomizer.ItemRandomizer;
-import is.codion.common.model.randomizer.ItemRandomizer.RandomItem;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.tools.loadtest.randomizer.ItemRandomizer;
+import is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;

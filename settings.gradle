@@ -100,6 +100,9 @@ project(":codion-swing-common-model").projectDir = file("swing/common-model")
 include "codion-swing-common-ui"
 project(":codion-swing-common-ui").projectDir = file("swing/common-ui")
 
+include "codion-tools-loadtest-core"
+project(":codion-tools-loadtest-core").projectDir = file("tools/loadtest/core")
+
 include "codion-tools-loadtest-model"
 project(":codion-tools-loadtest-model").projectDir = file("tools/loadtest/model")
 

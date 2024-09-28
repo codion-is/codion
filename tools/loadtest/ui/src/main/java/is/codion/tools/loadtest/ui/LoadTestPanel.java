@@ -19,9 +19,6 @@
 package is.codion.tools.loadtest.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.LoadTest.Scenario;
-import is.codion.common.model.randomizer.ItemRandomizer.RandomItem;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.Utilities;
@@ -34,9 +31,12 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.tools.loadtest.LoadTest;
+import is.codion.tools.loadtest.LoadTest.Scenario;
 import is.codion.tools.loadtest.model.LoadTestModel;
 import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow;
 import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow.ColumnId;
+import is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.jfree.chart.ChartPanel;

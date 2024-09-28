@@ -18,8 +18,6 @@
  */
 package is.codion.framework.demos.manual.store.test;
 
-import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
@@ -28,12 +26,14 @@ import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.tools.loadtest.LoadTest;
+import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
 
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
-import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
+import static is.codion.tools.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
 import static is.codion.tools.loadtest.ui.LoadTestPanel.loadTestPanel;
 

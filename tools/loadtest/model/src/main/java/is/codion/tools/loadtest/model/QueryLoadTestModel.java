@@ -22,10 +22,10 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.LoadTest.Scenario;
-import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.common.user.User;
+import is.codion.tools.loadtest.LoadTest;
+import is.codion.tools.loadtest.LoadTest.Scenario;
+import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

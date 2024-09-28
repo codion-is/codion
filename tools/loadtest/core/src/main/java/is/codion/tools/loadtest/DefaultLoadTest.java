@@ -16,16 +16,16 @@
  *
  * Copyright (c) 2008 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.loadtest;
+package is.codion.tools.loadtest;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
-import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.tools.loadtest.LoadTest.Scenario.Result;
+import is.codion.tools.loadtest.randomizer.ItemRandomizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +45,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static is.codion.common.model.randomizer.ItemRandomizer.RandomItem.randomItem;
-import static is.codion.common.model.randomizer.ItemRandomizer.itemRandomizer;
+import static is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem.randomItem;
+import static is.codion.tools.loadtest.randomizer.ItemRandomizer.itemRandomizer;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;

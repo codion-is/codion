@@ -465,6 +465,15 @@ image::modules/tools/generator/ui/build/reports/dependency-graph/dependency-grap
 === Load Test
 
 [discrete]
+=== codion-tools-loadtest-core
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/tools/loadtest/core/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
 === codion-tools-loadtest-model
 
 .Dependency graph

@@ -18,17 +18,17 @@
  */
 package is.codion.tools.loadtest.model;
 
-import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.LoadTest.Scenario;
-import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.common.user.User;
+import is.codion.tools.loadtest.LoadTest;
+import is.codion.tools.loadtest.LoadTest.Scenario;
+import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
+import static is.codion.tools.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;

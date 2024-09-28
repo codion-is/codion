@@ -17,24 +17,13 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Shared model classes, such as:
- * <li>{@link is.codion.common.model.UserPreferences}
- * <li>{@link is.codion.common.model.CancelException}
- * <li>{@link is.codion.common.model.FilterModel}
- * <li>{@link is.codion.common.model.selection.SingleItemSelection}
- * <li>{@link is.codion.common.model.selection.MultiItemSelection}
- * <li>{@link is.codion.common.model.condition.ConditionModel}
- * <li>{@link is.codion.common.model.condition.TableConditionModel}
- * <li>{@link is.codion.common.model.summary.SummaryModel}
- * <li>{@link is.codion.common.model.summary.TableSummaryModel}
+ * <li>{@link is.codion.tools.loadtest.LoadTest}
+ * <li>{@link is.codion.tools.loadtest.randomizer.ItemRandomizer}
  */
-module is.codion.common.model {
+module is.codion.tools.loadtest.core {
 	requires org.slf4j;
-	requires java.prefs;
 	requires transitive is.codion.common.core;
 
-	exports is.codion.common.model;
-	exports is.codion.common.model.condition;
-	exports is.codion.common.model.selection;
-	exports is.codion.common.model.summary;
+	exports is.codion.tools.loadtest;
+	exports is.codion.tools.loadtest.randomizer;
 }

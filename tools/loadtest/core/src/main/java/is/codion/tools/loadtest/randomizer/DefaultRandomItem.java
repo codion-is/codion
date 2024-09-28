@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.randomizer;
+package is.codion.tools.loadtest.randomizer;
 
 /**
  * A class encapsulating an Object item and an integer weight value.

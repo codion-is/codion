@@ -16,11 +16,11 @@
  *
  * Copyright (c) 2008 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.loadtest;
+package is.codion.tools.loadtest;
 
-import is.codion.common.model.loadtest.LoadTest.Scenario;
-import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.common.user.User;
+import is.codion.tools.loadtest.LoadTest.Scenario;
+import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +38,7 @@ public final class DefaultLoadTestTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final Scenario<Object> SCENARIO = scenario(new Performer<Object>() {
+	private static final Scenario<Object> SCENARIO = Scenario.scenario(new Performer<Object>() {
 		int counter = 0;
 
 		@Override
@@ -50,7 +49,7 @@ public final class DefaultLoadTestTest {
 		}
 	});
 
-	private static final Scenario<Object> SCENARIO_II = scenario(application -> {});
+	private static final Scenario<Object> SCENARIO_II = Scenario.scenario(application -> {});
 
 	@Test
 	void unknownScenario() {

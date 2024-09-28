@@ -18,10 +18,10 @@
  */
 package is.codion.tools.loadtest.model;
 
-import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.tools.loadtest.LoadTest;
+import is.codion.tools.loadtest.LoadTest.Scenario.Result;
 import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow.ColumnId;
 
 import org.jfree.data.xy.IntervalXYDataset;

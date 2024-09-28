@@ -18,8 +18,8 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
+import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.model.LoadTestModel;
 
 import org.junit.jupiter.api.Test;

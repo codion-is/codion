@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2010 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.randomizer;
+package is.codion.tools.loadtest.randomizer;
 
 import java.util.Collection;
 

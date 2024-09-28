@@ -18,7 +18,7 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.model.randomizer.ItemRandomizer;
+import is.codion.tools.loadtest.randomizer.ItemRandomizer;
 
 import org.junit.jupiter.api.Test;
 
