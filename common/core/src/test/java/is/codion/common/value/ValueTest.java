@@ -311,7 +311,7 @@ public class ValueTest {
 		assertThrows(IllegalArgumentException.class, () -> originalValue.set(3));
 
 		value.unlink(originalValueObserver);
-		value.unlink(originalValueObserver);
+		assertThrows(IllegalStateException.class, () -> value.unlink(originalValueObserver));
 
 		originalValue.set(3);
 

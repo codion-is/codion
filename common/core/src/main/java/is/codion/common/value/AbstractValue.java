@@ -52,7 +52,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	private Event<T> notifier;
 	private Set<Validator<? super T>> validators;
 	private Map<Value<T>, ValueLink<T>> linkedValues;
-	private Consumer<T> originalValueConsumer;
+	private Map<ValueObserver<T>, ValueObserverLink> linkedObservers;
 	private ValueObserver<T> observer;
 
 	/**
@@ -198,29 +198,34 @@ public abstract class AbstractValue<T> implements Value<T> {
 	@Override
 	public final void unlink(Value<T> originalValue) {
 		requireNonNull(originalValue);
-		if (linkedValues != null) {
-			if (!linkedValues.containsKey(originalValue)) {
-				throw new IllegalStateException("Values are not linked");
-			}
-			linkedValues.remove(originalValue).unlink();
+		if (linkedValues == null || !linkedValues.containsKey(originalValue)) {
+			throw new IllegalStateException("Values are not linked");
+		}
+		linkedValues.remove(originalValue).unlink();
+		if (linkedValues.isEmpty()) {
+			linkedValues = null;
 		}
 	}
 
 	@Override
 	public final void link(ValueObserver<T> originalValue) {
 		requireNonNull(originalValue);
-		if (originalValueConsumer == null) {
-			originalValueConsumer = new OriginalValueConsumer();
+		if (linkedObservers == null) {
+			linkedObservers = new LinkedHashMap<>(1);
 		}
 		set(originalValue.get());
-		originalValue.addConsumer(originalValueConsumer);
+		linkedObservers.put(originalValue, new ValueObserverLink(originalValue));
 	}
 
 	@Override
 	public final void unlink(ValueObserver<T> originalValue) {
 		requireNonNull(originalValue);
-		if (originalValueConsumer != null) {
-			originalValue.removeConsumer(originalValueConsumer);
+		if (linkedObservers == null || !linkedObservers.containsKey(originalValue)) {
+			throw new IllegalStateException("Values are not linked");
+		}
+		originalValue.removeConsumer(linkedObservers.remove(originalValue));
+		if (linkedObservers.isEmpty()) {
+			linkedObservers = null;
 		}
 	}
 
@@ -301,7 +306,11 @@ public abstract class AbstractValue<T> implements Value<T> {
 		return notifier;
 	}
 
-	private final class OriginalValueConsumer implements Consumer<T> {
+	private final class ValueObserverLink implements Consumer<T> {
+
+		private ValueObserverLink(ValueObserver<T> originalValue) {
+			originalValue.addConsumer(this);
+		}
 
 		@Override
 		public void accept(T value) {

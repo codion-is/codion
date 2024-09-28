@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.16
+### is.codion.common.core
+- AbstractValue.link/unlink(ValueObserver) bug fixed, did not support multiple links.
 ### is.codion.common.model
 - SingleSelectionModel and SelectionModel renamed SingleSelection and Selection respectively.
 - FilterModel.clear() moved to Items.
