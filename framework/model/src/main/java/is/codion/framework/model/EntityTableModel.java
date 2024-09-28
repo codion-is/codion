@@ -21,7 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.selection.Selection;
+import is.codion.common.model.selection.MultiItemSelection;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -197,9 +197,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	void select(Collection<Entity.Key> keys);
 
 	/**
-	 * @return the {@link Selection} instance
+	 * @return the {@link MultiItemSelection} instance
 	 */
-	Selection<Entity> selection();
+	MultiItemSelection<Entity> selection();
 
 	/**
 	 * @return the underlying query model

@@ -30,7 +30,7 @@ import java.util.function.Predicate;
  * A selection model
  * @param <T> the type of items
  */
-public interface Selection<T> extends SingleSelection<T> {
+public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 
 	/**
 	 * @return a {@link StateObserver} indicating whether multiple items are selected

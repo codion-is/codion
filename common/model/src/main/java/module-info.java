@@ -21,8 +21,8 @@
  * <li>{@link is.codion.common.model.UserPreferences}
  * <li>{@link is.codion.common.model.CancelException}
  * <li>{@link is.codion.common.model.FilterModel}
- * <li>{@link is.codion.common.model.selection.SingleSelection}
- * <li>{@link is.codion.common.model.selection.Selection}
+ * <li>{@link is.codion.common.model.selection.SingleItemSelection}
+ * <li>{@link is.codion.common.model.selection.MultiItemSelection}
  * <li>{@link is.codion.common.model.loadtest.LoadTest}
  * <li>{@link is.codion.common.model.condition.ConditionModel}
  * <li>{@link is.codion.common.model.condition.TableConditionModel}
