@@ -75,7 +75,7 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 	int count();
 
 	/**
-	 * Controls the selected indexes.
+	 * Manages the selected indexes.
 	 */
 	interface Indexes extends Mutable<List<Integer>> {
 
@@ -128,7 +128,7 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 	}
 
 	/**
-	 * Controls the selected items
+	 * Manages the the selected items.
 	 * @param <R> the item type
 	 */
 	interface Items<R> extends Mutable<List<R>> {

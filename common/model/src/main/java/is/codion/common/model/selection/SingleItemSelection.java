@@ -24,7 +24,7 @@ import is.codion.common.observer.Observer;
 import is.codion.common.state.StateObserver;
 
 /**
- * A selection model, managing a single selected item
+ * A selection model for managing a single selected item
  * @param <T> the item type
  */
 public interface SingleItemSelection<T> {
