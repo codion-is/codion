@@ -10,6 +10,7 @@ Codion Change Log
 - SingleSelection and Selection renamed SingleItemSelection and MultiItemSelection respectively.
 - FilterModel.Items.Visible and Filtered moved to FilterModel and renamed VisibleItems and FilteredItems respectively.
 - common.model.loadtest and randomizer packages moved to codion-loadtest-core module.
+- Item no longer extends Comparable.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.includeNull() and nullItem() moved to NullItem.
 - FilterComboBoxModel.replace() moved to FilterComboBoxModelItems.

@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.Text;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.model.condition.ConditionModel;
@@ -141,7 +142,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	public final void selectConditionPanel(JComponent dialogOwner) {
 		List<Item<C>> columnItems = selectableConditionPanels().stream()
 						.map(panel -> item(panel.condition().identifier(), panel.caption()))
-						.sorted()
+						.sorted(Text.collator())
 						.collect(toList());
 		if (columnItems.size() == 1) {
 			state().map(state -> state == HIDDEN ? SIMPLE : state);

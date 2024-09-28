@@ -18,20 +18,14 @@
  */
 package is.codion.common.item;
 
-import is.codion.common.Text;
-
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.Objects;
 
 abstract class AbstractItem<T> implements Item<T>, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
-
-	private static final ThreadLocal<Comparator<String>> COLLATOR =
-					ThreadLocal.withInitial(Text::collator);
 
 	private final T value;
 
@@ -46,16 +40,6 @@ abstract class AbstractItem<T> implements Item<T>, Serializable {
 	@Override
 	public final T value() {
 		return value;
-	}
-
-	/**
-	 * Compares this items caption with the caption of the given item
-	 * @param item the item to compare with
-	 * @return the compare result
-	 */
-	@Override
-	public final int compareTo(Item<T> item) {
-		return COLLATOR.get().compare(caption(), item.caption());
 	}
 
 	/**

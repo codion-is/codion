@@ -40,7 +40,6 @@ public class ItemsTest {
 		Item<String> newItem = Item.item("hello", "bla");
 		assertEquals(item, newItem);
 		assertEquals("hello".hashCode(), item.hashCode());
-		assertEquals(1, item.compareTo(newItem));
 
 		Item<String> thirdItem = Item.item("hello");
 		assertEquals("hello".hashCode(), thirdItem.hashCode());
@@ -52,8 +51,7 @@ public class ItemsTest {
 		assertEquals(0, Item.item(null).hashCode());
 
 		//just make sure it's ok post serialization
-		Item<String> deser = Serializer.deserialize(Serializer.serialize(item));
-		deser.compareTo(item);
+		Serializer.deserialize(Serializer.serialize(item));
 	}
 
 	@Test

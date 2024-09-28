@@ -20,7 +20,7 @@ package is.codion.common.item;
 
 /**
  * A class encapsulating a constant value and a caption representing the value.
- * Comparing {@link Item}s is based on their caption while their equality is based on their values.
+ * {@link Item}s equality is based on their values only.
  * Factory for {@link Item} instances.
  * @param <T> the type of the value
  * @see #value()
@@ -28,7 +28,7 @@ package is.codion.common.item;
  * @see Item#item(Object, String)
  * @see Item#itemI18n(Object, String, String)
  */
-public interface Item<T> extends Comparable<Item<T>> {
+public interface Item<T> {
 
 	/**
 	 * @return the caption
