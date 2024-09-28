@@ -52,7 +52,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 	public TrackTablePanel(TrackTableModel tableModel) {
 		super(tableModel, config -> config
 						.editComponentFactory(Track.RATING, new RatingComponentFactory())
-						.editComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false))
+						.editComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false,
+										tableModel.entityDefinition().attributes().definition(Track.MINUTES_SECONDS).caption()))
 						.configureTable(tableBuilder -> tableBuilder
 										.cellRendererFactory(new RatingCellRendererFactory(tableModel, Track.RATING))
 										.cellEditorFactory(new TrackCellEditorFactory(tableModel.editModel())))
@@ -104,9 +105,16 @@ public final class TrackTablePanel extends EntityTablePanel {
 					extends DefaultEntityComponentFactory<Integer, Attribute<Integer>, MinutesSecondsPanel> {
 
 		private final boolean horizontal;
+		private final String caption;
 
-		private MinutesSecondsComponentFactory(boolean horizontal) {
+		private MinutesSecondsComponentFactory(boolean horizontal, String caption) {
 			this.horizontal = horizontal;
+			this.caption = caption;
+		}
+
+		@Override
+		public Optional<String> caption() {
+			return Optional.of(caption);
 		}
 
 		@Override

@@ -35,6 +35,8 @@ Codion Change Log
 - EntityEditModel.EditableEntity.changed() renamed valueChanged().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel bug fixed, constructor used refresh, which could be async, instead of adding items directly to the model.
+### is.codion.swing.framework.ui
+- EntityComponentFactory.caption() added, related refactoring.
 
 ## 0.18.15
 ### is.codion.common.core

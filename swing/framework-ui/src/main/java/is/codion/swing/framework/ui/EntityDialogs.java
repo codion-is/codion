@@ -251,10 +251,12 @@ public final class EntityDialogs {
 
 		private static final Logger LOG = LoggerFactory.getLogger(DefaultEditAttributeDialogBuilder.class);
 
+		private static final EntityComponentFactory<?, ?, ?> DEFAULT_COMPONENT_FACTORY = new EditEntityComponentFactory<>();
+
 		private final SwingEntityEditModel editModel;
 		private final Attribute<T> attribute;
 
-		private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = new EditEntityComponentFactory<>();
+		private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = (EntityComponentFactory<T, Attribute<T>, ?>) DEFAULT_COMPONENT_FACTORY;
 		private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
 		private Consumer<Exception> onException = new DefaultExceptionHandler();
 
@@ -265,7 +267,7 @@ public final class EntityDialogs {
 
 		@Override
 		public EditAttributeDialogBuilder<T> componentFactory(EntityComponentFactory<T, Attribute<T>, ?> componentFactory) {
-			this.componentFactory = componentFactory == null ? new EditEntityComponentFactory<>() : componentFactory;
+			this.componentFactory = componentFactory == null ? (EntityComponentFactory<T, Attribute<T>, ?>) DEFAULT_COMPONENT_FACTORY : componentFactory;
 			return this;
 		}
 
@@ -304,28 +306,18 @@ public final class EntityDialogs {
 							.map(entity -> entity.get(attribute))
 							.collect(toSet());
 			T initialValue = values.size() == 1 ? values.iterator().next() : null;
-			ComponentValue<T, ?> componentValue = editSelectedComponentValue(attribute, initialValue);
+			ComponentValue<T, ?> componentValue = componentFactory.componentValue(attribute, editModel, initialValue);
 			InputValidator<T> validator = new InputValidator<>(entityDefinition, attribute, componentValue);
 			inputDialog(componentValue)
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.title(FrameworkMessages.edit())
-							.caption(attributeDefinition.caption())
+							.caption(componentFactory.caption().orElse(attributeDefinition.caption()))
 							.validator(validator)
 							.show(new SuccessfulUpdate(entities.stream()
 											.map(Entity::copy)
 											.collect(toList())));
-		}
-
-		private ComponentValue<T, ? extends JComponent> editSelectedComponentValue(Attribute<T> attribute, T initialValue) {
-			if (componentFactory == null) {
-				EditEntityComponentFactory<T, Attribute<T>, JComponent> entityComponentFactory = new EditEntityComponentFactory<>();
-
-				return entityComponentFactory.componentValue(attribute, editModel, initialValue);
-			}
-
-			return componentFactory.componentValue(attribute, editModel, initialValue);
 		}
 
 		private final class SuccessfulUpdate implements Predicate<T> {
