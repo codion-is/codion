@@ -126,14 +126,20 @@ public final class TrackTablePanel extends EntityTablePanel {
 	private static final class TrackCellEditorFactory
 					extends EntityTableCellEditorFactory {
 
+		private final EntityComponents components;
+
 		private TrackCellEditorFactory(SwingEntityEditModel editModel) {
 			super(editModel);
+			this.components = entityComponents(editModel.entityDefinition());
 		}
 
 		@Override
 		public Optional<TableCellEditor> tableCellEditor(FilterTableColumn<Attribute<?>> column) {
 			if (column.identifier().equals(Track.MILLISECONDS)) {
 				return Optional.of(filterTableCellEditor(() -> new MinutesSecondsPanelValue(true)));
+			}
+			if (column.identifier().equals(Track.RATING)) {
+				return Optional.of(filterTableCellEditor(() -> components.integerSpinner(Track.RATING).buildValue()));
 			}
 
 			return super.tableCellEditor(column);
