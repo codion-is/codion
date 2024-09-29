@@ -61,6 +61,13 @@ public class EntityTableCellEditorFactory implements FilterTableCellEditorFactor
 						componentFactory.componentValue(editModel, null)));
 	}
 
+	/**
+	 * @return the edit model
+	 */
+	protected final SwingEntityEditModel editModel() {
+		return editModel;
+	}
+
 	private boolean nonUpdatableForeignKey(Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;

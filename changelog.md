@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.17
+### is.codion.swing.framework.ui
+- EntityTableCellEditorFactory.editModel() added.
 
 ## 0.18.16
 ### is.codion.common.core
