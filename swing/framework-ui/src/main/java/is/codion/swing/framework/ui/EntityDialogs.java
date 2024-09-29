@@ -299,32 +299,33 @@ public final class EntityDialogs {
 				throw new IllegalArgumentException("All entities must be of the same type when editing");
 			}
 
-			EntityDefinition entityDefinition = editModel.entityDefinition();
-			AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
-			Collection<T> values = entities.stream()
-							.map(entity -> entity.get(attribute))
-							.collect(toSet());
-			T initialValue = values.size() == 1 ? values.iterator().next() : null;
-			ComponentValue<T, ?> componentValue = componentFactory.componentValue(editModel, initialValue);
-			InputValidator<T> validator = new InputValidator<>(entityDefinition, attribute, componentValue);
+			ComponentValue<T, ?> componentValue = componentFactory.componentValue(editModel, initialValue(entities));
 			inputDialog(componentValue)
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.title(FrameworkMessages.edit())
-							.caption(componentFactory.caption().orElse(attributeDefinition.caption()))
-							.validator(validator)
-							.show(new SuccessfulUpdate(entities.stream()
-											.map(Entity::copy)
-											.collect(toList())));
+							.caption(componentFactory.caption().orElse(editModel.entityDefinition().attributes().definition(attribute).caption()))
+							.validator(new InputValidator(componentValue))
+							.show(new PerformUpdate(entities));
 		}
 
-		private final class SuccessfulUpdate implements Predicate<T> {
+		private T initialValue(Collection<Entity> entities) {
+			Collection<T> values = entities.stream()
+							.map(entity -> entity.get(attribute))
+							.collect(toSet());
+
+			return values.size() == 1 ? values.iterator().next() : null;
+		}
+
+		private final class PerformUpdate implements Predicate<T> {
 
 			private final Collection<Entity> entities;
 
-			private SuccessfulUpdate(Collection<Entity> entities) {
-				this.entities = entities;
+			private PerformUpdate(Collection<Entity> entities) {
+				this.entities = entities.stream()
+								.map(Entity::copy)
+								.collect(toList());
 			}
 
 			@Override
@@ -392,20 +393,17 @@ public final class EntityDialogs {
 			}
 		}
 
-		private static final class InputValidator<T> implements Predicate<T> {
+		private final class InputValidator implements Predicate<T> {
 
-			private final EntityDefinition entityDefinition;
-			private final Attribute<T> attribute;
 			private final ComponentValue<T, ?> componentValue;
 
-			private InputValidator(EntityDefinition entityDefinition, Attribute<T> attribute, ComponentValue<T, ?> componentValue) {
-				this.entityDefinition = entityDefinition;
-				this.attribute = attribute;
+			private InputValidator(ComponentValue<T, ?> componentValue) {
 				this.componentValue = componentValue;
 			}
 
 			@Override
 			public boolean test(T value) {
+				EntityDefinition entityDefinition = editModel.entityDefinition();
 				Entity entity = entityDefinition.entity();
 				entity.put(attribute, value);
 				try {
@@ -496,15 +494,15 @@ public final class EntityDialogs {
 							.mnemonic(Messages.cancelMnemonic())
 							.build();
 			Control searchControl = Control.builder()
-						.command(this::search)
-						.name(FrameworkMessages.searchVerb())
-						.mnemonic(FrameworkMessages.searchMnemonic())
-						.build();
+							.command(this::search)
+							.name(FrameworkMessages.searchVerb())
+							.mnemonic(FrameworkMessages.searchMnemonic())
+							.build();
 			entityTablePanel = createTablePanel(tableModel, okControl, singleSelection);
 			actionDialog(borderLayoutPanel()
-											.centerComponent(entityTablePanel)
-											.border(Borders.emptyBorder())
-											.build())
+							.centerComponent(entityTablePanel)
+							.border(Borders.emptyBorder())
+							.build())
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
@@ -594,9 +592,9 @@ public final class EntityDialogs {
 			SwingEntityEditModel editModel = editPanel.editModel();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
 			actionDialog(borderLayoutPanel()
-											.centerComponent(editPanel)
-											.border(emptyBorder())
-											.build())
+							.centerComponent(editPanel)
+							.border(emptyBorder())
+							.build())
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
@@ -678,14 +676,14 @@ public final class EntityDialogs {
 			SwingEntityEditModel editModel = editPanel.editModel();
 			initializeEditModel(editModel);
 			actionDialog(borderLayoutPanel()
-											.centerComponent(editPanel)
-											.border(emptyBorder())
-											.build())
+							.centerComponent(editPanel)
+							.border(emptyBorder())
+							.build())
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createUpdateControl(editPanel,
-											new UpdateConsumer(new DisposeDialog(editPanel)), confirm))
+											new OnUpdate(new DisposeDialog(editPanel)), confirm))
 							.escapeAction(createCancelControl(new RevertAndDisposeDialog(editPanel)))
 							.title(FrameworkMessages.edit() + " - " + editModel.entities()
 											.definition(editModel.entityType()).caption())
@@ -702,17 +700,17 @@ public final class EntityDialogs {
 			}
 		}
 
-		private final class UpdateConsumer implements Consumer<Collection<Entity>> {
+		private final class OnUpdate implements Consumer<Collection<Entity>> {
 
 			private final Runnable disposeDialog;
 
-			private UpdateConsumer(Runnable disposeDialog) {
+			private OnUpdate(Runnable disposeDialog) {
 				this.disposeDialog = disposeDialog;
 			}
 
 			@Override
-			public void accept(Collection<Entity> updated) {
-				onUpdate.accept(updated.iterator().next());
+			public void accept(Collection<Entity> updatedEntities) {
+				onUpdate.accept(updatedEntities.iterator().next());
 				disposeDialog.run();
 			}
 		}
