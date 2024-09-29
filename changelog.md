@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.17
+
 ## 0.18.16
 ### is.codion.common.core
 - AbstractValue.link/unlink(ValueObserver) bug fixed, did not support multiple links.
