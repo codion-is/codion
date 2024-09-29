@@ -7,6 +7,7 @@ val documentationDir = documentationVersion
 
 tasks.register("copyModuleDependencyGraphs") {
     group = "documentation"
+    description = "Copies the module dependency graphs to the asciidoc images folder"
     doLast {
         frameworkModules().forEach { module ->
             val moduleDir = module.projectDir
@@ -23,6 +24,7 @@ tasks.register("copyModuleDependencyGraphs") {
 
 tasks.register("generateI18nValuesPage") {
     group = "documentation"
+    description = "Generates the i18n asciidoc page"
     doLast {
         val file = file("src/docs/asciidoc/technical/i18n-values.adoc")
         val moduleFiles = LinkedHashMap<String, List<String>>()
@@ -100,12 +102,9 @@ tasks.named<org.asciidoctor.gradle.jvm.AsciidoctorTask>("asciidoctor") {
     }
 }
 
-/**
- * An absolute monstrosity of a workaround for combining javadocs for multiple modular sub-projects.
- */
 tasks.register("combinedJavadoc") {
     group = "documentation"
-
+    description = "An absolute monstrosity of a workaround for combining javadocs for multiple modular sub-projects"
     val tempDir = project.layout.buildDirectory.dir("tmp").get()
     val combinedSrcDir = "${tempDir}/combinedSource"
     val outputDirectory = project.layout.buildDirectory.dir("javadoc").get()
@@ -157,6 +156,7 @@ tasks.register("combinedJavadoc") {
 tasks.register("assembleDocs") {
     dependsOn("combinedJavadoc", "asciidoctor")
     group = "documentation"
+    description = "Creates the javadocs and asciidocs and combines them into the documentatio directory"
     val docFolder = project.layout.buildDirectory.dir(documentationDir).get()
     doLast {
         delete(docFolder)
@@ -178,6 +178,7 @@ tasks.register("assembleDocs") {
 tasks.register<Sync>("copyToGitHubPages") {
     dependsOn("assembleDocs")
     group = "documentation"
+    description = "Copies the assembled docs to the github pages project"
     from(project.layout.buildDirectory.dir(documentationDir))
     into("../../codion-pages/doc/$documentationDir")
 }
@@ -185,6 +186,7 @@ tasks.register<Sync>("copyToGitHubPages") {
 tasks.register<Zip>("documentationZip") {
     dependsOn("assembleDocs")
     group = "documentation"
+    description = "Creates a zip file containing the assembled documentation"
     from(project.layout.buildDirectory.dir(documentationDir))
 }
 

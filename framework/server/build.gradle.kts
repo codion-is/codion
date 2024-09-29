@@ -43,6 +43,7 @@ apply(from = "../../plugins/jasperreports/extra-module-info-jasperreports.gradle
 tasks.register<JavaExec>("runServer") {
     dependsOn(tasks.named("createServerKeystore"))
     group = "application"
+    description = "Runs the EntityServer with the demo domain models"
     classpath = serverRuntime
     mainClass.set("is.codion.framework.server.EntityServer")
     maxHeapSize = "256m"

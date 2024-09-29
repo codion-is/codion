@@ -143,8 +143,10 @@ configure(frameworkModules()) {
         }
     }
 
-    /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
     tasks.register("createServerKeystore") {
+        group = "other"
+        description = "Creates a key and truststore pair to use when running server unit tests and demos with remote connection"
+
         val keystoreDir = "${rootDir}/framework/server/src/main/config/"
         val keystore = keystoreDir + "keystore.jks"
         val truststore = keystoreDir + "truststore.jks"
@@ -240,6 +242,9 @@ configure(subprojects) {
 }
 
 tasks.register("tagRelease") {
+    group = "other"
+    description = "Tags the current version as a release"
+
     doLast {
         if (project.version.toString().contains("SNAPSHOT")) {
             throw GradleException("Thou shalt not tag a snapshot release")

@@ -1,4 +1,7 @@
 tasks.register<WriteProperties>("writeVersion") {
+    group = "build"
+    description = "Writes the current framework version to a file available as a resource"
+
     destinationFile = file(temporaryDir.absolutePath + "/version.properties")
 
     property("version", project.version)

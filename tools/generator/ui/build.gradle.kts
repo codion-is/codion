@@ -26,6 +26,7 @@ dependencies {
 
 tasks.register<JavaExec>("runDomainGeneratorH2") {
     group = "application"
+    description = "Runs the domain generator using a in-memory H2 database initialized with the demo application schemas"
     mainClass.set("is.codion.tools.generator.ui.DomainGeneratorPanel")
     classpath = sourceSets["main"].runtimeClasspath
     maxHeapSize = "256m"

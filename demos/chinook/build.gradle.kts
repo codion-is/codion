@@ -84,7 +84,7 @@ tasks.withType<Test>().configureEach {
 }
 
 tasks.register<JavaExec>("runClientLocal") {
-    group ="application"
+    group = "application"
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("is.codion.framework.demos.chinook.ui.ChinookAppPanel")
     maxHeapSize = "128m"

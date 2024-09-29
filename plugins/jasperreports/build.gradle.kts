@@ -6,8 +6,6 @@ plugins {
 dependencies {
     api(project(":codion-common-db"))
 
-    testImplementation(project(":codion-framework-db-local"))
-
     api(libs.jasperreports) {
         exclude(group = "xml-apis")
     }
@@ -15,6 +13,7 @@ dependencies {
         exclude(group = "xml-apis")
     }
 
+    testImplementation(project(":codion-framework-db-local"))
     testImplementation(project(":codion-dbms-h2"))
     testImplementation(libs.javalin) {
         exclude(group = "org.jetbrains", module = "annotations")
