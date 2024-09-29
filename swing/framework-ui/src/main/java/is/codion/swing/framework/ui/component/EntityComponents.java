@@ -38,6 +38,7 @@ import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
+import is.codion.swing.common.ui.component.text.FileInputPanel;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -122,7 +123,8 @@ public final class EntityComponents {
 						type.isLong() ||
 						type.isDouble() ||
 						type.isBigDecimal() ||
-						type.isEnum();
+						type.isEnum() ||
+						type.isByteArray();
 	}
 
 	/**
@@ -168,8 +170,11 @@ public final class EntityComponents {
 		if (type.isEnum()) {
 			return (ComponentBuilder<T, C, B>) comboBox(attribute, createEnumComboBoxModel(attribute, attributeDefinition.nullable()));
 		}
+		if (attribute.type().isByteArray()) {
+			return (ComponentBuilder<T, C, B>) byteArrayInputPanel((Attribute<byte[]>) attribute);
+		}
 
-		throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + type.valueClass() + ")");
+		throw new IllegalArgumentException("Attribute: " + attribute + " (type: " + type.valueClass() + ") no supported");
 	}
 
 	/**
@@ -595,6 +600,18 @@ public final class EntityComponents {
 		AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.maskedTextField()
+						.toolTipText(attributeDefinition.description());
+	}
+
+	/**
+	 * Creates a byte array based {@link FileInputPanel} builder based on the given attribute.
+	 * @param attribute the attribute
+	 * @return a {@link FileInputPanel.Builder}
+	 */
+	public ComponentBuilder<byte[], FileInputPanel, FileInputPanel.Builder<byte[]>> byteArrayInputPanel(Attribute<byte[]> attribute) {
+		AttributeDefinition<byte[]> attributeDefinition = entityDefinition.attributes().definition(attribute);
+
+		return Components.byteArrayInputPanel()
 						.toolTipText(attributeDefinition.description());
 	}
 

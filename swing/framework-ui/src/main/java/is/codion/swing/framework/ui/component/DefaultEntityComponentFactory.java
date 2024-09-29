@@ -28,7 +28,6 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import javax.swing.JComponent;
 import java.time.temporal.Temporal;
 
-import static is.codion.swing.common.ui.component.Components.byteArrayInputPanel;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
 
@@ -57,10 +56,6 @@ public class DefaultEntityComponentFactory<T, C extends JComponent> implements E
 		}
 		if (attribute.type().isTemporal()) {
 			return createTemporalComponentValue(attribute, (Temporal) initialValue, inputComponents);
-		}
-		if (attribute.type().isByteArray()) {
-			return (ComponentValue<T, C>) byteArrayInputPanel()
-							.buildValue();
 		}
 
 		return (ComponentValue<T, C>) inputComponents.component(attribute)
