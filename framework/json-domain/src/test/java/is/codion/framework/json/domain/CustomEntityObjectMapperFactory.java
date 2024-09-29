@@ -23,7 +23,6 @@ import is.codion.framework.json.TestDomain;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -51,8 +50,7 @@ public final class CustomEntityObjectMapperFactory extends DefaultEntityObjectMa
 		});
 		mapper.addDeserializer(Custom.class, new StdDeserializer<Custom>(Custom.class) {
 			@Override
-			public Custom deserialize(JsonParser p, DeserializationContext ctxt) throws IOException,
-							JsonProcessingException {
+			public Custom deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
 				JsonNode node = p.getCodec().readTree(p);
 
 				return new Custom(node.get("value").asText());

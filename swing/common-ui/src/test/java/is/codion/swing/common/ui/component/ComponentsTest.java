@@ -218,14 +218,15 @@ public final class ComponentsTest {
 
 	@Test
 	void offsetDateTimeField() {
-		Value<OffsetDateTime> value = Value.value(OffsetDateTime.now());
+		OffsetDateTime now = OffsetDateTime.now();
+		Value<OffsetDateTime> value = Value.value(now);
 		ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue =
 						Components.offsetDateTimeField()
-										.dateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+										.dateTimePattern("dd-MM-yyyy HH:mm.ss")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
 										.link(value)
 										.buildValue();
-//    assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
+    assertEquals(now.truncatedTo(ChronoUnit.SECONDS), componentValue.get());
 	}
 
 	@Test

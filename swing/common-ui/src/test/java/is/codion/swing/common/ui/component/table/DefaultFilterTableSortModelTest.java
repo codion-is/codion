@@ -125,7 +125,6 @@ public class DefaultFilterTableSortModelTest {
 
 	@Test
 	void nonComparableColumnClass() {
-		FilterTableColumn<Integer> firstColumn = FilterTableColumn.builder(0).build();
 		DefaultFilterTableSortModel<ArrayList, Integer> model = new DefaultFilterTableSortModel<>(new FilterTableModel.Columns<ArrayList, Integer>() {
 			@Override
 			public List<Integer> identifiers() {

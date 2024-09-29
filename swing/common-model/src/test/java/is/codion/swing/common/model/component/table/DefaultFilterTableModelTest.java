@@ -279,7 +279,7 @@ public final class DefaultFilterTableModelTest {
 		Runnable listener = dataChangedEvents::incrementAndGet;
 		tableModel.items().visible().addListener(listener);
 		State selectionChangedState = State.state();
-		tableModel.selection().item().addConsumer((item) -> selectionChangedState.set(true));
+		tableModel.selection().item().addConsumer(item -> selectionChangedState.set(true));
 		tableModel.refresh();
 		assertEquals(1, dataChangedEvents.get());
 		tableModel.selection().item().set(B);

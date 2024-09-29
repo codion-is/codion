@@ -294,7 +294,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	private static double systemCpuLoad() {
-		return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
+		return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getCpuLoad();
 	}
 
 	private static double processCpuLoad() {

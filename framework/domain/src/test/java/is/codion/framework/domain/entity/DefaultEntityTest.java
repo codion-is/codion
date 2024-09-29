@@ -1020,7 +1020,7 @@ public class DefaultEntityTest {
 	}
 
 	@Test
-	void cachedDerived() throws IOException, ClassNotFoundException {
+	void cachedDerived() {
 		DomainType domainType = DomainType.domainType("cached_derived");
 		EntityType type = domainType.entityType("derived");
 		Attribute<String> stringAttribute = type.stringAttribute("string");

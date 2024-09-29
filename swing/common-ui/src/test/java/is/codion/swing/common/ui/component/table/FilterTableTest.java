@@ -325,9 +325,9 @@ public class FilterTableTest {
 		searchModel.selectNextResult();
 		searchModel.selectNextResult();
 
-		rowColumn = searchModel.selectPreviousResult().orElse(null);
-		rowColumn = searchModel.selectNextResult().orElse(null);
-		rowColumn = searchModel.selectNextResult().orElse(null);
+		searchModel.selectPreviousResult().orElse(null);
+		searchModel.selectNextResult().orElse(null);
+		searchModel.selectNextResult().orElse(null);
 
 		assertEquals(asList(
 						new DefaultRowColumn(0, 0),

@@ -35,7 +35,7 @@ public final class DomainGeneratorModelTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	@Test
-	void petstore() throws Exception {
+	void petstore() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().refresh();
 		model.schemaModel().items().visible().comparator().set(comparing(SchemaRow::name));
@@ -52,7 +52,7 @@ public final class DomainGeneratorModelTest {
 	}
 
 	@Test
-	void chinook() throws Exception {
+	void chinook() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().refresh();
 		model.schemaModel().items().visible().comparator().set(comparing(SchemaRow::name));
@@ -69,7 +69,7 @@ public final class DomainGeneratorModelTest {
 	}
 
 	@Test
-	void world() throws Exception {
+	void world() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().refresh();
 		model.schemaModel().items().visible().comparator().set(comparing(SchemaRow::name));

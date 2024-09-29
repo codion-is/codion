@@ -101,7 +101,7 @@ public final class SerializationWhitelistTest {
 	}
 
 	@Test
-	void array() throws IOException, ClassNotFoundException {
+	void array() {
 		List<String> whitelistItems = asList(
 						"java.lang.Number",
 						"java.lang.Byte"

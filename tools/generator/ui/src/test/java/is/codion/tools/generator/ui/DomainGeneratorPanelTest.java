@@ -19,7 +19,6 @@
 package is.codion.tools.generator.ui;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.tools.generator.model.DomainGeneratorModel;
 
@@ -31,7 +30,7 @@ public class DomainGeneratorPanelTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	@Test
-	void test() throws DatabaseException {
+	void test() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		new DomainGeneratorPanel(model);
 		model.schemaModel().refresh();
