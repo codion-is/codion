@@ -81,6 +81,7 @@ import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.LayoutManager;
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -937,21 +938,45 @@ public final class Components {
 	}
 
 	/**
+	 * Provides builder for a {@link Path} based file input panel.
 	 * @return a {@link FileInputPanel} builder
 	 */
-	public static FileInputPanel.Builder fileInputPanel() {
-		return fileInputPanel(stringField()
-						.editable(false)
-						.focusable(false)
-						.build());
+	public static FileInputPanel.Builder<Path> pathInputPanel() {
+		return pathInputPanel(stringField()
+										.editable(false)
+										.focusable(false)
+										.build());
 	}
 
 	/**
+	 * Provides builder for a {@link Path} based file input panel.
 	 * @param filePathField the file path field
 	 * @return a {@link FileInputPanel} builder
 	 */
-	public static FileInputPanel.Builder fileInputPanel(JTextField filePathField) {
-		return FileInputPanel.builder(filePathField);
+	public static FileInputPanel.Builder<Path> pathInputPanel(JTextField filePathField) {
+		return (FileInputPanel.Builder<Path>) FileInputPanel.builder()
+						.path(filePathField);
+	}
+
+	/**
+	 * Provides builder for a byte array based file input panel.
+	 * @return a {@link FileInputPanel} builder
+	 */
+	public static FileInputPanel.Builder<byte[]> byteArrayInputPanel() {
+		return byteArrayInputPanel(stringField()
+										.editable(false)
+										.focusable(false)
+										.build());
+	}
+
+	/**
+	 * Provides builder for a byte array based file input panel.
+	 * @param filePathField the file path field
+	 * @return a {@link FileInputPanel} builder
+	 */
+	public static FileInputPanel.Builder<byte[]> byteArrayInputPanel(JTextField filePathField) {
+		return (FileInputPanel.Builder<byte[]>) FileInputPanel.builder()
+						.byteArray(filePathField);
 	}
 
 	/**

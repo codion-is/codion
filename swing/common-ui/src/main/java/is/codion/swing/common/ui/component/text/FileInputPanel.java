@@ -34,14 +34,17 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * For instances use the {@link #fileInputPanel(JTextField)} factory method.
+ * For instances use the {@link #fileInputPanel(JTextField)} factory method or the {@link #builder()} method.
  * @see #fileInputPanel(JTextField)
+ * @see #builder()
  */
 public final class FileInputPanel extends JPanel {
 
@@ -74,20 +77,18 @@ public final class FileInputPanel extends JPanel {
 	}
 
 	/**
-	 * @param filePathField the file path input field
-	 * @return a new {@link FileInputPanel.Builder} instance.
+	 * @return a new {@link FileInputPanel.BuilderFactory} instance.
 	 */
-	public static FileInputPanel.Builder builder(JTextField filePathField) {
-		return new FileInputPanel.DefaultFileInputPanelBuilder(filePathField);
+	public static FileInputPanel.BuilderFactory builder() {
+		return new DefaultBuilderFactory();
 	}
 
 	private void browseFile() {
 		try {
-			File file = Dialogs.fileSelectionDialog()
+			filePathField.setText(Dialogs.fileSelectionDialog()
 							.owner(filePathField)
 							.title("Select file")
-							.selectFile();
-			filePathField.setText(file.toString());
+							.selectFile().toString());
 		}
 		catch (CancelException e) {
 			filePathField.setText("");
@@ -96,15 +97,48 @@ public final class FileInputPanel extends JPanel {
 	}
 
 	/**
+	 * Provides either a {@link Path} or a byte array based {@link FileInputPanel.Builder}.
+	 */
+	public interface BuilderFactory {
+
+		/**
+		 * Provides builder for a {@link Path} based file input panel.
+		 * @param filePathField the field providing the file path
+		 * @return a new builder
+		 */
+		ComponentBuilder<Path, FileInputPanel, Builder<Path>> path(JTextField filePathField);
+
+		/**
+		 * Provides builder for a byte[] based file input panel.
+		 * @param filePathField the field providing the file path
+		 * @return a new builder
+		 */
+		ComponentBuilder<byte[], FileInputPanel, Builder<byte[]>> byteArray(JTextField filePathField);
+	}
+
+	/**
 	 * Builds a {@link FileInputPanel}
 	 */
-	public interface Builder extends ComponentBuilder<Path, FileInputPanel, Builder> {}
+	public interface Builder<T> extends ComponentBuilder<T, FileInputPanel, Builder<T>> {}
 
-	private static final class DefaultFileInputPanelBuilder extends AbstractComponentBuilder<Path, FileInputPanel, Builder> implements Builder {
+	private static final class DefaultBuilderFactory implements BuilderFactory {
+
+		@Override
+		public ComponentBuilder<Path, FileInputPanel, Builder<Path>> path(JTextField filePathField) {
+			return new PathInputPanelBuilder(filePathField);
+		}
+
+		@Override
+		public ComponentBuilder<byte[], FileInputPanel, Builder<byte[]>> byteArray(JTextField filePathField) {
+			return new ByteArrayInputPanelBuilder(filePathField);
+		}
+	}
+
+	private static final class PathInputPanelBuilder extends AbstractComponentBuilder<Path, FileInputPanel, Builder<Path>> implements Builder<Path> {
 
 		private final JTextField filePathField;
 
-		private DefaultFileInputPanelBuilder(JTextField filePathField) {
+		private PathInputPanelBuilder(JTextField filePathField) {
 			this.filePathField = requireNonNull(filePathField);
 		}
 
@@ -115,16 +149,38 @@ public final class FileInputPanel extends JPanel {
 
 		@Override
 		protected ComponentValue<Path, FileInputPanel> createComponentValue(FileInputPanel component) {
-			return new FileInputPanelValue(component);
+			return new PathInputPanelValue(component);
 		}
 
 		@Override
 		protected void setInitialValue(FileInputPanel component, Path initialValue) {}
 	}
 
-	private static final class FileInputPanelValue extends AbstractComponentValue<Path, FileInputPanel> {
+	private static final class ByteArrayInputPanelBuilder extends AbstractComponentBuilder<byte[], FileInputPanel, Builder<byte[]>> implements Builder<byte[]> {
 
-		private FileInputPanelValue(FileInputPanel fileInputPanel) {
+		private final JTextField filePathField;
+
+		private ByteArrayInputPanelBuilder(JTextField filePathField) {
+			this.filePathField = requireNonNull(filePathField);
+		}
+
+		@Override
+		protected FileInputPanel createComponent() {
+			return fileInputPanel(filePathField);
+		}
+
+		@Override
+		protected ComponentValue<byte[], FileInputPanel> createComponentValue(FileInputPanel component) {
+			return new ByteArrayInputPanelValue(component);
+		}
+
+		@Override
+		protected void setInitialValue(FileInputPanel component, byte[] initialValue) {}
+	}
+
+	private static final class PathInputPanelValue extends AbstractComponentValue<Path, FileInputPanel> {
+
+		private PathInputPanelValue(FileInputPanel fileInputPanel) {
 			super(fileInputPanel);
 			fileInputPanel.filePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
 		}
@@ -142,6 +198,33 @@ public final class FileInputPanel extends JPanel {
 		@Override
 		protected void setComponentValue(Path path) {
 			component().filePathField.setText(path == null ? "" : path.toString());
+		}
+	}
+
+	private static final class ByteArrayInputPanelValue extends AbstractComponentValue<byte[], FileInputPanel> {
+
+		private ByteArrayInputPanelValue(FileInputPanel fileInputPanel) {
+			super(fileInputPanel);
+			fileInputPanel.filePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
+		}
+
+		@Override
+		protected byte[] getComponentValue() {
+			String filePath = component().filePathField().getText();
+			if (filePath.isEmpty()) {
+				return null;
+			}
+			try {
+				return Files.readAllBytes(Paths.get(filePath));
+			}
+			catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		protected void setComponentValue(byte[] value) {
+			throw new UnsupportedOperationException();
 		}
 	}
 }

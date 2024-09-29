@@ -29,6 +29,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTableSearchModel.searchPredicate() renamed predicate().
 - FileInputPanel.Builder now Path based.
+- FileInputPanel.BuilderFactory added, now Path or byte[] based.
 ### is.codion.framework.model
 - EntityComboBoxModel.linkForeignKeyFilterComboBoxModel() and linkForeignKeyConditionComboBoxModel() replaced with foreignKeyComboBoxModelLinker() returning a ForeignKeyComboBoxModelLinker.
 - EntityTableModel.rowCount() removed.
