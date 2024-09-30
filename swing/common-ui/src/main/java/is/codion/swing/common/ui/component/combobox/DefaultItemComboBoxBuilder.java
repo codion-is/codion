@@ -185,11 +185,6 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 		return new SelectedItemValue<>(component);
 	}
 
-	@Override
-	protected void setInitialValue(JComboBox<Item<T>> component, T initialValue) {
-		component.setSelectedItem(initialValue);
-	}
-
 	private ItemComboBoxModel<T> initializeItemComboBoxModel() {
 		Item<T> nullItem = Item.item(null, FilterComboBoxModel.NULL_CAPTION.get());
 		if (comboBoxModel == null) {

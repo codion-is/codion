@@ -175,11 +175,6 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 		return new SelectedValue<>(component);
 	}
 
-	@Override
-	protected final void setInitialValue(C component, T initialValue) {
-		component.setSelectedItem(initialValue);
-	}
-
 	protected C createComboBox() {
 		return (C) new FocusableComboBox<>(comboBoxModel);
 	}

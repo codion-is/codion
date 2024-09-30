@@ -97,9 +97,6 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
 		return new TabbedPaneComponentValue(component);
 	}
 
-	@Override
-	protected void setInitialValue(JTabbedPane component, Void initialValue) {}
-
 	private static final class DefaultTabBuilder implements TabBuilder {
 
 		private final DefaultTabbedPaneBuilder tabbedPaneBuilder;

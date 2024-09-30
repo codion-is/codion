@@ -18,13 +18,11 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
-import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
-import java.util.Objects;
 
 final class DefaultItemSpinnerBuilder<T> extends AbstractSpinnerBuilder<T, ItemSpinnerBuilder<T>>
 				implements ItemSpinnerBuilder<T> {
@@ -36,15 +34,5 @@ final class DefaultItemSpinnerBuilder<T> extends AbstractSpinnerBuilder<T, ItemS
 	@Override
 	protected ComponentValue<T, JSpinner> createComponentValue(JSpinner component) {
 		return new SpinnerItemValue<>(component);
-	}
-
-	@Override
-	protected void setInitialValue(JSpinner component, T initialValue) {
-		SpinnerListModel model = (SpinnerListModel) spinnerModel;
-		model.getList().stream()
-						.map(Item.class::cast)
-						.filter(item -> Objects.equals(item.value(), initialValue))
-						.findFirst()
-						.ifPresent(model::setValue);
 	}
 }

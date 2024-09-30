@@ -98,9 +98,6 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 		return new PanelComponentValue(component);
 	}
 
-	@Override
-	protected void setInitialValue(JPanel component, Void initialValue) {}
-
 	private static final class ComponentConstraints {
 
 		private final JComponent component;

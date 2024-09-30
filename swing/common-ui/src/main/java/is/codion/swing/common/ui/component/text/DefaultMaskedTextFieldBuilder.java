@@ -136,9 +136,4 @@ final class DefaultMaskedTextFieldBuilder
 	protected ComponentValue<String, JFormattedTextField> createComponentValue(JFormattedTextField component) {
 		return new MaskedTextFieldValue<>(component);
 	}
-
-	@Override
-	protected void setInitialValue(JFormattedTextField component, String initialValue) {
-		component.setText(initialValue);
-	}
 }

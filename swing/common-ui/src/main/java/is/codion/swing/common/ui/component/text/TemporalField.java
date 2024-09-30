@@ -467,11 +467,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 			return new TemporalFieldValue<>(component, updateOn());
 		}
 
-		@Override
-		protected void setInitialValue(TemporalField<T> component, T initialValue) {
-			component.setTemporal(initialValue);
-		}
-
 		private String defaultDateTimePattern() {
 			if (temporalClass.equals(LocalTime.class)) {
 				return "HH:mm";

@@ -288,11 +288,6 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 			component.transferFocusOnEnter(true);
 		}
 
-		@Override
-		protected void setInitialValue(TemporalFieldPanel<T> component, T initialValue) {
-			component.setTemporal(initialValue);
-		}
-
 		private TemporalField<T> createTemporalField() {
 			return temporalFieldBuilder.build();
 		}

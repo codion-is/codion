@@ -140,9 +140,6 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 		return new PanelComponentValue<>(component);
 	}
 
-	@Override
-	protected final void setInitialValue(C component, Void initialValue) {}
-
 	protected final Controls controls() {
 		return builder.build();
 	}

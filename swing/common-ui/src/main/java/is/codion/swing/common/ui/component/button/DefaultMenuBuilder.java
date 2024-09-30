@@ -135,9 +135,6 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 		return new MenuComponentValue(component);
 	}
 
-	@Override
-	protected void setInitialValue(JMenu component, Void initialValue) {}
-
 	private static final class IsControlsInstance implements Predicate<Action> {
 
 		@Override

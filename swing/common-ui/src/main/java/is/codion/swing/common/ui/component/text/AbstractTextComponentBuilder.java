@@ -252,19 +252,6 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 		return textComponent;
 	}
 
-	@Override
-	protected void setInitialValue(C component, T initialValue) {
-		if (initialValue instanceof String) {
-			component.setText((String) initialValue);
-		}
-		else if (initialValue instanceof Character) {
-			component.setText(String.valueOf(initialValue));
-		}
-		else if (initialValue != null) {
-			throw new IllegalArgumentException("Unsupported type: " + initialValue.getClass());
-		}
-	}
-
 	/**
 	 * Creates the text component built by this builder.
 	 * @return a JTextComponent or subclass

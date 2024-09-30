@@ -494,11 +494,6 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		protected abstract NumberDocument<T> createDocument();
 
-		@Override
-		protected final void setInitialValue(NumberField<T> component, T initialValue) {
-			component.setNumber(initialValue);
-		}
-
 		protected final NumberFormat initializeFormat(NumberFormat defaultFormat) {
 			NumberFormat format = (NumberFormat) format();
 			if (format != null) {

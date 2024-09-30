@@ -77,9 +77,4 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 
 		return (ComponentValue<Boolean, C>) new BooleanToggleButtonValue<>(component);
 	}
-
-	@Override
-	protected final void setInitialValue(C component, Boolean initialValue) {
-		component.setSelected(initialValue != null && initialValue);
-	}
 }

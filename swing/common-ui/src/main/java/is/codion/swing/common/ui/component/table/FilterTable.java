@@ -1275,9 +1275,6 @@ public final class FilterTable<R, C> extends JTable {
 			return new FilterTableComponentValue<>(component);
 		}
 
-		@Override
-		protected void setInitialValue(FilterTable<R, C> component, Void initialValue) {}
-
 		private Collection<FilterTableColumn<C>> validateIdentifiers(List<FilterTableColumn<C>> columns) {
 			if (columns.stream()
 							.map(new ColumnIdentifier<>())

@@ -379,11 +379,6 @@ public final class EntitySearchFieldPanel extends JPanel {
 			component.buttons.forEach(TransferFocusOnEnter::enable);
 		}
 
-		@Override
-		protected void setInitialValue(EntitySearchFieldPanel component, Entity initialValue) {
-			component.searchField.model().selection().entity().set(initialValue);
-		}
-
 		private EntitySearchField createSearchField() {
 			return searchFieldBuilder.build();
 		}

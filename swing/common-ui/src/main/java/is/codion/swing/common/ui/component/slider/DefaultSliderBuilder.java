@@ -143,9 +143,4 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
 	protected ComponentValue<Integer, JSlider> createComponentValue(JSlider component) {
 		return new IntegerSliderValue(component);
 	}
-
-	@Override
-	protected void setInitialValue(JSlider component, Integer initialValue) {
-		component.setValue(initialValue == null ? 0 : initialValue);
-	}
 }

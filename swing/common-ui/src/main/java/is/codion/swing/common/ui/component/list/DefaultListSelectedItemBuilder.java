@@ -48,11 +48,6 @@ final class DefaultListSelectedItemBuilder<T> extends AbstractListBuilder<T, T, 
 		return new ListSelectedItemValue<>(component);
 	}
 
-	@Override
-	protected void setInitialValue(JList<T> component, T initialValue) {
-		ListSelectedItemValue.selectValue(component, initialValue);
-	}
-
 	private static final class ListSelectedItemValue<T> extends AbstractComponentValue<T, JList<T>> {
 
 		private ListSelectedItemValue(JList<T> list) {

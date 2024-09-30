@@ -62,11 +62,6 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<T, List<T>, L
 		return new ListItemsValue<>(component);
 	}
 
-	@Override
-	protected void setInitialValue(JList<T> component, List<T> initialValue) {
-		ListItemsValue.setItems(component, initialValue);
-	}
-
 	private static final class ListItemsValue<T> extends AbstractComponentValue<List<T>, JList<T>> {
 
 		private ListItemsValue(JList<T> list) {

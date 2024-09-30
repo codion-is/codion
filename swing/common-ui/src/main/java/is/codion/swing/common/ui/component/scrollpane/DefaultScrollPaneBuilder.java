@@ -122,9 +122,6 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
 		return new ScrollPaneComponentValue(component);
 	}
 
-	@Override
-	protected void setInitialValue(JScrollPane component, Void initialValue) {}
-
 	private static final class ScrollPaneComponentValue extends AbstractComponentValue<Void, JScrollPane> {
 
 		private ScrollPaneComponentValue(JScrollPane component) {

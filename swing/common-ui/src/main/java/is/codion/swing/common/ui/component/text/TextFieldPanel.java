@@ -411,11 +411,6 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected void setInitialValue(TextFieldPanel component, String initialValue) {
-			component.setText(initialValue);
-		}
-
-		@Override
 		protected void enableTransferFocusOnEnter(TextFieldPanel component) {
 			component.transferFocusOnEnter(true);
 		}

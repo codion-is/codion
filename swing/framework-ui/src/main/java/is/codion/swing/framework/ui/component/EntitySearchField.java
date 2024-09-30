@@ -1205,11 +1205,6 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		protected void setInitialValue(EntitySearchField component, Entity initialValue) {
-			component.model().selection().entity().set(initialValue);
-		}
-
-		@Override
 		protected void enableTransferFocusOnEnter(EntitySearchField component) {
 			component.transferFocusOnEnter(true);
 		}

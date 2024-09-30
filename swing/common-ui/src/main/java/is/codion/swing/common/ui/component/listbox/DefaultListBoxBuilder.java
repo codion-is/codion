@@ -81,15 +81,6 @@ final class DefaultListBoxBuilder<T>
 		return new ListBoxComponentValue<>((ListComboBox<T>) comboBox);
 	}
 
-	@Override
-	protected void setInitialValue(JComboBox<T> comboBox, Set<T> initialValue) {
-		FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) comboBox.getModel();
-		comboBoxModel.items().clear();
-		if (initialValue != null) {
-			initialValue.forEach(comboBoxModel.items()::addItem);
-		}
-	}
-
 	private static int horizontalAlignment(JComponent component) {
 		if (component instanceof JTextField) {
 			return ((JTextField) component).getHorizontalAlignment();

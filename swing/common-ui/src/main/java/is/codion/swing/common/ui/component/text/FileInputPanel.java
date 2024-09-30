@@ -151,9 +151,6 @@ public final class FileInputPanel extends JPanel {
 		protected ComponentValue<Path, FileInputPanel> createComponentValue(FileInputPanel component) {
 			return new PathInputPanelValue(component);
 		}
-
-		@Override
-		protected void setInitialValue(FileInputPanel component, Path initialValue) {}
 	}
 
 	private static final class ByteArrayInputPanelBuilder extends AbstractComponentBuilder<byte[], FileInputPanel, Builder<byte[]>> implements Builder<byte[]> {
@@ -173,9 +170,6 @@ public final class FileInputPanel extends JPanel {
 		protected ComponentValue<byte[], FileInputPanel> createComponentValue(FileInputPanel component) {
 			return new ByteArrayInputPanelValue(component);
 		}
-
-		@Override
-		protected void setInitialValue(FileInputPanel component, byte[] initialValue) {}
 	}
 
 	private static final class PathInputPanelValue extends AbstractComponentValue<Path, FileInputPanel> {

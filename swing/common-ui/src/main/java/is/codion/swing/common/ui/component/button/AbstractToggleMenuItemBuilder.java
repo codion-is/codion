@@ -82,11 +82,6 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 	}
 
 	@Override
-	protected final void setInitialValue(C component, Boolean initialValue) {
-		component.setSelected(initialValue != null && initialValue);
-	}
-
-	@Override
 	protected final boolean supportsNull() {
 		return false;
 	}

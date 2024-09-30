@@ -461,13 +461,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	protected abstract ComponentValue<T, C> createComponentValue(C component);
 
 	/**
-	 * Sets the initial value in the component.
-	 * @param component the component
-	 * @param initialValue the initial value, may be null
-	 */
-	protected abstract void setInitialValue(C component, T initialValue);
-
-	/**
 	 * @return true if this component can be linked with a nullable value
 	 */
 	protected boolean supportsNull() {
@@ -537,7 +530,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		}
 		validators.forEach(componentValue::addValidator);
 		if (initialValueSet && linkedValues.isEmpty() && linkedValueObservers.isEmpty()) {
-			setInitialValue(component, initialValue);
+			componentValue.set(initialValue);
 		}
 		linkedValues.forEach(componentValue::link);
 		linkedValueObservers.forEach(componentValue::link);

@@ -236,11 +236,6 @@ public final class EntityComboBoxPanel extends JPanel {
 			component.buttons.forEach(TransferFocusOnEnter::enable);
 		}
 
-		@Override
-		protected void setInitialValue(EntityComboBoxPanel component, Entity initialValue) {
-			component.comboBox.setSelectedItem(initialValue);
-		}
-
 		private EntityComboBox createComboBox() {
 			return entityComboBoxBuilder.build();
 		}
