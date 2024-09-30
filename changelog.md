@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.17
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.setInitialValue() removed, no longer necessary now that the component value is always created, which is now used to set the initial value.
+- SpinnerNumberValue now non-null and validates the value according to the model minimum and maximum, if specified.
 ### is.codion.swing.framework.ui
 - EntityTableCellEditorFactory.editModel() added.
 

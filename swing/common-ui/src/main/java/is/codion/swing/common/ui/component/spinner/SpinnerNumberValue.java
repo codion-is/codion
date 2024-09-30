@@ -21,11 +21,14 @@ package is.codion.swing.common.ui.component.spinner;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<T, JSpinner> {
 
-	SpinnerNumberValue(JSpinner spinner) {
-		super(spinner);
+	SpinnerNumberValue(JSpinner spinner, Class<T> valueClass) {
+		super(spinner, nullValue((SpinnerNumberModel) spinner.getModel(), valueClass));
+		set(null);
+		addValidator(new SpinnerModelValidator<>((SpinnerNumberModel) component().getModel()));
 		spinner.getModel().addChangeListener(e -> notifyListeners());
 	}
 
@@ -36,6 +39,46 @@ final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<
 
 	@Override
 	protected void setComponentValue(T value) {
-		component().setValue(value == null ? 0 : value);
+		component().setValue(value);
+	}
+
+	private static <T extends Number> T nullValue(SpinnerNumberModel model, Class<T> valueClass) {
+		Comparable<T> minimumValue = (Comparable<T>) model.getMinimum();
+		Comparable<T> maximumValue = (Comparable<T>) model.getMaximum();
+		if (minimumValue != null) {
+			return (T) minimumValue;
+		}
+		if (maximumValue != null) {
+			return (T) maximumValue;
+		}
+		if (valueClass.equals(Integer.class)) {
+			return (T) Integer.valueOf(0);
+		}
+		if (valueClass.equals(Double.class)) {
+			return (T) Double.valueOf(0);
+		}
+
+		throw new IllegalArgumentException("Cannot create null value for valueClass: " + valueClass);
+	}
+
+	private static final class SpinnerModelValidator<T> implements Validator<T> {
+
+		private final SpinnerNumberModel model;
+
+		private SpinnerModelValidator(SpinnerNumberModel model) {
+			this.model = model;
+		}
+
+		@Override
+		public void validate(T value) {
+			Comparable<T> minimumValue = (Comparable<T>) model.getMinimum();
+			if (value != null && minimumValue != null && minimumValue.compareTo(value) > 0) {
+				throw new IllegalArgumentException("Value must be greater than or equal to the minimum value " + minimumValue);
+			}
+			Comparable<T> maximumValue = (Comparable<T>) model.getMaximum();
+			if (value != null && maximumValue != null && maximumValue.compareTo(value) < 0) {
+				throw new IllegalArgumentException("Value must be less than or equal to the maximum value " + maximumValue);
+			}
+		}
 	}
 }

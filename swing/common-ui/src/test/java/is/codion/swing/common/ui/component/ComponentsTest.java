@@ -690,6 +690,28 @@ public final class ComponentsTest {
 		assertEquals(10, componentValue.get());
 		value.set(50);
 		assertEquals(50, componentValue.get());
+		componentValue.set(null);
+		assertEquals(0, value.get());
+		value.set(null);
+		assertEquals(0, componentValue.get());
+
+		Components.integerSpinner()
+						.minimum(10)
+						.initialValue(10)
+						.build();
+		componentValue = Components.integerSpinner()
+						.maximum(10)
+						.initialValue(10)
+						.buildValue();
+		assertEquals(10, componentValue.get());
+		assertThrows(IllegalArgumentException.class, () -> Components.integerSpinner()
+						.minimum(10)
+						.initialValue(9)
+						.build());
+		assertThrows(IllegalArgumentException.class, () -> Components.integerSpinner()
+						.maximum(10)
+						.initialValue(11)
+						.build());
 	}
 
 	@Test
@@ -707,6 +729,33 @@ public final class ComponentsTest {
 		assertEquals(10d, componentValue.get());
 		value.set(50d);
 		assertEquals(50d, componentValue.get());
+
+		componentValue = Components.doubleSpinner()
+						.minimum(0d)
+						.initialValue(null)
+						.buildValue();
+		assertEquals(0d, componentValue.get());
+		componentValue = Components.doubleSpinner()
+						.buildValue();
+		assertEquals(0d, componentValue.get());
+
+		Components.doubleSpinner()
+						.minimum(10d)
+						.initialValue(10d)
+						.build();
+		componentValue = Components.doubleSpinner()
+						.maximum(10d)
+						.initialValue(10d)
+						.buildValue();
+		assertEquals(10d, componentValue.get());
+		assertThrows(IllegalArgumentException.class, () -> Components.doubleSpinner()
+						.minimum(10d)
+						.initialValue(9d)
+						.build());
+		assertThrows(IllegalArgumentException.class, () -> Components.doubleSpinner()
+						.maximum(10d)
+						.initialValue(11d)
+						.build());
 	}
 
 	@Test
