@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Builder;
@@ -51,7 +50,7 @@ public class EntityTableCellRendererFactory implements FilterTableCellRendererFa
 	 * @param column the column
 	 * @return a builder for a {@link FilterTableCellRenderer} based on the given column
 	 */
-	protected final Builder<Entity, Attribute<?>> builder(FilterTableColumn<Attribute<?>> column) {
+	protected final Builder<Attribute<?>> builder(FilterTableColumn<Attribute<?>> column) {
 		return new EntityTableCellRendererBuilder(tableModel, requireNonNull(column).identifier());
 	}
 

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.CellColors;
 
 import java.time.temporal.Temporal;
@@ -28,17 +28,16 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link FilterTableCellRenderer.Builder} implementation.
- * @param <R> the row type
  * @param <C> the column identifier type
  */
-public class DefaultFilterTableCellRendererBuilder<R, C> implements FilterTableCellRenderer.Builder<R, C> {
+public class DefaultFilterTableCellRendererBuilder<C> implements FilterTableCellRenderer.Builder<C> {
 
-	final FilterTableModel<R, C> tableModel;
 	final C columnIdentifier;
 
 	private final Class<?> columnClass;
 	private final boolean useBooleanRenderer;
 
+	ConditionModel<C, ?> condition;
 	int horizontalAlignment;
 	boolean toolTipData;
 	boolean columnShading = true;
@@ -50,23 +49,20 @@ public class DefaultFilterTableCellRendererBuilder<R, C> implements FilterTableC
 
 	/**
 	 * Instantiates a new builder
-	 * @param tableModel the table model
 	 * @param columnIdentifier the column identifier
 	 * @param columnClass the column class
 	 */
-	protected DefaultFilterTableCellRendererBuilder(FilterTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass) {
-		this(tableModel, columnIdentifier, columnClass, Boolean.class.equals(requireNonNull(columnClass)));
+	protected DefaultFilterTableCellRendererBuilder(C columnIdentifier, Class<?> columnClass) {
+		this(columnIdentifier, columnClass, Boolean.class.equals(requireNonNull(columnClass)));
 	}
 
 	/**
 	 * Instantiates a new builder
-	 * @param tableModel the table model
 	 * @param columnIdentifier the column identifier
 	 * @param columnClass the column class
 	 * @param useBooleanRenderer true if the boolean renderer should be used
 	 */
-	protected DefaultFilterTableCellRendererBuilder(FilterTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass, boolean useBooleanRenderer) {
-		this.tableModel = requireNonNull(tableModel);
+	protected DefaultFilterTableCellRendererBuilder(C columnIdentifier, Class<?> columnClass, boolean useBooleanRenderer) {
 		this.columnIdentifier = requireNonNull(columnIdentifier);
 		this.columnClass = requireNonNull(columnClass);
 		this.useBooleanRenderer = useBooleanRenderer;
@@ -74,49 +70,55 @@ public class DefaultFilterTableCellRendererBuilder<R, C> implements FilterTableC
 	}
 
 	@Override
-	public final FilterTableCellRenderer.Builder<R, C> horizontalAlignment(int horizontalAlignment) {
+	public FilterTableCellRenderer.Builder<C> condition(ConditionModel<C, ?> condition) {
+		this.condition = condition;
+		return this;
+	}
+
+	@Override
+	public final FilterTableCellRenderer.Builder<C> horizontalAlignment(int horizontalAlignment) {
 		this.horizontalAlignment = horizontalAlignment;
 		return this;
 	}
 
 	@Override
-	public final FilterTableCellRenderer.Builder<R, C> toolTipData(boolean toolTipData) {
+	public final FilterTableCellRenderer.Builder<C> toolTipData(boolean toolTipData) {
 		this.toolTipData = toolTipData;
 		return this;
 	}
 
 	@Override
-	public final FilterTableCellRenderer.Builder<R, C> columnShading(boolean columnShading) {
+	public final FilterTableCellRenderer.Builder<C> columnShading(boolean columnShading) {
 		this.columnShading = columnShading;
 		return this;
 	}
 
 	@Override
-	public final FilterTableCellRenderer.Builder<R, C> alternateRowColoring(boolean alternateRowColoring) {
+	public final FilterTableCellRenderer.Builder<C> alternateRowColoring(boolean alternateRowColoring) {
 		this.alternateRowColoring = alternateRowColoring;
 		return this;
 	}
 
 	@Override
-	public final FilterTableCellRenderer.Builder<R, C> leftPadding(int leftPadding) {
+	public final FilterTableCellRenderer.Builder<C> leftPadding(int leftPadding) {
 		this.leftPadding = leftPadding;
 		return this;
 	}
 
 	@Override
-	public final FilterTableCellRenderer.Builder<R, C> rightPadding(int rightPadding) {
+	public final FilterTableCellRenderer.Builder<C> rightPadding(int rightPadding) {
 		this.rightPadding = rightPadding;
 		return this;
 	}
 
 	@Override
-	public final FilterTableCellRenderer.Builder<R, C> string(Function<Object, String> string) {
+	public final FilterTableCellRenderer.Builder<C> string(Function<Object, String> string) {
 		this.string = requireNonNull(string);
 		return this;
 	}
 
 	@Override
-	public final FilterTableCellRenderer.Builder<R, C> cellColors(CellColors<C> cellColors) {
+	public final FilterTableCellRenderer.Builder<C> cellColors(CellColors<C> cellColors) {
 		this.cellColors = requireNonNull(cellColors);
 		return this;
 	}
@@ -159,5 +161,5 @@ public class DefaultFilterTableCellRendererBuilder<R, C> implements FilterTableC
 		}
 	}
 
-	private static final class DefaultCellColors<R> implements CellColors<R> {}
+	private static final class DefaultCellColors<C> implements CellColors<C> {}
 }

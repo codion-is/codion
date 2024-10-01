@@ -19,51 +19,51 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableCellRendererBuilder;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.CellColors;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Settings;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Colors.darker;
 import static java.util.Objects.requireNonNull;
 
-final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendererBuilder<Entity, Attribute<?>> {
+final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendererBuilder<Attribute<?>> {
+
+	private final ConditionModel<Attribute<?>, ?> queryConditionModel;
 
 	EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
 		this(requireNonNull(tableModel), tableModel.entityDefinition().attributes().definition(attribute));
 	}
 
 	private EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, AttributeDefinition<?> attributeDefinition) {
-		super(requireNonNull(tableModel), requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().type().valueClass(),
-						attributeDefinition.attribute().type().isBoolean() && attributeDefinition.items().isEmpty());
-		tableModel.entityDefinition().attributes().definition(attributeDefinition.attribute());
+		super(requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().type().valueClass());
+		requireNonNull(tableModel).entityDefinition().attributes().definition(attributeDefinition.attribute());
+		queryConditionModel = tableModel.queryModel().conditions().optional(attributeDefinition.attribute()).orElse(null);
+		condition(tableModel.conditions().optional(attributeDefinition.attribute()).orElse(null));
 		string(new DefaultString(attributeDefinition));
 		cellColors(new EntityCellColors(tableModel));
 	}
 
 	@Override
 	protected Settings<Attribute<?>> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
-		return new EntitySettings(leftPadding, rightPadding, alternateRowColoring);
+		return new EntitySettings(queryConditionModel, leftPadding, rightPadding, alternateRowColoring);
 	}
 
 	private static final class EntitySettings extends Settings<Attribute<?>> {
 
-		private final Map<Attribute<?>, ConditionModel<Attribute<?>, ?>> queryConditionModelCache = new HashMap<>();
+		private final ConditionModel<Attribute<?>, ?> queryConditionModel;
 
 		private Color backgroundColorDoubleShade;
 		private Color backgroundColorAlternateDoubleShade;
 
-		private EntitySettings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+		private EntitySettings(ConditionModel<Attribute<?>, ?> queryConditionModel, int leftPadding, int rightPadding, boolean alternateRowColoring) {
 			super(leftPadding, rightPadding, alternateRowColoring);
+			this.queryConditionModel = queryConditionModel;
 		}
 
 		@Override
@@ -74,23 +74,15 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		}
 
 		@Override
-		protected Color backgroundColorShaded(FilterTableModel<?, Attribute<?>> tableModel, int row,
+		protected Color backgroundColorShaded(ConditionModel<Attribute<?>, ?> conditionModel, int row,
 																					Attribute<?> identifier, Color cellBackgroundColor) {
-			ConditionModel<?, ?> conditionModel = queryConditionModel(tableModel, identifier);
-			boolean conditionEnabled = conditionModel != null && conditionModel.enabled().get();
-			conditionModel = conditionModel(tableModel, identifier);
+			boolean conditionEnabled = queryConditionModel != null && queryConditionModel.enabled().get();
 			boolean filterEnabled = conditionModel != null && conditionModel.enabled().get();
-			boolean showCondition = conditionEnabled || filterEnabled;
-			if (showCondition) {
+			if (conditionEnabled || filterEnabled) {
 				return backgroundColorShaded(row, conditionEnabled && filterEnabled, cellBackgroundColor);
 			}
 
 			return cellBackgroundColor;
-		}
-
-		private ConditionModel<?, ?> queryConditionModel(FilterTableModel<?, Attribute<?>> tableModel, Attribute<?> attribute) {
-			return queryConditionModelCache.computeIfAbsent(attribute,
-							k -> ((SwingEntityTableModel) tableModel).queryModel().conditions().optional(attribute).orElse(null));
 		}
 
 		private Color backgroundColorShaded(int row, boolean doubleShading, Color cellBackgroundColor) {

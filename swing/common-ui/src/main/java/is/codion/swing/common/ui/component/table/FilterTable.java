@@ -1528,8 +1528,9 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<C> column) {
-			return FilterTableCellRenderer.builder(tableModel, column.identifier(),
-							tableModel.getColumnClass(column.identifier())).build();
+			return FilterTableCellRenderer.builder(column.identifier(), tableModel.getColumnClass(column.identifier()))
+							.condition(tableModel.conditions().optional(column.identifier()).orElse(null))
+							.build();
 		}
 	}
 

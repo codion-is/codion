@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 
 final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
@@ -63,7 +64,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	@Override
 	public <T> ConditionModel<C, T> get(C identifier) {
-		ConditionModel<C, T> condition = (ConditionModel<C, T>) conditions.get(identifier);
+		ConditionModel<C, T> condition = (ConditionModel<C, T>) conditions.get(requireNonNull(identifier));
 		if (condition == null) {
 			throw new IllegalArgumentException("No condition available for identifier: " + identifier);
 		}
@@ -73,7 +74,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	@Override
 	public <T> Optional<ConditionModel<C, T>> optional(C identifier) {
-		return Optional.ofNullable((ConditionModel<C, T>) conditions.get(identifier));
+		return Optional.ofNullable((ConditionModel<C, T>) conditions.get(requireNonNull(identifier)));
 	}
 
 	@Override

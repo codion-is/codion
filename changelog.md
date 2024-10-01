@@ -5,10 +5,13 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.setInitialValue() removed, no longer necessary now that the component value is always created, which is now used to set the initial value.
 - SpinnerNumberValue now non-null and validates the value according to the model minimum and maximum, if specified.
+- FilterTableCellRenderer.backgroundColor() tableModel parameter replaced with conditionModel
+- DefaultFilterTableCellRenderer condition model cache removed.
 ### is.codion.swing.framework.ui
 - EntityTableCellEditorFactory.editModel() added.
 - EntityTableCellRenderer removed.
 - EntityTableCellEditorFactory.builder() now final, tableCellRenderer() no longer final.
+- EntityTableCellRendererBuilder, query condition model cache removed.
 
 ## 0.18.16
 ### is.codion.common.core

@@ -153,12 +153,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	@Override
 	public <T> ConditionModel<Attribute<?>, T> get(Attribute<?> identifier) {
-		return tableConditionModel.get(identifier);
+		return tableConditionModel.get(requireNonNull(identifier));
 	}
 
 	@Override
 	public <T> Optional<ConditionModel<Attribute<?>, T>> optional(Attribute<?> identifier) {
-		return tableConditionModel.optional(identifier);
+		return tableConditionModel.optional(requireNonNull(identifier));
 	}
 
 	@Override
