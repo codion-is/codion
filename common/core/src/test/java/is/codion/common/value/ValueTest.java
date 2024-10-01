@@ -38,7 +38,7 @@ public class ValueTest {
 						.build();
 		Value.builder()
 						.nonNull("NullString")
-						.initialValue("Testing")
+						.value("Testing")
 						.build();
 		assertThrows(NullPointerException.class, () -> Value.builder().nonNull(null));
 	}
@@ -69,7 +69,7 @@ public class ValueTest {
 		AtomicInteger eventCounter = new AtomicInteger();
 		Value<Integer> intValue = Value.builder()
 						.nonNull(-1)
-						.initialValue(42)
+						.value(42)
 						.build();
 		assertFalse(intValue.nullable());
 		assertTrue(intValue.optional().isPresent());
@@ -177,7 +177,7 @@ public class ValueTest {
 		AtomicInteger modelValueEventCounter = new AtomicInteger();
 		Value<Integer> modelValue = Value.builder()
 						.nonNull(0)
-						.initialValue(42)
+						.value(42)
 						.build();
 		Value<Integer> uiValue = Value.value();
 		assertFalse(modelValue.nullable());

@@ -85,27 +85,27 @@ public final class ConnectionPoolMonitor {
 		this.connectionPool = connectionPool;
 		this.pooledConnectionTimeoutValue = Value.builder()
 						.nonNull(0)
-						.initialValue(connectionPool.getIdleConnectionTimeout())
+						.value(connectionPool.getIdleConnectionTimeout())
 						.consumer(connectionPool::setIdleConnectionTimeout)
 						.build();
 		this.pooledCleanupIntervalValue = Value.builder()
 						.nonNull(0)
-						.initialValue(connectionPool.getCleanupInterval())
+						.value(connectionPool.getCleanupInterval())
 						.consumer(connectionPool::setCleanupInterval)
 						.build();
 		this.minimumPoolSizeValue = Value.builder()
 						.nonNull(0)
-						.initialValue(connectionPool.getMinimumPoolSize())
+						.value(connectionPool.getMinimumPoolSize())
 						.consumer(connectionPool::setMinimumPoolSize)
 						.build();
 		this.maximumPoolSizeValue = Value.builder()
 						.nonNull(0)
-						.initialValue(connectionPool.getMaximumPoolSize())
+						.value(connectionPool.getMaximumPoolSize())
 						.consumer(connectionPool::setMaximumPoolSize)
 						.build();
 		this.maximumCheckoutTimeValue = Value.builder()
 						.nonNull(0)
-						.initialValue(connectionPool.getMaximumCheckOutTime())
+						.value(connectionPool.getMaximumCheckOutTime())
 						.consumer(connectionPool::setMaximumCheckOutTime)
 						.build();
 		this.collectSnapshotStatisticsState = State.state(connectionPool.isCollectSnapshotStatistics());

@@ -188,13 +188,13 @@ final class DefaultState implements State {
 
 		private final Value.Builder<Boolean, ?> valueBuilder = Value.builder().nonNull(false);
 
-		DefaultBuilder(boolean initialValue) {
-			valueBuilder.initialValue(initialValue);
+		DefaultBuilder(boolean value) {
+			valueBuilder.value(value);
 		}
 
 		@Override
-		public Builder initialValue(Boolean initialValue) {
-			valueBuilder.initialValue(initialValue);
+		public Builder value(Boolean value) {
+			valueBuilder.value(value);
 			return this;
 		}
 

@@ -46,12 +46,12 @@ public interface ValueList<T> extends Values<T, List<T>> {
 
 	/**
 	 * Creates a new {@link ValueList}, using {@link Notify#WHEN_CHANGED}.
-	 * @param initialValue the initial value, may not be null
+	 * @param value the initial value, may not be null
 	 * @param <T> the value type
 	 * @return a new {@link ValueList}
 	 */
-	static <T> ValueList<T> valueList(Collection<T> initialValue) {
-		return builder(initialValue).build();
+	static <T> ValueList<T> valueList(Collection<T> value) {
+		return builder(value).build();
 	}
 
 	/**
@@ -65,16 +65,16 @@ public interface ValueList<T> extends Values<T, List<T>> {
 
 	/**
 	 * Creates a new {@link ValueList.Builder} instance.
-	 * @param initialValue the initial value
+	 * @param value the initial value
 	 * @param <T> the value set type
 	 * @return a new builder
-	 * @throws NullPointerException in case {@code initialValue} is null
+	 * @throws NullPointerException in case {@code value} is null
 	 */
-	static <T> Builder<T> builder(Collection<T> initialValue) {
-		requireNonNull(initialValue);
+	static <T> Builder<T> builder(Collection<T> value) {
+		requireNonNull(value);
 
 		return new DefaultValueList.DefaultBuilder<T>()
-						.initialValue(new ArrayList<>(initialValue));
+						.value(new ArrayList<>(value));
 	}
 
 	/**

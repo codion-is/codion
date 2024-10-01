@@ -65,7 +65,7 @@ public class ValuesTest {
 		initialValues.add(2);
 
 		values = Values.builder(emptySet, unmodifiableSet)
-						.initialValue(initialValues)
+						.value(initialValues)
 						.build();
 		observer = values.observer();
 		assertFalse(observer.empty());
@@ -185,7 +185,7 @@ public class ValuesTest {
 		initialValues.add(2);
 
 		values = Values.builder(emptyList, unmodifiableList)
-						.initialValue(initialValues)
+						.value(initialValues)
 						.build();
 		observer = values.observer();
 		assertFalse(observer.empty());

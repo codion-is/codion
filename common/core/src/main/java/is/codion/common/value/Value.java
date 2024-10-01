@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  * {@code
  * Value<String> string = Value.builder()
  *         .nonNull("none")
- *         .initialValue("hello")
+ *         .value("hello")
  *         .notify(Notify.WHEN_SET)
  *         .validator(this::validateString)
  *         .listener(this::onStringSet)
@@ -189,12 +189,12 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	/**
 	 * Creates a new nullable {@link Value} instance, wrapping the given initial value, using {@link Notify#WHEN_CHANGED}.
 	 * @param <T> the value type
-	 * @param initialValue the initial value
+	 * @param value the initial value
 	 * @return a Value for the given type
 	 */
-	static <T> Value<T> value(T initialValue) {
+	static <T> Value<T> value(T value) {
 		return builder()
-						.nullable(initialValue)
+						.nullable(value)
 						.build();
 	}
 
@@ -224,11 +224,11 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		<T> Builder<T, ?> nullable();
 
 		/**
-		 * @param initialValue the initial value
+		 * @param value the initial value
 		 * @param <T> the value type
 		 * @return a builder for a nullable {@link Value}
 		 */
-		<T> Builder<T, ?> nullable(T initialValue);
+		<T> Builder<T, ?> nullable(T value);
 	}
 
 	/**
@@ -239,10 +239,10 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	interface Builder<T, B extends Builder<T, B>> {
 
 		/**
-		 * @param initialValue the initial value
+		 * @param value the initial value
 		 * @return this builder instance
 		 */
-		B initialValue(T initialValue);
+		B value(T value);
 
 		/**
 		 * @param notify the notify policy for this value, default {@link Notify#WHEN_CHANGED}

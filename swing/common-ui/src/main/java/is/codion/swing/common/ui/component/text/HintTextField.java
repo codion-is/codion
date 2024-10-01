@@ -68,7 +68,7 @@ public class HintTextField extends JTextField {
 		super(document, null, 0);
 		this.hint = Value.builder()
 						.nonNull("")
-						.initialValue(hint)
+						.value(hint)
 						.listener(this::repaint)
 						.build();
 		setupListeners();

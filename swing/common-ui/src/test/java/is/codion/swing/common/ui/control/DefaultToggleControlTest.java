@@ -69,7 +69,7 @@ public class DefaultToggleControlTest {
 
 		Value<Boolean> nonNullableValue = Value.builder()
 						.nonNull(false)
-						.initialValue(true)
+						.value(true)
 						.build();
 		ToggleControl nonNullableControl = Control.builder().toggle(nonNullableValue).build();
 		ButtonModel buttonModel = toggleButton()

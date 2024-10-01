@@ -2737,7 +2737,7 @@ public class EntityTablePanel extends JPanel {
 
 		private final Value<String> statusMessage = Value.builder()
 						.nonNull("")
-						.initialValue(configuration.statusMessage.apply(tableModel))
+						.value(configuration.statusMessage.apply(tableModel))
 						.build();
 		private final JLabel label = Components.label(statusMessage)
 						.horizontalAlignment(SwingConstants.CENTER)

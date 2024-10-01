@@ -65,9 +65,9 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public <T> Builder<T, ?> nullable(T initialValue) {
+		public <T> Builder<T, ?> nullable(T value) {
 			return (Builder<T, ?>) new DefaultBuilder<>()
-							.initialValue(initialValue);
+							.value(value);
 		}
 	}
 
@@ -82,7 +82,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		private final List<Consumer<? super T>> consumers = new ArrayList<>();
 		private final List<Consumer<? super T>> weakConsumers = new ArrayList<>();
 
-		private T initialValue;
+		private T value;
 		private Notify notify = Notify.WHEN_CHANGED;
 
 		DefaultBuilder() {
@@ -91,12 +91,12 @@ class DefaultValue<T> extends AbstractValue<T> {
 
 		DefaultBuilder(T nullValue) {
 			this.nullValue = requireNonNull(nullValue);
-			this.initialValue = nullValue;
+			this.value = nullValue;
 		}
 
 		@Override
-		public final B initialValue(T initialValue) {
-			this.initialValue = initialValue;
+		public final B value(T value) {
+			this.value = value;
 			return self();
 		}
 
@@ -157,7 +157,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		 * @return the initial value
 		 */
 		protected T prepareInitialValue() {
-			return initialValue == null ? nullValue : initialValue;
+			return value == null ? nullValue : value;
 		}
 
 		private B self() {

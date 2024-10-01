@@ -149,7 +149,7 @@ public final class ServerMonitor {
 		this.server = connectServer(serverInformation.serverName());
 		this.connectionLimitValue = Value.builder()
 						.nonNull(-1)
-						.initialValue(getConnectionLimit())
+						.value(getConnectionLimit())
 						.consumer(this::setConnectionLimit)
 						.build();
 		this.logLevelValue = Value.builder()

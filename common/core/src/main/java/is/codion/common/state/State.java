@@ -104,11 +104,11 @@ public interface State extends StateObserver, Value<Boolean> {
 
 	/**
 	 * Creates a new {@link State} instance.
-	 * @param initialValue the initial state value
+	 * @param value the initial state value
 	 * @return a new {@link State} instance
 	 */
-	static State state(boolean initialValue) {
-		return builder(initialValue).build();
+	static State state(boolean value) {
+		return builder(value).build();
 	}
 
 	/**
@@ -119,11 +119,11 @@ public interface State extends StateObserver, Value<Boolean> {
 	}
 
 	/**
-	 * @param initialValue the initial value
+	 * @param value the initial value
 	 * @return a new {@link Builder} instance
 	 */
-	static Builder builder(boolean initialValue) {
-		return new DefaultState.DefaultBuilder(initialValue);
+	static Builder builder(boolean value) {
+		return new DefaultState.DefaultBuilder(value);
 	}
 
 	/**

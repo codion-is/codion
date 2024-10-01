@@ -269,7 +269,7 @@ public final class ComponentsTest {
 	void checkBox() {
 		Value<Boolean> value = Value.builder()
 						.nonNull(false)
-						.initialValue(true)
+						.value(true)
 						.build();
 		ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox(value)
 						.text("caption")
@@ -315,7 +315,7 @@ public final class ComponentsTest {
 	void toggleButton() {
 		Value<Boolean> value = Value.builder()
 						.nonNull(false)
-						.initialValue(true)
+						.value(true)
 						.build();
 		ComponentValue<Boolean, JToggleButton> componentValue = Components.toggleButton(value)
 						.text("caption")
@@ -363,7 +363,7 @@ public final class ComponentsTest {
 
 		Value<Boolean> value = Value.builder()
 						.nonNull(false)
-						.initialValue(true)
+						.value(true)
 						.build();
 		ComponentValue<Boolean, JRadioButton> componentValue = Components.radioButton(value)
 						.text("caption")

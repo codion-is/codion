@@ -163,7 +163,7 @@ public final class EventStateValue {
 		Value<Integer> value =
 						Value.builder()
 										.nonNull(nullValue)
-										.initialValue(initialValue)
+										.value(initialValue)
 										.build();
 
 		System.out.println(value.nullable());//output: false

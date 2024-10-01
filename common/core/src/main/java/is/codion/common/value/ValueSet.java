@@ -46,12 +46,12 @@ public interface ValueSet<T> extends Values<T, Set<T>> {
 
 	/**
 	 * Creates a new {@link ValueSet}, using {@link Notify#WHEN_CHANGED}.
-	 * @param initialValue the initial value, may not be null
+	 * @param value the initial value, may not be null
 	 * @param <T> the value type
 	 * @return a new {@link ValueSet}
 	 */
-	static <T> ValueSet<T> valueSet(Collection<T> initialValue) {
-		return builder(initialValue).build();
+	static <T> ValueSet<T> valueSet(Collection<T> value) {
+		return builder(value).build();
 	}
 
 	/**
@@ -65,16 +65,16 @@ public interface ValueSet<T> extends Values<T, Set<T>> {
 
 	/**
 	 * Creates a new {@link ValueSet.Builder} instance.
-	 * @param initialValue the initial value
+	 * @param value the initial value
 	 * @param <T> the value set type
 	 * @return a new builder
-	 * @throws NullPointerException in case {@code initialValue} is null
+	 * @throws NullPointerException in case {@code value} is null
 	 */
-	static <T> Builder<T> builder(Collection<T> initialValue) {
-		requireNonNull(initialValue);
+	static <T> Builder<T> builder(Collection<T> value) {
+		requireNonNull(value);
 
 		return new DefaultValueSet.DefaultBuilder<T>()
-						.initialValue(new LinkedHashSet<>(initialValue));
+						.value(new LinkedHashSet<>(value));
 	}
 
 	/**

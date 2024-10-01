@@ -194,7 +194,7 @@ public final class InputControls {
 		Value<Boolean> booleanValue =
 						Value.builder()
 										.nonNull(nullValue)
-										.initialValue(true)
+										.value(true)
 										.build();
 
 		JCheckBox checkBox =
