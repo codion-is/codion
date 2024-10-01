@@ -1036,10 +1036,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	private CommandControl createAddControl() {
 		return Control.builder()
-						.command(() -> addEntityDialog(() -> editPanel)
-										.owner(this)
-										.closeDialog(false)
-										.show())
+						.command(new AddCommand())
 						.name(FrameworkMessages.add())
 						.mnemonic(FrameworkMessages.addMnemonic())
 						.smallIcon(ICONS.add())
@@ -1052,11 +1049,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	private CommandControl createEditControl() {
 		return Control.builder()
-						.action(actionEvent -> editEntityDialog(() -> editPanel)
-										.owner(this)
-										.location(actionEvent.getSource() instanceof MouseEvent ?
-														((MouseEvent) actionEvent.getSource()).getLocationOnScreen() : null)
-										.show())
+						.action(new EditCommand())
 						.name(FrameworkMessages.edit())
 						.mnemonic(FrameworkMessages.editMnemonic())
 						.smallIcon(ICONS.edit())
@@ -1855,6 +1848,29 @@ public class EntityTablePanel extends JPanel {
 						null,
 						ADDITIONAL_TOOLBAR_CONTROLS
 		));
+	}
+
+	private final class AddCommand implements Control.Command {
+
+		@Override
+		public void execute() throws Exception {
+			addEntityDialog(() -> editPanel)
+							.owner(EntityTablePanel.this)
+							.closeDialog(false)
+							.show();
+		}
+	}
+
+	private final class EditCommand implements Control.ActionCommand {
+
+		@Override
+		public void execute(ActionEvent actionEvent) throws Exception {
+			editEntityDialog(() -> editPanel)
+							.owner(EntityTablePanel.this)
+							.location(actionEvent.getSource() instanceof MouseEvent ?
+											((MouseEvent) actionEvent.getSource()).getLocationOnScreen() : null)
+							.show();
+		}
 	}
 
 	private final class DeleteCommand implements Control.Command {

@@ -599,7 +599,7 @@ public final class EntityDialogs {
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createAddControl(editPanel,
-											new InsertConsumer(disposeDialog), confirm))
+											new OnInsert(disposeDialog), confirm))
 							.escapeAction(createCancelControl(disposeDialog))
 							.title(FrameworkMessages.add() + " - " + editModel.entities()
 											.definition(editModel.entityType()).caption())
@@ -607,11 +607,11 @@ public final class EntityDialogs {
 							.show();
 		}
 
-		private final class InsertConsumer implements Consumer<Collection<Entity>> {
+		private final class OnInsert implements Consumer<Collection<Entity>> {
 
 			private final Runnable disposeDialog;
 
-			private InsertConsumer(Runnable disposeDialog) {
+			private OnInsert(Runnable disposeDialog) {
 				this.disposeDialog = disposeDialog;
 			}
 

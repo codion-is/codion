@@ -1015,6 +1015,7 @@ public class EntityPanel extends JPanel {
 	private void disposeEditWindow() {
 		if (editWindow != null) {
 			editWindow.dispose();
+			editWindow = null;
 		}
 	}
 
