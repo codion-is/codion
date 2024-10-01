@@ -283,7 +283,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 			Dialogs.calendarDialog()
 							.owner(this)
 							.icon(calendarIcon)
-							.initialValue((LocalDate) getTemporal())
+							.value((LocalDate) getTemporal())
 							.selectLocalDate()
 							.ifPresent(this::setTemporal);
 		}
@@ -291,7 +291,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 			Dialogs.calendarDialog()
 							.owner(this)
 							.icon(calendarIcon)
-							.initialValue((LocalDateTime) getTemporal())
+							.value((LocalDateTime) getTemporal())
 							.selectLocalDateTime()
 							.ifPresent(this::setTemporal);
 		}

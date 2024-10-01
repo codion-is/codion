@@ -48,18 +48,18 @@ public class DefaultEntityComponentFactory<T, C extends JComponent> implements E
 	}
 
 	@Override
-	public ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T initialValue) {
+	public ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T value) {
 		requireNonNull(editModel, "editModel");
 		EntityComponents inputComponents = entityComponents(editModel.entityDefinition());
 		if (attribute instanceof ForeignKey) {
-			return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue, inputComponents);
+			return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) value, inputComponents);
 		}
 		if (attribute.type().isTemporal()) {
-			return createTemporalComponentValue(attribute, (Temporal) initialValue, inputComponents);
+			return createTemporalComponentValue(attribute, (Temporal) value, inputComponents);
 		}
 
 		return (ComponentValue<T, C>) inputComponents.component(attribute)
-						.initialValue(initialValue)
+						.value(value)
 						.buildValue();
 	}
 
@@ -71,30 +71,30 @@ public class DefaultEntityComponentFactory<T, C extends JComponent> implements E
 	}
 
 	private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel,
-																															Entity initialValue, EntityComponents inputComponents) {
+																															Entity value, EntityComponents inputComponents) {
 		if (editModel.entities().definition(foreignKey.referencedType()).smallDataset()) {
 			return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, editModel.createForeignKeyComboBoxModel(foreignKey))
-							.initialValue(initialValue)
+							.value(value)
 							.onSetVisible(comboBox -> comboBox.getModel().refresh())
 							.buildValue();
 		}
 
 		return (ComponentValue<T, C>) inputComponents.foreignKeySearchField(foreignKey, editModel.createForeignKeySearchModel(foreignKey))
-						.initialValue(initialValue)
+						.value(value)
 						.buildValue();
 	}
 
 	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<T, C> createTemporalComponentValue(A attribute,
-																																																										 Temporal initialValue,
+																																																										 Temporal value,
 																																																										 EntityComponents inputComponents) {
 		if (TemporalFieldPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
 			return (ComponentValue<T, C>) inputComponents.temporalFieldPanel((Attribute<Temporal>) attribute)
-							.initialValue(initialValue)
+							.value(value)
 							.buildValue();
 		}
 
 		return (ComponentValue<T, C>) inputComponents.temporalField((Attribute<Temporal>) attribute)
-						.initialValue(initialValue)
+						.value(value)
 						.buildValue();
 	}
 }

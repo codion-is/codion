@@ -95,8 +95,8 @@ public final class AlbumTablePanel extends EntityTablePanel {
 
 		@Override
 		public ComponentValue<List<String>, AlbumTagPanel> componentValue(SwingEntityEditModel editModel,
-																																			List<String> initialValue) {
-			return new TagComponentValue(initialValue);
+																																			List<String> value) {
+			return new TagComponentValue(value);
 		}
 	}
 
@@ -105,7 +105,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 		private TagComponentValue(List<String> tags) {
 			super(new AlbumTagPanel(Components.list(new DefaultListModel<String>())
 							.items()
-							.initialValue(tags)
+							.value(tags)
 							.buildValue()));
 		}
 

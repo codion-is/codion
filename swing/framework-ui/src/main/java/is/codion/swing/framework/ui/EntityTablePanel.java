@@ -2775,7 +2775,7 @@ public class EntityTablePanel extends JPanel {
 
 		private void configureLimit() {
 			ComponentValue<Integer, NumberField<Integer>> limitValue = Components.integerField()
-							.initialValue(tableModel.queryModel().limit().get())
+							.value(tableModel.queryModel().limit().get())
 							.groupingUsed(true)
 							.minimumValue(0)
 							.columns(6)

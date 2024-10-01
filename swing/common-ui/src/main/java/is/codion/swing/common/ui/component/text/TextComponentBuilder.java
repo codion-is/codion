@@ -155,7 +155,7 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
 	 * Default {@link InitialCaretPosition#START}
 	 * @param initialCaretPosition the initial caret position
 	 * @return this builder instance
-	 * @see #initialValue(Object)
+	 * @see #value(Object)
 	 */
 	B initialCaretPosition(InitialCaretPosition initialCaretPosition);
 

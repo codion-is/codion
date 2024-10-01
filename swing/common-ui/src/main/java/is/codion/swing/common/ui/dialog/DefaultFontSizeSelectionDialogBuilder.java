@@ -97,7 +97,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 			List<Item<Integer>> values = initializeValues();
 			this.fontSizeComboBoxModel = itemComboBoxModel(values);
 			add(ItemComboBoxBuilder.builder(fontSizeComboBoxModel)
-							.initialValue(initialFontSize)
+							.value(initialFontSize)
 							.renderer(new FontSizeCellRenderer(values, initialFontSize))
 							.build(), BorderLayout.CENTER);
 			setBorder(createEmptyBorder(10, 10, 0, 10));

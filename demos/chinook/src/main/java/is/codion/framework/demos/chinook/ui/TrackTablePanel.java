@@ -90,11 +90,11 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 		@Override
 		public ComponentValue<Integer, JSpinner> componentValue(SwingEntityEditModel editModel,
-																														Integer initialValue) {
+																														Integer value) {
 			EntityComponents inputComponents = entityComponents(editModel.entityDefinition());
 
 			return inputComponents.integerSpinner(Track.RATING)
-							.initialValue(initialValue)
+							.value(value)
 							.buildValue();
 		}
 	}
@@ -115,9 +115,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 		@Override
 		public ComponentValue<Integer, MinutesSecondsPanel> componentValue(SwingEntityEditModel editModel,
-																																			 Integer initialValue) {
+																																			 Integer value) {
 			MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue(false);
-			minutesSecondsPanelValue.set(initialValue);
+			minutesSecondsPanelValue.set(value);
 
 			return minutesSecondsPanelValue;
 		}

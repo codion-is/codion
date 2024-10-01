@@ -386,10 +386,10 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * Sets the initial value for the component, unless value(s) have been linked via {@link #link(Value)}
 	 * or {@link #link(ValueObserver)}, which then control the inital value.
 	 * The initial value is set before any listeners are added, so no events are triggered.
-	 * @param initialValue the initial value
+	 * @param value the initial value
 	 * @return this builder instance
 	 */
-	B initialValue(T initialValue);
+	B value(T value);
 
 	/**
 	 * @return a {@link ScrollPaneBuilder} using this component as the view

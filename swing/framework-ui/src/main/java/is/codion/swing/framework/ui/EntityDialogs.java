@@ -428,19 +428,19 @@ public final class EntityDialogs {
 		}
 
 		@Override
-		public ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T initialValue) {
+		public ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T value) {
 			AttributeDefinition<T> attributeDefinition = editModel.entityDefinition()
 							.attributes().definition(attribute());
 			if (attributeDefinition.items().isEmpty() && attribute().type().isString()) {
 				//special handling for non-item based String attributes, text field panel instead of a text field
 				return (ComponentValue<T, C>) entityComponents(editModel.entityDefinition())
 								.textFieldPanel((Attribute<String>) attribute())
-								.initialValue((String) initialValue)
+								.value((String) value)
 								.columns(TEXT_INPUT_PANEL_COLUMNS)
 								.buildValue();
 			}
 
-			return super.componentValue(editModel, initialValue);
+			return super.componentValue(editModel, value);
 		}
 	}
 

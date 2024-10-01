@@ -9,6 +9,7 @@ Codion Change Log
 - SpinnerNumberValue now non-null and validates the value according to the model minimum and maximum, if specified.
 - FilterTableCellRenderer.backgroundColor() tableModel parameter replaced with conditionModel
 - DefaultFilterTableCellRenderer condition model cache removed.
+- ComponentBuilder.initialValue() renamed value().
 ### is.codion.swing.framework.ui
 - EntityTableCellEditorFactory.editModel() added.
 - EntityTableCellRenderer removed.

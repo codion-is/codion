@@ -34,10 +34,10 @@ public interface EntityComponentFactory<T, C extends JComponent> {
 	/**
 	 * Provides an input {@link ComponentValue} for editing a single attribute value for one or more entities.
 	 * @param editModel the edit model used to create foreign key input models
-	 * @param initialValue the initial value to display
+	 * @param value the initial value to display
 	 * @return a new {@link ComponentValue} instance handling input for {@code attribute}
 	 */
-	ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T initialValue);
+	ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T value);
 
 	/**
 	 * Provides a way to override the default attribute caption, when presenting the component to the user.

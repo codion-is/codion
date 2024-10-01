@@ -300,7 +300,7 @@ public final class ServerMonitorPanel extends JPanel {
 						.editable(false)
 						.lineWrap(true)
 						.wrapStyleWord(true)
-						.initialValue(model.environmentInfo())
+						.value(model.environmentInfo())
 						.scrollPane()
 						.build();
 	}

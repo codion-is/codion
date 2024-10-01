@@ -420,7 +420,7 @@ public final class NumberFieldTest {
 	@Test
 	void silentValidation() {
 		NumberField<Integer> integerField = NumberField.builder(Integer.class)
-						.initialValue(10)
+						.value(10)
 						.valueRange(0, 100)
 						.build();
 		assertEquals(10, integerField.getNumber());

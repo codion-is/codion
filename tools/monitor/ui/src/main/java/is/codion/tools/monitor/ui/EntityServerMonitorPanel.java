@@ -245,7 +245,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
 	private void setUpdateInterval() {
 		NumberField<Integer> field = integerField()
-						.initialValue(5)
+						.value(5)
 						.columns(6)
 						.minimumValue(1d)
 						.horizontalAlignment(SwingConstants.CENTER)

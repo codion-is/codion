@@ -28,16 +28,16 @@ import java.util.Optional;
 public interface CalendarDialogBuilder extends DialogBuilder<CalendarDialogBuilder> {
 
 	/**
-	 * @param initialValue the initial value
+	 * @param value the initial value
 	 * @return this builder instance
 	 */
-	CalendarDialogBuilder initialValue(LocalDate initialValue);
+	CalendarDialogBuilder value(LocalDate value);
 
 	/**
-	 * @param initialValue the initial value
+	 * @param value the initial value
 	 * @return this builder instance
 	 */
-	CalendarDialogBuilder initialValue(LocalDateTime initialValue);
+	CalendarDialogBuilder value(LocalDateTime value);
 
 	/**
 	 * Retrieves a LocalDate from the user.

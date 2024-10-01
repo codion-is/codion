@@ -79,7 +79,7 @@ final class LoginPanel extends JPanel {
 						.enabled(validating.not())
 						.build();
 		this.passwordField = PasswordFieldBuilder.builder()
-						.initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.password()))
+						.value(defaultUser == null ? "" : String.valueOf(defaultUser.password()))
 						.columns(inputFieldColumns)
 						.selectAllOnFocusGained(true)
 						.build();

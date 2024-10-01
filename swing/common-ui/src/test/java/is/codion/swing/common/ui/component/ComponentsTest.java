@@ -598,7 +598,7 @@ public final class ComponentsTest {
 
 		// initial caret position
 		builder = Components.textArea()
-						.initialValue("hello there")
+						.value("hello there")
 						.initialCaretPosition(InitialCaretPosition.START);
 		textArea = builder.build();
 		assertEquals(0, textArea.getCaretPosition());
@@ -697,20 +697,20 @@ public final class ComponentsTest {
 
 		Components.integerSpinner()
 						.minimum(10)
-						.initialValue(10)
+						.value(10)
 						.build();
 		componentValue = Components.integerSpinner()
 						.maximum(10)
-						.initialValue(10)
+						.value(10)
 						.buildValue();
 		assertEquals(10, componentValue.get());
 		assertThrows(IllegalArgumentException.class, () -> Components.integerSpinner()
 						.minimum(10)
-						.initialValue(9)
+						.value(9)
 						.build());
 		assertThrows(IllegalArgumentException.class, () -> Components.integerSpinner()
 						.maximum(10)
-						.initialValue(11)
+						.value(11)
 						.build());
 	}
 
@@ -732,7 +732,7 @@ public final class ComponentsTest {
 
 		componentValue = Components.doubleSpinner()
 						.minimum(0d)
-						.initialValue(null)
+						.value(null)
 						.buildValue();
 		assertEquals(0d, componentValue.get());
 		componentValue = Components.doubleSpinner()
@@ -741,20 +741,20 @@ public final class ComponentsTest {
 
 		Components.doubleSpinner()
 						.minimum(10d)
-						.initialValue(10d)
+						.value(10d)
 						.build();
 		componentValue = Components.doubleSpinner()
 						.maximum(10d)
-						.initialValue(10d)
+						.value(10d)
 						.buildValue();
 		assertEquals(10d, componentValue.get());
 		assertThrows(IllegalArgumentException.class, () -> Components.doubleSpinner()
 						.minimum(10d)
-						.initialValue(9d)
+						.value(9d)
 						.build());
 		assertThrows(IllegalArgumentException.class, () -> Components.doubleSpinner()
 						.maximum(10d)
-						.initialValue(11d)
+						.value(11d)
 						.build());
 	}
 
@@ -934,7 +934,7 @@ public final class ComponentsTest {
 			}
 		};
 		assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
-						.initialValue("test")
+						.value("test")
 						.validator(validator)
 						.build());
 

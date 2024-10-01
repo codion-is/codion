@@ -38,19 +38,19 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 	private LocalDateTime initialDateTime;
 
 	@Override
-	public CalendarDialogBuilder initialValue(LocalDate initialValue) {
-		this.initialDate = initialValue;
-		if (initialValue != null) {
-			this.initialDateTime = initialValue.atStartOfDay();
+	public CalendarDialogBuilder value(LocalDate value) {
+		this.initialDate = value;
+		if (value != null) {
+			this.initialDateTime = value.atStartOfDay();
 		}
 		return this;
 	}
 
 	@Override
-	public CalendarDialogBuilder initialValue(LocalDateTime initialValue) {
-		this.initialDateTime = initialValue;
-		if (initialValue != null) {
-			this.initialDate = initialValue.toLocalDate();
+	public CalendarDialogBuilder value(LocalDateTime value) {
+		this.initialDateTime = value;
+		if (value != null) {
+			this.initialDate = value.toLocalDate();
 		}
 		return this;
 	}
@@ -58,7 +58,7 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 	@Override
 	public Optional<LocalDate> selectLocalDate() {
 		CalendarPanel.Builder calendarPanelBuilder = CalendarPanel.builder()
-						.initialValue(initialDate);
+						.value(initialDate);
 		State okPressed = State.state();
 		CalendarPanel calendarPanel = showCalendarDialog(calendarPanelBuilder.build(), MESSAGES.getString("select_date"), okPressed);
 
@@ -68,7 +68,7 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 	@Override
 	public Optional<LocalDateTime> selectLocalDateTime() {
 		CalendarPanel.Builder calendarPanelBuilder = CalendarPanel.builder()
-						.initialValue(initialDateTime);
+						.value(initialDateTime);
 		State okPressed = State.state();
 		CalendarPanel calendarPanel = showCalendarDialog(calendarPanelBuilder.build(), MESSAGES.getString("select_date_time"), okPressed);
 

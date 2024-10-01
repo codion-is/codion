@@ -295,7 +295,7 @@ public final class TextFieldPanel extends JPanel {
 	private void inputFromUser() {
 		JTextArea textArea = TextAreaBuilder.builder()
 						.document(sizedDocument(maximumLength))
-						.initialValue(textField.getText())
+						.value(textField.getText())
 						.preferredSize(textAreaSize)
 						.lineWrap(true)
 						.wrapStyleWord(true)

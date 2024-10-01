@@ -242,7 +242,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		private static final class DateConditionPanel extends ColumnConditionPanel<Attribute<?>, LocalDate> {
 
 			private final ComponentValue<Integer, NumberField<Integer>> yearValue = Components.integerField()
-							.initialValue(LocalDate.now().getYear())
+							.value(LocalDate.now().getYear())
 							.listener(this::updateCondition)
 							.focusable(false)
 							.buildValue();

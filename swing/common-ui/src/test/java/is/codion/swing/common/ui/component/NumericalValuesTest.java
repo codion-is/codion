@@ -189,7 +189,7 @@ public class NumericalValuesTest {
 	void integerValueField() {
 		final Integer value = 10;
 		ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField()
-						.initialValue(value)
+						.value(value)
 						.buildValue();
 		assertEquals(value, componentValue.get());
 

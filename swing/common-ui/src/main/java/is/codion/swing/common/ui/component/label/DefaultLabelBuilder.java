@@ -44,7 +44,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
 	}
 
 	DefaultLabelBuilder(String text) {
-		initialValue((T) text);
+		value((T) text);
 	}
 
 	DefaultLabelBuilder(ValueObserver<T> linkedValue) {

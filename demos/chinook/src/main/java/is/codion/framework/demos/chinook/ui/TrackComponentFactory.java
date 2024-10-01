@@ -33,8 +33,8 @@ final class TrackComponentFactory extends DefaultEntityComponentFactory<Entity, 
 
 	@Override
 	public ComponentValue<Entity, EntitySearchField> componentValue(SwingEntityEditModel editModel,
-																																	Entity initialValue) {
-		ComponentValue<Entity, EntitySearchField> componentValue = super.componentValue(editModel, initialValue);
+																																	Entity value) {
+		ComponentValue<Entity, EntitySearchField> componentValue = super.componentValue(editModel, value);
 		EntitySearchField trackSearchField = componentValue.component();
 		trackSearchField.selectorFactory().set(new TrackSelectorFactory());
 
