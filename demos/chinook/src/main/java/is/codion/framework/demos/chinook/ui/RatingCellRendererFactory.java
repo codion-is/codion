@@ -18,10 +18,9 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Builder;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRendererFactory;
@@ -47,13 +46,12 @@ final class RatingCellRendererFactory extends EntityTableCellRendererFactory {
 	}
 
 	@Override
-	protected Builder<Entity, Attribute<?>> builder(FilterTableColumn<Attribute<?>> column) {
-		Builder<Entity, Attribute<?>> builder = super.builder(column);
+	public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
 		if (column.identifier().equals(ratingColumn)) {
-			builder.string(rating -> RATINGS.get((Integer) rating))
+			builder(column).string(rating -> RATINGS.get((Integer) rating))
 							.toolTipData(true);
 		}
 
-		return builder;
+		return builder(column).build();
 	}
 }

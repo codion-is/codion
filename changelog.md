@@ -7,6 +7,8 @@ Codion Change Log
 - SpinnerNumberValue now non-null and validates the value according to the model minimum and maximum, if specified.
 ### is.codion.swing.framework.ui
 - EntityTableCellEditorFactory.editModel() added.
+- EntityTableCellRenderer removed.
+- EntityTableCellEditorFactory.builder() now final, tableCellRenderer() no longer final.
 
 ## 0.18.16
 ### is.codion.common.core

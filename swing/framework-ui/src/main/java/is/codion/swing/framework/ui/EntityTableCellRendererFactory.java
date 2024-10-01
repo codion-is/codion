@@ -43,16 +43,16 @@ public class EntityTableCellRendererFactory implements FilterTableCellRendererFa
 	}
 
 	@Override
-	public final FilterTableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
+	public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
 		return builder(column).build();
 	}
 
 	/**
 	 * @param column the column
-	 * @return a builder for a table cell renderer
+	 * @return a builder for a {@link FilterTableCellRenderer} based on the given column
 	 */
-	protected Builder<Entity, Attribute<?>> builder(FilterTableColumn<Attribute<?>> column) {
-		return EntityTableCellRenderer.builder(tableModel, column.identifier());
+	protected final Builder<Entity, Attribute<?>> builder(FilterTableColumn<Attribute<?>> column) {
+		return new EntityTableCellRendererBuilder(tableModel, requireNonNull(column).identifier());
 	}
 
 	/**
