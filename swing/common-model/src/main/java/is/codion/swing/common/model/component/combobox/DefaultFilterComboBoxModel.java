@@ -65,7 +65,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	/**
 	 * Instantiates a new FilterComboBoxModel.
 	 * The model items are sorted automatically with a default collation based comparator.
-	 * To prevent sorting set the comparator to null via {@link #comparator()} before adding items.
+	 * To prevent sorting set the comparator to null via {@link VisibleItems#comparator()} before adding items.
 	 */
 	protected DefaultFilterComboBoxModel() {
 		refresher = new DefaultRefresher(new DefaultItemsSupplier());

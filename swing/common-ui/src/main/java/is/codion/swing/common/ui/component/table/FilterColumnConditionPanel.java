@@ -57,6 +57,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.Collection;
@@ -531,10 +532,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private void setSimple() {
 		initialize();
-		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
+		KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
+		Component focusOwner = focusManager.getFocusOwner();
 		boolean parentOfFocusOwner = parentOfType(FilterColumnConditionPanel.class, focusOwner) == this;
 		if (parentOfFocusOwner) {
-			requestFocusInWindow(true);
+			focusManager.clearFocusOwner();
 		}
 		remove(controlPanel);
 		inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
@@ -548,10 +550,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private void setAdvanced() {
 		initialize();
-		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
+		KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
+		Component focusOwner = focusManager.getFocusOwner();
 		boolean parentOfFocusOwner = parentOfType(FilterColumnConditionPanel.class, focusOwner) == this;
 		if (parentOfFocusOwner) {
-			requestFocusInWindow(true);
+			focusManager.clearFocusOwner();
 		}
 		controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
 		add(controlPanel, BorderLayout.NORTH);

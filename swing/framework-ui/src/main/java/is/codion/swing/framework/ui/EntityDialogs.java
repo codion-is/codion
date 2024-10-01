@@ -152,13 +152,13 @@ public final class EntityDialogs {
 		EditAttributeDialogBuilder<T> onException(Consumer<Exception> onException);
 
 		/**
-		 * Displays a dialog for editing the given entity
+		 * Displays a dialog for editing a single attribute for the given entity
 		 * @param entity the entity to edit
 		 */
 		void edit(Entity entity);
 
 		/**
-		 * Displays a dialog for editing the given entities
+		 * Displays a dialog for editing a single attribute for the given entities
 		 * @param entities the entities to edit
 		 */
 		void edit(Collection<Entity> entities);

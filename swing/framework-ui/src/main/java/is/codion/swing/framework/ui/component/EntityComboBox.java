@@ -152,9 +152,9 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	/**
-	 * Creates an Action which displays a dialog for filtering this combo box via a foreign key
+	 * Creates a {@link Control} displaying a dialog for filtering this combo box via a foreign key
 	 * @param foreignKey the foreign key on which to filter
-	 * @return a Control for filtering this combo box
+	 * @return a {@link Control} for filtering this combo box
 	 */
 	public Control createForeignKeyFilterControl(ForeignKey foreignKey) {
 		return Control.builder()

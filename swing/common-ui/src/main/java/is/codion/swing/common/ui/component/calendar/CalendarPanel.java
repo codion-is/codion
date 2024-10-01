@@ -28,7 +28,6 @@ import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
 
-import javax.swing.FocusManager;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -73,6 +72,7 @@ import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -599,7 +599,7 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private void layoutDayPanel() {
-		FocusManager.getCurrentManager().clearFocusOwner();
+		getCurrentKeyboardFocusManager().clearFocusOwner();
 		dayGridPanel.removeAll();
 		DayOfWeek dayOfWeek = localDateValue.get().withDayOfMonth(1).getDayOfWeek();
 		Iterator<JLabel> paddingIterator = paddingLabels.iterator();
