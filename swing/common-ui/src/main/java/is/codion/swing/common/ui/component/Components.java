@@ -942,20 +942,7 @@ public final class Components {
 	 * @return a {@link FileInputPanel} builder
 	 */
 	public static FileInputPanel.Builder<Path> pathInputPanel() {
-		return pathInputPanel(stringField()
-										.editable(false)
-										.focusable(false)
-										.build());
-	}
-
-	/**
-	 * Provides builder for a {@link Path} based file input panel.
-	 * @param filePathField the file path field
-	 * @return a {@link FileInputPanel} builder
-	 */
-	public static FileInputPanel.Builder<Path> pathInputPanel(JTextField filePathField) {
-		return (FileInputPanel.Builder<Path>) FileInputPanel.builder()
-						.path(filePathField);
+		return FileInputPanel.builder().path();
 	}
 
 	/**
@@ -963,20 +950,7 @@ public final class Components {
 	 * @return a {@link FileInputPanel} builder
 	 */
 	public static FileInputPanel.Builder<byte[]> byteArrayInputPanel() {
-		return byteArrayInputPanel(stringField()
-										.editable(false)
-										.focusable(false)
-										.build());
-	}
-
-	/**
-	 * Provides builder for a byte array based file input panel.
-	 * @param filePathField the file path field
-	 * @return a {@link FileInputPanel} builder
-	 */
-	public static FileInputPanel.Builder<byte[]> byteArrayInputPanel(JTextField filePathField) {
-		return (FileInputPanel.Builder<byte[]>) FileInputPanel.builder()
-						.byteArray(filePathField);
+		return FileInputPanel.builder().byteArray();
 	}
 
 	/**

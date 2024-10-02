@@ -18,62 +18,71 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.CommandControl;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
-import javax.swing.AbstractAction;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
 
 /**
- * For instances use the {@link #fileInputPanel(JTextField)} factory method or the {@link #builder()} method.
- * @see #fileInputPanel(JTextField)
+ * For instances use the {@link #builder()} method.
  * @see #builder()
  */
 public final class FileInputPanel extends JPanel {
 
 	private final JTextField filePathField;
+	private final JButton browseButton;
 
-	private FileInputPanel(JTextField filePathField) {
-		this.filePathField = requireNonNull(filePathField);
-		setLayout(Layouts.borderLayout());
+	private FileInputPanel(AbstractBuilder<?> builder) {
+		CommandControl browseControl = Control.builder()
+						.command(this::browseFile)
+						.name(builder.buttonCaption)
+						.smallIcon(builder.buttonIcon)
+						.build();
+		filePathField = builder.pathFieldBuilder
+						.keyEvent(KeyEvents.builder(KeyEvent.VK_INSERT)
+										.action(browseControl))
+						.build();
+		browseButton = ButtonBuilder.builder(browseControl)
+						.preferredSize(new Dimension(filePathField.getPreferredSize().height, filePathField.getPreferredSize().height))
+						.build();
+		setLayout(borderLayout());
 		add(filePathField, BorderLayout.CENTER);
-		JButton browseButton = new JButton(new AbstractAction("...") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				browseFile();
-			}
-		});
-		browseButton.setPreferredSize(new Dimension(filePathField.getPreferredSize().height, filePathField.getPreferredSize().height));
 		add(browseButton, BorderLayout.EAST);
 	}
 
-	public JTextField filePathField() {
-		return filePathField;
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		filePathField.setEnabled(enabled);
+		browseButton.setEnabled(enabled);
 	}
 
-	/**
-	 * @param filePathField the file path input field
-	 * @return a new {@link FileInputPanel} instance.
-	 */
-	public static FileInputPanel fileInputPanel(JTextField filePathField) {
-		return new FileInputPanel(filePathField);
+	@Override
+	public void setToolTipText(String text) {
+		filePathField.setToolTipText(text);
 	}
 
 	/**
@@ -84,16 +93,10 @@ public final class FileInputPanel extends JPanel {
 	}
 
 	private void browseFile() {
-		try {
-			filePathField.setText(Dialogs.fileSelectionDialog()
-							.owner(filePathField)
-							.title("Select file")
-							.selectFile().toString());
-		}
-		catch (CancelException e) {
-			filePathField.setText("");
-			throw e;
-		}
+		filePathField.setText(Dialogs.fileSelectionDialog()
+						.owner(filePathField)
+						.title("Select file")
+						.selectFile().toString());
 	}
 
 	/**
@@ -103,48 +106,93 @@ public final class FileInputPanel extends JPanel {
 
 		/**
 		 * Provides builder for a {@link Path} based file input panel.
-		 * @param filePathField the field providing the file path
 		 * @return a new builder
 		 */
-		ComponentBuilder<Path, FileInputPanel, Builder<Path>> path(JTextField filePathField);
+		Builder<Path> path();
 
 		/**
 		 * Provides builder for a byte[] based file input panel.
-		 * @param filePathField the field providing the file path
 		 * @return a new builder
 		 */
-		ComponentBuilder<byte[], FileInputPanel, Builder<byte[]>> byteArray(JTextField filePathField);
+		Builder<byte[]> byteArray();
 	}
 
 	/**
 	 * Builds a {@link FileInputPanel}
 	 */
-	public interface Builder<T> extends ComponentBuilder<T, FileInputPanel, Builder<T>> {}
+	public interface Builder<T> extends ComponentBuilder<T, FileInputPanel, Builder<T>> {
+
+		/**
+		 * @param buttonCaption the browse button caption
+		 * @return this builder instance
+		 */
+		Builder<T> buttonCaption(String buttonCaption);
+
+		/**
+		 * @param buttonIcon the browse button icon
+		 * @return this builder instance
+		 */
+		Builder<T> buttonIcon(Icon buttonIcon);
+
+		/**
+		 * The field has already been rendered non-editable, use {@link TextFieldBuilder#editable(boolean)} to revert.
+		 * @param filePathField the file path field builder
+		 * @return this builder instance
+		 */
+		Builder<T> filePathField(Consumer<TextFieldBuilder<String, JTextField, ?>> filePathField);
+	}
 
 	private static final class DefaultBuilderFactory implements BuilderFactory {
 
 		@Override
-		public ComponentBuilder<Path, FileInputPanel, Builder<Path>> path(JTextField filePathField) {
-			return new PathInputPanelBuilder(filePathField);
+		public Builder<Path> path() {
+			return new PathInputPanelBuilder();
 		}
 
 		@Override
-		public ComponentBuilder<byte[], FileInputPanel, Builder<byte[]>> byteArray(JTextField filePathField) {
-			return new ByteArrayInputPanelBuilder(filePathField);
+		public Builder<byte[]> byteArray() {
+			return new ByteArrayInputPanelBuilder();
 		}
 	}
 
-	private static final class PathInputPanelBuilder extends AbstractComponentBuilder<Path, FileInputPanel, Builder<Path>> implements Builder<Path> {
+	private abstract static class AbstractBuilder<T> extends AbstractComponentBuilder<T, FileInputPanel, Builder<T>> implements Builder<T> {
 
-		private final JTextField filePathField;
+		private final TextFieldBuilder<String, JTextField, ?> pathFieldBuilder = TextFieldBuilder.builder(String.class)
+						.editable(false);
 
-		private PathInputPanelBuilder(JTextField filePathField) {
-			this.filePathField = requireNonNull(filePathField);
+		private String buttonCaption = "...";
+		private Icon buttonIcon;
+
+		@Override
+		public final Builder<T> buttonCaption(String buttonCaption) {
+			this.buttonCaption = requireNonNull(buttonCaption);
+			return this;
 		}
 
 		@Override
+		public Builder<T> buttonIcon(Icon buttonIcon) {
+			this.buttonIcon = requireNonNull(buttonIcon);
+			return this;
+		}
+
+		@Override
+		public final Builder<T> filePathField(Consumer<TextFieldBuilder<String, JTextField, ?>> filePathField) {
+			requireNonNull(filePathField).accept(pathFieldBuilder);
+			return this;
+		}
+
+		@Override
+		protected final void enableTransferFocusOnEnter(FileInputPanel component) {
+			TransferFocusOnEnter.enable(component.filePathField);
+			TransferFocusOnEnter.enable(component.browseButton);
+		}
+	}
+
+	private static final class PathInputPanelBuilder extends AbstractBuilder<Path> implements Builder<Path> {
+
+		@Override
 		protected FileInputPanel createComponent() {
-			return fileInputPanel(filePathField);
+			return new FileInputPanel(this);
 		}
 
 		@Override
@@ -153,17 +201,11 @@ public final class FileInputPanel extends JPanel {
 		}
 	}
 
-	private static final class ByteArrayInputPanelBuilder extends AbstractComponentBuilder<byte[], FileInputPanel, Builder<byte[]>> implements Builder<byte[]> {
-
-		private final JTextField filePathField;
-
-		private ByteArrayInputPanelBuilder(JTextField filePathField) {
-			this.filePathField = requireNonNull(filePathField);
-		}
+	private static final class ByteArrayInputPanelBuilder extends AbstractBuilder<byte[]> implements Builder<byte[]> {
 
 		@Override
 		protected FileInputPanel createComponent() {
-			return fileInputPanel(filePathField);
+			return new FileInputPanel(this);
 		}
 
 		@Override
@@ -176,12 +218,12 @@ public final class FileInputPanel extends JPanel {
 
 		private PathInputPanelValue(FileInputPanel fileInputPanel) {
 			super(fileInputPanel);
-			fileInputPanel.filePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
+			fileInputPanel.filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
 		}
 
 		@Override
 		protected Path getComponentValue() {
-			String filePath = component().filePathField().getText();
+			String filePath = component().filePathField.getText();
 			if (filePath.isEmpty()) {
 				return null;
 			}
@@ -199,12 +241,12 @@ public final class FileInputPanel extends JPanel {
 
 		private ByteArrayInputPanelValue(FileInputPanel fileInputPanel) {
 			super(fileInputPanel);
-			fileInputPanel.filePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
+			fileInputPanel.filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
 		}
 
 		@Override
 		protected byte[] getComponentValue() {
-			String filePath = component().filePathField().getText();
+			String filePath = component().filePathField.getText();
 			if (filePath.isEmpty()) {
 				return null;
 			}

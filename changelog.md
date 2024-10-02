@@ -13,6 +13,7 @@ Codion Change Log
 - AbstractComponentBuilder bug fixed, now only sets the componentOrientation if one has been specified, since it can affect the horizontalAlignment of components.
 - AbstractSpinnerBuilder hack added to preserve the horizontal editor alignment through UI changes.
 - FileInputPanel.ByteArrayInputPanelValue.setComponentValue() no longer throws UnsupportedOperationException.
+- FileInputPanel improved, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityTableCellEditorFactory.editModel() added.
 - EntityTableCellRenderer removed.
