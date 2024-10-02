@@ -217,8 +217,6 @@ public final class FileInputPanel extends JPanel {
 		}
 
 		@Override
-		protected void setComponentValue(byte[] value) {
-			throw new UnsupportedOperationException();
-		}
+		protected void setComponentValue(byte[] value) {}
 	}
 }
