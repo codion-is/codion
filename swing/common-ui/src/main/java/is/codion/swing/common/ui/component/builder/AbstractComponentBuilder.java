@@ -50,14 +50,12 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Sizes.*;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
-import static java.awt.ComponentOrientation.getOrientation;
 import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>>
@@ -97,7 +95,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private Font font;
 	private Color foreground;
 	private Color background;
-	private ComponentOrientation componentOrientation = getOrientation(Locale.getDefault());
+	private ComponentOrientation componentOrientation;
 	private StateObserver enabledObserver;
 	private boolean enabled = true;
 	private Function<C, JPopupMenu> popupMenu;
@@ -514,7 +512,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 			component.setOpaque(true);
 		}
 		component.setVisible(visible);
-		component.setComponentOrientation(componentOrientation);
+		if (componentOrientation != null) {
+			component.setComponentOrientation(componentOrientation);
+		}
 		clientProperties.forEach(component::putClientProperty);
 		if (onSetVisible != null) {
 			new OnSetVisible<>(component, onSetVisible);

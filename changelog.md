@@ -10,6 +10,7 @@ Codion Change Log
 - FilterTableCellRenderer.backgroundColor() tableModel parameter replaced with conditionModel
 - DefaultFilterTableCellRenderer condition model cache removed.
 - ComponentBuilder.initialValue() renamed value().
+- AbstractComponentBuilder bug fixed, now only sets the componentOrientation if one has been specified, since it can affect the horizontalAlignment of components.
 ### is.codion.swing.framework.ui
 - EntityTableCellEditorFactory.editModel() added.
 - EntityTableCellRenderer removed.
