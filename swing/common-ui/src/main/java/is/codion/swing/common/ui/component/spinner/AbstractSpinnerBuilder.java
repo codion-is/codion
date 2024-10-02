@@ -25,6 +25,9 @@ import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
@@ -98,6 +101,8 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 			}
 			if (horizontalAlignment != -1) {
 				editorField.setHorizontalAlignment(horizontalAlignment);
+				editorField.addPropertyChangeListener("horizontalAlignment",
+								new PreserveHorizontalAlignment(editorField, horizontalAlignment));
 			}
 		}
 		if (mouseWheelScrolling) {
@@ -112,5 +117,28 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 
 	protected JSpinner createSpinner() {
 		return new JSpinner(spinnerModel);
+	}
+
+	/**
+	 * Hack to preserve the horizontal alignment through UI changes, since the BasicSpinnerUI.createEditor()
+	 * gets called, which updates the editor alignment screwing up any previously set alignment value.
+	 * This of course renders the horizontal alignment effectively immutable for the component, which is not great.
+	 */
+	private static final class PreserveHorizontalAlignment implements PropertyChangeListener {
+
+		private final JTextField editorField;
+		private final int horizontalAlignment;
+
+		private PreserveHorizontalAlignment(JTextField editorField, int horizontalAlignment) {
+			this.editorField = editorField;
+			this.horizontalAlignment = horizontalAlignment;
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent event) {
+			if (!Objects.equals(event.getNewValue(), horizontalAlignment)) {
+				editorField.setHorizontalAlignment(horizontalAlignment);
+			}
+		}
 	}
 }

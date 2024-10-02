@@ -11,6 +11,7 @@ Codion Change Log
 - DefaultFilterTableCellRenderer condition model cache removed.
 - ComponentBuilder.initialValue() renamed value().
 - AbstractComponentBuilder bug fixed, now only sets the componentOrientation if one has been specified, since it can affect the horizontalAlignment of components.
+- AbstractSpinnerBuilder hack added to preserve the horizontal editor alignment through UI changes.
 ### is.codion.swing.framework.ui
 - EntityTableCellEditorFactory.editModel() added.
 - EntityTableCellRenderer removed.
