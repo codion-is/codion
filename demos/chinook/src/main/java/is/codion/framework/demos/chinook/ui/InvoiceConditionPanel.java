@@ -46,6 +46,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -63,7 +64,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.ADVANCED;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -245,11 +246,14 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 							.value(LocalDate.now().getYear())
 							.listener(this::updateCondition)
 							.focusable(false)
+							.columns(4)
+							.horizontalAlignment(SwingConstants.CENTER)
 							.buildValue();
 			private final ComponentValue<Month, JSpinner> monthValue = Components.<Month>itemSpinner(new MonthSpinnerModel())
 							.listener(this::updateCondition)
 							.editable(false)
 							.columns(3)
+							.horizontalAlignment(SwingConstants.LEFT)
 							.keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
 											.modifiers(InputEvent.CTRL_DOWN_MASK)
 											.action(command(this::incrementYear)))
@@ -271,7 +275,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 			private void initializeUI() {
 				setLayout(new BorderLayout());
-				add(gridLayoutPanel(1, 2)
+				add(flexibleGridLayoutPanel(1, 2)
 								.add(borderLayoutPanel()
 												.centerComponent(yearValue.component())
 												.border(createTitledBorder(createEmptyBorder(),
