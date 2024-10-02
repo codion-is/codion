@@ -31,6 +31,7 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 
 	CountryLanguageEditPanel(SwingEntityEditModel editModel) {
 		super(editModel);
+		editModel.value(CountryLanguage.IS_OFFICIAL).edited().addListener(this::update);
 	}
 
 	@Override
