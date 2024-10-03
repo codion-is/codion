@@ -29,7 +29,6 @@
  * <li>{@link is.codion.common.model.summary.TableSummaryModel}
  */
 module is.codion.common.model {
-	requires org.slf4j;
 	requires java.prefs;
 	requires transitive is.codion.common.core;
 
