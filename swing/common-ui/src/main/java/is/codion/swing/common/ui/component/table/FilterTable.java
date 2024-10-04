@@ -1535,7 +1535,7 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<C> column) {
 			return FilterTableCellRenderer.builder(column.identifier(), tableModel.getColumnClass(column.identifier()))
-							.condition(tableModel.filters().optional(column.identifier()).orElse(null))
+							.filter(tableModel.filters().optional(column.identifier()).orElse(null))
 							.build();
 		}
 	}

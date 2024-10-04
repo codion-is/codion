@@ -157,10 +157,10 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 
 		/**
 		 * Used to indicate whether a filter condition is enabled for the column by shading it.
-		 * @param condition the filter condition model, may be null
+		 * @param filter the filter condition model, may be null
 		 * @return this builder instance
 		 */
-		Builder<C> condition(ConditionModel<?> condition);
+		Builder<C> filter(ConditionModel<?> filter);
 
 		/**
 		 * @param horizontalAlignment the horizontal alignment
@@ -294,11 +294,11 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 			focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
 		}
 
-		protected final Color backgroundColor(ConditionModel<?> conditionModel, int row, C identifier, boolean columnShading,
+		protected final Color backgroundColor(ConditionModel<?> filter, int row, C identifier, boolean columnShading,
 																					boolean selected, Color cellBackgroundColor) {
 			cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
 			if (columnShading) {
-				cellBackgroundColor = backgroundColorShaded(conditionModel, row, identifier, cellBackgroundColor);
+				cellBackgroundColor = backgroundColorShaded(filter, row, identifier, cellBackgroundColor);
 			}
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
@@ -315,14 +315,14 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 
 		/**
 		 * Adds shading to the given cell, if applicable
-		 * @param conditionModel the filter condition model for the given column, may be null
+		 * @param filter the filter condition model for the given column, may be null
 		 * @param row the row
 		 * @param identifier the column identifier
 		 * @param cellBackgroundColor the cell specific background color, if any
 		 * @return a shaded background color
 		 */
-		protected Color backgroundColorShaded(ConditionModel<?> conditionModel, int row, C identifier, Color cellBackgroundColor) {
-			if (conditionModel != null && conditionModel.enabled().get()) {
+		protected Color backgroundColorShaded(ConditionModel<?> filter, int row, C identifier, Color cellBackgroundColor) {
+			if (filter != null && filter.enabled().get()) {
 				return backgroundShaded(row, cellBackgroundColor);
 			}
 

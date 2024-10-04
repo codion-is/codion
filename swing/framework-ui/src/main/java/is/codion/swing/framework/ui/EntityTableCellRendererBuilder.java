@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 
 final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendererBuilder<Attribute<?>> {
 
-	private final ConditionModel<?> queryConditionModel;
+	private final ConditionModel<?> queryCondition;
 
 	EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
 		this(requireNonNull(tableModel), tableModel.entityDefinition().attributes().definition(attribute));
@@ -43,27 +43,27 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 	private EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, AttributeDefinition<?> attributeDefinition) {
 		super(requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().type().valueClass());
 		requireNonNull(tableModel).entityDefinition().attributes().definition(attributeDefinition.attribute());
-		queryConditionModel = tableModel.queryModel().conditions().optional(attributeDefinition.attribute()).orElse(null);
-		condition(tableModel.filters().optional(attributeDefinition.attribute()).orElse(null));
+		queryCondition = tableModel.queryModel().conditions().optional(attributeDefinition.attribute()).orElse(null);
+		filter(tableModel.filters().optional(attributeDefinition.attribute()).orElse(null));
 		string(new DefaultString(attributeDefinition));
 		cellColors(new EntityCellColors(tableModel));
 	}
 
 	@Override
 	protected Settings<Attribute<?>> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
-		return new EntitySettings(queryConditionModel, leftPadding, rightPadding, alternateRowColoring);
+		return new EntitySettings(queryCondition, leftPadding, rightPadding, alternateRowColoring);
 	}
 
 	private static final class EntitySettings extends Settings<Attribute<?>> {
 
-		private final ConditionModel<?> queryConditionModel;
+		private final ConditionModel<?> queryCondition;
 
 		private Color backgroundColorDoubleShade;
 		private Color backgroundColorAlternateDoubleShade;
 
-		private EntitySettings(ConditionModel<?> queryConditionModel, int leftPadding, int rightPadding, boolean alternateRowColoring) {
+		private EntitySettings(ConditionModel<?> queryCondition, int leftPadding, int rightPadding, boolean alternateRowColoring) {
 			super(leftPadding, rightPadding, alternateRowColoring);
-			this.queryConditionModel = queryConditionModel;
+			this.queryCondition = queryCondition;
 		}
 
 		@Override
@@ -74,10 +74,10 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		}
 
 		@Override
-		protected Color backgroundColorShaded(ConditionModel<?> conditionModel, int row,
+		protected Color backgroundColorShaded(ConditionModel<?> filter, int row,
 																					Attribute<?> identifier, Color cellBackgroundColor) {
-			boolean conditionEnabled = queryConditionModel != null && queryConditionModel.enabled().get();
-			boolean filterEnabled = conditionModel != null && conditionModel.enabled().get();
+			boolean conditionEnabled = queryCondition != null && queryCondition.enabled().get();
+			boolean filterEnabled = filter != null && filter.enabled().get();
 			if (conditionEnabled || filterEnabled) {
 				return backgroundColorShaded(row, conditionEnabled && filterEnabled, cellBackgroundColor);
 			}
