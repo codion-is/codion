@@ -24,6 +24,7 @@ import is.codion.common.event.Event;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -62,12 +63,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	private final EntityConnectionProvider connectionProvider;
 	private final TableConditionModel<Attribute<?>> tableConditionModel;
 	private final Event<?> conditionChangedEvent = Event.event();
-	private final Value<Supplier<Condition>> additionalWhere = Value.builder()
-					.nonNull(NULL_CONDITION_SUPPLIER)
-					.build();
-	private final Value<Supplier<Condition>> additionalHaving = Value.builder()
-					.nonNull(NULL_CONDITION_SUPPLIER)
-					.build();
+	private final AdditionalCondition additionalWhere = new DefaultAdditionalWhereCondition();
+	private final AdditionalCondition additionalHaving = new DefaultAdditionalHavingCondition();
 	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
 	private final AggregateColumn aggregateColumn = new AggregateColumn();
 
@@ -123,21 +120,21 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	@Override
 	public Condition where(Conjunction conjunction) {
-		return createCondition(requireNonNull(conjunction), noneAggregateColumn, additionalWhere.get().get());
+		return createCondition(requireNonNull(conjunction), noneAggregateColumn, additionalWhere);
 	}
 
 	@Override
 	public Condition having(Conjunction conjunction) {
-		return createCondition(requireNonNull(conjunction), aggregateColumn, additionalHaving.get().get());
+		return createCondition(requireNonNull(conjunction), aggregateColumn, additionalHaving);
 	}
 
 	@Override
-	public Value<Supplier<Condition>> additionalWhere() {
+	public AdditionalCondition additionalWhere() {
 		return additionalWhere;
 	}
 
 	@Override
-	public Value<Supplier<Condition>> additionalHaving() {
+	public AdditionalCondition additionalHaving() {
 		return additionalHaving;
 	}
 
@@ -176,8 +173,24 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		tableConditionModel.clear();
 	}
 
-	private Condition createCondition(Conjunction conjunction, Predicate<ConditionModel<?, ?>> columnType, Condition additionalCondition) {
-		List<Condition> conditions = conditions(columnType, additionalCondition);
+	private Condition createCondition(Conjunction conjunction, Predicate<ConditionModel<?, ?>> columnType,
+																		AdditionalCondition additional) {
+		Condition columnConditions = columnConditions(conjunction, columnType);
+		Condition additionalCondition = additional.get().get();
+		if (additionalCondition == null) {
+			return columnConditions;
+		}
+
+		return combination(additional.conjunction().get(), columnConditions, additionalCondition);
+	}
+
+	private Condition columnConditions(Conjunction conjunction, Predicate<ConditionModel<?, ?>> columnType) {
+		List<Condition> conditions = tableConditionModel.identifiers().stream()
+						.map(tableConditionModel::get)
+						.filter(model -> model.enabled().get())
+						.filter(columnType)
+						.map(DefaultEntityConditionModel::condition)
+						.collect(toCollection(ArrayList::new));
 		switch (conditions.size()) {
 			case 0:
 				return all(entityDefinition.entityType());
@@ -186,20 +199,6 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 			default:
 				return combination(conjunction, conditions);
 		}
-	}
-
-	private List<Condition> conditions(Predicate<ConditionModel<?, ?>> columnType, Condition additionalCondition) {
-		List<Condition> conditions = tableConditionModel.identifiers().stream()
-						.map(tableConditionModel::get)
-						.filter(model -> model.enabled().get())
-						.filter(columnType)
-						.map(DefaultEntityConditionModel::condition)
-						.collect(toCollection(ArrayList::new));
-		if (additionalCondition != null) {
-			conditions.add(additionalCondition);
-		}
-
-		return conditions;
 	}
 
 	private void bindEvents() {
@@ -392,6 +391,84 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		public boolean test(ConditionModel<?, ?> conditionModel) {
 			return !(conditionModel.identifier() instanceof Column) ||
 							!entityDefinition.columns().definition((Column<?>) conditionModel.identifier()).aggregate();
+		}
+	}
+
+	private static final class MutableConjunction implements Mutable<Conjunction> {
+
+		private final Value<Conjunction> value = Value.builder()
+						.nonNull(Conjunction.AND)
+						.build();
+
+		@Override
+		public void set(Conjunction conjunction) {
+			value.set(conjunction);
+		}
+
+		@Override
+		public Conjunction get() {
+			return value.get();
+		}
+
+		@Override
+		public Observer<Conjunction> observer() {
+			return value.observer();
+		}
+	}
+
+	private static final class DefaultAdditionalWhereCondition implements AdditionalCondition {
+
+		private final Value<Supplier<Condition>> value = Value.builder()
+						.nonNull(NULL_CONDITION_SUPPLIER)
+						.build();
+		private final Mutable<Conjunction> conjunction = new MutableConjunction();
+
+		@Override
+		public Mutable<Conjunction> conjunction() {
+			return conjunction;
+		}
+
+		@Override
+		public void set(Supplier<Condition> condition) {
+			value.set(condition);
+		}
+
+		@Override
+		public Supplier<Condition> get() {
+			return value.get();
+		}
+
+		@Override
+		public Observer<Supplier<Condition>> observer() {
+			return value.observer();
+		}
+	}
+
+	private static final class DefaultAdditionalHavingCondition implements AdditionalCondition {
+
+		private final Value<Supplier<Condition>> value = Value.builder()
+						.nonNull(NULL_CONDITION_SUPPLIER)
+						.build();
+		private final Mutable<Conjunction> conjunction = new MutableConjunction();
+
+		@Override
+		public Mutable<Conjunction> conjunction() {
+			return conjunction;
+		}
+
+		@Override
+		public void set(Supplier<Condition> condition) {
+			value.set(condition);
+		}
+
+		@Override
+		public Supplier<Condition> get() {
+			return value.get();
+		}
+
+		@Override
+		public Observer<Supplier<Condition>> observer() {
+			return value.observer();
 		}
 	}
 }

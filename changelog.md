@@ -21,6 +21,7 @@ Codion Change Log
 - FileInputPanel improved, related refactoring.
 ### is.codion.framework.model
 - DefaultEntityConditionModel, no longer wraps a single condition in a condition combination.
+- EntityConditionModel.AdditionalCondition added, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityTableCellEditorFactory.editModel() added.
 - EntityTableCellRenderer removed.

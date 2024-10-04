@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.user.User;
@@ -26,6 +27,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.domain.entity.condition.Condition.Combination;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -133,11 +135,21 @@ public class DefaultEntityConditionModelTest {
 	void condition() throws DatabaseException {
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		conditionModel.clear();
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 		conditionModel.setInOperands(Employee.DEPARTMENT_FK, asList(sales, accounting));
-		ConditionModel<?, String> nameConditionModel = conditionModel.attribute(Employee.NAME);
-		nameConditionModel.operands().equal().set("SCOTT");
+		Condition condition = conditionModel.where(Conjunction.AND);
+		assertFalse(condition instanceof Combination);
 		conditionModel.additionalWhere().set(() -> Condition.custom(Employee.CONDITION_2_TYPE));
 		assertNotNull(conditionModel.additionalWhere().get());
+		condition = conditionModel.where(Conjunction.AND);
+		assertInstanceOf(Combination.class, condition);
+		assertEquals(Conjunction.AND, ((Combination) condition).conjunction());
+		conditionModel.additionalWhere().conjunction().set(Conjunction.OR);
+		condition = conditionModel.where(Conjunction.AND);
+		assertEquals(Conjunction.OR, ((Combination) condition).conjunction());
+		conditionModel.additionalWhere().set(null);
+		condition = conditionModel.where(Conjunction.AND);
+		assertFalse(condition instanceof Combination);
 	}
 }
