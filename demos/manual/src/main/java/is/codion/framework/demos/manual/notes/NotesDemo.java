@@ -20,7 +20,7 @@ package is.codion.framework.demos.manual.notes;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.ConditionModel.AutomaticWildcard;
+import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.dbms.h2.H2DatabaseFactory;
@@ -185,7 +185,7 @@ public final class NotesDemo {
 			// Case-insensitive note search with automatic wildcards
 			ConditionModel<String> noteCondition = queryModel().conditions().get(Note.NOTE);
 			noteCondition.caseSensitive().set(false);
-			noteCondition.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
+			noteCondition.wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
 		}
 	}
 

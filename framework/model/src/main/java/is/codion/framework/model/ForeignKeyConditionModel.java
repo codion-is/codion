@@ -97,8 +97,8 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 	}
 
 	@Override
-	public Value<AutomaticWildcard> automaticWildcard() {
-		return condition.automaticWildcard();
+	public Value<Wildcard> wildcard() {
+		return condition.wildcard();
 	}
 
 	@Override
@@ -264,7 +264,7 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 
 		private List<Operator> operators() {
 			if (equalSearchModel == null && inSearchModel == null) {
-				throw new IllegalStateException("You must specify either an equalSearchModel or an inSearchModel");
+				throw new IllegalStateException("Neither EQUAL nor IN operator specified");
 			}
 			if (equalSearchModel != null && inSearchModel != null) {
 				return asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN);

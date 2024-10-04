@@ -22,8 +22,8 @@ import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.item.Item;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.ConditionModel.AutomaticWildcard;
 import is.codion.common.model.condition.ConditionModel.Operands;
+import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.observer.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -673,7 +673,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 							.toggle(condition().caseSensitive())
 							.name(MESSAGES.getString("case_sensitive")));
 			if (condition().valueClass().equals(String.class)) {
-				controlsBuilder.control(createAutomaticWildcardControls());
+				controlsBuilder.control(createWildcardControls());
 			}
 			JPopupMenu popupMenu = menu(controlsBuilder).buildPopupMenu();
 			Stream.of(equalField, lowerBoundField, upperBoundField, inField)
@@ -686,52 +686,52 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		return condition().valueClass().equals(String.class) || condition().valueClass().equals(Character.class);
 	}
 
-	private Controls createAutomaticWildcardControls() {
-		Value<AutomaticWildcard> automaticWildcardValue = condition().automaticWildcard();
-		AutomaticWildcard automaticWildcard = automaticWildcardValue.get();
+	private Controls createWildcardControls() {
+		Value<Wildcard> wildcardValue = condition().wildcard();
+		Wildcard wildcard = wildcardValue.get();
 
-		State automaticWildcardNoneState = State.state(automaticWildcard.equals(AutomaticWildcard.NONE));
-		State automaticWildcardPostfixState = State.state(automaticWildcard.equals(AutomaticWildcard.POSTFIX));
-		State automaticWildcardPrefixState = State.state(automaticWildcard.equals(AutomaticWildcard.PREFIX));
-		State automaticWildcardPrefixAndPostfixState = State.state(automaticWildcard.equals(AutomaticWildcard.PREFIX_AND_POSTFIX));
+		State wildcardNoneState = State.state(wildcard.equals(Wildcard.NONE));
+		State wildcardPostfixState = State.state(wildcard.equals(Wildcard.POSTFIX));
+		State wildcardPrefixState = State.state(wildcard.equals(Wildcard.PREFIX));
+		State wildcardPrefixAndPostfixState = State.state(wildcard.equals(Wildcard.PREFIX_AND_POSTFIX));
 
-		State.group(automaticWildcardNoneState, automaticWildcardPostfixState, automaticWildcardPrefixState, automaticWildcardPrefixAndPostfixState);
+		State.group(wildcardNoneState, wildcardPostfixState, wildcardPrefixState, wildcardPrefixAndPostfixState);
 
-		automaticWildcardNoneState.addConsumer(enabled -> {
+		wildcardNoneState.addConsumer(enabled -> {
 			if (enabled) {
-				automaticWildcardValue.set(AutomaticWildcard.NONE);
+				wildcardValue.set(Wildcard.NONE);
 			}
 		});
-		automaticWildcardPostfixState.addConsumer(enabled -> {
+		wildcardPostfixState.addConsumer(enabled -> {
 			if (enabled) {
-				automaticWildcardValue.set(AutomaticWildcard.POSTFIX);
+				wildcardValue.set(Wildcard.POSTFIX);
 			}
 		});
-		automaticWildcardPrefixState.addConsumer(enabled -> {
+		wildcardPrefixState.addConsumer(enabled -> {
 			if (enabled) {
-				automaticWildcardValue.set(AutomaticWildcard.PREFIX);
+				wildcardValue.set(Wildcard.PREFIX);
 			}
 		});
-		automaticWildcardPrefixAndPostfixState.addConsumer(enabled -> {
+		wildcardPrefixAndPostfixState.addConsumer(enabled -> {
 			if (enabled) {
-				automaticWildcardValue.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
+				wildcardValue.set(Wildcard.PREFIX_AND_POSTFIX);
 			}
 		});
 
 		return Controls.builder()
-						.name(MESSAGES.getString("automatic_wildcard"))
+						.name(MESSAGES.getString("wildcard"))
 						.control(Control.builder()
-										.toggle(automaticWildcardNoneState)
-										.name(AutomaticWildcard.NONE.description()))
+										.toggle(wildcardNoneState)
+										.name(Wildcard.NONE.description()))
 						.control(Control.builder()
-										.toggle(automaticWildcardPostfixState)
-										.name(AutomaticWildcard.POSTFIX.description()))
+										.toggle(wildcardPostfixState)
+										.name(Wildcard.POSTFIX.description()))
 						.control(Control.builder()
-										.toggle(automaticWildcardPrefixState)
-										.name(AutomaticWildcard.PREFIX.description()))
+										.toggle(wildcardPrefixState)
+										.name(Wildcard.PREFIX.description()))
 						.control(Control.builder()
-										.toggle(automaticWildcardPrefixAndPostfixState)
-										.name(AutomaticWildcard.PREFIX_AND_POSTFIX.description()))
+										.toggle(wildcardPrefixAndPostfixState)
+										.name(Wildcard.PREFIX_AND_POSTFIX.description()))
 						.build();
 	}
 

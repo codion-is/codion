@@ -20,7 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.ConditionModel.AutomaticWildcard;
+import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -127,7 +127,7 @@ public class EntityTablePanelTest {
 		ConditionModel<String> condition =
 						testModel.queryModel().conditions().attribute(Detail.STRING);
 		condition.autoEnable().set(false);
-		condition.automaticWildcard().set(AutomaticWildcard.PREFIX);
+		condition.wildcard().set(Wildcard.PREFIX);
 		condition.caseSensitive().set(false);
 
 		tablePanel.savePreferences();
@@ -145,7 +145,7 @@ public class EntityTablePanelTest {
 		assertEquals(170, column.getPreferredWidth());
 		condition = testModel.queryModel().conditions().attribute(Detail.STRING);
 		assertFalse(condition.autoEnable().get());
-		assertEquals(condition.automaticWildcard().get(), AutomaticWildcard.PREFIX);
+		assertEquals(condition.wildcard().get(), Wildcard.PREFIX);
 		assertFalse(condition.caseSensitive().get());
 
 		tablePanel.clearPreferences();

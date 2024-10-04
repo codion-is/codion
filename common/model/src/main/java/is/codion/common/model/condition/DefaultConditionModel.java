@@ -43,7 +43,7 @@ import static java.util.stream.Collectors.joining;
 
 final class DefaultConditionModel<T> implements ConditionModel<T> {
 
-	private static final String WILDCARD = "%";
+	private static final String WILDCARD_CHARACTER = "%";
 	private static final String REGEX_WILDCARD = ".*";
 
 	private final Runnable autoEnableListener = new AutoEnableListener();
@@ -75,11 +75,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						.listener(autoEnableListener)
 						.listener(conditionChanged)
 						.build();
-		this.operands = new DefaultOperands<>(builder.automaticWildcard, operator);
+		this.operands = new DefaultOperands<>(builder.wildcard, operator);
 		this.operands.equal.addValidator(lockValidator);
 		this.operands.equal.addListener(autoEnableListener);
 		this.operands.equal.addListener(conditionChanged);
-		this.operands.equal.automaticWildcard.addListener(conditionChanged);
+		this.operands.equal.wildcard.addListener(conditionChanged);
 		this.operands.in.addValidator(lockValidator);
 		this.operands.in.addListener(autoEnableListener);
 		this.operands.in.addListener(conditionChanged);
@@ -146,8 +146,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	@Override
-	public Value<AutomaticWildcard> automaticWildcard() {
-		return operands.equal.automaticWildcard;
+	public Value<Wildcard> wildcard() {
+		return operands.equal.wildcard;
 	}
 
 	@Override
@@ -216,7 +216,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		if (equalOperand == null) {
 			return comparable == null;
 		}
-		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD)) {
+		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD_CHARACTER)) {
 			return isEqualWildcard((String) comparable);
 		}
 
@@ -234,7 +234,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		if (equalOperand == null) {
 			return comparable != null;
 		}
-		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD)) {
+		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD_CHARACTER)) {
 			return !isEqualWildcard((String) comparable);
 		}
 
@@ -246,19 +246,19 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		if (equalOperand == null) {
 			equalOperand = "";
 		}
-		if (equalOperand.equals(WILDCARD)) {
+		if (equalOperand.equals(WILDCARD_CHARACTER)) {
 			return true;
 		}
 		if (!caseSensitive.get()) {
 			equalOperand = equalOperand.toLowerCase();
 		}
-		if (!equalOperand.contains(WILDCARD)) {
+		if (!equalOperand.contains(WILDCARD_CHARACTER)) {
 			return value.compareTo(equalOperand) == 0;
 		}
 
-		return Pattern.matches(Stream.of(equalOperand.split(WILDCARD))
+		return Pattern.matches(Stream.of(equalOperand.split(WILDCARD_CHARACTER))
 						.map(Pattern::quote)
-						.collect(joining(REGEX_WILDCARD, "", equalOperand.endsWith(WILDCARD) ? REGEX_WILDCARD : "")), value);
+						.collect(joining(REGEX_WILDCARD, "", equalOperand.endsWith(WILDCARD_CHARACTER) ? REGEX_WILDCARD : "")), value);
 	}
 
 	private boolean isLessThan(Comparable<T> comparable) {
@@ -477,8 +477,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						.notify(Notify.WHEN_SET)
 						.build();
 
-		private DefaultOperands(AutomaticWildcard automaticWildcard, ValueObserver<Operator> operatorObserver) {
-			equal = new EqualOperand<>(automaticWildcard, operatorObserver);
+		private DefaultOperands(Wildcard wildcard, ValueObserver<Operator> operatorObserver) {
+			equal = new EqualOperand<>(wildcard, operatorObserver);
 		}
 
 		@Override
@@ -510,22 +510,22 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		private static final class EqualOperand<T> extends AbstractValue<T> {
 
-			private final Value<AutomaticWildcard> automaticWildcard;
+			private final Value<Wildcard> wildcard;
 			private final ValueObserver<Operator> operatorObserver;
 
 			private T value;
 
-			private EqualOperand(AutomaticWildcard automaticWildcard, ValueObserver<Operator> operatorObserver) {
+			private EqualOperand(Wildcard wildcard, ValueObserver<Operator> operatorObserver) {
 				super(null, Notify.WHEN_SET);
-				this.automaticWildcard = Value.builder()
-								.nonNull(automaticWildcard)
+				this.wildcard = Value.builder()
+								.nonNull(wildcard)
 								.build();
 				this.operatorObserver = operatorObserver;
 			}
 
 			@Override
 			protected T getValue() {
-				return addAutomaticWildcard(value);
+				return addWildcard(value);
 			}
 
 			@Override
@@ -533,7 +533,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 				this.value = value;
 			}
 
-			private T addAutomaticWildcard(T operand) {
+			private T addWildcard(T operand) {
 				if (!(operand instanceof String)) {
 					return operand;
 				}
@@ -541,15 +541,15 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 					//wildcard only used for EQUAL and NOT_EQUAL
 					case EQUAL:
 					case NOT_EQUAL:
-						return (T) addAutomaticWildcard((String) operand);
+						return (T) addWildcard((String) operand);
 					default:
 						return operand;
 				}
 			}
 
-			private String addAutomaticWildcard(String operand) {
+			private String addWildcard(String operand) {
 				String operandWithWildcards = operand;
-				switch (automaticWildcard.get()) {
+				switch (wildcard.get()) {
 					case PREFIX:
 						operandWithWildcards = addWildcardPrefix(operandWithWildcards);
 						break;
@@ -568,16 +568,16 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			}
 
 			private static String addWildcardPrefix(String operand) {
-				if (!operand.startsWith(WILDCARD)) {
-					return WILDCARD + operand;
+				if (!operand.startsWith(WILDCARD_CHARACTER)) {
+					return WILDCARD_CHARACTER + operand;
 				}
 
 				return operand;
 			}
 
 			private static String addWildcardPostfix(String operand) {
-				if (!operand.endsWith(WILDCARD)) {
-					return operand + WILDCARD;
+				if (!operand.endsWith(WILDCARD_CHARACTER)) {
+					return operand + WILDCARD_CHARACTER;
 				}
 
 				return operand;
@@ -600,7 +600,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						.hoursMinutesSeconds()
 						.build()
 						.dateTimePattern();
-		private AutomaticWildcard automaticWildcard = ConditionModel.AUTOMATIC_WILDCARD.get();
+		private Wildcard wildcard = WILDCARD.get();
 		private boolean caseSensitive = CASE_SENSITIVE.get();
 		private boolean autoEnable = true;
 
@@ -639,8 +639,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		@Override
-		public Builder<T> automaticWildcard(AutomaticWildcard automaticWildcard) {
-			this.automaticWildcard = requireNonNull(automaticWildcard);
+		public Builder<T> wildcard(Wildcard wildcard) {
+			this.wildcard = requireNonNull(wildcard);
 			return this;
 		}
 

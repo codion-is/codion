@@ -135,6 +135,7 @@ import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.ColumnPreferences.columnPreferences;
+import static is.codion.swing.framework.ui.ConditionPreferences.conditionPreferences;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
@@ -1703,10 +1704,10 @@ public class EntityTablePanel extends JPanel {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
 			tableModel.queryModel().conditions().optional(attribute)
-							.ifPresent(condition -> conditionPreferencesMap.put(attribute, ConditionPreferences.conditionPreferences(attribute,
+							.ifPresent(condition -> conditionPreferencesMap.put(attribute, conditionPreferences(attribute,
 											condition.autoEnable().get(),
 											condition.caseSensitive().get(),
-											condition.automaticWildcard().get())));
+											condition.wildcard().get())));
 		}
 
 		return conditionPreferencesMap;

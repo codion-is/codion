@@ -99,8 +99,8 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 	}
 
 	@Override
-	public Value<AutomaticWildcard> automaticWildcard() {
-		return condition.automaticWildcard();
+	public Value<Wildcard> wildcard() {
+		return condition.wildcard();
 	}
 
 	@Override
@@ -278,7 +278,7 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 
 		private List<Operator> operators() {
 			if (equalComboBoxModel == null && inSearchModel == null) {
-				throw new IllegalStateException("You must include either the EQUAL or IN operator or both");
+				throw new IllegalStateException("Neither EQUAL nor IN operator specified");
 			}
 			if (equalComboBoxModel != null && inSearchModel != null) {
 				return asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN);

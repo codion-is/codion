@@ -19,7 +19,7 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.common.model.condition.ConditionModel#AUTOMATIC_WILDCARD}
+ * <li>{@link is.codion.common.model.condition.ConditionModel#WILDCARD}
  * <li>{@link is.codion.common.model.condition.ConditionModel#CASE_SENSITIVE}
  * </ul>
  */

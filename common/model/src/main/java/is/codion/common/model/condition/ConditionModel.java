@@ -41,15 +41,15 @@ import static java.util.ResourceBundle.getBundle;
 public interface ConditionModel<T> {
 
 	/**
-	 * Specifies whether wildcards are automatically added to string conditions by default
+	 * Specifies whether wildcards are added to string values
 	 * <ul>
-	 * <li>Value type: {@link AutomaticWildcard}
-	 * <li>Default value: {@link AutomaticWildcard#POSTFIX}
+	 * <li>Value type: {@link Wildcard}
+	 * <li>Default value: {@link Wildcard#POSTFIX}
 	 * </ul>
 	 */
-	PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD =
-					Configuration.enumValue(ConditionModel.class.getName() + ".automaticWildard",
-									AutomaticWildcard.class, AutomaticWildcard.POSTFIX);
+	PropertyValue<Wildcard> WILDCARD =
+					Configuration.enumValue(ConditionModel.class.getName() + ".wildard",
+									Wildcard.class, Wildcard.POSTFIX);
 
 	/**
 	 * Specifies whether string based conditions are case-sensitive by default
@@ -62,9 +62,9 @@ public interface ConditionModel<T> {
 					Configuration.booleanValue(ConditionModel.class.getName() + ".caseSensitive", false);
 
 	/**
-	 * The possible automatic wildcard types
+	 * The possible wildcard types
 	 */
-	enum AutomaticWildcard {
+	enum Wildcard {
 		/**
 		 * No wildcard
 		 */
@@ -84,8 +84,8 @@ public interface ConditionModel<T> {
 
 		private final String description;
 
-		AutomaticWildcard() {
-			this.description = messageBundle(AutomaticWildcard.class, getBundle(AutomaticWildcard.class.getName())).getString(this.toString());
+		Wildcard() {
+			this.description = messageBundle(Wildcard.class, getBundle(Wildcard.class.getName())).getString(this.toString());
 		}
 
 		/**
@@ -114,9 +114,9 @@ public interface ConditionModel<T> {
 	/**
 	 * Note that this is only applicable to string based condition models and only used for
 	 * operators {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL}
-	 * @return the {@link Value} controlling whether automatic wildcards are enabled when working with strings
+	 * @return the {@link Value} controlling whether wildcards are added to strings
 	 */
-	Value<AutomaticWildcard> automaticWildcard();
+	Value<Wildcard> wildcard();
 
 	/**
 	 * @return the {@link State} controlling whether this model is enabled automatically when a condition value is specified
@@ -244,10 +244,10 @@ public interface ConditionModel<T> {
 		Builder<T> dateTimePattern(String dateTimePattern);
 
 		/**
-		 * @param automaticWildcard the automatic wildcard type to use
+		 * @param wildcard the wildcards to use
 		 * @return this builder instance
 		 */
-		Builder<T> automaticWildcard(AutomaticWildcard automaticWildcard);
+		Builder<T> wildcard(Wildcard wildcard);
 
 		/**
 		 * @param caseSensitive true if the model should be case-sensitive

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.condition.ConditionModel.AutomaticWildcard;
+import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityTableModel;
 
@@ -51,20 +51,20 @@ final class ConditionPreferences {
 	static final String CASE_SENSITIVE_KEY = "cs";
 
 	/**
-	 * The key for the 'automaticWildcard' property
+	 * The key for the 'wildcard' property
 	 */
-	static final String AUTOMATIC_WILDCARD_KEY = "aw";
+	static final String WILDCARD_KEY = "w";
 
 	private final Attribute<?> attribute;
 	private final boolean autoEnable;
 	private final boolean caseSensitive;
-	private final AutomaticWildcard automaticWildcard;
+	private final Wildcard wildcard;
 
-	ConditionPreferences(Attribute<?> attribute, boolean autoEnable, boolean caseSensitive, AutomaticWildcard automaticWildcard) {
+	ConditionPreferences(Attribute<?> attribute, boolean autoEnable, boolean caseSensitive, Wildcard wildcard) {
 		this.attribute = attribute;
 		this.autoEnable = autoEnable;
 		this.caseSensitive = caseSensitive;
-		this.automaticWildcard = requireNonNull(automaticWildcard);
+		this.wildcard = requireNonNull(wildcard);
 	}
 
 	Attribute<?> attribute() {
@@ -79,15 +79,15 @@ final class ConditionPreferences {
 		return caseSensitive;
 	}
 
-	AutomaticWildcard automaticWildcard() {
-		return automaticWildcard;
+	Wildcard wildcard() {
+		return wildcard;
 	}
 
 	JSONObject toJSONObject() {
 		JSONObject conditionObject = new JSONObject();
 		conditionObject.put(AUTO_ENABLE_KEY, autoEnable() ? 1 : 0);
 		conditionObject.put(CASE_SENSITIVE_KEY, caseSensitive() ? 1 : 0);
-		conditionObject.put(AUTOMATIC_WILDCARD_KEY, automaticWildcard());
+		conditionObject.put(WILDCARD_KEY, wildcard());
 
 		return conditionObject;
 	}
@@ -97,12 +97,12 @@ final class ConditionPreferences {
 	 * @param attribute the attribute
 	 * @param autoEnable true if auto enable is enabled
 	 * @param caseSensitive true if case sensitive
-	 * @param automaticWildcard the automatic wildcard state
+	 * @param wildcard the wildcard state
 	 * @return a new {@link ConditionPreferences} instance.
 	 */
 	static ConditionPreferences conditionPreferences(Attribute<?> attribute, boolean autoEnable, boolean caseSensitive,
-																									 AutomaticWildcard automaticWildcard) {
-		return new ConditionPreferences(attribute, autoEnable, caseSensitive, automaticWildcard);
+																									 Wildcard wildcard) {
+		return new ConditionPreferences(attribute, autoEnable, caseSensitive, wildcard);
 	}
 
 	/**
@@ -152,7 +152,7 @@ final class ConditionPreferences {
 								.ifPresent(condition -> {
 									condition.caseSensitive().set(preferences.caseSensitive());
 									condition.autoEnable().set(preferences.autoEnable());
-									condition.automaticWildcard().set(preferences.automaticWildcard());
+									condition.wildcard().set(preferences.wildcard());
 								});
 			}
 		}
@@ -170,6 +170,6 @@ final class ConditionPreferences {
 		return new ConditionPreferences(attribute,
 						conditionObject.getInt(AUTO_ENABLE_KEY) == 1,
 						conditionObject.getInt(CASE_SENSITIVE_KEY) == 1,
-						AutomaticWildcard.valueOf(conditionObject.getString(AUTOMATIC_WILDCARD_KEY)));
+						Wildcard.valueOf(conditionObject.getString(WILDCARD_KEY)));
 	}
 }
