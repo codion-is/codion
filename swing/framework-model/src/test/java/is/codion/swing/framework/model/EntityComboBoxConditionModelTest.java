@@ -26,7 +26,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
-import is.codion.framework.model.test.TestDomain.Employee;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
@@ -55,7 +54,7 @@ public class EntityComboBoxConditionModelTest {
 		comboBoxModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
 		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		SwingForeignKeyConditionModel condition =
-						SwingForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+						SwingForeignKeyConditionModel.builder()
 										.includeEqualOperators(comboBoxModel)
 										.includeInOperators(searchModel)
 										.build();
@@ -81,7 +80,7 @@ public class EntityComboBoxConditionModelTest {
 		comboBoxModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
 		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		SwingForeignKeyConditionModel conditionModel =
-						SwingForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+						SwingForeignKeyConditionModel.builder()
 										.includeEqualOperators(comboBoxModel)
 										.includeInOperators(searchModel)
 										.build();

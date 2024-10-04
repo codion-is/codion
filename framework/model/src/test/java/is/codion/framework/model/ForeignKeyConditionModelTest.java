@@ -25,7 +25,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
-import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +46,7 @@ public class ForeignKeyConditionModelTest {
 
 	@Test
 	void inSearchModel() throws DatabaseException {
-		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder()
 						.includeEqualOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.includeInOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.build();
@@ -70,7 +69,7 @@ public class ForeignKeyConditionModelTest {
 
 	@Test
 	void equalSearchModel() throws DatabaseException {
-		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder(Employee.DEPARTMENT_FK)
+		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder()
 						.includeEqualOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.includeInOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.build();

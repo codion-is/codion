@@ -49,7 +49,7 @@ public class SwingEntityColumnConditionFactory extends EntityColumnConditionFact
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			if (definition(foreignKey.referencedType()).smallDataset()) {
-				return Optional.of(SwingForeignKeyConditionModel.builder(foreignKey)
+				return Optional.of(SwingForeignKeyConditionModel.builder()
 								.includeEqualOperators(createEqualComboBoxModel(foreignKey))
 								.includeInOperators(createInSearchModel(foreignKey))
 								.build());

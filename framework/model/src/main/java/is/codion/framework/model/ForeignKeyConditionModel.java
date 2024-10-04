@@ -24,7 +24,6 @@ import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.text.Format;
 import java.util.List;
@@ -38,7 +37,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default foreign key condition model using {@link EntitySearchModel} for
  * both the {@link Operator#EQUAL} and {@link Operator#IN} operands.
- * @see #builder(ForeignKey)
+ * @see #builder()
  */
 public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 
@@ -153,11 +152,10 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 	}
 
 	/**
-	 * @param foreignKey the foreign key
 	 * @return a new {@link ForeignKeyConditionModel.Builder}
 	 */
-	public static Builder builder(ForeignKey foreignKey) {
-		return new DefaultBuilder(foreignKey);
+	public static Builder builder() {
+		return new DefaultBuilder();
 	}
 
 	/**
@@ -244,14 +242,8 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final ForeignKey foreignKey;
-
-		private EntitySearchModel equalSearchModel;
+ 		private EntitySearchModel equalSearchModel;
 		private EntitySearchModel inSearchModel;
-
-		private DefaultBuilder(ForeignKey foreignKey) {
-			this.foreignKey = requireNonNull(foreignKey);
-		}
 
 		@Override
 		public Builder includeEqualOperators(EntitySearchModel equalSearchModel) {

@@ -24,7 +24,6 @@ import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
@@ -40,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A condition model using a {@link EntityComboBoxModel} for the {@link Operator#EQUAL} operand
  * and a {@link EntitySearchModel} for the {@link Operator#IN} operands.
- * @see #builder(ForeignKey)
+ * @see #builder()
  */
 public final class SwingForeignKeyConditionModel implements ConditionModel<Entity> {
 
@@ -155,11 +154,10 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 	}
 
 	/**
-	 * @param foreignKey the foreign key
 	 * @return a new {@link SwingForeignKeyConditionModel.Builder}
 	 */
-	public static SwingForeignKeyConditionModel.Builder builder(ForeignKey foreignKey) {
-		return new DefaultBuilder(foreignKey);
+	public static SwingForeignKeyConditionModel.Builder builder() {
+		return new DefaultBuilder();
 	}
 
 	private static Operator defaultOperator(DefaultBuilder builder) {
@@ -258,14 +256,8 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final ForeignKey foreignKey;
-
 		private EntityComboBoxModel equalComboBoxModel;
 		private EntitySearchModel inSearchModel;
-
-		private DefaultBuilder(ForeignKey foreignKey) {
-			this.foreignKey = requireNonNull(foreignKey);
-		}
 
 		@Override
 		public Builder includeEqualOperators(EntityComboBoxModel equalComboBoxModel) {

@@ -89,8 +89,8 @@ final class DefaultEntityConditions implements EntityConditions {
 	@Override
 	public <T> boolean setEqualOperand(Attribute<T> attribute, T operand) {
 		requireNonNull(attribute);
-		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
-		Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
+		boolean aggregate = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
+		Condition condition = aggregate ? having(Conjunction.AND) : where(Conjunction.AND);
 		tableConditions.optional(attribute)
 						.ifPresent(conditionModel -> {
 							conditionModel.operator().set(Operator.EQUAL);
@@ -98,15 +98,15 @@ final class DefaultEntityConditions implements EntityConditions {
 							conditionModel.enabled().set(operand != null);
 						});
 
-		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
+		return !condition.equals(aggregate ? having(Conjunction.AND) : where(Conjunction.AND));
 	}
 
 	@Override
 	public <T> boolean setInOperands(Attribute<T> attribute, Collection<T> operands) {
 		requireNonNull(attribute);
 		requireNonNull(operands);
-		boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
-		Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
+		boolean aggregate = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
+		Condition condition = aggregate ? having(Conjunction.AND) : where(Conjunction.AND);
 		tableConditions.optional(attribute)
 						.map(conditionModel -> (ConditionModel<T>) conditionModel)
 						.ifPresent(conditionModel -> {
@@ -115,7 +115,7 @@ final class DefaultEntityConditions implements EntityConditions {
 							conditionModel.enabled().set(!operands.isEmpty());
 						});
 
-		return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
+		return !condition.equals(aggregate ? having(Conjunction.AND) : where(Conjunction.AND));
 	}
 
 	@Override
