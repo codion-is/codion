@@ -39,8 +39,10 @@ public final class Text {
 
 	/**
 	 * Specifies the default collator locale language.
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: {@code Locale.getDefault().getLanguage()}.
+	 * </ul>
 	 * @see #collator()
 	 * @see #collate(List)
 	 * @see Locale#toLanguageTag()

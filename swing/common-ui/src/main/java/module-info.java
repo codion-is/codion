@@ -18,6 +18,7 @@
  */
 /**
  * Common Swing UI classes, such as:
+ * <ul>
  * <li>{@link is.codion.swing.common.ui.component.Components}
  * <li>{@link is.codion.swing.common.ui.component.builder.ComponentBuilder}
  * <li>{@link is.codion.swing.common.ui.component.builder.AbstractComponentBuilder}
@@ -32,6 +33,7 @@
  * <li>{@link is.codion.swing.common.ui.key.KeyEvents}
  * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelProvider}
  * <li>{@link is.codion.swing.common.ui.layout.Layouts}
+ * </ul>
  */
 module is.codion.swing.common.ui {
 	requires java.rmi;

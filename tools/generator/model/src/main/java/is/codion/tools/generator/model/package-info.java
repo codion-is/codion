@@ -18,7 +18,9 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel#DEFAULT_DOMAIN_PACKAGE}
  * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel#DEFAULT_SOURCE_DIRECTORY}
+ * </ul>
  */
 package is.codion.tools.generator.model;

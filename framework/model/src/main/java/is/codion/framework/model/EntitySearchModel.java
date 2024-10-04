@@ -44,8 +44,10 @@ public interface EntitySearchModel {
 
 	/**
 	 * Specifies the default search result limit, that is, the maximum number of results, null meaning no limit
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: null
+	 * </ul>
 	 */
 	PropertyValue<Integer> DEFAULT_LIMIT = Configuration.integerValue(EntitySearchModel.class.getName() + ".defaultLimit");
 

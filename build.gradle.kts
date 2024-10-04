@@ -54,7 +54,6 @@ configure(frameworkModules()) {
         val docletOptions = options as StandardJavadocDocletOptions
         docletOptions.links("https://docs.oracle.com/javase/" + properties["jdkVersion"] + "/docs/api/")
         docletOptions.encoding = "UTF-8"
-        docletOptions.addStringOption("Xdoclint:none", "-quiet")
     }
 
     tasks.withType<Jar>().configureEach {

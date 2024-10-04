@@ -18,7 +18,9 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.framework.db.EntityConnectionProvider#CLIENT_DOMAIN_TYPE}
  * <li>{@link is.codion.framework.db.EntityConnectionProvider#CLIENT_CONNECTION_TYPE}
+ * </ul>
  */
 package is.codion.framework.db;

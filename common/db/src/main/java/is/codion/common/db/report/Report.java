@@ -40,8 +40,10 @@ public interface Report<T, R, P> {
 
 	/**
 	 * Specifies whether to cache reports when loaded from disk/network, this prevents "hot deploy" of reports
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("codion.report.cacheReports", true);
 

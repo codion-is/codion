@@ -18,11 +18,13 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.framework.db.http.HttpEntityConnection#HOSTNAME}
  * <li>{@link is.codion.framework.db.http.HttpEntityConnection#PORT}
  * <li>{@link is.codion.framework.db.http.HttpEntityConnection#SECURE}
  * <li>{@link is.codion.framework.db.http.HttpEntityConnection#JSON}
  * <li>{@link is.codion.framework.db.http.HttpEntityConnection#SOCKET_TIMEOUT}
  * <li>{@link is.codion.framework.db.http.HttpEntityConnection#SOCKET_TIMEOUT}
+ * </ul>
  */
 package is.codion.framework.db.http;

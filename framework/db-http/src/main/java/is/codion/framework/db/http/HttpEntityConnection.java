@@ -40,50 +40,64 @@ public interface HttpEntityConnection extends EntityConnection {
 
 	/**
 	 * The host on which to locate the http server
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: localhost
+	 * </ul>
 	 */
 	PropertyValue<String> HOSTNAME = Configuration.stringValue("codion.client.http.hostname", "localhost");
 
 	/**
 	 * The port which the http client should use.<br>
+	 * <ul>
 	 * <li>Value type: Integer<br>
 	 * <li>Default value: 8080
+	 * </ul>
 	 */
 	PropertyValue<Integer> PORT = Configuration.integerValue("codion.client.http.port", 8080);
 
 	/**
 	 * The port which the https client should use
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 4443
+	 * </ul>
 	 */
 	PropertyValue<Integer> SECURE_PORT = Configuration.integerValue("codion.client.http.securePort", 4443);
 
 	/**
 	 * Specifies whether https should be used
+	 * <ul>
 	 * <li>Value type: boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> SECURE = Configuration.booleanValue("codion.client.http.secure", true);
 
 	/**
 	 * Specifies whether json serialization should be used
 	 * Value types: Boolean
+	 * <ul>
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> JSON = Configuration.booleanValue("codion.client.http.json", true);
 
 	/**
 	 * The socket timeout in milliseconds
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 2000 ms
+	 * </ul>
 	 */
 	PropertyValue<Integer> SOCKET_TIMEOUT = Configuration.integerValue("codion.client.http.socketTimeout", 2000);
 
 	/**
 	 * The connect timeout in milliseconds
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 2000 ms
+	 * </ul>
 	 */
 	PropertyValue<Integer> CONNECT_TIMEOUT = Configuration.integerValue("codion.client.http.connectTimeout", 2000);
 

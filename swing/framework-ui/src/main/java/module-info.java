@@ -18,6 +18,7 @@
  */
 /**
  * Framework Swing UI classes, such as:
+ * <ul> 
  * <li>{@link is.codion.swing.framework.ui.EntityPanel}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel}
@@ -25,6 +26,7 @@
  * <li>{@link is.codion.swing.framework.ui.component.EntityComboBox}
  * <li>{@link is.codion.swing.framework.ui.component.EntityComponents}
  * <li>{@link is.codion.swing.framework.ui.icon.FrameworkIcons}
+ * </ul>
  * @uses is.codion.swing.framework.ui.icon.FrameworkIcons
  * @provides is.codion.swing.framework.ui.icon.FrameworkIcons
  * @provides org.kordamp.ikonli.IkonHandler

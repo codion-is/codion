@@ -18,8 +18,10 @@
  */
 /**
  * RMI based database connection classes.
+ * <ul>
  * <li>{@link is.codion.framework.db.rmi.RemoteEntityConnection}
  * <li>{@link is.codion.framework.db.rmi.RemoteEntityConnectionProvider}
+ * </ul>
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.db.rmi {

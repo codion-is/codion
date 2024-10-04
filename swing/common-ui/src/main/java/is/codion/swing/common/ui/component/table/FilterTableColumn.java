@@ -79,7 +79,7 @@ public final class FilterTableColumn<C> extends TableColumn {
 
 	/**
 	 * @param identifier an identifier for this column
-	 * @throws UnsupportedOperationException, changing the identifier is not supported
+	 * @throws UnsupportedOperationException changing the identifier is not supported
 	 */
 	@Override
 	public void setIdentifier(Object identifier) {

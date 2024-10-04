@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.swing.common.ui.component.text.NumberField#CONVERT_GROUPING_TO_DECIMAL_SEPARATOR}
+ * </ul> 
  */
 package is.codion.swing.common.ui.component.text;

@@ -40,56 +40,70 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 
 	/**
 	 * The default left padding for table cells.
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 0
+	 * </ul>
 	 */
 	PropertyValue<Integer> TABLE_CELL_LEFT_PADDING =
 					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".cellLeftPadding", 0);
 
 	/**
 	 * The default right padding for table cells.
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 5
+	 * </ul>
 	 */
 	PropertyValue<Integer> TABLE_CELL_RIGHT_PADDING =
 					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".cellRightPadding", 5);
 
 	/**
 	 * The default horizontal alignment for numerical columns.
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: {@link SwingConstants#RIGHT}
+	 * </ul>
 	 */
 	PropertyValue<Integer> NUMERICAL_HORIZONTAL_ALIGNMENT =
 					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".numericalHorizontalAlignment", SwingConstants.RIGHT);
 
 	/**
 	 * The default horizontal alignment for temporal columns.
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: {@link SwingConstants#RIGHT}
+	 * </ul>
 	 */
 	PropertyValue<Integer> TEMPORAL_HORIZONTAL_ALIGNMENT =
 					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".temporalHorizontalAlignment", SwingConstants.RIGHT);
 
 	/**
 	 * The default horizontal alignment for boolean columns.
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: {@link SwingConstants#CENTER}
+	 * </ul>
 	 */
 	PropertyValue<Integer> BOOLEAN_HORIZONTAL_ALIGNMENT =
 					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".booleanHorizontalAlignment", SwingConstants.CENTER);
 
 	/**
 	 * The default horizontal alignment.
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: {@link SwingConstants#LEADING}
+	 * </ul>
 	 */
 	PropertyValue<Integer> HORIZONTAL_ALIGNMENT =
 					Configuration.integerValue(FilterTableCellRenderer.class.getName() + ".horizontalAlignment", SwingConstants.LEADING);
 
 	/**
 	 * Specifies whether alternate row coloring is enabled by default.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> ALTERNATE_ROW_COLORING =
 					Configuration.booleanValue(FilterTableCellRenderer.class.getName() + ".alternateRowColoring", true);

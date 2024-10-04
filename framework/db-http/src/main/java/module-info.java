@@ -18,8 +18,10 @@
  */
 /**
  * HTTP based database connection classes.
+ * <ul>
  * <li>{@link is.codion.framework.db.http.HttpEntityConnection}
  * <li>{@link is.codion.framework.db.http.HttpEntityConnectionProvider}
+ * </ul>
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.db.http {

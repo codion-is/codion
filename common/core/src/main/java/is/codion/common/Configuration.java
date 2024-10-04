@@ -46,8 +46,10 @@ public final class Configuration {
 	/**
 	 * Specifies the main configuration file.<br>
 	 * Prefix with 'classpath:' to indicate that the configuration file is on the classpath.
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: null
+	 * </ul>
 	 */
 	public static final String CONFIGURATION_FILE = "codion.configurationFile";
 
@@ -55,8 +57,10 @@ public final class Configuration {
 	 * Specifies whether the application requires a configuration file to run.<br>
 	 * If this is set to true and the file referenced by {@link #CONFIGURATION_FILE}<br>
 	 * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
+	 * </ul>
 	 */
 	public static final String CONFIGURATION_FILE_REQUIRED = "codion.configurationFileRequired";
 

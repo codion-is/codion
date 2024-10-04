@@ -115,8 +115,10 @@ public class EntityEditComponentPanel extends JPanel {
 
 	/**
 	 * Specifies whether label text should be underlined to indicate that the associated value is modified
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 * @see #MODIFIED_INDICATOR_UNDERLINE_STYLE
 	 */
 	public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
@@ -124,9 +126,11 @@ public class EntityEditComponentPanel extends JPanel {
 
 	/**
 	 * The type of underline to use to indicate a modified value
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: {@link TextAttribute#UNDERLINE_LOW_DOTTED}
 	 * <li>Valid values: {@link TextAttribute}.UNDERLINE_*
+	 * </ul>
 	 * @see #MODIFIED_INDICATOR
 	 */
 	public static final PropertyValue<Integer> MODIFIED_INDICATOR_UNDERLINE_STYLE =
@@ -134,8 +138,10 @@ public class EntityEditComponentPanel extends JPanel {
 
 	/**
 	 * Specifies the default number of text field columns
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 12
+	 * </ul>
 	 */
 	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
 					Configuration.integerValue(EntityEditComponentPanel.class.getName() + ".defaultTextFieldColumns", 12);

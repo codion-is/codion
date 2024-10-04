@@ -17,8 +17,10 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
+ * <ul>
  * <li>{@link is.codion.tools.loadtest.LoadTest}
  * <li>{@link is.codion.tools.loadtest.randomizer.ItemRandomizer}
+ * </ul> 
  */
 module is.codion.tools.loadtest.core {
 	requires org.slf4j;

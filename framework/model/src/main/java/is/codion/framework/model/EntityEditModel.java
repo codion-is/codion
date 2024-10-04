@@ -51,16 +51,20 @@ public interface EntityEditModel {
 
 	/**
 	 * Specifies whether foreign key values should persist by default when defaults are set
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 * @see EditableEntity#defaults()
 	 */
 	PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = Configuration.booleanValue(EntityEditModel.class.getName() + ".persistForeignKeys", true);
 
 	/**
 	 * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 * @see #postEditEvents()
 	 * @see EntityTableModel#HANDLE_EDIT_EVENTS
 	 */

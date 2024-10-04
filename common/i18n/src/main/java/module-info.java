@@ -18,7 +18,9 @@
  */
 /**
  * Shared i18n messages.
+ * <ul>
  * <li>{@link is.codion.common.i18n.Messages}
+ * </ul>
  */
 module is.codion.common.i18n {
 	requires is.codion.common.core;

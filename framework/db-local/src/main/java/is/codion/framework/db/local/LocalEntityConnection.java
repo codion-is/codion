@@ -53,31 +53,39 @@ public interface LocalEntityConnection extends EntityConnection {
 
 	/**
 	 * Specifies the size of the (circular) log that is kept in memory for each connection
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 40
+	 * </ul>
 	 */
 	PropertyValue<Integer> CONNECTION_LOG_SIZE = Configuration.integerValue("codion.db.connectionLogSize", DEFAULT_CONNECTION_LOG_SIZE);
 
 	/**
 	 * Specifies the query timeout in seconds
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 120
+	 * </ul>
 	 */
 	PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = Configuration.integerValue("codion.db.queryTimeoutSeconds", DEFAULT_QUERY_TIMEOUT_SECONDS);
 
 	/**
 	 * Specifies whether optimistic locking should be performed, that is, if entities should
 	 * be selected for update and checked for modification before being updated
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> OPTIMISTIC_LOCKING = Configuration.booleanValue("codion.db.optimisticLocking", true);
 
 	/**
 	 * Specifies whether the foreign key value graph should be fully populated instead of
 	 * being limited by the foreign key fetch depth setting
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("codion.db.limitForeignKeyFetchDepth", true);
 

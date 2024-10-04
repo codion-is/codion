@@ -60,11 +60,13 @@ public final class Completion {
 
 	/**
 	 * Specifies the default completion model used for comboboxes.
+	 * <ul>
 	 * <li>{@link Completion.Mode#MAXIMUM_MATCH} for maximum match,
 	 * <li>{@link Completion.Mode#AUTOCOMPLETE} for auto-completion or
 	 * <li>{@link Completion.Mode#NONE} for no completion.
 	 * <li>Value type:String
 	 * <li>Default value: {@link Completion.Mode#MAXIMUM_MATCH}
+	 * </ul>
 	 */
 	public static final PropertyValue<Mode> COMBO_BOX_COMPLETION_MODE =
 					Configuration.enumValue(Completion.class.getName() + ".completionMode", Mode.class, Mode.MAXIMUM_MATCH);

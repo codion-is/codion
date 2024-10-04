@@ -18,7 +18,9 @@
  */
 /**
  * JSON serialization for db related classes.
+ * <ul>
  * <li>{@link is.codion.framework.json.db.DatabaseObjectMapper}
+ * </ul>
  */
 module is.codion.framework.json.db {
 	requires transitive com.fasterxml.jackson.databind;

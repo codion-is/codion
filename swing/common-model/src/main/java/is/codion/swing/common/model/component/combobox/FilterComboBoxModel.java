@@ -44,8 +44,10 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 
 	/**
 	 * Specifies the caption used by default to represent the null item in combo box models.
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: -
+	 * </ul>
 	 * @see ComboBoxItems#nullItem()
 	 */
 	PropertyValue<String> NULL_CAPTION = Configuration.stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");

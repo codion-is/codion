@@ -18,6 +18,7 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#HELP_URL}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}
@@ -55,5 +56,6 @@
  * <li>{@link is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling#REFERENTIAL_INTEGRITY_ERROR_HANDLING}
  * <li>{@link is.codion.swing.framework.ui.TabbedApplicationLayout#TAB_PLACEMENT}
  * <li>{@link is.codion.swing.framework.ui.TabbedDetailLayout#INCLUDE_CONTROLS}
+ * </ul>
  */
 package is.codion.swing.framework.ui;

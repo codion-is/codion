@@ -43,15 +43,19 @@ public interface AttributeDefinition<T> {
 	/**
 	 * Specifies the default maximum number of fraction digits for double property values<br>
 	 * Note that values are rounded when set.
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 10
+	 * </ul>
 	 */
 	PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("codion.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
 
 	/**
 	 * Specifies the default rounding mode used for decimal property values
+	 * <ul>
 	 * <li>Value type: {@link RoundingMode}
 	 * <li>Default value: {@link RoundingMode#HALF_EVEN}
+	 * </ul>
 	 * @see #MAXIMUM_FRACTION_DIGITS
 	 * @see Builder#decimalRoundingMode(RoundingMode)
 	 */
@@ -59,8 +63,10 @@ public interface AttributeDefinition<T> {
 
 	/**
 	 * The default date format pattern to use when showing time values in tables and when creating default time input fields
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: HH:mm
+	 * </ul>
 	 */
 	PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", LocaleDateTimePattern.builder()
 					.hoursMinutes()
@@ -70,8 +76,10 @@ public interface AttributeDefinition<T> {
 
 	/**
 	 * The default date/time format pattern to use when showing date/time values in tables and when creating default date/time input fields
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: dd-MM-yyyy HH:mm [month/day order is locale specific]
+	 * </ul>
 	 */
 	PropertyValue<String> DATE_TIME_FORMAT = Configuration.stringValue("codion.domain.dateTimeFormat", LocaleDateTimePattern.builder()
 					.delimiterDash()
@@ -82,8 +90,10 @@ public interface AttributeDefinition<T> {
 
 	/**
 	 * The default date format pattern to use when showing date values in tables and when creating default date input fields
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: dd-MM-yyyy [month/day order is locale specific]
+	 * </ul>
 	 */
 	PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", LocaleDateTimePattern.builder()
 					.delimiterDash()
@@ -93,31 +103,39 @@ public interface AttributeDefinition<T> {
 
 	/**
 	 * Specifies whether number format grouping is used by default
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
+	 * </ul>
 	 */
 	PropertyValue<Boolean> NUMBER_FORMAT_GROUPING = Configuration.booleanValue("codion.domain.numberFormatGrouping", false);
 
 	/**
 	 * Specifies the default number grouping separator
+	 * <ul>
 	 * <li>Value type: Character
 	 * <li>Default value: The grouping separator for the default locale
+	 * </ul>
 	 */
 	PropertyValue<Character> GROUPING_SEPARATOR = Configuration.characterValue("codion.domain.groupingSeparator",
 					DecimalFormatSymbols.getInstance().getGroupingSeparator());
 
 	/**
 	 * Specifies the default number decimal separator.
+	 * <ul>
 	 * <li>Value type: Character
 	 * <li>Default value: The decimal separator for the default locale
+	 * </ul>
 	 */
 	PropertyValue<Character> DECIMAL_SEPARATOR = Configuration.characterValue("codion.domain.decimalSeparator",
 					DecimalFormatSymbols.getInstance().getDecimalSeparator());
 
 	/**
 	 * Specifies whether String values should use a lexical comparator by default
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> USE_LEXICAL_STRING_COMPARATOR = Configuration.booleanValue("codion.domain.useLexicalStringComparator", true);
 

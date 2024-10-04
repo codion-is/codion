@@ -42,8 +42,10 @@ public interface ConditionModel<T> {
 
 	/**
 	 * Specifies whether wildcards are automatically added to string conditions by default
+	 * <ul>
 	 * <li>Value type: {@link AutomaticWildcard}
 	 * <li>Default value: {@link AutomaticWildcard#POSTFIX}
+	 * </ul>
 	 */
 	PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD =
 					Configuration.enumValue(ConditionModel.class.getName() + ".automaticWildard",
@@ -51,8 +53,10 @@ public interface ConditionModel<T> {
 
 	/**
 	 * Specifies whether string based conditions are case-sensitive by default
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
+	 * </ul>
 	 */
 	PropertyValue<Boolean> CASE_SENSITIVE =
 					Configuration.booleanValue(ConditionModel.class.getName() + ".caseSensitive", false);

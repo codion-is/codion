@@ -18,9 +18,11 @@
  */
 /**
  * Base classes for unit testing framework application model classes:
+ * <ul>
  * <li>{@link is.codion.framework.model.test.AbstractEntityModelTest}
  * <li>{@link is.codion.framework.model.test.AbstractEntityTableModelTest}
  * <li>{@link is.codion.framework.model.test.AbstractEntityApplicationModelTest}
+ * </ul>
  */
 module is.codion.framework.model.test {
 	requires org.junit.jupiter.api;

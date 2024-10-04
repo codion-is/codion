@@ -18,7 +18,9 @@
  */
 /**
  * Framework Swing generator model classes, such as:
+ * <ul>
  * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel}
+ * </ul>
  */
 module is.codion.tools.generator.model {
 	requires transitive is.codion.tools.generator.domain;

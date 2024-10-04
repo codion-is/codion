@@ -18,8 +18,10 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelProvider#CROSS_PLATFORM}
  * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelProvider#SYSTEM}
  * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelComboBox#ENABLE_ON_SELECTION}
+ * </ul>
  */
 package is.codion.swing.common.ui.laf;

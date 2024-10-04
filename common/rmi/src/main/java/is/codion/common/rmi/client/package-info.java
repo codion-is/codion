@@ -18,8 +18,10 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.common.rmi.client.Clients#SERVER_HOSTNAME}
  * <li>{@link is.codion.common.rmi.client.Clients#TRUSTSTORE}
  * <li>{@link is.codion.common.rmi.client.Clients#TRUSTSTORE_PASSWORD}
+ * </ul>
  */
 package is.codion.common.rmi.client;

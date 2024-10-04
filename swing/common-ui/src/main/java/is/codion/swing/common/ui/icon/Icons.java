@@ -39,15 +39,19 @@ public interface Icons {
 
 	/**
 	 * The icon size, note that this will affect the size of buttons
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 16
+	 * </ul>
 	 */
 	PropertyValue<Integer> ICON_SIZE = Configuration.integerValue(Icons.class.getName() + ".iconSize", DEFAULT_ICON_SIZE);
 
 	/**
 	 * The icon color
+	 * <ul>
 	 * <li>Value type: Color
 	 * <li>Default value: UIManager.getColor("Button.foreground")
+	 * </ul>
 	 */
 	PropertyValue<Color> ICON_COLOR = Configuration.value(Icons.class.getName() + ".iconColor", Color::decode, UIManager.getColor("Button.foreground"));
 

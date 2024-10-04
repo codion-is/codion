@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.swing.common.ui.component.label.LabelBuilder#HORIZONTAL_ALIGNMENT}
+ * </ul>
  */
 package is.codion.swing.common.ui.component.label;

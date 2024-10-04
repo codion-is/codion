@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}
+ * </ul>
  */
 package is.codion.common;

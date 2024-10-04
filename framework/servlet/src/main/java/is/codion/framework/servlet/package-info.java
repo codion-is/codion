@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.framework.servlet.EntityService#HTTP_SERVER_PORT}
+ * </ul>
  */
 package is.codion.framework.servlet;

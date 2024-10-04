@@ -18,6 +18,7 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#RMI_SERVER_HOSTNAME}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#SERVER_NAME_PREFIX}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#SERVER_PORT}
@@ -32,5 +33,6 @@
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME}
  * <li>{@link is.codion.common.rmi.server.WhitelistInputFilterFactory#SERIALIZATION_FILTER_WHITELIST}
  * <li>{@link is.codion.common.rmi.server.WhitelistInputFilterFactory#SERIALIZATION_FILTER_DRYRUN}
+ * </ul>
  */
 package is.codion.common.rmi.server;

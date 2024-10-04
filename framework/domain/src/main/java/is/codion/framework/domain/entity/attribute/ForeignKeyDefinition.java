@@ -33,8 +33,10 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 
 	/**
 	 * Specifies the default foreign key fetch depth
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 1
+	 * </ul>
 	 */
 	PropertyValue<Integer> FOREIGN_KEY_FETCH_DEPTH = Configuration.integerValue("codion.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
 

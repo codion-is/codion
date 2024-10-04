@@ -18,8 +18,10 @@
  */
 /**
  * Core framework database connection classes, such as:
+ * <ul>
  * <li>{@link is.codion.framework.db.EntityConnection}
  * <li>{@link is.codion.framework.db.EntityConnectionProvider}
+ * </ul>
  * @uses is.codion.framework.db.EntityConnectionProvider.Builder
  */
 module is.codion.framework.db.core {

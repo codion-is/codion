@@ -18,6 +18,7 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.common.db.database.Database#DATABASE_URL}
  * <li>{@link is.codion.common.db.database.Database#DATABASE_INIT_SCRIPTS}
  * <li>{@link is.codion.common.db.database.Database#COUNT_QUERIES}
@@ -25,5 +26,6 @@
  * <li>{@link is.codion.common.db.database.Database#LOGIN_TIMEOUT}
  * <li>{@link is.codion.common.db.database.Database#TRANSACTION_ISOLATION}
  * <li>{@link is.codion.common.db.database.Database#CONNECTION_VALIDITY_CHECK_TIMEOUT}
+ * </ul>
  */
 package is.codion.common.db.database;

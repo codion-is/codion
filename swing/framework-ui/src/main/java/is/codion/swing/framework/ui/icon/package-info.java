@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.swing.framework.ui.icon.FrameworkIcons#FRAMEWORK_ICONS_CLASSNAME}
+ * </ul>
  */
 package is.codion.swing.framework.ui.icon;

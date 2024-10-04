@@ -18,6 +18,7 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#TABLE_CELL_LEFT_PADDING}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#TABLE_CELL_RIGHT_PADDING}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#NUMERICAL_HORIZONTAL_ALIGNMENT}
@@ -27,5 +28,6 @@
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#ALTERNATE_ROW_COLORING}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#ALLOW_COLUMN_REORDERING}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#AUTO_RESIZE_MODE}
+ * </ul>
  */
 package is.codion.swing.common.ui.component.table;

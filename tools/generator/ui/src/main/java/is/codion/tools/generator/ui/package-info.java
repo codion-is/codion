@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.tools.generator.ui.DomainGeneratorPanel#DEFAULT_USER}
+ * </ul>
  */
 package is.codion.tools.generator.ui;

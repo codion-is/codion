@@ -18,8 +18,10 @@
  */
 /**
  * JSON serialization for domain related classes.
+ * <ul>
  * <li>{@link is.codion.framework.json.domain.EntityObjectMapper}
  * <li>{@link is.codion.framework.json.domain.EntityObjectMapperFactory}
+ * </ul>
  * @uses is.codion.framework.json.domain.EntityObjectMapperFactory
  */
 module is.codion.framework.json.domain {

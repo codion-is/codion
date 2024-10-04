@@ -45,15 +45,19 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 
 	/**
 	 * Specifies the default action a table model takes when entities are inserted via its edit model.
+	 * <ul>
 	 * <li>Value type: {@link OnInsert}
 	 * <li>Default value: {@link OnInsert#ADD_TOP}
+	 * </ul>
 	 */
 	PropertyValue<OnInsert> ON_INSERT = Configuration.enumValue(EntityTableModel.class.getName() + ".onInsert", OnInsert.class, OnInsert.ADD_TOP);
 
 	/**
 	 * Specifies whether table models handle entity edit events, by replacing updated entities
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 * @see #handleEditEvents()
 	 * @see EntityEditModel#POST_EDIT_EVENTS
 	 */

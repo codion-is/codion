@@ -18,6 +18,7 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.framework.domain.entity.EntityValidator#STRICT_VALIDATION}
  * <li>{@link is.codion.framework.domain.entity.Entities#VALIDATE_FOREIGN_KEYS}
  * <li>{@link is.codion.framework.domain.entity.Entities#STRICT_DESERIALIZATION}
@@ -31,5 +32,6 @@
  * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DATE_FORMAT}<br>
  * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DECIMAL_ROUNDING_MODE}<br>
  * <li>{@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition#FOREIGN_KEY_FETCH_DEPTH}
+ * </ul>
  */
 package is.codion.framework.domain.entity;

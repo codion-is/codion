@@ -136,7 +136,6 @@ tasks.register("combinedJavadoc") {
             links("https://docs.oracle.com/en/java/javase/" + properties["jdkVersion"] + "/docs/api/")
             encoding = "UTF-8"
             noTimestamp(true)
-            addStringOption("Xdoclint:none", "-quiet")
         }
 
         options.write(optionsFile)

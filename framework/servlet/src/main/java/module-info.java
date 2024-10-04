@@ -18,8 +18,10 @@
  */
 /**
  * Servlet AuxiliaryServer implementation for EntityServer, based on <a href="https://javalin.io">Javalin</a>.
+ * <ul>
  * <li>{@link is.codion.framework.servlet.EntityService}
  * <li>{@link is.codion.framework.servlet.EntityServiceFactory}
+ * </ul>
  * @provides is.codion.common.rmi.server.AuxiliaryServerFactory
  */
 module is.codion.framework.servlet {

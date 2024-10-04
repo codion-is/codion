@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.swing.common.ui.dialog.ExceptionDialogBuilder#SYSTEM_PROPERTIES}
+ * </ul>
  */
 package is.codion.swing.common.ui.dialog;

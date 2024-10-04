@@ -121,8 +121,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	/**
 	 * Specifies whether the client should save and apply user preferences
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 * @see #savePreferences()
 	 */
 	public static final PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
@@ -144,23 +146,29 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	/**
 	 * Specifies the URL to the application help
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: https://codion.is/doc/{version}/help/client.html
+	 * </ul>
 	 */
 	public static final PropertyValue<String> HELP_URL = Configuration.stringValue(EntityApplicationPanel.class.getName() + ".helpUrl",
 					"https://codion.is/doc/" + Version.versionString() + "/help/client.html");
 
 	/**
 	 * Indicates whether the application should ask for confirmation when exiting
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
+	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".confirmExit", false);
 
 	/**
 	 * Specifies whether a startup dialog should be shown
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".showStartupDialog", true);
 
@@ -168,8 +176,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * Specifies whether EntityPanels displayed via {@link EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)}
 	 * or {@link EntityApplicationPanel#displayEntityPanelFrame(EntityPanel)} should be cached,
 	 * instead of being created each time the dialog/frame is shown.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
+	 * </ul>
 	 * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)
 	 * @see EntityApplicationPanel#displayEntityPanelFrame(EntityPanel)
 	 */

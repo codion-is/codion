@@ -40,23 +40,29 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 
 	/**
 	 * Specifies a string to prepend to the username field in the login dialog
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: [empty string]
+	 * </ul>
 	 */
 	PropertyValue<String> USERNAME_PREFIX = Configuration.stringValue("codion.client.usernamePrefix", "");
 
 	/**
 	 * Specifies whether user authentication is required
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("codion.client.authenticationRequired", true);
 
 	/**
 	 * Specifies whether the client saves the last successful login username,
 	 * which is then displayed as the default username the next time the application is started
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("codion.client.saveDefaultUsername", true);
 

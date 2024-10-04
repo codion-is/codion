@@ -18,7 +18,9 @@
  */
 /**
  * Framework database domain model classes, such as:
+ * <ul>
  * <li>{@link is.codion.framework.domain.db.SchemaDomain}
+ * </ul>
  */
 module is.codion.framework.domain.db {
 	requires transitive is.codion.framework.domain;

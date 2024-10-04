@@ -39,31 +39,39 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	/**
 	 * Specifies maximum number of concurrent connections the server accepts
 	 * -1 indicates no limit and 0 indicates a closed server.
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: -1
+	 * </ul>
 	 */
 	PropertyValue<Integer> CONNECTION_LIMIT = Configuration.integerValue("codion.server.connectionLimit", -1);
 
 	/**
 	 * Specifies the class name of the connection pool factory to use.
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: none
+	 * </ul>
 	 * @see ConnectionPoolFactory
 	 */
 	PropertyValue<String> CONNECTION_POOL_FACTORY_CLASS = Configuration.stringValue("codion.server.pooling.poolFactoryClass");
 
 	/**
 	 * Specifies the default client connection timeout (ms) in a comma separated list.
+	 * <ul>
 	 * <li>Example: is.codion.demos.employees.client.ui.EmployeesAppPanel:60000,is.codion.demos.chinook.ui.ChinookAppPanel:120000
 	 * <li>Value type: String
 	 * <li>Default value: none
+	 * </ul>
 	 */
 	PropertyValue<String> CLIENT_CONNECTION_TIMEOUT = Configuration.stringValue("codion.server.clientConnectionTimeout");
 
 	/**
 	 * The initial connection logging status on the server, either true (on) or false (off)
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
+	 * </ul>
 	 */
 	PropertyValue<Boolean> CLIENT_LOGGING = Configuration.booleanValue("codion.server.clientLogging", false);
 

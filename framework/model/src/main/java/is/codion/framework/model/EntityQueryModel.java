@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -71,7 +70,6 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	 * Note that if a query condition is required ({@link #conditionRequired()})
 	 * and the condition is not enabled ({@link #conditionEnabled()}) an empty list is returned.
 	 * @return entities selected from the database according to the query condition.
-	 * @throws DatabaseException in case of an exception
 	 */
 	@Override
 	List<Entity> get();

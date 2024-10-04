@@ -46,7 +46,6 @@ public class EntityEditPanelTestUnit {
 
 	/**
 	 * Initializes the edit panel.
-	 * @throws Exception in case of an exception
 	 */
 	protected final void testInitialize() {
 		editPanel.apply(editModel).initialize();

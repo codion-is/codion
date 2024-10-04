@@ -500,12 +500,12 @@ is/codion/swing/common/ui/component/table/FilterTable_is_IS.properties
 |single_selection_mode|Single selection|Einnar línu val
 |===
 
-=== is/codion/swing/common/ui/component/table/TableConditionPanel.java
+=== is/codion/swing/common/ui/component/table/TableConditionsPanel.java
 
 [source]
 ----
-is/codion/swing/common/ui/component/table/TableConditionPanel.properties
-is/codion/swing/common/ui/component/table/TableConditionPanel_is_IS.properties
+is/codion/swing/common/ui/component/table/TableConditionsPanel.properties
+is/codion/swing/common/ui/component/table/TableConditionsPanel_is_IS.properties
 ----
 
 [cols="1,1,1"]

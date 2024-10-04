@@ -18,7 +18,9 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.common.db.report.Report#REPORT_PATH}
  * <li>{@link is.codion.common.db.report.Report#CACHE_REPORTS}
+ * </ul>
  */
 package is.codion.common.db.report;

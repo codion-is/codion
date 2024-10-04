@@ -68,6 +68,7 @@ import static java.util.stream.Collectors.joining;
  * <p>
  * {@code Name=John, Department='Accounting'}<br><br>
  * given the entities above.
+ * </p>
  */
 public final class StringFactory {
 

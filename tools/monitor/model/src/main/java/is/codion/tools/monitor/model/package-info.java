@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.tools.monitor.model.EntityServerMonitor#SERVER_MONITOR_UPDATE_RATE}
+ * </ul>
  */
 package is.codion.tools.monitor.model;

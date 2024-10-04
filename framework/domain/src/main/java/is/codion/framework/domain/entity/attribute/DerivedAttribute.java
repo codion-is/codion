@@ -21,6 +21,10 @@ package is.codion.framework.domain.entity.attribute;
 import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * An attribute which value is derived from one or more attributes.
+ * @param <T> the value type
+ */
 public interface DerivedAttribute<T> extends Attribute<T> {
 
 	/**

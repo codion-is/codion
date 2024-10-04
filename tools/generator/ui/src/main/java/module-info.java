@@ -18,7 +18,9 @@
  */
 /**
  * Framework Swing generator UI.
+ * <ul>
  * <li>{@link is.codion.tools.generator.ui.DomainGeneratorPanel}
+ * </ul>
  */
 module is.codion.tools.generator.ui {
 	requires com.formdev.flatlaf.intellijthemes;

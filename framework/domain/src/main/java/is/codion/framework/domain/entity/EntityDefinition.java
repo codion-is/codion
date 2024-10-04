@@ -45,8 +45,10 @@ public interface EntityDefinition {
 
 	/**
 	 * Specifies whether optimistic locking should be enabled by default for entities
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> OPTIMISTIC_LOCKING = Configuration.booleanValue("codion.domain.optimisticLocking", true);
 

@@ -18,6 +18,7 @@
  */
 /**
  * Shared model classes, such as:
+ * <ul>
  * <li>{@link is.codion.common.model.UserPreferences}
  * <li>{@link is.codion.common.model.CancelException}
  * <li>{@link is.codion.common.model.FilterModel}
@@ -27,6 +28,7 @@
  * <li>{@link is.codion.common.model.condition.TableConditions}
  * <li>{@link is.codion.common.model.summary.SummaryModel}
  * <li>{@link is.codion.common.model.summary.TableSummaryModel}
+ * </ul>
  */
 module is.codion.common.model {
 	requires java.prefs;

@@ -18,6 +18,7 @@
  */
 /**
  * Common classes used throughout, such as:
+ * <ul>
  * <li>{@link is.codion.common.observer.Observer}
  * <li>{@link is.codion.common.observer.Observable}
  * <li>{@link is.codion.common.observer.Mutable}
@@ -26,9 +27,12 @@
  * <li>{@link is.codion.common.state.StateObserver}
  * <li>{@link is.codion.common.value.Value}
  * <li>{@link is.codion.common.value.ValueObserver}
+ * </ul>
  * <p>
  * Configuration values:
+ * <ul>
  * <li>{@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}
+ * </ul>
  * @uses is.codion.common.logging.LoggerProxy
  * @uses is.codion.common.resource.Resources
  */

@@ -65,15 +65,19 @@ public interface ServerConfiguration {
 	/**
 	 * Specifies the rmi server hostname<br>
 	 * Note that this is the standard Java property 'java.rmi.server.hostname
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: localhost
+	 * </ul>
 	 */
 	PropertyValue<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", LOCALHOST);
 
 	/**
 	 * Specifies the prefix used when exporting/looking up the Codion server
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: Codion Server
+	 * </ul>
 	 */
 	PropertyValue<String> SERVER_NAME_PREFIX = Configuration.stringValue("codion.server.namePrefix", "Codion Server");
 
@@ -81,90 +85,114 @@ public interface ServerConfiguration {
 	 * The port on which the server is made available to clients.<br>
 	 * If specified on the client side, the client will only connect to a server running on this port,
 	 * use -1 or no value if the client should connect to any available server
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: -1
+	 * </ul>
 	 */
 	PropertyValue<Integer> SERVER_PORT = Configuration.integerValue("codion.server.port", -1);
 
 	/**
 	 * The port on which to locate the server registry
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: {@link Registry#REGISTRY_PORT} (1099)
+	 * </ul>
 	 */
 	PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("codion.server.registryPort", Registry.REGISTRY_PORT);
 
 	/**
 	 * The rmi ssl keystore to use on the classpath, this will be resolved to a temporary file and set
 	 * as the javax.net.ssl.keyStore system property on server start
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: null
+	 * </ul>
 	 */
 	PropertyValue<String> CLASSPATH_KEYSTORE = Configuration.stringValue("codion.server.classpathKeyStore");
 
 	/**
 	 * The rmi ssl keystore to use
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: null
+	 * </ul>
 	 * @see #CLASSPATH_KEYSTORE
 	 */
 	PropertyValue<String> KEYSTORE = Configuration.stringValue(JAVAX_NET_KEYSTORE);
 
 	/**
 	 * The rmi ssl keystore password to use
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: null
+	 * </ul>
 	 */
 	PropertyValue<String> KEYSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_KEYSTORE_PASSWORD);
 
 	/**
 	 * The port on which the server should export the remote admin interface
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 0 (admin not exported)
+	 * </ul>
 	 */
 	PropertyValue<Integer> ADMIN_PORT = Configuration.integerValue("codion.server.admin.port", 0);
 
 	/**
 	 * Specifies a username:password combination representing the server admin user<br>
 	 * Example: scott:tiger<br>
+	 * <ul>
 	 * <li>Default value: none
+	 * </ul>
 	 */
 	PropertyValue<String> ADMIN_USER = Configuration.stringValue("codion.server.admin.user");
 
 	/**
 	 * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> SSL_ENABLED = Configuration.booleanValue("codion.server.connection.sslEnabled", true);
 
 	/**
 	 * Specifies the default idle client connection timeout in milliseconds.
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 120.000ms (2 minutes)
+	 * </ul>
 	 */
 	PropertyValue<Integer> IDLE_CONNECTION_TIMEOUT = Configuration.integerValue("codion.server.idleConnectionTimeout", DEFAULT_IDLE_CONNECTION_TIMEOUT);
 
 	/**
 	 * A comma separated list of auxiliary server factories, providing servers to run alongside this Server<br>
 	 * Those must extend {@link AuxiliaryServerFactory}
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: none
+	 * </ul>
 	 * @see AuxiliaryServer
 	 */
 	PropertyValue<String> AUXILIARY_SERVER_FACTORY_CLASS_NAMES = Configuration.stringValue("codion.server.auxiliaryServerFactoryClassNames");
 
 	/**
 	 * Specifies the {@link ObjectInputFilterFactory} class to use
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: none
+	 * </ul>
 	 * @see ObjectInputFilterFactory
 	 */
 	PropertyValue<String> OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME = Configuration.stringValue("codion.server.objectInputFilterFactoryClassName");
 
 	/**
 	 * Specifies the interval between server connection maintenance runs, in milliseconds
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 30_000ms (30 seconds)
+	 * </ul>
 	 */
 	PropertyValue<Integer> CONNECTION_MAINTENANCE_INTERVAL = Configuration.integerValue("codion.server.connectionMaintenanceInterval", DEFAULT_CONNECTION_MAINTENANCE_INTERVAL);
 

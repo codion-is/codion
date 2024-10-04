@@ -18,7 +18,9 @@
  */
 /**
  * Image panel.
+ * <ul>
  * <li>{@link is.codion.plugin.imagepanel.NavigableImagePanel}
+ * </ul>
  */
 module is.codion.plugin.imagepanel {
 	requires java.desktop;

@@ -42,15 +42,19 @@ public interface LookAndFeelProvider {
 
 	/**
 	 * Specifies whether the cross platform Look and Feel should be available for selection.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> CROSS_PLATFORM = Configuration.booleanValue(LookAndFeelProvider.class.getName() + ".crossPlatform", true);
 
 	/**
 	 * Specifies whether the cross platform Look and Feel should be available for selection.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> SYSTEM = Configuration.booleanValue(LookAndFeelProvider.class.getName() + ".system", true);
 

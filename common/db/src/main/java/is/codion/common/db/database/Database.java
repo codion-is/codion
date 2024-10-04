@@ -76,37 +76,47 @@ public interface Database extends ConnectionFactory {
 
 	/**
 	 * Specifies the timeout (in seconds) to use when checking if database connections are valid.
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 2
+	 * </ul>
 	 */
 	PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("codion.db.validityCheckTimeout", 2);
 
 	/**
 	 * Specifies whether database queries should be counted for collecting statistics.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
+	 * </ul>
 	 */
 	PropertyValue<Boolean> COUNT_QUERIES = Configuration.booleanValue("codion.db.countQueries", false);
 
 	/**
 	 * Specifies whether 'select for update' should be NOWAIT, if supported by the database.<br>
 	 * A database implementation may disregard this.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> SELECT_FOR_UPDATE_NOWAIT = Configuration.booleanValue("codion.db.selectForUpdateNowait", true);
 
 	/**
 	 * Specifies the default login timeout (in seconds).
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 2
+	 * </ul>
 	 */
 	PropertyValue<Integer> LOGIN_TIMEOUT = Configuration.integerValue("codion.db.loginTimeout", 2);
 
 	/**
 	 * Specifies the transaction isolation to set for created connections
+	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: null
+	 * </ul>
 	 * @see java.sql.Connection#setTransactionIsolation(int)
 	 */
 	PropertyValue<Integer> TRANSACTION_ISOLATION = Configuration.integerValue("codion.db.transactionIsolation");
@@ -239,6 +249,7 @@ public interface Database extends ConnectionFactory {
 	 * Creates a connection pool for the given user in this database.
 	 * @param connectionPoolFactory the ConnectionPoolFactory implementation to use
 	 * @param poolUser the user for which to create a connection pool
+	 * @return a new {@link ConnectionPoolWrapper}
 	 * @throws DatabaseException in case of a database exception
 	 */
 	ConnectionPoolWrapper createConnectionPool(ConnectionPoolFactory connectionPoolFactory, User poolUser) throws DatabaseException;

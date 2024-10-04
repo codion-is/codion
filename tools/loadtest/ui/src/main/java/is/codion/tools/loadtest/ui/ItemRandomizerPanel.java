@@ -43,7 +43,6 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default UI for the ItemRandomizer class.
- * For instances use the factory method {@link #itemRandomizerPanel(ItemRandomizer)}.
  * @param <T> the type of items being randomized
  */
 final class ItemRandomizerPanel<T> extends JPanel {

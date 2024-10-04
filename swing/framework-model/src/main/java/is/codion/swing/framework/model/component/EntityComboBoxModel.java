@@ -62,8 +62,10 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	/**
 	 * Specifies whether entity combo box models handle entity edit events, by replacing updated entities and removing deleted ones
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 * @see #handleEditEvents()
 	 * @see is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS
 	 */

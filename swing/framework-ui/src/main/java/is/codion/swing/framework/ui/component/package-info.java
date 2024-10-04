@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.swing.framework.ui.component.EntitySearchField#SEARCH_INDICATOR}
+ * </ul>
  */
 package is.codion.swing.framework.ui.component;

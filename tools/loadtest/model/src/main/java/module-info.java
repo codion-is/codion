@@ -18,7 +18,9 @@
  */
 /**
  * Common Swing loadtest model.
+ * <ul>
  * <li>{@link is.codion.tools.loadtest.model.LoadTestModel}
+ * </ul>
  */
 module is.codion.tools.loadtest.model {
 	requires org.jfree.jfreechart;

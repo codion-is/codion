@@ -105,8 +105,10 @@ public final class TabbedDetailLayout implements DetailLayout {
 	/**
 	 * Specifies whether actions to hide detail panels or show them in a dialog should be available to the user,
 	 * for example in a popup menu or on a toolbar.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
 					Configuration.booleanValue(TabbedDetailLayout.class.getName() + ".includeControls", true);

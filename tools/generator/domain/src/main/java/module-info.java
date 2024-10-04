@@ -18,7 +18,9 @@
  */
 /**
  * Framework domain source generator model classes, such as:
+ * <ul>
  * <li>{@link is.codion.tools.generator.domain.DomainSource}
+ * </ul>
  */
 module is.codion.tools.generator.domain {
 	requires java.compiler;

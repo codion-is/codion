@@ -18,7 +18,9 @@
  */
 /**
  * Common Swing loadtest UI.
+ * <ul>
  * <li>{@link is.codion.tools.loadtest.ui.LoadTestPanel}
+ * </ul>
  */
 module is.codion.tools.loadtest.ui {
 	requires org.jfree.jfreechart;

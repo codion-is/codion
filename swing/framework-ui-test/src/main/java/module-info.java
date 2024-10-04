@@ -18,8 +18,10 @@
  */
 /**
  * Base classes for unit testing framework ui classes.
+ * <ul>
  * <li>{@link is.codion.swing.framework.ui.test.EntityEditPanelTestUnit}
  * <li>{@link is.codion.swing.framework.ui.test.EntityApplicationPanelTestUnit}
+ * </ul>
  */
 module is.codion.swing.framework.ui.test {
 	requires is.codion.swing.framework.ui;

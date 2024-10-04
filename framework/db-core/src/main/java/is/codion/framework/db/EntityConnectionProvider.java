@@ -61,16 +61,20 @@ public interface EntityConnectionProvider extends AutoCloseable {
 
 	/**
 	 * Specifies the domain type required for a client connection
+	 * <ul>
 	 * <li>Value type: is.codion.framework.domain.DomainType
 	 * <li>Default value: null
+	 * </ul>
 	 */
 	PropertyValue<DomainType> CLIENT_DOMAIN_TYPE = Configuration.value("codion.client.domainType", DomainType::domainType);
 
 	/**
 	 * Specifies whether the client should connect locally, via rmi or http,
 	 * accepted values: local, remote, http
+	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: {@link #CONNECTION_TYPE_LOCAL}
+	 * </ul>
 	 * @see #CONNECTION_TYPE_LOCAL
 	 * @see #CONNECTION_TYPE_REMOTE
 	 * @see #CONNECTION_TYPE_HTTP

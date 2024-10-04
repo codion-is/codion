@@ -33,40 +33,50 @@ public interface ForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E ext
 
 	/**
 	 * Specifies whether a detail model should automatically set the foreign key value to the entity inserted by the master model.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> SET_FOREIGN_KEY_VALUE_ON_INSERT =
 					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".setForeignKeyValueOnInsert", true);
 
 	/**
 	 * Specifies whether a detail model should automatically search by the entity inserted by the master model.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
+	 * </ul>
 	 */
 	PropertyValue<Boolean> SET_FOREIGN_KEY_CONDITION_ON_INSERT =
 					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".setForeignKeyConditionOnInsert", false);
 
 	/**
 	 * Specifies whether a detail model should be automatically refreshed when the selection in the master model changes.
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> REFRESH_ON_SELECTION =
 					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".refreshOnSelection", true);
 
 	/**
 	 * Specifies whether a detail model sets the master foreign key value to null when null or no value is selected in a master model<br>
+	 * <ul>
 	 * <li>Value type: Boolean<br>
 	 * <li>Default value: false
+	 * </ul>
 	 */
 	PropertyValue<Boolean> CLEAR_FOREIGN_KEY_VALUE_ON_EMPTY_SELECTION =
 					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".clearForeignKeyValueOnEmptySelection", false);
 
 	/**
 	 * Specifies whether a detail model clears the foreign key search condition when null or no value is selected in a master model<br>
+	 * <ul>
 	 * <li>Value type: Boolean<br>
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	PropertyValue<Boolean> CLEAR_FOREIGN_KEY_CONDITION_ON_EMPTY_SELECTION =
 					Configuration.booleanValue(ForeignKeyDetailModelLink.class.getName() + ".clearForeignKeyConditionOnEmptySelection", true);

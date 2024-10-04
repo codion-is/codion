@@ -123,16 +123,20 @@ public final class FilterTable<R, C> extends JTable {
 
 	/**
 	 * Specifies the default table column resize mode for tables in the application
+	 * <ul>
 	 * <li>Value type: Integer (JTable.AUTO_RESIZE_*)
 	 * <li>Default value: {@link JTable#AUTO_RESIZE_OFF}
+	 * </ul>
 	 */
 	public static final PropertyValue<Integer> AUTO_RESIZE_MODE =
 					Configuration.integerValue(FilterTable.class.getName() + ".autoResizeMode", AUTO_RESIZE_OFF);
 
 	/**
 	 * Specifies whether columns can be rearranged in tables
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
 					Configuration.booleanValue(FilterTable.class.getName() + ".allowColumnReordering", true);

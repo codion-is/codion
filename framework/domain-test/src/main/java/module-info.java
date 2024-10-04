@@ -18,8 +18,10 @@
  */
 /**
  * Domain model unit test classes.
+ * <ul>
  * <li>{@link is.codion.framework.domain.test.DomainTest}
  * <li>{@link is.codion.framework.domain.test.DefaultEntityFactory}
+ * </ul>
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.domain.test {

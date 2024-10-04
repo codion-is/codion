@@ -362,17 +362,21 @@ public class EntityTablePanel extends JPanel {
 		public static final ControlKey<CommandControl> COPY_ROWS = CommandControl.key("copyRows");
 		/**
 		 * A {@link Controls} instance containing controls for copying either cell or table data.
-		 * <li>{@link ControlKeys#COPY_ROWS ControlKeys#COPY_ROWS}</li>
-		 * <li>{@link ControlKeys#COPY_CELL ControlKeys#COPY_CELL}</li>
+		 * <ul>
+		 * <li>{@link ControlKeys#COPY_ROWS ControlKeys#COPY_ROWS}
+		 * <li>{@link ControlKeys#COPY_CELL ControlKeys#COPY_CELL}
+		 * </ul>
 		 * @see #COPY_CELL
 		 * @see #COPY_ROWS
 		 */
 		public static final ControlsKey COPY_CONTROLS = Controls.key("copyControls", Controls.layout(asList(COPY_CELL, COPY_ROWS)));
 		/**
 		 * A {@link Controls} instance containing controls for configuring columns.
-		 * <li>{@link ControlKeys#SELECT_COLUMNS ControlKeys#SELECT_COLUMNS} or {@link ControlKeys#TOGGLE_COLUMN_CONTROLS ControlKeys#TOGGLE_COLUMN_CONTROLS}</li>
-		 * <li>{@link ControlKeys#RESET_COLUMNS ControlKeys#RESET_COLUMNS}</li>
-		 * <li>{@link ControlKeys#SELECT_AUTO_RESIZE_MODE ControlKeys#SELECT_AUTO_RESIZE_MODE} or {@link ControlKeys#TOGGLE_AUTO_RESIZE_MODE_CONTROLS ControlKeys#TOGGLE_AUTO_RESIZE_MODE_CONTROLS}</li>
+		 * <ul>
+		 * <li>{@link ControlKeys#SELECT_COLUMNS ControlKeys#SELECT_COLUMNS} or {@link ControlKeys#TOGGLE_COLUMN_CONTROLS ControlKeys#TOGGLE_COLUMN_CONTROLS}
+		 * <li>{@link ControlKeys#RESET_COLUMNS ControlKeys#RESET_COLUMNS}
+		 * <li>{@link ControlKeys#SELECT_AUTO_RESIZE_MODE ControlKeys#SELECT_AUTO_RESIZE_MODE} or {@link ControlKeys#TOGGLE_AUTO_RESIZE_MODE_CONTROLS ControlKeys#TOGGLE_AUTO_RESIZE_MODE_CONTROLS}
+		 * </ul>
 		 * @see #SELECT_COLUMNS
 		 * @see #TOGGLE_COLUMN_CONTROLS
 		 * @see #RESET_COLUMNS
@@ -625,6 +629,7 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Returns a {@link Value} containing the control associated with {@code controlKey},
 	 * an empty {@link Value} if no such control is available.
+	 * @param <T> the control type
 	 * @param controlKey the control key
 	 * @return the {@link Value} containing the control associated with {@code controlKey}
 	 */
@@ -822,19 +827,19 @@ public class EntityTablePanel extends JPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link ControlKeys#TOGGLE_SUMMARY_PANEL ControlKeys#TOGGLE_SUMMARY_PANEL}</li>
-	 * 	 <li>{@link ControlKeys#TOGGLE_CONDITION_PANEL ControlKeys#TOGGLE_CONDITION_PANEL}</li>
-	 * 	 <li>{@link ControlKeys#TOGGLE_FILTER_PANEL ControlKeys#TOGGLE_FILTER_PANEL}</li>
-	 * 	 <li>Separator</li>
-	 * 	 <li>{@link ControlKeys#ADD ControlKeys#ADD} (If an EditPanel is available)</li>
-	 * 	 <li>{@link ControlKeys#EDIT ControlKeys#EDIT} (If an EditPanel is available)</li>
-	 * 	 <li>{@link ControlKeys#DELETE ControlKeys#DELETE}</li>
-	 * 	 <li>Separator</li>
-	 * 	 <li>{@link ControlKeys#EDIT_SELECTED_ATTRIBUTE ControlKeys#EDIT_SELECTED_ATTRIBUTE}</li>
-	 * 	 <li>Separator</li>
-	 * 	 <li>{@link ControlKeys#PRINT ControlKeys#PRINT}</li>
-	 * 	 <li>Separator</li>
-	 * 	 <li>{@link ControlKeys#ADDITIONAL_TOOLBAR_CONTROLS ControlKeys#ADDITIONAL_TOOLBAR_CONTROLS}</li>
+	 *   <li>{@link ControlKeys#TOGGLE_SUMMARY_PANEL ControlKeys#TOGGLE_SUMMARY_PANEL}
+	 * 	 <li>{@link ControlKeys#TOGGLE_CONDITION_PANEL ControlKeys#TOGGLE_CONDITION_PANEL}
+	 * 	 <li>{@link ControlKeys#TOGGLE_FILTER_PANEL ControlKeys#TOGGLE_FILTER_PANEL}
+	 * 	 <li>Separator
+	 * 	 <li>{@link ControlKeys#ADD ControlKeys#ADD} (If an EditPanel is available)
+	 * 	 <li>{@link ControlKeys#EDIT ControlKeys#EDIT} (If an EditPanel is available)
+	 * 	 <li>{@link ControlKeys#DELETE ControlKeys#DELETE}
+	 * 	 <li>Separator
+	 * 	 <li>{@link ControlKeys#EDIT_SELECTED_ATTRIBUTE ControlKeys#EDIT_SELECTED_ATTRIBUTE}
+	 * 	 <li>Separator
+	 * 	 <li>{@link ControlKeys#PRINT ControlKeys#PRINT}
+	 * 	 <li>Separator
+	 * 	 <li>{@link ControlKeys#ADDITIONAL_TOOLBAR_CONTROLS ControlKeys#ADDITIONAL_TOOLBAR_CONTROLS}
 	 * </ul>
 	 * @param toolBarLayout provides access to the toolbar configuration
 	 * @see Controls.Layout#clear()
@@ -860,30 +865,30 @@ public class EntityTablePanel extends JPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link ControlKeys#REFRESH ControlKeys#REFRESH}</li>
-	 *   <li>{@link ControlKeys#CLEAR ControlKeys#CLEAR}</li>
-	 *   <li>Separator</li>
-	 *   <li>{@link ControlKeys#ADD ControlKeys#ADD} (If an EditPanel is available)</li>
-	 *   <li>{@link ControlKeys#EDIT ControlKeys#EDIT} (If an EditPanel is available)</li>
-	 *   <li>{@link ControlKeys#DELETE ControlKeys#DELETE}</li>
-	 *   <li>Separator</li>
-	 *   <li>{@link ControlKeys#EDIT_SELECTED_ATTRIBUTE ControlKeys#EDIT_SELECTED_ATTRIBUTE} or {@link ControlKeys#EDIT_ATTRIBUTE_CONTROLS ControlKeys#EDIT_ATTRIBUTE_CONTROLS}</li>
-	 *   <li>Separator</li>
-	 *   <li>{@link ControlKeys#VIEW_DEPENDENCIES ControlKeys#VIEW_DEPENDENCIES}</li>
-	 *   <li>Separator</li>
-	 *   <li>{@link ControlKeys#ADDITIONAL_POPUP_MENU_CONTROLS ControlKeys#ADDITIONAL_POPUP_MENU_CONTROLS}</li>
-	 *   <li>Separator</li>
-	 *   <li>{@link ControlKeys#PRINT_CONTROLS ControlKeys#PRINT_CONTROLS}</li>
-	 *   <li>Separator</li>
-	 *   <li>{@link ControlKeys#COLUMN_CONTROLS ControlKeys#COLUMN_CONTROLS}</li>
-	 *   <li>Separator</li>
-	 *   <li>{@link ControlKeys#SELECTION_MODE ControlKeys#SELECTION_MODE}</li>
-	 *   <li>Separator</li>
-	 *   <li>{@link ControlKeys#CONDITION_CONTROLS ControlKeys#CONDITION_CONTROLS}</li>
-	 *   <li>Separator</li>
-	 *   <li>{@link ControlKeys#FILTER_CONTROLS ControlKeys#FILTER_CONTROLS}</li>
-	 *   <li>Separator</li>
-	 *   <li>{@link ControlKeys#COPY_CONTROLS ControlKeys#COPY_CONTROLS}</li>
+	 *   <li>{@link ControlKeys#REFRESH ControlKeys#REFRESH}
+	 *   <li>{@link ControlKeys#CLEAR ControlKeys#CLEAR}
+	 *   <li>Separator
+	 *   <li>{@link ControlKeys#ADD ControlKeys#ADD} (If an EditPanel is available)
+	 *   <li>{@link ControlKeys#EDIT ControlKeys#EDIT} (If an EditPanel is available)
+	 *   <li>{@link ControlKeys#DELETE ControlKeys#DELETE}
+	 *   <li>Separator
+	 *   <li>{@link ControlKeys#EDIT_SELECTED_ATTRIBUTE ControlKeys#EDIT_SELECTED_ATTRIBUTE} or {@link ControlKeys#EDIT_ATTRIBUTE_CONTROLS ControlKeys#EDIT_ATTRIBUTE_CONTROLS}
+	 *   <li>Separator
+	 *   <li>{@link ControlKeys#VIEW_DEPENDENCIES ControlKeys#VIEW_DEPENDENCIES}
+	 *   <li>Separator
+	 *   <li>{@link ControlKeys#ADDITIONAL_POPUP_MENU_CONTROLS ControlKeys#ADDITIONAL_POPUP_MENU_CONTROLS}
+	 *   <li>Separator
+	 *   <li>{@link ControlKeys#PRINT_CONTROLS ControlKeys#PRINT_CONTROLS}
+	 *   <li>Separator
+	 *   <li>{@link ControlKeys#COLUMN_CONTROLS ControlKeys#COLUMN_CONTROLS}
+	 *   <li>Separator
+	 *   <li>{@link ControlKeys#SELECTION_MODE ControlKeys#SELECTION_MODE}
+	 *   <li>Separator
+	 *   <li>{@link ControlKeys#CONDITION_CONTROLS ControlKeys#CONDITION_CONTROLS}
+	 *   <li>Separator
+	 *   <li>{@link ControlKeys#FILTER_CONTROLS ControlKeys#FILTER_CONTROLS}
+	 *   <li>Separator
+	 *   <li>{@link ControlKeys#COPY_CONTROLS ControlKeys#COPY_CONTROLS}
 	 * </ul>
 	 * @param popupMenuLayout provides access to the popup menu layout
 	 * @see Controls.Layout#clear()
@@ -1990,23 +1995,29 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Specifies whether the values of hidden columns are included in the underlying query
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue(EntityTablePanel.class.getName() + ".queryHiddenColumns", true);
 
 		/**
 		 * Specifies whether the table model sort order is used as a basis for the query order by clause.
 		 * Note that this only applies to column attributes.
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: false
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue(EntityTablePanel.class.getName() + ".orderQueryBySortOrder", false);
 
 		/**
 		 * Specifies the default initial table condition panel state
+		 * <ul>
 		 * <li>Value type: {@link ConditionState}
 		 * <li>Default value: {@link ConditionState#HIDDEN}
+		 * </ul>
 		 */
 		public static final PropertyValue<ConditionState> CONDITION_STATE =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".conditionState",
@@ -2014,8 +2025,10 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Specifies the default initial table filter panel state
+		 * <ul>
 		 * <li>Value type: {@link ConditionState}
 		 * <li>Default value: {@link ConditionState#HIDDEN}
+		 * </ul>
 		 */
 		public static final PropertyValue<ConditionState> FILTER_STATE =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".filterState",
@@ -2023,80 +2036,100 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Specifies whether table summary panel should be visible or not by default
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: false
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> SUMMARY_PANEL_VISIBLE =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".summaryPanelVisible", false);
 
 		/**
 		 * Specifies whether to include the default popup menu on entity tables
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_POPUP_MENU =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includePopupMenu", true);
 
 		/**
 		 * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeEntityMenu", true);
 
 		/**
 		 * Specifies whether to include a 'Clear' control in the popup menu.
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: false
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CLEAR_CONTROL =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeClearControl", false);
 
 		/**
 		 * Specifies whether to include a condition panel.
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CONDITION_PANEL =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeConditionPanel", true);
 
 		/**
 		 * Specifies whether to include a filter panel.
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_FILTER_PANEL =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeFilterPanel", false);
 
 		/**
 		 * Specifies whether to include a summary panel.
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_SUMMARY_PANEL =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeSummaryPanel", true);
 
 		/**
 		 * Specifies whether to include a popup menu for configuring the table model limit.
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: false
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_LIMIT_MENU =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeLimitMenu", false);
 
 		/**
 		 * Specifies whether to show an indeterminate progress bar while the model is refreshing.
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: false
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> SHOW_REFRESH_PROGRESS_BAR =
 						Configuration.booleanValue(EntityTablePanel.class.getName() + ".showRefreshProgressBar", false);
 
 		/**
 		 * Specifies whether the refresh button should always be visible or only when the condition panel is visible
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
+		 * </ul>
 		 */
 		public static final PropertyValue<RefreshButtonVisible> REFRESH_BUTTON_VISIBLE =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".refreshButtonVisible",
@@ -2104,24 +2137,30 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Specifies how column selection is presented to the user.
+		 * <ul>
 		 * <li>Value type: {@link ColumnSelection}
 		 * <li>Default value: {@link ColumnSelection#DIALOG}
+		 * </ul>
 		 */
 		public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
 
 		/**
 		 * Specifies how column selection is presented to the user.
+		 * <ul>
 		 * <li>Value type: {@link AutoResizeModeSelection}
 		 * <li>Default value: {@link AutoResizeModeSelection#DIALOG}
+		 * </ul>
 		 */
 		public static final PropertyValue<AutoResizeModeSelection> AUTO_RESIZE_MODE_SELECTION =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".autoResizeModeSelection", AutoResizeModeSelection.class, AutoResizeModeSelection.DIALOG);
 
 		/**
 		 * Specifies how the edit an attribute action is presented to the user.
+		 * <ul>
 		 * <li>Value type: {@link EditAttributeSelection}
 		 * <li>Default value: {@link EditAttributeSelection#MENU}
+		 * </ul>
 		 */
 		public static final PropertyValue<EditAttributeSelection> EDIT_ATTRIBUTE_SELECTION =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".editAttributeSelection", EditAttributeSelection.class, EditAttributeSelection.MENU);

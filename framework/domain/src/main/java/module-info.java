@@ -18,6 +18,7 @@
  */
 /**
  * Framework domain model classes, such as:
+ * <ul>
  * <li>{@link is.codion.framework.domain.Domain}
  * <li>{@link is.codion.framework.domain.entity.Entity}
  * <li>{@link is.codion.framework.domain.entity.EntityDefinition}
@@ -30,6 +31,7 @@
  * <li>{@link is.codion.framework.domain.entity.condition.Condition}
  * <li>{@link is.codion.framework.domain.entity.condition.ColumnCondition}
  * <li>{@link is.codion.framework.domain.entity.condition.ForeignKeyCondition}
+ * </ul>
  * @uses is.codion.framework.domain.Domain
  */
 module is.codion.framework.domain {

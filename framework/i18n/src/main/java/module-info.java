@@ -18,7 +18,9 @@
  */
 /**
  * Shared framework i18n messages.
+ * <ul>
  * <li>{@link is.codion.framework.i18n.FrameworkMessages}
+ * </ul>
  */
 module is.codion.framework.i18n {
 	requires transitive is.codion.common.core;

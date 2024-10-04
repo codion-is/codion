@@ -41,8 +41,10 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 
 	/**
 	 * Specifies the tab placement
+	 * <ul>
 	 * <li>Value type: Integer (SwingConstants.TOP, SwingConstants.BOTTOM, SwingConstants.LEFT, SwingConstants.RIGHT)
 	 * <li>Default value: {@link SwingConstants#TOP}
+	 * </ul>
 	 */
 	public static final PropertyValue<Integer> TAB_PLACEMENT =
 					Configuration.integerValue(TabbedApplicationLayout.class.getName() + ".tabPlacement", SwingConstants.TOP);

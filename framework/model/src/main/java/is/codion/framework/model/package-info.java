@@ -18,6 +18,7 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.framework.model.EntityApplicationModel#USERNAME_PREFIX}
  * <li>{@link is.codion.framework.model.EntityApplicationModel#AUTHENTICATION_REQUIRED}
  * <li>{@link is.codion.framework.model.EntityApplicationModel#SAVE_DEFAULT_USERNAME}
@@ -31,5 +32,6 @@
  * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_CONDITION_ON_EMPTY_SELECTION}
  * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_VALUE_ON_EMPTY_SELECTION}
  * <li>{@link is.codion.framework.model.EntitySearchModel#DEFAULT_LIMIT}
+ * </ul>
  */
 package is.codion.framework.model;

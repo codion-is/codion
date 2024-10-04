@@ -454,6 +454,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Returns a {@link Value} containing the control associated with {@code controlKey},
 	 * an empty {@link Value} if no such control is available.
+	 * @param <T> the control type
 	 * @param controlKey the control key
 	 * @return the {@link Value} containing the control associated with {@code controlKey}
 	 */
@@ -684,8 +685,8 @@ public class EntityPanel extends JPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link ControlKeys#EDIT_CONTROLS ControlKeys#EDIT_CONTROLS}</li>
-	 *   <li>{@link ControlKeys#REFRESH ControlKeys#REFRESH}</li>
+	 *   <li>{@link ControlKeys#EDIT_CONTROLS ControlKeys#EDIT_CONTROLS}
+	 *   <li>{@link ControlKeys#REFRESH ControlKeys#REFRESH}
 	 * </ul>
 	 * @param controlsLayout provides access to the controls layout configuration
 	 * @see Controls.Layout#clear()
@@ -1118,48 +1119,60 @@ public class EntityPanel extends JPanel {
 
 		/**
 		 * Indicates whether keyboard navigation will be enabled
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION =
 						Configuration.booleanValue(EntityPanel.class.getName() + ".useKeyboardNavigation", true);
 
 		/**
 		 * Indicates whether entity edit panel dialogs should be closed on escape
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE =
 						Configuration.booleanValue(EntityPanel.class.getName() + ".disposeEditDialogOnEscape", true);
 
 		/**
 		 * Specifies whether a control for toggling the edit panel is available to the user
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_TOGGLE_EDIT_PANEL_CONTROL =
 						Configuration.booleanValue(EntityPanel.class.getName() + ".includeToggleEditPanelControl", true);
 
 		/**
 		 * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: false
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> TOOLBAR_CONTROLS =
 						Configuration.booleanValue(EntityPanel.class.getName() + ".toolbarControls", false);
 
 		/**
 		 * Specifies how detail and edit panels should be displayed.
+		 * <ul>
 		 * <li>Value type: {@link WindowType}
 		 * <li>Default value: {@link WindowType#DIALOG}
+		 * </ul>
 		 */
 		public static final PropertyValue<WindowType> WINDOW_TYPE =
 						Configuration.enumValue(EntityPanel.class.getName() + ".windowType", WindowType.class, DIALOG);
 
 		/**
 		 * Specifies where the control panel should be placed in a BorderLayout
+		 * <ul>
 		 * <li>Value type: String
 		 * <li>Default value: {@link BorderLayout#EAST}
+		 * </ul>
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_PANEL_CONSTRAINTS =
@@ -1167,8 +1180,10 @@ public class EntityPanel extends JPanel {
 
 		/**
 		 * Specifies where the control toolbar should be placed in a BorderLayout
+		 * <ul>
 		 * <li>Value type: String
 		 * <li>Default value: BorderLayout.WEST
+		 * </ul>
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_TOOLBAR_CONSTRAINTS =
@@ -1176,16 +1191,20 @@ public class EntityPanel extends JPanel {
 
 		/**
 		 * Specifies where the edit panel should be placed in a BorderLayout
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: BorderLayout.NORTH
+		 * </ul>
 		 */
 		public static final PropertyValue<String> EDIT_PANEL_CONSTRAINTS =
 						Configuration.stringValue(EntityPanel.class.getName() + ".editPanelConstraints", BorderLayout.NORTH);
 
 		/**
 		 * Specifies whether entity panels should include controls by default
+		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
+		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
 						Configuration.booleanValue(EntityPanel.class.getName() + ".includeControls", true);

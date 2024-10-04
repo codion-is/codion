@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.swing.common.model.component.combobox.FilterComboBoxModel#NULL_CAPTION}
+ * </ul>
  */
 package is.codion.swing.common.model.component.combobox;

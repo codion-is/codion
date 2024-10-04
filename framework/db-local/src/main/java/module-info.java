@@ -18,8 +18,10 @@
  */
 /**
  * Local JDBC based database connection classes.
+ * <ul>
  * <li>{@link is.codion.framework.db.local.LocalEntityConnection}
  * <li>{@link is.codion.framework.db.local.LocalEntityConnectionProvider}
+ * </ul>
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.db.local {

@@ -37,8 +37,10 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
 
 	/**
 	 * Specifies the default horizontal alignment used in labels
+	 * <ul>
 	 * <li>Value type: Integer (SwingConstants.LEFT, SwingConstants.RIGHT, SwingConstants.CENTER)
 	 * <li>Default value: {@link SwingConstants#LEADING}
+	 * </ul>
 	 */
 	PropertyValue<Integer> HORIZONTAL_ALIGNMENT =
 					Configuration.integerValue(LabelBuilder.class.getName() + ".horizontalAlignment", SwingConstants.LEADING);

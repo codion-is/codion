@@ -18,11 +18,13 @@
  */
 /**
  * Framework Swing model classes, such as:
+ * <ul>
  * <li>{@link is.codion.swing.framework.model.SwingEntityModel}
  * <li>{@link is.codion.swing.framework.model.SwingEntityEditModel}
  * <li>{@link is.codion.swing.framework.model.SwingEntityTableModel}
  * <li>{@link is.codion.swing.framework.model.SwingEntityApplicationModel}
  * <li>{@link is.codion.swing.framework.model.component.EntityComboBoxModel}
+ * </ul>
  */
 module is.codion.swing.framework.model {
 	requires org.slf4j;

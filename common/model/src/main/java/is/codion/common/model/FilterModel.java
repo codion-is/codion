@@ -44,8 +44,10 @@ public interface FilterModel<T> {
 
 	/**
 	 * Specifies whether data models should refresh data asynchronously or on the UI thread
+	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
+	 * </ul>
 	 * @see Refresher#async()
 	 */
 	PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);

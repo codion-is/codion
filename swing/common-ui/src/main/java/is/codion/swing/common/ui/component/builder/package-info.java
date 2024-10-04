@@ -18,6 +18,8 @@
  */
 /**
  * Package configuration values:
+ * <ul>
  * <li>{@link is.codion.swing.common.ui.component.builder.ComponentBuilder#TRANSFER_FOCUS_ON_ENTER}
+ * </ul>
  */
 package is.codion.swing.common.ui.component.builder;
