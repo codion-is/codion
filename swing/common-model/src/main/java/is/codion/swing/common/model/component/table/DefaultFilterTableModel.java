@@ -199,7 +199,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private Map<C, ConditionModel<?>> createColumnFilterModels(ColumnConditionFactory<C> filterModelFactory) {
 		Map<C, ConditionModel<?>> columnFilterModels = new HashMap<>();
 		for (C identifier : columns.identifiers()) {
-			filterModelFactory.createColumnCondition(identifier)
+			filterModelFactory.create(identifier)
 							.ifPresent(condition -> columnFilterModels.put(identifier, condition));
 		}
 
@@ -263,7 +263,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final class DefaultColumnFilterFactory implements ColumnConditionFactory<C> {
 
 		@Override
-		public Optional<ConditionModel<?>> createColumnCondition(C identifier) {
+		public Optional<ConditionModel<?>> create(C identifier) {
 			Class<?> columnClass = getColumnClass(identifier);
 			if (Comparable.class.isAssignableFrom(columnClass)) {
 				return Optional.of(ConditionModel.builder(columnClass).build());

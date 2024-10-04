@@ -391,7 +391,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 
 		@Override
-		public Optional<ConditionModel<?>> createColumnCondition(Attribute<?> attribute) {
+		public Optional<ConditionModel<?>> create(Attribute<?> attribute) {
 			if (!include(attribute)) {
 				return Optional.empty();
 			}

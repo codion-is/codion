@@ -91,6 +91,6 @@ public interface TableConditions<C> {
 		 * @param identifier the column identifier for which to create a {@link ConditionModel}
 		 * @return a {@link ConditionModel} for the given identifier or an empty optional if none is provided
 		 */
-		Optional<ConditionModel<?>> createColumnCondition(C identifier);
+		Optional<ConditionModel<?>> create(C identifier);
 	}
 }

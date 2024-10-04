@@ -212,10 +212,10 @@ final class DefaultEntityConditions implements EntityConditions {
 		Map<Attribute<?>, ConditionModel<?>> models = new HashMap<>();
 		EntityDefinition definition = connectionProvider.entities().definition(entityType);
 		definition.columns().definitions().forEach(columnDefinition ->
-						columnConditionFactory.createColumnCondition(columnDefinition.attribute())
+						columnConditionFactory.create(columnDefinition.attribute())
 										.ifPresent(conditionModel -> models.put(columnDefinition.attribute(), conditionModel)));
 		definition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
-						columnConditionFactory.createColumnCondition(foreignKeyDefinition.attribute())
+						columnConditionFactory.create(foreignKeyDefinition.attribute())
 										.ifPresent(conditionModel -> models.put(foreignKeyDefinition.attribute(), conditionModel)));
 
 		return models;

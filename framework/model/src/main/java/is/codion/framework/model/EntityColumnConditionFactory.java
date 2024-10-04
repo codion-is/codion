@@ -48,7 +48,7 @@ public class EntityColumnConditionFactory implements ColumnConditionFactory<Attr
 	}
 
 	@Override
-	public Optional<ConditionModel<?>> createColumnCondition(Attribute<?> attribute) {
+	public Optional<ConditionModel<?>> create(Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			return Optional.of(ForeignKeyConditionModel.builder(foreignKey)

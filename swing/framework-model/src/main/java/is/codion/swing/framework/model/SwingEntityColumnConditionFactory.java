@@ -45,7 +45,7 @@ public class SwingEntityColumnConditionFactory extends EntityColumnConditionFact
 	}
 
 	@Override
-	public Optional<ConditionModel<?>> createColumnCondition(Attribute<?> attribute) {
+	public Optional<ConditionModel<?>> create(Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			if (definition(foreignKey.referencedType()).smallDataset()) {
@@ -56,7 +56,7 @@ public class SwingEntityColumnConditionFactory extends EntityColumnConditionFact
 			}
 		}
 
-		return super.createColumnCondition(attribute);
+		return super.create(attribute);
 	}
 
 	/**
