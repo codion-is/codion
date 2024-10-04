@@ -43,12 +43,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 import static is.codion.framework.domain.entity.condition.Condition.combination;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default {@link EntityConditionModel} implementation
@@ -67,8 +68,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	private final Value<Supplier<Condition>> additionalHaving = Value.builder()
 					.nonNull(NULL_CONDITION_SUPPLIER)
 					.build();
-	private final NoneAggregatePredicate noneAggregatePredicate = new NoneAggregatePredicate();
-	private final AggregatePredicate aggregatePredicate = new AggregatePredicate();
+	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
+	private final AggregateColumn aggregateColumn = new AggregateColumn();
 
 	DefaultEntityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
 															ConditionModel.Factory<Attribute<?>> conditionModelFactory) {
@@ -122,18 +123,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	@Override
 	public Condition where(Conjunction conjunction) {
-		requireNonNull(conjunction);
-		Collection<Condition> conditions = conditions(noneAggregatePredicate, additionalWhere.get().get());
-
-		return conditions.isEmpty() ? all(entityDefinition.entityType()) : combination(conjunction, conditions);
+		return createCondition(requireNonNull(conjunction), noneAggregateColumn, additionalWhere.get().get());
 	}
 
 	@Override
 	public Condition having(Conjunction conjunction) {
-		requireNonNull(conjunction);
-		Collection<Condition> conditions = conditions(aggregatePredicate, additionalHaving.get().get());
-
-		return conditions.isEmpty() ? all(entityDefinition.entityType()) : combination(conjunction, conditions);
+		return createCondition(requireNonNull(conjunction), aggregateColumn, additionalHaving.get().get());
 	}
 
 	@Override
@@ -181,13 +176,25 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		tableConditionModel.clear();
 	}
 
-	private Collection<Condition> conditions(Predicate<ConditionModel<?, ?>> conditionModelTypePredicate, Condition additionalCondition) {
+	private Condition createCondition(Conjunction conjunction, Predicate<ConditionModel<?, ?>> columnType, Condition additionalCondition) {
+		List<Condition> conditions = conditions(columnType, additionalCondition);
+		switch (conditions.size()) {
+			case 0:
+				return all(entityDefinition.entityType());
+			case 1:
+				return conditions.get(0);
+			default:
+				return combination(conjunction, conditions);
+		}
+	}
+
+	private List<Condition> conditions(Predicate<ConditionModel<?, ?>> columnType, Condition additionalCondition) {
 		List<Condition> conditions = tableConditionModel.identifiers().stream()
 						.map(tableConditionModel::get)
 						.filter(model -> model.enabled().get())
-						.filter(conditionModelTypePredicate)
+						.filter(columnType)
 						.map(DefaultEntityConditionModel::condition)
-						.collect(Collectors.toCollection(ArrayList::new));
+						.collect(toCollection(ArrayList::new));
 		if (additionalCondition != null) {
 			conditions.add(additionalCondition);
 		}
@@ -216,7 +223,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 		return models.stream()
 						.map(model -> (ConditionModel<Attribute<?>, ?>) model)
-						.collect(Collectors.toList());
+						.collect(toList());
 	}
 
 	private static Condition condition(ConditionModel<?, ?> conditionModel) {
@@ -370,7 +377,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return value != null && (value.contains("%") || value.contains("_"));
 	}
 
-	private final class AggregatePredicate implements Predicate<ConditionModel<?, ?>> {
+	private final class AggregateColumn implements Predicate<ConditionModel<?, ?>> {
 
 		@Override
 		public boolean test(ConditionModel<?, ?> conditionModel) {
@@ -379,7 +386,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		}
 	}
 
-	private final class NoneAggregatePredicate implements Predicate<ConditionModel<?, ?>> {
+	private final class NoneAggregateColumn implements Predicate<ConditionModel<?, ?>> {
 
 		@Override
 		public boolean test(ConditionModel<?, ?> conditionModel) {

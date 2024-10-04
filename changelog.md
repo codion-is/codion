@@ -19,6 +19,8 @@ Codion Change Log
 - AbstractSpinnerBuilder hack added to preserve the horizontal editor alignment through UI changes.
 - FileInputPanel.ByteArrayInputPanelValue.setComponentValue() no longer throws UnsupportedOperationException.
 - FileInputPanel improved, related refactoring.
+### is.codion.framework.model
+- DefaultEntityConditionModel, no longer wraps a single condition in a condition combination.
 ### is.codion.swing.framework.ui
 - EntityTableCellEditorFactory.editModel() added.
 - EntityTableCellRenderer removed.
