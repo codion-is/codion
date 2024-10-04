@@ -647,6 +647,26 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(String.class, tableModel.getColumnClass(0));
 	}
 
+	@Test
+	void nullItems() {
+		assertThrows(NullPointerException.class, () -> tableModel.items().addItem(null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().removeItem(null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().addItems(null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().addItems(singleton(null)));
+		assertThrows(NullPointerException.class, () -> tableModel.items().removeItems(singleton(null)));
+		assertThrows(NullPointerException.class, () -> tableModel.items().contains(null));
+
+		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemAt(0, null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemsAt(0, null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemsAt(0, singleton(null)));
+		assertThrows(NullPointerException.class, () -> tableModel.items().visible().contains(null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().visible().indexOf(null));
+		tableModel.items().addItem(new TestRow("test"));
+		assertThrows(NullPointerException.class, () -> tableModel.items().visible().setItemAt(0, null));
+
+		assertThrows(NullPointerException.class, () -> tableModel.items().filtered().contains(null));
+	}
+
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
 																							 FilterTableModel<TestRow, Integer> model) {
 		for (TestRow row : rows) {

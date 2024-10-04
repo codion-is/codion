@@ -294,24 +294,25 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public void set(Collection<R> items) {
-			refresher.processResult(requireNonNull(items));
+			refresher.processResult(rejectNulls(items));
 		}
 
 		@Override
 		public boolean addItems(Collection<R> items) {
-			return addItemsAtInternal(visible.items.size(), items);
+			return addItemsAtInternal(visible.items.size(), rejectNulls(items));
 		}
 
 		@Override
 		public boolean removeItem(R item) {
-			return removeItemInternal(item, true);
+			return removeItemInternal(requireNonNull(item), true);
 		}
 
 		@Override
 		public boolean removeItems(Collection<R> items) {
+			rejectNulls(items);
 			selection.setValueIsAdjusting(true);
 			boolean visibleItemRemoved = false;
-			for (R item : requireNonNull(items)) {
+			for (R item : items) {
 				visibleItemRemoved = removeItemInternal(item, false) || visibleItemRemoved;
 			}
 			selection.setValueIsAdjusting(false);
@@ -324,7 +325,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public boolean addItem(R item) {
-			return addItemInternal(item);
+			return addItemInternal(requireNonNull(item));
 		}
 
 		@Override
@@ -344,7 +345,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public boolean contains(R item) {
-			return visible.contains(item) || filtered.contains(item);
+			return visible.contains(requireNonNull(item)) || filtered.contains(item);
 		}
 
 		@Override
@@ -449,10 +450,17 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private void validate(R item) {
-			requireNonNull(item);
 			if (!validator.test(item)) {
 				throw new IllegalArgumentException("Invalid item: " + item);
 			}
+		}
+
+		private static <T> Collection<T> rejectNulls(Collection<T> items) {
+			for (T item : requireNonNull(items)) {
+				requireNonNull(item);
+			}
+
+			return items;
 		}
 
 		private final class DefaultVisibleItems implements VisibleItems<R> {
@@ -493,12 +501,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			@Override
 			public boolean contains(R item) {
-				return items.contains(item);
+				return items.contains(requireNonNull(item));
 			}
 
 			@Override
 			public int indexOf(R item) {
-				return items.indexOf(item);
+				return items.indexOf(requireNonNull(item));
 			}
 
 			@Override
@@ -508,17 +516,17 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			@Override
 			public boolean addItemsAt(int index, Collection<R> items) {
-				return addItemsAtInternal(index, items);
+				return addItemsAtInternal(index, rejectNulls(items));
 			}
 
 			@Override
 			public boolean addItemAt(int index, R item) {
-				return addItemAtInternal(index, item);
+				return addItemAtInternal(index, requireNonNull(item));
 			}
 
 			@Override
 			public boolean setItemAt(int index, R item) {
-				validate(item);
+				validate(requireNonNull(item));
 				if (visiblePredicate.test(item)) {
 					items.set(index, item);
 					fireTableRowsUpdated(index, index);
@@ -591,7 +599,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			@Override
 			public boolean contains(R item) {
-				return items.contains(item);
+				return items.contains(requireNonNull(item));
 			}
 
 			@Override

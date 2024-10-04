@@ -37,7 +37,8 @@ import static is.codion.swing.common.model.component.table.DefaultFilterTableMod
 import static is.codion.swing.common.model.component.table.DefaultFilterTableModel.STRING_COMPARATOR;
 
 /**
- * Specifies a table model supporting selection as well as filtering
+ * Specifies a table model supporting selection as well as filtering.
+ * A {@link FilterTableModel} can not contain null items.
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  * @see #builder(Columns)
