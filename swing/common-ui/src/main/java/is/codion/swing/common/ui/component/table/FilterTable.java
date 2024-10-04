@@ -74,6 +74,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -140,6 +142,16 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
 					Configuration.booleanValue(FilterTable.class.getName() + ".allowColumnReordering", true);
+
+	/**
+	 * Specifies whether the table resizes the row being edited to fit the editor component. Only applicable to {@link FilterTableCellEditor}.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> RESIZE_ROW_TO_FIT_EDITOR =
+					Configuration.booleanValue(FilterTable.class.getName() + ".resizeRowToFitEditor", true);
 
 	/**
 	 * The controls.
@@ -213,6 +225,7 @@ public final class FilterTable<R, C> extends JTable {
 	private static final String RESET_COLUMNS_DESCRIPTION = "reset_columns_description";
 	private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
 	private static final String AUTO_RESIZE = "auto_resize";
+	private static final String TABLE_CELL_EDITOR =	"tableCellEditor";
 	private static final List<Item<Integer>> AUTO_RESIZE_MODES = asList(
 					item(AUTO_RESIZE_OFF, MESSAGES.getString("resize_off")),
 					item(AUTO_RESIZE_NEXT_COLUMN, MESSAGES.getString("resize_next_column")),
@@ -271,6 +284,9 @@ public final class FilterTable<R, C> extends JTable {
 		configureColumns(builder.cellRendererFactory, builder.cellEditorFactory);
 		configureTableHeader(builder.columnReorderingAllowed, builder.columnResizingAllowed);
 		bindEvents(builder.columnReorderingAllowed, builder.columnResizingAllowed);
+		if (builder.resizeRowToFitEditor) {
+			addPropertyChangeListener(TABLE_CELL_EDITOR, new ResizeRowToFitEditor());
+		}
 	}
 
 	@Override
@@ -1100,6 +1116,13 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> autoResizeMode(int autoResizeMode);
 
 		/**
+		 * Only applicable to {@link FilterTableCellEditor}
+		 * @param resizeRowToFitEditor true if the row should be resized to fit the editor
+		 * @return this builder instance
+		 */
+		Builder<R, C> resizeRowToFitEditor(boolean resizeRowToFitEditor);
+
+		/**
 		 * @param conditionState the initial filter condition panel state
 		 * @return this builder instance
 		 */
@@ -1170,6 +1193,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean columnReorderingAllowed = ALLOW_COLUMN_REORDERING.get();
 		private boolean columnResizingAllowed = true;
 		private int autoResizeMode = AUTO_RESIZE_MODE.get();
+		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.get();
 		private ConditionState conditionState = ConditionState.HIDDEN;
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
@@ -1260,6 +1284,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> autoResizeMode(int autoResizeMode) {
 			this.autoResizeMode = autoResizeMode;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> resizeRowToFitEditor(boolean resizeRowToFitEditor) {
+			this.resizeRowToFitEditor = resizeRowToFitEditor;
 			return this;
 		}
 
@@ -1420,6 +1450,25 @@ public final class FilterTable<R, C> extends JTable {
 			return columns.stream()
 							.map(column -> tableModel.getStringAt(row, column.identifier()))
 							.collect(toList());
+		}
+	}
+
+	private class ResizeRowToFitEditor implements PropertyChangeListener {
+
+		private int editedRow = -1;
+
+		@Override
+		public void propertyChange(PropertyChangeEvent event) {
+			TableCellEditor editor = (TableCellEditor) event.getNewValue();
+			if (editor instanceof DefaultFilterTableCellEditor<?>) {
+				DefaultFilterTableCellEditor<?> filterTableCellEditor = (DefaultFilterTableCellEditor<?>) editor;
+				editedRow = filterTableCellEditor.editedRow;
+				setRowHeight(editedRow, filterTableCellEditor.componentValue().component().getPreferredSize().height);
+			}
+			else if (event.getNewValue() == null && editedRow != -1) {
+				setRowHeight(editedRow, getRowHeight());
+				editedRow = -1;
+			}
 		}
 	}
 

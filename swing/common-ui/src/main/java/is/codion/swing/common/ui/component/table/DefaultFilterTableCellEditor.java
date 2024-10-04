@@ -42,6 +42,8 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 	private final Supplier<ComponentValue<T, ? extends JComponent>> inputComponent;
 
 	private ComponentValue<T, ? extends JComponent> componentValue;
+	
+	int editedRow = -1;
 
 	DefaultFilterTableCellEditor(Supplier<ComponentValue<T, ? extends JComponent>> inputComponent) {
 		this.inputComponent = requireNonNull(inputComponent);
@@ -58,6 +60,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 
 	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+		this.editedRow = row;
 		componentValue().set((T) value);
 
 		return componentValue().component();
