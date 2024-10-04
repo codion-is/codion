@@ -20,9 +20,9 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
+import is.codion.common.model.condition.ColumnConditions;
+import is.codion.common.model.condition.ColumnConditions.ColumnConditionFactory;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditions;
-import is.codion.common.model.condition.TableConditions.ColumnConditionFactory;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
@@ -47,7 +47,7 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static is.codion.common.model.condition.TableConditions.tableConditions;
+import static is.codion.common.model.condition.ColumnConditions.columnConditions;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -68,7 +68,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final Columns<R, C> columns;
 	private final DefaultItems modelItems;
 	private final TableSelection<R> selection;
-	private final TableConditions<C> filters;
+	private final ColumnConditions<C> filters;
 	private final VisiblePredicate visiblePredicate;
 	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
@@ -77,7 +77,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.columns = requireNonNull(builder.columns);
 		this.modelItems = new DefaultItems(builder.validator);
 		this.selection = new DefaultFilterTableSelection<>(modelItems);
-		this.filters = tableConditions(createColumnFilterModels(builder.filterModelFactory == null ?
+		this.filters = columnConditions(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultColumnFilterFactory() : builder.filterModelFactory));
 		this.visiblePredicate = new VisiblePredicate(filters.get());
 		this.refresher = new DefaultRefresher(builder.supplier == null ? modelItems::get : (Supplier<Collection<R>>) builder.supplier);
@@ -123,7 +123,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public TableConditions<C> filters() {
+	public ColumnConditions<C> filters() {
 		return filters;
 	}
 

@@ -21,8 +21,8 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.Text;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
+import is.codion.common.model.condition.ColumnConditions;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditions;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -45,15 +45,15 @@ import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A base class for a UI component based on a {@link TableConditions}.
+ * A base class for a UI component based on a {@link ColumnConditions}.
  * @param <C> the type used to identify the table columns
  */
-public abstract class TableConditionsPanel<C> extends JPanel {
+public abstract class ColumnConditionsPanel<C> extends JPanel {
 
 	private static final MessageBundle MESSAGES =
-					messageBundle(FilterColumnConditionPanel.class, getBundle(TableConditionsPanel.class.getName()));
+					messageBundle(FilterColumnConditionPanel.class, getBundle(ColumnConditionsPanel.class.getName()));
 
-	private final TableConditions<C> tableConditions;
+	private final ColumnConditions<C> columnConditions;
 	private final Value<ConditionState> conditionState = Value.builder()
 					.nonNull(HIDDEN)
 					.consumer(this::onStateChanged)
@@ -63,19 +63,19 @@ public abstract class TableConditionsPanel<C> extends JPanel {
 	private final State advancedState = State.state();
 
 	/**
-	 * Instantiates a new {@link TableConditionsPanel}
-	 * @param tableConditions the {@link TableConditions}
+	 * Instantiates a new {@link ColumnConditionsPanel}
+	 * @param columnConditions the {@link ColumnConditions}
 	 */
-	protected TableConditionsPanel(TableConditions<C> tableConditions) {
-		this.tableConditions = requireNonNull(tableConditions);
+	protected ColumnConditionsPanel(ColumnConditions<C> columnConditions) {
+		this.columnConditions = requireNonNull(columnConditions);
 		configureStates();
 	}
 
 	/**
-	 * @return the underlying {@link TableConditions}
+	 * @return the underlying {@link ColumnConditions}
 	 */
-	public final TableConditions<C> conditions() {
-		return tableConditions;
+	public final ColumnConditions<C> conditions() {
+		return columnConditions;
 	}
 
 	/**
@@ -181,7 +181,7 @@ public abstract class TableConditionsPanel<C> extends JPanel {
 	}
 
 	private void clearConditions() {
-		tableConditions.get().values()
+		columnConditions.get().values()
 						.forEach(ConditionModel::clear);
 	}
 
@@ -195,12 +195,12 @@ public abstract class TableConditionsPanel<C> extends JPanel {
 		 * @param conditionPanels the condition panels
 		 * @param columnModel the column model
 		 * @param onPanelInitialized called when the panel has been initialized
-		 * @return a new {@link TableConditionsPanel}
+		 * @return a new {@link ColumnConditionsPanel}
 		 */
-		TableConditionsPanel<C> create(TableConditions<C> conditionModel,
-																	 Collection<ColumnConditionPanel<C, ?>> conditionPanels,
-																	 FilterTableColumnModel<C> columnModel,
-																	 Consumer<TableConditionsPanel<C>> onPanelInitialized);
+		ColumnConditionsPanel<C> create(ColumnConditions<C> conditionModel,
+																		Collection<ColumnConditionPanel<C, ?>> conditionPanels,
+																		FilterTableColumnModel<C> columnModel,
+																		Consumer<ColumnConditionsPanel<C>> onPanelInitialized);
 	}
 
 	private final class StateConsumer implements Consumer<Boolean> {

@@ -240,7 +240,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final FilterTableSortModel<R, C> sortModel;
 	private final TableSummaryModel<C> summaryModel;
 
-	private final TableConditionsPanel.Factory<C> filterPanelFactory;
+	private final ColumnConditionsPanel.Factory<C> filterPanelFactory;
 	private final FieldFactory<C> filterFieldFactory;
 	private final Event<MouseEvent> doubleClick = Event.event();
 	private final Value<Action> doubleClickAction;
@@ -251,7 +251,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private final ControlMap controlMap;
 
-	private TableConditionsPanel<C> filterPanel;
+	private ColumnConditionsPanel<C> filterPanel;
 	private JTextField searchField;
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
@@ -360,9 +360,9 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * @return the filter conditions panel
+	 * @return the filter column conditions panel
 	 */
-	public TableConditionsPanel<C> filterPanel() {
+	public ColumnConditionsPanel<C> filterPanel() {
 		if (filterPanel == null) {
 			filterPanel = filterPanelFactory.create(tableModel.filters(), createColumnFilterPanels(),
 							columnModel(), this::configureFilterConditionsPanel);
@@ -920,7 +920,7 @@ public final class FilterTable<R, C> extends JTable {
 		return conditionPanels;
 	}
 
-	private void configureFilterConditionsPanel(TableConditionsPanel<C> filterConditionsPanel) {
+	private void configureFilterConditionsPanel(ColumnConditionsPanel<C> filterConditionsPanel) {
 		filterConditionsPanel.conditionPanels().forEach(this::configureColumnFilterPanel);
 	}
 
@@ -1037,7 +1037,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * @param filterPanelFactory the table filter conditions panel factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> filterPanelFactory(TableConditionsPanel.Factory<C> filterPanelFactory);
+		Builder<R, C> filterPanelFactory(ColumnConditionsPanel.Factory<C> filterPanelFactory);
 
 		/**
 		 * @param filterFieldFactory the column filter field factory
@@ -1180,7 +1180,7 @@ public final class FilterTable<R, C> extends JTable {
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
-		private TableConditionsPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
+		private ColumnConditionsPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private FieldFactory<C> filterFieldFactory = new DefaultFilterFieldFactory<>();
 		private FilterTableCellRendererFactory<C> cellRendererFactory;
 		private FilterTableCellEditorFactory<C> cellEditorFactory;
@@ -1210,7 +1210,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> filterPanelFactory(TableConditionsPanel.Factory<C> filterPanelFactory) {
+		public Builder<R, C> filterPanelFactory(ColumnConditionsPanel.Factory<C> filterPanelFactory) {
 			this.filterPanelFactory = requireNonNull(filterPanelFactory);
 			return this;
 		}

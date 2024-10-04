@@ -19,8 +19,8 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.condition.TableConditions;
-import is.codion.common.model.condition.TableConditions.ColumnConditionFactory;
+import is.codion.common.model.condition.ColumnConditions;
+import is.codion.common.model.condition.ColumnConditions.ColumnConditionFactory;
 import is.codion.common.model.selection.MultiItemSelection;
 import is.codion.common.value.Value;
 
@@ -113,9 +113,9 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	TableSelection<R> selection();
 
 	/**
-	 * @return the filter conditions used by this table model
+	 * @return the filter column conditions used by this table model
 	 */
-	TableConditions<C> filters();
+	ColumnConditions<C> filters();
 
 	/**
 	 * {@inheritDoc}

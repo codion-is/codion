@@ -19,8 +19,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
+import is.codion.common.model.condition.ColumnConditions;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditions;
 import is.codion.common.observer.Mutable;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * Factory for {@link EntityConditions} instances via
  * {@link EntityConditions#entityConditions(EntityType, EntityConnectionProvider)}
  */
-public interface EntityConditions extends TableConditions<Attribute<?>> {
+public interface EntityConditions extends ColumnConditions<Attribute<?>> {
 
 	/**
 	 * @return the type of the entity this table condition model is based on

@@ -17,6 +17,7 @@ Codion Change Log
 - TableConditionModel renamed TableConditions.
 - ConditionModelFactory renamed ColumnConditionFactory.
 - ColumnConditionFactory.createColumnCondition() renamed create().
+- TableConditions renamed ColumnConditions.
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.setInitialValue() removed, no longer necessary now that the component value is always created, which is now used to set the initial value.
 - SpinnerNumberValue now non-null and validates the value according to the model minimum and maximum, if specified.

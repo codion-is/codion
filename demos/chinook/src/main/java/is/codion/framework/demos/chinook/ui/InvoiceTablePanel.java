@@ -18,12 +18,12 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.common.model.condition.TableConditions;
+import is.codion.common.model.condition.ColumnConditions;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.component.table.ColumnConditionsPanel;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
-import is.codion.swing.common.ui.component.table.TableConditionsPanel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -37,11 +37,11 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 	public InvoiceTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
 						.editable(attributes -> attributes.remove(Invoice.TOTAL))
-						.tableConditionsPanelFactory(new InvoiceConditionPanelFactory(tableModel)));
+						.columnConditionsPanelFactory(new InvoiceConditionPanelFactory(tableModel)));
 		conditionPanel().state().set(SIMPLE);
 	}
 
-	private static final class InvoiceConditionPanelFactory implements TableConditionsPanel.Factory<Attribute<?>> {
+	private static final class InvoiceConditionPanelFactory implements ColumnConditionsPanel.Factory<Attribute<?>> {
 
 		private final SwingEntityTableModel tableModel;
 
@@ -50,10 +50,10 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public TableConditionsPanel<Attribute<?>> create(TableConditions<Attribute<?>> conditionModel,
-																										 Collection<ColumnConditionPanel<Attribute<?>, ?>> columnConditionPanels,
-																										 FilterTableColumnModel<Attribute<?>> columnModel,
-																										 Consumer<TableConditionsPanel<Attribute<?>>> onPanelInitialized) {
+		public ColumnConditionsPanel<Attribute<?>> create(ColumnConditions<Attribute<?>> conditionModel,
+																											Collection<ColumnConditionPanel<Attribute<?>, ?>> columnConditionPanels,
+																											FilterTableColumnModel<Attribute<?>> columnModel,
+																											Consumer<ColumnConditionsPanel<Attribute<?>>> onPanelInitialized) {
 			return new InvoiceConditionPanel(tableModel.entityDefinition(), conditionModel,
 							columnModel, onPanelInitialized, tableModel::refresh);
 		}
