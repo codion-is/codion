@@ -79,7 +79,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.selection = new DefaultFilterTableSelection<>(modelItems);
 		this.filters = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
-		this.visiblePredicate = new VisiblePredicate(filters.conditions());
+		this.visiblePredicate = new VisiblePredicate(filters.get());
 		this.refresher = new DefaultRefresher(builder.supplier == null ? modelItems::get : (Supplier<Collection<R>>) builder.supplier);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);

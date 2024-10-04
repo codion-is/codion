@@ -57,7 +57,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public Map<C, ConditionModel<?>> conditions() {
+	public Map<C, ConditionModel<?>> get() {
 		return conditions;
 	}
 

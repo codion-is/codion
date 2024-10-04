@@ -885,7 +885,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
 		Collection<ColumnConditionPanel<C, ?>> conditionPanels = new ArrayList<>();
-		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.filters().conditions().entrySet()) {
+		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.filters().get().entrySet()) {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
 			if (columnModel().containsColumn(identifier) && filterFieldFactory.supportsType(condition.valueClass())) {

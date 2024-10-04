@@ -139,8 +139,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	@Override
-	public Map<Attribute<?>, ConditionModel<?>> conditions() {
-		return tableConditionModel.conditions();
+	public Map<Attribute<?>, ConditionModel<?>> get() {
+		return tableConditionModel.get();
 	}
 
 	@Override
@@ -185,7 +185,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	private Condition columnConditions(Conjunction conjunction, Predicate<Attribute<?>> columnType) {
-		List<Condition> conditions = tableConditionModel.conditions().entrySet().stream()
+		List<Condition> conditions = tableConditionModel.get().entrySet().stream()
 						.filter(entry -> columnType.test(entry.getKey()))
 						.filter(entry -> entry.getValue().enabled().get())
 						.map(entry -> condition(entry.getValue(), entry.getKey()))
@@ -201,7 +201,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	private void bindEvents() {
-		tableConditionModel.conditions().values()
+		tableConditionModel.get().values()
 						.forEach(conditionModel -> conditionModel.changed().addListener(conditionChangedEvent));
 		additionalWhere.addListener(conditionChangedEvent);
 		additionalHaving.addListener(conditionChangedEvent);

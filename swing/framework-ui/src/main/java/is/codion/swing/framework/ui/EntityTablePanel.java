@@ -1465,7 +1465,7 @@ public class EntityTablePanel extends JPanel {
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createColumnConditionPanels() {
 		Collection<ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new ArrayList<>();
-		tableModel.queryModel().conditions().conditions().entrySet().stream()
+		tableModel.queryModel().conditions().get().entrySet().stream()
 						.filter(entry -> table.columnModel().containsColumn(entry.getKey()))
 						.filter(entry -> configuration.conditionFieldFactory.supportsType(entry.getValue().valueClass()))
 						.forEach(entry -> conditionPanels.add(createColumnConditionPanel(entry.getValue(), entry.getKey())));

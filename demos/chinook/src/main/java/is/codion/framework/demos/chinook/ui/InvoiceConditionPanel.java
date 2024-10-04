@@ -159,7 +159,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(FieldFactory<Attribute<?>> fieldFactory) {
 		Collection<ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new ArrayList<>();
-		conditionModel().conditions().entrySet().stream()
+		conditions().get().entrySet().stream()
 						.filter(entry -> columnModel.containsColumn(entry.getKey()))
 						.filter(entry -> fieldFactory.supportsType(entry.getValue().valueClass()))
 						.forEach(entry -> conditionPanels.add(createColumnConditionPanel(entry.getValue(), entry.getKey(), fieldFactory)));

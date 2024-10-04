@@ -11,6 +11,7 @@ Codion Change Log
 - DefaultFilterTableModel, null item rejection improved.
 - DefaultFilterTableSelection, null item rejection improved.
 - FilterTableModel.conditions() renamed filters().
+- TableConditionModel.conditions() renamed get().
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.setInitialValue() removed, no longer necessary now that the component value is always created, which is now used to set the initial value.
 - SpinnerNumberValue now non-null and validates the value according to the model minimum and maximum, if specified.
@@ -22,6 +23,7 @@ Codion Change Log
 - FileInputPanel.ByteArrayInputPanelValue.setComponentValue() no longer throws UnsupportedOperationException.
 - FileInputPanel improved, related refactoring.
 - FilterTableCellRenderer.Builder.condition() renamed filter().
+- TableConditionPanel.conditionModel() renamed conditions().
 ### is.codion.framework.model
 - DefaultEntityConditionModel, no longer wraps a single condition in a condition combination.
 - EntityConditionModel.AdditionalCondition added, related refactoring.

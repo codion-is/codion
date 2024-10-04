@@ -35,7 +35,7 @@ public interface TableConditionModel<C> {
 	/**
 	 * @return an unmodifiable view of the available condition models
 	 */
-	Map<C, ConditionModel<?>> conditions();
+	Map<C, ConditionModel<?>> get();
 
 	/**
 	 * The condition model associated with {@code identifier}

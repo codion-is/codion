@@ -74,7 +74,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	/**
 	 * @return the underlying condition model
 	 */
-	public final TableConditionModel<C> conditionModel() {
+	public final TableConditionModel<C> conditions() {
 		return conditionModel;
 	}
 
@@ -181,7 +181,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	private void clearConditions() {
-		conditionModel.conditions().values()
+		conditionModel.get().values()
 						.forEach(ConditionModel::clear);
 	}
 
