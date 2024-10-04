@@ -19,8 +19,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -74,52 +72,52 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 	}
 
 	@Override
-	public JComponent createEqualField(ConditionModel<?> condition, Attribute<?> attribute) {
+	public <T> JComponent createEqualField(ConditionModel<T> condition, Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
 			return createEqualForeignKeyField(condition, attribute);
 		}
 
-		return inputComponents.component((Attribute<Object>) attribute)
-						.link((Value<Object>) condition.operands().equal())
+		return inputComponents.component((Attribute<T>) attribute)
+						.link(condition.operands().equal())
 						.build();
 	}
 
 	@Override
-	public Optional<JComponent> createUpperBoundField(ConditionModel<?> condition, Attribute<?> attribute) {
+	public <T> Optional<JComponent> createUpperBoundField(ConditionModel<T> condition, Attribute<?> attribute) {
 		Class<?> columnClass = condition.valueClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no upper bound field required for booleans or entities
 		}
 
-		return Optional.of(inputComponents.component((Attribute<Object>) attribute)
-						.link((Value<Object>) condition.operands().upperBound())
+		return Optional.of(inputComponents.component((Attribute<T>) attribute)
+						.link(condition.operands().upperBound())
 						.build());
 	}
 
 	@Override
-	public Optional<JComponent> createLowerBoundField(ConditionModel<?> condition, Attribute<?> attribute) {
-		Class<?> columnClass = condition.valueClass();
+	public <T> Optional<JComponent> createLowerBoundField(ConditionModel<T> condition, Attribute<?> attribute) {
+		Class<T> columnClass = condition.valueClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no lower bound field required for booleans or entities
 		}
 
-		return Optional.of(inputComponents.component((Attribute<Object>) attribute)
-						.link((Value<Object>) condition.operands().lowerBound())
+		return Optional.of(inputComponents.component((Attribute<T>) attribute)
+						.link(condition.operands().lowerBound())
 						.build());
 	}
 
 	@Override
-	public JComponent createInField(ConditionModel<?> condition, Attribute<?> attribute) {
+	public <T> JComponent createInField(ConditionModel<T> condition, Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
-			return createInForeignKeyField(condition, (ForeignKey) attribute);
+			return createInForeignKeyField((ConditionModel<Entity>) condition, (ForeignKey) attribute);
 		}
 
-		return listBox((ComponentValue<Object, JComponent>)
+		return listBox((ComponentValue<T, JComponent>)
 						inputComponents.component(attribute)
-										.buildValue(), (ValueSet<Object>) condition.operands().in()).build();
+										.buildValue(), condition.operands().in()).build();
 	}
 
-	private JComponent createEqualForeignKeyField(ConditionModel<?> model, Attribute<?> attribute) {
+	private <T> JComponent createEqualForeignKeyField(ConditionModel<T> model, Attribute<?> attribute) {
 		if (model instanceof ForeignKeyConditionModel) {
 			EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).equalSearchModel();
 
@@ -137,7 +135,7 @@ public final class EntityConditionFieldFactory implements FieldFactory<Attribute
 		throw new IllegalArgumentException("Unknown foreign key condition model type: " + model);
 	}
 
-	private JComponent createInForeignKeyField(ConditionModel<?> model, ForeignKey foreignKey) {
+	private JComponent createInForeignKeyField(ConditionModel<Entity> model, ForeignKey foreignKey) {
 		if (model instanceof ForeignKeyConditionModel) {
 			EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).inSearchModel();
 

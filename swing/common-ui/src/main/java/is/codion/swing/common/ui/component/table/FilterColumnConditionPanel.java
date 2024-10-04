@@ -336,39 +336,43 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 		/**
 		 * Creates the field representing the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operand, linked to {@link Operands#equal()}
+		 * @param <T> the value type
 		 * @param condition the condition model
 		 * @param identifier the column identifier
 		 * @return the equal value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		JComponent createEqualField(ConditionModel<?> condition, C identifier);
+		<T> JComponent createEqualField(ConditionModel<T> condition, C identifier);
 
 		/**
 		 * Creates the field representing the upper bound operand, linked to {@link Operands#upperBound()}
+		 * @param <T> the value type
 		 * @param condition the condition model
 		 * @param identifier the column identifier
 		 * @return an upper bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		Optional<JComponent> createUpperBoundField(ConditionModel<?> condition, C identifier);
+		<T> Optional<JComponent> createUpperBoundField(ConditionModel<T> condition, C identifier);
 
 		/**
 		 * Creates the field representing the lower bound operand, linked to {@link Operands#lowerBound()}
+		 * @param <T> the value type
 		 * @param condition the condition model
 		 * @param identifier the column identifier
 		 * @return a lower bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		Optional<JComponent> createLowerBoundField(ConditionModel<?> condition, C identifier);
+		<T> Optional<JComponent> createLowerBoundField(ConditionModel<T> condition, C identifier);
 
 		/**
 		 * Creates the field representing the {@link Operator#IN} operands, linked to {@link Operands#in()}
+		 * @param <T> the value type
 		 * @param condition the condition model
 		 * @param identifier the column identifier
 		 * @return the in value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		JComponent createInField(ConditionModel<?> condition, C identifier);
+		<T> JComponent createInField(ConditionModel<T> condition, C identifier);
 	}
 
 	private JComponent createEqualField(FieldFactory<C> fieldFactory) {

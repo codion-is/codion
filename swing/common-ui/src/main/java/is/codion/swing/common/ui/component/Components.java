@@ -356,7 +356,7 @@ public final class Components {
 	 * in the combo box (as opposed to the selected item). The provided {@code itemValue} supplies
 	 * new items to add to the combo box.
 	 * <ul>
-	 * <li>{@link java.awt.event.KeyEvent#VK_INSERT} adds the current value whereas
+	 * <li>{@link java.awt.event.KeyEvent#VK_INSERT} adds the current value to the list
 	 * <li>{@link java.awt.event.KeyEvent#VK_DELETE} deletes the selected item from the list.
 	 * </ul>
 	 * @param itemValue the component value providing the items to add
