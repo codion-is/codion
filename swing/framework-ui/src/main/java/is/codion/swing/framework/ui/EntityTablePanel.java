@@ -1758,8 +1758,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void onColumnHidden(Attribute<?> attribute) {
-		//disable the condition for the column to be hidden, to prevent confusion
-		tableModel.conditions().optional(attribute)
+		//disable the filter for the column to be hidden, to prevent confusion
+		tableModel.filters().optional(attribute)
 						.ifPresent(condition -> condition.enabled().set(false));
 	}
 

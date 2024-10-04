@@ -68,7 +68,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final Columns<R, C> columns;
 	private final DefaultItems modelItems;
 	private final TableSelection<R> selection;
-	private final TableConditionModel<C> conditionModel;
+	private final TableConditionModel<C> filters;
 	private final VisiblePredicate visiblePredicate;
 	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
@@ -77,9 +77,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.columns = requireNonNull(builder.columns);
 		this.modelItems = new DefaultItems(builder.validator);
 		this.selection = new DefaultFilterTableSelection<>(modelItems);
-		this.conditionModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
+		this.filters = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
-		this.visiblePredicate = new VisiblePredicate(conditionModel.conditions());
+		this.visiblePredicate = new VisiblePredicate(filters.conditions());
 		this.refresher = new DefaultRefresher(builder.supplier == null ? modelItems::get : (Supplier<Collection<R>>) builder.supplier);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
@@ -123,8 +123,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public TableConditionModel<C> conditions() {
-		return conditionModel;
+	public TableConditionModel<C> filters() {
+		return filters;
 	}
 
 	@Override
@@ -189,7 +189,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private void bindEvents() {
 		addTableModelListener(removeSelectionListener);
-		conditionModel.changed().addListener(modelItems::filter);
+		filters.changed().addListener(modelItems::filter);
 	}
 
 	private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {

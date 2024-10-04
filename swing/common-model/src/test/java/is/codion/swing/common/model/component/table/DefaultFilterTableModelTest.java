@@ -136,11 +136,11 @@ public final class DefaultFilterTableModelTest {
 	void conditionModel() {
 		tableModel.refresh();
 		assertEquals(5, tableModel.items().visible().count());
-		tableModel.conditions().get(0).operands().equal().set("a");
+		tableModel.filters().get(0).operands().equal().set("a");
 		assertEquals(1, tableModel.items().visible().count());
-		tableModel.conditions().get(0).operands().equal().set("b");
+		tableModel.filters().get(0).operands().equal().set("b");
 		assertEquals(1, tableModel.items().visible().count());
-		tableModel.conditions().get(0).clear();
+		tableModel.filters().get(0).clear();
 	}
 
 	@Test
@@ -250,7 +250,7 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().visible().addListener(listener);
 		tableModel.refresh();
 		assertEquals(1, events.get());
-		tableModel.conditions().get(0).operands().equal().set("a");
+		tableModel.filters().get(0).operands().equal().set("a");
 		assertFalse(tableModel.items().removeItem(B));
 		assertEquals(3, events.get());
 		assertFalse(tableModel.items().visible().contains(B));
@@ -264,7 +264,7 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.items().visible().contains(E));
 		assertFalse(tableModel.items().filtered().contains(D));
 		assertFalse(tableModel.items().filtered().contains(E));
-		tableModel.conditions().get(0).operands().equal().set(null);
+		tableModel.filters().get(0).operands().equal().set(null);
 		tableModel.refresh();//two events, clear and add
 		assertEquals(8, events.get());
 		tableModel.items().visible().removeItems(0, 2);
@@ -531,10 +531,10 @@ public final class DefaultFilterTableModelTest {
 		tableModel.selection().indexes().add(singletonList(3));
 		assertEquals(3, tableModel.selection().getMinSelectionIndex());
 
-		tableModel.conditions().get(0).operands().equal().set("d");
+		tableModel.filters().get(0).operands().equal().set("d");
 		assertEquals(0, tableModel.selection().getMinSelectionIndex());
 		assertEquals(singletonList(0), tableModel.selection().indexes().get());
-		tableModel.conditions().get(0).enabled().set(false);
+		tableModel.filters().get(0).enabled().set(false);
 		assertEquals(0, tableModel.selection().getMinSelectionIndex());
 		assertEquals(ITEMS.get(3), tableModel.selection().item().get());
 	}
@@ -554,7 +554,7 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void filterAndRemove() {
 		tableModel.refresh();
-		tableModel.conditions().get(0).operands().equal().set("a");
+		tableModel.filters().get(0).operands().equal().set("a");
 		assertTrue(tableModel.items().contains(B));
 		assertFalse(tableModel.items().removeItem(B));
 		assertFalse(tableModel.items().contains(B));
@@ -569,9 +569,9 @@ public final class DefaultFilterTableModelTest {
 		assertTrue(tableModel.items().visible().predicate().isNull());
 
 		//test filters
-		assertNotNull(tableModel.conditions().get(0));
+		assertNotNull(tableModel.filters().get(0));
 		assertTrue(tableModel.items().visible().contains(B));
-		tableModel.conditions().get(0).operands().equal().set("a");
+		tableModel.filters().get(0).operands().equal().set("a");
 		assertTrue(tableModel.items().visible().contains(A));
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().filtered().contains(D));
@@ -584,7 +584,7 @@ public final class DefaultFilterTableModelTest {
 
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().contains(B));
-		assertTrue(tableModel.conditions().get(0).enabled().get());
+		assertTrue(tableModel.filters().get(0).enabled().get());
 		assertEquals(4, tableModel.items().filtered().count());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
@@ -593,35 +593,35 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.items().filtered().get().isEmpty());
 		assertFalse(tableModel.items().get().isEmpty());
 
-		tableModel.conditions().get(0).enabled().set(false);
-		assertFalse(tableModel.conditions().get(0).enabled().get());
+		tableModel.filters().get(0).enabled().set(false);
+		assertFalse(tableModel.filters().get(0).enabled().get());
 
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
-		tableModel.conditions().get(0).operands().equal().set("t"); // ekki til
-		assertTrue(tableModel.conditions().get(0).enabled().get());
+		tableModel.filters().get(0).operands().equal().set("t"); // ekki til
+		assertTrue(tableModel.filters().get(0).enabled().get());
 		assertEquals(5, tableModel.items().filtered().count());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
-		tableModel.conditions().get(0).enabled().set(false);
+		tableModel.filters().get(0).enabled().set(false);
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
-		assertFalse(tableModel.conditions().get(0).enabled().get());
+		assertFalse(tableModel.filters().get(0).enabled().get());
 
-		tableModel.conditions().get(0).operands().equal().set("b");
+		tableModel.filters().get(0).operands().equal().set("b");
 		int rowCount = tableModel.items().visible().count();
 		tableModel.items().visible().addItemsAt(0, singletonList(new TestRow("x")));
 		assertEquals(rowCount, tableModel.items().visible().count());
 
-		assertThrows(IllegalArgumentException.class, () -> tableModel.conditions().get(1));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.filters().get(1));
 	}
 
 	@Test
 	void clearFilterModels() {
-		assertFalse(tableModel.conditions().get(0).enabled().get());
-		tableModel.conditions().get(0).operands().equal().set("SCOTT");
-		assertTrue(tableModel.conditions().get(0).enabled().get());
-		tableModel.conditions().clear();
-		assertFalse(tableModel.conditions().get(0).enabled().get());
+		assertFalse(tableModel.filters().get(0).enabled().get());
+		tableModel.filters().get(0).operands().equal().set("SCOTT");
+		assertTrue(tableModel.filters().get(0).enabled().get());
+		tableModel.filters().clear();
+		assertFalse(tableModel.filters().get(0).enabled().get());
 	}
 
 	@Test

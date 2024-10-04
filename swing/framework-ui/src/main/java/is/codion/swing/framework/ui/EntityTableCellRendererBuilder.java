@@ -44,7 +44,7 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		super(requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().type().valueClass());
 		requireNonNull(tableModel).entityDefinition().attributes().definition(attributeDefinition.attribute());
 		queryConditionModel = tableModel.queryModel().conditions().optional(attributeDefinition.attribute()).orElse(null);
-		condition(tableModel.conditions().optional(attributeDefinition.attribute()).orElse(null));
+		condition(tableModel.filters().optional(attributeDefinition.attribute()).orElse(null));
 		string(new DefaultString(attributeDefinition));
 		cellColors(new EntityCellColors(tableModel));
 	}

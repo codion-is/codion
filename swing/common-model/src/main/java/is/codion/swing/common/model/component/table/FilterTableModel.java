@@ -115,7 +115,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	/**
 	 * @return the filter condition model used by this table model
 	 */
-	TableConditionModel<C> conditions();
+	TableConditionModel<C> filters();
 
 	/**
 	 * {@inheritDoc}

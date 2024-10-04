@@ -344,7 +344,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public TableConditionPanel<C> conditionPanel() {
 		if (filterPanel == null) {
-			filterPanel = filterPanelFactory.create(tableModel.conditions(), createColumnFilterPanels(),
+			filterPanel = filterPanelFactory.create(tableModel.filters(), createColumnFilterPanels(),
 							columnModel(), this::configureTableConditionPanel);
 		}
 
@@ -848,7 +848,7 @@ public final class FilterTable<R, C> extends JTable {
 													boolean columnResizingAllowed) {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
-		tableModel.conditions().changed().addListener(getTableHeader()::repaint);
+		tableModel.filters().changed().addListener(getTableHeader()::repaint);
 		searchModel.currentResult().addListener(this::repaint);
 		sortModel.sortingChanged().addListener(getTableHeader()::repaint);
 		sortModel.sortingChanged().addListener(() ->
@@ -862,7 +862,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void onColumnHidden(C columnIdentifier) {
 		//disable the filter model for the column to be hidden, to prevent confusion
-		tableModel.conditions().optional(columnIdentifier)
+		tableModel.filters().optional(columnIdentifier)
 						.ifPresent(condition -> condition.enabled().set(false));
 	}
 
@@ -885,7 +885,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
 		Collection<ColumnConditionPanel<C, ?>> conditionPanels = new ArrayList<>();
-		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.conditions().conditions().entrySet()) {
+		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.filters().conditions().entrySet()) {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
 			if (columnModel().containsColumn(identifier) && filterFieldFactory.supportsType(condition.valueClass())) {
@@ -1535,7 +1535,7 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<C> column) {
 			return FilterTableCellRenderer.builder(column.identifier(), tableModel.getColumnClass(column.identifier()))
-							.condition(tableModel.conditions().optional(column.identifier()).orElse(null))
+							.condition(tableModel.filters().optional(column.identifier()).orElse(null))
 							.build();
 		}
 	}
