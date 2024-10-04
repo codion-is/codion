@@ -27,10 +27,11 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * Manages a set of {@link ConditionModel}s for table columns.
  * @param <C> the condition identifier type
- * @see #tableConditionModel(Map)
+ * @see #tableConditions(Map)
  */
-public interface TableConditionModel<C> {
+public interface TableConditions<C> {
 
 	/**
 	 * @return an unmodifiable view of the available condition models
@@ -71,25 +72,25 @@ public interface TableConditionModel<C> {
 	Observer<?> changed();
 
 	/**
-	 * Instantiates a new {@link TableConditionModel}
-	 * @param conditionModels the condition models
+	 * Instantiates a new {@link TableConditions}
+	 * @param conditions the condition models
 	 * @param <C> the condition identifier type
-	 * @return a new {@link TableConditionModel}
+	 * @return a new {@link TableConditions}
 	 */
-	static <C> TableConditionModel<C> tableConditionModel(Map<C, ConditionModel<?>> conditionModels) {
-		return new DefaultTableConditionModel<>(requireNonNull(conditionModels));
+	static <C> TableConditions<C> tableConditions(Map<C, ConditionModel<?>> conditions) {
+		return new DefaultTableConditions<>(requireNonNull(conditions));
 	}
 
 	/**
 	 * Responsible for creating {@link ConditionModel} instances.
 	 */
-	interface ConditionModelFactory<C> {
+	interface ColumnConditionFactory<C> {
 
 		/**
-		 * Creates a {@link ConditionModel} for a given identifier
-		 * @param identifier the identifier for which to create a {@link ConditionModel}
+		 * Creates a {@link ConditionModel} for a given column identifier
+		 * @param identifier the column identifier for which to create a {@link ConditionModel}
 		 * @return a {@link ConditionModel} for the given identifier or an empty optional if none is provided
 		 */
-		Optional<ConditionModel<?>> createConditionModel(C identifier);
+		Optional<ConditionModel<?>> createColumnCondition(C identifier);
 	}
 }

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 
@@ -38,22 +38,22 @@ import static java.util.stream.Collectors.toMap;
 /**
  * A default filter table condition panel.
  * @param <C> the column identifier type
- * @see #filterTableConditionPanel(TableConditionModel, Collection, FilterTableColumnModel, Consumer)
+ * @see #filterTableConditionsPanel(TableConditions, Collection, FilterTableColumnModel, Consumer)
  */
-public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
+public final class FilterTableConditionsPanel<C> extends TableConditionsPanel<C> {
 
 	private final Collection<ColumnConditionPanel<C, ?>> conditionPanels;
 	private final FilterTableColumnModel<C> columnModel;
-	private final Consumer<TableConditionPanel<C>> onPanelInitialized;
+	private final Consumer<TableConditionsPanel<C>> onPanelInitialized;
 
 	private FilterTableColumnComponentPanel<C> componentPanel;
 	private boolean initialized;
 
-	private FilterTableConditionPanel(TableConditionModel<C> conditionModel,
-																		Collection<ColumnConditionPanel<C, ?>> conditionPanels,
-																		FilterTableColumnModel<C> columnModel,
-																		Consumer<TableConditionPanel<C>> onPanelInitialized) {
-		super(conditionModel);
+	private FilterTableConditionsPanel(TableConditions<C> tableConditions,
+																		 Collection<ColumnConditionPanel<C, ?>> conditionPanels,
+																		 FilterTableColumnModel<C> columnModel,
+																		 Consumer<TableConditionsPanel<C>> onPanelInitialized) {
+		super(tableConditions);
 		this.conditionPanels = unmodifiableList(new ArrayList<>(requireNonNull(conditionPanels)));
 		this.columnModel = requireNonNull(columnModel);
 		this.onPanelInitialized = onPanelInitialized == null ? panel -> {} : onPanelInitialized;
@@ -79,17 +79,17 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	/**
 	 * @param <C> the column identifier type
-	 * @param conditionModel the condition model
+	 * @param tableConditions the {@link TableConditions}
 	 * @param conditionPanels the condition panels
 	 * @param columnModel the column model
 	 * @param onPanelInitialized called when the panel has been initialized
-	 * @return a new {@link FilterTableConditionPanel}
+	 * @return a new {@link FilterTableConditionsPanel}
 	 */
-	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(TableConditionModel<C> conditionModel,
-																																					 Collection<ColumnConditionPanel<C, ?>> conditionPanels,
-																																					 FilterTableColumnModel<C> columnModel,
-																																					 Consumer<TableConditionPanel<C>> onPanelInitialized) {
-		return new FilterTableConditionPanel<>(conditionModel, conditionPanels, columnModel, onPanelInitialized);
+	public static <C> FilterTableConditionsPanel<C> filterTableConditionsPanel(TableConditions<C> tableConditions,
+																																						 Collection<ColumnConditionPanel<C, ?>> conditionPanels,
+																																						 FilterTableColumnModel<C> columnModel,
+																																						 Consumer<TableConditionsPanel<C>> onPanelInitialized) {
+		return new FilterTableConditionsPanel<>(tableConditions, conditionPanels, columnModel, onPanelInitialized);
 	}
 
 	@Override

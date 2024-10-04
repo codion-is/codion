@@ -22,7 +22,7 @@ import is.codion.common.Text;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -45,15 +45,15 @@ import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A base class for a UI component based on a {@link TableConditionModel}.
+ * A base class for a UI component based on a {@link TableConditions}.
  * @param <C> the type used to identify the table columns
  */
-public abstract class TableConditionPanel<C> extends JPanel {
+public abstract class TableConditionsPanel<C> extends JPanel {
 
 	private static final MessageBundle MESSAGES =
-					messageBundle(FilterColumnConditionPanel.class, getBundle(TableConditionPanel.class.getName()));
+					messageBundle(FilterColumnConditionPanel.class, getBundle(TableConditionsPanel.class.getName()));
 
-	private final TableConditionModel<C> conditionModel;
+	private final TableConditions<C> tableConditions;
 	private final Value<ConditionState> conditionState = Value.builder()
 					.nonNull(HIDDEN)
 					.consumer(this::onStateChanged)
@@ -63,19 +63,19 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	private final State advancedState = State.state();
 
 	/**
-	 * Instantiates a new {@link TableConditionPanel}
-	 * @param conditionModel the condition model
+	 * Instantiates a new {@link TableConditionsPanel}
+	 * @param tableConditions the {@link TableConditions}
 	 */
-	protected TableConditionPanel(TableConditionModel<C> conditionModel) {
-		this.conditionModel = requireNonNull(conditionModel);
+	protected TableConditionsPanel(TableConditions<C> tableConditions) {
+		this.tableConditions = requireNonNull(tableConditions);
 		configureStates();
 	}
 
 	/**
-	 * @return the underlying condition model
+	 * @return the underlying {@link TableConditions}
 	 */
-	public final TableConditionModel<C> conditions() {
-		return conditionModel;
+	public final TableConditions<C> conditions() {
+		return tableConditions;
 	}
 
 	/**
@@ -181,7 +181,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	private void clearConditions() {
-		conditionModel.get().values()
+		tableConditions.get().values()
 						.forEach(ConditionModel::clear);
 	}
 
@@ -195,12 +195,12 @@ public abstract class TableConditionPanel<C> extends JPanel {
 		 * @param conditionPanels the condition panels
 		 * @param columnModel the column model
 		 * @param onPanelInitialized called when the panel has been initialized
-		 * @return a new {@link TableConditionPanel}
+		 * @return a new {@link TableConditionsPanel}
 		 */
-		TableConditionPanel<C> create(TableConditionModel<C> conditionModel,
-																	Collection<ColumnConditionPanel<C, ?>> conditionPanels,
-																	FilterTableColumnModel<C> columnModel,
-																	Consumer<TableConditionPanel<C>> onPanelInitialized);
+		TableConditionsPanel<C> create(TableConditions<C> conditionModel,
+																	 Collection<ColumnConditionPanel<C, ?>> conditionPanels,
+																	 FilterTableColumnModel<C> columnModel,
+																	 Consumer<TableConditionsPanel<C>> onPanelInitialized);
 	}
 
 	private final class StateConsumer implements Consumer<Boolean> {

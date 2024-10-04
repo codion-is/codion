@@ -19,7 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
+import is.codion.common.model.condition.TableConditions.ColumnConditionFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -33,22 +33,22 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link ConditionModelFactory} implementation for creating Entity based column condition models.
+ * A default {@link ColumnConditionFactory} implementation for creating Entity based column condition models.
  */
-public class EntityConditionModelFactory implements ConditionModelFactory<Attribute<?>> {
+public class EntityColumnConditionFactory implements ColumnConditionFactory<Attribute<?>> {
 
 	private final EntityConnectionProvider connectionProvider;
 
 	/**
-	 * Instantiates a new {@link EntityConditionModelFactory}.
+	 * Instantiates a new {@link EntityColumnConditionFactory}.
 	 * @param connectionProvider the connection provider
 	 */
-	public EntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
+	public EntityColumnConditionFactory(EntityConnectionProvider connectionProvider) {
 		this.connectionProvider = requireNonNull(connectionProvider);
 	}
 
 	@Override
-	public Optional<ConditionModel<?>> createConditionModel(Attribute<?> attribute) {
+	public Optional<ConditionModel<?>> createColumnCondition(Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			return Optional.of(ForeignKeyConditionModel.builder(foreignKey)

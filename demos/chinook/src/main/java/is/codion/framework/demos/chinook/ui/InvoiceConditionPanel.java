@@ -21,7 +21,7 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.common.Operator;
 import is.codion.common.item.Item;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -33,8 +33,8 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionS
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
-import is.codion.swing.common.ui.component.table.FilterTableConditionPanel;
-import is.codion.swing.common.ui.component.table.TableConditionPanel;
+import is.codion.swing.common.ui.component.table.FilterTableConditionsPanel;
+import is.codion.swing.common.ui.component.table.TableConditionsPanel;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Controls;
@@ -66,7 +66,7 @@ import java.util.stream.Stream;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.ADVANCED;
-import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
+import static is.codion.swing.common.ui.component.table.FilterTableConditionsPanel.filterTableConditionsPanel;
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
@@ -77,24 +77,24 @@ import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.border.TitledBorder.CENTER;
 import static javax.swing.border.TitledBorder.DEFAULT_POSITION;
 
-final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
+final class InvoiceConditionPanel extends TableConditionsPanel<Attribute<?>> {
 
 	private static final ResourceBundle BUNDLE = getBundle(InvoiceConditionPanel.class.getName());
 
 	private final FilterTableColumnModel<Attribute<?>> columnModel;
-	private final FilterTableConditionPanel<Attribute<?>> advancedConditionPanel;
+	private final FilterTableConditionsPanel<Attribute<?>> advancedConditionPanel;
 	private final SimpleConditionPanel simpleConditionPanel;
 
 	InvoiceConditionPanel(EntityDefinition invoiceDefinition,
-												TableConditionModel<Attribute<?>> conditionModel,
+												TableConditions<Attribute<?>> tableConditions,
 												FilterTableColumnModel<Attribute<?>> columnModel,
-												Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized,
+												Consumer<TableConditionsPanel<Attribute<?>>> onPanelInitialized,
 												Runnable onDateChanged) {
-		super(conditionModel);
+		super(tableConditions);
 		setLayout(new BorderLayout());
 		this.columnModel = columnModel;
-		this.simpleConditionPanel = new SimpleConditionPanel(conditionModel, invoiceDefinition, onDateChanged);
-		this.advancedConditionPanel = filterTableConditionPanel(conditionModel,
+		this.simpleConditionPanel = new SimpleConditionPanel(tableConditions, invoiceDefinition, onDateChanged);
+		this.advancedConditionPanel = filterTableConditionsPanel(tableConditions,
 						createConditionPanels(new EntityConditionFieldFactory(invoiceDefinition)),
 						columnModel, onPanelInitialized);
 		state().link(advancedConditionPanel.state());
@@ -181,12 +181,12 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		private final CustomerConditionPanel customerConditionPanel;
 		private final DateConditionPanel dateConditionPanel;
 
-		private SimpleConditionPanel(TableConditionModel<Attribute<?>> conditionModel,
+		private SimpleConditionPanel(TableConditions<Attribute<?>> tableConditions,
 																 EntityDefinition invoiceDefinition, Runnable onDateChanged) {
 			super(new BorderLayout());
 			setBorder(createEmptyBorder(5, 5, 5, 5));
-			customerConditionPanel = new CustomerConditionPanel(conditionModel.get(Invoice.CUSTOMER_FK), invoiceDefinition);
-			dateConditionPanel = new DateConditionPanel(conditionModel.get(Invoice.DATE), invoiceDefinition);
+			customerConditionPanel = new CustomerConditionPanel(tableConditions.get(Invoice.CUSTOMER_FK), invoiceDefinition);
+			dateConditionPanel = new DateConditionPanel(tableConditions.get(Invoice.DATE), invoiceDefinition);
 			dateConditionPanel.yearValue.addListener(onDateChanged);
 			dateConditionPanel.monthValue.addListener(onDateChanged);
 			initializeUI();

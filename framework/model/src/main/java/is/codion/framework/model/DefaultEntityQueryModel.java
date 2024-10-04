@@ -42,7 +42,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityQueryModel implements EntityQueryModel {
 
-	private final EntityConditionModel conditionModel;
+	private final EntityConditions entityConditions;
 	private final Value<StateObserver> conditionEnabled;
 	private final State conditionRequired = State.state();
 	private final State conditionChanged = State.state();
@@ -57,24 +57,24 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	private Select refreshCondition;
 
-	DefaultEntityQueryModel(EntityConditionModel conditionModel) {
-		this.conditionModel = requireNonNull(conditionModel);
+	DefaultEntityQueryModel(EntityConditions entityConditions) {
+		this.entityConditions = requireNonNull(entityConditions);
 		this.conditionEnabled = Value.builder()
-						.nonNull(conditionModel.enabled())
+						.nonNull(entityConditions.enabled())
 						.build();
 		this.orderBy = createOrderBy();
 		this.refreshCondition = createSelect();
-		conditionModel.changed().addListener(this::onConditionChanged);
+		entityConditions.changed().addListener(this::onConditionChanged);
 	}
 
 	@Override
 	public EntityType entityType() {
-		return conditionModel.entityType();
+		return entityConditions.entityType();
 	}
 
 	@Override
 	public EntityConnectionProvider connectionProvider() {
-		return conditionModel.connectionProvider();
+		return entityConditions.connectionProvider();
 	}
 
 	@Override
@@ -83,8 +83,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public EntityConditionModel conditions() {
-		return conditionModel;
+	public EntityConditions conditions() {
+		return entityConditions;
 	}
 
 	@Override
@@ -133,8 +133,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	private Select createSelect() {
-		return Select.where(conditionModel.where(Conjunction.AND))
-						.having(conditionModel.having(Conjunction.AND))
+		return Select.where(entityConditions.where(Conjunction.AND))
+						.having(entityConditions.having(Conjunction.AND))
 						.attributes(attributes.get())
 						.limit(limit.get())
 						.orderBy(orderBy.get())
@@ -142,7 +142,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	private Value<OrderBy> createOrderBy() {
-		EntityDefinition definition = conditionModel.connectionProvider().entities().definition(conditionModel.entityType());
+		EntityDefinition definition = entityConditions.connectionProvider().entities().definition(entityConditions.entityType());
 		return definition.orderBy()
 						.map(entityOrderBy -> Value.builder()
 										.nonNull(entityOrderBy)
@@ -159,8 +159,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		@Override
 		public void validate(Set<Attribute<?>> attributes) {
 			for (Attribute<?> attribute : attributes) {
-				if (!attribute.entityType().equals(conditionModel.entityType())) {
-					throw new IllegalArgumentException(attribute + " is not part of entity:  " + conditionModel.entityType());
+				if (!attribute.entityType().equals(entityConditions.entityType())) {
+					throw new IllegalArgumentException(attribute + " is not part of entity:  " + entityConditions.entityType());
 				}
 			}
 		}
@@ -185,7 +185,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 				return emptyList();
 			}
-			List<Entity> items = conditionModel.connectionProvider().connection().select(select);
+			List<Entity> items = entityConditions.connectionProvider().connection().select(select);
 			resetConditionChanged(select);
 
 			return items;

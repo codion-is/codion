@@ -18,20 +18,20 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditions;
 
 import java.util.Collection;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
+import static is.codion.swing.common.ui.component.table.FilterTableConditionsPanel.filterTableConditionsPanel;
 
-final class DefaultFilterPanelFactory<C> implements TableConditionPanel.Factory<C> {
+final class DefaultFilterPanelFactory<C> implements TableConditionsPanel.Factory<C> {
 
 	@Override
-	public TableConditionPanel<C> create(TableConditionModel<C> conditionModel,
-																			 Collection<ColumnConditionPanel<C, ?>> columnConditionPanels,
-																			 FilterTableColumnModel<C> columnModel,
-																			 Consumer<TableConditionPanel<C>> onPanelInitialized) {
-		return filterTableConditionPanel(conditionModel, columnConditionPanels, columnModel, onPanelInitialized);
+	public TableConditionsPanel<C> create(TableConditions<C> conditionModel,
+																				Collection<ColumnConditionPanel<C, ?>> columnConditionPanels,
+																				FilterTableColumnModel<C> columnModel,
+																				Consumer<TableConditionsPanel<C>> onPanelInitialized) {
+		return filterTableConditionsPanel(conditionModel, columnConditionPanels, columnModel, onPanelInitialized);
 	}
 }

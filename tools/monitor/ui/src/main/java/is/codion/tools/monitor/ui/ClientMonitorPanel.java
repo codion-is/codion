@@ -76,7 +76,7 @@ public final class ClientMonitorPanel extends JPanel {
 		clientInstanceScroller = scrollPane(clientInstanceTable)
 						.border(BorderFactory.createTitledBorder("Clients"))
 						.build();
-		filterScrollPane = createLinkedScrollPane(clientInstanceScroller, clientInstanceTable.conditionPanel());
+		filterScrollPane = createLinkedScrollPane(clientInstanceScroller, clientInstanceTable.filterPanel());
 		initializeUI();
 	}
 
@@ -157,7 +157,7 @@ public final class ClientMonitorPanel extends JPanel {
 	}
 
 	private void toggleAdvancedFilters(boolean advanced) {
-		clientInstanceTable.conditionPanel().state().set(advanced ?
+		clientInstanceTable.filterPanel().state().set(advanced ?
 						ConditionState.ADVANCED : ConditionState.SIMPLE);
 		revalidate();
 	}

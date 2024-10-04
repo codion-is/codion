@@ -19,8 +19,8 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
+import is.codion.common.model.condition.TableConditions;
+import is.codion.common.model.condition.TableConditions.ColumnConditionFactory;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -31,7 +31,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractEntityTableModel;
-import is.codion.framework.model.EntityConditionModel;
+import is.codion.framework.model.EntityConditions;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
@@ -47,7 +47,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
-import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
+import static is.codion.framework.model.EntityConditions.entityConditions;
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
@@ -97,10 +97,10 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
-	 * @param conditionModel the entity condition model
+	 * @param entityConditions the {@link EntityConditions}
 	 */
-	public SwingEntityTableModel(EntityConditionModel conditionModel) {
-		this(entityQueryModel(conditionModel));
+	public SwingEntityTableModel(EntityConditions entityConditions) {
+		this(entityQueryModel(entityConditions));
 	}
 
 	/**
@@ -117,8 +117,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param editModel the edit model
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
-		this(editModel, entityQueryModel(entityConditionModel(editModel.entityType(), editModel.connectionProvider(),
-						new SwingEntityConditionModelFactory(editModel.connectionProvider()))));
+		this(editModel, entityQueryModel(entityConditions(editModel.entityType(), editModel.connectionProvider(),
+						new SwingEntityColumnConditionFactory(editModel.connectionProvider()))));
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final TableConditionModel<Attribute<?>> filters() {
+	public final TableConditions<Attribute<?>> filters() {
 		return filterModel().filters();
 	}
 
@@ -327,7 +327,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(EntityDefinition definition) {
 		return FilterTableModel.builder(new EntityTableColumns(definition))
-						.filterModelFactory(new EntityFilterModelFactory(definition))
+						.filterModelFactory(new EntityColumnFilterFactory(definition))
 						.validator(new EntityItemValidator(definition.entityType()));
 	}
 
@@ -382,16 +382,16 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 	}
 
-	private static final class EntityFilterModelFactory implements ConditionModelFactory<Attribute<?>> {
+	private static final class EntityColumnFilterFactory implements ColumnConditionFactory<Attribute<?>> {
 
 		private final EntityDefinition entityDefinition;
 
-		private EntityFilterModelFactory(EntityDefinition entityDefinition) {
+		private EntityColumnFilterFactory(EntityDefinition entityDefinition) {
 			this.entityDefinition = requireNonNull(entityDefinition);
 		}
 
 		@Override
-		public Optional<ConditionModel<?>> createConditionModel(Attribute<?> attribute) {
+		public Optional<ConditionModel<?>> createColumnCondition(Attribute<?> attribute) {
 			if (!include(attribute)) {
 				return Optional.empty();
 			}
