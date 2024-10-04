@@ -63,8 +63,8 @@ final class DefaultEntityConditions implements EntityConditions {
 	private final EntityConnectionProvider connectionProvider;
 	private final TableConditions<Attribute<?>> tableConditions;
 	private final Event<?> conditionChangedEvent = Event.event();
-	private final AdditionalCondition additionalWhere = new DefaultAdditionalWhereCondition();
-	private final AdditionalCondition additionalHaving = new DefaultAdditionalHavingCondition();
+	private final AdditionalCondition additionalWhere = new DefaultAdditionalCondition();
+	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
 	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
 	private final AggregateColumn aggregateColumn = new AggregateColumn();
 
@@ -411,35 +411,7 @@ final class DefaultEntityConditions implements EntityConditions {
 		}
 	}
 
-	private static final class DefaultAdditionalWhereCondition implements AdditionalCondition {
-
-		private final Value<Supplier<Condition>> value = Value.builder()
-						.nonNull(NULL_CONDITION_SUPPLIER)
-						.build();
-		private final Mutable<Conjunction> conjunction = new MutableConjunction();
-
-		@Override
-		public Mutable<Conjunction> conjunction() {
-			return conjunction;
-		}
-
-		@Override
-		public void set(Supplier<Condition> condition) {
-			value.set(condition);
-		}
-
-		@Override
-		public Supplier<Condition> get() {
-			return value.get();
-		}
-
-		@Override
-		public Observer<Supplier<Condition>> observer() {
-			return value.observer();
-		}
-	}
-
-	private static final class DefaultAdditionalHavingCondition implements AdditionalCondition {
+	private static final class DefaultAdditionalCondition implements AdditionalCondition {
 
 		private final Value<Supplier<Condition>> value = Value.builder()
 						.nonNull(NULL_CONDITION_SUPPLIER)

@@ -31,9 +31,6 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 /**
- * This interface defines filtering functionality, which refers to showing/hiding entities already available
- * in a table model and searching functionality, which refers to configuring the underlying query,
- * which then needs to be re-run.
  * Factory for {@link EntityConditions} instances via
  * {@link EntityConditions#entityConditions(EntityType, EntityConnectionProvider)}
  */
