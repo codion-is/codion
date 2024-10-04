@@ -418,7 +418,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 
 		@Override
 		public void set(R item) {
-			selectedItems.set(singletonList(item));
+			selectedItems.set(singletonList(requireNonNull(item)));
 		}
 
 		@Override
@@ -445,15 +445,16 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 
 		@Override
 		public void set(Collection<R> items) {
-			set(new ArrayList<>(requireNonNull(items)));
+			rejectNulls(items);
+			clearSelection();
+			addInternal(items);
 		}
 
 		@Override
 		public void set(List<R> items) {
-			if (!isSelectionEmpty()) {
-				DefaultFilterTableSelection.this.clear();
-			}
-			add(items);
+			rejectNulls(items);
+			clearSelection();
+			addInternal(items);
 		}
 
 		@Override
@@ -468,17 +469,13 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 
 		@Override
 		public void add(R item) {
-			add(singletonList(item));
+			addInternal(singletonList(requireNonNull(item)));
 		}
 
 		@Override
 		public void add(Collection<R> items) {
-			requireNonNull(items, "items");
-			selectedIndexes.add(items.stream()
-							.mapToInt(DefaultFilterTableSelection.this.items.visible()::indexOf)
-							.filter(index -> index >= 0)
-							.boxed()
-							.collect(toList()));
+			rejectNulls(items);
+			addInternal(items);
 		}
 
 		@Override
@@ -487,20 +484,26 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		}
 
 		@Override
-		public void remove(Collection<R> items) {
-			requireNonNull(items).forEach(item -> selectedIndexes.remove(DefaultFilterTableSelection.this.items.visible().indexOf(item)));
+		public void remove(Collection<R> itemsToRemove) {
+			rejectNulls(itemsToRemove).forEach(item -> selectedIndexes.remove(items.visible().indexOf(item)));
 		}
 
 		@Override
 		public boolean contains(R item) {
-			requireNonNull(item);
-
-			return isSelectedIndex(items.visible().indexOf(item));
+			return isSelectedIndex(items.visible().indexOf(requireNonNull(item)));
 		}
 
 		@Override
 		public Observer<List<R>> observer() {
 			return event.observer();
+		}
+
+		private void addInternal(Collection<R> itemsToAdd) {
+			selectedIndexes.add(itemsToAdd.stream()
+							.mapToInt(items.visible()::indexOf)
+							.filter(index -> index >= 0)
+							.boxed()
+							.collect(toList()));
 		}
 
 		private List<Integer> indexesToSelect(Predicate<R> predicate) {
@@ -518,6 +521,14 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 
 		private void notifyListeners() {
 			event.accept(get());
+		}
+
+		private static <T> Collection<T> rejectNulls(Collection<T> items) {
+			for (T item : requireNonNull(items)) {
+				requireNonNull(item);
+			}
+
+			return items;
 		}
 	}
 }

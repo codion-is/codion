@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -652,19 +653,29 @@ public final class DefaultFilterTableModelTest {
 		assertThrows(NullPointerException.class, () -> tableModel.items().addItem(null));
 		assertThrows(NullPointerException.class, () -> tableModel.items().removeItem(null));
 		assertThrows(NullPointerException.class, () -> tableModel.items().addItems(null));
-		assertThrows(NullPointerException.class, () -> tableModel.items().addItems(singleton(null)));
-		assertThrows(NullPointerException.class, () -> tableModel.items().removeItems(singleton(null)));
+		Set<TestRow> singleNull = singleton(null);
+		assertThrows(NullPointerException.class, () -> tableModel.items().addItems(singleNull));
+		assertThrows(NullPointerException.class, () -> tableModel.items().removeItems(singleNull));
 		assertThrows(NullPointerException.class, () -> tableModel.items().contains(null));
 
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemAt(0, null));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemsAt(0, null));
-		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemsAt(0, singleton(null)));
+		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemsAt(0, singleNull));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().contains(null));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().indexOf(null));
 		tableModel.items().addItem(new TestRow("test"));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().setItemAt(0, null));
 
 		assertThrows(NullPointerException.class, () -> tableModel.items().filtered().contains(null));
+
+		TableSelection<TestRow> selection = tableModel.selection();
+		assertThrows(NullPointerException.class, () -> selection.item().set(null));
+		assertThrows(NullPointerException.class, () -> selection.items().remove((TestRow) null));
+		assertThrows(NullPointerException.class, () -> selection.items().remove((Collection<TestRow>) null));
+		assertThrows(NullPointerException.class, () -> selection.items().remove(singleNull));
+		assertThrows(NullPointerException.class, () -> selection.items().set(singleNull));
+		assertThrows(NullPointerException.class, () -> selection.items().add(singleNull));
+		assertThrows(NullPointerException.class, () -> selection.items().contains(null));
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,

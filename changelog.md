@@ -8,6 +8,7 @@ Codion Change Log
 - Unused slf4j dependency removed.
 ### is.codion.swing.common.model
 - DefaultFilterTableModel, null item rejection improved.
+- DefaultFilterTableSelection, null item rejection improved.
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.setInitialValue() removed, no longer necessary now that the component value is always created, which is now used to set the initial value.
 - SpinnerNumberValue now non-null and validates the value according to the model minimum and maximum, if specified.
