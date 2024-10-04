@@ -20,6 +20,7 @@ package is.codion.common.model.condition;
 
 import is.codion.common.Configuration;
 import is.codion.common.Operator;
+import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -114,9 +115,9 @@ public interface ConditionModel<T> {
 	/**
 	 * Note that this is only applicable to string based condition models and only used for
 	 * operators {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL}
-	 * @return the {@link Value} controlling whether wildcards are added to strings
+	 * @return the {@link Mutable} controlling whether wildcards are added to strings
 	 */
-	Value<Wildcard> wildcard();
+	Mutable<Wildcard> wildcard();
 
 	/**
 	 * @return the {@link State} controlling whether this model is enabled automatically when a condition value is specified

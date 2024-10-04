@@ -27,7 +27,6 @@ import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.observer.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -687,8 +686,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private Controls createWildcardControls() {
-		Value<Wildcard> wildcardValue = condition().wildcard();
-		Wildcard wildcard = wildcardValue.get();
+		Wildcard wildcard = condition().wildcard().get();
 
 		State wildcardNoneState = State.state(wildcard.equals(Wildcard.NONE));
 		State wildcardPostfixState = State.state(wildcard.equals(Wildcard.POSTFIX));
@@ -699,22 +697,22 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 		wildcardNoneState.addConsumer(enabled -> {
 			if (enabled) {
-				wildcardValue.set(Wildcard.NONE);
+				condition().wildcard().set(Wildcard.NONE);
 			}
 		});
 		wildcardPostfixState.addConsumer(enabled -> {
 			if (enabled) {
-				wildcardValue.set(Wildcard.POSTFIX);
+				condition().wildcard().set(Wildcard.POSTFIX);
 			}
 		});
 		wildcardPrefixState.addConsumer(enabled -> {
 			if (enabled) {
-				wildcardValue.set(Wildcard.PREFIX);
+				condition().wildcard().set(Wildcard.PREFIX);
 			}
 		});
 		wildcardPrefixAndPostfixState.addConsumer(enabled -> {
 			if (enabled) {
-				wildcardValue.set(Wildcard.PREFIX_AND_POSTFIX);
+				condition().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
 			}
 		});
 

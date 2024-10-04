@@ -21,6 +21,7 @@ package is.codion.common.model.condition;
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.format.LocaleDateTimePattern;
+import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
@@ -146,7 +147,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	@Override
-	public Value<Wildcard> wildcard() {
+	public Mutable<Wildcard> wildcard() {
 		return operands.equal.wildcard;
 	}
 
@@ -508,18 +509,42 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			lowerBound.clear();
 		}
 
+		private static final class MutableWildcard implements Mutable<Wildcard> {
+
+			private final Value<Wildcard> value;
+
+			private MutableWildcard(Wildcard wildcard) {
+				value = Value.builder()
+								.nonNull(wildcard)
+								.build();
+			}
+
+			@Override
+			public void set(Wildcard wildcard) {
+				value.set(wildcard);
+			}
+
+			@Override
+			public Wildcard get() {
+				return value.get();
+			}
+
+			@Override
+			public Observer<Wildcard> observer() {
+				return value.observer();
+			}
+		}
+
 		private static final class EqualOperand<T> extends AbstractValue<T> {
 
-			private final Value<Wildcard> wildcard;
+			private final Mutable<Wildcard> wildcard;
 			private final ValueObserver<Operator> operatorObserver;
 
 			private T value;
 
 			private EqualOperand(Wildcard wildcard, ValueObserver<Operator> operatorObserver) {
 				super(null, Notify.WHEN_SET);
-				this.wildcard = Value.builder()
-								.nonNull(wildcard)
-								.build();
+				this.wildcard = new MutableWildcard(wildcard);
 				this.operatorObserver = operatorObserver;
 			}
 

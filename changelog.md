@@ -8,6 +8,7 @@ Codion Change Log
 - Unused slf4j dependency removed.
 - ConditionModel.identifier() removed, related refactoring.
 - ConditionModel.AutomaticWildcard renamed Wildcard.
+- ConditionModel.wildcard() now Mutable instead of Value.
 ### is.codion.swing.common.model
 - DefaultFilterTableModel, null item rejection improved.
 - DefaultFilterTableSelection, null item rejection improved.
