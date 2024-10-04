@@ -23,6 +23,7 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.model.summary.TableSummaryModel;
 import is.codion.common.observer.Observer;
@@ -78,6 +79,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -882,16 +884,20 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
-		return tableModel.conditions().identifiers().stream()
-						.map(tableModel.conditions()::get)
-						.filter(condition -> columnModel().containsColumn(condition.identifier()))
-						.filter(condition -> filterFieldFactory.supportsType(condition.valueClass()))
-						.map(condition -> FilterColumnConditionPanel.builder(condition)
+		Collection<ColumnConditionPanel<C, ?>> conditionPanels = new ArrayList<>();
+		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.conditions().conditions().entrySet()) {
+			ConditionModel<?> condition = entry.getValue();
+			C identifier = entry.getKey();
+			if (columnModel().containsColumn(identifier) && filterFieldFactory.supportsType(condition.valueClass())) {
+				conditionPanels.add(FilterColumnConditionPanel.builder(condition, identifier)
 										.fieldFactory(filterFieldFactory)
-										.tableColumn(columnModel().column(condition.identifier()))
-										.caption(Objects.toString(columnModel().column(condition.identifier()).getHeaderValue()))
-										.build())
-						.collect(toList());
+										.tableColumn(columnModel().column(identifier))
+										.caption(Objects.toString(columnModel().column(identifier).getHeaderValue()))
+										.build());
+			}
+		}
+
+		return conditionPanels;
 	}
 
 	private void configureTableConditionPanel(TableConditionPanel<C> tableConditionPanel) {

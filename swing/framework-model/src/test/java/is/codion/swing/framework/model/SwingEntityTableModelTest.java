@@ -24,7 +24,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
@@ -90,7 +89,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void testFiltering() {
 		testModel.refresh();
-		ConditionModel<?, String> filterModel =
+		ConditionModel<String> filterModel =
 						testModel.conditions().get(Detail.STRING);
 		filterModel.operands().equal().set("a");
 		testModel.items().filter();
@@ -147,7 +146,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void backgroundColor() {
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
-		ConditionModel<Attribute<?>, String> nameCondition =
+		ConditionModel<String> nameCondition =
 						employeeTableModel.queryModel().conditions().attribute(Employee.NAME);
 		nameCondition.operands().equal().set("BLAKE");
 		employeeTableModel.refresh();
@@ -172,7 +171,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	void conditionChanged() {
 		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
 		tableModel.refresh();
-		ConditionModel<?, String> nameCondition = tableModel.queryModel().conditions().get(Employee.NAME);
+		ConditionModel<String> nameCondition = tableModel.queryModel().conditions().get(Employee.NAME);
 		nameCondition.operands().equal().set("JONES");
 		assertTrue(tableModel.queryModel().conditionChanged().get());
 		tableModel.refresh();
@@ -193,7 +192,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		queryModel.conditionRequired().set(true);
 		tableModel.refresh();
 		assertEquals(0, tableModel.items().visible().count());
-		ConditionModel<?, Entity> mgrCondition = queryModel.conditions().get(Employee.MGR_FK);
+		ConditionModel<Entity> mgrCondition = queryModel.conditions().get(Employee.MGR_FK);
 		mgrCondition.operands().equal().set(null);
 		mgrCondition.enabled().set(true);
 		tableModel.refresh();

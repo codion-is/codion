@@ -6,6 +6,7 @@ Codion Change Log
 - Value.Builder.initialValue() renamed value.
 ### is.codion.common.model
 - Unused slf4j dependency removed.
+- ConditionModel.identifier() removed, related refactoring.
 ### is.codion.swing.common.model
 - DefaultFilterTableModel, null item rejection improved.
 - DefaultFilterTableSelection, null item rejection improved.

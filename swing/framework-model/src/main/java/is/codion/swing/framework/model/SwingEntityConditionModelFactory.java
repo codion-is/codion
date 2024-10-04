@@ -19,6 +19,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -31,7 +32,7 @@ import java.util.Optional;
 import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 
 /**
- * A Swing {@link ConditionModel.Factory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
+ * A Swing {@link ConditionModelFactory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
 public class SwingEntityConditionModelFactory extends EntityConditionModelFactory {
 
@@ -44,7 +45,7 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
 	}
 
 	@Override
-	public Optional<ConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+	public Optional<ConditionModel<?>> createConditionModel(Attribute<?> attribute) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			if (definition(foreignKey.referencedType()).smallDataset()) {

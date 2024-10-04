@@ -27,7 +27,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityTableModel;
@@ -224,7 +223,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		tableModel.queryModel().limit().set(6);
 		tableModel.refresh();
 		assertEquals(6, tableModel.items().visible().count());
-		ConditionModel<?, Double> commissionCondition =
+		ConditionModel<Double> commissionCondition =
 						tableModel.queryModel().conditions().attribute(Employee.COMMISSION);
 		commissionCondition.operator().set(Operator.EQUAL);
 		commissionCondition.enabled().set(true);
@@ -243,7 +242,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		AtomicInteger counter = new AtomicInteger();
 		Runnable conditionChangedListener = counter::incrementAndGet;
 		empModel.queryModel().conditionChanged().addListener(conditionChangedListener);
-		ConditionModel<Attribute<?>, Double> commissionModel =
+		ConditionModel<Double> commissionModel =
 						empModel.queryModel().conditions().attribute(Employee.COMMISSION);
 		commissionModel.enabled().set(true);
 		assertEquals(1, counter.get());
@@ -260,7 +259,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	public void testSearchState() {
 		TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
 		assertFalse(empModel.queryModel().conditionChanged().get());
-		ConditionModel<Attribute<?>, String> jobModel =
+		ConditionModel<String> jobModel =
 						empModel.queryModel().conditions().attribute(Employee.JOB);
 		jobModel.operands().equal().set("job");
 		assertTrue(empModel.queryModel().conditionChanged().get());

@@ -23,24 +23,23 @@ import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static java.util.function.Function.identity;
 
 final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
-	private final Map<C, ConditionModel<C, ?>> conditions;
+	private final Map<C, ConditionModel<?>> conditions;
 	private final StateObserver enabled;
 	private final Event<?> changed = Event.event();
 
-	DefaultTableConditionModel(Collection<ConditionModel<C, ?>> conditions) {
-		this.conditions = initializeColumnConditions(conditions);
-		this.enabled = State.or(conditions.stream()
+	DefaultTableConditionModel(Map<C, ConditionModel<?>> conditions) {
+		this.conditions = unmodifiableMap(new HashMap<>(conditions));
+		this.enabled = State.or(conditions.values().stream()
 						.map(ConditionModel::enabled)
 						.collect(Collectors.toList()));
 		this.conditions.values().forEach(condition ->
@@ -58,13 +57,13 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public Collection<C> identifiers() {
-		return conditions.keySet();
+	public Map<C, ConditionModel<?>> conditions() {
+		return conditions;
 	}
 
 	@Override
-	public <T> ConditionModel<C, T> get(C identifier) {
-		ConditionModel<C, T> condition = (ConditionModel<C, T>) conditions.get(requireNonNull(identifier));
+	public <T> ConditionModel<T> get(C identifier) {
+		ConditionModel<T> condition = (ConditionModel<T>) conditions.get(requireNonNull(identifier));
 		if (condition == null) {
 			throw new IllegalArgumentException("No condition available for identifier: " + identifier);
 		}
@@ -73,18 +72,12 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public <T> Optional<ConditionModel<C, T>> optional(C identifier) {
-		return Optional.ofNullable((ConditionModel<C, T>) conditions.get(requireNonNull(identifier)));
+	public <T> Optional<ConditionModel<T>> optional(C identifier) {
+		return Optional.ofNullable((ConditionModel<T>) conditions.get(requireNonNull(identifier)));
 	}
 
 	@Override
 	public Observer<?> changed() {
 		return changed.observer();
-	}
-
-	private Map<C, ConditionModel<C, ?>> initializeColumnConditions(
-					Collection<ConditionModel<C, ?>> conditions) {
-		return unmodifiableMap(conditions.stream()
-						.collect(Collectors.toMap(ConditionModel::identifier, identity())));
 	}
 }

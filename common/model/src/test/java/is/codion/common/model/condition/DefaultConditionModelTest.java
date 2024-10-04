@@ -54,7 +54,7 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void testOperands() {
-		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
+		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.caseSensitive().set(false);
 		model.automaticWildcard().set(AutomaticWildcard.NONE);
 
@@ -103,8 +103,7 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void testMisc() {
-		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
-		assertEquals("test", model.identifier());
+		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 
 		model.operator().set(Operator.EQUAL);
 		model.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
@@ -114,14 +113,14 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void testOperator() {
-		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder("test", String.class)
+		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder(String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN))
 						.operator(Operator.IN));
-		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder("test", String.class)
+		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder(String.class)
 						.operator(Operator.IN)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN)));
 
-		ConditionModel<String, String> model = ConditionModel.builder("test", String.class)
+		ConditionModel<String> model = ConditionModel.builder(String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.LESS_THAN_OR_EQUAL, Operator.NOT_BETWEEN))
 						.build();
 		model.operator().addConsumer(operatorConsumer);
@@ -142,13 +141,12 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void test() {
-		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
+		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		assertTrue(model.autoEnable().get());
 		model.operands().equal().set("test");
 		assertTrue(model.enabled().get());
 		model.caseSensitive().set(false);
 		assertFalse(model.caseSensitive().get());
-		assertEquals("test", model.identifier());
 		assertEquals(String.class, model.valueClass());
 
 		model.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
@@ -169,42 +167,42 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void setUpperBoundLocked() {
-		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
+		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().upperBound().set("test"));
 	}
 
 	@Test
 	void setLowerBoundLocked() {
-		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
+		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().lowerBound().set("test"));
 	}
 
 	@Test
 	void setEqualOperandLocked() {
-		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
+		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().equal().set("test"));
 	}
 
 	@Test
 	void setInOperandsLocked() {
-		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
+		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().in().set(Collections.singletonList("test")));
 	}
 
 	@Test
 	void setEnabledLocked() {
-		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
+		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.enabled().set(true));
 	}
 
 	@Test
 	void setOperatorLocked() {
-		ConditionModel<String, String> model = ConditionModel.builder("test", String.class).build();
+		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operator().set(Operator.NOT_EQUAL));
 		assertThrows(IllegalStateException.class, () -> model.operator().set(Operator.NOT_EQUAL));
@@ -212,7 +210,7 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void multiConditionString() {
-		ConditionModel<String, String> condition = ConditionModel.builder("test", String.class).build();
+		ConditionModel<String> condition = ConditionModel.builder(String.class).build();
 		condition.caseSensitive().set(false);
 		condition.automaticWildcard().set(AutomaticWildcard.NONE);
 
@@ -224,7 +222,7 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable() {
-		ConditionModel<String, Integer> condition = ConditionModel.builder("test", Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
 
 		condition.operator().set(Operator.EQUAL);
 		assertFalse(condition.enabled().get());
@@ -360,13 +358,13 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void noOperators() {
-		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder("test", String.class)
+		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder(String.class)
 						.operators(Collections.emptyList()));
 	}
 
 	@Test
 	void includeInteger() {
-		ConditionModel<String, Integer> condition = ConditionModel.builder("test", Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
 		condition.autoEnable().set(false);
 		condition.enabled().set(true);
 		condition.operator().set(Operator.EQUAL);
@@ -492,7 +490,7 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void acceptsString() {
-		ConditionModel<String, String> condition = ConditionModel.builder("test", String.class).build();
+		ConditionModel<String> condition = ConditionModel.builder(String.class).build();
 		condition.autoEnable().set(false);
 		condition.enabled().set(true);
 
@@ -548,7 +546,7 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void acceptCharacter() {
-		ConditionModel<String, Character> condition = ConditionModel.builder("test", Character.class).build();
+		ConditionModel<Character> condition = ConditionModel.builder(Character.class).build();
 		condition.autoEnable().set(false);
 		condition.enabled().set(true);
 

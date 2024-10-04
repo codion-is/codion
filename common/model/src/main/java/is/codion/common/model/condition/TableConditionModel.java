@@ -21,21 +21,21 @@ package is.codion.common.model.condition;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.StateObserver;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * @param <C> the condition identifier type
- * @see #tableConditionModel(Collection)
+ * @see #tableConditionModel(Map)
  */
 public interface TableConditionModel<C> {
 
 	/**
-	 * @return the available condition model identifiers
+	 * @return an unmodifiable view of the available condition models
 	 */
-	Collection<C> identifiers();
+	Map<C, ConditionModel<?>> conditions();
 
 	/**
 	 * The condition model associated with {@code identifier}
@@ -44,7 +44,7 @@ public interface TableConditionModel<C> {
 	 * @return the {@link ConditionModel} for the {@code identifier}
 	 * @throws IllegalArgumentException in case no condition model exists for the given identifier
 	 */
-	<T> ConditionModel<C, T> get(C identifier);
+	<T> ConditionModel<T> get(C identifier);
 
 		/**
 	 * The condition model associated with {@code identifier}
@@ -52,7 +52,7 @@ public interface TableConditionModel<C> {
 	 * @param identifier the identifier for which to retrieve the {@link ConditionModel}
 	 * @return the {@link ConditionModel} for the {@code identifier} or an empty Optional in case one is not available
 	 */
-	<T> Optional<ConditionModel<C, T>> optional(C identifier);
+	<T> Optional<ConditionModel<T>> optional(C identifier);
 
 	/**
 	 * Clears the search state of all the condition models, disables them and
@@ -76,7 +76,20 @@ public interface TableConditionModel<C> {
 	 * @param <C> the condition identifier type
 	 * @return a new {@link TableConditionModel}
 	 */
-	static <C> TableConditionModel<C> tableConditionModel(Collection<ConditionModel<C, ?>> conditionModels) {
+	static <C> TableConditionModel<C> tableConditionModel(Map<C, ConditionModel<?>> conditionModels) {
 		return new DefaultTableConditionModel<>(requireNonNull(conditionModels));
+	}
+
+	/**
+	 * Responsible for creating {@link ConditionModel} instances.
+	 */
+	interface ConditionModelFactory<C> {
+
+		/**
+		 * Creates a {@link ConditionModel} for a given identifier
+		 * @param identifier the identifier for which to create a {@link ConditionModel}
+		 * @return a {@link ConditionModel} for the given identifier or an empty optional if none is provided
+		 */
+		Optional<ConditionModel<?>> createConditionModel(C identifier);
 	}
 }

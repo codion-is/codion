@@ -35,11 +35,10 @@ import static java.util.ResourceBundle.getBundle;
 
 /**
  * Specifies a condition with an operator and operands as well as relevant events and states.
- * For instances create a {@link Builder} via {@link #builder(Object, Class)}.
- * @param <C> the type used to identify the condition
+ * For instances create a {@link Builder} via {@link #builder(Class)}.
  * @param <T> the condition value type
  */
-public interface ConditionModel<C, T> {
+public interface ConditionModel<T> {
 
 	/**
 	 * Specifies whether wildcards are automatically added to string conditions by default
@@ -92,11 +91,6 @@ public interface ConditionModel<C, T> {
 			return description;
 		}
 	}
-
-	/**
-	 * @return the condition identifier
-	 */
-	C identifier();
 
 	/**
 	 * @return the {@link State} controlling whether this model is case-sensitive, when working with strings
@@ -177,14 +171,12 @@ public interface ConditionModel<C, T> {
 
 	/**
 	 * Returns a new {@link Builder} instance.
-	 * @param identifier the condition identifier
 	 * @param valueClass the value class
-	 * @param <C> the condition identifier type
 	 * @param <T> the condition value type
 	 * @return a new {@link Builder} instance
 	 */
-	static <C, T> Builder<C, T> builder(C identifier, Class<T> valueClass) {
-		return new DefaultConditionModel.DefaultBuilder<>(identifier, valueClass);
+	static <T> Builder<T> builder(Class<T> valueClass) {
+		return new DefaultConditionModel.DefaultBuilder<>(valueClass);
 	}
 
 	/**
@@ -215,22 +207,9 @@ public interface ConditionModel<C, T> {
 	}
 
 	/**
-	 * Responsible for creating {@link ConditionModel} instances.
-	 */
-	interface Factory<C> {
-
-		/**
-		 * Creates a {@link ConditionModel} for a given identifier
-		 * @param identifier the identifier for which to create a {@link ConditionModel}
-		 * @return a {@link ConditionModel} for the given identifier or an empty optional if none is provided
-		 */
-		Optional<ConditionModel<C, ?>> createConditionModel(C identifier);
-	}
-
-	/**
 	 * Builds a {@link ConditionModel} instance.
 	 */
-	interface Builder<C, T> {
+	interface Builder<T> {
 
 		/**
 		 * @param operators the conditional operators available to this condition model
@@ -238,7 +217,7 @@ public interface ConditionModel<C, T> {
 		 * @throws IllegalArgumentException in case operators don't contain the selected operator
 		 * @see #operator(Operator)
 		 */
-		Builder<C, T> operators(List<Operator> operators);
+		Builder<T> operators(List<Operator> operators);
 
 		/**
 		 * @param operator the initial operator
@@ -246,41 +225,41 @@ public interface ConditionModel<C, T> {
 		 * @throws IllegalArgumentException in case the model operators don't contain the given operator
 		 * @see #operators(List)
 		 */
-		Builder<C, T> operator(Operator operator);
+		Builder<T> operator(Operator operator);
 
 		/**
 		 * @param format the format to use when presenting the values, numbers for example
 		 * @return this builder instance
 		 */
-		Builder<C, T> format(Format format);
+		Builder<T> format(Format format);
 
 		/**
 		 * @param dateTimePattern the date/time format pattern to use in case of a date/time value
 		 * @return this builder instance
 		 */
-		Builder<C, T> dateTimePattern(String dateTimePattern);
+		Builder<T> dateTimePattern(String dateTimePattern);
 
 		/**
 		 * @param automaticWildcard the automatic wildcard type to use
 		 * @return this builder instance
 		 */
-		Builder<C, T> automaticWildcard(AutomaticWildcard automaticWildcard);
+		Builder<T> automaticWildcard(AutomaticWildcard automaticWildcard);
 
 		/**
 		 * @param caseSensitive true if the model should be case-sensitive
 		 * @return this builder instance
 		 */
-		Builder<C, T> caseSensitive(boolean caseSensitive);
+		Builder<T> caseSensitive(boolean caseSensitive);
 
 		/**
 		 * @param autoEnable true if the model should auto-enable
 		 * @return this builder instance
 		 */
-		Builder<C, T> autoEnable(boolean autoEnable);
+		Builder<T> autoEnable(boolean autoEnable);
 
 		/**
 		 * @return a new {@link ConditionModel} instance based on this builder
 		 */
-		ConditionModel<C, T> build();
+		ConditionModel<T> build();
 	}
 }

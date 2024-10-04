@@ -51,14 +51,14 @@ final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 	}
 
 	@Override
-	public JComponent createEqualField(ConditionModel<C, ?> condition) {
+	public JComponent createEqualField(ConditionModel<?> condition, C identifier) {
 		return createField(condition)
 						.link((Value<Object>) condition.operands().equal())
 						.build();
 	}
 
 	@Override
-	public Optional<JComponent> createUpperBoundField(ConditionModel<C, ?> condition) {
+	public Optional<JComponent> createUpperBoundField(ConditionModel<?> condition, C identifier) {
 		if (condition.valueClass().equals(Boolean.class)) {
 			return Optional.empty();//no upper bound field required for boolean values
 		}
@@ -69,7 +69,7 @@ final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 	}
 
 	@Override
-	public Optional<JComponent> createLowerBoundField(ConditionModel<C, ?> condition) {
+	public Optional<JComponent> createLowerBoundField(ConditionModel<?> condition, C identifier) {
 		if (condition.valueClass().equals(Boolean.class)) {
 			return Optional.empty();//no lower bound field required for boolean values
 		}
@@ -80,13 +80,13 @@ final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 	}
 
 	@Override
-	public JComponent createInField(ConditionModel<C, ?> condition) {
+	public JComponent createInField(ConditionModel<?> condition, C identifier) {
 		return listBox(createField(condition).buildValue(),
 						(ValueSet<Object>) condition.operands().in())
 						.build();
 	}
 
-	private static <T> ComponentBuilder<T, ? extends JComponent, ?> createField(ConditionModel<?, ?> conditionModel) {
+	private static <T> ComponentBuilder<T, ? extends JComponent, ?> createField(ConditionModel<?> conditionModel) {
 		Class<?> columnClass = conditionModel.valueClass();
 		if (columnClass.equals(Boolean.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) checkBox()

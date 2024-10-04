@@ -24,7 +24,6 @@ import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.text.Format;
@@ -41,16 +40,16 @@ import static java.util.Objects.requireNonNull;
  * both the {@link Operator#EQUAL} and {@link Operator#IN} operands.
  * @see #builder(ForeignKey)
  */
-public final class ForeignKeyConditionModel implements ConditionModel<Attribute<?>, Entity> {
+public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 
-	private final ConditionModel<ForeignKey, Entity> condition;
+	private final ConditionModel<Entity> condition;
 	private final EntitySearchModel equalSearchModel;
 	private final EntitySearchModel inSearchModel;
 
 	private boolean updatingModel = false;
 
 	private ForeignKeyConditionModel(DefaultBuilder builder) {
-		this.condition = ConditionModel.builder(builder.foreignKey, Entity.class)
+		this.condition = ConditionModel.builder(Entity.class)
 						.operators(builder.operators())
 						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
 						.build();
@@ -81,11 +80,6 @@ public final class ForeignKeyConditionModel implements ConditionModel<Attribute<
 		}
 
 		return inSearchModel;
-	}
-
-	@Override
-	public Attribute<?> identifier() {
-		return condition.identifier();
 	}
 
 	@Override

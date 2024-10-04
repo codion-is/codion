@@ -81,7 +81,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		}
 
 		@Override
-		public Optional<ConditionModel<Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+		public Optional<ConditionModel<?>> createConditionModel(Attribute<?> attribute) {
 			if (attribute.equals(Track.MEDIATYPE_FK)) {
 				return Optional.of(SwingForeignKeyConditionModel.builder(Track.MEDIATYPE_FK)
 								.includeEqualOperators(createEqualComboBoxModel(Track.MEDIATYPE_FK))

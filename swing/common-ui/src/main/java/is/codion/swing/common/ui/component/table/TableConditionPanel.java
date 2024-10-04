@@ -107,7 +107,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 */
 	public <T extends ColumnConditionPanel<C, ?>> T conditionPanel(C identifier) {
 		return (T) conditionPanels().stream()
-						.filter(panel -> panel.condition().identifier().equals(identifier))
+						.filter(panel -> panel.identifier().equals(identifier))
 						.findFirst()
 						.orElseThrow(() -> new IllegalStateException("No condition panel available for " + identifier));
 	}
@@ -141,7 +141,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	 */
 	public final void selectConditionPanel(JComponent dialogOwner) {
 		List<Item<C>> columnItems = selectableConditionPanels().stream()
-						.map(panel -> item(panel.condition().identifier(), panel.caption()))
+						.map(panel -> item(panel.identifier(), panel.caption()))
 						.sorted(Text.collator())
 						.collect(toList());
 		if (columnItems.size() == 1) {
@@ -181,8 +181,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	private void clearConditions() {
-		conditionModel.identifiers().stream()
-						.map(conditionModel::get)
+		conditionModel.conditions().values()
 						.forEach(ConditionModel::clear);
 	}
 

@@ -1464,19 +1464,20 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createColumnConditionPanels() {
-		return tableModel.queryModel().conditions().identifiers().stream()
-						.map(identifier -> tableModel.queryModel().conditions().get(identifier))
-						.filter(condition -> table.columnModel().containsColumn(condition.identifier()))
-						.filter(condition -> configuration.conditionFieldFactory.supportsType(condition.valueClass()))
-						.map(this::createColumnConditionPanel)
-						.collect(toList());
+		Collection<ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new ArrayList<>();
+		tableModel.queryModel().conditions().conditions().entrySet().stream()
+						.filter(entry -> table.columnModel().containsColumn(entry.getKey()))
+						.filter(entry -> configuration.conditionFieldFactory.supportsType(entry.getValue().valueClass()))
+						.forEach(entry -> conditionPanels.add(createColumnConditionPanel(entry.getValue(), entry.getKey())));
+
+		return conditionPanels;
 	}
 
-	private FilterColumnConditionPanel<Attribute<?>, ?> createColumnConditionPanel(ConditionModel<Attribute<?>, ?> condition) {
-		return FilterColumnConditionPanel.builder(condition)
-						.fieldFactory(configuration.conditionFieldFactory)
-						.tableColumn(table.columnModel().column(condition.identifier()))
-						.caption(Objects.toString(table.columnModel().column(condition.identifier()).getHeaderValue()))
+	private <C extends Attribute<?>> FilterColumnConditionPanel<C, ?> createColumnConditionPanel(ConditionModel<?> condition, C identifier) {
+		return FilterColumnConditionPanel.builder(condition, identifier)
+						.fieldFactory((FieldFactory<C>) configuration.conditionFieldFactory)
+						.tableColumn(table.columnModel().column(identifier))
+						.caption(Objects.toString(table.columnModel().column(identifier).getHeaderValue()))
 						.build();
 	}
 

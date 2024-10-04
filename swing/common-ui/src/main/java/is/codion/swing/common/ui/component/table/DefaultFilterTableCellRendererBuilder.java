@@ -37,7 +37,7 @@ public class DefaultFilterTableCellRendererBuilder<C> implements FilterTableCell
 	private final Class<?> columnClass;
 	private final boolean useBooleanRenderer;
 
-	ConditionModel<C, ?> condition;
+	ConditionModel<?> condition;
 	int horizontalAlignment;
 	boolean toolTipData;
 	boolean columnShading = true;
@@ -70,7 +70,7 @@ public class DefaultFilterTableCellRendererBuilder<C> implements FilterTableCell
 	}
 
 	@Override
-	public FilterTableCellRenderer.Builder<C> condition(ConditionModel<C, ?> condition) {
+	public FilterTableCellRenderer.Builder<C> condition(ConditionModel<?> condition) {
 		this.condition = condition;
 		return this;
 	}

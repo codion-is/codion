@@ -37,7 +37,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer implements FilterTableCellRenderer {
 
 	private final Settings<C> settings;
-	private final ConditionModel<C, ?> conditionModel;
+	private final ConditionModel<?> conditionModel;
 	private final C columnIdentifier;
 	private final boolean toolTipData;
 	private final boolean columnShading;
@@ -128,7 +128,7 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 
 		private final Settings<C> settings;
 		private final C columnIdentifier;
-		private final ConditionModel<C, ?> conditionModel;
+		private final ConditionModel<?> conditionModel;
 		private final boolean columnShading;
 		private final boolean alternateRowColoring;
 		private final CellColors<C> cellColors;

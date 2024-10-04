@@ -22,6 +22,7 @@ import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
@@ -33,9 +34,11 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -76,9 +79,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.selection = new DefaultFilterTableSelection<>(modelItems);
 		this.conditionModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
 						new DefaultFilterModelFactory() : builder.filterModelFactory));
-		this.visiblePredicate = new VisiblePredicate(conditionModel.identifiers().stream()
-						.map(conditionModel::get)
-						.collect(toList()));
+		this.visiblePredicate = new VisiblePredicate(conditionModel.conditions());
 		this.refresher = new DefaultRefresher(builder.supplier == null ? modelItems::get : (Supplier<Collection<R>>) builder.supplier);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
@@ -195,12 +196,14 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
 	}
 
-	private Collection<ConditionModel<C, ?>> createColumnFilterModels(ConditionModel.Factory<C> filterModelFactory) {
-		return columns.identifiers().stream()
-						.map(filterModelFactory::createConditionModel)
-						.flatMap(Optional::stream)
-						.map(model -> (ConditionModel<C, ?>) model)
-						.collect(toList());
+	private Map<C, ConditionModel<?>> createColumnFilterModels(ConditionModelFactory<C> filterModelFactory) {
+		Map<C, ConditionModel<?>> columnFilterModels = new HashMap<>();
+		for (C identifier : columns.identifiers()) {
+			filterModelFactory.createConditionModel(identifier)
+							.ifPresent(condition -> columnFilterModels.put(identifier, condition));
+		}
+
+		return columnFilterModels;
 	}
 
 	private final class DefaultRefresher extends AbstractFilterModelRefresher<R> {
@@ -257,13 +260,13 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class DefaultFilterModelFactory implements ConditionModel.Factory<C> {
+	private final class DefaultFilterModelFactory implements ConditionModelFactory<C> {
 
 		@Override
-		public Optional<ConditionModel<C, ?>> createConditionModel(C identifier) {
+		public Optional<ConditionModel<?>> createConditionModel(C identifier) {
 			Class<?> columnClass = getColumnClass(identifier);
 			if (Comparable.class.isAssignableFrom(columnClass)) {
-				return Optional.of(ConditionModel.builder(identifier, columnClass).build());
+				return Optional.of(ConditionModel.builder(columnClass).build());
 			}
 
 			return Optional.empty();
@@ -615,14 +618,14 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final class VisiblePredicate implements Predicate<R> {
 
-		private final List<ConditionModel<C, ?>> columnFilters;
+		private final Map<C, ConditionModel<?>> columnFilters;
 
 		private final Value<Predicate<R>> predicate = Value.builder()
 						.<Predicate<R>>nullable()
 						.listener(modelItems::filter)
 						.build();
 
-		private VisiblePredicate(List<ConditionModel<C, ?>> columnFilters) {
+		private VisiblePredicate(Map<C, ConditionModel<?>> columnFilters) {
 			this.columnFilters = columnFilters;
 		}
 
@@ -632,19 +635,19 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 				return false;
 			}
 
-			return columnFilters.stream()
-							.filter(condition -> condition.enabled().get())
-							.allMatch(condition -> accepts(item, condition, columns));
+			return columnFilters.entrySet().stream()
+							.filter(entry -> entry.getValue().enabled().get())
+							.allMatch(entry -> accepts(item, entry.getValue(), entry.getKey(), columns));
 		}
 
-		private boolean accepts(R item, ConditionModel<C, ?> condition, Columns<R, C> columns) {
+		private boolean accepts(R item, ConditionModel<?> condition, C identifier, Columns<R, C> columns) {
 			if (condition.valueClass().equals(String.class)) {
-				String string = columns.string(item, condition.identifier());
+				String string = columns.string(item, identifier);
 
-				return ((ConditionModel<?, String>) condition).accepts(string.isEmpty() ? null : string);
+				return ((ConditionModel<String>) condition).accepts(string.isEmpty() ? null : string);
 			}
 
-			return condition.accepts(columns.comparable(item, condition.identifier()));
+			return condition.accepts(columns.comparable(item, identifier));
 		}
 	}
 
@@ -664,7 +667,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private Supplier<? extends Collection<R>> supplier;
 		private Predicate<R> validator = new ValidPredicate<>();
-		private ConditionModel.Factory<C> filterModelFactory;
+		private ConditionModelFactory<C> filterModelFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.get();
 
@@ -676,7 +679,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> filterModelFactory(ConditionModel.Factory<C> filterModelFactory) {
+		public Builder<R, C> filterModelFactory(ConditionModelFactory<C> filterModelFactory) {
 			this.filterModelFactory = requireNonNull(filterModelFactory);
 			return this;
 		}

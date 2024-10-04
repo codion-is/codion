@@ -73,7 +73,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	@Override
 	public Collection<ColumnConditionPanel<C, ?>> selectableConditionPanels() {
 		return conditionPanels.stream()
-						.filter(conditionPanel -> columnModel.visible(conditionPanel.condition().identifier()).get())
+						.filter(conditionPanel -> columnModel.visible(conditionPanel.identifier()).get())
 						.collect(Collectors.toList());
 	}
 
@@ -114,7 +114,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 		if (!initialized) {
 			setLayout(new BorderLayout());
 			Map<C, ColumnConditionPanel<C, ?>> conditionPanelMap = conditionPanels.stream()
-							.collect(toMap(panel -> panel.condition().identifier(), identity()));
+							.collect(toMap(ColumnConditionPanel::identifier, identity()));
 			componentPanel = filterTableColumnComponentPanel(columnModel, conditionPanelMap);
 			onPanelInitialized.accept(this);
 			initialized = true;

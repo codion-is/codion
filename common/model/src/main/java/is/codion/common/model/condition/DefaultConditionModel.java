@@ -41,7 +41,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-final class DefaultConditionModel<C, T> implements ConditionModel<C, T> {
+final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	private static final String WILDCARD = "%";
 	private static final String REGEX_WILDCARD = ".*";
@@ -61,14 +61,12 @@ final class DefaultConditionModel<C, T> implements ConditionModel<C, T> {
 					.listener(conditionChanged)
 					.build();
 
-	private final C identifier;
 	private final Class<T> valueClass;
 	private final Format format;
 	private final String dateTimePattern;
 	private final List<Operator> operators;
 
-	private DefaultConditionModel(DefaultBuilder<C, T> builder) {
-		this.identifier = builder.identifier;
+	private DefaultConditionModel(DefaultBuilder<T> builder) {
 		this.operators = unmodifiableList(builder.operators);
 		this.operator = Value.builder()
 						.nonNull(builder.operator)
@@ -100,11 +98,6 @@ final class DefaultConditionModel<C, T> implements ConditionModel<C, T> {
 		this.autoEnable = State.builder(builder.autoEnable)
 						.listener(autoEnableListener)
 						.build();
-	}
-
-	@Override
-	public C identifier() {
-		return identifier;
 	}
 
 	@Override
@@ -402,13 +395,13 @@ final class DefaultConditionModel<C, T> implements ConditionModel<C, T> {
 
 	private void checkLock() {
 		if (locked.get()) {
-			throw new IllegalStateException("Condition model for column identified by " + identifier + " is locked");
+			throw new IllegalStateException("Condition model is locked");
 		}
 	}
 
 	private void validateOperator(Operator operator) {
 		if (operators != null && !operators.contains(requireNonNull(operator, "operator"))) {
-			throw new IllegalArgumentException("Operator " + operator + " not available in condition model: " + identifier);
+			throw new IllegalArgumentException("Operator " + operator + " not available");
 		}
 	}
 
@@ -592,11 +585,10 @@ final class DefaultConditionModel<C, T> implements ConditionModel<C, T> {
 		}
 	}
 
-	static final class DefaultBuilder<C, T> implements Builder<C, T> {
+	static final class DefaultBuilder<T> implements Builder<T> {
 
 		private static final List<Operator> DEFAULT_OPERATORS = asList(Operator.values());
 
-		private final C identifier;
 		private final Class<T> valueClass;
 
 		private List<Operator> operators;
@@ -612,14 +604,13 @@ final class DefaultConditionModel<C, T> implements ConditionModel<C, T> {
 		private boolean caseSensitive = CASE_SENSITIVE.get();
 		private boolean autoEnable = true;
 
-		DefaultBuilder(C identifier, Class<T> valueClass) {
-			this.identifier = requireNonNull(identifier);
+		DefaultBuilder(Class<T> valueClass) {
 			this.valueClass = requireNonNull(valueClass);
 			this.operators = valueClass.equals(Boolean.class) ? singletonList(Operator.EQUAL) : DEFAULT_OPERATORS;
 		}
 
 		@Override
-		public Builder<C, T> operators(List<Operator> operators) {
+		public Builder<T> operators(List<Operator> operators) {
 			if (requireNonNull(operators).isEmpty()) {
 				throw new IllegalArgumentException("One or more operators must be specified");
 			}
@@ -629,44 +620,44 @@ final class DefaultConditionModel<C, T> implements ConditionModel<C, T> {
 		}
 
 		@Override
-		public Builder<C, T> operator(Operator operator) {
+		public Builder<T> operator(Operator operator) {
 			validateOperators(operators, operator);
 			this.operator = operator;
 			return this;
 		}
 
 		@Override
-		public Builder<C, T> format(Format format) {
+		public Builder<T> format(Format format) {
 			this.format = format;
 			return this;
 		}
 
 		@Override
-		public Builder<C, T> dateTimePattern(String dateTimePattern) {
+		public Builder<T> dateTimePattern(String dateTimePattern) {
 			this.dateTimePattern = dateTimePattern;
 			return this;
 		}
 
 		@Override
-		public Builder<C, T> automaticWildcard(AutomaticWildcard automaticWildcard) {
+		public Builder<T> automaticWildcard(AutomaticWildcard automaticWildcard) {
 			this.automaticWildcard = requireNonNull(automaticWildcard);
 			return this;
 		}
 
 		@Override
-		public Builder<C, T> caseSensitive(boolean caseSensitive) {
+		public Builder<T> caseSensitive(boolean caseSensitive) {
 			this.caseSensitive = caseSensitive;
 			return this;
 		}
 
 		@Override
-		public Builder<C, T> autoEnable(boolean autoEnable) {
+		public Builder<T> autoEnable(boolean autoEnable) {
 			this.autoEnable = autoEnable;
 			return this;
 		}
 
 		@Override
-		public ConditionModel<C, T> build() {
+		public ConditionModel<T> build() {
 			return new DefaultConditionModel<>(this);
 		}
 

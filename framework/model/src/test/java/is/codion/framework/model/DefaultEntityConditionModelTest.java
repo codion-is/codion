@@ -25,7 +25,6 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.domain.entity.condition.Condition.Combination;
 import is.codion.framework.model.test.TestDomain;
@@ -55,7 +54,7 @@ public class DefaultEntityConditionModelTest {
 	@Test
 	void test() {
 		assertEquals(Employee.TYPE, conditionModel.entityType());
-		assertEquals(10, conditionModel.identifiers().size());
+		assertEquals(10, conditionModel.conditions().size());
 
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 
@@ -69,7 +68,7 @@ public class DefaultEntityConditionModelTest {
 		EntityConditionModel model = new DefaultEntityConditionModel(Detail.TYPE,
 						CONNECTION_PROVIDER, new EntityConditionModelFactory(CONNECTION_PROVIDER));
 		//no search columns defined for master entity
-		ConditionModel<Attribute<?>, Entity> masterModel =
+		ConditionModel<Entity> masterModel =
 						model.attribute(Detail.MASTER_FK);
 		assertThrows(IllegalStateException.class, () ->
 						((ForeignKeyConditionModel) masterModel).equalSearchModel().search());
@@ -92,7 +91,7 @@ public class DefaultEntityConditionModelTest {
 		boolean searchStateChanged = conditionModel.setEqualOperand(Employee.DEPARTMENT_FK, sales);
 		assertTrue(searchStateChanged);
 		assertTrue(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
-		ConditionModel<Attribute<?>, Entity> deptModel =
+		ConditionModel<Entity> deptModel =
 						conditionModel.attribute(Employee.DEPARTMENT_FK);
 		assertSame(deptModel.operands().equal().get(), sales);
 		assertThrows(NullPointerException.class, () -> conditionModel.setEqualOperand(null, sales));
@@ -109,7 +108,7 @@ public class DefaultEntityConditionModelTest {
 		boolean searchStateChanged = conditionModel.setInOperands(Employee.DEPARTMENT_FK, asList(sales, accounting));
 		assertTrue(searchStateChanged);
 		assertTrue(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
-		ConditionModel<Attribute<?>, Entity> deptModel =
+		ConditionModel<Entity> deptModel =
 						conditionModel.attribute(Employee.DEPARTMENT_FK);
 		assertTrue(deptModel.operands().in().get().contains(sales));
 		assertTrue(deptModel.operands().in().get().contains(accounting));

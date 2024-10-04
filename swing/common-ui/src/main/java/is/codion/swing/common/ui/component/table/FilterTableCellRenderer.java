@@ -160,7 +160,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		 * @param condition the filter condition model, may be null
 		 * @return this builder instance
 		 */
-		Builder<C> condition(ConditionModel<C, ?> condition);
+		Builder<C> condition(ConditionModel<?> condition);
 
 		/**
 		 * @param horizontalAlignment the horizontal alignment
@@ -294,7 +294,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 			focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
 		}
 
-		protected final Color backgroundColor(ConditionModel<C, ?> conditionModel, int row, C identifier, boolean columnShading,
+		protected final Color backgroundColor(ConditionModel<?> conditionModel, int row, C identifier, boolean columnShading,
 																					boolean selected, Color cellBackgroundColor) {
 			cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
 			if (columnShading) {
@@ -321,7 +321,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		 * @param cellBackgroundColor the cell specific background color, if any
 		 * @return a shaded background color
 		 */
-		protected Color backgroundColorShaded(ConditionModel<C, ?> conditionModel, int row, C identifier, Color cellBackgroundColor) {
+		protected Color backgroundColorShaded(ConditionModel<?> conditionModel, int row, C identifier, Color cellBackgroundColor) {
 			if (conditionModel != null && conditionModel.enabled().get()) {
 				return backgroundShaded(row, cellBackgroundColor);
 			}

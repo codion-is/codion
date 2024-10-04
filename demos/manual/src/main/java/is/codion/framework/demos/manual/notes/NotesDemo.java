@@ -183,7 +183,7 @@ public final class NotesDemo {
 			super(new NoteEditModel(connectionProvider));
 			onInsert().set(OnInsert.ADD_TOP_SORTED);
 			// Case-insensitive note search with automatic wildcards
-			ConditionModel<?, ?> noteCondition = queryModel().conditions().get(Note.NOTE);
+			ConditionModel<String> noteCondition = queryModel().conditions().get(Note.NOTE);
 			noteCondition.caseSensitive().set(false);
 			noteCondition.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
 		}

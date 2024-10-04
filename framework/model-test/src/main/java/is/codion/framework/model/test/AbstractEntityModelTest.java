@@ -26,7 +26,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.DefaultEntityModel;
@@ -234,7 +233,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		TableModel empTableModel = employeeModel.tableModel();
 		EditModel empEditModel = employeeModel.editModel();
 		Value<Entity> departmentEditModelValue = empEditModel.value(Employee.DEPARTMENT_FK);
-		ConditionModel<Attribute<?>, Entity> deptCondition = empTableModel.queryModel()
+		ConditionModel<Entity> deptCondition = empTableModel.queryModel()
 						.conditions()
 						.get(Employee.DEPARTMENT_FK);
 

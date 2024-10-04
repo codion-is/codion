@@ -49,7 +49,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -85,10 +84,10 @@ import static javax.swing.SwingConstants.CENTER;
 
 /**
  * A UI implementation for {@link ConditionModel}.
- * For instances use {@link #builder(ConditionModel)}.
- * @param <C> the type of objects used to identify columns
+ * For instances use {@link #builder(ConditionModel, Object)}.
+ * @param <C> the column identifies type
  * @param <T> the column value type
- * @see #builder(ConditionModel)
+ * @see #builder(ConditionModel, Object)
  */
 public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel<C, T> {
 
@@ -142,7 +141,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	private boolean initialized = false;
 
 	private FilterColumnConditionPanel(DefaultBuilder<C, T> builder) {
-		super(builder.condition, builder.caption);
+		super(builder.condition, builder.identifier, builder.caption);
 		this.fieldFactory = builder.fieldFactory;
 		this.tableColumn = builder.tableColumn;
 	}
@@ -241,12 +240,13 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	/**
 	 * @param condition the condition model
+	 * @param identifier the column identifier
 	 * @param <C> the condition identifier type
 	 * @param <T> the condition value type
 	 * @return a new {@link Builder}
 	 */
-	public static <C, T> Builder<C, T> builder(ConditionModel<C, T> condition) {
-		return new DefaultBuilder<>(condition);
+	public static <C, T> Builder<C, T> builder(ConditionModel<T> condition, C identifier) {
+		return new DefaultBuilder<>(condition, identifier);
 	}
 
 	/**
@@ -283,15 +283,17 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private static final class DefaultBuilder<C, T> implements Builder<C, T> {
 
-		private final ConditionModel<C, T> condition;
+		private final ConditionModel<T> condition;
+		private final C identifier;
 
 		private String caption;
 		private FieldFactory<C> fieldFactory = new DefaultFilterFieldFactory<>();
 		private TableColumn tableColumn;
 
-		private DefaultBuilder(ConditionModel<C, T> condition) {
+		private DefaultBuilder(ConditionModel<T> condition, C identifier) {
 			this.condition = requireNonNull(condition);
-			this.caption = condition.identifier().toString();
+			this.identifier = requireNonNull(identifier);
+			this.caption = identifier.toString();
 		}
 
 		@Override
@@ -323,7 +325,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	/**
-	 * Provides equal, upper and lower bound input fields for a ColumnConditionPanel
+	 * Provides equal, upper and lower bound input fields for a {@link FilterColumnConditionPanel}
 	 */
 	public interface FieldFactory<C> {
 
@@ -335,47 +337,55 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 		/**
 		 * Creates the field representing the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operand, linked to {@link Operands#equal()}
+		 * @param condition the condition model
+		 * @param identifier the column identifier
 		 * @return the equal value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		JComponent createEqualField(ConditionModel<C, ?> condition);
+		JComponent createEqualField(ConditionModel<?> condition, C identifier);
 
 		/**
 		 * Creates the field representing the upper bound operand, linked to {@link Operands#upperBound()}
+		 * @param condition the condition model
+		 * @param identifier the column identifier
 		 * @return an upper bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		Optional<JComponent> createUpperBoundField(ConditionModel<C, ?> condition);
+		Optional<JComponent> createUpperBoundField(ConditionModel<?> condition, C identifier);
 
 		/**
 		 * Creates the field representing the lower bound operand, linked to {@link Operands#lowerBound()}
+		 * @param condition the condition model
+		 * @param identifier the column identifier
 		 * @return a lower bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		Optional<JComponent> createLowerBoundField(ConditionModel<C, ?> condition);
+		Optional<JComponent> createLowerBoundField(ConditionModel<?> condition, C identifier);
 
 		/**
 		 * Creates the field representing the {@link Operator#IN} operands, linked to {@link Operands#in()}
+		 * @param condition the condition model
+		 * @param identifier the column identifier
 		 * @return the in value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		JComponent createInField(ConditionModel<C, ?> condition);
+		JComponent createInField(ConditionModel<?> condition, C identifier);
 	}
 
 	private JComponent createEqualField(FieldFactory<C> fieldFactory) {
-		return equalFieldRequired() ? fieldFactory.createEqualField(condition()) : null;
+		return equalFieldRequired() ? fieldFactory.createEqualField(condition(), identifier()) : null;
 	}
 
 	private JComponent createUpperBoundField(FieldFactory<C> fieldFactory) {
-		return upperBoundFieldRequired() ? fieldFactory.createUpperBoundField(condition()).orElse(null) : null;
+		return upperBoundFieldRequired() ? fieldFactory.createUpperBoundField(condition(), identifier()).orElse(null) : null;
 	}
 
 	private JComponent createLowerBoundField(FieldFactory<C> fieldFactory) {
-		return lowerBoundFieldRequired() ? fieldFactory.createLowerBoundField(condition()).orElse(null) : null;
+		return lowerBoundFieldRequired() ? fieldFactory.createLowerBoundField(condition(), identifier()).orElse(null) : null;
 	}
 
 	private JComponent createInField(FieldFactory<C> fieldFactory) {
-		return inFieldRequired() ? fieldFactory.createInField(condition()) : null;
+		return inFieldRequired() ? fieldFactory.createInField(condition(), identifier()) : null;
 	}
 
 	private boolean equalFieldRequired() {
@@ -435,7 +445,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private void configureHorizontalAlignment(JComponent component) {
 		if (component instanceof JCheckBox) {
-			((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
+			((JCheckBox) component).setHorizontalAlignment(CENTER);
 		}
 		else if (tableColumn != null) {
 			TableCellRenderer cellRenderer = tableColumn.getCellRenderer();
@@ -459,7 +469,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		linkToEnabledState(condition().locked().not(),
 						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
 		components().forEach(component ->
-						component.addFocusListener(new FocusGained(condition().identifier())));
+						component.addFocusListener(new FocusGained(identifier())));
 
 		Collection<JComponent> fields = Stream.of(operatorCombo, toggleEnabledButton, equalField, upperBoundField, lowerBoundField, inField)
 						.filter(Objects::nonNull)

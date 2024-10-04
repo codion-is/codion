@@ -106,7 +106,7 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	 * @return the {@link ConditionModel} associated with {@code attribute}
 	 * @throws IllegalArgumentException in case no condition model exists for the given attribute
 	 */
-	<T> ConditionModel<Attribute<?>, T> attribute(Attribute<T> attribute);
+	<T> ConditionModel<T> attribute(Attribute<T> attribute);
 
 	/**
 	 * Creates a new {@link EntityConditionModel}
@@ -126,7 +126,7 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	 * @return a new {@link EntityConditionModel} instance
 	 */
 	static EntityConditionModel entityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-																									 ConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+																									 ConditionModelFactory<Attribute<?>> conditionModelFactory) {
 		return new DefaultEntityConditionModel(entityType, connectionProvider, conditionModelFactory);
 	}
 

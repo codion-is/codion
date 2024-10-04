@@ -24,7 +24,6 @@ import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -43,16 +42,16 @@ import static java.util.Objects.requireNonNull;
  * and a {@link EntitySearchModel} for the {@link Operator#IN} operands.
  * @see #builder(ForeignKey)
  */
-public final class SwingForeignKeyConditionModel implements ConditionModel<Attribute<?>, Entity> {
+public final class SwingForeignKeyConditionModel implements ConditionModel<Entity> {
 
-	private final ConditionModel<ForeignKey, Entity> condition;
+	private final ConditionModel<Entity> condition;
 	private final EntityComboBoxModel equalComboBoxModel;
 	private final EntitySearchModel inSearchModel;
 
 	private boolean updatingModel = false;
 
 	private SwingForeignKeyConditionModel(DefaultBuilder builder) {
-		this.condition = ConditionModel.builder(builder.foreignKey, Entity.class)
+		this.condition = ConditionModel.builder(Entity.class)
 						.operators(builder.operators())
 						.operator(defaultOperator(builder))
 						.build();
@@ -83,11 +82,6 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Attri
 		}
 
 		return inSearchModel;
-	}
-
-	@Override
-	public Attribute<?> identifier() {
-		return condition.identifier();
 	}
 
 	@Override

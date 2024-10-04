@@ -124,7 +124,7 @@ public class EntityTablePanelTest {
 		column.setWidth(150);//timestamp
 		column = columnModel.getColumn(5);
 		column.setWidth(170);//entity_ref
-		ConditionModel<Attribute<?>, String> condition =
+		ConditionModel<String> condition =
 						testModel.queryModel().conditions().attribute(Detail.STRING);
 		condition.autoEnable().set(false);
 		condition.automaticWildcard().set(AutomaticWildcard.PREFIX);

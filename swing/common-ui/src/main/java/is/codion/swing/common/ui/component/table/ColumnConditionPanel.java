@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class ColumnConditionPanel<C, T> extends JPanel {
 
-	private final ConditionModel<C, T> condition;
+	private final ConditionModel<T> condition;
 	private final Value<ConditionState> conditionState = Value.builder()
 					.nonNull(HIDDEN)
 					.consumer(this::onStateChanged)
@@ -66,6 +66,7 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 		ADVANCED
 	}
 
+	private final C identifier;
 	private final String caption;
 
 	/**
@@ -73,8 +74,8 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 * identifier as caption.
 	 * @param condition the condition model
 	 */
-	protected ColumnConditionPanel(ConditionModel<C, T> condition) {
-		this(requireNonNull(condition), condition.identifier().toString());
+	protected ColumnConditionPanel(ConditionModel<T> condition, C identifier) {
+		this(requireNonNull(condition), identifier, identifier.toString());
 		configureStates();
 	}
 
@@ -83,16 +84,24 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 * @param condition the condition model
 	 * @param caption the caption to use when presenting this condition panel
 	 */
-	protected ColumnConditionPanel(ConditionModel<C, T> condition, String caption) {
+	protected ColumnConditionPanel(ConditionModel<T> condition, C identifier, String caption) {
 		this.condition = requireNonNull(condition);
+		this.identifier = requireNonNull(identifier);
 		this.caption = requireNonNull(caption);
 	}
 
 	/**
 	 * @return the condition model this panel is based on
 	 */
-	public final ConditionModel<C, T> condition() {
+	public final ConditionModel<T> condition() {
 		return condition;
+	}
+
+	/**
+	 * @return the column identifier
+	 */
+	public final C identifier() {
+		return identifier;
 	}
 
 	/**
