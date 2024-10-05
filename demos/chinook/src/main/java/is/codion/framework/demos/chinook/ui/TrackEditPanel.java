@@ -27,7 +27,7 @@ import javax.swing.JPanel;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -61,13 +61,9 @@ public final class TrackEditPanel extends EntityEditPanel {
 						.includeEditButton(true);
 		createTextFieldPanel(Track.COMPOSER)
 						.columns(12);
-		createIntegerField(Track.MILLISECONDS)
-						.columns(5);
 
-		MinutesSecondsPanelValue minutesSecondsValue = new MinutesSecondsPanelValue();
-		addValidator(Track.MILLISECONDS, minutesSecondsValue.component().minutesField);
-		addValidator(Track.MILLISECONDS, minutesSecondsValue.component().secondsField);
-		minutesSecondsValue.link(editModel().value(Track.MILLISECONDS));
+		DurationComponentValue durationValue = createDurationValue();
+		component(Track.MILLISECONDS).set(durationValue.component());
 
 		createIntegerField(Track.BYTES)
 						.columns(6);
@@ -76,15 +72,14 @@ public final class TrackEditPanel extends EntityEditPanel {
 		createTextField(Track.UNITPRICE)
 						.columns(4);
 
-		JPanel genreMediaTypePanel = flexibleGridLayoutPanel(1, 2)
+		JPanel genreMediaTypePanel = gridLayoutPanel(1, 2)
 						.add(createInputPanel(Track.GENRE_FK))
 						.add(createInputPanel(Track.MEDIATYPE_FK))
 						.build();
 
-		JPanel durationPanel = flexibleGridLayoutPanel(1, 3)
+		JPanel durationPanel = gridLayoutPanel(1, 2)
 						.add(createInputPanel(Track.BYTES))
-						.add(createInputPanel(Track.MILLISECONDS))
-						.add(minutesSecondsValue.component())
+						.add(durationValue.component())
 						.build();
 
 		JPanel unitPricePanel = borderLayoutPanel()
@@ -107,6 +102,16 @@ public final class TrackEditPanel extends EntityEditPanel {
 
 	private GenreEditPanel createGenreEditPanel() {
 		return new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider()));
+	}
+
+	private DurationComponentValue createDurationValue() {
+		DurationComponentValue durationValue = new DurationComponentValue();
+		addValidator(Track.MILLISECONDS, durationValue.component().minutesField);
+		addValidator(Track.MILLISECONDS, durationValue.component().secondsField);
+		addValidator(Track.MILLISECONDS, durationValue.component().millisecondsField);
+		durationValue.link(editModel().value(Track.MILLISECONDS));
+
+		return durationValue;
 	}
 
 	private void addKeyEvents() {

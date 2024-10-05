@@ -77,14 +77,16 @@ public final class ChinookImpl extends DomainModel {
 														.nullable(false)
 														.maximumLength(120),
 										Artist.NUMBER_OF_ALBUMS.define()
-														.subquery("SELECT COUNT(*) " +
-																		"FROM chinook.album " +
-																		"WHERE album.artistid = artist.artistid"),
+														.subquery("""
+																		SELECT COUNT(*)
+																		FROM chinook.album
+																		WHERE album.artistid = artist.artistid"""),
 										Artist.NUMBER_OF_TRACKS.define()
-														.subquery("SELECT count(*) " +
-																		"FROM chinook.track " +
-																		"JOIN chinook.album ON track.albumid = album.albumid " +
-																		"WHERE album.artistid = artist.artistid"))
+														.subquery("""
+																		SELECT count(*)
+																		FROM chinook.track
+																		JOIN chinook.album ON track.albumid = album.albumid
+																		WHERE album.artistid = artist.artistid"""))
 						.tableName("chinook.artist")
 						.keyGenerator(identity())
 						.orderBy(ascending(Artist.NAME))
@@ -111,14 +113,16 @@ public final class ChinookImpl extends DomainModel {
 														.column()
 														.format(new CoverFormatter()),
 										Album.NUMBER_OF_TRACKS.define()
-														.subquery("SELECT COUNT(*) FROM chinook.track " +
-																		"WHERE track.albumid = album.albumid"),
+														.subquery("""
+																		SELECT COUNT(*) FROM chinook.track
+																		WHERE track.albumid = album.albumid"""),
 										Album.TAGS.define()
 														.column()
 														.columnClass(Array.class, new TagsConverter(), ResultSet::getArray),
 										Album.RATING.define()
-														.subquery("SELECT AVG(rating) FROM chinook.track " +
-																		"WHERE track.albumid = album.albumid"))
+														.subquery("""
+																		SELECT AVG(rating) FROM chinook.track
+																		WHERE track.albumid = album.albumid"""))
 						.tableName("chinook.album")
 						.keyGenerator(identity())
 						.orderBy(ascending(Album.ARTIST_ID, Album.TITLE))
@@ -317,8 +321,6 @@ public final class ChinookImpl extends DomainModel {
 														.column()
 														.nullable(false)
 														.format(NumberFormat.getIntegerInstance()),
-										Track.MINUTES_SECONDS.define()
-														.derived(new TrackMinSecProvider(), Track.MILLISECONDS),
 										Track.BYTES.define()
 														.column()
 														.format(NumberFormat.getIntegerInstance()),
@@ -381,9 +383,10 @@ public final class ChinookImpl extends DomainModel {
 														.column()
 														.maximumFractionDigits(2),
 										Invoice.CALCULATED_TOTAL.define()
-														.subquery("SELECT SUM(unitprice * quantity) " +
-																		"FROM chinook.invoiceline " +
-																		"WHERE invoiceid = invoice.invoiceid")
+														.subquery("""
+																		SELECT SUM(unitprice * quantity)
+																		FROM chinook.invoiceline
+																		WHERE invoiceid = invoice.invoiceid""")
 														.maximumFractionDigits(2))
 						.tableName("chinook.invoice")
 						// tag::identity[]
@@ -498,11 +501,12 @@ public final class ChinookImpl extends DomainModel {
 
 		@Override
 		public String toString(List<Column<?>> columns, List<?> values) {
-			return new StringBuilder()
-							.append("trackid NOT IN (\n")
-							.append("    SELECT trackid\n")
-							.append("    FROM chinook.playlisttrack\n")
-							.append("    WHERE playlistid IN (").append(join(", ", nCopies(values.size(), "?"))).append(")\n")
+			return new StringBuilder("""
+							trackid NOT IN (
+							    SELECT trackid
+							    FROM chinook.playlisttrack
+							    WHERE playlistid IN (""")
+							.append(join(", ", nCopies(values.size(), "?"))).append(")\n")
 							.append(")")
 							.toString();
 		}

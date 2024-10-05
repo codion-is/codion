@@ -51,6 +51,11 @@ include::{dir-test-source}/is/codion/framework/demos/chinook/domain/ChinookTest.
 
 [source,java]
 ----
+include::{dir-source}/is/codion/framework/demos/chinook/model/AlbumModel.java[lines=19..-1]
+----
+
+[source,java]
+----
 include::{dir-source}/is/codion/framework/demos/chinook/model/InvoiceModel.java[lines=19..-1]
 ----
 
@@ -81,6 +86,11 @@ include::{dir-source}/is/codion/framework/demos/chinook/model/PlaylistTrackEditM
 
 [source,java]
 ----
+include::{dir-source}/is/codion/framework/demos/chinook/model/TrackEditModel.java[lines=19..-1]
+----
+
+[source,java]
+----
 include::{dir-source}/is/codion/framework/demos/chinook/model/TrackTableModel.java[lines=19..-1]
 ----
 
@@ -98,6 +108,11 @@ include::{dir-source}/is/codion/framework/demos/chinook/model/ChinookAppModel.ja
 ----
 
 === Model unit test
+
+[source,java]
+----
+include::{dir-test-source}/is/codion/framework/demos/chinook/model/AlbumModelTest.java[lines=19..-1]
+----
 
 [source,java]
 ----
@@ -179,11 +194,6 @@ include::{dir-source}/is/codion/framework/demos/chinook/ui/AlbumTablePanel.java[
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/RatingCellRendererFactory.java[lines=19..-1]
-----
-
-[source,java]
-----
 include::{dir-source}/is/codion/framework/demos/chinook/ui/CoverArtPanel.java[lines=19..-1]
 ----
 
@@ -199,7 +209,7 @@ include::{dir-source}/is/codion/framework/demos/chinook/ui/TrackEditPanel.java[l
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/MinutesSecondsPanelValue.java[lines=19..-1]
+include::{dir-source}/is/codion/framework/demos/chinook/ui/DurationComponentValue.java[lines=19..-1]
 ----
 
 [source,java]

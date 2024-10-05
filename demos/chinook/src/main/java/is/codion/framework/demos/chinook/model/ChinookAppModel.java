@@ -24,7 +24,7 @@ import is.codion.framework.model.ForeignKeyDetailModelLink;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
-import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
 
 public final class ChinookAppModel extends SwingEntityApplicationModel {
 
@@ -38,12 +38,7 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 	}
 
 	private static SwingEntityModel createAlbumModel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
-		SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
-		trackModel.editModel().initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
-
-		albumModel.addDetailModel(trackModel);
-
+		AlbumModel albumModel = new AlbumModel(connectionProvider);
 		albumModel.tableModel().refresh();
 
 		return albumModel;
