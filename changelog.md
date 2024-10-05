@@ -73,6 +73,7 @@ Codion Change Log
 - FilterTableSearchModel.searchPredicate() renamed predicate().
 - FileInputPanel.Builder now Path based.
 - FileInputPanel.BuilderFactory added, now Path or byte[] based.
+- DefaultFilterTableCellEditor.isCellEditable() now returns true for events other than double click, in order to respect the default cell editor table action.
 ### is.codion.framework.model
 - EntityComboBoxModel.linkForeignKeyFilterComboBoxModel() and linkForeignKeyConditionComboBoxModel() replaced with foreignKeyComboBoxModelLinker() returning a ForeignKeyComboBoxModelLinker.
 - EntityTableModel.rowCount() removed.

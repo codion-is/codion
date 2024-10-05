@@ -77,7 +77,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 			return ((MouseEvent) event).getClickCount() >= 2;
 		}
 
-		return false;
+		return true;
 	}
 
 	private ComponentValue<T, ? extends JComponent> initializeComponentValue() {
