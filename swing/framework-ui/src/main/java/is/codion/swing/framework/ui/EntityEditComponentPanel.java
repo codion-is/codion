@@ -210,10 +210,11 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Request focus for the component associated with the given attribute.
 	 * If no component is associated with the attribute calling this method has no effect.
+	 * Uses {@link JComponent#requestFocusInWindow()}.
 	 * @param attribute the attribute of the component to select
 	 */
 	public final void requestComponentFocus(Attribute<?> attribute) {
-		component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocus());
+		component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocusInWindow());
 	}
 
 	/**

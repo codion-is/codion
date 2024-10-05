@@ -174,13 +174,13 @@ final class DefaultEntityConditions implements EntityConditions {
 
 	private Condition createCondition(Conjunction conjunction, Predicate<Attribute<?>> columnType,
 																		AdditionalCondition additional) {
-		Condition columnConditions = columnConditions(conjunction, columnType);
+		Condition conditions = columnConditions(conjunction, columnType);
 		Condition additionalCondition = additional.get().get();
 		if (additionalCondition == null) {
-			return columnConditions;
+			return conditions;
 		}
 
-		return combination(additional.conjunction().get(), columnConditions, additionalCondition);
+		return combination(additional.conjunction().get(), conditions, additionalCondition);
 	}
 
 	private Condition columnConditions(Conjunction conjunction, Predicate<Attribute<?>> columnType) {

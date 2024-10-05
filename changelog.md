@@ -42,6 +42,7 @@ Codion Change Log
 - EntityTableCellRenderer removed.
 - EntityTableCellEditorFactory.builder() now final, tableCellRenderer() no longer final.
 - EntityTableCellRendererBuilder, query condition model cache removed.
+- EntityEditComponentPanel.requestComponentFocus() now uses requestFocusInWindow() instead of requestFocus().
 
 ## 0.18.16
 ### is.codion.common.core
