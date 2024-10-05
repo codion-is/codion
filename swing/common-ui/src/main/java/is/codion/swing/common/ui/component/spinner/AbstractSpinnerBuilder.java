@@ -116,6 +116,10 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 	}
 
 	protected JSpinner createSpinner() {
+		if (editable) {
+			return new FocusEditorSpinner(spinnerModel);
+		}
+
 		return new JSpinner(spinnerModel);
 	}
 
@@ -139,6 +143,18 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 			if (!Objects.equals(event.getNewValue(), horizontalAlignment)) {
 				editorField.setHorizontalAlignment(horizontalAlignment);
 			}
+		}
+	}
+
+	private static final class FocusEditorSpinner extends JSpinner {
+
+		private FocusEditorSpinner(SpinnerModel model) {
+			super(model);
+		}
+
+		@Override
+		public void requestFocus() {
+			getEditor().requestFocus();
 		}
 	}
 }

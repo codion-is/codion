@@ -74,6 +74,7 @@ Codion Change Log
 - FileInputPanel.Builder now Path based.
 - FileInputPanel.BuilderFactory added, now Path or byte[] based.
 - DefaultFilterTableCellEditor.isCellEditable() now returns true for events other than double click, in order to respect the default cell editor table action.
+- AbstractSpinnerBuilder, editable spinner now overridden in order for the editor to receive the focus when used as a cell editor.
 ### is.codion.framework.model
 - EntityComboBoxModel.linkForeignKeyFilterComboBoxModel() and linkForeignKeyConditionComboBoxModel() replaced with foreignKeyComboBoxModelLinker() returning a ForeignKeyComboBoxModelLinker.
 - EntityTableModel.rowCount() removed.
