@@ -18,9 +18,10 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParser.NumberParseResult;
 
 import javax.swing.text.AttributeSet;
@@ -46,6 +47,8 @@ import static java.util.ResourceBundle.getBundle;
  * A Document implementation for numerical values
  */
 class NumberDocument<T extends Number> extends PlainDocument {
+
+	private final MutableNumber number = new MutableNumber();
 
 	NumberDocument(NumberFormat format, Class<T> clazz) {
 		this(new NumberParsingDocumentFilter<>(new NumberParser<>(format, clazz)));
@@ -98,8 +101,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		}
 	}
 
-	final ValueObserver<T> value() {
-		return getDocumentFilter().value.observer();
+	final Mutable<T> number() {
+		return number;
 	}
 
 	void setTextComponent(JTextComponent textComponent) {
@@ -107,9 +110,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 	}
 
 	void setGroupingUsed(boolean groupingUsed) {
-		T number = getNumber();
+		T value = getNumber();
 		getFormat().setGroupingUsed(groupingUsed);
-		setNumber(number);
+		setNumber(value);
 	}
 
 	void setSeparators(char decimalSeparator, char groupingSeparator) {
@@ -119,9 +122,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
 		symbols.setDecimalSeparator(decimalSeparator);
 		symbols.setGroupingSeparator(groupingSeparator);
-		T number = getNumber();
+		T value = getNumber();
 		((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-		setNumber(number);
+		setNumber(value);
 	}
 
 	void setDecimalSeparator(char decimalSeparator) {
@@ -130,9 +133,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			symbols.setGroupingSeparator(symbols.getDecimalSeparator());
 		}
 		symbols.setDecimalSeparator(decimalSeparator);
-		T number = getNumber();
+		T value = getNumber();
 		((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-		setNumber(number);
+		setNumber(value);
 	}
 
 	void setGroupingSeparator(char groupingSeparator) {
@@ -141,9 +144,27 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			symbols.setDecimalSeparator(symbols.getGroupingSeparator());
 		}
 		symbols.setGroupingSeparator(groupingSeparator);
-		T number = getNumber();
+		T value = getNumber();
 		((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-		setNumber(number);
+		setNumber(value);
+	}
+
+	private final class MutableNumber implements Mutable<T> {
+
+		@Override
+		public void set(T value) {
+			setNumber(value);
+		}
+
+		@Override
+		public T get() {
+			return getNumber();
+		}
+
+		@Override
+		public Observer<T> observer() {
+			return getDocumentFilter().value.observer();
+		}
 	}
 
 	static class NumberParser<T extends Number> implements Parser<T> {

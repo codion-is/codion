@@ -32,6 +32,7 @@ Codion Change Log
 - TableConditionPanel.conditionModel() renamed conditions().
 - FilterTable.Builder.resizeRowToFitEditor() added along with RESIZE_ROW_TO_FIT_EDITOR configuration value.
 - FilterColumnConditionPanel.FieldFactory, type parameter added to create methods.
+- NumberField.getNumber(), setNumber() and value() replaced with Mutable number().
 ### is.codion.framework.model
 - DefaultEntityConditionModel, no longer wraps a single condition in a condition combination.
 - EntityConditionModel.AdditionalCondition added, related refactoring.

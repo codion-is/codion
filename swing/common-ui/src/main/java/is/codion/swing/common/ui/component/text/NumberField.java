@@ -19,9 +19,9 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.Configuration;
+import is.codion.common.observer.Mutable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParsingDocumentFilter;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -99,20 +99,6 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 */
 	public void setGroupingUsed(boolean groupingUsed) {
 		document().setGroupingUsed(groupingUsed);
-	}
-
-	/**
-	 * @param number the number to display in this field
-	 */
-	public void setNumber(T number) {
-		document().setNumber(number);
-	}
-
-	/**
-	 * @return the number being displayed in this field
-	 */
-	public T getNumber() {
-		return document().getNumber();
 	}
 
 	/**
@@ -239,10 +225,10 @@ public final class NumberField<T extends Number> extends HintTextField {
 	}
 
 	/**
-	 * @return an observer notified each time the underlying value changes
+	 * @return a {@link Mutable} instance for the underlying number
 	 */
-	public ValueObserver<T> value() {
-		return document().value();
+	public Mutable<T> number() {
+		return document().number();
 	}
 
 	/**
@@ -622,7 +608,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected Short getComponentValue() {
-			Number number = component().getNumber();
+			Number number = component().number().get();
 			if (number == null) {
 				return nullable() ? null : (short) 0;
 			}
@@ -632,7 +618,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(Short value) {
-			component().setNumber(value);
+			component().number().set(value);
 		}
 	}
 
@@ -644,7 +630,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected Double getComponentValue() {
-			Number number = component().getNumber();
+			Number number = component().number().get();
 			if (number == null) {
 				return nullable() ? null : 0d;
 			}
@@ -654,7 +640,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(Double value) {
-			component().setNumber(value);
+			component().number().set(value);
 		}
 	}
 
@@ -666,7 +652,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected Integer getComponentValue() {
-			Number number = component().getNumber();
+			Number number = component().number().get();
 			if (number == null) {
 				return nullable() ? null : 0;
 			}
@@ -676,7 +662,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(Integer value) {
-			component().setNumber(value);
+			component().number().set(value);
 		}
 	}
 
@@ -688,7 +674,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected Long getComponentValue() {
-			Number number = component().getNumber();
+			Number number = component().number().get();
 			if (number == null) {
 				return nullable() ? null : 0L;
 			}
@@ -698,7 +684,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(Long value) {
-			component().setNumber(value);
+			component().number().set(value);
 		}
 	}
 
@@ -710,7 +696,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected BigDecimal getComponentValue() {
-			BigDecimal number = component().getNumber();
+			BigDecimal number = component().number().get();
 			if (number == null) {
 				return nullable() ? null : BigDecimal.ZERO;
 			}
@@ -720,7 +706,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(BigDecimal value) {
-			component().setNumber(value);
+			component().number().set(value);
 		}
 	}
 }

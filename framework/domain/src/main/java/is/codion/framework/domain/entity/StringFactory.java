@@ -34,7 +34,6 @@ import static java.util.stream.Collectors.joining;
 
 /**
  * Factory class for building functions for String representations of {@link Entity} instances.
- * <p>
  * <pre>
  * {@code
  *   interface Department {
