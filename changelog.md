@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.18
+
 ## 0.18.17
 ### is.codion.common.core
 - Value.Builder.initialValue() renamed value.
