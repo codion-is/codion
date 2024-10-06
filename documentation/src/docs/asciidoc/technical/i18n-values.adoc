@@ -69,12 +69,12 @@ is/codion/common/i18n/Messages_is_IS.properties
 
 == codion-common-model
 
-=== is/codion/common/model/condition/ConditionModel$AutomaticWildcard.java
+=== is/codion/common/model/condition/ConditionModel$Wildcard.java
 
 [source]
 ----
-is/codion/common/model/condition/ConditionModel$AutomaticWildcard.properties
-is/codion/common/model/condition/ConditionModel$AutomaticWildcard_is_IS.properties
+is/codion/common/model/condition/ConditionModel$Wildcard.properties
+is/codion/common/model/condition/ConditionModel$Wildcard_is_IS.properties
 ----
 
 [cols="1,1,1"]
@@ -437,6 +437,24 @@ is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 |today_mnemonic|T|D
 |===
 
+=== is/codion/swing/common/ui/component/table/ColumnConditionsPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/table/ColumnConditionsPanel.properties
+is/codion/swing/common/ui/component/table/ColumnConditionsPanel_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|advanced|Advanced|Nákvæm
+|hidden|Hidden|Falin
+|select_condition|Select condition|Veldu leitarreit
+|simple|Simple|Einföld
+|===
+
 === is/codion/swing/common/ui/component/table/ColumnSelectionPanel.java
 
 [source]
@@ -468,8 +486,8 @@ is/codion/swing/common/ui/component/table/FilterColumnConditionPanel_is_IS.prope
 |key|default|is_IS
 
 |auto_enable|Auto-enable|Virkja sjálfkrafa
-|automatic_wildcard|Automatic wildcard|Sjálfkrafa algildi
 |case_sensitive|Case-sensitive|Hástafanæmni
+|wildcard|Wildcard|Algildi
 |===
 
 === is/codion/swing/common/ui/component/table/FilterTable.java
@@ -498,24 +516,6 @@ is/codion/swing/common/ui/component/table/FilterTable_is_IS.properties
 |select|Select|Velja
 |select_columns|Select columns|Velja dálka
 |single_selection_mode|Single selection|Einnar línu val
-|===
-
-=== is/codion/swing/common/ui/component/table/TableConditionsPanel.java
-
-[source]
-----
-is/codion/swing/common/ui/component/table/TableConditionsPanel.properties
-is/codion/swing/common/ui/component/table/TableConditionsPanel_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|advanced|Advanced|Nákvæm
-|hidden|Hidden|Falin
-|select_condition|Select condition|Veldu leitarreit
-|simple|Simple|Einföld
 |===
 
 === is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFilter.java
