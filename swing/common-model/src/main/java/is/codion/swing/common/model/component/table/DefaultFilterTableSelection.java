@@ -523,7 +523,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 			event.accept(get());
 		}
 
-		private static <T> Collection<T> rejectNulls(Collection<T> items) {
+		private <T> Collection<T> rejectNulls(Collection<T> items) {
 			for (T item : requireNonNull(items)) {
 				requireNonNull(item);
 			}

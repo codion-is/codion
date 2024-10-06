@@ -813,6 +813,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 		/**
 		 * @param modifiedWarning specifies whether this edit panel presents a warning before discarding unsaved modifications
+		 * @return this Config instance
 		 * @see #MODIFIED_WARNING
 		 * @see EntityEditModel.EditableEntity#edited()
 		 */

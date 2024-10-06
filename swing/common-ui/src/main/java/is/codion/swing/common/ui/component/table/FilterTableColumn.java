@@ -129,11 +129,12 @@ public final class FilterTableColumn<C> extends TableColumn {
 	/**
 	 * Instantiates a new enum based {@link FilterTableColumn.Builder}.
 	 * The enum ordinal position is used as the column model index
+	 * @param <C> the column identifier type
 	 * @param identifier the column identifier
 	 * @return a new {@link FilterTableColumn.Builder} instance
 	 * @see Enum#ordinal()
 	 */
-	public static <T extends Enum<T>> FilterTableColumn.Builder<T> builder(T identifier) {
+	public static <C extends Enum<C>> FilterTableColumn.Builder<C> builder(C identifier) {
 		return builder(identifier, identifier.ordinal());
 	}
 

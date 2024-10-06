@@ -112,6 +112,7 @@ public interface Control extends Action {
 
 	/**
 	 * Returns a new {@link Control.Builder} instance, based on a copy of this control.
+	 * @param <C> the control type
 	 * @param <B> the builder type
 	 * @return a new builder
 	 */
