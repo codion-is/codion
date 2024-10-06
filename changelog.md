@@ -3,6 +3,9 @@ Codion Change Log
 
 ## 0.18.18
 
+### is.codion.swing.framework.ui
+- EntityApplicationPanel.Builder.ConnectionProviderFactory.createConnectionProvider() renamed create().
+
 ## 0.18.17
 ### is.codion.common.core
 - Value.Builder.initialValue() renamed value.

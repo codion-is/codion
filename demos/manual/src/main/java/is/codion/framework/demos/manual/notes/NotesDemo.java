@@ -281,10 +281,10 @@ public final class NotesDemo {
 	private static final class NotesConnectionProviderFactory implements ConnectionProviderFactory {
 
 		@Override
-		public EntityConnectionProvider createConnectionProvider(User user,
-																														 DomainType domainType,
-																														 String clientTypeId,
-																														 Version clientVersion) {
+		public EntityConnectionProvider create(User user,
+																					 DomainType domainType,
+																					 String clientTypeId,
+																					 Version clientVersion) {
 			Database database = new H2DatabaseFactory()
 							.createDatabase("jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1");
 

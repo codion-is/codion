@@ -194,8 +194,8 @@ public final class ClientTutorial {
 	private static final class LocalConnectionProviderFactory implements ConnectionProviderFactory {
 
 		@Override
-		public EntityConnectionProvider createConnectionProvider(User user, DomainType domainType,
-																														 String clientTypeId, Version clientVersion) {
+		public EntityConnectionProvider create(User user, DomainType domainType,
+																					 String clientTypeId, Version clientVersion) {
 			return LocalEntityConnectionProvider.builder()
 							.user(user)
 							.domain(new Chinook())

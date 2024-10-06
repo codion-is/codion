@@ -1334,7 +1334,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 			 * @param clientVersion the client version
 			 * @return a new {@link EntityConnectionProvider} instance.
 			 */
-			default EntityConnectionProvider createConnectionProvider(User user, DomainType domainType, String clientTypeId, Version clientVersion) {
+			default EntityConnectionProvider create(User user, DomainType domainType, String clientTypeId, Version clientVersion) {
 				return EntityConnectionProvider.builder()
 								.user(user)
 								.domainType(domainType)
