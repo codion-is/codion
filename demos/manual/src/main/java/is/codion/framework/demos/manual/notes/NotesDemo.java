@@ -286,7 +286,7 @@ public final class NotesDemo {
 																					 String clientTypeId,
 																					 Version clientVersion) {
 			Database database = new H2DatabaseFactory()
-							.createDatabase("jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1");
+							.create("jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1");
 
 			// Here we create the EntityConnectionProvider instance
 			// manually so we can safely ignore some method parameters

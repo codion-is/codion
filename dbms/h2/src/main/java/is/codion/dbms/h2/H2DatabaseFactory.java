@@ -46,7 +46,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 	}
 
 	@Override
-	public Database createDatabase(String url) {
+	public Database create(String url) {
 		return new H2Database(url, Text.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPTS.get()),
 						Database.SELECT_FOR_UPDATE_NOWAIT.get());
 	}

@@ -3,6 +3,8 @@ Codion Change Log
 
 ## 0.18.18
 
+### is.codion.common.db
+- DatabaseFactory.createDatabase() renamed create().
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.ConnectionProviderFactory.createConnectionProvider() renamed create().
 

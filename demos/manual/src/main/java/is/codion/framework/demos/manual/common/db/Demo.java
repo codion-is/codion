@@ -51,7 +51,7 @@ public final class Demo {
 
 		DatabaseFactory databaseFactory = DatabaseFactory.instance(url);
 
-		Database database = databaseFactory.createDatabase(url);
+		Database database = databaseFactory.create(url);
 		// end::url[]
 	}
 
@@ -61,7 +61,7 @@ public final class Demo {
 
 		H2DatabaseFactory databaseFactory = new H2DatabaseFactory();
 
-		Database database = databaseFactory.createDatabase(url);
+		Database database = databaseFactory.create(url);
 		// end::factory[]
 	}
 

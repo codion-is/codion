@@ -34,7 +34,7 @@ import java.util.Collection;
  * @see Database#instance()
  * @see DatabaseFactory#instance()
  * @see DatabaseFactory#instance(String)
- * @see DatabaseFactory#createDatabase(String)
+ * @see DatabaseFactory#create(String)
  */
 public interface Database extends ConnectionFactory {
 

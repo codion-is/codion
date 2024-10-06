@@ -30,7 +30,7 @@ import static java.util.stream.StreamSupport.stream;
  * Provides {@link Database} implementations
  * @see #instance()
  * @see #instance(String)
- * @see #createDatabase(String)
+ * @see #create(String)
  */
 public interface DatabaseFactory {
 
@@ -44,7 +44,7 @@ public interface DatabaseFactory {
 	 * @param url the jdbc url
 	 * @return a new {@link Database} implementation based on the given jdbc url.
 	 */
-	Database createDatabase(String url);
+	Database create(String url);
 
 	/**
 	 * @return a {@link DatabaseFactory} implementation for {@link Database#DATABASE_URL}

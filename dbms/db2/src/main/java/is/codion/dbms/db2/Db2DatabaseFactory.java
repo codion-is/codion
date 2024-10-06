@@ -36,7 +36,7 @@ public final class Db2DatabaseFactory implements DatabaseFactory {
 	}
 
 	@Override
-	public Database createDatabase(String url) {
+	public Database create(String url) {
 		return new Db2Database(url);
 	}
 }

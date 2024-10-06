@@ -246,7 +246,7 @@ public abstract class AbstractDatabase implements Database {
 				if (AbstractDatabase.instance == null || !AbstractDatabase.instance.url().equals(databaseUrl)) {
 					Database previousInstance = AbstractDatabase.instance;
 					//replace the instance
-					AbstractDatabase.instance = DatabaseFactory.instance().createDatabase(databaseUrl);
+					AbstractDatabase.instance = DatabaseFactory.instance().create(databaseUrl);
 					if (previousInstance != null) {
 						//cleanup
 						previousInstance.closeConnectionPools();

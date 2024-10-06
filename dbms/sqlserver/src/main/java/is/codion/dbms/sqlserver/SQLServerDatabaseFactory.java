@@ -38,7 +38,7 @@ public final class SQLServerDatabaseFactory implements DatabaseFactory {
 	}
 
 	@Override
-	public Database createDatabase(String url) {
+	public Database create(String url) {
 		return new SQLServerDatabase(url);
 	}
 }
