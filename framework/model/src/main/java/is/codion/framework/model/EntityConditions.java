@@ -21,14 +21,12 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.model.condition.ColumnConditions;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.observer.Mutable;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.Collection;
-import java.util.function.Supplier;
 
 /**
  * Factory for {@link EntityConditions} instances via
@@ -67,34 +65,18 @@ public interface EntityConditions extends ColumnConditions<Attribute<?>> {
 	<T> boolean setInOperands(Attribute<T> attribute, Collection<T> operands);
 
 	/**
-	 * Returns a WHERE condition based on enabled condition models which are based on non-aggregate function columns
-	 * along with any {@link #additionalWhere()} condition.
+	 * Returns a WHERE condition based on enabled condition models which are based on non-aggregate function columns.
 	 * @param conjunction the conjunction to use in case of multiple enabled conditions
 	 * @return the current WHERE condition based on the state of the underlying condition models
 	 */
 	Condition where(Conjunction conjunction);
 
 	/**
-	 * Returns a HAVING condition based on enabled condition models which are based on aggregate function columns
-	 * along with any {@link #additionalHaving()} condition.
+	 * Returns a HAVING condition based on enabled condition models which are based on aggregate function columns.
 	 * @param conjunction the conjunction to use in case of multiple enabled conditions
 	 * @return the current HAVING condition based on the state of the underlying condition models
 	 */
 	Condition having(Conjunction conjunction);
-
-	/**
-	 * Controls the additional WHERE condition.
-	 * The condition supplier may return null in case of no condition.
-	 * @return the {@link AdditionalCondition} instance controlling the additional WHERE condition
-	 */
-	AdditionalCondition additionalWhere();
-
-	/**
-	 * Controls the additional HAVING condition.
-	 * The condition supplier may return null in case of no condition.
-	 * @return the {@link AdditionalCondition} instance controlling the additional HAVING condition
-	 */
-	AdditionalCondition additionalHaving();
 
 	/**
 	 * Returns the {@link ConditionModel} associated with the given attribute.
@@ -125,17 +107,5 @@ public interface EntityConditions extends ColumnConditions<Attribute<?>> {
 	static EntityConditions entityConditions(EntityType entityType, EntityConnectionProvider connectionProvider,
 																					 ColumnConditionFactory<Attribute<?>> columnConditionFactory) {
 		return new DefaultEntityConditions(entityType, connectionProvider, columnConditionFactory);
-	}
-
-	/**
-	 * Specifies an additional condition supplier.
-	 */
-	interface AdditionalCondition extends Mutable<Supplier<Condition>> {
-
-		/**
-		 * Default {@link Conjunction#AND}.
-		 * @return the {@link Mutable} controlling the {@link Conjunction} to use when adding the additional condition
-		 */
-		Mutable<Conjunction> conjunction();
 	}
 }

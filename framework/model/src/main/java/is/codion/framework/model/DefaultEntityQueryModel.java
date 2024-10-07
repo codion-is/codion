@@ -20,9 +20,12 @@ package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -31,18 +34,25 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+import static is.codion.framework.domain.entity.condition.Condition.combination;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityQueryModel implements EntityQueryModel {
 
+	private static final Supplier<Condition> NULL_CONDITION_SUPPLIER = () -> null;
+
 	private final EntityConditions entityConditions;
+	private final AdditionalCondition additionalWhere = new DefaultAdditionalCondition();
+	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
 	private final Value<StateObserver> conditionEnabled;
 	private final State conditionRequired = State.state();
 	private final State conditionChanged = State.state();
@@ -64,7 +74,12 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 						.build();
 		this.orderBy = createOrderBy();
 		this.refreshCondition = createSelect();
-		entityConditions.changed().addListener(this::onConditionChanged);
+		Runnable onConditionChanged = this::onConditionChanged;
+		entityConditions.changed().addListener(onConditionChanged);
+		additionalWhere.addListener(onConditionChanged);
+		additionalWhere.conjunction().addListener(onConditionChanged);
+		additionalHaving.addListener(onConditionChanged);
+		additionalHaving.conjunction().addListener(onConditionChanged);
 	}
 
 	@Override
@@ -127,18 +142,32 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		return query;
 	}
 
-	private void resetConditionChanged(Select select) {
-		refreshCondition = select;
-		conditionChanged.set(false);
+	@Override
+	public AdditionalCondition where() {
+		return additionalWhere;
 	}
 
-	private Select createSelect() {
-		return Select.where(entityConditions.where(Conjunction.AND))
-						.having(entityConditions.having(Conjunction.AND))
+	@Override
+	public AdditionalCondition having() {
+		return additionalHaving;
+	}
+
+	Select createSelect() {
+		return Select.where(createCondition(entityConditions.where(Conjunction.AND), additionalWhere))
+						.having(createCondition(entityConditions.having(Conjunction.AND), additionalHaving))
 						.attributes(attributes.get())
 						.limit(limit.get())
 						.orderBy(orderBy.get())
 						.build();
+	}
+
+	private static Condition createCondition(Condition entityCondition, AdditionalCondition additional) {
+		Condition additionalCondition = additional.get().get();
+		if (additionalCondition == null) {
+			return entityCondition;
+		}
+
+		return combination(additional.conjunction().get(), entityCondition, additionalCondition);
 	}
 
 	private Value<OrderBy> createOrderBy() {
@@ -148,6 +177,11 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 										.nonNull(entityOrderBy)
 										.build())
 						.orElse(Value.value());
+	}
+
+	private void resetConditionChanged(Select select) {
+		refreshCondition = select;
+		conditionChanged.set(false);
 	}
 
 	private void onConditionChanged() {
@@ -189,6 +223,57 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 			resetConditionChanged(select);
 
 			return items;
+		}
+	}
+
+	private static final class MutableConjunction implements Mutable<Conjunction> {
+
+		private final Value<Conjunction> value = Value.builder()
+						.nonNull(Conjunction.AND)
+						.build();
+
+		@Override
+		public void set(Conjunction conjunction) {
+			value.set(conjunction);
+		}
+
+		@Override
+		public Conjunction get() {
+			return value.get();
+		}
+
+		@Override
+		public Observer<Conjunction> observer() {
+			return value.observer();
+		}
+	}
+
+	private static final class DefaultAdditionalCondition implements AdditionalCondition {
+
+		private final Value<Supplier<Condition>> value = Value.builder()
+						.nonNull(NULL_CONDITION_SUPPLIER)
+						.notify(Notify.WHEN_SET)
+						.build();
+		private final Mutable<Conjunction> conjunction = new MutableConjunction();
+
+		@Override
+		public Mutable<Conjunction> conjunction() {
+			return conjunction;
+		}
+
+		@Override
+		public void set(Supplier<Condition> condition) {
+			value.set(condition);
+		}
+
+		@Override
+		public Supplier<Condition> get() {
+			return value.get();
+		}
+
+		@Override
+		public Observer<Supplier<Condition>> observer() {
+			return value.observer();
 		}
 	}
 }

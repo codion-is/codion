@@ -24,10 +24,8 @@ import is.codion.common.event.Event;
 import is.codion.common.model.condition.ColumnConditions;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Operands;
-import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.StateObserver;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -44,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static is.codion.framework.domain.entity.condition.Condition.all;
 import static is.codion.framework.domain.entity.condition.Condition.combination;
@@ -56,14 +53,10 @@ import static java.util.stream.Collectors.toList;
  */
 final class DefaultEntityConditions implements EntityConditions {
 
-	private static final Supplier<Condition> NULL_CONDITION_SUPPLIER = () -> null;
-
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
 	private final ColumnConditions<Attribute<?>> columnConditions;
 	private final Event<?> conditionChangedEvent = Event.event();
-	private final AdditionalCondition additionalWhere = new DefaultAdditionalCondition();
-	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
 	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
 	private final AggregateColumn aggregateColumn = new AggregateColumn();
 
@@ -119,22 +112,12 @@ final class DefaultEntityConditions implements EntityConditions {
 
 	@Override
 	public Condition where(Conjunction conjunction) {
-		return createCondition(requireNonNull(conjunction), noneAggregateColumn, additionalWhere);
+		return createCondition(conjunction, noneAggregateColumn);
 	}
 
 	@Override
 	public Condition having(Conjunction conjunction) {
-		return createCondition(requireNonNull(conjunction), aggregateColumn, additionalHaving);
-	}
-
-	@Override
-	public AdditionalCondition additionalWhere() {
-		return additionalWhere;
-	}
-
-	@Override
-	public AdditionalCondition additionalHaving() {
-		return additionalHaving;
+		return createCondition(conjunction, aggregateColumn);
 	}
 
 	@Override
@@ -172,18 +155,7 @@ final class DefaultEntityConditions implements EntityConditions {
 		columnConditions.clear();
 	}
 
-	private Condition createCondition(Conjunction conjunction, Predicate<Attribute<?>> columnType,
-																		AdditionalCondition additional) {
-		Condition conditions = columnConditions(conjunction, columnType);
-		Condition additionalCondition = additional.get().get();
-		if (additionalCondition == null) {
-			return conditions;
-		}
-
-		return combination(additional.conjunction().get(), conditions, additionalCondition);
-	}
-
-	private Condition columnConditions(Conjunction conjunction, Predicate<Attribute<?>> columnType) {
+	private Condition createCondition(Conjunction conjunction, Predicate<Attribute<?>> columnType) {
 		List<Condition> conditions = columnConditions.get().entrySet().stream()
 						.filter(entry -> columnType.test(entry.getKey()))
 						.filter(entry -> entry.getValue().enabled().get())
@@ -202,8 +174,6 @@ final class DefaultEntityConditions implements EntityConditions {
 	private void bindEvents() {
 		columnConditions.get().values()
 						.forEach(conditionModel -> conditionModel.changed().addListener(conditionChangedEvent));
-		additionalWhere.addListener(conditionChangedEvent);
-		additionalHaving.addListener(conditionChangedEvent);
 	}
 
 	private Map<Attribute<?>, ConditionModel<?>> createConditionModels(EntityType entityType,
@@ -385,56 +355,6 @@ final class DefaultEntityConditions implements EntityConditions {
 		public boolean test(Attribute<?> attribute) {
 			return !(attribute instanceof Column) ||
 							!entityDefinition.columns().definition((Column<?>) attribute).aggregate();
-		}
-	}
-
-	private static final class MutableConjunction implements Mutable<Conjunction> {
-
-		private final Value<Conjunction> value = Value.builder()
-						.nonNull(Conjunction.AND)
-						.build();
-
-		@Override
-		public void set(Conjunction conjunction) {
-			value.set(conjunction);
-		}
-
-		@Override
-		public Conjunction get() {
-			return value.get();
-		}
-
-		@Override
-		public Observer<Conjunction> observer() {
-			return value.observer();
-		}
-	}
-
-	private static final class DefaultAdditionalCondition implements AdditionalCondition {
-
-		private final Value<Supplier<Condition>> value = Value.builder()
-						.nonNull(NULL_CONDITION_SUPPLIER)
-						.build();
-		private final Mutable<Conjunction> conjunction = new MutableConjunction();
-
-		@Override
-		public Mutable<Conjunction> conjunction() {
-			return conjunction;
-		}
-
-		@Override
-		public void set(Supplier<Condition> condition) {
-			value.set(condition);
-		}
-
-		@Override
-		public Supplier<Condition> get() {
-			return value.get();
-		}
-
-		@Override
-		public Observer<Supplier<Condition>> observer() {
-			return value.observer();
 		}
 	}
 }

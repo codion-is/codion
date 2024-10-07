@@ -5,6 +5,8 @@ Codion Change Log
 
 ### is.codion.common.db
 - DatabaseFactory.createDatabase() renamed create().
+### is.codion.framework.model
+- EntityConditions.AdditionalCondition moved to EntityQueryModel, additionalWhere() and additionalHaving() renamed where() and having() respectively.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.ConnectionProviderFactory.createConnectionProvider() renamed create().
 

@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
+import is.codion.framework.domain.entity.query.SelectQuery;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,7 +44,7 @@ public final class TestDomain extends DomainModel {
 
 	public TestDomain() {
 		super(DOMAIN);
-		add(master(), detail(), department(), employee(), enumEntity(), derived());
+		add(master(), detail(), department(), employee(), enumEntity(), derived(), job());
 	}
 
 	public interface Master {
@@ -319,6 +320,47 @@ public final class TestDomain extends DomainModel {
 														.derived(sourceValues -> sourceValues.optional(Derived.INT3)
 																		.map(value -> value + 1)
 																		.orElse(null), Derived.INT3))
+						.build();
+	}
+
+	public interface Job {
+		EntityType TYPE = DOMAIN.entityType("job");
+
+		Column<String> JOB = TYPE.stringColumn("job");
+		Column<Double> MAX_SALARY = TYPE.doubleColumn("max_salary");
+		Column<Double> MIN_SALARY = TYPE.doubleColumn("min_salary");
+		Column<Double> MAX_COMMISSION = TYPE.doubleColumn("max_commission");
+		Column<Double> MIN_COMMISSION = TYPE.doubleColumn("min_commission");
+
+		ConditionType ADDITIONAL_HAVING = TYPE.conditionType("additional_having");
+	}
+
+	EntityDefinition job() {
+		return Job.TYPE.define(
+										Job.JOB.define()
+														.primaryKey()
+														.groupBy(true),
+										Job.MAX_SALARY.define()
+														.column()
+														.expression("max(sal)")
+														.aggregate(true),
+										Job.MIN_SALARY.define()
+														.column()
+														.expression("min(sal)")
+														.aggregate(true),
+										Job.MAX_COMMISSION.define()
+														.column()
+														.expression("max(comm)")
+														.aggregate(true),
+										Job.MIN_COMMISSION.define()
+														.column()
+														.expression("min(comm)")
+														.aggregate(true))
+						.tableName("employees.employee")
+						.selectQuery(SelectQuery.builder()
+										.having("job <> 'PRESIDENT'")
+										.build())
+						.condition(Job.ADDITIONAL_HAVING, (attributes, values) -> "count(*) > 1")
 						.build();
 	}
 }
