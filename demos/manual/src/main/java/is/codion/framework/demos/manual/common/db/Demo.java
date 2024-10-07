@@ -77,7 +77,7 @@ public final class Demo {
 		// end::connection[]
 	}
 
-	private void databaseConnection() throws DatabaseException {
+	private void databaseConnection() throws DatabaseException, SQLException {
 		// tag::databaseConnection[]
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 

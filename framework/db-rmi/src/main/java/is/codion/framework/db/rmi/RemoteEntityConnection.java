@@ -110,17 +110,19 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 
 	/**
 	 * Performs a rollback and ends the current transaction
+	 * @throws DatabaseException in case the rollback failed
 	 * @throws IllegalStateException in case a transaction is not open
 	 * @throws RemoteException in case of a remote exception
 	 */
-	void rollbackTransaction() throws RemoteException;
+	void rollbackTransaction() throws RemoteException, DatabaseException;
 
 	/**
 	 * Performs a commit and ends the current transaction
+	 * @throws DatabaseException in case the commit failed
 	 * @throws IllegalStateException in case a transaction is not open
 	 * @throws RemoteException in case of a remote exception
 	 */
-	void commitTransaction() throws RemoteException;
+	void commitTransaction() throws RemoteException, DatabaseException;
 
 	/**
 	 * Controls the enabled state of the query result cache.

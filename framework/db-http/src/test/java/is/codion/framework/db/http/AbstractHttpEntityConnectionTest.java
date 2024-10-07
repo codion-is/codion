@@ -214,7 +214,7 @@ abstract class AbstractHttpEntityConnectionTest {
 	}
 
 	@Test
-	void transactions() {
+	void transactions() throws DatabaseException {
 		assertFalse(connection.transactionOpen());
 		connection.startTransaction();
 		assertTrue(connection.transactionOpen());

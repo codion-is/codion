@@ -2,9 +2,11 @@ Codion Change Log
 ==================
 
 ## 0.18.18
-
 ### is.codion.common.db
 - DatabaseFactory.createDatabase() renamed create().
+- DatabaseConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw SQLException.
+### is.codion.framework.db
+- EntityConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw DatabaseException.
 ### is.codion.framework.model
 - EntityConditions.AdditionalCondition moved to EntityQueryModel, additionalWhere() and additionalHaving() renamed where() and having() respectively.
 ### is.codion.swing.framework.ui

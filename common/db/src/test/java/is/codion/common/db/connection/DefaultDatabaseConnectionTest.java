@@ -110,7 +110,7 @@ public class DefaultDatabaseConnectionTest {
 			connection.rollbackTransaction();
 			assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
 		}
-		catch (DatabaseException e) {
+		catch (SQLException | DatabaseException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -186,21 +186,21 @@ public class DefaultDatabaseConnectionTest {
 	}
 
 	@Test
-	void commitTransactionAlreadyCommitted() {
+	void commitTransactionAlreadyCommitted() throws SQLException {
 		dbConnection.startTransaction();
 		dbConnection.commitTransaction();
 		assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
 	}
 
 	@Test
-	void rollbackTransactionAlreadyRollbacked() {
+	void rollbackTransactionAlreadyRollbacked() throws SQLException {
 		dbConnection.startTransaction();
 		dbConnection.rollbackTransaction();
 		assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
 	}
 
 	@Test
-	void commitTransaction() {
+	void commitTransaction() throws SQLException {
 		dbConnection.startTransaction();
 		assertTrue(dbConnection.transactionOpen());
 		dbConnection.commitTransaction();
@@ -208,7 +208,7 @@ public class DefaultDatabaseConnectionTest {
 	}
 
 	@Test
-	void rollbackTransaction() {
+	void rollbackTransaction() throws SQLException {
 		dbConnection.startTransaction();
 		assertTrue(dbConnection.transactionOpen());
 		dbConnection.rollbackTransaction();

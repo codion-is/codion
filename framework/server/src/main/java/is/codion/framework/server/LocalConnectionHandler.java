@@ -347,7 +347,12 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private void rollbackIfRequired(LocalEntityConnection entityConnection) {
 		if (entityConnection.transactionOpen()) {
 			LOG.info("Rollback open transaction on disconnect: {}", remoteClient);
-			entityConnection.rollbackTransaction();
+			try {
+				entityConnection.rollbackTransaction();
+			}
+			catch (DatabaseException e) {
+				LOG.error("Rollback on disconnect failed: " + remoteClient, e);
+			}
 		}
 	}
 

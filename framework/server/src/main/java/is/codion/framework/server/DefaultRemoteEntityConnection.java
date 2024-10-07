@@ -140,7 +140,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	}
 
 	@Override
-	public void commitTransaction() {
+	public void commitTransaction() throws DatabaseException {
 		synchronized (connectionProxy) {
 			connectionProxy.commitTransaction();
 		}
@@ -161,7 +161,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	}
 
 	@Override
-	public void rollbackTransaction() {
+	public void rollbackTransaction() throws DatabaseException {
 		synchronized (connectionProxy) {
 			connectionProxy.rollbackTransaction();
 		}

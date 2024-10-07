@@ -187,16 +187,28 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public void rollbackTransaction() {
+	public void rollbackTransaction() throws DatabaseException {
 		synchronized (connection) {
-			connection.rollbackTransaction();
+			try {
+				connection.rollbackTransaction();
+			}
+			catch (SQLException e) {
+				LOG.error("Exception during transaction rollback", e);
+				throw new DatabaseException(e);
+			}
 		}
 	}
 
 	@Override
-	public void commitTransaction() {
+	public void commitTransaction() throws DatabaseException {
 		synchronized (connection) {
-			connection.commitTransaction();
+			try {
+				connection.commitTransaction();
+			}
+			catch (SQLException e) {
+				LOG.error("Exception during transaction commit", e);
+				throw new DatabaseException(e);
+			}
 		}
 	}
 

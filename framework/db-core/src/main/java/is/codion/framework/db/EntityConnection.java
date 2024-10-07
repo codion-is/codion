@@ -119,15 +119,17 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * Performs a rollback and ends the current transaction
+	 * @throws DatabaseException in case the rollback failed
 	 * @throws IllegalStateException in case a transaction is not open
 	 */
-	void rollbackTransaction();
+	void rollbackTransaction() throws DatabaseException;
 
 	/**
 	 * Performs a commit and ends the current transaction
+	 * @throws DatabaseException in case the commit failed
 	 * @throws IllegalStateException in case a transaction is not open
 	 */
-	void commitTransaction();
+	void commitTransaction() throws DatabaseException;
 
 	/**
 	 * Controls the enabled state of the query result cache.

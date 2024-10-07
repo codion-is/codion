@@ -584,7 +584,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void insertOnlyNullValues() {
+	void insertOnlyNullValues() throws DatabaseException {
 		connection.startTransaction();
 		try {
 			Entity department = ENTITIES.entity(Department.TYPE);

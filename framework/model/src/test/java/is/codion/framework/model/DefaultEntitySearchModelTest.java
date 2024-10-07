@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -253,7 +254,7 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@AfterEach
-	void tearDown() {
+	void tearDown() throws DatabaseException {
 		CONNECTION_PROVIDER.connection().rollbackTransaction();
 	}
 

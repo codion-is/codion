@@ -151,7 +151,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	}
 
 	@Override
-	public void rollbackTransaction() {
+	public void rollbackTransaction() throws SQLException {
 		if (!transactionOpen) {
 			throw new IllegalStateException("Transaction is not open");
 		}
@@ -163,6 +163,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		}
 		catch (SQLException e) {
 			exception = e;
+			throw e;
 		}
 		finally {
 			transactionOpen = false;
@@ -171,7 +172,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	}
 
 	@Override
-	public void commitTransaction() {
+	public void commitTransaction() throws SQLException {
 		if (!transactionOpen) {
 			throw new IllegalStateException("Transaction is not open");
 		}
@@ -183,6 +184,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		}
 		catch (SQLException e) {
 			exception = e;
+			throw e;
 		}
 		finally {
 			transactionOpen = false;
