@@ -1461,7 +1461,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	 * @return true if the value is missing or the original value differs from the one in the comparison entity
 	 */
 	static <T> boolean valueMissingOrModified(Entity entity, Entity comparison, Attribute<T> attribute) {
-		if (!entity.contains(attribute)) {
+		if (!comparison.contains(attribute)) {
 			return true;
 		}
 

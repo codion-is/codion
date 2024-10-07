@@ -1321,6 +1321,21 @@ public class DefaultLocalEntityConnectionTest {
 		entity.put(Department.DNAME, "new name");
 
 		assertEquals(2, DefaultLocalEntityConnection.modifiedColumns(current, entity).size());
+
+		entity = ENTITIES.builder(Department.TYPE)
+						.with(Department.DEPTNO, 1)
+						.with(Department.LOC, null)
+						.with(Department.DNAME, "Name")
+						.build();
+		current = entity.copy();
+
+		// Original value becomes null
+		entity.put(Department.LOC, "Location");
+
+		current.remove(Department.LOC);
+		Collection<Column<?>> columns = DefaultLocalEntityConnection.modifiedColumns(entity, current);
+		// Should be able to discern a missing value from an original null value
+		assertTrue(columns.contains(Department.LOC));
 	}
 
 	@Test
