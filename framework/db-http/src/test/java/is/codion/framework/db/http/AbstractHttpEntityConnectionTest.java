@@ -30,6 +30,7 @@ import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityService;
@@ -46,6 +47,7 @@ import java.util.Random;
 
 import static is.codion.framework.db.EntityConnection.Count.all;
 import static is.codion.framework.db.EntityConnection.Count.where;
+import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -224,6 +226,15 @@ abstract class AbstractHttpEntityConnectionTest {
 		assertTrue(connection.transactionOpen());
 		connection.commitTransaction();
 		assertFalse(connection.transactionOpen());
+	}
+
+	@Test
+	void transactional() throws DatabaseException {
+		transaction(connection, () -> {
+			connection.select(Condition.all(Department.TYPE));
+		});
+		Collection<Entity> departments = transaction(connection, () -> connection.select(Condition.all(Department.TYPE)));
+		assertFalse(departments.isEmpty());
 	}
 
 	@Test

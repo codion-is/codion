@@ -26,6 +26,8 @@ import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistP
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
+import static is.codion.framework.db.EntityConnection.transaction;
+
 public final class PlaylistTableModel extends SwingEntityTableModel {
 
 	public PlaylistTableModel(EntityConnectionProvider connectionProvider) {
@@ -33,27 +35,9 @@ public final class PlaylistTableModel extends SwingEntityTableModel {
 	}
 
 	public void createRandomPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
-		Entity randomPlaylist = createPlaylist(parameters);
+		EntityConnection connection = connection();
+		Entity randomPlaylist = transaction(connection, () -> connection.execute(Playlist.RANDOM_PLAYLIST, parameters));
 		items().visible().addItemAt(0, randomPlaylist);
 		selection().item().set(randomPlaylist);
-	}
-
-	private Entity createPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
-		EntityConnection connection = connection();
-		connection.startTransaction();
-		try {
-			Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
-			connection.commitTransaction();
-
-			return randomPlaylist;
-		}
-		catch (DatabaseException e) {
-			connection.rollbackTransaction();
-			throw e;
-		}
-		catch (Exception e) {
-			connection.rollbackTransaction();
-			throw new RuntimeException(e);
-		}
 	}
 }

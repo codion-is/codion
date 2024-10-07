@@ -31,8 +31,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomCustomerId;
+import static is.codion.framework.domain.entity.Entity.distinct;
 
 public final class UpdateTotals implements Performer<EntityConnectionProvider> {
 
@@ -53,19 +55,9 @@ public final class UpdateTotals implements Performer<EntityConnectionProvider> {
 	}
 
 	private static void updateInvoiceLines(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
-		connection.startTransaction();
-		try {
-			Collection<Entity> updated = connection.updateSelect(invoiceLines);
-			connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, updated));
-			connection.commitTransaction();
-		}
-		catch (DatabaseException e) {
-			connection.rollbackTransaction();
-			throw e;
-		}
-		catch (Exception e) {
-			connection.rollbackTransaction();
-			throw new RuntimeException(e);
-		}
+		transaction(connection, () -> {
+			connection.update(invoiceLines);
+			connection.execute(Invoice.UPDATE_TOTALS, distinct(InvoiceLine.INVOICE_ID, invoiceLines));
+		});
 	}
 }

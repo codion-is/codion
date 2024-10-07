@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomCustomerId;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomTrackId;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
@@ -60,8 +61,7 @@ public final class InsertDeleteInvoice implements Performer<EntityConnectionProv
 						.collect(toSet());
 		List<Entity> invoiceLines = new ArrayList<>();
 		for (Entity track : connection.select(Track.ID.in(invoiceTrackIds))) {
-			connection.startTransaction();
-			try {
+			transaction(connection, () -> {
 				invoiceLines.add(connection.insertSelect(connection.entities().builder(InvoiceLine.TYPE)
 								.with(InvoiceLine.INVOICE_FK, invoice)
 								.with(InvoiceLine.TRACK_FK, track)
@@ -69,12 +69,7 @@ public final class InsertDeleteInvoice implements Performer<EntityConnectionProv
 								.with(InvoiceLine.UNITPRICE, track.get(Track.UNITPRICE))
 								.build()));
 				connection.execute(Invoice.UPDATE_TOTALS, List.of(invoice.get(Invoice.ID)));
-				connection.commitTransaction();
-			}
-			catch (Exception e) {
-				connection.rollbackTransaction();
-				throw e;
-			}
+			});
 		}
 
 		List<Entity> toDelete = new ArrayList<>(invoiceLines);

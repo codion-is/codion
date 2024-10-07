@@ -25,6 +25,8 @@ import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
+import is.codion.framework.db.EntityConnection.Transactional;
+import is.codion.framework.db.EntityConnection.TransactionalResult;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
@@ -376,13 +378,116 @@ public final class EntityConnectionDemo {
 		//end::report[]
 	}
 
+	static void transactionalLambda(EntityConnectionProvider connectionProvider) throws DatabaseException {
+		// tag::transactionalLambda[]
+		EntityConnection connection = connectionProvider.connection();
+
+		EntityConnection.transaction(connection, () -> {
+			Entities entities = connection.entities();
+
+			Entity artist = entities.builder(Artist.TYPE)
+							.with(Artist.NAME, "The Band")
+							.build();
+			artist = connection.insertSelect(artist);
+
+			Entity album = entities.builder(Album.TYPE)
+							.with(Album.ARTIST_FK, artist)
+							.with(Album.TITLE, "The Album")
+							.build();
+
+			connection.insert(album);
+		});
+		// end::transactionalLambda[]
+	}
+
+	static void transactionalAnonymous(EntityConnectionProvider connectionProvider) throws DatabaseException {
+		// tag::transactionalAnonymous[]
+		EntityConnection connection = connectionProvider.connection();
+
+		Transactional transactional = new Transactional() {
+
+			@Override
+			public void execute() throws DatabaseException {
+				Entities entities = connection.entities();
+
+				Entity artist = entities.builder(Artist.TYPE)
+								.with(Artist.NAME, "The Band")
+								.build();
+				artist = connection.insertSelect(artist);
+
+				Entity album = entities.builder(Album.TYPE)
+								.with(Album.ARTIST_FK, artist)
+								.with(Album.TITLE, "The Album")
+								.build();
+
+				connection.insert(album);
+			}
+		};
+
+		EntityConnection.transaction(connection, transactional);
+		// end::transactionalAnonymous[]
+	}
+
+	static void transactionalResultLambda(EntityConnectionProvider connectionProvider) throws DatabaseException {
+		// tag::transactionalResultLambda[]
+		EntityConnection connection = connectionProvider.connection();
+
+		Entity.Key albumKey = EntityConnection.transaction(connection, () -> {
+			Entities entities = connection.entities();
+
+			Entity artist = entities.builder(Artist.TYPE)
+							.with(Artist.NAME, "The Band")
+							.build();
+			artist = connection.insertSelect(artist);
+
+			Entity album = entities.builder(Album.TYPE)
+							.with(Album.ARTIST_FK, artist)
+							.with(Album.TITLE, "The Album")
+							.build();
+
+			return connection.insert(album);
+		});
+		// end::transactionalResultLambda[]
+	}
+
+	static void transactionalResultAnonymous(EntityConnectionProvider connectionProvider) throws DatabaseException {
+		// tag::transactionalResultAnonymous[]
+		EntityConnection connection = connectionProvider.connection();
+
+		TransactionalResult<Entity.Key> transactional = new TransactionalResult<Entity.Key>() {
+
+			@Override
+			public Entity.Key execute() throws DatabaseException {
+				Entities entities = connection.entities();
+
+				Entity artist = entities.builder(Artist.TYPE)
+								.with(Artist.NAME, "The Band")
+								.build();
+				artist = connection.insertSelect(artist);
+
+				Entity album = entities.builder(Album.TYPE)
+								.with(Album.ARTIST_FK, artist)
+								.with(Album.TITLE, "The Album")
+								.build();
+
+				return connection.insert(album);
+			}
+		};
+
+		Entity.Key albumKey = EntityConnection.transaction(connection, transactional);
+		// end::transactionalResultAnonymous[]
+	}
+
 	static void transaction(EntityConnectionProvider connectionProvider) throws DatabaseException {
 		// tag::transaction[]
 		EntityConnection connection = connectionProvider.connection();
 
 		Entities entities = connection.entities();
 
-		// It is very important to start the transaction here, outside of the try/catch block.
+		// It is very important to start the transaction here, outside of the try/catch block,
+		// otherwise, trying to start a transaction on a connection already with an open transaction
+		// (which is a bug in itself), would cause the current transaction to be rolled back
+		// in the Exception catch block, which is probably not what you want.
 		connection.startTransaction();
 		try {
 			Entity artist = entities.builder(Artist.TYPE)
@@ -402,8 +507,14 @@ public final class EntityConnectionDemo {
 			connection.rollbackTransaction();
 			throw e;
 		}
+		catch (RuntimeException e) {
+			// It is a good practice, but not necessary, to catch RuntimeException,
+			// in order to not wrap a RuntimeException in another RuntimeException.
+			connection.rollbackTransaction();
+			throw e;
+		}
 		catch (Exception e) {
-			// Always add a catch for the top level Exception, otherwise unexpected
+			// Always include a catch for the top level Exception, otherwise unexpected
 			// exceptions may cause a transaction to remain open, which is a very serious bug.
 			connection.rollbackTransaction();
 			throw new RuntimeException(e);

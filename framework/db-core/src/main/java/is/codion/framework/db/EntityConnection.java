@@ -433,6 +433,64 @@ public interface EntityConnection extends AutoCloseable {
 	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;
 
 	/**
+	 * Executes the given {@link Transactional} instance within a transaction, committing on success and rolling back on exception.
+	 * @param connection the connection to use
+	 * @param transactional the transactional to run
+	 * @throws DatabaseException in case of an exception
+	 */
+	static void transaction(EntityConnection connection, Transactional transactional) throws DatabaseException {
+		requireNonNull(connection);
+		requireNonNull(transactional);
+		connection.startTransaction();
+		try {
+			transactional.execute();
+			connection.commitTransaction();
+		}
+		catch (Exception e) {
+			connection.rollbackTransaction();
+			if (e instanceof DatabaseException) {
+				throw (DatabaseException) e;
+			}
+			if (e instanceof RuntimeException) {
+				throw (RuntimeException) e;
+			}
+
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Executes the given {@link TransactionalResult} instance within a transaction, committing on success and rolling back on exception.
+	 * @param <T> the result type
+	 * @param connection the connection to use
+	 * @param transactional the transactional to run
+	 * @return the result
+	 * @throws DatabaseException in case of an exception
+	 */
+	static <T> T transaction(EntityConnection connection, TransactionalResult<T> transactional) throws DatabaseException {
+		requireNonNull(connection);
+		requireNonNull(transactional);
+		connection.startTransaction();
+		try {
+			T result = transactional.execute();
+			connection.commitTransaction();
+
+			return result;
+		}
+		catch (Exception e) {
+			connection.rollbackTransaction();
+			if (e instanceof DatabaseException) {
+				throw (DatabaseException) e;
+			}
+			if (e instanceof RuntimeException) {
+				throw (RuntimeException) e;
+			}
+
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
 	 * Creates a new {@link BatchCopy.Builder} instance for copying entities from source to destination, with a default batch size of 100.
 	 * Performs a commit after each {code batchSize} number of inserts, unless the destination connection has an open transaction.
 	 * Call {@link BatchCopy.Builder#execute()} to perform the copy operation.
@@ -454,6 +512,30 @@ public interface EntityConnection extends AutoCloseable {
 	 */
 	static BatchInsert.Builder batchInsert(EntityConnection connection, Iterator<Entity> entities) {
 		return new DefaultBatchInsert.DefaultBuilder(connection, entities);
+	}
+
+	/**
+	 * Specifies an action to be executed within a transaction.
+	 */
+	interface Transactional {
+
+		/**
+		 * @throws DatabaseException in case of an exception
+		 */
+		void execute() throws DatabaseException;
+	}
+
+	/**
+	 * Specifies an action to be executed within a transaction producing a result.
+	 * @param <T> the result type
+	 */
+	interface TransactionalResult<T> {
+
+		/**
+		 * @return the result
+		 * @throws DatabaseException in case of an exception
+		 */
+		T execute() throws DatabaseException;
 	}
 
 	/**

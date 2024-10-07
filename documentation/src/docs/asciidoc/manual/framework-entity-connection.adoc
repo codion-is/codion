@@ -280,6 +280,51 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 == Transaction control
 
+=== Transactional
+
+The recommended way to use transactions is to use either of the following, depending on whether a return value is required.
+
+** {url-entity-connection}#transaction{opar}is.codion.framework.db.EntityConnection{comma}is.codion.framework.db.EntityConnection.Transactional{cpar}[transaction(EntityConnection, Transactional transactional)]
+** {url-entity-connection}#transaction{opar}is.codion.framework.db.EntityConnection{comma}is.codion.framework.db.EntityConnection.TransactionalResult{cpar}[transaction(EntityConnection, TransactionalResult transactional)]
+
+These methods perform a commit on success and rollback on failure.
+
+==== Transaction without a result
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalLambda]
+----
+
+.Same example using an anonymous class
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalAnonymous]
+----
+====
+
+==== Transaction with a result
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalResultLambda]
+----
+
+.Same example using an anonymous class
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalResultAnonymous]
+----
+====
+
+=== Transaction
+
+For a more fine grained transaction control and the ability to rollback, transactions can be started and ended manually, note that this is more complex and thereby error prone and should not be used unless the method described above does not work for your use-case.
+
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transaction]

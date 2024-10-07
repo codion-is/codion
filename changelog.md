@@ -7,6 +7,7 @@ Codion Change Log
 - DatabaseConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw SQLException.
 ### is.codion.framework.db
 - EntityConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw DatabaseException.
+- EntityConnection.transaction() added along with Transactional and TransactionalResult.
 ### is.codion.framework.model
 - EntityConditions.AdditionalCondition moved to EntityQueryModel, additionalWhere() and additionalHaving() renamed where() and having() respectively.
 ### is.codion.swing.framework.ui

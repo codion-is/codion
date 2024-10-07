@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static java.util.Arrays.asList;
 
@@ -42,35 +43,16 @@ public final class RandomPlaylist implements Performer<EntityConnectionProvider>
 					asList("Alternative", "Rock", "Metal", "Heavy Metal", "Pop");
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+	public void perform(EntityConnectionProvider connectionProvider) throws DatabaseException {
 		EntityConnection connection = connectionProvider.connection();
 		List<Entity> playlistGenres = connection.select(Genre.NAME.in(GENRES));
 		RandomPlaylistParameters parameters = new RandomPlaylistParameters(PLAYLIST_NAME + " " + UUID.randomUUID(),
 						RANDOM.nextInt(20) + 25, playlistGenres);
-		Entity playlist = createPlaylist(connection, parameters);
+		Entity playlist = transaction(connection, () -> connection.execute(Playlist.RANDOM_PLAYLIST, parameters));
 		Collection<Entity> playlistTracks = connection.select(PlaylistTrack.PLAYLIST_FK.equalTo(playlist));
 		Collection<Entity.Key> toDelete = Entity.primaryKeys(playlistTracks);
 		toDelete.add(playlist.primaryKey());
 
 		connection.delete(toDelete);
-	}
-
-	private static Entity createPlaylist(EntityConnection connection,
-																			 RandomPlaylistParameters parameters) throws DatabaseException {
-		connection.startTransaction();
-		try {
-			Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
-			connection.commitTransaction();
-
-			return randomPlaylist;
-		}
-		catch (DatabaseException e) {
-			connection.rollbackTransaction();
-			throw e;
-		}
-		catch (Exception e) {
-			connection.rollbackTransaction();
-			throw new RuntimeException(e);
-		}
 	}
 }

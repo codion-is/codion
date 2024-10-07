@@ -28,6 +28,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Collection;
 
+import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
 
 public final class PlaylistEditModel extends SwingEntityEditModel {
@@ -38,19 +39,9 @@ public final class PlaylistEditModel extends SwingEntityEditModel {
 
 	@Override
 	protected void delete(Collection<Entity> playlists, EntityConnection connection) throws DatabaseException {
-		connection.startTransaction();
-		try {
+		transaction(connection, () -> {
 			connection.delete(PlaylistTrack.PLAYLIST_FK.in(playlists));
 			connection.delete(primaryKeys(playlists));
-			connection.commitTransaction();
-		}
-		catch (DatabaseException e) {
-			connection.rollbackTransaction();
-			throw e;
-		}
-		catch (Exception e) {
-			connection.rollbackTransaction();
-			throw new RuntimeException(e);
-		}
+		});
 	}
 }

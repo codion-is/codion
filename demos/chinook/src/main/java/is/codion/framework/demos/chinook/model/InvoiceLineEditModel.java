@@ -31,6 +31,8 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import java.util.Collection;
 import java.util.function.Consumer;
 
+import static is.codion.framework.db.EntityConnection.transaction;
+
 public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
 	private final Event<Collection<Entity>> totalsUpdatedEvent = Event.event();
@@ -46,67 +48,29 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
 	@Override
 	protected Collection<Entity> insert(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
-		connection.startTransaction();
-		try {
-			Collection<Entity> inserted = connection.insertSelect(invoiceLines);
-			updateTotals(inserted, connection);
-			connection.commitTransaction();
-
-			return inserted;
-		}
-		catch (DatabaseException e) {
-			connection.rollbackTransaction();
-			throw e;
-		}
-		catch (Exception e) {
-			connection.rollbackTransaction();
-			throw new RuntimeException(e);
-		}
+		return transaction(connection, () -> updateTotals(connection.insertSelect(invoiceLines), connection));
 	}
 
 	@Override
 	protected Collection<Entity> update(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
-		connection.startTransaction();
-		try {
-			Collection<Entity> updated = connection.updateSelect(invoiceLines);
-			updateTotals(updated, connection);
-			connection.commitTransaction();
-
-			return updated;
-		}
-		catch (DatabaseException e) {
-			connection.rollbackTransaction();
-			throw e;
-		}
-		catch (Exception e) {
-			connection.rollbackTransaction();
-			throw new RuntimeException(e);
-		}
+		return transaction(connection, () -> updateTotals(connection.updateSelect(invoiceLines), connection));
 	}
 
 	@Override
 	protected void delete(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
-		connection.startTransaction();
-		try {
+		transaction(connection, () -> {
 			connection.delete(Entity.primaryKeys(invoiceLines));
 			updateTotals(invoiceLines, connection);
-			connection.commitTransaction();
-		}
-		catch (DatabaseException e) {
-			connection.rollbackTransaction();
-			throw e;
-		}
-		catch (Exception e) {
-			connection.rollbackTransaction();
-			throw new RuntimeException(e);
-		}
+		});
 	}
 
 	private void setUnitPrice(Entity track) {
 		value(InvoiceLine.UNITPRICE).set(track == null ? null : track.get(Track.UNITPRICE));
 	}
 
-	private void updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
+	private Collection<Entity> updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
 		totalsUpdatedEvent.accept(connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, invoiceLines)));
+
+		return invoiceLines;
 	}
 }
