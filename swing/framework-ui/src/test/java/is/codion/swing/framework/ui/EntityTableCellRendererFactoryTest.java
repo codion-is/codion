@@ -48,7 +48,7 @@ public class EntityTableCellRendererFactoryTest {
 		tablePanel.tableModel().refresh();
 		EntityTableCellRendererFactory factory = new EntityTableCellRendererFactory(tablePanel.tableModel());
 		FilterTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(Employee.NAME);
-		FilterTableCellRenderer renderer =  factory.tableCellRenderer(column);
+		FilterTableCellRenderer renderer =  factory.create(column);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, true, 0, 0);
@@ -68,6 +68,6 @@ public class EntityTableCellRendererFactoryTest {
 		FilterTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(Department.NAME);
 
 		EntityTableCellRendererFactory factory = new EntityTableCellRendererFactory(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
-		assertThrows(IllegalArgumentException.class, () -> factory.tableCellRenderer(column));
+		assertThrows(IllegalArgumentException.class, () -> factory.create(column));
 	}
 }

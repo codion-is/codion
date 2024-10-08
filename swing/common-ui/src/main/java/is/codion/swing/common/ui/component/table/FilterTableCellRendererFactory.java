@@ -27,5 +27,5 @@ public interface FilterTableCellRendererFactory<C> {
 	 * @param column the column
 	 * @return a {@link FilterTableCellRenderer} instance for the given column
 	 */
-	FilterTableCellRenderer tableCellRenderer(FilterTableColumn<C> column);
+	FilterTableCellRenderer create(FilterTableColumn<C> column);
 }

@@ -132,7 +132,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
+		public FilterTableCellRenderer create(FilterTableColumn<Attribute<?>> column) {
 			if (column.identifier().equals(Album.RATING)) {
 				return RatingCellRenderer.create(column);
 			}

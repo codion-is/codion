@@ -816,7 +816,7 @@ public final class FilterTable<R, C> extends JTable {
 																FilterTableCellEditorFactory<C> cellEditorFactory) {
 		columnModel().columns().stream()
 						.filter(column -> column.getCellRenderer() == null)
-						.forEach(column -> column.setCellRenderer(cellRendererFactory.tableCellRenderer(column)));
+						.forEach(column -> column.setCellRenderer(cellRendererFactory.create(column)));
 		columnModel().columns().stream()
 						.filter(column -> column.getHeaderRenderer() == null)
 						.forEach(column -> column.setHeaderRenderer(new FilterTableHeaderRenderer<>(this, column)));
@@ -1579,7 +1579,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<C> column) {
+		public FilterTableCellRenderer create(FilterTableColumn<C> column) {
 			return FilterTableCellRenderer.builder(column.identifier(), tableModel.getColumnClass(column.identifier()))
 							.filter(tableModel.filters().optional(column.identifier()).orElse(null))
 							.build();

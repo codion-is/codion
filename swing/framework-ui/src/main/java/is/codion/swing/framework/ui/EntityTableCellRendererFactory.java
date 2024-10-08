@@ -42,7 +42,7 @@ public class EntityTableCellRendererFactory implements FilterTableCellRendererFa
 	}
 
 	@Override
-	public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
+	public FilterTableCellRenderer create(FilterTableColumn<Attribute<?>> column) {
 		return builder(column).build();
 	}
 

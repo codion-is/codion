@@ -472,7 +472,6 @@ public class EntityTablePanel extends JPanel {
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
 	private final List<Controls> additionalToolBarControls = new ArrayList<>();
-	private final ScrollToColumn scrollToColumn = new ScrollToColumn();
 
 	private JScrollPane conditionPanelScrollPane;
 	private JScrollPane filterPanelScrollPane;

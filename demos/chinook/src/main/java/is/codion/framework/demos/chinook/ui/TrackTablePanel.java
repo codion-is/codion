@@ -178,7 +178,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<Attribute<?>> column) {
+		public FilterTableCellRenderer create(FilterTableColumn<Attribute<?>> column) {
 			if (column.identifier().equals(Track.MILLISECONDS)) {
 				return builder(column).string(millisecods -> toMinutesSecondsString((Integer) millisecods))
 								.toolTipData(true)

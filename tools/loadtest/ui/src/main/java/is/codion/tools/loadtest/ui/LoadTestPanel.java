@@ -552,7 +552,7 @@ public final class LoadTestPanel<T> extends JPanel {
 					FilterTableCellRendererFactory<ColumnId> {
 
 		@Override
-		public FilterTableCellRenderer tableCellRenderer(FilterTableColumn<ColumnId> column) {
+		public FilterTableCellRenderer create(FilterTableColumn<ColumnId> column) {
 			FilterTableCellRenderer.Builder<ColumnId> builder =
 							FilterTableCellRenderer.builder(column.identifier(), Integer.class)
 											.filter(model().applicationTableModel().filters().optional(column.identifier()).orElse(null));
