@@ -921,7 +921,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void configureFilterConditionsPanel(ColumnConditionsPanel<C> filterConditionsPanel) {
-		filterConditionsPanel.conditionPanels().forEach(this::configureColumnFilterPanel);
+		filterConditionsPanel.panels().forEach(this::configureColumnFilterPanel);
 	}
 
 	private void configureColumnFilterPanel(C identifier, ColumnConditionPanel<?> conditionPanel) {

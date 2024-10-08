@@ -64,12 +64,12 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	}
 
 	@Override
-	public Map<C, ColumnConditionPanel<?>> conditionPanels() {
+	public Map<C, ColumnConditionPanel<?>> panels() {
 		return conditionPanels;
 	}
 
 	@Override
-	public Collection<ColumnConditionPanel<?>> selectableConditionPanels() {
+	public Collection<ColumnConditionPanel<?>> selectablePanels() {
 		return conditionPanels.entrySet().stream()
 						.filter(entry -> columnModel.visible(entry.getKey()).get())
 						.map(Map.Entry::getValue)

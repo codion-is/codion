@@ -1246,7 +1246,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createSelectConditionPanelControl() {
-		return command(() -> conditionPanel().selectConditionPanel(this));
+		return command(() -> conditionPanel().selectPanel(this));
 	}
 
 	private Controls createConditionControls() {
@@ -1281,7 +1281,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createSelectFilterPanelControl() {
-		return command(() -> table.filterPanel().selectConditionPanel(this));
+		return command(() -> table.filterPanel().selectPanel(this));
 	}
 
 	private void toggleConditionPanel() {
@@ -1514,7 +1514,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void configureTableConditionPanel(ColumnConditionsPanel<Attribute<?>> columnConditionsPanel) {
-		columnConditionsPanel.conditionPanels().forEach(this::configureColumnConditionPanel);
+		columnConditionsPanel.panels().forEach(this::configureColumnConditionPanel);
 	}
 
 	private void configureColumnConditionPanel(Attribute<?> attribute, ColumnConditionPanel<?> conditionPanel) {

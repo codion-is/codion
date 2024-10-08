@@ -101,29 +101,29 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 	}
 
 	@Override
-	public Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels() {
+	public Map<Attribute<?>, ColumnConditionPanel<?>> panels() {
 		Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels =
-						new HashMap<>(advancedConditionPanel.conditionPanels());
-		conditionPanels.putAll(simpleConditionPanel.conditionPanels());
+						new HashMap<>(advancedConditionPanel.panels());
+		conditionPanels.putAll(simpleConditionPanel.panels());
 
 		return conditionPanels;
 	}
 
 	@Override
-	public Collection<ColumnConditionPanel<?>> selectableConditionPanels() {
-		return state().isEqualTo(ADVANCED) ? advancedConditionPanel.selectableConditionPanels() : simpleConditionPanel.conditionPanels().values();
+	public Collection<ColumnConditionPanel<?>> selectablePanels() {
+		return state().isEqualTo(ADVANCED) ? advancedConditionPanel.selectablePanels() : simpleConditionPanel.panels().values();
 	}
 
 	@Override
-	public <T extends ColumnConditionPanel<?>> T conditionPanel(Attribute<?> attribute) {
+	public <T extends ColumnConditionPanel<?>> T panel(Attribute<?> attribute) {
 		if (state().isNotEqualTo(ADVANCED)) {
-			return (T) simpleConditionPanel.conditionPanels().entrySet().stream()
+			return (T) simpleConditionPanel.panels().entrySet().stream()
 							.filter(entry -> entry.getKey().equals(attribute))
 							.findFirst()
 							.orElseThrow(IllegalArgumentException::new);
 		}
 
-		return (T) advancedConditionPanel.conditionPanels().entrySet().stream()
+		return (T) advancedConditionPanel.panels().entrySet().stream()
 						.filter(entry -> entry.getKey().equals(attribute))
 						.map(Map.Entry::getValue)
 						.findFirst()
@@ -146,10 +146,10 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 			case ADVANCED:
 				add(advancedConditionPanel, BorderLayout.CENTER);
 				if (simpleConditionPanel.customerConditionPanel.hasInputFocus()) {
-					advancedConditionPanel.conditionPanel(Invoice.CUSTOMER_FK).requestInputFocus();
+					advancedConditionPanel.panel(Invoice.CUSTOMER_FK).requestInputFocus();
 				}
 				else if (simpleConditionPanel.dateConditionPanel.hasInputFocus()) {
-					advancedConditionPanel.conditionPanel(Invoice.DATE).requestInputFocus();
+					advancedConditionPanel.panel(Invoice.DATE).requestInputFocus();
 				}
 				break;
 			default:
@@ -209,7 +209,7 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 							.build(), BorderLayout.CENTER);
 		}
 
-		private Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels() {
+		private Map<Attribute<?>, ColumnConditionPanel<?>> panels() {
 			return conditionPanels;
 		}
 

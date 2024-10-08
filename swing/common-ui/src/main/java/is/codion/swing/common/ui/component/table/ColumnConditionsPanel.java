@@ -89,15 +89,15 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	/**
 	 * @return an unmodifiable view of the condition panels
 	 */
-	public abstract Map<C, ColumnConditionPanel<?>> conditionPanels();
+	public abstract Map<C, ColumnConditionPanel<?>> panels();
 
 	/**
 	 * By default this returns all condition panels, override to customize.
 	 * @return the selectable panels
-	 * @see #selectConditionPanel(JComponent)
+	 * @see #selectPanel(JComponent)
 	 */
-	public Collection<ColumnConditionPanel<?>> selectableConditionPanels() {
-		return conditionPanels().values();
+	public Collection<ColumnConditionPanel<?>> selectablePanels() {
+		return panels().values();
 	}
 
 	/**
@@ -106,8 +106,8 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @return the condition panel associated with the given column
 	 * @throws IllegalStateException in case no panel is available
 	 */
-	public <T extends ColumnConditionPanel<?>> T conditionPanel(C identifier) {
-		ColumnConditionPanel<?> conditionPanel = conditionPanels().get(identifier);
+	public <T extends ColumnConditionPanel<?>> T panel(C identifier) {
+		ColumnConditionPanel<?> conditionPanel = panels().get(identifier);
 		if (conditionPanel == null) {
 			throw new IllegalStateException("No condition panel available for " + identifier);
 		}
@@ -142,8 +142,8 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * If multiple conditon panels are available a selection dialog is presented.
 	 * @param dialogOwner the dialog owner
 	 */
-	public final void selectConditionPanel(JComponent dialogOwner) {
-		List<Item<? extends ColumnConditionPanel<?>>> panelItems = selectableConditionPanels().stream()
+	public final void selectPanel(JComponent dialogOwner) {
+		List<Item<? extends ColumnConditionPanel<?>>> panelItems = selectablePanels().stream()
 						.map(conditionPanel -> item(conditionPanel, conditionPanel.caption()))
 						.sorted(Text.collator())
 						.collect(toList());
