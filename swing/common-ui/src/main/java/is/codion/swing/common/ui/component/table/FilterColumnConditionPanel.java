@@ -62,6 +62,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static is.codion.common.Operator.*;
@@ -122,10 +123,12 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 					GREATER_THAN, GREATER_THAN_OR_EQUAL, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
 	private static final List<Operator> UPPER_BOUND_OPERATORS = asList(
 					LESS_THAN, LESS_THAN_OR_EQUAL, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
+	private static final DefaultOperatorCaptions DEFAULT_OPERATOR_CAPTIONS = new DefaultOperatorCaptions();
 
 	private final FieldFactory<C> fieldFactory;
 	private final Event<C> focusGainedEvent = Event.event();
 	private final TableColumn tableColumn;
+	private final Function<Operator, String> operatorCaptions;
 
 	private JToggleButton toggleEnabledButton;
 	private JComboBox<Item<Operator>> operatorCombo;
@@ -142,6 +145,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	private FilterColumnConditionPanel(DefaultBuilder<C, T> builder) {
 		super(builder.condition, builder.identifier, builder.caption);
 		this.fieldFactory = builder.fieldFactory;
+		this.operatorCaptions = builder.operatorCaptions;
 		this.tableColumn = builder.tableColumn;
 	}
 
@@ -269,6 +273,13 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		Builder<C, T> fieldFactory(FieldFactory<C> fieldFactory);
 
 		/**
+		 * Provides captions for operators, displayed in the operator combo box
+		 * @param operatorCaptions the operator caption function
+		 * @return this builder
+		 */
+		Builder<C, T> operatorCaptions(Function<Operator, String> operatorCaptions);
+
+		/**
 		 * @param tableColumn the table column this condition panel represents
 		 * @return this builder
 		 */
@@ -287,6 +298,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 		private String caption;
 		private FieldFactory<C> fieldFactory = new DefaultFilterFieldFactory<>();
+		private Function<Operator, String> operatorCaptions = DEFAULT_OPERATOR_CAPTIONS;
 		private TableColumn tableColumn;
 
 		private DefaultBuilder(ConditionModel<T> condition, C identifier) {
@@ -308,6 +320,12 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 			}
 
 			this.fieldFactory = requireNonNull(fieldFactory);
+			return this;
+		}
+
+		@Override
+		public Builder<C, T> operatorCaptions(Function<Operator, String> operatorCaptions) {
+			this.operatorCaptions = requireNonNull(operatorCaptions);
 			return this;
 		}
 
@@ -581,7 +599,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private JComboBox<Item<Operator>> createOperatorComboBox(List<Operator> operators) {
 		ItemComboBoxModel<Operator> operatorComboBoxModel = ItemComboBoxModel.itemComboBoxModel(operators.stream()
-						.map(operator -> Item.item(operator, caption(operator)))
+						.map(operator -> Item.item(operator, operatorCaptions.apply(operator)))
 						.collect(toList()));
 
 		return itemComboBox(operatorComboBoxModel, condition().operator())
@@ -751,37 +769,6 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		return false;
 	}
 
-	private static String caption(Operator operator) {
-		switch (requireNonNull(operator)) {
-			case EQUAL:
-				return "α =";
-			case NOT_EQUAL:
-				return "α ≠";
-			case LESS_THAN:
-				return "α <";
-			case LESS_THAN_OR_EQUAL:
-				return "α ≤";
-			case GREATER_THAN:
-				return "α >";
-			case GREATER_THAN_OR_EQUAL:
-				return "α ≥";
-			case BETWEEN_EXCLUSIVE:
-				return "< α <";
-			case BETWEEN:
-				return "≤ α ≤";
-			case NOT_BETWEEN_EXCLUSIVE:
-				return "≥ α ≥";
-			case NOT_BETWEEN:
-				return "> α >";
-			case IN:
-				return "α ∈";
-			case NOT_IN:
-				return "α ∉";
-			default:
-				throw new IllegalArgumentException(UNKNOWN_OPERATOR + operator);
-		}
-	}
-
 	private final class FocusGained extends FocusAdapter {
 
 		private final C identifier;
@@ -808,6 +795,41 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		public Component getListCellRendererComponent(JList<? extends Item<Operator>> list, Item<Operator> value,
 																									int index, boolean isSelected, boolean cellHasFocus) {
 			return listCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+		}
+	}
+
+	private static final class DefaultOperatorCaptions implements Function<Operator, String> {
+
+		@Override
+		public String apply(Operator operator) {
+			switch (requireNonNull(operator)) {
+				case EQUAL:
+					return "α =";
+				case NOT_EQUAL:
+					return "α ≠";
+				case LESS_THAN:
+					return "α <";
+				case LESS_THAN_OR_EQUAL:
+					return "α ≤";
+				case GREATER_THAN:
+					return "α >";
+				case GREATER_THAN_OR_EQUAL:
+					return "α ≥";
+				case BETWEEN_EXCLUSIVE:
+					return "< α <";
+				case BETWEEN:
+					return "≤ α ≤";
+				case NOT_BETWEEN_EXCLUSIVE:
+					return "≥ α ≥";
+				case NOT_BETWEEN:
+					return "> α >";
+				case IN:
+					return "α ∈";
+				case NOT_IN:
+					return "α ∉";
+				default:
+					throw new IllegalArgumentException(UNKNOWN_OPERATOR + operator);
+			}
 		}
 	}
 }
