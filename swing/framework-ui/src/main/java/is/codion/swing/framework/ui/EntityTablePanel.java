@@ -574,7 +574,7 @@ public class EntityTablePanel extends JPanel {
 	 * @throws IllegalStateException in case a condition panel is not available
 	 * @see Config#includeConditionPanel(boolean)
 	 */
-	public final <T extends ColumnConditionsPanel<Attribute<?>>> T conditionPanel() {
+	public final <T extends ColumnConditionsPanel<Attribute<?>>> T conditions() {
 		if (!configuration.includeConditionPanel) {
 			throw new IllegalStateException("No condition panel is available");
 		}
@@ -1246,7 +1246,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createSelectConditionPanelControl() {
-		return command(() -> conditionPanel().selectPanel(this));
+		return command(() -> conditions().selectPanel(this));
 	}
 
 	private Controls createConditionControls() {
@@ -1281,11 +1281,11 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createSelectFilterPanelControl() {
-		return command(() -> table.filterPanel().selectPanel(this));
+		return command(() -> table.filters().selectPanel(this));
 	}
 
 	private void toggleConditionPanel() {
-		Value<ConditionState> conditionState = conditionPanel().state();
+		Value<ConditionState> conditionState = conditions().state();
 		switch (conditionState.get()) {
 			case HIDDEN:
 				conditionState.set(SIMPLE);
@@ -1300,7 +1300,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void toggleFilterPanel() {
-		Value<ConditionState> conditionState = table.filterPanel().state();
+		Value<ConditionState> conditionState = table.filters().state();
 		switch (conditionState.get()) {
 			case HIDDEN:
 				conditionState.set(SIMPLE);
@@ -1321,7 +1321,7 @@ public class EntityTablePanel extends JPanel {
 		ControlsBuilder builder = Controls.builder()
 						.name(FrameworkMessages.filterNoun())
 						.smallIcon(ICONS.filter());
-		Controls filterPanelControls = table.filterPanel().controls();
+		Controls filterPanelControls = table.filters().controls();
 		if (filterPanelControls.notEmpty()) {
 			builder.actions(filterPanelControls.actions());
 		}
@@ -2303,7 +2303,7 @@ public class EntityTablePanel extends JPanel {
 		 * @param attribute the attribute
 		 * @param conditionFieldFactory the condition field factory for the given attribute
 		 * @return this Config instance
-		 * @see EntityTablePanel#conditionPanel()
+		 * @see EntityTablePanel#conditions()
 		 */
 		public Config conditionFieldFactory(Attribute<?> attribute, FieldFactory conditionFieldFactory) {
 			this.conditionFieldFactories.put(attribute, requireNonNull(conditionFieldFactory));
@@ -2665,9 +2665,9 @@ public class EntityTablePanel extends JPanel {
 				}
 			}
 			if (configuration.includeFilterPanel) {
-				filterPanelScrollPane = createLinkedScrollPane(table.filterPanel());
-				table.filterPanel().state().addConsumer(this::filterPanelStateChanged);
-				if (table.filterPanel().state().isNotEqualTo(ConditionState.HIDDEN)) {
+				filterPanelScrollPane = createLinkedScrollPane(table.filters());
+				table.filters().state().addConsumer(this::filterPanelStateChanged);
+				if (table.filters().state().isNotEqualTo(ConditionState.HIDDEN)) {
 					tableSouthPanel.add(filterPanelScrollPane, BorderLayout.SOUTH);
 				}
 			}

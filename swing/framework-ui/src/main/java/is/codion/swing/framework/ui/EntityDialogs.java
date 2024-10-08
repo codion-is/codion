@@ -520,7 +520,7 @@ public final class EntityDialogs {
 			EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeSouthPanel(false));
 			tablePanel.initialize();
 			tablePanel.table().doubleClickAction().set(okControl);
-			tablePanel.conditionPanel().state().set(ConditionState.SIMPLE);
+			tablePanel.conditions().state().set(ConditionState.SIMPLE);
 			tablePanel.table().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 			tablePanel.table().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);

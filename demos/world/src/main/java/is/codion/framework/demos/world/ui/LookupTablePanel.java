@@ -109,7 +109,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		objectMapper = new WorldObjectMapperFactory().entityObjectMapper(lookupModel.entities());
 		objectMapper.setIncludeNullValues(false);
 		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		conditionPanel().state().set(ConditionState.SIMPLE);
+		conditions().state().set(ConditionState.SIMPLE);
 		configurePopupMenuAndToolBar();
 		bindEvents();
 	}

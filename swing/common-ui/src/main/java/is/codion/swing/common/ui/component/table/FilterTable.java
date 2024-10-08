@@ -276,7 +276,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.controlMap.control(TOGGLE_SORT_COLUMN).set(createToggleSortColumnControl());
 		this.controlMap.control(TOGGLE_SORT_COLUMN_ADD).set(createToggleSortColumnAddControl());
 		if (builder.conditionState != ConditionState.HIDDEN) {
-			filterPanel().state().set(builder.conditionState);
+			filters().state().set(builder.conditionState);
 		}
 		autoStartsEdit(builder.autoStartsEdit);
 		setSelectionMode(builder.selectionMode);
@@ -362,7 +362,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return the filter column conditions panel
 	 */
-	public ColumnConditionsPanel<C> filterPanel() {
+	public ColumnConditionsPanel<C> filters() {
 		if (filterPanel == null) {
 			filterPanel = filterPanelFactory.create(tableModel.filters(), createColumnFilterPanels(),
 							columnModel(), this::configureFilterConditionsPanel);
@@ -1035,7 +1035,7 @@ public final class FilterTable<R, C> extends JTable {
 		/**
 		 * @param filterFieldFactory the column filter field factory
 		 * @return this builder instance
-		 * @see FilterTable#filterPanel()
+		 * @see FilterTable#filters()
 		 */
 		Builder<R, C> filterFieldFactory(FieldFactory filterFieldFactory);
 

@@ -38,7 +38,7 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 		super(tableModel, config -> config
 						.editable(attributes -> attributes.remove(Invoice.TOTAL))
 						.columnConditionsPanelFactory(new InvoiceConditionPanelFactory(tableModel)));
-		conditionPanel().state().set(SIMPLE);
+		conditions().state().set(SIMPLE);
 	}
 
 	private static final class InvoiceConditionPanelFactory implements ColumnConditionsPanel.Factory<Attribute<?>> {
