@@ -143,7 +143,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public Optional<TableCellEditor> tableCellEditor(FilterTableColumn<Attribute<?>> column) {
+		public Optional<TableCellEditor> create(FilterTableColumn<Attribute<?>> column) {
 			if (column.identifier().equals(Track.MILLISECONDS)) {
 				return Optional.of(filterTableCellEditor(() -> new DurationComponentValue(true)));
 			}
@@ -151,7 +151,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 				return Optional.of(filterTableCellEditor(() -> components.integerSpinner(Track.RATING).buildValue()));
 			}
 
-			return super.tableCellEditor(column);
+			return super.create(column);
 		}
 	}
 

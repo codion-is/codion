@@ -30,5 +30,5 @@ public interface FilterTableCellEditorFactory<C> {
 	 * @param column the column
 	 * @return a {@link TableCellEditor} instance for the given column or an empty optional if the column should not be editable
 	 */
-	Optional<TableCellEditor> tableCellEditor(FilterTableColumn<C> column);
+	Optional<TableCellEditor> create(FilterTableColumn<C> column);
 }

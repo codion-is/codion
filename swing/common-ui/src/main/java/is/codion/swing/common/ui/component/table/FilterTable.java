@@ -822,7 +822,7 @@ public final class FilterTable<R, C> extends JTable {
 						.forEach(column -> column.setHeaderRenderer(new FilterTableHeaderRenderer<>(this, column)));
 		columnModel().columns().stream()
 						.filter(column -> column.getCellEditor() == null)
-						.forEach(column -> cellEditorFactory.tableCellEditor(column).ifPresent(column::setCellEditor));
+						.forEach(column -> cellEditorFactory.create(column).ifPresent(column::setCellEditor));
 	}
 
 	private void configureTableHeader(boolean reorderingAllowed, boolean columnResizingAllowed) {
@@ -1589,7 +1589,7 @@ public final class FilterTable<R, C> extends JTable {
 	private static final class DefaultFilterTableCellEditorFactory<C> implements FilterTableCellEditorFactory<C> {
 
 		@Override
-		public Optional<TableCellEditor> tableCellEditor(FilterTableColumn<C> column) {
+		public Optional<TableCellEditor> create(FilterTableColumn<C> column) {
 			return Optional.empty();
 		}
 	}

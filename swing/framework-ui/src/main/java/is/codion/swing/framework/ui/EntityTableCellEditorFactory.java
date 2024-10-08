@@ -49,7 +49,7 @@ public class EntityTableCellEditorFactory implements FilterTableCellEditorFactor
 	}
 
 	@Override
-	public Optional<TableCellEditor> tableCellEditor(FilterTableColumn<Attribute<?>> column) {
+	public Optional<TableCellEditor> create(FilterTableColumn<Attribute<?>> column) {
 		if (nonUpdatableForeignKey(column.identifier())) {
 			return Optional.empty();
 		}
