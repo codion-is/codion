@@ -81,6 +81,9 @@ import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REF
 import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERENCE;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Provides persistance services for Entities
+ */
 public final class EntityService implements AuxiliaryServer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityService.class);

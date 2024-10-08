@@ -860,10 +860,17 @@ public class EntityEditComponentPanel extends JPanel {
 		return getInitialFocusComponent();
 	}
 
+	/**
+	 * Request focus after an insert operation
+	 * @see #getAfterInsertFocusComponent()
+	 */
 	protected final void requestAfterInsertFocus() {
 		requestFocus(getAfterInsertFocusComponent());
 	}
 
+	/**
+	 * Request focus after an update operation
+	 */
 	protected final void requestAfterUpdateFocus() {
 		requestFocus(focusedInputComponent.optional().orElse(getInitialFocusComponent()));
 	}

@@ -38,7 +38,7 @@ import static is.codion.swing.framework.ui.icon.FrameworkIkon.*;
 import static java.util.stream.StreamSupport.stream;
 
 /**
- * A default FrameworkIcons implementation.
+ * A default {@link FrameworkIcons} implementation.
  */
 public final class DefaultFrameworkIcons implements FrameworkIcons {
 
@@ -70,6 +70,9 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 					.color(Color.RED.darker())
 					.build().imageIcon();
 
+	/**
+	 * Instantiates a new {@link DefaultFrameworkIcons} instance
+	 */
 	public DefaultFrameworkIcons() {
 		add(LOGO, FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
 						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);

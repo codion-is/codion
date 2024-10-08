@@ -28,6 +28,9 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
 
+	/**
+	 * The path of this report, relative to any defined #{@link Report#REPORT_PATH}.
+	 */
 	protected final String reportPath;
 
 	private final boolean cacheReport;

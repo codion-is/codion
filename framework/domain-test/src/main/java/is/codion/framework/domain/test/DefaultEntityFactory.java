@@ -72,6 +72,10 @@ public class DefaultEntityFactory implements EntityFactory {
 	private final Entities entities;
 	private final Map<ForeignKey, Entity> foreignKeyEntities = new HashMap<>();
 
+	/**
+	 * Instantiates a new {@link DefaultEntityFactory}
+	 * @param connection the connection to use
+	 */
 	public DefaultEntityFactory(EntityConnection connection) {
 		this.connection = requireNonNull(connection);
 		this.entities = connection.entities();

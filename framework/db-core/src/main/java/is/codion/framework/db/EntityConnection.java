@@ -60,6 +60,9 @@ import static java.util.Objects.requireNonNull;
  */
 public interface EntityConnection extends AutoCloseable {
 
+	/**
+	 * The default query timeout in seconds
+	 */
 	int DEFAULT_QUERY_TIMEOUT_SECONDS = 120;
 
 	/**
@@ -341,7 +344,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param <T> the value type
 	 * @return the values of the given column
 	 * @throws DatabaseException in case of a database exception
-	 * @throws IllegalArgumentException in case the given column is not associated with a table column
+	 * @throws IllegalArgumentException in case the column and select condition entity types don't match
 	 * @throws UnsupportedOperationException in case the entity uses a custom column clause or if the column represents an aggregate value
 	 */
 	<T> List<T> select(Column<T> column, Select select) throws DatabaseException;

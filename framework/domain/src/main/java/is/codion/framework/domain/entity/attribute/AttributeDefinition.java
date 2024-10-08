@@ -38,6 +38,9 @@ import java.util.List;
  */
 public interface AttributeDefinition<T> {
 
+	/**
+	 * The default maximum fraction digits for floating point numbers
+	 */
 	int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
 
 	/**

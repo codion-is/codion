@@ -42,6 +42,9 @@ public final class DefaultHttpEntityConnectionProviderBuilder
 	int connectTimeout = HttpEntityConnection.CONNECT_TIMEOUT.get();
 	Executor executor = AbstractHttpEntityConnection.DEFAULT_EXECUTOR;
 
+	/**
+	 * Instantiates a new {@link DefaultHttpEntityConnectionProviderBuilder}
+	 */
 	public DefaultHttpEntityConnectionProviderBuilder() {
 		super(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
 	}

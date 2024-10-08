@@ -59,69 +59,18 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	static final RequestCounter REQUEST_COUNTER = new RequestCounter();
 
-	/**
-	 * The domain model
-	 */
 	private final Domain domain;
-
-	/**
-	 * Contains information about the client using this connection
-	 */
 	private final RemoteClient remoteClient;
-
-	/**
-	 * Contains information about the underlying database
-	 */
 	private final Database database;
-
-	/**
-	 * The connection pool to use, if any
-	 */
 	private final ConnectionPoolWrapper connectionPool;
-
-	/**
-	 * The method call log
-	 */
 	private final MethodLogger methodLogger;
-
-	/**
-	 * Identifies the log file being used for this connection
-	 */
 	private final String logIdentifier;
-
-	/**
-	 * Describes the logged-in user, for logging purposes
-	 */
 	private final String userDescription;
-
-	/**
-	 * The date and time when this remote connection was established
-	 */
 	private final long creationTime = System.currentTimeMillis();
-
-	/**
-	 * True while working
-	 */
 	private final AtomicBoolean active = new AtomicBoolean(false);
-
-	/**
-	 * A local connection used in case no connection pool is provided, managed by fetchConnection()/returnConnection()
-	 */
 	private LocalEntityConnection localEntityConnection;
-
-	/**
-	 * A local connection used in case of a connection pool, managed by fetchConnection()/returnConnection()
-	 */
 	private LocalEntityConnection poolEntityConnection;
-
-	/**
-	 * The time this connection was last used
-	 */
 	private long lastAccessTime = creationTime;
-
-	/**
-	 * Indicates whether this remote connection has been disconnected
-	 */
 	private boolean closed = false;
 
 	LocalConnectionHandler(Domain domain, RemoteClient remoteClient, Database database) throws DatabaseException {

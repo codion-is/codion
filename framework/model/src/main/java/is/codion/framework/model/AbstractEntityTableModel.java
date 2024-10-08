@@ -46,6 +46,10 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * An abstract {@link EntityTableModel} implementation
+ * @param <E> the {@link EntityEditModel} type
+ */
 public abstract class AbstractEntityTableModel<E extends EntityEditModel> implements EntityTableModel<E> {
 
 	private final FilterModel<Entity> filterModel;

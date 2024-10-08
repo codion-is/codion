@@ -195,6 +195,9 @@ public class EntityTablePanel extends JPanel {
 	private static final String COLUMN_PREFERENCES = "-columns";
 	private static final String CONDITIONS_PREFERENCES = "-conditions";
 
+	/**
+	 * The Controls available in a {@link EntityTablePanel}
+	 */
 	public static final class ControlKeys {
 
 		/**
@@ -780,6 +783,24 @@ public class EntityTablePanel extends JPanel {
 		return new SouthPanel();
 	}
 
+	/**
+	 * Sets up the keyboard shortcuts.
+	 * @see ControlKeys#REFRESH
+	 * @see ControlKeys#REQUEST_TABLE_FOCUS
+	 * @see ControlKeys#SELECT_CONDITION_PANEL
+	 * @see ControlKeys#TOGGLE_CONDITION_PANEL
+	 * @see ControlKeys#SELECT_FILTER_PANEL
+	 * @see ControlKeys#TOGGLE_FILTER_PANEL
+	 * @see ControlKeys#PRINT
+	 * @see ControlKeys#ADD
+	 * @see ControlKeys#EDIT
+	 * @see ControlKeys#EDIT_SELECTED_ATTRIBUTE
+	 * @see ControlKeys#DELETE
+	 * @see ControlKeys#MOVE_SELECTION_UP
+	 * @see ControlKeys#MOVE_SELECTION_DOWN
+	 * @see ControlKeys#DISPLAY_ENTITY_MENU
+	 * @see ControlKeys#DISPLAY_POPUP_MENU
+	 */
 	protected void setupKeyboardActions() {
 		configuration.controlMap.keyEvent(REFRESH).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

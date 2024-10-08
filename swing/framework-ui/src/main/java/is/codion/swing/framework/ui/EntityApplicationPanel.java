@@ -211,10 +211,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private int fontSize = 100;
 	private boolean initialized = false;
 
+	/**
+	 * Instantiates a new {@link EntityApplicationPanel} based on the given application model,
+	 * using the default {@link TabbedApplicationLayout}.
+	 * @param applicationModel the application model
+	 */
 	public EntityApplicationPanel(M applicationModel) {
 		this(applicationModel, TabbedApplicationLayout::new);
 	}
 
+	/**
+	 * Instantiates a new {@link EntityApplicationPanel} based on the given application model,
+	 * using the {@link ApplicationLayout} provided by {@code applicationLayout}.
+	 * @param applicationModel the application model
+	 * @param applicationLayout provides the application layout
+	 */
 	public EntityApplicationPanel(M applicationModel, Function<EntityApplicationPanel<M>, ApplicationLayout> applicationLayout) {
 		this.applicationModel = requireNonNull(applicationModel);
 		this.applicationLayout = requireNonNull(applicationLayout).apply(this);

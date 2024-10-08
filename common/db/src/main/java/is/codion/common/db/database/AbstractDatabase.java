@@ -46,7 +46,14 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractDatabase implements Database {
 
+	/**
+	 * {@code FOR UPDATE}
+	 */
 	protected static final String FOR_UPDATE = "FOR UPDATE";
+
+	/**
+	 * {@code FOR UPDATE NOWAIT}
+	 */
 	protected static final String FOR_UPDATE_NOWAIT = "FOR UPDATE NOWAIT";
 
 	private static final String FETCH_NEXT = "FETCH NEXT ";
@@ -264,32 +271,52 @@ public abstract class AbstractDatabase implements Database {
 		}
 	}
 
+	/**
+	 * Creates a limit/offset clause of the form {@code LIMIT {limit} OFFSET {offset}}.
+	 * Returns a partial clause if either value is null.
+	 * If both values are null, an empty string is returned.
+	 * @param limit the limit, may be null
+	 * @param offset the offset, may be null
+	 * @return a limit/offset clause
+	 */
 	protected static String createLimitOffsetClause(Integer limit, Integer offset) {
-		/* LIMIT {limit} OFFSET {offset} */
 		StringBuilder builder = new StringBuilder();
 		if (limit != null) {
 			builder.append(LIMIT).append(limit);
 		}
 		if (offset != null) {
-			builder.append(builder.length() == 0 ? "" : " ").append(OFFSET).append(offset);
+			builder.append(builder.isEmpty() ? "" : " ").append(OFFSET).append(offset);
 		}
 
 		return builder.toString();
 	}
 
+	/**
+	 * Creates a offset/fetch next clause of the form {@code OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY}.
+	 * Returns a partial clause if either value is null.
+	 * If both values are null, an empty string is returned.
+	 * @param limit the limit, may be null
+	 * @param offset the offset, may be null
+	 * @return a limit/offset clause
+	 */
 	protected static String createOffsetFetchNextClause(Integer limit, Integer offset) {
-		/* OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY */
 		StringBuilder builder = new StringBuilder();
 		if (offset != null) {
 			builder.append(OFFSET).append(offset).append(ROWS);
 		}
 		if (limit != null) {
-			builder.append(builder.length() == 0 ? "" : " ").append(FETCH_NEXT).append(limit).append(ROWS).append(ONLY);
+			builder.append(builder.isEmpty() ? "" : " ").append(FETCH_NEXT).append(limit).append(ROWS).append(ONLY);
 		}
 
 		return builder.toString();
 	}
 
+	/**
+	 * Removes the given prefixes along with any options and parameters from the given jdbc url.
+	 * @param url the url
+	 * @param prefixes the prefixes to remove
+	 * @return the given url without prefixes, options and parameters
+	 */
 	protected static String removeUrlPrefixOptionsAndParameters(String url, String... prefixes) {
 		String result = url;
 		for (String prefix : prefixes) {

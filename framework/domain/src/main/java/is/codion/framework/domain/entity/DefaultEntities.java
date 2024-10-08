@@ -117,11 +117,21 @@ public abstract class DefaultEntities implements Entities, Serializable {
 		return getClass().getSimpleName() + ": " + domainType;
 	}
 
+	/**
+	 * Specifies whether to validate foreign keys when created, asserting that
+	 * the referenced entity has been defined. Disable in case of cyclical dependencies.
+	 * @param validateForeignKeys true if foreign keys should be validated
+	 */
 	protected final void validateForeignKeys(boolean validateForeignKeys) {
 		this.validateForeignKeys = validateForeignKeys;
 	}
 
+	/**
+	 * @param definition the entity definition to add
+	 * @throws IllegalArgumentException in case this {@link DefaultEntities} instance already contains the given definition
+	 */
 	protected final void add(EntityDefinition definition) {
+		requireNonNull(definition);
 		if (entityDefinitions.containsKey(definition.entityType().name())) {
 			throw new IllegalArgumentException("Entity has already been defined: " +
 							definition.entityType() + ", for table: " + definition.tableName());

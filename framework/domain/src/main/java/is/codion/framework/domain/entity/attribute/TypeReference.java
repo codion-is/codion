@@ -29,6 +29,9 @@ public abstract class TypeReference<T> {
 
 	private final Type type;
 
+	/**
+	 * Instantiates a new {@link TypeReference}
+	 */
 	protected TypeReference() {
 		Type superClass = getClass().getGenericSuperclass();
 		type = ((ParameterizedType) superClass).getActualTypeArguments()[0];

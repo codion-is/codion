@@ -32,6 +32,9 @@ import static java.util.ResourceBundle.getBundle;
  * The summary types available to the default summary model
  */
 public enum ColumnSummary implements SummaryModel.Summary {
+	/**
+	 * No summary
+	 */
 	NONE {
 		@Override
 		public String toString() {
@@ -42,7 +45,11 @@ public enum ColumnSummary implements SummaryModel.Summary {
 		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
 			return "";
 		}
-	}, SUM {
+	},
+	/**
+	 * The sum of the supplied values
+	 */
+	SUM {
 		@Override
 		public String toString() {
 			return MESSAGES.getString("sum");
@@ -59,7 +66,11 @@ public enum ColumnSummary implements SummaryModel.Summary {
 
 			return "";
 		}
-	}, AVERAGE {
+	},
+	/**
+	 * The average of the supplied values
+	 */
+	AVERAGE {
 		@Override
 		public String toString() {
 			return MESSAGES.getString("average");
@@ -79,7 +90,11 @@ public enum ColumnSummary implements SummaryModel.Summary {
 
 			return "";
 		}
-	}, MINIMUM {
+	},
+	/**
+	 * The minimum of the supplied values
+	 */
+	MINIMUM {
 		@Override
 		public String toString() {
 			return MESSAGES.getString("minimum");
@@ -100,7 +115,11 @@ public enum ColumnSummary implements SummaryModel.Summary {
 
 			return "";
 		}
-	}, MAXIMUM {
+	},
+	/**
+	 * The maximum of the supplied values
+	 */
+	MAXIMUM {
 		@Override
 		public String toString() {
 			return MESSAGES.getString("maximum");
@@ -121,7 +140,11 @@ public enum ColumnSummary implements SummaryModel.Summary {
 
 			return "";
 		}
-	}, MINIMUM_MAXIMUM {
+	},
+	/**
+	 * The minimum and maximum of the supplied values
+	 */
+	MINIMUM_MAXIMUM {
 		@Override
 		public String toString() {
 			return MESSAGES.getString("minimum_and_maximum");

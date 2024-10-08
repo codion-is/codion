@@ -122,14 +122,40 @@ public class EntityPanel extends JPanel {
 	 * The possible states of a detail or edit panel.
 	 */
 	public enum PanelState {
-		EMBEDDED, WINDOW, HIDDEN
+		/**
+		 * Embedded in the master panel
+		 */
+		EMBEDDED,
+		/**
+		 * Displayed in a window or dialog
+		 */
+		WINDOW,
+		/**
+		 * Hidden
+		 */
+		HIDDEN
 	}
 
 	/**
 	 * The navigation directions.
 	 */
 	public enum Direction {
-		UP, DOWN, RIGHT, LEFT
+		/**
+		 * Navigate up to the master panel
+		 */
+		UP,
+		/**
+		 * Navigate down to the currently active detail panel
+		 */
+		DOWN,
+		/**
+		 * Navigate to the next sibling panel
+		 */
+		RIGHT,
+		/**
+		 * Navigate to the previous sibling panel
+		 */
+		LEFT
 	}
 
 	/**
@@ -788,6 +814,13 @@ public class EntityPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * Sets up the navigation keyboard shortcuts.
+	 * @see ControlKeys#NAVIGATE_UP
+	 * @see ControlKeys#NAVIGATE_DOWN
+	 * @see ControlKeys#NAVIGATE_LEFT
+	 * @see ControlKeys#NAVIGATE_RIGHT
+	 */
 	protected final void setupNavigation() {
 		JComponent[] components = navigationComponents();
 		configuration.controlMap.keyEvent(NAVIGATE_UP).ifPresent(keyEvent ->

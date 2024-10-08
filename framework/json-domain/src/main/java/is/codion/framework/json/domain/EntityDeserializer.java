@@ -37,7 +37,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class EntityDeserializer extends StdDeserializer<Entity> {
+final class EntityDeserializer extends StdDeserializer<Entity> {
 
 	@Serial
 	private static final long serialVersionUID = 1;

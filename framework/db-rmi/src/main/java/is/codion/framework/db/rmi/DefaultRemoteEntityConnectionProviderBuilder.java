@@ -38,6 +38,9 @@ public final class DefaultRemoteEntityConnectionProviderBuilder
 	int registryPort = ServerConfiguration.REGISTRY_PORT.get();
 	String namePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
 
+	/**
+	 * Instantiates a new {@link DefaultRemoteEntityConnectionProviderBuilder}
+	 */
 	public DefaultRemoteEntityConnectionProviderBuilder() {
 		super(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
 	}

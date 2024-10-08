@@ -29,6 +29,9 @@ import java.util.List;
  */
 public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 
+	/**
+	 * The default number of levels of foreign keys to fetch
+	 */
 	int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
 
 	/**

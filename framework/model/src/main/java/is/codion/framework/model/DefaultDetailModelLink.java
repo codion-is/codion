@@ -42,6 +42,10 @@ public class DefaultDetailModelLink<M extends DefaultEntityModel<M, E, T>, E ext
 	private final M detailModel;
 	private final State active = State.state();
 
+	/**
+	 * Instantiates a {@link DefaultDetailModelLink} for the given detail model
+	 * @param detailModel the detail model to link
+	 */
 	public DefaultDetailModelLink(M detailModel) {
 		this.detailModel = requireNonNull(detailModel, "detailModel");
 		if (detailModel.containsTableModel()) {

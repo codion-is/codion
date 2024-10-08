@@ -26,17 +26,53 @@ import static java.util.ResourceBundle.getBundle;
  */
 public enum Operator {
 
+	/**
+	 * {@code α = x}
+	 */
 	EQUAL,
+	/**
+	 * {@code α ≠ x}
+	 */
 	NOT_EQUAL,
+	/**
+	 * {@code α < x}
+	 */
 	LESS_THAN,
+	/**
+	 * {@code α ≤ x}
+	 */
 	LESS_THAN_OR_EQUAL,
+	/**
+	 * {@code α > x}
+	 */
 	GREATER_THAN,
+	/**
+	 * {@code α ≥ x}
+	 */
 	GREATER_THAN_OR_EQUAL,
+	/**
+	 * {@code α ∈ {x,y,z...}}
+	 */
 	IN,
+	/**
+	 * {@code α ∉ {x,y,z...}}
+	 */
 	NOT_IN,
+	/**
+	 * {@code x < α < y}
+	 */
 	BETWEEN_EXCLUSIVE,
+	/**
+	 * {@code x ≤ α ≤ y}
+	 */
 	BETWEEN,
+	/**
+	 * {@code x ≥ α ≥ y}
+	 */
 	NOT_BETWEEN_EXCLUSIVE,
+	/**
+	 * {@code x > α > y}
+	 */
 	NOT_BETWEEN;
 
 	private final String description;
@@ -45,6 +81,9 @@ public enum Operator {
 		this.description = messageBundle(Operator.class, getBundle(Operator.class.getName())).getString(name().toLowerCase());
 	}
 
+	/**
+	 * @return the operator description
+	 */
 	public String description() {
 		return description;
 	}

@@ -39,6 +39,11 @@ public abstract class AbstractCondition implements Condition, Serializable {
 	private final List<Column<?>> columns;
 	private final List<?> values;
 
+	/**
+	 * @param entityType the entity type
+	 * @param columns the columns used by this condition
+	 * @param values the values matching their columns in the columns list
+	 */
 	protected AbstractCondition(EntityType entityType, List<Column<?>> columns, Collection<?> values) {
 		this.entityType = requireNonNull(entityType);
 		this.columns = unmodifiableList(new ArrayList<>(columns));

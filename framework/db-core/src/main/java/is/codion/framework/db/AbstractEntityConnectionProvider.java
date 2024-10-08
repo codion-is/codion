@@ -53,6 +53,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private EntityConnection entityConnection;
 	private Entities entities;
 
+	/**
+	 * @param builder the builder
+	 */
 	protected AbstractEntityConnectionProvider(AbstractBuilder<?, ?> builder) {
 		requireNonNull(builder);
 		this.user = requireNonNull(builder.user, "A user must be specified");
@@ -174,6 +177,11 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		connectedEvent.accept(entityConnection);
 	}
 
+	/**
+	 * An abstract {@link EntityConnectionProvider.Builder}.
+	 * @param <T> the {@link EntityConnectionProvider} type built by this builder
+	 * @param <B> the builder type
+	 */
 	public abstract static class AbstractBuilder<T extends EntityConnectionProvider,
 					B extends Builder<T, B>> implements Builder<T, B> {
 
@@ -186,6 +194,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		private Version clientVersion;
 		private Consumer<EntityConnectionProvider> onClose;
 
+		/**
+		 * @param connectionType a string describing the connection type
+		 */
 		protected AbstractBuilder(String connectionType) {
 			this.connectionType = requireNonNull(connectionType);
 		}

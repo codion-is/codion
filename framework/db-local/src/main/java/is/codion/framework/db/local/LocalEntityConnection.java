@@ -49,6 +49,9 @@ import java.sql.Connection;
  */
 public interface LocalEntityConnection extends EntityConnection {
 
+	/**
+	 * The default number of log entries to keep.
+	 */
 	int DEFAULT_CONNECTION_LOG_SIZE = 40;
 
 	/**

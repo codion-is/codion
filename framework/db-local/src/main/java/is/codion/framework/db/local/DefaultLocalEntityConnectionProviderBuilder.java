@@ -37,6 +37,9 @@ public final class DefaultLocalEntityConnectionProviderBuilder
 	Database database;
 	int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
 
+	/**
+	 * Instantiates a new {@link DefaultLocalEntityConnectionProviderBuilder}
+	 */
 	public DefaultLocalEntityConnectionProviderBuilder() {
 		super(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
 	}
