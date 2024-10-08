@@ -279,7 +279,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		if (requireNonNull(entities, ENTITIES).isEmpty()) {
 			return emptyList();
 		}
-		List<Entity> updatedEntities = new ArrayList<>(entities.size());
+		Collection<Entity> updatedEntities = new ArrayList<>(entities.size());
 		update(entities, updatedEntities);
 
 		return updatedEntities;
@@ -288,7 +288,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	@Override
 	public int update(Update update) throws DatabaseException {
 		if (requireNonNull(update, CONDITION).values().isEmpty()) {
-			throw new IllegalArgumentException("No values provided for update");
+			throw new IllegalArgumentException("Update requires one or more values");
 		}
 		throwIfReadOnly(update.where().entityType());
 
@@ -475,7 +475,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
 		EntityDefinition entityDefinition = definition(requireNonNull(column, "column").entityType());
 		if (!requireNonNull(select, "select").where().entityType().equals(column.entityType())) {
-			throw new IllegalArgumentException("Condition entity type " + column.entityType() + " required, got " + select.where().entityType());
+			throw new IllegalArgumentException("Condition entity type " + select.where().entityType() +
+							" does not match Column entity type " + column.entityType());
 		}
 		ColumnDefinition<T> columnDefinition = entityDefinition.columns().definition(column);
 		verifyColumnIsSelectable(columnDefinition, entityDefinition);
@@ -758,7 +759,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		}
 	}
 
-	private void update(Collection<Entity> entities, List<Entity> updatedEntities) throws DatabaseException {
+	private void update(Collection<Entity> entities, Collection<Entity> updatedEntities) throws DatabaseException {
 		Map<EntityType, List<Entity>> entitiesByEntityType = groupByType(entities);
 		throwIfReadOnly(entitiesByEntityType.keySet());
 

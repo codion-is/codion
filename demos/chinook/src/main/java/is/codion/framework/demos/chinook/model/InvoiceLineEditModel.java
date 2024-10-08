@@ -32,6 +32,8 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 import static is.codion.framework.db.EntityConnection.transaction;
+import static is.codion.framework.domain.entity.Entity.distinct;
+import static is.codion.framework.domain.entity.Entity.primaryKeys;
 
 public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
@@ -59,7 +61,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	@Override
 	protected void delete(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
 		transaction(connection, () -> {
-			connection.delete(Entity.primaryKeys(invoiceLines));
+			connection.delete(primaryKeys(invoiceLines));
 			updateTotals(invoiceLines, connection);
 		});
 	}
@@ -69,7 +71,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	}
 
 	private Collection<Entity> updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
-		totalsUpdatedEvent.accept(connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, invoiceLines)));
+		totalsUpdatedEvent.accept(connection.execute(Invoice.UPDATE_TOTALS, distinct(InvoiceLine.INVOICE_ID, invoiceLines)));
 
 		return invoiceLines;
 	}

@@ -68,6 +68,8 @@ import java.util.TimeZone;
 import java.util.function.Consumer;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
+import static is.codion.framework.db.local.DefaultLocalEntityConnection.modifiedColumns;
+import static is.codion.framework.db.local.DefaultLocalEntityConnection.valueMissingOrModified;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.db.local.TestDomain.*;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
@@ -1272,7 +1274,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void modifiedColumns() {
+	void missingOrModifiedValues() {
 		Entity entity = ENTITIES.builder(Department.TYPE)
 						.with(Department.DEPTNO, 1)
 						.with(Department.LOC, "Location")
@@ -1286,41 +1288,41 @@ public class DefaultLocalEntityConnectionTest {
 						.with(Department.DNAME, "Name")
 						.build();
 
-		assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DEPTNO));
-		assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.LOC));
-		assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DNAME));
+		assertFalse(valueMissingOrModified(current, entity, Department.DEPTNO));
+		assertFalse(valueMissingOrModified(current, entity, Department.LOC));
+		assertFalse(valueMissingOrModified(current, entity, Department.DNAME));
 
 		current.put(Department.DEPTNO, 2);
 		current.save();
-		assertTrue(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DEPTNO));
-		assertEquals(Department.DEPTNO, DefaultLocalEntityConnection.modifiedColumns(current, entity).iterator().next());
+		assertTrue(valueMissingOrModified(current, entity, Department.DEPTNO));
+		assertEquals(Department.DEPTNO, modifiedColumns(current, entity).iterator().next());
 		Integer id = current.remove(Department.DEPTNO);
 		assertEquals(2, id);
 		current.save();
-		assertTrue(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DEPTNO));
-		assertTrue(DefaultLocalEntityConnection.modifiedColumns(current, entity).isEmpty());
+		assertTrue(valueMissingOrModified(current, entity, Department.DEPTNO));
+		assertTrue(modifiedColumns(current, entity).isEmpty());
 		current.put(Department.DEPTNO, 1);
 		current.save();
-		assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DEPTNO));
-		assertTrue(DefaultLocalEntityConnection.modifiedColumns(current, entity).isEmpty());
+		assertFalse(valueMissingOrModified(current, entity, Department.DEPTNO));
+		assertTrue(modifiedColumns(current, entity).isEmpty());
 
 		current.put(Department.LOC, "New location");
 		current.save();
-		assertTrue(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.LOC));
-		assertEquals(Department.LOC, DefaultLocalEntityConnection.modifiedColumns(current, entity).iterator().next());
+		assertTrue(valueMissingOrModified(current, entity, Department.LOC));
+		assertEquals(Department.LOC, modifiedColumns(current, entity).iterator().next());
 		current.remove(Department.LOC);
 		current.save();
-		assertTrue(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.LOC));
-		assertTrue(DefaultLocalEntityConnection.modifiedColumns(current, entity).isEmpty());
+		assertTrue(valueMissingOrModified(current, entity, Department.LOC));
+		assertTrue(modifiedColumns(current, entity).isEmpty());
 		current.put(Department.LOC, "Location");
 		current.save();
-		assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.LOC));
-		assertTrue(DefaultLocalEntityConnection.modifiedColumns(current, entity).isEmpty());
+		assertFalse(valueMissingOrModified(current, entity, Department.LOC));
+		assertTrue(modifiedColumns(current, entity).isEmpty());
 
 		entity.put(Department.LOC, "new loc");
 		entity.put(Department.DNAME, "new name");
 
-		assertEquals(2, DefaultLocalEntityConnection.modifiedColumns(current, entity).size());
+		assertEquals(2, modifiedColumns(current, entity).size());
 
 		entity = ENTITIES.builder(Department.TYPE)
 						.with(Department.DEPTNO, 1)
@@ -1333,7 +1335,7 @@ public class DefaultLocalEntityConnectionTest {
 		entity.put(Department.LOC, "Location");
 
 		current.remove(Department.LOC);
-		Collection<Column<?>> columns = DefaultLocalEntityConnection.modifiedColumns(entity, current);
+		Collection<Column<?>> columns = modifiedColumns(entity, current);
 		// Should be able to discern a missing value from an original null value
 		assertTrue(columns.contains(Department.LOC));
 	}
@@ -1358,7 +1360,7 @@ public class DefaultLocalEntityConnectionTest {
 						.with(Employee.DATA, modifiedBytes)
 						.build();
 
-		Collection<Column<?>> modifiedColumns = DefaultLocalEntityConnection.modifiedColumns(emp1, emp2);
+		Collection<Column<?>> modifiedColumns = modifiedColumns(emp1, emp2);
 		assertTrue(modifiedColumns.contains(Employee.DATA));
 
 		//lazy loaded blob
@@ -1373,15 +1375,15 @@ public class DefaultLocalEntityConnectionTest {
 						.with(Department.DATA, modifiedBytes)
 						.build();
 
-		modifiedColumns = DefaultLocalEntityConnection.modifiedColumns(dept1, dept2);
+		modifiedColumns = modifiedColumns(dept1, dept2);
 		assertFalse(modifiedColumns.contains(Department.DATA));
 
 		dept2.put(Department.LOC, "new loc");
-		modifiedColumns = DefaultLocalEntityConnection.modifiedColumns(dept1, dept2);
+		modifiedColumns = modifiedColumns(dept1, dept2);
 		assertTrue(modifiedColumns.contains(Department.LOC));
 
 		dept2.remove(Department.DATA);
-		modifiedColumns = DefaultLocalEntityConnection.modifiedColumns(dept1, dept2);
+		modifiedColumns = modifiedColumns(dept1, dept2);
 		assertFalse(modifiedColumns.contains(Department.DATA));
 	}
 

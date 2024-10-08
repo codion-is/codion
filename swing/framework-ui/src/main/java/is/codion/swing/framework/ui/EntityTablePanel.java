@@ -1947,13 +1947,6 @@ public class EntityTablePanel extends JPanel {
 						.anyMatch(Optional::isPresent);
 	}
 
-	private final class ScrollToColumn implements Consumer<Attribute<?>> {
-		@Override
-		public void accept(Attribute<?> attribute) {
-			table.scrollToColumn(attribute);
-		}
-	}
-
 	private final class HeaderRenderer implements TableCellRenderer {
 
 		private final TableCellRenderer wrappedRenderer;
