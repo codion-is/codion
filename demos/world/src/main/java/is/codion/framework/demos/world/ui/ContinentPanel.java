@@ -73,7 +73,7 @@ final class ContinentPanel extends EntityPanel {
 		EntityTablePanel countryTablePanel =
 						new EntityTablePanel(model.detailModel(Country.TYPE).tableModel(),
 										config -> config
-														.includeConditionPanel(false)
+														.includeConditions(false)
 														.includeToolBar(false));
 		setPreferredHeight(countryTablePanel, 300);
 

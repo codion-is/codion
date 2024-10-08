@@ -49,9 +49,9 @@
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_LIMIT_MENU}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#REFRESH_BUTTON_VISIBLE}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#COLUMN_SELECTION}
- * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_CONDITION_PANEL}
- * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_FILTER_PANEL}
- * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_SUMMARY_PANEL}
+ * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_CONDITIONS}
+ * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_FILTERS}
+ * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_SUMMARY}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#SHOW_REFRESH_PROGRESS_BAR}
  * <li>{@link is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling#REFERENTIAL_INTEGRITY_ERROR_HANDLING}
  * <li>{@link is.codion.swing.framework.ui.TabbedApplicationLayout#TAB_PLACEMENT}

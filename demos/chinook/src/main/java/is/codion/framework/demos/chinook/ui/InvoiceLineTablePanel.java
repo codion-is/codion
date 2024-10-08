@@ -30,8 +30,8 @@ public final class InvoiceLineTablePanel extends EntityTablePanel {
 	public InvoiceLineTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
 						.includeSouthPanel(false)
-						.includeConditionPanel(false)
-						.includeFilterPanel(false)
+						.includeConditions(false)
+						.includeFilters(false)
 						.editable(attributes -> attributes.remove(InvoiceLine.INVOICE_FK))
 						.editComponentFactory(InvoiceLine.TRACK_FK, new TrackComponentFactory(InvoiceLine.TRACK_FK)));
 		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);

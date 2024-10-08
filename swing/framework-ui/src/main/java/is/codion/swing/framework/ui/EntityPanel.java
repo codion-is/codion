@@ -765,16 +765,16 @@ public class EntityPanel extends JPanel {
 			tablePanel.configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITION_PANEL).ifPresent(keyEvent ->
+			tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITIONS).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(SELECT_CONDITION_PANEL).ifPresent(keyEvent ->
+			tablePanel.configuration.controlMap.keyEvent(SELECT_CONDITION).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(TOGGLE_FILTER_PANEL).ifPresent(keyEvent ->
+			tablePanel.configuration.controlMap.keyEvent(TOGGLE_FILTERS).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(SELECT_FILTER_PANEL).ifPresent(keyEvent ->
+			tablePanel.configuration.controlMap.keyEvent(SELECT_FILTER).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
 			tablePanel.configuration.controlMap.keyEvent(REQUEST_SEARCH_FIELD_FOCUS).ifPresent(keyEvent ->
@@ -784,16 +784,16 @@ public class EntityPanel extends JPanel {
 				tablePanel.configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITION_PANEL).ifPresent(keyEvent ->
+				tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITIONS).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(SELECT_CONDITION_PANEL).ifPresent(keyEvent ->
+				tablePanel.configuration.controlMap.keyEvent(SELECT_CONDITION).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(TOGGLE_FILTER_PANEL).ifPresent(keyEvent ->
+				tablePanel.configuration.controlMap.keyEvent(TOGGLE_FILTERS).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(SELECT_FILTER_PANEL).ifPresent(keyEvent ->
+				tablePanel.configuration.controlMap.keyEvent(SELECT_FILTER).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
 			}

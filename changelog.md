@@ -24,6 +24,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.ConnectionProviderFactory.createConnectionProvider() renamed create().
 - EntityTablePanel.conditionPanel() renamed conditions().
+- EntityTablePanel.Config.includeFilterPanel(), includeConditionPanel() and includeSummaryPanel() renamed includFilters(), includeConditions() and includeSummary() respectively.
 
 ## 0.18.17
 ### is.codion.common.core

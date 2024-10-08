@@ -230,23 +230,23 @@ public class EntityTablePanel extends JPanel {
 		 * Default key stroke: CTRL-ALT-S
 		 * @see ColumnConditionsPanel#state()
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_CONDITION_PANEL = CommandControl.key("toggleConditionPanel", keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_CONDITIONS = CommandControl.key("toggleConditions", keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays a dialog for selecting a column condition panel.<br>
 		 * Default key stroke: CTRL-S
 		 */
-		public static final ControlKey<CommandControl> SELECT_CONDITION_PANEL = CommandControl.key("selectConditionPanel", keyStroke(VK_S, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_CONDITION = CommandControl.key("selectCondition", keyStroke(VK_S, CTRL_DOWN_MASK));
 		/**
 		 * Toggles the filter panel between hidden, visible and advanced.<br>
 		 * Default key stroke: CTRL-ALT-F
 		 * @see ColumnConditionsPanel#state()
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_FILTER_PANEL = CommandControl.key("toggleFilterPanel", keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_FILTERS = CommandControl.key("toggleFilters", keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays a dialog for selecting a column filter panel.<br>
 		 * Default key stroke: CTRL-SHIFT-F
 		 */
-		public static final ControlKey<CommandControl> SELECT_FILTER_PANEL = CommandControl.key("selectFilterPanel", keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_FILTER = CommandControl.key("selectFilter", keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selection up.<br>
 		 * Default key stroke: ALT-SHIFT-UP
@@ -342,7 +342,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * A {@link ToggleControl} for showing/hiding the summary panel.
 		 */
-		public static final ControlKey<ToggleControl> TOGGLE_SUMMARY_PANEL = ToggleControl.key("toggleSummaryPanel");
+		public static final ControlKey<ToggleControl> TOGGLE_SUMMARIES = ToggleControl.key("toggleSummaries");
 		/**
 		 * A {@link Controls} instance containing the condition panel controls.
 		 */
@@ -572,10 +572,10 @@ public class EntityTablePanel extends JPanel {
 	 * @param <T> the condition panel type
 	 * @return the condition panel
 	 * @throws IllegalStateException in case a condition panel is not available
-	 * @see Config#includeConditionPanel(boolean)
+	 * @see Config#includeConditions(boolean)
 	 */
 	public final <T extends ColumnConditionsPanel<Attribute<?>>> T conditions() {
-		if (!configuration.includeConditionPanel) {
+		if (!configuration.includeConditions) {
 			throw new IllegalStateException("No condition panel is available");
 		}
 
@@ -786,10 +786,10 @@ public class EntityTablePanel extends JPanel {
 	 * Sets up the keyboard shortcuts.
 	 * @see ControlKeys#REFRESH
 	 * @see ControlKeys#REQUEST_TABLE_FOCUS
-	 * @see ControlKeys#SELECT_CONDITION_PANEL
-	 * @see ControlKeys#TOGGLE_CONDITION_PANEL
-	 * @see ControlKeys#SELECT_FILTER_PANEL
-	 * @see ControlKeys#TOGGLE_FILTER_PANEL
+	 * @see ControlKeys#SELECT_CONDITION
+	 * @see ControlKeys#TOGGLE_CONDITIONS
+	 * @see ControlKeys#SELECT_FILTER
+	 * @see ControlKeys#TOGGLE_FILTERS
 	 * @see ControlKeys#PRINT
 	 * @see ControlKeys#ADD
 	 * @see ControlKeys#EDIT
@@ -807,16 +807,16 @@ public class EntityTablePanel extends JPanel {
 		configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
-		configuration.controlMap.keyEvent(SELECT_CONDITION_PANEL).ifPresent(keyEvent ->
+		configuration.controlMap.keyEvent(SELECT_CONDITION).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
-		configuration.controlMap.keyEvent(TOGGLE_CONDITION_PANEL).ifPresent(keyEvent ->
+		configuration.controlMap.keyEvent(TOGGLE_CONDITIONS).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
-		configuration.controlMap.keyEvent(TOGGLE_FILTER_PANEL).ifPresent(keyEvent ->
+		configuration.controlMap.keyEvent(TOGGLE_FILTERS).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
-		configuration.controlMap.keyEvent(SELECT_FILTER_PANEL).ifPresent(keyEvent ->
+		configuration.controlMap.keyEvent(SELECT_FILTER).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
 		configuration.controlMap.keyEvent(PRINT).ifPresent(keyEvent ->
@@ -848,9 +848,9 @@ public class EntityTablePanel extends JPanel {
 	 * </pre>
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link ControlKeys#TOGGLE_SUMMARY_PANEL ControlKeys#TOGGLE_SUMMARY_PANEL}
-	 * 	 <li>{@link ControlKeys#TOGGLE_CONDITION_PANEL ControlKeys#TOGGLE_CONDITION_PANEL}
-	 * 	 <li>{@link ControlKeys#TOGGLE_FILTER_PANEL ControlKeys#TOGGLE_FILTER_PANEL}
+	 *   <li>{@link ControlKeys#TOGGLE_SUMMARIES ControlKeys#TOGGLE_SUMMARY_PANEL}
+	 * 	 <li>{@link ControlKeys#TOGGLE_CONDITIONS ControlKeys#TOGGLE_CONDITION_PANEL}
+	 * 	 <li>{@link ControlKeys#TOGGLE_FILTERS ControlKeys#TOGGLE_FILTER_PANEL}
 	 * 	 <li>Separator
 	 * 	 <li>{@link ControlKeys#ADD ControlKeys#ADD} (If an EditPanel is available)
 	 * 	 <li>{@link ControlKeys#EDIT ControlKeys#EDIT} (If an EditPanel is available)
@@ -1237,7 +1237,7 @@ public class EntityTablePanel extends JPanel {
 		return additionalControls.empty() ? null : additionalControls;
 	}
 
-	private CommandControl createToggleConditionPanelControl() {
+	private CommandControl createToggleConditionsControl() {
 		return Control.builder()
 						.command(this::toggleConditionPanel)
 						.smallIcon(ICONS.search())
@@ -1245,12 +1245,12 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private CommandControl createSelectConditionPanelControl() {
+	private CommandControl createSelectConditionControl() {
 		return command(() -> conditions().selectPanel(this));
 	}
 
 	private Controls createConditionControls() {
-		if (!configuration.includeConditionPanel || columnConditionsPanel == null) {
+		if (!configuration.includeConditions || columnConditionsPanel == null) {
 			return null;
 		}
 		ControlsBuilder builder = Controls.builder()
@@ -1272,7 +1272,7 @@ public class EntityTablePanel extends JPanel {
 		return conditionControls.empty() ? null : conditionControls;
 	}
 
-	private CommandControl createToggleFilterPanelControl() {
+	private CommandControl createToggleFiltersControl() {
 		return Control.builder()
 						.command(this::toggleFilterPanel)
 						.smallIcon(ICONS.filter())
@@ -1280,7 +1280,7 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private CommandControl createSelectFilterPanelControl() {
+	private CommandControl createSelectFilterControl() {
 		return command(() -> table.filters().selectPanel(this));
 	}
 
@@ -1315,7 +1315,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Controls createFilterControls() {
-		if (!configuration.includeFilterPanel) {
+		if (!configuration.includeFilters) {
 			return null;
 		}
 		ControlsBuilder builder = Controls.builder()
@@ -1330,7 +1330,7 @@ public class EntityTablePanel extends JPanel {
 		return filterControls.empty() ? null : filterControls;
 	}
 
-	private ToggleControl createToggleSummaryPanelControl() {
+	private ToggleControl createToggleSummariesControl() {
 		return Control.builder()
 						.toggle(summaryPanelVisibleState)
 						.smallIcon(ICONS.summary())
@@ -1446,7 +1446,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private boolean includeToggleSummaryPanelControl() {
-		return configuration.includeSummaryPanel && containsSummaryModels(table);
+		return configuration.includeSummaries && containsSummaryModels(table);
 	}
 
 	private Control createConditionRefreshControl() {
@@ -1473,7 +1473,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private ColumnConditionsPanel<Attribute<?>> createColumnConditionsPanel() {
-		if (configuration.includeConditionPanel) {
+		if (configuration.includeConditions) {
 			ColumnConditionsPanel<Attribute<?>> conditionPanel = configuration.columnConditionsPanelFactory
 							.create(tableModel.queryModel().conditions(), createColumnConditionPanels(),
 											table.getColumnModel(), this::configureTableConditionPanel);
@@ -1600,15 +1600,15 @@ public class EntityTablePanel extends JPanel {
 			controlMap.control(VIEW_DEPENDENCIES).set(createViewDependenciesControl());
 		}
 		if (includeToggleSummaryPanelControl()) {
-			controlMap.control(TOGGLE_SUMMARY_PANEL).set(createToggleSummaryPanelControl());
+			controlMap.control(TOGGLE_SUMMARIES).set(createToggleSummariesControl());
 		}
-		if (configuration.includeConditionPanel) {
-			controlMap.control(TOGGLE_CONDITION_PANEL).set(createToggleConditionPanelControl());
-			controlMap.control(SELECT_CONDITION_PANEL).set(createSelectConditionPanelControl());
+		if (configuration.includeConditions) {
+			controlMap.control(TOGGLE_CONDITIONS).set(createToggleConditionsControl());
+			controlMap.control(SELECT_CONDITION).set(createSelectConditionControl());
 		}
-		if (configuration.includeFilterPanel) {
-			controlMap.control(TOGGLE_FILTER_PANEL).set(createToggleFilterPanelControl());
-			controlMap.control(SELECT_FILTER_PANEL).set(createSelectFilterPanelControl());
+		if (configuration.includeFilters) {
+			controlMap.control(TOGGLE_FILTERS).set(createToggleFiltersControl());
+			controlMap.control(SELECT_FILTER).set(createSelectFilterControl());
 		}
 		controlMap.control(CLEAR_SELECTION).set(createClearSelectionControl());
 		controlMap.control(MOVE_SELECTION_UP).set(createMoveSelectionUpControl());
@@ -1862,9 +1862,9 @@ public class EntityTablePanel extends JPanel {
 
 	private Controls.Layout createToolBarLayout() {
 		return Controls.layout(asList(
-						TOGGLE_SUMMARY_PANEL,
-						TOGGLE_CONDITION_PANEL,
-						TOGGLE_FILTER_PANEL,
+						TOGGLE_SUMMARIES,
+						TOGGLE_CONDITIONS,
+						TOGGLE_FILTERS,
 						null,
 						ADD,
 						EDIT,
@@ -2103,8 +2103,8 @@ public class EntityTablePanel extends JPanel {
 		 * <li>Default value: true
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> INCLUDE_CONDITION_PANEL =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeConditionPanel", true);
+		public static final PropertyValue<Boolean> INCLUDE_CONDITIONS =
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeConditions", true);
 
 		/**
 		 * Specifies whether to include a filter panel.
@@ -2113,8 +2113,8 @@ public class EntityTablePanel extends JPanel {
 		 * <li>Default value: true
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> INCLUDE_FILTER_PANEL =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeFilterPanel", false);
+		public static final PropertyValue<Boolean> INCLUDE_FILTERS =
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeFilters", false);
 
 		/**
 		 * Specifies whether to include a summary panel.
@@ -2123,8 +2123,8 @@ public class EntityTablePanel extends JPanel {
 		 * <li>Default value: true
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> INCLUDE_SUMMARY_PANEL =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeSummaryPanel", true);
+		public static final PropertyValue<Boolean> INCLUDE_SUMMARY =
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeSummary", true);
 
 		/**
 		 * Specifies whether to include a popup menu for configuring the table model limit.
@@ -2198,9 +2198,9 @@ public class EntityTablePanel extends JPanel {
 
 		private ColumnConditionsPanel.Factory<Attribute<?>> columnConditionsPanelFactory = new DefaultColumnConditionsPanelFactory();
 		private boolean includeSouthPanel = true;
-		private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
-		private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
-		private boolean includeSummaryPanel = INCLUDE_SUMMARY_PANEL.get();
+		private boolean includeConditions = INCLUDE_CONDITIONS.get();
+		private boolean includeFilters = INCLUDE_FILTERS.get();
+		private boolean includeSummaries = INCLUDE_SUMMARY.get();
 		private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
 		private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.get();
 		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.get();
@@ -2247,9 +2247,9 @@ public class EntityTablePanel extends JPanel {
 			this.controlMap = config.controlMap.copy();
 			this.editable = valueSet(config.editable.get());
 			this.includeSouthPanel = config.includeSouthPanel;
-			this.includeConditionPanel = config.includeConditionPanel;
-			this.includeFilterPanel = config.includeFilterPanel;
-			this.includeSummaryPanel = config.includeSummaryPanel;
+			this.includeConditions = config.includeConditions;
+			this.includeFilters = config.includeFilters;
+			this.includeSummaries = config.includeSummaries;
 			this.includeClearControl = config.includeClearControl;
 			this.includeLimitMenu = config.includeLimitMenu;
 			this.includeEntityMenu = config.includeEntityMenu;
@@ -2320,29 +2320,29 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeConditionPanel true if the condition panel should be included
+		 * @param includeConditions true if the condition panel should be included
 		 * @return this Config instance
 		 */
-		public Config includeConditionPanel(boolean includeConditionPanel) {
-			this.includeConditionPanel = includeConditionPanel;
+		public Config includeConditions(boolean includeConditions) {
+			this.includeConditions = includeConditions;
 			return this;
 		}
 
 		/**
-		 * @param includeFilterPanel true if the filter panel should be included
+		 * @param includeFilters true if the filter panel should be included
 		 * @return this Config instance
 		 */
-		public Config includeFilterPanel(boolean includeFilterPanel) {
-			this.includeFilterPanel = includeFilterPanel;
+		public Config includeFilters(boolean includeFilters) {
+			this.includeFilters = includeFilters;
 			return this;
 		}
 
 		/**
-		 * @param includeSummaryPanel true if the summary panel should be included
+		 * @param includeSummaries true if the summary panel should be included
 		 * @return this Config instance
 		 */
-		public Config includeSummaryPanel(boolean includeSummaryPanel) {
-			this.includeSummaryPanel = includeSummaryPanel;
+		public Config includeSummaries(boolean includeSummaries) {
+			this.includeSummaries = includeSummaries;
 			return this;
 		}
 
@@ -2664,7 +2664,7 @@ public class EntityTablePanel extends JPanel {
 					tableSouthPanel.add(summaryPanelScrollPane, BorderLayout.NORTH);
 				}
 			}
-			if (configuration.includeFilterPanel) {
+			if (configuration.includeFilters) {
 				filterPanelScrollPane = createLinkedScrollPane(table.filters());
 				table.filters().state().addConsumer(this::filterPanelStateChanged);
 				if (table.filters().state().isNotEqualTo(ConditionState.HIDDEN)) {
