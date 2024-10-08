@@ -21,7 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.swing.common.ui.component.table.FilterTableCellEditorFactory;
+import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
@@ -35,9 +35,9 @@ import static is.codion.swing.common.ui.component.table.FilterTableCellEditor.fi
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link FilterTableCellEditorFactory} implementation.
+ * A default {@link FilterTableCellEditor.Factory} implementation.
  */
-public class EntityTableCellEditorFactory implements FilterTableCellEditorFactory<Attribute<?>> {
+public class EntityTableCellEditorFactory implements FilterTableCellEditor.Factory<Attribute<?>> {
 
 	private final SwingEntityEditModel editModel;
 

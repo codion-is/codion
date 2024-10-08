@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JComponent;
 import javax.swing.table.TableCellEditor;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -42,5 +43,17 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 	 */
 	static <T> FilterTableCellEditor<T> filterTableCellEditor(Supplier<ComponentValue<T, ? extends JComponent>> inputComponent) {
 		return new DefaultFilterTableCellEditor<>(inputComponent);
+	}
+
+	/**
+	 * A factory for {@link TableCellEditor} instances.
+	 */
+	interface Factory<C> {
+
+		/**
+		 * @param column the column
+		 * @return a {@link TableCellEditor} instance for the given column or an empty optional if the column should not be editable
+		 */
+		Optional<TableCellEditor> create(FilterTableColumn<C> column);
 	}
 }

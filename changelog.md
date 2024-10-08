@@ -14,6 +14,8 @@ Codion Change Log
 - ColumnConditionsPanel.selectableConditionPanels() back to returning Collection instead of Map.
 - ColumnConditionPanels.conditionPanels(), selectableConditionPanels() and selectConditionPanel() renamed panels(), selectablePanels() and selectPanel() respectively.
 - FilterTable.filterPanel() renamed filters().
+- FilterTableCellRendererFactory moved to FilterTableCellRenderer and renamed Factory.
+- FilterTableCellEditorFactory moved to FilterTableCellEditor and renamed Factory.
 ### is.codion.framework.db
 - EntityConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw DatabaseException.
 - EntityConnection.transaction() added along with Transactional and TransactionalResult.

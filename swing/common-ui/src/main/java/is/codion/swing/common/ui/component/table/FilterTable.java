@@ -812,8 +812,8 @@ public final class FilterTable<R, C> extends JTable {
 						.build();
 	}
 
-	private void configureColumns(FilterTableCellRendererFactory<C> cellRendererFactory,
-																FilterTableCellEditorFactory<C> cellEditorFactory) {
+	private void configureColumns(FilterTableCellRenderer.Factory<C> cellRendererFactory,
+																FilterTableCellEditor.Factory<C> cellEditorFactory) {
 		columnModel().columns().stream()
 						.filter(column -> column.getCellRenderer() == null)
 						.forEach(column -> column.setCellRenderer(cellRendererFactory.create(column)));
@@ -1044,14 +1044,14 @@ public final class FilterTable<R, C> extends JTable {
 		 * @param cellRendererFactory the table cell renderer factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellRendererFactory(FilterTableCellRendererFactory<C> cellRendererFactory);
+		Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<C> cellRendererFactory);
 
 		/**
 		 * Note that this factory is only used to create cell editors for columns which do not already have a cell editor set.
 		 * @param cellEditorFactory the table cell editor factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellEditorFactory(FilterTableCellEditorFactory<C> cellEditorFactory);
+		Builder<R, C> cellEditorFactory(FilterTableCellEditor.Factory<C> cellEditorFactory);
 
 		/**
 		 * @param autoStartsEdit true if editing should start automatically
@@ -1175,8 +1175,8 @@ public final class FilterTable<R, C> extends JTable {
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private ColumnConditionsPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private FieldFactory filterFieldFactory = new DefaultFilterFieldFactory();
-		private FilterTableCellRendererFactory<C> cellRendererFactory;
-		private FilterTableCellEditorFactory<C> cellEditorFactory;
+		private FilterTableCellRenderer.Factory<C> cellRendererFactory;
+		private FilterTableCellEditor.Factory<C> cellEditorFactory;
 		private boolean autoStartsEdit = false;
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 		private Action doubleClickAction;
@@ -1215,13 +1215,13 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellRendererFactory(FilterTableCellRendererFactory<C> cellRendererFactory) {
+		public Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<C> cellRendererFactory) {
 			this.cellRendererFactory = requireNonNull(cellRendererFactory);
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> cellEditorFactory(FilterTableCellEditorFactory<C> cellEditorFactory) {
+		public Builder<R, C> cellEditorFactory(FilterTableCellEditor.Factory<C> cellEditorFactory) {
 			this.cellEditorFactory = requireNonNull(cellEditorFactory);
 			return this;
 		}
@@ -1570,7 +1570,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 	}
 
-	private static final class DefaultFilterTableCellRendererFactory<R, C> implements FilterTableCellRendererFactory<C> {
+	private static final class DefaultFilterTableCellRendererFactory<R, C> implements FilterTableCellRenderer.Factory<C> {
 
 		private final FilterTableModel<R, C> tableModel;
 
@@ -1586,7 +1586,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 	}
 
-	private static final class DefaultFilterTableCellEditorFactory<C> implements FilterTableCellEditorFactory<C> {
+	private static final class DefaultFilterTableCellEditorFactory<C> implements FilterTableCellEditor.Factory<C> {
 
 		@Override
 		public Optional<TableCellEditor> create(FilterTableColumn<C> column) {

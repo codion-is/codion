@@ -21,16 +21,15 @@ package is.codion.swing.framework.ui;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Builder;
-import is.codion.swing.common.ui.component.table.FilterTableCellRendererFactory;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A {@link FilterTableCellRendererFactory} implementation.
+ * A {@link FilterTableCellRenderer.Factory} implementation.
  */
-public class EntityTableCellRendererFactory implements FilterTableCellRendererFactory<Attribute<?>> {
+public class EntityTableCellRendererFactory implements FilterTableCellRenderer.Factory<Attribute<?>> {
 
 	private final SwingEntityTableModel tableModel;
 

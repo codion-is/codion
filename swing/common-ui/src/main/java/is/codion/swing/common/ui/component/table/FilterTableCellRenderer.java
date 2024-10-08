@@ -231,6 +231,18 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	}
 
 	/**
+	 * A factory for {@link FilterTableCellRenderer} instances.
+	 */
+	interface Factory<C> {
+
+		/**
+		 * @param column the column
+		 * @return a {@link FilterTableCellRenderer} instance for the given column
+		 */
+		FilterTableCellRenderer create(FilterTableColumn<C> column);
+	}
+
+	/**
 	 * Settings for a {@link FilterTableCellRenderer}
 	 * @param <C> the column identifier type
 	 */

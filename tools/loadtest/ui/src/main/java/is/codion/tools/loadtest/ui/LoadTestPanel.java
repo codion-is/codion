@@ -25,7 +25,6 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilterTableCellRendererFactory;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -549,7 +548,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private final class ApplicationTableCellRendererFactory implements
-					FilterTableCellRendererFactory<ColumnId> {
+					FilterTableCellRenderer.Factory<ColumnId> {
 
 		@Override
 		public FilterTableCellRenderer create(FilterTableColumn<ColumnId> column) {
