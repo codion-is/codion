@@ -11,6 +11,7 @@ Codion Change Log
 - FilterColumnConditionPanel column identifier type parameter removed, related refactoring.
 - FilterTableCellEditorFactory.tableCellEditor() renamed create() for consistency.
 - FilterTableCellRendererFactory.tableCellRenderer() renamed create() for consistency.
+- ColumnConditionsPanel.selectableConditionPanels() back to returning Collection instead of Map.
 ### is.codion.framework.db
 - EntityConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw DatabaseException.
 - EntityConnection.transaction() added along with Transactional and TransactionalResult.

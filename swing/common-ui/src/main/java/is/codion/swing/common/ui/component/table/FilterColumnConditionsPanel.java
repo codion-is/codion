@@ -23,6 +23,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 
 import java.awt.BorderLayout;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -30,7 +31,7 @@ import java.util.function.Consumer;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default filter table condition panel.
@@ -68,10 +69,11 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	}
 
 	@Override
-	public Map<C, ColumnConditionPanel<?>> selectableConditionPanels() {
+	public Collection<ColumnConditionPanel<?>> selectableConditionPanels() {
 		return conditionPanels.entrySet().stream()
 						.filter(entry -> columnModel.visible(entry.getKey()).get())
-						.collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+						.map(Map.Entry::getValue)
+						.collect(toList());
 	}
 
 	/**

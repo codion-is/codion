@@ -33,6 +33,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -95,8 +96,8 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @return the selectable panels
 	 * @see #selectConditionPanel(JComponent)
 	 */
-	public Map<C, ColumnConditionPanel<?>> selectableConditionPanels() {
-		return conditionPanels();
+	public Collection<ColumnConditionPanel<?>> selectableConditionPanels() {
+		return conditionPanels().values();
 	}
 
 	/**
@@ -142,21 +143,20 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @param dialogOwner the dialog owner
 	 */
 	public final void selectConditionPanel(JComponent dialogOwner) {
-		List<Item<C>> columnItems = selectableConditionPanels().entrySet().stream()
-						.map(entry -> item(entry.getKey(), entry.getValue().caption()))
+		List<Item<? extends ColumnConditionPanel<?>>> panelItems = selectableConditionPanels().stream()
+						.map(conditionPanel -> item(conditionPanel, conditionPanel.caption()))
 						.sorted(Text.collator())
 						.collect(toList());
-		if (columnItems.size() == 1) {
+		if (panelItems.size() == 1) {
 			state().map(state -> state == HIDDEN ? SIMPLE : state);
-			conditionPanel(columnItems.get(0).value()).requestInputFocus();
+			panelItems.get(0).value().requestInputFocus();
 		}
-		else if (!columnItems.isEmpty()) {
-			Dialogs.selectionDialog(columnItems)
+		else if (!panelItems.isEmpty()) {
+			Dialogs.selectionDialog(panelItems)
 							.owner(dialogOwner)
 							.title(MESSAGES.getString("select_condition"))
 							.selectSingle()
-							.map(columnItem -> conditionPanel(columnItem.value()))
-							.map(ColumnConditionPanel.class::cast)
+							.map(Item::value)
 							.ifPresent(conditionPanel -> {
 								state().map(state -> state == HIDDEN ? SIMPLE : state);
 								conditionPanel.requestInputFocus();
