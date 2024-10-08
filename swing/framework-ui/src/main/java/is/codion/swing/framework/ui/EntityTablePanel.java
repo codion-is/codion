@@ -1492,19 +1492,25 @@ public class EntityTablePanel extends JPanel {
 
 	private Map<Attribute<?>, ColumnConditionPanel<?>> createColumnConditionPanels() {
 		Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels = new HashMap<>();
-		tableModel.queryModel().conditions().get().entrySet().stream()
-						.filter(entry -> table.columnModel().containsColumn(entry.getKey()))
-						.filter(entry -> configuration.conditionFieldFactory.supportsType(entry.getValue().valueClass()))
-						.forEach(entry -> conditionPanels.put(entry.getKey(), createColumnConditionPanel(entry.getValue(), entry.getKey())));
+		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : tableModel.queryModel().conditions().get().entrySet()) {
+			Attribute<?> attribute = conditionEntry.getKey();
+			if (table.columnModel().containsColumn(attribute)) {
+				FieldFactory fieldFactory = configuration.conditionFieldFactories.getOrDefault(attribute,
+								new EntityConditionFieldFactory(tableModel.entityDefinition(), attribute));
+				if (fieldFactory.supportsType(attribute.type().valueClass())) {
+					conditionPanels.put(attribute, createColumnConditionPanel(conditionEntry.getValue(), attribute, fieldFactory));
+				}
+			}
+		}
 
 		return conditionPanels;
 	}
 
-	private <C extends Attribute<?>> FilterColumnConditionPanel<C, ?> createColumnConditionPanel(ConditionModel<?> condition, C identifier) {
-		return FilterColumnConditionPanel.builder(condition, identifier)
-						.fieldFactory((FieldFactory<C>) configuration.conditionFieldFactory)
+	private <C extends Attribute<?>> FilterColumnConditionPanel<?> createColumnConditionPanel(ConditionModel<?> condition, C identifier,
+																																														FieldFactory fieldFactory) {
+		return FilterColumnConditionPanel.builder(condition, Objects.toString(table.columnModel().column(identifier).getHeaderValue()))
+						.fieldFactory(fieldFactory)
 						.tableColumn(table.columnModel().column(identifier))
-						.caption(Objects.toString(table.columnModel().column(identifier).getHeaderValue()))
 						.build();
 	}
 
@@ -2189,9 +2195,9 @@ public class EntityTablePanel extends JPanel {
 		private final ValueSet<Attribute<?>> editable;
 		private final Map<Attribute<?>, EntityComponentFactory<?, ?>> editComponentFactories;
 		private final FilterTable.Builder<Entity, Attribute<?>> tableBuilder;
+		private final Map<Attribute<?>, FieldFactory> conditionFieldFactories;
 
 		private ColumnConditionsPanel.Factory<Attribute<?>> columnConditionsPanelFactory = new DefaultColumnConditionsPanelFactory();
-		private FieldFactory<Attribute<?>> conditionFieldFactory;
 		private boolean includeSouthPanel = true;
 		private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
 		private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
@@ -2225,7 +2231,7 @@ public class EntityTablePanel extends JPanel {
 							.cellEditorFactory(new EntityTableCellEditorFactory(tablePanel.tableModel.editModel()))
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.columnConditionsPanelFactory = new DefaultColumnConditionsPanelFactory();
-			this.conditionFieldFactory = new EntityConditionFieldFactory(entityDefinition);
+			this.conditionFieldFactories = new HashMap<>();
 			this.controlMap = ControlMap.controlMap(ControlKeys.class);
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
 							.map(AttributeDefinition::attribute)
@@ -2264,7 +2270,7 @@ public class EntityTablePanel extends JPanel {
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeToolBar = config.includeToolBar;
 			this.columnConditionsPanelFactory = config.columnConditionsPanelFactory;
-			this.conditionFieldFactory = config.conditionFieldFactory;
+			this.conditionFieldFactories = new HashMap<>(config.conditionFieldFactories);
 		}
 
 		/**
@@ -2295,12 +2301,13 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param conditionFieldFactory the condition field factory
+		 * @param attribute the attribute
+		 * @param conditionFieldFactory the condition field factory for the given attribute
 		 * @return this Config instance
 		 * @see EntityTablePanel#conditionPanel()
 		 */
-		public Config conditionFieldFactory(FieldFactory<Attribute<?>> conditionFieldFactory) {
-			this.conditionFieldFactory = requireNonNull(conditionFieldFactory);
+		public Config conditionFieldFactory(Attribute<?> attribute, FieldFactory conditionFieldFactory) {
+			this.conditionFieldFactories.put(attribute, requireNonNull(conditionFieldFactory));
 			return this;
 		}
 

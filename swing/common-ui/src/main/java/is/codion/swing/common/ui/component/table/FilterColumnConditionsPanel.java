@@ -23,7 +23,6 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 
 import java.awt.BorderLayout;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -36,7 +35,7 @@ import static java.util.stream.Collectors.toMap;
 /**
  * A default filter table condition panel.
  * @param <C> the column identifier type
- * @see #filterColumnConditionsPanel(ColumnConditions, Collection, FilterTableColumnModel, Consumer)
+ * @see #filterColumnConditionsPanel(ColumnConditions, Map, FilterTableColumnModel, Consumer)
  */
 public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<C> {
 

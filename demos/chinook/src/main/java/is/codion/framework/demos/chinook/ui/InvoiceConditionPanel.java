@@ -96,8 +96,7 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 		this.columnModel = columnModel;
 		this.simpleConditionPanel = new SimpleConditionPanel(columnConditions, invoiceDefinition, onDateChanged);
 		this.advancedConditionPanel = filterColumnConditionsPanel(columnConditions,
-						createConditionPanels(new EntityConditionFieldFactory(invoiceDefinition)),
-						columnModel, onPanelInitialized);
+						createConditionPanels(invoiceDefinition), columnModel, onPanelInitialized);
 		state().link(advancedConditionPanel.state());
 	}
 
@@ -159,22 +158,26 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 		revalidate();
 	}
 
-	private Map<Attribute<?>, ColumnConditionPanel<?>> createConditionPanels(FieldFactory<Attribute<?>> fieldFactory) {
+	private Map<Attribute<?>, ColumnConditionPanel<?>> createConditionPanels(EntityDefinition invoiceDefinition) {
 		Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels = new HashMap<>();
-		conditions().get().entrySet().stream()
-						.filter(entry -> columnModel.containsColumn(entry.getKey()))
-						.filter(entry -> fieldFactory.supportsType(entry.getValue().valueClass()))
-						.forEach(entry -> conditionPanels.put(entry.getKey(), createColumnConditionPanel(entry.getValue(), entry.getKey(), fieldFactory)));
+		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : conditions().get().entrySet()) {
+			Attribute<?> attribute = conditionEntry.getKey();
+			if (columnModel.containsColumn(attribute)) {
+				EntityConditionFieldFactory fieldFactory = new EntityConditionFieldFactory(invoiceDefinition, attribute);
+				if (fieldFactory.supportsType(attribute.type().valueClass())) {
+					conditionPanels.put(attribute, createColumnConditionPanel(conditionEntry.getValue(), attribute, fieldFactory));
+				}
+			}
+		}
 
 		return conditionPanels;
 	}
 
-	private <C extends Attribute<?>> FilterColumnConditionPanel<C, ?> createColumnConditionPanel(ConditionModel<?> condition, C identifier,
-																																															 FieldFactory<C> fieldFactory) {
-		return FilterColumnConditionPanel.builder(condition, identifier)
+	private <C extends Attribute<?>> FilterColumnConditionPanel<?> createColumnConditionPanel(ConditionModel<?> condition, C identifier,
+																																														FieldFactory fieldFactory) {
+		return FilterColumnConditionPanel.builder(condition, columnModel.column(identifier).getHeaderValue().toString())
 						.fieldFactory(fieldFactory)
 						.tableColumn(columnModel.column(identifier))
-						.caption(columnModel.column(identifier).getHeaderValue().toString())
 						.build();
 	}
 

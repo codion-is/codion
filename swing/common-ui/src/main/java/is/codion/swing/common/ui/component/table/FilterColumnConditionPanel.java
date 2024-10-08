@@ -84,12 +84,11 @@ import static javax.swing.SwingConstants.CENTER;
 
 /**
  * A UI implementation for {@link ConditionModel}.
- * For instances use {@link #builder(ConditionModel, Object)}.
- * @param <C> the column identifier type
+ * For instances use {@link #builder(ConditionModel, String)}.
  * @param <T> the column value type
- * @see #builder(ConditionModel, Object)
+ * @see #builder(ConditionModel, String)
  */
-public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel<T> {
+public final class FilterColumnConditionPanel<T> extends ColumnConditionPanel<T> {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(FilterColumnConditionPanel.class, getBundle(FilterColumnConditionPanel.class.getName()));
@@ -125,11 +124,10 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 					LESS_THAN, LESS_THAN_OR_EQUAL, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
 	private static final DefaultOperatorCaptions DEFAULT_OPERATOR_CAPTIONS = new DefaultOperatorCaptions();
 
-	private final FieldFactory<C> fieldFactory;
+	private final FieldFactory fieldFactory;
 	private final Event<?> focusGainedEvent = Event.event();
 	private final TableColumn tableColumn;
 	private final Function<Operator, String> operatorCaptions;
-	private final C identifier;
 
 	private JToggleButton toggleEnabledButton;
 	private JComboBox<Item<Operator>> operatorCombo;
@@ -143,12 +141,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private boolean initialized = false;
 
-	private FilterColumnConditionPanel(DefaultBuilder<C, T> builder) {
+	private FilterColumnConditionPanel(DefaultBuilder<T> builder) {
 		super(builder.condition, builder.caption);
 		this.fieldFactory = builder.fieldFactory;
 		this.operatorCaptions = builder.operatorCaptions;
 		this.tableColumn = builder.tableColumn;
-		this.identifier = builder.identifier;
 	}
 
 	@Override
@@ -245,78 +242,62 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	/**
 	 * @param condition the condition model
-	 * @param identifier the column identifier
-	 * @param <C> the condition identifier type
+	 * @param caption the caption to use when presenting this condition panel
 	 * @param <T> the condition value type
 	 * @return a new {@link Builder}
 	 */
-	public static <C, T> Builder<C, T> builder(ConditionModel<T> condition, C identifier) {
-		return new DefaultBuilder<>(condition, identifier);
+	public static <T> Builder<T> builder(ConditionModel<T> condition, String caption) {
+		return new DefaultBuilder<>(condition, caption);
 	}
 
 	/**
 	 * Builds a {@link FilterColumnConditionPanel} instance
-	 * @param <C> the column identifier type
 	 * @param <T> the column value type
 	 */
-	public interface Builder<C, T> {
-
-		/**
-		 * @param caption the caption to use when presenting this condition panel
-		 * @return this builder
-		 */
-		Builder<C, T> caption(String caption);
+	public interface Builder<T> {
 
 		/**
 		 * @param fieldFactory the input field factory
 		 * @return this builder
 		 * @throws IllegalArgumentException in case the given field factory does not support the column value type
 		 */
-		Builder<C, T> fieldFactory(FieldFactory<C> fieldFactory);
+		Builder<T> fieldFactory(FieldFactory fieldFactory);
 
 		/**
 		 * Provides captions for operators, displayed in the operator combo box
 		 * @param operatorCaptions the operator caption function
 		 * @return this builder
 		 */
-		Builder<C, T> operatorCaptions(Function<Operator, String> operatorCaptions);
+		Builder<T> operatorCaptions(Function<Operator, String> operatorCaptions);
 
 		/**
 		 * @param tableColumn the table column this condition panel represents
 		 * @return this builder
 		 */
-		Builder<C, T> tableColumn(TableColumn tableColumn);
+		Builder<T> tableColumn(TableColumn tableColumn);
 
 		/**
 		 * @return a new {@link FilterColumnConditionPanel} based on this builder
 		 */
-		FilterColumnConditionPanel<C, T> build();
+		FilterColumnConditionPanel<T> build();
 	}
 
-	private static final class DefaultBuilder<C, T> implements Builder<C, T> {
+	private static final class DefaultBuilder<T> implements Builder<T> {
 
 		private final ConditionModel<T> condition;
-		private final C identifier;
+		private final String caption;
 
-		private String caption;
-		private FieldFactory<C> fieldFactory = new DefaultFilterFieldFactory<>();
+		private FieldFactory fieldFactory = new DefaultFilterFieldFactory();
 		private Function<Operator, String> operatorCaptions = DEFAULT_OPERATOR_CAPTIONS;
 		private TableColumn tableColumn;
 
-		private DefaultBuilder(ConditionModel<T> condition, C identifier) {
+		private DefaultBuilder(ConditionModel<T> condition, String caption) {
 			this.condition = requireNonNull(condition);
-			this.identifier = requireNonNull(identifier);
-			this.caption = identifier.toString();
-		}
-
-		@Override
-		public Builder<C, T> caption(String caption) {
 			this.caption = requireNonNull(caption);
-			return this;
 		}
 
 		@Override
-		public Builder<C, T> fieldFactory(FieldFactory<C> fieldFactory) {
+		public Builder<T> fieldFactory(FieldFactory fieldFactory) {
 			if (!requireNonNull(fieldFactory).supportsType(condition.valueClass())) {
 				throw new IllegalArgumentException("Field factory does not support the value type: " + condition.valueClass());
 			}
@@ -326,19 +307,19 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		}
 
 		@Override
-		public Builder<C, T> operatorCaptions(Function<Operator, String> operatorCaptions) {
+		public Builder<T> operatorCaptions(Function<Operator, String> operatorCaptions) {
 			this.operatorCaptions = requireNonNull(operatorCaptions);
 			return this;
 		}
 
 		@Override
-		public Builder<C, T> tableColumn(TableColumn tableColumn) {
+		public Builder<T> tableColumn(TableColumn tableColumn) {
 			this.tableColumn = requireNonNull(tableColumn);
 			return this;
 		}
 
 		@Override
-		public FilterColumnConditionPanel<C, T> build() {
+		public FilterColumnConditionPanel<T> build() {
 			return new FilterColumnConditionPanel<>(this);
 		}
 	}
@@ -346,7 +327,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	/**
 	 * Provides equal, upper and lower bound input fields for a {@link FilterColumnConditionPanel}
 	 */
-	public interface FieldFactory<C> {
+	public interface FieldFactory {
 
 		/**
 		 * @param valueClass the value class
@@ -358,57 +339,53 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		 * Creates the field representing the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operand, linked to {@link Operands#equal()}
 		 * @param <T> the value type
 		 * @param condition the condition model
-		 * @param identifier the column identifier
 		 * @return the equal value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		<T> JComponent createEqualField(ConditionModel<T> condition, C identifier);
+		<T> JComponent createEqualField(ConditionModel<T> condition);
 
 		/**
 		 * Creates the field representing the upper bound operand, linked to {@link Operands#upperBound()}
 		 * @param <T> the value type
 		 * @param condition the condition model
-		 * @param identifier the column identifier
 		 * @return an upper bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		<T> Optional<JComponent> createUpperBoundField(ConditionModel<T> condition, C identifier);
+		<T> Optional<JComponent> createUpperBoundField(ConditionModel<T> condition);
 
 		/**
 		 * Creates the field representing the lower bound operand, linked to {@link Operands#lowerBound()}
 		 * @param <T> the value type
 		 * @param condition the condition model
-		 * @param identifier the column identifier
 		 * @return a lower bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		<T> Optional<JComponent> createLowerBoundField(ConditionModel<T> condition, C identifier);
+		<T> Optional<JComponent> createLowerBoundField(ConditionModel<T> condition);
 
 		/**
 		 * Creates the field representing the {@link Operator#IN} operands, linked to {@link Operands#in()}
 		 * @param <T> the value type
 		 * @param condition the condition model
-		 * @param identifier the column identifier
 		 * @return the in value field
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		<T> JComponent createInField(ConditionModel<T> condition, C identifier);
+		<T> JComponent createInField(ConditionModel<T> condition);
 	}
 
-	private JComponent createEqualField(FieldFactory<C> fieldFactory) {
-		return equalFieldRequired() ? fieldFactory.createEqualField(condition(), identifier) : null;
+	private JComponent createEqualField(FieldFactory fieldFactory) {
+		return equalFieldRequired() ? fieldFactory.createEqualField(condition()) : null;
 	}
 
-	private JComponent createUpperBoundField(FieldFactory<C> fieldFactory) {
-		return upperBoundFieldRequired() ? fieldFactory.createUpperBoundField(condition(), identifier).orElse(null) : null;
+	private JComponent createUpperBoundField(FieldFactory fieldFactory) {
+		return upperBoundFieldRequired() ? fieldFactory.createUpperBoundField(condition()).orElse(null) : null;
 	}
 
-	private JComponent createLowerBoundField(FieldFactory<C> fieldFactory) {
-		return lowerBoundFieldRequired() ? fieldFactory.createLowerBoundField(condition(), identifier).orElse(null) : null;
+	private JComponent createLowerBoundField(FieldFactory fieldFactory) {
+		return lowerBoundFieldRequired() ? fieldFactory.createLowerBoundField(condition()).orElse(null) : null;
 	}
 
-	private JComponent createInField(FieldFactory<C> fieldFactory) {
-		return inFieldRequired() ? fieldFactory.createInField(condition(), identifier) : null;
+	private JComponent createInField(FieldFactory fieldFactory) {
+		return inFieldRequired() ? fieldFactory.createInField(condition()) : null;
 	}
 
 	private boolean equalFieldRequired() {

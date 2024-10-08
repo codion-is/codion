@@ -226,7 +226,7 @@ public final class FilterTable<R, C> extends JTable {
 	private static final String RESET_COLUMNS_DESCRIPTION = "reset_columns_description";
 	private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
 	private static final String AUTO_RESIZE = "auto_resize";
-	private static final String TABLE_CELL_EDITOR =	"tableCellEditor";
+	private static final String TABLE_CELL_EDITOR = "tableCellEditor";
 	private static final List<Item<Integer>> AUTO_RESIZE_MODES = asList(
 					item(AUTO_RESIZE_OFF, MESSAGES.getString("resize_off")),
 					item(AUTO_RESIZE_NEXT_COLUMN, MESSAGES.getString("resize_next_column")),
@@ -242,7 +242,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final TableSummaryModel<C> summaryModel;
 
 	private final ColumnConditionsPanel.Factory<C> filterPanelFactory;
-	private final FieldFactory<C> filterFieldFactory;
+	private final FieldFactory filterFieldFactory;
 	private final Event<MouseEvent> doubleClick = Event.event();
 	private final Value<Action> doubleClickAction;
 	private final State sortingEnabled;
@@ -909,11 +909,11 @@ public final class FilterTable<R, C> extends JTable {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
 			if (columnModel().containsColumn(identifier) && filterFieldFactory.supportsType(condition.valueClass())) {
-				conditionPanels.put(identifier, FilterColumnConditionPanel.builder(condition, identifier)
-										.fieldFactory(filterFieldFactory)
-										.tableColumn(columnModel().column(identifier))
-										.caption(Objects.toString(columnModel().column(identifier).getHeaderValue()))
-										.build());
+				conditionPanels.put(identifier, FilterColumnConditionPanel.builder(condition,
+												Objects.toString(columnModel().column(identifier).getHeaderValue()))
+								.fieldFactory(filterFieldFactory)
+								.tableColumn(columnModel().column(identifier))
+								.build());
 			}
 		}
 
@@ -1037,7 +1037,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * @return this builder instance
 		 * @see FilterTable#filterPanel()
 		 */
-		Builder<R, C> filterFieldFactory(FieldFactory<C> filterFieldFactory);
+		Builder<R, C> filterFieldFactory(FieldFactory filterFieldFactory);
 
 		/**
 		 * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer set.
@@ -1174,7 +1174,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private ColumnConditionsPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
-		private FieldFactory<C> filterFieldFactory = new DefaultFilterFieldFactory<>();
+		private FieldFactory filterFieldFactory = new DefaultFilterFieldFactory();
 		private FilterTableCellRendererFactory<C> cellRendererFactory;
 		private FilterTableCellEditorFactory<C> cellEditorFactory;
 		private boolean autoStartsEdit = false;
@@ -1209,7 +1209,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> filterFieldFactory(FieldFactory<C> filterFieldFactory) {
+		public Builder<R, C> filterFieldFactory(FieldFactory filterFieldFactory) {
 			this.filterFieldFactory = requireNonNull(filterFieldFactory);
 			return this;
 		}

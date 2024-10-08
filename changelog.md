@@ -8,6 +8,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterColumnConditionPanel.Builder.operatorCaptions() added.
 - ColumnConditionPanel.identifier() removed along with type parameter.
+- FilterColumnConditionPanel column identifier type parameter removed, related refactoring.
 ### is.codion.framework.db
 - EntityConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw DatabaseException.
 - EntityConnection.transaction() added along with Transactional and TransactionalResult.

@@ -36,7 +36,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
 
-final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
+final class DefaultFilterFieldFactory implements FieldFactory {
 
 	private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
 					Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
@@ -49,14 +49,14 @@ final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 	}
 
 	@Override
-	public <T> JComponent createEqualField(ConditionModel<T> condition, C identifier) {
+	public <T> JComponent createEqualField(ConditionModel<T> condition) {
 		return createField(condition)
 						.link(condition.operands().equal())
 						.build();
 	}
 
 	@Override
-	public <T> Optional<JComponent> createUpperBoundField(ConditionModel<T> condition, C identifier) {
+	public <T> Optional<JComponent> createUpperBoundField(ConditionModel<T> condition) {
 		if (condition.valueClass().equals(Boolean.class)) {
 			return Optional.empty();//no upper bound field required for boolean values
 		}
@@ -67,7 +67,7 @@ final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 	}
 
 	@Override
-	public <T> Optional<JComponent> createLowerBoundField(ConditionModel<T> condition, C identifier) {
+	public <T> Optional<JComponent> createLowerBoundField(ConditionModel<T> condition) {
 		if (condition.valueClass().equals(Boolean.class)) {
 			return Optional.empty();//no lower bound field required for boolean values
 		}
@@ -78,7 +78,7 @@ final class DefaultFilterFieldFactory<C> implements FieldFactory<C> {
 	}
 
 	@Override
-	public <T> JComponent createInField(ConditionModel<T> condition, C identifier) {
+	public <T> JComponent createInField(ConditionModel<T> condition) {
 		return listBox(createField(condition).buildValue(), condition.operands().in()).build();
 	}
 
