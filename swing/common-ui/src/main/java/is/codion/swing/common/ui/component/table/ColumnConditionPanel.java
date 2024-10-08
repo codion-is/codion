@@ -34,10 +34,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A base class for a UI component based on a {@link ConditionModel}.
- * @param <C> the type identifying the table columns
  * @param <T> the condition value type
  */
-public abstract class ColumnConditionPanel<C, T> extends JPanel {
+public abstract class ColumnConditionPanel<T> extends JPanel {
 
 	private final ConditionModel<T> condition;
 	private final Value<ConditionState> conditionState = Value.builder()
@@ -66,30 +65,17 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 		ADVANCED
 	}
 
-	private final C identifier;
 	private final String caption;
-
-	/**
-	 * Instantiates a new {@link ColumnConditionPanel} using the column
-	 * identifier as caption.
-	 * @param condition the condition model
-	 * @param identifier the column identifier
-	 */
-	protected ColumnConditionPanel(ConditionModel<T> condition, C identifier) {
-		this(requireNonNull(condition), identifier, identifier.toString());
-		configureStates();
-	}
 
 	/**
 	 * Instantiates a new {@link ColumnConditionPanel}.
 	 * @param condition the condition model
-	 * @param identifier the column identifier
 	 * @param caption the caption to use when presenting this condition panel
 	 */
-	protected ColumnConditionPanel(ConditionModel<T> condition, C identifier, String caption) {
+	protected ColumnConditionPanel(ConditionModel<T> condition, String caption) {
 		this.condition = requireNonNull(condition);
-		this.identifier = requireNonNull(identifier);
 		this.caption = requireNonNull(caption);
+		configureStates();
 	}
 
 	/**
@@ -97,13 +83,6 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 */
 	public final ConditionModel<T> condition() {
 		return condition;
-	}
-
-	/**
-	 * @return the column identifier
-	 */
-	public final C identifier() {
-		return identifier;
 	}
 
 	/**
@@ -134,7 +113,7 @@ public abstract class ColumnConditionPanel<C, T> extends JPanel {
 	 * The default implementation returns an empty Optional.
 	 * @return an observer notified when a subcomponent of this condition panel receives focus or an empty Optional if none is available
 	 */
-	public Optional<Observer<C>> focusGainedObserver() {
+	public Optional<Observer<?>> focusGainedObserver() {
 		return Optional.empty();
 	}
 

@@ -27,7 +27,7 @@ import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.SIMPLE;
@@ -51,7 +51,7 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 
 		@Override
 		public ColumnConditionsPanel<Attribute<?>> create(ColumnConditions<Attribute<?>> conditionModel,
-																											Collection<ColumnConditionPanel<Attribute<?>, ?>> columnConditionPanels,
+																											Map<Attribute<?>, ColumnConditionPanel<?>> columnConditionPanels,
 																											FilterTableColumnModel<Attribute<?>> columnModel,
 																											Consumer<ColumnConditionsPanel<Attribute<?>>> onPanelInitialized) {
 			return new InvoiceConditionPanel(tableModel.entityDefinition(), conditionModel,

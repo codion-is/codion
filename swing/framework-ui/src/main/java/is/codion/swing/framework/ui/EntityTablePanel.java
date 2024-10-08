@@ -1490,12 +1490,12 @@ public class EntityTablePanel extends JPanel {
 		return null;
 	}
 
-	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createColumnConditionPanels() {
-		Collection<ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new ArrayList<>();
+	private Map<Attribute<?>, ColumnConditionPanel<?>> createColumnConditionPanels() {
+		Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels = new HashMap<>();
 		tableModel.queryModel().conditions().get().entrySet().stream()
 						.filter(entry -> table.columnModel().containsColumn(entry.getKey()))
 						.filter(entry -> configuration.conditionFieldFactory.supportsType(entry.getValue().valueClass()))
-						.forEach(entry -> conditionPanels.add(createColumnConditionPanel(entry.getValue(), entry.getKey())));
+						.forEach(entry -> conditionPanels.put(entry.getKey(), createColumnConditionPanel(entry.getValue(), entry.getKey())));
 
 		return conditionPanels;
 	}
@@ -1512,9 +1512,9 @@ public class EntityTablePanel extends JPanel {
 		columnConditionsPanel.conditionPanels().forEach(this::configureColumnConditionPanel);
 	}
 
-	private void configureColumnConditionPanel(ColumnConditionPanel<Attribute<?>, ?> conditionPanel) {
+	private void configureColumnConditionPanel(Attribute<?> attribute, ColumnConditionPanel<?> conditionPanel) {
 		conditionPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
-						focusGainedObserver.addConsumer(scrollToColumn));
+						focusGainedObserver.addListener(() -> table.scrollToColumn(attribute)));
 		conditionPanel.components().forEach(this::enableConditionPanelRefreshOnEnter);
 	}
 
@@ -1536,11 +1536,6 @@ public class EntityTablePanel extends JPanel {
 		tableModel.refresher().observer().addConsumer(this::onRefreshingChanged);
 		tableModel.refresher().failure().addConsumer(this::onException);
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
-		if (configuration.includeFilterPanel) {
-			table.filterPanel().conditionPanels().forEach(conditionPanel ->
-							conditionPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
-											focusGainedObserver.addConsumer(scrollToColumn)));
-		}
 	}
 
 	private void enableConditionPanelRefreshOnEnter(JComponent component) {
@@ -2547,7 +2542,7 @@ public class EntityTablePanel extends JPanel {
 
 			@Override
 			public ColumnConditionsPanel<Attribute<?>> create(ColumnConditions<Attribute<?>> conditionModel,
-																												Collection<ColumnConditionPanel<Attribute<?>, ?>> columnConditionPanels,
+																												Map<Attribute<?>, ColumnConditionPanel<?>> columnConditionPanels,
 																												FilterTableColumnModel<Attribute<?>> columnModel,
 																												Consumer<ColumnConditionsPanel<Attribute<?>>> onPanelInitialized) {
 				return filterColumnConditionsPanel(conditionModel, columnConditionPanels, columnModel, onPanelInitialized);

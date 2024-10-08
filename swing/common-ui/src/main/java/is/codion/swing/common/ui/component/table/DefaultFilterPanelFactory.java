@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ColumnConditions;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionsPanel.filterColumnConditionsPanel;
@@ -29,7 +29,7 @@ final class DefaultFilterPanelFactory<C> implements ColumnConditionsPanel.Factor
 
 	@Override
 	public ColumnConditionsPanel<C> create(ColumnConditions<C> conditionModel,
-																				 Collection<ColumnConditionPanel<C, ?>> columnConditionPanels,
+																				 Map<C, ColumnConditionPanel<?>> columnConditionPanels,
 																				 FilterTableColumnModel<C> columnModel,
 																				 Consumer<ColumnConditionsPanel<C>> onPanelInitialized) {
 		return filterColumnConditionsPanel(conditionModel, columnConditionPanels, columnModel, onPanelInitialized);

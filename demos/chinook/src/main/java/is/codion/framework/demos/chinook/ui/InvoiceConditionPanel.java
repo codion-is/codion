@@ -54,11 +54,12 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -101,30 +102,31 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 	}
 
 	@Override
-	public Collection<ColumnConditionPanel<Attribute<?>, ?>> conditionPanels() {
-		Collection<ColumnConditionPanel<Attribute<?>, ?>> conditionPanels =
-						new ArrayList<>(advancedConditionPanel.conditionPanels());
-		conditionPanels.addAll(simpleConditionPanel.conditionPanels());
+	public Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels() {
+		Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels =
+						new HashMap<>(advancedConditionPanel.conditionPanels());
+		conditionPanels.putAll(simpleConditionPanel.conditionPanels());
 
 		return conditionPanels;
 	}
 
 	@Override
-	public Collection<ColumnConditionPanel<Attribute<?>, ?>> selectableConditionPanels() {
+	public Map<Attribute<?>, ColumnConditionPanel<?>> selectableConditionPanels() {
 		return state().isEqualTo(ADVANCED) ? advancedConditionPanel.selectableConditionPanels() : simpleConditionPanel.conditionPanels();
 	}
 
 	@Override
-	public <T extends ColumnConditionPanel<Attribute<?>, ?>> T conditionPanel(Attribute<?> attribute) {
+	public <T extends ColumnConditionPanel<?>> T conditionPanel(Attribute<?> attribute) {
 		if (state().isNotEqualTo(ADVANCED)) {
-			return (T) simpleConditionPanel.conditionPanels().stream()
-							.filter(panel -> panel.identifier().equals(attribute))
+			return (T) simpleConditionPanel.conditionPanels().entrySet().stream()
+							.filter(entry -> entry.getKey().equals(attribute))
 							.findFirst()
 							.orElseThrow(IllegalArgumentException::new);
 		}
 
-		return (T) advancedConditionPanel.conditionPanels().stream()
-						.filter(panel -> panel.identifier().equals(attribute))
+		return (T) advancedConditionPanel.conditionPanels().entrySet().stream()
+						.filter(entry -> entry.getKey().equals(attribute))
+						.map(Map.Entry::getValue)
 						.findFirst()
 						.orElseThrow(IllegalArgumentException::new);
 	}
@@ -157,12 +159,12 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 		revalidate();
 	}
 
-	private Collection<ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(FieldFactory<Attribute<?>> fieldFactory) {
-		Collection<ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new ArrayList<>();
+	private Map<Attribute<?>, ColumnConditionPanel<?>> createConditionPanels(FieldFactory<Attribute<?>> fieldFactory) {
+		Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels = new HashMap<>();
 		conditions().get().entrySet().stream()
 						.filter(entry -> columnModel.containsColumn(entry.getKey()))
 						.filter(entry -> fieldFactory.supportsType(entry.getValue().valueClass()))
-						.forEach(entry -> conditionPanels.add(createColumnConditionPanel(entry.getValue(), entry.getKey(), fieldFactory)));
+						.forEach(entry -> conditionPanels.put(entry.getKey(), createColumnConditionPanel(entry.getValue(), entry.getKey(), fieldFactory)));
 
 		return conditionPanels;
 	}
@@ -178,6 +180,7 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 
 	private static final class SimpleConditionPanel extends JPanel {
 
+		private final Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels = new HashMap<>();
 		private final CustomerConditionPanel customerConditionPanel;
 		private final DateConditionPanel dateConditionPanel;
 
@@ -189,6 +192,8 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 			dateConditionPanel = new DateConditionPanel(columnConditions.get(Invoice.DATE), invoiceDefinition);
 			dateConditionPanel.yearValue.addListener(onDateChanged);
 			dateConditionPanel.monthValue.addListener(onDateChanged);
+			conditionPanels.put(Invoice.CUSTOMER_FK, customerConditionPanel);
+			conditionPanels.put(Invoice.DATE, dateConditionPanel);
 			initializeUI();
 		}
 
@@ -201,8 +206,8 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 							.build(), BorderLayout.CENTER);
 		}
 
-		private Collection<ColumnConditionPanel<Attribute<?>, ?>> conditionPanels() {
-			return asList(customerConditionPanel, dateConditionPanel);
+		private Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels() {
+			return conditionPanels;
 		}
 
 		private void activate() {
@@ -211,12 +216,12 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 			customerConditionPanel.requestInputFocus();
 		}
 
-		private static final class CustomerConditionPanel extends ColumnConditionPanel<Attribute<?>, Entity> {
+		private static final class CustomerConditionPanel extends ColumnConditionPanel<Entity> {
 
 			private final EntitySearchField searchField;
 
 			private CustomerConditionPanel(ConditionModel<Entity> condition, EntityDefinition invoiceDefinition) {
-				super(condition, Invoice.CUSTOMER_FK, invoiceDefinition.attributes().definition(Invoice.CUSTOMER_FK).caption());
+				super(condition, invoiceDefinition.attributes().definition(Invoice.CUSTOMER_FK).caption());
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(), caption()));
 				ForeignKeyConditionModel foreignKeyCondition = (ForeignKeyConditionModel) condition;
@@ -245,7 +250,7 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 			}
 		}
 
-		private static final class DateConditionPanel extends ColumnConditionPanel<Attribute<?>, LocalDate> {
+		private static final class DateConditionPanel extends ColumnConditionPanel<LocalDate> {
 
 			private final ComponentValue<Integer, NumberField<Integer>> yearValue = Components.integerField()
 							.value(LocalDate.now().getYear())
@@ -268,7 +273,7 @@ final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
 							.buildValue();
 
 			private DateConditionPanel(ConditionModel<LocalDate> conditionModel, EntityDefinition invoiceDefinition) {
-				super(conditionModel, Invoice.DATE, invoiceDefinition.attributes().definition(Invoice.DATE).caption());
+				super(conditionModel, invoiceDefinition.attributes().definition(Invoice.DATE).caption());
 				setLayout(new BorderLayout());
 				condition().operator().set(Operator.BETWEEN);
 				updateCondition();

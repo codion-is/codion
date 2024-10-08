@@ -33,8 +33,8 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static is.codion.common.item.Item.item;
@@ -88,14 +88,14 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	/**
 	 * @return an unmodifiable view of the condition panels
 	 */
-	public abstract Collection<ColumnConditionPanel<C, ?>> conditionPanels();
+	public abstract Map<C, ColumnConditionPanel<?>> conditionPanels();
 
 	/**
 	 * By default this returns all condition panels, override to customize.
 	 * @return the selectable panels
 	 * @see #selectConditionPanel(JComponent)
 	 */
-	public Collection<ColumnConditionPanel<C, ?>> selectableConditionPanels() {
+	public Map<C, ColumnConditionPanel<?>> selectableConditionPanels() {
 		return conditionPanels();
 	}
 
@@ -105,11 +105,13 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @return the condition panel associated with the given column
 	 * @throws IllegalStateException in case no panel is available
 	 */
-	public <T extends ColumnConditionPanel<C, ?>> T conditionPanel(C identifier) {
-		return (T) conditionPanels().stream()
-						.filter(panel -> panel.identifier().equals(identifier))
-						.findFirst()
-						.orElseThrow(() -> new IllegalStateException("No condition panel available for " + identifier));
+	public <T extends ColumnConditionPanel<?>> T conditionPanel(C identifier) {
+		ColumnConditionPanel<?> conditionPanel = conditionPanels().get(identifier);
+		if (conditionPanel == null) {
+			throw new IllegalStateException("No condition panel available for " + identifier);
+		}
+
+		return (T) conditionPanel;
 	}
 
 	/**
@@ -140,8 +142,8 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @param dialogOwner the dialog owner
 	 */
 	public final void selectConditionPanel(JComponent dialogOwner) {
-		List<Item<C>> columnItems = selectableConditionPanels().stream()
-						.map(panel -> item(panel.identifier(), panel.caption()))
+		List<Item<C>> columnItems = selectableConditionPanels().entrySet().stream()
+						.map(entry -> item(entry.getKey(), entry.getValue().caption()))
 						.sorted(Text.collator())
 						.collect(toList());
 		if (columnItems.size() == 1) {
@@ -198,7 +200,7 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 		 * @return a new {@link ColumnConditionsPanel}
 		 */
 		ColumnConditionsPanel<C> create(ColumnConditions<C> conditionModel,
-																		Collection<ColumnConditionPanel<C, ?>> conditionPanels,
+																		Map<C, ColumnConditionPanel<?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel,
 																		Consumer<ColumnConditionsPanel<C>> onPanelInitialized);
 	}

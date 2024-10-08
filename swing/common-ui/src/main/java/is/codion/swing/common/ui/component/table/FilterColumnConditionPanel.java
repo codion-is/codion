@@ -85,11 +85,11 @@ import static javax.swing.SwingConstants.CENTER;
 /**
  * A UI implementation for {@link ConditionModel}.
  * For instances use {@link #builder(ConditionModel, Object)}.
- * @param <C> the column identifies type
+ * @param <C> the column identifier type
  * @param <T> the column value type
  * @see #builder(ConditionModel, Object)
  */
-public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel<C, T> {
+public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel<T> {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(FilterColumnConditionPanel.class, getBundle(FilterColumnConditionPanel.class.getName()));
@@ -126,9 +126,10 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	private static final DefaultOperatorCaptions DEFAULT_OPERATOR_CAPTIONS = new DefaultOperatorCaptions();
 
 	private final FieldFactory<C> fieldFactory;
-	private final Event<C> focusGainedEvent = Event.event();
+	private final Event<?> focusGainedEvent = Event.event();
 	private final TableColumn tableColumn;
 	private final Function<Operator, String> operatorCaptions;
+	private final C identifier;
 
 	private JToggleButton toggleEnabledButton;
 	private JComboBox<Item<Operator>> operatorCombo;
@@ -143,10 +144,11 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	private boolean initialized = false;
 
 	private FilterColumnConditionPanel(DefaultBuilder<C, T> builder) {
-		super(builder.condition, builder.identifier, builder.caption);
+		super(builder.condition, builder.caption);
 		this.fieldFactory = builder.fieldFactory;
 		this.operatorCaptions = builder.operatorCaptions;
 		this.tableColumn = builder.tableColumn;
+		this.identifier = builder.identifier;
 	}
 
 	@Override
@@ -192,7 +194,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	@Override
-	public Optional<Observer<C>> focusGainedObserver() {
+	public Optional<Observer<?>> focusGainedObserver() {
 		return Optional.of(focusGainedEvent.observer());
 	}
 
@@ -394,19 +396,19 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 	}
 
 	private JComponent createEqualField(FieldFactory<C> fieldFactory) {
-		return equalFieldRequired() ? fieldFactory.createEqualField(condition(), identifier()) : null;
+		return equalFieldRequired() ? fieldFactory.createEqualField(condition(), identifier) : null;
 	}
 
 	private JComponent createUpperBoundField(FieldFactory<C> fieldFactory) {
-		return upperBoundFieldRequired() ? fieldFactory.createUpperBoundField(condition(), identifier()).orElse(null) : null;
+		return upperBoundFieldRequired() ? fieldFactory.createUpperBoundField(condition(), identifier).orElse(null) : null;
 	}
 
 	private JComponent createLowerBoundField(FieldFactory<C> fieldFactory) {
-		return lowerBoundFieldRequired() ? fieldFactory.createLowerBoundField(condition(), identifier()).orElse(null) : null;
+		return lowerBoundFieldRequired() ? fieldFactory.createLowerBoundField(condition(), identifier).orElse(null) : null;
 	}
 
 	private JComponent createInField(FieldFactory<C> fieldFactory) {
-		return inFieldRequired() ? fieldFactory.createInField(condition(), identifier()) : null;
+		return inFieldRequired() ? fieldFactory.createInField(condition(), identifier) : null;
 	}
 
 	private boolean equalFieldRequired() {
@@ -489,8 +491,7 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 		condition().operator().addConsumer(this::onOperatorChanged);
 		linkToEnabledState(condition().locked().not(),
 						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
-		components().forEach(component ->
-						component.addFocusListener(new FocusGained(identifier())));
+		components().forEach(component -> component.addFocusListener(new FocusGained()));
 
 		Collection<JComponent> fields = Stream.of(operatorCombo, toggleEnabledButton, equalField, upperBoundField, lowerBoundField, inField)
 						.filter(Objects::nonNull)
@@ -771,15 +772,9 @@ public final class FilterColumnConditionPanel<C, T> extends ColumnConditionPanel
 
 	private final class FocusGained extends FocusAdapter {
 
-		private final C identifier;
-
-		private FocusGained(C identifier) {
-			this.identifier = identifier;
-		}
-
 		@Override
 		public void focusGained(FocusEvent e) {
-			focusGainedEvent.accept(identifier);
+			focusGainedEvent.run();
 		}
 	}
 

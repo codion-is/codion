@@ -80,6 +80,7 @@ import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -247,7 +248,6 @@ public final class FilterTable<R, C> extends JTable {
 	private final State sortingEnabled;
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
-	private final ScrollToColumn scrollToColumn = new ScrollToColumn();
 
 	private final ControlMap controlMap;
 
@@ -903,13 +903,13 @@ public final class FilterTable<R, C> extends JTable {
 		return components.stream();
 	}
 
-	private Collection<ColumnConditionPanel<C, ?>> createColumnFilterPanels() {
-		Collection<ColumnConditionPanel<C, ?>> conditionPanels = new ArrayList<>();
+	private Map<C, ColumnConditionPanel<?>> createColumnFilterPanels() {
+		Map<C, ColumnConditionPanel<?>> conditionPanels = new HashMap<>();
 		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.filters().get().entrySet()) {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
 			if (columnModel().containsColumn(identifier) && filterFieldFactory.supportsType(condition.valueClass())) {
-				conditionPanels.add(FilterColumnConditionPanel.builder(condition, identifier)
+				conditionPanels.put(identifier, FilterColumnConditionPanel.builder(condition, identifier)
 										.fieldFactory(filterFieldFactory)
 										.tableColumn(columnModel().column(identifier))
 										.caption(Objects.toString(columnModel().column(identifier).getHeaderValue()))
@@ -924,9 +924,9 @@ public final class FilterTable<R, C> extends JTable {
 		filterConditionsPanel.conditionPanels().forEach(this::configureColumnFilterPanel);
 	}
 
-	private void configureColumnFilterPanel(ColumnConditionPanel<C, ?> filterPanel) {
-		filterPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
-						focusGainedObserver.addConsumer(scrollToColumn));
+	private void configureColumnFilterPanel(C identifier, ColumnConditionPanel<?> conditionPanel) {
+		conditionPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
+						focusGainedObserver.addListener(() -> scrollToColumn(identifier)));
 	}
 
 	private static void addIfComponent(Collection<JComponent> components, Object object) {
@@ -1010,13 +1010,6 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			scrollRectToVisible(new Rectangle(e.getX(), getVisibleRect().y, 1, 1));
-		}
-	}
-
-	private final class ScrollToColumn implements Consumer<C> {
-		@Override
-		public void accept(C identifier) {
-			scrollToColumn(identifier);
 		}
 	}
 

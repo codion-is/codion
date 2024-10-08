@@ -23,16 +23,14 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 
 import java.awt.BorderLayout;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -42,7 +40,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<C> {
 
-	private final Collection<ColumnConditionPanel<C, ?>> conditionPanels;
+	private final Map<C, ColumnConditionPanel<?>> conditionPanels;
 	private final FilterTableColumnModel<C> columnModel;
 	private final Consumer<ColumnConditionsPanel<C>> onPanelInitialized;
 
@@ -50,11 +48,11 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	private boolean initialized;
 
 	private FilterColumnConditionsPanel(ColumnConditions<C> columnConditions,
-																			Collection<ColumnConditionPanel<C, ?>> conditionPanels,
+																			Map<C, ColumnConditionPanel<?>> conditionPanels,
 																			FilterTableColumnModel<C> columnModel,
 																			Consumer<ColumnConditionsPanel<C>> onPanelInitialized) {
 		super(columnConditions);
-		this.conditionPanels = unmodifiableList(new ArrayList<>(requireNonNull(conditionPanels)));
+		this.conditionPanels = unmodifiableMap(new HashMap<>(requireNonNull(conditionPanels)));
 		this.columnModel = requireNonNull(columnModel);
 		this.onPanelInitialized = onPanelInitialized == null ? panel -> {} : onPanelInitialized;
 	}
@@ -66,15 +64,15 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	}
 
 	@Override
-	public Collection<ColumnConditionPanel<C, ?>> conditionPanels() {
+	public Map<C, ColumnConditionPanel<?>> conditionPanels() {
 		return conditionPanels;
 	}
 
 	@Override
-	public Collection<ColumnConditionPanel<C, ?>> selectableConditionPanels() {
-		return conditionPanels.stream()
-						.filter(conditionPanel -> columnModel.visible(conditionPanel.identifier()).get())
-						.collect(Collectors.toList());
+	public Map<C, ColumnConditionPanel<?>> selectableConditionPanels() {
+		return conditionPanels.entrySet().stream()
+						.filter(entry -> columnModel.visible(entry.getKey()).get())
+						.collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	/**
@@ -86,7 +84,7 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	 * @return a new {@link FilterColumnConditionsPanel}
 	 */
 	public static <C> FilterColumnConditionsPanel<C> filterColumnConditionsPanel(ColumnConditions<C> columnConditions,
-																																							 Collection<ColumnConditionPanel<C, ?>> conditionPanels,
+																																							 Map<C, ColumnConditionPanel<?>> conditionPanels,
 																																							 FilterTableColumnModel<C> columnModel,
 																																							 Consumer<ColumnConditionsPanel<C>> onPanelInitialized) {
 		return new FilterColumnConditionsPanel<>(columnConditions, conditionPanels, columnModel, onPanelInitialized);
@@ -94,7 +92,7 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 
 	@Override
 	protected void onStateChanged(ConditionState conditionState) {
-		conditionPanels.forEach(panel -> panel.state().set(conditionState));
+		conditionPanels.values().forEach(panel -> panel.state().set(conditionState));
 		switch (conditionState) {
 			case HIDDEN:
 				remove(componentPanel);
@@ -113,9 +111,7 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	private void initialize() {
 		if (!initialized) {
 			setLayout(new BorderLayout());
-			Map<C, ColumnConditionPanel<C, ?>> conditionPanelMap = conditionPanels.stream()
-							.collect(toMap(ColumnConditionPanel::identifier, identity()));
-			componentPanel = filterTableColumnComponentPanel(columnModel, conditionPanelMap);
+			componentPanel = filterTableColumnComponentPanel(columnModel, conditionPanels);
 			onPanelInitialized.accept(this);
 			initialized = true;
 		}
