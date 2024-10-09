@@ -906,7 +906,7 @@ class DefaultEntity implements Entity, Serializable {
 
 		@Override
 		public Entity immutable() {
-			return new ImmutableEntity(entity.definition, entity.values, entity.originalValues);
+			return new ImmutableEntity(entity.definition, entity.values, entity.originalValues, new HashMap<>());
 		}
 
 		@Override
@@ -921,19 +921,19 @@ class DefaultEntity implements Entity, Serializable {
 
 		/**
 		 * Watching out for cyclical foreign key values
-		 * @param copiedEntities entities that have already been copied
+		 * @param copied entities that have already been copied, preventing stack overflow error
 		 * @return a deep copy of this entity
 		 */
-		private Entity deepCopy(Map<Key, Entity> copiedEntities) {
+		private Entity deepCopy(Map<Key, Entity> copied) {
 			Entity copy = mutable();
-			copiedEntities.put(copy.primaryKey(), copy);
+			copied.put(copy.primaryKey(), copy);
 			for (ForeignKey foreignKey : entity.definition.foreignKeys().get()) {
 				Entity foreignKeyValue = copy.get(foreignKey);
 				if (foreignKeyValue instanceof DefaultEntity) {//instead of null check, since we cast
-					Entity copiedForeignKeyValue = copiedEntities.get(foreignKeyValue.primaryKey());
+					Entity copiedForeignKeyValue = copied.get(foreignKeyValue.primaryKey());
 					if (copiedForeignKeyValue == null) {
-						copiedForeignKeyValue = ((DefaultCopy) foreignKeyValue.copy()).deepCopy(copiedEntities);
-						copiedEntities.put(copiedForeignKeyValue.primaryKey(), copiedForeignKeyValue);
+						copiedForeignKeyValue = ((DefaultCopy) foreignKeyValue.copy()).deepCopy(copied);
+						copied.put(copiedForeignKeyValue.primaryKey(), copiedForeignKeyValue);
 					}
 					copy.put(foreignKey, copiedForeignKeyValue);
 				}

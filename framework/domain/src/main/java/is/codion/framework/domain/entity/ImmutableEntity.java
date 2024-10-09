@@ -27,7 +27,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import static is.codion.framework.domain.entity.DefaultKey.serializerForDomain;
 
@@ -39,16 +38,18 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
 	private static final String ERROR_MESSAGE = "This entity instance is immutable";
 
 	ImmutableEntity(DefaultEntity entity) {
-		this(entity.definition, entity.values, entity.originalValues);
+		this(entity.definition, entity.values, entity.originalValues, new HashMap<>());
 	}
 
-	ImmutableEntity(EntityDefinition definition, Map<Attribute<?>, Object> valueMap, Map<Attribute<?>, Object> originalValueMap) {
+	ImmutableEntity(EntityDefinition definition, Map<Attribute<?>, Object> valueMap,
+									Map<Attribute<?>, Object> originalValueMap, Map<Key, ImmutableEntity> immutables) {
 		this.definition = definition;
 		values = new HashMap<>(valueMap);
-		values.forEach(new ReplaceWithImmutable(values));
+		immutables.put(primaryKey(), this);
+		replace(values, immutables);
 		if (originalValueMap != null) {
 			originalValues = new HashMap<>(originalValueMap);
-			originalValues.forEach(new ReplaceWithImmutable(originalValues));
+			replace(originalValues, immutables);
 		}
 	}
 
@@ -103,19 +104,21 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
 		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
 	}
 
-	private static final class ReplaceWithImmutable implements BiConsumer<Attribute<?>, Object> {
-
-		private final Map<Attribute<?>, Object> map;
-
-		private ReplaceWithImmutable(Map<Attribute<?>, Object> map) {
-			this.map = map;
-		}
-
-		@Override
-		public void accept(Attribute<?> attribute, Object value) {
-			if (value instanceof Entity && !(value instanceof ImmutableEntity)) {
-				map.replace(attribute, ((Entity) value).immutable());
+	private static void replace(Map<Attribute<?>, Object> valueMap, Map<Key, ImmutableEntity> immutables) {
+		for (Map.Entry<Attribute<?>, Object> attributeValue : valueMap.entrySet()) {
+			Object value = attributeValue.getValue();
+			if (value instanceof DefaultEntity && !(value instanceof ImmutableEntity)) {
+				attributeValue.setValue(immutable((DefaultEntity) value, immutables));
 			}
 		}
+	}
+
+	private static ImmutableEntity immutable(DefaultEntity entity, Map<Key, ImmutableEntity> immutables) {
+		ImmutableEntity immutable = immutables.get(entity.primaryKey());
+		if (immutable == null) {
+			immutable = new ImmutableEntity(entity.definition, entity.values, entity.originalValues, immutables);
+		}
+
+		return immutable;
 	}
 }

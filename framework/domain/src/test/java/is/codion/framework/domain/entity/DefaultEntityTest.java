@@ -344,7 +344,7 @@ public class DefaultEntityTest {
 		detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master);
 
 		//otherwise the values are equal and put() returns before propagating foreign key values
-		Entity masterCopy = master.copy().deep();
+		Entity masterCopy = master.copy().deep().copy().mutable();
 		masterCopy.put(CompositeMaster.COMPOSITE_MASTER_ID, 1);
 		masterCopy.put(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
 		detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
@@ -414,7 +414,7 @@ public class DefaultEntityTest {
 		testEntity.key(Detail.MASTER_FK);
 
 		//test copy()
-		Entity test2 = testEntity.copy().deep();
+		Entity test2 = testEntity.copy().deep().copy().mutable();
 		assertNotSame(test2, testEntity, "Entity copy should not be == the original");
 		assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
 		assertTrue(test2.equalValues(testEntity), "Entity attribute values should be equal after deepCopy()");
@@ -428,18 +428,21 @@ public class DefaultEntityTest {
 		//cyclical deep copy
 		Entity manager1 = ENTITIES.builder(Employee.TYPE)
 						.with(Employee.ID, 10)
+						.with(Employee.NAME, "Man 1")
 						.build();
 		Entity manager2 = ENTITIES.builder(Employee.TYPE)
 						.with(Employee.ID, 11)
+						.with(Employee.NAME, "Man 2")
 						.with(Employee.MANAGER_FK, manager1)
 						.build();
 		Entity manager3 = ENTITIES.builder(Employee.TYPE)
 						.with(Employee.ID, 12)
+						.with(Employee.NAME, "Man 3")
 						.with(Employee.MANAGER_FK, manager2)
 						.build();
 		manager1.put(Employee.MANAGER_FK, manager3);
 
-		manager1.copy().deep();//stack overflow if not careful
+		manager1.copy().deep();
 
 		//test propagate entity reference/denormalized values
 		testEntity.put(Detail.MASTER_FK, null);
@@ -947,6 +950,29 @@ public class DefaultEntityTest {
 		assertThrows(UnsupportedOperationException.class, dept::revert);
 		assertThrows(UnsupportedOperationException.class, () -> dept.remove(Department.ID));
 		assertThrows(UnsupportedOperationException.class, () -> dept.set(dept));
+
+		// Cyclical dependencies
+		Entity manager1 = ENTITIES.builder(Employee.TYPE)
+						.with(Employee.ID, 10)
+						.with(Employee.NAME, "Man 1")
+						.build();
+		Entity manager2 = ENTITIES.builder(Employee.TYPE)
+						.with(Employee.ID, 11)
+						.with(Employee.NAME, "Man 2")
+						.with(Employee.MANAGER_FK, manager1)
+						.build();
+		Entity manager3 = ENTITIES.builder(Employee.TYPE)
+						.with(Employee.ID, 12)
+						.with(Employee.NAME, "Man 3")
+						.with(Employee.MANAGER_FK, manager2)
+						.build();
+		manager1.put(Employee.MANAGER_FK, manager3);
+
+		manager1.immutable();
+
+		manager1.put(Employee.MANAGER_FK, manager1);
+
+		manager1.immutable();
 	}
 
 	@Test
