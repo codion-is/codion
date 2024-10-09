@@ -176,6 +176,7 @@ final class EntityDependenciesPanel extends JPanel {
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
 			Dialogs.componentDialog(dependenciesPanel)
 							.owner(dialogParent)
+							.modal(false)
 							.title(FrameworkMessages.dependencies())
 							.onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
 							.show();

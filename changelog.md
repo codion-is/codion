@@ -30,6 +30,7 @@ Codion Change Log
 - EntityApplicationPanel.Builder.ConnectionProviderFactory.createConnectionProvider() renamed create().
 - EntityTablePanel.conditionPanel() renamed conditions().
 - EntityTablePanel.Config.includeFilterPanel(), includeConditionPanel() and includeSummaryPanel() renamed includeFilters(), includeConditions() and includeSummary() respectively.
+- EntityDependenciesPanel, dependencies dialog no longer modal.
 
 ## 0.18.17
 ### is.codion.common.core
