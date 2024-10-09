@@ -21,8 +21,8 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.common.model.condition.ColumnConditions;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionsPanel;
+import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -30,7 +30,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.SIMPLE;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState.SIMPLE;
 
 public final class InvoiceTablePanel extends EntityTablePanel {
 
@@ -51,11 +51,10 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 
 		@Override
 		public ColumnConditionsPanel<Attribute<?>> create(ColumnConditions<Attribute<?>> conditionModel,
-																											Map<Attribute<?>, ColumnConditionPanel<?>> columnConditionPanels,
+																											Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
 																											FilterTableColumnModel<Attribute<?>> columnModel,
 																											Consumer<ColumnConditionsPanel<Attribute<?>>> onPanelInitialized) {
-			return new InvoiceConditionPanel(tableModel.entityDefinition(), conditionModel,
-							columnModel, onPanelInitialized, tableModel::refresh);
+			return new InvoiceConditionPanel(tableModel, conditionPanels, columnModel, onPanelInitialized);
 		}
 	}
 }

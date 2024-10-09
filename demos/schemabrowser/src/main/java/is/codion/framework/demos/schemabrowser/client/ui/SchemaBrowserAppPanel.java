@@ -26,7 +26,7 @@ import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ConstraintCo
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Schema;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;

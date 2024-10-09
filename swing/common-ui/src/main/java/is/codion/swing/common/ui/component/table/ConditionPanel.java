@@ -29,14 +29,14 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.*;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState.*;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A base class for a UI component based on a {@link ConditionModel}.
  * @param <T> the condition value type
  */
-public abstract class ColumnConditionPanel<T> extends JPanel {
+public abstract class ConditionPanel<T> extends JPanel {
 
 	private final ConditionModel<T> condition;
 	private final Value<ConditionState> conditionState = Value.builder()
@@ -66,10 +66,10 @@ public abstract class ColumnConditionPanel<T> extends JPanel {
 	}
 
 	/**
-	 * Instantiates a new {@link ColumnConditionPanel}.
+	 * Instantiates a new {@link ConditionPanel}.
 	 * @param condition the condition model
 	 */
-	protected ColumnConditionPanel(ConditionModel<T> condition) {
+	protected ConditionPanel(ConditionModel<T> condition) {
 		this.condition = requireNonNull(condition);
 		configureStates();
 	}

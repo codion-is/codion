@@ -20,7 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;

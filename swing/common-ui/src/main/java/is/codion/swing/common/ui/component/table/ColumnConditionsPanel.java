@@ -26,7 +26,7 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -40,7 +40,7 @@ import java.util.function.Function;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.*;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
@@ -93,14 +93,14 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	/**
 	 * @return an unmodifiable view of the condition panels
 	 */
-	public abstract Map<C, ColumnConditionPanel<?>> panels();
+	public abstract Map<C, ConditionPanel<?>> panels();
 
 	/**
 	 * By default this returns all condition panels, override to customize.
 	 * @return the selectable condition panels
 	 * @see #select(JComponent)
 	 */
-	public Map<C, ColumnConditionPanel<?>> selectable() {
+	public Map<C, ConditionPanel<?>> selectable() {
 		return panels();
 	}
 
@@ -110,9 +110,9 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @return the condition panel associated with the given column
 	 * @throws IllegalStateException in case no panel is available
 	 */
-	public <T extends ColumnConditionPanel<?>> T panel(C identifier) {
+	public <T extends ConditionPanel<?>> T panel(C identifier) {
 		requireNonNull(identifier);
-		ColumnConditionPanel<?> conditionPanel = panels().get(identifier);
+		ConditionPanel<?> conditionPanel = panels().get(identifier);
 		if (conditionPanel == null) {
 			throw new IllegalStateException("No condition panel available for " + identifier);
 		}
@@ -148,7 +148,7 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @param dialogOwner the selection dialog owner
 	 */
 	public final void select(JComponent dialogOwner) {
-		List<Item<? extends ColumnConditionPanel<?>>> panelItems = selectable().entrySet().stream()
+		List<Item<? extends ConditionPanel<?>>> panelItems = selectable().entrySet().stream()
 						.map(entry -> item(entry.getValue(), captions.apply(entry.getKey())))
 						.sorted(Text.collator())
 						.collect(toList());
@@ -205,7 +205,7 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 		 * @return a new {@link ColumnConditionsPanel}
 		 */
 		ColumnConditionsPanel<C> create(ColumnConditions<C> conditionModel,
-																		Map<C, ColumnConditionPanel<?>> conditionPanels,
+																		Map<C, ConditionPanel<?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel,
 																		Consumer<ColumnConditionsPanel<C>> onPanelInitialized);
 	}

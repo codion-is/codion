@@ -48,9 +48,9 @@ import is.codion.swing.common.model.component.table.FilterTableModel.TableSelect
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.ColumnConditionsPanel;
+import is.codion.swing.common.ui.component.table.ConditionPanel;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -125,9 +125,9 @@ import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.Components.toolBar;
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.ADVANCED;
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState.SIMPLE;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState.ADVANCED;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState.SIMPLE;
 import static is.codion.swing.common.ui.component.table.FilterColumnConditionsPanel.filterColumnConditionsPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -1475,7 +1475,7 @@ public class EntityTablePanel extends JPanel {
 	private ColumnConditionsPanel<Attribute<?>> createColumnConditionsPanel() {
 		if (configuration.includeConditions) {
 			ColumnConditionsPanel<Attribute<?>> conditionPanel = configuration.columnConditionsPanelFactory
-							.create(tableModel.queryModel().conditions(), createColumnConditionPanels(),
+							.create(tableModel.queryModel().conditions(), createConditionPanels(),
 											table.getColumnModel(), this::configureTableConditionPanel);
 			KeyEvents.builder(VK_ENTER)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1489,15 +1489,15 @@ public class EntityTablePanel extends JPanel {
 		return null;
 	}
 
-	private Map<Attribute<?>, ColumnConditionPanel<?>> createColumnConditionPanels() {
-		Map<Attribute<?>, ColumnConditionPanel<?>> conditionPanels = new HashMap<>();
+	private Map<Attribute<?>, ConditionPanel<?>> createConditionPanels() {
+		Map<Attribute<?>, ConditionPanel<?>> conditionPanels = new HashMap<>();
 		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : tableModel.queryModel().conditions().get().entrySet()) {
 			Attribute<?> attribute = conditionEntry.getKey();
 			if (table.columnModel().containsColumn(attribute)) {
 				FieldFactory fieldFactory = configuration.conditionFieldFactories.getOrDefault(attribute,
 								new EntityConditionFieldFactory(tableModel.entityDefinition(), attribute));
 				if (fieldFactory.supportsType(attribute.type().valueClass())) {
-					conditionPanels.put(attribute, createColumnConditionPanel(conditionEntry.getValue(), attribute, fieldFactory));
+					conditionPanels.put(attribute, createConditionPanel(conditionEntry.getValue(), attribute, fieldFactory));
 				}
 			}
 		}
@@ -1505,8 +1505,8 @@ public class EntityTablePanel extends JPanel {
 		return conditionPanels;
 	}
 
-	private <C extends Attribute<?>> FilterColumnConditionPanel<?> createColumnConditionPanel(ConditionModel<?> condition, C identifier,
-																																														FieldFactory fieldFactory) {
+	private <C extends Attribute<?>> FilterColumnConditionPanel<?> createConditionPanel(ConditionModel<?> condition, C identifier,
+																																											FieldFactory fieldFactory) {
 		return FilterColumnConditionPanel.builder(condition)
 						.fieldFactory(fieldFactory)
 						.tableColumn(table.columnModel().column(identifier))
@@ -1514,10 +1514,10 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void configureTableConditionPanel(ColumnConditionsPanel<Attribute<?>> columnConditionsPanel) {
-		columnConditionsPanel.panels().forEach(this::configureColumnConditionPanel);
+		columnConditionsPanel.panels().forEach(this::configureConditionPanel);
 	}
 
-	private void configureColumnConditionPanel(Attribute<?> attribute, ColumnConditionPanel<?> conditionPanel) {
+	private void configureConditionPanel(Attribute<?> attribute, ConditionPanel<?> conditionPanel) {
 		conditionPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
 						focusGainedObserver.addListener(() -> table.scrollToColumn(attribute)));
 		conditionPanel.components().forEach(this::enableConditionPanelRefreshOnEnter);
@@ -2572,7 +2572,7 @@ public class EntityTablePanel extends JPanel {
 
 			@Override
 			public ColumnConditionsPanel<Attribute<?>> create(ColumnConditions<Attribute<?>> conditionModel,
-																												Map<Attribute<?>, ColumnConditionPanel<?>> columnConditionPanels,
+																												Map<Attribute<?>, ConditionPanel<?>> columnConditionPanels,
 																												FilterTableColumnModel<Attribute<?>> columnModel,
 																												Consumer<ColumnConditionsPanel<Attribute<?>>> onPanelInitialized) {
 				return filterColumnConditionsPanel(conditionModel, columnConditionPanels, columnModel, onPanelInitialized);

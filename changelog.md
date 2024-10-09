@@ -21,6 +21,7 @@ Codion Change Log
 - DefaultToolBarBuilder bug fixed, now cleans up separators like DefaultMenuBuilder, related refactoring.
 - ColumnConditionPanel.caption() removed, related refactoring.
 - ColumnConditionsPanel captions function added as constructor parameter.
+- ColumnConditionPanel renamed ConditionPanel.
 ### is.codion.framework.domain
 - Entity.copy(), copyBuilder() and deepCopy() moved to Entity.Copy, renamed mutable(), builder() and deep() respectively, immutable() added.
 - ImmutableEntity bug fixed, StackOverflowError when creating an immutable entity with cyclical foreign key dependencies, some refactoring.

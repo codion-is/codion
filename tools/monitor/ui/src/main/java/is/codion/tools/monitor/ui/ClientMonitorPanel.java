@@ -21,7 +21,7 @@ package is.codion.tools.monitor.ui;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;

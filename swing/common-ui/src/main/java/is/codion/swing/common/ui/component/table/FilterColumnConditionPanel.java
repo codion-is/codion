@@ -84,11 +84,11 @@ import static javax.swing.SwingConstants.CENTER;
 
 /**
  * A UI implementation for {@link ConditionModel}.
- * For instances use {@link #builder(ConditionModel, String)}.
+ * For instances use {@link #builder(ConditionModel)}.
  * @param <T> the column value type
- * @see #builder(ConditionModel, String)
+ * @see #builder(ConditionModel)
  */
-public final class FilterColumnConditionPanel<T> extends ColumnConditionPanel<T> {
+public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(FilterColumnConditionPanel.class, getBundle(FilterColumnConditionPanel.class.getName()));

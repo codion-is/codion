@@ -31,7 +31,7 @@ import is.codion.framework.model.DetailModelLink;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.border.Borders;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;

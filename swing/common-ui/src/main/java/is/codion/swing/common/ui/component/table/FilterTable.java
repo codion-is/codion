@@ -39,7 +39,7 @@ import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
@@ -361,7 +361,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public ColumnConditionsPanel<C> filters() {
 		if (filterPanel == null) {
-			filterPanel = filterPanelFactory.create(tableModel.filters(), createColumnFilterPanels(),
+			filterPanel = filterPanelFactory.create(tableModel.filters(), createFilterPanels(),
 							columnModel(), this::configureFilterConditionsPanel);
 		}
 
@@ -900,8 +900,8 @@ public final class FilterTable<R, C> extends JTable {
 		return components.stream();
 	}
 
-	private Map<C, ColumnConditionPanel<?>> createColumnFilterPanels() {
-		Map<C, ColumnConditionPanel<?>> conditionPanels = new HashMap<>();
+	private Map<C, ConditionPanel<?>> createFilterPanels() {
+		Map<C, ConditionPanel<?>> conditionPanels = new HashMap<>();
 		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.filters().get().entrySet()) {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
@@ -917,11 +917,11 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void configureFilterConditionsPanel(ColumnConditionsPanel<C> filterConditionsPanel) {
-		filterConditionsPanel.panels().forEach(this::configureColumnFilterPanel);
+		filterConditionsPanel.panels().forEach(this::configureFilterPanel);
 	}
 
-	private void configureColumnFilterPanel(C identifier, ColumnConditionPanel<?> conditionPanel) {
-		conditionPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
+	private void configureFilterPanel(C identifier, ConditionPanel<?> filterPanel) {
+		filterPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
 						focusGainedObserver.addListener(() -> scrollToColumn(identifier)));
 	}
 

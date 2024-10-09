@@ -24,7 +24,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Employee;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.demos.chinook.ui.EmployeeEditPanel;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;

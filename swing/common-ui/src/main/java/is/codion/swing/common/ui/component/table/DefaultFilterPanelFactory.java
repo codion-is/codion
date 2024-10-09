@@ -29,7 +29,7 @@ final class DefaultFilterPanelFactory<C> implements ColumnConditionsPanel.Factor
 
 	@Override
 	public ColumnConditionsPanel<C> create(ColumnConditions<C> conditionModel,
-																				 Map<C, ColumnConditionPanel<?>> columnConditionPanels,
+																				 Map<C, ConditionPanel<?>> columnConditionPanels,
 																				 FilterTableColumnModel<C> columnModel,
 																				 Consumer<ColumnConditionsPanel<C>> onPanelInitialized) {
 		return filterColumnConditionsPanel(conditionModel, columnConditionPanels, columnModel, onPanelInitialized);

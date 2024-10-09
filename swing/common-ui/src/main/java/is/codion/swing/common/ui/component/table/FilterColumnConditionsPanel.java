@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ColumnConditions;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 
 import java.awt.BorderLayout;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<C> {
 
-	private final Map<C, ColumnConditionPanel<?>> conditionPanels;
+	private final Map<C, ConditionPanel<?>> conditionPanels;
 	private final FilterTableColumnModel<C> columnModel;
 	private final Consumer<ColumnConditionsPanel<C>> onPanelInitialized;
 
@@ -48,7 +48,7 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	private boolean initialized;
 
 	private FilterColumnConditionsPanel(ColumnConditions<C> columnConditions,
-																			Map<C, ColumnConditionPanel<?>> conditionPanels,
+																			Map<C, ConditionPanel<?>> conditionPanels,
 																			FilterTableColumnModel<C> columnModel,
 																			Consumer<ColumnConditionsPanel<C>> onPanelInitialized) {
 		super(columnConditions, identifier -> Objects.toString(columnModel.column(identifier).getHeaderValue()));
@@ -64,12 +64,12 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	}
 
 	@Override
-	public Map<C, ColumnConditionPanel<?>> panels() {
+	public Map<C, ConditionPanel<?>> panels() {
 		return conditionPanels;
 	}
 
 	@Override
-	public Map<C, ColumnConditionPanel<?>> selectable() {
+	public Map<C, ConditionPanel<?>> selectable() {
 		return conditionPanels.entrySet().stream()
 						.filter(entry -> columnModel.visible(entry.getKey()).get())
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -84,7 +84,7 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	 * @return a new {@link FilterColumnConditionsPanel}
 	 */
 	public static <C> FilterColumnConditionsPanel<C> filterColumnConditionsPanel(ColumnConditions<C> columnConditions,
-																																							 Map<C, ColumnConditionPanel<?>> conditionPanels,
+																																							 Map<C, ConditionPanel<?>> conditionPanels,
 																																							 FilterTableColumnModel<C> columnModel,
 																																							 Consumer<ColumnConditionsPanel<C>> onPanelInitialized) {
 		return new FilterColumnConditionsPanel<>(columnConditions, conditionPanels, columnModel, onPanelInitialized);
