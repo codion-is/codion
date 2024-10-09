@@ -71,7 +71,7 @@ public final class ClientMonitorPanel extends JPanel {
 		clientInstanceTable = FilterTable.builder(model.clientInstanceTableModel(), createColumns())
 						.popupMenu(this::createPopupMenu)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.conditionState(ConditionState.SIMPLE)
+						.filterState(ConditionState.SIMPLE)
 						.build();
 		clientInstanceScroller = scrollPane(clientInstanceTable)
 						.border(BorderFactory.createTitledBorder("Clients"))

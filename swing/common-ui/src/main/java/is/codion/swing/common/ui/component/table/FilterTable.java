@@ -275,9 +275,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
 		this.controlMap.control(TOGGLE_SORT_COLUMN).set(createToggleSortColumnControl());
 		this.controlMap.control(TOGGLE_SORT_COLUMN_ADD).set(createToggleSortColumnAddControl());
-		if (builder.conditionState != ConditionState.HIDDEN) {
-			filters().state().set(builder.conditionState);
-		}
+		filters().state().set(builder.filterState);
 		autoStartsEdit(builder.autoStartsEdit);
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);
@@ -1116,10 +1114,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> resizeRowToFitEditor(boolean resizeRowToFitEditor);
 
 		/**
-		 * @param conditionState the initial filter condition panel state
+		 * @param filterState the initial filter condition panel state
 		 * @return this builder instance
 		 */
-		Builder<R, C> conditionState(ConditionState conditionState);
+		Builder<R, C> filterState(ConditionState filterState);
 
 		/**
 		 * @param controlKey the control key
@@ -1187,7 +1185,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean columnResizingAllowed = true;
 		private int autoResizeMode = AUTO_RESIZE_MODE.get();
 		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.get();
-		private ConditionState conditionState = ConditionState.HIDDEN;
+		private ConditionState filterState = ConditionState.HIDDEN;
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = tableModel;
@@ -1287,8 +1285,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> conditionState(ConditionState conditionState) {
-			this.conditionState = requireNonNull(conditionState);
+		public Builder<R, C> filterState(ConditionState filterState) {
+			this.filterState = requireNonNull(filterState);
 			return this;
 		}
 
