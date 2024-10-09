@@ -33,6 +33,7 @@ Codion Change Log
 - EntityTablePanel.Config.includeFilterPanel(), includeConditionPanel() and includeSummaryPanel() renamed includeFilters(), includeConditions() and includeSummary() respectively.
 - EntityDependenciesPanel, dependencies dialog no longer modal.
 - EntityTablePanel.Config.conditionState() and filterState() added.
+- EntityDialogs.EntitySelectionDialogBuilder.configureTablePanel() added.
 
 ## 0.18.17
 ### is.codion.common.core

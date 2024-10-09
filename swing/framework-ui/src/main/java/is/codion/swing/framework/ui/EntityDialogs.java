@@ -30,7 +30,6 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.border.Borders;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
@@ -233,6 +232,12 @@ public final class EntityDialogs {
 		 * @return this builder instance
 		 */
 		EntitySelectionDialogBuilder dialogSize(Dimension dialogSize);
+
+		/**
+		 * @param configureTablePanel configures the table panel
+		 * @return this builder instance
+		 */
+		EntitySelectionDialogBuilder configureTablePanel(Consumer<EntityTablePanel.Config> configureTablePanel);
 
 		/**
 		 * Displays table for selecting a one or more entities
@@ -449,9 +454,12 @@ public final class EntityDialogs {
 	private static final class DefaultEntitySelectionDialogBuilder extends AbstractDialogBuilder<EntitySelectionDialogBuilder>
 					implements EntitySelectionDialogBuilder {
 
+		private static final Consumer<EntityTablePanel.Config> NO_CONFIGURATION = c -> {};
+
 		private final SwingEntityTableModel tableModel;
 
 		private Dimension dialogSize;
+		private Consumer<EntityTablePanel.Config> tablePanelConfig = NO_CONFIGURATION;
 
 		private DefaultEntitySelectionDialogBuilder(SwingEntityTableModel tableModel) {
 			this.tableModel = requireNonNull(tableModel);
@@ -464,15 +472,21 @@ public final class EntityDialogs {
 		}
 
 		@Override
+		public EntitySelectionDialogBuilder configureTablePanel(Consumer<EntityTablePanel.Config> configureTablePanel) {
+			this.tablePanelConfig = requireNonNull(configureTablePanel);
+			return this;
+		}
+
+		@Override
 		public List<Entity> select() {
 			return new EntitySelectionDialog(tableModel, owner, location, locationRelativeTo,
-							title, icon, dialogSize, false).selectEntities();
+							title, icon, dialogSize, false, tablePanelConfig).selectEntities();
 		}
 
 		@Override
 		public Optional<Entity> selectSingle() {
 			List<Entity> entities = new EntitySelectionDialog(tableModel, owner, location, locationRelativeTo,
-							title, icon, dialogSize, true).selectEntities();
+							title, icon, dialogSize, true, tablePanelConfig).selectEntities();
 
 			return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
 		}
@@ -483,7 +497,8 @@ public final class EntityDialogs {
 		private final EntityTablePanel entityTablePanel;
 
 		private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, Point location, Component locationRelativeTo,
-																	ValueObserver<String> title, ImageIcon icon, Dimension dialogSize, boolean singleSelection) {
+																	ValueObserver<String> title, ImageIcon icon, Dimension dialogSize, boolean singleSelection,
+																	Consumer<EntityTablePanel.Config> configureTablePanel) {
 			Control okControl = Control.builder()
 							.command(this::ok)
 							.name(Messages.ok())
@@ -500,7 +515,7 @@ public final class EntityDialogs {
 							.name(FrameworkMessages.searchVerb())
 							.mnemonic(FrameworkMessages.searchMnemonic())
 							.build();
-			entityTablePanel = createTablePanel(tableModel, okControl, singleSelection);
+			entityTablePanel = createTablePanel(tableModel, okControl, singleSelection, configureTablePanel);
 			actionDialog(borderLayoutPanel()
 							.centerComponent(entityTablePanel)
 							.border(Borders.emptyBorder())
@@ -517,12 +532,12 @@ public final class EntityDialogs {
 							.show();
 		}
 
-		private static EntityTablePanel createTablePanel(SwingEntityTableModel tableModel, Control okControl, boolean singleSelection) {
+		private static EntityTablePanel createTablePanel(SwingEntityTableModel tableModel, Control okControl, boolean singleSelection,
+																										 Consumer<EntityTablePanel.Config> configureTablePanel) {
 			tableModel.editModel().readOnly().set(true);
-			EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeSouthPanel(false));
+			EntityTablePanel tablePanel = new EntityTablePanel(tableModel, configureTablePanel);
 			tablePanel.initialize();
 			tablePanel.table().doubleClickAction().set(okControl);
-			tablePanel.conditions().state().set(ConditionState.SIMPLE);
 			tablePanel.table().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 			tablePanel.table().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
