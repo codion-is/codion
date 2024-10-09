@@ -69,7 +69,7 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	}
 
 	@Override
-	public Collection<ColumnConditionPanel<?>> selectablePanels() {
+	public Collection<ColumnConditionPanel<?>> selectable() {
 		return conditionPanels.entrySet().stream()
 						.filter(entry -> columnModel.visible(entry.getKey()).get())
 						.map(Map.Entry::getValue)

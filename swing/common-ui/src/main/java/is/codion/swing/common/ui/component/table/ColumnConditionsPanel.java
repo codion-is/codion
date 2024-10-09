@@ -93,10 +93,10 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 
 	/**
 	 * By default this returns all condition panels, override to customize.
-	 * @return the selectable panels
-	 * @see #selectPanel(JComponent)
+	 * @return the selectable condition panels
+	 * @see #select(JComponent)
 	 */
-	public Collection<ColumnConditionPanel<?>> selectablePanels() {
+	public Collection<ColumnConditionPanel<?>> selectable() {
 		return panels().values();
 	}
 
@@ -137,13 +137,13 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	}
 
 	/**
-	 * Selects one conditon panel to receive the input focus.
+	 * Selects one condition panel to receive the input focus.
 	 * If only one panel is available, that one receives the input focus automatically.
-	 * If multiple conditon panels are available a selection dialog is presented.
-	 * @param dialogOwner the dialog owner
+	 * If multiple condition panels are available a selection dialog is presented.
+	 * @param dialogOwner the selection dialog owner
 	 */
-	public final void selectPanel(JComponent dialogOwner) {
-		List<Item<? extends ColumnConditionPanel<?>>> panelItems = selectablePanels().stream()
+	public final void select(JComponent dialogOwner) {
+		List<Item<? extends ColumnConditionPanel<?>>> panelItems = selectable().stream()
 						.map(conditionPanel -> item(conditionPanel, conditionPanel.caption()))
 						.sorted(Text.collator())
 						.collect(toList());

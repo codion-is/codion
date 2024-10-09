@@ -16,6 +16,7 @@ Codion Change Log
 - FilterTable.filterPanel() renamed filters().
 - FilterTableCellRendererFactory moved to FilterTableCellRenderer and renamed Factory.
 - FilterTableCellEditorFactory moved to FilterTableCellEditor and renamed Factory.
+- ColumnConditionPanels.selectablePanels() and selectPanel() renamed selectable() and select() respectively.
 ### is.codion.framework.domain
 - Entity.copy(), copyBuilder() and deepCopy() moved to Entity.Copy, renamed mutable(), builder() and deep() respectively, immutable() added.
 ### is.codion.framework.db
@@ -28,7 +29,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.ConnectionProviderFactory.createConnectionProvider() renamed create().
 - EntityTablePanel.conditionPanel() renamed conditions().
-- EntityTablePanel.Config.includeFilterPanel(), includeConditionPanel() and includeSummaryPanel() renamed includFilters(), includeConditions() and includeSummary() respectively.
+- EntityTablePanel.Config.includeFilterPanel(), includeConditionPanel() and includeSummaryPanel() renamed includeFilters(), includeConditions() and includeSummary() respectively.
 
 ## 0.18.17
 ### is.codion.common.core
