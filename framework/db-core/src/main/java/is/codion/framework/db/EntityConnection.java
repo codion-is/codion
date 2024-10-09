@@ -436,10 +436,12 @@ public interface EntityConnection extends AutoCloseable {
 	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;
 
 	/**
-	 * Executes the given {@link Transactional} instance within a transaction, committing on success and rolling back on exception.
+	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.
+	 * Any {@link DatabaseException}s and {@link RuntimeException}s encountered are rethrown, other exceptions are rethrown as {@link RuntimeException}s.
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run
-	 * @throws DatabaseException in case of an exception
+	 * @throws DatabaseException in case of a database exception
+	 * @throws RuntimeException in case of exceptions other than {@link DatabaseException}
 	 */
 	static void transaction(EntityConnection connection, Transactional transactional) throws DatabaseException {
 		requireNonNull(connection);
@@ -463,12 +465,14 @@ public interface EntityConnection extends AutoCloseable {
 	}
 
 	/**
-	 * Executes the given {@link TransactionalResult} instance within a transaction, committing on success and rolling back on exception.
+	 * Executes the given {@link TransactionalResult} instance within a transaction on the given connection, committing on success and rolling back on exception.
+	 * Any {@link DatabaseException}s and {@link RuntimeException}s encountered are rethrown, other exceptions are rethrown as {@link RuntimeException}s.
 	 * @param <T> the result type
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run
 	 * @return the result
-	 * @throws DatabaseException in case of an exception
+	 * @throws DatabaseException in case of a database exception
+	 * @throws RuntimeException in case of exceptions other than {@link DatabaseException}
 	 */
 	static <T> T transaction(EntityConnection connection, TransactionalResult<T> transactional) throws DatabaseException {
 		requireNonNull(connection);
@@ -523,9 +527,9 @@ public interface EntityConnection extends AutoCloseable {
 	interface Transactional {
 
 		/**
-		 * @throws DatabaseException in case of an exception
+		 * @throws Exception in case of an exception
 		 */
-		void execute() throws DatabaseException;
+		void execute() throws Exception;
 	}
 
 	/**
@@ -536,9 +540,9 @@ public interface EntityConnection extends AutoCloseable {
 
 		/**
 		 * @return the result
-		 * @throws DatabaseException in case of an exception
+		 * @throws Exception in case of an exception
 		 */
-		T execute() throws DatabaseException;
+		T execute() throws Exception;
 	}
 
 	/**

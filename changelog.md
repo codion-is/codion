@@ -26,6 +26,7 @@ Codion Change Log
 ### is.codion.framework.db
 - EntityConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw DatabaseException.
 - EntityConnection.transaction() added along with Transactional and TransactionalResult.
+- EntityConnection.Transactional and TransactionalResult.execute() now throw Exception instead of DatabaseException.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.valueMissingOrModified() bug fixed, could not discern a missing value from a null original value, since the incorrent entity was being used when checking, test case improved.
 ### is.codion.framework.model
