@@ -29,18 +29,18 @@ public class FilterColumnConditionPanelTest {
 	@Test
 	void test() {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
-		FilterColumnConditionPanel<String> panel = FilterColumnConditionPanel.builder(model, "test").build();
+		FilterColumnConditionPanel<String> panel = FilterColumnConditionPanel.builder(model).build();
 		assertEquals(model, panel.condition());
 		assertNotNull(panel.equalField());
 		assertNotNull(panel.upperBoundField());
 		assertNotNull(panel.lowerBoundField());
-		assertThrows(NullPointerException.class, () -> FilterColumnConditionPanel.<String>builder(null, "test"));
+		assertThrows(NullPointerException.class, () -> FilterColumnConditionPanel.<String>builder(null));
 	}
 
 	@Test
 	void lockedModel() {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
-		FilterColumnConditionPanel.builder(model, "test").build();
+		FilterColumnConditionPanel.builder(model).build();
 	}
 }

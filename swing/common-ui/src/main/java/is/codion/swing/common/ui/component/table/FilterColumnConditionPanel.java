@@ -142,7 +142,7 @@ public final class FilterColumnConditionPanel<T> extends ColumnConditionPanel<T>
 	private boolean initialized = false;
 
 	private FilterColumnConditionPanel(DefaultBuilder<T> builder) {
-		super(builder.condition, builder.caption);
+		super(builder.condition);
 		this.fieldFactory = builder.fieldFactory;
 		this.operatorCaptions = builder.operatorCaptions;
 		this.tableColumn = builder.tableColumn;
@@ -242,12 +242,11 @@ public final class FilterColumnConditionPanel<T> extends ColumnConditionPanel<T>
 
 	/**
 	 * @param condition the condition model
-	 * @param caption the caption to use when presenting this condition panel
 	 * @param <T> the condition value type
 	 * @return a new {@link Builder}
 	 */
-	public static <T> Builder<T> builder(ConditionModel<T> condition, String caption) {
-		return new DefaultBuilder<>(condition, caption);
+	public static <T> Builder<T> builder(ConditionModel<T> condition) {
+		return new DefaultBuilder<>(condition);
 	}
 
 	/**
@@ -285,15 +284,13 @@ public final class FilterColumnConditionPanel<T> extends ColumnConditionPanel<T>
 	private static final class DefaultBuilder<T> implements Builder<T> {
 
 		private final ConditionModel<T> condition;
-		private final String caption;
 
 		private FieldFactory fieldFactory = new DefaultFilterFieldFactory();
 		private Function<Operator, String> operatorCaptions = DEFAULT_OPERATOR_CAPTIONS;
 		private TableColumn tableColumn;
 
-		private DefaultBuilder(ConditionModel<T> condition, String caption) {
+		private DefaultBuilder(ConditionModel<T> condition) {
 			this.condition = requireNonNull(condition);
-			this.caption = requireNonNull(caption);
 		}
 
 		@Override

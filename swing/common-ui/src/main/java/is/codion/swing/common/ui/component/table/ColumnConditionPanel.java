@@ -65,16 +65,12 @@ public abstract class ColumnConditionPanel<T> extends JPanel {
 		ADVANCED
 	}
 
-	private final String caption;
-
 	/**
 	 * Instantiates a new {@link ColumnConditionPanel}.
 	 * @param condition the condition model
-	 * @param caption the caption to use when presenting this condition panel
 	 */
-	protected ColumnConditionPanel(ConditionModel<T> condition, String caption) {
+	protected ColumnConditionPanel(ConditionModel<T> condition) {
 		this.condition = requireNonNull(condition);
-		this.caption = requireNonNull(caption);
 		configureStates();
 	}
 
@@ -90,13 +86,6 @@ public abstract class ColumnConditionPanel<T> extends JPanel {
 	 */
 	public final Value<ConditionState> state() {
 		return conditionState;
-	}
-
-	/**
-	 * @return the caption to use when presenting this condition panel
-	 */
-	public final String caption() {
-		return caption;
 	}
 
 	/**

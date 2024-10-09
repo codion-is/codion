@@ -33,10 +33,10 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -55,6 +55,7 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 					messageBundle(FilterColumnConditionPanel.class, getBundle(ColumnConditionsPanel.class.getName()));
 
 	private final ColumnConditions<C> columnConditions;
+	private final Function<C, String> captions;
 	private final Value<ConditionState> conditionState = Value.builder()
 					.nonNull(HIDDEN)
 					.consumer(this::onStateChanged)
@@ -66,9 +67,12 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	/**
 	 * Instantiates a new {@link ColumnConditionsPanel}
 	 * @param columnConditions the {@link ColumnConditions}
+	 * @param captions provides captions based on the column identifiers presenting condition selection
+	 * @see #select(JComponent)
 	 */
-	protected ColumnConditionsPanel(ColumnConditions<C> columnConditions) {
+	protected ColumnConditionsPanel(ColumnConditions<C> columnConditions, Function<C, String> captions) {
 		this.columnConditions = requireNonNull(columnConditions);
+		this.captions = requireNonNull(captions);
 		configureStates();
 	}
 
@@ -96,8 +100,8 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @return the selectable condition panels
 	 * @see #select(JComponent)
 	 */
-	public Collection<ColumnConditionPanel<?>> selectable() {
-		return panels().values();
+	public Map<C, ColumnConditionPanel<?>> selectable() {
+		return panels();
 	}
 
 	/**
@@ -107,6 +111,7 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @throws IllegalStateException in case no panel is available
 	 */
 	public <T extends ColumnConditionPanel<?>> T panel(C identifier) {
+		requireNonNull(identifier);
 		ColumnConditionPanel<?> conditionPanel = panels().get(identifier);
 		if (conditionPanel == null) {
 			throw new IllegalStateException("No condition panel available for " + identifier);
@@ -143,8 +148,8 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @param dialogOwner the selection dialog owner
 	 */
 	public final void select(JComponent dialogOwner) {
-		List<Item<? extends ColumnConditionPanel<?>>> panelItems = selectable().stream()
-						.map(conditionPanel -> item(conditionPanel, conditionPanel.caption()))
+		List<Item<? extends ColumnConditionPanel<?>>> panelItems = selectable().entrySet().stream()
+						.map(entry -> item(entry.getValue(), captions.apply(entry.getKey())))
 						.sorted(Text.collator())
 						.collect(toList());
 		if (panelItems.size() == 1) {

@@ -113,7 +113,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -1508,7 +1507,7 @@ public class EntityTablePanel extends JPanel {
 
 	private <C extends Attribute<?>> FilterColumnConditionPanel<?> createColumnConditionPanel(ConditionModel<?> condition, C identifier,
 																																														FieldFactory fieldFactory) {
-		return FilterColumnConditionPanel.builder(condition, Objects.toString(table.columnModel().column(identifier).getHeaderValue()))
+		return FilterColumnConditionPanel.builder(condition)
 						.fieldFactory(fieldFactory)
 						.tableColumn(table.columnModel().column(identifier))
 						.build();

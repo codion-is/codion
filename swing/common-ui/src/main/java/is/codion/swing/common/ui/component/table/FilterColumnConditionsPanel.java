@@ -23,15 +23,15 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionState;
 
 import java.awt.BorderLayout;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A default filter table condition panel.
@@ -51,7 +51,7 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 																			Map<C, ColumnConditionPanel<?>> conditionPanels,
 																			FilterTableColumnModel<C> columnModel,
 																			Consumer<ColumnConditionsPanel<C>> onPanelInitialized) {
-		super(columnConditions);
+		super(columnConditions, identifier -> Objects.toString(columnModel.column(identifier).getHeaderValue()));
 		this.conditionPanels = unmodifiableMap(new HashMap<>(requireNonNull(conditionPanels)));
 		this.columnModel = requireNonNull(columnModel);
 		this.onPanelInitialized = onPanelInitialized == null ? panel -> {} : onPanelInitialized;
@@ -69,11 +69,10 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	}
 
 	@Override
-	public Collection<ColumnConditionPanel<?>> selectable() {
+	public Map<C, ColumnConditionPanel<?>> selectable() {
 		return conditionPanels.entrySet().stream()
 						.filter(entry -> columnModel.visible(entry.getKey()).get())
-						.map(Map.Entry::getValue)
-						.collect(toList());
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	/**

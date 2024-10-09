@@ -83,7 +83,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -907,8 +906,7 @@ public final class FilterTable<R, C> extends JTable {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
 			if (columnModel().containsColumn(identifier) && filterFieldFactory.supportsType(condition.valueClass())) {
-				conditionPanels.put(identifier, FilterColumnConditionPanel.builder(condition,
-												Objects.toString(columnModel().column(identifier).getHeaderValue()))
+				conditionPanels.put(identifier, FilterColumnConditionPanel.builder(condition)
 								.fieldFactory(filterFieldFactory)
 								.tableColumn(columnModel().column(identifier))
 								.build());
