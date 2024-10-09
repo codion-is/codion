@@ -506,6 +506,7 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
+		initializeConditionsAndFilters();
 		createControls();
 		bindTableEvents();
 		applyPreferences();
@@ -1566,6 +1567,15 @@ public class EntityTablePanel extends JPanel {
 		summaryPanelVisibleState.addValidator(new ComponentAvailableValidator(summaryPanel, "summary"));
 	}
 
+	private void initializeConditionsAndFilters() {
+		if (configuration.includeConditions) {
+			columnConditionsPanel.state().set(configuration.conditionState);
+		}
+		if (configuration.includeFilters) {
+			table().filters().state().set(configuration.filterState);
+		}
+	}
+
 	private void createControls() {
 		Value.Validator<Control> controlValueValidator = control -> {
 			if (initialized) {
@@ -2192,7 +2202,9 @@ public class EntityTablePanel extends JPanel {
 		private ColumnConditionsPanel.Factory<Attribute<?>> columnConditionsPanelFactory = new DefaultColumnConditionsPanelFactory();
 		private boolean includeSouthPanel = true;
 		private boolean includeConditions = INCLUDE_CONDITIONS.get();
+		private ConditionState conditionState = CONDITION_STATE.get();
 		private boolean includeFilters = INCLUDE_FILTERS.get();
+		private ConditionState filterState = FILTER_STATE.get();
 		private boolean includeSummaries = INCLUDE_SUMMARY.get();
 		private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
 		private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.get();
@@ -2241,7 +2253,9 @@ public class EntityTablePanel extends JPanel {
 			this.editable = valueSet(config.editable.get());
 			this.includeSouthPanel = config.includeSouthPanel;
 			this.includeConditions = config.includeConditions;
+			this.conditionState = config.conditionState;
 			this.includeFilters = config.includeFilters;
+			this.filterState = config.filterState;
 			this.includeSummaries = config.includeSummaries;
 			this.includeClearControl = config.includeClearControl;
 			this.includeLimitMenu = config.includeLimitMenu;
@@ -2322,11 +2336,29 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
+		 * @param conditionState the initial condition state
+		 * @return this Config instance
+		 */
+		public Config conditionState(ConditionState conditionState) {
+			this.conditionState = requireNonNull(conditionState);
+			return this;
+		}
+
+		/**
 		 * @param includeFilters true if the filter panel should be included
 		 * @return this Config instance
 		 */
 		public Config includeFilters(boolean includeFilters) {
 			this.includeFilters = includeFilters;
+			return this;
+		}
+
+		/**
+		 * @param filterState the initial filter state
+		 * @return this Config instance
+		 */
+		public Config filterState(ConditionState filterState) {
+			this.filterState = requireNonNull(filterState);
 			return this;
 		}
 
