@@ -910,36 +910,8 @@ class DefaultEntity implements Entity, Serializable {
 		}
 
 		@Override
-		public Entity deep() {
-			return deepCopy(new HashMap<>());
-		}
-
-		@Override
 		public Builder builder() {
 			return new DefaultEntityBuilder(entity.definition, entity.values, entity.originalValues);
-		}
-
-		/**
-		 * Watching out for cyclical foreign key values
-		 * @param copied entities that have already been copied, preventing stack overflow error
-		 * @return a deep copy of this entity
-		 */
-		private Entity deepCopy(Map<Key, Entity> copied) {
-			Entity copy = mutable();
-			copied.put(copy.primaryKey(), copy);
-			for (ForeignKey foreignKey : entity.definition.foreignKeys().get()) {
-				Entity foreignKeyValue = copy.get(foreignKey);
-				if (foreignKeyValue instanceof DefaultEntity) {//instead of null check, since we cast
-					Entity copiedForeignKeyValue = copied.get(foreignKeyValue.primaryKey());
-					if (copiedForeignKeyValue == null) {
-						copiedForeignKeyValue = ((DefaultCopy) foreignKeyValue.copy()).deepCopy(copied);
-						copied.put(copiedForeignKeyValue.primaryKey(), copiedForeignKeyValue);
-					}
-					copy.put(foreignKey, copiedForeignKeyValue);
-				}
-			}
-
-			return copy;
 		}
 	}
 

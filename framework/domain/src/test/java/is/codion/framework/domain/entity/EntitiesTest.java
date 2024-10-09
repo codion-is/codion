@@ -20,7 +20,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.Serializer;
 import is.codion.framework.domain.TestDomain;
-import is.codion.framework.domain.TestDomain.KeyTest;
 import is.codion.framework.domain.TestDomainExtended;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -47,6 +46,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
+import static is.codion.framework.domain.TestDomain.*;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,105 +56,105 @@ public final class EntitiesTest {
 
 	@Test
 	void defineTypes() {
-		EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
+		EntityDefinition definition = entities.definition(Detail.TYPE);
 
 		//assert types
-		assertEquals(definition.columns().definition(TestDomain.Detail.ID).attribute().type().valueClass(), Long.class);
-		assertEquals(definition.columns().definition(TestDomain.Detail.SHORT).attribute().type().valueClass(), Short.class);
-		assertEquals(definition.columns().definition(TestDomain.Detail.INT).attribute().type().valueClass(), Integer.class);
-		assertEquals(definition.columns().definition(TestDomain.Detail.DOUBLE).attribute().type().valueClass(), Double.class);
-		assertEquals(definition.columns().definition(TestDomain.Detail.STRING).attribute().type().valueClass(), String.class);
-		assertEquals(definition.columns().definition(TestDomain.Detail.DATE).attribute().type().valueClass(), LocalDate.class);
-		assertEquals(definition.columns().definition(TestDomain.Detail.TIMESTAMP).attribute().type().valueClass(), LocalDateTime.class);
-		assertEquals(definition.columns().definition(TestDomain.Detail.BOOLEAN).attribute().type().valueClass(), Boolean.class);
-		assertEquals(definition.foreignKeys().definition(TestDomain.Detail.MASTER_FK).attribute().type().valueClass(), Entity.class);
-		assertEquals(definition.columns().definition(TestDomain.Detail.MASTER_ID).attribute().type().valueClass(), Long.class);
-		assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_NAME).attribute().type().valueClass(), String.class);
-		assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).attribute().type().valueClass(), Integer.class);
+		assertEquals(definition.columns().definition(Detail.ID).attribute().type().valueClass(), Long.class);
+		assertEquals(definition.columns().definition(Detail.SHORT).attribute().type().valueClass(), Short.class);
+		assertEquals(definition.columns().definition(Detail.INT).attribute().type().valueClass(), Integer.class);
+		assertEquals(definition.columns().definition(Detail.DOUBLE).attribute().type().valueClass(), Double.class);
+		assertEquals(definition.columns().definition(Detail.STRING).attribute().type().valueClass(), String.class);
+		assertEquals(definition.columns().definition(Detail.DATE).attribute().type().valueClass(), LocalDate.class);
+		assertEquals(definition.columns().definition(Detail.TIMESTAMP).attribute().type().valueClass(), LocalDateTime.class);
+		assertEquals(definition.columns().definition(Detail.BOOLEAN).attribute().type().valueClass(), Boolean.class);
+		assertEquals(definition.foreignKeys().definition(Detail.MASTER_FK).attribute().type().valueClass(), Entity.class);
+		assertEquals(definition.columns().definition(Detail.MASTER_ID).attribute().type().valueClass(), Long.class);
+		assertEquals(definition.attributes().definition(Detail.MASTER_NAME).attribute().type().valueClass(), String.class);
+		assertEquals(definition.attributes().definition(Detail.MASTER_CODE).attribute().type().valueClass(), Integer.class);
 
 		//assert column names
-		assertEquals(definition.columns().definition(TestDomain.Detail.ID).attribute(), TestDomain.Detail.ID);
-		assertEquals(definition.columns().definition(TestDomain.Detail.SHORT).attribute(), TestDomain.Detail.SHORT);
-		assertEquals(definition.columns().definition(TestDomain.Detail.INT).attribute(), TestDomain.Detail.INT);
-		assertEquals(definition.columns().definition(TestDomain.Detail.DOUBLE).attribute(), TestDomain.Detail.DOUBLE);
-		assertEquals(definition.columns().definition(TestDomain.Detail.STRING).attribute(), TestDomain.Detail.STRING);
-		assertEquals(definition.columns().definition(TestDomain.Detail.DATE).attribute(), TestDomain.Detail.DATE);
-		assertEquals(definition.columns().definition(TestDomain.Detail.TIMESTAMP).attribute(), TestDomain.Detail.TIMESTAMP);
-		assertEquals(definition.columns().definition(TestDomain.Detail.BOOLEAN).attribute(), TestDomain.Detail.BOOLEAN);
-		assertEquals(definition.columns().definition(TestDomain.Detail.MASTER_ID).attribute(), TestDomain.Detail.MASTER_ID);
-		assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_NAME).attribute(), TestDomain.Detail.MASTER_NAME);
-		assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).attribute(), TestDomain.Detail.MASTER_CODE);
+		assertEquals(definition.columns().definition(Detail.ID).attribute(), Detail.ID);
+		assertEquals(definition.columns().definition(Detail.SHORT).attribute(), Detail.SHORT);
+		assertEquals(definition.columns().definition(Detail.INT).attribute(), Detail.INT);
+		assertEquals(definition.columns().definition(Detail.DOUBLE).attribute(), Detail.DOUBLE);
+		assertEquals(definition.columns().definition(Detail.STRING).attribute(), Detail.STRING);
+		assertEquals(definition.columns().definition(Detail.DATE).attribute(), Detail.DATE);
+		assertEquals(definition.columns().definition(Detail.TIMESTAMP).attribute(), Detail.TIMESTAMP);
+		assertEquals(definition.columns().definition(Detail.BOOLEAN).attribute(), Detail.BOOLEAN);
+		assertEquals(definition.columns().definition(Detail.MASTER_ID).attribute(), Detail.MASTER_ID);
+		assertEquals(definition.attributes().definition(Detail.MASTER_NAME).attribute(), Detail.MASTER_NAME);
+		assertEquals(definition.attributes().definition(Detail.MASTER_CODE).attribute(), Detail.MASTER_CODE);
 
 		//assert captions
-		assertNotNull(definition.columns().definition(TestDomain.Detail.ID).caption());
-		assertEquals(definition.columns().definition(TestDomain.Detail.SHORT).caption(), TestDomain.Detail.SHORT.name());
-		assertEquals(definition.columns().definition(TestDomain.Detail.INT).caption(), TestDomain.Detail.INT.name());
-		assertEquals(definition.columns().definition(TestDomain.Detail.DOUBLE).caption(), TestDomain.Detail.DOUBLE.name());
-		assertEquals(definition.columns().definition(TestDomain.Detail.STRING).caption(), "Detail string");
-		assertEquals(definition.columns().definition(TestDomain.Detail.DATE).caption(), TestDomain.Detail.DATE.name());
-		assertEquals(definition.columns().definition(TestDomain.Detail.TIMESTAMP).caption(), TestDomain.Detail.TIMESTAMP.name());
-		assertEquals(definition.columns().definition(TestDomain.Detail.BOOLEAN).caption(), TestDomain.Detail.BOOLEAN.name());
-		assertEquals(definition.foreignKeys().definition(TestDomain.Detail.MASTER_FK).caption(), TestDomain.Detail.MASTER_FK.name());
-		assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_NAME).caption(), TestDomain.Detail.MASTER_NAME.name());
-		assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).caption(), TestDomain.Detail.MASTER_CODE.name());
+		assertNotNull(definition.columns().definition(Detail.ID).caption());
+		assertEquals(definition.columns().definition(Detail.SHORT).caption(), Detail.SHORT.name());
+		assertEquals(definition.columns().definition(Detail.INT).caption(), Detail.INT.name());
+		assertEquals(definition.columns().definition(Detail.DOUBLE).caption(), Detail.DOUBLE.name());
+		assertEquals(definition.columns().definition(Detail.STRING).caption(), "Detail string");
+		assertEquals(definition.columns().definition(Detail.DATE).caption(), Detail.DATE.name());
+		assertEquals(definition.columns().definition(Detail.TIMESTAMP).caption(), Detail.TIMESTAMP.name());
+		assertEquals(definition.columns().definition(Detail.BOOLEAN).caption(), Detail.BOOLEAN.name());
+		assertEquals(definition.foreignKeys().definition(Detail.MASTER_FK).caption(), Detail.MASTER_FK.name());
+		assertEquals(definition.attributes().definition(Detail.MASTER_NAME).caption(), Detail.MASTER_NAME.name());
+		assertEquals(definition.attributes().definition(Detail.MASTER_CODE).caption(), Detail.MASTER_CODE.name());
 
 		//assert hidden status
-		assertTrue(definition.columns().definition(TestDomain.Detail.ID).hidden());
-		assertFalse(definition.columns().definition(TestDomain.Detail.SHORT).hidden());
-		assertFalse(definition.columns().definition(TestDomain.Detail.INT).hidden());
-		assertFalse(definition.columns().definition(TestDomain.Detail.DOUBLE).hidden());
-		assertFalse(definition.columns().definition(TestDomain.Detail.STRING).hidden());
-		assertFalse(definition.columns().definition(TestDomain.Detail.DATE).hidden());
-		assertFalse(definition.columns().definition(TestDomain.Detail.TIMESTAMP).hidden());
-		assertFalse(definition.columns().definition(TestDomain.Detail.BOOLEAN).hidden());
-		assertFalse(definition.foreignKeys().definition(TestDomain.Detail.MASTER_FK).hidden());
-		assertFalse(definition.attributes().definition(TestDomain.Detail.MASTER_NAME).hidden());
-		assertFalse(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).hidden());
+		assertTrue(definition.columns().definition(Detail.ID).hidden());
+		assertFalse(definition.columns().definition(Detail.SHORT).hidden());
+		assertFalse(definition.columns().definition(Detail.INT).hidden());
+		assertFalse(definition.columns().definition(Detail.DOUBLE).hidden());
+		assertFalse(definition.columns().definition(Detail.STRING).hidden());
+		assertFalse(definition.columns().definition(Detail.DATE).hidden());
+		assertFalse(definition.columns().definition(Detail.TIMESTAMP).hidden());
+		assertFalse(definition.columns().definition(Detail.BOOLEAN).hidden());
+		assertFalse(definition.foreignKeys().definition(Detail.MASTER_FK).hidden());
+		assertFalse(definition.attributes().definition(Detail.MASTER_NAME).hidden());
+		assertFalse(definition.attributes().definition(Detail.MASTER_CODE).hidden());
 	}
 
 	@Test
 	void attributeWrongEntityType() {
-		EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-		assertThrows(IllegalArgumentException.class, () -> definition.columns().definition(TestDomain.Master.CODE));
+		EntityDefinition definition = entities.definition(Detail.TYPE);
+		assertThrows(IllegalArgumentException.class, () -> definition.columns().definition(Master.CODE));
 	}
 
 	@Test
 	void sortAttributes() {
-		EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
-		List<AttributeDefinition<?>> attributes = Stream.of(TestDomain.Employee.HIREDATE, TestDomain.Employee.COMMISSION,
-										TestDomain.Employee.SALARY, TestDomain.Employee.JOB)
+		EntityDefinition definition = entities.definition(Employee.TYPE);
+		List<AttributeDefinition<?>> attributes = Stream.of(Employee.HIREDATE, Employee.COMMISSION,
+										Employee.SALARY, Employee.JOB)
 						.map(definition.columns()::definition)
 						.sorted(AttributeDefinition.definitionComparator())
 						.collect(toList());
-		assertEquals(TestDomain.Employee.COMMISSION, attributes.get(0).attribute());
-		assertEquals(TestDomain.Employee.HIREDATE, attributes.get(1).attribute());
-		assertEquals(TestDomain.Employee.JOB, attributes.get(2).attribute());
-		assertEquals(TestDomain.Employee.SALARY, attributes.get(3).attribute());
+		assertEquals(Employee.COMMISSION, attributes.get(0).attribute());
+		assertEquals(Employee.HIREDATE, attributes.get(1).attribute());
+		assertEquals(Employee.JOB, attributes.get(2).attribute());
+		assertEquals(Employee.SALARY, attributes.get(3).attribute());
 	}
 
 	@Test
 	void updatableAttributes() {
-		EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
+		EntityDefinition definition = entities.definition(Detail.TYPE);
 		Collection<AttributeDefinition<?>> attributes = definition.attributes().updatable();
 		assertEquals(11, attributes.size());
-		assertFalse(attributes.contains(definition.attributes().definition(TestDomain.Detail.MASTER_NAME)));
-		assertFalse(attributes.contains(definition.attributes().definition(TestDomain.Detail.MASTER_CODE)));
-		assertFalse(attributes.contains(definition.attributes().definition(TestDomain.Detail.INT_DERIVED)));
+		assertFalse(attributes.contains(definition.attributes().definition(Detail.MASTER_NAME)));
+		assertFalse(attributes.contains(definition.attributes().definition(Detail.MASTER_CODE)));
+		assertFalse(attributes.contains(definition.attributes().definition(Detail.INT_DERIVED)));
 	}
 
 	@Test
 	void selectedAttributes() {
 		List<Attribute<?>> attributes = new ArrayList<>();
-		attributes.add(TestDomain.Department.ID);
-		attributes.add(TestDomain.Department.NAME);
+		attributes.add(Department.ID);
+		attributes.add(Department.NAME);
 
-		EntityDefinition definition = entities.definition(TestDomain.Department.TYPE);
+		EntityDefinition definition = entities.definition(Department.TYPE);
 		Collection<AttributeDefinition<?>> definitions = attributes.stream()
 						.map(definition.attributes()::definition)
 						.collect(toList());
 		assertEquals(2, definitions.size());
-		assertTrue(definitions.contains(definition.columns().definition(TestDomain.Department.ID)));
-		assertTrue(definitions.contains(definition.columns().definition(TestDomain.Department.NAME)));
+		assertTrue(definitions.contains(definition.columns().definition(Department.ID)));
+		assertTrue(definitions.contains(definition.columns().definition(Department.NAME)));
 	}
 
 	@Test
@@ -209,44 +209,44 @@ public final class EntitiesTest {
 
 		assertThrows(NullPointerException.class, () -> entities.keyBuilder(null));
 
-		assertFalse(entities.keyBuilder(TestDomain.NoPk.TYPE)
-						.with(TestDomain.NoPk.COL1, 1)
+		assertFalse(entities.keyBuilder(NoPk.TYPE)
+						.with(NoPk.COL1, 1)
 						.build()
 						.primaryKey());
-		Entity.Key noPk = entities.keyBuilder(TestDomain.NoPk.TYPE).build();
-		assertThrows(IllegalArgumentException.class, () -> noPk.get(TestDomain.NoPk.COL1));
+		Entity.Key noPk = entities.keyBuilder(NoPk.TYPE).build();
+		assertThrows(IllegalArgumentException.class, () -> noPk.get(NoPk.COL1));
 	}
 
 	@Test
 	void keys() {
-		List<Entity.Key> intKeys = entities.primaryKeys(TestDomain.Employee.TYPE, 1, 2, 3, 4);
+		List<Entity.Key> intKeys = entities.primaryKeys(Employee.TYPE, 1, 2, 3, 4);
 		assertEquals(4, intKeys.size());
 		assertEquals(Integer.valueOf(3), intKeys.get(2).get());
-		List<Entity.Key> longKeys = entities.primaryKeys(TestDomain.Detail.TYPE, 1L, 2L, 3L, 4L);
+		List<Entity.Key> longKeys = entities.primaryKeys(Detail.TYPE, 1L, 2L, 3L, 4L);
 		assertEquals(4, longKeys.size());
 		assertEquals(Long.valueOf(3), longKeys.get(2).get());
 	}
 
 	@Test
 	void entity() {
-		Entity.Key key = entities.primaryKey(TestDomain.Master.TYPE, 10L);
+		Entity.Key key = entities.primaryKey(Master.TYPE, 10L);
 
 		Entity master = Entity.entity(key);
-		assertEquals(TestDomain.Master.TYPE, master.entityType());
-		assertTrue(master.contains(TestDomain.Master.ID));
-		assertEquals(10L, master.get(TestDomain.Master.ID));
+		assertEquals(Master.TYPE, master.entityType());
+		assertTrue(master.contains(Master.ID));
+		assertEquals(10L, master.get(Master.ID));
 
 		assertThrows(NullPointerException.class, () -> entities.entity(null));
 	}
 
 	@Test
 	void attributes() {
-		EntityDefinition definition = entities.definition(TestDomain.Department.TYPE);
-		AttributeDefinition<Integer> id = definition.columns().definition(TestDomain.Department.ID);
-		AttributeDefinition<String> location = definition.columns().definition(TestDomain.Department.LOCATION);
-		AttributeDefinition<String> name = definition.columns().definition(TestDomain.Department.NAME);
-		AttributeDefinition<Boolean> active = definition.columns().definition(TestDomain.Department.ACTIVE);
-		Collection<AttributeDefinition<?>> attributes = Stream.of(TestDomain.Department.LOCATION, TestDomain.Department.NAME)
+		EntityDefinition definition = entities.definition(Department.TYPE);
+		AttributeDefinition<Integer> id = definition.columns().definition(Department.ID);
+		AttributeDefinition<String> location = definition.columns().definition(Department.LOCATION);
+		AttributeDefinition<String> name = definition.columns().definition(Department.NAME);
+		AttributeDefinition<Boolean> active = definition.columns().definition(Department.ACTIVE);
+		Collection<AttributeDefinition<?>> attributes = Stream.of(Department.LOCATION, Department.NAME)
 						.map(definition.columns()::definition)
 						.collect(toList());
 		assertEquals(2, attributes.size());
@@ -271,64 +271,64 @@ public final class EntitiesTest {
 
 	@Test
 	void definitionInvalid() {
-		assertThrows(IllegalArgumentException.class, () -> entities.definition(TestDomain.Master.TYPE)
-						.attributes().definition(TestDomain.Master.TYPE.attribute("unknown attribute", Integer.class)));
+		assertThrows(IllegalArgumentException.class, () -> entities.definition(Master.TYPE)
+						.attributes().definition(Master.TYPE.attribute("unknown attribute", Integer.class)));
 	}
 
 	@Test
 	void foreignKeys() {
-		EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-		Collection<ForeignKey> foreignKeys = definition.foreignKeys().get(TestDomain.Employee.TYPE);
+		EntityDefinition definition = entities.definition(Detail.TYPE);
+		Collection<ForeignKey> foreignKeys = definition.foreignKeys().get(Employee.TYPE);
 		assertEquals(0, foreignKeys.size());
-		foreignKeys = definition.foreignKeys().get(TestDomain.Master.TYPE);
+		foreignKeys = definition.foreignKeys().get(Master.TYPE);
 		assertEquals(2, foreignKeys.size());
-		assertTrue(foreignKeys.contains(TestDomain.Detail.MASTER_FK));
+		assertTrue(foreignKeys.contains(Detail.MASTER_FK));
 	}
 
 	@Test
 	void foreignKeyAttribute() {
-		assertNotNull(entities.definition(TestDomain.Detail.TYPE).foreignKeys().definition(TestDomain.Detail.MASTER_FK));
+		assertNotNull(entities.definition(Detail.TYPE).foreignKeys().definition(Detail.MASTER_FK));
 	}
 
 	@Test
 	void foreignKeyAttributeInvalid() {
-		ForeignKey foreignKey = TestDomain.Detail.TYPE.foreignKey("bla bla", TestDomain.Detail.MASTER_ID, TestDomain.Master.ID);
-		assertThrows(IllegalArgumentException.class, () -> entities.definition(TestDomain.Detail.TYPE).foreignKeys().definition(foreignKey));
+		ForeignKey foreignKey = Detail.TYPE.foreignKey("bla bla", Detail.MASTER_ID, Master.ID);
+		assertThrows(IllegalArgumentException.class, () -> entities.definition(Detail.TYPE).foreignKeys().definition(foreignKey));
 	}
 
 	@Test
 	void hasDerivedAttributes() {
-		EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-		assertTrue(definition.attributes().derivedFrom(TestDomain.Detail.BOOLEAN).isEmpty());
-		assertFalse(definition.attributes().derivedFrom(TestDomain.Detail.INT).isEmpty());
+		EntityDefinition definition = entities.definition(Detail.TYPE);
+		assertTrue(definition.attributes().derivedFrom(Detail.BOOLEAN).isEmpty());
+		assertFalse(definition.attributes().derivedFrom(Detail.INT).isEmpty());
 	}
 
 	@Test
 	void derivedAttributes() {
-		EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-		Collection<Attribute<?>> derivedAttributes = definition.attributes().derivedFrom(TestDomain.Detail.BOOLEAN);
+		EntityDefinition definition = entities.definition(Detail.TYPE);
+		Collection<Attribute<?>> derivedAttributes = definition.attributes().derivedFrom(Detail.BOOLEAN);
 		assertTrue(derivedAttributes.isEmpty());
-		derivedAttributes = definition.attributes().derivedFrom(TestDomain.Detail.INT);
+		derivedAttributes = definition.attributes().derivedFrom(Detail.INT);
 		assertEquals(1, derivedAttributes.size());
-		assertTrue(derivedAttributes.contains(TestDomain.Detail.INT_DERIVED));
+		assertTrue(derivedAttributes.contains(Detail.INT_DERIVED));
 	}
 
 	@Test
 	void isSmallDataset() {
-		assertTrue(entities.definition(TestDomain.Detail.TYPE).smallDataset());
+		assertTrue(entities.definition(Detail.TYPE).smallDataset());
 	}
 
 	@Test
 	void stringFactory() {
-		assertNotNull(entities.definition(TestDomain.Department.TYPE).stringFactory());
+		assertNotNull(entities.definition(Department.TYPE).stringFactory());
 	}
 
 	@Test
 	void nullValidation() {
-		Entity emp = entities.builder(TestDomain.Employee.TYPE)
-						.with(TestDomain.Employee.NAME, "Name")
-						.with(TestDomain.Employee.HIREDATE, LocalDateTime.now())
-						.with(TestDomain.Employee.SALARY, 1200.0)
+		Entity emp = entities.builder(Employee.TYPE)
+						.with(Employee.NAME, "Name")
+						.with(Employee.HIREDATE, LocalDateTime.now())
+						.with(Employee.SALARY, 1200.0)
 						.build();
 
 		DefaultEntityValidator validator = new DefaultEntityValidator();
@@ -338,84 +338,84 @@ public final class EntitiesTest {
 		}
 		catch (ValidationException e) {
 			assertTrue(e instanceof NullValidationException);
-			assertEquals(TestDomain.Employee.DEPARTMENT_FK, e.attribute());
+			assertEquals(Employee.DEPARTMENT_FK, e.attribute());
 		}
-		emp.put(TestDomain.Employee.DEPARTMENT_NO, 1);
+		emp.put(Employee.DEPARTMENT_NO, 1);
 		try {
 			validator.validate(emp);
 		}
 		catch (ValidationException e) {
 			fail();
 		}
-		emp.put(TestDomain.Employee.SALARY, null);
+		emp.put(Employee.SALARY, null);
 		try {
 			validator.validate(emp);
 			fail();
 		}
 		catch (ValidationException e) {
 			assertTrue(e instanceof NullValidationException);
-			assertEquals(TestDomain.Employee.SALARY, e.attribute());
+			assertEquals(Employee.SALARY, e.attribute());
 		}
 	}
 
 	@Test
 	void maxLengthValidation() {
-		Entity emp = entities.builder(TestDomain.Employee.TYPE)
-						.with(TestDomain.Employee.DEPARTMENT_NO, 1)
-						.with(TestDomain.Employee.NAME, "Name")
-						.with(TestDomain.Employee.HIREDATE, LocalDateTime.now())
-						.with(TestDomain.Employee.SALARY, 1200.0)
+		Entity emp = entities.builder(Employee.TYPE)
+						.with(Employee.DEPARTMENT_NO, 1)
+						.with(Employee.NAME, "Name")
+						.with(Employee.HIREDATE, LocalDateTime.now())
+						.with(Employee.SALARY, 1200.0)
 						.build();
 		DefaultEntityValidator validator = new DefaultEntityValidator();
 		assertDoesNotThrow(() -> validator.validate(emp));
-		emp.put(TestDomain.Employee.NAME, "LooooongName");
+		emp.put(Employee.NAME, "LooooongName");
 		assertThrows(LengthValidationException.class, () -> validator.validate(emp));
 	}
 
 	@Test
 	void rangeValidation() {
-		Entity emp = entities.builder(TestDomain.Employee.TYPE)
-						.with(TestDomain.Employee.DEPARTMENT_NO, 1)
-						.with(TestDomain.Employee.NAME, "Name")
-						.with(TestDomain.Employee.HIREDATE, LocalDateTime.now())
-						.with(TestDomain.Employee.SALARY, 1200d)
-						.with(TestDomain.Employee.COMMISSION, 300d)
+		Entity emp = entities.builder(Employee.TYPE)
+						.with(Employee.DEPARTMENT_NO, 1)
+						.with(Employee.NAME, "Name")
+						.with(Employee.HIREDATE, LocalDateTime.now())
+						.with(Employee.SALARY, 1200d)
+						.with(Employee.COMMISSION, 300d)
 						.build();
 		DefaultEntityValidator validator = new DefaultEntityValidator();
 		assertDoesNotThrow(() -> validator.validate(emp));
-		emp.put(TestDomain.Employee.COMMISSION, 10d);
+		emp.put(Employee.COMMISSION, 10d);
 		assertThrows(RangeValidationException.class, () -> validator.validate(emp));
-		emp.put(TestDomain.Employee.COMMISSION, 2100d);
+		emp.put(Employee.COMMISSION, 2100d);
 		assertThrows(RangeValidationException.class, () -> validator.validate(emp));
 	}
 
 	@Test
 	void itemValidation() {
 		Map<Attribute<?>, Object> values = new HashMap<>();
-		values.put(TestDomain.Employee.NAME, "Name");
-		values.put(TestDomain.Employee.DEPARTMENT_NO, 1);
-		values.put(TestDomain.Employee.JOB, "CLREK");
-		Entity emp = entities.definition(TestDomain.Employee.TYPE).entity(values);
+		values.put(Employee.NAME, "Name");
+		values.put(Employee.DEPARTMENT_NO, 1);
+		values.put(Employee.JOB, "CLREK");
+		Entity emp = entities.definition(Employee.TYPE).entity(values);
 		DefaultEntityValidator validator = new DefaultEntityValidator();
 		assertThrows(ItemValidationException.class, () -> validator.validate(emp));
 	}
 
 	@Test
 	void strictValidation() throws ValidationException {
-		Entity emp = entities.builder(TestDomain.Employee.TYPE)
-						.with(TestDomain.Employee.NAME, "1234567891000")
-						.with(TestDomain.Employee.DEPARTMENT_NO, 1)
-						.with(TestDomain.Employee.JOB, "CLERK")
-						.with(TestDomain.Employee.SALARY, 1200d)
-						.with(TestDomain.Employee.HIREDATE, LocalDateTime.now())
+		Entity emp = entities.builder(Employee.TYPE)
+						.with(Employee.NAME, "1234567891000")
+						.with(Employee.DEPARTMENT_NO, 1)
+						.with(Employee.JOB, "CLERK")
+						.with(Employee.SALARY, 1200d)
+						.with(Employee.HIREDATE, LocalDateTime.now())
 						.build();
 		DefaultEntityValidator validator = new DefaultEntityValidator();
 		assertThrows(LengthValidationException.class, () -> validator.validate(emp));
-		emp.put(TestDomain.Employee.NAME, "Name");
+		emp.put(Employee.NAME, "Name");
 		emp.save();
 
-		emp.put(TestDomain.Employee.ID, 10);//now it "exists"
-		emp.put(TestDomain.Employee.NAME, "1234567891000");
+		emp.put(Employee.ID, 10);//now it "exists"
+		emp.put(Employee.NAME, "1234567891000");
 		assertThrows(LengthValidationException.class, () -> validator.validate(emp));
 		emp.save();//but not modified
 		validator.validate(emp);
@@ -423,11 +423,11 @@ public final class EntitiesTest {
 		DefaultEntityValidator validator2 = new DefaultEntityValidator(true);
 
 		assertThrows(LengthValidationException.class, () -> validator2.validate(emp));
-		emp.put(TestDomain.Employee.NAME, "Name");
+		emp.put(Employee.NAME, "Name");
 		emp.save();
 
-		emp.put(TestDomain.Employee.ID, 10);//now it "exists"
-		emp.put(TestDomain.Employee.NAME, "1234567891000");
+		emp.put(Employee.ID, 10);//now it "exists"
+		emp.put(Employee.NAME, "1234567891000");
 		assertThrows(LengthValidationException.class, () -> validator2.validate(emp));
 		emp.save();//but not modified
 		assertThrows(LengthValidationException.class, () -> validator2.validate(emp));//strict
@@ -435,51 +435,51 @@ public final class EntitiesTest {
 
 	@Test
 	void searchable() {
-		EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
+		EntityDefinition definition = entities.definition(Employee.TYPE);
 		Collection<Column<String>> searchable = definition.columns().searchable();
-		assertTrue(searchable.contains(TestDomain.Employee.JOB));
-		assertTrue(searchable.contains(TestDomain.Employee.NAME));
+		assertTrue(searchable.contains(Employee.JOB));
+		assertTrue(searchable.contains(Employee.NAME));
 
-		searchable = entities.definition(TestDomain.Department.TYPE).columns().searchable();
+		searchable = entities.definition(Department.TYPE).columns().searchable();
 		//should contain all string based columns
-		assertTrue(searchable.contains(TestDomain.Department.NAME));
+		assertTrue(searchable.contains(Department.NAME));
 	}
 
 	@Test
 	void validateTypeEntity() {
-		Entity entity = entities.entity(TestDomain.Detail.TYPE);
-		Entity entity1 = entities.entity(TestDomain.Detail.TYPE);
-		assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.Detail.MASTER_FK, entity1));
+		Entity entity = entities.entity(Detail.TYPE);
+		Entity entity1 = entities.entity(Detail.TYPE);
+		assertThrows(IllegalArgumentException.class, () -> entity.put(Detail.MASTER_FK, entity1));
 	}
 
 	@Test
 	void setValueDerived() {
-		Entity entity = entities.entity(TestDomain.Detail.TYPE);
-		assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.Detail.INT_DERIVED, 10));
+		Entity entity = entities.entity(Detail.TYPE);
+		assertThrows(IllegalArgumentException.class, () -> entity.put(Detail.INT_DERIVED, 10));
 	}
 
 	@Test
 	void setValueItem() {
-		Entity entity = entities.entity(TestDomain.Detail.TYPE);
-		assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.Detail.INT_VALUE_LIST, -10));
+		Entity entity = entities.entity(Detail.TYPE);
+		assertThrows(IllegalArgumentException.class, () -> entity.put(Detail.INT_VALUE_LIST, -10));
 	}
 
 	@Test
 	void copyEntities() {
-		Entity dept1 = entities.builder(TestDomain.Department.TYPE)
-						.with(TestDomain.Department.ID, 1)
-						.with(TestDomain.Department.LOCATION, "location")
-						.with(TestDomain.Department.NAME, "name")
+		Entity dept1 = entities.builder(Department.TYPE)
+						.with(Department.ID, 1)
+						.with(Department.LOCATION, "location")
+						.with(Department.NAME, "name")
 						.build();
-		Entity dept2 = entities.builder(TestDomain.Department.TYPE)
-						.with(TestDomain.Department.ID, 2)
-						.with(TestDomain.Department.LOCATION, "location2")
-						.with(TestDomain.Department.NAME, "name2")
+		Entity dept2 = entities.builder(Department.TYPE)
+						.with(Department.ID, 2)
+						.with(Department.LOCATION, "location2")
+						.with(Department.NAME, "name2")
 						.build();
 
 		Iterator<Entity> copies = Stream.of(dept1, dept2)
 						.map(Entity::copy)
-						.map(Entity.Copy::deep)
+						.map(Entity.Copy::immutable)
 						.collect(toList())
 						.iterator();
 		Entity dept1Copy = copies.next();
@@ -489,24 +489,24 @@ public final class EntitiesTest {
 		assertNotSame(dept2Copy, dept2);
 		assertTrue(dept2Copy.equalValues(dept2));
 
-		Entity emp1 = entities.builder(TestDomain.Employee.TYPE)
-						.with(TestDomain.Employee.DEPARTMENT_FK, dept1)
-						.with(TestDomain.Employee.NAME, "name")
-						.with(TestDomain.Employee.COMMISSION, 130.5)
+		Entity emp1 = entities.builder(Employee.TYPE)
+						.with(Employee.DEPARTMENT_FK, dept1)
+						.with(Employee.NAME, "name")
+						.with(Employee.COMMISSION, 130.5)
 						.build();
 
 		Entity copy = emp1.copy().mutable();
 		assertTrue(emp1.equalValues(copy));
-		assertSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
+		assertSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
 		assertFalse(emp1.modified());
 
 		copy = copy.copy().immutable();
-		assertNotSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
+		assertNotSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
 
-		copy = emp1.copy().deep();
-		assertTrue(copy.mutable());
+		copy = emp1.copy().immutable();
+		assertFalse(copy.mutable());
 		assertTrue(emp1.equalValues(copy));
-		assertNotSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
+		assertNotSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
 		assertFalse(emp1.modified());
 	}
 
@@ -517,7 +517,7 @@ public final class EntitiesTest {
 
 		entities.entity(TestDomainExtended.T_EXTENDED);
 
-		entities.entity(TestDomain.CompositeMaster.TYPE);
+		entities.entity(CompositeMaster.TYPE);
 
 		TestDomainExtended.TestDomainSecondExtension second = new TestDomainExtended.TestDomainSecondExtension();
 		entities = second.entities();
@@ -526,7 +526,7 @@ public final class EntitiesTest {
 
 		entities.entity(TestDomainExtended.T_EXTENDED);
 
-		entities.entity(TestDomain.CompositeMaster.TYPE);
+		entities.entity(CompositeMaster.TYPE);
 
 		assertNotNull(second.procedure(TestDomainExtended.PROC_TYPE));
 		assertNotNull(second.function(TestDomainExtended.FUNC_TYPE));
@@ -538,14 +538,14 @@ public final class EntitiesTest {
 
 	@Test
 	void transients() throws IOException, ClassNotFoundException {
-		EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
+		EntityDefinition definition = entities.definition(Employee.TYPE);
 		assertNotNull(definition.tableName());
 		assertNotNull(definition.selectTableName());
 		assertNotNull(definition.primaryKey().generator());
 		assertTrue(definition.optimisticLocking());
 		assertTrue(definition.selectQuery().isPresent());
-		assertNotNull(definition.conditionProvider(TestDomain.Employee.CONDITION));
-		ColumnDefinition<String> nameDefinition = definition.columns().definition(TestDomain.Employee.NAME);
+		assertNotNull(definition.conditionProvider(Employee.CONDITION));
+		ColumnDefinition<String> nameDefinition = definition.columns().definition(Employee.NAME);
 		assertNotNull(nameDefinition.name());
 		assertNotNull(nameDefinition.expression());
 		EntityDefinition deserialized = Serializer.deserialize(Serializer.serialize(definition));
@@ -554,8 +554,8 @@ public final class EntitiesTest {
 		assertNull(deserialized.primaryKey().generator());
 		assertFalse(deserialized.optimisticLocking());
 		assertFalse(deserialized.selectQuery().isPresent());
-		assertThrows(IllegalArgumentException.class, () -> deserialized.conditionProvider(TestDomain.Employee.CONDITION));
-		nameDefinition = deserialized.columns().definition(TestDomain.Employee.NAME);
+		assertThrows(IllegalArgumentException.class, () -> deserialized.conditionProvider(Employee.CONDITION));
+		nameDefinition = deserialized.columns().definition(Employee.NAME);
 		assertNull(nameDefinition.name());
 		assertNull(nameDefinition.expression());
 	}

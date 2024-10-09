@@ -344,7 +344,7 @@ public class DefaultEntityTest {
 		detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master);
 
 		//otherwise the values are equal and put() returns before propagating foreign key values
-		Entity masterCopy = master.copy().deep().copy().mutable();
+		Entity masterCopy = master.copy().mutable();
 		masterCopy.put(CompositeMaster.COMPOSITE_MASTER_ID, 1);
 		masterCopy.put(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
 		detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
@@ -414,7 +414,7 @@ public class DefaultEntityTest {
 		testEntity.key(Detail.MASTER_FK);
 
 		//test copy()
-		Entity test2 = testEntity.copy().deep().copy().mutable();
+		Entity test2 = testEntity.copy().immutable().copy().mutable();
 		assertNotSame(test2, testEntity, "Entity copy should not be == the original");
 		assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
 		assertTrue(test2.equalValues(testEntity), "Entity attribute values should be equal after deepCopy()");
@@ -424,25 +424,6 @@ public class DefaultEntityTest {
 		assertTrue(test2.modified());
 		Entity test2Copy = test2.copy().immutable();
 		assertTrue(test2Copy.modified());
-
-		//cyclical deep copy
-		Entity manager1 = ENTITIES.builder(Employee.TYPE)
-						.with(Employee.ID, 10)
-						.with(Employee.NAME, "Man 1")
-						.build();
-		Entity manager2 = ENTITIES.builder(Employee.TYPE)
-						.with(Employee.ID, 11)
-						.with(Employee.NAME, "Man 2")
-						.with(Employee.MANAGER_FK, manager1)
-						.build();
-		Entity manager3 = ENTITIES.builder(Employee.TYPE)
-						.with(Employee.ID, 12)
-						.with(Employee.NAME, "Man 3")
-						.with(Employee.MANAGER_FK, manager2)
-						.build();
-		manager1.put(Employee.MANAGER_FK, manager3);
-
-		manager1.copy().deep();
 
 		//test propagate entity reference/denormalized values
 		testEntity.put(Detail.MASTER_FK, null);
@@ -778,7 +759,7 @@ public class DefaultEntityTest {
 		emp.put(Employee.MANAGER_FK, manager);
 		emp.put(Employee.DEPARTMENT_FK, dept2);
 
-		Entity copy = emp.copy().deep();
+		Entity copy = emp.copy().immutable();
 		assertNotSame(emp, copy);
 		assertTrue(emp.equalValues(copy));
 		assertNotSame(emp.get(Employee.MANAGER_FK), copy.get(Employee.MANAGER_FK));

@@ -299,7 +299,6 @@ public interface Entity extends Comparable<Entity> {
 	 * <ul>
 	 *   <li>{@link #mutable()} returns a mutable copy
 	 *   <li>{@link #immutable()} returns an immutable copy
-	 *   <li>{@link #deep()} returns a mutable deep copy of the entity, with deep copies of all foreign key references
 	 *   <li>{@link #builder()} returns a {@link Builder} instance initialized with the values of the entity being copied
 	 * </ul>
 	 */
@@ -316,12 +315,6 @@ public interface Entity extends Comparable<Entity> {
 		 * @return a copy of this entity
 		 */
 		Entity immutable();
-
-		/**
-		 * Returns a mutable copy of this entity, with new copied instances of all foreign key value entities.
-		 * @return a deep copy of this entity
-		 */
-		Entity deep();
 
 		/**
 		 * Returns a new {@link Builder} instance initialized with the values and original values from this entity.
