@@ -23,6 +23,8 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 abstract class ControlHandler implements Consumer<Action> {
@@ -57,4 +59,31 @@ abstract class ControlHandler implements Consumer<Action> {
 	abstract void onControls(Controls controls);
 
 	abstract void onAction(Action action);
+
+	/**
+	 * Trims separators from the ends and removes adjacent duplicate separators
+	 * @param actions the actions
+	 * @return the cleaned action list
+	 */
+	protected static List<Action> cleanupSeparators(List<Action> actions) {
+		while (!actions.isEmpty() && actions.get(0) == Controls.SEPARATOR) {
+			actions.remove(0);
+		}
+		while (!actions.isEmpty() && actions.get(actions.size() - 1) == Controls.SEPARATOR) {
+			actions.remove(actions.size() - 1);
+		}
+		List<Action> cleaned = new ArrayList<>(actions.size());
+		for (int i = 0; i < actions.size(); i++) {
+			Action action = actions.get(i);
+			// Prevent multiple separators
+			if (action == Controls.SEPARATOR && i > 0 && actions.get(i - 1) == Controls.SEPARATOR) {
+				continue;
+			}
+			else {
+				cleaned.add(action);
+			}
+		}
+
+		return cleaned;
+	}
 }

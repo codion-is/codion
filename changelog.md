@@ -18,6 +18,7 @@ Codion Change Log
 - FilterTableCellEditorFactory moved to FilterTableCellEditor and renamed Factory.
 - ColumnConditionPanels.selectablePanels() and selectPanel() renamed selectable() and select() respectively.
 - FilterTable.Builder.conditionState() renamed filterState().
+- DefaultToolBarBuilder bug fixed, now cleans up separators like DefaultMenuBuilder, related refactoring.
 ### is.codion.framework.domain
 - Entity.copy(), copyBuilder() and deepCopy() moved to Entity.Copy, renamed mutable(), builder() and deep() respectively, immutable() added.
 ### is.codion.framework.db

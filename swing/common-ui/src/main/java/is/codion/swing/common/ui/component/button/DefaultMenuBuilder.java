@@ -213,15 +213,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 			this.menu = menu;
 			this.menuItemBuilder = menuItemBuilder;
 			this.toggleMenuItemBuilder = toggleMenuItemBuilder;
-			List<Action> actions = trimSeparators(new ArrayList<>(controls.actions()));
-			for (int i = 0; i < actions.size(); i++) {
-				Action action = actions.get(i);
-				// Prevent multiple separators
-				if (action == Controls.SEPARATOR && i > 0 && actions.get(i - 1) == Controls.SEPARATOR) {
-					continue;
-				}
-				accept(action);
-			}
+			cleanupSeparators(new ArrayList<>(controls.actions())).forEach(this);
 		}
 
 		@Override
@@ -249,17 +241,6 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 		@Override
 		void onAction(Action action) {
 			menu.add(action);
-		}
-
-		private static List<Action> trimSeparators(List<Action> actions) {
-			while (!actions.isEmpty() && actions.get(0) == Controls.SEPARATOR) {
-				actions.remove(0);
-			}
-			while (!actions.isEmpty() && actions.get(actions.size() - 1) == Controls.SEPARATOR) {
-				actions.remove(actions.size() - 1);
-			}
-
-			return actions;
 		}
 	}
 

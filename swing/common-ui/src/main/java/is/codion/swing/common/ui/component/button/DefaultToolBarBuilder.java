@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
 import javax.swing.JToolBar;
+import java.util.ArrayList;
 
 final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, ToolBarBuilder> implements ToolBarBuilder {
 
@@ -79,7 +80,7 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 			this.toolBar = toolBar;
 			this.buttonBuilder = buttonBuilder;
 			this.toggleButtonBuilder = toggleButtonBuilder;
-			controls.actions().forEach(this);
+			cleanupSeparators(new ArrayList<>(controls.actions())).forEach(this);
 		}
 
 		@Override
