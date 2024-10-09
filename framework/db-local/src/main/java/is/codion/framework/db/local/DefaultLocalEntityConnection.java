@@ -855,7 +855,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		for (Entity entity : entities) {
 			Entity current = currentEntitiesByKey.get(entity.originalPrimaryKey());
 			if (current == null) {
-				Entity original = entity.copy();
+				Entity original = entity.copy().mutable();
 				original.revert();
 
 				throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)

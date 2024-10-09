@@ -478,7 +478,8 @@ public final class EntitiesTest {
 						.build();
 
 		Iterator<Entity> copies = Stream.of(dept1, dept2)
-						.map(Entity::deepCopy)
+						.map(Entity::copy)
+						.map(Entity.Copy::deep)
 						.collect(toList())
 						.iterator();
 		Entity dept1Copy = copies.next();
@@ -494,12 +495,16 @@ public final class EntitiesTest {
 						.with(TestDomain.Employee.COMMISSION, 130.5)
 						.build();
 
-		Entity copy = emp1.copy();
+		Entity copy = emp1.copy().mutable();
 		assertTrue(emp1.equalValues(copy));
 		assertSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
 		assertFalse(emp1.modified());
 
-		copy = emp1.deepCopy();
+		copy = copy.copy().immutable();
+		assertNotSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
+
+		copy = emp1.copy().deep();
+		assertTrue(copy.mutable());
 		assertTrue(emp1.equalValues(copy));
 		assertNotSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
 		assertFalse(emp1.modified());

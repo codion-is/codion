@@ -295,21 +295,8 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public final Entity copy() {
-		Entity entity = new DefaultEntity(definition, null, null);
-		entity.set(this);
-
-		return entity;
-	}
-
-	@Override
-	public final Builder copyBuilder() {
-		return new DefaultEntityBuilder(definition, values, originalValues);
-	}
-
-	@Override
-	public final Entity deepCopy() {
-		return deepCopy(new HashMap<>());
+	public final Copy copy() {
+		return new DefaultCopy(this);
 	}
 
 	@Override
@@ -843,29 +830,6 @@ class DefaultEntity implements Entity, Serializable {
 		return originalValues != null && originalValues.containsKey(attribute);
 	}
 
-	/**
-	 * Watching out for cyclical foreign key values
-	 * @param copiedEntities entities that have already been copied
-	 * @return a deep copy of this entity
-	 */
-	private Entity deepCopy(Map<Key, Entity> copiedEntities) {
-		Entity copy = copy();
-		copiedEntities.put(copy.primaryKey(), copy);
-		for (ForeignKey foreignKey : definition.foreignKeys().get()) {
-			Entity foreignKeyValue = copy.get(foreignKey);
-			if (foreignKeyValue instanceof DefaultEntity) {//instead of null check, since we cast
-				Entity copiedForeignKeyValue = copiedEntities.get(foreignKeyValue.primaryKey());
-				if (copiedForeignKeyValue == null) {
-					copiedForeignKeyValue = ((DefaultEntity) foreignKeyValue).deepCopy(copiedEntities);
-					copiedEntities.put(copiedForeignKeyValue.primaryKey(), copiedForeignKeyValue);
-				}
-				copy.put(foreignKey, copiedForeignKeyValue);
-			}
-		}
-
-		return copy;
-	}
-
 	@Serial
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.writeObject(definition.entityType().domainType().name());
@@ -918,6 +882,64 @@ class DefaultEntity implements Entity, Serializable {
 		@Override
 		public boolean test(Map.Entry<Attribute<?>, Object> entry) {
 			return Objects.equals(entry.getValue(), get(definition.attributes().definition(entry.getKey())));
+		}
+	}
+
+	private static final class DefaultCopy implements Copy {
+
+		private final DefaultEntity entity;
+
+		private DefaultCopy(DefaultEntity entity) {
+			this.entity = entity;
+		}
+
+		@Override
+		public Entity mutable() {
+			DefaultEntity copy = new DefaultEntity(entity.definition(), null, null);
+			copy.values.putAll(entity.values);
+			if (entity.originalValues != null) {
+				copy.originalValues = new HashMap<>(entity.originalValues);
+			}
+
+			return copy;
+		}
+
+		@Override
+		public Entity immutable() {
+			return new ImmutableEntity(entity.definition, entity.values, entity.originalValues);
+		}
+
+		@Override
+		public Entity deep() {
+			return deepCopy(new HashMap<>());
+		}
+
+		@Override
+		public Builder builder() {
+			return new DefaultEntityBuilder(entity.definition, entity.values, entity.originalValues);
+		}
+
+		/**
+		 * Watching out for cyclical foreign key values
+		 * @param copiedEntities entities that have already been copied
+		 * @return a deep copy of this entity
+		 */
+		private Entity deepCopy(Map<Key, Entity> copiedEntities) {
+			Entity copy = mutable();
+			copiedEntities.put(copy.primaryKey(), copy);
+			for (ForeignKey foreignKey : entity.definition.foreignKeys().get()) {
+				Entity foreignKeyValue = copy.get(foreignKey);
+				if (foreignKeyValue instanceof DefaultEntity) {//instead of null check, since we cast
+					Entity copiedForeignKeyValue = copiedEntities.get(foreignKeyValue.primaryKey());
+					if (copiedForeignKeyValue == null) {
+						copiedForeignKeyValue = ((DefaultCopy) foreignKeyValue.copy()).deepCopy(copiedEntities);
+						copiedEntities.put(copiedForeignKeyValue.primaryKey(), copiedForeignKeyValue);
+					}
+					copy.put(foreignKey, copiedForeignKeyValue);
+				}
+			}
+
+			return copy;
 		}
 	}
 

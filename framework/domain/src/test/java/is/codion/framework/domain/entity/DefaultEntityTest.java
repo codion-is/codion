@@ -344,7 +344,7 @@ public class DefaultEntityTest {
 		detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master);
 
 		//otherwise the values are equal and put() returns before propagating foreign key values
-		Entity masterCopy = master.deepCopy();
+		Entity masterCopy = master.copy().deep();
 		masterCopy.put(CompositeMaster.COMPOSITE_MASTER_ID, 1);
 		masterCopy.put(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
 		detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
@@ -414,7 +414,7 @@ public class DefaultEntityTest {
 		testEntity.key(Detail.MASTER_FK);
 
 		//test copy()
-		Entity test2 = testEntity.deepCopy();
+		Entity test2 = testEntity.copy().deep();
 		assertNotSame(test2, testEntity, "Entity copy should not be == the original");
 		assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
 		assertTrue(test2.equalValues(testEntity), "Entity attribute values should be equal after deepCopy()");
@@ -422,7 +422,7 @@ public class DefaultEntityTest {
 
 		test2.put(Detail.DOUBLE, 2.1);
 		assertTrue(test2.modified());
-		Entity test2Copy = test2.copy();
+		Entity test2Copy = test2.copy().immutable();
 		assertTrue(test2Copy.modified());
 
 		//cyclical deep copy
@@ -439,7 +439,7 @@ public class DefaultEntityTest {
 						.build();
 		manager1.put(Employee.MANAGER_FK, manager3);
 
-		manager1.deepCopy();//stack overflow if not careful
+		manager1.copy().deep();//stack overflow if not careful
 
 		//test propagate entity reference/denormalized values
 		testEntity.put(Detail.MASTER_FK, null);
@@ -471,12 +471,12 @@ public class DefaultEntityTest {
 						.with(Department.LOCATION, "Location")
 						.with(Department.ACTIVE, true)
 						.build();
-		assertTrue(dept.equalValues(dept.copyBuilder().build()));
-		assertFalse(dept.equalValues(dept.copyBuilder().with(Department.NAME, "new name").build()));
+		assertTrue(dept.equalValues(dept.copy().builder().build()));
+		assertFalse(dept.equalValues(dept.copy().builder().with(Department.NAME, "new name").build()));
 
 		dept.put(Department.NAME, "New name");
-		assertTrue(dept.copyBuilder().build().modified());
-		assertFalse(dept.copyBuilder().with(Department.NAME, "Name").build().modified());
+		assertTrue(dept.copy().builder().build().modified());
+		assertFalse(dept.copy().builder().with(Department.NAME, "Name").build().modified());
 	}
 
 	@Test
@@ -775,7 +775,7 @@ public class DefaultEntityTest {
 		emp.put(Employee.MANAGER_FK, manager);
 		emp.put(Employee.DEPARTMENT_FK, dept2);
 
-		Entity copy = emp.deepCopy();
+		Entity copy = emp.copy().deep();
 		assertNotSame(emp, copy);
 		assertTrue(emp.equalValues(copy));
 		assertNotSame(emp.get(Employee.MANAGER_FK), copy.get(Employee.MANAGER_FK));

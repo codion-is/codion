@@ -61,7 +61,7 @@ final class EntityPopupMenu extends JPopupMenu {
 	EntityPopupMenu(Entity entity, EntityConnection connection) {
 		requireNonNull(entity);
 		requireNonNull(connection);
-		populateEntityMenu(this, populateEntityGraph(entity.copy(), connection, new HashSet<>()), connection);
+		populateEntityMenu(this, populateEntityGraph(entity.copy().mutable(), connection, new HashSet<>()), connection);
 	}
 
 	private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection) {

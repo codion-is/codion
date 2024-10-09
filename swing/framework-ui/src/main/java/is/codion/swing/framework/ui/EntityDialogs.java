@@ -22,6 +22,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Entity.Copy;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -325,6 +326,7 @@ public final class EntityDialogs {
 			private PerformUpdate(Collection<Entity> entities) {
 				this.entities = entities.stream()
 								.map(Entity::copy)
+								.map(Copy::mutable)
 								.collect(toList());
 			}
 

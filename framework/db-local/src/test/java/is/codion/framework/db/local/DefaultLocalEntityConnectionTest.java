@@ -1329,7 +1329,7 @@ public class DefaultLocalEntityConnectionTest {
 						.with(Department.LOC, null)
 						.with(Department.DNAME, "Name")
 						.build();
-		current = entity.copy();
+		current = entity.copy().mutable();
 
 		// Original value becomes null
 		entity.put(Department.LOC, "Location");
@@ -1356,7 +1356,7 @@ public class DefaultLocalEntityConnectionTest {
 						.with(Employee.DATA, bytes)
 						.build();
 
-		Entity emp2 = emp1.copyBuilder()
+		Entity emp2 = emp1.copy().builder()
 						.with(Employee.DATA, modifiedBytes)
 						.build();
 
@@ -1371,7 +1371,7 @@ public class DefaultLocalEntityConnectionTest {
 						.with(Department.DATA, bytes)
 						.build();
 
-		Entity dept2 = dept1.copyBuilder()
+		Entity dept2 = dept1.copy().builder()
 						.with(Department.DATA, modifiedBytes)
 						.build();
 

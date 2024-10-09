@@ -16,6 +16,8 @@ Codion Change Log
 - FilterTable.filterPanel() renamed filters().
 - FilterTableCellRendererFactory moved to FilterTableCellRenderer and renamed Factory.
 - FilterTableCellEditorFactory moved to FilterTableCellEditor and renamed Factory.
+### is.codion.framework.domain
+- Entity.copy(), copyBuilder() and deepCopy() moved to Entity.Copy, renamed mutable(), builder() and deep() respectively, immutable() added.
 ### is.codion.framework.db
 - EntityConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw DatabaseException.
 - EntityConnection.transaction() added along with Transactional and TransactionalResult.

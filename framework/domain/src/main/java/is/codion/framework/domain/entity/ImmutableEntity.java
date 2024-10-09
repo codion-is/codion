@@ -39,11 +39,15 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
 	private static final String ERROR_MESSAGE = "This entity instance is immutable";
 
 	ImmutableEntity(DefaultEntity entity) {
-		definition = entity.definition();
-		values = new HashMap<>(entity.values);
+		this(entity.definition, entity.values, entity.originalValues);
+	}
+
+	ImmutableEntity(EntityDefinition definition, Map<Attribute<?>, Object> valueMap, Map<Attribute<?>, Object> originalValueMap) {
+		this.definition = definition;
+		values = new HashMap<>(valueMap);
 		values.forEach(new ReplaceWithImmutable(values));
-		if (entity.originalValues != null) {
-			originalValues = new HashMap<>(entity.originalValues);
+		if (originalValueMap != null) {
+			originalValues = new HashMap<>(originalValueMap);
 			originalValues.forEach(new ReplaceWithImmutable(originalValues));
 		}
 	}

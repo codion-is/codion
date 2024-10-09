@@ -468,7 +468,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private Collection<Entity> entityForInsert() {
-			Entity toInsert = editable.entity.copy();
+			Entity toInsert = editable.entity.copy().mutable();
 			if (toInsert.definition().primaryKey().generated()) {
 				toInsert.clearPrimaryKey();
 			}
@@ -522,7 +522,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Collection<Entity> entities;
 
 		private DefaultUpdate() throws ValidationException {
-			entities = singleton(editable.entity.copy());
+			entities = singleton(editable.entity.copy().mutable());
 			states.verifyUpdateEnabled(entities.size());
 			validate(entities);
 			verifyModified(entities);
@@ -607,7 +607,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private Entity activeEntity() {
-			Entity copy = editable.entity.copy();
+			Entity copy = editable.entity.copy().mutable();
 			copy.revert();
 
 			return copy;
