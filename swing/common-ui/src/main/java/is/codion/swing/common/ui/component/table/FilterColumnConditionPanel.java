@@ -479,25 +479,22 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private void bindEvents() {
 		condition().operator().addConsumer(this::onOperatorChanged);
-		linkToEnabledState(condition().locked().not(),
-						operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
-		components().forEach(component -> component.addFocusListener(new FocusGained()));
-
-		Collection<JComponent> fields = Stream.of(operatorCombo, toggleEnabledButton, equalField, upperBoundField, lowerBoundField, inField)
-						.filter(Objects::nonNull)
-						.collect(toList());
+		Collection<JComponent> components = components();
+		linkToEnabledState(condition().locked().not(), components.toArray(new JComponent[0]));
+		FocusGained focusGained = new FocusGained();
+		components.forEach(component -> component.addFocusListener(focusGained));
 		TOGGLE_ENABLED.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
 										.action(command(this::toggleEnabled))
-										.enable(fields));
+										.enable(components));
 		PREVIOUS_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
 										.action(command(this::selectPreviousOperator))
-										.enable(fields));
+										.enable(components));
 		NEXT_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
 										.action(command(this::selectNextOperator))
-										.enable(fields));
+										.enable(components));
 	}
 
 	private void onOperatorChanged(Operator operator) {

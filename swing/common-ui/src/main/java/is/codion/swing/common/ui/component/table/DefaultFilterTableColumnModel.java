@@ -275,12 +275,13 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	private void hideColumn(C identifier) {
-		if (!hiddenColumnMap.containsKey(identifier)) {
+		hiddenColumnMap.computeIfAbsent(identifier, k -> {
 			HiddenColumn hiddenColumn = new HiddenColumn(column(identifier));
-			hiddenColumnMap.put(identifier, hiddenColumn);
 			tableColumnModel.removeColumn(hiddenColumn.column);
 			columnHidden.accept(identifier);
-		}
+
+			return hiddenColumn;
+		});
 	}
 
 	private void checkIfLocked() {
