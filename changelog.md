@@ -5,6 +5,9 @@ Codion Change Log
 ### is.codion.common.db
 - DatabaseFactory.createDatabase() renamed create().
 - DatabaseConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw SQLException.
+### is.codion.common.model
+- ColumnConditions renamed TableConditionModel.
+- TableConditionModel.ColumnConditionFactory renamed ConditionModelFactory.
 ### is.codion.swing.common.ui
 - FilterColumnConditionPanel.Builder.operatorCaptions() added.
 - ColumnConditionPanel.identifier() removed along with type parameter.
@@ -36,6 +39,10 @@ Codion Change Log
 - DefaultLocalEntityConnection.valueMissingOrModified() bug fixed, could not discern a missing value from a null original value, since the incorrent entity was being used when checking, test case improved.
 ### is.codion.framework.model
 - EntityConditions.AdditionalCondition moved to EntityQueryModel, additionalWhere() and additionalHaving() renamed where() and having() respectively.
+- EntityConditions renamed EntityConditionModel.
+- EntityColumnConditionFactory renamed AttributeConditionModelFactory.
+### is.codion.swing.framework.model
+- SwingEntityColumnConditionFactory renamed SwingAttributeConditionModelFactory
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.ConnectionProviderFactory.createConnectionProvider() renamed create().
 - EntityTablePanel.conditionPanel() renamed conditions().

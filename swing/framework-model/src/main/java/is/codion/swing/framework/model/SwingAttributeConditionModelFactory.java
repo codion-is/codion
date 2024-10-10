@@ -18,12 +18,12 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.model.condition.ColumnConditions.ColumnConditionFactory;
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.EntityColumnConditionFactory;
+import is.codion.framework.model.AttributeConditionModelFactory;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
@@ -32,15 +32,15 @@ import java.util.Optional;
 import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 
 /**
- * A Swing {@link ColumnConditionFactory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
+ * A Swing {@link ConditionModelFactory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
-public class SwingEntityColumnConditionFactory extends EntityColumnConditionFactory {
+public class SwingAttributeConditionModelFactory extends AttributeConditionModelFactory {
 
 	/**
-	 * Instantiates a new {@link SwingEntityColumnConditionFactory}.
+	 * Instantiates a new {@link SwingAttributeConditionModelFactory}.
 	 * @param connectionProvider the connection provider
 	 */
-	public SwingEntityColumnConditionFactory(EntityConnectionProvider connectionProvider) {
+	public SwingAttributeConditionModelFactory(EntityConnectionProvider connectionProvider) {
 		super(connectionProvider);
 	}
 

@@ -22,8 +22,8 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.UserPreferences;
-import is.codion.common.model.condition.ColumnConditions;
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.summary.SummaryModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
@@ -2570,11 +2570,11 @@ public class EntityTablePanel extends JPanel {
 						implements TableConditionPanel.Factory<Attribute<?>> {
 
 			@Override
-			public TableConditionPanel<Attribute<?>> create(ColumnConditions<Attribute<?>> conditionModel,
+			public TableConditionPanel<Attribute<?>> create(TableConditionModel<Attribute<?>> tableConditionModel,
 																											Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
 																											FilterTableColumnModel<Attribute<?>> columnModel,
 																											Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized) {
-				return filterTableConditionPanel(conditionModel, conditionPanels, columnModel, onPanelInitialized);
+				return filterTableConditionPanel(tableConditionModel, conditionPanels, columnModel, onPanelInitialized);
 			}
 		}
 

@@ -19,8 +19,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.model.condition.ColumnConditions;
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -29,10 +29,10 @@ import is.codion.framework.domain.entity.condition.Condition;
 import java.util.Collection;
 
 /**
- * Factory for {@link EntityConditions} instances via
- * {@link EntityConditions#entityConditions(EntityType, EntityConnectionProvider)}
+ * Factory for {@link EntityConditionModel} instances via
+ * {@link EntityConditionModel#entityConditionModel(EntityType, EntityConnectionProvider)}
  */
-public interface EntityConditions extends ColumnConditions<Attribute<?>> {
+public interface EntityConditionModel extends TableConditionModel<Attribute<?>> {
 
 	/**
 	 * @return the type of the entity this table condition model is based on
@@ -88,24 +88,24 @@ public interface EntityConditions extends ColumnConditions<Attribute<?>> {
 	<T> ConditionModel<T> attribute(Attribute<T> attribute);
 
 	/**
-	 * Creates a new {@link EntityConditions}
+	 * Creates a new {@link EntityConditionModel}
 	 * @param entityType the underlying entity type
 	 * @param connectionProvider a EntityConnectionProvider instance
-	 * @return a new {@link EntityConditions} instance
+	 * @return a new {@link EntityConditionModel} instance
 	 */
-	static EntityConditions entityConditions(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return entityConditions(entityType, connectionProvider, new EntityColumnConditionFactory(connectionProvider));
+	static EntityConditionModel entityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		return entityConditionModel(entityType, connectionProvider, new AttributeConditionModelFactory(connectionProvider));
 	}
 
 	/**
-	 * Creates a new {@link EntityConditions}
+	 * Creates a new {@link EntityConditionModel}
 	 * @param entityType the underlying entity type
 	 * @param connectionProvider a EntityConnectionProvider instance
-	 * @param columnConditionFactory provides the column condition models for this table condition model
-	 * @return a new {@link EntityConditions} instance
+	 * @param conditionModelFactory provides the column condition models for this table condition model
+	 * @return a new {@link EntityConditionModel} instance
 	 */
-	static EntityConditions entityConditions(EntityType entityType, EntityConnectionProvider connectionProvider,
-																					 ColumnConditionFactory<Attribute<?>> columnConditionFactory) {
-		return new DefaultEntityConditions(entityType, connectionProvider, columnConditionFactory);
+	static EntityConditionModel entityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+																									 ConditionModelFactory<Attribute<?>> conditionModelFactory) {
+		return new DefaultEntityConditionModel(entityType, connectionProvider, conditionModelFactory);
 	}
 }

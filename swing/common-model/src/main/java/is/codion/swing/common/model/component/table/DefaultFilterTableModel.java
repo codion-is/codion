@@ -20,9 +20,9 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.condition.ColumnConditions;
-import is.codion.common.model.condition.ColumnConditions.ColumnConditionFactory;
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
@@ -47,7 +47,7 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static is.codion.common.model.condition.ColumnConditions.columnConditions;
+import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -68,7 +68,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final Columns<R, C> columns;
 	private final DefaultItems modelItems;
 	private final TableSelection<R> selection;
-	private final ColumnConditions<C> filters;
+	private final TableConditionModel<C> filters;
 	private final VisiblePredicate visiblePredicate;
 	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
@@ -77,7 +77,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.columns = requireNonNull(builder.columns);
 		this.modelItems = new DefaultItems(builder.validator);
 		this.selection = new DefaultFilterTableSelection<>(modelItems);
-		this.filters = columnConditions(createColumnFilterModels(builder.filterModelFactory == null ?
+		this.filters = tableConditionModel(createFilterConditionModels(builder.filterModelFactory == null ?
 						new DefaultColumnFilterFactory() : builder.filterModelFactory));
 		this.visiblePredicate = new VisiblePredicate(filters.get());
 		this.refresher = new DefaultRefresher(builder.supplier == null ? modelItems::get : (Supplier<Collection<R>>) builder.supplier);
@@ -123,7 +123,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public ColumnConditions<C> filters() {
+	public TableConditionModel<C> filters() {
 		return filters;
 	}
 
@@ -196,7 +196,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
 	}
 
-	private Map<C, ConditionModel<?>> createColumnFilterModels(ColumnConditionFactory<C> filterModelFactory) {
+	private Map<C, ConditionModel<?>> createFilterConditionModels(ConditionModelFactory<C> filterModelFactory) {
 		Map<C, ConditionModel<?>> columnFilterModels = new HashMap<>();
 		for (C identifier : columns.identifiers()) {
 			filterModelFactory.create(identifier)
@@ -260,7 +260,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private final class DefaultColumnFilterFactory implements ColumnConditionFactory<C> {
+	private final class DefaultColumnFilterFactory implements ConditionModelFactory<C> {
 
 		@Override
 		public Optional<ConditionModel<?>> create(C identifier) {
@@ -667,7 +667,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private Supplier<? extends Collection<R>> supplier;
 		private Predicate<R> validator = new ValidPredicate<>();
-		private ColumnConditionFactory<C> filterModelFactory;
+		private ConditionModelFactory<C> filterModelFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.get();
 
@@ -679,7 +679,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> filterModelFactory(ColumnConditionFactory<C> filterModelFactory) {
+		public Builder<R, C> filterModelFactory(ConditionModelFactory<C> filterModelFactory) {
 			this.filterModelFactory = requireNonNull(filterModelFactory);
 			return this;
 		}

@@ -50,7 +50,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	private static final Supplier<Condition> NULL_CONDITION_SUPPLIER = () -> null;
 
-	private final EntityConditions entityConditions;
+	private final EntityConditionModel entityConditionModel;
 	private final AdditionalCondition additionalWhere = new DefaultAdditionalCondition();
 	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
 	private final Value<StateObserver> conditionEnabled;
@@ -67,15 +67,15 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	private Select refreshCondition;
 
-	DefaultEntityQueryModel(EntityConditions entityConditions) {
-		this.entityConditions = requireNonNull(entityConditions);
+	DefaultEntityQueryModel(EntityConditionModel entityConditionModel) {
+		this.entityConditionModel = requireNonNull(entityConditionModel);
 		this.conditionEnabled = Value.builder()
-						.nonNull(entityConditions.enabled())
+						.nonNull(entityConditionModel.enabled())
 						.build();
 		this.orderBy = createOrderBy();
 		this.refreshCondition = createSelect();
 		Runnable onConditionChanged = this::onConditionChanged;
-		entityConditions.changed().addListener(onConditionChanged);
+		entityConditionModel.changed().addListener(onConditionChanged);
 		additionalWhere.addListener(onConditionChanged);
 		additionalWhere.conjunction().addListener(onConditionChanged);
 		additionalHaving.addListener(onConditionChanged);
@@ -84,12 +84,12 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	@Override
 	public EntityType entityType() {
-		return entityConditions.entityType();
+		return entityConditionModel.entityType();
 	}
 
 	@Override
 	public EntityConnectionProvider connectionProvider() {
-		return entityConditions.connectionProvider();
+		return entityConditionModel.connectionProvider();
 	}
 
 	@Override
@@ -98,8 +98,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public EntityConditions conditions() {
-		return entityConditions;
+	public EntityConditionModel conditions() {
+		return entityConditionModel;
 	}
 
 	@Override
@@ -153,8 +153,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	Select createSelect() {
-		return Select.where(createCondition(entityConditions.where(Conjunction.AND), additionalWhere))
-						.having(createCondition(entityConditions.having(Conjunction.AND), additionalHaving))
+		return Select.where(createCondition(entityConditionModel.where(Conjunction.AND), additionalWhere))
+						.having(createCondition(entityConditionModel.having(Conjunction.AND), additionalHaving))
 						.attributes(attributes.get())
 						.limit(limit.get())
 						.orderBy(orderBy.get())
@@ -171,7 +171,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	private Value<OrderBy> createOrderBy() {
-		EntityDefinition definition = entityConditions.connectionProvider().entities().definition(entityConditions.entityType());
+		EntityDefinition definition = entityConditionModel.connectionProvider().entities().definition(entityConditionModel.entityType());
 		return definition.orderBy()
 						.map(entityOrderBy -> Value.builder()
 										.nonNull(entityOrderBy)
@@ -193,8 +193,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		@Override
 		public void validate(Set<Attribute<?>> attributes) {
 			for (Attribute<?> attribute : attributes) {
-				if (!attribute.entityType().equals(entityConditions.entityType())) {
-					throw new IllegalArgumentException(attribute + " is not part of entity:  " + entityConditions.entityType());
+				if (!attribute.entityType().equals(entityConditionModel.entityType())) {
+					throw new IllegalArgumentException(attribute + " is not part of entity:  " + entityConditionModel.entityType());
 				}
 			}
 		}
@@ -219,7 +219,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 				return emptyList();
 			}
-			List<Entity> items = entityConditions.connectionProvider().connection().select(select);
+			List<Entity> items = entityConditionModel.connectionProvider().connection().select(select);
 			resetConditionChanged(select);
 
 			return items;

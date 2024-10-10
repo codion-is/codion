@@ -43,8 +43,8 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 	}
 
 	private void configureTrackConditionPanel() {
-		FilterColumnConditionPanel<Entity> condition = conditions().get(PlaylistTrack.TRACK_FK);
-		Stream.of(condition.equalField(), condition.inField())
+		FilterColumnConditionPanel<Entity> conditionPanel = conditions().get(PlaylistTrack.TRACK_FK);
+		Stream.of(conditionPanel.equalField(), conditionPanel.inField())
 						.flatMap(Optional::stream)
 						.map(EntitySearchField.class::cast)
 						.forEach(field -> field.selectorFactory().set(new TrackSelectorFactory()));

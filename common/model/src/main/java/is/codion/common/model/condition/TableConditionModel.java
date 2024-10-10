@@ -29,9 +29,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * Manages a set of {@link ConditionModel}s for table columns.
  * @param <C> the condition identifier type
- * @see #columnConditions(Map)
+ * @see #tableConditionModel(Map)
  */
-public interface ColumnConditions<C> {
+public interface TableConditionModel<C> {
 
 	/**
 	 * @return an unmodifiable view of the available condition models
@@ -72,19 +72,19 @@ public interface ColumnConditions<C> {
 	Observer<?> changed();
 
 	/**
-	 * Instantiates a new {@link ColumnConditions}
+	 * Instantiates a new {@link TableConditionModel}
 	 * @param conditions the condition models mapped to their respective column identifiers
 	 * @param <C> the condition identifier type
-	 * @return a new {@link ColumnConditions}
+	 * @return a new {@link TableConditionModel}
 	 */
-	static <C> ColumnConditions<C> columnConditions(Map<C, ConditionModel<?>> conditions) {
-		return new DefaultColumnConditions<>(requireNonNull(conditions));
+	static <C> TableConditionModel<C> tableConditionModel(Map<C, ConditionModel<?>> conditions) {
+		return new DefaultTableConditionModel<>(requireNonNull(conditions));
 	}
 
 	/**
 	 * Responsible for creating {@link ConditionModel} instances.
 	 */
-	interface ColumnConditionFactory<C> {
+	interface ConditionModelFactory<C> {
 
 		/**
 		 * Creates a {@link ConditionModel} for a given column identifier

@@ -20,8 +20,8 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.Operator;
 import is.codion.common.item.Item;
-import is.codion.common.model.condition.ColumnConditions;
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -153,12 +153,12 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		private final CustomerConditionPanel customerConditionPanel;
 		private final DateConditionPanel dateConditionPanel;
 
-		private SimpleConditionPanel(ColumnConditions<Attribute<?>> columnConditions,
+		private SimpleConditionPanel(TableConditionModel<Attribute<?>> tableConditionModel,
 																 SwingEntityTableModel tableModel) {
 			super(new BorderLayout());
 			setBorder(createEmptyBorder(5, 5, 5, 5));
-			customerConditionPanel = new CustomerConditionPanel(columnConditions.get(Invoice.CUSTOMER_FK), tableModel.entityDefinition());
-			dateConditionPanel = new DateConditionPanel(columnConditions.get(Invoice.DATE));
+			customerConditionPanel = new CustomerConditionPanel(tableConditionModel.get(Invoice.CUSTOMER_FK), tableModel.entityDefinition());
+			dateConditionPanel = new DateConditionPanel(tableConditionModel.get(Invoice.DATE));
 			dateConditionPanel.yearValue.addListener(tableModel::refresh);
 			dateConditionPanel.monthValue.addListener(tableModel::refresh);
 			conditionPanels.put(Invoice.CUSTOMER_FK, customerConditionPanel);

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.condition.ColumnConditions;
+import is.codion.common.model.condition.TableConditionModel;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -28,10 +28,10 @@ import static is.codion.swing.common.ui.component.table.FilterTableConditionPane
 final class DefaultFilterPanelFactory<C> implements TableConditionPanel.Factory<C> {
 
 	@Override
-	public TableConditionPanel<C> create(ColumnConditions<C> conditionModel,
+	public TableConditionPanel<C> create(TableConditionModel<C> tableConditionModel,
 																			 Map<C, ConditionPanel<?>> conditionPanels,
 																			 FilterTableColumnModel<C> columnModel,
 																			 Consumer<TableConditionPanel<C>> onPanelInitialized) {
-		return filterTableConditionPanel(conditionModel, conditionPanels, columnModel, onPanelInitialized);
+		return filterTableConditionPanel(tableConditionModel, conditionPanels, columnModel, onPanelInitialized);
 	}
 }

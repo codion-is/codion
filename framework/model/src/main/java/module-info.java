@@ -22,7 +22,8 @@
  * <li>{@link is.codion.framework.model.EntityModel}
  * <li>{@link is.codion.framework.model.EntityEditModel}
  * <li>{@link is.codion.framework.model.EntityTableModel}
- * <li>{@link is.codion.framework.model.EntityConditions}
+ * <li>{@link is.codion.framework.model.EntityConditionModel}
+ * <li>{@link is.codion.framework.model.EntityQueryModel}
  * <li>{@link is.codion.framework.model.EntityApplicationModel}
  * </ul>
  */

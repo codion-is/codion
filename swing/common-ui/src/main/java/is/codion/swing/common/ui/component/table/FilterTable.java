@@ -357,12 +357,12 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * @return the filter column conditions panel
+	 * @return the filter {@link TableConditionPanel}
 	 */
 	public TableConditionPanel<C> filters() {
 		if (filterPanel == null) {
 			filterPanel = filterPanelFactory.create(tableModel.filters(), createFilterPanels(),
-							columnModel(), this::configureTableConditionPanel);
+							columnModel(), this::configureFilterConditionPanel);
 		}
 
 		return filterPanel;
@@ -916,8 +916,8 @@ public final class FilterTable<R, C> extends JTable {
 		return conditionPanels;
 	}
 
-	private void configureTableConditionPanel(TableConditionPanel<C> tableConditionPanel) {
-		tableConditionPanel.get().forEach(this::configureFilterPanel);
+	private void configureFilterConditionPanel(TableConditionPanel<C> filterConditionPanel) {
+		filterConditionPanel.get().forEach(this::configureFilterPanel);
 	}
 
 	private void configureFilterPanel(C identifier, ConditionPanel<?> filterPanel) {

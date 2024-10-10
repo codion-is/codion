@@ -25,7 +25,7 @@
  * <li>{@link is.codion.common.model.selection.SingleItemSelection}
  * <li>{@link is.codion.common.model.selection.MultiItemSelection}
  * <li>{@link is.codion.common.model.condition.ConditionModel}
- * <li>{@link is.codion.common.model.condition.ColumnConditions}
+ * <li>{@link is.codion.common.model.condition.TableConditionModel}
  * <li>{@link is.codion.common.model.summary.SummaryModel}
  * <li>{@link is.codion.common.model.summary.TableSummaryModel}
  * </ul>

@@ -27,7 +27,7 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.EntityConditions;
+import is.codion.framework.model.EntityConditionModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -57,8 +57,8 @@ public final class DesignAndStyle {
 
 		State state = State.state(true);
 
-		EntityConditions conditions =
-						EntityConditions.entityConditions(Customer.TYPE, connectionProvider);
+		EntityConditionModel conditionModel =
+						EntityConditionModel.entityConditionModel(Customer.TYPE, connectionProvider);
 		//end::factories[]
 
 		//tag::builders[]

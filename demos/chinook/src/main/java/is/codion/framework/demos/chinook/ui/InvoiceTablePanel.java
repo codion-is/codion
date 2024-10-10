@@ -18,7 +18,7 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.common.model.condition.ColumnConditions;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
@@ -50,7 +50,7 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public TableConditionPanel<Attribute<?>> create(ColumnConditions<Attribute<?>> conditionModel,
+		public TableConditionPanel<Attribute<?>> create(TableConditionModel<Attribute<?>> tableConditionModel,
 																										Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
 																										FilterTableColumnModel<Attribute<?>> columnModel,
 																										Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized) {

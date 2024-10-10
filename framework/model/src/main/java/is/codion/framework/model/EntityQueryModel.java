@@ -54,7 +54,7 @@ import java.util.function.Supplier;
  * tableModel.queryModel().query().set(query);
  * }
  * </pre>
- * @see #entityQueryModel(EntityConditions)
+ * @see #entityQueryModel(EntityConditionModel)
  */
 public interface EntityQueryModel extends Supplier<List<Entity>> {
 
@@ -78,9 +78,9 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	List<Entity> get();
 
 	/**
-	 * @return the {@link EntityConditions} instance used by this query model
+	 * @return the {@link EntityConditionModel} instance used by this query model
 	 */
-	EntityConditions conditions();
+	EntityConditionModel conditions();
 
 	/**
 	 * Controls the additional WHERE condition, which can be used in conjunction with {@link #conditions()}.
@@ -149,7 +149,7 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	/**
 	 * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
 	 * This can be done by enabling the {@link EntityQueryModel#conditionRequired()} {@link State}, which prevents a refresh as long as the
-	 * {@link StateObserver} controlled via this method is disabled. The default {@link StateObserver} is simply {@link EntityConditions#enabled()}.
+	 * {@link StateObserver} controlled via this method is disabled. The default {@link StateObserver} is simply {@link EntityConditionModel#enabled()}.
 	 * Override for a more fine grained control, such as requiring a specific column condition to be enabled.
 	 * @return the {@link Value} controlling the {@link StateObserver} specifying if enough conditions are enabled for a safe refresh
 	 * @see #conditionRequired()
@@ -163,11 +163,11 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	Value<Function<EntityQueryModel, List<Entity>>> query();
 
 	/**
-	 * @param entityConditions the condition model
-	 * @return a new {@link EntityQueryModel} instance based on the given condition model
+	 * @param entityConditionModel the {@link EntityConditionModel}
+	 * @return a new {@link EntityQueryModel} instance based on the given {@link EntityConditionModel}
 	 */
-	static EntityQueryModel entityQueryModel(EntityConditions entityConditions) {
-		return new DefaultEntityQueryModel(entityConditions);
+	static EntityQueryModel entityQueryModel(EntityConditionModel entityConditionModel) {
+		return new DefaultEntityQueryModel(entityConditionModel);
 	}
 
 	/**

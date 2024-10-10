@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultColumnConditions<C> implements ColumnConditions<C> {
+final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	private final Map<C, ConditionModel<?>> conditions;
 	private final StateObserver enabled;
 	private final Event<?> changed = Event.event();
 
-	DefaultColumnConditions(Map<C, ConditionModel<?>> conditions) {
+	DefaultTableConditionModel(Map<C, ConditionModel<?>> conditions) {
 		this.conditions = unmodifiableMap(new HashMap<>(conditions));
 		this.enabled = State.or(conditions.values().stream()
 						.map(ConditionModel::enabled)

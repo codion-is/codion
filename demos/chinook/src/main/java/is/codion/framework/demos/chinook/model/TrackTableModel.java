@@ -25,7 +25,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.framework.model.SwingEntityColumnConditionFactory;
+import is.codion.swing.framework.model.SwingAttributeConditionModelFactory;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 
@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;
-import static is.codion.framework.model.EntityConditions.entityConditions;
+import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
 
 public final class TrackTableModel extends SwingEntityTableModel {
@@ -44,7 +44,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 
 	public TrackTableModel(EntityConnectionProvider connectionProvider) {
 		super(new TrackEditModel(connectionProvider),
-						entityQueryModel(entityConditions(Track.TYPE, connectionProvider,
+						entityQueryModel(entityConditionModel(Track.TYPE, connectionProvider,
 										new TrackColumnConditionFactory(connectionProvider))));
 		editable().set(true);
 		configureLimit();
@@ -76,7 +76,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		}
 	}
 
-	private static class TrackColumnConditionFactory extends SwingEntityColumnConditionFactory {
+	private static class TrackColumnConditionFactory extends SwingAttributeConditionModelFactory {
 
 		private TrackColumnConditionFactory(EntityConnectionProvider connectionProvider) {
 			super(connectionProvider);

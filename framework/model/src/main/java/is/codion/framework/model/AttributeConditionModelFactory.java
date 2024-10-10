@@ -18,8 +18,8 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.condition.ColumnConditions.ColumnConditionFactory;
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -33,17 +33,17 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link ColumnConditionFactory} implementation for creating Entity based column condition models.
+ * A default {@link ConditionModelFactory} implementation for creating Entity based column condition models.
  */
-public class EntityColumnConditionFactory implements ColumnConditionFactory<Attribute<?>> {
+public class AttributeConditionModelFactory implements ConditionModelFactory<Attribute<?>> {
 
 	private final EntityConnectionProvider connectionProvider;
 
 	/**
-	 * Instantiates a new {@link EntityColumnConditionFactory}.
+	 * Instantiates a new {@link AttributeConditionModelFactory}.
 	 * @param connectionProvider the connection provider
 	 */
-	public EntityColumnConditionFactory(EntityConnectionProvider connectionProvider) {
+	public AttributeConditionModelFactory(EntityConnectionProvider connectionProvider) {
 		this.connectionProvider = requireNonNull(connectionProvider);
 	}
 

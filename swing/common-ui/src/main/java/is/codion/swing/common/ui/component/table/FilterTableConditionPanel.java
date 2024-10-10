@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.condition.ColumnConditions;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 
@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default filter table condition panel.
  * @param <C> the column identifier type
- * @see #filterTableConditionPanel(ColumnConditions, Map, FilterTableColumnModel, Consumer)
+ * @see #filterTableConditionPanel(TableConditionModel, Map, FilterTableColumnModel, Consumer)
  */
 public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
@@ -47,11 +47,11 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	private FilterTableColumnComponentPanel<C> componentPanel;
 	private boolean initialized;
 
-	private FilterTableConditionPanel(ColumnConditions<C> columnConditions,
+	private FilterTableConditionPanel(TableConditionModel<C> tableConditionModel,
 																		Map<C, ConditionPanel<?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel,
 																		Consumer<TableConditionPanel<C>> onPanelInitialized) {
-		super(columnConditions, identifier -> Objects.toString(columnModel.column(identifier).getHeaderValue()));
+		super(tableConditionModel, identifier -> Objects.toString(columnModel.column(identifier).getHeaderValue()));
 		this.conditionPanels = unmodifiableMap(new HashMap<>(requireNonNull(conditionPanels)));
 		this.columnModel = requireNonNull(columnModel);
 		this.onPanelInitialized = onPanelInitialized == null ? panel -> {} : onPanelInitialized;
@@ -77,17 +77,17 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	/**
 	 * @param <C> the column identifier type
-	 * @param columnConditions the {@link ColumnConditions}
+	 * @param tableConditionModel the {@link TableConditionModel}
 	 * @param conditionPanels the condition panels
 	 * @param columnModel the column model
 	 * @param onPanelInitialized called when the panel has been initialized
 	 * @return a new {@link FilterTableConditionPanel}
 	 */
-	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(ColumnConditions<C> columnConditions,
+	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(TableConditionModel<C> tableConditionModel,
 																																					 Map<C, ConditionPanel<?>> conditionPanels,
 																																					 FilterTableColumnModel<C> columnModel,
 																																					 Consumer<TableConditionPanel<C>> onPanelInitialized) {
-		return new FilterTableConditionPanel<>(columnConditions, conditionPanels, columnModel, onPanelInitialized);
+		return new FilterTableConditionPanel<>(tableConditionModel, conditionPanels, columnModel, onPanelInitialized);
 	}
 
 	@Override
