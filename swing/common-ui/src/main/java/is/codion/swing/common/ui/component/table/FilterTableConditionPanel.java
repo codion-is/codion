@@ -36,21 +36,21 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default filter table condition panel.
  * @param <C> the column identifier type
- * @see #filterColumnConditionsPanel(ColumnConditions, Map, FilterTableColumnModel, Consumer)
+ * @see #filterTableConditionPanel(ColumnConditions, Map, FilterTableColumnModel, Consumer)
  */
-public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<C> {
+public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	private final Map<C, ConditionPanel<?>> conditionPanels;
 	private final FilterTableColumnModel<C> columnModel;
-	private final Consumer<ColumnConditionsPanel<C>> onPanelInitialized;
+	private final Consumer<TableConditionPanel<C>> onPanelInitialized;
 
 	private FilterTableColumnComponentPanel<C> componentPanel;
 	private boolean initialized;
 
-	private FilterColumnConditionsPanel(ColumnConditions<C> columnConditions,
-																			Map<C, ConditionPanel<?>> conditionPanels,
-																			FilterTableColumnModel<C> columnModel,
-																			Consumer<ColumnConditionsPanel<C>> onPanelInitialized) {
+	private FilterTableConditionPanel(ColumnConditions<C> columnConditions,
+																		Map<C, ConditionPanel<?>> conditionPanels,
+																		FilterTableColumnModel<C> columnModel,
+																		Consumer<TableConditionPanel<C>> onPanelInitialized) {
 		super(columnConditions, identifier -> Objects.toString(columnModel.column(identifier).getHeaderValue()));
 		this.conditionPanels = unmodifiableMap(new HashMap<>(requireNonNull(conditionPanels)));
 		this.columnModel = requireNonNull(columnModel);
@@ -81,13 +81,13 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	 * @param conditionPanels the condition panels
 	 * @param columnModel the column model
 	 * @param onPanelInitialized called when the panel has been initialized
-	 * @return a new {@link FilterColumnConditionsPanel}
+	 * @return a new {@link FilterTableConditionPanel}
 	 */
-	public static <C> FilterColumnConditionsPanel<C> filterColumnConditionsPanel(ColumnConditions<C> columnConditions,
-																																							 Map<C, ConditionPanel<?>> conditionPanels,
-																																							 FilterTableColumnModel<C> columnModel,
-																																							 Consumer<ColumnConditionsPanel<C>> onPanelInitialized) {
-		return new FilterColumnConditionsPanel<>(columnConditions, conditionPanels, columnModel, onPanelInitialized);
+	public static <C> FilterTableConditionPanel<C> filterTableConditionPanel(ColumnConditions<C> columnConditions,
+																																					 Map<C, ConditionPanel<?>> conditionPanels,
+																																					 FilterTableColumnModel<C> columnModel,
+																																					 Consumer<TableConditionPanel<C>> onPanelInitialized) {
+		return new FilterTableConditionPanel<>(columnConditions, conditionPanels, columnModel, onPanelInitialized);
 	}
 
 	@Override

@@ -28,11 +28,11 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.table.ColumnConditionsPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
-import is.codion.swing.common.ui.component.table.FilterColumnConditionsPanel;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
+import is.codion.swing.common.ui.component.table.FilterTableConditionPanel;
+import is.codion.swing.common.ui.component.table.TableConditionPanel;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Controls;
@@ -65,7 +65,7 @@ import java.util.stream.Stream;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState.ADVANCED;
-import static is.codion.swing.common.ui.component.table.FilterColumnConditionsPanel.filterColumnConditionsPanel;
+import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
@@ -77,21 +77,21 @@ import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.border.TitledBorder.CENTER;
 import static javax.swing.border.TitledBorder.DEFAULT_POSITION;
 
-final class InvoiceConditionPanel extends ColumnConditionsPanel<Attribute<?>> {
+final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 	private static final ResourceBundle BUNDLE = getBundle(InvoiceConditionPanel.class.getName());
 
-	private final FilterColumnConditionsPanel<Attribute<?>> advancedConditionPanel;
+	private final FilterTableConditionPanel<Attribute<?>> advancedConditionPanel;
 	private final SimpleConditionPanel simpleConditionPanel;
 
 	InvoiceConditionPanel(SwingEntityTableModel tableModel,
 												Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
 												FilterTableColumnModel<Attribute<?>> columnModel,
-												Consumer<ColumnConditionsPanel<Attribute<?>>> onPanelInitialized) {
+												Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized) {
 		super(tableModel.queryModel().conditions(), attribute -> columnModel.column(attribute).getHeaderValue().toString());
 		setLayout(new BorderLayout());
 		this.simpleConditionPanel = new SimpleConditionPanel(tableModel.queryModel().conditions(), tableModel);
-		this.advancedConditionPanel = filterColumnConditionsPanel(tableModel.queryModel().conditions(),
+		this.advancedConditionPanel = filterTableConditionPanel(tableModel.queryModel().conditions(),
 						conditionPanels, columnModel, onPanelInitialized);
 		state().link(advancedConditionPanel.state());
 	}

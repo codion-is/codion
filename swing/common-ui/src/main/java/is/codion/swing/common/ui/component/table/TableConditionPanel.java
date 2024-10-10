@@ -49,10 +49,10 @@ import static java.util.stream.Collectors.toList;
  * A base class for a UI component based on a {@link ColumnConditions}.
  * @param <C> the type used to identify the table columns
  */
-public abstract class ColumnConditionsPanel<C> extends JPanel {
+public abstract class TableConditionPanel<C> extends JPanel {
 
 	private static final MessageBundle MESSAGES =
-					messageBundle(FilterColumnConditionPanel.class, getBundle(ColumnConditionsPanel.class.getName()));
+					messageBundle(FilterColumnConditionPanel.class, getBundle(TableConditionPanel.class.getName()));
 
 	private final ColumnConditions<C> columnConditions;
 	private final Function<C, String> captions;
@@ -65,12 +65,12 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	private final State advancedState = State.state();
 
 	/**
-	 * Instantiates a new {@link ColumnConditionsPanel}
+	 * Instantiates a new {@link TableConditionPanel}
 	 * @param columnConditions the {@link ColumnConditions}
 	 * @param captions provides captions based on the column identifiers presenting condition selection
 	 * @see #select(JComponent)
 	 */
-	protected ColumnConditionsPanel(ColumnConditions<C> columnConditions, Function<C, String> captions) {
+	protected TableConditionPanel(ColumnConditions<C> columnConditions, Function<C, String> captions) {
 		this.columnConditions = requireNonNull(columnConditions);
 		this.captions = requireNonNull(captions);
 		configureStates();
@@ -202,12 +202,12 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 		 * @param conditionPanels the condition panels
 		 * @param columnModel the column model
 		 * @param onPanelInitialized called when the panel has been initialized
-		 * @return a new {@link ColumnConditionsPanel}
+		 * @return a new {@link TableConditionPanel}
 		 */
-		ColumnConditionsPanel<C> create(ColumnConditions<C> conditionModel,
-																		Map<C, ConditionPanel<?>> conditionPanels,
-																		FilterTableColumnModel<C> columnModel,
-																		Consumer<ColumnConditionsPanel<C>> onPanelInitialized);
+		TableConditionPanel<C> create(ColumnConditions<C> conditionModel,
+																	Map<C, ConditionPanel<?>> conditionPanels,
+																	FilterTableColumnModel<C> columnModel,
+																	Consumer<TableConditionPanel<C>> onPanelInitialized);
 	}
 
 	private final class StateConsumer implements Consumer<Boolean> {

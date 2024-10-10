@@ -240,7 +240,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final FilterTableSortModel<R, C> sortModel;
 	private final TableSummaryModel<C> summaryModel;
 
-	private final ColumnConditionsPanel.Factory<C> filterPanelFactory;
+	private final TableConditionPanel.Factory<C> filterPanelFactory;
 	private final FieldFactory filterFieldFactory;
 	private final Event<MouseEvent> doubleClick = Event.event();
 	private final Value<Action> doubleClickAction;
@@ -250,7 +250,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private final ControlMap controlMap;
 
-	private ColumnConditionsPanel<C> filterPanel;
+	private TableConditionPanel<C> filterPanel;
 	private JTextField searchField;
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
@@ -359,10 +359,10 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return the filter column conditions panel
 	 */
-	public ColumnConditionsPanel<C> filters() {
+	public TableConditionPanel<C> filters() {
 		if (filterPanel == null) {
 			filterPanel = filterPanelFactory.create(tableModel.filters(), createFilterPanels(),
-							columnModel(), this::configureFilterConditionsPanel);
+							columnModel(), this::configureTableConditionPanel);
 		}
 
 		return filterPanel;
@@ -916,8 +916,8 @@ public final class FilterTable<R, C> extends JTable {
 		return conditionPanels;
 	}
 
-	private void configureFilterConditionsPanel(ColumnConditionsPanel<C> filterConditionsPanel) {
-		filterConditionsPanel.get().forEach(this::configureFilterPanel);
+	private void configureTableConditionPanel(TableConditionPanel<C> tableConditionPanel) {
+		tableConditionPanel.get().forEach(this::configureFilterPanel);
 	}
 
 	private void configureFilterPanel(C identifier, ConditionPanel<?> filterPanel) {
@@ -1023,10 +1023,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory);
 
 		/**
-		 * @param filterPanelFactory the table filter conditions panel factory
+		 * @param filterPanelFactory the table filter condition panel factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> filterPanelFactory(ColumnConditionsPanel.Factory<C> filterPanelFactory);
+		Builder<R, C> filterPanelFactory(TableConditionPanel.Factory<C> filterPanelFactory);
 
 		/**
 		 * @param filterFieldFactory the column filter field factory
@@ -1169,7 +1169,7 @@ public final class FilterTable<R, C> extends JTable {
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
-		private ColumnConditionsPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
+		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private FieldFactory filterFieldFactory = new DefaultFilterFieldFactory();
 		private FilterTableCellRenderer.Factory<C> cellRendererFactory;
 		private FilterTableCellEditor.Factory<C> cellEditorFactory;
@@ -1199,7 +1199,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> filterPanelFactory(ColumnConditionsPanel.Factory<C> filterPanelFactory) {
+		public Builder<R, C> filterPanelFactory(TableConditionPanel.Factory<C> filterPanelFactory) {
 			this.filterPanelFactory = requireNonNull(filterPanelFactory);
 			return this;
 		}

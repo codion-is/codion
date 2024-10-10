@@ -23,15 +23,15 @@ import is.codion.common.model.condition.ColumnConditions;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.component.table.FilterColumnConditionsPanel.filterColumnConditionsPanel;
+import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 
-final class DefaultFilterPanelFactory<C> implements ColumnConditionsPanel.Factory<C> {
+final class DefaultFilterPanelFactory<C> implements TableConditionPanel.Factory<C> {
 
 	@Override
-	public ColumnConditionsPanel<C> create(ColumnConditions<C> conditionModel,
-																				 Map<C, ConditionPanel<?>> columnConditionPanels,
-																				 FilterTableColumnModel<C> columnModel,
-																				 Consumer<ColumnConditionsPanel<C>> onPanelInitialized) {
-		return filterColumnConditionsPanel(conditionModel, columnConditionPanels, columnModel, onPanelInitialized);
+	public TableConditionPanel<C> create(ColumnConditions<C> conditionModel,
+																			 Map<C, ConditionPanel<?>> conditionPanels,
+																			 FilterTableColumnModel<C> columnModel,
+																			 Consumer<TableConditionPanel<C>> onPanelInitialized) {
+		return filterTableConditionPanel(conditionModel, conditionPanels, columnModel, onPanelInitialized);
 	}
 }
