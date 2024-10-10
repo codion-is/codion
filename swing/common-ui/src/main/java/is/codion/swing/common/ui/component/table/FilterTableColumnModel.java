@@ -70,9 +70,9 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	FilterTableColumn<C> getColumn(int columnIndex);
 
 	/**
-	 * Returns the State for controlling the column visibility
+	 * Returns the {@link State} for controlling the column visibility
 	 * @param identifier the column identifier
-	 * @return a State for controlling the column visibility
+	 * @return a {@link State} for controlling the column visibility
 	 * @throws IllegalArgumentException in case the column is not found
 	 */
 	State visible(C identifier);
@@ -81,7 +81,7 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	 * @param identifier the column identifier
 	 * @return true if this column model contains a column with the given identifier
 	 */
-	boolean containsColumn(C identifier);
+	boolean contains(C identifier);
 
 	/**
 	 * @param modelColumnIndex the column model index
@@ -92,7 +92,7 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	/**
 	 * Resets the columns to their original location and visibility
 	 */
-	void resetColumns();
+	void reset();
 
 	/**
 	 * @return an observer notified each time a column is hidden

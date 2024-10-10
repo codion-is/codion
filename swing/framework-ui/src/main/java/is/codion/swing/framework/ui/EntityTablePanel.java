@@ -1484,7 +1484,7 @@ public class EntityTablePanel extends JPanel {
 		Map<Attribute<?>, ConditionPanel<?>> conditionPanels = new HashMap<>();
 		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : tableModel.queryModel().conditions().get().entrySet()) {
 			Attribute<?> attribute = conditionEntry.getKey();
-			if (table.columnModel().containsColumn(attribute)) {
+			if (table.columnModel().contains(attribute)) {
 				FieldFactory fieldFactory = configuration.conditionFieldFactories.getOrDefault(attribute,
 								new EntityConditionFieldFactory(tableModel.entityDefinition(), attribute));
 				if (fieldFactory.supportsType(attribute.type().valueClass())) {
@@ -1755,7 +1755,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private boolean columnNotHidden(Attribute<?> attribute) {
-		return !table.columnModel().containsColumn(attribute) || table.columnModel().visible(attribute).get();
+		return !table.columnModel().contains(attribute) || table.columnModel().visible(attribute).get();
 	}
 
 	private OrderBy orderByFromSortModel() {

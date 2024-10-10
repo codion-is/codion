@@ -52,8 +52,8 @@ public class DefaultFilterTableColumnModelTest {
 		testModel.columnHidden().removeConsumer(hideConsumer);
 		testModel.columnShown().removeConsumer(showConsumer);
 
-		assertTrue(testModel.containsColumn(0));
-		assertFalse(testModel.containsColumn(1));
+		assertTrue(testModel.contains(0));
+		assertFalse(testModel.contains(1));
 	}
 
 	@Test

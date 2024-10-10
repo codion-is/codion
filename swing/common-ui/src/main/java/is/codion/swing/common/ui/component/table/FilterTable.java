@@ -583,7 +583,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public CommandControl createResetColumnsControl() {
 		return Control.builder()
-						.command(columnModel()::resetColumns)
+						.command(columnModel()::reset)
 						.name(MESSAGES.getString(RESET))
 						.enabled(columnModel().locked().not())
 						.description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
@@ -905,7 +905,7 @@ public final class FilterTable<R, C> extends JTable {
 		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.filters().get().entrySet()) {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
-			if (columnModel().containsColumn(identifier) && filterFieldFactory.supportsType(condition.valueClass())) {
+			if (columnModel().contains(identifier) && filterFieldFactory.supportsType(condition.valueClass())) {
 				conditionPanels.put(identifier, FilterColumnConditionPanel.builder(condition)
 								.fieldFactory(filterFieldFactory)
 								.tableColumn(columnModel().column(identifier))

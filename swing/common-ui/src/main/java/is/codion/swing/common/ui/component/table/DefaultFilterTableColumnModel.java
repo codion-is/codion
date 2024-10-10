@@ -92,7 +92,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	@Override
-	public boolean containsColumn(C identifier) {
+	public boolean contains(C identifier) {
 		return columns.containsKey(requireNonNull(identifier));
 	}
 
@@ -112,7 +112,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	@Override
-	public void resetColumns() {
+	public void reset() {
 		visibleColumns.set(new ArrayList<>(columns.keySet()));
 	}
 

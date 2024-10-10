@@ -62,7 +62,7 @@ public final class FilterTableColumnComponentPanel<C> extends JPanel {
 		this.columnModel = requireNonNull(columnModel);
 		this.columns = columnModel.columns();
 		requireNonNull(components).forEach((identifier, component) -> {
-			if (!columnModel.containsColumn(identifier)) {
+			if (!columnModel.contains(identifier)) {
 				throw new IllegalArgumentException("Column " + identifier + " is not part of column model");
 			}
 		});
