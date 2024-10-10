@@ -37,8 +37,8 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 						// Skip confirmation when deleting
 						.deleteConfirmer(Confirmer.NONE)
 						.includeEditControl(false));
-		table().getColumnModel()
-						.setVisibleColumns(PlaylistTrack.TRACK_FK, PlaylistTrack.ARTIST, PlaylistTrack.ALBUM);
+		table().columnModel()
+						.visible().set(PlaylistTrack.TRACK_FK, PlaylistTrack.ARTIST, PlaylistTrack.ALBUM);
 		configureTrackConditionPanel();
 	}
 

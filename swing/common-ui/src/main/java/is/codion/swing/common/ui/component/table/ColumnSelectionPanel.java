@@ -83,12 +83,12 @@ final class ColumnSelectionPanel<C> extends JPanel {
 	}
 
 	void applyChanges() {
-		columnModel.visible().forEach(tableColumn -> {
+		columnModel.visible().columns().forEach(tableColumn -> {
 			if (!visibleStates.get(tableColumn).get()) {
 				columnModel.visible(tableColumn.identifier()).set(false);
 			}
 		});
-		new ArrayList<>(columnModel.hidden()).forEach(tableColumn -> {
+		new ArrayList<>(columnModel.hidden().columns()).forEach(tableColumn -> {
 			if (visibleStates.get(tableColumn).get()) {
 				columnModel.visible(tableColumn.identifier()).set(true);
 			}

@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 
@@ -40,14 +42,14 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	Collection<FilterTableColumn<C>> columns();
 
 	/**
-	 * @return an unmodifiable view of the currently visible columns
+	 * @return the visible columns
 	 */
-	List<FilterTableColumn<C>> visible();
+	VisibleColumns<C> visible();
 
 	/**
-	 * @return an unmodifiable view of currently hidden columns, in no particular order
+	 * @return the hidden columns
 	 */
-	Collection<FilterTableColumn<C>> hidden();
+	HiddenColumns<C> hidden();
 
 	/**
 	 * Returns a {@link State} instance controlling whether this model is locked or not.
@@ -55,20 +57,6 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	 * @return a {@link State} controlling whether this model is locked or not
 	 */
 	State locked();
-
-	/**
-	 * Arranges the columns so that only the given columns are visible and in the given order
-	 * @param identifiers the column identifiers
-	 * @throws IllegalArgumentException in case a column is not found
-	 */
-	void setVisibleColumns(C... identifiers);
-
-	/**
-	 * Arranges the columns so that only the given columns are visible and in the given order
-	 * @param identifiers the column identifiers
-	 * @throws IllegalArgumentException in case a column is not found
-	 */
-	void setVisibleColumns(List<C> identifiers);
 
 	/**
 	 * Returns the TableColumn with the given identifier
@@ -115,4 +103,43 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	 * @return an observer notified each time a column is shown
 	 */
 	Observer<C> columnShown();
+
+	/**
+	 * Controls the visible columns
+	 * @param <C> the column identifier type
+	 */
+	interface VisibleColumns<C> extends Mutable<List<C>> {
+
+		/**
+		 * Arranges the columns so that only the given columns are visible and in the given order
+		 * @param identifiers the column identifiers
+		 * @throws IllegalArgumentException in case a column is not found
+		 */
+		void set(C... identifiers);
+
+		/**
+		 * Arranges the columns so that only the given columns are visible and in the given order
+		 * @param identifiers the column identifiers
+		 * @throws IllegalArgumentException in case a column is not found
+		 */
+		@Override
+		void set(List<C> identifiers);
+
+		/**
+		 * @return an unmodifiable view of the currently visible columns
+		 */
+		List<FilterTableColumn<C>> columns();
+	}
+
+	/**
+	 * Observes the hidden columns
+	 * @param <C> the column identifier type
+	 */
+	interface HiddenColumns<C> extends Observable<Collection<C>> {
+
+		/**
+		 * @return an unmodifiable view of the currently hidden columns
+		 */
+		Collection<FilterTableColumn<C>> columns();
+	}
 }

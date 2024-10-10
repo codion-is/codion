@@ -66,7 +66,7 @@ public class EntityTablePanelTest {
 			assertTrue(employee.contains(Employee.HIREDATE));
 			assertTrue(employee.contains(Employee.JOB));
 		});
-		tablePanel.table().columnModel().setVisibleColumns(Employee.ID, Employee.NAME, Employee.COMMISSION);
+		tablePanel.table().columnModel().visible().set(Employee.ID, Employee.NAME, Employee.COMMISSION);
 		tablePanel.queryHiddenColumns().set(false);
 		tableModel.refresh();
 		tableModel.items().get().forEach(employee -> {

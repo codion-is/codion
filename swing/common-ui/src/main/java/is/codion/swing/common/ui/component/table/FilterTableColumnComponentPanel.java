@@ -115,7 +115,7 @@ public final class FilterTableColumnComponentPanel<C> extends JPanel {
 			basePanel.requestFocusInWindow();
 		}
 		basePanel.removeAll();
-		columnModel.visible().stream()
+		columnModel.visible().get().stream()
 						.map(this::columnComponent)
 						.forEach(basePanel::add);
 		basePanel.add(scrollBarFiller);
@@ -138,7 +138,7 @@ public final class FilterTableColumnComponentPanel<C> extends JPanel {
 	private void bindColumnAndComponentSizes() {
 		columnModel.addColumnModelListener(new SyncColumnModelListener());
 		for (FilterTableColumn<C> column : columns) {
-			JComponent component = columnComponent(column);
+			JComponent component = columnComponent(column.identifier());
 			component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
 			column.addPropertyChangeListener(new SyncListener(component, column));
 		}
@@ -146,13 +146,13 @@ public final class FilterTableColumnComponentPanel<C> extends JPanel {
 
 	private void syncPanelWidths() {
 		for (FilterTableColumn<C> column : columns) {
-			syncPanelWidth(columnComponent(column), column);
+			syncPanelWidth(columnComponent(column.identifier()), column);
 		}
 	}
 
-	private JComponent columnComponent(FilterTableColumn<C> column) {
-		return components.getOrDefault(column.identifier(),
-						nullComponents.computeIfAbsent(column.identifier(), c -> new JPanel()));
+	private JComponent columnComponent(C identifier) {
+		return components.getOrDefault(identifier,
+						nullComponents.computeIfAbsent(identifier, c -> new JPanel()));
 	}
 
 	private static void syncPanelWidth(JComponent component, TableColumn column) {

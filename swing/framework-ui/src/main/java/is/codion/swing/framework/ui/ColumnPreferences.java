@@ -159,7 +159,7 @@ final class ColumnPreferences {
 						.map(ColumnPreferences::attribute)
 						.collect(toList());
 		visibleColumnAttributes.addAll(0, columnAttributesWithoutPreferences);
-		tablePanel.table().columnModel().setVisibleColumns(visibleColumnAttributes);
+		tablePanel.table().columnModel().visible().set(visibleColumnAttributes);
 	}
 
 	static Optional<ColumnPreferences> columnPreferences(Attribute<?> attribute, JSONObject preferences) {

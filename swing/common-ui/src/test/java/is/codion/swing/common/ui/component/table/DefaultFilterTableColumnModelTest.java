@@ -45,7 +45,7 @@ public class DefaultFilterTableColumnModelTest {
 
 		testModel.visible(0).set(false);
 		assertEquals(1, hidden.size());
-		assertEquals(1, testModel.hidden().size());
+		assertEquals(1, testModel.hidden().get().size());
 		testModel.visible(0).set(true);
 		assertEquals(1, shown.size());
 
@@ -82,7 +82,7 @@ public class DefaultFilterTableColumnModelTest {
 		DefaultFilterTableColumnModel<Integer> columnModel =
 						new DefaultFilterTableColumnModel<>(asList(column0, column1, column2, column3));
 
-		columnModel.setVisibleColumns(1, 3);
+		columnModel.visible().set(1, 3);
 		assertEquals(0, columnModel.getSelectionModel().getLeadSelectionIndex());
 		assertTrue(columnModel.visible(1).get());
 		assertTrue(columnModel.visible(3).get());
@@ -90,7 +90,7 @@ public class DefaultFilterTableColumnModelTest {
 		assertFalse(columnModel.visible(2).get());
 		assertEquals(0, columnModel.getColumnIndex(1));
 		assertEquals(1, columnModel.getColumnIndex(3));
-		columnModel.setVisibleColumns(0, 1);
+		columnModel.visible().set(0, 1);
 		assertEquals(0, columnModel.getSelectionModel().getLeadSelectionIndex());
 		assertTrue(columnModel.visible(0).get());
 		assertTrue(columnModel.visible(0).get());
@@ -100,19 +100,19 @@ public class DefaultFilterTableColumnModelTest {
 		assertFalse(columnModel.visible(3).get());
 		assertEquals(0, columnModel.getColumnIndex(0));
 		assertEquals(1, columnModel.getColumnIndex(1));
-		columnModel.setVisibleColumns(3);
+		columnModel.visible().set(3);
 		assertEquals(0, columnModel.getSelectionModel().getLeadSelectionIndex());
 		assertTrue(columnModel.visible(3).get());
 		assertFalse(columnModel.visible(2).get());
 		assertFalse(columnModel.visible(1).get());
 		assertFalse(columnModel.visible(0).get());
 		assertEquals(0, columnModel.getColumnIndex(3));
-		columnModel.setVisibleColumns();
+		columnModel.visible().set();
 		assertFalse(columnModel.visible(3).get());
 		assertFalse(columnModel.visible(2).get());
 		assertFalse(columnModel.visible(1).get());
 		assertFalse(columnModel.visible(0).get());
-		columnModel.setVisibleColumns(3, 2, 1, 0);
+		columnModel.visible().set(3, 2, 1, 0);
 		assertEquals(0, columnModel.getSelectionModel().getLeadSelectionIndex());
 		assertTrue(columnModel.visible(3).get());
 		assertTrue(columnModel.visible(2).get());
@@ -140,18 +140,18 @@ public class DefaultFilterTableColumnModelTest {
 		columnModel.visible(0).set(false);
 		columnModel.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> columnModel.visible(0).set(true));
-		assertThrows(IllegalStateException.class, () -> columnModel.setVisibleColumns(0));
+		assertThrows(IllegalStateException.class, () -> columnModel.visible().set(0));
 
 		columnModel.locked().set(false);
-		columnModel.setVisibleColumns(3, 2, 1);
+		columnModel.visible().set(3, 2, 1);
 		columnModel.locked().set(true);
-		assertThrows(IllegalStateException.class, () -> columnModel.setVisibleColumns(1, 0, 2));
+		assertThrows(IllegalStateException.class, () -> columnModel.visible().set(1, 0, 2));
 	}
 
 	@Test
 	void visibleColumns() {
 		FilterTableColumnModel<Integer> testModel = createTestModel();
-		assertThrows(IllegalArgumentException.class, () -> testModel.setVisibleColumns(0, 1));
+		assertThrows(IllegalArgumentException.class, () -> testModel.visible().set(0, 1));
 		assertThrows(IllegalArgumentException.class, () -> testModel.visible(1));
 	}
 

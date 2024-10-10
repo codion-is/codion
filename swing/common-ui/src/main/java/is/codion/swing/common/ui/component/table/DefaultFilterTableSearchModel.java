@@ -175,7 +175,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 			return;
 		}
 		Predicate<String> searchPredicate = predicate.get();
-		List<FilterTableColumn<C>> visibleColumns = columnModel.visible();
+		List<FilterTableColumn<C>> visibleColumns = columnModel.visible().columns();
 		for (int row = 0; row < tableModel.items().visible().count(); row++) {
 			for (int columnIndex = 0; columnIndex < visibleColumns.size(); columnIndex++) {
 				FilterTableColumn<C> column = visibleColumns.get(columnIndex);

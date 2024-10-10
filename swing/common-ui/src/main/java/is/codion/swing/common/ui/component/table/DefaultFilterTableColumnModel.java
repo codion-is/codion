@@ -38,8 +38,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C> {
@@ -47,22 +46,24 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	private final DefaultTableColumnModel tableColumnModel = new DefaultTableColumnModel();
 	private final Event<C> columnHidden = Event.event();
 	private final Event<C> columnShown = Event.event();
-	private final Map<C, FilterTableColumn<C>> columns = new LinkedHashMap<>();
+	private final Map<C, FilterTableColumn<C>> columns;
 	private final Map<Integer, C> columnIdentifiers = new HashMap<>();
-	private final Map<C, HiddenColumn> hiddenColumns = new LinkedHashMap<>();
+	private final Map<C, HiddenColumn> hiddenColumnMap = new LinkedHashMap<>();
 	private final Map<C, State> visibleStates = new HashMap<>();
 	private final State locked = State.state();
+	private final DefaultVisibleColumns visibleColumns = new DefaultVisibleColumns();
+	private final DefaultHiddenColumns hiddenColumns = new DefaultHiddenColumns();
 
 	DefaultFilterTableColumnModel(List<FilterTableColumn<C>> tableColumns) {
-		if (requireNonNull(tableColumns, "columns").isEmpty()) {
+		if (requireNonNull(tableColumns).isEmpty()) {
 			throw new IllegalArgumentException("One or more columns must be specified");
 		}
-		tableColumns.forEach(this::initializeColumn);
+		this.columns = initializeColumns(tableColumns);
 	}
 
 	@Override
 	public Collection<FilterTableColumn<C>> columns() {
-		return unmodifiableCollection(columns.values());
+		return columns.values();
 	}
 
 	@Override
@@ -71,45 +72,13 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	@Override
-	public void setVisibleColumns(C... identifiers) {
-		setVisibleColumns(asList(identifiers));
+	public VisibleColumns<C> visible() {
+		return visibleColumns;
 	}
 
 	@Override
-	public void setVisibleColumns(List<C> identifiers) {
-		requireNonNull(identifiers);
-		identifiers.forEach(this::validateColumn);
-		int columnIndex = 0;
-		for (C identifier : identifiers) {
-			visibleStates.get(identifier).set(true);
-			moveColumn(getColumnIndex(identifier), columnIndex++);
-		}
-		for (FilterTableColumn<C> column : columns()) {
-			if (!identifiers.contains(column.identifier())) {
-				visibleStates.get(column.identifier()).set(false);
-			}
-		}
-		if (!identifiers.isEmpty()) {
-			tableColumnModel.getSelectionModel().setSelectionInterval(0, 0);
-		}
-	}
-
-	@Override
-	public List<FilterTableColumn<C>> visible() {
-		List<FilterTableColumn<C>> tableColumns = new ArrayList<>(tableColumnModel.getColumnCount());
-		Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
-		while (columnEnumeration.hasMoreElements()) {
-			tableColumns.add((FilterTableColumn<C>) columnEnumeration.nextElement());
-		}
-
-		return unmodifiableList(tableColumns);
-	}
-
-	@Override
-	public Collection<FilterTableColumn<C>> hidden() {
-		return unmodifiableCollection(hiddenColumns.values().stream()
-						.map(hiddenColumn -> hiddenColumn.column)
-						.collect(Collectors.toList()));
+	public HiddenColumns<C> hidden() {
+		return hiddenColumns;
 	}
 
 	@Override
@@ -144,7 +113,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 
 	@Override
 	public void resetColumns() {
-		setVisibleColumns(new ArrayList<>(columns.keySet()));
+		visibleColumns.set(new ArrayList<>(columns.keySet()));
 	}
 
 	/* TableColumnModel implementation begins */
@@ -256,12 +225,17 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		return columnShown.observer();
 	}
 
-	private void initializeColumn(FilterTableColumn<C> column) {
-		C identifier = column.identifier();
-		columns.put(identifier, column);
-		columnIdentifiers.put(column.getModelIndex(), identifier);
-		tableColumnModel.addColumn(column);
-		visibleStates.put(identifier, createVisibleState(identifier));
+	private Map<C, FilterTableColumn<C>> initializeColumns(List<FilterTableColumn<C>> tableColumns) {
+		Map<C, FilterTableColumn<C>> columnMap = new LinkedHashMap<>();
+		for (FilterTableColumn<C> column : tableColumns) {
+			C identifier = column.identifier();
+			columnMap.put(identifier, column);
+			columnIdentifiers.put(column.getModelIndex(), identifier);
+			tableColumnModel.addColumn(column);
+			visibleStates.put(identifier, createVisibleState(identifier));
+		}
+
+		return unmodifiableMap(columnMap);
 	}
 
 	private State createVisibleState(C identifier) {
@@ -291,9 +265,9 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	private void showColumn(C identifier) {
-		HiddenColumn column = hiddenColumns.get(identifier);
+		HiddenColumn column = hiddenColumnMap.get(identifier);
 		if (column != null) {
-			hiddenColumns.remove(identifier);
+			hiddenColumnMap.remove(identifier);
 			tableColumnModel.addColumn(column.column);
 			tableColumnModel.moveColumn(getColumnCount() - 1, column.indexWhenShown());
 			columnShown.accept(identifier);
@@ -301,9 +275,9 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	private void hideColumn(C identifier) {
-		if (!hiddenColumns.containsKey(identifier)) {
+		if (!hiddenColumnMap.containsKey(identifier)) {
 			HiddenColumn hiddenColumn = new HiddenColumn(column(identifier));
-			hiddenColumns.put(identifier, hiddenColumn);
+			hiddenColumnMap.put(identifier, hiddenColumn);
 			tableColumnModel.removeColumn(hiddenColumn.column);
 			columnHidden.accept(identifier);
 		}
@@ -339,6 +313,98 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 			}
 
 			return tableColumnModel.getColumnCount() - 1;
+		}
+	}
+
+	private final class DefaultVisibleColumns implements VisibleColumns<C> {
+
+		private final Event<List<C>> event = Event.event();
+
+		private DefaultVisibleColumns() {
+			columnHidden.addListener(this::changed);
+			columnShown.addListener(this::changed);
+		}
+
+		@Override
+		public void set(C... identifiers) {
+			set(asList(identifiers));
+		}
+
+		@Override
+		public void set(List<C> identifiers) {
+			requireNonNull(identifiers);
+			identifiers.forEach(DefaultFilterTableColumnModel.this::validateColumn);
+			int columnIndex = 0;
+			for (C identifier : identifiers) {
+				visibleStates.get(identifier).set(true);
+				moveColumn(getColumnIndex(identifier), columnIndex++);
+			}
+			for (FilterTableColumn<C> column : columns()) {
+				if (!identifiers.contains(column.identifier())) {
+					visibleStates.get(column.identifier()).set(false);
+				}
+			}
+			if (!identifiers.isEmpty()) {
+				tableColumnModel.getSelectionModel().setSelectionInterval(0, 0);
+			}
+		}
+
+		@Override
+		public List<C> get() {
+			return columns().stream()
+							.map(FilterTableColumn::identifier)
+							.collect(Collectors.toList());
+		}
+
+		@Override
+		public List<FilterTableColumn<C>> columns() {
+			List<FilterTableColumn<C>> tableColumns = new ArrayList<>(tableColumnModel.getColumnCount());
+			Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
+			while (columnEnumeration.hasMoreElements()) {
+				tableColumns.add((FilterTableColumn<C>) columnEnumeration.nextElement());
+			}
+
+			return unmodifiableList(tableColumns);
+		}
+
+		@Override
+		public Observer<List<C>> observer() {
+			return event.observer();
+		}
+
+		private void changed() {
+			event.accept(get());
+		}
+	}
+
+	private final class DefaultHiddenColumns implements HiddenColumns<C> {
+
+		private final Event<Collection<C>> event = Event.event();
+
+		private DefaultHiddenColumns() {
+			columnHidden.addListener(this::changed);
+			columnShown.addListener(this::changed);
+		}
+
+		@Override
+		public Collection<C> get() {
+			return unmodifiableCollection(hiddenColumnMap.keySet());
+		}
+
+		@Override
+		public Observer<Collection<C>> observer() {
+			return event.observer();
+		}
+
+		@Override
+		public Collection<FilterTableColumn<C>> columns() {
+			return unmodifiableCollection(hiddenColumnMap.values().stream()
+							.map(hiddenColumn -> hiddenColumn.column)
+							.collect(Collectors.toList()));
+		}
+
+		private void changed() {
+			event.accept(get());
 		}
 	}
 }

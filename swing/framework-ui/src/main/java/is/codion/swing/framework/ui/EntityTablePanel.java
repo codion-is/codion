@@ -1467,7 +1467,7 @@ public class EntityTablePanel extends JPanel {
 		if (configuration.includeConditions) {
 			TableConditionPanel<Attribute<?>> conditionPanel = configuration.conditionPanelFactory
 							.create(tableModel.queryModel().conditions(), createConditionPanels(),
-											table.getColumnModel(), this::configureTableConditionPanel);
+											table.columnModel(), this::configureTableConditionPanel);
 			KeyEvents.builder(VK_ENTER)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.action(conditionRefreshControl)
@@ -1553,7 +1553,7 @@ public class EntityTablePanel extends JPanel {
 	private void setupComponents() {
 		tableScrollPane.setViewportView(table());
 		tablePanel.initialize();
-		table.getColumnModel().columns().forEach(this::configureColumn);
+		table.columnModel().columns().forEach(this::configureColumn);
 		summaryPanelVisibleState.addValidator(new ComponentAvailableValidator(summaryPanel, "summary"));
 	}
 
@@ -1711,7 +1711,7 @@ public class EntityTablePanel extends JPanel {
 
 	private Map<Attribute<?>, ColumnPreferences> createColumnPreferences() {
 		Map<Attribute<?>, ColumnPreferences> columnPreferencesMap = new HashMap<>();
-		FilterTableColumnModel<Attribute<?>> columnModel = table.getColumnModel();
+		FilterTableColumnModel<Attribute<?>> columnModel = table.columnModel();
 		for (FilterTableColumn<Attribute<?>> column : columnModel.columns()) {
 			Attribute<?> attribute = column.identifier();
 			int index = columnModel.visible(attribute).get() ? columnModel.getColumnIndex(attribute) : -1;
@@ -1744,8 +1744,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Collection<Attribute<?>> selectAttributes() {
-		FilterTableColumnModel<Attribute<?>> columnModel = table.getColumnModel();
-		if (queryHiddenColumns.get() || columnModel.hidden().isEmpty()) {
+		FilterTableColumnModel<Attribute<?>> columnModel = table.columnModel();
+		if (queryHiddenColumns.get() || columnModel.hidden().get().isEmpty()) {
 			return emptyList();
 		}
 
@@ -1755,7 +1755,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private boolean columnNotHidden(Attribute<?> attribute) {
-		return !table.getColumnModel().containsColumn(attribute) || table.getColumnModel().visible(attribute).get();
+		return !table.columnModel().containsColumn(attribute) || table.columnModel().visible(attribute).get();
 	}
 
 	private OrderBy orderByFromSortModel() {
@@ -1806,12 +1806,12 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void applyColumnPreferences(String preferencesString) {
-		List<Attribute<?>> columnAttributes = table.getColumnModel().columns().stream()
+		List<Attribute<?>> columnAttributes = table.columnModel().columns().stream()
 						.map(FilterTableColumn::identifier)
 						.collect(toList());
 		try {
 			ColumnPreferences.apply(this, columnAttributes, preferencesString, (attribute, columnWidth) ->
-							table.getColumnModel().column(attribute).setPreferredWidth(columnWidth));
+							table.columnModel().column(attribute).setPreferredWidth(columnWidth));
 		}
 		catch (Exception e) {
 			LOG.error("Error while applying column preferences: {}", preferencesString, e);
@@ -1941,7 +1941,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private static boolean containsSummaryModels(FilterTable<Entity, Attribute<?>> table) {
-		return table.getColumnModel().columns().stream()
+		return table.columnModel().columns().stream()
 						.map(FilterTableColumn::identifier)
 						.map(table.summaryModel()::summaryModel)
 						.anyMatch(Optional::isPresent);
@@ -1961,7 +1961,7 @@ public class EntityTablePanel extends JPanel {
 			Component component = wrappedRenderer == null ?
 							table.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
 							wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			FilterTableColumn<Attribute<?>> tableColumn = table().getColumnModel().getColumn(column);
+			FilterTableColumn<Attribute<?>> tableColumn = table().columnModel().getColumn(column);
 			TableCellRenderer renderer = tableColumn.getCellRenderer();
 			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
 							&& ((FilterTableCellRenderer) renderer).columnShading()
@@ -2738,12 +2738,12 @@ public class EntityTablePanel extends JPanel {
 				return null;
 			}
 
-			return filterTableColumnComponentPanel(table.getColumnModel(), columnSummaryPanels);
+			return filterTableColumnComponentPanel(table.columnModel(), columnSummaryPanels);
 		}
 
 		private Map<Attribute<?>, JComponent> createColumnSummaryPanels() {
 			Map<Attribute<?>, JComponent> components = new HashMap<>();
-			table.getColumnModel().columns().forEach(column ->
+			table.columnModel().columns().forEach(column ->
 							table.summaryModel().summaryModel(column.identifier())
 											.ifPresent(columnSummaryModel ->
 															components.put(column.identifier(), columnSummaryPanel(columnSummaryModel,

@@ -290,7 +290,7 @@ public final class FilterTable<R, C> extends JTable {
 	public void updateUI() {
 		super.updateUI();
 		Utilities.updateUI(getTableHeader(), searchField, filterPanel);
-		Utilities.updateUI(columnModel().hidden().stream()
+		Utilities.updateUI(columnModel().hidden().columns().stream()
 						.flatMap(FilterTable::columnComponents)
 						.collect(toList()));
 	}
@@ -1415,9 +1415,9 @@ public final class FilterTable<R, C> extends JTable {
 											.boxed()
 											.collect(toList());
 
-			List<FilterTableColumn<C>> columns = new ArrayList<>(columnModel().visible());
+			List<FilterTableColumn<C>> columns = new ArrayList<>(columnModel().visible().columns());
 			if (hidden) {
-				columns.addAll(columnModel().hidden());
+				columns.addAll(columnModel().hidden().columns());
 			}
 
 			List<List<String>> lines = new ArrayList<>();
