@@ -93,7 +93,7 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	/**
 	 * @return an unmodifiable view of the condition panels
 	 */
-	public abstract Map<C, ConditionPanel<?>> panels();
+	public abstract Map<C, ConditionPanel<?>> get();
 
 	/**
 	 * By default this returns all condition panels, override to customize.
@@ -101,7 +101,7 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @see #select(JComponent)
 	 */
 	public Map<C, ConditionPanel<?>> selectable() {
-		return panels();
+		return get();
 	}
 
 	/**
@@ -110,9 +110,9 @@ public abstract class ColumnConditionsPanel<C> extends JPanel {
 	 * @return the condition panel associated with the given column
 	 * @throws IllegalStateException in case no panel is available
 	 */
-	public <T extends ConditionPanel<?>> T panel(C identifier) {
+	public <T extends ConditionPanel<?>> T get(C identifier) {
 		requireNonNull(identifier);
-		ConditionPanel<?> conditionPanel = panels().get(identifier);
+		ConditionPanel<?> conditionPanel = get().get(identifier);
 		if (conditionPanel == null) {
 			throw new IllegalStateException("No condition panel available for " + identifier);
 		}

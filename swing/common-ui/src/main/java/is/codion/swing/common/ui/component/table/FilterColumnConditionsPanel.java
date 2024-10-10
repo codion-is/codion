@@ -64,7 +64,7 @@ public final class FilterColumnConditionsPanel<C> extends ColumnConditionsPanel<
 	}
 
 	@Override
-	public Map<C, ConditionPanel<?>> panels() {
+	public Map<C, ConditionPanel<?>> get() {
 		return conditionPanels;
 	}
 

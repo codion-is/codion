@@ -22,6 +22,7 @@ Codion Change Log
 - ColumnConditionPanel.caption() removed, related refactoring.
 - ColumnConditionsPanel captions function added as constructor parameter.
 - ColumnConditionPanel renamed ConditionPanel.
+- ColumnConditionsPanel.panels() and panel() renamed get().
 ### is.codion.framework.domain
 - Entity.copy(), copyBuilder() and deepCopy() moved to Entity.Copy, renamed mutable(), builder() and deep() respectively, immutable() added.
 - ImmutableEntity bug fixed, StackOverflowError when creating an immutable entity with cyclical foreign key dependencies, some refactoring.
