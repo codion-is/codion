@@ -31,7 +31,7 @@ import is.codion.framework.model.DetailModelLink;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.border.Borders;
-import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
@@ -765,13 +765,13 @@ public class EntityPanel extends JPanel {
 			tablePanel.configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITIONS).ifPresent(keyEvent ->
+			tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITION_VIEW).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
 			tablePanel.configuration.controlMap.keyEvent(SELECT_CONDITION).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(TOGGLE_FILTERS).ifPresent(keyEvent ->
+			tablePanel.configuration.controlMap.keyEvent(TOGGLE_FILTER_VIEW).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
 			tablePanel.configuration.controlMap.keyEvent(SELECT_FILTER).ifPresent(keyEvent ->
@@ -784,13 +784,13 @@ public class EntityPanel extends JPanel {
 				tablePanel.configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITIONS).ifPresent(keyEvent ->
+				tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITION_VIEW).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
 				tablePanel.configuration.controlMap.keyEvent(SELECT_CONDITION).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(TOGGLE_FILTERS).ifPresent(keyEvent ->
+				tablePanel.configuration.controlMap.keyEvent(TOGGLE_FILTER_VIEW).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
 				tablePanel.configuration.controlMap.keyEvent(SELECT_FILTER).ifPresent(keyEvent ->
@@ -1702,16 +1702,16 @@ public class EntityPanel extends JPanel {
 		Builder refreshWhenInitialized(boolean refreshWhenInitialized);
 
 		/**
-		 * @param conditionState the initial condition panel state
+		 * @param conditionView the initial condition panel view
 		 * @return this builder instance
 		 */
-		Builder conditionState(ConditionState conditionState);
+		Builder conditionView(ConditionView conditionView);
 
 		/**
-		 * @param filterState the initial filter panel state
+		 * @param filterView the initial filter panel view
 		 * @return this builder instance
 		 */
-		Builder filterState(ConditionState filterState);
+		Builder filterView(ConditionView filterView);
 
 		/**
 		 * @param detailLayout provides the detail panel layout to use

@@ -29,28 +29,28 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState.*;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A base class for a UI component based on a {@link ConditionModel}.
+ * An abstract base class for a UI component based on a {@link ConditionModel}.
  * @param <T> the condition value type
  */
 public abstract class ConditionPanel<T> extends JPanel {
 
 	private final ConditionModel<T> condition;
-	private final Value<ConditionState> conditionState = Value.builder()
+	private final Value<ConditionView> conditionView = Value.builder()
 					.nonNull(HIDDEN)
-					.consumer(this::onStateChanged)
+					.consumer(this::onViewChanged)
 					.build();
 	private final State hiddenState = State.state(true);
 	private final State simpleState = State.state();
 	private final State advancedState = State.state();
 
 	/**
-	 * The available condition panel states
+	 * The available condition panel views
 	 */
-	public enum ConditionState {
+	public enum ConditionView {
 		/**
 		 * The condition panel is hidden.
 		 */
@@ -82,10 +82,10 @@ public abstract class ConditionPanel<T> extends JPanel {
 	}
 
 	/**
-	 * @return the {@link Value} controlling the condition panel state
+	 * @return the {@link Value} controlling the condition panel view
 	 */
-	public final Value<ConditionState> state() {
-		return conditionState;
+	public final Value<ConditionView> conditionView() {
+		return conditionView;
 	}
 
 	/**
@@ -106,32 +106,32 @@ public abstract class ConditionPanel<T> extends JPanel {
 		return Optional.empty();
 	}
 
-	protected abstract void onStateChanged(ConditionState state);
+	protected abstract void onViewChanged(ConditionView conditionView);
 
 	private void configureStates() {
 		State.group(hiddenState, simpleState, advancedState);
-		hiddenState.addConsumer(new StateConsumer(HIDDEN));
-		simpleState.addConsumer(new StateConsumer(SIMPLE));
-		advancedState.addConsumer(new StateConsumer(ADVANCED));
-		conditionState.addConsumer(state -> {
-			hiddenState.set(state == HIDDEN);
-			simpleState.set(state == SIMPLE);
-			advancedState.set(state == ADVANCED);
+		hiddenState.addConsumer(new ViewConsumer(HIDDEN));
+		simpleState.addConsumer(new ViewConsumer(SIMPLE));
+		advancedState.addConsumer(new ViewConsumer(ADVANCED));
+		conditionView.addConsumer(view -> {
+			hiddenState.set(view == HIDDEN);
+			simpleState.set(view == SIMPLE);
+			advancedState.set(view == ADVANCED);
 		});
 	}
 
-	private final class StateConsumer implements Consumer<Boolean> {
+	private final class ViewConsumer implements Consumer<Boolean> {
 
-		private final ConditionState state;
+		private final ConditionView conditionView;
 
-		private StateConsumer(ConditionState state) {
-			this.state = state;
+		private ViewConsumer(ConditionView conditionView) {
+			this.conditionView = conditionView;
 		}
 
 		@Override
 		public void accept(Boolean enabled) {
 			if (enabled) {
-				conditionState.set(state);
+				ConditionPanel.this.conditionView.set(conditionView);
 			}
 		}
 	}

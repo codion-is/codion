@@ -21,7 +21,7 @@ package is.codion.tools.monitor.ui;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
@@ -71,7 +71,7 @@ public final class ClientMonitorPanel extends JPanel {
 		clientInstanceTable = FilterTable.builder(model.clientInstanceTableModel(), createColumns())
 						.popupMenu(this::createPopupMenu)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.filterState(ConditionState.SIMPLE)
+						.filterView(ConditionView.SIMPLE)
 						.build();
 		clientInstanceScroller = scrollPane(clientInstanceTable)
 						.border(BorderFactory.createTitledBorder("Clients"))
@@ -157,8 +157,8 @@ public final class ClientMonitorPanel extends JPanel {
 	}
 
 	private void toggleAdvancedFilters(boolean advanced) {
-		clientInstanceTable.filters().state().set(advanced ?
-						ConditionState.ADVANCED : ConditionState.SIMPLE);
+		clientInstanceTable.filters().conditionView().set(advanced ?
+						ConditionView.ADVANCED : ConditionView.SIMPLE);
 		revalidate();
 	}
 

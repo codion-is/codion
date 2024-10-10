@@ -170,7 +170,7 @@ public interface ConditionModel<T> {
 	boolean accepts(Comparable<T> value);
 
 	/**
-	 * @return an observer notified each time the condition state changes
+	 * @return an observer notified each time the condition changes
 	 */
 	Observer<?> changed();
 

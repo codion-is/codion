@@ -21,10 +21,12 @@
 |*BETWEEN*| ≤ α ≤ |Between an upper and lower bound, including the bounds
 |*NOT BETWEEN EXCLUSIVE*| ≥ α ≥ |Not between an upper and lower bound, excluding the bounds
 |*NOT BETWEEN*| > α > |Not between an upper and lower bound, including the bounds
+|*IN*| α ∈ |In a set of values
+|*NOT IN*| α ∉ |Not in a set of values
 |===
 
 Each table has an associated search panel, which can be displayed by using the button highlighted in the screenshot below.
-This button toggles through the available search panel states; *hidden*, *visible* and *advanced*.
+This button toggles through the available search panel views; *hidden*, *simple* and *advanced*.
 
 image::search/search_cleared.png[Search,cleared]
 

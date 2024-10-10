@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
-import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.component.table.FilterTableConditionPanel;
 import is.codion.swing.common.ui.component.table.TableConditionPanel;
@@ -64,7 +64,7 @@ import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
-import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState.ADVANCED;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.ADVANCED;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.time.Month.DECEMBER;
@@ -93,7 +93,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		this.simpleConditionPanel = new SimpleConditionPanel(tableModel.queryModel().conditions(), tableModel);
 		this.advancedConditionPanel = filterTableConditionPanel(tableModel.queryModel().conditions(),
 						conditionPanels, columnModel, onPanelInitialized);
-		state().link(advancedConditionPanel.state());
+		conditionView().link(advancedConditionPanel.conditionView());
 	}
 
 	@Override
@@ -107,12 +107,12 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 	@Override
 	public Map<Attribute<?>, ConditionPanel<?>> selectable() {
-		return state().isEqualTo(ADVANCED) ? advancedConditionPanel.selectable() : simpleConditionPanel.panels();
+		return conditionView().isEqualTo(ADVANCED) ? advancedConditionPanel.selectable() : simpleConditionPanel.panels();
 	}
 
 	@Override
 	public <T extends ConditionPanel<?>> T get(Attribute<?> attribute) {
-		if (state().isNotEqualTo(ADVANCED)) {
+		if (conditionView().isNotEqualTo(ADVANCED)) {
 			return (T) simpleConditionPanel.panel(attribute);
 		}
 
@@ -125,9 +125,9 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 	}
 
 	@Override
-	protected void onStateChanged(ConditionState conditionState) {
+	protected void onViewChanged(ConditionView conditionView) {
 		removeAll();
-		switch (conditionState) {
+		switch (conditionView) {
 			case SIMPLE:
 				add(simpleConditionPanel, BorderLayout.CENTER);
 				simpleConditionPanel.activate();
@@ -222,7 +222,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			}
 
 			@Override
-			protected void onStateChanged(ConditionState state) {}
+			protected void onViewChanged(ConditionView conditionView) {}
 
 			private boolean isFocused() {
 				return searchField.hasFocus();
@@ -259,7 +259,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			}
 
 			@Override
-			protected void onStateChanged(ConditionState state) {}
+			protected void onViewChanged(ConditionView conditionView) {}
 
 			private void initializeUI() {
 				setLayout(new BorderLayout());

@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
-import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -58,6 +57,7 @@ import static is.codion.framework.demos.world.ui.LookupTablePanel.ExportFormat.C
 import static is.codion.framework.demos.world.ui.LookupTablePanel.ExportFormat.JSON;
 import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static is.codion.swing.common.ui.component.Components.toolBar;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.SIMPLE;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
@@ -106,7 +106,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	LookupTablePanel(SwingEntityTableModel lookupModel) {
 		super(lookupModel, config -> config
 						.showRefreshProgressBar(true)
-						.conditionState(ConditionState.SIMPLE));
+						.conditionView(SIMPLE));
 		columnSelectionPanelVisible.addConsumer(this::setColumnSelectionPanelVisible);
 		objectMapper = new WorldObjectMapperFactory().entityObjectMapper(lookupModel.entities());
 		objectMapper.setIncludeNullValues(false);

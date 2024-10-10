@@ -20,7 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -50,8 +50,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	private ImageIcon icon;
 	private boolean refreshWhenInitialized = true;
 	private Dimension preferredSize;
-	private ConditionState conditionState = EntityTablePanel.Config.CONDITION_STATE.get();
-	private ConditionState filterState = EntityTablePanel.Config.FILTER_STATE.get();
+	private ConditionView conditionView = EntityTablePanel.Config.CONDITION_VIEW.get();
+	private ConditionView filterView = EntityTablePanel.Config.FILTER_VIEW.get();
 	private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
 
 	private Class<? extends EntityPanel> panelClass;
@@ -128,14 +128,14 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	}
 
 	@Override
-	public EntityPanel.Builder conditionState(ConditionState conditionState) {
-		this.conditionState = requireNonNull(conditionState);
+	public EntityPanel.Builder conditionView(ConditionView conditionView) {
+		this.conditionView = requireNonNull(conditionView);
 		return this;
 	}
 
 	@Override
-	public EntityPanel.Builder filterState(ConditionState filterState) {
-		this.filterState = requireNonNull(filterState);
+	public EntityPanel.Builder filterView(ConditionView filterView) {
+		this.filterView = requireNonNull(filterView);
 		return this;
 	}
 
@@ -231,8 +231,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		requireNonNull(model, "model");
 		EntityPanel entityPanel = createPanel(model);
 		if (entityPanel.containsTablePanel()) {
-			entityPanel.tablePanel().conditions().state().set(conditionState);
-			entityPanel.tablePanel().table().filters().state().set(filterState);
+			entityPanel.tablePanel().conditions().conditionView().set(conditionView);
+			entityPanel.tablePanel().table().filters().conditionView().set(filterView);
 		}
 		if (!detailPanelBuilders.isEmpty()) {
 			for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {

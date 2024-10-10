@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 
 import java.awt.BorderLayout;
 import java.util.HashMap;
@@ -91,9 +91,9 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	}
 
 	@Override
-	protected void onStateChanged(ConditionState conditionState) {
-		conditionPanels.values().forEach(panel -> panel.state().set(conditionState));
-		switch (conditionState) {
+	protected void onViewChanged(ConditionView conditionView) {
+		conditionPanels.values().forEach(panel -> panel.conditionView().set(conditionView));
+		switch (conditionView) {
 			case HIDDEN:
 				remove(componentPanel);
 				break;
@@ -103,7 +103,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 				add(componentPanel, BorderLayout.CENTER);
 				break;
 			default:
-				throw new IllegalArgumentException("Unknown panel state: " + conditionState);
+				throw new IllegalArgumentException("Unknown condition view: " + conditionView);
 		}
 		revalidate();
 	}

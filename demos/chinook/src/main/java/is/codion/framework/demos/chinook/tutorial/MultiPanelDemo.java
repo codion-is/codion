@@ -24,13 +24,13 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Employee;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.demos.chinook.ui.EmployeeEditPanel;
-import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JPanel;
 
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.SIMPLE;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
@@ -56,7 +56,7 @@ public final class MultiPanelDemo {
 		JPanel basePanel = new JPanel(gridLayout(2, 2));
 		for (int i = 0; i < 4; i++) {
 			EntityPanel employeePanel = new EntityPanel(employeeModel, new EmployeeEditPanel(employeeModel.editModel()));
-			employeePanel.tablePanel().conditions().state().set(ConditionState.SIMPLE);
+			employeePanel.tablePanel().conditions().conditionView().set(SIMPLE);
 			employeePanel.initialize();
 			basePanel.add(employeePanel);
 		}

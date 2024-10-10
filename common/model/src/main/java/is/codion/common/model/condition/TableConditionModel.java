@@ -42,7 +42,7 @@ public interface TableConditionModel<C> {
 	 * The condition model associated with {@code identifier}
 	 * @param <T> the condition value type
 	 * @param identifier the identifier for which to retrieve the {@link ConditionModel}
-	 * @return the {@link ConditionModel} for the {@code identifier}
+	 * @return the {@link ConditionModel} associated with the given identifier
 	 * @throws IllegalArgumentException in case no condition model exists for the given identifier
 	 */
 	<T> ConditionModel<T> get(C identifier);

@@ -515,8 +515,8 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 		repaint();
 	}
 
-	protected void onStateChanged(ConditionState conditionState) {
-		switch (conditionState) {
+	protected void onViewChanged(ConditionView conditionView) {
+		switch (conditionView) {
 			case HIDDEN:
 				setHidden();
 				break;
@@ -527,7 +527,7 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 				setAdvanced();
 				break;
 			default:
-				throw new IllegalArgumentException("Unknown panel state: " + conditionState);
+				throw new IllegalArgumentException("Unknown condition view: " + conditionView);
 		}
 		revalidate();
 	}
@@ -621,7 +621,7 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 			boolean boundFieldHasFocus = boundFieldHasFocus();
 			clearInputPanel(boundFieldHasFocus);
 			inputPanel.add(boundField, BorderLayout.CENTER);
-			if (state().isEqualTo(ConditionState.SIMPLE)) {
+			if (conditionView().isEqualTo(ConditionView.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (boundFieldHasFocus) {
@@ -637,7 +637,7 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 			rangePanel.add(lowerBoundField);
 			rangePanel.add(upperBoundField);
 			inputPanel.add(rangePanel, BorderLayout.CENTER);
-			if (state().isEqualTo(ConditionState.SIMPLE)) {
+			if (conditionView().isEqualTo(ConditionView.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (boundFieldHasFocus) {

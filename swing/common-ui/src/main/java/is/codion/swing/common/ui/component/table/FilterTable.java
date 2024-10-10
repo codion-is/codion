@@ -39,7 +39,7 @@ import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
-import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
@@ -274,7 +274,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
 		this.controlMap.control(TOGGLE_SORT_COLUMN).set(createToggleSortColumnControl());
 		this.controlMap.control(TOGGLE_SORT_COLUMN_ADD).set(createToggleSortColumnAddControl());
-		filters().state().set(builder.filterState);
+		filters().conditionView().set(builder.filterView);
 		autoStartsEdit(builder.autoStartsEdit);
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);
@@ -1112,10 +1112,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> resizeRowToFitEditor(boolean resizeRowToFitEditor);
 
 		/**
-		 * @param filterState the initial filter condition panel state
+		 * @param filterView the initial filter condition view
 		 * @return this builder instance
 		 */
-		Builder<R, C> filterState(ConditionState filterState);
+		Builder<R, C> filterView(ConditionView filterView);
 
 		/**
 		 * @param controlKey the control key
@@ -1183,7 +1183,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean columnResizingAllowed = true;
 		private int autoResizeMode = AUTO_RESIZE_MODE.get();
 		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.get();
-		private ConditionState filterState = ConditionState.HIDDEN;
+		private ConditionView filterView = ConditionView.HIDDEN;
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = tableModel;
@@ -1283,8 +1283,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> filterState(ConditionState filterState) {
-			this.filterState = requireNonNull(filterState);
+		public Builder<R, C> filterView(ConditionView filterView) {
+			this.filterView = requireNonNull(filterView);
 			return this;
 		}
 

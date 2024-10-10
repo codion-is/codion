@@ -30,7 +30,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState.SIMPLE;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.SIMPLE;
 
 public final class InvoiceTablePanel extends EntityTablePanel {
 
@@ -38,7 +38,7 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 		super(tableModel, config -> config
 						.editable(attributes -> attributes.remove(Invoice.TOTAL))
 						.conditionPanelFactory(new InvoiceConditionPanelFactory(tableModel))
-						.conditionState(SIMPLE));
+						.conditionView(SIMPLE));
 	}
 
 	private static final class InvoiceConditionPanelFactory implements TableConditionPanel.Factory<Attribute<?>> {

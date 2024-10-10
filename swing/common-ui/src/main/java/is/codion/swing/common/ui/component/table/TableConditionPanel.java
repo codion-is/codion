@@ -26,7 +26,7 @@ import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -40,13 +40,13 @@ import java.util.function.Function;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionState.*;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A base class for a UI component based on a {@link TableConditionModel}.
+ * An abstract base class for a UI component based on a {@link TableConditionModel}.
  * @param <C> the type used to identify the table columns
  */
 public abstract class TableConditionPanel<C> extends JPanel {
@@ -56,13 +56,13 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 	private final TableConditionModel<C> tableConditionModel;
 	private final Function<C, String> captions;
-	private final Value<ConditionState> conditionState = Value.builder()
+	private final Value<ConditionView> conditionView = Value.builder()
 					.nonNull(HIDDEN)
-					.consumer(this::onStateChanged)
+					.consumer(this::onViewChanged)
 					.build();
-	private final State hiddenState = State.state(true);
-	private final State simpleState = State.state();
-	private final State advancedState = State.state();
+	private final State hiddenView = State.state(true);
+	private final State simpleView = State.state();
+	private final State advancedView = State.state();
 
 	/**
 	 * Instantiates a new {@link TableConditionPanel}
@@ -77,17 +77,10 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * @return the underlying {@link TableConditionModel}
+	 * @return the {@link Value} controlling the {@link ConditionView}
 	 */
-	public final TableConditionModel<C> conditions() {
-		return tableConditionModel;
-	}
-
-	/**
-	 * @return the {@link Value} controlling the condition panel state
-	 */
-	public final Value<ConditionState> state() {
-		return conditionState;
+	public final Value<ConditionView> conditionView() {
+		return conditionView;
 	}
 
 	/**
@@ -105,34 +98,34 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * @param <T> the column value type
-	 * @param identifier the column identifier
-	 * @return the condition panel associated with the given column
-	 * @throws IllegalStateException in case no panel is available
+	 * @param <T> the condition panel type
+	 * @param identifier the identifier for which to retrieve the {@link ConditionPanel}
+	 * @return the {@link ConditionPanel} associated with the given identifier
+	 * @throws IllegalArgumentException in case no panel is available
 	 */
 	public <T extends ConditionPanel<?>> T get(C identifier) {
 		requireNonNull(identifier);
 		ConditionPanel<?> conditionPanel = get().get(identifier);
 		if (conditionPanel == null) {
-			throw new IllegalStateException("No condition panel available for " + identifier);
+			throw new IllegalArgumentException("No condition panel available for " + identifier);
 		}
 
 		return (T) conditionPanel;
 	}
 
 	/**
-	 * @return the controls provided by this condition panel, for example clearing the condition and toggling the condition state
+	 * @return the controls provided by this condition panel, for example clearing the condition and changing the condition view
 	 */
 	public Controls controls() {
 		return Controls.builder()
 						.control(Control.builder()
-										.toggle(hiddenState)
+										.toggle(hiddenView)
 										.name(MESSAGES.getString("hidden")))
 						.control(Control.builder()
-										.toggle(simpleState)
+										.toggle(simpleView)
 										.name(MESSAGES.getString("simple")))
 						.control(Control.builder()
-										.toggle(advancedState)
+										.toggle(advancedView)
 										.name(MESSAGES.getString("advanced")))
 						.separator()
 						.control(Control.builder()
@@ -153,7 +146,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 						.sorted(Text.collator())
 						.collect(toList());
 		if (panelItems.size() == 1) {
-			state().map(state -> state == HIDDEN ? SIMPLE : state);
+			conditionView().map(view -> view == HIDDEN ? SIMPLE : view);
 			panelItems.get(0).value().requestInputFocus();
 		}
 		else if (!panelItems.isEmpty()) {
@@ -163,27 +156,27 @@ public abstract class TableConditionPanel<C> extends JPanel {
 							.selectSingle()
 							.map(Item::value)
 							.ifPresent(conditionPanel -> {
-								state().map(state -> state == HIDDEN ? SIMPLE : state);
+								conditionView().map(view -> view == HIDDEN ? SIMPLE : view);
 								conditionPanel.requestInputFocus();
 							});
 		}
 	}
 
 	/**
-	 * Called each time the condition state changes, override to update this panel according to the state
-	 * @param conditionState the new condition state
+	 * Called each time the condition view changes, override to update this panel according to the state
+	 * @param conditionView the new condition view
 	 */
-	protected void onStateChanged(ConditionState conditionState) {}
+	protected void onViewChanged(ConditionView conditionView) {}
 
 	private void configureStates() {
-		State.group(hiddenState, simpleState, advancedState);
-		hiddenState.addConsumer(new StateConsumer(HIDDEN));
-		simpleState.addConsumer(new StateConsumer(SIMPLE));
-		advancedState.addConsumer(new StateConsumer(ADVANCED));
-		conditionState.addConsumer(state -> {
-			hiddenState.set(state == HIDDEN);
-			simpleState.set(state == SIMPLE);
-			advancedState.set(state == ADVANCED);
+		State.group(hiddenView, simpleView, advancedView);
+		hiddenView.addConsumer(new StateConsumer(HIDDEN));
+		simpleView.addConsumer(new StateConsumer(SIMPLE));
+		advancedView.addConsumer(new StateConsumer(ADVANCED));
+		conditionView.addConsumer(state -> {
+			hiddenView.set(state == HIDDEN);
+			simpleView.set(state == SIMPLE);
+			advancedView.set(state == ADVANCED);
 		});
 	}
 
@@ -212,16 +205,16 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 	private final class StateConsumer implements Consumer<Boolean> {
 
-		private final ConditionState state;
+		private final ConditionView view;
 
-		private StateConsumer(ConditionState state) {
-			this.state = state;
+		private StateConsumer(ConditionView view) {
+			this.view = view;
 		}
 
 		@Override
 		public void accept(Boolean enabled) {
 			if (enabled) {
-				conditionState.set(state);
+				conditionView.set(view);
 			}
 		}
 	}
