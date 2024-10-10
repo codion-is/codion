@@ -128,6 +128,7 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 	private final Event<?> focusGainedEvent = Event.event();
 	private final TableColumn tableColumn;
 	private final Function<Operator, String> operatorCaptions;
+	private final Fields fields = new Fields();
 
 	private JToggleButton toggleEnabledButton;
 	private JComboBox<Item<Operator>> operatorCombo;
@@ -167,7 +168,7 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 		switch (condition().operator().get()) {
 			case EQUAL:
 			case NOT_EQUAL:
-				equalField().ifPresent(JComponent::requestFocusInWindow);
+				fields.equal().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			case GREATER_THAN:
 			case GREATER_THAN_OR_EQUAL:
@@ -175,15 +176,15 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 			case BETWEEN:
 			case NOT_BETWEEN_EXCLUSIVE:
 			case NOT_BETWEEN:
-				lowerBoundField().ifPresent(JComponent::requestFocusInWindow);
+				fields.lowerBound().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			case LESS_THAN:
 			case LESS_THAN_OR_EQUAL:
-				upperBoundField().ifPresent(JComponent::requestFocusInWindow);
+				fields.upperBound().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			case IN:
 			case NOT_IN:
-				inField().ifPresent(JComponent::requestFocusInWindow);
+				fields.in().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			default:
 				throw new IllegalArgumentException(UNKNOWN_OPERATOR + condition().operator().get());
@@ -196,48 +197,63 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	/**
-	 * @return the condition operator combo box
+	 * @return the Fields used by this condition panel
 	 */
-	public JComboBox<Item<Operator>> operatorComboBox() {
-		initialize();
-
-		return operatorCombo;
+	public Fields fields() {
+		return fields;
 	}
 
 	/**
-	 * @return the JComponent used to specify the equal value
+	 * Provides the fields.
 	 */
-	public Optional<JComponent> equalField() {
-		initialize();
+	public final class Fields {
 
-		return Optional.ofNullable(equalField);
-	}
+		private Fields() {}
 
-	/**
-	 * @return the JComponent used to specify the upper bound
-	 */
-	public Optional<JComponent> upperBoundField() {
-		initialize();
+		/**
+		 * @return the condition operator combo box
+		 */
+		public JComboBox<Item<Operator>> operator() {
+			initialize();
 
-		return Optional.ofNullable(upperBoundField);
-	}
+			return operatorCombo;
+		}
 
-	/**
-	 * @return the JComponent used to specify the lower bound
-	 */
-	public Optional<JComponent> lowerBoundField() {
-		initialize();
+		/**
+		 * @return the JComponent used to specify the equal value
+		 */
+		public Optional<JComponent> equal() {
+			initialize();
 
-		return Optional.ofNullable(lowerBoundField);
-	}
+			return Optional.ofNullable(equalField);
+		}
 
-	/**
-	 * @return the JComponent used to specify the in values
-	 */
-	public Optional<JComponent> inField() {
-		initialize();
+		/**
+		 * @return the JComponent used to specify the upper bound
+		 */
+		public Optional<JComponent> upperBound() {
+			initialize();
 
-		return Optional.ofNullable(inField);
+			return Optional.ofNullable(upperBoundField);
+		}
+
+		/**
+		 * @return the JComponent used to specify the lower bound
+		 */
+		public Optional<JComponent> lowerBound() {
+			initialize();
+
+			return Optional.ofNullable(lowerBoundField);
+		}
+
+		/**
+		 * @return the JComponent used to specify the in values
+		 */
+		public Optional<JComponent> in() {
+			initialize();
+
+			return Optional.ofNullable(inField);
+		}
 	}
 
 	/**
