@@ -52,7 +52,7 @@ import static java.util.stream.Collectors.toList;
 public abstract class TableConditionPanel<C> extends JPanel {
 
 	private static final MessageBundle MESSAGES =
-					messageBundle(FilterColumnConditionPanel.class, getBundle(TableConditionPanel.class.getName()));
+					messageBundle(TableConditionPanel.class, getBundle(TableConditionPanel.class.getName()));
 
 	private final TableConditionModel<C> tableConditionModel;
 	private final Function<C, String> captions;
