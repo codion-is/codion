@@ -68,7 +68,7 @@ public interface EntityDefinition {
 	 * @return the condition provider associated with the given type
 	 * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionType
 	 */
-	ConditionProvider conditionProvider(ConditionType conditionType);
+	ConditionProvider condition(ConditionType conditionType);
 
 	/**
 	 * @return the validator for this entity type

@@ -544,7 +544,7 @@ public final class EntitiesTest {
 		assertNotNull(definition.primaryKey().generator());
 		assertTrue(definition.optimisticLocking());
 		assertTrue(definition.selectQuery().isPresent());
-		assertNotNull(definition.conditionProvider(Employee.CONDITION));
+		assertNotNull(definition.condition(Employee.CONDITION));
 		ColumnDefinition<String> nameDefinition = definition.columns().definition(Employee.NAME);
 		assertNotNull(nameDefinition.name());
 		assertNotNull(nameDefinition.expression());
@@ -554,7 +554,7 @@ public final class EntitiesTest {
 		assertNull(deserialized.primaryKey().generator());
 		assertFalse(deserialized.optimisticLocking());
 		assertFalse(deserialized.selectQuery().isPresent());
-		assertThrows(IllegalArgumentException.class, () -> deserialized.conditionProvider(Employee.CONDITION));
+		assertThrows(IllegalArgumentException.class, () -> deserialized.condition(Employee.CONDITION));
 		nameDefinition = deserialized.columns().definition(Employee.NAME);
 		assertNull(nameDefinition.name());
 		assertNull(nameDefinition.expression());

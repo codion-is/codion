@@ -42,6 +42,7 @@ Codion Change Log
 - ImmutableEntity bug fixed, StackOverflowError when creating an immutable entity with cyclical foreign key dependencies, some refactoring.
 - Entity.Copy.deep() removed.
 - EntityDefinition.backgroundColorProvider() and foregroundColorProvider() removed.
+- EntityDefinition.conditionProvider() renamed condition().
 ### is.codion.framework.db
 - EntityConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw DatabaseException.
 - EntityConnection.transaction() added along with Transactional and TransactionalResult.
