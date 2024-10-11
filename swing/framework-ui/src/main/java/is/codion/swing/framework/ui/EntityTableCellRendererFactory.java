@@ -49,7 +49,7 @@ public class EntityTableCellRendererFactory implements FilterTableCellRenderer.F
 	 * @param column the column
 	 * @return a builder for a {@link FilterTableCellRenderer} based on the given column
 	 */
-	protected final Builder<Attribute<?>> builder(FilterTableColumn<Attribute<?>> column) {
+	protected final Builder builder(FilterTableColumn<Attribute<?>> column) {
 		return new EntityTableCellRendererBuilder(tableModel, requireNonNull(column).identifier());
 	}
 

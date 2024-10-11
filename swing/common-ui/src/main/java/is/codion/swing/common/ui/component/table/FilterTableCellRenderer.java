@@ -130,7 +130,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 * @param columnClass the column class
 	 * @return a new {@link FilterTableCellRenderer.Builder} instance
 	 */
-	static <C> Builder<C> builder(C identifier, Class<?> columnClass) {
+	static <C> Builder builder(C identifier, Class<?> columnClass) {
 		return new DefaultFilterTableCellRendererBuilder<>(identifier, columnClass);
 	}
 
@@ -149,70 +149,69 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 
 	/**
 	 * Builds a {@link FilterTableCellRenderer}
-	 * @param <C> the column identifier type
 	 */
-	interface Builder<C> {
+	interface Builder {
 
 		/**
 		 * Used to indicate whether a filter condition is enabled for the column by shading it.
 		 * @param filter the filter condition model, may be null
 		 * @return this builder instance
 		 */
-		Builder<C> filter(ConditionModel<?> filter);
+		Builder filter(ConditionModel<?> filter);
 
 		/**
 		 * @param horizontalAlignment the horizontal alignment
 		 * @return this builder instance
 		 */
-		Builder<C> horizontalAlignment(int horizontalAlignment);
+		Builder horizontalAlignment(int horizontalAlignment);
 
 		/**
 		 * @param toolTipData true if the cell should display its contents in a tool tip
 		 * @return this builder instance
 		 */
-		Builder<C> toolTipData(boolean toolTipData);
+		Builder toolTipData(boolean toolTipData);
 
 		/**
 		 * @param columnShading true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
 		 * @return this builder instance
 		 */
-		Builder<C> columnShading(boolean columnShading);
+		Builder columnShading(boolean columnShading);
 
 		/**
 		 * @param alternateRowColoring true if alternate row coloring should be enabled
 		 * @return this builder instance
 		 */
-		Builder<C> alternateRowColoring(boolean alternateRowColoring);
+		Builder alternateRowColoring(boolean alternateRowColoring);
 
 		/**
 		 * @param leftPadding the left cell padding
 		 * @return this builder instance
 		 */
-		Builder<C> leftPadding(int leftPadding);
+		Builder leftPadding(int leftPadding);
 
 		/**
 		 * @param rightPadding the right cell padding
 		 * @return this builder instance
 		 */
-		Builder<C> rightPadding(int rightPadding);
+		Builder rightPadding(int rightPadding);
 
 		/**
 		 * @param string provides a String to display for a given cell value, formatted or otherwise
 		 * @return this builder instance
 		 */
-		Builder<C> string(Function<Object, String> string);
+		Builder string(Function<Object, String> string);
 
 		/**
 		 * @param background provides the background color
 		 * @return this builder instance
 		 */
-		Builder<C> background(ColorProvider background);
+		Builder background(ColorProvider background);
 
 		/**
 		 * @param foreground provides the foreground color
 		 * @return this builder instance
 		 */
-		Builder<C> foreground(ColorProvider foreground);
+		Builder foreground(ColorProvider foreground);
 
 		/**
 		 * @return a new {@link FilterTableCellRenderer} instance based on this builder

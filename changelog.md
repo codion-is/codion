@@ -36,6 +36,7 @@ Codion Change Log
 - FilterColumnConditionPanel renamed ColumnConditionPanel.
 - ConditionPanel.conditionView() and TableConditionPanel.conditionView() renamed view().
 - FilterTableCellRenderer.CellColors replaced with ColorProvider, Builder.foreground() and background() added, related refactoring.
+- FilterTableCellRenderer.Builder, column identifier type parameter removed.
 ### is.codion.framework.domain
 - Entity.copy(), copyBuilder() and deepCopy() moved to Entity.Copy, renamed mutable(), builder() and deep() respectively, immutable() added.
 - ImmutableEntity bug fixed, StackOverflowError when creating an immutable entity with cyclical foreign key dependencies, some refactoring.
