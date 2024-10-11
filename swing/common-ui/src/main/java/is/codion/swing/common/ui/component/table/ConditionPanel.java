@@ -39,13 +39,13 @@ import static java.util.Objects.requireNonNull;
 public abstract class ConditionPanel<T> extends JPanel {
 
 	private final ConditionModel<T> condition;
-	private final Value<ConditionView> conditionView = Value.builder()
+	private final Value<ConditionView> view = Value.builder()
 					.nonNull(HIDDEN)
 					.consumer(this::onViewChanged)
 					.build();
-	private final State hiddenState = State.state(true);
-	private final State simpleState = State.state();
-	private final State advancedState = State.state();
+	private final State hiddenView = State.state(true);
+	private final State simpleView = State.state();
+	private final State advancedView = State.state();
 
 	/**
 	 * The available condition panel views
@@ -84,8 +84,8 @@ public abstract class ConditionPanel<T> extends JPanel {
 	/**
 	 * @return the {@link Value} controlling the condition panel view
 	 */
-	public final Value<ConditionView> conditionView() {
-		return conditionView;
+	public final Value<ConditionView> view() {
+		return view;
 	}
 
 	/**
@@ -109,14 +109,14 @@ public abstract class ConditionPanel<T> extends JPanel {
 	protected abstract void onViewChanged(ConditionView conditionView);
 
 	private void configureStates() {
-		State.group(hiddenState, simpleState, advancedState);
-		hiddenState.addConsumer(new ViewConsumer(HIDDEN));
-		simpleState.addConsumer(new ViewConsumer(SIMPLE));
-		advancedState.addConsumer(new ViewConsumer(ADVANCED));
-		conditionView.addConsumer(view -> {
-			hiddenState.set(view == HIDDEN);
-			simpleState.set(view == SIMPLE);
-			advancedState.set(view == ADVANCED);
+		State.group(hiddenView, simpleView, advancedView);
+		hiddenView.addConsumer(new ViewConsumer(HIDDEN));
+		simpleView.addConsumer(new ViewConsumer(SIMPLE));
+		advancedView.addConsumer(new ViewConsumer(ADVANCED));
+		view.addConsumer(conditionView -> {
+			hiddenView.set(conditionView == HIDDEN);
+			simpleView.set(conditionView == SIMPLE);
+			advancedView.set(conditionView == ADVANCED);
 		});
 	}
 
@@ -131,7 +131,7 @@ public abstract class ConditionPanel<T> extends JPanel {
 		@Override
 		public void accept(Boolean enabled) {
 			if (enabled) {
-				ConditionPanel.this.conditionView.set(conditionView);
+				ConditionPanel.this.view.set(conditionView);
 			}
 		}
 	}

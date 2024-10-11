@@ -231,8 +231,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		requireNonNull(model, "model");
 		EntityPanel entityPanel = createPanel(model);
 		if (entityPanel.containsTablePanel()) {
-			entityPanel.tablePanel().conditions().conditionView().set(conditionView);
-			entityPanel.tablePanel().table().filters().conditionView().set(filterView);
+			entityPanel.tablePanel().conditions().view().set(conditionView);
+			entityPanel.tablePanel().table().filters().view().set(filterView);
 		}
 		if (!detailPanelBuilders.isEmpty()) {
 			for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {

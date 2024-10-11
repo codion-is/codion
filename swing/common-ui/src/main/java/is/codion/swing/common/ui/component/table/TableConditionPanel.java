@@ -56,7 +56,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 	private final TableConditionModel<C> tableConditionModel;
 	private final Function<C, String> captions;
-	private final Value<ConditionView> conditionView = Value.builder()
+	private final Value<ConditionView> view = Value.builder()
 					.nonNull(HIDDEN)
 					.consumer(this::onViewChanged)
 					.build();
@@ -79,8 +79,8 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	/**
 	 * @return the {@link Value} controlling the {@link ConditionView}
 	 */
-	public final Value<ConditionView> conditionView() {
-		return conditionView;
+	public final Value<ConditionView> view() {
+		return view;
 	}
 
 	/**
@@ -146,7 +146,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 						.sorted(Text.collator())
 						.collect(toList());
 		if (panelItems.size() == 1) {
-			conditionView().map(view -> view == HIDDEN ? SIMPLE : view);
+			view().map(conditionView -> conditionView == HIDDEN ? SIMPLE : conditionView);
 			panelItems.get(0).value().requestInputFocus();
 		}
 		else if (!panelItems.isEmpty()) {
@@ -156,7 +156,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 							.selectSingle()
 							.map(Item::value)
 							.ifPresent(conditionPanel -> {
-								conditionView().map(view -> view == HIDDEN ? SIMPLE : view);
+								view().map(conditionView -> conditionView == HIDDEN ? SIMPLE : conditionView);
 								conditionPanel.requestInputFocus();
 							});
 		}
@@ -173,10 +173,10 @@ public abstract class TableConditionPanel<C> extends JPanel {
 		hiddenView.addConsumer(new StateConsumer(HIDDEN));
 		simpleView.addConsumer(new StateConsumer(SIMPLE));
 		advancedView.addConsumer(new StateConsumer(ADVANCED));
-		conditionView.addConsumer(state -> {
-			hiddenView.set(state == HIDDEN);
-			simpleView.set(state == SIMPLE);
-			advancedView.set(state == ADVANCED);
+		view.addConsumer(conditionView -> {
+			hiddenView.set(conditionView == HIDDEN);
+			simpleView.set(conditionView == SIMPLE);
+			advancedView.set(conditionView == ADVANCED);
 		});
 	}
 
@@ -214,7 +214,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 		@Override
 		public void accept(Boolean enabled) {
 			if (enabled) {
-				conditionView.set(view);
+				TableConditionPanel.this.view.set(view);
 			}
 		}
 	}

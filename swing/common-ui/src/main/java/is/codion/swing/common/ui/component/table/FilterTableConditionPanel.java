@@ -92,7 +92,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	@Override
 	protected void onViewChanged(ConditionView conditionView) {
-		conditionPanels.values().forEach(panel -> panel.conditionView().set(conditionView));
+		conditionPanels.values().forEach(panel -> panel.view().set(conditionView));
 		switch (conditionView) {
 			case HIDDEN:
 				remove(componentPanel);

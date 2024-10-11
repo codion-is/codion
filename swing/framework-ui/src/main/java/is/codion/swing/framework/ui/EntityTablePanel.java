@@ -126,8 +126,7 @@ import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
-import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.ADVANCED;
-import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.SIMPLE;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.*;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -225,9 +224,9 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> REQUEST_TABLE_FOCUS = CommandControl.key("requestTableFocus", keyStroke(VK_T, CTRL_DOWN_MASK));
 		/**
-		 * Toggles the condition panel between the hidden, visible and advanced views.<br>
+		 * Toggles the condition panel between the hidden, simple and advanced views.<br>
 		 * Default key stroke: CTRL-ALT-S
-		 * @see TableConditionPanel#conditionView()
+		 * @see TableConditionPanel#view()
 		 */
 		public static final ControlKey<CommandControl> TOGGLE_CONDITION_VIEW = CommandControl.key("toggleConditionView", keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
@@ -236,9 +235,9 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> SELECT_CONDITION = CommandControl.key("selectCondition", keyStroke(VK_S, CTRL_DOWN_MASK));
 		/**
-		 * Toggles the filter panel between the hidden, visible and advanced views.<br>
+		 * Toggles the filter panel between the hidden, simple and advanced views.<br>
 		 * Default key stroke: CTRL-ALT-F
-		 * @see TableConditionPanel#conditionView()
+		 * @see TableConditionPanel#view()
 		 */
 		public static final ControlKey<CommandControl> TOGGLE_FILTER_VIEW = CommandControl.key("toggleFilterView", keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
@@ -1284,11 +1283,11 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void toggleConditionView() {
-		toggleView(conditions().conditionView(), conditionPanelScrollPane);
+		toggleView(conditions().view(), conditionPanelScrollPane);
 	}
 
 	private void toggleFilterView() {
-		toggleView(table.filters().conditionView(), filterPanelScrollPane);
+		toggleView(table.filters().view(), filterPanelScrollPane);
 	}
 
 	private void toggleView(Value<ConditionView> conditionView, JScrollPane conditionScrollPane) {
@@ -1459,7 +1458,7 @@ public class EntityTablePanel extends JPanel {
 						.floatable(false)
 						.rollover(false)
 						.visible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS ||
-										(tableConditionPanel != null && tableConditionPanel.conditionView().isNotEqualTo(ConditionView.HIDDEN)))
+										(tableConditionPanel != null && tableConditionPanel.view().isNotEqualTo(HIDDEN)))
 						.build();
 	}
 
@@ -1472,7 +1471,7 @@ public class EntityTablePanel extends JPanel {
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.action(conditionRefreshControl)
 							.enable(conditionPanel);
-			conditionPanel.conditionView().addConsumer(tablePanel::conditionViewChanged);
+			conditionPanel.view().addConsumer(tablePanel::conditionViewChanged);
 
 			return conditionPanel;
 		}
@@ -1559,10 +1558,10 @@ public class EntityTablePanel extends JPanel {
 
 	private void initializeConditionsAndFilters() {
 		if (configuration.includeConditions) {
-			tableConditionPanel.conditionView().set(configuration.conditionView);
+			tableConditionPanel.view().set(configuration.conditionView);
 		}
 		if (configuration.includeFilters) {
-			table().filters().conditionView().set(configuration.filterView);
+			table().filters().view().set(configuration.filterView);
 		}
 	}
 
@@ -1695,7 +1694,7 @@ public class EntityTablePanel extends JPanel {
 		if (conditionPanelHasFocus) {
 			focusManager.clearFocusOwner();
 		}
-		conditionView.set(ConditionView.HIDDEN);
+		conditionView.set(HIDDEN);
 		if (conditionPanelHasFocus) {
 			table.requestFocusInWindow();
 		}
@@ -2036,7 +2035,7 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final PropertyValue<ConditionView> CONDITION_VIEW =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".conditionView",
-										ConditionView.class, ConditionView.HIDDEN);
+										ConditionView.class, HIDDEN);
 
 		/**
 		 * Specifies the default initial table filter panel view
@@ -2047,7 +2046,7 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final PropertyValue<ConditionView> FILTER_VIEW =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".filterView",
-										ConditionView.class, ConditionView.HIDDEN);
+										ConditionView.class, HIDDEN);
 
 		/**
 		 * Specifies whether table summary panel should be visible or not by default
@@ -2681,8 +2680,8 @@ public class EntityTablePanel extends JPanel {
 			}
 			if (configuration.includeFilters) {
 				filterPanelScrollPane = createLinkedScrollPane(table.filters());
-				table.filters().conditionView().addConsumer(this::filterViewChanged);
-				if (table.filters().conditionView().isNotEqualTo(ConditionView.HIDDEN)) {
+				table.filters().view().addConsumer(this::filterViewChanged);
+				if (table.filters().view().isNotEqualTo(HIDDEN)) {
 					tableSouthPanel.add(filterPanelScrollPane, BorderLayout.SOUTH);
 				}
 			}
@@ -2691,8 +2690,8 @@ public class EntityTablePanel extends JPanel {
 		private void conditionViewChanged(ConditionView conditionView) {
 			initializeConditionPanel();
 			refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
-							|| conditionView != ConditionView.HIDDEN);
-			if (conditionView == ConditionView.HIDDEN) {
+							|| conditionView != HIDDEN);
+			if (conditionView == HIDDEN) {
 				remove(conditionPanelScrollPane);
 			}
 			else {
@@ -2704,11 +2703,11 @@ public class EntityTablePanel extends JPanel {
 		private void initializeConditionPanel() {
 			if (conditionPanelScrollPane == null) {
 				conditionPanelScrollPane = createLinkedScrollPane(tableConditionPanel);
-				if (tableConditionPanel.conditionView().isNotEqualTo(ConditionView.HIDDEN)) {
+				if (tableConditionPanel.view().isNotEqualTo(HIDDEN)) {
 					tablePanel.add(conditionPanelScrollPane, BorderLayout.NORTH);
 				}
 				refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
-								|| tableConditionPanel.conditionView().isNotEqualTo(ConditionView.HIDDEN));
+								|| tableConditionPanel.view().isNotEqualTo(HIDDEN));
 			}
 		}
 
@@ -2723,7 +2722,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void filterViewChanged(ConditionView conditionView) {
-			if (conditionView == ConditionView.HIDDEN) {
+			if (conditionView == HIDDEN) {
 				tableSouthPanel.remove(filterPanelScrollPane);
 			}
 			else {

@@ -274,7 +274,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
 		this.controlMap.control(TOGGLE_SORT_COLUMN).set(createToggleSortColumnControl());
 		this.controlMap.control(TOGGLE_SORT_COLUMN_ADD).set(createToggleSortColumnAddControl());
-		filters().conditionView().set(builder.filterView);
+		filters().view().set(builder.filterView);
 		autoStartsEdit(builder.autoStartsEdit);
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);

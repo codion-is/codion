@@ -93,7 +93,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		this.simpleConditionPanel = new SimpleConditionPanel(tableModel.queryModel().conditions(), tableModel);
 		this.advancedConditionPanel = filterTableConditionPanel(tableModel.queryModel().conditions(),
 						conditionPanels, columnModel, onPanelInitialized);
-		conditionView().link(advancedConditionPanel.conditionView());
+		view().link(advancedConditionPanel.view());
 	}
 
 	@Override
@@ -107,12 +107,12 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 	@Override
 	public Map<Attribute<?>, ConditionPanel<?>> selectable() {
-		return conditionView().isEqualTo(ADVANCED) ? advancedConditionPanel.selectable() : simpleConditionPanel.panels();
+		return view().isEqualTo(ADVANCED) ? advancedConditionPanel.selectable() : simpleConditionPanel.panels();
 	}
 
 	@Override
 	public <T extends ConditionPanel<?>> T get(Attribute<?> attribute) {
-		if (conditionView().isNotEqualTo(ADVANCED)) {
+		if (view().isNotEqualTo(ADVANCED)) {
 			return (T) simpleConditionPanel.panel(attribute);
 		}
 

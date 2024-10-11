@@ -634,7 +634,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			boolean boundFieldHasFocus = boundFieldHasFocus();
 			clearInputPanel(boundFieldHasFocus);
 			inputPanel.add(boundField, BorderLayout.CENTER);
-			if (conditionView().isEqualTo(ConditionView.SIMPLE)) {
+			if (view().isEqualTo(ConditionView.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (boundFieldHasFocus) {
@@ -650,7 +650,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			rangePanel.add(lowerBoundField);
 			rangePanel.add(upperBoundField);
 			inputPanel.add(rangePanel, BorderLayout.CENTER);
-			if (conditionView().isEqualTo(ConditionView.SIMPLE)) {
+			if (view().isEqualTo(ConditionView.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (boundFieldHasFocus) {

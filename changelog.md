@@ -34,6 +34,7 @@ Codion Change Log
 - FilterColumnConditionPanel bug fixed, did not link all components to locked state.
 - TableConditionPanel bug fixed, incorrect baseBundleName in MessageBundle.
 - FilterColumnConditionPanel renamed ColumnConditionPanel.
+- ConditionPanel.conditionView() and TableConditionPanel.conditionView() renamed view().
 ### is.codion.framework.domain
 - Entity.copy(), copyBuilder() and deepCopy() moved to Entity.Copy, renamed mutable(), builder() and deep() respectively, immutable() added.
 - ImmutableEntity bug fixed, StackOverflowError when creating an immutable entity with cyclical foreign key dependencies, some refactoring.
