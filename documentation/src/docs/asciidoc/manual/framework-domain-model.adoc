@@ -456,22 +456,6 @@ include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[t
 include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[tags=toString]
 ----
 
-== ColorProvider
-
-{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/ColorProvider.html[ColorProvider] is used to provide colors for attributes, used as foreground or background color in table cells for example.
-
-The framework supports String color definitions, in a format recognized by *java.awt.Color.decode()*, like the one below, in case you don't want a dependency on *java.awt.Color* in the domain model.
-
-[source,java,indent=0]
-----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=colorProvider]
-----
-
-[source,java,indent=0]
-----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=foreground]
-----
-
 == Validation
 
 Custom validation of Entities is performed by implementing a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityValidator.html[EntityValidator].

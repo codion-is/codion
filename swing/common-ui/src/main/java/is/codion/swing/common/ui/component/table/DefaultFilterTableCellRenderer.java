@@ -43,7 +43,8 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 	private final boolean columnShading;
 	private final boolean alternateRowColoring;
 	private final Function<Object, String> string;
-	private final CellColors<C> cellColors;
+	private final ColorProvider backgroundColor;
+	private final ColorProvider foregroundColor;
 
 	/**
 	 * @param builder the builder
@@ -58,7 +59,8 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 		this.columnShading = builder.columnShading;
 		this.alternateRowColoring = builder.alternateRowColoring;
 		this.string = builder.string;
-		this.cellColors = builder.cellColors;
+		this.backgroundColor = builder.backgroundColor;
+		this.foregroundColor = builder.foregroundColor;
 		setHorizontalAlignment(builder.horizontalAlignment);
 	}
 
@@ -89,10 +91,11 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																								 boolean hasFocus, int row, int column) {
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		setForeground(settings.foregroundColor(cellColors.foregroundColor(row, columnIdentifier, value, isSelected)));
+		FilterTable<?, C> filterTable = (FilterTable<?, C>) table;
+		setForeground(settings.foregroundColor(foregroundColor == null ? null : foregroundColor.color(filterTable, row, value)));
 		setBackground(settings.backgroundColor(filter, row, columnIdentifier, columnShading, isSelected,
-						cellColors.backgroundColor(row, columnIdentifier, value, isSelected)));
-		setBorder(hasFocus || isSearchResult(((FilterTable<?, ?>) table).searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
+						backgroundColor == null ? null : backgroundColor.color(filterTable, row, value)));
+		setBorder(hasFocus || isSearchResult(filterTable.searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 		if (toolTipData) {
 			setToolTipText(value == null ? "" : value.toString());
 		}
@@ -131,7 +134,8 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 		private final ConditionModel<?> filter;
 		private final boolean columnShading;
 		private final boolean alternateRowColoring;
-		private final CellColors<C> cellColors;
+		private final ColorProvider backgroundColor;
+		private final ColorProvider foregroundColor;
 
 		/**
 		 * @param builder the builder
@@ -145,7 +149,8 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 			this.filter = builder.filter;
 			this.columnShading = builder.columnShading;
 			this.alternateRowColoring = builder.alternateRowColoring;
-			this.cellColors = builder.cellColors;
+			this.backgroundColor = builder.backgroundColor;
+			this.foregroundColor = builder.foregroundColor;
 			setHorizontalAlignment(builder.horizontalAlignment);
 			setBorderPainted(true);
 		}
@@ -177,10 +182,11 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																									 boolean hasFocus, int row, int column) {
 			model().toggleState().set((Boolean) value);
-			setForeground(settings.foregroundColor(cellColors.foregroundColor(row, columnIdentifier, value, isSelected)));
+			FilterTable<?, C> filterTable = (FilterTable<?, C>) table;
+			setForeground(settings.foregroundColor(foregroundColor == null ? null : foregroundColor.color(filterTable, row, value)));
 			setBackground(settings.backgroundColor(filter, row, columnIdentifier, columnShading, isSelected,
-							cellColors.backgroundColor(row, columnIdentifier, value, isSelected)));
-			setBorder(hasFocus || isSearchResult(((FilterTable<?, ?>) table).searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
+							backgroundColor == null ? null : backgroundColor.color(filterTable, row, value)));
+			setBorder(hasFocus || isSearchResult(filterTable.searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 
 			return this;
 		}

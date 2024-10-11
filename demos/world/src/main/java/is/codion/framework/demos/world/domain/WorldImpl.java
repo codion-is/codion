@@ -104,9 +104,6 @@ public final class WorldImpl extends DomainModel {
 						// end::validator[]
 						.orderBy(ascending(City.NAME))
 						.stringFactory(City.NAME)
-						// tag::foreground[]
-						.foregroundColorProvider(new CityColorProvider())
-						// end::foreground[]
 						.description("Cities of the World")
 						.caption("City")
 						.build();

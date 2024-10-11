@@ -19,19 +19,31 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.demos.world.model.CityTableModel.PopulateLocationTask;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityTableCellRendererFactory;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.kordamp.ikonli.foundation.Foundation;
+
+import java.awt.Color;
+import java.util.Objects;
 
 final class CityTablePanel extends ChartTablePanel {
 
 	CityTablePanel(CityTableModel tableModel) {
 		super(tableModel, tableModel.chartDataset(), "Cities", config ->
-						config.editable(attributes -> attributes.remove(City.LOCATION)));
+						config.configureTable(builder -> builder
+														.cellRendererFactory(new CityCellRendererFactory(tableModel)))
+										.editable(attributes -> attributes.remove(City.LOCATION)));
 		configurePopupMenu(config -> config.clear()
 						.control(createPopulateLocationControl())
 						.separator()
@@ -71,5 +83,42 @@ final class CityTablePanel extends ChartTablePanel {
 						.owner(this)
 						.title("Unable to populate location")
 						.show(exception);
+	}
+
+	private static class CityCellRendererFactory extends EntityTableCellRendererFactory {
+
+		private CityCellRendererFactory(SwingEntityTableModel tableModel) {
+			super(tableModel);
+		}
+
+		@Override
+		public FilterTableCellRenderer create(FilterTableColumn<Attribute<?>> column) {
+			if (column.identifier().equals(City.POPULATION)) {
+				return builder(column)
+								.background((table, row, value) -> {
+									Integer population = (Integer) value;
+									if (population > 1_000_000) {
+										return Color.YELLOW;
+									}
+
+									return null;
+								})
+								.build();
+			}
+			if (column.identifier().equals(City.NAME)) {
+				return builder(column)
+								.background((table, row, value) -> {
+									Entity city = (Entity) table.model().items().visible().itemAt(row);
+									if (Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL))) {
+										return Color.GREEN;
+									}
+
+									return null;
+								})
+								.build();
+			}
+
+			return super.create(column);
+		}
 	}
 }

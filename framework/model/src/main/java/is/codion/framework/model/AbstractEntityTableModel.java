@@ -28,7 +28,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.ArrayList;
@@ -151,16 +150,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	@Override
 	public final State editable() {
 		return editable;
-	}
-
-	@Override
-	public Object backgroundColor(int row, Attribute<?> attribute) {
-		return entityDefinition().backgroundColorProvider().color(filterModel.items().visible().itemAt(row), requireNonNull(attribute));
-	}
-
-	@Override
-	public Object foregroundColor(int row, Attribute<?> attribute) {
-		return entityDefinition().foregroundColorProvider().color(filterModel.items().visible().itemAt(row), requireNonNull(attribute));
 	}
 
 	@Override

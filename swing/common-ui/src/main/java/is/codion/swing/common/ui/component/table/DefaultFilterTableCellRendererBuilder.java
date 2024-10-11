@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.CellColors;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.ColorProvider;
 
 import java.time.temporal.Temporal;
 import java.util.function.Function;
@@ -45,7 +45,8 @@ public class DefaultFilterTableCellRendererBuilder<C> implements FilterTableCell
 	int leftPadding = FilterTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
 	int rightPadding = FilterTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
 	Function<Object, String> string = new DefaultString();
-	CellColors<C> cellColors = new DefaultCellColors<>();
+	ColorProvider backgroundColor;
+	ColorProvider foregroundColor;
 
 	/**
 	 * Instantiates a new builder
@@ -118,8 +119,14 @@ public class DefaultFilterTableCellRendererBuilder<C> implements FilterTableCell
 	}
 
 	@Override
-	public final FilterTableCellRenderer.Builder<C> cellColors(CellColors<C> cellColors) {
-		this.cellColors = requireNonNull(cellColors);
+	public FilterTableCellRenderer.Builder<C> background(ColorProvider background) {
+		this.backgroundColor = requireNonNull(background);
+		return this;
+	}
+
+	@Override
+	public FilterTableCellRenderer.Builder<C> foreground(ColorProvider foreground) {
+		this.foregroundColor = requireNonNull(foreground);
 		return this;
 	}
 
@@ -160,6 +167,4 @@ public class DefaultFilterTableCellRendererBuilder<C> implements FilterTableCell
 			return value == null ? "" : value.toString();
 		}
 	}
-
-	private static final class DefaultCellColors<C> implements CellColors<C> {}
 }

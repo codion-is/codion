@@ -35,10 +35,12 @@ Codion Change Log
 - TableConditionPanel bug fixed, incorrect baseBundleName in MessageBundle.
 - FilterColumnConditionPanel renamed ColumnConditionPanel.
 - ConditionPanel.conditionView() and TableConditionPanel.conditionView() renamed view().
+- FilterTableCellRenderer.CellColors replaced with ColorProvider, Builder.foreground() and background() added, related refactoring.
 ### is.codion.framework.domain
 - Entity.copy(), copyBuilder() and deepCopy() moved to Entity.Copy, renamed mutable(), builder() and deep() respectively, immutable() added.
 - ImmutableEntity bug fixed, StackOverflowError when creating an immutable entity with cyclical foreign key dependencies, some refactoring.
 - Entity.Copy.deep() removed.
+- EntityDefinition.backgroundColorProvider() and foregroundColorProvider() removed.
 ### is.codion.framework.db
 - EntityConnection.rollbackTransaction() and commitTransaction() no longer ignore exceptions, now throw DatabaseException.
 - EntityConnection.transaction() added along with Transactional and TransactionalResult.
@@ -49,6 +51,7 @@ Codion Change Log
 - EntityConditions.AdditionalCondition moved to EntityQueryModel, additionalWhere() and additionalHaving() renamed where() and having() respectively.
 - EntityConditions renamed EntityConditionModel.
 - EntityColumnConditionFactory renamed AttributeConditionModelFactory.
+- EntityTableModel.backgroundColor() and foregroundColor() removed.
 ### is.codion.swing.framework.model
 - SwingEntityColumnConditionFactory renamed SwingAttributeConditionModelFactory
 ### is.codion.swing.framework.ui

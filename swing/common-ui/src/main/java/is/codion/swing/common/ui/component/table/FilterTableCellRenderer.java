@@ -135,32 +135,16 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	}
 
 	/**
-	 * Provides cell specific colors.
-	 * @param <C> the column identifier type
+	 * Provides a color to override the default color for table cells.
 	 */
-	interface CellColors<C> {
+	interface ColorProvider {
 
 		/**
 		 * @param row the row number
-		 * @param identifier the column identifier
-		 * @param cellValue the cell value
-		 * @param selected true if the cell is selected
-		 * @return a background Color for the given cell, null for none
+		 * @param value the cell value
+		 * @return the Color for the given cell, null for the default color
 		 */
-		default Color backgroundColor(int row, C identifier, Object cellValue, boolean selected) {
-			return null;
-		}
-
-		/**
-		 * @param row the row number
-		 * @param identifier the column identifier
-		 * @param cellValue the cell value
-		 * @param selected true if the cell is selected
-		 * @return a foreground Color for the given cell, null for none
-		 */
-		default Color foregroundColor(int row, C identifier, Object cellValue, boolean selected) {
-			return null;
-		}
+		Color color(FilterTable<?, ?> table, int row, Object value);
 	}
 
 	/**
@@ -219,10 +203,16 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		Builder<C> string(Function<Object, String> string);
 
 		/**
-		 * @param cellColors provides cell/row background and foreground color
+		 * @param background provides the background color
 		 * @return this builder instance
 		 */
-		Builder<C> cellColors(CellColors<C> cellColors);
+		Builder<C> background(ColorProvider background);
+
+		/**
+		 * @param foreground provides the foreground color
+		 * @return this builder instance
+		 */
+		Builder<C> foreground(ColorProvider foreground);
 
 		/**
 		 * @return a new {@link FilterTableCellRenderer} instance based on this builder

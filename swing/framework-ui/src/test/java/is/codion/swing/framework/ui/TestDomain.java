@@ -27,7 +27,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import java.awt.Color;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -285,13 +284,6 @@ public final class TestDomain extends DomainModel {
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
 						.caption("Employee")
-						.backgroundColorProvider((entity, attribute) -> {
-							if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {
-								return Color.CYAN;
-							}
-
-							return null;
-						})
 						.build());
 	}
 }

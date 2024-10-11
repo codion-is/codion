@@ -183,6 +183,13 @@ All we have to do is override *initializeUI*.
 include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeeEditPanel.java[tags=initializeUI]
 ----
 
+We extend *EntityTablePanel* for the employee entity in order to provide data specific cell coloring.
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeeTablePanel.java[]
+----
+
 [#_main_application_model]
 === Main application model
 

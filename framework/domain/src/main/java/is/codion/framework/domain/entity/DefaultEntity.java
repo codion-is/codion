@@ -57,7 +57,6 @@ class DefaultEntity implements Entity, Serializable {
 
 	static final DefaultKeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
 	static final DefaultStringFactory DEFAULT_STRING_FACTORY = new DefaultStringFactory();
-	static final NullColorProvider NULL_COLOR_PROVIDER = new NullColorProvider();
 	static final EntityValidator DEFAULT_VALIDATOR = new DefaultEntityValidator();
 	static final Predicate<Entity> DEFAULT_EXISTS = new DefaultEntityExists();
 

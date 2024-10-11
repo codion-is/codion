@@ -120,16 +120,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final Function<Entity, String> stringFactory;
 
 	/**
-	 * Provides the background color
-	 */
-	private final ColorProvider backgroundColorProvider;
-
-	/**
-	 * Provides the color
-	 */
-	private final ColorProvider foregroundColorProvider;
-
-	/**
 	 * The comparator
 	 */
 	private final Comparator<Entity> comparator;
@@ -202,8 +192,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		this.keyGenerated = builder.keyGenerated;
 		this.optimisticLocking = builder.optimisticLocking;
 		this.stringFactory = builder.stringFactory;
-		this.backgroundColorProvider = builder.backgroundColorProvider;
-		this.foregroundColorProvider = builder.foregroundColorProvider;
 		this.comparator = builder.comparator;
 		this.validator = builder.validator;
 		this.exists = builder.exists;
@@ -331,16 +319,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	@Override
 	public Predicate<Entity> exists() {
 		return exists;
-	}
-
-	@Override
-	public ColorProvider backgroundColorProvider() {
-		return backgroundColorProvider;
-	}
-
-	@Override
-	public ColorProvider foregroundColorProvider() {
-		return foregroundColorProvider;
 	}
 
 	@Override
@@ -863,8 +841,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private String selectTableName;
 		private SelectQuery selectQuery;
 		private Function<Entity, String> stringFactory = DefaultEntity.DEFAULT_STRING_FACTORY;
-		private ColorProvider backgroundColorProvider = DefaultEntity.NULL_COLOR_PROVIDER;
-		private ColorProvider foregroundColorProvider = DefaultEntity.NULL_COLOR_PROVIDER;
 		private Comparator<Entity> comparator = Text.collator();
 		private EntityValidator validator = DefaultEntity.DEFAULT_VALIDATOR;
 		private Predicate<Entity> exists = DefaultEntity.DEFAULT_EXISTS;
@@ -981,18 +957,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		@Override
 		public Builder stringFactory(Function<Entity, String> stringFactory) {
 			this.stringFactory = requireNonNull(stringFactory, "stringFactory");
-			return this;
-		}
-
-		@Override
-		public Builder backgroundColorProvider(ColorProvider backgroundColorProvider) {
-			this.backgroundColorProvider = requireNonNull(backgroundColorProvider, "backgroundColorProvider");
-			return this;
-		}
-
-		@Override
-		public Builder foregroundColorProvider(ColorProvider foregroundColorProvider) {
-			this.foregroundColorProvider = requireNonNull(foregroundColorProvider, "foregroundColorProvider");
 			return this;
 		}
 

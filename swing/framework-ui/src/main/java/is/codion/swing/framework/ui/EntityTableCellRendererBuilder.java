@@ -22,7 +22,6 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableCellRendererBuilder;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.CellColors;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Settings;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -46,7 +45,6 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		queryCondition = tableModel.queryModel().conditions().optional(attributeDefinition.attribute()).orElse(null);
 		filter(tableModel.filters().optional(attributeDefinition.attribute()).orElse(null));
 		string(new DefaultString(attributeDefinition));
-		cellColors(new EntityCellColors(tableModel));
 	}
 
 	@Override
@@ -107,25 +105,6 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		@Override
 		public String apply(Object value) {
 			return definition.string(value);
-		}
-	}
-
-	private static final class EntityCellColors implements CellColors<Attribute<?>> {
-
-		private final SwingEntityTableModel tableModel;
-
-		private EntityCellColors(SwingEntityTableModel tableModel) {
-			this.tableModel = tableModel;
-		}
-
-		@Override
-		public Color backgroundColor(int row, Attribute<?> identifier, Object cellValue, boolean selected) {
-			return tableModel.backgroundColor(row, identifier);
-		}
-
-		@Override
-		public Color foregroundColor(int row, Attribute<?> identifier, Object cellValue, boolean selected) {
-			return tableModel.foregroundColor(row, identifier);
 		}
 	}
 }

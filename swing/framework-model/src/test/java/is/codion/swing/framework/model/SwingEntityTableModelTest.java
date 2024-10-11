@@ -33,7 +33,6 @@ import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import java.awt.Color;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -141,16 +140,6 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertEquals(Boolean.class, testModel.getColumnClass(5));
 		assertEquals(Boolean.class, testModel.getColumnClass(6));
 		assertEquals(Entity.class, testModel.getColumnClass(7));
-	}
-
-	@Test
-	void backgroundColor() {
-		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
-		ConditionModel<String> nameCondition =
-						employeeTableModel.queryModel().conditions().attribute(Employee.NAME);
-		nameCondition.operands().equal().set("BLAKE");
-		employeeTableModel.refresh();
-		assertEquals(Color.GREEN, employeeTableModel.backgroundColor(0, Employee.JOB));
 	}
 
 	@Test

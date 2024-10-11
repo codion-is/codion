@@ -324,28 +324,6 @@ public class DefaultEntityDefinitionTest {
 	}
 
 	@Test
-	void color() {
-		final String colorBlue = "blue";
-		final String colorYellow = "blue";
-		EntityType entityType = DOMAIN_TYPE.entityType("getColor");
-		class TestDomain extends DomainModel {
-			public TestDomain() {
-				super(DOMAIN_TYPE);
-				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
-								.backgroundColorProvider((entity1, attribute) -> colorBlue)
-								.foregroundColorProvider((entity1, attribute) -> colorYellow)
-								.build());
-			}
-		}
-		Entities entities = new TestDomain().entities();
-
-		Entity entity = entities.entity(entityType);
-		EntityDefinition definition = entities.definition(entityType);
-		assertEquals(colorBlue, definition.backgroundColorProvider().color(entity, entity.primaryKey().column()));
-		assertEquals(colorYellow, definition.foregroundColorProvider().color(entity, entity.primaryKey().column()));
-	}
-
-	@Test
 	void testDefaultStringProvider() {
 		EntityType entityType = DOMAIN_TYPE.entityType("testDefaultStringProvider");
 		Column<Integer> attribute = entityType.integerColumn("attribute");

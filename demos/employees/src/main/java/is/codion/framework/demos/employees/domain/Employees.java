@@ -30,7 +30,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.plugin.jasperreports.JRReportType;
 import is.codion.plugin.jasperreports.JasperReports;
 
-import java.awt.Color;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -178,20 +177,6 @@ public final class Employees extends DomainModel {
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
 						.stringFactory(Employee.NAME)
 						.caption("Employee")
-						.backgroundColorProvider((entity, attribute) -> {
-							if (attribute.equals(Employee.JOB) && "Manager".equals(entity.get(Employee.JOB))) {
-								return Color.CYAN;
-							}
-
-							return null;
-						})
-						.foregroundColorProvider((entity, attribute) -> {
-							if (attribute.equals(Employee.SALARY) && entity.get(Employee.SALARY).doubleValue() < 1300) {
-								return Color.RED;
-							}
-
-							return null;
-						})
 						.build();
 	}
 }

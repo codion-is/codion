@@ -153,18 +153,6 @@ public interface EntityDefinition {
 	PrimaryKey primaryKey();
 
 	/**
-	 * Returns the background color provider, never null
-	 * @return the background color provider
-	 */
-	ColorProvider backgroundColorProvider();
-
-	/**
-	 * Returns the foreground color provider, never null
-	 * @return the foreground color provider
-	 */
-	ColorProvider foregroundColorProvider();
-
-	/**
 	 * Creates a new {@link Entity} instance based on this definition
 	 * @return a new {@link Entity} instance
 	 */
@@ -225,18 +213,6 @@ public interface EntityDefinition {
 		 * @return this {@link Builder} instance
 		 */
 		Builder condition(ConditionType conditionType, ConditionProvider conditionProvider);
-
-		/**
-		 * @param backgroundColorProvider the background color provider
-		 * @return this {@link Builder} instance
-		 */
-		Builder backgroundColorProvider(ColorProvider backgroundColorProvider);
-
-		/**
-		 * @param foregroundColorProvider the foreground color provider
-		 * @return this {@link Builder} instance
-		 */
-		Builder foregroundColorProvider(ColorProvider foregroundColorProvider);
 
 		/**
 		 * Sets the caption for this entity type

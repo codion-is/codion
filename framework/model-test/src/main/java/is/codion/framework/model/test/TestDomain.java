@@ -265,13 +265,6 @@ public final class TestDomain extends DomainModel {
 						.condition(Employee.CONDITION_2_TYPE, (attributes, values) -> "1 = 1")
 						.condition(Employee.CONDITION_3_TYPE, (attributes, values) -> " ename = 'CLARK'")
 						.caption("Employee")
-						.backgroundColorProvider((entity, attribute) -> {
-							if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {
-								return "#00ff00";//Color.GREEN
-							}
-
-							return null;
-						})
 						.build();
 	}
 
