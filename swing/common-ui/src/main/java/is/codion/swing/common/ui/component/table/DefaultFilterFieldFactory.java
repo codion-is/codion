@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
-import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.FieldFactory;
 
 import javax.swing.JComponent;
 import java.math.BigDecimal;

@@ -20,7 +20,7 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -43,7 +43,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 	}
 
 	private void configureTrackConditionPanel() {
-		FilterColumnConditionPanel<Entity> conditionPanel = conditions().get(PlaylistTrack.TRACK_FK);
+		ColumnConditionPanel<Entity> conditionPanel = conditions().get(PlaylistTrack.TRACK_FK);
 		Stream.of(conditionPanel.fields().equal(), conditionPanel.fields().in())
 						.flatMap(Optional::stream)
 						.map(EntitySearchField.class::cast)

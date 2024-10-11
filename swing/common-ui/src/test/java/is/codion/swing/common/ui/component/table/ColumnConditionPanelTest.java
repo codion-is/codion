@@ -24,23 +24,23 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FilterColumnConditionPanelTest {
+public class ColumnConditionPanelTest {
 
 	@Test
 	void test() {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
-		FilterColumnConditionPanel<String> panel = FilterColumnConditionPanel.builder(model).build();
+		ColumnConditionPanel<String> panel = ColumnConditionPanel.builder(model).build();
 		assertEquals(model, panel.condition());
 		assertNotNull(panel.fields().equal());
 		assertNotNull(panel.fields().upperBound());
 		assertNotNull(panel.fields().lowerBound());
-		assertThrows(NullPointerException.class, () -> FilterColumnConditionPanel.<String>builder(null));
+		assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<String>builder(null));
 	}
 
 	@Test
 	void lockedModel() {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
-		FilterColumnConditionPanel.builder(model).build();
+		ColumnConditionPanel.builder(model).build();
 	}
 }

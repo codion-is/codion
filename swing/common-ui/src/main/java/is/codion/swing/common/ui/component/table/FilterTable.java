@@ -39,8 +39,8 @@ import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
-import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -906,7 +906,7 @@ public final class FilterTable<R, C> extends JTable {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
 			if (columnModel().contains(identifier) && filterFieldFactory.supportsType(condition.valueClass())) {
-				conditionPanels.put(identifier, FilterColumnConditionPanel.builder(condition)
+				conditionPanels.put(identifier, ColumnConditionPanel.builder(condition)
 								.fieldFactory(filterFieldFactory)
 								.tableColumn(columnModel().column(identifier))
 								.build());

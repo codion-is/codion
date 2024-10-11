@@ -70,7 +70,7 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.ControlKeys.*;
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ControlKeys.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
@@ -88,10 +88,10 @@ import static javax.swing.SwingConstants.CENTER;
  * @param <T> the column value type
  * @see #builder(ConditionModel)
  */
-public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
+public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private static final MessageBundle MESSAGES =
-					messageBundle(FilterColumnConditionPanel.class, getBundle(FilterColumnConditionPanel.class.getName()));
+					messageBundle(ColumnConditionPanel.class, getBundle(ColumnConditionPanel.class.getName()));
 
 	/**
 	 * The condition controls.
@@ -142,7 +142,7 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private boolean initialized = false;
 
-	private FilterColumnConditionPanel(DefaultBuilder<T> builder) {
+	private ColumnConditionPanel(DefaultBuilder<T> builder) {
 		super(builder.condition);
 		this.fieldFactory = builder.fieldFactory;
 		this.operatorCaptions = builder.operatorCaptions;
@@ -266,7 +266,7 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	/**
-	 * Builds a {@link FilterColumnConditionPanel} instance
+	 * Builds a {@link ColumnConditionPanel} instance
 	 * @param <T> the column value type
 	 */
 	public interface Builder<T> {
@@ -292,9 +292,9 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 		Builder<T> tableColumn(TableColumn tableColumn);
 
 		/**
-		 * @return a new {@link FilterColumnConditionPanel} based on this builder
+		 * @return a new {@link ColumnConditionPanel} based on this builder
 		 */
-		FilterColumnConditionPanel<T> build();
+		ColumnConditionPanel<T> build();
 	}
 
 	private static final class DefaultBuilder<T> implements Builder<T> {
@@ -332,13 +332,13 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 		}
 
 		@Override
-		public FilterColumnConditionPanel<T> build() {
-			return new FilterColumnConditionPanel<>(this);
+		public ColumnConditionPanel<T> build() {
+			return new ColumnConditionPanel<>(this);
 		}
 	}
 
 	/**
-	 * Provides equal, upper and lower bound input fields for a {@link FilterColumnConditionPanel}
+	 * Provides equal, in, upper and lower bound input fields for a {@link ColumnConditionPanel}
 	 */
 	public interface FieldFactory {
 
@@ -553,7 +553,7 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 		initialize();
 		KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
 		Component focusOwner = focusManager.getFocusOwner();
-		boolean parentOfFocusOwner = parentOfType(FilterColumnConditionPanel.class, focusOwner) == this;
+		boolean parentOfFocusOwner = parentOfType(ColumnConditionPanel.class, focusOwner) == this;
 		if (parentOfFocusOwner) {
 			focusManager.clearFocusOwner();
 		}
@@ -571,7 +571,7 @@ public final class FilterColumnConditionPanel<T> extends ConditionPanel<T> {
 		initialize();
 		KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
 		Component focusOwner = focusManager.getFocusOwner();
-		boolean parentOfFocusOwner = parentOfType(FilterColumnConditionPanel.class, focusOwner) == this;
+		boolean parentOfFocusOwner = parentOfType(ColumnConditionPanel.class, focusOwner) == this;
 		if (parentOfFocusOwner) {
 			focusManager.clearFocusOwner();
 		}

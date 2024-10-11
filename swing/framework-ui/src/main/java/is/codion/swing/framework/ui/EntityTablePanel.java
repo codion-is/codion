@@ -48,10 +48,10 @@ import is.codion.swing.common.model.component.table.FilterTableModel.TableSelect
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
-import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel;
-import is.codion.swing.common.ui.component.table.FilterColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
@@ -1496,9 +1496,9 @@ public class EntityTablePanel extends JPanel {
 		return conditionPanels;
 	}
 
-	private <C extends Attribute<?>> FilterColumnConditionPanel<?> createConditionPanel(ConditionModel<?> condition, C identifier,
-																																											FieldFactory fieldFactory) {
-		return FilterColumnConditionPanel.builder(condition)
+	private <C extends Attribute<?>> ColumnConditionPanel<?> createConditionPanel(ConditionModel<?> condition, C identifier,
+																																								FieldFactory fieldFactory) {
+		return ColumnConditionPanel.builder(condition)
 						.fieldFactory(fieldFactory)
 						.tableColumn(table.columnModel().column(identifier))
 						.build();
