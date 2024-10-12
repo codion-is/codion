@@ -86,7 +86,7 @@ final class CityTablePanel extends ChartTablePanel {
 
 	private static FilterTableCellRenderer populationRenderer(SwingEntityTableModel tableModel) {
 		return EntityTableCellRenderer.builder(City.POPULATION, tableModel)
-						.foreground((table, row, value) -> {
+						.foreground((table, row, colum, value) -> {
 							if (value > 1_000_000) {
 								return Color.YELLOW;
 							}
@@ -98,7 +98,7 @@ final class CityTablePanel extends ChartTablePanel {
 
 	private static FilterTableCellRenderer nameRenderer(CityTableModel tableModel) {
 		return EntityTableCellRenderer.builder(City.NAME, tableModel)
-						.foreground((table, row, value) -> {
+						.foreground((table, row, column, value) -> {
 							Entity city = (Entity) table.model().items().visible().itemAt(row);
 							if (Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL))) {
 								return Color.GREEN;

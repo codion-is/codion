@@ -179,7 +179,7 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 													 boolean isSelected, boolean hasFocus, int row, int column) {
 			requireNonNull(cellRenderer);
 			requireNonNull(filterTable);
-			Color foreground = foregroundColor(filterTable, value, row);
+			Color foreground = foregroundColor(filterTable, value, row, column);
 			Color background = backgroundColor(filterTable, value, isSelected, row, column);
 			Border border = border(filterTable, hasFocus, row, column);
 			if (cellRenderer instanceof DefaultTableCellRenderer) {
@@ -196,14 +196,14 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 			}
 		}
 
-		private Color foregroundColor(FilterTable<?, ?> filterTable, T value, int row) {
-			return foregroundColorProvider == null ? uiSettings.foregroundColor() : foregroundColorProvider.color(filterTable, row, value);
+		private Color foregroundColor(FilterTable<?, ?> filterTable, T value, int row, int column) {
+			return foregroundColorProvider == null ? uiSettings.foregroundColor() : foregroundColorProvider.color(filterTable, row, column, value);
 		}
 
 		private Color backgroundColor(FilterTable<?, ?> filterTable, T value, boolean selected, int row, int column) {
 			Color cellBackgroundColor = null;
 			if (backgroundColorProvider != null) {
-				cellBackgroundColor = backgroundColorProvider.color(filterTable, row, value);
+				cellBackgroundColor = backgroundColorProvider.color(filterTable, row, column, value);
 			}
 			cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
 			if (columnShading) {

@@ -149,11 +149,13 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	interface ColorProvider<T> {
 
 		/**
+		 * @param table the table
 		 * @param row the row number
+		 * @param column the column
 		 * @param value the cell value
 		 * @return the Color for the given cell, null for the default color
 		 */
-		Color color(FilterTable<?, ?> table, int row, T value);
+		Color color(FilterTable<?, ?> table, int row, int column, T value);
 	}
 
 	/**

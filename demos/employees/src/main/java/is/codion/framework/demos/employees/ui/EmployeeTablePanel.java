@@ -46,7 +46,7 @@ public class EmployeeTablePanel extends EntityTablePanel {
 	private static final class JobBackgroundProvider implements ColorProvider<String> {
 
 		@Override
-		public Color color(FilterTable<?, ?> table, int row, String value) {
+		public Color color(FilterTable<?, ?> table, int row, int column, String value) {
 			if ("Manager".equals(value)) {
 				return Color.CYAN;
 			}
@@ -58,7 +58,7 @@ public class EmployeeTablePanel extends EntityTablePanel {
 	private static final class SalaryForegroundProvider implements ColorProvider<BigDecimal> {
 
 		@Override
-		public Color color(FilterTable<?, ?> table, int row, BigDecimal value) {
+		public Color color(FilterTable<?, ?> table, int row, int column, BigDecimal value) {
 			double salary = value.doubleValue();
 			if (salary < 1300) {
 				return Color.RED;
