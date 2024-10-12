@@ -437,22 +437,21 @@ is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 |today_mnemonic|T|D
 |===
 
-=== is/codion/swing/common/ui/component/table/ColumnConditionsPanel.java
+=== is/codion/swing/common/ui/component/table/ColumnConditionPanel.java
 
 [source]
 ----
-is/codion/swing/common/ui/component/table/ColumnConditionsPanel.properties
-is/codion/swing/common/ui/component/table/ColumnConditionsPanel_is_IS.properties
+is/codion/swing/common/ui/component/table/ColumnConditionPanel.properties
+is/codion/swing/common/ui/component/table/ColumnConditionPanel_is_IS.properties
 ----
 
 [cols="1,1,1"]
 |===
 |key|default|is_IS
 
-|advanced|Advanced|Nákvæm
-|hidden|Hidden|Falin
-|select_condition|Select condition|Veldu leitarreit
-|simple|Simple|Einföld
+|auto_enable|Auto-enable|Virkja sjálfkrafa
+|case_sensitive|Case-sensitive|Hástafanæmni
+|wildcard|Wildcard|Algildi
 |===
 
 === is/codion/swing/common/ui/component/table/ColumnSelectionPanel.java
@@ -471,23 +470,6 @@ is/codion/swing/common/ui/component/table/ColumnSelectionPanel_is_IS.properties
 |select_all_mnemonic|A|A
 |select_none|None|Engan
 |select_none_mnemonic|N|E
-|===
-
-=== is/codion/swing/common/ui/component/table/FilterColumnConditionPanel.java
-
-[source]
-----
-is/codion/swing/common/ui/component/table/FilterColumnConditionPanel.properties
-is/codion/swing/common/ui/component/table/FilterColumnConditionPanel_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|auto_enable|Auto-enable|Virkja sjálfkrafa
-|case_sensitive|Case-sensitive|Hástafanæmni
-|wildcard|Wildcard|Algildi
 |===
 
 === is/codion/swing/common/ui/component/table/FilterTable.java
@@ -516,6 +498,24 @@ is/codion/swing/common/ui/component/table/FilterTable_is_IS.properties
 |select|Select|Velja
 |select_columns|Select columns|Velja dálka
 |single_selection_mode|Single selection|Einnar línu val
+|===
+
+=== is/codion/swing/common/ui/component/table/TableConditionPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/table/TableConditionPanel.properties
+is/codion/swing/common/ui/component/table/TableConditionPanel_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|advanced|Advanced|Nákvæm
+|hidden|Hidden|Falin
+|select_condition|Select condition|Veldu leitarreit
+|simple|Simple|Einföld
 |===
 
 === is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFilter.java
