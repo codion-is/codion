@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Configuration;
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.property.PropertyValue;
+import is.codion.swing.common.ui.component.table.DefaultFilterTableCellRenderer.DefaultBuilder;
 
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -31,10 +31,11 @@ import java.awt.Color;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Colors.darker;
+import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
 
 /**
- * Provides TableCellRenderer implementations for FilterTable via {@link #builder(Class)}.
+ * A {@link TableCellRenderer} for {@link FilterTable}, instantiated via {@link #builder(Class)}.
  */
 public interface FilterTableCellRenderer extends TableCellRenderer {
 
@@ -124,13 +125,21 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	int horizontalAlignment();
 
 	/**
+	 * @param row the row index
+	 * @return true if the row is an alternate row (odd number)
+	 */
+	static boolean alternateRow(int row) {
+		return row % 2 != 0;
+	}
+
+	/**
 	 * Instantiates a new {@link FilterTableCellRenderer.Builder}.
 	 * @param <T> the cell value type
 	 * @param columnClass the column class
 	 * @return a new {@link FilterTableCellRenderer.Builder} instance
 	 */
 	static <T> Builder<T> builder(Class<T> columnClass) {
-		return new DefaultFilterTableCellRendererBuilder<>(columnClass);
+		return new DefaultBuilder<>(requireNonNull(columnClass), Boolean.class.equals(columnClass));
 	}
 
 	/**
@@ -154,11 +163,10 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	interface Builder<T> {
 
 		/**
-		 * Used to indicate whether a filter condition is enabled for the column by shading it.
-		 * @param filter the filter condition model, may be null
+		 * @param uiSettings the ui settings
 		 * @return this builder instance
 		 */
-		Builder<T> filter(ConditionModel<?> filter);
+		Builder<T> uiSettings(UISettings uiSettings);
 
 		/**
 		 * @param horizontalAlignment the horizontal alignment
@@ -233,170 +241,206 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	}
 
 	/**
-	 * Settings for a {@link FilterTableCellRenderer}
+	 * Represents the UI cell colors according to the look and feel.
 	 */
-	class Settings {
+	interface UISettings {
+
+		/**
+		 * The foreground color as defined by the {@code Table.foreground} system property
+		 * @return the foreground color
+		 */
+		Color foregroundColor();
+
+		/**
+		 * The background color as defined by the {@code Table.background} system property
+		 * @return the background color
+		 */
+		Color backgroundColor();
+
+		/**
+		 * The alternate row color as defined by the {@code Table.alternateRowColor} system property
+		 * @return the alternate row color, if any
+		 */
+		Color alternateRowColor();
+
+		/**
+		 * The selection background color as defined by the {@code Table.selectionBackground} system property
+		 * @return the selection background color
+		 */
+		Color selectionBackground();
+
+		/**
+		 * @return the shaded background color
+		 */
+		Color shadedBackgroundColor();
+
+		/**
+		 * Returns the {@link #alternateRowColor()} if specified
+		 * or double shaded {@link #backgroundColor()}.
+		 * @return the alternate background color
+		 */
+		Color alternateBackgroundColor();
+
+		/**
+		 * @return the shaded alternate background color
+		 */
+		Color shadedAlternateBackgroundColor();
+
+		/**
+		 * @return the default cell border to use
+		 */
+		Border defaultCellBorder();
+
+		/**
+		 * @return the cell border to use for the focused cell
+		 */
+		Border focusedCellBorder();
+
+		/**
+		 * @param filterEnabled true if a filter is enabled
+		 * @param row the row index
+		 * @param cellBackgroundColor the cell background color, if any
+		 * @return the shaded cell background color if specified, otherwise the default
+		 */
+		Color shadedBackgroundColor(boolean filterEnabled, int row, Color cellBackgroundColor);
+
+		/**
+		 * @param row the row
+		 * @param cellBackgroundColor the cell background color, if any
+		 * @return the shaded cell background color if specified, otherwise the default
+		 */
+		Color shadedBackgroundColor(int row, Color cellBackgroundColor);
+
+		/**
+		 * @return the alternate selection background color
+		 */
+		Color alternateSelectionBackground();
+
+		/**
+		 * Updates the colors and border according to the current Look and Feel.
+		 * @param leftPadding the left padding to use for the border
+		 * @param rightPadding the right padding to use for the border
+		 */
+		void update(int leftPadding, int rightPadding);
+	}
+
+	/**
+	 * A default {@link UISettings} implementation.
+	 */
+	class DefaultUISettings implements UISettings {
 
 		protected static final float SELECTION_COLOR_BLEND_RATIO = 0.5f;
 		protected static final double DARKENING_FACTOR = 0.9;
 		protected static final double DOUBLE_DARKENING_FACTOR = 0.8;
 		protected static final int FOCUSED_CELL_BORDER_THICKNESS = 1;
 
-		private final int leftPadding;
-		private final int rightPadding;
-		private final boolean alternateRowColoring;
-
 		private Color foregroundColor;
 		private Color backgroundColor;
 		private Color alternateRowColor;
-		private Color backgroundColorShaded;
-		private Color backgroundColorAlternate;
-		private Color backgroundColorAlternateShaded;
+		private Color shadedBackgroundColor;
+		private Color alternateBackgroundColor;
+		private Color shadedAlternateBackgroundColor;
 		private Color selectionBackground;
-		private Color selectionBackgroundAlternate;
+		private Color alternateSelectionBackground;
 		private Border defaultCellBorder;
 		private Border focusedCellBorder;
 
-		/**
-		 * @param leftPadding the left padding
-		 * @param rightPadding the right padding
-		 * @param alternateRowColoring true if alternate row coloring should be enabled
-		 */
-		protected Settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
-			this.leftPadding = leftPadding;
-			this.rightPadding = rightPadding;
-			this.alternateRowColoring = alternateRowColoring;
-		}
-
-		/**
-		 * @param cellForegroundColor the cell specific foreground color
-		 * @return the cell foreground color or the default foreground if null
-		 */
-		final Color foregroundColor(Color cellForegroundColor) {
-			return cellForegroundColor == null ? foregroundColor : cellForegroundColor;
-		}
-
-		/**
-		 * @return the border to use for a focused cell
-		 */
-		final Border focusedCellBorder() {
-			return focusedCellBorder;
-		}
-
-		/**
-		 * @return the default cell border
-		 */
-		final Border defaultCellBorder() {
-			return defaultCellBorder;
-		}
+		protected DefaultUISettings() {}
 
 		/**
 		 * Updates the colors according the the selected look and feel
 		 */
-		protected void updateColors() {
+		@Override
+		public void update(int leftPadding, int rightPadding) {
 			foregroundColor = UIManager.getColor("Table.foreground");
 			backgroundColor = UIManager.getColor("Table.background");
 			alternateRowColor = UIManager.getColor("Table.alternateRowColor");
-			backgroundColorAlternate = alternateRowColor;
-			if (backgroundColorAlternate == null) {
-				backgroundColorAlternate = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
+			alternateBackgroundColor = alternateRowColor;
+			if (alternateBackgroundColor == null) {
+				alternateBackgroundColor = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
 			}
 			selectionBackground = UIManager.getColor("Table.selectionBackground");
-			backgroundColorShaded = darker(backgroundColor, DARKENING_FACTOR);
-			backgroundColorAlternateShaded = darker(backgroundColorAlternate, DARKENING_FACTOR);
-			selectionBackgroundAlternate = darker(selectionBackground, DARKENING_FACTOR);
+			shadedBackgroundColor = darker(backgroundColor, DARKENING_FACTOR);
+			shadedAlternateBackgroundColor = darker(alternateBackgroundColor, DARKENING_FACTOR);
+			alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
 			defaultCellBorder = leftPadding > 0 || rightPadding > 0 ? createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
-			focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
+			focusedCellBorder = createFocusedCellBorder();
 		}
 
-		protected final Color backgroundColor(ConditionModel<?> filter, int row, boolean columnShading,
-																					boolean selected, Color cellBackgroundColor) {
-			cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
-			if (columnShading) {
-				cellBackgroundColor = backgroundColorShaded(filter, row, cellBackgroundColor);
-			}
-			if (cellBackgroundColor != null) {
-				return cellBackgroundColor;
-			}
-			if (alternateRowColoring) {
-				return alternateRow(row) ? backgroundColorAlternate : backgroundColor;
-			}
-			if (alternateRowColor == null) {
-				return backgroundColor;
-			}
-			// If alternate row coloring is enabled outside of the framework, respect it
-			return alternateRow(row) ? alternateRowColor : backgroundColor;
+		@Override
+		public final Color foregroundColor() {
+			return foregroundColor;
 		}
 
-		/**
-		 * Adds shading to the given cell, if applicable
-		 * @param filter the filter condition model for the given column, may be null
-		 * @param row the row
-		 * @param cellBackgroundColor the cell specific background color, if any
-		 * @return a shaded background color
-		 */
-		protected Color backgroundColorShaded(ConditionModel<?> filter, int row, Color cellBackgroundColor) {
-			if (filter != null && filter.enabled().get()) {
-				return backgroundShaded(row, cellBackgroundColor);
-			}
-
-			return cellBackgroundColor;
-		}
-
-		protected final Color backgroundColor() {
+		@Override
+		public final Color backgroundColor() {
 			return backgroundColor;
 		}
 
-		protected final Color backgroundColorShaded() {
-			return backgroundColorShaded;
+		@Override
+		public final Color alternateRowColor() {
+			return alternateRowColor;
 		}
 
-		protected final Color backgroundColorAlternate() {
-			return backgroundColorAlternate;
+		@Override
+		public final Color selectionBackground() {
+			return selectionBackground;
 		}
 
-		protected final Color backgroundColorAlternateShaded() {
-			return backgroundColorAlternateShaded;
+		@Override
+		public final Color shadedBackgroundColor() {
+			return shadedBackgroundColor;
 		}
 
-		private Color backgroundColor(Color cellBackgroundColor, int row, boolean selected) {
-			if (selected) {
-				if (cellBackgroundColor == null) {
-					return selectionBackgroundColor(row);
-				}
+		@Override
+		public final Color alternateBackgroundColor() {
+			return alternateBackgroundColor;
+		}
 
-				return blendColors(cellBackgroundColor, selectionBackgroundColor(row));
+		@Override
+		public final Color shadedAlternateBackgroundColor() {
+			return shadedAlternateBackgroundColor;
+		}
+
+		@Override
+		public final Color alternateSelectionBackground() {
+			return alternateSelectionBackground;
+		}
+
+		@Override
+		public final Border defaultCellBorder() {
+			return defaultCellBorder;
+		}
+
+		@Override
+		public final Border focusedCellBorder() {
+			return focusedCellBorder;
+		}
+
+		@Override
+		public Color shadedBackgroundColor(boolean filterEnabled, int row, Color cellBackgroundColor) {
+			if (filterEnabled) {
+				return shadedBackgroundColor(row, cellBackgroundColor);
 			}
 
 			return cellBackgroundColor;
 		}
 
-		private Color selectionBackgroundColor(int row) {
-			return alternateRow(row) ? selectionBackgroundAlternate : selectionBackground;
-		}
-
-		private Color backgroundShaded(int row, Color cellBackgroundColor) {
+		@Override
+		public final Color shadedBackgroundColor(int row, Color cellBackgroundColor) {
 			if (cellBackgroundColor != null) {
 				return darker(cellBackgroundColor, DARKENING_FACTOR);
 			}
 
-			return alternateRow(row) ? backgroundColorAlternateShaded : backgroundColorShaded;
+			return alternateRow(row) ? shadedAlternateBackgroundColor : shadedBackgroundColor;
 		}
 
-		/**
-		 * @param row the row
-		 * @return true if the given row should use the alternate row color
-		 */
-		protected static boolean alternateRow(int row) {
-			return row % 2 != 0;
-		}
-
-		private static CompoundBorder createFocusedCellBorder(Color foregroundColor, Border defaultCellBorder) {
+		private CompoundBorder createFocusedCellBorder() {
 			return createCompoundBorder(createLineBorder(darker(foregroundColor, DOUBLE_DARKENING_FACTOR),
 							FOCUSED_CELL_BORDER_THICKNESS), defaultCellBorder);
 		}
 
-		private static Color blendColors(Color color1, Color color2) {
+		static Color blendColors(Color color1, Color color2) {
 			int r = (int) (color1.getRed() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getRed() * SELECTION_COLOR_BLEND_RATIO);
 			int g = (int) (color1.getGreen() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getGreen() * SELECTION_COLOR_BLEND_RATIO);
 			int b = (int) (color1.getBlue() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getBlue() * SELECTION_COLOR_BLEND_RATIO);

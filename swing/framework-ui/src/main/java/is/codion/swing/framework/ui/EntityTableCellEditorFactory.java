@@ -36,14 +36,14 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default {@link FilterTableCellEditor.Factory} implementation.
  */
-public class EntityTableCellEditorFactory implements FilterTableCellEditor.Factory<Attribute<?>> {
+final class EntityTableCellEditorFactory implements FilterTableCellEditor.Factory<Attribute<?>> {
 
 	private final SwingEntityEditModel editModel;
 
 	/**
 	 * @param editModel the edit model
 	 */
-	public EntityTableCellEditorFactory(SwingEntityEditModel editModel) {
+	EntityTableCellEditorFactory(SwingEntityEditModel editModel) {
 		this.editModel = requireNonNull(editModel);
 	}
 
@@ -58,13 +58,6 @@ public class EntityTableCellEditorFactory implements FilterTableCellEditor.Facto
 
 		return Optional.of(filterTableCellEditor(() ->
 						componentFactory.componentValue(editModel, null)));
-	}
-
-	/**
-	 * @return the edit model
-	 */
-	protected final SwingEntityEditModel editModel() {
-		return editModel;
 	}
 
 	private boolean nonUpdatableForeignKey(Attribute<?> attribute) {

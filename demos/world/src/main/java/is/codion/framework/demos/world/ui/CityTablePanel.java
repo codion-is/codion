@@ -23,12 +23,11 @@ import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.demos.world.model.CityTableModel.PopulateLocationTask;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableCellRendererFactory;
+import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.kordamp.ikonli.foundation.Foundation;
@@ -39,10 +38,11 @@ import java.util.Objects;
 final class CityTablePanel extends ChartTablePanel {
 
 	CityTablePanel(CityTableModel tableModel) {
-		super(tableModel, tableModel.chartDataset(), "Cities", config ->
-						config.configureTable(builder -> builder
-														.cellRendererFactory(new CityCellRendererFactory(tableModel)))
-										.editable(attributes -> attributes.remove(City.LOCATION)));
+		super(tableModel, tableModel.chartDataset(), "Cities", config -> config
+						.configureTable(builder -> builder
+										.cellRenderer(City.POPULATION, () -> populationRenderer(tableModel))
+										.cellRenderer(City.NAME, () -> nameRenderer(tableModel)))
+						.editable(attributes -> attributes.remove(City.LOCATION)));
 		configurePopupMenu(config -> config.clear()
 						.control(createPopulateLocationControl())
 						.separator()
@@ -84,39 +84,28 @@ final class CityTablePanel extends ChartTablePanel {
 						.show(exception);
 	}
 
-	private static class CityCellRendererFactory extends EntityTableCellRendererFactory {
+	private static FilterTableCellRenderer populationRenderer(SwingEntityTableModel tableModel) {
+		return EntityTableCellRenderer.builder(City.POPULATION, tableModel)
+						.foreground((table, row, value) -> {
+							if (value > 1_000_000) {
+								return Color.YELLOW;
+							}
 
-		private CityCellRendererFactory(SwingEntityTableModel tableModel) {
-			super(tableModel);
-		}
+							return null;
+						})
+						.build();
+	}
 
-		@Override
-		public FilterTableCellRenderer create(Attribute<?> attribute) {
-			if (attribute.equals(City.POPULATION)) {
-				return builder(City.POPULATION)
-								.background((table, row, value) -> {
-									if (value > 1_000_000) {
-										return Color.YELLOW;
-									}
+	private static FilterTableCellRenderer nameRenderer(CityTableModel tableModel) {
+		return EntityTableCellRenderer.builder(City.NAME, tableModel)
+						.foreground((table, row, value) -> {
+							Entity city = (Entity) table.model().items().visible().itemAt(row);
+							if (Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL))) {
+								return Color.GREEN;
+							}
 
-									return null;
-								})
-								.build();
-			}
-			if (attribute.equals(City.NAME)) {
-				return builder(City.NAME)
-								.background((table, row, value) -> {
-									Entity city = (Entity) table.model().items().visible().itemAt(row);
-									if (Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL))) {
-										return Color.GREEN;
-									}
-
-									return null;
-								})
-								.build();
-			}
-
-			return super.create(attribute);
-		}
+							return null;
+						})
+						.build();
 	}
 }

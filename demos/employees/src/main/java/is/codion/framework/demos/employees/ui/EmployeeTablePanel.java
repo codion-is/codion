@@ -19,55 +19,52 @@
 package is.codion.framework.demos.employees.ui;
 
 import is.codion.framework.demos.employees.domain.Employees.Employee;
-import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.ColorProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableCellRendererFactory;
+import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.awt.Color;
+import java.math.BigDecimal;
 
 public class EmployeeTablePanel extends EntityTablePanel {
 
 	public EmployeeTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
 						.configureTable(builder -> builder
-										.cellRendererFactory(new EmployeeCellRendererFactory(tableModel))));
+										.cellRenderer(Employee.JOB, () ->
+														EntityTableCellRenderer.builder(Employee.JOB, tableModel)
+																		.background(new JobBackgroundProvider())
+																		.build())
+										.cellRenderer(Employee.SALARY, () ->
+														EntityTableCellRenderer.builder(Employee.SALARY, tableModel)
+																		.foreground(new SalaryForegroundProvider())
+																		.build())));
 	}
 
-	private static class EmployeeCellRendererFactory extends EntityTableCellRendererFactory {
-
-		private EmployeeCellRendererFactory(SwingEntityTableModel tableModel) {
-			super(tableModel);
-		}
+	private static final class JobBackgroundProvider implements ColorProvider<String> {
 
 		@Override
-		public FilterTableCellRenderer create(Attribute<?> attribute) {
-			if (attribute.equals(Employee.JOB)) {
-				return builder(Employee.JOB)
-								.background((table, row, value) -> {
-									if ("Manager".equals(value)) {
-										return Color.CYAN;
-									}
-
-									return null;
-								})
-								.build();
-			}
-			if (attribute.equals(Employee.SALARY)) {
-				return builder(Employee.SALARY)
-								.foreground((table, row, value) -> {
-									double salary = value.doubleValue();
-									if (salary < 1300) {
-										return Color.RED;
-									}
-
-									return null;
-								})
-								.build();
+		public Color color(FilterTable<?, ?> table, int row, String value) {
+			if ("Manager".equals(value)) {
+				return Color.CYAN;
 			}
 
-			return super.create(attribute);
+			return null;
+		}
+	}
+
+	private static final class SalaryForegroundProvider implements ColorProvider<BigDecimal> {
+
+		@Override
+		public Color color(FilterTable<?, ?> table, int row, BigDecimal value) {
+			double salary = value.doubleValue();
+			if (salary < 1300) {
+				return Color.RED;
+			}
+
+			return null;
 		}
 	}
 }

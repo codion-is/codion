@@ -389,7 +389,10 @@ public final class LoadTestPanel<T> extends JPanel {
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClickAction(command(this::viewException))
 						.scrollToSelectedItem(false)
-						.cellRendererFactory(new ApplicationTableCellRendererFactory())
+						.cellRenderer(ColumnId.DURATION, () ->
+										FilterTableCellRenderer.builder(Integer.class)
+														.string(duration -> duration == null ? null : DURATION_FORMAT.format(duration))
+														.build())
 						.popupMenuControls(table -> Controls.builder()
 										.control(Control.builder()
 														.command(table.model()::refresh)
@@ -545,22 +548,6 @@ public final class LoadTestPanel<T> extends JPanel {
 	private static void lookAndFeelSelected(LookAndFeelProvider selectedLookAndFeel) {
 		setUserPreference(LoadTestPanel.class.getName(),
 						selectedLookAndFeel.lookAndFeelInfo().getClassName());
-	}
-
-	private final class ApplicationTableCellRendererFactory implements
-					FilterTableCellRenderer.Factory<ColumnId> {
-
-		@Override
-		public FilterTableCellRenderer create(ColumnId identifier) {
-			FilterTableCellRenderer.Builder<Integer> builder =
-							FilterTableCellRenderer.builder(Integer.class)
-											.filter(model().applicationTableModel().filters().optional(identifier).orElse(null));
-			if (identifier.equals(ColumnId.DURATION)) {
-				builder.string(duration -> duration == null ? null : DURATION_FORMAT.format(duration));
-			}
-
-			return builder.build();
-		}
 	}
 
 	private final class ClearExceptionsCommand implements Control.Command {

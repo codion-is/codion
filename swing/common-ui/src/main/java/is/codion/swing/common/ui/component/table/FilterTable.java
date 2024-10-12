@@ -86,6 +86,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -278,7 +279,7 @@ public final class FilterTable<R, C> extends JTable {
 		autoStartsEdit(builder.autoStartsEdit);
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);
-		configureColumns(builder.cellRendererFactory, builder.cellEditorFactory);
+		configureColumns(builder.cellRenderers, builder.cellRendererFactory, builder.cellEditors, builder.cellEditorFactory);
 		configureTableHeader(builder.columnReorderingAllowed, builder.columnResizingAllowed);
 		bindEvents(builder.columnReorderingAllowed, builder.columnResizingAllowed);
 		if (builder.resizeRowToFitEditor) {
@@ -809,17 +810,28 @@ public final class FilterTable<R, C> extends JTable {
 						.build();
 	}
 
-	private void configureColumns(FilterTableCellRenderer.Factory<C> cellRendererFactory,
+	private void configureColumns(Map<C, Supplier<FilterTableCellRenderer>> cellRenderers,
+																FilterTableCellRenderer.Factory<C> cellRendererFactory,
+																Map<C, Supplier<FilterTableCellEditor<?>>> cellEditors,
 																FilterTableCellEditor.Factory<C> cellEditorFactory) {
 		columnModel().columns().stream()
 						.filter(column -> column.getCellRenderer() == null)
-						.forEach(column -> column.setCellRenderer(cellRendererFactory.create(column.identifier())));
+						.forEach(column -> column.setCellRenderer(cellRenderers.getOrDefault(column.identifier(),
+										() -> cellRendererFactory.create(column.identifier())).get()));
 		columnModel().columns().stream()
 						.filter(column -> column.getHeaderRenderer() == null)
 						.forEach(column -> column.setHeaderRenderer(new FilterTableHeaderRenderer<>(this, column)));
 		columnModel().columns().stream()
 						.filter(column -> column.getCellEditor() == null)
-						.forEach(column -> cellEditorFactory.create(column.identifier()).ifPresent(column::setCellEditor));
+						.forEach(column -> {
+							Supplier<FilterTableCellEditor<?>> cellEditor = cellEditors.get(column.identifier());
+							if (cellEditor != null) {
+								column.setCellEditor(cellEditor.get());
+							}
+							else if (cellEditorFactory != null) {
+								cellEditorFactory.create(column.identifier()).ifPresent(column::setCellEditor);
+							}
+						});
 	}
 
 	private void configureTableHeader(boolean reorderingAllowed, boolean columnResizingAllowed) {
@@ -1036,14 +1048,32 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filterFieldFactory(FieldFactory filterFieldFactory);
 
 		/**
-		 * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer set.
+		 * Supplies the cell renderer for the given column, overrides {@link #cellRendererFactory(FilterTableCellRenderer.Factory)}.
+		 * @param identifier the column identifier
+		 * @param cellRenderer supplies the cell renderer to use for the given column
+		 * @return this builder instance
+		 */
+		Builder<R, C> cellRenderer(C identifier, Supplier<FilterTableCellRenderer> cellRenderer);
+
+		/**
+		 * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer
+		 * and is overridden by any renderer set via {@link #cellRenderer(Object, Supplier)}.
 		 * @param cellRendererFactory the table cell renderer factory
 		 * @return this builder instance
 		 */
 		Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<C> cellRendererFactory);
 
 		/**
-		 * Note that this factory is only used to create cell editors for columns which do not already have a cell editor set.
+		 * Supplies the cell renderer for the given column, overrides {@link #cellEditorFactory(FilterTableCellEditor.Factory)}.
+		 * @param identifier the column identifier
+		 * @param cellEditor supplies the cell editor to use for the given column
+		 * @return this builder instance
+		 */
+		Builder<R, C> cellEditor(C identifier, Supplier<FilterTableCellEditor<?>> cellEditor);
+
+		/**
+		 * Note that this factory is only used to create cell editors for columns which do not already have a cell editor
+		 * and is overridden by any editor set via {@link #cellEditor(Object, Supplier)}.
 		 * @param cellEditorFactory the table cell editor factory
 		 * @return this builder instance
 		 */
@@ -1167,6 +1197,8 @@ public final class FilterTable<R, C> extends JTable {
 		private final FilterTableModel<R, C> tableModel;
 		private final List<FilterTableColumn<C>> columns;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
+		private final Map<C, Supplier<FilterTableCellRenderer>> cellRenderers = new HashMap<>();
+		private final Map<C, Supplier<FilterTableCellEditor<?>>> cellEditors = new HashMap<>();
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
@@ -1189,7 +1221,6 @@ public final class FilterTable<R, C> extends JTable {
 			this.tableModel = tableModel;
 			this.columns = new ArrayList<>(validateIdentifiers(columns));
 			this.cellRendererFactory = new DefaultFilterTableCellRendererFactory<>(tableModel);
-			this.cellEditorFactory = new DefaultFilterTableCellEditorFactory<>();
 		}
 
 		@Override
@@ -1211,8 +1242,20 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
+		public Builder<R, C> cellRenderer(C identifier, Supplier<FilterTableCellRenderer> cellRenderer) {
+			this.cellRenderers.put(requireNonNull(identifier), requireNonNull(cellRenderer));
+			return this;
+		}
+
+		@Override
 		public Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<C> cellRendererFactory) {
 			this.cellRendererFactory = requireNonNull(cellRendererFactory);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> cellEditor(C identifier, Supplier<FilterTableCellEditor<?>> cellEditor) {
+			this.cellEditors.put(requireNonNull(identifier), requireNonNull(cellEditor));
 			return this;
 		}
 
@@ -1576,17 +1619,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public FilterTableCellRenderer create(C identifier) {
-			return FilterTableCellRenderer.builder(tableModel.getColumnClass(identifier))
-							.filter(tableModel.filters().optional(identifier).orElse(null))
-							.build();
-		}
-	}
-
-	private static final class DefaultFilterTableCellEditorFactory<C> implements FilterTableCellEditor.Factory<C> {
-
-		@Override
-		public Optional<TableCellEditor> create(C identifier) {
-			return Optional.empty();
+			return FilterTableCellRenderer.builder(tableModel.getColumnClass(identifier)).build();
 		}
 	}
 

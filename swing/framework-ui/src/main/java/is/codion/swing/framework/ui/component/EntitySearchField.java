@@ -63,7 +63,7 @@ import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityTableCellRendererFactory;
+import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.Action;
@@ -916,7 +916,7 @@ public final class EntitySearchField extends HintTextField {
 			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder(tableModel,
 											entityTableColumns(tableModel.entityDefinition()))
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-							.cellRendererFactory(new EntityTableCellRendererFactory(tableModel))
+							.cellRendererFactory(EntityTableCellRenderer.factory(tableModel))
 							.selectionMode(searchModel.singleSelection() ?
 											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
 							.doubleClickAction(selectControl)

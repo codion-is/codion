@@ -40,6 +40,8 @@ Codion Change Log
 - FilterTableCellRenderer.Factory.create() parameter now column identifier instead of column.
 - FilterTableCellRenderer.Builder, column value type parameter added.
 - FilterTableCellEditor.Factory.create() parameter now column identifier instead of column.
+- FilterTableCellRenderer.UISettings added, DefaultFilterTableCellRenderer refactored.
+- FilterTable.Builder.cellEditor() and cellRenderer() added, related refactoring.
 ### is.codion.framework.domain
 - Entity.copy(), copyBuilder() and deepCopy() moved to Entity.Copy, renamed mutable(), builder() and deep() respectively, immutable() added.
 - ImmutableEntity bug fixed, StackOverflowError when creating an immutable entity with cyclical foreign key dependencies, some refactoring.
@@ -66,6 +68,9 @@ Codion Change Log
 - EntityDependenciesPanel, dependencies dialog no longer modal.
 - EntityTablePanel.Config.conditionState() and filterState() added.
 - EntityDialogs.EntitySelectionDialogBuilder.configureTablePanel() added.
+- EntityTableCellRendererBuilder removed.
+- EntityTablePanel.Config.configureTable() renamed table().
+- EntityTableCellRendererFactory replaced with EntityTableCellRenderer.
 
 ## 0.18.17
 ### is.codion.common.core

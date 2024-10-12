@@ -22,7 +22,11 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.framework.demos.chinook.ui.DurationComponentValue.DurationPanel;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -30,14 +34,12 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableCellEditorFactory;
-import is.codion.swing.framework.ui.EntityTableCellRendererFactory;
+import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EntityComponentFactory;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
 import javax.swing.JSpinner;
-import javax.swing.table.TableCellEditor;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
@@ -58,13 +60,15 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 	private static final ResourceBundle BUNDLE = getBundle(TrackTablePanel.class.getName());
 
+	static final Map<Integer, String> RATINGS = rangeClosed(1, 10)
+					.mapToObj(ranking -> rightPad("", ranking, '*'))
+					.collect(toMap(String::length, identity()));
+
 	public TrackTablePanel(TrackTableModel tableModel) {
 		super(tableModel, config -> config
 						.editComponentFactory(Track.RATING, new RatingComponentFactory())
 						.editComponentFactory(Track.MILLISECONDS, new DurationComponentFactory(tableModel))
-						.configureTable(tableBuilder -> tableBuilder
-										.cellRendererFactory(new TrackCellRendererFactory(tableModel))
-										.cellEditorFactory(new TrackCellEditorFactory(tableModel.editModel())))
+						.configureTable(builder -> configureTable(builder, tableModel))
 						.includeLimitMenu(true));
 		configurePopupMenu(config -> config.clear()
 						.control(Control.builder()
@@ -92,6 +96,31 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.title(BUNDLE.getString("amount"))
 						.validator(amount -> amount.compareTo(BigDecimal.ZERO) > 0)
 						.show();
+	}
+
+	private static void configureTable(FilterTable.Builder<Entity, Attribute<?>> builder, SwingEntityTableModel tableModel) {
+		builder.cellRenderer(Track.MILLISECONDS, () -> durationRenderer(tableModel))
+						.cellEditor(Track.MILLISECONDS, () -> filterTableCellEditor(() -> new DurationComponentValue(true)))
+						.cellRenderer(Track.RATING, () -> ratingCellRenderer(tableModel))
+						.cellEditor(Track.RATING, () -> ratingEditor(tableModel.entityDefinition()));
+	}
+
+	private static FilterTableCellRenderer durationRenderer(SwingEntityTableModel tableModel) {
+		return EntityTableCellRenderer.builder(Track.MILLISECONDS, tableModel)
+						.string(milliseconds -> minutes(milliseconds) + " min " + seconds(milliseconds) + " sec")
+						.toolTipData(true)
+						.build();
+	}
+
+	private static FilterTableCellRenderer ratingCellRenderer(SwingEntityTableModel tableModel) {
+		return EntityTableCellRenderer.builder(Track.RATING, tableModel)
+						.string(RATINGS::get)
+						.toolTipData(true)
+						.build();
+	}
+
+	private static FilterTableCellEditor<?> ratingEditor(EntityDefinition entityDefinition) {
+		return filterTableCellEditor(() -> entityComponents(entityDefinition).integerSpinner(Track.RATING).buildValue());
 	}
 
 	private static final class RatingComponentFactory
@@ -128,72 +157,6 @@ public final class TrackTablePanel extends EntityTablePanel {
 			durationValue.set(value);
 
 			return durationValue;
-		}
-	}
-
-	private static final class TrackCellEditorFactory
-					extends EntityTableCellEditorFactory {
-
-		private final EntityComponents components;
-
-		private TrackCellEditorFactory(SwingEntityEditModel editModel) {
-			super(editModel);
-			this.components = entityComponents(editModel.entityDefinition());
-		}
-
-		@Override
-		public Optional<TableCellEditor> create(Attribute<?> attribute) {
-			if (attribute.equals(Track.MILLISECONDS)) {
-				return Optional.of(filterTableCellEditor(() -> new DurationComponentValue(true)));
-			}
-			if (attribute.equals(Track.RATING)) {
-				return Optional.of(filterTableCellEditor(() -> components.integerSpinner(Track.RATING).buildValue()));
-			}
-
-			return super.create(attribute);
-		}
-	}
-
-	static final class RatingCellRenderer {
-
-		private static final Map<Integer, String> RATINGS = rangeClosed(1, 10)
-						.mapToObj(ranking -> rightPad("", ranking, '*'))
-						.collect(toMap(String::length, identity()));
-
-		private RatingCellRenderer() {}
-
-		static FilterTableCellRenderer create() {
-			return FilterTableCellRenderer.builder(Integer.class)
-							.string(RATINGS::get)
-							.toolTipData(true)
-							.build();
-		}
-	}
-
-	private static final class TrackCellRendererFactory extends EntityTableCellRendererFactory {
-
-		private TrackCellRendererFactory(SwingEntityTableModel tableModel) {
-			super(tableModel);
-		}
-
-		@Override
-		public FilterTableCellRenderer create(Attribute<?> attribute) {
-			if (attribute.equals(Track.MILLISECONDS)) {
-				return builder(Track.MILLISECONDS)
-								.string(TrackCellRendererFactory::toMinutesSecondsString)
-								.toolTipData(true)
-								.build();
-			}
-			if (attribute.equals(Track.RATING)) {
-				return RatingCellRenderer.create();
-			}
-
-			return builder(attribute).build();
-		}
-
-		private static String toMinutesSecondsString(Integer milliseconds) {
-			return minutes(milliseconds) + " min " +
-							seconds(milliseconds) + " sec";
 		}
 	}
 }
