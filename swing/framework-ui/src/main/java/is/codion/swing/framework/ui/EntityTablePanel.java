@@ -2278,11 +2278,11 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Provides access to the builder for the underlying {@link FilterTable}
-		 * @param tableBuilder the table builder
+		 * @param builder the table builder
 		 * @return this Config instance
 		 */
-		public Config configureTable(Consumer<FilterTable.Builder<Entity, Attribute<?>>> tableBuilder) {
-			requireNonNull(tableBuilder).accept(this.tableBuilder);
+		public Config table(Consumer<FilterTable.Builder<Entity, Attribute<?>>> builder) {
+			requireNonNull(builder).accept(this.tableBuilder);
 			return this;
 		}
 

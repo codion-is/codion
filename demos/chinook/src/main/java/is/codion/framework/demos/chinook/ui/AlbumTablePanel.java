@@ -49,7 +49,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	public AlbumTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
 						.editComponentFactory(Album.TAGS, new TagEditComponentFactory())
-						.configureTable(builder -> builder.cellRenderer(Album.RATING,
+						.table(builder -> builder.cellRenderer(Album.RATING,
 										() -> EntityTableCellRenderer.builder(Album.RATING, tableModel)
 														.string(RATINGS::get)
 														.toolTipData(true)

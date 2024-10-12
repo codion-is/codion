@@ -71,6 +71,7 @@ Codion Change Log
 - EntityTableCellRendererBuilder removed.
 - EntityTablePanel.Config.configureTable() renamed table().
 - EntityTableCellRendererFactory replaced with EntityTableCellRenderer.
+- EntityTable.Config.configureTable() renamed table().
 
 ## 0.18.17
 ### is.codion.common.core

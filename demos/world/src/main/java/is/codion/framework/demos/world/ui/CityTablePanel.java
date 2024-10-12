@@ -39,7 +39,7 @@ final class CityTablePanel extends ChartTablePanel {
 
 	CityTablePanel(CityTableModel tableModel) {
 		super(tableModel, tableModel.chartDataset(), "Cities", config -> config
-						.configureTable(builder -> builder
+						.table(builder -> builder
 										.cellRenderer(City.POPULATION, () -> populationRenderer(tableModel))
 										.cellRenderer(City.NAME, () -> nameRenderer(tableModel)))
 						.editable(attributes -> attributes.remove(City.LOCATION)));

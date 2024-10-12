@@ -32,7 +32,7 @@ public class EmployeeTablePanel extends EntityTablePanel {
 
 	public EmployeeTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
-						.configureTable(builder -> builder
+						.table(builder -> builder
 										.cellRenderer(Employee.JOB, () ->
 														EntityTableCellRenderer.builder(Employee.JOB, tableModel)
 																		.background(new JobBackgroundProvider())

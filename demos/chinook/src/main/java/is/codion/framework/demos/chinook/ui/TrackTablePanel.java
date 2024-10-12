@@ -68,7 +68,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 		super(tableModel, config -> config
 						.editComponentFactory(Track.RATING, new RatingComponentFactory())
 						.editComponentFactory(Track.MILLISECONDS, new DurationComponentFactory(tableModel))
-						.configureTable(builder -> configureTable(builder, tableModel))
+						.table(builder -> configureTable(builder, tableModel))
 						.includeLimitMenu(true));
 		configurePopupMenu(config -> config.clear()
 						.control(Control.builder()
