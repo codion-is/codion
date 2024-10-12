@@ -21,6 +21,7 @@ package is.codion.tools.loadtest.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -385,7 +386,9 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private FilterTable<ApplicationRow, ColumnId> createApplicationsTable() {
-		return FilterTable.builder(model().applicationTableModel(), createApplicationTableModelColumns())
+		FilterTableModel<ApplicationRow, ColumnId> tableModel = model().applicationTableModel();
+
+		return FilterTable.builder(tableModel, createApplicationTableModelColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClickAction(command(this::viewException))
 						.scrollToSelectedItem(false)

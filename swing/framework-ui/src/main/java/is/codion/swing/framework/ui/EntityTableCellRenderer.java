@@ -19,10 +19,13 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.ColorProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.awt.Color;
@@ -33,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * @see #builder(Attribute, SwingEntityTableModel)
- * @see #factory(SwingEntityTableModel)
+ * @see #factory()
  */
 public final class EntityTableCellRenderer {
 
@@ -45,7 +48,8 @@ public final class EntityTableCellRenderer {
 	 * @return a new {@link FilterTableCellRenderer.Builder} instance for the given attribute
 	 * @param <T> the attribute value type
 	 */
-	public static <T> FilterTableCellRenderer.Builder<T> builder(Attribute<T> attribute, SwingEntityTableModel tableModel) {
+	public static <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> builder(Attribute<T> attribute,
+																																										 SwingEntityTableModel tableModel) {
 		EntityDefinition entityDefinition = tableModel.entityDefinition();
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 		ConditionModel<?> queryCondition = tableModel.queryModel()
@@ -53,17 +57,40 @@ public final class EntityTableCellRenderer {
 						.optional(attribute)
 						.orElse(null);
 
-		return FilterTableCellRenderer.builder(attributeDefinition.attribute().type().valueClass())
+		return FilterTableCellRenderer.<Entity, Attribute<?>, T>builder(attributeDefinition.attribute().type().valueClass())
 						.uiSettings(new EntityUISettings(queryCondition))
 						.string(attributeDefinition::string);
 	}
 
 	/**
-	 * @param tableModel the table model
-	 * @return a new {@link FilterTableCellRenderer.Factory}
+	 * @return a new {@link Factory}
 	 */
-	public static FilterTableCellRenderer.Factory<Attribute<?>> factory(SwingEntityTableModel tableModel) {
-		return new Factory(tableModel);
+	public static Factory factory() {
+		return new Factory() {};
+	}
+
+	/**
+	 * @param <T> the attribute value type
+	 */
+	public interface EntityColorProvider<T> extends ColorProvider<Entity, Attribute<?>, T> {}
+
+	/**
+	 * A {@link SwingEntityTableModel} based table cell factory.
+	 */
+	public interface Factory extends FilterTableCellRenderer.Factory<Entity, Attribute<?>> {
+		/**
+		 * @param attribute the attribute
+		 * @param tableModel the table model
+		 * @return a new {@link FilterTableCellRenderer}
+		 */
+		default FilterTableCellRenderer create(Attribute<?> attribute, SwingEntityTableModel tableModel) {
+			return create(attribute, (FilterTableModel<Entity, Attribute<?>>) tableModel);
+		}
+
+		@Override
+		default FilterTableCellRenderer create(Attribute<?> attribute, FilterTableModel<Entity, Attribute<?>> tableModel) {
+			return builder(requireNonNull(attribute), (SwingEntityTableModel) tableModel).build();
+		}
 	}
 
 	private static final class EntityUISettings extends FilterTableCellRenderer.DefaultUISettings {
@@ -102,20 +129,6 @@ public final class EntityTableCellRenderer {
 			return alternateRow(row) ?
 							(doubleShading ? doubleShadedAlternateBackgroundColor : shadedAlternateBackgroundColor()) :
 							(doubleShading ? doubleShadedBackgroundColor : shadedBackgroundColor());
-		}
-	}
-
-	private static final class Factory implements FilterTableCellRenderer.Factory<Attribute<?>> {
-
-		private final SwingEntityTableModel tableModel;
-
-		Factory(SwingEntityTableModel tableModel) {
-			this.tableModel = tableModel;
-		}
-
-		@Override
-		public FilterTableCellRenderer create(Attribute<?> attribute) {
-			return builder(requireNonNull(attribute), tableModel).build();
 		}
 	}
 }

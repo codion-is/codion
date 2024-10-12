@@ -2220,7 +2220,7 @@ public class EntityTablePanel extends JPanel {
 			this.entityDefinition = tablePanel.tableModel.entityDefinition();
 			this.tableBuilder = FilterTable.builder(tablePanel.tableModel, entityTableColumns(entityDefinition))
 							.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
-							.cellRendererFactory(EntityTableCellRenderer.factory(tablePanel.tableModel))
+							.cellRendererFactory(EntityTableCellRenderer.factory())
 							.cellEditorFactory(new EntityTableCellEditorFactory(tablePanel.tableModel.editModel()))
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.conditionPanelFactory = new DefaultConditionPanelFactory();

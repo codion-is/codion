@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableCellRenderer.DefaultBuilder;
 
 import javax.swing.SwingConstants;
@@ -134,19 +135,23 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 
 	/**
 	 * Instantiates a new {@link FilterTableCellRenderer.Builder}.
+	 * @param <R> the row type
+	 * @param <C> the column identifier type
 	 * @param <T> the cell value type
 	 * @param columnClass the column class
 	 * @return a new {@link FilterTableCellRenderer.Builder} instance
 	 */
-	static <T> Builder<T> builder(Class<T> columnClass) {
-		return new DefaultBuilder<>(requireNonNull(columnClass), Boolean.class.equals(columnClass));
+	static <R, C, T> Builder<R, C, T> builder(Class<T> columnClass) {
+		return new DefaultBuilder<>(requireNonNull(columnClass));
 	}
 
 	/**
 	 * Provides a color to override the default color for table cells.
+	 * @param <R> the row type
+	 * @param <C> the column identifier type
 	 * @param <T> the cell value type
 	 */
-	interface ColorProvider<T> {
+	interface ColorProvider<R, C, T> {
 
 		/**
 		 * @param table the table
@@ -155,74 +160,76 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		 * @param value the cell value
 		 * @return the Color for the given cell, null for the default color
 		 */
-		Color color(FilterTable<?, ?> table, int row, int column, T value);
+		Color color(FilterTable<R, C> table, int row, int column, T value);
 	}
 
 	/**
 	 * Builds a {@link FilterTableCellRenderer}
+	 * @param <R> the row type
+	 * @param <C> the column identifier type
 	 * @param <T> the cell value type
 	 */
-	interface Builder<T> {
+	interface Builder<R, C, T> {
 
 		/**
 		 * @param uiSettings the ui settings
 		 * @return this builder instance
 		 */
-		Builder<T> uiSettings(UISettings uiSettings);
+		Builder<R, C, T> uiSettings(UISettings uiSettings);
 
 		/**
 		 * @param horizontalAlignment the horizontal alignment
 		 * @return this builder instance
 		 */
-		Builder<T> horizontalAlignment(int horizontalAlignment);
+		Builder<R, C, T> horizontalAlignment(int horizontalAlignment);
 
 		/**
 		 * @param toolTipData true if the cell should display its contents in a tool tip
 		 * @return this builder instance
 		 */
-		Builder<T> toolTipData(boolean toolTipData);
+		Builder<R, C, T> toolTipData(boolean toolTipData);
 
 		/**
 		 * @param columnShading true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
 		 * @return this builder instance
 		 */
-		Builder<T> columnShading(boolean columnShading);
+		Builder<R, C, T> columnShading(boolean columnShading);
 
 		/**
 		 * @param alternateRowColoring true if alternate row coloring should be enabled
 		 * @return this builder instance
 		 */
-		Builder<T> alternateRowColoring(boolean alternateRowColoring);
+		Builder<R, C, T> alternateRowColoring(boolean alternateRowColoring);
 
 		/**
 		 * @param leftPadding the left cell padding
 		 * @return this builder instance
 		 */
-		Builder<T> leftPadding(int leftPadding);
+		Builder<R, C, T> leftPadding(int leftPadding);
 
 		/**
 		 * @param rightPadding the right cell padding
 		 * @return this builder instance
 		 */
-		Builder<T> rightPadding(int rightPadding);
+		Builder<R, C, T> rightPadding(int rightPadding);
 
 		/**
 		 * @param string provides a String to display for a given cell value, formatted or otherwise
 		 * @return this builder instance
 		 */
-		Builder<T> string(Function<T, String> string);
+		Builder<R, C, T> string(Function<T, String> string);
 
 		/**
 		 * @param background provides the background color
 		 * @return this builder instance
 		 */
-		Builder<T> background(ColorProvider<T> background);
+		Builder<R, C, T> background(ColorProvider<R, C, T> background);
 
 		/**
 		 * @param foreground provides the foreground color
 		 * @return this builder instance
 		 */
-		Builder<T> foreground(ColorProvider<T> foreground);
+		Builder<R, C, T> foreground(ColorProvider<R, C, T> foreground);
 
 		/**
 		 * @return a new {@link FilterTableCellRenderer} instance based on this builder
@@ -233,13 +240,13 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	/**
 	 * A factory for {@link FilterTableCellRenderer} instances.
 	 */
-	interface Factory<C> {
+	interface Factory<R, C> {
 
 		/**
 		 * @param identifier the column identifier
 		 * @return a {@link FilterTableCellRenderer} instance for the given column
 		 */
-		FilterTableCellRenderer create(C identifier);
+		FilterTableCellRenderer create(C identifier, FilterTableModel<R, C> tableModel);
 	}
 
 	/**

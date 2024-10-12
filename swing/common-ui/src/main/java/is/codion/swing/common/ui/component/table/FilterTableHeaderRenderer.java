@@ -70,7 +70,7 @@ final class FilterTableHeaderRenderer<R, C> implements TableCellRenderer {
 				label.setHorizontalAlignment(((AbstractButton) columnCellRenderer).getHorizontalAlignment());
 			}
 			if (columnCellRenderer instanceof DefaultFilterTableCellRenderer) {
-				Border tableCellBorder = ((DefaultFilterTableCellRenderer<?>) columnCellRenderer).settings().defaultCellBorder();
+				Border tableCellBorder = ((DefaultFilterTableCellRenderer<?, ?, ?>) columnCellRenderer).settings().defaultCellBorder();
 				label.setBorder(label.getBorder() == null ? tableCellBorder : createCompoundBorder(label.getBorder(), tableCellBorder));
 			}
 		}

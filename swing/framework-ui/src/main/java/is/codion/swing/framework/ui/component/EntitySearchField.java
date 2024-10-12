@@ -916,7 +916,7 @@ public final class EntitySearchField extends HintTextField {
 			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder(tableModel,
 											entityTableColumns(tableModel.entityDefinition()))
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-							.cellRendererFactory(EntityTableCellRenderer.factory(tableModel))
+							.cellRendererFactory(EntityTableCellRenderer.factory())
 							.selectionMode(searchModel.singleSelection() ?
 											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
 							.doubleClickAction(selectControl)

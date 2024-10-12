@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -46,8 +47,8 @@ public class EntityTableCellRendererFactoryTest {
 	void test() {
 		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
 		tablePanel.tableModel().refresh();
-		FilterTableCellRenderer.Factory<Attribute<?>> factory = factory(tablePanel.tableModel());
-		FilterTableCellRenderer renderer =  factory.create(Employee.NAME);
+		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = factory();
+		FilterTableCellRenderer renderer =  factory.create(Employee.NAME, tablePanel.tableModel());
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, true, 0, 0);
@@ -63,7 +64,7 @@ public class EntityTableCellRendererFactoryTest {
 
 	@Test
 	void entityMismatch() {
-		FilterTableCellRenderer.Factory<Attribute<?>> factory = factory(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
-		assertThrows(IllegalArgumentException.class, () -> factory.create(Department.NAME));
+		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = factory();
+		assertThrows(IllegalArgumentException.class, () -> factory.create(Department.NAME, new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER)));
 	}
 }

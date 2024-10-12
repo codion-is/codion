@@ -811,13 +811,13 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void configureColumns(Map<C, Supplier<FilterTableCellRenderer>> cellRenderers,
-																FilterTableCellRenderer.Factory<C> cellRendererFactory,
+																FilterTableCellRenderer.Factory<R, C> cellRendererFactory,
 																Map<C, Supplier<FilterTableCellEditor<?>>> cellEditors,
 																FilterTableCellEditor.Factory<C> cellEditorFactory) {
 		columnModel().columns().stream()
 						.filter(column -> column.getCellRenderer() == null)
 						.forEach(column -> column.setCellRenderer(cellRenderers.getOrDefault(column.identifier(),
-										() -> cellRendererFactory.create(column.identifier())).get()));
+										() -> cellRendererFactory.create(column.identifier(), tableModel)).get()));
 		columnModel().columns().stream()
 						.filter(column -> column.getHeaderRenderer() == null)
 						.forEach(column -> column.setHeaderRenderer(new FilterTableHeaderRenderer<>(this, column)));
@@ -1061,7 +1061,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * @param cellRendererFactory the table cell renderer factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<C> cellRendererFactory);
+		Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C> cellRendererFactory);
 
 		/**
 		 * Supplies the cell renderer for the given column, overrides {@link #cellEditorFactory(FilterTableCellEditor.Factory)}.
@@ -1203,7 +1203,7 @@ public final class FilterTable<R, C> extends JTable {
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private FieldFactory filterFieldFactory = new DefaultFilterFieldFactory();
-		private FilterTableCellRenderer.Factory<C> cellRendererFactory;
+		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
 		private FilterTableCellEditor.Factory<C> cellEditorFactory;
 		private boolean autoStartsEdit = false;
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
@@ -1220,7 +1220,7 @@ public final class FilterTable<R, C> extends JTable {
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = tableModel;
 			this.columns = new ArrayList<>(validateIdentifiers(columns));
-			this.cellRendererFactory = new DefaultFilterTableCellRendererFactory<>(tableModel);
+			this.cellRendererFactory = new DefaultFilterTableCellRendererFactory<>();
 		}
 
 		@Override
@@ -1248,7 +1248,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<C> cellRendererFactory) {
+		public Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C> cellRendererFactory) {
 			this.cellRendererFactory = requireNonNull(cellRendererFactory);
 			return this;
 		}
@@ -1609,16 +1609,10 @@ public final class FilterTable<R, C> extends JTable {
 		}
 	}
 
-	private static final class DefaultFilterTableCellRendererFactory<R, C> implements FilterTableCellRenderer.Factory<C> {
-
-		private final FilterTableModel<R, C> tableModel;
-
-		private DefaultFilterTableCellRendererFactory(FilterTableModel<R, C> tableModel) {
-			this.tableModel = tableModel;
-		}
+	private static final class DefaultFilterTableCellRendererFactory<R, C> implements FilterTableCellRenderer.Factory<R, C> {
 
 		@Override
-		public FilterTableCellRenderer create(C identifier) {
+		public FilterTableCellRenderer create(C identifier, FilterTableModel<R, C> tableModel) {
 			return FilterTableCellRenderer.builder(tableModel.getColumnClass(identifier)).build();
 		}
 	}

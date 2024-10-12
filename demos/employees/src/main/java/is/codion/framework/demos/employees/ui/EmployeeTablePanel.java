@@ -19,10 +19,12 @@
 package is.codion.framework.demos.employees.ui;
 
 import is.codion.framework.demos.employees.domain.Employees.Employee;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.ColorProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
+import is.codion.swing.framework.ui.EntityTableCellRenderer.EntityColorProvider;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.awt.Color;
@@ -43,10 +45,10 @@ public class EmployeeTablePanel extends EntityTablePanel {
 																		.build())));
 	}
 
-	private static final class JobBackgroundProvider implements ColorProvider<String> {
+	private static final class JobBackgroundProvider implements EntityColorProvider<String> {
 
 		@Override
-		public Color color(FilterTable<?, ?> table, int row, int column, String value) {
+		public Color color(FilterTable<Entity, Attribute<?>> table, int row, int column, String value) {
 			if ("Manager".equals(value)) {
 				return Color.CYAN;
 			}
@@ -55,10 +57,10 @@ public class EmployeeTablePanel extends EntityTablePanel {
 		}
 	}
 
-	private static final class SalaryForegroundProvider implements ColorProvider<BigDecimal> {
+	private static final class SalaryForegroundProvider implements EntityColorProvider<BigDecimal> {
 
 		@Override
-		public Color color(FilterTable<?, ?> table, int row, int column, BigDecimal value) {
+		public Color color(FilterTable<Entity, Attribute<?>> table, int row, int column, BigDecimal value) {
 			double salary = value.doubleValue();
 			if (salary < 1300) {
 				return Color.RED;

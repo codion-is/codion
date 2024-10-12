@@ -36,11 +36,11 @@ import java.util.function.Function;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.alternateRow;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer implements FilterTableCellRenderer {
+final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer {
 
-	private final Settings<T> settings;
+	private final Settings<R, C, T> settings;
 
-	DefaultFilterTableCellRenderer(Settings<T> settings) {
+	DefaultFilterTableCellRenderer(Settings<R, C, T> settings) {
 		this.settings = requireNonNull(settings);
 		this.settings.update();
 		setHorizontalAlignment(settings.horizontalAlignment);
@@ -72,7 +72,7 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		settings.configure(this, (FilterTable<?, ?>) table, (T) value, isSelected, hasFocus, row, column);
+		settings.configure(this, (FilterTable<R, C>) table, (T) value, isSelected, hasFocus, row, column);
 		if (settings.toolTipData) {
 			setToolTipText(settings.string.apply((T) value));
 		}
@@ -92,12 +92,12 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 	/**
 	 * A default {@link FilterTableCellRenderer} implementation for Boolean values
 	 */
-	public static final class BooleanRenderer extends NullableCheckBox
+	private static final class BooleanRenderer<R, C> extends NullableCheckBox
 					implements TableCellRenderer, javax.swing.plaf.UIResource, FilterTableCellRenderer {
 
-		private final Settings<Boolean> settings;
+		private final Settings<R, C, Boolean> settings;
 
-		BooleanRenderer(Settings<Boolean> settings) {
+		BooleanRenderer(Settings<R, C, Boolean> settings) {
 			super(new NullableToggleButtonModel());
 			this.settings = requireNonNull(settings);
 			this.settings.update();
@@ -132,7 +132,7 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																									 boolean hasFocus, int row, int column) {
 			model().toggleState().set((Boolean) value);
-			settings.configure(this, (FilterTable<?, ?>) table, (Boolean) value, isSelected, hasFocus, row, column);
+			settings.configure(this, (FilterTable<R, C>) table, (Boolean) value, isSelected, hasFocus, row, column);
 			if (settings.toolTipData) {
 				setToolTipText(value == null ? "" : value.toString());
 			}
@@ -141,14 +141,14 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 		}
 	}
 
-	private static final class Settings<T> {
+	private static final class Settings<R, C, T> {
 
 		private final int leftPadding;
 		private final int rightPadding;
 		private final boolean alternateRowColoring;
 		private final boolean columnShading;
-		private final ColorProvider<T> backgroundColorProvider;
-		private final ColorProvider<T> foregroundColorProvider;
+		private final ColorProvider<R, C, T> backgroundColorProvider;
+		private final ColorProvider<R, C, T> foregroundColorProvider;
 		private final int horizontalAlignment;
 		private final boolean toolTipData;
 		private final Function<T, String> string;
@@ -158,7 +158,7 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 		private StateObserver filterEnabled;
 		private boolean filterEnabledSet = false;
 
-		private Settings(SettingsBuilder<T> builder) {
+		private Settings(SettingsBuilder<R, C, T> builder) {
 			this.uiSettings = builder.uiSettings;
 			this.leftPadding = builder.leftPadding;
 			this.rightPadding = builder.rightPadding;
@@ -175,7 +175,7 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 			uiSettings.update(leftPadding, rightPadding);
 		}
 
-		private void configure(FilterTableCellRenderer cellRenderer, FilterTable<?, ?> filterTable, T value,
+		private void configure(FilterTableCellRenderer cellRenderer, FilterTable<R, C> filterTable, T value,
 													 boolean isSelected, boolean hasFocus, int row, int column) {
 			requireNonNull(cellRenderer);
 			requireNonNull(filterTable);
@@ -196,11 +196,11 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 			}
 		}
 
-		private Color foregroundColor(FilterTable<?, ?> filterTable, T value, int row, int column) {
+		private Color foregroundColor(FilterTable<R, C> filterTable, T value, int row, int column) {
 			return foregroundColorProvider == null ? uiSettings.foregroundColor() : foregroundColorProvider.color(filterTable, row, column, value);
 		}
 
-		private Color backgroundColor(FilterTable<?, ?> filterTable, T value, boolean selected, int row, int column) {
+		private Color backgroundColor(FilterTable<R, C> filterTable, T value, boolean selected, int row, int column) {
 			Color cellBackgroundColor = null;
 			if (backgroundColorProvider != null) {
 				cellBackgroundColor = backgroundColorProvider.color(filterTable, row, column, value);
@@ -260,15 +260,15 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 		}
 	}
 
-	static final class SettingsBuilder<T> {
+	static final class SettingsBuilder<R, C, T> {
 
 		private UISettings uiSettings = new DefaultUISettings();
 		private int leftPadding = TABLE_CELL_LEFT_PADDING.get();
 		private int rightPadding = TABLE_CELL_RIGHT_PADDING.get();
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.get();
 		private boolean columnShading = true;
-		private ColorProvider<T> backgroundColor;
-		private ColorProvider<T> foregroundColor;
+		private ColorProvider<R, C, T> backgroundColor;
+		private ColorProvider<R, C, T> foregroundColor;
 		private boolean toolTipData = false;
 		private Function<T, String> string = new DefaultString<>();
 		private int horizontalAlignment;
@@ -277,57 +277,57 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 			this.horizontalAlignment = defaultHorizontalAlignment;
 		}
 
-		SettingsBuilder<T> uiSettings(UISettings uiSettings) {
+		SettingsBuilder<R, C, T> uiSettings(UISettings uiSettings) {
 			this.uiSettings = requireNonNull(uiSettings);
 			return this;
 		}
 
-		SettingsBuilder<T> leftPadding(int leftPadding) {
+		SettingsBuilder<R, C, T> leftPadding(int leftPadding) {
 			this.leftPadding = leftPadding;
 			return this;
 		}
 
-		SettingsBuilder<T> rightPadding(int rightPadding) {
+		SettingsBuilder<R, C, T> rightPadding(int rightPadding) {
 			this.rightPadding = rightPadding;
 			return this;
 		}
 
-		SettingsBuilder<T> alternateRowColoring(boolean alternateRowColoring) {
+		SettingsBuilder<R, C, T> alternateRowColoring(boolean alternateRowColoring) {
 			this.alternateRowColoring = alternateRowColoring;
 			return this;
 		}
 
-		SettingsBuilder<T> columnShading(boolean columnShading) {
+		SettingsBuilder<R, C, T> columnShading(boolean columnShading) {
 			this.columnShading = columnShading;
 			return this;
 		}
 
-		SettingsBuilder<T> backgroundColor(ColorProvider<T> backgroundColor) {
+		SettingsBuilder<R, C, T> backgroundColor(ColorProvider<R, C, T> backgroundColor) {
 			this.backgroundColor = requireNonNull(backgroundColor);
 			return this;
 		}
 
-		SettingsBuilder<T> foregroundColor(ColorProvider<T> foregroundColor) {
+		SettingsBuilder<R, C, T> foregroundColor(ColorProvider<R, C, T> foregroundColor) {
 			this.foregroundColor = requireNonNull(foregroundColor);
 			return this;
 		}
 
-		SettingsBuilder<T> horizontalAlignment(int horizontalAlignment) {
+		SettingsBuilder<R, C, T> horizontalAlignment(int horizontalAlignment) {
 			this.horizontalAlignment = horizontalAlignment;
 			return this;
 		}
 
-		SettingsBuilder<T> toolTipData(boolean toolTipData) {
+		SettingsBuilder<R, C, T> toolTipData(boolean toolTipData) {
 			this.toolTipData = toolTipData;
 			return this;
 		}
 
-		SettingsBuilder<T> string(Function<T, String> string) {
+		SettingsBuilder<R, C, T> string(Function<T, String> string) {
 			this.string = requireNonNull(string);
 			return this;
 		}
 
-		Settings<T> build() {
+		Settings<R, C, T> build() {
 			return new Settings<>(this);
 		}
 	}
@@ -342,81 +342,81 @@ final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer i
 	/**
 	 * A default {@link Builder} implementation.
 	 */
-	static class DefaultBuilder<T> implements Builder<T> {
+	static final class DefaultBuilder<R, C, T> implements Builder<R, C, T> {
 
-		private final SettingsBuilder<T> settings;
+		private final SettingsBuilder<R, C, T> settings;
 		private final boolean useBooleanRenderer;
 
-		DefaultBuilder(Class<T> columnClass, boolean useBooleanRenderer) {
+		DefaultBuilder(Class<T> columnClass) {
 			this.settings = new SettingsBuilder<>(defaultHorizontalAlignment(requireNonNull(columnClass)));
-			this.useBooleanRenderer = useBooleanRenderer;
+			this.useBooleanRenderer = Boolean.class.equals(columnClass);
 		}
 
 		@Override
-		public final Builder<T> uiSettings(UISettings uiSettings) {
+		public Builder<R, C, T> uiSettings(UISettings uiSettings) {
 			this.settings.uiSettings(uiSettings);
 			return this;
 		}
 
 		@Override
-		public final Builder<T> horizontalAlignment(int horizontalAlignment) {
+		public Builder<R, C, T> horizontalAlignment(int horizontalAlignment) {
 			this.settings.horizontalAlignment(horizontalAlignment);
 			return this;
 		}
 
 		@Override
-		public final Builder<T> toolTipData(boolean toolTipData) {
+		public Builder<R, C, T> toolTipData(boolean toolTipData) {
 			this.settings.toolTipData(toolTipData);
 			return this;
 		}
 
 		@Override
-		public final Builder<T> columnShading(boolean columnShading) {
+		public Builder<R, C, T> columnShading(boolean columnShading) {
 			this.settings.columnShading(columnShading);
 			return this;
 		}
 
 		@Override
-		public final Builder<T> alternateRowColoring(boolean alternateRowColoring) {
+		public Builder<R, C, T> alternateRowColoring(boolean alternateRowColoring) {
 			this.settings.alternateRowColoring(alternateRowColoring);
 			return this;
 		}
 
 		@Override
-		public final Builder<T> leftPadding(int leftPadding) {
+		public Builder<R, C, T> leftPadding(int leftPadding) {
 			this.settings.leftPadding(leftPadding);
 			return this;
 		}
 
 		@Override
-		public final Builder<T> rightPadding(int rightPadding) {
+		public Builder<R, C, T> rightPadding(int rightPadding) {
 			this.settings.rightPadding(rightPadding);
 			return this;
 		}
 
 		@Override
-		public final Builder<T> string(Function<T, String> string) {
+		public Builder<R, C, T> string(Function<T, String> string) {
 			this.settings.string(string);
 			return this;
 		}
 
 		@Override
-		public Builder<T> background(ColorProvider<T> background) {
+		public Builder<R, C, T> background(ColorProvider<R, C, T> background) {
 			this.settings.backgroundColor(background);
 			return this;
 		}
 
 		@Override
-		public Builder<T> foreground(ColorProvider<T> foreground) {
+		public Builder<R, C, T> foreground(ColorProvider<R, C, T> foreground) {
 			this.settings.foregroundColor(foreground);
 			return this;
 		}
 
 		@Override
-		public final FilterTableCellRenderer build() {
+		public FilterTableCellRenderer build() {
 			return useBooleanRenderer ?
-							new BooleanRenderer((Settings<Boolean>) this.settings.build()) :
-							new DefaultFilterTableCellRenderer<>(this.settings.build());
+							new BooleanRenderer<>((Settings<R, C, Boolean>) settings.build()) :
+							new DefaultFilterTableCellRenderer<>(settings.build());
 		}
 
 		private int defaultHorizontalAlignment(Class<T> columnClass) {
