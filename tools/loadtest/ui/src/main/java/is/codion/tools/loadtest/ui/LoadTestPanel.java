@@ -551,11 +551,11 @@ public final class LoadTestPanel<T> extends JPanel {
 					FilterTableCellRenderer.Factory<ColumnId> {
 
 		@Override
-		public FilterTableCellRenderer create(FilterTableColumn<ColumnId> column) {
-			FilterTableCellRenderer.Builder builder =
-							FilterTableCellRenderer.builder(column.identifier(), Integer.class)
-											.filter(model().applicationTableModel().filters().optional(column.identifier()).orElse(null));
-			if (column.identifier().equals(ColumnId.DURATION)) {
+		public FilterTableCellRenderer create(ColumnId identifier) {
+			FilterTableCellRenderer.Builder<Integer> builder =
+							FilterTableCellRenderer.builder(Integer.class)
+											.filter(model().applicationTableModel().filters().optional(identifier).orElse(null));
+			if (identifier.equals(ColumnId.DURATION)) {
 				builder.string(duration -> duration == null ? null : DURATION_FORMAT.format(duration));
 			}
 

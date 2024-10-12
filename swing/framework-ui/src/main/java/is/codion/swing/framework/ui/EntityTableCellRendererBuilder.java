@@ -31,16 +31,16 @@ import java.util.function.Function;
 import static is.codion.swing.common.ui.Colors.darker;
 import static java.util.Objects.requireNonNull;
 
-final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendererBuilder<Attribute<?>> {
+final class EntityTableCellRendererBuilder<T> extends DefaultFilterTableCellRendererBuilder<T> {
 
 	private final ConditionModel<?> queryCondition;
 
-	EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
+	EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Attribute<T> attribute) {
 		this(requireNonNull(tableModel), tableModel.entityDefinition().attributes().definition(attribute));
 	}
 
-	private EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, AttributeDefinition<?> attributeDefinition) {
-		super(requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().type().valueClass());
+	private EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, AttributeDefinition<T> attributeDefinition) {
+		super(requireNonNull(attributeDefinition).attribute().type().valueClass());
 		requireNonNull(tableModel).entityDefinition().attributes().definition(attributeDefinition.attribute());
 		queryCondition = tableModel.queryModel().conditions().optional(attributeDefinition.attribute()).orElse(null);
 		filter(tableModel.filters().optional(attributeDefinition.attribute()).orElse(null));
@@ -48,11 +48,11 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 	}
 
 	@Override
-	protected Settings<Attribute<?>> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+	protected Settings settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
 		return new EntitySettings(queryCondition, leftPadding, rightPadding, alternateRowColoring);
 	}
 
-	private static final class EntitySettings extends Settings<Attribute<?>> {
+	private static final class EntitySettings extends Settings {
 
 		private final ConditionModel<?> queryCondition;
 
@@ -72,8 +72,7 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		}
 
 		@Override
-		protected Color backgroundColorShaded(ConditionModel<?> filter, int row,
-																					Attribute<?> identifier, Color cellBackgroundColor) {
+		protected Color backgroundColorShaded(ConditionModel<?> filter, int row, Color cellBackgroundColor) {
 			boolean conditionEnabled = queryCondition != null && queryCondition.enabled().get();
 			boolean filterEnabled = filter != null && filter.enabled().get();
 			if (conditionEnabled || filterEnabled) {
@@ -94,16 +93,16 @@ final class EntityTableCellRendererBuilder extends DefaultFilterTableCellRendere
 		}
 	}
 
-	private static final class DefaultString implements Function<Object, String> {
+	private final class DefaultString implements Function<T, String> {
 
-		private final AttributeDefinition<Object> definition;
+		private final AttributeDefinition<T> definition;
 
-		private DefaultString(AttributeDefinition<?> attributeDefinition) {
-			this.definition = (AttributeDefinition<Object>) attributeDefinition;
+		private DefaultString(AttributeDefinition<T> attributeDefinition) {
+			this.definition = attributeDefinition;
 		}
 
 		@Override
-		public String apply(Object value) {
+		public String apply(T value) {
 			return definition.string(value);
 		}
 	}

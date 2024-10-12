@@ -32,28 +32,26 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link FilterTableCellRenderer} implementation.
- * @param <C> the column identifier type
+ * @param <T> the column value type
  */
-final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer implements FilterTableCellRenderer {
+final class DefaultFilterTableCellRenderer<T> extends DefaultTableCellRenderer implements FilterTableCellRenderer {
 
-	private final Settings<C> settings;
+	private final Settings settings;
 	private final ConditionModel<?> filter;
-	private final C columnIdentifier;
 	private final boolean toolTipData;
 	private final boolean columnShading;
 	private final boolean alternateRowColoring;
-	private final Function<Object, String> string;
-	private final ColorProvider backgroundColor;
-	private final ColorProvider foregroundColor;
+	private final Function<T, String> string;
+	private final ColorProvider<T> backgroundColor;
+	private final ColorProvider<T> foregroundColor;
 
 	/**
 	 * @param builder the builder
 	 * @param settings the UI settings for the renderer
 	 */
-	DefaultFilterTableCellRenderer(DefaultFilterTableCellRendererBuilder<C> builder, Settings<C> settings) {
+	DefaultFilterTableCellRenderer(DefaultFilterTableCellRendererBuilder<T> builder, Settings settings) {
 		this.settings = requireNonNull(settings);
 		this.settings.updateColors();
-		this.columnIdentifier = builder.columnIdentifier;
 		this.filter = builder.filter;
 		this.toolTipData = builder.toolTipData;
 		this.columnShading = builder.columnShading;
@@ -91,10 +89,10 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																								 boolean hasFocus, int row, int column) {
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		FilterTable<?, C> filterTable = (FilterTable<?, C>) table;
-		setForeground(settings.foregroundColor(foregroundColor == null ? null : foregroundColor.color(filterTable, row, value)));
-		setBackground(settings.backgroundColor(filter, row, columnIdentifier, columnShading, isSelected,
-						backgroundColor == null ? null : backgroundColor.color(filterTable, row, value)));
+		FilterTable<?, ?> filterTable = (FilterTable<?, ?>) table;
+		setForeground(settings.foregroundColor(foregroundColor == null ? null : foregroundColor.color(filterTable, row, (T) value)));
+		setBackground(settings.backgroundColor(filter, row, columnShading, isSelected,
+						backgroundColor == null ? null : backgroundColor.color(filterTable, row, (T) value)));
 		setBorder(hasFocus || isSearchResult(filterTable.searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 		if (toolTipData) {
 			setToolTipText(value == null ? "" : value.toString());
@@ -108,13 +106,13 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 	 */
 	@Override
 	protected void setValue(Object value) {
-		super.setValue(string.apply(value));
+		super.setValue(string.apply((T) value));
 	}
 
 	/**
 	 * @return the Settings instance
 	 */
-	Settings<C> settings() {
+	Settings settings() {
 		return settings;
 	}
 
@@ -124,28 +122,25 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 
 	/**
 	 * A default {@link FilterTableCellRenderer} implementation for Boolean values
-	 * @param <C> the column identifier type
 	 */
-	public static final class BooleanRenderer<C> extends NullableCheckBox
+	public static final class BooleanRenderer extends NullableCheckBox
 					implements TableCellRenderer, javax.swing.plaf.UIResource, FilterTableCellRenderer {
 
-		private final Settings<C> settings;
-		private final C columnIdentifier;
+		private final Settings settings;
 		private final ConditionModel<?> filter;
 		private final boolean columnShading;
 		private final boolean alternateRowColoring;
-		private final ColorProvider backgroundColor;
-		private final ColorProvider foregroundColor;
+		private final ColorProvider<Boolean> backgroundColor;
+		private final ColorProvider<Boolean> foregroundColor;
 
 		/**
 		 * @param builder the builder
 		 * @param settings the UI settings for the renderer
 		 */
-		BooleanRenderer(DefaultFilterTableCellRendererBuilder<C> builder, Settings<C> settings) {
+		BooleanRenderer(DefaultFilterTableCellRendererBuilder<Boolean> builder, Settings settings) {
 			super(new NullableToggleButtonModel());
 			this.settings = requireNonNull(settings);
 			this.settings.updateColors();
-			this.columnIdentifier = builder.columnIdentifier;
 			this.filter = builder.filter;
 			this.columnShading = builder.columnShading;
 			this.alternateRowColoring = builder.alternateRowColoring;
@@ -182,10 +177,10 @@ final class DefaultFilterTableCellRenderer<C> extends DefaultTableCellRenderer i
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																									 boolean hasFocus, int row, int column) {
 			model().toggleState().set((Boolean) value);
-			FilterTable<?, C> filterTable = (FilterTable<?, C>) table;
-			setForeground(settings.foregroundColor(foregroundColor == null ? null : foregroundColor.color(filterTable, row, value)));
-			setBackground(settings.backgroundColor(filter, row, columnIdentifier, columnShading, isSelected,
-							backgroundColor == null ? null : backgroundColor.color(filterTable, row, value)));
+			FilterTable<?, ?> filterTable = (FilterTable<?, ?>) table;
+			setForeground(settings.foregroundColor(foregroundColor == null ? null : foregroundColor.color(filterTable, row, (Boolean) value)));
+			setBackground(settings.backgroundColor(filter, row, columnShading, isSelected,
+							backgroundColor == null ? null : backgroundColor.color(filterTable, row, (Boolean) value)));
 			setBorder(hasFocus || isSearchResult(filterTable.searchModel(), row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 
 			return this;

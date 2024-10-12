@@ -813,13 +813,13 @@ public final class FilterTable<R, C> extends JTable {
 																FilterTableCellEditor.Factory<C> cellEditorFactory) {
 		columnModel().columns().stream()
 						.filter(column -> column.getCellRenderer() == null)
-						.forEach(column -> column.setCellRenderer(cellRendererFactory.create(column)));
+						.forEach(column -> column.setCellRenderer(cellRendererFactory.create(column.identifier())));
 		columnModel().columns().stream()
 						.filter(column -> column.getHeaderRenderer() == null)
 						.forEach(column -> column.setHeaderRenderer(new FilterTableHeaderRenderer<>(this, column)));
 		columnModel().columns().stream()
 						.filter(column -> column.getCellEditor() == null)
-						.forEach(column -> cellEditorFactory.create(column).ifPresent(column::setCellEditor));
+						.forEach(column -> cellEditorFactory.create(column.identifier()).ifPresent(column::setCellEditor));
 	}
 
 	private void configureTableHeader(boolean reorderingAllowed, boolean columnResizingAllowed) {
@@ -1575,9 +1575,9 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public FilterTableCellRenderer create(FilterTableColumn<C> column) {
-			return FilterTableCellRenderer.builder(column.identifier(), tableModel.getColumnClass(column.identifier()))
-							.filter(tableModel.filters().optional(column.identifier()).orElse(null))
+		public FilterTableCellRenderer create(C identifier) {
+			return FilterTableCellRenderer.builder(tableModel.getColumnClass(identifier))
+							.filter(tableModel.filters().optional(identifier).orElse(null))
 							.build();
 		}
 	}
@@ -1585,7 +1585,7 @@ public final class FilterTable<R, C> extends JTable {
 	private static final class DefaultFilterTableCellEditorFactory<C> implements FilterTableCellEditor.Factory<C> {
 
 		@Override
-		public Optional<TableCellEditor> create(FilterTableColumn<C> column) {
+		public Optional<TableCellEditor> create(C identifier) {
 			return Optional.empty();
 		}
 	}

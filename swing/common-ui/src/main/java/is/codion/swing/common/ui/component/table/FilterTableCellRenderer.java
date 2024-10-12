@@ -34,7 +34,7 @@ import static is.codion.swing.common.ui.Colors.darker;
 import static javax.swing.BorderFactory.*;
 
 /**
- * Provides TableCellRenderer implementations for FilterTable via {@link #builder(Object, Class)}.
+ * Provides TableCellRenderer implementations for FilterTable via {@link #builder(Class)}.
  */
 public interface FilterTableCellRenderer extends TableCellRenderer {
 
@@ -125,93 +125,94 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 
 	/**
 	 * Instantiates a new {@link FilterTableCellRenderer.Builder}.
-	 * @param <C> the column identifier type
-	 * @param identifier the column identifier
+	 * @param <T> the cell value type
 	 * @param columnClass the column class
 	 * @return a new {@link FilterTableCellRenderer.Builder} instance
 	 */
-	static <C> Builder builder(C identifier, Class<?> columnClass) {
-		return new DefaultFilterTableCellRendererBuilder<>(identifier, columnClass);
+	static <T> Builder<T> builder(Class<T> columnClass) {
+		return new DefaultFilterTableCellRendererBuilder<>(columnClass);
 	}
 
 	/**
 	 * Provides a color to override the default color for table cells.
+	 * @param <T> the cell value type
 	 */
-	interface ColorProvider {
+	interface ColorProvider<T> {
 
 		/**
 		 * @param row the row number
 		 * @param value the cell value
 		 * @return the Color for the given cell, null for the default color
 		 */
-		Color color(FilterTable<?, ?> table, int row, Object value);
+		Color color(FilterTable<?, ?> table, int row, T value);
 	}
 
 	/**
 	 * Builds a {@link FilterTableCellRenderer}
+	 * @param <T> the cell value type
 	 */
-	interface Builder {
+	interface Builder<T> {
 
 		/**
 		 * Used to indicate whether a filter condition is enabled for the column by shading it.
 		 * @param filter the filter condition model, may be null
 		 * @return this builder instance
 		 */
-		Builder filter(ConditionModel<?> filter);
+		Builder<T> filter(ConditionModel<?> filter);
 
 		/**
 		 * @param horizontalAlignment the horizontal alignment
 		 * @return this builder instance
 		 */
-		Builder horizontalAlignment(int horizontalAlignment);
+		Builder<T> horizontalAlignment(int horizontalAlignment);
 
 		/**
 		 * @param toolTipData true if the cell should display its contents in a tool tip
 		 * @return this builder instance
 		 */
-		Builder toolTipData(boolean toolTipData);
+		Builder<T> toolTipData(boolean toolTipData);
 
 		/**
 		 * @param columnShading true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
 		 * @return this builder instance
 		 */
-		Builder columnShading(boolean columnShading);
+		Builder<T> columnShading(boolean columnShading);
 
 		/**
 		 * @param alternateRowColoring true if alternate row coloring should be enabled
 		 * @return this builder instance
 		 */
-		Builder alternateRowColoring(boolean alternateRowColoring);
+		Builder<T> alternateRowColoring(boolean alternateRowColoring);
 
 		/**
 		 * @param leftPadding the left cell padding
 		 * @return this builder instance
 		 */
-		Builder leftPadding(int leftPadding);
+		Builder<T> leftPadding(int leftPadding);
 
 		/**
 		 * @param rightPadding the right cell padding
 		 * @return this builder instance
 		 */
-		Builder rightPadding(int rightPadding);
+		Builder<T> rightPadding(int rightPadding);
 
 		/**
 		 * @param string provides a String to display for a given cell value, formatted or otherwise
 		 * @return this builder instance
 		 */
-		Builder string(Function<Object, String> string);
+		Builder<T> string(Function<T, String> string);
 
 		/**
 		 * @param background provides the background color
 		 * @return this builder instance
 		 */
-		Builder background(ColorProvider background);
+		Builder<T> background(ColorProvider<T> background);
 
 		/**
 		 * @param foreground provides the foreground color
 		 * @return this builder instance
 		 */
-		Builder foreground(ColorProvider foreground);
+		Builder<T> foreground(ColorProvider<T> foreground);
 
 		/**
 		 * @return a new {@link FilterTableCellRenderer} instance based on this builder
@@ -225,17 +226,16 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	interface Factory<C> {
 
 		/**
-		 * @param column the column
+		 * @param identifier the column identifier
 		 * @return a {@link FilterTableCellRenderer} instance for the given column
 		 */
-		FilterTableCellRenderer create(FilterTableColumn<C> column);
+		FilterTableCellRenderer create(C identifier);
 	}
 
 	/**
 	 * Settings for a {@link FilterTableCellRenderer}
-	 * @param <C> the column identifier type
 	 */
-	class Settings<C> {
+	class Settings {
 
 		protected static final float SELECTION_COLOR_BLEND_RATIO = 0.5f;
 		protected static final double DARKENING_FACTOR = 0.9;
@@ -309,11 +309,11 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 			focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
 		}
 
-		protected final Color backgroundColor(ConditionModel<?> filter, int row, C identifier, boolean columnShading,
+		protected final Color backgroundColor(ConditionModel<?> filter, int row, boolean columnShading,
 																					boolean selected, Color cellBackgroundColor) {
 			cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
 			if (columnShading) {
-				cellBackgroundColor = backgroundColorShaded(filter, row, identifier, cellBackgroundColor);
+				cellBackgroundColor = backgroundColorShaded(filter, row, cellBackgroundColor);
 			}
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
@@ -332,11 +332,10 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		 * Adds shading to the given cell, if applicable
 		 * @param filter the filter condition model for the given column, may be null
 		 * @param row the row
-		 * @param identifier the column identifier
 		 * @param cellBackgroundColor the cell specific background color, if any
 		 * @return a shaded background color
 		 */
-		protected Color backgroundColorShaded(ConditionModel<?> filter, int row, C identifier, Color cellBackgroundColor) {
+		protected Color backgroundColorShaded(ConditionModel<?> filter, int row, Color cellBackgroundColor) {
 			if (filter != null && filter.enabled().get()) {
 				return backgroundShaded(row, cellBackgroundColor);
 			}

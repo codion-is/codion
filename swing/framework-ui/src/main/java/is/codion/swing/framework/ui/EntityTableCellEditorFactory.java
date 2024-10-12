@@ -22,7 +22,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
 import is.codion.swing.framework.ui.component.EntityComponentFactory;
@@ -49,13 +48,13 @@ public class EntityTableCellEditorFactory implements FilterTableCellEditor.Facto
 	}
 
 	@Override
-	public Optional<TableCellEditor> create(FilterTableColumn<Attribute<?>> column) {
-		if (nonUpdatableForeignKey(column.identifier())) {
+	public Optional<TableCellEditor> create(Attribute<?> attribute) {
+		if (nonUpdatableForeignKey(attribute)) {
 			return Optional.empty();
 		}
 
 		EntityComponentFactory<Object, JComponent> componentFactory =
-						new DefaultEntityComponentFactory<>((Attribute<Object>) column.identifier());
+						new DefaultEntityComponentFactory<>((Attribute<Object>) attribute);
 
 		return Optional.of(filterTableCellEditor(() ->
 						componentFactory.componentValue(editModel, null)));

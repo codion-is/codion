@@ -21,7 +21,6 @@ package is.codion.swing.framework.ui;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Builder;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import static java.util.Objects.requireNonNull;
@@ -41,22 +40,22 @@ public class EntityTableCellRendererFactory implements FilterTableCellRenderer.F
 	}
 
 	@Override
-	public FilterTableCellRenderer create(FilterTableColumn<Attribute<?>> column) {
-		return builder(column).build();
+	public FilterTableCellRenderer create(Attribute<?> attribute) {
+		return builder(attribute).build();
 	}
 
 	/**
-	 * @param column the column
+	 * @param attribute the attribute
 	 * @return a builder for a {@link FilterTableCellRenderer} based on the given column
 	 */
-	protected final Builder builder(FilterTableColumn<Attribute<?>> column) {
-		return new EntityTableCellRendererBuilder(tableModel, requireNonNull(column).identifier());
+	protected final <T> Builder<T> builder(Attribute<T> attribute) {
+		return new EntityTableCellRendererBuilder<>(tableModel, requireNonNull(attribute));
 	}
 
 	/**
 	 * @return the table model
 	 */
-	protected final SwingEntityTableModel tableModel() {
-		return tableModel;
+	protected final <T extends SwingEntityTableModel> T tableModel() {
+		return (T) tableModel;
 	}
 }

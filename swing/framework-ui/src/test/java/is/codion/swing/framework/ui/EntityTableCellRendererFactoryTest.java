@@ -21,9 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
@@ -47,8 +45,7 @@ public class EntityTableCellRendererFactoryTest {
 		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
 		tablePanel.tableModel().refresh();
 		EntityTableCellRendererFactory factory = new EntityTableCellRendererFactory(tablePanel.tableModel());
-		FilterTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(Employee.NAME);
-		FilterTableCellRenderer renderer =  factory.create(column);
+		FilterTableCellRenderer renderer =  factory.create(Employee.NAME);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, true, 0, 0);
@@ -64,10 +61,7 @@ public class EntityTableCellRendererFactoryTest {
 
 	@Test
 	void entityMismatch() {
-		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Department.TYPE, CONNECTION_PROVIDER));
-		FilterTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(Department.NAME);
-
 		EntityTableCellRendererFactory factory = new EntityTableCellRendererFactory(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
-		assertThrows(IllegalArgumentException.class, () -> factory.create(column));
+		assertThrows(IllegalArgumentException.class, () -> factory.create(Department.NAME));
 	}
 }

@@ -26,7 +26,6 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -132,12 +131,12 @@ public final class AlbumTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public FilterTableCellRenderer create(FilterTableColumn<Attribute<?>> column) {
-			if (column.identifier().equals(Album.RATING)) {
-				return RatingCellRenderer.create(column);
+		public FilterTableCellRenderer create(Attribute<?> attribute) {
+			if (attribute.equals(Album.RATING)) {
+				return RatingCellRenderer.create();
 			}
 
-			return builder(column).build();
+			return builder(attribute).build();
 		}
 	}
 }

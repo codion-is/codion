@@ -24,7 +24,6 @@ import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.framework.demos.chinook.ui.DurationComponentValue.DurationPanel;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -143,15 +142,15 @@ public final class TrackTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public Optional<TableCellEditor> create(FilterTableColumn<Attribute<?>> column) {
-			if (column.identifier().equals(Track.MILLISECONDS)) {
+		public Optional<TableCellEditor> create(Attribute<?> attribute) {
+			if (attribute.equals(Track.MILLISECONDS)) {
 				return Optional.of(filterTableCellEditor(() -> new DurationComponentValue(true)));
 			}
-			if (column.identifier().equals(Track.RATING)) {
+			if (attribute.equals(Track.RATING)) {
 				return Optional.of(filterTableCellEditor(() -> components.integerSpinner(Track.RATING).buildValue()));
 			}
 
-			return super.create(column);
+			return super.create(attribute);
 		}
 	}
 
@@ -163,9 +162,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 		private RatingCellRenderer() {}
 
-		static FilterTableCellRenderer create(FilterTableColumn<Attribute<?>> column) {
-			return FilterTableCellRenderer.builder(column, Integer.class)
-							.string(rating -> RATINGS.get((Integer) rating))
+		static FilterTableCellRenderer create() {
+			return FilterTableCellRenderer.builder(Integer.class)
+							.string(RATINGS::get)
 							.toolTipData(true)
 							.build();
 		}
@@ -178,17 +177,18 @@ public final class TrackTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public FilterTableCellRenderer create(FilterTableColumn<Attribute<?>> column) {
-			if (column.identifier().equals(Track.MILLISECONDS)) {
-				return builder(column).string(millisecods -> toMinutesSecondsString((Integer) millisecods))
+		public FilterTableCellRenderer create(Attribute<?> attribute) {
+			if (attribute.equals(Track.MILLISECONDS)) {
+				return builder(Track.MILLISECONDS)
+								.string(TrackCellRendererFactory::toMinutesSecondsString)
 								.toolTipData(true)
 								.build();
 			}
-			if (column.identifier().equals(Track.RATING)) {
-				return RatingCellRenderer.create(column);
+			if (attribute.equals(Track.RATING)) {
+				return RatingCellRenderer.create();
 			}
 
-			return builder(column).build();
+			return builder(attribute).build();
 		}
 
 		private static String toMinutesSecondsString(Integer milliseconds) {

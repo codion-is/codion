@@ -25,7 +25,6 @@ import is.codion.framework.demos.world.model.CityTableModel.PopulateLocationTask
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -92,12 +91,11 @@ final class CityTablePanel extends ChartTablePanel {
 		}
 
 		@Override
-		public FilterTableCellRenderer create(FilterTableColumn<Attribute<?>> column) {
-			if (column.identifier().equals(City.POPULATION)) {
-				return builder(column)
+		public FilterTableCellRenderer create(Attribute<?> attribute) {
+			if (attribute.equals(City.POPULATION)) {
+				return builder(City.POPULATION)
 								.background((table, row, value) -> {
-									Integer population = (Integer) value;
-									if (population > 1_000_000) {
+									if (value > 1_000_000) {
 										return Color.YELLOW;
 									}
 
@@ -105,8 +103,8 @@ final class CityTablePanel extends ChartTablePanel {
 								})
 								.build();
 			}
-			if (column.identifier().equals(City.NAME)) {
-				return builder(column)
+			if (attribute.equals(City.NAME)) {
+				return builder(City.NAME)
 								.background((table, row, value) -> {
 									Entity city = (Entity) table.model().items().visible().itemAt(row);
 									if (Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL))) {
@@ -118,7 +116,7 @@ final class CityTablePanel extends ChartTablePanel {
 								.build();
 			}
 
-			return super.create(column);
+			return super.create(attribute);
 		}
 	}
 }

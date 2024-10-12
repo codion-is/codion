@@ -21,13 +21,11 @@ package is.codion.framework.demos.employees.ui;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRendererFactory;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.awt.Color;
-import java.math.BigDecimal;
 
 public class EmployeeTablePanel extends EntityTablePanel {
 
@@ -44,12 +42,11 @@ public class EmployeeTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public FilterTableCellRenderer create(FilterTableColumn<Attribute<?>> column) {
-			if (column.identifier().equals(Employee.JOB)) {
-				return builder(column)
+		public FilterTableCellRenderer create(Attribute<?> attribute) {
+			if (attribute.equals(Employee.JOB)) {
+				return builder(Employee.JOB)
 								.background((table, row, value) -> {
-									String job = (String) value;
-									if ("Manager".equals(job)) {
+									if ("Manager".equals(value)) {
 										return Color.CYAN;
 									}
 
@@ -57,10 +54,10 @@ public class EmployeeTablePanel extends EntityTablePanel {
 								})
 								.build();
 			}
-			if (column.identifier().equals(Employee.SALARY)) {
-				return builder(column)
+			if (attribute.equals(Employee.SALARY)) {
+				return builder(Employee.SALARY)
 								.foreground((table, row, value) -> {
-									double salary = ((BigDecimal) value).doubleValue();
+									double salary = value.doubleValue();
 									if (salary < 1300) {
 										return Color.RED;
 									}
@@ -70,7 +67,7 @@ public class EmployeeTablePanel extends EntityTablePanel {
 								.build();
 			}
 
-			return super.create(column);
+			return super.create(attribute);
 		}
 	}
 }

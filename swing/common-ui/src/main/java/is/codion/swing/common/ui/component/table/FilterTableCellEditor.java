@@ -51,9 +51,9 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 	interface Factory<C> {
 
 		/**
-		 * @param column the column
+		 * @param identifier the column identifier
 		 * @return a {@link TableCellEditor} instance for the given column or an empty optional if the column should not be editable
 		 */
-		Optional<TableCellEditor> create(FilterTableColumn<C> column);
+		Optional<TableCellEditor> create(C identifier);
 	}
 }
