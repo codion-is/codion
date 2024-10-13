@@ -27,6 +27,7 @@ import java.util.function.Supplier;
 
 /**
  * A {@link TableCellEditor} implementation for {@link FilterTable}.
+ * @param <T> the value type
  */
 public interface FilterTableCellEditor<T> extends TableCellEditor {
 

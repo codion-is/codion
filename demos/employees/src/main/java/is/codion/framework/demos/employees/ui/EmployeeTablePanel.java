@@ -35,14 +35,12 @@ public class EmployeeTablePanel extends EntityTablePanel {
 	public EmployeeTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
 						.table(builder -> builder
-										.cellRenderer(Employee.JOB, () ->
-														EntityTableCellRenderer.builder(Employee.JOB, tableModel)
-																		.background(new JobBackgroundProvider())
-																		.build())
-										.cellRenderer(Employee.SALARY, () ->
-														EntityTableCellRenderer.builder(Employee.SALARY, tableModel)
-																		.foreground(new SalaryForegroundProvider())
-																		.build())));
+										.cellRenderer(Employee.JOB, EntityTableCellRenderer.builder(Employee.JOB, tableModel)
+														.background(new JobBackgroundProvider())
+														.build())
+										.cellRenderer(Employee.SALARY, EntityTableCellRenderer.builder(Employee.SALARY, tableModel)
+														.foreground(new SalaryForegroundProvider())
+														.build())));
 	}
 
 	private static final class JobBackgroundProvider implements EntityColorProvider<String> {

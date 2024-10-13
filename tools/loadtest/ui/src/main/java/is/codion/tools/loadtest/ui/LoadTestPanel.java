@@ -392,8 +392,7 @@ public final class LoadTestPanel<T> extends JPanel {
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClickAction(command(this::viewException))
 						.scrollToSelectedItem(false)
-						.cellRenderer(ColumnId.DURATION, () ->
-										FilterTableCellRenderer.builder(Integer.class)
+						.cellRenderer(ColumnId.DURATION, FilterTableCellRenderer.builder(Integer.class)
 														.string(duration -> duration == null ? null : DURATION_FORMAT.format(duration))
 														.build())
 						.popupMenuControls(table -> Controls.builder()

@@ -40,8 +40,8 @@ final class CityTablePanel extends ChartTablePanel {
 	CityTablePanel(CityTableModel tableModel) {
 		super(tableModel, tableModel.chartDataset(), "Cities", config -> config
 						.table(builder -> builder
-										.cellRenderer(City.POPULATION, () -> populationRenderer(tableModel))
-										.cellRenderer(City.NAME, () -> nameRenderer(tableModel)))
+										.cellRenderer(City.POPULATION, populationRenderer(tableModel))
+										.cellRenderer(City.NAME, nameRenderer(tableModel)))
 						.editable(attributes -> attributes.remove(City.LOCATION)));
 		configurePopupMenu(config -> config.clear()
 						.control(createPopulateLocationControl())

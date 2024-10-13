@@ -99,10 +99,10 @@ public final class TrackTablePanel extends EntityTablePanel {
 	}
 
 	private static void configureTable(FilterTable.Builder<Entity, Attribute<?>> builder, SwingEntityTableModel tableModel) {
-		builder.cellRenderer(Track.MILLISECONDS, () -> durationRenderer(tableModel))
-						.cellEditor(Track.MILLISECONDS, () -> filterTableCellEditor(() -> new DurationComponentValue(true)))
-						.cellRenderer(Track.RATING, () -> ratingCellRenderer(tableModel))
-						.cellEditor(Track.RATING, () -> ratingEditor(tableModel.entityDefinition()));
+		builder.cellRenderer(Track.MILLISECONDS, durationRenderer(tableModel))
+						.cellEditor(Track.MILLISECONDS, filterTableCellEditor(() -> new DurationComponentValue(true)))
+						.cellRenderer(Track.RATING, ratingCellRenderer(tableModel))
+						.cellEditor(Track.RATING, ratingEditor(tableModel.entityDefinition()));
 	}
 
 	private static FilterTableCellRenderer durationRenderer(SwingEntityTableModel tableModel) {

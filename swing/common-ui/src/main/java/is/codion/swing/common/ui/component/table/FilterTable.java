@@ -86,7 +86,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -810,23 +809,23 @@ public final class FilterTable<R, C> extends JTable {
 						.build();
 	}
 
-	private void configureColumns(Map<C, Supplier<FilterTableCellRenderer>> cellRenderers,
+	private void configureColumns(Map<C, FilterTableCellRenderer> cellRenderers,
 																FilterTableCellRenderer.Factory<R, C> cellRendererFactory,
-																Map<C, Supplier<FilterTableCellEditor<?>>> cellEditors,
+																Map<C, FilterTableCellEditor<?>> cellEditors,
 																FilterTableCellEditor.Factory<C> cellEditorFactory) {
 		columnModel().columns().stream()
 						.filter(column -> column.getCellRenderer() == null)
 						.forEach(column -> column.setCellRenderer(cellRenderers.getOrDefault(column.identifier(),
-										() -> cellRendererFactory.create(column.identifier(), tableModel)).get()));
+										cellRendererFactory.create(column.identifier(), tableModel))));
 		columnModel().columns().stream()
 						.filter(column -> column.getHeaderRenderer() == null)
 						.forEach(column -> column.setHeaderRenderer(new FilterTableHeaderRenderer<>(this, column)));
 		columnModel().columns().stream()
 						.filter(column -> column.getCellEditor() == null)
 						.forEach(column -> {
-							Supplier<FilterTableCellEditor<?>> cellEditor = cellEditors.get(column.identifier());
+							FilterTableCellEditor<?> cellEditor = cellEditors.get(column.identifier());
 							if (cellEditor != null) {
-								column.setCellEditor(cellEditor.get());
+								column.setCellEditor(cellEditor);
 							}
 							else if (cellEditorFactory != null) {
 								cellEditorFactory.create(column.identifier()).ifPresent(column::setCellEditor);
@@ -1048,32 +1047,32 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filterFieldFactory(FieldFactory filterFieldFactory);
 
 		/**
-		 * Supplies the cell renderer for the given column, overrides {@link #cellRendererFactory(FilterTableCellRenderer.Factory)}.
+		 * The cell renderer for the given column, overrides {@link #cellRendererFactory(FilterTableCellRenderer.Factory)}.
 		 * @param identifier the column identifier
-		 * @param cellRenderer supplies the cell renderer to use for the given column
+		 * @param cellRenderer the cell renderer to use for the given column
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellRenderer(C identifier, Supplier<FilterTableCellRenderer> cellRenderer);
+		Builder<R, C> cellRenderer(C identifier, FilterTableCellRenderer cellRenderer);
 
 		/**
 		 * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer
-		 * and is overridden by any renderer set via {@link #cellRenderer(Object, Supplier)}.
+		 * and is overridden by any renderer set via {@link #cellRenderer(Object, FilterTableCellRenderer)}.
 		 * @param cellRendererFactory the table cell renderer factory
 		 * @return this builder instance
 		 */
 		Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C> cellRendererFactory);
 
 		/**
-		 * Supplies the cell renderer for the given column, overrides {@link #cellEditorFactory(FilterTableCellEditor.Factory)}.
+		 * the cell renderer for the given column, overrides {@link #cellEditorFactory(FilterTableCellEditor.Factory)}.
 		 * @param identifier the column identifier
-		 * @param cellEditor supplies the cell editor to use for the given column
+		 * @param cellEditor the cell editor to use for the given column
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellEditor(C identifier, Supplier<FilterTableCellEditor<?>> cellEditor);
+		Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<?> cellEditor);
 
 		/**
 		 * Note that this factory is only used to create cell editors for columns which do not already have a cell editor
-		 * and is overridden by any editor set via {@link #cellEditor(Object, Supplier)}.
+		 * and is overridden by any editor set via {@link #cellEditor(Object, FilterTableCellEditor)}.
 		 * @param cellEditorFactory the table cell editor factory
 		 * @return this builder instance
 		 */
@@ -1197,8 +1196,8 @@ public final class FilterTable<R, C> extends JTable {
 		private final FilterTableModel<R, C> tableModel;
 		private final List<FilterTableColumn<C>> columns;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
-		private final Map<C, Supplier<FilterTableCellRenderer>> cellRenderers = new HashMap<>();
-		private final Map<C, Supplier<FilterTableCellEditor<?>>> cellEditors = new HashMap<>();
+		private final Map<C, FilterTableCellRenderer> cellRenderers = new HashMap<>();
+		private final Map<C, FilterTableCellEditor<?>> cellEditors = new HashMap<>();
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
@@ -1242,7 +1241,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellRenderer(C identifier, Supplier<FilterTableCellRenderer> cellRenderer) {
+		public Builder<R, C> cellRenderer(C identifier, FilterTableCellRenderer cellRenderer) {
 			this.cellRenderers.put(requireNonNull(identifier), requireNonNull(cellRenderer));
 			return this;
 		}
@@ -1254,7 +1253,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellEditor(C identifier, Supplier<FilterTableCellEditor<?>> cellEditor) {
+		public Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<?> cellEditor) {
 			this.cellEditors.put(requireNonNull(identifier), requireNonNull(cellEditor));
 			return this;
 		}
