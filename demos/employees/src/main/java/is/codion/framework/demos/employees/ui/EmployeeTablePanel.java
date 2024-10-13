@@ -19,16 +19,11 @@
 package is.codion.framework.demos.employees.ui;
 
 import is.codion.framework.demos.employees.domain.Employees.Employee;
-import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
-import is.codion.swing.framework.ui.EntityTableCellRenderer.EntityColorProvider;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.awt.Color;
-import java.math.BigDecimal;
 
 public class EmployeeTablePanel extends EntityTablePanel {
 
@@ -36,35 +31,10 @@ public class EmployeeTablePanel extends EntityTablePanel {
 		super(tableModel, config -> config
 						.table(builder -> builder
 										.cellRenderer(Employee.JOB, EntityTableCellRenderer.builder(Employee.JOB, tableModel)
-														.background(new JobBackgroundProvider())
+														.background((table, row, attribute, job) -> "Manager".equals(job) ? Color.CYAN : null)
 														.build())
 										.cellRenderer(Employee.SALARY, EntityTableCellRenderer.builder(Employee.SALARY, tableModel)
-														.foreground(new SalaryForegroundProvider())
+														.foreground((table, row, attribute, salary) -> salary.doubleValue() < 1300 ? Color.RED : null)
 														.build())));
-	}
-
-	private static final class JobBackgroundProvider implements EntityColorProvider<String> {
-
-		@Override
-		public Color color(FilterTable<Entity, Attribute<?>> table, int row, int column, String value) {
-			if ("Manager".equals(value)) {
-				return Color.CYAN;
-			}
-
-			return null;
-		}
-	}
-
-	private static final class SalaryForegroundProvider implements EntityColorProvider<BigDecimal> {
-
-		@Override
-		public Color color(FilterTable<Entity, Attribute<?>> table, int row, int column, BigDecimal value) {
-			double salary = value.doubleValue();
-			if (salary < 1300) {
-				return Color.RED;
-			}
-
-			return null;
-		}
 	}
 }

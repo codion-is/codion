@@ -71,7 +71,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		settings.configure(this, (FilterTable<R, C>) table, (T) value, isSelected, hasFocus, row, column);
+		settings.configure((FilterTable<R, C>) table, this, (T) value, isSelected, hasFocus, row, column);
 		if (settings.toolTipData) {
 			setToolTipText(settings.string.apply((T) value));
 		}
@@ -131,7 +131,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																									 boolean hasFocus, int row, int column) {
 			model().toggleState().set((Boolean) value);
-			settings.configure(this, (FilterTable<R, C>) table, (Boolean) value, isSelected, hasFocus, row, column);
+			settings.configure((FilterTable<R, C>) table, this, (Boolean) value, isSelected, hasFocus, row, column);
 			if (settings.toolTipData) {
 				setToolTipText(value == null ? "" : value.toString());
 			}
@@ -174,13 +174,16 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			uiSettings.update(leftPadding, rightPadding);
 		}
 
-		private void configure(FilterTableCellRenderer cellRenderer, FilterTable<R, C> filterTable, T value,
-													 boolean isSelected, boolean hasFocus, int row, int column) {
+		private void configure(FilterTable<R, C> filterTable, FilterTableCellRenderer cellRenderer, T value,
+													 boolean isSelected, boolean hasFocus, int rowIndex, int columnIndex) {
 			requireNonNull(cellRenderer);
 			requireNonNull(filterTable);
-			Color foreground = foregroundColor(filterTable, value, row, column);
-			Color background = backgroundColor(filterTable, value, isSelected, row, column);
-			Border border = border(filterTable, hasFocus, row, column);
+			R row = filterTable.model().items().visible().itemAt(rowIndex);
+			C identifier = filterTable.columnModel().getColumn(columnIndex).identifier();
+			boolean alternateRow = alternateRow(rowIndex);
+			Color foreground = foregroundColor(filterTable, row, identifier, value);
+			Color background = backgroundColor(filterTable, row, identifier, value, isSelected, alternateRow);
+			Border border = border(filterTable, hasFocus, rowIndex, columnIndex);
 			if (cellRenderer instanceof DefaultTableCellRenderer) {
 				DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) cellRenderer;
 				renderer.setForeground(foreground);
@@ -195,19 +198,18 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			}
 		}
 
-		private Color foregroundColor(FilterTable<R, C> filterTable, T value, int row, int column) {
-			return foregroundColor == null ? uiSettings.foreground() : foregroundColor.color(filterTable, row, column, value);
+		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value) {
+			return foregroundColor == null ? uiSettings.foreground() : foregroundColor.color(filterTable, row, identifier, value);
 		}
 
-		private Color backgroundColor(FilterTable<R, C> filterTable, T value, boolean selected, int row, int column) {
+		private Color backgroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
 			Color cellBackgroundColor = null;
 			if (backgroundColor != null) {
-				cellBackgroundColor = backgroundColor.color(filterTable, row, column, value);
+				cellBackgroundColor = backgroundColor.color(filterTable, row, identifier, value);
 			}
-			boolean alternateRow = alternateRow(row);
 			cellBackgroundColor = backgroundColor(cellBackgroundColor, alternateRow, selected);
 			if (filterIndicator) {
-				cellBackgroundColor = uiSettings.background(filterEnabled(filterTable, column), alternateRow, cellBackgroundColor);
+				cellBackgroundColor = uiSettings.background(filterEnabled(filterTable, identifier), alternateRow, cellBackgroundColor);
 			}
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
@@ -222,29 +224,28 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return alternateRow ? uiSettings.alternateRowColor() : uiSettings.background();
 		}
 
-		private Border border(FilterTable<?, ?> filterTable, boolean hasFocus, int row, int column) {
-			return hasFocus || isSearchResult(filterTable.searchModel(), row, column) ? uiSettings.focusedCellBorder() : uiSettings.defaultCellBorder();
+		private Border border(FilterTable<?, ?> filterTable, boolean hasFocus, int rowIndex, int columnIndex) {
+			return hasFocus || isSearchResult(filterTable.searchModel(), rowIndex, columnIndex) ? uiSettings.focusedCellBorder() : uiSettings.defaultCellBorder();
 		}
 
-		private <C> boolean filterEnabled(FilterTable<?, C> filterTable, int columnIndex) {
+		private <C> boolean filterEnabled(FilterTable<?, C> filterTable, C identifier) {
 			if (filterEnabledSet) {
 				return filterEnabled != null && filterEnabled.get();
 			}
 
-			ConditionModel<?> filter = filterTable.model().filters().get()
-							.get(filterTable.columnModel().getColumn(columnIndex).identifier());
+			ConditionModel<?> filter = filterTable.model().filters().get().get(identifier);
 			filterEnabled = filter == null ? null : filter.enabled();
 			filterEnabledSet = true;
 
 			return filterEnabled != null && filterEnabled.get();
 		}
 
-		private static boolean isSearchResult(FilterTableSearchModel searchModel, int row, int column) {
-			return searchModel.currentResult().get().equals(row, column);
+		private static boolean isSearchResult(FilterTableSearchModel searchModel, int rowIndex, int columnIndex) {
+			return searchModel.currentResult().get().equals(rowIndex, columnIndex);
 		}
 
-		private static boolean alternateRow(int row) {
-			return row % 2 != 0;
+		private static boolean alternateRow(int rowIndex) {
+			return rowIndex % 2 != 0;
 		}
 
 		private Color backgroundColor(Color cellBackgroundColor, boolean alternateRow, boolean selected) {
