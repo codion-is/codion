@@ -31,7 +31,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import java.awt.Color;
 
 import static is.codion.swing.common.ui.Colors.darker;
-import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.alternateRow;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -97,8 +96,8 @@ public final class EntityTableCellRenderer {
 
 		private final ConditionModel<?> queryCondition;
 
-		private Color doubleShadedBackgroundColor;
-		private Color doubleShadedAlternateBackgroundColor;
+		private Color filteredConditionBackground;
+		private Color filteredConditionAlternateBackground;
 
 		private EntityUISettings(ConditionModel<?> queryCondition) {
 			this.queryCondition = queryCondition;
@@ -107,28 +106,28 @@ public final class EntityTableCellRenderer {
 		@Override
 		public void update(int leftPadding, int rightPadding) {
 			super.update(leftPadding, rightPadding);
-			doubleShadedBackgroundColor = darker(backgroundColor(), DOUBLE_DARKENING_FACTOR);
-			doubleShadedAlternateBackgroundColor = darker(alternateBackgroundColor(), DOUBLE_DARKENING_FACTOR);
+			filteredConditionBackground = darker(background(), DOUBLE_DARKENING_FACTOR);
+			filteredConditionAlternateBackground = darker(alternateBackground(), DOUBLE_DARKENING_FACTOR);
 		}
 
 		@Override
-		public Color shadedBackgroundColor(boolean filterEnabled, int row, Color cellBackgroundColor) {
+		public Color background(boolean filterEnabled, boolean alternateRow, Color cellBackgroundColor) {
 			boolean conditionEnabled = queryCondition != null && queryCondition.enabled().get();
 			if (conditionEnabled || filterEnabled) {
-				return shadedBackgroundColor(row, conditionEnabled && filterEnabled, cellBackgroundColor);
+				return filterConditionBackground(alternateRow, conditionEnabled && filterEnabled, cellBackgroundColor);
 			}
 
 			return cellBackgroundColor;
 		}
 
-		private Color shadedBackgroundColor(int row, boolean doubleShading, Color cellBackgroundColor) {
+		private Color filterConditionBackground(boolean alternateRow, boolean filterAndConditionEnabled, Color cellBackgroundColor) {
 			if (cellBackgroundColor != null) {
 				return darker(cellBackgroundColor, DARKENING_FACTOR);
 			}
 
-			return alternateRow(row) ?
-							(doubleShading ? doubleShadedAlternateBackgroundColor : shadedAlternateBackgroundColor()) :
-							(doubleShading ? doubleShadedBackgroundColor : shadedBackgroundColor());
+			return alternateRow ?
+							(filterAndConditionEnabled ? filteredConditionAlternateBackground : filterAlternateBackground()) :
+							(filterAndConditionEnabled ? filteredConditionBackground : filterBackground());
 		}
 	}
 }

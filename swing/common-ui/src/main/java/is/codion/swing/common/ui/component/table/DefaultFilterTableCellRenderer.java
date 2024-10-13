@@ -33,7 +33,6 @@ import java.awt.Component;
 import java.time.temporal.Temporal;
 import java.util.function.Function;
 
-import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.alternateRow;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer {
@@ -55,8 +54,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	}
 
 	@Override
-	public boolean columnShading() {
-		return settings.columnShading;
+	public boolean filterIndicator() {
+		return settings.filterIndicator;
 	}
 
 	@Override
@@ -114,8 +113,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public boolean columnShading() {
-			return settings.columnShading;
+		public boolean filterIndicator() {
+			return settings.filterIndicator;
 		}
 
 		@Override
@@ -146,9 +145,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final int leftPadding;
 		private final int rightPadding;
 		private final boolean alternateRowColoring;
-		private final boolean columnShading;
-		private final ColorProvider<R, C, T> backgroundColorProvider;
-		private final ColorProvider<R, C, T> foregroundColorProvider;
+		private final boolean filterIndicator;
+		private final ColorProvider<R, C, T> backgroundColor;
+		private final ColorProvider<R, C, T> foregroundColor;
 		private final int horizontalAlignment;
 		private final boolean toolTipData;
 		private final Function<T, String> string;
@@ -163,9 +162,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.leftPadding = builder.leftPadding;
 			this.rightPadding = builder.rightPadding;
 			this.alternateRowColoring = builder.alternateRowColoring;
-			this.columnShading = builder.columnShading;
-			this.foregroundColorProvider = builder.foregroundColor;
-			this.backgroundColorProvider = builder.backgroundColor;
+			this.filterIndicator = builder.filterIndicator;
+			this.foregroundColor = builder.foregroundColor;
+			this.backgroundColor = builder.backgroundColor;
 			this.horizontalAlignment = builder.horizontalAlignment;
 			this.toolTipData = builder.toolTipData;
 			this.string = builder.string;
@@ -197,29 +196,30 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private Color foregroundColor(FilterTable<R, C> filterTable, T value, int row, int column) {
-			return foregroundColorProvider == null ? uiSettings.foregroundColor() : foregroundColorProvider.color(filterTable, row, column, value);
+			return foregroundColor == null ? uiSettings.foreground() : foregroundColor.color(filterTable, row, column, value);
 		}
 
 		private Color backgroundColor(FilterTable<R, C> filterTable, T value, boolean selected, int row, int column) {
 			Color cellBackgroundColor = null;
-			if (backgroundColorProvider != null) {
-				cellBackgroundColor = backgroundColorProvider.color(filterTable, row, column, value);
+			if (backgroundColor != null) {
+				cellBackgroundColor = backgroundColor.color(filterTable, row, column, value);
 			}
-			cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
-			if (columnShading) {
-				cellBackgroundColor = uiSettings.shadedBackgroundColor(filterEnabled(filterTable, column), row, cellBackgroundColor);
+			boolean alternateRow = alternateRow(row);
+			cellBackgroundColor = backgroundColor(cellBackgroundColor, alternateRow, selected);
+			if (filterIndicator) {
+				cellBackgroundColor = uiSettings.background(filterEnabled(filterTable, column), alternateRow, cellBackgroundColor);
 			}
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
 			}
 			if (alternateRowColoring) {
-				return alternateRow(row) ? uiSettings.alternateBackgroundColor() : uiSettings.backgroundColor();
+				return alternateRow ? uiSettings.alternateBackground() : uiSettings.background();
 			}
 			if (uiSettings.alternateRowColor() == null) {
-				return uiSettings.backgroundColor();
+				return uiSettings.background();
 			}
 			// If alternate row coloring is enabled outside of the framework, respect it
-			return alternateRow(row) ? uiSettings.alternateRowColor() : uiSettings.backgroundColor();
+			return alternateRow ? uiSettings.alternateRowColor() : uiSettings.background();
 		}
 
 		private Border border(FilterTable<?, ?> filterTable, boolean hasFocus, int row, int column) {
@@ -243,20 +243,24 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return searchModel.currentResult().get().equals(row, column);
 		}
 
-		private Color backgroundColor(Color cellBackgroundColor, int row, boolean selected) {
+		private static boolean alternateRow(int row) {
+			return row % 2 != 0;
+		}
+
+		private Color backgroundColor(Color cellBackgroundColor, boolean alternateRow, boolean selected) {
 			if (selected) {
 				if (cellBackgroundColor == null) {
-					return selectionBackgroundColor(row);
+					return selectionBackgroundColor(alternateRow);
 				}
 
-				return DefaultUISettings.blendColors(cellBackgroundColor, selectionBackgroundColor(row));
+				return DefaultUISettings.blendColors(cellBackgroundColor, selectionBackgroundColor(alternateRow));
 			}
 
 			return cellBackgroundColor;
 		}
 
-		private Color selectionBackgroundColor(int row) {
-			return alternateRow(row) ? uiSettings.alternateSelectionBackground() : uiSettings.selectionBackground();
+		private Color selectionBackgroundColor(boolean alternateRow) {
+			return alternateRow ? uiSettings.selectedAlternateBackground() : uiSettings.selectedBackground();
 		}
 	}
 
@@ -266,7 +270,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private int leftPadding = TABLE_CELL_LEFT_PADDING.get();
 		private int rightPadding = TABLE_CELL_RIGHT_PADDING.get();
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.get();
-		private boolean columnShading = true;
+		private boolean filterIndicator = true;
 		private ColorProvider<R, C, T> backgroundColor;
 		private ColorProvider<R, C, T> foregroundColor;
 		private boolean toolTipData = false;
@@ -297,8 +301,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return this;
 		}
 
-		SettingsBuilder<R, C, T> columnShading(boolean columnShading) {
-			this.columnShading = columnShading;
+		SettingsBuilder<R, C, T> filterIndicator(boolean filterIndicator) {
+			this.filterIndicator = filterIndicator;
 			return this;
 		}
 
@@ -371,8 +375,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Builder<R, C, T> columnShading(boolean columnShading) {
-			this.settings.columnShading(columnShading);
+		public Builder<R, C, T> filterIndicator(boolean filterIndicator) {
+			this.settings.filterIndicator(filterIndicator);
 			return this;
 		}
 

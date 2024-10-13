@@ -111,9 +111,9 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 					Configuration.booleanValue(FilterTableCellRenderer.class.getName() + ".alternateRowColoring", true);
 
 	/**
-	 * @return true if column shading is enabled
+	 * @return true if an enabled filter should be indicated
 	 */
-	boolean columnShading();
+	boolean filterIndicator();
 
 	/**
 	 * @return true if alternate row coloring is enabled
@@ -124,14 +124,6 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 * @return the horizontal alignment
 	 */
 	int horizontalAlignment();
-
-	/**
-	 * @param row the row index
-	 * @return true if the row is an alternate row (odd number)
-	 */
-	static boolean alternateRow(int row) {
-		return row % 2 != 0;
-	}
 
 	/**
 	 * Instantiates a new {@link FilterTableCellRenderer.Builder}.
@@ -193,7 +185,7 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		 * @param columnShading true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
 		 * @return this builder instance
 		 */
-		Builder<R, C, T> columnShading(boolean columnShading);
+		Builder<R, C, T> filterIndicator(boolean columnShading);
 
 		/**
 		 * @param alternateRowColoring true if alternate row coloring should be enabled
@@ -255,45 +247,44 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	interface UISettings {
 
 		/**
-		 * The foreground color as defined by the {@code Table.foreground} system property
+		 * The table foreground color as defined by the {@code Table.foreground} system property
 		 * @return the foreground color
 		 */
-		Color foregroundColor();
+		Color foreground();
 
 		/**
-		 * The background color as defined by the {@code Table.background} system property
+		 * The table background color as defined by the {@code Table.background} system property
 		 * @return the background color
 		 */
-		Color backgroundColor();
+		Color background();
 
 		/**
-		 * The alternate row color as defined by the {@code Table.alternateRowColor} system property
+		 * The table alternate row color as defined by the {@code Table.alternateRowColor} system property
 		 * @return the alternate row color, if any
 		 */
 		Color alternateRowColor();
 
 		/**
-		 * The selection background color as defined by the {@code Table.selectionBackground} system property
+		 * The table selection background color as defined by the {@code Table.selectionBackground} system property
 		 * @return the selection background color
 		 */
-		Color selectionBackground();
+		Color selectedBackground();
 
 		/**
-		 * @return the shaded background color
+		 * @return the background color to use for columns with a filter enabled
+		 * @see #filterIndicator()
 		 */
-		Color shadedBackgroundColor();
+		Color filterBackground();
 
 		/**
-		 * Returns the {@link #alternateRowColor()} if specified
-		 * or double shaded {@link #backgroundColor()}.
 		 * @return the alternate background color
 		 */
-		Color alternateBackgroundColor();
+		Color alternateBackground();
 
 		/**
-		 * @return the shaded alternate background color
+		 * @return the alternate background color to use for columns with a filter enabled
 		 */
-		Color shadedAlternateBackgroundColor();
+		Color filterAlternateBackground();
 
 		/**
 		 * @return the default cell border to use
@@ -307,23 +298,23 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 
 		/**
 		 * @param filterEnabled true if a filter is enabled
-		 * @param row the row index
-		 * @param cellBackgroundColor the cell background color, if any
-		 * @return the shaded cell background color if specified, otherwise the default
+		 * @param alternateRow true if this is an alternate row number
+		 * @param cellBackgroundColor the cell specific background color, if any
+		 * @return the background color
 		 */
-		Color shadedBackgroundColor(boolean filterEnabled, int row, Color cellBackgroundColor);
+		Color background(boolean filterEnabled, boolean alternateRow, Color cellBackgroundColor);
 
 		/**
-		 * @param row the row
-		 * @param cellBackgroundColor the cell background color, if any
-		 * @return the shaded cell background color if specified, otherwise the default
+		 * @param alternateRow true if this is an alternate row number
+		 * @param cellBackgroundColor the cell specific background color, if any
+		 * @return the filtered cell background
 		 */
-		Color shadedBackgroundColor(int row, Color cellBackgroundColor);
+		Color filteredBackground(boolean alternateRow, Color cellBackgroundColor);
 
 		/**
 		 * @return the alternate selection background color
 		 */
-		Color alternateSelectionBackground();
+		Color selectedAlternateBackground();
 
 		/**
 		 * Updates the colors and border according to the current Look and Feel.
@@ -343,14 +334,14 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		protected static final double DOUBLE_DARKENING_FACTOR = 0.8;
 		protected static final int FOCUSED_CELL_BORDER_THICKNESS = 1;
 
-		private Color foregroundColor;
-		private Color backgroundColor;
+		private Color foreground;
+		private Color background;
 		private Color alternateRowColor;
-		private Color shadedBackgroundColor;
-		private Color alternateBackgroundColor;
-		private Color shadedAlternateBackgroundColor;
-		private Color selectionBackground;
-		private Color alternateSelectionBackground;
+		private Color filterBackground;
+		private Color filterAlternateBackground;
+		private Color alternateBackground;
+		private Color selectedBackground;
+		private Color selectedAlternateBackground;
 		private Border defaultCellBorder;
 		private Border focusedCellBorder;
 
@@ -361,29 +352,29 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		 */
 		@Override
 		public void update(int leftPadding, int rightPadding) {
-			foregroundColor = UIManager.getColor("Table.foreground");
-			backgroundColor = UIManager.getColor("Table.background");
+			foreground = UIManager.getColor("Table.foreground");
+			background = UIManager.getColor("Table.background");
 			alternateRowColor = UIManager.getColor("Table.alternateRowColor");
-			alternateBackgroundColor = alternateRowColor;
-			if (alternateBackgroundColor == null) {
-				alternateBackgroundColor = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
+			alternateBackground = alternateRowColor;
+			if (alternateBackground == null) {
+				alternateBackground = darker(background, DOUBLE_DARKENING_FACTOR);
 			}
-			selectionBackground = UIManager.getColor("Table.selectionBackground");
-			shadedBackgroundColor = darker(backgroundColor, DARKENING_FACTOR);
-			shadedAlternateBackgroundColor = darker(alternateBackgroundColor, DARKENING_FACTOR);
-			alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
+			selectedBackground = UIManager.getColor("Table.selectionBackground");
+			filterBackground = darker(background, DARKENING_FACTOR);
+			filterAlternateBackground = darker(alternateBackground, DARKENING_FACTOR);
+			selectedAlternateBackground = darker(selectedBackground, DARKENING_FACTOR);
 			defaultCellBorder = leftPadding > 0 || rightPadding > 0 ? createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
 			focusedCellBorder = createFocusedCellBorder();
 		}
 
 		@Override
-		public final Color foregroundColor() {
-			return foregroundColor;
+		public final Color foreground() {
+			return foreground;
 		}
 
 		@Override
-		public final Color backgroundColor() {
-			return backgroundColor;
+		public final Color background() {
+			return background;
 		}
 
 		@Override
@@ -392,28 +383,28 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		}
 
 		@Override
-		public final Color selectionBackground() {
-			return selectionBackground;
+		public final Color selectedBackground() {
+			return selectedBackground;
 		}
 
 		@Override
-		public final Color shadedBackgroundColor() {
-			return shadedBackgroundColor;
+		public final Color filterBackground() {
+			return filterBackground;
 		}
 
 		@Override
-		public final Color alternateBackgroundColor() {
-			return alternateBackgroundColor;
+		public final Color alternateBackground() {
+			return alternateBackground;
 		}
 
 		@Override
-		public final Color shadedAlternateBackgroundColor() {
-			return shadedAlternateBackgroundColor;
+		public final Color filterAlternateBackground() {
+			return filterAlternateBackground;
 		}
 
 		@Override
-		public final Color alternateSelectionBackground() {
-			return alternateSelectionBackground;
+		public final Color selectedAlternateBackground() {
+			return selectedAlternateBackground;
 		}
 
 		@Override
@@ -427,25 +418,25 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		}
 
 		@Override
-		public Color shadedBackgroundColor(boolean filterEnabled, int row, Color cellBackgroundColor) {
+		public Color background(boolean filterEnabled, boolean alternateRow, Color cellBackgroundColor) {
 			if (filterEnabled) {
-				return shadedBackgroundColor(row, cellBackgroundColor);
+				return filteredBackground(alternateRow, cellBackgroundColor);
 			}
 
 			return cellBackgroundColor;
 		}
 
 		@Override
-		public final Color shadedBackgroundColor(int row, Color cellBackgroundColor) {
+		public final Color filteredBackground(boolean alternateRow, Color cellBackgroundColor) {
 			if (cellBackgroundColor != null) {
 				return darker(cellBackgroundColor, DARKENING_FACTOR);
 			}
 
-			return alternateRow(row) ? shadedAlternateBackgroundColor : shadedBackgroundColor;
+			return alternateRow ? filterAlternateBackground : filterBackground;
 		}
 
 		private CompoundBorder createFocusedCellBorder() {
-			return createCompoundBorder(createLineBorder(darker(foregroundColor, DOUBLE_DARKENING_FACTOR),
+			return createCompoundBorder(createLineBorder(darker(foreground, DOUBLE_DARKENING_FACTOR),
 							FOCUSED_CELL_BORDER_THICKNESS), defaultCellBorder);
 		}
 
