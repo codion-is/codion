@@ -49,11 +49,10 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	public AlbumTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
 						.editComponentFactory(Album.TAGS, new TagEditComponentFactory())
-						.table(builder -> builder.cellRenderer(Album.RATING,
-										EntityTableCellRenderer.builder(Album.RATING, tableModel)
-														.string(RATINGS::get)
-														.toolTipData(true)
-														.build())));
+						.cellRenderer(Album.RATING, EntityTableCellRenderer.builder(Album.RATING, tableModel)
+										.string(RATINGS::get)
+										.toolTipData(true)
+										.build()));
 		imagePanel = new NavigableImagePanel();
 		imagePanel.setPreferredSize(Windows.screenSizeRatio(0.5));
 		table().doubleClickAction().set(viewCoverControl());

@@ -29,12 +29,13 @@ public class EmployeeTablePanel extends EntityTablePanel {
 
 	public EmployeeTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
-						.table(builder -> builder
-										.cellRenderer(Employee.JOB, EntityTableCellRenderer.builder(Employee.JOB, tableModel)
-														.background((table, row, attribute, job) -> "Manager".equals(job) ? Color.CYAN : null)
-														.build())
-										.cellRenderer(Employee.SALARY, EntityTableCellRenderer.builder(Employee.SALARY, tableModel)
-														.foreground((table, row, attribute, salary) -> salary.doubleValue() < 1300 ? Color.RED : null)
-														.build())));
+						.cellRenderer(Employee.JOB, EntityTableCellRenderer.builder(Employee.JOB, tableModel)
+										.background((table, employee, attribute, job) ->
+														"Manager".equals(job) ? Color.CYAN : null)
+										.build())
+						.cellRenderer(Employee.SALARY, EntityTableCellRenderer.builder(Employee.SALARY, tableModel)
+										.foreground((table, employee, attribute, salary) ->
+														salary.doubleValue() < 1300 ? Color.RED : null)
+										.build()));
 	}
 }

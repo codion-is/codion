@@ -36,15 +36,14 @@ final class CityTablePanel extends ChartTablePanel {
 
 	CityTablePanel(CityTableModel tableModel) {
 		super(tableModel, tableModel.chartDataset(), "Cities", config -> config
-						.table(builder -> builder
-										.cellRenderer(City.POPULATION, EntityTableCellRenderer.builder(City.POPULATION, tableModel)
-														.foreground((table, city, attribute, population) ->
-																		population > 1_000_000 ? Color.YELLOW : null)
-														.build())
-										.cellRenderer(City.NAME, EntityTableCellRenderer.builder(City.NAME, tableModel)
-														.foreground((table, city, attribute, name) ->
-																		Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL)) ? Color.GREEN : null)
-														.build()))
+						.cellRenderer(City.POPULATION, EntityTableCellRenderer.builder(City.POPULATION, tableModel)
+										.foreground((table, city, attribute, population) ->
+														population > 1_000_000 ? Color.YELLOW : null)
+										.build())
+						.cellRenderer(City.NAME, EntityTableCellRenderer.builder(City.NAME, tableModel)
+										.foreground((table, city, attribute, name) ->
+														Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL)) ? Color.GREEN : null)
+										.build())
 						.editable(attributes -> attributes.remove(City.LOCATION)));
 		configurePopupMenu(config -> config.clear()
 						.control(createPopulateLocationControl())

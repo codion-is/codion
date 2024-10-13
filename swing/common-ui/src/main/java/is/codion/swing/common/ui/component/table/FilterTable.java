@@ -1050,6 +1050,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * The cell renderer for the given column, overrides {@link #cellRendererFactory(FilterTableCellRenderer.Factory)}.
 		 * @param identifier the column identifier
 		 * @param cellRenderer the cell renderer to use for the given column
+		 * @param <T> the column type
 		 * @return this builder instance
 		 */
 		<T> Builder<R, C> cellRenderer(C identifier, FilterTableCellRenderer<T> cellRenderer);
@@ -1066,6 +1067,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * the cell renderer for the given column, overrides {@link #cellEditorFactory(FilterTableCellEditor.Factory)}.
 		 * @param identifier the column identifier
 		 * @param cellEditor the cell editor to use for the given column
+		 * @param <T> the column type
 		 * @return this builder instance
 		 */
 		<T> Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<T> cellEditor);

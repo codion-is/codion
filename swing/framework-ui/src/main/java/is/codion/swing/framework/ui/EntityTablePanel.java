@@ -53,6 +53,7 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel.FieldFacto
 import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel;
@@ -2511,6 +2512,36 @@ public class EntityTablePanel extends JPanel {
 																																												 EntityComponentFactory<T, C> componentFactory) {
 			entityDefinition.attributes().definition(attribute);
 			editComponentFactories.put(attribute, requireNonNull(componentFactory));
+			return this;
+		}
+
+		/**
+		 * Sets the cell editor for the given attribute
+		 * @param attribute the attribute
+		 * @param cellEditor the cell editor
+		 * @param <T> the value type
+		 * @param <A> the attribute type
+		 * @return this Config instance
+		 * @see FilterTable.Builder#cellEditor(Object, FilterTableCellEditor)
+		 */
+		public <T, A extends Attribute<T>> Config cellEditor(A attribute, FilterTableCellEditor<T> cellEditor) {
+			entityDefinition.attributes().definition(attribute);
+			tableBuilder.cellEditor(attribute, requireNonNull(cellEditor));
+			return this;
+		}
+
+		/**
+		 * Sets the cell renderer for the given attribute
+		 * @param attribute the attribute
+		 * @param cellRenderer the cell renderer
+		 * @param <T> the value type
+		 * @param <A> the attribute type
+		 * @return this Config instance
+		 * @see FilterTable.Builder#cellRenderer(Object, FilterTableCellRenderer)
+		 */
+		public <T, A extends Attribute<T>> Config cellRenderer(A attribute, FilterTableCellRenderer<T> cellRenderer) {
+			entityDefinition.attributes().definition(attribute);
+			tableBuilder.cellRenderer(attribute, requireNonNull(cellRenderer));
 			return this;
 		}
 

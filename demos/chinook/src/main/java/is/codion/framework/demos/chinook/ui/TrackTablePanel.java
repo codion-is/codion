@@ -22,10 +22,8 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.framework.demos.chinook.ui.DurationComponentValue.DurationPanel;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.text.NumberField;
@@ -37,7 +35,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EntityComponentFactory;
-import is.codion.swing.framework.ui.component.EntityComponents;
 
 import javax.swing.JSpinner;
 import java.math.BigDecimal;
@@ -68,7 +65,10 @@ public final class TrackTablePanel extends EntityTablePanel {
 		super(tableModel, config -> config
 						.editComponentFactory(Track.RATING, new RatingComponentFactory())
 						.editComponentFactory(Track.MILLISECONDS, new DurationComponentFactory(tableModel))
-						.table(builder -> configureTable(builder, tableModel))
+						.cellRenderer(Track.RATING, ratingRenderer(tableModel))
+						.cellRenderer(Track.MILLISECONDS, durationRenderer(tableModel))
+						.cellEditor(Track.RATING, ratingEditor(tableModel.entityDefinition()))
+						.cellEditor(Track.MILLISECONDS, durationEditor())
 						.includeLimitMenu(true));
 		configurePopupMenu(config -> config.clear()
 						.control(Control.builder()
@@ -98,29 +98,30 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.show();
 	}
 
-	private static void configureTable(FilterTable.Builder<Entity, Attribute<?>> builder, SwingEntityTableModel tableModel) {
-		builder.cellRenderer(Track.MILLISECONDS, durationRenderer(tableModel))
-						.cellEditor(Track.MILLISECONDS, filterTableCellEditor(() -> new DurationComponentValue(true)))
-						.cellRenderer(Track.RATING, ratingCellRenderer(tableModel))
-						.cellEditor(Track.RATING, ratingEditor(tableModel.entityDefinition()));
-	}
-
-	private static FilterTableCellRenderer durationRenderer(SwingEntityTableModel tableModel) {
+	private static FilterTableCellRenderer<Integer> durationRenderer(SwingEntityTableModel tableModel) {
 		return EntityTableCellRenderer.builder(Track.MILLISECONDS, tableModel)
 						.string(milliseconds -> minutes(milliseconds) + " min " + seconds(milliseconds) + " sec")
 						.toolTipData(true)
 						.build();
 	}
 
-	private static FilterTableCellRenderer ratingCellRenderer(SwingEntityTableModel tableModel) {
+	private static FilterTableCellEditor<Integer> durationEditor() {
+		return filterTableCellEditor(() -> new DurationComponentValue(true));
+	}
+
+	private static FilterTableCellRenderer<Integer> ratingRenderer(SwingEntityTableModel tableModel) {
 		return EntityTableCellRenderer.builder(Track.RATING, tableModel)
 						.string(RATINGS::get)
 						.toolTipData(true)
 						.build();
 	}
 
-	private static FilterTableCellEditor<?> ratingEditor(EntityDefinition entityDefinition) {
-		return filterTableCellEditor(() -> entityComponents(entityDefinition).integerSpinner(Track.RATING).buildValue());
+	private static FilterTableCellEditor<Integer> ratingEditor(EntityDefinition entityDefinition) {
+		return filterTableCellEditor(() -> ratingSpinner(entityDefinition).buildValue());
+	}
+
+	private static NumberSpinnerBuilder<Integer> ratingSpinner(EntityDefinition entityDefinition) {
+		return entityComponents(entityDefinition).integerSpinner(Track.RATING);
 	}
 
 	private static final class RatingComponentFactory
@@ -129,9 +130,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 		@Override
 		public ComponentValue<Integer, JSpinner> componentValue(SwingEntityEditModel editModel,
 																														Integer value) {
-			EntityComponents inputComponents = entityComponents(editModel.entityDefinition());
-
-			return inputComponents.integerSpinner(Track.RATING)
+			return ratingSpinner(editModel.entityDefinition())
 							.value(value)
 							.buildValue();
 		}
