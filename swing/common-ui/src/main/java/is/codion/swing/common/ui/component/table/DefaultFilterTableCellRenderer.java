@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 
 import javax.swing.JComponent;
@@ -35,12 +36,14 @@ import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer {
+final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer<T> {
 
 	private final Settings<R, C, T> settings;
+	private final Class<T> columnClass;
 
-	DefaultFilterTableCellRenderer(Settings<R, C, T> settings) {
+	DefaultFilterTableCellRenderer(Settings<R, C, T> settings, Class<T> columnClass) {
 		this.settings = requireNonNull(settings);
+		this.columnClass = columnClass;
 		this.settings.update();
 		setHorizontalAlignment(settings.horizontalAlignment);
 	}
@@ -51,6 +54,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		if (settings != null) {
 			settings.update();
 		}
+	}
+
+	@Override
+	public Class<T> columnClass() {
+		return columnClass;
 	}
 
 	@Override
@@ -92,7 +100,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	 * A default {@link FilterTableCellRenderer} implementation for Boolean values
 	 */
 	private static final class BooleanRenderer<R, C> extends NullableCheckBox
-					implements TableCellRenderer, javax.swing.plaf.UIResource, FilterTableCellRenderer {
+					implements TableCellRenderer, javax.swing.plaf.UIResource, FilterTableCellRenderer<Boolean> {
 
 		private final Settings<R, C, Boolean> settings;
 
@@ -110,6 +118,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			if (settings != null) {
 				settings.update();
 			}
+		}
+
+		@Override
+		public Class<Boolean> columnClass() {
+			return Boolean.class;
 		}
 
 		@Override
@@ -350,10 +363,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	static final class DefaultBuilder<R, C, T> implements Builder<R, C, T> {
 
 		private final SettingsBuilder<R, C, T> settings;
+		private final Class<T> columnClass;
 		private final boolean useBooleanRenderer;
 
 		DefaultBuilder(Class<T> columnClass) {
 			this.settings = new SettingsBuilder<>(defaultHorizontalAlignment(requireNonNull(columnClass)));
+			this.columnClass = requireNonNull(columnClass);
 			this.useBooleanRenderer = Boolean.class.equals(columnClass);
 		}
 
@@ -418,10 +433,10 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public FilterTableCellRenderer build() {
+		public FilterTableCellRenderer<T> build() {
 			return useBooleanRenderer ?
-							new BooleanRenderer<>((Settings<R, C, Boolean>) settings.build()) :
-							new DefaultFilterTableCellRenderer<>(settings.build());
+							(FilterTableCellRenderer<T>) new BooleanRenderer<>((Settings<R, C, Boolean>) settings.build()) :
+							new DefaultFilterTableCellRenderer<>(settings.build(), columnClass);
 		}
 
 		private int defaultHorizontalAlignment(Class<T> columnClass) {
@@ -436,6 +451,14 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			}
 
 			return HORIZONTAL_ALIGNMENT.get();
+		}
+	}
+
+	static final class DefaultFactory<R, C> implements Factory<R, C> {
+
+		@Override
+		public <T> FilterTableCellRenderer<T> create(C identifier, FilterTableModel<R, C> tableModel) {
+			return new DefaultBuilder<>((Class<T>) tableModel.getColumnClass(identifier)).build();
 		}
 	}
 }

@@ -32,7 +32,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import java.awt.Color;
 
 import static is.codion.swing.common.ui.Colors.darker;
-import static java.util.Objects.requireNonNull;
 
 /**
  * @see #builder(Attribute, SwingEntityTableModel)
@@ -45,8 +44,8 @@ public final class EntityTableCellRenderer {
 	/**
 	 * @param attribute the attribute
 	 * @param tableModel the table model
-	 * @return a new {@link FilterTableCellRenderer.Builder} instance for the given attribute
 	 * @param <T> the attribute value type
+	 * @return a new {@link FilterTableCellRenderer.Builder} instance for the given attribute
 	 */
 	public static <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> builder(Attribute<T> attribute,
 																																										 SwingEntityTableModel tableModel) {
@@ -63,10 +62,10 @@ public final class EntityTableCellRenderer {
 	}
 
 	/**
-	 * @return a new {@link Factory}
+	 * @return a new default {@link Factory} instance
 	 */
 	public static Factory factory() {
-		return new Factory() {};
+		return new DefaultFactory();
 	}
 
 	/**
@@ -83,17 +82,24 @@ public final class EntityTableCellRenderer {
 	 */
 	public interface Factory extends FilterTableCellRenderer.Factory<Entity, Attribute<?>> {
 		/**
+		 * @param <T> the attribute type
 		 * @param attribute the attribute
 		 * @param tableModel the table model
 		 * @return a new {@link FilterTableCellRenderer}
 		 */
-		default FilterTableCellRenderer create(Attribute<?> attribute, SwingEntityTableModel tableModel) {
-			return create(attribute, (FilterTableModel<Entity, Attribute<?>>) tableModel);
-		}
+		<T> FilterTableCellRenderer<T> create(Attribute<T> attribute, SwingEntityTableModel tableModel);
 
 		@Override
-		default FilterTableCellRenderer create(Attribute<?> attribute, FilterTableModel<Entity, Attribute<?>> tableModel) {
-			return builder(requireNonNull(attribute), (SwingEntityTableModel) tableModel).build();
+		default <T> FilterTableCellRenderer<T> create(Attribute<?> attribute, FilterTableModel<Entity, Attribute<?>> tableModel) {
+			return (FilterTableCellRenderer<T>) builder(attribute, (SwingEntityTableModel) tableModel).build();
+		}
+	}
+
+	private static final class DefaultFactory implements Factory {
+
+		@Override
+		public <T> FilterTableCellRenderer<T> create(Attribute<T> attribute, SwingEntityTableModel tableModel) {
+			return builder(attribute, tableModel).build();
 		}
 	}
 

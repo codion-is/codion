@@ -37,8 +37,9 @@ import static javax.swing.BorderFactory.*;
 
 /**
  * A {@link TableCellRenderer} for {@link FilterTable}, instantiated via {@link #builder(Class)}.
+ * @param <T> the column type
  */
-public interface FilterTableCellRenderer extends TableCellRenderer {
+public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 
 	/**
 	 * The default left padding for table cells.
@@ -109,6 +110,11 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	 */
 	PropertyValue<Boolean> ALTERNATE_ROW_COLORING =
 					Configuration.booleanValue(FilterTableCellRenderer.class.getName() + ".alternateRowColoring", true);
+
+	/**
+	 * @return the column class
+	 */
+	Class<T> columnClass();
 
 	/**
 	 * @return true if an enabled filter should be indicated
@@ -226,7 +232,16 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 		/**
 		 * @return a new {@link FilterTableCellRenderer} instance based on this builder
 		 */
-		FilterTableCellRenderer build();
+		FilterTableCellRenderer<T> build();
+	}
+
+	/**
+	 * @return a new default {@link Factory} instance
+	 * @param <R> the row type
+	 * @param <C> the column identifier type
+	 */
+	static <R, C> Factory<R, C> factory() {
+		return new DefaultFilterTableCellRenderer.DefaultFactory<>();
 	}
 
 	/**
@@ -235,10 +250,11 @@ public interface FilterTableCellRenderer extends TableCellRenderer {
 	interface Factory<R, C> {
 
 		/**
+		 * @param <T> the column type
 		 * @param identifier the column identifier
 		 * @return a {@link FilterTableCellRenderer} instance for the given column
 		 */
-		FilterTableCellRenderer create(C identifier, FilterTableModel<R, C> tableModel);
+		<T> FilterTableCellRenderer<T> create(C identifier, FilterTableModel<R, C> tableModel);
 	}
 
 	/**

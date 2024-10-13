@@ -809,7 +809,7 @@ public final class FilterTable<R, C> extends JTable {
 						.build();
 	}
 
-	private void configureColumns(Map<C, FilterTableCellRenderer> cellRenderers,
+	private void configureColumns(Map<C, FilterTableCellRenderer<?>> cellRenderers,
 																FilterTableCellRenderer.Factory<R, C> cellRendererFactory,
 																Map<C, FilterTableCellEditor<?>> cellEditors,
 																FilterTableCellEditor.Factory<C> cellEditorFactory) {
@@ -1052,7 +1052,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * @param cellRenderer the cell renderer to use for the given column
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellRenderer(C identifier, FilterTableCellRenderer cellRenderer);
+		<T> Builder<R, C> cellRenderer(C identifier, FilterTableCellRenderer<T> cellRenderer);
 
 		/**
 		 * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer
@@ -1068,7 +1068,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * @param cellEditor the cell editor to use for the given column
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<?> cellEditor);
+		<T> Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<T> cellEditor);
 
 		/**
 		 * Note that this factory is only used to create cell editors for columns which do not already have a cell editor
@@ -1196,7 +1196,7 @@ public final class FilterTable<R, C> extends JTable {
 		private final FilterTableModel<R, C> tableModel;
 		private final List<FilterTableColumn<C>> columns;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
-		private final Map<C, FilterTableCellRenderer> cellRenderers = new HashMap<>();
+		private final Map<C, FilterTableCellRenderer<?>> cellRenderers = new HashMap<>();
 		private final Map<C, FilterTableCellEditor<?>> cellEditors = new HashMap<>();
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
@@ -1219,7 +1219,7 @@ public final class FilterTable<R, C> extends JTable {
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = tableModel;
 			this.columns = new ArrayList<>(validateIdentifiers(columns));
-			this.cellRendererFactory = new DefaultFilterTableCellRendererFactory<>();
+			this.cellRendererFactory = FilterTableCellRenderer.factory();
 		}
 
 		@Override
@@ -1241,7 +1241,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellRenderer(C identifier, FilterTableCellRenderer cellRenderer) {
+		public <T> Builder<R, C> cellRenderer(C identifier, FilterTableCellRenderer<T> cellRenderer) {
 			this.cellRenderers.put(requireNonNull(identifier), requireNonNull(cellRenderer));
 			return this;
 		}
@@ -1253,7 +1253,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<?> cellEditor) {
+		public <T> Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<T> cellEditor) {
 			this.cellEditors.put(requireNonNull(identifier), requireNonNull(cellEditor));
 			return this;
 		}
@@ -1605,14 +1605,6 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		protected void setComponentValue(Void value) {
 			throw new UnsupportedOperationException();
-		}
-	}
-
-	private static final class DefaultFilterTableCellRendererFactory<R, C> implements FilterTableCellRenderer.Factory<R, C> {
-
-		@Override
-		public FilterTableCellRenderer create(C identifier, FilterTableModel<R, C> tableModel) {
-			return FilterTableCellRenderer.builder(tableModel.getColumnClass(identifier)).build();
 		}
 	}
 

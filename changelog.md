@@ -47,6 +47,7 @@ Codion Change Log
 - FilterTable.Builder.cellEditor() and cellRenderer() now long Supplier based.
 - FilterTableCellRenderer, renaming and refactoring.
 - FilterTableCellRenderer.ColorProvider.color() row and column index parameters replaced with row item and column identifier.
+- FilterTableCellRenderer column type parameter added, related refactoring.
 ### is.codion.framework.domain
 - Entity.copy(), copyBuilder() and deepCopy() moved to Entity.Copy, renamed mutable(), builder() and deep() respectively, immutable() added.
 - ImmutableEntity bug fixed, StackOverflowError when creating an immutable entity with cyclical foreign key dependencies, some refactoring.
