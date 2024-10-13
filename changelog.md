@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.19
+
 ## 0.18.18
 ### is.codion.common.db
 - DatabaseFactory.createDatabase() renamed create().
