@@ -244,7 +244,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 			foreignKeyFilterKeys.put(foreignKey, new HashSet<>(keys));
 		}
 		items().visible().predicate().set(foreignKeyVisiblePredicate);
-		items().filter();
 	}
 
 	/**
