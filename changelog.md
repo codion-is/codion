@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.19
 ### is.codion.swing.framework.ui
 - EntityTablePanel.Config.cellRenderer() and cellEditor() added.
+- EntityComboBox.model() added for consistency.
 
 ## 0.18.18
 ### is.codion.common.db

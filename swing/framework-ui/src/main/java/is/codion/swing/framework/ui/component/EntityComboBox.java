@@ -106,6 +106,13 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	/**
+	 * @return the underlying {@link EntityComboBoxModel}
+	 */
+	public EntityComboBoxModel model() {
+		return getModel();
+	}
+
+	/**
 	 * @return a Control for inserting a new record, if one is available
 	 * @see Builder#editPanel(Supplier)
 	 */
