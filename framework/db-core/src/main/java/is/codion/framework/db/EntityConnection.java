@@ -438,6 +438,7 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.
 	 * Any {@link DatabaseException}s and {@link RuntimeException}s encountered are rethrown, other exceptions are rethrown as {@link RuntimeException}s.
+	 * Note that nesting transactions will cause an {@link IllegalStateException} to be thrown, causing the outer transaction to be rolled back.
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run
 	 * @throws DatabaseException in case of a database exception

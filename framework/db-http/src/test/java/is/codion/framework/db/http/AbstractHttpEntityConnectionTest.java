@@ -235,6 +235,7 @@ abstract class AbstractHttpEntityConnectionTest {
 		});
 		Collection<Entity> departments = transaction(connection, () -> connection.select(Condition.all(Department.TYPE)));
 		assertFalse(departments.isEmpty());
+		assertThrows(IllegalStateException.class, () -> transaction(connection, () -> transaction(connection, () -> {})));
 	}
 
 	@Test

@@ -68,6 +68,7 @@ import java.util.TimeZone;
 import java.util.function.Consumer;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
+import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.db.local.DefaultLocalEntityConnection.modifiedColumns;
 import static is.codion.framework.db.local.DefaultLocalEntityConnection.valueMissingOrModified;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
@@ -1238,6 +1239,7 @@ public class DefaultLocalEntityConnectionTest {
 			assertFalse(connection1.select(Department.DEPTNO.equalTo(-42)).isEmpty());
 			connection2.commitTransaction();
 			assertTrue(connection1.select(Department.DEPTNO.equalTo(-42)).isEmpty());
+			assertThrows(IllegalStateException.class, () -> transaction(connection, () -> transaction(connection, () -> {})));
 		}
 	}
 
