@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.19
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel.DefaultComboBoxItems.visiblePredicate bug fixed, now Notify.WHEN_SET.
+- DefaultFilterTableModel.VisiblePredicate.predicate bug fixed, now Notify.WHEN_SET.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.Config.cellRenderer() and cellEditor() added.
 - EntityComboBox.model() added for consistency.

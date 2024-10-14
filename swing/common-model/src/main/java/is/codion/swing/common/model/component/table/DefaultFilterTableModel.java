@@ -48,6 +48,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
+import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -470,7 +471,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			private final Value<Comparator<R>> comparator = Value.builder()
 							.<Comparator<R>>nullable()
-							.notify(Value.Notify.WHEN_SET)
+							.notify(WHEN_SET)
 							.listener(this::sort)
 							.build();
 
@@ -622,6 +623,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private final Value<Predicate<R>> predicate = Value.builder()
 						.<Predicate<R>>nullable()
+						.notify(WHEN_SET)
 						.listener(modelItems::filter)
 						.build();
 
