@@ -32,19 +32,15 @@ import is.codion.swing.common.ui.component.combobox.DefaultComboBoxBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import java.awt.event.FocusListener;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -156,18 +152,6 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		if (isEditable()) {
 			getEditor().getEditorComponent().removeFocusListener(listener);
 		}
-	}
-
-	/**
-	 * Creates a {@link Control} displaying a dialog for filtering this combo box via a foreign key
-	 * @param foreignKey the foreign key on which to filter
-	 * @return a {@link Control} for filtering this combo box
-	 */
-	public Control createForeignKeyFilterControl(ForeignKey foreignKey) {
-		return Control.builder()
-						.command(createForeignKeyFilterCommand(requireNonNull(foreignKey)))
-						.smallIcon(FrameworkIcons.instance().filter())
-						.build();
 	}
 
 	/**
@@ -314,17 +298,6 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	private CommandControl createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
 		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke, confirm);
-	}
-
-	private Control.Command createForeignKeyFilterCommand(ForeignKey foreignKey) {
-		return () -> {
-			Collection<Entity.Key> currentFilterKeys = getModel().foreignKeyFilterKeys(foreignKey);
-			Dialogs.okCancelDialog(foreignKeyComboBox(foreignKey).filter().build())
-							.owner(this)
-							.title(MESSAGES.getString("filter_by"))
-							.onCancel(() -> getModel().filterByForeignKey(foreignKey, currentFilterKeys))
-							.show();
-		};
 	}
 
 	private void onRefreshingChanged(boolean refreshing) {
