@@ -37,7 +37,6 @@ import is.codion.framework.model.EntityEditEvents;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import javax.swing.event.ListDataListener;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -253,11 +252,8 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 */
 	public Collection<Entity.Key> foreignKeyFilterKeys(ForeignKey foreignKey) {
 		requireNonNull(foreignKey);
-		if (foreignKeyFilterKeys.containsKey(foreignKey)) {
-			return unmodifiableCollection(new ArrayList<>(foreignKeyFilterKeys.get(foreignKey)));
-		}
 
-		return emptyList();
+		return unmodifiableSet(foreignKeyFilterKeys.getOrDefault(foreignKey, emptySet()));
 	}
 
 	/**
@@ -460,7 +456,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 			entities.definition(entityType).foreignKeys().definition(foreignKey);
 			EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider);
 			foreignKeyModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
-			foreignKeyModel.refresh();
 			ForeignKeyComboBoxModelLinker modelLinker = foreignKeyComboBoxModelLinker(foreignKey);
 			if (filter) {
 				modelLinker.filter(foreignKeyModel);
@@ -497,11 +492,6 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 				throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.entityType()
 								+ ", should be: " + foreignKey.referencedType());
 			}
-			//if foreign key filter keys have been set previously, initialize with one of those
-			Collection<Entity.Key> filterKeys = foreignKeyFilterKeys(foreignKey);
-			if (!filterKeys.isEmpty()) {
-				foreignKeyModel.select(filterKeys.iterator().next());
-			}
 			if (filter) {
 				linkFilter(foreignKey, foreignKeyModel);
 			}
@@ -514,9 +504,21 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 				}
 			});
 			refresher().success().addListener(foreignKeyModel::refresh);
+			// Select the correct foreign key item according to the selected item after refresh
+			foreignKeyModel.refresher().success().addListener(() -> {
+				Entity selected = getSelectedItem();
+				if (selected != null && !selected.isNull(foreignKey)) {
+					foreignKeyModel.select(selected.key(foreignKey));
+				}
+			});
 		}
 
 		private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
+			//if foreign key filter keys have been set previously, initialize with one of those
+			Collection<Entity.Key> filterKeys = foreignKeyFilterKeys(foreignKey);
+			if (!filterKeys.isEmpty()) {
+				foreignKeyModel.select(filterKeys.iterator().next());
+			}
 			Predicate<Entity> filterAllCondition = item -> false;
 			if (strictForeignKeyFiltering.get()) {
 				items().visible().predicate().set(filterAllCondition);
@@ -532,13 +534,13 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		}
 
 		private void linkCondition(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
-			Consumer<Entity> consumer = selected -> {
+			Consumer<Entity> setConditionAndRefresh = selected -> {
 				conditionSupplier.set(() -> foreignKey.equalTo(selected));
 				refresh();
 			};
-			foreignKeyModel.selection().item().addConsumer(consumer);
+			foreignKeyModel.selection().item().addConsumer(setConditionAndRefresh);
 			//initialize
-			consumer.accept(selection().value());
+			setConditionAndRefresh.accept(selection().value());
 		}
 	}
 

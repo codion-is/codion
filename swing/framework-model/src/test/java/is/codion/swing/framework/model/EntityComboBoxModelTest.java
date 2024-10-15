@@ -109,13 +109,58 @@ public final class EntityComboBoxModelTest {
 	}
 
 	@Test
+	void foreignKeyFilter() {
+		EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
+		Entities entities = connectionProvider.entities();
+		EntityComboBoxModel empBox = entityComboBoxModel(Employee.TYPE, connectionProvider);
+		empBox.selection().filterSelected().set(true);
+		EntityComboBoxModel mgrBox = empBox.foreignKeyComboBoxModel(Employee.MGR_FK).filter();
+		mgrBox.selection().filterSelected().set(true);
+		mgrBox.condition().set(() -> Employee.JOB.in("MANAGER", "PRESIDENT"));
+		EntityComboBoxModel deptBox = mgrBox.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).filter();
+		empBox.refresh();
+		empBox.strictForeignKeyFiltering().set(true);
+		assertEquals(0, empBox.items().visible().count());
+		assertEquals(16, empBox.items().filtered().count());
+		assertEquals(0, mgrBox.items().visible().count());
+		assertEquals(4, mgrBox.items().filtered().count());
+		assertEquals(4, deptBox.items().visible().count());
+		assertEquals(0, deptBox.items().filtered().count());
+
+		deptBox.select(entities.primaryKey(Department.TYPE, 10));
+		//three managers in the accounting department
+		assertEquals(3, mgrBox.items().visible().count());
+		assertEquals(1, mgrBox.items().filtered().count());
+
+		mgrBox.select(entities.primaryKey(Employee.TYPE, 5));//Blake, Manager, Accounting
+		assertEquals(5, empBox.items().visible().count());
+		assertEquals(11, empBox.items().filtered().count());
+
+		empBox.select(entities.primaryKey(Employee.TYPE, 7));//Scott, Analyst, Research
+		assertEquals(3, mgrBox.selection().item().get().get(Employee.ID));//Jones, Manager, Research
+		assertEquals(20, deptBox.selection().item().get().get(Department.ID));// Research
+		//one manager in the research department
+		assertEquals(1, mgrBox.items().visible().count());
+		assertEquals(3, mgrBox.items().filtered().count());
+		//six employees under Jones
+		assertEquals(6, empBox.items().visible().count());
+		assertEquals(10, empBox.items().filtered().count());
+
+		deptBox.select(entities.primaryKey(Department.TYPE, 40));// Operations
+		//no managers or employees in the Operations department
+		assertEquals(0, mgrBox.items().visible().count());
+		assertEquals(4, mgrBox.items().filtered().count());
+		assertEquals(0, empBox.items().visible().count());
+		assertEquals(16, empBox.items().filtered().count());
+	}
+
+	@Test
 	void foreignKeyFilterComboBoxModel() {
 		EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
 		EntityComboBoxModel empBox = entityComboBoxModel(Employee.TYPE, connectionProvider);
 		empBox.setNullCaption("-");
-		empBox.refresh();
-		assertEquals(17, empBox.getSize());
 		EntityComboBoxModel deptBox = empBox.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).filter();
+		empBox.refresh();//refreshes both
 		assertEquals(1, empBox.getSize());
 		Entity.Key accountingKey = connectionProvider.entities().primaryKey(Department.TYPE, 10);
 		deptBox.select(accountingKey);
@@ -134,9 +179,8 @@ public final class EntityComboBoxModelTest {
 		EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
 		EntityComboBoxModel empBox = entityComboBoxModel(Employee.TYPE, connectionProvider);
 		empBox.setNullCaption("-");
-		empBox.refresh();
-		assertEquals(17, empBox.getSize());
 		EntityComboBoxModel deptBox = empBox.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).condition();
+		empBox.refresh();
 		assertEquals(1, empBox.getSize());
 		Entity.Key accountingKey = connectionProvider.entities().primaryKey(Department.TYPE, 10);
 		deptBox.select(accountingKey);
