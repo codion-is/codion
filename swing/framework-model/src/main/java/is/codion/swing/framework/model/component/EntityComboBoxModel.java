@@ -81,7 +81,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 
 	private final Entities entities;
 	private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
-	private final Predicate<Entity> foreignKeyVisiblePredicate = new ForeignKeyVisiblePredicate();
+	private final Predicate<Entity> foreignKeyFilterPredicate = new ForeignKeyFilterPredicate();
 	private final Value<Supplier<Condition>> conditionSupplier;
 	private final State handleEditEvents = State.builder()
 					.consumer(new HandleEditEventsChanged())
@@ -106,7 +106,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		comboBoxModel.selection().translator().set(new SelectedItemTranslator());
 		comboBoxModel.refresher().supplier().set(this::performQuery);
 		comboBoxModel.items().validator().set(new ItemValidator());
-		comboBoxModel.items().visible().predicate().set(foreignKeyVisiblePredicate);
+		comboBoxModel.items().visible().predicate().set(foreignKeyFilterPredicate);
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
 
@@ -215,15 +215,15 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 	 * want to add a custom {@link Predicate} to this model via {@link VisibleItems#predicate()}.
 	 * <pre>
 	 * {@code
-	 *   Predicate fkPredicate = model.foreignKeyVisiblePredicate();
-	 *   model.items().visiblePredicate().set(item -&gt; fkPredicate.test(item) &amp;&amp; ...);
+	 *   Predicate fkPredicate = model.foreignKeyFilterPredicate();
+	 *   model.items().visible().predicate().set(item -> fkPredicate.test(item) && ...);
 	 * }
 	 * </pre>
 	 * @return the {@link Predicate} based on the foreign key filter entities
 	 * @see #filterByForeignKey(ForeignKey, Collection)
 	 */
-	public Predicate<Entity> foreignKeyVisiblePredicate() {
-		return foreignKeyVisiblePredicate;
+	public Predicate<Entity> foreignKeyFilterPredicate() {
+		return foreignKeyFilterPredicate;
 	}
 
 	/**
@@ -242,7 +242,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		else {
 			foreignKeyFilterKeys.put(foreignKey, new HashSet<>(keys));
 		}
-		items().visible().predicate().set(foreignKeyVisiblePredicate);
+		items().visible().predicate().set(foreignKeyFilterPredicate);
 	}
 
 	/**
@@ -634,7 +634,7 @@ public final class EntityComboBoxModel implements FilterComboBoxModel<Entity> {
 		}
 	}
 
-	private final class ForeignKeyVisiblePredicate implements Predicate<Entity> {
+	private final class ForeignKeyFilterPredicate implements Predicate<Entity> {
 
 		@Override
 		public boolean test(Entity item) {
