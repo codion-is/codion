@@ -367,9 +367,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final boolean useBooleanRenderer;
 
 		DefaultBuilder(Class<T> columnClass) {
-			this.settings = new SettingsBuilder<>(defaultHorizontalAlignment(requireNonNull(columnClass)));
 			this.columnClass = requireNonNull(columnClass);
 			this.useBooleanRenderer = Boolean.class.equals(columnClass);
+			this.settings = new SettingsBuilder<>(defaultHorizontalAlignment(columnClass));
 		}
 
 		@Override
