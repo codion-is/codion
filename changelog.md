@@ -7,6 +7,7 @@ Codion Change Log
 - DefaultFilterTableModel.VisiblePredicate.predicate bug fixed, now Notify.WHEN_SET.
 - EntityComboBoxModel, foreign key filtering and linking improved.
 - EntityComboBoxModel.foreignKeyVisiblePredicate() renamed foreignKeyFilterPredicate().
+- EntityComboBoxModel.ForeignKeyFilters added, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.Config.cellRenderer() and cellEditor() added.
 - EntityComboBox.model() added for consistency.
