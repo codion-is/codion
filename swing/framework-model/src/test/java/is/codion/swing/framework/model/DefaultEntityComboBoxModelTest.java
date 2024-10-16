@@ -48,7 +48,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class EntityComboBoxModelTest {
+public final class DefaultEntityComboBoxModelTest {
 
 	private static final Entities ENTITIES = new TestDomain().entities();
 
@@ -62,7 +62,7 @@ public final class EntityComboBoxModelTest {
 
 	private final EntityComboBoxModel comboBoxModel;
 
-	public EntityComboBoxModelTest() {
+	public DefaultEntityComboBoxModelTest() {
 		comboBoxModel = entityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
 	}
 
@@ -119,7 +119,7 @@ public final class EntityComboBoxModelTest {
 		mgrBox.condition().set(() -> Employee.JOB.in("MANAGER", "PRESIDENT"));
 		EntityComboBoxModel deptBox = mgrBox.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).filter();
 		empBox.refresh();
-		empBox.foreignKeyFilters().strict().set(true);
+		empBox.foreignKeyFilter().strict().set(true);
 		assertEquals(0, empBox.items().visible().count());
 		assertEquals(16, empBox.items().filtered().count());
 		assertEquals(0, mgrBox.items().visible().count());
@@ -198,7 +198,7 @@ public final class EntityComboBoxModelTest {
 	void setForeignKeyFilterEntities() throws Exception {
 		comboBoxModel.refresh();
 		Entity blake = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
-		comboBoxModel.foreignKeyFilters().set(Employee.MGR_FK, singletonList(blake.primaryKey()));
+		comboBoxModel.foreignKeyFilter().set(Employee.MGR_FK, singletonList(blake.primaryKey()));
 		assertEquals(5, comboBoxModel.getSize());
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
 			Entity item = comboBoxModel.getElementAt(i);
@@ -206,7 +206,7 @@ public final class EntityComboBoxModelTest {
 		}
 
 		Entity sales = comboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
-		comboBoxModel.foreignKeyFilters().set(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
+		comboBoxModel.foreignKeyFilter().set(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
 		assertEquals(2, comboBoxModel.getSize());
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
 			Entity item = comboBoxModel.getElementAt(i);
@@ -230,8 +230,8 @@ public final class EntityComboBoxModelTest {
 		assertEquals(accounting, deptComboBoxModel.selection().value());
 
 		//non strict filtering
-		comboBoxModel.foreignKeyFilters().strict().set(false);
-		comboBoxModel.foreignKeyFilters().set(Employee.DEPARTMENT_FK, emptyList());
+		comboBoxModel.foreignKeyFilter().strict().set(false);
+		comboBoxModel.foreignKeyFilter().set(Employee.DEPARTMENT_FK, emptyList());
 		assertEquals(6, comboBoxModel.getSize());
 		boolean kingFound = false;
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
@@ -337,7 +337,7 @@ public final class EntityComboBoxModelTest {
 		assertEquals(0, comboBoxModel.getSize());
 
 		comboBoxModel.condition().set(() -> Condition.custom(Employee.CONDITION_3_TYPE));
-		comboBoxModel.foreignKeyFilters().set(Employee.DEPARTMENT_FK, emptyList());
+		comboBoxModel.foreignKeyFilter().set(Employee.DEPARTMENT_FK, emptyList());
 
 		comboBoxModel.refresh();
 		assertEquals(1, comboBoxModel.getSize());

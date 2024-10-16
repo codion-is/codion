@@ -11,6 +11,8 @@ Codion Change Log
 - EntityComboBoxModel, foreign key filtering and linking improved.
 - EntityComboBoxModel.foreignKeyVisiblePredicate() renamed foreignKeyFilterPredicate().
 - EntityComboBoxModel.ForeignKeyFilters added, related refactoring.
+- EntityComboBoxModel now an interface.
+- EntityComboBoxModel.ForeignKeyFilters renamed ForeignKeyFilter.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.Config.cellRenderer() and cellEditor() added.
 - EntityComboBox.model() added for consistency.

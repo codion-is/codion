@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -44,7 +43,6 @@ import java.awt.event.FocusListener;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.component.EntityComboBox.ControlKeys.ADD;
@@ -52,16 +50,12 @@ import static is.codion.swing.framework.ui.component.EntityComboBox.ControlKeys.
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 
 /**
  * A UI component based on the {@link EntityComboBoxModel}.
  * @see EntityComboBoxModel
  */
 public final class EntityComboBox extends JComboBox<Entity> {
-
-	private static final MessageBundle MESSAGES =
-					messageBundle(EntityComboBox.class, getBundle(EntityComboBox.class.getName()));
 
 	/**
 	 * The available controls.
