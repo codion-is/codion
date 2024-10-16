@@ -50,7 +50,7 @@ public interface ConditionModel<T> {
 	 */
 	PropertyValue<Wildcard> WILDCARD =
 					Configuration.enumValue(ConditionModel.class.getName() + ".wildard",
-									Wildcard.class, Wildcard.POSTFIX);
+									Wildcard.class, Wildcard.PREFIX_AND_POSTFIX);
 
 	/**
 	 * Specifies whether string based conditions are case-sensitive by default
