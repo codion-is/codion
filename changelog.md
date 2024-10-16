@@ -19,6 +19,7 @@ Codion Change Log
 - EntityTablePanel.Config.cellRenderer() and cellEditor() added.
 - EntityComboBox.model() added for consistency.
 - EntityComboBox.createForeignKeyFilterControl() removed.
+- EntityTablePanel, no longer removes tooltips from south toolbar buttons, seem to only block mouse cursor in MetalLookAndFeel.
 
 ## 0.18.18
 ### is.codion.common.db

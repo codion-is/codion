@@ -109,7 +109,6 @@ import java.awt.event.MouseEvent;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -2835,9 +2834,7 @@ public class EntityTablePanel extends JPanel {
 							.controls(toolbarControls)
 							.floatable(false)
 							.rollover(true)
-							.build(toolBar -> Arrays.stream(toolBar.getComponents())
-											.map(JComponent.class::cast)
-											.forEach(component -> component.setToolTipText(null)));
+							.build();
 		}
 	}
 
