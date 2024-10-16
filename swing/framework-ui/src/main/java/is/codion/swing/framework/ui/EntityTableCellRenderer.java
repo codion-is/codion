@@ -91,7 +91,7 @@ public final class EntityTableCellRenderer {
 
 		@Override
 		default <T> FilterTableCellRenderer<T> create(Attribute<?> attribute, FilterTableModel<Entity, Attribute<?>> tableModel) {
-			return (FilterTableCellRenderer<T>) builder(attribute, (SwingEntityTableModel) tableModel).build();
+			return (FilterTableCellRenderer<T>) create(attribute, (SwingEntityTableModel) tableModel);
 		}
 	}
 

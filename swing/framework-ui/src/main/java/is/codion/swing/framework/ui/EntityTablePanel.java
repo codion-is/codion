@@ -2462,7 +2462,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param editAttributeSelection specifies attributes are selected when editing the selected records
+		 * @param editAttributeSelection specifies how attribute selection is presented selected when editing the selected records
 		 * @return this Config instance
 		 */
 		public Config editAttributeSelection(EditAttributeSelection editAttributeSelection) {
@@ -2530,6 +2530,17 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
+		 * Overridden by {@link #cellEditor(Attribute, FilterTableCellEditor)}.
+		 * @param cellEditorFactory the cell editor factory
+		 * @return this Config instance
+		 * @see FilterTable.Builder#cellRendererFactory(FilterTableCellRenderer.Factory)
+		 */
+		public Config cellEditorFactory(FilterTableCellEditor.Factory<Attribute<?>> cellEditorFactory) {
+			tableBuilder.cellEditorFactory(requireNonNull(cellEditorFactory));
+			return this;
+		}
+
+		/**
 		 * Sets the cell renderer for the given attribute
 		 * @param attribute the attribute
 		 * @param cellRenderer the cell renderer
@@ -2541,6 +2552,17 @@ public class EntityTablePanel extends JPanel {
 		public <T, A extends Attribute<T>> Config cellRenderer(A attribute, FilterTableCellRenderer<T> cellRenderer) {
 			entityDefinition.attributes().definition(attribute);
 			tableBuilder.cellRenderer(attribute, requireNonNull(cellRenderer));
+			return this;
+		}
+
+		/**
+		 * Overridden by {@link #cellRenderer(Attribute, FilterTableCellRenderer)}.
+		 * @param cellRendererFactory the cell renderer factory
+		 * @return this Config instance
+		 * @see FilterTable.Builder#cellRendererFactory(FilterTableCellRenderer.Factory)
+		 */
+		public Config cellRendererFactory(EntityTableCellRenderer.Factory cellRendererFactory) {
+			tableBuilder.cellRendererFactory(cellRendererFactory);
 			return this;
 		}
 

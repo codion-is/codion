@@ -484,6 +484,51 @@ public class FilterTableTest {
 		)));
 	}
 
+	@Test
+	void cellRenderers() {
+		FilterTableModel.Columns<Object, Integer> columns = new FilterTableModel.Columns<>() {
+			@Override
+			public List<Integer> identifiers() {
+				return List.of(0, 1);
+			}
+
+			@Override
+			public Class<?> columnClass(Integer identifier) {
+				return Object.class;
+			}
+
+			@Override
+			public Object value(Object row, Integer identifier) {
+				return 1;
+			}
+		};
+		List<FilterTableColumn<Integer>> tableColumns = asList(
+						FilterTableColumn.builder(0).build(),
+						FilterTableColumn.builder(1).build());
+
+		FilterTableModel<Object, Integer> model = FilterTableModel.builder(columns).build();
+		model.items().addItem(1);
+
+		FilterTableCellRenderer<Object> zeroRenderer = FilterTableCellRenderer.builder(Object.class).build();
+		FilterTableCellRenderer<Object> oneRenderer = FilterTableCellRenderer.builder(Object.class).build();
+
+		FilterTable<Object, Integer> table = FilterTable.builder(model, tableColumns)
+						.cellRenderer(0, zeroRenderer)
+						.cellRendererFactory(new FilterTableCellRenderer.Factory<Object, Integer>() {
+							@Override
+							public <T> FilterTableCellRenderer<T> create(Integer identifier, FilterTableModel<Object, Integer> tableModel) {
+								return (FilterTableCellRenderer<T>) oneRenderer;
+							}
+						})
+						.build();
+
+		assertSame(zeroRenderer, table.columnModel().column(0).getCellRenderer());
+		assertSame(zeroRenderer, table.getCellRenderer(0, 0));
+
+		assertSame(oneRenderer, table.columnModel().column(1).getCellRenderer());
+		assertSame(oneRenderer, table.getCellRenderer(0, 1));
+	}
+
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
 																							 FilterTableModel<TestRow, Integer> model) {
 		for (TestRow row : rows) {
