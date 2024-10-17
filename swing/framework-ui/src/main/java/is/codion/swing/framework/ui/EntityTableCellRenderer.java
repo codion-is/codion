@@ -81,24 +81,24 @@ public final class EntityTableCellRenderer {
 	 * A {@link SwingEntityTableModel} based table cell factory.
 	 */
 	public interface Factory extends FilterTableCellRenderer.Factory<Entity, Attribute<?>> {
+
 		/**
-		 * @param <T> the attribute type
 		 * @param attribute the attribute
 		 * @param tableModel the table model
 		 * @return a new {@link FilterTableCellRenderer}
 		 */
-		<T> FilterTableCellRenderer<T> create(Attribute<T> attribute, SwingEntityTableModel tableModel);
+		FilterTableCellRenderer<?> create(Attribute<?> attribute, SwingEntityTableModel tableModel);
 
 		@Override
-		default <T> FilterTableCellRenderer<T> create(Attribute<?> attribute, FilterTableModel<Entity, Attribute<?>> tableModel) {
-			return (FilterTableCellRenderer<T>) create(attribute, (SwingEntityTableModel) tableModel);
+		default FilterTableCellRenderer<?> create(Attribute<?> attribute, FilterTableModel<Entity, Attribute<?>> tableModel) {
+			return create(attribute, (SwingEntityTableModel) tableModel);
 		}
 	}
 
 	private static final class DefaultFactory implements Factory {
 
 		@Override
-		public <T> FilterTableCellRenderer<T> create(Attribute<T> attribute, SwingEntityTableModel tableModel) {
+		public FilterTableCellRenderer<?> create(Attribute<?> attribute, SwingEntityTableModel tableModel) {
 			return builder(attribute, tableModel).build();
 		}
 	}

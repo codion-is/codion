@@ -514,12 +514,7 @@ public class FilterTableTest {
 
 		FilterTable<Object, Integer> table = FilterTable.builder(model, tableColumns)
 						.cellRenderer(0, zeroRenderer)
-						.cellRendererFactory(new FilterTableCellRenderer.Factory<Object, Integer>() {
-							@Override
-							public <T> FilterTableCellRenderer<T> create(Integer identifier, FilterTableModel<Object, Integer> tableModel) {
-								return (FilterTableCellRenderer<T>) oneRenderer;
-							}
-						})
+						.cellRendererFactory((identifier, tableModel) -> oneRenderer)
 						.build();
 
 		assertSame(zeroRenderer, table.columnModel().column(0).getCellRenderer());

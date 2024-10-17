@@ -250,11 +250,10 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	interface Factory<R, C> {
 
 		/**
-		 * @param <T> the column type
 		 * @param identifier the column identifier
 		 * @return a {@link FilterTableCellRenderer} instance for the given column
 		 */
-		<T> FilterTableCellRenderer<T> create(C identifier, FilterTableModel<R, C> tableModel);
+		FilterTableCellRenderer<?> create(C identifier, FilterTableModel<R, C> tableModel);
 	}
 
 	/**

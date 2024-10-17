@@ -9,6 +9,7 @@ Codion Change Log
 - DefaultFilterTableModel.VisiblePredicate.predicate bug fixed, now Notify.WHEN_SET.
 ### is.codion.swing.common.ui
 - DefaultFilterTableCellRenderer.DefaultBuilder bug fixed, useBooleanRenderer now initialized before settings, in order for a correct horizontal alignment for boolean columns.
+- FilterTableCellRenderer.Factory.create() T type parameter removed.
 ### is.codion.swing.framework.model 
 - EntityComboBoxModel, foreign key filtering and linking improved.
 - EntityComboBoxModel.foreignKeyVisiblePredicate() renamed foreignKeyFilterPredicate().
@@ -22,6 +23,7 @@ Codion Change Log
 - EntityTablePanel, no longer removes tooltips from south toolbar buttons, seem to only block mouse cursor in MetalLookAndFeel.
 - EntityTableCellRenderer bug fixed, create(Attribute, SwingEntityTableModel) never got called.
 - EntityTable.Config.cellEditorFactory() and cellRendererFactory() added.
+- EntityTableCellRenderer.Factory.create() T type parameter removed.
 
 ## 0.18.18
 ### is.codion.common.db

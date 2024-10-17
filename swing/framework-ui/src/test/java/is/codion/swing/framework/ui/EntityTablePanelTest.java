@@ -209,15 +209,12 @@ public class EntityTablePanelTest {
 		FilterTableCellRenderer<Double> commissionRenderer = EntityTableCellRenderer.builder(Employee.COMMISSION, tableModel).build();
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config
 						.cellRenderer(Employee.NAME, nameRenderer)
-						.cellRendererFactory(new EntityTableCellRenderer.Factory() {
-							@Override
-							public <T> FilterTableCellRenderer<T> create(Attribute<T> attribute, SwingEntityTableModel tableModel) {
-								if (attribute.equals(Employee.COMMISSION)) {
-									return (FilterTableCellRenderer<T>) commissionRenderer;
-								}
-
-								return EntityTableCellRenderer.builder(attribute, tableModel).build();
+						.cellRendererFactory((attribute, model) -> {
+							if (attribute.equals(Employee.COMMISSION)) {
+								return commissionRenderer;
 							}
+
+							return EntityTableCellRenderer.builder(attribute, model).build();
 						}));
 		assertSame(nameRenderer, tablePanel.table().columnModel().column(Employee.NAME).getCellRenderer());
 		assertSame(commissionRenderer, tablePanel.table().columnModel().column(Employee.COMMISSION).getCellRenderer());

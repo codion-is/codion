@@ -457,8 +457,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	static final class DefaultFactory<R, C> implements Factory<R, C> {
 
 		@Override
-		public <T> FilterTableCellRenderer<T> create(C identifier, FilterTableModel<R, C> tableModel) {
-			return new DefaultBuilder<>((Class<T>) tableModel.getColumnClass(identifier)).build();
+		public FilterTableCellRenderer<?> create(C identifier, FilterTableModel<R, C> tableModel) {
+			return new DefaultBuilder<>(tableModel.getColumnClass(identifier)).build();
 		}
 	}
 }
