@@ -26,6 +26,7 @@ Codion Change Log
 - EntityTableCellRenderer bug fixed, create(Attribute, SwingEntityTableModel) never got called.
 - EntityTable.Config.cellEditorFactory() and cellRendererFactory() added.
 - EntityTableCellRenderer.Factory.create() T type parameter removed.
+- EntityDependenciesPanel.displayDependenciesDialog() removed, EntityTablePanel and EntityEditPanel refactored accordingly.
 
 ## 0.18.18
 ### is.codion.common.db

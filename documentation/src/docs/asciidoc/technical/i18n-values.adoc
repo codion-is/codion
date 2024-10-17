@@ -768,22 +768,6 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |view_application_tree|Application Tree|Yfirlitsmynd
 |===
 
-=== is/codion/swing/framework/ui/EntityDependenciesPanel.java
-
-[source]
-----
-is/codion/swing/framework/ui/EntityDependenciesPanel.properties
-is/codion/swing/framework/ui/EntityDependenciesPanel_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|no_dependencies|This record has no dependent records|Færslan á sér engar tengdar færslur
-|no_dependencies_title|No dependencies|Engar tengdar færslur
-|===
-
 === is/codion/swing/framework/ui/EntityEditPanel.java
 
 [source]
@@ -798,6 +782,8 @@ is/codion/swing/framework/ui/EntityEditPanel_is_IS.properties
 
 |deleting|Deleting|Eyði
 |inserting|Inserting|Vista
+|no_dependencies|This record has no dependent records|Færslan á sér engar tengdar færslur
+|no_dependencies_title|No dependencies|Engar tengdar færslur
 |unknown_dependent_records|This record has unknown dependencies|Færslan á sér óþekktar tengdar færslur
 |updating|Updating|Uppfæri
 |===
@@ -937,21 +923,6 @@ is/codion/swing/framework/ui/TabbedDetailLayout_is_IS.properties
 
 |detail_tables|Detail Tables|Undirtöflur
 |toggle_detail|Toggle between detail views|Skipta á milli sýna á undirtöflur
-|===
-
-=== is/codion/swing/framework/ui/component/EntityComboBox.java
-
-[source]
-----
-is/codion/swing/framework/ui/component/EntityComboBox.properties
-is/codion/swing/framework/ui/component/EntityComboBox_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|filter_by|Filter by|Sía út frá
 |===
 
 === is/codion/swing/framework/ui/component/EntityControls.java

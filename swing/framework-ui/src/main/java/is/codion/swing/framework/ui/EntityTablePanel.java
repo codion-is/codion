@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.UserPreferences;
@@ -33,6 +34,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -72,6 +74,7 @@ import is.codion.swing.common.ui.control.Controls.ControlsKey;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.component.EntityComponentFactory;
@@ -134,7 +137,6 @@ import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.ColumnPreferences.columnPreferences;
 import static is.codion.swing.framework.ui.ConditionPreferences.conditionPreferences;
-import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
@@ -146,10 +148,12 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
@@ -675,7 +679,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void viewDependencies() {
 		if (!tableModel.selection().empty().get()) {
-			displayDependenciesDialog(tableModel.selection().items().get(), tableModel.connectionProvider(), this);
+			displayDependencies(EDIT_PANEL_MESSAGES.getString("no_dependencies"));
 		}
 	}
 
@@ -976,8 +980,7 @@ public class EntityTablePanel extends JPanel {
 	protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
 		requireNonNull(exception);
 		if (configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-			displayDependenciesDialog(tableModel.selection().items().get(), tableModel.connectionProvider(),
-							this, EDIT_PANEL_MESSAGES.getString("unknown_dependent_records"));
+			displayDependencies(EDIT_PANEL_MESSAGES.getString("unknown_dependent_records"));
 		}
 		else {
 			displayException(exception);
@@ -1814,6 +1817,40 @@ public class EntityTablePanel extends JPanel {
 		}
 		catch (Exception e) {
 			LOG.error("Error while applying column preferences: {}", preferencesString, e);
+		}
+	}
+
+	private void displayDependencies(String noDependenciesMessage) {
+		Map<EntityType, Collection<Entity>> dependencies = selectionDependencies();
+		if (dependencies.isEmpty()) {
+			JOptionPane.showMessageDialog(this, noDependenciesMessage,
+							EDIT_PANEL_MESSAGES.getString("no_dependencies_title"), JOptionPane.INFORMATION_MESSAGE);
+		}
+		else {
+			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, tableModel.connectionProvider());
+			int gap = Layouts.GAP.get();
+			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
+			Dialogs.componentDialog(dependenciesPanel)
+							.owner(this)
+							.modal(false)
+							.title(FrameworkMessages.dependencies())
+							.onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
+							.show();
+		}
+	}
+
+	private Map<EntityType, Collection<Entity>> selectionDependencies() {
+		setCursor(Cursors.WAIT);
+		try {
+			return tableModel.connectionProvider().connection().dependencies(tableModel.selection().items().get());
+		}
+		catch (DatabaseException e) {
+			displayException(e);
+
+			return emptyMap();
+		}
+		finally {
+			setCursor(Cursors.DEFAULT);
 		}
 	}
 

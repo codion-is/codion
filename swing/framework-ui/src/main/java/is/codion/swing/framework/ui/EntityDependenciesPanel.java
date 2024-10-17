@@ -18,33 +18,23 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.resource.MessageBundle;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_LEFT;
@@ -54,18 +44,12 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
-import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
-import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * Displays the given dependencies in a tabbed pane.
  * @see #displayDependenciesDialog(Collection, EntityConnectionProvider, JComponent)
  */
 final class EntityDependenciesPanel extends JPanel {
-
-	private static final MessageBundle MESSAGES =
-					messageBundle(EntityDependenciesPanel.class, getBundle(EntityDependenciesPanel.class.getName()));
 
 	/**
 	 * The dependencies panel controls.
@@ -107,33 +91,6 @@ final class EntityDependenciesPanel extends JPanel {
 										.enable(tabPane));
 	}
 
-	/**
-	 * Displays a dialog containing the entities depending on the given entities.
-	 * @param entities the entities for which to display dependencies
-	 * @param connectionProvider the connection provider
-	 * @param dialogParent the dialog parent
-	 */
-	static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
-																				JComponent dialogParent) {
-		displayDependenciesDialog(entities, connectionProvider, dialogParent, MESSAGES.getString("no_dependencies"));
-	}
-
-	/**
-	 * Shows a dialog containing the entities depending on the given entities.
-	 * @param entities the entities for which to display dependencies
-	 * @param connectionProvider the connection provider
-	 * @param dialogParent the dialog parent
-	 * @param noDependenciesMessage the message to show in case of no dependencies
-	 */
-	static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
-																				JComponent dialogParent, String noDependenciesMessage) {
-		requireNonNull(entities);
-		requireNonNull(connectionProvider);
-		requireNonNull(dialogParent);
-		Map<EntityType, Collection<Entity>> dependencies = dependencies(entities, connectionProvider, dialogParent);
-		displayDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
-	}
-
 	private static EntityTablePanel createTablePanel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(entities, connectionProvider);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeConditions(false));
@@ -144,43 +101,6 @@ final class EntityDependenciesPanel extends JPanel {
 						.control(VIEW_DEPENDENCIES));
 
 		return tablePanel.initialize();
-	}
-
-	private static Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities,
-																																	EntityConnectionProvider connectionProvider,
-																																	JComponent dialogParent) {
-		dialogParent.setCursor(Cursors.WAIT);
-		try {
-			return connectionProvider.connection().dependencies(entities);
-		}
-		catch (DatabaseException e) {
-			Dialogs.displayExceptionDialog(e, parentWindow(dialogParent));
-
-			return Collections.emptyMap();
-		}
-		finally {
-			dialogParent.setCursor(Cursors.DEFAULT);
-		}
-	}
-
-	private static void displayDependenciesDialog(Map<EntityType, Collection<Entity>> dependencies,
-																								EntityConnectionProvider connectionProvider,
-																								JComponent dialogParent, String noDependenciesMessage) {
-		if (dependencies.isEmpty()) {
-			JOptionPane.showMessageDialog(dialogParent, noDependenciesMessage,
-							MESSAGES.getString("no_dependencies_title"), JOptionPane.INFORMATION_MESSAGE);
-		}
-		else {
-			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, connectionProvider);
-			int gap = Layouts.GAP.get();
-			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
-			Dialogs.componentDialog(dependenciesPanel)
-							.owner(dialogParent)
-							.modal(false)
-							.title(FrameworkMessages.dependencies())
-							.onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
-							.show();
-		}
 	}
 
 	void requestSelectedTableFocus() {
