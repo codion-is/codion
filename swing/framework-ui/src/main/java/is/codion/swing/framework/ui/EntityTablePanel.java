@@ -101,6 +101,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -118,6 +119,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -474,6 +476,7 @@ public class EntityTablePanel extends JPanel {
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
 	private final List<Controls> additionalToolBarControls = new ArrayList<>();
+	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 
 	private JScrollPane conditionPanelScrollPane;
 	private JScrollPane filterPanelScrollPane;
@@ -1834,8 +1837,10 @@ public class EntityTablePanel extends JPanel {
 			Dialogs.componentDialog(dependenciesPanel)
 							.owner(this)
 							.modal(false)
+							.size(dependenciesDialogSize.get())
 							.title(FrameworkMessages.dependencies())
 							.onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
+							.onClosed(event -> dependenciesDialogSize.set(event.getWindow().getSize()))
 							.show();
 		}
 	}

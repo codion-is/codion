@@ -30,6 +30,7 @@ Codion Change Log
 - EntityTablePanel no longer applies preferences when constructed, applyPreferences() now public.
 - EntityPanel.applyPreferences() now public.
 - EntityApplicationPanel now handles applying preferences for its entity panels.
+- EntityTablePanel now remembers and reuses the dependencies dialog size.
 
 ## 0.18.18
 ### is.codion.common.db

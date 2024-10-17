@@ -81,7 +81,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
 	@Override
 	public ComponentDialogBuilder size(Dimension size) {
-		this.size = requireNonNull(size);
+		this.size = size;
 		return this;
 	}
 

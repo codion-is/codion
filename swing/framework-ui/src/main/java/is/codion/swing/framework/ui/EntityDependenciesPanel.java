@@ -27,7 +27,6 @@ import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
@@ -47,7 +46,6 @@ import static java.awt.event.KeyEvent.VK_RIGHT;
 
 /**
  * Displays the given dependencies in a tabbed pane.
- * @see #displayDependenciesDialog(Collection, EntityConnectionProvider, JComponent)
  */
 final class EntityDependenciesPanel extends JPanel {
 
