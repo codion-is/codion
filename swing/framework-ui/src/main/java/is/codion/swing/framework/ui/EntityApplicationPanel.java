@@ -404,6 +404,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		if (!initialized) {
 			try {
 				createEntityPanels().forEach(this::addEntityPanel);
+				entityPanels.forEach(EntityPanel::applyPreferences);
 				supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
 				setLayout(new BorderLayout());
 				add(applicationLayout.layout(), BorderLayout.CENTER);
@@ -848,6 +849,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		}
 
 		EntityPanel entityPanel = panelBuilder.build(applicationModel.connectionProvider());
+		entityPanel.applyPreferences();
 		entityPanel.initialize();
 		if (CACHE_ENTITY_PANELS.get()) {
 			cachedEntityPanels.put(panelBuilder, entityPanel);

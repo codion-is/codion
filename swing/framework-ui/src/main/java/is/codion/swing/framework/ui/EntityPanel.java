@@ -642,11 +642,26 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Saves any user preferences for all entity panels and associated elements
+	 * Saves user preferences for this entity panel and its detail panels.
+	 * @see EntityTablePanel#savePreferences()
 	 */
 	public void savePreferences() {
-		tablePanel.savePreferences();
+		if (containsTablePanel()) {
+			tablePanel.savePreferences();
+		}
 		detailPanels.forEach(EntityPanel::savePreferences);
+	}
+
+	/**
+	 * Applies any user preferences previously saved via {@link #savePreferences()}
+	 * for this panel and its detail panels.
+	 * @see EntityTablePanel#applyPreferences()
+	 */
+	public void applyPreferences() {
+		if (containsTablePanel()) {
+			tablePanel.applyPreferences();
+		}
+		detailPanels.forEach(EntityPanel::applyPreferences);
 	}
 
 	/**

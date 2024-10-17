@@ -27,6 +27,9 @@ Codion Change Log
 - EntityTable.Config.cellEditorFactory() and cellRendererFactory() added.
 - EntityTableCellRenderer.Factory.create() T type parameter removed.
 - EntityDependenciesPanel.displayDependenciesDialog() removed, EntityTablePanel and EntityEditPanel refactored accordingly.
+- EntityTablePanel no longer applies preferences when constructed, applyPreferences() now public.
+- EntityPanel.applyPreferences() now public.
+- EntityApplicationPanel now handles applying preferences for its entity panels.
 
 ## 0.18.18
 ### is.codion.common.db

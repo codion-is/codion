@@ -511,7 +511,6 @@ public class EntityTablePanel extends JPanel {
 		initializeConditionsAndFilters();
 		createControls();
 		bindTableEvents();
-		applyPreferences();
 	}
 
 	/**
@@ -541,7 +540,6 @@ public class EntityTablePanel extends JPanel {
 		this.toolBarLayout = createToolBarLayout();
 		createControls();
 		bindTableEvents();
-		applyPreferences();
 	}
 
 	@Override
@@ -737,6 +735,24 @@ public class EntityTablePanel extends JPanel {
 		}
 		catch (Exception e) {
 			LOG.error("Error while saving condition preferences", e);
+		}
+	}
+
+	/**
+	 * Applies any user preferences previously saved via {@link #savePreferences()}
+	 */
+	public void applyPreferences() {
+		String columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + COLUMN_PREFERENCES, "");
+		if (columnPreferencesString.isEmpty()) {//todo remove: see if a legacy one without "-columns" postfix exists
+			columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
+		}
+		if (!columnPreferencesString.isEmpty()) {
+			applyColumnPreferences(columnPreferencesString);
+		}
+
+		String conditionPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES, "");
+		if (!conditionPreferencesString.isEmpty()) {
+			applyConditionPreferences(conditionPreferencesString);
 		}
 	}
 
@@ -1790,21 +1806,6 @@ public class EntityTablePanel extends JPanel {
 		//disable the filter for the column to be hidden, to prevent confusion
 		tableModel.filters().optional(attribute)
 						.ifPresent(condition -> condition.enabled().set(false));
-	}
-
-	private void applyPreferences() {
-		String columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + COLUMN_PREFERENCES, "");
-		if (columnPreferencesString.isEmpty()) {//todo remove: see if a legacy one without "-columns" postfix exists
-			columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
-		}
-		if (!columnPreferencesString.isEmpty()) {
-			applyColumnPreferences(columnPreferencesString);
-		}
-
-		String conditionPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES, "");
-		if (!conditionPreferencesString.isEmpty()) {
-			applyConditionPreferences(conditionPreferencesString);
-		}
 	}
 
 	private void applyColumnPreferences(String preferencesString) {

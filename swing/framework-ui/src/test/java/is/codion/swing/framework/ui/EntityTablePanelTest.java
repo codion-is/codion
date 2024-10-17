@@ -134,8 +134,9 @@ public class EntityTablePanelTest {
 		tablePanel.savePreferences();
 
 		tablePanel = new EntityTablePanel(testModel);
-		columnModel = tablePanel.table().columnModel();
+		tablePanel.applyPreferences();
 
+		columnModel = tablePanel.table().columnModel();
 		assertFalse(columnModel.visible(Detail.STRING).get());
 		assertEquals(0, columnModel.getColumnIndex(Detail.DOUBLE));
 		assertEquals(1, columnModel.getColumnIndex(Detail.INT));
