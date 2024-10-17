@@ -10,6 +10,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - DefaultFilterTableCellRenderer.DefaultBuilder bug fixed, useBooleanRenderer now initialized before settings, in order for a correct horizontal alignment for boolean columns.
 - FilterTableCellRenderer.Factory.create() T type parameter removed.
+### is.codion.framework.db
+- DefaultLocalEntityConnection.delete() bug fixed, database exception now with the correct Operation.
 ### is.codion.swing.framework.model 
 - EntityComboBoxModel, foreign key filtering and linking improved.
 - EntityComboBoxModel.foreignKeyVisiblePredicate() renamed foreignKeyFilterPredicate().

@@ -20,6 +20,7 @@ package is.codion.framework.db.local;
 
 import is.codion.common.db.database.ConnectionProvider;
 import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.DeleteException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
@@ -213,9 +214,15 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void deleteReferentialIntegrity() {
+	void deleteReferentialIntegrity() throws DatabaseException {
 		Entity.Key key = ENTITIES.primaryKey(Department.TYPE, 10);
-		assertThrows(ReferentialIntegrityException.class, () -> connection.delete(key));
+		try {
+		  connection.delete(key);
+			fail("ReferentialIntegrityException should have been thrown");
+		}
+		catch (ReferentialIntegrityException e) {
+			assertEquals(Operation.DELETE, e.operation());
+		}
 	}
 
 	@Test
@@ -235,14 +242,20 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void insertNoParentKey() {
+	void insertNoParentKey() throws DatabaseException {
 		Entity emp = ENTITIES.builder(Employee.TYPE)
 						.with(Employee.ID, -100)
 						.with(Employee.NAME, "Testing")
 						.with(Employee.DEPARTMENT, -1010)//not available
 						.with(Employee.SALARY, 2000d)
 						.build();
-		assertThrows(ReferentialIntegrityException.class, () -> connection.insert(emp));
+		try {
+		  connection.insert(emp);
+			fail("ReferentialIntegrityException should have been thrown");
+		}
+		catch (ReferentialIntegrityException e) {
+			assertEquals(Operation.INSERT, e.operation());
+		}
 	}
 
 	@Test
@@ -263,19 +276,36 @@ public class DefaultLocalEntityConnectionTest {
 	void updateNoParentKey() throws DatabaseException {
 		Entity emp = connection.selectSingle(Employee.ID.equalTo(3));
 		emp.put(Employee.DEPARTMENT, -1010);//not available
-		assertThrows(ReferentialIntegrityException.class, () -> connection.update(emp));
+		try {
+			connection.update(emp);
+			fail("ReferentialIntegrityException should have been thrown");
+		}
+		catch (ReferentialIntegrityException e) {
+			assertEquals(Operation.UPDATE, e.operation());
+		}
 	}
 
 	@Test
 	void deleteByKeyWithForeignKeys() throws DatabaseException {
 		Entity accounting = connection.selectSingle(Department.DNAME.equalTo("ACCOUNTING"));
-		assertThrows(ReferentialIntegrityException.class, () -> connection.delete(accounting.primaryKey()));
+		try {
+		  connection.delete(accounting.primaryKey());
+			fail("ReferentialIntegrityException should have been thrown");
+		}
+		catch (ReferentialIntegrityException e) {
+			assertEquals(Operation.DELETE, e.operation());
+		}
 	}
 
 	@Test
-	void deleteByConditionWithForeignKeys() {
-		assertThrows(ReferentialIntegrityException.class, () ->
-						connection.delete(Department.DNAME.equalTo("ACCOUNTING")));
+	void deleteByConditionWithForeignKeys() throws DatabaseException {
+		try {
+		  connection.delete(Department.DNAME.equalTo("ACCOUNTING"));
+			fail("ReferentialIntegrityException should have been thrown");
+		}
+		catch (ReferentialIntegrityException e) {
+			assertEquals(Operation.DELETE, e.operation());
+		}
 	}
 
 	@Test
