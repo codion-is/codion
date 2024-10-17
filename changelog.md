@@ -13,7 +13,7 @@ Codion Change Log
 - FilterTableColumnModel.identifiers() added.
 ### is.codion.framework.db
 - DefaultLocalEntityConnection.delete() bug fixed, database exception now with the correct Operation.
-### is.codion.swing.framework.model 
+### is.codion.swing.framework.model
 - EntityComboBoxModel, foreign key filtering and linking improved.
 - EntityComboBoxModel.foreignKeyVisiblePredicate() renamed foreignKeyFilterPredicate().
 - EntityComboBoxModel.ForeignKeyFilters added, related refactoring.
@@ -33,6 +33,7 @@ Codion Change Log
 - EntityApplicationPanel now handles applying preferences for its entity panels.
 - EntityTablePanel now remembers and reuses the dependencies dialog size.
 - EntityTablePanel now remembers and reapplies column user preferences for dependency panels, related refactoring.
+- EntityApplicationPanel, cached entity panels displayed via displayEntityPanel() now remember their size next time they are opened.
 
 ## 0.18.18
 ### is.codion.common.db

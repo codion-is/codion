@@ -728,7 +728,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))
 							.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-							.onClosed(windowEvent -> entityPanel.savePreferences())
+							.onClosed(e -> onEntityPanelWindowClosed(entityPanel))
 							.show();
 		}
 	}
@@ -759,9 +759,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 							.owner(parentWindow().orElse(null))
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))
-							.onClosed(e -> entityPanel.savePreferences())
+							.onClosed(e -> onEntityPanelWindowClosed(entityPanel))
 							.modal(modalDialog)
-							.resizable(true)
 							.show();
 		}
 	}
@@ -1007,6 +1006,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
 		return entities.definition(entityType).foreignKeys().get().stream()
 						.allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
+	}
+
+	private static void onEntityPanelWindowClosed(EntityPanel entityPanel) {
+		entityPanel.savePreferences();
+		entityPanel.setPreferredSize(entityPanel.getSize());
 	}
 
 	void setSaveDefaultUsername(boolean saveDefaultUsername) {
