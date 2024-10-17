@@ -42,6 +42,11 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	Collection<FilterTableColumn<C>> columns();
 
 	/**
+	 * @return an unmodifiable view of all column identifiers in this model, both hidden and visible, in no particular order
+	 */
+	Collection<C> identifiers();
+
+	/**
 	 * @return the visible columns
 	 */
 	VisibleColumns<C> visible();

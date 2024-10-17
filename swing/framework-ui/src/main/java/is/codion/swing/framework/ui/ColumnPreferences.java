@@ -132,17 +132,15 @@ final class ColumnPreferences {
 	 * Applies the given column preferences to the given table model
 	 * @param tableModel the table model to apply the preferences to
 	 * @param columnAttributes the available column attributes
-	 * @param preferencesString the preferences string
+	 * @param columnPreferences the column preferences
 	 * @param setColumnWidth sets the column width
 	 */
 	static void apply(EntityTablePanel tablePanel, Collection<Attribute<?>> columnAttributes,
-										String preferencesString, BiConsumer<Attribute<?>, Integer> setColumnWidth) {
+										Map<Attribute<?>, ColumnPreferences> columnPreferences, BiConsumer<Attribute<?>, Integer> setColumnWidth) {
 		requireNonNull(tablePanel);
 		requireNonNull(columnAttributes);
-		requireNonNull(preferencesString);
+		requireNonNull(columnPreferences);
 		requireNonNull(setColumnWidth);
-
-		Map<Attribute<?>, ColumnPreferences> columnPreferences = fromString(columnAttributes, preferencesString);
 		List<Attribute<?>> columnAttributesWithoutPreferences = new ArrayList<>();
 		for (Attribute<?> attribute : columnAttributes) {
 			ColumnPreferences preferences = columnPreferences.get(attribute);

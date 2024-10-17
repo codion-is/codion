@@ -33,6 +33,7 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
@@ -43,6 +44,7 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * Displays the given dependencies in a tabbed pane.
@@ -58,24 +60,25 @@ final class EntityDependenciesPanel extends JPanel {
 		 * Navigates to the dependencies panel on the left (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key("navigateLeft", keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key("navigateLeft", keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the dependencies panel on the right (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key("navigateRight", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key("navigateRight", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}
 
+	private final Map<EntityType, EntityTablePanel> tablePanels;
 	private final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
 
 	EntityDependenciesPanel(Map<EntityType, Collection<Entity>> dependencies, EntityConnectionProvider connectionProvider) {
 		super(new BorderLayout());
-		for (Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
-			tabPane.addTab(connectionProvider.entities().definition(entry.getKey()).caption(),
-							createTablePanel(entry.getValue(), connectionProvider));
-		}
+		this.tablePanels = unmodifiableMap(dependencies.entrySet().stream()
+						.collect(Collectors.toMap(Map.Entry::getKey, entry -> createTablePanel(entry.getValue(), connectionProvider))));
+		tablePanels.forEach((entityType, tablePanel) ->
+						tabPane.addTab(connectionProvider.entities().definition(entityType).caption(), tablePanel));
 		add(tabPane, BorderLayout.CENTER);
 		NAVIGATE_RIGHT.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
@@ -89,6 +92,10 @@ final class EntityDependenciesPanel extends JPanel {
 										.enable(tabPane));
 	}
 
+	Map<EntityType, EntityTablePanel> tablePanels() {
+		return tablePanels;
+	}
+
 	private static EntityTablePanel createTablePanel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(entities, connectionProvider);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeConditions(false));
@@ -96,7 +103,9 @@ final class EntityDependenciesPanel extends JPanel {
 						.control(EDIT_ATTRIBUTE_CONTROLS)
 						.control(DELETE)
 						.separator()
-						.control(VIEW_DEPENDENCIES));
+						.control(VIEW_DEPENDENCIES)
+						.separator()
+						.control(COLUMN_CONTROLS));
 
 		return tablePanel.initialize();
 	}

@@ -476,6 +476,8 @@ public class EntityTablePanel extends JPanel {
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
 	private final List<Controls> additionalToolBarControls = new ArrayList<>();
+
+	private final Map<EntityType, Map<Attribute<?>, ColumnPreferences>> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 
 	private JScrollPane conditionPanelScrollPane;
@@ -1812,15 +1814,26 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void applyColumnPreferences(String preferencesString) {
-		List<Attribute<?>> columnAttributes = table.columnModel().columns().stream()
-						.map(FilterTableColumn::identifier)
-						.collect(toList());
 		try {
-			ColumnPreferences.apply(this, columnAttributes, preferencesString, (attribute, columnWidth) ->
-							table.columnModel().column(attribute).setPreferredWidth(columnWidth));
+			Map<Attribute<?>, ColumnPreferences> columnPreferences =
+							ColumnPreferences.fromString(table.columnModel().identifiers(), preferencesString);
+			ColumnPreferences.apply(this, table.columnModel().identifiers(), columnPreferences,
+							(attribute, columnWidth) -> table.columnModel().column(attribute).setPreferredWidth(columnWidth));
 		}
 		catch (Exception e) {
 			LOG.error("Error while applying column preferences: {}", preferencesString, e);
+		}
+	}
+
+	private void applyColumnPreferences(Map<Attribute<?>, ColumnPreferences> columnPreferences) {
+		try {
+			if (columnPreferences != null) {
+				ColumnPreferences.apply(this, table.columnModel().identifiers(), columnPreferences,
+								(attribute, columnWidth) -> table.columnModel().column(attribute).setPreferredWidth(columnWidth));
+			}
+		}
+		catch (Exception e) {
+			LOG.error("Error while applying column preferences: {}", columnPreferences, e);
 		}
 	}
 
@@ -1832,6 +1845,8 @@ public class EntityTablePanel extends JPanel {
 		}
 		else {
 			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, tableModel.connectionProvider());
+			dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) ->
+							dependencyTablePanel.applyColumnPreferences(dependencyPanelPreferences.get(entityType)));
 			int gap = Layouts.GAP.get();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
 			Dialogs.componentDialog(dependenciesPanel)
@@ -1840,7 +1855,11 @@ public class EntityTablePanel extends JPanel {
 							.size(dependenciesDialogSize.get())
 							.title(FrameworkMessages.dependencies())
 							.onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
-							.onClosed(event -> dependenciesDialogSize.set(event.getWindow().getSize()))
+							.onClosed(event -> {
+								dependenciesDialogSize.set(event.getWindow().getSize());
+								dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) ->
+												dependencyPanelPreferences.put(entityType, dependencyTablePanel.createColumnPreferences()));
+							})
 							.show();
 		}
 	}
@@ -1983,8 +2002,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private static boolean containsSummaryModels(FilterTable<Entity, Attribute<?>> table) {
-		return table.columnModel().columns().stream()
-						.map(FilterTableColumn::identifier)
+		return table.columnModel().identifiers().stream()
 						.map(table.summaryModel()::summaryModel)
 						.anyMatch(Optional::isPresent);
 	}

@@ -23,9 +23,10 @@ import is.codion.swing.common.model.component.table.FilterTableModel;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JPanel;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static java.util.Arrays.asList;
@@ -109,9 +110,7 @@ public class FilterTableColumnComponentPanelTest {
 	}
 
 	private static Map<Integer, JPanel> createColumnComponents(FilterTableColumnModel<Integer> columnModel) {
-		Map<Integer, JPanel> columnComponents = new HashMap<>();
-		columnModel.columns().forEach(column -> columnComponents.put(column.identifier(), new JPanel()));
-
-		return columnComponents;
+		return columnModel.identifiers().stream()
+						.collect(Collectors.toMap(Function.identity(), identifier -> new JPanel()));
 	}
 }

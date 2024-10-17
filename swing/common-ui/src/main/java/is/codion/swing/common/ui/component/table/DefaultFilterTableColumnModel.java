@@ -67,6 +67,11 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	@Override
+	public Collection<C> identifiers() {
+		return columns.keySet();
+	}
+
+	@Override
 	public State locked() {
 		return locked;
 	}
