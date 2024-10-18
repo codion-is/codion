@@ -50,8 +50,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	private ImageIcon icon;
 	private boolean refreshWhenInitialized = true;
 	private Dimension preferredSize;
-	private ConditionView conditionView = EntityTablePanel.Config.CONDITION_VIEW.get();
-	private ConditionView filterView = EntityTablePanel.Config.FILTER_VIEW.get();
+	private ConditionView conditionView;
+	private ConditionView filterView;
 	private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
 
 	private Class<? extends EntityPanel> panelClass;
@@ -231,8 +231,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		requireNonNull(model, "model");
 		EntityPanel entityPanel = createPanel(model);
 		if (entityPanel.containsTablePanel()) {
-			entityPanel.tablePanel().conditions().view().set(conditionView);
-			entityPanel.tablePanel().table().filters().view().set(filterView);
+			if (conditionView != null) {
+				entityPanel.tablePanel().conditions().view().set(conditionView);
+			}
+			if (filterView != null) {
+				entityPanel.tablePanel().table().filters().view().set(filterView);
+			}
 		}
 		if (!detailPanelBuilders.isEmpty()) {
 			for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {

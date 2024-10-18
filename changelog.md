@@ -34,6 +34,7 @@ Codion Change Log
 - EntityTablePanel now remembers and reuses the dependencies dialog size.
 - EntityTablePanel now remembers and reapplies column user preferences for dependency panels, related refactoring.
 - EntityApplicationPanel, cached entity panels displayed via displayEntityPanel() now remember their size next time they are opened.
+- EntityPanelBuilder bug fixed, no longer overrides the panel condition and filter view, unless explicitly set in the builder.
 
 ## 0.18.18
 ### is.codion.common.db

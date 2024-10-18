@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
@@ -79,5 +80,33 @@ public class EntityPanelBuilderTest {
 
 		assertEquals(departmentModel, departmentPanel.model());
 		assertEquals(departmentModel.detailModel(Employee.TYPE), employeePanel.model());
+	}
+
+	@Test
+	void filterAndConditionView() {
+		EntityPanel.Builder testPanelBuilder = EntityPanel.builder(Department.TYPE)
+						.panel(TestPanel.class);
+		EntityPanel testPanel = testPanelBuilder.build(CONNECTION_PROVIDER);
+		assertEquals(ConditionView.SIMPLE, testPanel.tablePanel().conditions().view().get());
+		assertEquals(ConditionView.ADVANCED, testPanel.tablePanel().table().filters().view().get());
+
+		testPanelBuilder = EntityPanel.builder(Department.TYPE)
+						.panel(TestPanel.class)
+						.conditionView(ConditionView.ADVANCED)
+						.filterView(ConditionView.SIMPLE);
+		testPanel = testPanelBuilder.build(CONNECTION_PROVIDER);
+		assertEquals(ConditionView.ADVANCED, testPanel.tablePanel().conditions().view().get());
+		assertEquals(ConditionView.SIMPLE, testPanel.tablePanel().table().filters().view().get());
+	}
+
+	public static final class TestPanel extends EntityPanel {
+
+		public TestPanel(SwingEntityModel entityModel) {
+			super(entityModel, new EntityTablePanel(entityModel.tableModel(), config -> config
+							.includeConditions(true)
+							.includeFilters(true)));
+			tablePanel().conditions().view().set(ConditionView.SIMPLE);
+			tablePanel().table().filters().view().set(ConditionView.ADVANCED);
+		}
 	}
 }
