@@ -108,7 +108,7 @@ public final class EntityTableCellRenderer {
 		private final ConditionModel<?> queryCondition;
 
 		private Color filteredConditionBackground;
-		private Color filteredConditionAlternateBackground;
+		private Color alternateFilteredConditionBackground;
 
 		private EntityUISettings(ConditionModel<?> queryCondition) {
 			this.queryCondition = queryCondition;
@@ -118,27 +118,27 @@ public final class EntityTableCellRenderer {
 		public void update(int leftPadding, int rightPadding) {
 			super.update(leftPadding, rightPadding);
 			filteredConditionBackground = darker(background(), DOUBLE_DARKENING_FACTOR);
-			filteredConditionAlternateBackground = darker(alternateBackground(), DOUBLE_DARKENING_FACTOR);
+			alternateFilteredConditionBackground = darker(alternateBackground(), DOUBLE_DARKENING_FACTOR);
 		}
 
 		@Override
 		public Color background(boolean filterEnabled, boolean alternateRow, Color cellBackgroundColor) {
 			boolean conditionEnabled = queryCondition != null && queryCondition.enabled().get();
 			if (conditionEnabled || filterEnabled) {
-				return filterConditionBackground(alternateRow, conditionEnabled && filterEnabled, cellBackgroundColor);
+				return filtererdConditionBackground(alternateRow, conditionEnabled && filterEnabled, cellBackgroundColor);
 			}
 
 			return cellBackgroundColor;
 		}
 
-		private Color filterConditionBackground(boolean alternateRow, boolean filterAndConditionEnabled, Color cellBackgroundColor) {
+		private Color filtererdConditionBackground(boolean alternateRow, boolean filterAndConditionEnabled, Color cellBackgroundColor) {
 			if (cellBackgroundColor != null) {
 				return darker(cellBackgroundColor, DARKENING_FACTOR);
 			}
 
 			return alternateRow ?
-							(filterAndConditionEnabled ? filteredConditionAlternateBackground : filterAlternateBackground()) :
-							(filterAndConditionEnabled ? filteredConditionBackground : filterBackground());
+							(filterAndConditionEnabled ? alternateFilteredConditionBackground : alternateFilteredBackground()) :
+							(filterAndConditionEnabled ? filteredConditionBackground : filteredBackground());
 		}
 	}
 }

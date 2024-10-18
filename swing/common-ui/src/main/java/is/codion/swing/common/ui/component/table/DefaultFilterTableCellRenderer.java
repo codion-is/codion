@@ -34,6 +34,9 @@ import java.awt.Component;
 import java.time.temporal.Temporal;
 import java.util.function.Function;
 
+import static is.codion.swing.common.ui.Colors.darker;
+import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.DOUBLE_DARKENING_FACTOR;
+import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.blendColors;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer<T> {
@@ -187,7 +190,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			uiSettings.update(leftPadding, rightPadding);
 		}
 
-		private void configure(FilterTable<R, C> filterTable, FilterTableCellRenderer cellRenderer, T value,
+		private void configure(FilterTable<R, C> filterTable, FilterTableCellRenderer<?> cellRenderer, T value,
 													 boolean isSelected, boolean hasFocus, int rowIndex, int columnIndex) {
 			requireNonNull(cellRenderer);
 			requireNonNull(filterTable);
@@ -212,29 +215,74 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value) {
-			return foregroundColor == null ? uiSettings.foreground() : foregroundColor.color(filterTable, row, identifier, value);
+			Color foreground = foregroundColor.color(filterTable, row, identifier, value);
+
+			return foreground == null ? uiSettings.foreground() : foreground;
 		}
 
 		private Color backgroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
-			Color cellBackgroundColor = null;
-			if (backgroundColor != null) {
-				cellBackgroundColor = backgroundColor.color(filterTable, row, identifier, value);
+			if (alternateRowColoring) {
+				return backgroundAlternating(filterTable, row, identifier, value, selected, alternateRow);
 			}
-			cellBackgroundColor = backgroundColor(cellBackgroundColor, alternateRow, selected);
+
+			return backgroundNonAlternating(filterTable, row, identifier, value, selected, alternateRow);
+		}
+
+		private Color backgroundAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
+			Color cellBackgroundColor = backgroundColor.color(filterTable, row, identifier, value);
+			cellBackgroundColor = backgroundAlternating(cellBackgroundColor, alternateRow, selected);
 			if (filterIndicator) {
 				cellBackgroundColor = uiSettings.background(filterEnabled(filterTable, identifier), alternateRow, cellBackgroundColor);
 			}
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
 			}
-			if (alternateRowColoring) {
-				return alternateRow ? uiSettings.alternateBackground() : uiSettings.background();
+
+			return alternateRow ? uiSettings.alternateBackground() : uiSettings.background();
+		}
+
+		private Color backgroundNonAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
+			Color cellBackgroundColor = backgroundColor.color(filterTable, row, identifier, value);
+			cellBackgroundColor = backgroundNonAlternating(cellBackgroundColor, selected);
+			if (filterIndicator) {
+				cellBackgroundColor = uiSettings.background(filterEnabled(filterTable, identifier), false, cellBackgroundColor);
+			}
+			if (cellBackgroundColor != null) {
+				return cellBackgroundColor;
 			}
 			if (uiSettings.alternateRowColor() == null) {
 				return uiSettings.background();
 			}
 			// If alternate row coloring is enabled outside of the framework, respect it
 			return alternateRow ? uiSettings.alternateRowColor() : uiSettings.background();
+		}
+
+		private Color backgroundAlternating(Color cellBackgroundColor, boolean alternateRow, boolean selected) {
+			if (cellBackgroundColor != null && alternateRow) {
+				cellBackgroundColor = darker(cellBackgroundColor, DOUBLE_DARKENING_FACTOR);
+			}
+			if (selected) {
+				Color selectionBackground = alternateRow ? uiSettings.alternateSelectionBackground() : uiSettings.selectionBackground();
+				if (cellBackgroundColor == null) {
+					return selectionBackground;
+				}
+
+				return blendColors(cellBackgroundColor, selectionBackground);
+			}
+
+			return cellBackgroundColor;
+		}
+
+		private Color backgroundNonAlternating(Color cellBackgroundColor, boolean selected) {
+			if (selected) {
+				if (cellBackgroundColor == null) {
+					return uiSettings.selectionBackground();
+				}
+
+				return blendColors(cellBackgroundColor, uiSettings.selectionBackground());
+			}
+
+			return cellBackgroundColor;
 		}
 
 		private Border border(FilterTable<?, ?> filterTable, boolean hasFocus, int rowIndex, int columnIndex) {
@@ -260,33 +308,19 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private static boolean alternateRow(int rowIndex) {
 			return rowIndex % 2 != 0;
 		}
-
-		private Color backgroundColor(Color cellBackgroundColor, boolean alternateRow, boolean selected) {
-			if (selected) {
-				if (cellBackgroundColor == null) {
-					return selectionBackgroundColor(alternateRow);
-				}
-
-				return DefaultUISettings.blendColors(cellBackgroundColor, selectionBackgroundColor(alternateRow));
-			}
-
-			return cellBackgroundColor;
-		}
-
-		private Color selectionBackgroundColor(boolean alternateRow) {
-			return alternateRow ? uiSettings.selectedAlternateBackground() : uiSettings.selectedBackground();
-		}
 	}
 
 	static final class SettingsBuilder<R, C, T> {
+
+		private static final ColorProvider<?, ?, ?> NULL_COLOR_PROVIDER = (table, row, identifier, value) -> null;
 
 		private UISettings uiSettings = new DefaultUISettings();
 		private int leftPadding = TABLE_CELL_LEFT_PADDING.get();
 		private int rightPadding = TABLE_CELL_RIGHT_PADDING.get();
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.get();
 		private boolean filterIndicator = true;
-		private ColorProvider<R, C, T> backgroundColor;
-		private ColorProvider<R, C, T> foregroundColor;
+		private ColorProvider<R, C, T> backgroundColor = (ColorProvider<R, C, T>) NULL_COLOR_PROVIDER;
+		private ColorProvider<R, C, T> foregroundColor = (ColorProvider<R, C, T>) NULL_COLOR_PROVIDER;
 		private boolean toolTipData = false;
 		private Function<T, String> string = new DefaultString<>();
 		private int horizontalAlignment;

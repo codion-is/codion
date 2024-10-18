@@ -11,6 +11,7 @@ Codion Change Log
 - DefaultFilterTableCellRenderer.DefaultBuilder bug fixed, useBooleanRenderer now initialized before settings, in order for a correct horizontal alignment for boolean columns.
 - FilterTableCellRenderer.Factory.create() T type parameter removed.
 - FilterTableColumnModel.identifiers() added.
+- DefaultFilterTableCellRenderer bug fixed, cell specific background color now included in alternate row coloring, some refactoring and renaming.
 ### is.codion.framework.db
 - DefaultLocalEntityConnection.delete() bug fixed, database exception now with the correct Operation.
 ### is.codion.swing.framework.model

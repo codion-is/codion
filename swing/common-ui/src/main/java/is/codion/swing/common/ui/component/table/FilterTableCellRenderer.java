@@ -251,6 +251,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 
 		/**
 		 * @param identifier the column identifier
+		 * @param tableModel the table model
 		 * @return a {@link FilterTableCellRenderer} instance for the given column
 		 */
 		FilterTableCellRenderer<?> create(C identifier, FilterTableModel<R, C> tableModel);
@@ -262,34 +263,42 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	interface UISettings {
 
 		/**
-		 * The table foreground color as defined by the {@code Table.foreground} system property
+		 * The table foreground color associated with the {@code Table.foreground} UI key
 		 * @return the foreground color
+		 * @see UIManager#getColor(Object)
+		 * @see UIManager#put(Object, Object)
 		 */
 		Color foreground();
 
 		/**
-		 * The table background color as defined by the {@code Table.background} system property
+		 * The table background color associated with the {@code Table.background} UI key
 		 * @return the background color
+		 * @see UIManager#getColor(Object)
+		 * @see UIManager#put(Object, Object)
 		 */
 		Color background();
 
 		/**
-		 * The table alternate row color as defined by the {@code Table.alternateRowColor} system property
+		 * The table alternate row color associated with the {@code Table.alternateRowColor} UI key
 		 * @return the alternate row color, if any
+		 * @see UIManager#getColor(Object)
+		 * @see UIManager#put(Object, Object)
 		 */
 		Color alternateRowColor();
 
 		/**
-		 * The table selection background color as defined by the {@code Table.selectionBackground} system property
+		 * The table selection background color associated with the {@code Table.selectionBackground} UI key
 		 * @return the selection background color
+		 * @see UIManager#getColor(Object)
+		 * @see UIManager#put(Object, Object)
 		 */
-		Color selectedBackground();
+		Color selectionBackground();
 
 		/**
 		 * @return the background color to use for columns with a filter enabled
 		 * @see #filterIndicator()
 		 */
-		Color filterBackground();
+		Color filteredBackground();
 
 		/**
 		 * @return the alternate background color
@@ -299,7 +308,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		/**
 		 * @return the alternate background color to use for columns with a filter enabled
 		 */
-		Color filterAlternateBackground();
+		Color alternateFilteredBackground();
 
 		/**
 		 * @return the default cell border to use
@@ -329,7 +338,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		/**
 		 * @return the alternate selection background color
 		 */
-		Color selectedAlternateBackground();
+		Color alternateSelectionBackground();
 
 		/**
 		 * Updates the colors and border according to the current Look and Feel.
@@ -352,11 +361,11 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		private Color foreground;
 		private Color background;
 		private Color alternateRowColor;
-		private Color filterBackground;
-		private Color filterAlternateBackground;
+		private Color filteredBackground;
+		private Color alternateFilteredBackground;
 		private Color alternateBackground;
-		private Color selectedBackground;
-		private Color selectedAlternateBackground;
+		private Color selectionBackground;
+		private Color alternateSelectionBackground;
 		private Border defaultCellBorder;
 		private Border focusedCellBorder;
 
@@ -374,10 +383,10 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 			if (alternateBackground == null) {
 				alternateBackground = darker(background, DOUBLE_DARKENING_FACTOR);
 			}
-			selectedBackground = UIManager.getColor("Table.selectionBackground");
-			filterBackground = darker(background, DARKENING_FACTOR);
-			filterAlternateBackground = darker(alternateBackground, DARKENING_FACTOR);
-			selectedAlternateBackground = darker(selectedBackground, DARKENING_FACTOR);
+			selectionBackground = UIManager.getColor("Table.selectionBackground");
+			filteredBackground = darker(background, DARKENING_FACTOR);
+			alternateFilteredBackground = darker(alternateBackground, DARKENING_FACTOR);
+			alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
 			defaultCellBorder = leftPadding > 0 || rightPadding > 0 ? createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
 			focusedCellBorder = createFocusedCellBorder();
 		}
@@ -398,13 +407,13 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		}
 
 		@Override
-		public final Color selectedBackground() {
-			return selectedBackground;
+		public final Color selectionBackground() {
+			return selectionBackground;
 		}
 
 		@Override
-		public final Color filterBackground() {
-			return filterBackground;
+		public final Color filteredBackground() {
+			return filteredBackground;
 		}
 
 		@Override
@@ -413,13 +422,13 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		}
 
 		@Override
-		public final Color filterAlternateBackground() {
-			return filterAlternateBackground;
+		public final Color alternateFilteredBackground() {
+			return alternateFilteredBackground;
 		}
 
 		@Override
-		public final Color selectedAlternateBackground() {
-			return selectedAlternateBackground;
+		public final Color alternateSelectionBackground() {
+			return alternateSelectionBackground;
 		}
 
 		@Override
@@ -447,7 +456,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 				return darker(cellBackgroundColor, DARKENING_FACTOR);
 			}
 
-			return alternateRow ? filterAlternateBackground : filterBackground;
+			return alternateRow ? alternateFilteredBackground : filteredBackground;
 		}
 
 		private CompoundBorder createFocusedCellBorder() {
