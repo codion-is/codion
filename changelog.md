@@ -37,6 +37,7 @@ Codion Change Log
 - EntityApplicationPanel, cached entity panels displayed via displayEntityPanel() now remember their size next time they are opened.
 - EntityPanelBuilder bug fixed, no longer overrides the panel condition and filter view, unless explicitly set in the builder.
 - EntityApplicationPanel.USE_CLIENT_PREFERENCES renamed USER_PREFERENCES_ENABLED and RESTORE_DEFAULT_PREFERENCES added.
+- EntityApplicationPanel.CALL_SYSTEM_EXIT added.
 
 ## 0.18.18
 ### is.codion.common.db

@@ -142,6 +142,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	public static final PropertyValue<Boolean> RESTORE_DEFAULT_PREFERENCES =
 					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".restoreDefaultPreferences", false);
 
+	/**
+	 * Specifies whether the application should call {@link System#exit(int)} when exiting.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see #exit()
+	 */
+	public static final PropertyValue<Boolean> CALL_SYSTEM_EXIT =
+					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".callSystemExit", false);
+
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
 	private static final String HELP = "help";
@@ -340,11 +351,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
-	 * Exits this application
+	 * Exits this application. Calls {@link System#exit(int)} in case {@link #CALL_SYSTEM_EXIT} is true.
 	 * @throws CancelException if the exit is cancelled
 	 * @see #exitObserver()
 	 * @see EntityEditPanel.Config#MODIFIED_WARNING
 	 * @see EntityApplicationPanel#CONFIRM_EXIT
+	 * @see EntityApplicationPanel#CALL_SYSTEM_EXIT
 	 */
 	public final void exit() {
 		if (cancelExit()) {
@@ -377,7 +389,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 			LOG.debug("Exception while disconnecting from database", e);
 		}
 		parentWindow().ifPresent(Window::dispose);
-		System.exit(0);
+		if (CALL_SYSTEM_EXIT.get()) {
+			System.exit(0);
+		}
 	}
 
 	/**
