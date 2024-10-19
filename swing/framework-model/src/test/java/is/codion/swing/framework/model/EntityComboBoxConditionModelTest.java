@@ -26,7 +26,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,8 +48,9 @@ public class EntityComboBoxConditionModelTest {
 
 	@Test
 	void searchEntitiesComboBoxModel() throws DatabaseException {
-		EntityComboBoxModel comboBoxModel = entityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
-		comboBoxModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
+		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER)
+						.includeNull(true)
+						.build();
 		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		SwingForeignKeyConditionModel condition =
 						SwingForeignKeyConditionModel.builder()
@@ -76,8 +75,9 @@ public class EntityComboBoxConditionModelTest {
 
 	@Test
 	void inSearchModel() throws DatabaseException {
-		EntityComboBoxModel comboBoxModel = entityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
-		comboBoxModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
+		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER)
+						.includeNull(true)
+						.build();
 		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		SwingForeignKeyConditionModel conditionModel =
 						SwingForeignKeyConditionModel.builder()

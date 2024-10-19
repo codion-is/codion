@@ -19,10 +19,10 @@
 package is.codion.swing.framework.model.component;
 
 import is.codion.common.Configuration;
+import is.codion.common.model.FilterModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -40,7 +40,7 @@ import java.util.function.Supplier;
 
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
- * @see #entityComboBoxModel(EntityType, EntityConnectionProvider)
+ * @see #builder(EntityType, EntityConnectionProvider)
  */
 public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
@@ -50,7 +50,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see #handleEditEvents()
+	 * @see Builder#handleEditEvents(boolean)
 	 * @see is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS
 	 */
 	PropertyValue<Boolean> HANDLE_EDIT_EVENTS =
@@ -67,29 +67,6 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	EntityType entityType();
 
 	/**
-	 * Enables the null item and sets the null item caption.
-	 * @param nullCaption the null item caption
-	 * @throws NullPointerException in case {@code nullCaption} is null
-	 * @see ComboBoxItems#nullItem()
-	 */
-	void setNullCaption(String nullCaption);
-
-	/**
-	 * Controls the attributes to include when selecting the entities to populate this model with.
-	 * Note that the primary key attribute values are always included.
-	 * An empty Collection indicates that all attributes should be selected.
-	 * @return the {@link ValueSet} controlling the attributes to select, an empty {@link ValueSet} indicating all available attributes
-	 */
-	ValueSet<Attribute<?>> attributes();
-
-	/**
-	 * @return the {@link State} controlling whether this combo box model should handle entity edit events, by adding inserted items,
-	 * updating any updated items and removing deleted ones
-	 * @see EntityEditEvents
-	 */
-	State handleEditEvents();
-
-	/**
 	 * @param primaryKey the primary key of the entity to fetch from this model
 	 * @return the entity with the given key if found in the model, an empty Optional otherwise
 	 */
@@ -103,19 +80,12 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	void select(Entity.Key primaryKey);
 
 	/**
-	 * Controls the condition supplier to use when querying data, set to null to fetch all underlying entities.
+	 * Controls the condition supplier to use when querying data, setting this to null reverts back
+	 * to the original condition, set via {@link Builder#condition(Supplier)} or the default one,
+	 * fetching all underlying entities, if none was specified.
 	 * @return a value controlling the condition supplier
 	 */
 	Value<Supplier<Condition>> condition();
-
-	/**
-	 * Controls the order by to use when selecting entities for this model.
-	 * Note that in order for this to have an effect, you must disable sorting
-	 * by setting the sort comparator to null via {@link VisibleItems#comparator()}
-	 * @return the {@link Value} controlling the {@link OrderBy}
-	 * @see VisibleItems#comparator()
-	 */
-	Value<OrderBy> orderBy();
 
 	/**
 	 * @return the foreign key filter
@@ -133,10 +103,70 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	/**
 	 * @param entityType the type of the entity this combo box model should represent
 	 * @param connectionProvider a EntityConnectionProvider instance
-	 * @return a new {@link EntityComboBoxModel} instance
+	 * @return a new {@link EntityComboBoxModel.Builder} instance
 	 */
-	static EntityComboBoxModel entityComboBoxModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return new DefaultEntityComboBoxModel(entityType, connectionProvider);
+	static Builder builder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		return new DefaultEntityComboBoxModel.DefaultBuilder(entityType, connectionProvider);
+	}
+
+	/**
+	 * Builds a {@link EntityComboBoxModel}.
+	 */
+	interface Builder {
+
+		/**
+		 * Specifies the {@link OrderBy} to use when selecting entities for this model.
+		 * Note that this is overridden by setting the {@link FilterModel.VisibleItems#comparator()}
+		 * in the combo box model.
+		 * @param orderBy the {@link OrderBy} to use when selecting
+		 * @return this builder instance
+		 */
+		Builder orderBy(OrderBy orderBy);
+
+		/**
+		 * @param condition the condition supplier to use when querying data
+		 * @return this builder instance
+		 */
+		Builder condition(Supplier<Condition> condition);
+
+		/**
+		 * Specifies the attributes to include when selecting the entities to populate this model with.
+		 * Note that the primary key attribute values are always included.
+		 * An empty Collection indicates that all attributes should be selected.
+		 * @param attributes the attributes to select, an empty Collection for all
+		 * @return this builder instance
+		 */
+		Builder attributes(Collection<Attribute<?>> attributes);
+
+		/**
+		 * @param includeNull if true then the null item is enabled using the default null item caption ({@link FilterComboBoxModel#NULL_CAPTION})
+		 * @return this builder instance
+		 * @see ComboBoxItems#nullItem()
+		 * @see FilterComboBoxModel.NullItem
+		 * @see FilterComboBoxModel#NULL_CAPTION
+		 */
+		Builder includeNull(boolean includeNull);
+
+		/**
+		 * Enables the null item and sets the null item caption.
+		 * @param nullCaption the null item caption
+		 * @return this builder instance
+		 * @see ComboBoxItems#nullItem()
+		 */
+		Builder nullCaption(String nullCaption);
+
+		/**
+		 * @param handleEditEvents controls whether this combo box model should handle entity edit events, by adding inserted items,
+		 * updating any updated items and removing deleted ones
+		 * @return this builder instance
+		 * @see EntityEditEvents
+		 */
+		Builder handleEditEvents(boolean handleEditEvents);
+
+		/**
+		 * @return a new {@link EntityComboBoxModel} instance
+		 */
+		EntityComboBoxModel build();
 	}
 
 	/**

@@ -24,12 +24,9 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AttributeConditionModelFactory;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Optional;
-
-import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 
 /**
  * A Swing {@link ConditionModelFactory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
@@ -64,9 +61,8 @@ public class SwingAttributeConditionModelFactory extends AttributeConditionModel
 	 * @return a combo box model to use for the equal value
 	 */
 	protected EntityComboBoxModel createEqualComboBoxModel(ForeignKey foreignKey) {
-		EntityComboBoxModel comboBoxModel = entityComboBoxModel(foreignKey.referencedType(), connectionProvider());
-		comboBoxModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
-
-		return comboBoxModel;
+		return EntityComboBoxModel.builder(foreignKey.referencedType(), connectionProvider())
+						.includeNull(true)
+						.build();
 	}
 }

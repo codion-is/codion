@@ -19,11 +19,9 @@
 package is.codion.swing.framework.model.component;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.model.FilterModel;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -49,47 +47,52 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
-	private final FilterComboBoxModel<Entity> comboBoxModel;
+	private final FilterComboBoxModel<Entity> comboBoxModel = filterComboBoxModel();
 
 	private final EntityType entityType;
 	private final EntityConnectionProvider connectionProvider;
-	private final ValueSet<Attribute<?>> attributes = ValueSet.<Attribute<?>>builder()
-					.validator(new AttributeValidator())
-					.build();
 
 	private final Entities entities;
 	private final DefaultForeignKeyFilter foreignKeyFilter;
-	private final Value<Supplier<Condition>> conditionSupplier;
-	private final State handleEditEvents = State.builder()
-					.consumer(new HandleEditEventsChanged())
-					.build();
-	private final Value<OrderBy> orderBy;
+	private final Value<Supplier<Condition>> condition;
+	private final OrderBy orderBy;
+	private final Collection<Attribute<?>> attributes;
 
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
 	private final Consumer<Collection<Entity>> insertListener = new InsertListener();
 	private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
-	DefaultEntityComboBoxModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this.comboBoxModel = FilterComboBoxModel.filterComboBoxModel();
-		this.entityType = requireNonNull(entityType, "entityType");
-		this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+	DefaultEntityComboBoxModel(DefaultBuilder builder) {
+		this.entityType = builder.entityType;
+		this.connectionProvider = builder.connectionProvider;
+		this.attributes = builder.attributes;
 		this.entities = connectionProvider.entities();
-		this.orderBy = Value.value(this.entities.definition(entityType).orderBy().orElse(null));
-		this.conditionSupplier = Value.builder()
-						.nonNull((Supplier<Condition>) new DefaultConditionSupplier())
+		this.condition = Value.builder()
+						.nonNull(builder.condition)
 						.build();
-		this.foreignKeyFilter = new DefaultForeignKeyFilter();
+		this.orderBy = builder.orderBy;
+		if (orderBy != null) {
+			// otherwise the sorting overrides the order by
+			comboBoxModel.items().visible().comparator().clear();
+		}
+		if (builder.nullCaption != null) {
+			setNullCaption(builder.nullCaption);
+		}
+		foreignKeyFilter = new DefaultForeignKeyFilter();
 		comboBoxModel.selection().translator().set(new SelectedItemTranslator());
 		comboBoxModel.refresher().supplier().set(this::performQuery);
 		comboBoxModel.items().validator().set(new ItemValidator());
 		comboBoxModel.items().visible().predicate().set(foreignKeyFilter.predicate);
-		handleEditEvents.set(EntityComboBoxModel.HANDLE_EDIT_EVENTS.get());
+		if (builder.handleEditEvents) {
+			addEditListeners();
+		}
 	}
 
 	@Override
@@ -97,63 +100,16 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		return getClass().getSimpleName() + " [entityType: " + entityType + "]";
 	}
 
-	/**
-	 * @return the connection provider used by this combo box model
-	 */
 	@Override
 	public EntityConnectionProvider connectionProvider() {
 		return connectionProvider;
 	}
 
-	/**
-	 * @return the type of the entity this combo box model is based on
-	 */
 	@Override
 	public EntityType entityType() {
 		return entityType;
 	}
 
-	/**
-	 * Enables the null item and sets the null item caption.
-	 * @param nullCaption the null item caption
-	 * @throws NullPointerException in case {@code nullCaption} is null
-	 * @see FilterComboBoxModel.ComboBoxItems#nullItem()
-	 */
-	@Override
-	public void setNullCaption(String nullCaption) {
-		requireNonNull(nullCaption, "nullCaption");
-		items().nullItem().include().set(true);
-		items().nullItem().set(ProxyBuilder.builder(Entity.class)
-						.delegate(entities.entity(entityType))
-						.method("toString", parameters -> nullCaption)
-						.build());
-	}
-
-	/**
-	 * Controls the attributes to include when selecting the entities to populate this model with.
-	 * Note that the primary key attribute values are always included.
-	 * An empty Collection indicates that all attributes should be selected.
-	 * @return the {@link ValueSet} controlling the attributes to select, an empty {@link ValueSet} indicating all available attributes
-	 */
-	@Override
-	public ValueSet<Attribute<?>> attributes() {
-		return attributes;
-	}
-
-	/**
-	 * @return the {@link State} controlling whether this combo box model should handle entity edit events, by adding inserted items,
-	 * updating any updated items and removing deleted ones
-	 * @see EntityEditEvents
-	 */
-	@Override
-	public State handleEditEvents() {
-		return handleEditEvents;
-	}
-
-	/**
-	 * @param primaryKey the primary key of the entity to fetch from this model
-	 * @return the entity with the given key if found in the model, an empty Optional otherwise
-	 */
 	@Override
 	public Optional<Entity> find(Entity.Key primaryKey) {
 		requireNonNull(primaryKey);
@@ -163,11 +119,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.findFirst();
 	}
 
-	/**
-	 * Selects the entity with the given primary key, whether filtered or visible.
-	 * If the entity is not available in the model this method returns silently without changing the selection.
-	 * @param primaryKey the primary key of the entity to select
-	 */
 	@Override
 	public void select(Entity.Key primaryKey) {
 		requireNonNull(primaryKey);
@@ -186,35 +137,14 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	 */
 	@Override
 	public Value<Supplier<Condition>> condition() {
-		return conditionSupplier;
+		return condition;
 	}
 
-	/**
-	 * Controls the order by to use when selecting entities for this model.
-	 * Note that in order for this to have an effect, you must disable sorting
-	 * by setting the sort comparator to null via {@link FilterModel.VisibleItems#comparator()}
-	 * @return the {@link Value} controlling the {@link OrderBy}
-	 * @see FilterModel.VisibleItems#comparator()
-	 */
-	@Override
-	public Value<OrderBy> orderBy() {
-		return orderBy;
-	}
-
-	/**
-	 * @return the foreign key filters
-	 */
 	@Override
 	public ForeignKeyFilter foreignKeyFilter() {
 		return foreignKeyFilter;
 	}
 
-	/**
-	 * Creates a {@link Value} linked to the selected entity via the value of the given attribute.
-	 * @param <T> the attribute type
-	 * @param attribute the attribute
-	 * @return a {@link Value} for selecting items by attribute value
-	 */
 	@Override
 	public <T> Value<T> createSelectorValue(Attribute<T> attribute) {
 		if (!entities.definition(entityType()).attributes().contains(attribute)) {
@@ -225,7 +155,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public FilterComboBoxModel.ComboBoxSelection<Entity> selection() {
+	public ComboBoxSelection<Entity> selection() {
 		return comboBoxModel.selection();
 	}
 
@@ -235,17 +165,17 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public <V> Value<V> createSelectorValue(FilterComboBoxModel.ItemFinder<Entity, V> itemFinder) {
+	public <V> Value<V> createSelectorValue(ItemFinder<Entity, V> itemFinder) {
 		return comboBoxModel.createSelectorValue(itemFinder);
 	}
 
 	@Override
-	public FilterComboBoxModel.ComboBoxItems<Entity> items() {
+	public ComboBoxItems<Entity> items() {
 		return comboBoxModel.items();
 	}
 
 	@Override
-	public FilterModel.Refresher<Entity> refresher() {
+	public Refresher<Entity> refresher() {
 		return comboBoxModel.refresher();
 	}
 
@@ -284,20 +214,11 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		comboBoxModel.removeListDataListener(listener);
 	}
 
-	/**
-	 * Retrieves the entities to present in this EntityComboBoxModel, taking into account
-	 * the condition supplier ({@link #condition()}) as well as the
-	 * select attributes ({@link #attributes()}) and order by clause ({@link #orderBy()}.
-	 * @return the entities to present in this EntityComboBoxModel
-	 * @see #condition()
-	 * @see #attributes()
-	 * @see #orderBy()
-	 */
 	private Collection<Entity> performQuery() {
 		try {
-			return connectionProvider.connection().select(where(conditionSupplier.get().get())
-							.attributes(attributes.get())
-							.orderBy(orderBy.get())
+			return connectionProvider.connection().select(where(condition.get().get())
+							.attributes(attributes)
+							.orderBy(orderBy)
 							.build());
 		}
 		catch (DatabaseException e) {
@@ -311,16 +232,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.findFirst();
 	}
 
-	private final class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {
-
-		@Override
-		public void validate(Set<Attribute<?>> attributes) {
-			for (Attribute<?> attribute : requireNonNull(attributes)) {
-				if (!attribute.entityType().equals(entityType)) {
-					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType);
-				}
-			}
-		}
+	private void setNullCaption(String nullCaption) {
+		items().nullItem().include().set(true);
+		items().nullItem().set(ProxyBuilder.builder(Entity.class)
+						.delegate(entities.entity(entityType))
+						.method("toString", parameters -> nullCaption)
+						.build());
 	}
 
 	private final class ItemValidator implements Predicate<Entity> {
@@ -376,29 +293,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	private final class HandleEditEventsChanged implements Consumer<Boolean> {
-
-		@Override
-		public void accept(Boolean handleEditEvents) {
-			if (handleEditEvents) {
-				addEditListeners();
-			}
-			else {
-				removeEditListeners();
-			}
-		}
-
-		private void addEditListeners() {
-			EntityEditEvents.insertObserver(entityType).addWeakConsumer(insertListener);
-			EntityEditEvents.updateObserver(entityType).addWeakConsumer(updateListener);
-			EntityEditEvents.deleteObserver(entityType).addWeakConsumer(deleteListener);
-		}
-
-		private void removeEditListeners() {
-			EntityEditEvents.insertObserver(entityType).removeWeakConsumer(insertListener);
-			EntityEditEvents.updateObserver(entityType).removeWeakConsumer(updateListener);
-			EntityEditEvents.deleteObserver(entityType).removeWeakConsumer(deleteListener);
-		}
+	private void addEditListeners() {
+		EntityEditEvents.insertObserver(entityType).addWeakConsumer(insertListener);
+		EntityEditEvents.updateObserver(entityType).addWeakConsumer(updateListener);
+		EntityEditEvents.deleteObserver(entityType).addWeakConsumer(deleteListener);
 	}
 
 	/**
@@ -410,13 +308,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private final Predicate<Entity> predicate = new ForeignKeyFilterPredicate();
 		private final State strict = State.state(true);
 
-		/**
-		 * Filters the combo box model so that only items referencing the given keys via the given foreign key are visible.
-		 * Note that this uses the {@link FilterModel.VisibleItems#predicate()} and replaces any previously set prediate.
-		 * @param foreignKey the foreign key
-		 * @param keys the keys, an empty Collection to clear the filter
-		 * @see FilterModel.VisibleItems#predicate()
-		 */
 		public void set(ForeignKey foreignKey, Collection<Entity.Key> keys) {
 			requireNonNull(foreignKey);
 			requireNonNull(keys);
@@ -429,41 +320,16 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			comboBoxModel.items().visible().predicate().set(predicate);
 		}
 
-		/**
-		 * @param foreignKey the foreign key
-		 * @return the keys currently used to filter the items of this model by foreign key, an empty collection for none
-		 * @see #set(ForeignKey, Collection)
-		 */
 		public Collection<Entity.Key> get(ForeignKey foreignKey) {
 			requireNonNull(foreignKey);
 
 			return unmodifiableSet(foreignKeyFilterKeys.getOrDefault(foreignKey, emptySet()));
 		}
 
-		/**
-		 * Controls whether foreign key filtering should be strict or not.
-		 * When the filtering is strict only entities with the correct reference are included, that is,
-		 * entities with null values for the given foreign key are filtered.
-		 * Non-strict simply means that entities with null references are not filtered.
-		 * @return the {@link State} controlling whether foreign key filtering should be strict
-		 * @see #set(ForeignKey, Collection)
-		 */
 		public State strict() {
 			return strict;
 		}
 
-		/**
-		 * Use this method to retrieve the default foreign key filter visible predicate if you
-		 * want to add a custom {@link Predicate} to this model via {@link FilterModel.VisibleItems#predicate()}.
-		 * <pre>
-		 * {@code
-		 *   Predicate fkPredicate = model.foreignKeyFilter().predicate();
-		 *   model.items().visible().predicate().set(item -> fkPredicate.test(item) && ...);
-		 * }
-		 * </pre>
-		 * @return the {@link Predicate} based on the foreign key filter entities
-		 * @see #set(ForeignKey, Collection)
-		 */
 		public Predicate<Entity> predicate() {
 			return predicate;
 		}
@@ -526,15 +392,21 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	private final class DefaultConditionSupplier implements Supplier<Condition> {
+	private static final class DefaultConditionSupplier implements Supplier<Condition> {
+
+		private final Condition condition;
+
+		private DefaultConditionSupplier(EntityType entityType) {
+			this.condition = Condition.all(entityType);
+		}
 
 		@Override
 		public Condition get() {
-			return Condition.all(entityType);
+			return condition;
 		}
 	}
 
-	private static final class EntityFinder<T> implements FilterComboBoxModel.ItemFinder<Entity, T> {
+	private static final class EntityFinder<T> implements ItemFinder<Entity, T> {
 
 		private final Attribute<T> attribute;
 
@@ -550,6 +422,69 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public Predicate<Entity> predicate(T value) {
 			return entity -> Objects.equals(entity.get(attribute), value);
+		}
+	}
+
+	static class DefaultBuilder implements Builder {
+
+		private final EntityType entityType;
+		private final EntityConnectionProvider connectionProvider;
+
+		private OrderBy orderBy;
+		private Supplier<Condition> condition;
+		private Collection<Attribute<?>> attributes = emptyList();
+		private boolean handleEditEvents = EntityComboBoxModel.HANDLE_EDIT_EVENTS.get();
+		private String nullCaption;
+
+		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+			this.entityType = requireNonNull(entityType, "entityType");
+			this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+			this.condition = new DefaultConditionSupplier(entityType);
+		}
+
+		@Override
+		public Builder orderBy(OrderBy orderBy) {
+			this.orderBy = requireNonNull(orderBy);
+			return this;
+		}
+
+		@Override
+		public Builder condition(Supplier<Condition> condition) {
+			this.condition = requireNonNull(condition);
+			return this;
+		}
+
+		@Override
+		public Builder attributes(Collection<Attribute<?>> attributes) {
+			for (Attribute<?> attribute : requireNonNull(attributes)) {
+				if (!attribute.entityType().equals(entityType)) {
+					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType);
+				}
+			}
+			this.attributes = attributes;
+			return this;
+		}
+
+		@Override
+		public Builder includeNull(boolean includeNull) {
+			return nullCaption(includeNull ? FilterComboBoxModel.NULL_CAPTION.get() : null);
+		}
+
+		@Override
+		public Builder nullCaption(String nullCaption) {
+			this.nullCaption = nullCaption;
+			return this;
+		}
+
+		@Override
+		public Builder handleEditEvents(boolean handleEditEvents) {
+			this.handleEditEvents = handleEditEvents;
+			return this;
+		}
+
+		@Override
+		public EntityComboBoxModel build() {
+			return new DefaultEntityComboBoxModel(this);
 		}
 	}
 }

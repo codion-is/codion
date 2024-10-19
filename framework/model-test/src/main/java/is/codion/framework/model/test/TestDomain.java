@@ -209,7 +209,7 @@ public final class TestDomain extends DomainModel {
 
 		ConditionType CONDITION_1_TYPE = TYPE.conditionType("condition1Id");
 		ConditionType CONDITION_2_TYPE = TYPE.conditionType("condition2Id");
-		ConditionType CONDITION_3_TYPE = TYPE.conditionType("condition3Id");
+		ConditionType ENAME_CLARK = TYPE.conditionType("condition3Id");
 	}
 
 	EntityDefinition employee() {
@@ -263,7 +263,7 @@ public final class TestDomain extends DomainModel {
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
 						.condition(Employee.CONDITION_1_TYPE, (attributes, values) -> "1 = 2")
 						.condition(Employee.CONDITION_2_TYPE, (attributes, values) -> "1 = 1")
-						.condition(Employee.CONDITION_3_TYPE, (attributes, values) -> " ename = 'CLARK'")
+						.condition(Employee.ENAME_CLARK, (attributes, values) -> " ename = 'CLARK'")
 						.caption("Employee")
 						.build();
 	}

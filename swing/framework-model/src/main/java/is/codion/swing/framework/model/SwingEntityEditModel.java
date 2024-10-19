@@ -41,7 +41,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
-import static is.codion.swing.framework.model.component.EntityComboBoxModel.entityComboBoxModel;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -168,24 +167,24 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 * This method is called when creating a foreign key {@link EntityComboBoxModel} for the edit
 	 * fields used when editing a single record.
 	 * This default implementation returns a sorted {@link EntityComboBoxModel} with the default
-	 * nullValueCaption if the underlying attribute is nullable.
+	 * null item caption if the underlying attribute is nullable.
 	 * If the foreign key has select attributes defined, those are set in the combo box model.
 	 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
 	 * @return a {@link EntityComboBoxModel} for the given foreign key
 	 * @see FilterComboBoxModel#NULL_CAPTION
+	 * @see EntityComboBoxModel.Builder#nullCaption(String)
+	 * @see EntityComboBoxModel.Builder#includeNull(boolean)
 	 * @see AttributeDefinition#nullable()
-	 * @see EntityComboBoxModel#attributes()
+	 * @see EntityComboBoxModel.Builder#attributes(Collection)
 	 * @see ForeignKeyDefinition#attributes()
 	 */
 	public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeys().definition(foreignKey);
-		EntityComboBoxModel comboBoxModel = entityComboBoxModel(foreignKey.referencedType(), connectionProvider());
-		comboBoxModel.attributes().set(foreignKeyDefinition.attributes());
-		if (entity().nullable(foreignKey)) {
-			comboBoxModel.setNullCaption(FilterComboBoxModel.NULL_CAPTION.get());
-		}
 
-		return comboBoxModel;
+		return EntityComboBoxModel.builder(foreignKey.referencedType(), connectionProvider())
+						.attributes(foreignKeyDefinition.attributes())
+						.includeNull(entity().nullable(foreignKey))
+						.build();
 	}
 
 	/**
