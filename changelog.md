@@ -20,6 +20,7 @@ Codion Change Log
 - EntityComboBoxModel.ForeignKeyFilters added, related refactoring.
 - EntityComboBoxModel now an interface.
 - EntityComboBoxModel.ForeignKeyFilters renamed ForeignKeyFilter.
+- EntityComboBoxModel.ForeignKeyComboBoxModelFactory and ForeignKeyComboBoxModelLinker removed, ForeignKeyFilter.link() added.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.Config.cellRenderer() and cellEditor() added.
 - EntityComboBox.model() added for consistency.
@@ -38,6 +39,7 @@ Codion Change Log
 - EntityPanelBuilder bug fixed, no longer overrides the panel condition and filter view, unless explicitly set in the builder.
 - EntityApplicationPanel.USE_CLIENT_PREFERENCES renamed USER_PREFERENCES_ENABLED and RESTORE_DEFAULT_PREFERENCES added.
 - EntityApplicationPanel.CALL_SYSTEM_EXIT added.
+- EntityComboBox.foreignKeyComboBox() and ForeignKeyComboBoxFactory removed.
 
 ## 0.18.18
 ### is.codion.common.db

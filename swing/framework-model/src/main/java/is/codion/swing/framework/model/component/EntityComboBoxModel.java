@@ -123,58 +123,6 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	ForeignKeyFilter foreignKeyFilter();
 
 	/**
-	 * @param foreignKey the foreign key
-	 * @return a new {@link ForeignKeyComboBoxModelFactory}
-	 */
-	ForeignKeyComboBoxModelFactory foreignKeyComboBoxModel(ForeignKey foreignKey);
-
-	/**
-	 * @param foreignKey the foreign key
-	 * @return a new {@link ForeignKeyComboBoxModelLinker}
-	 */
-	ForeignKeyComboBoxModelLinker foreignKeyComboBoxModelLinker(ForeignKey foreignKey);
-
-	/**
-	 * Provides a combo box for filtering this combo box instance, either by filter predicate or query condition.
-	 */
-	interface ForeignKeyComboBoxModelFactory {
-
-		/**
-		 * Returns a combo box model for selecting a foreign key value for filtering this model.
-		 * @return a combo box model for selecting a filtering value for this combo box model
-		 * @see #foreignKeyComboBoxModelLinker(ForeignKey)
-		 */
-		EntityComboBoxModel filter();
-
-		/**
-		 * Returns a combo box model for selecting a foreign key value for using as a query condition in this model.
-		 * Note that each time the selection changes in the resulting model this model is refreshed.
-		 * @return a combo box model for selecting a condition query value for this combo box model
-		 * @see #foreignKeyComboBoxModelLinker(ForeignKey)
-		 */
-		EntityComboBoxModel condition();
-	}
-
-	/**
-	 * Links a given combo box model representing master entities to this combo box model
-	 * so that selection in the master model filters this model, either filter predicate or query condition
-	 */
-	interface ForeignKeyComboBoxModelLinker {
-
-		/**
-		 * Links the given foreign key combo box model via filter predicate
-		 * @param foreignKeyModel the combo box model to link
-		 */
-		void filter(EntityComboBoxModel foreignKeyModel);
-
-		/**
-		 * Links the given foreign key combo box model via query condition
-		 * @param foreignKeyModel the combo box model to link
-		 */
-		void condition(EntityComboBoxModel foreignKeyModel);
-	}
-
-	/**
 	 * Creates a {@link Value} linked to the selected entity via the value of the given attribute.
 	 * @param <T> the attribute type
 	 * @param attribute the attribute
@@ -235,5 +183,14 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @see #set(ForeignKey, Collection)
 		 */
 		Predicate<Entity> predicate();
+
+		/**
+		 * Links the given combo box model representing foreign key entities to this combo box model
+		 * so that selection in the foreign key model filters this model.
+		 * Note that the foreign key model is refreshed each time this combo box model is refreshed.
+		 * @param foreignKey the foreign key
+		 * @param foreignKeyModel the combo box model containing the foreign key values
+		 */
+		void link(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel);
 	}
 }

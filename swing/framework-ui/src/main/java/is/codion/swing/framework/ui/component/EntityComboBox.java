@@ -21,12 +21,10 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
-import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.combobox.DefaultComboBoxBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
@@ -149,14 +147,6 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	/**
-	 * @param foreignKey the foreign key
-	 * @return a new {@link ForeignKeyComboBoxFactory}
-	 */
-	public ForeignKeyComboBoxFactory foreignKeyComboBox(ForeignKey foreignKey) {
-		return new DefaultForeignKeyComboBoxFactory(foreignKey);
-	}
-
-	/**
 	 * Creates a {@link TextFieldBuilder} returning a {@link NumberField} which value is bound to the selected value in this combo box
 	 * @param attribute the attribute
 	 * @param <B> the builder type
@@ -232,26 +222,6 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	/**
-	 * Provides builders for creating a combo box filtering this combo box instance, either by filter predicate or query condition.
-	 */
-	public interface ForeignKeyComboBoxFactory {
-
-		/**
-		 * Creates a {@link ComboBoxBuilder} returning a combo box using a filter predicate for filtering this combo box via a foreign key
-		 * @param <B> the builder type
-		 * @return a {@link ComboBoxBuilder} for a filter predicate based foreign key filter combo box
-		 */
-		<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> filter();
-
-		/**
-		 * Creates a {@link ComboBoxBuilder} returning a combo box for using a query condition to filter this combo box via a foreign key
-		 * @param <B> the builder type
-		 * @return a {@link ComboBoxBuilder} for a query condition based foreign key filter combo box
-		 */
-		<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> condition();
-	}
-
-	/**
 	 * Builds a {@link EntityComboBox} instance.
 	 * @see Builder#editPanel(Supplier)
 	 */
@@ -300,29 +270,6 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		}
 		else {
 			setCursor(Cursors.DEFAULT);
-		}
-	}
-
-	private final class DefaultForeignKeyComboBoxFactory implements ForeignKeyComboBoxFactory {
-
-		private final ForeignKey foreignKey;
-
-		private DefaultForeignKeyComboBoxFactory(ForeignKey foreignKey) {
-			this.foreignKey = foreignKey;
-		}
-
-		@Override
-		public <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> filter() {
-			return (B) builder(getModel().foreignKeyComboBoxModel(requireNonNull(foreignKey))
-							.filter())
-							.completionMode(Completion.Mode.MAXIMUM_MATCH);
-		}
-
-		@Override
-		public <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> condition() {
-			return (B) builder(getModel().foreignKeyComboBoxModel(requireNonNull(foreignKey))
-							.condition())
-							.completionMode(Completion.Mode.MAXIMUM_MATCH);
 		}
 	}
 

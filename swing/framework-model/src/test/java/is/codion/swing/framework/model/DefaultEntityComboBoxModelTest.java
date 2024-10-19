@@ -114,10 +114,12 @@ public final class DefaultEntityComboBoxModelTest {
 		Entities entities = connectionProvider.entities();
 		EntityComboBoxModel empBox = entityComboBoxModel(Employee.TYPE, connectionProvider);
 		empBox.selection().filterSelected().set(true);
-		EntityComboBoxModel mgrBox = empBox.foreignKeyComboBoxModel(Employee.MGR_FK).filter();
+		EntityComboBoxModel mgrBox = entityComboBoxModel(Employee.TYPE, connectionProvider);
+		empBox.foreignKeyFilter().link(Employee.MGR_FK, mgrBox);
 		mgrBox.selection().filterSelected().set(true);
 		mgrBox.condition().set(() -> Employee.JOB.in("MANAGER", "PRESIDENT"));
-		EntityComboBoxModel deptBox = mgrBox.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).filter();
+		EntityComboBoxModel deptBox = entityComboBoxModel(Department.TYPE, connectionProvider);
+		mgrBox.foreignKeyFilter().link(Employee.DEPARTMENT_FK, deptBox);
 		empBox.refresh();
 		empBox.foreignKeyFilter().strict().set(true);
 		assertEquals(0, empBox.items().visible().count());
@@ -159,28 +161,9 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
 		EntityComboBoxModel empBox = entityComboBoxModel(Employee.TYPE, connectionProvider);
 		empBox.setNullCaption("-");
-		EntityComboBoxModel deptBox = empBox.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).filter();
+		EntityComboBoxModel deptBox = entityComboBoxModel(Department.TYPE, connectionProvider);
+		empBox.foreignKeyFilter().link(Employee.DEPARTMENT_FK, deptBox);
 		empBox.refresh();//refreshes both
-		assertEquals(1, empBox.getSize());
-		Entity.Key accountingKey = connectionProvider.entities().primaryKey(Department.TYPE, 10);
-		deptBox.select(accountingKey);
-		assertEquals(8, empBox.getSize());
-		deptBox.setSelectedItem(null);
-		assertEquals(1, empBox.getSize());
-		Entity.Key salesKey = connectionProvider.entities().primaryKey(Department.TYPE, 30);
-		deptBox.select(salesKey);
-		assertEquals(5, empBox.getSize());
-		empBox.setSelectedItem(empBox.items().visible().get().get(1));
-		empBox.setSelectedItem(null);
-	}
-
-	@Test
-	void foreignKeyConditionComboBoxModel() {
-		EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
-		EntityComboBoxModel empBox = entityComboBoxModel(Employee.TYPE, connectionProvider);
-		empBox.setNullCaption("-");
-		EntityComboBoxModel deptBox = empBox.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).condition();
-		empBox.refresh();
 		assertEquals(1, empBox.getSize());
 		Entity.Key accountingKey = connectionProvider.entities().primaryKey(Department.TYPE, 10);
 		deptBox.select(accountingKey);
@@ -215,7 +198,8 @@ public final class DefaultEntityComboBoxModelTest {
 		}
 
 		Entity accounting = comboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
-		EntityComboBoxModel deptComboBoxModel = comboBoxModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).filter();
+		EntityComboBoxModel deptComboBoxModel = entityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
+		comboBoxModel.foreignKeyFilter().link(Employee.DEPARTMENT_FK, deptComboBoxModel);
 		deptComboBoxModel.setSelectedItem(accounting);
 		assertEquals(3, comboBoxModel.getSize());
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
