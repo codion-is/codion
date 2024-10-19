@@ -103,6 +103,7 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.awt.Frame.MAXIMIZED_BOTH;
+import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
@@ -120,15 +121,26 @@ import static javax.swing.UIManager.getLookAndFeel;
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel> extends JPanel {
 
 	/**
-	 * Specifies whether the client should save and apply user preferences
+	 * Specifies whether the client should apply and save user preferences
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
 	 * @see #savePreferences()
 	 */
-	public static final PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
-					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".useClientPreferences", true);
+	public static final PropertyValue<Boolean> USER_PREFERENCES_ENABLED =
+					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".userPreferencesEnabled", true);
+
+	/**
+	 * Specifies whether the application should restore default preferences, that is, not load any saved user preferences.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see EntityPanel#applyPreferences()
+	 */
+	public static final PropertyValue<Boolean> RESTORE_DEFAULT_PREFERENCES =
+					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".restoreDefaultPreferences", false);
 
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
@@ -202,6 +214,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private final Event<?> exitEvent = Event.event();
 	private final Event<EntityApplicationPanel<?>> onInitialized = Event.event();
 	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.get();
+	private final boolean userPreferencesEnabled = USER_PREFERENCES_ENABLED.get();
+	private final boolean restoreDefaultPreferences = RESTORE_DEFAULT_PREFERENCES.get();
 
 	private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
 
@@ -347,8 +361,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 			LOG.debug("Exception while exiting", e);
 		}
 		try {
-			savePreferences();
-			UserPreferences.flushUserPreferences();
+			if (userPreferencesEnabled) {
+				LOG.debug("Saving user preferences");
+				savePreferences();
+				UserPreferences.flushUserPreferences();
+			}
 		}
 		catch (Throwable e) {
 			LOG.error("Exception while saving preferences", e);
@@ -404,7 +421,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		if (!initialized) {
 			try {
 				createEntityPanels().forEach(this::addEntityPanel);
-				entityPanels.forEach(EntityPanel::applyPreferences);
+				applyUserPreferences(entityPanels);
 				supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
 				setLayout(new BorderLayout());
 				add(applicationLayout.layout(), BorderLayout.CENTER);
@@ -801,18 +818,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	/**
 	 * Called during the exit() method, override to save user preferences on program exit,
-	 * remember to call super.savePreferences() when overriding
-	 * @see #USE_CLIENT_PREFERENCES
+	 * remember to call super.savePreferences() when overriding.
+	 * Only called if {@link #USER_PREFERENCES_ENABLED} is set to true.
+	 * @see #USER_PREFERENCES_ENABLED
 	 */
 	protected void savePreferences() {
-		if (USE_CLIENT_PREFERENCES.get()) {
-			entityPanels().forEach(EntityPanel::savePreferences);
-			try {
-				createPreferences().save(getClass());
-			}
-			catch (Exception e) {
-				LOG.error("Error while saving application preferences", e);
-			}
+		entityPanels().forEach(EntityPanel::savePreferences);
+		try {
+			createPreferences().save(getClass());
+		}
+		catch (Exception e) {
+			LOG.error("Error while saving application preferences", e);
 		}
 	}
 
@@ -848,13 +864,25 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		}
 
 		EntityPanel entityPanel = panelBuilder.build(applicationModel.connectionProvider());
-		entityPanel.applyPreferences();
+		applyUserPreferences(singleton(entityPanel));
 		entityPanel.initialize();
 		if (CACHE_ENTITY_PANELS.get()) {
 			cachedEntityPanels.put(panelBuilder, entityPanel);
 		}
 
 		return entityPanel;
+	}
+
+	private void applyUserPreferences(Collection<EntityPanel> panels) {
+		if (!userPreferencesEnabled) {
+			LOG.debug("User preferences are disabled");
+			return;
+		}
+		if (restoreDefaultPreferences) {
+			LOG.debug("Restoring default user preferences for EntityPanels: {}", panels);
+			return;
+		}
+		panels.forEach(EntityPanel::applyPreferences);
 	}
 
 	private static JPanel createEmptyBorderBasePanel(EntityPanel entityPanel) {

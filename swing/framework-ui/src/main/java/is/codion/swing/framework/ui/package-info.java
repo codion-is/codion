@@ -23,7 +23,8 @@
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CACHE_ENTITY_PANELS}
- * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#USE_CLIENT_PREFERENCES}
+ * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#USER_PREFERENCES_ENABLED}
+ * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#RESTORE_DEFAULT_PREFERENCES}
  * <li>{@link is.codion.swing.framework.ui.EntityEditComponentPanel#MODIFIED_INDICATOR}
  * <li>{@link is.codion.swing.framework.ui.EntityEditComponentPanel#MODIFIED_INDICATOR_UNDERLINE_STYLE}
  * <li>{@link is.codion.swing.framework.ui.EntityEditComponentPanel#DEFAULT_TEXT_FIELD_COLUMNS}
