@@ -340,7 +340,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public EntityComboBoxModel.Builder builder(ForeignKey foreignKey) {
-			return new DefaultBuilder(foreignKey.referencedType(), connectionProvider, DefaultEntityComboBoxModel.this, requireNonNull(foreignKey));
+			return new DefaultBuilder(foreignKey.referencedType(), connectionProvider, DefaultEntityComboBoxModel.this, requireNonNull(foreignKey))
+							.includeNull(connectionProvider.entities().definition(foreignKey.entityType()).foreignKeys().definition(foreignKey).nullable());
 		}
 
 		@Override

@@ -108,8 +108,10 @@ public final class DefaultEntityComboBoxModelTest {
 		employeeComboBoxModel.foreignKeyFilter().strict().set(true);
 		assertEquals(0, employeeComboBoxModel.items().visible().count());
 		assertEquals(16, employeeComboBoxModel.items().filtered().count());
+		assertTrue(managerComboBoxModel.items().nullItem().include().get());
 		assertEquals(0, managerComboBoxModel.items().visible().count());
 		assertEquals(4, managerComboBoxModel.items().filtered().count());
+		assertFalse(departmentComboBoxModel.items().nullItem().include().get());
 		assertEquals(4, departmentComboBoxModel.items().visible().count());
 		assertEquals(0, departmentComboBoxModel.items().filtered().count());
 
@@ -147,6 +149,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.build();
 		EntityComboBoxModel departmentComboBoxModel = employeeComboBoxModel.foreignKeyFilter().builder(Employee.DEPARTMENT_FK).build();
 		employeeComboBoxModel.refresh();//refreshes both
+		assertFalse(departmentComboBoxModel.items().nullItem().include().get());
 		assertEquals(1, employeeComboBoxModel.getSize());
 		Entity.Key accountingKey = CONNECTION_PROVIDER.entities().primaryKey(Department.TYPE, 10);
 		departmentComboBoxModel.select(accountingKey);
