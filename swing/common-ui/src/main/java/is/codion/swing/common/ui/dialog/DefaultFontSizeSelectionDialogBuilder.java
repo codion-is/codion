@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.item.Item;
 import is.codion.common.resource.MessageBundle;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -90,7 +90,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 
 	private static final class FontSizeSelectionPanel extends JPanel {
 
-		private final ItemComboBoxModel<Integer> fontSizeComboBoxModel;
+		private final FilterComboBoxModel<Item<Integer>> fontSizeComboBoxModel;
 
 		private FontSizeSelectionPanel(int initialFontSize) {
 			super(Layouts.borderLayout());

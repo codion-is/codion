@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -55,7 +56,7 @@ public class SelectedValuesTest {
 	void selectedItemValue() {
 		List<Item<String>> items = asList(item(null), item("one"),
 						item("two"), item("three"), item("four"));
-		ItemComboBoxModel<String> boxModel = ItemComboBoxModel.itemComboBoxModel(items);
+		FilterComboBoxModel<Item<String>> boxModel = ItemComboBoxModel.itemComboBoxModel(items);
 		boxModel.setSelectedItem("two");
 		ComponentValue<String, JComboBox<Item<String>>> componentValue = Components.itemComboBox(boxModel)
 						.buildValue();

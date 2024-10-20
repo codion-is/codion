@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -50,7 +51,7 @@ public class BooleanValuesTest {
 
 	@Test
 	void booleanComboBox() {
-		ItemComboBoxModel<Boolean> model = ItemComboBoxModel.booleanItemComboBoxModel();
+		FilterComboBoxModel<Item<Boolean>> model = ItemComboBoxModel.booleanItemComboBoxModel();
 		model.setSelectedItem(false);
 		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = Components.booleanComboBox(model)
 						.buildValue();

@@ -22,7 +22,7 @@ import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.common.value.ValueSet;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
@@ -274,7 +274,7 @@ public final class Components {
 	 * @param comboBoxModel the combo box model
 	 * @return a boolean based JComboBox builder
 	 */
-	public static ItemComboBoxBuilder<Boolean> booleanComboBox(ItemComboBoxModel<Boolean> comboBoxModel) {
+	public static ItemComboBoxBuilder<Boolean> booleanComboBox(FilterComboBoxModel<Item<Boolean>> comboBoxModel) {
 		return ItemComboBoxBuilder.builder(comboBoxModel);
 	}
 
@@ -283,7 +283,7 @@ public final class Components {
 	 * @param linkedValue the value to link to the component
 	 * @return a boolean based JComboBox builder
 	 */
-	public static ItemComboBoxBuilder<Boolean> booleanComboBox(ItemComboBoxModel<Boolean> comboBoxModel,
+	public static ItemComboBoxBuilder<Boolean> booleanComboBox(FilterComboBoxModel<Item<Boolean>> comboBoxModel,
 																														 Value<Boolean> linkedValue) {
 		return ItemComboBoxBuilder.builder(comboBoxModel, linkedValue);
 	}
@@ -293,7 +293,7 @@ public final class Components {
 	 * @param <T> the value type
 	 * @return a {@link Item} based JComboBox builder
 	 */
-	public static <T> ItemComboBoxBuilder<T> itemComboBox(ItemComboBoxModel<T> comboBoxModel) {
+	public static <T> ItemComboBoxBuilder<T> itemComboBox(FilterComboBoxModel<Item<T>> comboBoxModel) {
 		return ItemComboBoxBuilder.builder(comboBoxModel);
 	}
 
@@ -303,7 +303,7 @@ public final class Components {
 	 * @param <T> the value type
 	 * @return a {@link Item} based JComboBox builder
 	 */
-	public static <T> ItemComboBoxBuilder<T> itemComboBox(ItemComboBoxModel<T> comboBoxModel,
+	public static <T> ItemComboBoxBuilder<T> itemComboBox(FilterComboBoxModel<Item<T>> comboBoxModel,
 																												Value<T> linkedValue) {
 		return ItemComboBoxBuilder.builder(comboBoxModel, linkedValue);
 	}

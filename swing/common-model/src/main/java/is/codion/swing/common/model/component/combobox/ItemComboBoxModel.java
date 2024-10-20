@@ -24,7 +24,6 @@ import is.codion.common.item.Item;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 import static is.codion.common.item.Item.item;
@@ -33,49 +32,21 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A ComboBoxModel implementation based on the {@link Item} class.
- * @param <T> the type of value wrapped by this combo box models items
+ * A factory for {@link FilterComboBoxModel} implementations based on the {@link Item} class.
  * @see #itemComboBoxModel()
  * @see #sortedItemComboBoxModel()
  * @see #booleanItemComboBoxModel()
  */
-public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<T>> {
+public final class ItemComboBoxModel {
 
-	private ItemComboBoxModel(List<Item<T>> items) {
-		selection().translator().set(new SelectedItemTranslator());
-		items().set(items);
-	}
-
-	private ItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
-		selection().translator().set(new SelectedItemTranslator());
-		items().visible().comparator().set(comparator);
-		items().set(items);
-		if (items().contains(Item.item(null))) {
-			setSelectedItem(null);
-		}
-	}
-
-	/**
-	 * Returns the index of the Item representing the given value, -1 if this model does not contain such an Item.
-	 * @param value the value
-	 * @return the index of the Item representing the given value, -1 if not found
-	 */
-	public int indexOf(T value) {
-		for (int i = 0; i < getSize(); i++) {
-			if (Objects.equals(getElementAt(i).value(), value)) {
-				return i;
-			}
-		}
-
-		return -1;
-	}
+	private ItemComboBoxModel() {}
 
 	/**
 	 * @param <T> the Item value type
 	 * @return a new combo box model
 	 */
-	public static <T> ItemComboBoxModel<T> itemComboBoxModel() {
-		return new ItemComboBoxModel<>(null, emptyList());
+	public static <T> FilterComboBoxModel<Item<T>> itemComboBoxModel() {
+		return createItemComboBoxModel(null, emptyList());
 	}
 
 	/**
@@ -83,15 +54,15 @@ public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<
 	 * @param <T> the Item value type
 	 * @return a new combo box model
 	 */
-	public static <T> ItemComboBoxModel<T> itemComboBoxModel(List<Item<T>> items) {
-		return new ItemComboBoxModel<>(null, items);
+	public static <T> FilterComboBoxModel<Item<T>> itemComboBoxModel(List<Item<T>> items) {
+		return createItemComboBoxModel(null, items);
 	}
 
 	/**
 	 * @param <T> the Item value type
 	 * @return a new combo box model
 	 */
-	public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel() {
+	public static <T> FilterComboBoxModel<Item<T>> sortedItemComboBoxModel() {
 		return sortedItemComboBoxModel(emptyList());
 	}
 
@@ -100,8 +71,8 @@ public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<
 	 * @param <T> the Item value type
 	 * @return a new combo box model
 	 */
-	public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(List<Item<T>> items) {
-		return new ItemComboBoxModel<>(items);
+	public static <T> FilterComboBoxModel<Item<T>> sortedItemComboBoxModel(List<Item<T>> items) {
+		return createItemComboBoxModel(items);
 	}
 
 	/**
@@ -109,8 +80,8 @@ public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<
 	 * @param <T> the Item value type
 	 * @return a new combo box model
 	 */
-	public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(Comparator<Item<T>> comparator) {
-		return new ItemComboBoxModel<>(requireNonNull(comparator), emptyList());
+	public static <T> FilterComboBoxModel<Item<T>> sortedItemComboBoxModel(Comparator<Item<T>> comparator) {
+		return createItemComboBoxModel(requireNonNull(comparator), emptyList());
 	}
 
 	/**
@@ -119,18 +90,18 @@ public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<
 	 * @param <T> the Item value type
 	 * @return a new combo box model
 	 */
-	public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(List<Item<T>> items, Comparator<Item<T>> comparator) {
+	public static <T> FilterComboBoxModel<Item<T>> sortedItemComboBoxModel(List<Item<T>> items, Comparator<Item<T>> comparator) {
 		requireNonNull(items);
 		requireNonNull(comparator);
 
-		return new ItemComboBoxModel<>(comparator, items);
+		return createItemComboBoxModel(comparator, items);
 	}
 
 	/**
 	 * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
 	 * @return a Boolean based ItemComboBoxModel
 	 */
-	public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel() {
+	public static FilterComboBoxModel<Item<Boolean>> booleanItemComboBoxModel() {
 		return booleanItemComboBoxModel("-");
 	}
 
@@ -139,7 +110,7 @@ public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<
 	 * @param nullCaption the string representing a null value
 	 * @return a Boolean based ItemComboBoxModel
 	 */
-	public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel(String nullCaption) {
+	public static FilterComboBoxModel<Item<Boolean>> booleanItemComboBoxModel(String nullCaption) {
 		return booleanItemComboBoxModel(nullCaption, Messages.yes(), Messages.no());
 	}
 
@@ -150,11 +121,36 @@ public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<
 	 * @param falseCaption the string representing the boolean value 'false'
 	 * @return a Boolean based ItemComboBoxModel
 	 */
-	public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel(String nullCaption, String trueCaption, String falseCaption) {
-		return new ItemComboBoxModel<>(null, asList(item(null, nullCaption), item(true, trueCaption), item(false, falseCaption)));
+	public static FilterComboBoxModel<Item<Boolean>> booleanItemComboBoxModel(String nullCaption, String trueCaption, String falseCaption) {
+		return createItemComboBoxModel(null, asList(item(null, nullCaption), item(true, trueCaption), item(false, falseCaption)));
 	}
 
-	private final class SelectedItemTranslator implements Function<Object, Item<T>> {
+	private static <T> FilterComboBoxModel<Item<T>> createItemComboBoxModel(List<Item<T>> items) {
+		FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.filterComboBoxModel(items);
+		comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
+
+		return comboBoxModel;
+	}
+
+	private static <T> FilterComboBoxModel<Item<T>> createItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
+		FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.filterComboBoxModel();
+		comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
+		comboBoxModel.items().visible().comparator().set(comparator);
+		comboBoxModel.items().set(items);
+		if (comboBoxModel.items().contains(Item.item(null))) {
+			comboBoxModel.setSelectedItem(null);
+		}
+
+		return comboBoxModel;
+	}
+
+	private static final class SelectedItemTranslator<T> implements Function<Object, Item<T>> {
+
+		private final FilterComboBoxModel<Item<T>> comboBoxModel;
+
+		private SelectedItemTranslator(FilterComboBoxModel<Item<T>> comboBoxModel) {
+			this.comboBoxModel = comboBoxModel;
+		}
 
 		@Override
 		public Item<T> apply(Object item) {
@@ -166,21 +162,16 @@ public final class ItemComboBoxModel<T> extends DefaultFilterComboBoxModel<Item<
 		}
 
 		private Item<T> findItem(Item<T> item) {
-			int index = items().visible().indexOf(item);
+			int index = comboBoxModel.items().visible().indexOf(item);
 			if (index >= 0) {
-				return getElementAt(index);
+				return comboBoxModel.getElementAt(index);
 			}
 
 			return null;
 		}
 
 		private Item<T> findItem(T value) {
-			int index = indexOf(value);
-			if (index >= 0) {
-				return getElementAt(index);
-			}
-
-			return null;
+			return findItem(Item.item(value));
 		}
 	}
 }

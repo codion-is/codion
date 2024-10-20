@@ -22,7 +22,7 @@ import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.list.ListBuilder;
@@ -496,8 +496,8 @@ public final class ComponentsTest {
 										.transferFocusOnEnter(true)
 										.link(value)
 										.buildValue();
-		ItemComboBoxModel<Boolean> boxModel =
-						(ItemComboBoxModel<Boolean>) componentValue.component().getModel();
+		FilterComboBoxModel<Item<Boolean>> boxModel =
+						(FilterComboBoxModel<Item<Boolean>>) componentValue.component().getModel();
 		assertTrue(boxModel.selection().value().value());
 		boxModel.setSelectedItem(null);
 		assertNull(value.get());
@@ -519,8 +519,8 @@ public final class ComponentsTest {
 						.nullable(true)
 						.buildValue();
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
-		ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
-		assertEquals(0, model.indexOf(null));
+		FilterComboBoxModel<Item<Integer>> model = (FilterComboBoxModel<Item<Integer>>) comboBox.getModel();
+		assertEquals(0, model.items().visible().indexOf(Item.item(null)));
 		assertTrue(model.items().contains(Item.item(null)));
 
 		assertNull(value.get());

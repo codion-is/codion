@@ -27,6 +27,7 @@ import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.observer.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -586,7 +587,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private JComboBox<Item<Operator>> createOperatorComboBox(List<Operator> operators) {
-		ItemComboBoxModel<Operator> operatorComboBoxModel = ItemComboBoxModel.itemComboBoxModel(operators.stream()
+		FilterComboBoxModel<Item<Operator>> operatorComboBoxModel = ItemComboBoxModel.itemComboBoxModel(operators.stream()
 						.map(operator -> Item.item(operator, operatorCaptions.apply(operator)))
 						.collect(toList()));
 
@@ -602,7 +603,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private void selectNextOperator() {
-		ItemComboBoxModel<Operator> itemComboBoxModel = (ItemComboBoxModel<Operator>) operatorCombo.getModel();
+		FilterComboBoxModel<Item<Operator>> itemComboBoxModel = (FilterComboBoxModel<Item<Operator>>) operatorCombo.getModel();
 		List<Item<Operator>> visibleItems = itemComboBoxModel.items().visible().get();
 		int index = visibleItems.indexOf(itemComboBoxModel.getSelectedItem());
 		if (index < itemComboBoxModel.items().visible().count() - 1) {
@@ -618,7 +619,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private void selectPreviousOperator() {
-		ItemComboBoxModel<Operator> itemComboBoxModel = (ItemComboBoxModel<Operator>) operatorCombo.getModel();
+		FilterComboBoxModel<Item<Operator>> itemComboBoxModel = (FilterComboBoxModel<Item<Operator>>) operatorCombo.getModel();
 		List<Item<Operator>> visibleItems = itemComboBoxModel.items().visible().get();
 		int index = visibleItems.indexOf(itemComboBoxModel.getSelectedItem());
 		if (index > 0) {

@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.component.combobox;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -47,7 +46,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	private final List<Item<T>> items;
 	private final List<ItemListener> itemListeners = new ArrayList<>();
 
-	private ItemComboBoxModel<T> comboBoxModel;
+	private FilterComboBoxModel<Item<T>> comboBoxModel;
 	private Comparator<Item<T>> comparator;
 	private boolean sorted = true;
 	private boolean nullable;
@@ -65,7 +64,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 		preferredHeight(preferredTextFieldHeight());
 	}
 
-	DefaultItemComboBoxBuilder(ItemComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
+	DefaultItemComboBoxBuilder(FilterComboBoxModel<Item<T>> comboBoxModel, Value<T> linkedValue) {
 		super(linkedValue);
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		this.items = Collections.emptyList();
@@ -153,7 +152,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 
 	@Override
 	protected JComboBox<Item<T>> createComponent() {
-		ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
+		FilterComboBoxModel<Item<T>> itemComboBoxModel = initializeItemComboBoxModel();
 		JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
 		Completion.enable(comboBox, completionMode);
 		if (renderer != null) {
@@ -185,7 +184,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 		return new SelectedItemValue<>(component);
 	}
 
-	private ItemComboBoxModel<T> initializeItemComboBoxModel() {
+	private FilterComboBoxModel<Item<T>> initializeItemComboBoxModel() {
 		Item<T> nullItem = Item.item(null, FilterComboBoxModel.NULL_CAPTION.get());
 		if (comboBoxModel == null) {
 			List<Item<T>> modelItems = new ArrayList<>(items);

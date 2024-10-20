@@ -22,8 +22,8 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -221,7 +221,7 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		ItemComboBoxModel<Integer> integerItemComboBoxModel = model.createIntegerItemComboBoxModel();
+		FilterComboBoxModel<Item<Integer>> integerItemComboBoxModel = model.createIntegerItemComboBoxModel();
 		Value<Integer> integerItemSelectorValue = integerItemComboBoxModel.createSelectorValue(new IntegerItemFinder());
 		NumberField<Integer> integerItemSelectorField = integerField(integerItemSelectorValue)
 						.columns(2)
@@ -403,7 +403,7 @@ public final class ApplicationPanel extends JPanel {
 		}
 	}
 
-	private static Control createSelectRandomItemControl(ItemComboBoxModel<Integer> integerItemComboBoxModel) {
+	private static Control createSelectRandomItemControl(FilterComboBoxModel<Item<Integer>> integerItemComboBoxModel) {
 		Random random = new Random();
 		return Control.builder()
 						.command(() -> integerItemComboBoxModel.setSelectedItem(

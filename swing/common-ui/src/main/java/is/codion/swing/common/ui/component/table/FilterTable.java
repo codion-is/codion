@@ -31,7 +31,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.ui.Utilities;
@@ -461,7 +461,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * Displays a dialog for selecting the column auto-resize mode
 	 */
 	public void selectAutoResizeMode() {
-		ItemComboBoxModel<Integer> autoResizeComboBoxModel = createAutoResizeModeComboBoxModel();
+		FilterComboBoxModel<Item<Integer>> autoResizeComboBoxModel = createAutoResizeModeComboBoxModel();
 		Dialogs.okCancelDialog(borderLayoutPanel()
 										.centerComponent(itemComboBox(autoResizeComboBoxModel).build())
 										.border(Borders.emptyBorder())
@@ -843,8 +843,8 @@ public final class FilterTable<R, C> extends JTable {
 		header.addMouseListener(new MouseSortHandler());
 	}
 
-	private ItemComboBoxModel<Integer> createAutoResizeModeComboBoxModel() {
-		ItemComboBoxModel<Integer> autoResizeComboBoxModel = itemComboBoxModel(AUTO_RESIZE_MODES);
+	private FilterComboBoxModel<Item<Integer>> createAutoResizeModeComboBoxModel() {
+		FilterComboBoxModel<Item<Integer>> autoResizeComboBoxModel = itemComboBoxModel(AUTO_RESIZE_MODES);
 		autoResizeComboBoxModel.setSelectedItem(AUTO_RESIZE_MODES.get(getAutoResizeMode()));
 
 		return autoResizeComboBoxModel;

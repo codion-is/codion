@@ -41,13 +41,13 @@ public class ItemComboBoxModelTest {
 		Item<Integer> dFour = item(4, "DFour");
 
 		List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-		ItemComboBoxModel<Integer> model = ItemComboBoxModel.sortedItemComboBoxModel(items);
+		FilterComboBoxModel<Item<Integer>> model = ItemComboBoxModel.sortedItemComboBoxModel(items);
 
-		assertEquals(0, model.indexOf(null));
-		assertEquals(1, model.indexOf(1));
-		assertEquals(2, model.indexOf(2));
-		assertEquals(3, model.indexOf(3));
-		assertEquals(4, model.indexOf(4));
+		assertEquals(0, model.items().visible().indexOf(nullItem));
+		assertEquals(1, model.items().visible().indexOf(aOne));
+		assertEquals(2, model.items().visible().indexOf(bTwo));
+		assertEquals(3, model.items().visible().indexOf(cThree));
+		assertEquals(4, model.items().visible().indexOf(dFour));
 
 		model.setSelectedItem(1);
 		assertEquals(model.getSelectedItem(), aOne);
@@ -65,25 +65,25 @@ public class ItemComboBoxModelTest {
 
 		model.refresh();
 
-		assertEquals(0, model.indexOf(null));
-		assertEquals(1, model.indexOf(1));
-		assertEquals(2, model.indexOf(2));
-		assertEquals(3, model.indexOf(3));
-		assertEquals(4, model.indexOf(4));
+		assertEquals(0, model.items().visible().indexOf(nullItem));
+		assertEquals(1, model.items().visible().indexOf(aOne));
+		assertEquals(2, model.items().visible().indexOf(bTwo));
+		assertEquals(3, model.items().visible().indexOf(cThree));
+		assertEquals(4, model.items().visible().indexOf(dFour));
 
 		//test unsorted final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-		ItemComboBoxModel<Integer> unsortedModel = ItemComboBoxModel.itemComboBoxModel(items);
+		FilterComboBoxModel<Item<Integer>> unsortedModel = ItemComboBoxModel.itemComboBoxModel(items);
 
-		assertEquals(0, unsortedModel.indexOf(null));
-		assertEquals(1, unsortedModel.indexOf(3));
-		assertEquals(2, unsortedModel.indexOf(2));
-		assertEquals(3, unsortedModel.indexOf(1));
-		assertEquals(4, unsortedModel.indexOf(4));
+		assertEquals(0, unsortedModel.items().visible().indexOf(nullItem));
+		assertEquals(1, unsortedModel.items().visible().indexOf(cThree));
+		assertEquals(2, unsortedModel.items().visible().indexOf(bTwo));
+		assertEquals(3, unsortedModel.items().visible().indexOf(aOne));
+		assertEquals(4, unsortedModel.items().visible().indexOf(dFour));
 	}
 
 	@Test
 	void booleanComboBoxModel() {
-		ItemComboBoxModel<Boolean> model = ItemComboBoxModel.booleanItemComboBoxModel();
+		FilterComboBoxModel<Item<Boolean>> model = ItemComboBoxModel.booleanItemComboBoxModel();
 
 		model.setSelectedItem(false);
 		assertEquals(false, model.getSelectedItem().value());

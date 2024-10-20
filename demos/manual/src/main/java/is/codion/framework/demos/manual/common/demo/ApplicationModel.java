@@ -18,10 +18,11 @@
  */
 package is.codion.framework.demos.manual.common.demo;
 
+import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultBoundedRangeModel;
@@ -181,7 +182,7 @@ public final class ApplicationModel {
 		return new DefaultComboBoxModel<>(new String[] {"Hello", "Everybody", "How", "Are", "You"});
 	}
 
-	public ItemComboBoxModel<Integer> createIntegerItemComboBoxModel() {
+	public FilterComboBoxModel<Item<Integer>> createIntegerItemComboBoxModel() {
 		return itemComboBoxModel(asList(
 						item(1, "One"), item(2, "Two"), item(3, "Three"),
 						item(4, "Four"), item(5, "Five"), item(6, "Six"),
