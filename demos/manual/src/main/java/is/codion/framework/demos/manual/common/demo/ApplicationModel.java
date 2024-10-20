@@ -23,6 +23,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultBoundedRangeModel;
@@ -40,7 +41,6 @@ import java.util.List;
 import static is.codion.common.item.Item.item;
 import static is.codion.common.value.Value.value;
 import static is.codion.common.value.ValueList.valueList;
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 import static java.util.Arrays.asList;
 
@@ -183,11 +183,11 @@ public final class ApplicationModel {
 	}
 
 	public FilterComboBoxModel<Item<Integer>> createIntegerItemComboBoxModel() {
-		return itemComboBoxModel(asList(
-						item(1, "One"), item(2, "Two"), item(3, "Three"),
-						item(4, "Four"), item(5, "Five"), item(6, "Six"),
-						item(7, "Seven"), item(8, "Eight"), item(9, "Nine")
-		));
+		return ItemComboBoxModel.builder(asList(
+										item(1, "One"), item(2, "Two"), item(3, "Three"),
+										item(4, "Four"), item(5, "Five"), item(6, "Six"),
+										item(7, "Seven"), item(8, "Eight"), item(9, "Nine")))
+						.build();
 	}
 
 	public DefaultBoundedRangeModel createIntegerSliderModel() {

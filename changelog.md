@@ -9,6 +9,7 @@ Codion Change Log
 - DefaultFilterComboBoxModel.DefaultComboBoxItems.visiblePredicate bug fixed, now Notify.WHEN_SET.
 - DefaultFilterTableModel.VisiblePredicate.predicate bug fixed, now Notify.WHEN_SET.
 - ItemComboBoxModel no longer extends DefaultFilterComboBoxModel, now a factory class.
+- ItemComboBoxModel.Builder along with builder() added, replacing factory methods.
 ### is.codion.swing.common.ui
 - DefaultFilterTableCellRenderer.DefaultBuilder bug fixed, useBooleanRenderer now initialized before settings, in order for a correct horizontal alignment for boolean columns.
 - FilterTableCellRenderer.Factory.create() T type parameter removed.

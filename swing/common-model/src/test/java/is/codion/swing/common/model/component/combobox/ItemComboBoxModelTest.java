@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItems;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -33,7 +34,6 @@ public class ItemComboBoxModelTest {
 
 	@Test
 	void test() {
-		ItemComboBoxModel.itemComboBoxModel();
 		Item<Integer> nullItem = item(null, "");
 		Item<Integer> aOne = item(1, "AOne");
 		Item<Integer> bTwo = item(2, "BTwo");
@@ -41,7 +41,9 @@ public class ItemComboBoxModelTest {
 		Item<Integer> dFour = item(4, "DFour");
 
 		List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-		FilterComboBoxModel<Item<Integer>> model = ItemComboBoxModel.sortedItemComboBoxModel(items);
+		FilterComboBoxModel<Item<Integer>> model = ItemComboBoxModel.builder(items)
+						.sorted(true)
+						.build();
 
 		assertEquals(0, model.items().visible().indexOf(nullItem));
 		assertEquals(1, model.items().visible().indexOf(aOne));
@@ -72,7 +74,7 @@ public class ItemComboBoxModelTest {
 		assertEquals(4, model.items().visible().indexOf(dFour));
 
 		//test unsorted final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-		FilterComboBoxModel<Item<Integer>> unsortedModel = ItemComboBoxModel.itemComboBoxModel(items);
+		FilterComboBoxModel<Item<Integer>> unsortedModel = ItemComboBoxModel.builder(items).build();
 
 		assertEquals(0, unsortedModel.items().visible().indexOf(nullItem));
 		assertEquals(1, unsortedModel.items().visible().indexOf(cThree));
@@ -83,7 +85,7 @@ public class ItemComboBoxModelTest {
 
 	@Test
 	void booleanComboBoxModel() {
-		FilterComboBoxModel<Item<Boolean>> model = ItemComboBoxModel.booleanItemComboBoxModel();
+		FilterComboBoxModel<Item<Boolean>> model = ItemComboBoxModel.builder(booleanItems()).build();
 
 		model.setSelectedItem(false);
 		assertEquals(false, model.getSelectedItem().value());

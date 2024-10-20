@@ -32,6 +32,7 @@ import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.ui.Utilities;
@@ -92,7 +93,6 @@ import java.util.stream.Stream;
 import static is.codion.common.item.Item.item;
 import static is.codion.common.model.summary.TableSummaryModel.tableSummaryModel;
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.*;
@@ -844,7 +844,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private FilterComboBoxModel<Item<Integer>> createAutoResizeModeComboBoxModel() {
-		FilterComboBoxModel<Item<Integer>> autoResizeComboBoxModel = itemComboBoxModel(AUTO_RESIZE_MODES);
+		FilterComboBoxModel<Item<Integer>> autoResizeComboBoxModel = ItemComboBoxModel.builder(AUTO_RESIZE_MODES).build();
 		autoResizeComboBoxModel.setSelectedItem(AUTO_RESIZE_MODES.get(getAutoResizeMode()));
 
 		return autoResizeComboBoxModel;

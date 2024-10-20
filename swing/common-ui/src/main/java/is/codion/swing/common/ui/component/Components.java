@@ -23,6 +23,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
@@ -89,7 +90,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.List;
 
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItems;
 import static is.codion.swing.common.ui.layout.Layouts.*;
 import static java.util.Objects.requireNonNull;
 
@@ -259,7 +260,7 @@ public final class Components {
 	 * @return a boolean based JComboBox builder
 	 */
 	public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
-		return ItemComboBoxBuilder.builder(booleanItemComboBoxModel());
+		return ItemComboBoxBuilder.builder(ItemComboBoxModel.builder(booleanItems()).build());
 	}
 
 	/**
@@ -267,7 +268,7 @@ public final class Components {
 	 * @return a boolean based JComboBox builder
 	 */
 	public static ItemComboBoxBuilder<Boolean> booleanComboBox(Value<Boolean> linkedValue) {
-		return ItemComboBoxBuilder.builder(booleanItemComboBoxModel(), requireNonNull(linkedValue));
+		return ItemComboBoxBuilder.builder(ItemComboBoxModel.builder(booleanItems()).build(), requireNonNull(linkedValue));
 	}
 
 	/**

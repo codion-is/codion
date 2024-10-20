@@ -23,6 +23,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.list.ListBuilder;
@@ -81,7 +82,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItems;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -226,7 +227,7 @@ public final class ComponentsTest {
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
 										.link(value)
 										.buildValue();
-    assertEquals(now.truncatedTo(ChronoUnit.SECONDS), componentValue.get());
+		assertEquals(now.truncatedTo(ChronoUnit.SECONDS), componentValue.get());
 	}
 
 	@Test
@@ -491,7 +492,7 @@ public final class ComponentsTest {
 	void booleanComboBox() {
 		Value<Boolean> value = Value.value(true);
 		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
-						Components.booleanComboBox(booleanItemComboBoxModel())
+						Components.booleanComboBox(ItemComboBoxModel.builder(booleanItems()).build())
 										.maximumRowCount(5)
 										.transferFocusOnEnter(true)
 										.link(value)

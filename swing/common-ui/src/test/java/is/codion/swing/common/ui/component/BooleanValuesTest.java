@@ -33,6 +33,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JToggleButton;
 
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItems;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BooleanValuesTest {
@@ -51,7 +52,7 @@ public class BooleanValuesTest {
 
 	@Test
 	void booleanComboBox() {
-		FilterComboBoxModel<Item<Boolean>> model = ItemComboBoxModel.booleanItemComboBoxModel();
+		FilterComboBoxModel<Item<Boolean>> model = ItemComboBoxModel.builder(booleanItems()).build();
 		model.setSelectedItem(false);
 		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = Components.booleanComboBox(model)
 						.buildValue();

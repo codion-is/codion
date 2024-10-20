@@ -36,6 +36,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Cursors;
@@ -95,6 +96,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +107,6 @@ import java.util.function.Supplier;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
@@ -647,12 +648,13 @@ public final class EntitySearchField extends HintTextField {
 		private static JPanel createSearchColumnPanel(EntitySearchModel searchModel) {
 			CardLayout cardLayout = new CardLayout(5, 5);
 			PanelBuilder columnBasePanelBuilder = panel(cardLayout);
-			FilterComboBoxModel<Item<Column<String>>> columnComboBoxModel = itemComboBoxModel();
+			List<Item<Column<String>>> items = new ArrayList<>();
 			EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
 			for (Map.Entry<Column<String>, EntitySearchModel.Settings> entry : searchModel.settings().entrySet()) {
-				columnComboBoxModel.items().addItem(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
+				items.add(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
 				columnBasePanelBuilder.add(createSettingsPanel(entry.getValue()), entry.getKey().name());
 			}
+			FilterComboBoxModel<Item<Column<String>>> columnComboBoxModel = ItemComboBoxModel.builder(items).build();
 			JPanel columnBasePanel = columnBasePanelBuilder.build();
 			if (columnComboBoxModel.getSize() > 0) {
 				columnComboBoxModel.selection().item().addConsumer(selected ->

@@ -28,120 +28,140 @@ import java.util.function.Function;
 
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A factory for {@link FilterComboBoxModel} implementations based on the {@link Item} class.
- * @see #itemComboBoxModel()
- * @see #sortedItemComboBoxModel()
- * @see #booleanItemComboBoxModel()
+ * Provides a {@link Builder} for {@link FilterComboBoxModel} implementations based on the {@link Item} class.
+ * Note that item combo box models are unsorted by default, the provided items are assumed to be ordered.
+ * Use {@link Builder#sorted(boolean)} or {@link Builder#sorted(Comparator)} for a sorted combo box model.
+ * @see #builder(List)
+ * @see #booleanItems()
+ * @see #booleanItems(String)
+ * @see #booleanItems(String, String, String)
  */
 public final class ItemComboBoxModel {
 
 	private ItemComboBoxModel() {}
 
 	/**
-	 * @param <T> the Item value type
-	 * @return a new combo box model
+	 * Returns a {@link Builder}, by default unsorted.
+	 * @param items the items to display in the model
+	 * @param <T> the item type
+	 * @return a new {@link Builder}
 	 */
-	public static <T> FilterComboBoxModel<Item<T>> itemComboBoxModel() {
-		return createItemComboBoxModel(null, emptyList());
+	public static <T> Builder<T> builder(List<Item<T>> items) {
+		return new DefaultBuilder<>(items);
 	}
 
 	/**
-	 * @param items the items
-	 * @param <T> the Item value type
-	 * @return a new combo box model
+	 * @return items for null, true and false, using the default captions
+	 * @see FilterComboBoxModel#NULL_CAPTION
+	 * @see Messages#yes()
+	 * @see Messages#no()
 	 */
-	public static <T> FilterComboBoxModel<Item<T>> itemComboBoxModel(List<Item<T>> items) {
-		return createItemComboBoxModel(null, items);
+	public static List<Item<Boolean>> booleanItems() {
+		return booleanItems(FilterComboBoxModel.NULL_CAPTION.get());
 	}
 
 	/**
-	 * @param <T> the Item value type
-	 * @return a new combo box model
+	 * @param nullCaption the caption for the null value
+	 * @return items for null, true and false, using the given null caption and the default true/false captions
+	 * @see Messages#yes()
+	 * @see Messages#no()
 	 */
-	public static <T> FilterComboBoxModel<Item<T>> sortedItemComboBoxModel() {
-		return sortedItemComboBoxModel(emptyList());
+	public static List<Item<Boolean>> booleanItems(String nullCaption) {
+		return booleanItems(nullCaption, Messages.yes(), Messages.no());
 	}
 
 	/**
-	 * @param items the items
-	 * @param <T> the Item value type
-	 * @return a new combo box model
+	 * @param nullCaption the caption for null
+	 * @param trueCaption the caption for true
+	 * @param falseCaption the caption for false
+	 * @return items for null, true and false
 	 */
-	public static <T> FilterComboBoxModel<Item<T>> sortedItemComboBoxModel(List<Item<T>> items) {
-		return createItemComboBoxModel(items);
+	public static List<Item<Boolean>> booleanItems(String nullCaption, String trueCaption, String falseCaption) {
+		return asList(item(null, requireNonNull(nullCaption)), item(true, requireNonNull(trueCaption)), item(false, requireNonNull(falseCaption)));
 	}
 
 	/**
-	 * @param comparator the comparator to use when sorting
-	 * @param <T> the Item value type
-	 * @return a new combo box model
+	 * Builds an {@link Item} based {@link FilterComboBoxModel}
+	 * @param <T> the item type
 	 */
-	public static <T> FilterComboBoxModel<Item<T>> sortedItemComboBoxModel(Comparator<Item<T>> comparator) {
-		return createItemComboBoxModel(requireNonNull(comparator), emptyList());
+	public interface Builder<T> {
+
+		/**
+		 * Default false.
+		 * @param sorted true if the items should be sorted
+		 * @return this builder instance
+		 */
+		Builder<T> sorted(boolean sorted);
+
+		/**
+		 * @param comparator the comparator to sort by
+		 * @return this builder instance
+		 */
+		Builder<T> sorted(Comparator<Item<T>> comparator);
+
+		/**
+		 * @return a new {@link FilterComboBoxModel}
+		 */
+		FilterComboBoxModel<Item<T>> build();
 	}
 
-	/**
-	 * @param items the items
-	 * @param comparator the comparator to use when sorting
-	 * @param <T> the Item value type
-	 * @return a new combo box model
-	 */
-	public static <T> FilterComboBoxModel<Item<T>> sortedItemComboBoxModel(List<Item<T>> items, Comparator<Item<T>> comparator) {
-		requireNonNull(items);
-		requireNonNull(comparator);
+	private static final class DefaultBuilder<T> implements Builder<T> {
 
-		return createItemComboBoxModel(comparator, items);
-	}
+		private final List<Item<T>> items;
 
-	/**
-	 * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
-	 * @return a Boolean based ItemComboBoxModel
-	 */
-	public static FilterComboBoxModel<Item<Boolean>> booleanItemComboBoxModel() {
-		return booleanItemComboBoxModel("-");
-	}
+		private boolean sorted = false;
+		private Comparator<Item<T>> comparator;
 
-	/**
-	 * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
-	 * @param nullCaption the string representing a null value
-	 * @return a Boolean based ItemComboBoxModel
-	 */
-	public static FilterComboBoxModel<Item<Boolean>> booleanItemComboBoxModel(String nullCaption) {
-		return booleanItemComboBoxModel(nullCaption, Messages.yes(), Messages.no());
-	}
-
-	/**
-	 * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
-	 * @param nullCaption the string representing a null value
-	 * @param trueCaption the string representing the boolean value 'true'
-	 * @param falseCaption the string representing the boolean value 'false'
-	 * @return a Boolean based ItemComboBoxModel
-	 */
-	public static FilterComboBoxModel<Item<Boolean>> booleanItemComboBoxModel(String nullCaption, String trueCaption, String falseCaption) {
-		return createItemComboBoxModel(null, asList(item(null, nullCaption), item(true, trueCaption), item(false, falseCaption)));
-	}
-
-	private static <T> FilterComboBoxModel<Item<T>> createItemComboBoxModel(List<Item<T>> items) {
-		FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.filterComboBoxModel(items);
-		comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
-
-		return comboBoxModel;
-	}
-
-	private static <T> FilterComboBoxModel<Item<T>> createItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
-		FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.filterComboBoxModel();
-		comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
-		comboBoxModel.items().visible().comparator().set(comparator);
-		comboBoxModel.items().set(items);
-		if (comboBoxModel.items().contains(Item.item(null))) {
-			comboBoxModel.setSelectedItem(null);
+		@Override
+		public Builder<T> sorted(boolean sorted) {
+			this.sorted = sorted;
+			if (!sorted) {
+				this.comparator = null;
+			}
+			return this;
 		}
 
-		return comboBoxModel;
+		@Override
+		public Builder<T> sorted(Comparator<Item<T>> comparator) {
+			this.sorted = true;
+			this.comparator = requireNonNull(comparator);
+			return this;
+		}
+
+		private DefaultBuilder(List<Item<T>> items) {
+			this.items = requireNonNull(items);
+		}
+
+		@Override
+		public FilterComboBoxModel<Item<T>> build() {
+			if (sorted && comparator == null) {
+				return createItemComboBoxModel(items);
+			}
+
+			return createItemComboBoxModel(comparator, items);
+		}
+
+		private static <T> FilterComboBoxModel<Item<T>> createItemComboBoxModel(List<Item<T>> items) {
+			FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.filterComboBoxModel(items);
+			comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
+
+			return comboBoxModel;
+		}
+
+		private static <T> FilterComboBoxModel<Item<T>> createItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
+			FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.filterComboBoxModel();
+			comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
+			comboBoxModel.items().visible().comparator().set(comparator);
+			comboBoxModel.items().set(items);
+			if (comboBoxModel.items().contains(Item.item(null))) {
+				comboBoxModel.setSelectedItem(null);
+			}
+
+			return comboBoxModel;
+		}
 	}
 
 	private static final class SelectedItemTranslator<T> implements Function<Object, Item<T>> {

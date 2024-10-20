@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
@@ -69,7 +70,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItems;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -214,7 +215,7 @@ public final class EntityComponents {
 	public ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
 		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-		return Components.booleanComboBox(booleanItemComboBoxModel())
+		return Components.booleanComboBox(ItemComboBoxModel.builder(booleanItems()).build())
 						.toolTipText(attributeDefinition.description());
 	}
 
