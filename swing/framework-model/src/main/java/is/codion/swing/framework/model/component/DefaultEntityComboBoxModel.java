@@ -53,7 +53,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
-	private final FilterComboBoxModel<Entity> comboBoxModel = filterComboBoxModel();
+	private final FilterComboBoxModel<Entity> comboBoxModel;
 
 	private final EntityType entityType;
 	private final EntityConnectionProvider connectionProvider;
@@ -74,6 +74,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		this.connectionProvider = builder.connectionProvider;
 		this.attributes = builder.attributes;
 		this.entities = connectionProvider.entities();
+		this.comboBoxModel = filterComboBoxModel(this::performQuery);
 		this.condition = Value.builder()
 						.nonNull(builder.condition)
 						.build();
@@ -88,7 +89,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		foreignKeyFilter = new DefaultForeignKeyFilter();
 		comboBoxModel.selection().filterSelected().set(builder.filterSelected);
 		comboBoxModel.selection().translator().set(new SelectedItemTranslator());
-		comboBoxModel.refresher().supplier().set(this::performQuery);
 		comboBoxModel.items().validator().set(new ItemValidator());
 		comboBoxModel.items().visible().predicate().set(foreignKeyFilter.predicate);
 		if (builder.handleEditEvents) {

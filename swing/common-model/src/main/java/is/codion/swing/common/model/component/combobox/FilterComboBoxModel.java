@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -77,6 +78,24 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 */
 	static <T> FilterComboBoxModel<T> filterComboBoxModel() {
 		return new DefaultFilterComboBoxModel<>();
+	}
+
+	/**
+	 * @param <T> the item type
+	 * @param items the items to add to the model
+	 * @return a new {@link FilterComboBoxModel} instance
+	 */
+	static <T> FilterComboBoxModel<T> filterComboBoxModel(Collection<T> items) {
+		return new DefaultFilterComboBoxModel<>(requireNonNull(items));
+	}
+
+	/**
+	 * @param <T> the item type
+	 * @param supplier the item supplier
+	 * @return a new {@link FilterComboBoxModel} instance
+	 */
+	static <T> FilterComboBoxModel<T> filterComboBoxModel(Supplier<Collection<T>> supplier) {
+		return new DefaultFilterComboBoxModel<>(requireNonNull(supplier));
 	}
 
 	/**

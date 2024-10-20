@@ -54,7 +54,7 @@ final class KeyBindingModel {
 	private final FilterComboBoxModel<String> componentComboBoxModel;
 
 	KeyBindingModel(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-		this.componentComboBoxModel = createComponentComboBoxModel(lookAndFeelComboBoxModel);
+		this.componentComboBoxModel = filterComboBoxModel(new ComponentItems(lookAndFeelComboBoxModel));
 		this.componentComboBoxModel.refresh();
 		this.tableModel = FilterTableModel.builder(new KeyBindingColumns())
 						.supplier(new KeyBindingItems())
@@ -188,14 +188,6 @@ final class KeyBindingModel {
 				case WHEN_ANCESTOR_COLUMN -> keyBinding.whenAncestor;
 			};
 		}
-	}
-
-	private static FilterComboBoxModel<String> createComponentComboBoxModel(
-					FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-		FilterComboBoxModel<String> comboBoxModel = filterComboBoxModel();
-		comboBoxModel.refresher().supplier().set(new ComponentItems(lookAndFeelComboBoxModel));
-
-		return comboBoxModel;
 	}
 
 	private static final class ComponentItems implements Supplier<Collection<String>> {

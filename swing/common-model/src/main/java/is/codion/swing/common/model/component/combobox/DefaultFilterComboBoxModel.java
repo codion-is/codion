@@ -63,13 +63,17 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	 */
 	private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
 
-	/**
-	 * Instantiates a new FilterComboBoxModel.
-	 * The model items are sorted automatically with a default collation based comparator.
-	 * To prevent sorting set the comparator to null via {@link VisibleItems#comparator()} before adding items.
-	 */
 	protected DefaultFilterComboBoxModel() {
 		refresher = new DefaultRefresher(new DefaultItemsSupplier());
+	}
+
+	protected DefaultFilterComboBoxModel(Collection<T> items) {
+		refresher = new DefaultRefresher(new DefaultItemsSupplier());
+		modelItems.set(items);
+	}
+
+	protected DefaultFilterComboBoxModel(Supplier<Collection<T>> supplier) {
+		refresher = new DefaultRefresher(supplier);
 	}
 
 	@Override
@@ -190,11 +194,6 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final Value<Predicate<T>> validator = Value.builder()
 						.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)
 						.build();
-		private final Value<Predicate<T>> visiblePredicate = Value.builder()
-						.<Predicate<T>>nullable()
-						.notify(WHEN_SET)
-						.listener(this::filter)
-						.build();
 		private final DefaultVisibleItems visible = new DefaultVisibleItems();
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 		private final DefaultNullItem nullItem = new DefaultNullItem();
@@ -209,6 +208,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 							.forEach(validator::test));
 			nullItem.item.addValidator(this::validate);
 			visible.comparator.addListener(visible::sort);
+			visible.predicate.addListener(this::filter);
 		}
 
 		@Override
@@ -245,7 +245,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public boolean addItem(T item) {
 			requireNonNull(item);
 			validate(item);
-			if (visiblePredicate.isNull() || visiblePredicate.get().test(item)) {
+			if (visible.predicate.isNull() || visible.predicate.get().test(item)) {
 				if (!visible.items.contains(item)) {
 					visible.items.add(item);
 					visible.sort();
@@ -361,10 +361,10 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private void filter(boolean filterSelectedItem) {
 			visible.items.addAll(filtered.items);
 			filtered.items.clear();
-			if (visiblePredicate.isNotNull()) {
+			if (visible.predicate.isNotNull()) {
 				for (Iterator<T> iterator = visible.items.listIterator(); iterator.hasNext(); ) {
 					T item = iterator.next();
-					if (item != null && !visiblePredicate.get().test(item)) {
+					if (item != null && !visible.predicate.get().test(item)) {
 						filtered.items.add(item);
 						iterator.remove();
 					}
@@ -393,6 +393,10 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final class DefaultVisibleItems implements VisibleItems<T> {
 
+		private final Value<Predicate<T>> predicate = Value.builder()
+						.<Predicate<T>>nullable()
+						.notify(WHEN_SET)
+						.build();
 		private final Value<Comparator<T>> comparator = Value.builder()
 						.nullable((Comparator<T>) DEFAULT_COMPARATOR)
 						.build();
@@ -401,7 +405,7 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public Value<Predicate<T>> predicate() {
-			return modelItems.visiblePredicate;
+			return predicate;
 		}
 
 		@Override

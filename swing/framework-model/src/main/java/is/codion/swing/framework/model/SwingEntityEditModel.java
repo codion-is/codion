@@ -259,26 +259,9 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	}
 
 	private <T> FilterComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
-		FilterComboBoxModel<T> comboBoxModel = filterComboBoxModel();
-		comboBoxModel.refresher().supplier().set(column.type().isEnum() ?
-						new EnumAttributeItems<>(column) :
-						new ColumnItems<>(connectionProvider(), column));
-
-		return comboBoxModel;
-	}
-
-	private static final class EnumAttributeItems<T> implements Supplier<Collection<T>> {
-
-		private final Collection<T> items;
-
-		private EnumAttributeItems(Column<T> column) {
-			items = asList(column.type().valueClass().getEnumConstants());
-		}
-
-		@Override
-		public Collection<T> get() {
-			return items;
-		}
+		return column.type().isEnum() ?
+						filterComboBoxModel(asList(column.type().valueClass().getEnumConstants())) :
+						filterComboBoxModel(new ColumnItems<>(connectionProvider(), column));
 	}
 
 	private static final class ColumnItems<T> implements Supplier<Collection<T>> {

@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.19
 ### is.codion.common.model
 - ConditionModel.WILDCARD default now PREFIX_AND_POSTFIX.
+- FilterModel.Refresher.supplier() removed.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel.DefaultComboBoxItems.visiblePredicate bug fixed, now Notify.WHEN_SET.
 - DefaultFilterTableModel.VisiblePredicate.predicate bug fixed, now Notify.WHEN_SET.

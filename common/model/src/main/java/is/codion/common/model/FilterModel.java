@@ -36,6 +36,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Specifies a data model that can be filtered to hide some or all of the items it contains.
  * @param <T> the type of items in the model.
@@ -280,11 +282,6 @@ public interface FilterModel<T> {
 		State async();
 
 		/**
-		 * @return a {@link Value} controlling the item supplier for this refresher instance
-		 */
-		Value<Supplier<Collection<T>>> supplier();
-
-		/**
 		 * @return an observer active while a refresh is in progress
 		 */
 		StateObserver observer();
@@ -309,26 +306,19 @@ public interface FilterModel<T> {
 		private final Event<Collection<T>> refreshEvent = Event.event();
 		private final Event<Exception> refreshFailedEvent = Event.event();
 		private final State refreshingState = State.state();
-		private final Value<Supplier<Collection<T>>> supplier;
+		private final Supplier<Collection<T>> supplier;
 		private final State async = State.state(ASYNC_REFRESH.get());
 
 		/**
-		 * @param supplier supplies the items
+		 * @param supplier supplies the items when refreshing
 		 */
 		protected AbstractRefresher(Supplier<Collection<T>> supplier) {
-			this.supplier = Value.builder()
-							.nonNull(supplier)
-							.build();
+			this.supplier = requireNonNull(supplier);
 		}
 
 		@Override
 		public final State async() {
 			return async;
-		}
-
-		@Override
-		public final Value<Supplier<Collection<T>>> supplier() {
-			return supplier;
 		}
 
 		@Override
@@ -344,6 +334,13 @@ public interface FilterModel<T> {
 		@Override
 		public final Observer<Exception> failure() {
 			return refreshFailedEvent.observer();
+		}
+
+		/**
+		 * @return the item supplier for this refresher instance
+		 */
+		protected final Supplier<Collection<T>> supplier() {
+			return supplier;
 		}
 
 		/**

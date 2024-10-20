@@ -65,7 +65,6 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.time.temporal.Temporal;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -661,11 +660,8 @@ public final class EntityComponents {
 	}
 
 	private static <T> FilterComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
-		FilterComboBoxModel<T> comboBoxModel = filterComboBoxModel();
-		Collection<T> enumConstants = asList(attribute.type().valueClass().getEnumConstants());
-		comboBoxModel.refresher().supplier().set(() -> enumConstants);
+		FilterComboBoxModel<T> comboBoxModel = filterComboBoxModel(asList(attribute.type().valueClass().getEnumConstants()));
 		comboBoxModel.items().nullItem().include().set(nullable);
-		comboBoxModel.refresh();
 
 		return comboBoxModel;
 	}

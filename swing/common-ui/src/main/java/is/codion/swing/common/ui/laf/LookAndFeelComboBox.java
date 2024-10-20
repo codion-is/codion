@@ -166,8 +166,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 	}
 
 	private static FilterComboBoxModel<Item<LookAndFeelProvider>> createLookAndFeelComboBoxModel() {
-		FilterComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel = filterComboBoxModel();
-		comboBoxModel.items().set(initializeAvailableLookAndFeels());
+		FilterComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel = filterComboBoxModel(initializeAvailableLookAndFeels());
 		currentLookAndFeel(comboBoxModel).ifPresent(comboBoxModel::setSelectedItem);
 
 		return comboBoxModel;
