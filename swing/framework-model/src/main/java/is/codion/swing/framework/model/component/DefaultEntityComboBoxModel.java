@@ -86,6 +86,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			setNullCaption(builder.nullCaption);
 		}
 		foreignKeyFilter = new DefaultForeignKeyFilter();
+		comboBoxModel.selection().filterSelected().set(builder.filterSelected);
 		comboBoxModel.selection().translator().set(new SelectedItemTranslator());
 		comboBoxModel.refresher().supplier().set(this::performQuery);
 		comboBoxModel.items().validator().set(new ItemValidator());
@@ -320,18 +321,26 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			comboBoxModel.items().visible().predicate().set(predicate);
 		}
 
+		@Override
 		public Collection<Entity.Key> get(ForeignKey foreignKey) {
 			requireNonNull(foreignKey);
 
 			return unmodifiableSet(foreignKeyFilterKeys.getOrDefault(foreignKey, emptySet()));
 		}
 
+		@Override
 		public State strict() {
 			return strict;
 		}
 
+		@Override
 		public Predicate<Entity> predicate() {
 			return predicate;
+		}
+
+		@Override
+		public EntityComboBoxModel.Builder builder(ForeignKey foreignKey) {
+			return new DefaultBuilder(foreignKey.referencedType(), connectionProvider, DefaultEntityComboBoxModel.this, requireNonNull(foreignKey));
 		}
 
 		@Override
@@ -429,17 +438,26 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		private final EntityType entityType;
 		private final EntityConnectionProvider connectionProvider;
+		private final EntityComboBoxModel filterModel;
+		private final ForeignKey filterForeignKey;
 
 		private OrderBy orderBy;
 		private Supplier<Condition> condition;
 		private Collection<Attribute<?>> attributes = emptyList();
 		private boolean handleEditEvents = EntityComboBoxModel.HANDLE_EDIT_EVENTS.get();
 		private String nullCaption;
+		private boolean filterSelected = false;
 
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+			this(entityType, connectionProvider, null, null);
+		}
+
+		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider, EntityComboBoxModel filterModel, ForeignKey filterForeignKey) {
 			this.entityType = requireNonNull(entityType, "entityType");
 			this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
 			this.condition = new DefaultConditionSupplier(entityType);
+			this.filterModel = filterModel;
+			this.filterForeignKey = filterForeignKey;
 		}
 
 		@Override
@@ -483,8 +501,19 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
+		public Builder filterSelected(boolean filterSelected) {
+			this.filterSelected = filterSelected;
+			return this;
+		}
+
+		@Override
 		public EntityComboBoxModel build() {
-			return new DefaultEntityComboBoxModel(this);
+			DefaultEntityComboBoxModel entityComboBoxModel = new DefaultEntityComboBoxModel(this);
+			if (filterModel != null) {
+				filterModel.foreignKeyFilter().link(filterForeignKey, entityComboBoxModel);
+			}
+
+			return entityComboBoxModel;
 		}
 	}
 }

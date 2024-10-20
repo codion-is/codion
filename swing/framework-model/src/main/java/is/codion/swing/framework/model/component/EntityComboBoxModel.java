@@ -164,6 +164,17 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		Builder handleEditEvents(boolean handleEditEvents);
 
 		/**
+		 * Specifies whether filtering the model affects the currently selected item.
+		 * If true, the selection is cleared when the selected item is filtered from
+		 * the model, otherwise the selected item can potentially represent a value
+		 * which is not currently visible in the model
+		 * This is false by default.
+		 * @param filterSelected if true then the selected item is cleared when filtered
+		 * @see VisibleItems#predicate()
+		 */
+		Builder filterSelected(boolean filterSelected);
+
+		/**
 		 * @return a new {@link EntityComboBoxModel} instance
 		 */
 		EntityComboBoxModel build();
@@ -213,6 +224,13 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @see #set(ForeignKey, Collection)
 		 */
 		Predicate<Entity> predicate();
+
+		/**
+		 * Returns a {@link Builder} for a {@link EntityComboBoxModel} filtering this model using the given {@link ForeignKey}
+		 * @param foreignKey the foreign key to filter by
+		 * @return a {@link Builder} for a foreign key filter model
+		 */
+		Builder builder(ForeignKey foreignKey);
 
 		/**
 		 * Links the given combo box model representing foreign key entities to this combo box model

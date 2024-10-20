@@ -95,121 +95,114 @@ public final class DefaultEntityComboBoxModelTest {
 
 	@Test
 	void foreignKeyFilter() {
-		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
-		Entities entities = connectionProvider.entities();
-		EntityComboBoxModel empBox = EntityComboBoxModel.builder(Employee.TYPE, connectionProvider).build();
-		empBox.selection().filterSelected().set(true);
-		EntityComboBoxModel mgrBox = EntityComboBoxModel.builder(Employee.TYPE, connectionProvider)
-						.condition(() -> Employee.JOB.in("MANAGER", "PRESIDENT"))
+		Entities entities = CONNECTION_PROVIDER.entities();
+		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
+						.filterSelected(true)
 						.build();
-		empBox.foreignKeyFilter().link(Employee.MGR_FK, mgrBox);
-		mgrBox.selection().filterSelected().set(true);
-		EntityComboBoxModel deptBox = EntityComboBoxModel.builder(Department.TYPE, connectionProvider).build();
-		mgrBox.foreignKeyFilter().link(Employee.DEPARTMENT_FK, deptBox);
-		empBox.refresh();
-		empBox.foreignKeyFilter().strict().set(true);
-		assertEquals(0, empBox.items().visible().count());
-		assertEquals(16, empBox.items().filtered().count());
-		assertEquals(0, mgrBox.items().visible().count());
-		assertEquals(4, mgrBox.items().filtered().count());
-		assertEquals(4, deptBox.items().visible().count());
-		assertEquals(0, deptBox.items().filtered().count());
+		EntityComboBoxModel managerComboBoxModel = employeeComboBoxModel.foreignKeyFilter().builder(Employee.MGR_FK)
+						.condition(() -> Employee.JOB.in("MANAGER", "PRESIDENT"))
+						.filterSelected(true)
+						.build();
+		EntityComboBoxModel departmentComboBoxModel = managerComboBoxModel.foreignKeyFilter().builder(Employee.DEPARTMENT_FK).build();
+		employeeComboBoxModel.refresh();
+		employeeComboBoxModel.foreignKeyFilter().strict().set(true);
+		assertEquals(0, employeeComboBoxModel.items().visible().count());
+		assertEquals(16, employeeComboBoxModel.items().filtered().count());
+		assertEquals(0, managerComboBoxModel.items().visible().count());
+		assertEquals(4, managerComboBoxModel.items().filtered().count());
+		assertEquals(4, departmentComboBoxModel.items().visible().count());
+		assertEquals(0, departmentComboBoxModel.items().filtered().count());
 
-		deptBox.select(entities.primaryKey(Department.TYPE, 10));
+		departmentComboBoxModel.select(entities.primaryKey(Department.TYPE, 10));
 		//three managers in the accounting department
-		assertEquals(3, mgrBox.items().visible().count());
-		assertEquals(1, mgrBox.items().filtered().count());
+		assertEquals(3, managerComboBoxModel.items().visible().count());
+		assertEquals(1, managerComboBoxModel.items().filtered().count());
 
-		mgrBox.select(entities.primaryKey(Employee.TYPE, 5));//Blake, Manager, Accounting
-		assertEquals(5, empBox.items().visible().count());
-		assertEquals(11, empBox.items().filtered().count());
+		managerComboBoxModel.select(entities.primaryKey(Employee.TYPE, 5));//Blake, Manager, Accounting
+		assertEquals(5, employeeComboBoxModel.items().visible().count());
+		assertEquals(11, employeeComboBoxModel.items().filtered().count());
 
-		empBox.select(entities.primaryKey(Employee.TYPE, 7));//Scott, Analyst, Research
-		assertEquals(3, mgrBox.selection().item().get().get(Employee.ID));//Jones, Manager, Research
-		assertEquals(20, deptBox.selection().item().get().get(Department.ID));// Research
+		employeeComboBoxModel.select(entities.primaryKey(Employee.TYPE, 7));//Scott, Analyst, Research
+		assertEquals(3, managerComboBoxModel.selection().item().get().get(Employee.ID));//Jones, Manager, Research
+		assertEquals(20, departmentComboBoxModel.selection().item().get().get(Department.ID));// Research
 		//one manager in the research department
-		assertEquals(1, mgrBox.items().visible().count());
-		assertEquals(3, mgrBox.items().filtered().count());
+		assertEquals(1, managerComboBoxModel.items().visible().count());
+		assertEquals(3, managerComboBoxModel.items().filtered().count());
 		//six employees under Jones
-		assertEquals(6, empBox.items().visible().count());
-		assertEquals(10, empBox.items().filtered().count());
+		assertEquals(6, employeeComboBoxModel.items().visible().count());
+		assertEquals(10, employeeComboBoxModel.items().filtered().count());
 
-		deptBox.select(entities.primaryKey(Department.TYPE, 40));// Operations
+		departmentComboBoxModel.select(entities.primaryKey(Department.TYPE, 40));// Operations
 		//no managers or employees in the Operations department
-		assertEquals(0, mgrBox.items().visible().count());
-		assertEquals(4, mgrBox.items().filtered().count());
-		assertEquals(0, empBox.items().visible().count());
-		assertEquals(16, empBox.items().filtered().count());
+		assertEquals(0, managerComboBoxModel.items().visible().count());
+		assertEquals(4, managerComboBoxModel.items().filtered().count());
+		assertEquals(0, employeeComboBoxModel.items().visible().count());
+		assertEquals(16, employeeComboBoxModel.items().filtered().count());
 	}
 
 	@Test
 	void foreignKeyFilterComboBoxModel() {
-		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
-		EntityComboBoxModel empBox = EntityComboBoxModel.builder(Employee.TYPE, connectionProvider)
+		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.includeNull(true)
 						.build();
-		EntityComboBoxModel deptBox = EntityComboBoxModel.builder(Department.TYPE, connectionProvider).build();
-		empBox.foreignKeyFilter().link(Employee.DEPARTMENT_FK, deptBox);
-		empBox.refresh();//refreshes both
-		assertEquals(1, empBox.getSize());
-		Entity.Key accountingKey = connectionProvider.entities().primaryKey(Department.TYPE, 10);
-		deptBox.select(accountingKey);
-		assertEquals(8, empBox.getSize());
-		deptBox.setSelectedItem(null);
-		assertEquals(1, empBox.getSize());
-		Entity.Key salesKey = connectionProvider.entities().primaryKey(Department.TYPE, 30);
-		deptBox.select(salesKey);
-		assertEquals(5, empBox.getSize());
-		empBox.setSelectedItem(empBox.items().visible().get().get(1));
-		empBox.setSelectedItem(null);
+		EntityComboBoxModel departmentComboBoxModel = employeeComboBoxModel.foreignKeyFilter().builder(Employee.DEPARTMENT_FK).build();
+		employeeComboBoxModel.refresh();//refreshes both
+		assertEquals(1, employeeComboBoxModel.getSize());
+		Entity.Key accountingKey = CONNECTION_PROVIDER.entities().primaryKey(Department.TYPE, 10);
+		departmentComboBoxModel.select(accountingKey);
+		assertEquals(8, employeeComboBoxModel.getSize());
+		departmentComboBoxModel.setSelectedItem(null);
+		assertEquals(1, employeeComboBoxModel.getSize());
+		Entity.Key salesKey = CONNECTION_PROVIDER.entities().primaryKey(Department.TYPE, 30);
+		departmentComboBoxModel.select(salesKey);
+		assertEquals(5, employeeComboBoxModel.getSize());
+		employeeComboBoxModel.setSelectedItem(employeeComboBoxModel.items().visible().get().get(1));
+		employeeComboBoxModel.setSelectedItem(null);
 	}
 
 	@Test
 	void setForeignKeyFilterEntities() throws Exception {
-		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.refresh();
-		Entity blake = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
-		comboBoxModel.foreignKeyFilter().set(Employee.MGR_FK, singletonList(blake.primaryKey()));
-		assertEquals(5, comboBoxModel.getSize());
-		for (int i = 0; i < comboBoxModel.getSize(); i++) {
-			Entity item = comboBoxModel.getElementAt(i);
+		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
+		employeeComboBoxModel.refresh();
+		Entity blake = employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
+		employeeComboBoxModel.foreignKeyFilter().set(Employee.MGR_FK, singletonList(blake.primaryKey()));
+		assertEquals(5, employeeComboBoxModel.getSize());
+		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
+			Entity item = employeeComboBoxModel.getElementAt(i);
 			assertEquals(item.entity(Employee.MGR_FK), blake);
 		}
 
-		Entity sales = comboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
-		comboBoxModel.foreignKeyFilter().set(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
-		assertEquals(2, comboBoxModel.getSize());
-		for (int i = 0; i < comboBoxModel.getSize(); i++) {
-			Entity item = comboBoxModel.getElementAt(i);
+		Entity sales = employeeComboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
+		employeeComboBoxModel.foreignKeyFilter().set(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
+		assertEquals(2, employeeComboBoxModel.getSize());
+		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
+			Entity item = employeeComboBoxModel.getElementAt(i);
 			assertEquals(item.entity(Employee.DEPARTMENT_FK), sales);
 			assertEquals(item.entity(Employee.MGR_FK), blake);
 		}
 
-		Entity accounting = comboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
-		EntityComboBoxModel deptComboBoxModel = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.foreignKeyFilter().link(Employee.DEPARTMENT_FK, deptComboBoxModel);
+		Entity accounting = employeeComboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		EntityComboBoxModel deptComboBoxModel = employeeComboBoxModel.foreignKeyFilter().builder(Employee.DEPARTMENT_FK).build();
 		deptComboBoxModel.setSelectedItem(accounting);
-		assertEquals(3, comboBoxModel.getSize());
-		for (int i = 0; i < comboBoxModel.getSize(); i++) {
-			Entity item = comboBoxModel.getElementAt(i);
+		assertEquals(3, employeeComboBoxModel.getSize());
+		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
+			Entity item = employeeComboBoxModel.getElementAt(i);
 			assertEquals(item.entity(Employee.DEPARTMENT_FK), accounting);
 			assertEquals(item.entity(Employee.MGR_FK), blake);
 		}
-		comboBoxModel.items().get().stream()
+		employeeComboBoxModel.items().get().stream()
 						.filter(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(accounting))
 						.findFirst()
-						.ifPresent(comboBoxModel::setSelectedItem);
+						.ifPresent(employeeComboBoxModel::setSelectedItem);
 		assertEquals(accounting, deptComboBoxModel.selection().value());
 
 		//non strict filtering
-		comboBoxModel.foreignKeyFilter().strict().set(false);
-		comboBoxModel.foreignKeyFilter().set(Employee.DEPARTMENT_FK, emptyList());
-		assertEquals(6, comboBoxModel.getSize());
+		employeeComboBoxModel.foreignKeyFilter().strict().set(false);
+		employeeComboBoxModel.foreignKeyFilter().set(Employee.DEPARTMENT_FK, emptyList());
+		assertEquals(6, employeeComboBoxModel.getSize());
 		boolean kingFound = false;
-		for (int i = 0; i < comboBoxModel.getSize(); i++) {
-			Entity item = comboBoxModel.getElementAt(i);
+		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
+			Entity item = employeeComboBoxModel.getElementAt(i);
 			if (Objects.equals(item.get(Employee.NAME), "KING")) {
 				kingFound = true;
 			}
