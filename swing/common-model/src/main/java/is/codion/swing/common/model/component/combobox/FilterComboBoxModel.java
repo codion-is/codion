@@ -116,14 +116,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	interface ComboBoxItems<T> extends Items<T> {
 
 		/**
-		 * Provides a way for the model to prevent the addition of certain items.
-		 * Trying to add items that fail validation will result in an exception.
-		 * Note that any translation of the selected item is done before validation.
-		 * @return the {@link Value} controlling the item validator
-		 */
-		Value<Predicate<T>> validator();
-
-		/**
 		 * Replaces the given item in this combo box model
 		 * @param item the item to replace
 		 * @param replacement the replacement item

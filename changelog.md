@@ -11,6 +11,7 @@ Codion Change Log
 - ItemComboBoxModel no longer extends DefaultFilterComboBoxModel, now a factory class.
 - ItemComboBoxModel.Builder along with builder() added, replacing factory methods.
 - FilterComboBoxModel.ComboBoxSelection.validPredicate() removed.
+- FilterComboBoxModel.ComboBoxItems.validator() removed.
 ### is.codion.swing.common.ui
 - DefaultFilterTableCellRenderer.DefaultBuilder bug fixed, useBooleanRenderer now initialized before settings, in order for a correct horizontal alignment for boolean columns.
 - FilterTableCellRenderer.Factory.create() T type parameter removed.

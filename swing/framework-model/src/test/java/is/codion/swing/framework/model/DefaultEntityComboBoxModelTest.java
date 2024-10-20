@@ -377,22 +377,4 @@ public final class DefaultEntityComboBoxModelTest {
 		model.items().nullItem().include().set(false);
 		assertFalse(model.items().contains(null));
 	}
-
-	@Test
-	void validItems() {
-		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.refresh();
-		Entity dept = ENTITIES.builder(Department.TYPE)
-						.with(Department.ID, 1)
-						.with(Department.NAME, "dept")
-						.build();
-
-		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().addItem(dept));
-		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().replace(comboBoxModel.getElementAt(2), dept));
-		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.items().nullItem().set(dept));
-
-		assertThrows(NullPointerException.class, () -> comboBoxModel.items().addItem(null));
-		assertThrows(NullPointerException.class, () -> comboBoxModel.items().replace(comboBoxModel.getElementAt(2), null));
-		assertThrows(NullPointerException.class, () -> comboBoxModel.items().nullItem().clear());
-	}
 }

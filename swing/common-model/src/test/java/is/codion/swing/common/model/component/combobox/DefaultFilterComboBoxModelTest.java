@@ -328,13 +328,6 @@ public class DefaultFilterComboBoxModelTest {
 	}
 
 	@Test
-	void validator() {
-		FilterComboBoxModel<Integer> model = new DefaultFilterComboBoxModel<>();
-		model.items().validator().set(item -> item > 0);
-		assertThrows(IllegalArgumentException.class, () -> model.items().set(asList(1, 2, 3, 4, 5, 0)));
-	}
-
-	@Test
 	void items() {
 		List<Integer> values = asList(0, 1, 2);
 		FilterComboBoxModel<Integer> model = new DefaultFilterComboBoxModel<>(() -> values);

@@ -89,7 +89,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		foreignKeyFilter = new DefaultForeignKeyFilter();
 		comboBoxModel.selection().filterSelected().set(builder.filterSelected);
 		comboBoxModel.selection().translator().set(new SelectedItemTranslator());
-		comboBoxModel.items().validator().set(new ItemValidator());
 		comboBoxModel.items().visible().predicate().set(foreignKeyFilter.predicate);
 		if (builder.handleEditEvents) {
 			addEditListeners();

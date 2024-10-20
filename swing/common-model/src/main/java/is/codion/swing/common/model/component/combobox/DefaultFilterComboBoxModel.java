@@ -45,11 +45,9 @@ import java.util.function.Supplier;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
-	private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultValidator<>();
 	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
@@ -189,10 +187,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	private final class DefaultComboBoxItems implements ComboBoxItems<T> {
-
-		private final Value<Predicate<T>> validator = Value.builder()
-						.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR)
-						.build();
 		private final DefaultVisibleItems visible = new DefaultVisibleItems();
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 		private final DefaultNullItem nullItem = new DefaultNullItem();
@@ -202,10 +196,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private boolean cleared = true;
 
 		private DefaultComboBoxItems() {
-			validator.addValidator(validator -> get().stream()
-							.filter(Objects::nonNull)
-							.forEach(validator::test));
-			nullItem.item.addValidator(this::validate);
 			visible.comparator.addListener(visible::sort);
 			visible.predicate.addListener(this::filter);
 		}
@@ -231,9 +221,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (nullItem.include.get()) {
 				visible.items.add(0, null);
 			}
-			visible.items.addAll(items.stream()
-							.map(this::validate)
-							.collect(toList()));
+			visible.items.addAll(items);
 			// Notifies both visible and filtered
 			filter(false);
 			cleared = items.isEmpty();
@@ -243,7 +231,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean addItem(T item) {
 			requireNonNull(item);
-			validate(item);
 			if (visible.predicate.isNull() || visible.predicate.get().test(item)) {
 				if (!visible.items.contains(item)) {
 					visible.items.add(item);
@@ -328,15 +315,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Value<Predicate<T>> validator() {
-			return validator;
-		}
-
-		@Override
 		public void replace(T item, T replacement) {
 			requireNonNull(item);
 			requireNonNull(replacement);
-			validate(replacement);
 			removeItem(item);
 			addItem(replacement);
 			if (Objects.equals(selectionModel.selected.item, item)) {
@@ -347,14 +328,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean cleared() {
 			return cleared;
-		}
-
-		private T validate(T item) {
-			if (!validator.get().test(item)) {
-				throw new IllegalArgumentException("Invalid item: " + item);
-			}
-
-			return item;
 		}
 
 		private void filter(boolean filterSelectedItem) {
