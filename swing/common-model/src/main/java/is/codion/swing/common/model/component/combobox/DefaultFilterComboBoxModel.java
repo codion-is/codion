@@ -47,7 +47,7 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
+final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultValidator<>();
 	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
@@ -63,68 +63,68 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	 */
 	private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
 
-	protected DefaultFilterComboBoxModel() {
+	DefaultFilterComboBoxModel() {
 		refresher = new DefaultRefresher(new DefaultItemsSupplier());
 	}
 
-	protected DefaultFilterComboBoxModel(Collection<T> items) {
+	DefaultFilterComboBoxModel(Collection<T> items) {
 		refresher = new DefaultRefresher(new DefaultItemsSupplier());
 		modelItems.set(items);
 	}
 
-	protected DefaultFilterComboBoxModel(Supplier<Collection<T>> supplier) {
+	DefaultFilterComboBoxModel(Supplier<Collection<T>> supplier) {
 		refresher = new DefaultRefresher(supplier);
 	}
 
 	@Override
-	public final Refresher<T> refresher() {
+	public Refresher<T> refresher() {
 		return refresher;
 	}
 
 	@Override
-	public final void refresh() {
+	public void refresh() {
 		refresh(null);
 	}
 
 	@Override
-	public final void refresh(Consumer<Collection<T>> onRefresh) {
+	public void refresh(Consumer<Collection<T>> onRefresh) {
 		refresher.doRefresh(onRefresh);
 	}
 
 	@Override
-	public final ComboBoxItems<T> items() {
+	public ComboBoxItems<T> items() {
 		return modelItems;
 	}
 
 	@Override
-	public final ComboBoxSelection<T> selection() {
+	public ComboBoxSelection<T> selection() {
 		return selectionModel;
 	}
 
 	@Override
-	public final T getSelectedItem() {
+	public T getSelectedItem() {
 		return selectionModel.selected.get();
 	}
 
 	@Override
-	public final void setSelectedItem(Object item) {
+	public void setSelectedItem(Object item) {
 		selectionModel.selected.setSelectedItem(item);
 	}
 
 	@Override
-	public final void addListDataListener(ListDataListener listener) {
+	public void addListDataListener(ListDataListener listener) {
 		requireNonNull(listener, "listener");
 		listDataListeners.add(listener);
 	}
 
 	@Override
-	public final void removeListDataListener(ListDataListener listener) {
+	public void removeListDataListener(ListDataListener listener) {
 		requireNonNull(listener, "listener");
 		listDataListeners.remove(listener);
 	}
 
 	@Override
-	public final T getElementAt(int index) {
+	public T getElementAt(int index) {
 		T element = modelItems.visible.items.get(index);
 		if (element == null) {
 			return modelItems.nullItem.get();
@@ -134,12 +134,12 @@ class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public final int getSize() {
+	public int getSize() {
 		return modelItems.visible.items.size();
 	}
 
 	@Override
-	public final <V> Value<V> createSelectorValue(ItemFinder<T, V> itemFinder) {
+	public <V> Value<V> createSelectorValue(ItemFinder<T, V> itemFinder) {
 		return new SelectorValue<>(itemFinder);
 	}
 
