@@ -168,12 +168,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		Value<Function<Object, T>> translator();
 
 		/**
-		 * Provides a way for the combo box model to prevent the selection of certain items.
-		 * @return the {@link Value} controlling the valid selection predicate
-		 */
-		Value<Predicate<T>> validPredicate();
-
-		/**
 		 * Specifies whether filtering the model affects the currently selected item.
 		 * If true, the selection is cleared when the selected item is filtered from
 		 * the model, otherwise the selected item can potentially represent a value

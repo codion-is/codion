@@ -343,18 +343,6 @@ public class DefaultFilterComboBoxModelTest {
 		assertTrue(values.containsAll(model.items().get()));
 	}
 
-	@Test
-	void validSelectionPredicate() {
-		FilterComboBoxModel<Integer> model = new DefaultFilterComboBoxModel<>();
-		model.items().set(asList(0, 1, 2));
-		model.setSelectedItem(0);
-		assertThrows(IllegalArgumentException.class, () -> model.selection().validPredicate().set(item -> item > 0));
-		model.setSelectedItem(1);
-		model.selection().validPredicate().set(item -> item > 0);
-		model.setSelectedItem(0);
-		assertEquals(1, model.getSelectedItem());
-	}
-
 	@BeforeEach
 	void setUp() {
 		testModel = new DefaultFilterComboBoxModel<>();

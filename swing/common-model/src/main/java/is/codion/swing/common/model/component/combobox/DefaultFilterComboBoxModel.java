@@ -51,7 +51,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultValidator<>();
 	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
-	private static final Predicate<?> DEFAULT_VALID_SELECTION_PREDICATE = new DefaultValidSelectionPredicate<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
 	private final DefaultComboBoxSelection selectionModel = new DefaultComboBoxSelection();
@@ -581,11 +580,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Value<Predicate<T>> validPredicate() {
-			return selected.valid;
-		}
-
-		@Override
 		public State filterSelected() {
 			return filterSelectedItem;
 		}
@@ -599,19 +593,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final Value<Function<Object, T>> translator = Value.builder()
 						.nonNull((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR)
 						.build();
-		private final Value<Predicate<T>> valid = Value.builder()
-						.nonNull((Predicate<T>) DEFAULT_VALID_SELECTION_PREDICATE)
-						.build();
 
 		private T item = null;
-
-		private Selected() {
-			valid.addValidator(predicate -> {
-				if (predicate != null && !predicate.test(item)) {
-					throw new IllegalArgumentException("The current selected item does not satisfy the valid selection predicate");
-				}
-			});
-		}
 
 		@Override
 		public T get() {
@@ -634,7 +617,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private void setSelectedItem(Object item) {
 			T toSelect = translator.get().apply(Objects.equals(modelItems.nullItem.get(), item) ? null : item);
-			if (!Objects.equals(this.item, toSelect) && valid.get().test(toSelect)) {
+			if (!Objects.equals(this.item, toSelect)) {
 				changing.accept(toSelect);
 				this.item = toSelect;
 				empty.set(selectionModel.value() == null);
@@ -710,14 +693,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Collection<T> get() {
 			return modelItems.get();
-		}
-	}
-
-	private static final class DefaultValidSelectionPredicate<T> implements Predicate<T> {
-
-		@Override
-		public boolean test(T item) {
-			return true;
 		}
 	}
 
