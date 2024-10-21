@@ -98,6 +98,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -388,7 +389,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		catch (Exception e) {
 			LOG.debug("Exception while disconnecting from database", e);
 		}
-		parentWindow().ifPresent(Window::dispose);
+		Stream.of(Window.getWindows()).forEach(Window::dispose);
 		if (CALL_SYSTEM_EXIT.get()) {
 			System.exit(0);
 		}
