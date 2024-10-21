@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.20
+
 ## 0.18.19
 ### is.codion.common.model
 - ConditionModel.WILDCARD default now PREFIX_AND_POSTFIX.
