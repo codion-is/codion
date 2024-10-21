@@ -217,7 +217,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * want to add a custom {@link Predicate} to this model via {@link VisibleItems#predicate()}.
 		 * <pre>
 		 * {@code
-		 *   Predicate fkPredicate = model.foreignKeyFilter().predicate();
+		 *   Predicate fkPredicate = model.filter().predicate();
 		 *   model.items().visible().predicate().set(item -> fkPredicate.test(item) && ...);
 		 * }
 		 * </pre>

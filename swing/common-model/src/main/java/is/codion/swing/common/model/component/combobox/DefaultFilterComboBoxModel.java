@@ -187,6 +187,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	private final class DefaultComboBoxItems implements ComboBoxItems<T> {
+
 		private final DefaultVisibleItems visible = new DefaultVisibleItems();
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 		private final DefaultNullItem nullItem = new DefaultNullItem();
@@ -650,14 +651,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public T apply(Object item) {
 			return (T) item;
-		}
-	}
-
-	private static final class DefaultValidator<T> implements Predicate<T> {
-
-		@Override
-		public boolean test(T item) {
-			return true;
 		}
 	}
 

@@ -115,6 +115,10 @@ public final class ItemComboBoxModel {
 		private boolean sorted = false;
 		private Comparator<Item<T>> comparator;
 
+		private DefaultBuilder(List<Item<T>> items) {
+			this.items = requireNonNull(items);
+		}
+
 		@Override
 		public Builder<T> sorted(boolean sorted) {
 			this.sorted = sorted;
@@ -129,10 +133,6 @@ public final class ItemComboBoxModel {
 			this.sorted = true;
 			this.comparator = requireNonNull(comparator);
 			return this;
-		}
-
-		private DefaultBuilder(List<Item<T>> items) {
-			this.items = requireNonNull(items);
 		}
 
 		@Override

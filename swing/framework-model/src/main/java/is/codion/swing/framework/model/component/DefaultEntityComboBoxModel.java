@@ -240,14 +240,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.build());
 	}
 
-	private final class ItemValidator implements Predicate<Entity> {
-
-		@Override
-		public boolean test(Entity entity) {
-			return entity.entityType().equals(entityType);
-		}
-	}
-
 	private final class SelectedItemTranslator implements Function<Object, Entity> {
 
 		@Override
@@ -308,6 +300,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private final Predicate<Entity> predicate = new ForeignKeyFilterPredicate();
 		private final State strict = State.state(true);
 
+		@Override
 		public void set(ForeignKey foreignKey, Collection<Entity.Key> keys) {
 			requireNonNull(foreignKey);
 			requireNonNull(keys);

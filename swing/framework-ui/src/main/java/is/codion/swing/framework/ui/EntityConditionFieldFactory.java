@@ -87,7 +87,7 @@ public final class EntityConditionFieldFactory implements FieldFactory {
 
 	@Override
 	public <T> Optional<JComponent> createUpperBoundField(ConditionModel<T> condition) {
-		Class<?> columnClass = condition.valueClass();
+		Class<T> columnClass = condition.valueClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no upper bound field required for booleans or entities
 		}
