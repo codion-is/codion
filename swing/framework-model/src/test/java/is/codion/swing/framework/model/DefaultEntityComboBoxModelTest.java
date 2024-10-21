@@ -99,13 +99,13 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.filterSelected(true)
 						.build();
-		EntityComboBoxModel managerComboBoxModel = employeeComboBoxModel.foreignKeyFilter().builder(Employee.MGR_FK)
+		EntityComboBoxModel managerComboBoxModel = employeeComboBoxModel.filter().builder(Employee.MGR_FK)
 						.condition(() -> Employee.JOB.in("MANAGER", "PRESIDENT"))
 						.filterSelected(true)
 						.build();
-		EntityComboBoxModel departmentComboBoxModel = managerComboBoxModel.foreignKeyFilter().builder(Employee.DEPARTMENT_FK).build();
+		EntityComboBoxModel departmentComboBoxModel = managerComboBoxModel.filter().builder(Employee.DEPARTMENT_FK).build();
 		employeeComboBoxModel.refresh();
-		employeeComboBoxModel.foreignKeyFilter().strict().set(true);
+		employeeComboBoxModel.filter().strict().set(true);
 		assertEquals(0, employeeComboBoxModel.items().visible().count());
 		assertEquals(16, employeeComboBoxModel.items().filtered().count());
 		assertTrue(managerComboBoxModel.items().nullItem().include().get());
@@ -147,7 +147,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.includeNull(true)
 						.build();
-		EntityComboBoxModel departmentComboBoxModel = employeeComboBoxModel.foreignKeyFilter().builder(Employee.DEPARTMENT_FK).build();
+		EntityComboBoxModel departmentComboBoxModel = employeeComboBoxModel.filter().builder(Employee.DEPARTMENT_FK).build();
 		employeeComboBoxModel.refresh();//refreshes both
 		assertFalse(departmentComboBoxModel.items().nullItem().include().get());
 		assertEquals(1, employeeComboBoxModel.getSize());
@@ -168,7 +168,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
 		employeeComboBoxModel.refresh();
 		Entity blake = employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
-		employeeComboBoxModel.foreignKeyFilter().set(Employee.MGR_FK, singletonList(blake.primaryKey()));
+		employeeComboBoxModel.filter().set(Employee.MGR_FK, singletonList(blake.primaryKey()));
 		assertEquals(5, employeeComboBoxModel.getSize());
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
 			Entity item = employeeComboBoxModel.getElementAt(i);
@@ -176,7 +176,7 @@ public final class DefaultEntityComboBoxModelTest {
 		}
 
 		Entity sales = employeeComboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
-		employeeComboBoxModel.foreignKeyFilter().set(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
+		employeeComboBoxModel.filter().set(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
 		assertEquals(2, employeeComboBoxModel.getSize());
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
 			Entity item = employeeComboBoxModel.getElementAt(i);
@@ -185,7 +185,7 @@ public final class DefaultEntityComboBoxModelTest {
 		}
 
 		Entity accounting = employeeComboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
-		EntityComboBoxModel deptComboBoxModel = employeeComboBoxModel.foreignKeyFilter().builder(Employee.DEPARTMENT_FK).build();
+		EntityComboBoxModel deptComboBoxModel = employeeComboBoxModel.filter().builder(Employee.DEPARTMENT_FK).build();
 		deptComboBoxModel.setSelectedItem(accounting);
 		assertEquals(3, employeeComboBoxModel.getSize());
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
@@ -200,8 +200,8 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals(accounting, deptComboBoxModel.selection().value());
 
 		//non strict filtering
-		employeeComboBoxModel.foreignKeyFilter().strict().set(false);
-		employeeComboBoxModel.foreignKeyFilter().set(Employee.DEPARTMENT_FK, emptyList());
+		employeeComboBoxModel.filter().strict().set(false);
+		employeeComboBoxModel.filter().set(Employee.DEPARTMENT_FK, emptyList());
 		assertEquals(6, employeeComboBoxModel.getSize());
 		boolean kingFound = false;
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
@@ -311,7 +311,7 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals(0, comboBoxModel.getSize());
 
 		comboBoxModel.condition().set(() -> Condition.custom(Employee.ENAME_CLARK));
-		comboBoxModel.foreignKeyFilter().set(Employee.DEPARTMENT_FK, emptyList());
+		comboBoxModel.filter().set(Employee.DEPARTMENT_FK, emptyList());
 
 		comboBoxModel.refresh();
 		assertEquals(1, comboBoxModel.getSize());

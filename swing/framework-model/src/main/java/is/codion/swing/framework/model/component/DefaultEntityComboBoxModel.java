@@ -141,7 +141,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public ForeignKeyFilter foreignKeyFilter() {
+	public ForeignKeyFilter filter() {
 		return foreignKeyFilter;
 	}
 
@@ -510,7 +510,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		public EntityComboBoxModel build() {
 			DefaultEntityComboBoxModel entityComboBoxModel = new DefaultEntityComboBoxModel(this);
 			if (filterModel != null) {
-				filterModel.foreignKeyFilter().link(filterForeignKey, entityComboBoxModel);
+				filterModel.filter().link(filterForeignKey, entityComboBoxModel);
 			}
 
 			return entityComboBoxModel;

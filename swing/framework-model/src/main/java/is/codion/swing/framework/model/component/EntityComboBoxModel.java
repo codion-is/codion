@@ -90,7 +90,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	/**
 	 * @return the foreign key filter
 	 */
-	ForeignKeyFilter foreignKeyFilter();
+	ForeignKeyFilter filter();
 
 	/**
 	 * Creates a {@link Value} linked to the selected entity via the value of the given attribute.
@@ -170,6 +170,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * which is not currently visible in the model
 		 * This is false by default.
 		 * @param filterSelected if true then the selected item is cleared when filtered
+		 * @return this builder instance
 		 * @see VisibleItems#predicate()
 		 */
 		Builder filterSelected(boolean filterSelected);
