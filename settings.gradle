@@ -182,14 +182,14 @@ dependencyResolutionManagement {
     versionCatalogs {
         libs {
             version("slf4j.api", "2.0.16")
-            version("logback", "1.5.10")
+            version("logback", "1.5.11")
             version("h2", "2.3.232")
             version("json", "20240303")
 
             version("jfreechart", "1.5.5")
             version("junit", "5.11.2")
             version("sslcontext.kickstart", "8.3.7")
-            version("flatlaf", "3.5.1")
+            version("flatlaf", "3.5.2")
             version("ikonli", "12.3.1")
             version("javalin", "6.3.0")
             version("javapoet", "1.13.0")
