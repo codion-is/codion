@@ -109,6 +109,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -2952,6 +2953,7 @@ public class EntityTablePanel extends JPanel {
 												.name(MESSAGES.getString("row_limit"))
 												.build())
 								.buildPopupMenu());
+				addMouseListener(new ConfigureLimit());
 			}
 		}
 
@@ -2964,6 +2966,7 @@ public class EntityTablePanel extends JPanel {
 		private void configureLimit() {
 			ComponentValue<Integer, NumberField<Integer>> limitValue = Components.integerField()
 							.value(tableModel.queryModel().limit().get())
+							.selectAllOnFocusGained(true)
 							.groupingUsed(true)
 							.minimumValue(0)
 							.columns(6)
@@ -3002,6 +3005,16 @@ public class EntityTablePanel extends JPanel {
 				}
 				catch (IllegalArgumentException e) {
 					return false;
+				}
+			}
+		}
+
+		private final class ConfigureLimit extends MouseAdapter {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					configureLimit();
 				}
 			}
 		}

@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.20
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel now disposes all windows on exit.
+- EntityTablePanel, row limit configuration field now selects all on focus gained.
+- EntityTablePanel, row limit configuration now accessible by double clicking the status panel.
 
 ## 0.18.19
 ### is.codion.common.model
