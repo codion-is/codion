@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.20
+### is.codion.swing.framework.model
+- EntityComboBoxModel.Filter and ForeignKeyFilter added.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel now disposes all windows on exit.
 - EntityTablePanel, row limit configuration field now selects all on focus gained.

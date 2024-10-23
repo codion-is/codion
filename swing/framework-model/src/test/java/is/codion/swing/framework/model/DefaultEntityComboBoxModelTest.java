@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -99,13 +99,13 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.filterSelected(true)
 						.build();
-		EntityComboBoxModel managerComboBoxModel = employeeComboBoxModel.filter().builder(Employee.MGR_FK)
+		EntityComboBoxModel managerComboBoxModel = employeeComboBoxModel.filter().get(Employee.MGR_FK).builder()
 						.condition(() -> Employee.JOB.in("MANAGER", "PRESIDENT"))
 						.filterSelected(true)
 						.build();
-		EntityComboBoxModel departmentComboBoxModel = managerComboBoxModel.filter().builder(Employee.DEPARTMENT_FK).build();
+		EntityComboBoxModel departmentComboBoxModel = managerComboBoxModel.filter().get(Employee.DEPARTMENT_FK).builder().build();
 		employeeComboBoxModel.refresh();
-		employeeComboBoxModel.filter().strict().set(true);
+		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).strict().set(true);
 		assertEquals(0, employeeComboBoxModel.items().visible().count());
 		assertEquals(16, employeeComboBoxModel.items().filtered().count());
 		assertTrue(managerComboBoxModel.items().nullItem().include().get());
@@ -147,7 +147,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.includeNull(true)
 						.build();
-		EntityComboBoxModel departmentComboBoxModel = employeeComboBoxModel.filter().builder(Employee.DEPARTMENT_FK).build();
+		EntityComboBoxModel departmentComboBoxModel = employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).builder().build();
 		employeeComboBoxModel.refresh();//refreshes both
 		assertFalse(departmentComboBoxModel.items().nullItem().include().get());
 		assertEquals(1, employeeComboBoxModel.getSize());
@@ -168,7 +168,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
 		employeeComboBoxModel.refresh();
 		Entity blake = employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
-		employeeComboBoxModel.filter().set(Employee.MGR_FK, singletonList(blake.primaryKey()));
+		employeeComboBoxModel.filter().get(Employee.MGR_FK).set(singletonList(blake.primaryKey()));
 		assertEquals(5, employeeComboBoxModel.getSize());
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
 			Entity item = employeeComboBoxModel.getElementAt(i);
@@ -176,7 +176,7 @@ public final class DefaultEntityComboBoxModelTest {
 		}
 
 		Entity sales = employeeComboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
-		employeeComboBoxModel.filter().set(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
+		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(singletonList(sales.primaryKey()));
 		assertEquals(2, employeeComboBoxModel.getSize());
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
 			Entity item = employeeComboBoxModel.getElementAt(i);
@@ -185,7 +185,7 @@ public final class DefaultEntityComboBoxModelTest {
 		}
 
 		Entity accounting = employeeComboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
-		EntityComboBoxModel deptComboBoxModel = employeeComboBoxModel.filter().builder(Employee.DEPARTMENT_FK).build();
+		EntityComboBoxModel deptComboBoxModel = employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).builder().build();
 		deptComboBoxModel.setSelectedItem(accounting);
 		assertEquals(3, employeeComboBoxModel.getSize());
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
@@ -200,8 +200,8 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals(accounting, deptComboBoxModel.selection().value());
 
 		//non strict filtering
-		employeeComboBoxModel.filter().strict().set(false);
-		employeeComboBoxModel.filter().set(Employee.DEPARTMENT_FK, emptyList());
+		employeeComboBoxModel.filter().get(Employee.MGR_FK).strict().set(false);//now shows employees without a manager, as in, Mr King
+		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).clear();
 		assertEquals(6, employeeComboBoxModel.getSize());
 		boolean kingFound = false;
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
@@ -214,6 +214,9 @@ public final class DefaultEntityComboBoxModelTest {
 			}
 		}
 		assertTrue(kingFound);
+
+		employeeComboBoxModel.filter().predicate().set(entity -> false);
+		assertEquals(0, employeeComboBoxModel.getSize());
 	}
 
 	@Test
@@ -225,7 +228,7 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals(clark, comboBoxModel.selection().value());
 		comboBoxModel.setSelectedItem(null);
 		assertNull(comboBoxModel.selection().value());
-		comboBoxModel.items().visible().predicate().set(entity -> false);
+		comboBoxModel.filter().predicate().set(entity -> false);
 		comboBoxModel.select(clark.primaryKey());
 		assertEquals(clark, comboBoxModel.selection().value());
 		Entity.Key nobodyPK = ENTITIES.primaryKey(Employee.TYPE, -1);
@@ -311,14 +314,15 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals(0, comboBoxModel.getSize());
 
 		comboBoxModel.condition().set(() -> Condition.custom(Employee.ENAME_CLARK));
-		comboBoxModel.filter().set(Employee.DEPARTMENT_FK, emptyList());
+		comboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(singleton(ENTITIES.primaryKey(Department.TYPE, 10)));//accounting
+		assertThrows(UnsupportedOperationException.class, () -> comboBoxModel.items().visible().predicate().set(entity -> false));
 
 		comboBoxModel.refresh();
 		assertEquals(1, comboBoxModel.getSize());
 		assertEquals(2, refreshed.get());
 		comboBoxModel.condition().clear();
 		comboBoxModel.refresh();
-		assertEquals(16, comboBoxModel.getSize());
+		assertEquals(7, comboBoxModel.getSize());// 7 in acounting
 		assertEquals(3, refreshed.get());
 		comboBoxModel.refresher().success().removeListener(refreshListener);
 	}

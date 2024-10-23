@@ -39,7 +39,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
+ * <p>A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.</p>
+ * <p>To filter a {@link EntityComboBoxModel} use {@link #filter()} to set a {@link Predicate} or configure {@link ForeignKey} based filtering.</p>
  * @see #builder(EntityType, EntityConnectionProvider)
  */
 public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
@@ -88,9 +89,9 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	Value<Supplier<Condition>> condition();
 
 	/**
-	 * @return the foreign key filter
+	 * @return the {@link Filter} instance
 	 */
-	ForeignKeyFilter filter();
+	Filter filter();
 
 	/**
 	 * Creates a {@link Value} linked to the selected entity via the value of the given attribute.
@@ -182,64 +183,62 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	}
 
 	/**
-	 * Controls the foreign key filter for a {@link EntityComboBoxModel}
+	 * Controls the filters for a {@link EntityComboBoxModel}
+	 */
+	interface Filter {
+
+		/**
+		 * Controls the additional filter predicate, which is tested for items that pass all foreign key filters
+		 * @return the {@link Value} controlling the addition filter predicate
+		 */
+		Value<Predicate<Entity>> predicate();
+
+		/**
+		 * Returns a filter based on the given foreign key
+		 * @param foreignKey the foreign key
+		 * @return a foreign key filter
+		 */
+		ForeignKeyFilter get(ForeignKey foreignKey);
+	}
+
+	/**
+	 * Controls a foreign key filter for a {@link EntityComboBoxModel}
 	 */
 	interface ForeignKeyFilter {
 
 		/**
-		 * Filters the combo box model so that only items referencing the given keys via the given foreign key are visible.
-		 * Note that this uses the {@link VisibleItems#predicate()} and replaces any previously set prediate.
-		 * @param foreignKey the foreign key
-		 * @param keys the keys, an empty Collection to clear the filter
-		 * @see VisibleItems#predicate()
+		 * Filters the combo box model so that only items referencing the given keys key are visible.
+		 * If {@code keys} is empty and {@link #strict()} filtering is enabled, all entities are filtered.
+		 * @param keys the keys to filter by
 		 */
-		void set(ForeignKey foreignKey, Collection<Entity.Key> keys);
+		void set(Collection<Entity.Key> keys);
 
 		/**
-		 * @param foreignKey the foreign key
-		 * @return the keys currently used to filter the items of this model by foreign key, an empty collection for none
-		 * @see #set(ForeignKey, Collection)
+		 * Clears and disables this foreign key filter
 		 */
-		Collection<Entity.Key> get(ForeignKey foreignKey);
+		void clear();
 
 		/**
 		 * Controls whether foreign key filtering should be strict or not.
-		 * When the filtering is strict only entities with the correct reference are included, that is,
-		 * entities with null values for the given foreign key are filtered.
-		 * Non-strict simply means that entities with null references are not filtered.
+		 * A strict foreign key filter filters all entities if no filter keys are specified and filters individual entities if the reference key is null.
 		 * @return the {@link State} controlling whether foreign key filtering should be strict
-		 * @see #set(ForeignKey, Collection)
+		 * @see #set(Collection)
 		 */
 		State strict();
 
 		/**
-		 * Use this method to retrieve the default foreign key filter visible predicate if you
-		 * want to add a custom {@link Predicate} to this model via {@link VisibleItems#predicate()}.
-		 * <pre>
-		 * {@code
-		 *   Predicate fkPredicate = model.filter().predicate();
-		 *   model.items().visible().predicate().set(item -> fkPredicate.test(item) && ...);
-		 * }
-		 * </pre>
-		 * @return the {@link Predicate} based on the foreign key filter entities
-		 * @see #set(ForeignKey, Collection)
-		 */
-		Predicate<Entity> predicate();
-
-		/**
 		 * Returns a {@link Builder} for a {@link EntityComboBoxModel} filtering this model using the given {@link ForeignKey}
-		 * @param foreignKey the foreign key to filter by
 		 * @return a {@link Builder} for a foreign key filter model
+		 * @see #link(EntityComboBoxModel)
 		 */
-		Builder builder(ForeignKey foreignKey);
+		Builder builder();
 
 		/**
 		 * Links the given combo box model representing foreign key entities to this combo box model
 		 * so that selection in the foreign key model filters this model.
-		 * Note that the foreign key model is refreshed each time this combo box model is refreshed.
-		 * @param foreignKey the foreign key
-		 * @param foreignKeyModel the combo box model containing the foreign key values
+		 * Note that {@code filterModel} is automatically refreshed each time this combo box model is refreshed.
+		 * @param filterModel the combo box model filtering this model
 		 */
-		void link(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel);
+		void link(EntityComboBoxModel filterModel);
 	}
 }

@@ -46,6 +46,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static java.util.Collections.*;
@@ -59,7 +60,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	private final EntityConnectionProvider connectionProvider;
 
 	private final Entities entities;
-	private final DefaultForeignKeyFilter foreignKeyFilter;
+	private final DefaultFilter filter;
 	private final Value<Supplier<Condition>> condition;
 	private final OrderBy orderBy;
 	private final Collection<Attribute<?>> attributes;
@@ -75,6 +76,13 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		this.attributes = builder.attributes;
 		this.entities = connectionProvider.entities();
 		this.comboBoxModel = filterComboBoxModel(this::performQuery);
+		this.filter = new DefaultFilter();
+		this.comboBoxModel.items().visible().predicate().set(filter);
+		this.comboBoxModel.items().visible().predicate().addValidator(predicate -> {
+			if (predicate != filter) {
+				throw new UnsupportedOperationException("EntityComboBoxModel visible predicate can not be changed, use filter()");
+			}
+		});
 		this.condition = Value.builder()
 						.nonNull(builder.condition)
 						.build();
@@ -86,10 +94,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		if (builder.nullCaption != null) {
 			setNullCaption(builder.nullCaption);
 		}
-		foreignKeyFilter = new DefaultForeignKeyFilter();
 		comboBoxModel.selection().filterSelected().set(builder.filterSelected);
 		comboBoxModel.selection().translator().set(new SelectedItemTranslator());
-		comboBoxModel.items().visible().predicate().set(foreignKeyFilter.predicate);
 		if (builder.handleEditEvents) {
 			addEditListeners();
 		}
@@ -141,8 +147,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public ForeignKeyFilter filter() {
-		return foreignKeyFilter;
+	public Filter filter() {
+		return filter;
 	}
 
 	@Override
@@ -291,33 +297,76 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		EntityEditEvents.deleteObserver(entityType).addWeakConsumer(deleteListener);
 	}
 
-	/**
-	 * Controls the foreign key filters for a {@link EntityComboBoxModel}
-	 */
-	private final class DefaultForeignKeyFilter implements ForeignKeyFilter {
+	private final class DefaultFilter implements Filter, Predicate<Entity> {
 
-		private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
-		private final Predicate<Entity> predicate = new ForeignKeyFilterPredicate();
-		private final State strict = State.state(true);
+		private final Map<ForeignKey, DefaultForeignKeyFilter> foreignKeyFilters = new HashMap<>();
+		private final Value<Predicate<Entity>> predicate = Value.builder()
+						.<Predicate<Entity>>nullable()
+						.notify(WHEN_SET)
+						.listener(items()::filter)
+						.build();
 
 		@Override
-		public void set(ForeignKey foreignKey, Collection<Entity.Key> keys) {
-			requireNonNull(foreignKey);
-			requireNonNull(keys);
-			if (keys.isEmpty()) {
-				foreignKeyFilterKeys.remove(foreignKey);
-			}
-			else {
-				foreignKeyFilterKeys.put(foreignKey, new HashSet<>(keys));
-			}
-			comboBoxModel.items().visible().predicate().set(predicate);
+		public Value<Predicate<Entity>> predicate() {
+			return predicate;
 		}
 
 		@Override
-		public Collection<Entity.Key> get(ForeignKey foreignKey) {
-			requireNonNull(foreignKey);
+		public ForeignKeyFilter get(ForeignKey foreignKey) {
+			entities.definition(entityType).foreignKeys().definition(foreignKey);
 
-			return unmodifiableSet(foreignKeyFilterKeys.getOrDefault(foreignKey, emptySet()));
+			return foreignKeyFilters.computeIfAbsent(foreignKey, DefaultForeignKeyFilter::new);
+		}
+
+		@Override
+		public boolean test(Entity entity) {
+			for (Map.Entry<ForeignKey, DefaultForeignKeyFilter> entry : foreignKeyFilters.entrySet()) {
+				if (!entry.getValue().test(entity)) {
+					return false;
+				}
+			}
+
+			return predicate.isNull() || predicate.get().test(entity);
+		}
+	}
+
+	private final class DefaultForeignKeyFilter implements ForeignKeyFilter, Predicate<Entity> {
+
+		private final ForeignKey foreignKey;
+		private final State strict = State.builder(true)
+						.listener(items()::filter)
+						.build();
+
+		private Set<Entity.Key> foreignKeys;
+
+		private DefaultForeignKeyFilter(ForeignKey foreignKey) {
+			this.foreignKey = foreignKey;
+		}
+
+		@Override
+		public boolean test(Entity item) {
+			if (foreignKeys == null) {
+				//cleared and disabled
+				return true;
+			}
+			Entity.Key key = item.key(foreignKey);
+			if (key == null || foreignKeys.isEmpty()) {
+				return !strict.get();
+			}
+
+			return foreignKeys.isEmpty() || foreignKeys.contains(key);
+		}
+
+		@Override
+		public void set(Collection<Entity.Key> keys) {
+			foreignKeys = new HashSet<>(requireNonNull(keys));
+			items().filter();
+		}
+
+		@Override
+		public void clear() {
+			this.foreignKeys = null;
+			items().filter();
 		}
 
 		@Override
@@ -326,71 +375,55 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
-		public Predicate<Entity> predicate() {
-			return predicate;
+		public EntityComboBoxModel.Builder builder() {
+			return new DefaultBuilder(foreignKey.referencedType(), connectionProvider, DefaultEntityComboBoxModel.this, foreignKey)
+							.includeNull(connectionProvider.entities()
+											.definition(foreignKey.entityType())
+											.foreignKeys()
+											.definition(foreignKey)
+											.nullable());
 		}
 
 		@Override
-		public EntityComboBoxModel.Builder builder(ForeignKey foreignKey) {
-			return new DefaultBuilder(foreignKey.referencedType(), connectionProvider, DefaultEntityComboBoxModel.this, requireNonNull(foreignKey))
-							.includeNull(connectionProvider.entities().definition(foreignKey.entityType()).foreignKeys().definition(foreignKey).nullable());
-		}
-
-		@Override
-		public void link(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
+		public void link(EntityComboBoxModel filterModel) {
 			entities.definition(entityType).foreignKeys().definition(foreignKey);
-			if (!foreignKey.referencedType().equals(foreignKeyModel.entityType())) {
-				throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.entityType()
+			if (!foreignKey.referencedType().equals(filterModel.entityType())) {
+				throw new IllegalArgumentException("EntityComboBoxModel is of type: " + filterModel.entityType()
 								+ ", should be: " + foreignKey.referencedType());
 			}
 			//if foreign key filter keys have been set previously, initialize with one of those
-			Collection<Entity.Key> filterKeys = get(foreignKey);
+			Collection<Entity.Key> filterKeys = get();
 			if (!filterKeys.isEmpty()) {
-				foreignKeyModel.select(filterKeys.iterator().next());
+				filterModel.select(filterKeys.iterator().next());
 			}
-			Predicate<Entity> hideAllCondition = item -> false;
-			if (strict.get()) {
-				comboBoxModel.items().visible().predicate().set(hideAllCondition);
-			}
-			foreignKeyModel.selection().item().addConsumer(selected -> {
-				if (selected == null && strict.get()) {
-					comboBoxModel.items().visible().predicate().set(hideAllCondition);
-				}
-				else {
-					set(foreignKey, selected == null ? emptyList() : singletonList(selected.primaryKey()));
-				}
-			});
-			selection().item().addConsumer(selected -> {
-				if (selected != null && !selected.isNull(foreignKey)) {
-					foreignKeyModel.select(selected.key(foreignKey));
-				}
-			});
-			refresher().success().addListener(foreignKeyModel::refresh);
+			set(selection().value());
+			filterModel.selection().item().addConsumer(this::set);
+			selection().item().addConsumer(selected -> select(filterModel, selected));
+			refresher().success().addListener(filterModel::refresh);
 			// Select the correct foreign key item according to the selected item after refresh
-			foreignKeyModel.refresher().success().addListener(() -> {
-				Entity selected = getSelectedItem();
-				if (selected != null && !selected.isNull(foreignKey)) {
-					foreignKeyModel.select(selected.key(foreignKey));
-				}
-			});
+			filterModel.refresher().success().addListener(() -> select(filterModel, getSelectedItem()));
 		}
 
-		private final class ForeignKeyFilterPredicate implements Predicate<Entity> {
-
-			@Override
-			public boolean test(Entity item) {
-				for (Map.Entry<ForeignKey, Set<Entity.Key>> entry : foreignKeyFilterKeys.entrySet()) {
-					Entity.Key key = item.key(entry.getKey());
-					if (key == null) {
-						return !strict.get();
-					}
-					if (!entry.getValue().contains(key)) {
-						return false;
-					}
-				}
-
-				return true;
+		private void select(EntityComboBoxModel filterModel, Entity selected) {
+			if (selected != null && !selected.isNull(foreignKey)) {
+				filterModel.select(selected.key(foreignKey));
 			}
+		}
+
+		private void set(Entity selected) {
+			if (selected != null) {
+				set(singletonList(selected.primaryKey()));
+			}
+			else if (strict.get()) {
+				set(emptyList());
+			}
+			else {
+				clear();
+			}
+		}
+
+		private Collection<Entity.Key> get() {
+			return foreignKeys == null ? emptySet() : foreignKeys;
 		}
 	}
 
@@ -503,7 +536,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		public EntityComboBoxModel build() {
 			DefaultEntityComboBoxModel entityComboBoxModel = new DefaultEntityComboBoxModel(this);
 			if (filterModel != null) {
-				filterModel.filter().link(filterForeignKey, entityComboBoxModel);
+				filterModel.filter().get(filterForeignKey).link(entityComboBoxModel);
 			}
 
 			return entityComboBoxModel;
