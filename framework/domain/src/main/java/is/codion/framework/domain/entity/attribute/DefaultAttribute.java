@@ -99,7 +99,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		return type.entityType.name() + "." + name;
 	}
 
-	private static final class DefaultType<T> implements Type<T>, Serializable {
+	private final class DefaultType<T> implements Type<T>, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
@@ -121,7 +121,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		public T validateType(T value) {
 			if (value != null && valueClass != value.getClass() && !valueClass.isAssignableFrom(value.getClass())) {
 				throw new IllegalArgumentException("Value of type " + valueClass +
-								" expected for attribute " + this + " in entity " + entityType + ", got: " + value.getClass());
+								" expected for attribute " + DefaultAttribute.this + ", got: " + value.getClass());
 			}
 
 			return value;

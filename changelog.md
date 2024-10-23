@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.20
+### is.codion.framework.domain
+- DefaultAttribute.DefaultType.validateType() bug fixed, error message now contains the attribute. 
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Filter and ForeignKeyFilter added.
 ### is.codion.swing.framework.ui
