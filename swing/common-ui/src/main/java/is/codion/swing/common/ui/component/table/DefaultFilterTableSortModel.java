@@ -20,17 +20,16 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 
 import javax.swing.SortOrder;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -41,7 +40,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
 	private final Event<Boolean> sortingChanged = Event.event();
 	private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
-	private final Set<C> columnSortingDisabled = new HashSet<>();
+	private final Map<C, State> sortingEnabled = new HashMap<>();
 	private final RowComparator comparator = new RowComparator();
 
 	DefaultFilterTableSortModel(Columns<R, C> columns) {
@@ -55,7 +54,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 
 	@Override
 	public Optional<ColumnSortOrder<C>> columnSortOrder(C identifier) {
-		requireNonNull(identifier);
+		validateIdentifier(identifier);
 
 		return columnSortOrders.stream()
 						.filter(columnSortOrder -> columnSortOrder.identifier().equals(identifier))
@@ -86,22 +85,10 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public void setSortingEnabled(C identifier, boolean sortingEnabled) {
-		requireNonNull(identifier);
-		if (sortingEnabled) {
-			columnSortingDisabled.remove(identifier);
-		}
-		else {
-			columnSortingDisabled.add(identifier);
-			if (removeSortOrder(identifier)) {
-				sortingChanged.accept(!columnSortOrders.isEmpty());
-			}
-		}
-	}
+	public State sortingEnabled(C identifier) {
+		validateIdentifier(identifier);
 
-	@Override
-	public boolean isSortingEnabled(C identifier) {
-		return !columnSortingDisabled.contains(requireNonNull(identifier));
+		return sortingEnabled.computeIfAbsent(identifier, this::createSortingEnabledState);
 	}
 
 	@Override
@@ -110,9 +97,9 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	private void setSortOrder(C identifier, SortOrder sortOrder, boolean addColumnToSort) {
-		requireNonNull(identifier);
+		validateIdentifier(identifier);
 		requireNonNull(sortOrder);
-		if (!isSortingEnabled(identifier)) {
+		if (sortingEnabled.containsKey(identifier) && !sortingEnabled.get(identifier).get()) {
 			throw new IllegalStateException("Sorting is disabled for column: " + identifier);
 		}
 		if (!addColumnToSort) {
@@ -129,6 +116,26 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 
 	private boolean removeSortOrder(C identifier) {
 		return columnSortOrders.removeIf(columnSortOrder -> columnSortOrder.identifier().equals(identifier));
+	}
+
+	private State createSortingEnabledState(C identifier) {
+		return State.builder(true)
+						.consumer(sortingEnabled -> sortingEnabledChanged(identifier, sortingEnabled))
+						.build();
+	}
+
+	private void sortingEnabledChanged(C identifier, boolean sortingEnabled) {
+		if (!sortingEnabled) {
+			if (removeSortOrder(identifier)) {
+				sortingChanged.accept(!columnSortOrders.isEmpty());
+			}
+		}
+	}
+
+	private void validateIdentifier(C identifier) {
+		if (!columns.identifiers().contains(requireNonNull(identifier))) {
+			throw new IllegalArgumentException("Column not found: " + identifier);
+		}
 	}
 
 	private final class RowComparator implements Comparator<R> {

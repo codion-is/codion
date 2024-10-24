@@ -113,14 +113,14 @@ public class DefaultFilterTableSortModelTest {
 
 		model.clear();
 		model.setSortOrder(2, SortOrder.ASCENDING);
-		model.setSortingEnabled(2, false);
-		assertFalse(model.isSortingEnabled(2));
+		model.sortingEnabled(2).set(false);
 		assertFalse(model.columnSortOrder(2).isPresent());
 		assertThrows(IllegalStateException.class, () -> model.setSortOrder(2, SortOrder.DESCENDING));
-		model.setSortingEnabled(2, true);
-		assertTrue(model.isSortingEnabled(2));
+		model.sortingEnabled(2).set(true);
 		model.setSortOrder(2, SortOrder.DESCENDING);
 		assertSame(SortOrder.DESCENDING, model.columnSortOrder(2).orElseThrow().sortOrder());
+
+		assertThrows(IllegalArgumentException.class, () -> model.setSortOrder(3, SortOrder.ASCENDING));//unknown column
 	}
 
 	@Test

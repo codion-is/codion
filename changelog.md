@@ -9,6 +9,7 @@ Codion Change Log
 - FilterTableSortModel.sortingChanged() renamed observer, now propagates the sorting state instead of a column identifier.
 - FilterTableSortModel.sortOrder() replaced with columnSortOrder(), sortPriority() removed, ColumnSortOrder.priority() added.
 - FilterTableSortModel.sorted() removed.
+- FilterTableSortModel.setSortingEnabled() and isSortingEnabled() replaced with State based sortingEnabled().
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Filter and ForeignKeyFilter added.
 ### is.codion.swing.framework.ui

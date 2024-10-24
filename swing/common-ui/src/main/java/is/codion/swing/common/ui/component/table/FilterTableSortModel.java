@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.observer.Observer;
+import is.codion.common.state.State;
 
 import javax.swing.SortOrder;
 import java.util.Comparator;
@@ -47,7 +48,7 @@ public interface FilterTableSortModel<R, C> {
 	 * @see #addSortOrder(Object, SortOrder)
 	 * @see #columnSortOrder()
 	 * @see #columnSortOrder(Object)
-	 * @see #setSortingEnabled(Object, boolean)
+	 * @see #sortingEnabled(Object)
 	 */
 	void setSortOrder(C identifier, SortOrder sortOrder);
 
@@ -61,7 +62,7 @@ public interface FilterTableSortModel<R, C> {
 	 * @see #setSortOrder(Object, SortOrder)
 	 * @see #columnSortOrder()
 	 * @see #columnSortOrder(Object)
-	 * @see #setSortingEnabled(Object, boolean)
+	 * @see #sortingEnabled(Object)
 	 */
 	void addSortOrder(C identifier, SortOrder sortOrder);
 
@@ -83,18 +84,12 @@ public interface FilterTableSortModel<R, C> {
 	void clear();
 
 	/**
-	 * Disabling sorting will cause {@link #setSortOrder(Object, SortOrder)} and
-	 * {@link #addSortOrder(Object, SortOrder)} to throw a {@link IllegalStateException} for the given column.
+	 * Disabling sorting for a column will cause {@link #setSortOrder(Object, SortOrder)} and
+	 * {@link #addSortOrder(Object, SortOrder)} to throw a {@link IllegalStateException}.
 	 * @param identifier the column identifier
-	 * @param sortingEnabled true if sorting should be enabled for the given column
+	 * @return the {@link State} controlling whether sorting is enabled for the given column
 	 */
-	void setSortingEnabled(C identifier, boolean sortingEnabled);
-
-	/**
-	 * @param identifier the column identifier
-	 * @return true if sorting is enabled for the given column
-	 */
-	boolean isSortingEnabled(C identifier);
+	State sortingEnabled(C identifier);
 
 	/**
 	 * @return an observer notified each time the sorting changes, with the current sorted state as event data
