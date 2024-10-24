@@ -173,6 +173,19 @@ public class DefaultEntityDefinitionTest {
 			}
 		}
 		assertThrows(IllegalArgumentException.class, () -> new TestDomain());
+
+		class TestDomain2 extends DomainModel {
+			public TestDomain2() {
+				super(DOMAIN_TYPE);
+				EntityType entityType = DOMAIN_TYPE.entityType("duplicateAttributes");
+				add(entityType.define(
+												entityType.integerColumn("id").define().primaryKey(),
+												entityType.stringColumn("name").define().column(),
+												entityType.integerAttribute("id").define().attribute())
+								.build());
+			}
+		}
+		assertThrows(IllegalArgumentException.class, () -> new TestDomain2());
 	}
 
 	@Test

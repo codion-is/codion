@@ -622,6 +622,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		private Map<Attribute<?>, AttributeDefinition<?>> attributeMap(List<AttributeDefinition.Builder<?, ?>> builders) {
+			preventDuplicateAttributeNames(builders);
 			Map<Attribute<?>, AttributeDefinition<?>> attributes = new HashMap<>(builders.size());
 			for (AttributeDefinition.Builder<?, ?> builder : builders) {
 				if (!(builder instanceof ForeignKeyDefinition.Builder)) {
@@ -735,6 +736,16 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			return primaryKeyColumnDefinitions.stream()
 							.map(ColumnDefinition::attribute)
 							.collect(toList());
+		}
+
+		private static void preventDuplicateAttributeNames(List<AttributeDefinition.Builder<?, ?>> builders) {
+			Set<String> attributeNames = new HashSet<>();
+			for (AttributeDefinition.Builder<?, ?> builder : builders) {
+				if (attributeNames.contains(builder.attribute().name())) {
+					throw new IllegalArgumentException("Duplicate attribute name: " + builder.attribute().name());
+				}
+				attributeNames.add(builder.attribute().name());
+			}
 		}
 
 		private static Map<String, Attribute<?>> attributeNameMap(Map<Attribute<?>, AttributeDefinition<?>> attributeDefinitions) {
