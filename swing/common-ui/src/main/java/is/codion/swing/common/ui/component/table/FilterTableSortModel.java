@@ -72,13 +72,7 @@ public interface FilterTableSortModel<R, C> {
 	Optional<ColumnSortOrder<C>> columnSortOrder(C identifier);
 
 	/**
-	 * @return true if sorting is enabled for one or more columns
-	 */
-	boolean sorted();
-
-	/**
-	 * Returns the current column sort order, in order of priority
-	 * @return the current column sort order, in order of priority
+	 * @return the current column sort order, in order of priority or an empty list in case this model is unsorted
 	 */
 	List<ColumnSortOrder<C>> columnSortOrder();
 

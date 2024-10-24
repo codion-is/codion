@@ -73,11 +73,6 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public boolean sorted() {
-		return !columnSortOrders.isEmpty();
-	}
-
-	@Override
 	public List<ColumnSortOrder<C>> columnSortOrder() {
 		return unmodifiableList(columnSortOrders);
 	}
@@ -99,7 +94,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		else {
 			columnSortingDisabled.add(identifier);
 			if (removeSortOrder(identifier)) {
-				sortingChanged.accept(sorted());
+				sortingChanged.accept(!columnSortOrders.isEmpty());
 			}
 		}
 	}
@@ -129,7 +124,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		if (sortOrder != SortOrder.UNSORTED) {
 			columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder, columnSortOrders.size()));
 		}
-		sortingChanged.accept(sorted());
+		sortingChanged.accept(!columnSortOrders.isEmpty());
 	}
 
 	private boolean removeSortOrder(C identifier) {

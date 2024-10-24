@@ -60,6 +60,7 @@ import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
+import is.codion.swing.common.ui.component.table.FilterTableSortModel.ColumnSortOrder;
 import is.codion.swing.common.ui.component.table.TableConditionPanel;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -1783,21 +1784,23 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private OrderBy orderByFromSortModel() {
-		if (!table.sortModel().sorted()) {
+		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = table.sortModel().columnSortOrder();
+		if (columnSortOrder.isEmpty()) {
 			return null;
 		}
 		OrderBy.Builder builder = OrderBy.builder();
-		table.sortModel().columnSortOrder().stream()
-						.filter(columnSortOrder -> isColumn(columnSortOrder.identifier()))
-						.forEach(columnSortOrder -> {
-							switch (columnSortOrder.sortOrder()) {
+		columnSortOrder.stream()
+						.filter(sortOrder -> isColumn(sortOrder.identifier()))
+						.forEach(sortOrder -> {
+							switch (sortOrder.sortOrder()) {
 								case ASCENDING:
-									builder.ascending((Column<?>) columnSortOrder.identifier());
+									builder.ascending((Column<?>) sortOrder.identifier());
 									break;
 								case DESCENDING:
-									builder.descending((Column<?>) columnSortOrder.identifier());
+									builder.descending((Column<?>) sortOrder.identifier());
 									break;
 								default:
+									break;
 							}
 						});
 
