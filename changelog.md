@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.framework.domain
 - DefaultAttribute.DefaultType.validateType() bug fixed, error message now contains the attribute.
 - DefaultEntityDefinition, improved error message on duplicate attribute names.
+### is.codion.swing.common.ui
+- FilterTableSortModel.sortingChanged() renamed observer, now propagates the sorting state instead of a column identifier.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Filter and ForeignKeyFilter added.
 ### is.codion.swing.framework.ui

@@ -878,9 +878,9 @@ public final class FilterTable<R, C> extends JTable {
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
 		tableModel.filters().changed().addListener(getTableHeader()::repaint);
 		searchModel.currentResult().addListener(this::repaint);
-		sortModel.sortingChanged().addListener(getTableHeader()::repaint);
-		sortModel.sortingChanged().addListener(() ->
-						tableModel.items().visible().comparator().set(sortModel.sorted() ? sortModel.comparator() : null));
+		sortModel.observer().addListener(getTableHeader()::repaint);
+		sortModel.observer().addConsumer(sorted ->
+						tableModel.items().visible().comparator().set(sorted ? sortModel.comparator() : null));
 		addMouseListener(new FilterTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener(columnReorderingAllowed, columnResizingAllowed));
 		controlMap.keyEvent(COPY_CELL).ifPresent(keyEvent -> keyEvent.enable(this));

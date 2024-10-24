@@ -38,7 +38,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 
 	private final Columns<R, C> columns;
 	private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
-	private final Event<C> sortingChanged = Event.event();
+	private final Event<Boolean> sortingChanged = Event.event();
 	private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
 	private final Set<C> columnSortingDisabled = new HashSet<>();
 	private final RowComparator comparator = new RowComparator();
@@ -98,9 +98,8 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	@Override
 	public void clear() {
 		if (!columnSortOrders.isEmpty()) {
-			C firstSortColumn = columnSortOrders.get(0).identifier();
 			columnSortOrders.clear();
-			sortingChanged.accept(firstSortColumn);
+			sortingChanged.accept(false);
 		}
 	}
 
@@ -113,7 +112,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		else {
 			columnSortingDisabled.add(identifier);
 			if (removeSortOrder(identifier)) {
-				sortingChanged.accept(identifier);
+				sortingChanged.accept(sorted());
 			}
 		}
 	}
@@ -124,7 +123,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public Observer<C> sortingChanged() {
+	public Observer<Boolean> observer() {
 		return sortingChanged.observer();
 	}
 
@@ -143,7 +142,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		if (sortOrder != SortOrder.UNSORTED) {
 			columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder));
 		}
-		sortingChanged.accept(identifier);
+		sortingChanged.accept(sorted());
 	}
 
 	private boolean removeSortOrder(C identifier) {

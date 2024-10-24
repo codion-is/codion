@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumn.filterTableColumn;
@@ -340,8 +339,8 @@ public class FilterTableTest {
 		FilterTable<TestRow, Integer> table = createTestTable();
 		FilterTableModel<TestRow, Integer> tableModel = table.model();
 		AtomicInteger actionsPerformed = new AtomicInteger();
-		Consumer<Integer> consumer = identifier -> actionsPerformed.incrementAndGet();
-		table.sortModel().sortingChanged().addConsumer(consumer);
+		Runnable consumer = actionsPerformed::incrementAndGet;
+		table.sortModel().observer().addListener(consumer);
 
 		tableModel.refresh();
 		FilterTableSortModel<TestRow, Integer> sortModel = table.sortModel();
@@ -377,7 +376,7 @@ public class FilterTableTest {
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
 		assertEquals(tableModel.items().visible().count() - 2, tableModel.items().visible().indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.UNSORTED);
-		table.sortModel().sortingChanged().removeConsumer(consumer);
+		table.sortModel().observer().removeListener(consumer);
 	}
 
 	@Test

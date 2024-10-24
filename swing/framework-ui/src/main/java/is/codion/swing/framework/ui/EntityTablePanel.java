@@ -1546,7 +1546,7 @@ public class EntityTablePanel extends JPanel {
 		queryHiddenColumns.addListener(setSelectAttributes);
 		orderQueryBySortOrder.addConsumer(enabled ->
 						tableModel.queryModel().orderBy().set(enabled ? orderByFromSortModel() : null));
-		table.sortModel().sortingChanged().addListener(() ->
+		table.sortModel().observer().addListener(() ->
 						tableModel.queryModel().orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel() : null));
 	}
 
