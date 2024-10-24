@@ -7,6 +7,7 @@ Codion Change Log
 - DefaultEntityDefinition, improved error message on duplicate attribute names.
 ### is.codion.swing.common.ui
 - FilterTableSortModel.sortingChanged() renamed observer, now propagates the sorting state instead of a column identifier.
+- FilterTableSortModel.sortOrder() replaced with columnSortOrder(), sortPriority() removed, ColumnSortOrder.priority() added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Filter and ForeignKeyFilter added.
 ### is.codion.swing.framework.ui

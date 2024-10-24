@@ -24,14 +24,15 @@ import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 
 import javax.swing.SortOrder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R, C> {
@@ -53,26 +54,12 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public SortOrder sortOrder(C identifier) {
+	public Optional<ColumnSortOrder<C>> columnSortOrder(C identifier) {
 		requireNonNull(identifier);
 
 		return columnSortOrders.stream()
 						.filter(columnSortOrder -> columnSortOrder.identifier().equals(identifier))
-						.findFirst()
-						.map(ColumnSortOrder::sortOrder)
-						.orElse(SortOrder.UNSORTED);
-	}
-
-	@Override
-	public int sortPriority(C identifier) {
-		requireNonNull(identifier);
-		for (int i = 0; i < columnSortOrders.size(); i++) {
-			if (columnSortOrders.get(i).identifier().equals(identifier)) {
-				return i;
-			}
-		}
-
-		return -1;
+						.findFirst();
 	}
 
 	@Override
@@ -92,7 +79,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 
 	@Override
 	public List<ColumnSortOrder<C>> columnSortOrder() {
-		return Collections.unmodifiableList(columnSortOrders);
+		return unmodifiableList(columnSortOrders);
 	}
 
 	@Override
@@ -140,7 +127,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 			removeSortOrder(identifier);
 		}
 		if (sortOrder != SortOrder.UNSORTED) {
-			columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder));
+			columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder, columnSortOrders.size()));
 		}
 		sortingChanged.accept(sorted());
 	}
@@ -193,10 +180,12 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 
 		private final C identifier;
 		private final SortOrder sortOrder;
+		private final int priority;
 
-		private DefaultColumnSortOrder(C identifier, SortOrder sortOrder) {
+		private DefaultColumnSortOrder(C identifier, SortOrder sortOrder, int priority) {
 			this.identifier = identifier;
 			this.sortOrder = sortOrder;
+			this.priority = priority;
 		}
 
 		@Override
@@ -207,6 +196,11 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		@Override
 		public SortOrder sortOrder() {
 			return sortOrder;
+		}
+
+		@Override
+		public int priority() {
+			return priority;
 		}
 	}
 }

@@ -23,6 +23,7 @@ import is.codion.common.observer.Observer;
 import javax.swing.SortOrder;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -44,7 +45,8 @@ public interface FilterTableSortModel<R, C> {
 	 * @param sortOrder the sorting order
 	 * @throws IllegalStateException in case sorting is disabled for the given column
 	 * @see #addSortOrder(Object, SortOrder)
-	 * @see #sortOrder(Object)
+	 * @see #columnSortOrder()
+	 * @see #columnSortOrder(Object)
 	 * @see #setSortingEnabled(Object, boolean)
 	 */
 	void setSortOrder(C identifier, SortOrder sortOrder);
@@ -57,22 +59,17 @@ public interface FilterTableSortModel<R, C> {
 	 * @param sortOrder the sorting order
 	 * @throws IllegalStateException in case sorting is disabled for the given column
 	 * @see #setSortOrder(Object, SortOrder)
-	 * @see #sortOrder(Object)
+	 * @see #columnSortOrder()
+	 * @see #columnSortOrder(Object)
 	 * @see #setSortingEnabled(Object, boolean)
 	 */
 	void addSortOrder(C identifier, SortOrder sortOrder);
 
 	/**
 	 * @param identifier the column identifier
-	 * @return the {@link SortOrder} associated with the given column
+	 * @return the {@link ColumnSortOrder} associated with the given column or an empty Optional if the column is not sorted
 	 */
-	SortOrder sortOrder(C identifier);
-
-	/**
-	 * @param identifier the column identifier
-	 * @return the sort priority for the given column, -1 if not sorted
-	 */
-	int sortPriority(C identifier);
+	Optional<ColumnSortOrder<C>> columnSortOrder(C identifier);
 
 	/**
 	 * @return true if sorting is enabled for one or more columns
@@ -121,9 +118,14 @@ public interface FilterTableSortModel<R, C> {
 		C identifier();
 
 		/**
-		 * @return the sorting order currently associated with the column
+		 * @return the {@link SortOrder} currently associated with the column
 		 */
 		SortOrder sortOrder();
+
+		/**
+		 * @return the sort priority
+		 */
+		int priority();
 	}
 
 	/**

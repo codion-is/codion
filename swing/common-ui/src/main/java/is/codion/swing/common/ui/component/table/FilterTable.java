@@ -61,7 +61,6 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.SortOrder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
@@ -746,15 +745,14 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void toggleColumnSorting(int selectedColumn, boolean add) {
 		if (sortingEnabled.get() && selectedColumn != -1) {
-			C identifier = columnModel().getColumn(selectedColumn).identifier();
-			if (sortModel.isSortingEnabled(identifier)) {
+			sortModel.columnSortOrder(columnModel().getColumn(selectedColumn).identifier()).ifPresent(columnSortOrder -> {
 				if (add) {
-					sortModel.addSortOrder(identifier, nextSortOrder(sortModel.sortOrder(identifier)));
+					sortModel.addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
 				}
 				else {
-					sortModel.setSortOrder(identifier, nextSortOrder(sortModel.sortOrder(identifier)));
+					sortModel.setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
 				}
-			}
+			});
 		}
 	}
 
@@ -999,16 +997,14 @@ public final class FilterTable<R, C> extends JTable {
 				if (!getSelectionModel().isSelectionEmpty()) {
 					setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 				}
-				C identifier = columnModel.getColumn(index).identifier();
-				if (sortModel.isSortingEnabled(identifier)) {
-					SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(identifier));
+				sortModel.columnSortOrder(columnModel.getColumn(index).identifier()).ifPresent(columnSortOrder -> {
 					if (e.isAltDown()) {
-						sortModel.addSortOrder(identifier, nextSortOrder);
+						sortModel.addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
 					}
 					else {
-						sortModel.setSortOrder(identifier, nextSortOrder);
+						sortModel.setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
 					}
-				}
+				});
 			}
 		}
 	}

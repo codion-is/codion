@@ -345,11 +345,11 @@ public class FilterTableTest {
 		tableModel.refresh();
 		FilterTableSortModel<TestRow, Integer> sortModel = table.sortModel();
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
-		assertEquals(SortOrder.DESCENDING, sortModel.sortOrder(0));
+		assertEquals(SortOrder.DESCENDING, sortModel.columnSortOrder(0).orElseThrow().sortOrder());
 		assertEquals(E, tableModel.items().visible().itemAt(0));
 		assertEquals(1, actionsPerformed.get());
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
-		assertEquals(SortOrder.ASCENDING, sortModel.sortOrder(0));
+		assertEquals(SortOrder.ASCENDING, sortModel.columnSortOrder(0).orElseThrow().sortOrder());
 		assertEquals(A, tableModel.items().visible().itemAt(0));
 		assertEquals(0, sortModel.columnSortOrder().get(0).identifier());
 		assertEquals(2, actionsPerformed.get());
