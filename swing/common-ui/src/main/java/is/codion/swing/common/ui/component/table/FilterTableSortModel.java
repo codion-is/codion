@@ -24,7 +24,6 @@ import is.codion.common.state.State;
 import javax.swing.SortOrder;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -68,9 +67,9 @@ public interface FilterTableSortModel<R, C> {
 
 	/**
 	 * @param identifier the column identifier
-	 * @return the {@link ColumnSortOrder} associated with the given column or an empty Optional if the column is not sorted
+	 * @return the {@link ColumnSortOrder} associated with the given column
 	 */
-	Optional<ColumnSortOrder<C>> columnSortOrder(C identifier);
+	ColumnSortOrder<C> columnSortOrder(C identifier);
 
 	/**
 	 * @return the current column sort order, in order of priority or an empty list in case this model is unsorted
@@ -112,7 +111,7 @@ public interface FilterTableSortModel<R, C> {
 		SortOrder sortOrder();
 
 		/**
-		 * @return the sort priority
+		 * @return the sort priority, -1 if not sorted
 		 */
 		int priority();
 	}

@@ -29,7 +29,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DefaultFilterTableSortModelTest {
 
@@ -114,11 +115,11 @@ public class DefaultFilterTableSortModelTest {
 		model.clear();
 		model.setSortOrder(2, SortOrder.ASCENDING);
 		model.sortingEnabled(2).set(false);
-		assertFalse(model.columnSortOrder(2).isPresent());
+		assertEquals(SortOrder.UNSORTED, model.columnSortOrder(2).sortOrder());
 		assertThrows(IllegalStateException.class, () -> model.setSortOrder(2, SortOrder.DESCENDING));
 		model.sortingEnabled(2).set(true);
 		model.setSortOrder(2, SortOrder.DESCENDING);
-		assertSame(SortOrder.DESCENDING, model.columnSortOrder(2).orElseThrow().sortOrder());
+		assertEquals(SortOrder.DESCENDING, model.columnSortOrder(2).sortOrder());
 
 		assertThrows(IllegalArgumentException.class, () -> model.setSortOrder(3, SortOrder.ASCENDING));//unknown column
 	}

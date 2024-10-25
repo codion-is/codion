@@ -43,6 +43,7 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
+import is.codion.swing.common.ui.component.table.FilterTableSortModel.ColumnSortOrder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -745,14 +746,13 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void toggleColumnSorting(int selectedColumn, boolean add) {
 		if (sortingEnabled.get() && selectedColumn != -1) {
-			sortModel.columnSortOrder(columnModel().getColumn(selectedColumn).identifier()).ifPresent(columnSortOrder -> {
-				if (add) {
-					sortModel.addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
-				}
-				else {
-					sortModel.setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
-				}
-			});
+			ColumnSortOrder<C> columnSortOrder = sortModel.columnSortOrder(columnModel().getColumn(selectedColumn).identifier());
+			if (add) {
+				sortModel.addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
+			}
+			else {
+				sortModel.setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
+			}
 		}
 	}
 
@@ -997,14 +997,13 @@ public final class FilterTable<R, C> extends JTable {
 				if (!getSelectionModel().isSelectionEmpty()) {
 					setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 				}
-				sortModel.columnSortOrder(columnModel.getColumn(index).identifier()).ifPresent(columnSortOrder -> {
-					if (e.isAltDown()) {
-						sortModel.addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
-					}
-					else {
-						sortModel.setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
-					}
-				});
+				ColumnSortOrder<C> columnSortOrder = sortModel.columnSortOrder(columnModel.getColumn(index).identifier());
+				if (e.isAltDown()) {
+					sortModel.addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
+				}
+				else {
+					sortModel.setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
+				}
 			}
 		}
 	}

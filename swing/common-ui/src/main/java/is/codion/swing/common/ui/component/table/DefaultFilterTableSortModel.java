@@ -29,7 +29,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -53,12 +52,13 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public Optional<ColumnSortOrder<C>> columnSortOrder(C identifier) {
+	public ColumnSortOrder<C> columnSortOrder(C identifier) {
 		validateIdentifier(identifier);
 
 		return columnSortOrders.stream()
 						.filter(columnSortOrder -> columnSortOrder.identifier().equals(identifier))
-						.findFirst();
+						.findFirst()
+						.orElse(new DefaultColumnSortOrder<>(identifier, SortOrder.UNSORTED, -1));
 	}
 
 	@Override
@@ -120,15 +120,13 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 
 	private State createSortingEnabledState(C identifier) {
 		return State.builder(true)
-						.consumer(sortingEnabled -> sortingEnabledChanged(identifier, sortingEnabled))
+						.consumer(enabled -> sortingEnabledChanged(identifier, enabled))
 						.build();
 	}
 
 	private void sortingEnabledChanged(C identifier, boolean sortingEnabled) {
-		if (!sortingEnabled) {
-			if (removeSortOrder(identifier)) {
-				sortingChanged.accept(!columnSortOrders.isEmpty());
-			}
+		if (!sortingEnabled && removeSortOrder(identifier)) {
+			sortingChanged.accept(!columnSortOrders.isEmpty());
 		}
 	}
 

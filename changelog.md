@@ -12,6 +12,7 @@ Codion Change Log
 - FilterTableSortModel.sortOrder() replaced with columnSortOrder(), sortPriority() removed, ColumnSortOrder.priority() added.
 - FilterTableSortModel.sorted() removed.
 - FilterTableSortModel.setSortingEnabled() and isSortingEnabled() replaced with State based sortingEnabled().
+- FilterTableSortModel, refactoring mistake fixed, sortOrder() no longer returns Optional.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Filter and ForeignKeyFilter added.
 ### is.codion.swing.framework.ui
