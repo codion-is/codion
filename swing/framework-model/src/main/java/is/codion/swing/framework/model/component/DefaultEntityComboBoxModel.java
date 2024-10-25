@@ -91,6 +91,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			// otherwise the sorting overrides the order by
 			comboBoxModel.items().visible().comparator().clear();
 		}
+		else {
+			comboBoxModel.items().visible().comparator().set(entities.definition(entityType).comparator());
+		}
 		if (builder.nullCaption != null) {
 			setNullCaption(builder.nullCaption);
 		}

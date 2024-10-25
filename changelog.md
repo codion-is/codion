@@ -15,6 +15,7 @@ Codion Change Log
 - FilterTableSortModel, refactoring mistake fixed, sortOrder() no longer returns Optional.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Filter and ForeignKeyFilter added.
+- DefaultEntityComboBoxModel bug fixed, now uses the comparator from the entity it is based on.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel now disposes all windows on exit.
 - EntityTablePanel, row limit configuration field now selects all on focus gained.
