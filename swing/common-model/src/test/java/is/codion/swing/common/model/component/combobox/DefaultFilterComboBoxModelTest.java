@@ -60,6 +60,29 @@ public class DefaultFilterComboBoxModelTest {
 	};
 
 	@Test
+	void sorting() {
+		String first = "ari";
+		String second = "ári";
+		String third = "eg";
+		String fourth = "ég";
+		String fifth = "inn";
+		String sixth = "ínn";
+		String seventh = "oli";
+		String eigtht = "óli";
+
+		DefaultFilterComboBoxModel<String> comboBoxModel = new DefaultFilterComboBoxModel<>(asList(eigtht, fourth, seventh, second, first, fifth, sixth, third));
+
+		assertEquals(0, comboBoxModel.items().visible().indexOf(first));
+		assertEquals(1, comboBoxModel.items().visible().indexOf(second));
+		assertEquals(2, comboBoxModel.items().visible().indexOf(third));
+		assertEquals(3, comboBoxModel.items().visible().indexOf(fourth));
+		assertEquals(4, comboBoxModel.items().visible().indexOf(fifth));
+		assertEquals(5, comboBoxModel.items().visible().indexOf(sixth));
+		assertEquals(6, comboBoxModel.items().visible().indexOf(seventh));
+		assertEquals(7, comboBoxModel.items().visible().indexOf(eigtht));
+	}
+
+	@Test
 	void testRefreshClear() {
 		testModel.refresh();
 		assertEquals(5, testModel.items().visible().count());

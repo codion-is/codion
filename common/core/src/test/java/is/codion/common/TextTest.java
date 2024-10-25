@@ -101,6 +101,29 @@ public final class TextTest {
 	}
 
 	@Test
+	void accentedSort() {
+		String first = "ari";
+		String second = "ári";
+		String third = "eg";
+		String fourth = "ég";
+		String fifth = "inn";
+		String sixth = "ínn";
+		String seventh = "oli";
+		String eigtht = "óli";
+
+		List<String> strings = Text.collate(asList(eigtht, fourth, seventh, second, first, fifth, sixth, third));
+
+		assertEquals(first, strings.get(0));
+		assertEquals(second, strings.get(1));
+		assertEquals(third, strings.get(2));
+		assertEquals(fourth, strings.get(3));
+		assertEquals(fifth, strings.get(4));
+		assertEquals(sixth, strings.get(5));
+		assertEquals(seventh, strings.get(6));
+		assertEquals(eigtht, strings.get(7));
+	}
+
+	@Test
 	void parseCommaSeparatedValues() {
 		List<String> hello = Collections.singletonList("hello");
 		assertEquals(hello, Text.parseCommaSeparatedValues("hello"));

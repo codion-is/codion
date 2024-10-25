@@ -664,7 +664,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private static final class DefaultComparator<T> implements Comparator<T> {
 
-		private final Comparator<T> comparator = Text.collator();
+		private final Comparator<T> collator = Text.collator();
 
 		@Override
 		public int compare(T o1, T o2) {
@@ -677,12 +677,14 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (o2 == null) {
 				return 1;
 			}
+			if (o1 instanceof String && o2 instanceof String) {
+				return collator.compare(o1, o2);
+			}
 			if (o1 instanceof Comparable && o2 instanceof Comparable) {
 				return ((Comparable<T>) o1).compareTo(o2);
 			}
-			else {
-				return comparator.compare(o1, o2);
-			}
+
+			return collator.compare(o1, o2);
 		}
 	}
 }
