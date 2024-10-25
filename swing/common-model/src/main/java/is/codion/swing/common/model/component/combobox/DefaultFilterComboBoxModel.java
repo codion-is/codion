@@ -52,7 +52,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
 	private final DefaultComboBoxSelection selectionModel = new DefaultComboBoxSelection();
-	private final DefaultComboBoxItems modelItems = new DefaultComboBoxItems();
+	private final DefaultComboBoxItems modelItems;
 	private final DefaultRefresher refresher;
 
 	/**
@@ -60,17 +60,17 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	 */
 	private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
 
-	DefaultFilterComboBoxModel() {
-		refresher = new DefaultRefresher(new DefaultItemsSupplier());
-	}
-
-	DefaultFilterComboBoxModel(Collection<T> items) {
-		refresher = new DefaultRefresher(new DefaultItemsSupplier());
-		modelItems.set(items);
-	}
-
-	DefaultFilterComboBoxModel(Supplier<Collection<T>> supplier) {
-		refresher = new DefaultRefresher(supplier);
+	private DefaultFilterComboBoxModel(DefaultBuilder<T> builder) {
+		modelItems = new DefaultComboBoxItems(builder.includeNull, builder.nullItem, builder.comparator);
+		if (builder.supplier == null) {
+			refresher = new DefaultRefresher(new DefaultItemsSupplier());
+			if (builder.items != null) {
+				modelItems.set(builder.items);
+			}
+		}
+		else {
+			refresher = new DefaultRefresher(builder.supplier);
+		}
 	}
 
 	@Override
@@ -124,7 +124,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	public T getElementAt(int index) {
 		T element = modelItems.visible.items.get(index);
 		if (element == null) {
-			return modelItems.nullItem.get();
+			return modelItems.nullItem;
 		}
 
 		return element;
@@ -147,57 +147,63 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class DefaultNullItem implements NullItem<T> {
+	static final class DefaultBuilder<T> implements Builder<T> {
 
-		private final State include = State.builder()
-						.consumer(this::includeNullItem)
-						.build();
-		private final Value<T> item = Value.builder()
-						.<T>nullable()
-						.build();
+		private final Collection<T> items;
+		private final Supplier<Collection<T>> supplier;
 
-		@Override
-		public State include() {
-			return include;
+		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
+		private boolean includeNull;
+		private T nullItem;
+
+		DefaultBuilder(Collection<T> items, Supplier<Collection<T>> supplier) {
+			this.items = items;
+			this.supplier = supplier;
 		}
 
 		@Override
-		public void set(T value) {
-			item.set(value);
+		public Builder<T> comparator(Comparator<T> comparator) {
+			this.comparator = comparator;
+			return this;
 		}
 
 		@Override
-		public T get() {
-			return item.get();
+		public Builder<T> includeNull(boolean includeNull) {
+			this.includeNull = includeNull;
+			return this;
 		}
 
 		@Override
-		public Observer<T> observer() {
-			return item.observer();
+		public Builder<T> nullItem(T nullItem) {
+			this.nullItem = nullItem;
+
+			return includeNull(nullItem != null);
 		}
 
-		private void includeNullItem(boolean includeNull) {
-			if (includeNull && !modelItems.visible.items.contains(null)) {
-				modelItems.visible.items.add(0, null);
-			}
-			else {
-				modelItems.visible.items.remove(null);
-			}
+		@Override
+		public FilterComboBoxModel<T> build() {
+			return new DefaultFilterComboBoxModel<>(this);
 		}
 	}
 
 	private final class DefaultComboBoxItems implements ComboBoxItems<T> {
 
-		private final DefaultVisibleItems visible = new DefaultVisibleItems();
+		private final DefaultVisibleItems visible;
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
-		private final DefaultNullItem nullItem = new DefaultNullItem();
-
 		private final Event<Collection<T>> event = Event.event();
+
+		private final boolean includeNull;
+		private final T nullItem;
 
 		private boolean cleared = true;
 
-		private DefaultComboBoxItems() {
-			visible.comparator.addListener(visible::sort);
+		private DefaultComboBoxItems(boolean includeNull, T nullItem, Comparator<T> comparator) {
+			this.includeNull = includeNull;
+			this.nullItem = nullItem;
+			this.visible = new DefaultVisibleItems(comparator);
+			if (includeNull) {
+				visible.items.add(null);
+			}
 			visible.predicate.addListener(this::filter);
 		}
 
@@ -219,7 +225,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			requireNonNull(items);
 			filtered.items.clear();
 			visible.items.clear();
-			if (nullItem.include.get()) {
+			if (includeNull) {
 				visible.items.add(0, null);
 			}
 			visible.items.addAll(items);
@@ -311,11 +317,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public NullItem<T> nullItem() {
-			return nullItem;
-		}
-
-		@Override
 		public void replace(T item, T replacement) {
 			requireNonNull(item);
 			requireNonNull(replacement);
@@ -370,11 +371,13 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						.<Predicate<T>>nullable()
 						.notify(WHEN_SET)
 						.build();
-		private final Value<Comparator<T>> comparator = Value.builder()
-						.nullable((Comparator<T>) DEFAULT_COMPARATOR)
-						.build();
+		private final Comparator<T> comparator;
 		private final List<T> items = new ArrayList<>();
 		private final Event<List<T>> event = Event.event();
+
+		private DefaultVisibleItems(Comparator<T> comparator) {
+			this.comparator = comparator;
+		}
 
 		@Override
 		public Value<Predicate<T>> predicate() {
@@ -386,7 +389,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (items.isEmpty()) {
 				return emptyList();
 			}
-			if (!modelItems.nullItem.include.get()) {
+			if (!modelItems.includeNull) {
 				return unmodifiableList(items);
 			}
 
@@ -401,7 +404,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean contains(T item) {
 			if (item == null) {
-				return modelItems.nullItem.include.get();
+				return modelItems.includeNull;
 			}
 
 			return items.contains(item);
@@ -447,7 +450,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (items.isEmpty()) {
 				return 0;
 			}
-			if (!modelItems.nullItem.include.get()) {
+			if (!modelItems.includeNull) {
 				return items.size();
 			}
 
@@ -455,18 +458,13 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Value<Comparator<T>> comparator() {
-			return comparator;
-		}
-
-		@Override
 		public void sort() {
-			if (comparator.isNotNull() && !items.isEmpty()) {
-				if (modelItems.nullItem.include.get()) {
+			if (comparator != null && !items.isEmpty()) {
+				if (modelItems.includeNull) {
 					items.remove(0);
 				}
-				items.sort(comparator.get());
-				if (modelItems.nullItem.include.get()) {
+				items.sort(comparator);
+				if (modelItems.includeNull) {
 					items.add(0, null);
 				}
 				fireContentsChanged();
@@ -540,7 +538,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public boolean nullSelected() {
-			return modelItems.nullItem.include.get() && selected.item == null;
+			return modelItems.includeNull && selected.item == null;
 		}
 
 		@Override
@@ -573,7 +571,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public T get() {
 			if (item == null) {
-				return modelItems.nullItem.get();
+				return modelItems.nullItem;
 			}
 
 			return item;
@@ -590,7 +588,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		private void setSelectedItem(Object item) {
-			T toSelect = translator.get().apply(Objects.equals(modelItems.nullItem.get(), item) ? null : item);
+			T toSelect = translator.get().apply(Objects.equals(modelItems.nullItem, item) ? null : item);
 			if (!Objects.equals(this.item, toSelect)) {
 				changing.accept(toSelect);
 				this.item = toSelect;

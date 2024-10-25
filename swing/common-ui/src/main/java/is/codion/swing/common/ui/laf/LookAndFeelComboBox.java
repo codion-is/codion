@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static is.codion.swing.common.ui.component.combobox.ComboBoxBuilder.enableMouseWheelSelection;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.enableLookAndFeel;
 import static java.util.Objects.requireNonNull;
@@ -166,7 +165,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 	}
 
 	private static FilterComboBoxModel<Item<LookAndFeelProvider>> createLookAndFeelComboBoxModel() {
-		FilterComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel = filterComboBoxModel(initializeAvailableLookAndFeels());
+		FilterComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel = FilterComboBoxModel.builder(initializeAvailableLookAndFeels()).build();
 		currentLookAndFeel(comboBoxModel).ifPresent(comboBoxModel::setSelectedItem);
 
 		return comboBoxModel;

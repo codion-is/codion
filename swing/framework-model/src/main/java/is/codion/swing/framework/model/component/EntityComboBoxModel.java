@@ -19,7 +19,6 @@
 package is.codion.swing.framework.model.component;
 
 import is.codion.common.Configuration;
-import is.codion.common.model.FilterModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -117,7 +116,6 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 		/**
 		 * Specifies the {@link OrderBy} to use when selecting entities for this model.
-		 * Note that this is overridden by setting the {@link FilterModel.VisibleItems#comparator()}
 		 * in the combo box model.
 		 * @param orderBy the {@link OrderBy} to use when selecting
 		 * @return this builder instance
@@ -142,8 +140,6 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		/**
 		 * @param includeNull if true then the null item is enabled using the default null item caption ({@link FilterComboBoxModel#NULL_CAPTION})
 		 * @return this builder instance
-		 * @see ComboBoxItems#nullItem()
-		 * @see FilterComboBoxModel.NullItem
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 */
 		Builder includeNull(boolean includeNull);
@@ -152,7 +148,6 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * Enables the null item and sets the null item caption.
 		 * @param nullCaption the null item caption
 		 * @return this builder instance
-		 * @see ComboBoxItems#nullItem()
 		 */
 		Builder nullCaption(String nullCaption);
 

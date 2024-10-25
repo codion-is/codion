@@ -108,10 +108,10 @@ public final class DefaultEntityComboBoxModelTest {
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).strict().set(true);
 		assertEquals(0, employeeComboBoxModel.items().visible().count());
 		assertEquals(16, employeeComboBoxModel.items().filtered().count());
-		assertTrue(managerComboBoxModel.items().nullItem().include().get());
+		assertTrue(managerComboBoxModel.items().visible().contains(null));
 		assertEquals(0, managerComboBoxModel.items().visible().count());
 		assertEquals(4, managerComboBoxModel.items().filtered().count());
-		assertFalse(departmentComboBoxModel.items().nullItem().include().get());
+		assertFalse(departmentComboBoxModel.items().visible().contains(null));
 		assertEquals(4, departmentComboBoxModel.items().visible().count());
 		assertEquals(0, departmentComboBoxModel.items().filtered().count());
 
@@ -149,7 +149,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.build();
 		EntityComboBoxModel departmentComboBoxModel = employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).builder().build();
 		employeeComboBoxModel.refresh();//refreshes both
-		assertFalse(departmentComboBoxModel.items().nullItem().include().get());
+		assertFalse(departmentComboBoxModel.items().visible().contains(null));
 		assertEquals(1, employeeComboBoxModel.getSize());
 		Entity.Key accountingKey = CONNECTION_PROVIDER.entities().primaryKey(Department.TYPE, 10);
 		departmentComboBoxModel.select(accountingKey);
@@ -348,13 +348,11 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.orderBy(OrderBy.ascending(Employee.NAME))
 						.build();
-		assertNull(comboBoxModel.items().visible().comparator().get());
 		comboBoxModel.refresh();
 		assertEquals("ADAMS", comboBoxModel.getElementAt(0).get(Employee.NAME));
 		comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.orderBy(OrderBy.descending(Employee.NAME))
 						.build();
-		assertNull(comboBoxModel.items().visible().comparator().get());
 		comboBoxModel.refresh();
 		assertEquals("WARD", comboBoxModel.getElementAt(0).get(Employee.NAME));
 	}
@@ -378,7 +376,5 @@ public final class DefaultEntityComboBoxModelTest {
 		assertTrue(model.items().contains(null));
 		assertEquals("-", model.getSelectedItem().toString());
 		assertNull(model.selection().value());
-		model.items().nullItem().include().set(false);
-		assertFalse(model.items().contains(null));
 	}
 }

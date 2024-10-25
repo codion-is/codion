@@ -2,11 +2,15 @@ Codion Change Log
 ==================
 
 ## 0.18.20
+### is.codion.common.model
+- FilterModel.VisibleItems.comparator() removed.
 ### is.codion.framework.domain
 - DefaultAttribute.DefaultType.validateType() bug fixed, error message now contains the attribute.
 - DefaultEntityDefinition, improved error message on duplicate attribute names.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel.DefaultComparator bug fixed, did not use collator to sort strings.
+- FilterComboBoxModel.NullItem removed.
+- FilterComboBoxModel.Builder added, related refactoring.
 ### is.codion.swing.common.ui
 - FilterTableSortModel.sortingChanged() renamed observer, now propagates the sorting state instead of a column identifier.
 - FilterTableSortModel.sortOrder() replaced with columnSortOrder(), sortPriority() removed, ColumnSortOrder.priority() added.

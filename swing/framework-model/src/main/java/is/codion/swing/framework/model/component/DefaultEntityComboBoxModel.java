@@ -48,7 +48,6 @@ import java.util.function.Supplier;
 
 import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
-import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -75,7 +74,11 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		this.connectionProvider = builder.connectionProvider;
 		this.attributes = builder.attributes;
 		this.entities = connectionProvider.entities();
-		this.comboBoxModel = filterComboBoxModel(this::performQuery);
+		this.comboBoxModel = FilterComboBoxModel.builder(this::performQuery)
+						.nullItem(createNullItem(builder.nullCaption))
+						// otherwise the sorting overrides the order by
+						.comparator(builder.orderBy == null ? entities.definition(entityType).comparator() : null)
+						.build();
 		this.filter = new DefaultFilter();
 		this.comboBoxModel.items().visible().predicate().set(filter);
 		this.comboBoxModel.items().visible().predicate().addValidator(predicate -> {
@@ -87,16 +90,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.nonNull(builder.condition)
 						.build();
 		this.orderBy = builder.orderBy;
-		if (orderBy != null) {
-			// otherwise the sorting overrides the order by
-			comboBoxModel.items().visible().comparator().clear();
-		}
-		else {
-			comboBoxModel.items().visible().comparator().set(entities.definition(entityType).comparator());
-		}
-		if (builder.nullCaption != null) {
-			setNullCaption(builder.nullCaption);
-		}
 		comboBoxModel.selection().filterSelected().set(builder.filterSelected);
 		comboBoxModel.selection().translator().set(new SelectedItemTranslator());
 		if (builder.handleEditEvents) {
@@ -241,12 +234,11 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.findFirst();
 	}
 
-	private void setNullCaption(String nullCaption) {
-		items().nullItem().include().set(true);
-		items().nullItem().set(ProxyBuilder.builder(Entity.class)
+	private Entity createNullItem(String nullCaption) {
+		return nullCaption == null ? null : ProxyBuilder.builder(Entity.class)
 						.delegate(entities.entity(entityType))
 						.method("toString", parameters -> nullCaption)
-						.build());
+						.build();
 	}
 
 	private final class SelectedItemTranslator implements Function<Object, Entity> {

@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -197,15 +196,16 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 */
 	public <T> FilterComboBoxModel<T> createComboBoxModel(Column<T> column) {
 		requireNonNull(column, "column");
-		FilterComboBoxModel<T> comboBoxModel = createColumnComboBoxModel(column);
+		FilterComboBoxModel.Builder<T> builder = createColumnComboBoxModel(column);
 		if (entity().nullable(column)) {
-			comboBoxModel.items().nullItem().include().set(true);
+			builder.includeNull(true);
 			if (column.type().valueClass().isInterface()) {
-				comboBoxModel.items().nullItem().set(ProxyBuilder.builder(column.type().valueClass())
+				builder.nullItem(ProxyBuilder.builder(column.type().valueClass())
 								.method("toString", (ProxyMethod<T>) NULL_ITEM_CAPTION)
 								.build());
 			}
 		}
+		FilterComboBoxModel<T> comboBoxModel = builder.build();
 		afterInsertUpdateOrDelete().addListener(comboBoxModel::refresh);
 
 		return comboBoxModel;
@@ -258,10 +258,10 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		});
 	}
 
-	private <T> FilterComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
+	private <T> FilterComboBoxModel.Builder<T> createColumnComboBoxModel(Column<T> column) {
 		return column.type().isEnum() ?
-						filterComboBoxModel(asList(column.type().valueClass().getEnumConstants())) :
-						filterComboBoxModel(new ColumnItems<>(connectionProvider(), column));
+						FilterComboBoxModel.builder(asList(column.type().valueClass().getEnumConstants())) :
+						FilterComboBoxModel.builder(new ColumnItems<>(connectionProvider(), column));
 	}
 
 	private static final class ColumnItems<T> implements Supplier<Collection<T>> {

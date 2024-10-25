@@ -145,17 +145,17 @@ public final class ItemComboBoxModel {
 		}
 
 		private static <T> FilterComboBoxModel<Item<T>> createItemComboBoxModel(List<Item<T>> items) {
-			FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.filterComboBoxModel(items);
+			FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.builder(items).build();
 			comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
 
 			return comboBoxModel;
 		}
 
 		private static <T> FilterComboBoxModel<Item<T>> createItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
-			FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.filterComboBoxModel();
+			FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.builder(items)
+							.comparator(comparator)
+							.build();
 			comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
-			comboBoxModel.items().visible().comparator().set(comparator);
-			comboBoxModel.items().set(items);
 			if (comboBoxModel.items().contains(Item.item(null))) {
 				comboBoxModel.setSelectedItem(null);
 			}

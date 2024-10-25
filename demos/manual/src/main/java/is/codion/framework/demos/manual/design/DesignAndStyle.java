@@ -34,7 +34,6 @@ import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.TemporalField;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -100,8 +99,6 @@ public final class DesignAndStyle {
 		selection.indexes().set(asList(0, 1, 2));
 
 		selection.items().addListener(() -> System.out.println("Selected items changed"));
-
-		tableModel.items().visible().comparator().set(Comparator.comparing(row -> row.get(0)));
 
 		table.sortingEnabled().set(false);
 		//end::mutable[]

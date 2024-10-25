@@ -21,13 +21,13 @@ package is.codion.swing.common.model.component.combobox;
 import is.codion.common.Configuration;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.selection.SingleItemSelection;
-import is.codion.common.observer.Mutable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
 import javax.swing.ComboBoxModel;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -38,7 +38,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A combo box model based on {@link FilterModel}.
  * @param <T> the type of values in this combo box model
- * @see #filterComboBoxModel()
+ * @see #builder()
  * @see VisibleItems#predicate()
  */
 public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T> {
@@ -49,7 +49,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * <li>Value type: String
 	 * <li>Default value: -
 	 * </ul>
-	 * @see ComboBoxItems#nullItem()
+	 * @see Builder#includeNull(boolean)
 	 */
 	PropertyValue<String> NULL_CAPTION = Configuration.stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
 
@@ -61,7 +61,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 
 	/**
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-	 * via {@link ComboBoxItems#nullItem()}, {@link ComboBoxSelection#value()} is usually what you want
+	 * via {@link Builder#nullItem(Object)}, {@link ComboBoxSelection#value()} is usually what you want
 	 */
 	T getSelectedItem();
 
@@ -74,40 +74,58 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 
 	/**
 	 * @param <T> the item type
-	 * @return a new {@link FilterComboBoxModel} instance
+	 * @return a new {@link FilterComboBoxModel.Builder} instance
 	 */
-	static <T> FilterComboBoxModel<T> filterComboBoxModel() {
-		return new DefaultFilterComboBoxModel<>();
+	static <T> FilterComboBoxModel.Builder<T> builder() {
+		return new DefaultFilterComboBoxModel.DefaultBuilder<>(null, null);
 	}
 
 	/**
 	 * @param <T> the item type
 	 * @param items the items to add to the model
-	 * @return a new {@link FilterComboBoxModel} instance
+	 * @return a new {@link FilterComboBoxModel.Builder} instance
 	 */
-	static <T> FilterComboBoxModel<T> filterComboBoxModel(Collection<T> items) {
-		return new DefaultFilterComboBoxModel<>(requireNonNull(items));
+	static <T> FilterComboBoxModel.Builder<T> builder(Collection<T> items) {
+		return new DefaultFilterComboBoxModel.DefaultBuilder<>(requireNonNull(items), null);
 	}
 
 	/**
 	 * @param <T> the item type
 	 * @param supplier the item supplier
-	 * @return a new {@link FilterComboBoxModel} instance
+	 * @return a new {@link FilterComboBoxModel.Builder} instance
 	 */
-	static <T> FilterComboBoxModel<T> filterComboBoxModel(Supplier<Collection<T>> supplier) {
-		return new DefaultFilterComboBoxModel<>(requireNonNull(supplier));
+	static <T> FilterComboBoxModel.Builder<T> builder(Supplier<Collection<T>> supplier) {
+		return new DefaultFilterComboBoxModel.DefaultBuilder<>(null, requireNonNull(supplier));
 	}
 
 	/**
-	 * Specifies the item that should represent null for providing a caption.
+	 * Builds a {@link FilterComboBoxModel}
 	 * @param <T> the item type
 	 */
-	interface NullItem<T> extends Mutable<T> {
+	interface Builder<T> {
+		/**
+		 * @param comparator the comparator, null for unsorted
+		 * @return this builder
+		 */
+		Builder<T> comparator(Comparator<T> comparator);
 
 		/**
-		 * @return the {@link State} controlling whether a null value is included as the first item
+		 * @param includeNull true if a null item should be included
+		 * @return this builder
 		 */
-		State include();
+		Builder<T> includeNull(boolean includeNull);
+
+		/**
+		 * Sets {@link #includeNull(boolean)} to true if {@code nullItem} is non-null, false otherwise.
+		 * @param nullItem the item representing null
+		 * @return this builder
+		 */
+		Builder<T> nullItem(T nullItem);
+
+		/**
+		 * @return a new {@link FilterComboBoxModel} instance
+		 */
+		FilterComboBoxModel<T> build();
 	}
 
 	/**
@@ -127,11 +145,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @return true if the items have been cleared and need to be refreshed
 		 */
 		boolean cleared();
-
-		/**
-		 * @return the null item
-		 */
-		NullItem<T> nullItem();
 	}
 
 	/**
@@ -148,7 +161,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		/**
 		 * Returns true if this model contains null and it is selected.
 		 * @return true if this model contains null and it is selected, false otherwise
-		 * @see ComboBoxItems#nullItem()
+		 * @see Builder#nullItem(Object)
 		 */
 		boolean nullSelected();
 

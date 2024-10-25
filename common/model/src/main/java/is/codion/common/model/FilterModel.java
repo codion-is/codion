@@ -30,7 +30,6 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -235,16 +234,9 @@ public interface FilterModel<T> {
 		int count();
 
 		/**
-		 * Sorts the visible items according to {@link #comparator()}, preserving the selection.
-		 * Calling this method when no comparator is specified has no effect.
-		 * @see #comparator()
+		 * Sorts the visible items according to the underlying comparator, if one is available, preserving the selection.
 		 */
 		void sort();
-
-		/**
-		 * @return the {@link Value} controlling the comparator to use when sorting
-		 */
-		Value<Comparator<T>> comparator();
 	}
 
 	/**

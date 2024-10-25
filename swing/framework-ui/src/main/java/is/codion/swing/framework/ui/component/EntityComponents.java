@@ -69,7 +69,6 @@ import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.filterComboBoxModel;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItems;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -661,10 +660,9 @@ public final class EntityComponents {
 	}
 
 	private static <T> FilterComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
-		FilterComboBoxModel<T> comboBoxModel = filterComboBoxModel(asList(attribute.type().valueClass().getEnumConstants()));
-		comboBoxModel.items().nullItem().include().set(nullable);
-
-		return comboBoxModel;
+		return FilterComboBoxModel.builder(asList(attribute.type().valueClass().getEnumConstants()))
+						.includeNull(nullable)
+						.build();
 	}
 
 	private final class DefaultListBuilderFactory<T> implements EntityListBuilderFactory<T> {

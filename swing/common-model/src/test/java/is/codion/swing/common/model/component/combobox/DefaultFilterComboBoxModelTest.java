@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -70,7 +69,8 @@ public class DefaultFilterComboBoxModelTest {
 		String seventh = "oli";
 		String eigtht = "óli";
 
-		DefaultFilterComboBoxModel<String> comboBoxModel = new DefaultFilterComboBoxModel<>(asList(eigtht, fourth, seventh, second, first, fifth, sixth, third));
+		FilterComboBoxModel<String> comboBoxModel = FilterComboBoxModel.builder(asList(eigtht, fourth, seventh, second, first, fifth, sixth, third))
+						.build();
 
 		assertEquals(0, comboBoxModel.items().visible().indexOf(first));
 		assertEquals(1, comboBoxModel.items().visible().indexOf(second));
@@ -95,60 +95,6 @@ public class DefaultFilterComboBoxModelTest {
 	void testDataListeners() {
 		testModel.addListDataListener(listDataListener);
 		testModel.removeListDataListener(listDataListener);
-	}
-
-	@Test
-	void testSorting() {
-		assertEquals(ANNA, testModel.getElementAt(1));
-		assertEquals(BJORN, testModel.getElementAt(2));
-		assertEquals(KALLI, testModel.getElementAt(3));
-		assertEquals(SIGGI, testModel.getElementAt(4));
-		assertEquals(TOMAS, testModel.getElementAt(5));
-
-		Comparator<String> comparator = testModel.items().visible().comparator().get();
-		testModel.items().visible().comparator().clear();
-		assertNull(testModel.items().visible().comparator().get());
-		List<String> names = new ArrayList<>();
-		names.add(ANNA);
-		names.add(KALLI);
-		names.add(SIGGI);
-		names.add(TOMAS);
-		names.add(BJORN);
-		testModel.items().set(names);
-
-		assertEquals(ANNA, testModel.getElementAt(1));
-		assertEquals(KALLI, testModel.getElementAt(2));
-		assertEquals(SIGGI, testModel.getElementAt(3));
-		assertEquals(TOMAS, testModel.getElementAt(4));
-		assertEquals(BJORN, testModel.getElementAt(5));
-
-		testModel.items().visible().comparator().set(comparator);
-		names.remove(SIGGI);
-		testModel.items().set(names);
-		testModel.items().addItem(SIGGI);
-
-		assertEquals(ANNA, testModel.getElementAt(1));
-		assertEquals(BJORN, testModel.getElementAt(2));
-		assertEquals(KALLI, testModel.getElementAt(3));
-		assertEquals(SIGGI, testModel.getElementAt(4));
-		assertEquals(TOMAS, testModel.getElementAt(5));
-
-		testModel.items().visible().comparator().set((o1, o2) -> {
-			if (o1 == null) {
-				return -1;
-			}
-			if (o2 == null) {
-				return 1;
-			}
-			return o2.compareTo(o1);
-		});
-		assertNotNull(testModel.items().visible().comparator().get());
-
-		assertEquals(TOMAS, testModel.getElementAt(1));
-		assertEquals(SIGGI, testModel.getElementAt(2));
-		assertEquals(KALLI, testModel.getElementAt(3));
-		assertEquals(BJORN, testModel.getElementAt(4));
-		assertEquals(ANNA, testModel.getElementAt(5));
 	}
 
 	@Test
@@ -274,14 +220,15 @@ public class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void nullItem() {
-		FilterComboBoxModel<String> model = new DefaultFilterComboBoxModel<>();
+		FilterComboBoxModel<String> model = FilterComboBoxModel.<String>builder().build();
 		assertFalse(model.items().contains(null));
-		model.items().nullItem().include().set(true);
+		model = FilterComboBoxModel.<String>builder()
+						.includeNull(true)
+						.build();
 		assertTrue(model.items().contains(null));
-		model.items().nullItem().include().set(false);
-		assertFalse(model.items().contains(null));
-		model.items().nullItem().include().set(true);
-		model.items().nullItem().set("-");
+		model = FilterComboBoxModel.<String>builder()
+						.nullItem("-")
+						.build();
 		assertTrue(model.items().contains(null));
 		assertEquals("-", model.getSelectedItem());
 		model.setSelectedItem("-");
@@ -339,7 +286,7 @@ public class DefaultFilterComboBoxModelTest {
 		}
 		List<Data> items = asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
 
-		FilterComboBoxModel<Data> model = new DefaultFilterComboBoxModel<>();
+		FilterComboBoxModel<Data> model = FilterComboBoxModel.<Data>builder().build();
 		model.items().set(items);
 		model.setSelectedItem(items.get(1));
 		assertEquals("2", model.selection().value().data);
@@ -353,7 +300,7 @@ public class DefaultFilterComboBoxModelTest {
 	@Test
 	void items() {
 		List<Integer> values = asList(0, 1, 2);
-		FilterComboBoxModel<Integer> model = new DefaultFilterComboBoxModel<>(() -> values);
+		FilterComboBoxModel<Integer> model = FilterComboBoxModel.builder(() -> values).build();
 		model.refresh();
 		assertEquals(values.size(), model.items().get().size());
 		assertTrue(values.containsAll(model.items().get()));
@@ -361,9 +308,9 @@ public class DefaultFilterComboBoxModelTest {
 
 	@BeforeEach
 	void setUp() {
-		testModel = new DefaultFilterComboBoxModel<>();
-		testModel.items().nullItem().include().set(true);
-		testModel.items().nullItem().set(NULL);
+		testModel = FilterComboBoxModel.<String>builder()
+						.nullItem(NULL)
+						.build();
 		List<String> names = new ArrayList<>();
 		names.add(ANNA);
 		names.add(KALLI);
