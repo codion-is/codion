@@ -936,7 +936,7 @@ public final class EntitySearchField extends HintTextField {
 											.enable(t.searchField()))
 							.build();
 
-			filterTable.sortModel().setSortOrder(searchModel.columns().iterator().next(), SortOrder.ASCENDING);
+			filterTable.model().sorter().setSortOrder(searchModel.columns().iterator().next(), SortOrder.ASCENDING);
 			filterTable.columnModel().visible().set(searchModel.columns().toArray(new Attribute[0]));
 
 			return filterTable;

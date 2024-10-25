@@ -47,6 +47,7 @@ import is.codion.framework.model.EntityEditModel.Delete;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
+import is.codion.swing.common.model.component.table.FilterTableSortModel.ColumnSortOrder;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -60,7 +61,6 @@ import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
-import is.codion.swing.common.ui.component.table.FilterTableSortModel.ColumnSortOrder;
 import is.codion.swing.common.ui.component.table.TableConditionPanel;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -1547,7 +1547,7 @@ public class EntityTablePanel extends JPanel {
 		queryHiddenColumns.addListener(setSelectAttributes);
 		orderQueryBySortOrder.addConsumer(enabled ->
 						tableModel.queryModel().orderBy().set(enabled ? orderByFromSortModel() : null));
-		table.sortModel().observer().addListener(() ->
+		table.model().sorter().observer().addListener(() ->
 						tableModel.queryModel().orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel() : null));
 	}
 
@@ -1784,7 +1784,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private OrderBy orderByFromSortModel() {
-		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = table.sortModel().columnSortOrder();
+		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = table.model().sorter().columnSortOrder();
 		if (columnSortOrder.isEmpty()) {
 			return null;
 		}

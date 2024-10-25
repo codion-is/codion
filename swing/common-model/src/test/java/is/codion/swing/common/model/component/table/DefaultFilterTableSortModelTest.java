@@ -16,9 +16,7 @@
  *
  * Copyright (c) 2014 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui.component.table;
-
-import is.codion.swing.common.model.component.table.FilterTableModel;
+package is.codion.swing.common.model.component.table;
 
 import org.junit.jupiter.api.Test;
 

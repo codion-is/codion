@@ -13,6 +13,7 @@ Codion Change Log
 - FilterTableSortModel.sorted() removed.
 - FilterTableSortModel.setSortingEnabled() and isSortingEnabled() replaced with State based sortingEnabled().
 - FilterTableSortModel, refactoring mistake fixed, sortOrder() no longer returns Optional.
+- FilterTableSortModel moved back to swing.common.model.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Filter and ForeignKeyFilter added.
 - DefaultEntityComboBoxModel bug fixed, now uses the comparator from the entity it is based on.

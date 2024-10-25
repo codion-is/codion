@@ -20,12 +20,13 @@ package is.codion.tools.generator.model;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
+import is.codion.tools.generator.model.DomainGeneratorModel.SchemaColumns;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.SortOrder;
 import java.util.List;
 
-import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -37,8 +38,8 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void petstore() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
+		model.schemaModel().sorter().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING);
 		model.schemaModel().refresh();
-		model.schemaModel().items().visible().comparator().set(comparing(SchemaRow::name));
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("PETSTORE"))
@@ -54,8 +55,8 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void chinook() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
+		model.schemaModel().sorter().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING);
 		model.schemaModel().refresh();
-		model.schemaModel().items().visible().comparator().set(comparing(SchemaRow::name));
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("CHINOOK"))
@@ -71,8 +72,8 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void world() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
+		model.schemaModel().sorter().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING);
 		model.schemaModel().refresh();
-		model.schemaModel().items().visible().comparator().set(comparing(SchemaRow::name));
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("WORLD"))

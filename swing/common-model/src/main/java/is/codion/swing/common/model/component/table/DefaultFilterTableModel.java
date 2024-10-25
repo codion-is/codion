@@ -70,12 +70,14 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final DefaultItems modelItems;
 	private final TableSelection<R> selection;
 	private final TableConditionModel<C> filters;
+	private final FilterTableSortModel<R, C> sorter;
 	private final VisiblePredicate visiblePredicate;
 	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = requireNonNull(builder.columns);
+		this.sorter = new DefaultFilterTableSortModel<>(builder.columns);
 		this.modelItems = new DefaultItems(builder.validator);
 		this.selection = new DefaultFilterTableSelection<>(modelItems);
 		this.filters = tableConditionModel(createFilterConditionModels(builder.filterModelFactory == null ?
@@ -126,6 +128,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public TableConditionModel<C> filters() {
 		return filters;
+	}
+
+	@Override
+	public FilterTableSortModel<R, C> sorter() {
+		return sorter;
 	}
 
 	@Override
@@ -470,8 +477,15 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private final class DefaultVisibleItems implements VisibleItems<R> {
 
 			private final Value<Comparator<R>> comparator = Value.builder()
-							.<Comparator<R>>nullable()
-							.notify(WHEN_SET)
+							.nonNull(sorter.comparator())
+							.validator(new Value.Validator<Comparator<R>>() {// todo temporary
+								@Override
+								public void validate(Comparator<R> value) {
+									if (value != sorter.comparator()) {
+										throw new IllegalStateException();
+									}
+								}
+							})
 							.listener(this::sort)
 							.build();
 
@@ -573,7 +587,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			@Override
 			public void sort() {
-				if (comparator.isNotNull()) {
+				if (!sorter.columnSortOrder().isEmpty()) {
 					List<R> selectedItems = selection.items().get();
 					items.sort(comparator.get());
 					fireTableRowsUpdated(0, items.size());

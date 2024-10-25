@@ -35,6 +35,7 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
+import is.codion.swing.common.model.component.table.FilterTableSortModel.ColumnSortOrder;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
@@ -43,7 +44,6 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.FieldFactory;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
-import is.codion.swing.common.ui.component.table.FilterTableSortModel.ColumnSortOrder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -93,10 +93,10 @@ import java.util.stream.Stream;
 import static is.codion.common.item.Item.item;
 import static is.codion.common.model.summary.TableSummaryModel.tableSummaryModel;
 import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.swing.common.model.component.table.FilterTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.*;
-import static is.codion.swing.common.ui.component.table.FilterTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
@@ -237,7 +237,6 @@ public final class FilterTable<R, C> extends JTable {
 
 	private final FilterTableModel<R, C> tableModel;
 	private final FilterTableSearchModel searchModel;
-	private final FilterTableSortModel<R, C> sortModel;
 	private final TableSummaryModel<C> summaryModel;
 
 	private final TableConditionPanel.Factory<C> filterPanelFactory;
@@ -257,7 +256,6 @@ public final class FilterTable<R, C> extends JTable {
 		super(builder.tableModel, new DefaultFilterTableColumnModel<>(builder.columns),
 						builder.tableModel.selection());
 		this.tableModel = builder.tableModel;
-		this.sortModel = new DefaultFilterTableSortModel<>(tableModel.columns());
 		this.searchModel = new DefaultFilterTableSearchModel<>(tableModel, columnModel());
 		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
 						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
@@ -373,13 +371,6 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public FilterTableSearchModel searchModel() {
 		return searchModel;
-	}
-
-	/**
-	 * @return the sorting model
-	 */
-	public FilterTableSortModel<R, C> sortModel() {
-		return sortModel;
 	}
 
 	/**
@@ -746,12 +737,12 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void toggleColumnSorting(int selectedColumn, boolean add) {
 		if (sortingEnabled.get() && selectedColumn != -1) {
-			ColumnSortOrder<C> columnSortOrder = sortModel.columnSortOrder(columnModel().getColumn(selectedColumn).identifier());
+			ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSortOrder(columnModel().getColumn(selectedColumn).identifier());
 			if (add) {
-				sortModel.addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
+				tableModel.sorter().addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
 			}
 			else {
-				sortModel.setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
+				tableModel.sorter().setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
 			}
 		}
 	}
@@ -876,9 +867,8 @@ public final class FilterTable<R, C> extends JTable {
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
 		tableModel.filters().changed().addListener(getTableHeader()::repaint);
 		searchModel.currentResult().addListener(this::repaint);
-		sortModel.observer().addListener(getTableHeader()::repaint);
-		sortModel.observer().addConsumer(sorted ->
-						tableModel.items().visible().comparator().set(sorted ? sortModel.comparator() : null));
+		tableModel.sorter().observer().addListener(getTableHeader()::repaint);
+		tableModel.sorter().observer().addListener(model().items().visible()::sort);
 		addMouseListener(new FilterTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener(columnReorderingAllowed, columnResizingAllowed));
 		controlMap.keyEvent(COPY_CELL).ifPresent(keyEvent -> keyEvent.enable(this));
@@ -997,12 +987,12 @@ public final class FilterTable<R, C> extends JTable {
 				if (!getSelectionModel().isSelectionEmpty()) {
 					setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 				}
-				ColumnSortOrder<C> columnSortOrder = sortModel.columnSortOrder(columnModel.getColumn(index).identifier());
+				ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSortOrder(columnModel.getColumn(index).identifier());
 				if (e.isAltDown()) {
-					sortModel.addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
+					tableModel.sorter().addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
 				}
 				else {
-					sortModel.setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
+					tableModel.sorter().setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
 				}
 			}
 		}

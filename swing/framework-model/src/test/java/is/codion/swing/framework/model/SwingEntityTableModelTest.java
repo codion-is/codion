@@ -33,9 +33,9 @@ import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.SortOrder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,7 +50,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Override
 	protected SwingEntityTableModel createDepartmentTableModel() {
 		SwingEntityTableModel deptModel = createTableModel(Department.TYPE, testModel.connectionProvider());
-		deptModel.items().visible().comparator().set(Comparator.comparing(department -> department.get(Department.NAME)));
+		deptModel.sorter().setSortOrder(Department.NAME, SortOrder.ASCENDING);
 
 		return deptModel;
 	}

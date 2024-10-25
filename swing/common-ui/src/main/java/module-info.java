@@ -28,7 +28,6 @@
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableColumn}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableColumnModel}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableSearchModel}
- * <li>{@link is.codion.swing.common.ui.component.table.FilterTableSortModel}
  * <li>{@link is.codion.swing.common.ui.dialog.Dialogs}
  * <li>{@link is.codion.swing.common.ui.key.KeyEvents}
  * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelProvider}

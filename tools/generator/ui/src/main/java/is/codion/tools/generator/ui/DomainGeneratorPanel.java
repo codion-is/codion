@@ -54,7 +54,6 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -178,7 +177,6 @@ public final class DomainGeneratorPanel extends JPanel {
 														.control(table.createToggleColumnsControls())
 														.control(table.createToggleAutoResizeModeControls()))
 										.build())
-						.onBuild(table -> table.sortModel().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING))
 						.build();
 	}
 
@@ -186,7 +184,6 @@ public final class DomainGeneratorPanel extends JPanel {
 		return FilterTable.builder(model.entityModel(), createEntityColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.popupMenuControl(FilterTable::createToggleAutoResizeModeControls)
-						.onBuild(table -> table.sortModel().setSortOrder(EntityColumns.Id.ENTITY, SortOrder.ASCENDING))
 						.build();
 	}
 

@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2013 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui.component.table;
+package is.codion.swing.common.model.component.table;
 
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
@@ -28,7 +28,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Handles the column sorting states for a {@link FilterTable}.
+ * Handles the column sorting states for a {@link FilterTableModel}.
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifiers in the table model
  */

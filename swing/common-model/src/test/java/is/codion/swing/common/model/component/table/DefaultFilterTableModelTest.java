@@ -26,10 +26,10 @@ import is.codion.swing.common.model.component.table.FilterTableModel.TableSelect
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.SortOrder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -208,9 +208,8 @@ public final class DefaultFilterTableModelTest {
 										.build();
 		testModel.selection().indexes().addListener(selectionEvents::incrementAndGet);
 		testModel.refreshStrategy().set(RefreshStrategy.MERGE);
+		testModel.sorter().setSortOrder(0, SortOrder.ASCENDING);
 		testModel.refresh();
-		testModel.items().visible().comparator().set(Comparator.comparing(o -> o.value));
-//		testModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
 		testModel.selection().index().set(1);//b
 
 		assertEquals(1, selectionEvents.get());

@@ -118,6 +118,11 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	TableConditionModel<C> filters();
 
 	/**
+	 * @return the sort model
+	 */
+	FilterTableSortModel<R, C> sorter();
+
+	/**
 	 * {@inheritDoc}
 	 * <br><br>
 	 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.

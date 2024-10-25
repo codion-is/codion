@@ -30,6 +30,7 @@ import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.tools.generator.domain.DomainSource;
 
+import javax.swing.SortOrder;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -114,6 +115,8 @@ public final class DomainGeneratorModel {
 		this.user = requireNonNull(user, "user");
 		sourceDirectoryChanged();
 		domainPackageChanged();
+		schemaTableModel.sorter().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING);
+		entityTableModel.sorter().setSortOrder(EntityColumns.Id.ENTITY, SortOrder.ASCENDING);
 		schemaTableModel.refresh();
 		bindEvents();
 	}

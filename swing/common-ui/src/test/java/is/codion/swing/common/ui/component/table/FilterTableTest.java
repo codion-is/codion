@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
+import is.codion.swing.common.model.component.table.FilterTableSortModel;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 
@@ -251,7 +252,7 @@ public class FilterTableTest {
 		rowColumn = searchModel.nextResult().orElse(null);
 		assertNull(rowColumn);
 
-		table.sortModel().setSortOrder(1, SortOrder.DESCENDING);
+		table.model().sorter().setSortOrder(1, SortOrder.DESCENDING);
 
 		searchModel.searchString().set("b");
 		rowColumn = searchModel.nextResult().orElse(null);
@@ -278,7 +279,7 @@ public class FilterTableTest {
 						new DefaultRowColumn(3, 1)
 		), searchModel.searchResults());
 
-		table.sortModel().setSortOrder(1, SortOrder.ASCENDING);
+		table.model().sorter().setSortOrder(1, SortOrder.ASCENDING);
 		table.columnModel().moveColumn(1, 0);
 
 		testModel.refresh();
@@ -295,7 +296,7 @@ public class FilterTableTest {
 		rowColumn = searchModel.nextResult().orElse(null);
 		assertNull(rowColumn);
 
-		table.sortModel().setSortOrder(0, SortOrder.DESCENDING);
+		table.model().sorter().setSortOrder(0, SortOrder.DESCENDING);
 
 		searchModel.searchString().set("b");
 		rowColumn = searchModel.nextResult().orElse(null);
@@ -340,10 +341,10 @@ public class FilterTableTest {
 		FilterTableModel<TestRow, Integer> tableModel = table.model();
 		AtomicInteger actionsPerformed = new AtomicInteger();
 		Runnable consumer = actionsPerformed::incrementAndGet;
-		table.sortModel().observer().addListener(consumer);
+		table.model().sorter().observer().addListener(consumer);
 
 		tableModel.refresh();
-		FilterTableSortModel<TestRow, Integer> sortModel = table.sortModel();
+		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sorter();
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
 		assertEquals(SortOrder.DESCENDING, sortModel.columnSortOrder(0).sortOrder());
 		assertEquals(E, tableModel.items().visible().itemAt(0));
@@ -376,7 +377,7 @@ public class FilterTableTest {
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
 		assertEquals(tableModel.items().visible().count() - 2, tableModel.items().visible().indexOf(NULL));
 		sortModel.setSortOrder(0, SortOrder.UNSORTED);
-		table.sortModel().observer().removeListener(consumer);
+		table.model().sorter().observer().removeListener(consumer);
 	}
 
 	@Test
@@ -384,7 +385,7 @@ public class FilterTableTest {
 		FilterTable<TestRow, Integer> table = createTestTable(Comparator.reverseOrder());
 		FilterTableModel<TestRow, Integer> tableModel = table.model();
 		tableModel.refresh();
-		FilterTableSortModel<TestRow, Integer> sortModel = table.sortModel();
+		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sorter();
 		sortModel.setSortOrder(0, SortOrder.ASCENDING);
 		assertEquals(E, tableModel.items().visible().itemAt(0));
 		sortModel.setSortOrder(0, SortOrder.DESCENDING);
@@ -410,13 +411,13 @@ public class FilterTableTest {
 		assertEquals(3, selectionModel.getMinSelectionIndex());
 		assertEquals(ITEMS.get(2), selectionModel.item().get());
 
-		table.sortModel().setSortOrder(0, SortOrder.ASCENDING);
+		table.model().sorter().setSortOrder(0, SortOrder.ASCENDING);
 		assertEquals(ITEMS.get(2), selectionModel.item().get());
 		assertEquals(2, selectionModel.getMinSelectionIndex());
 
 		tableModel.selection().indexes().set(singletonList(0));
 		assertEquals(ITEMS.get(0), selectionModel.item().get());
-		table.sortModel().setSortOrder(0, SortOrder.DESCENDING);
+		table.model().sorter().setSortOrder(0, SortOrder.DESCENDING);
 		assertEquals(4, selectionModel.getMinSelectionIndex());
 
 		assertEquals(singletonList(4), selectionModel.indexes().get());
