@@ -202,7 +202,13 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	interface ForeignKeyFilter {
 
 		/**
-		 * Filters the combo box model so that only items referencing the given keys key are visible.
+		 * Filters the combo box model so that only items referencing the given key are visible.
+		 * @param key the key to filter by
+		 */
+		void set(Entity.Key key);
+
+		/**
+		 * Filters the combo box model so that only items referencing the given keys are visible.
 		 * If {@code keys} is empty and {@link #strict()} filtering is enabled, all entities are filtered.
 		 * @param keys the keys to filter by
 		 */

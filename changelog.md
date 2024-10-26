@@ -21,6 +21,7 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Filter and ForeignKeyFilter added.
 - DefaultEntityComboBoxModel bug fixed, now uses the comparator from the entity it is based on.
+- EntityComboBox.ForeignKeyFilter.set() overloaded for a single Key.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel now disposes all windows on exit.
 - EntityTablePanel, row limit configuration field now selects all on focus gained.

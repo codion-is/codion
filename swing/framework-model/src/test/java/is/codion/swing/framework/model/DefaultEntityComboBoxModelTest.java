@@ -168,7 +168,9 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
 		employeeComboBoxModel.refresh();
 		Entity blake = employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
-		employeeComboBoxModel.filter().get(Employee.MGR_FK).set(singletonList(blake.primaryKey()));
+		assertThrows(IllegalArgumentException.class, () -> employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(blake.primaryKey()));
+
+		employeeComboBoxModel.filter().get(Employee.MGR_FK).set(blake.primaryKey());
 		assertEquals(5, employeeComboBoxModel.getSize());
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
 			Entity item = employeeComboBoxModel.getElementAt(i);
@@ -176,7 +178,7 @@ public final class DefaultEntityComboBoxModelTest {
 		}
 
 		Entity sales = employeeComboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
-		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(singletonList(sales.primaryKey()));
+		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(sales.primaryKey());
 		assertEquals(2, employeeComboBoxModel.getSize());
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
 			Entity item = employeeComboBoxModel.getElementAt(i);

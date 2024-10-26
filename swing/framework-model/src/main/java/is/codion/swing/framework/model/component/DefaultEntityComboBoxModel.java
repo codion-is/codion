@@ -353,8 +353,13 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
+		public void set(Entity.Key key) {
+			set(singleton(requireNonNull(key)));
+		}
+
+		@Override
 		public void set(Collection<Entity.Key> keys) {
-			foreignKeys = new HashSet<>(requireNonNull(keys));
+			foreignKeys = new HashSet<>(validateKeys(keys));
 			items().filter();
 		}
 
@@ -407,7 +412,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		private void set(Entity selected) {
 			if (selected != null) {
-				set(singletonList(selected.primaryKey()));
+				set(selected.primaryKey());
 			}
 			else if (strict.get()) {
 				set(emptyList());
@@ -419,6 +424,17 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		private Collection<Entity.Key> get() {
 			return foreignKeys == null ? emptySet() : foreignKeys;
+		}
+
+		private Collection<Entity.Key> validateKeys(Collection<Entity.Key> keys) {
+			requireNonNull(keys);
+			for (Entity.Key key : keys) {
+				if (!key.entityType().equals(foreignKey.referencedType())) {
+					throw new IllegalArgumentException("Key " + key + " is not of the correct type (" + foreignKey.referencedType() + ")");
+				}
+			}
+
+			return keys;
 		}
 	}
 
