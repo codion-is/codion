@@ -20,8 +20,6 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.junit.jupiter.api.Test;
@@ -56,17 +54,15 @@ public class SelectedValuesTest {
 	void selectedItemValue() {
 		List<Item<String>> items = asList(item(null), item("one"),
 						item("two"), item("three"), item("four"));
-		FilterComboBoxModel<Item<String>> boxModel = ItemComboBoxModel.builder(items).build();
-		boxModel.setSelectedItem("two");
-		ComponentValue<String, JComboBox<Item<String>>> componentValue = Components.itemComboBox(boxModel)
+		ComponentValue<String, JComboBox<Item<String>>> componentValue = Components.itemComboBox(items)
+						.value("two")
 						.buildValue();
-		assertEquals(5, boxModel.getSize());
+		assertEquals(5, componentValue.component().getModel().getSize());
 		assertEquals("two", componentValue.get());
 
-		boxModel = ItemComboBoxModel.builder(items).build();
-		componentValue = Components.itemComboBox(boxModel)
+		componentValue = Components.itemComboBox(items)
 						.buildValue();
-		assertEquals(5, boxModel.getSize());
+		assertEquals(5, componentValue.component().getModel().getSize());
 		assertNull(componentValue.get());
 	}
 

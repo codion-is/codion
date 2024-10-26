@@ -20,13 +20,13 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.item.Item;
 import is.codion.common.resource.MessageBundle;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -90,21 +90,21 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 
 	private static final class FontSizeSelectionPanel extends JPanel {
 
-		private final FilterComboBoxModel<Item<Integer>> fontSizeComboBoxModel;
+		private final ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue;
 
 		private FontSizeSelectionPanel(int initialFontSize) {
 			super(Layouts.borderLayout());
 			List<Item<Integer>> values = initializeValues();
-			this.fontSizeComboBoxModel = ItemComboBoxModel.builder(values).build();
-			add(ItemComboBoxBuilder.builder(fontSizeComboBoxModel)
+			componentValue = ItemComboBoxBuilder.builder(values)
 							.value(initialFontSize)
 							.renderer(new FontSizeCellRenderer(values, initialFontSize))
-							.build(), BorderLayout.CENTER);
+							.buildValue();
+			add(componentValue.component(), BorderLayout.CENTER);
 			setBorder(createEmptyBorder(10, 10, 0, 10));
 		}
 
 		private int selectedFontSize() {
-			return fontSizeComboBoxModel.selection().value().value();
+			return componentValue.get();
 		}
 
 		private static List<Item<Integer>> initializeValues() {

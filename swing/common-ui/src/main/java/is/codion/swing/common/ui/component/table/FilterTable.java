@@ -56,6 +56,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.Action;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -452,14 +453,16 @@ public final class FilterTable<R, C> extends JTable {
 	 * Displays a dialog for selecting the column auto-resize mode
 	 */
 	public void selectAutoResizeMode() {
-		FilterComboBoxModel<Item<Integer>> autoResizeComboBoxModel = createAutoResizeModeComboBoxModel();
+		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue = itemComboBox(AUTO_RESIZE_MODES)
+						.value(getAutoResizeMode())
+						.buildValue();
 		Dialogs.okCancelDialog(borderLayoutPanel()
-										.centerComponent(itemComboBox(autoResizeComboBoxModel).build())
+										.centerComponent(componentValue.component())
 										.border(Borders.emptyBorder())
 										.build())
 						.owner(getParent())
 						.title(MESSAGES.getString(AUTO_RESIZE))
-						.onOk(() -> setAutoResizeMode(autoResizeComboBoxModel.selection().value().value()))
+						.onOk(() -> setAutoResizeMode(componentValue.get()))
 						.show();
 	}
 

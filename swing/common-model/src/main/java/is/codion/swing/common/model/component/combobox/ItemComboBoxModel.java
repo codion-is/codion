@@ -21,7 +21,6 @@ package is.codion.swing.common.model.component.combobox;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
@@ -137,24 +136,15 @@ public final class ItemComboBoxModel {
 
 		@Override
 		public FilterComboBoxModel<Item<T>> build() {
-			if (sorted && comparator == null) {
-				return createItemComboBoxModel(items);
+			FilterComboBoxModel.Builder<Item<T>> builder = FilterComboBoxModel.builder(items);
+			if (!sorted) {
+				builder.comparator(null);
+			}
+			if (comparator != null) {
+				builder.comparator(comparator);
 			}
 
-			return createItemComboBoxModel(comparator, items);
-		}
-
-		private static <T> FilterComboBoxModel<Item<T>> createItemComboBoxModel(List<Item<T>> items) {
-			FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.builder(items).build();
-			comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
-
-			return comboBoxModel;
-		}
-
-		private static <T> FilterComboBoxModel<Item<T>> createItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
-			FilterComboBoxModel<Item<T>> comboBoxModel = FilterComboBoxModel.builder(items)
-							.comparator(comparator)
-							.build();
+			FilterComboBoxModel<Item<T>> comboBoxModel = builder.build();
 			comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
 			if (comboBoxModel.items().contains(Item.item(null))) {
 				comboBoxModel.setSelectedItem(null);

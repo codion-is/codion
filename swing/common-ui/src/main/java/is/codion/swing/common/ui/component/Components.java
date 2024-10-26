@@ -23,7 +23,6 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
@@ -260,7 +259,7 @@ public final class Components {
 	 * @return a boolean based JComboBox builder
 	 */
 	public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
-		return ItemComboBoxBuilder.builder(ItemComboBoxModel.builder(booleanItems()).build());
+		return ItemComboBoxBuilder.builder(booleanItems());
 	}
 
 	/**
@@ -268,7 +267,7 @@ public final class Components {
 	 * @return a boolean based JComboBox builder
 	 */
 	public static ItemComboBoxBuilder<Boolean> booleanComboBox(Value<Boolean> linkedValue) {
-		return ItemComboBoxBuilder.builder(ItemComboBoxModel.builder(booleanItems()).build(), requireNonNull(linkedValue));
+		return ItemComboBoxBuilder.builder(booleanItems(), requireNonNull(linkedValue));
 	}
 
 	/**

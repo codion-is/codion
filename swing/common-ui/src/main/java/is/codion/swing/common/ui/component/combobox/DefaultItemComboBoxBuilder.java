@@ -47,7 +47,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 
 	private FilterComboBoxModel<Item<T>> comboBoxModel;
 	private Comparator<Item<T>> comparator;
-	private boolean sorted = true;
+	private boolean sorted = false;
 	private boolean nullable;
 	private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
 	private boolean mouseWheelScrolling = true;
@@ -59,7 +59,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 
 	DefaultItemComboBoxBuilder(List<Item<T>> items, Value<T> linkedValue) {
 		super(linkedValue);
-		this.items = requireNonNull(items);
+		this.items = new ArrayList<>(requireNonNull(items));
 		preferredHeight(preferredTextFieldHeight());
 	}
 
@@ -151,7 +151,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 
 	@Override
 	protected JComboBox<Item<T>> createComponent() {
-		FilterComboBoxModel<Item<T>> itemComboBoxModel = initializeItemComboBoxModel();
+		FilterComboBoxModel<Item<T>> itemComboBoxModel = comboBoxModel == null ? createItemComboBoxModel() : comboBoxModel;
 		JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
 		Completion.enable(comboBox, completionMode);
 		if (renderer != null) {
@@ -183,29 +183,23 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 		return new SelectedItemValue<>(component);
 	}
 
-	private FilterComboBoxModel<Item<T>> initializeItemComboBoxModel() {
+	private FilterComboBoxModel<Item<T>> createItemComboBoxModel() {
 		Item<T> nullItem = Item.item(null, FilterComboBoxModel.NULL_CAPTION.get());
-		if (comboBoxModel == null) {
-			List<Item<T>> modelItems = new ArrayList<>(items);
-			if (nullable && !modelItems.contains(nullItem)) {
-				modelItems.add(0, nullItem);
-			}
-			if (comparator != null) {
-				comboBoxModel = ItemComboBoxModel.builder(modelItems)
-								.sorted(comparator)
-								.build();
-			}
-			else if (sorted) {
-				comboBoxModel = ItemComboBoxModel.builder(modelItems)
-								.sorted(true)
-								.build();
-			}
-			else {
-				comboBoxModel = ItemComboBoxModel.builder(modelItems).build();
-			}
+		if (nullable && !items.contains(nullItem)) {
+			items.add(0, nullItem);
 		}
-		if (nullable && comboBoxModel.items().contains(nullItem)) {
-			comboBoxModel.setSelectedItem(null);
+		if (comparator != null) {
+			comboBoxModel = ItemComboBoxModel.builder(items)
+							.sorted(comparator)
+							.build();
+		}
+		else if (sorted) {
+			comboBoxModel = ItemComboBoxModel.builder(items)
+							.sorted(true)
+							.build();
+		}
+		else {
+			comboBoxModel = ItemComboBoxModel.builder(items).build();
 		}
 
 		return comboBoxModel;
