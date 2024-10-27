@@ -21,9 +21,12 @@ package is.codion.tools.generator.domain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.AuditColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -31,12 +34,14 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.FieldSpec;
+import com.palantir.javapoet.JavaFile;
+import com.palantir.javapoet.MethodSpec;
+import com.palantir.javapoet.ParameterSpec;
+import com.palantir.javapoet.ParameterizedTypeName;
+import com.palantir.javapoet.TypeName;
+import com.palantir.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -53,10 +58,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import static com.squareup.javapoet.MethodSpec.constructorBuilder;
-import static com.squareup.javapoet.MethodSpec.methodBuilder;
-import static com.squareup.javapoet.TypeSpec.classBuilder;
-import static com.squareup.javapoet.TypeSpec.interfaceBuilder;
+import static com.palantir.javapoet.MethodSpec.constructorBuilder;
+import static com.palantir.javapoet.MethodSpec.methodBuilder;
+import static com.palantir.javapoet.TypeSpec.classBuilder;
+import static com.palantir.javapoet.TypeSpec.interfaceBuilder;
 import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Collections.singleton;
 import static java.util.Comparator.comparing;
@@ -91,8 +96,8 @@ public final class DomainSource {
 	 * @param domainPackage the domain package.
 	 * @return the api source code.
 	 */
-	public String api(String domainPackage) {
-		return toApiString(requireNonNull(domainPackage) + ".api");
+	public String api(String domainPackage, boolean includeDto) {
+		return toApiString(requireNonNull(domainPackage) + ".api", includeDto);
 	}
 
 	/**
@@ -107,8 +112,8 @@ public final class DomainSource {
 	 * @param domainPackage the domain package.
 	 * @return the combined source code of the api and implementation.
 	 */
-	public String combined(String domainPackage) {
-		return toCombinedString(requireNonNull(domainPackage));
+	public String combined(String domainPackage, boolean includeDto) {
+		return toCombinedString(requireNonNull(domainPackage), includeDto);
 	}
 
 	/**
@@ -117,11 +122,11 @@ public final class DomainSource {
 	 * @param path the path to write the source code to.
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeApiImpl(String domainPackage, Path path) throws IOException {
+	public void writeApiImpl(String domainPackage, boolean includeDto, Path path) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(path));
 		Path filePath = path.resolve(interfaceName + ".java");
-		Files.write(filePath, singleton(api(requireNonNull(domainPackage) + ".api")));
+		Files.write(filePath, singleton(api(requireNonNull(domainPackage) + ".api", includeDto)));
 		path = path.resolve("impl");
 		Files.createDirectories(path);
 		filePath = path.resolve(interfaceName + "Impl.java");
@@ -134,10 +139,10 @@ public final class DomainSource {
 	 * @param path the path to write the source code to.
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeCombined(String domainPackage, Path path) throws IOException {
+	public void writeCombined(String domainPackage, boolean includeDto, Path path) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(path));
-		Files.write(path.resolve(interfaceName + ".java"), singleton(combined(requireNonNull(domainPackage))));
+		Files.write(path.resolve(interfaceName + ".java"), singleton(combined(requireNonNull(domainPackage), includeDto)));
 	}
 
 	/**
@@ -149,7 +154,7 @@ public final class DomainSource {
 		return new DomainSource(domain);
 	}
 
-	private String toApiString(String sourcePackage) {
+	private String toApiString(String sourcePackage, boolean includeDto) {
 		TypeSpec.Builder classBuilder = interfaceBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
@@ -157,7 +162,7 @@ public final class DomainSource {
 										.initializer("domainType($L)", domainInterfaceName + ".class")
 										.build());
 
-		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
+		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, includeDto)));
 
 		return removeInterfaceLineBreaks(JavaFile.builder(sourcePackage.isEmpty() ? "" : sourcePackage, classBuilder.build())
 						.addStaticImport(DomainType.class, "domainType")
@@ -196,7 +201,7 @@ public final class DomainSource {
 		return sourceString;
 	}
 
-	private String toCombinedString(String sourcePackage) {
+	private String toCombinedString(String sourcePackage, boolean includeDto) {
 		TypeSpec.Builder classBuilder = classBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC, FINAL)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
@@ -206,7 +211,7 @@ public final class DomainSource {
 						.superclass(DomainModel.class);
 
 		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(classBuilder);
-		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
+		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, includeDto)));
 
 		JavaFile.Builder fileBuilder = JavaFile.builder(sourcePackage,
 										classBuilder.addMethod(createDomainConstructor(definitionMethods))
@@ -259,10 +264,10 @@ public final class DomainSource {
 																		BiConsumer<EntityDefinition, String> onMethod) {
 		MethodSpec definitionMethod = createDefinitionMethod(definition);
 		classBuilder.addMethod(definitionMethod);
-		onMethod.accept(definition, definitionMethod.name);
+		onMethod.accept(definition, definitionMethod.name());
 	}
 
-	private static TypeSpec createInterface(EntityDefinition definition) {
+	private TypeSpec createInterface(EntityDefinition definition, boolean includeDto) {
 		String interfaceName = interfaceName(definition.tableName(), true);
 		TypeSpec.Builder interfaceBuilder = interfaceBuilder(interfaceName)
 						.addModifiers(PUBLIC, STATIC)
@@ -278,7 +283,125 @@ public final class DomainSource {
 						.filter(ForeignKeyDefinition.class::isInstance)
 						.forEach(foreignKeyDefinition -> appendAttribute(interfaceBuilder, foreignKeyDefinition));
 
+		if (includeDto) {
+			addDtoRecord(definition, interfaceBuilder);
+		}
+
 		return interfaceBuilder.build();
+	}
+
+	private void addDtoRecord(EntityDefinition definition, TypeSpec.Builder interfaceBuilder) {
+		List<Attribute<?>> nonForeignKeyColumnAttributes = definition.attributes().definitions().stream()
+						.filter(attributeDefinition -> noneForeignKeyColumn(attributeDefinition.attribute(), definition))
+						.map(AttributeDefinition::attribute)
+						.collect(toList());
+
+		interfaceBuilder.addType(dtoRecord(nonForeignKeyColumnAttributes));
+		interfaceBuilder.addMethod(dtoFromEntityMethod(nonForeignKeyColumnAttributes, definition));
+	}
+
+	private TypeSpec dtoRecord(List<Attribute<?>> attributes) {
+		TypeSpec.Builder dtoBuilder = TypeSpec.recordBuilder("Dto")
+						.addModifiers(PUBLIC, STATIC);
+		MethodSpec.Builder constructorBuilder = constructorBuilder();
+
+		attributes.forEach(attribute -> addRecordField(attribute, constructorBuilder));
+
+		return dtoBuilder.recordConstructor(constructorBuilder.addModifiers(PUBLIC).build())
+						.addMethod(entityFromDtoMethod(attributes))
+						.build();
+	}
+
+	private void addRecordField(Attribute<?> attribute, MethodSpec.Builder constructorBuilder) {
+		if (attribute instanceof Column<?>) {
+			constructorBuilder.addParameter(ParameterSpec.builder(((Column<?>) attribute).type().valueClass(),
+							underscoreToCamelCase(attribute.name().toLowerCase())).build());
+		}
+		else if (attribute instanceof ForeignKey) {
+			EntityDefinition referenced = sortedDefinitions.stream()
+							.filter(definition -> definition.entityType().equals(((ForeignKey) attribute).referencedType()))
+							.findFirst()
+							.orElseThrow();
+			constructorBuilder.addParameter(ParameterSpec.builder(dtoName(referenced),
+							underscoreToCamelCase(attribute.name().toLowerCase().replace("_fk", "").replace("fk", ""))).build());
+		}
+	}
+
+	private static MethodSpec entityFromDtoMethod(List<Attribute<?>> attributes) {
+		return methodBuilder("entity")
+						.addModifiers(PUBLIC)
+						.returns(Entity.class)
+						.addParameter(ParameterSpec.builder(Entities.class, "entities").build())
+						.addCode(entityFromDtoMethodBody(attributes))
+						.build();
+	}
+
+	private static String entityFromDtoMethodBody(Collection<Attribute<?>> attributes) {
+		StringBuilder builder = new StringBuilder("return entities.builder(TYPE)\n");
+		attributes.forEach(attribute -> {
+			if (attribute instanceof Column<?>) {
+				builder.append("\t.with(")
+								.append(attribute.name().toUpperCase())
+								.append(", ")
+								.append(underscoreToCamelCase(attribute.name().toLowerCase()))
+								.append(")\n");
+			}
+			else if (attribute instanceof ForeignKey) {
+				builder.append("\t.with(")
+								.append(attribute.name().toUpperCase())
+								.append(", ")
+								.append(underscoreToCamelCase(attribute.name().toLowerCase().replace("_fk", "").replace("fk", "")))
+								.append(".entity(entities)")
+								.append(")\n");
+			}
+		});
+
+		return builder.append("\t.build();").toString();
+	}
+
+	private MethodSpec dtoFromEntityMethod(List<Attribute<?>> attributes, EntityDefinition definition) {
+		return MethodSpec.methodBuilder("dto")
+						.addModifiers(PUBLIC, STATIC)
+						.returns(ClassName.get("", "Dto"))
+						.addParameter(Entity.class, interfaceName(definition.tableName(), false))
+						.addCode(dtoFromEntityMethodBody(attributes, interfaceName(definition.tableName(), false)))
+						.build();
+	}
+
+	private String dtoFromEntityMethodBody(List<Attribute<?>> attributes, String parameter) {
+		List<String> arguments = new ArrayList<>();
+		attributes.forEach(attribute -> {
+			if (attribute instanceof Column<?>) {
+				arguments.add(parameter + ".get(" + attribute.name().toUpperCase() + ")");
+			}
+			else if (attribute instanceof ForeignKey) {
+				EntityDefinition referenced = sortedDefinitions.stream()
+								.filter(definition -> definition.entityType().equals(((ForeignKey) attribute).referencedType()))
+								.findFirst()
+								.orElseThrow();
+				arguments.add(interfaceName(referenced.tableName(), true)
+								+ ".dto(" + parameter + ".get(" + attribute.name().toUpperCase() + "))");
+			}
+		});
+
+		return new StringBuilder("return ")
+						.append(parameter)
+						.append(" == null ? null :\n")
+						.append("\tnew Dto(")
+						.append(String.join(",\n\t\t", arguments))
+						.append(");").toString();
+	}
+
+	private static TypeName dtoName(EntityDefinition referenced) {
+		return ClassName.get("", interfaceName(referenced.tableName(), true) + ".Dto");
+	}
+
+	private static boolean noneForeignKeyColumn(Attribute<?> attribute, EntityDefinition entityDefinition) {
+		if (attribute instanceof Column) {
+			return !entityDefinition.foreignKeys().foreignKeyColumn(((Column<?>) attribute));
+		}
+
+		return true;
 	}
 
 	private static MethodSpec createDefinitionMethod(EntityDefinition definition) {
@@ -509,8 +632,7 @@ public final class DomainSource {
 	private String addInterfaceImports(String sourceString,
 																		 String parentInterface) {
 		List<String> interfaceNames = sortedDefinitions.stream()
-						.map(DomainSource::createInterface)
-						.map(interfaceSpec -> interfaceSpec.name)
+						.map(definition -> interfaceName(definition.tableName(), true))
 						.sorted()
 						.collect(toList());
 		List<String> lines = new ArrayList<>();

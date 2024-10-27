@@ -45,6 +45,7 @@ import is.codion.tools.generator.model.SchemaRow;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -259,9 +260,15 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 
 		return borderLayoutPanel()
-						.centerComponent(gridLayoutPanel(2, 1)
-										.add(packageLabel)
-										.add(createPackageField(packageLabel))
+						.centerComponent(borderLayoutPanel()
+										.westComponent(gridLayoutPanel(2, 1)
+														.add(new JLabel(" "))
+														.add(createDtoCheckBox())
+														.build())
+										.centerComponent(gridLayoutPanel(2, 1)
+														.add(packageLabel)
+														.add(createPackageField(packageLabel))
+														.build())
 										.build())
 						.eastComponent(gridLayoutPanel(2, 1)
 										.add(label(" ").build())
@@ -293,6 +300,18 @@ public final class DomainGeneratorPanel extends JPanel {
 										.add(label(" ").build())
 										.add(button(selectSourceDirectoryControl).build())
 										.build())
+						.build();
+	}
+
+	private JCheckBox createDtoCheckBox() {
+		return checkBox(model.includeDto())
+						.text("Include DTOs")
+						.mnemonic('D')
+						.onBuild(checkBox -> KeyEvents.builder(KeyEvent.VK_D)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.modifiers(InputEvent.ALT_DOWN_MASK)
+										.action(command(() -> checkBox.setSelected(!checkBox.isSelected())))
+										.enable(this))
 						.build();
 	}
 

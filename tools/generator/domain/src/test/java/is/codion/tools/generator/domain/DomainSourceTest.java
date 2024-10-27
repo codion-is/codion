@@ -52,11 +52,11 @@ public final class DomainSourceTest {
 			String donainPackage = "is.codion.petstore.domain";
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String petstoreApi = textFileContents(DomainSourceTest.class, "PetstoreAPI.java");
-			assertEquals(petstoreApi, domainSource.api(donainPackage));
+			assertEquals(petstoreApi, domainSource.api(donainPackage, true));
 			String petstoreImpl = textFileContents(DomainSourceTest.class, "PetstoreImpl.java");
 			assertEquals(petstoreImpl, domainSource.implementation(donainPackage));
 			String petstoreCombined = textFileContents(DomainSourceTest.class, "Petstore.java");
-			assertEquals(petstoreCombined, domainSource.combined(donainPackage));
+			assertEquals(petstoreCombined, domainSource.combined(donainPackage, true));
 		}
 	}
 
@@ -67,11 +67,11 @@ public final class DomainSourceTest {
 			String domainPackage = "is.codion.chinook.domain";
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String chinookApi = textFileContents(DomainSourceTest.class, "ChinookAPI.java");
-			assertEquals(chinookApi, domainSource.api(domainPackage));
+			assertEquals(chinookApi, domainSource.api(domainPackage, true));
 			String chinookImpl = textFileContents(DomainSourceTest.class, "ChinookImpl.java");
 			assertEquals(chinookImpl, domainSource.implementation(domainPackage));
 			String chinookCombined = textFileContents(DomainSourceTest.class, "Chinook.java");
-			assertEquals(chinookCombined, domainSource.combined(domainPackage));
+			assertEquals(chinookCombined, domainSource.combined(domainPackage, true));
 		}
 	}
 
@@ -82,11 +82,11 @@ public final class DomainSourceTest {
 			String domainPackage = "is.codion.world.domain";
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String worldApi = textFileContents(DomainSourceTest.class, "WorldAPI.java");
-			assertEquals(worldApi, domainSource.api(domainPackage));
+			assertEquals(worldApi, domainSource.api(domainPackage, true));
 			String worldImpl = textFileContents(DomainSourceTest.class, "WorldImpl.java");
 			assertEquals(worldImpl, domainSource.implementation(domainPackage));
 			String worldCombined = textFileContents(DomainSourceTest.class, "World.java");
-			assertEquals(worldCombined, domainSource.combined(domainPackage));
+			assertEquals(worldCombined, domainSource.combined(domainPackage, true));
 		}
 	}
 

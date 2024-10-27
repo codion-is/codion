@@ -28,6 +28,7 @@ Codion Change Log
 - EntityTablePanel, row limit configuration now accessible by double clicking the status panel.
 ### is.codion.tools.generator.domain
 - DomainSource refactored.
+- DomainSource can now generate DTOs.
 
 ## 0.18.19
 ### is.codion.common.model

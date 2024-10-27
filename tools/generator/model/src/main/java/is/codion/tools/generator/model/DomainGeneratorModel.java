@@ -85,6 +85,9 @@ public final class DomainGeneratorModel {
 									.build();
 	private final Database database;
 	private final User user;
+	private final State includeDto = State.builder()
+					.listener(this::updateDomainSource)
+					.build();
 	private final State domainPackageSpecified = State.state();
 	private final Value<String> domainPackageValue = Value.builder()
 					.nonNull(DEFAULT_DOMAIN_PACKAGE.get())
@@ -141,6 +144,10 @@ public final class DomainGeneratorModel {
 		return domainCombinedValue.observer();
 	}
 
+	public State includeDto() {
+		return includeDto;
+	}
+
 	public Value<String> domainPackage() {
 		return domainPackageValue;
 	}
@@ -174,7 +181,7 @@ public final class DomainGeneratorModel {
 				domainSource(domain)
 								.writeApiImpl(domainPackageValue.optional()
 												.filter(DomainGeneratorModel::validPackageName)
-												.orElse(""), savePath(Path.of(sourceDirectoryValue.get())));
+												.orElse(""), includeDto.get(), savePath(Path.of(sourceDirectoryValue.get())));
 			}
 		}
 	}
@@ -186,7 +193,7 @@ public final class DomainGeneratorModel {
 				domainSource(domain)
 								.writeCombined(domainPackageValue.optional()
 												.filter(DomainGeneratorModel::validPackageName)
-												.orElse(""), savePath(Path.of(sourceDirectoryValue.get())));
+												.orElse(""), includeDto.get(), savePath(Path.of(sourceDirectoryValue.get())));
 			}
 		}
 	}
@@ -248,9 +255,9 @@ public final class DomainGeneratorModel {
 			String domainPackage = domainPackageValue.optional()
 							.filter(DomainGeneratorModel::validPackageName)
 							.orElse("");
-			domainApiValue.set(domainSource.api(domainPackage));
+			domainApiValue.set(domainSource.api(domainPackage, includeDto.get()));
 			domainImplValue.set(domainSource.implementation(domainPackage));
-			domainCombinedValue.set(domainSource.combined(domainPackage));
+			domainCombinedValue.set(domainSource.combined(domainPackage, includeDto.get()));
 		}
 		else {
 			domainApiValue.clear();

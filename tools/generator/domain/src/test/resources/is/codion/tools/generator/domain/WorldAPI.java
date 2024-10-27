@@ -3,6 +3,8 @@ package is.codion.world.domain.api;
 import static is.codion.framework.domain.DomainType.domainType;
 
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -33,6 +35,61 @@ public interface World {
 		Column<String> CITYNAME = TYPE.stringColumn("cityname");
 		Column<String> DISTRICT = TYPE.stringColumn("district");
 		Column<Integer> CITYPOPULATION = TYPE.integerColumn("citypopulation");
+
+		static Dto dto(Entity countryCityV) {
+			return countryCityV == null ? null :
+				new Dto(countryCityV.get(COUNTRYCODE),
+					countryCityV.get(COUNTRYNAME),
+					countryCityV.get(CONTINENT),
+					countryCityV.get(REGION),
+					countryCityV.get(SURFACEAREA),
+					countryCityV.get(INDEPYEAR),
+					countryCityV.get(COUNTRYPOPULATION),
+					countryCityV.get(LIFEEXPECTANCY),
+					countryCityV.get(GNP),
+					countryCityV.get(GNPOLD),
+					countryCityV.get(LOCALNAME),
+					countryCityV.get(GOVERNMENTFORM),
+					countryCityV.get(HEADOFSTATE),
+					countryCityV.get(CAPITAL),
+					countryCityV.get(CODE2),
+					countryCityV.get(FLAG),
+					countryCityV.get(CITYID),
+					countryCityV.get(CITYNAME),
+					countryCityV.get(DISTRICT),
+					countryCityV.get(CITYPOPULATION));
+		}
+
+		record Dto(String countrycode, String countryname, String continent, String region,
+				Double surfacearea, Short indepyear, Integer countrypopulation, Double lifeexpectancy,
+				Double gnp, Double gnpold, String localname, String governmentform, String headofstate,
+				Integer capital, String code2, byte[] flag, Integer cityid, String cityname, String district,
+				Integer citypopulation) {
+			public Entity entity(Entities entities) {
+				return entities.builder(TYPE)
+					.with(COUNTRYCODE, countrycode)
+					.with(COUNTRYNAME, countryname)
+					.with(CONTINENT, continent)
+					.with(REGION, region)
+					.with(SURFACEAREA, surfacearea)
+					.with(INDEPYEAR, indepyear)
+					.with(COUNTRYPOPULATION, countrypopulation)
+					.with(LIFEEXPECTANCY, lifeexpectancy)
+					.with(GNP, gnp)
+					.with(GNPOLD, gnpold)
+					.with(LOCALNAME, localname)
+					.with(GOVERNMENTFORM, governmentform)
+					.with(HEADOFSTATE, headofstate)
+					.with(CAPITAL, capital)
+					.with(CODE2, code2)
+					.with(FLAG, flag)
+					.with(CITYID, cityid)
+					.with(CITYNAME, cityname)
+					.with(DISTRICT, district)
+					.with(CITYPOPULATION, citypopulation)
+					.build();
+			}
+		}
 	}
 
 	interface City {
@@ -46,6 +103,30 @@ public interface World {
 		Column<Object> LOCATION = TYPE.column("location", Object.class);
 
 		ForeignKey COUNTRYCODE_FK = TYPE.foreignKey("countrycode_fk", COUNTRYCODE, Country.CODE);
+
+		static Dto dto(Entity city) {
+			return city == null ? null :
+				new Dto(city.get(ID),
+					city.get(NAME),
+					Country.dto(city.get(COUNTRYCODE_FK)),
+					city.get(DISTRICT),
+					city.get(POPULATION),
+					city.get(LOCATION));
+		}
+
+		record Dto(Integer id, String name, Country.Dto countrycode, String district, Integer population,
+				Object location) {
+			public Entity entity(Entities entities) {
+				return entities.builder(TYPE)
+					.with(ID, id)
+					.with(NAME, name)
+					.with(COUNTRYCODE_FK, countrycode.entity(entities))
+					.with(DISTRICT, district)
+					.with(POPULATION, population)
+					.with(LOCATION, location)
+					.build();
+			}
+		}
 	}
 
 	interface Country {
@@ -69,6 +150,52 @@ public interface World {
 		Column<byte[]> FLAG = TYPE.byteArrayColumn("flag");
 
 		ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", CAPITAL, City.ID);
+
+		static Dto dto(Entity country) {
+			return country == null ? null :
+				new Dto(country.get(CODE),
+					country.get(NAME),
+					country.get(CONTINENT),
+					country.get(REGION),
+					country.get(SURFACEAREA),
+					country.get(INDEPYEAR),
+					country.get(POPULATION),
+					country.get(LIFEEXPECTANCY),
+					country.get(GNP),
+					country.get(GNPOLD),
+					country.get(LOCALNAME),
+					country.get(GOVERNMENTFORM),
+					country.get(HEADOFSTATE),
+					City.dto(country.get(CAPITAL_FK)),
+					country.get(CODE2),
+					country.get(FLAG));
+		}
+
+		record Dto(String code, String name, String continent, String region, Double surfacearea,
+				Short indepyear, Integer population, Double lifeexpectancy, Double gnp, Double gnpold,
+				String localname, String governmentform, String headofstate, City.Dto capital, String code2,
+				byte[] flag) {
+			public Entity entity(Entities entities) {
+				return entities.builder(TYPE)
+					.with(CODE, code)
+					.with(NAME, name)
+					.with(CONTINENT, continent)
+					.with(REGION, region)
+					.with(SURFACEAREA, surfacearea)
+					.with(INDEPYEAR, indepyear)
+					.with(POPULATION, population)
+					.with(LIFEEXPECTANCY, lifeexpectancy)
+					.with(GNP, gnp)
+					.with(GNPOLD, gnpold)
+					.with(LOCALNAME, localname)
+					.with(GOVERNMENTFORM, governmentform)
+					.with(HEADOFSTATE, headofstate)
+					.with(CAPITAL_FK, capital.entity(entities))
+					.with(CODE2, code2)
+					.with(FLAG, flag)
+					.build();
+			}
+		}
 	}
 
 	interface Countrylanguage {
@@ -80,5 +207,24 @@ public interface World {
 		Column<Double> PERCENTAGE = TYPE.doubleColumn("percentage");
 
 		ForeignKey COUNTRYCODE_FK = TYPE.foreignKey("countrycode_fk", COUNTRYCODE, Country.CODE);
+
+		static Dto dto(Entity countrylanguage) {
+			return countrylanguage == null ? null :
+				new Dto(Country.dto(countrylanguage.get(COUNTRYCODE_FK)),
+					countrylanguage.get(LANGUAGE),
+					countrylanguage.get(ISOFFICIAL),
+					countrylanguage.get(PERCENTAGE));
+		}
+
+		record Dto(Country.Dto countrycode, String language, Boolean isofficial, Double percentage) {
+			public Entity entity(Entities entities) {
+				return entities.builder(TYPE)
+					.with(COUNTRYCODE_FK, countrycode.entity(entities))
+					.with(LANGUAGE, language)
+					.with(ISOFFICIAL, isofficial)
+					.with(PERCENTAGE, percentage)
+					.build();
+			}
+		}
 	}
 }

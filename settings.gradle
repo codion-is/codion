@@ -192,7 +192,7 @@ dependencyResolutionManagement {
             version("flatlaf", "3.5.2")
             version("ikonli", "12.3.1")
             version("javalin", "6.3.0")
-            version("javapoet", "1.13.0")
+            version("javapoet", "0.5.0")
 
             version("hikari", "6.0.0")
             version("jackson", "2.18.0")
@@ -220,7 +220,7 @@ dependencyResolutionManagement {
             library("ikonli-core", "org.kordamp.ikonli", "ikonli-core").versionRef("ikonli")
             library("ikonli-swing", "org.kordamp.ikonli", "ikonli-swing").versionRef("ikonli")
             library("ikonli-foundation-pack", "org.kordamp.ikonli", "ikonli-foundation-pack").versionRef("ikonli")
-            library("javapoet", "com.squareup", "javapoet").versionRef("javapoet")
+            library("javapoet", "com.palantir.javapoet", "javapoet").versionRef("javapoet")
 
             library("hikari", "com.zaxxer", "HikariCP").versionRef("hikari")
             library("jackson-databind", "com.fasterxml.jackson.core", "jackson-databind").versionRef("jackson")
