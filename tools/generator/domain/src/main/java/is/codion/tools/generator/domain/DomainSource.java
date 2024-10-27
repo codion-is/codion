@@ -276,12 +276,12 @@ public final class DomainSource {
 										.initializer("DOMAIN.entityType($S)", definition.tableName().toLowerCase())
 										.build())
 						.addModifiers(PUBLIC);
-		definition.attributes().definitions().stream()
-						.filter(ColumnDefinition.class::isInstance)
-						.forEach(columnDefinition -> appendAttribute(interfaceBuilder, columnDefinition));
-		definition.attributes().definitions().stream()
-						.filter(ForeignKeyDefinition.class::isInstance)
-						.forEach(foreignKeyDefinition -> appendAttribute(interfaceBuilder, foreignKeyDefinition));
+		definition.attributes().get().stream()
+						.filter(Column.class::isInstance)
+						.forEach(column -> appendAttribute(interfaceBuilder, column));
+		definition.attributes().get().stream()
+						.filter(ForeignKey.class::isInstance)
+						.forEach(foreignKey -> appendAttribute(interfaceBuilder, foreignKey));
 
 		if (includeDto) {
 			addDtoRecord(definition, interfaceBuilder);
@@ -291,9 +291,8 @@ public final class DomainSource {
 	}
 
 	private void addDtoRecord(EntityDefinition definition, TypeSpec.Builder interfaceBuilder) {
-		List<Attribute<?>> nonForeignKeyColumnAttributes = definition.attributes().definitions().stream()
-						.filter(attributeDefinition -> noneForeignKeyColumn(attributeDefinition.attribute(), definition))
-						.map(AttributeDefinition::attribute)
+		List<Attribute<?>> nonForeignKeyColumnAttributes = definition.attributes().get().stream()
+						.filter(attribute -> noneForeignKeyColumn(attribute, definition))
 						.collect(toList());
 
 		interfaceBuilder.addType(dtoRecord(nonForeignKeyColumnAttributes));
@@ -468,46 +467,45 @@ public final class DomainSource {
 		return foreignKeyDefinition(interfaceName, (ForeignKeyDefinition) attributeDefinition);
 	}
 
-	private static void appendAttribute(TypeSpec.Builder interfaceBuilder,
-																			AttributeDefinition<?> attributeDefinition) {
-		if (attributeDefinition instanceof ColumnDefinition) {
-			ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
+	private static void appendAttribute(TypeSpec.Builder interfaceBuilder, Attribute<?> attribute) {
+		if (attribute instanceof Column) {
+			Column<?> column = (Column<?>) attribute;
 			FieldSpec.Builder columnBuilder = FieldSpec.builder(ParameterizedTypeName.get(Column.class,
-															columnDefinition.attribute().type().valueClass()),
-											columnDefinition.name().toUpperCase())
+															column.type().valueClass()),
+											column.name().toUpperCase())
 							.addModifiers(PUBLIC, STATIC, FINAL);
-			addInitializer(columnBuilder, columnDefinition);
+			addInitializer(columnBuilder, column);
 			interfaceBuilder.addField(columnBuilder.build());
 		}
-		else if (attributeDefinition instanceof ForeignKeyDefinition) {
-			ForeignKeyDefinition foreignKeyDefinition = (ForeignKeyDefinition) attributeDefinition;
+		else if (attribute instanceof ForeignKey) {
+			ForeignKey foreignKey = (ForeignKey) attribute;
 			//todo wrap references if more than four
 			interfaceBuilder.addField(FieldSpec.builder(ForeignKey.class,
-											attributeDefinition.attribute().name().toUpperCase())
+											attribute.name().toUpperCase())
 							.addModifiers(PUBLIC, STATIC, FINAL)
 							.initializer("TYPE.foreignKey($S, $L)",
-											attributeDefinition.attribute().name().toLowerCase(),
-											createReferences(foreignKeyDefinition))
+											attribute.name().toLowerCase(),
+											createReferences(foreignKey))
 							.build());
 		}
 	}
 
 	private static void addInitializer(FieldSpec.Builder columnBuilder,
-																		 ColumnDefinition<?> columnDefinition) {
-		if (Object.class.equals(columnDefinition.attribute().type().valueClass())) {
+																		 Column<?> column) {
+		if (Object.class.equals(column.type().valueClass())) {
 			//special handling for mapping unknown column data types to Object columns
 			columnBuilder.initializer("TYPE.column($S, $L)",
-							columnDefinition.name().toLowerCase(), "Object.class");
+							column.name().toLowerCase(), "Object.class");
 		}
 		else {
 			columnBuilder.initializer("TYPE.$LColumn($S)",
-							attributeTypePrefix(columnDefinition.attribute().type().valueClass().getSimpleName()),
-							columnDefinition.name().toLowerCase());
+							attributeTypePrefix(column.type().valueClass().getSimpleName()),
+							column.name().toLowerCase());
 		}
 	}
 
-	private static String createReferences(ForeignKeyDefinition foreignKeyDefinition) {
-		return foreignKeyDefinition.references().stream()
+	private static String createReferences(ForeignKey foreignKey) {
+		return foreignKey.references().stream()
 						.map(reference -> new StringBuilder()
 										.append(reference.column().name().toUpperCase()).append(", ")
 										.append(interfaceName(reference.foreign().entityType().name(), true))
