@@ -11,6 +11,8 @@ Codion Change Log
 - DefaultFilterComboBoxModel.DefaultComparator bug fixed, did not use collator to sort strings.
 - FilterComboBoxModel.NullItem removed.
 - FilterComboBoxModel.Builder added, related refactoring.
+- FilterComboBoxModel.ComboBoxSelection.translator() removed, Builder.translator() added.
+- ItemComboBoxModel.SelectedItemTranslator refactored.
 ### is.codion.swing.common.ui
 - FilterTableSortModel.sortingChanged() renamed observer, now propagates the sorting state instead of a column identifier.
 - FilterTableSortModel.sortOrder() replaced with columnSortOrder(), sortPriority() removed, ColumnSortOrder.priority() added.

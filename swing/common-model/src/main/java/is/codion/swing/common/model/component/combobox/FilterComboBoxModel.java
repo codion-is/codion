@@ -123,6 +123,13 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		Builder<T> nullItem(T nullItem);
 
 		/**
+		 * Provides a way for a combo box model to translate an item received via {@link ComboBoxSelection#item()} to an actual item to select,
+		 * such as as selecting the String "1" in a String based model when selected item is set to the Integer 1.
+		 * @return the {@link Value} controlling the selected item translator
+		 */
+		Builder<T> translator(Function<Object, T> translator);
+
+		/**
 		 * @return a new {@link FilterComboBoxModel} instance
 		 */
 		FilterComboBoxModel<T> build();
@@ -164,13 +171,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @see Builder#nullItem(Object)
 		 */
 		boolean nullSelected();
-
-		/**
-		 * Provides a way for the combo box model to translate an item when it is selected, such
-		 * as selecting the String "1" in a String based model when selected item is set to the number 1.
-		 * @return the {@link Value} controlling the selected item translator
-		 */
-		Value<Function<Object, T>> translator();
 
 		/**
 		 * Specifies whether filtering the model affects the currently selected item.

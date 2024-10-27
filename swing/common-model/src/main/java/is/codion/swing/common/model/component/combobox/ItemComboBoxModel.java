@@ -23,11 +23,13 @@ import is.codion.common.item.Item;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Provides a {@link Builder} for {@link FilterComboBoxModel} implementations based on the {@link Item} class.
@@ -136,7 +138,8 @@ public final class ItemComboBoxModel {
 
 		@Override
 		public FilterComboBoxModel<Item<T>> build() {
-			FilterComboBoxModel.Builder<Item<T>> builder = FilterComboBoxModel.builder(items);
+			FilterComboBoxModel.Builder<Item<T>> builder = FilterComboBoxModel.builder(items)
+							.translator(new SelectedItemTranslator<>(items));
 			if (!sorted) {
 				builder.comparator(null);
 			}
@@ -145,7 +148,6 @@ public final class ItemComboBoxModel {
 			}
 
 			FilterComboBoxModel<Item<T>> comboBoxModel = builder.build();
-			comboBoxModel.selection().translator().set(new SelectedItemTranslator<>(comboBoxModel));
 			if (comboBoxModel.items().contains(Item.item(null))) {
 				comboBoxModel.setSelectedItem(null);
 			}
@@ -156,32 +158,20 @@ public final class ItemComboBoxModel {
 
 	private static final class SelectedItemTranslator<T> implements Function<Object, Item<T>> {
 
-		private final FilterComboBoxModel<Item<T>> comboBoxModel;
+		private final Map<T, Item<T>> itemMap;
 
-		private SelectedItemTranslator(FilterComboBoxModel<Item<T>> comboBoxModel) {
-			this.comboBoxModel = comboBoxModel;
+		private SelectedItemTranslator(List<Item<T>> items) {
+			itemMap = items.stream()
+							.collect(toMap(Item::value, Function.identity()));
 		}
 
 		@Override
 		public Item<T> apply(Object item) {
 			if (item instanceof Item) {
-				return findItem((Item<T>) item);
+				return itemMap.get(((Item<T>) item).value());
 			}
 
-			return findItem((T) item);
-		}
-
-		private Item<T> findItem(Item<T> item) {
-			int index = comboBoxModel.items().visible().indexOf(item);
-			if (index >= 0) {
-				return comboBoxModel.getElementAt(index);
-			}
-
-			return null;
-		}
-
-		private Item<T> findItem(T value) {
-			return findItem(Item.item(value));
+			return itemMap.get(item);
 		}
 	}
 }

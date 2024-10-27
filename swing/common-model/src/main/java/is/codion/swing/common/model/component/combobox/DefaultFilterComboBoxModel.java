@@ -51,7 +51,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
-	private final DefaultComboBoxSelection selectionModel = new DefaultComboBoxSelection();
+	private final DefaultComboBoxSelection selectionModel;
 	private final DefaultComboBoxItems modelItems;
 	private final DefaultRefresher refresher;
 
@@ -61,6 +61,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
 
 	private DefaultFilterComboBoxModel(DefaultBuilder<T> builder) {
+		selectionModel = new DefaultComboBoxSelection(builder.translator);
 		modelItems = new DefaultComboBoxItems(builder.includeNull, builder.nullItem, builder.comparator);
 		if (builder.supplier == null) {
 			refresher = new DefaultRefresher(new DefaultItemsSupplier());
@@ -153,6 +154,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final Supplier<Collection<T>> supplier;
 
 		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
+		private Function<Object, T> translator = (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR;
 		private boolean includeNull;
 		private T nullItem;
 
@@ -178,6 +180,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			this.nullItem = nullItem;
 
 			return includeNull(nullItem != null);
+		}
+
+		@Override
+		public Builder<T> translator(Function<Object, T> translator) {
+			this.translator = requireNonNull(translator);
+			return this;
 		}
 
 		@Override
@@ -509,8 +517,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final class DefaultComboBoxSelection implements ComboBoxSelection<T> {
 
-		private final Selected selected = new Selected();
+		private final Selected selected;
 		private final State filterSelectedItem = State.state(false);
+
+		private DefaultComboBoxSelection(Function<Object, T> translator) {
+			selected = new Selected(translator);
+		}
 
 		@Override
 		public StateObserver empty() {
@@ -547,11 +559,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Value<Function<Object, T>> translator() {
-			return selected.translator;
-		}
-
-		@Override
 		public State filterSelected() {
 			return filterSelectedItem;
 		}
@@ -562,11 +569,13 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final Event<T> changing = Event.event();
 		private final Event<T> event = Event.event();
 		private final State empty = State.state(true);
-		private final Value<Function<Object, T>> translator = Value.builder()
-						.nonNull((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR)
-						.build();
+		private final Function<Object, T> translator;
 
 		private T item = null;
+
+		private Selected(Function<Object, T> translator) {
+			this.translator = translator;
+		}
 
 		@Override
 		public T get() {
@@ -588,7 +597,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		private void setSelectedItem(Object item) {
-			T toSelect = translator.get().apply(Objects.equals(modelItems.nullItem, item) ? null : item);
+			T toSelect = translator.apply(Objects.equals(modelItems.nullItem, item) ? null : item);
 			if (!Objects.equals(this.item, toSelect)) {
 				changing.accept(toSelect);
 				this.item = toSelect;
@@ -599,8 +608,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		private void replaceWith(T replacement) {
-			selectionModel.selected.item = selectionModel.selected.translator.get().apply(null);
-			selectionModel.selected.set(replacement);
+			selectionModel.selected.item = selectionModel.selected.translator.apply(null);
+			setSelectedItem(replacement);
 		}
 	}
 
