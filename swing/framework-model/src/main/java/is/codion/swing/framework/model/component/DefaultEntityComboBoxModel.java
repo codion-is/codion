@@ -35,6 +35,7 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import javax.swing.event.ListDataListener;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -77,7 +78,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		this.comboBoxModel = FilterComboBoxModel.builder(this::performQuery)
 						.nullItem(createNullItem(builder.nullCaption))
 						// otherwise the sorting overrides the order by
-						.comparator(builder.orderBy == null ? entities.definition(entityType).comparator() : null)
+						.comparator(builder.orderBy == null ? builder.comparator : null)
 						.build();
 		this.filter = new DefaultFilter();
 		this.comboBoxModel.items().visible().predicate().set(filter);
@@ -480,6 +481,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		private OrderBy orderBy;
 		private Supplier<Condition> condition;
+		private Comparator<Entity> comparator;
 		private Collection<Attribute<?>> attributes = emptyList();
 		private boolean handleEditEvents = EntityComboBoxModel.HANDLE_EDIT_EVENTS.get();
 		private String nullCaption;
@@ -493,6 +495,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			this.entityType = requireNonNull(entityType, "entityType");
 			this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
 			this.condition = new DefaultConditionSupplier(entityType);
+			this.comparator = connectionProvider.entities().definition(entityType).comparator();
 			this.filterModel = filterModel;
 			this.filterForeignKey = filterForeignKey;
 		}
@@ -500,6 +503,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public Builder orderBy(OrderBy orderBy) {
 			this.orderBy = requireNonNull(orderBy);
+			return this;
+		}
+
+		@Override
+		public Builder comparator(Comparator<Entity> comparator) {
+			this.comparator = comparator;
 			return this;
 		}
 

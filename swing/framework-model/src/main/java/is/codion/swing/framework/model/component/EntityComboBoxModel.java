@@ -33,6 +33,7 @@ import is.codion.framework.model.EntityEditEvents;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -121,6 +122,13 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @return this builder instance
 		 */
 		Builder orderBy(OrderBy orderBy);
+
+		/**
+		 * Note that this comparator is not used if {@link #orderBy(OrderBy)} has been specified.
+		 * @param comparator the comparator to use, null for unsorted
+		 * @return this builder instance
+		 */
+		Builder comparator(Comparator<Entity> comparator);
 
 		/**
 		 * @param condition the condition supplier to use when querying data

@@ -21,6 +21,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -36,6 +37,7 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -357,6 +359,21 @@ public final class DefaultEntityComboBoxModelTest {
 						.build();
 		comboBoxModel.refresh();
 		assertEquals("WARD", comboBoxModel.getElementAt(0).get(Employee.NAME));
+	}
+
+	@Test
+	void comparator() throws DatabaseException {
+		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER)
+						.comparator(Comparator.comparing(employee -> employee.get(Department.ID)))
+						.build();
+		comboBoxModel.refresh();
+
+		EntityConnection connection = CONNECTION_PROVIDER.connection();
+
+		assertEquals(0, comboBoxModel.items().visible().indexOf(connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"))));
+		assertEquals(1, comboBoxModel.items().visible().indexOf(connection.selectSingle(Department.NAME.equalTo("RESEARCH"))));
+		assertEquals(2, comboBoxModel.items().visible().indexOf(connection.selectSingle(Department.NAME.equalTo("SALES"))));
+		assertEquals(3, comboBoxModel.items().visible().indexOf(connection.selectSingle(Department.NAME.equalTo("OPERATIONS"))));
 	}
 
 	@Test
