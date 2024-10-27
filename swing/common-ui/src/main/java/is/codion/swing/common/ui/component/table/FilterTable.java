@@ -31,8 +31,6 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.model.component.table.FilterTableSortModel.ColumnSortOrder;
@@ -833,13 +831,6 @@ public final class FilterTable<R, C> extends JTable {
 		header.setAutoscrolls(true);
 		header.addMouseMotionListener(new ColumnDragMouseHandler());
 		header.addMouseListener(new MouseSortHandler());
-	}
-
-	private FilterComboBoxModel<Item<Integer>> createAutoResizeModeComboBoxModel() {
-		FilterComboBoxModel<Item<Integer>> autoResizeComboBoxModel = ItemComboBoxModel.builder(AUTO_RESIZE_MODES).build();
-		autoResizeComboBoxModel.setSelectedItem(AUTO_RESIZE_MODES.get(getAutoResizeMode()));
-
-		return autoResizeComboBoxModel;
 	}
 
 	private List<ToggleControl> createAutoResizeModeControls() {

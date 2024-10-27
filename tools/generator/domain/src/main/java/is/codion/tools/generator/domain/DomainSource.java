@@ -79,7 +79,7 @@ public final class DomainSource {
 	private static final String INDENT = "\t";
 	private static final String DOUBLE_INDENT = INDENT + INDENT;
 	private static final String TRIPLE_INDENT = DOUBLE_INDENT + INDENT;
-	private static final String DOMAIN = "DOMAIN";
+	private static final String DOMAIN_STRING = "DOMAIN";
 	private static final String LINE_SEPARATOR = System.lineSeparator();
 
 	private final Domain domain;
@@ -157,7 +157,7 @@ public final class DomainSource {
 	private String toApiString(String sourcePackage, boolean includeDto) {
 		TypeSpec.Builder classBuilder = interfaceBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC)
-						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
+						.addField(FieldSpec.builder(DomainType.class, DOMAIN_STRING)
 										.addModifiers(PUBLIC, STATIC, FINAL)
 										.initializer("domainType($L)", domainInterfaceName + ".class")
 										.build());
@@ -190,7 +190,7 @@ public final class DomainSource {
 			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
 		}
 		if (!implementationPackage.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + ".api." + domainInterfaceName), DOMAIN);
+			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + ".api." + domainInterfaceName), DOMAIN_STRING);
 		}
 
 		String sourceString = fileBuilder.build().toString();
@@ -204,7 +204,7 @@ public final class DomainSource {
 	private String toCombinedString(String sourcePackage, boolean includeDto) {
 		TypeSpec.Builder classBuilder = classBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC, FINAL)
-						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
+						.addField(FieldSpec.builder(DomainType.class, DOMAIN_STRING)
 										.addModifiers(PUBLIC, STATIC, FINAL)
 										.initializer("domainType($L)", domainInterfaceName + ".class")
 										.build())
@@ -223,7 +223,7 @@ public final class DomainSource {
 			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
 		}
 		if (!sourcePackage.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + domainInterfaceName), DOMAIN);
+			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + domainInterfaceName), DOMAIN_STRING);
 		}
 
 		String sourceString = fileBuilder.build().toString();

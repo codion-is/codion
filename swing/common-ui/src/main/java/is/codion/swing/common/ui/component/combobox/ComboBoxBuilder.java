@@ -90,7 +90,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	 * When a JComboBox is editable, and a long item is selected, the caret is moved to the end, hiding
 	 * the start of the selected item. Enabling this moves the caret to the front on selection, thereby
 	 * showing the start of the selected item.
-	 * Note that this only works for {@link FilterComboBoxModel}.
+	 * Note that this only works in conjunction with a {@link FilterComboBoxModel}.
 	 * This is enabled by default.
 	 * @param moveCaretToFrontOnSelection if true the caret is moved to the front of the editor component on selection,
 	 * displaying the start of the selected item, instead of the end
@@ -99,7 +99,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	B moveCaretToFrontOnSelection(boolean moveCaretToFrontOnSelection);
 
 	/**
-	 * Only used for the system and cross-platform Look and Feels.
+	 * Only applicable for the system and cross-platform Look and Feels.
 	 * @param popupWidth a fixed popup width
 	 * @return this builder instance
 	 */

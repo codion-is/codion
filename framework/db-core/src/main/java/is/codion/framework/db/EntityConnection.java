@@ -54,9 +54,8 @@ import static java.util.Objects.requireNonNull;
  * do not perform any transaction control whereas the select, insert, update and delete methods
  * perform a commit unless they are run within a transaction.
  * A static helper class for mass data manipulation.
- * @see #startTransaction()
- * @see #rollbackTransaction()
- * @see #commitTransaction()
+ * @see #transaction(EntityConnection, Transactional)
+ * @see #transaction(EntityConnection, TransactionalResult)
  */
 public interface EntityConnection extends AutoCloseable {
 
@@ -117,6 +116,8 @@ public interface EntityConnection extends AutoCloseable {
 	 * }
 	 * </pre>
 	 * @throws IllegalStateException if a transaction is already open
+	 * @see #transaction(EntityConnection, Transactional)
+	 * @see #transaction(EntityConnection, TransactionalResult)
 	 */
 	void startTransaction();
 
@@ -124,6 +125,8 @@ public interface EntityConnection extends AutoCloseable {
 	 * Performs a rollback and ends the current transaction
 	 * @throws DatabaseException in case the rollback failed
 	 * @throws IllegalStateException in case a transaction is not open
+	 * @see #transaction(EntityConnection, Transactional)
+	 * @see #transaction(EntityConnection, TransactionalResult)
 	 */
 	void rollbackTransaction() throws DatabaseException;
 
@@ -131,6 +134,8 @@ public interface EntityConnection extends AutoCloseable {
 	 * Performs a commit and ends the current transaction
 	 * @throws DatabaseException in case the commit failed
 	 * @throws IllegalStateException in case a transaction is not open
+	 * @see #transaction(EntityConnection, Transactional)
+	 * @see #transaction(EntityConnection, TransactionalResult)
 	 */
 	void commitTransaction() throws DatabaseException;
 
