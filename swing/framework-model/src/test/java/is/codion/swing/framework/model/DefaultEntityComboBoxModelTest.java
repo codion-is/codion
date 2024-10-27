@@ -332,22 +332,6 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
-	void setSelectedItemNonExistingString() {
-		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.setSelectedItem("test");
-		assertNull(comboBoxModel.selection().value());
-	}
-
-	@Test
-	void selectString() {
-		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.refresh();
-		comboBoxModel.setSelectedItem(comboBoxModel.getElementAt(0));
-		comboBoxModel.setSelectedItem("SCOTT");
-		assertEquals(comboBoxModel.selection().value().get(Employee.NAME), "SCOTT");
-	}
-
-	@Test
 	void orderBy() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.orderBy(OrderBy.ascending(Employee.NAME))

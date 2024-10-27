@@ -43,7 +43,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -92,7 +91,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.build();
 		this.orderBy = builder.orderBy;
 		comboBoxModel.selection().filterSelected().set(builder.filterSelected);
-		comboBoxModel.selection().translator().set(new SelectedItemTranslator());
 		if (builder.handleEditEvents) {
 			addEditListeners();
 		}
@@ -240,27 +238,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.delegate(entities.entity(entityType))
 						.method("toString", parameters -> nullCaption)
 						.build();
-	}
-
-	private final class SelectedItemTranslator implements Function<Object, Entity> {
-
-		@Override
-		public Entity apply(Object itemToSelect) {
-			if (itemToSelect == null) {
-				return null;
-			}
-
-			if (itemToSelect instanceof Entity) {
-				return find(((Entity) itemToSelect).primaryKey()).orElse((Entity) itemToSelect);
-			}
-			String itemToString = itemToSelect.toString();
-
-			return items().visible().get().stream()
-							.filter(visibleItem -> visibleItem != null && itemToString.equals(visibleItem.toString()))
-							.findFirst()
-							//item not found, select null value
-							.orElse(null);
-		}
 	}
 
 	private final class InsertListener implements Consumer<Collection<Entity>> {
