@@ -21,7 +21,6 @@ package is.codion.tools.generator.domain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -68,7 +67,7 @@ import static java.util.stream.Stream.concat;
 import static javax.lang.model.element.Modifier.*;
 
 /**
- * For instances use the factory method {@link #domainSource(SchemaDomain, String)}.
+ * For instances use the factory method {@link #domainSource(Domain)}.
  */
 public final class DomainSource {
 
@@ -78,90 +77,87 @@ public final class DomainSource {
 	private static final String DOMAIN = "DOMAIN";
 	private static final String LINE_SEPARATOR = System.lineSeparator();
 
-	private final SchemaDomain schemaDomain;
-	private final String api;
-	private final String implementation;
-	private final String combined;
+	private final Domain domain;
+	private final String domainInterfaceName;
+	private final List<EntityDefinition> sortedDefinitions;
 
-	private DomainSource(SchemaDomain schemaDomain, String sourcePackage) {
-		this.schemaDomain = requireNonNull(schemaDomain);
-		requireNonNull(sourcePackage);
-		String interfaceName = interfaceName(requireNonNull(schemaDomain).type().name(), true);
-		List<EntityDefinition> entityDefinitions = sortDefinitions(schemaDomain);
-		this.api = toApiString(entityDefinitions, sourcePackage + ".api", interfaceName);
-		this.implementation = toImplementationString(entityDefinitions, sourcePackage, interfaceName);
-		this.combined = toCombinedString(entityDefinitions, sourcePackage, interfaceName);
+	private DomainSource(Domain domain) {
+		this.domain = requireNonNull(domain);
+		this.domainInterfaceName = interfaceName(requireNonNull(domain).type().name(), true);
+		this.sortedDefinitions = sortDefinitions(domain);
 	}
 
 	/**
+	 * @param domainPackage the domain package.
 	 * @return the api source code.
 	 */
-	public String api() {
-		return api;
+	public String api(String domainPackage) {
+		return toApiString(requireNonNull(domainPackage) + ".api");
 	}
 
 	/**
+	 * @param domainPackage the domain package.
 	 * @return the implementation source code.
 	 */
-	public String implementation() {
-		return implementation;
+	public String implementation(String domainPackage) {
+		return toImplementationString(requireNonNull(domainPackage));
 	}
 
 	/**
+	 * @param domainPackage the domain package.
 	 * @return the combined source code of the api and implementation.
 	 */
-	public String combined() {
-		return combined;
+	public String combined(String domainPackage) {
+		return toCombinedString(requireNonNull(domainPackage));
 	}
 
 	/**
 	 * Writes the api and implementation source code to the given path.
+	 * @param domainPackage the domain package.
 	 * @param path the path to write the source code to.
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeApiImpl(Path path) throws IOException {
-		requireNonNull(path);
-		String interfaceName = interfaceName(schemaDomain.type().name(), true);
-		Files.createDirectories(path);
+	public void writeApiImpl(String domainPackage, Path path) throws IOException {
+		String interfaceName = interfaceName(domain.type().name(), true);
+		Files.createDirectories(requireNonNull(path));
 		Path filePath = path.resolve(interfaceName + ".java");
-		Files.write(filePath, singleton(api));
+		Files.write(filePath, singleton(api(requireNonNull(domainPackage) + ".api")));
 		path = path.resolve("impl");
 		Files.createDirectories(path);
 		filePath = path.resolve(interfaceName + "Impl.java");
-		Files.write(filePath, singleton(implementation));
+		Files.write(filePath, singleton(implementation(domainPackage)));
 	}
 
 	/**
 	 * Writes the combined source code to the given path.
+	 * @param domainPackage the domain package.
 	 * @param path the path to write the source code to.
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeCombined(Path path) throws IOException {
-		requireNonNull(path);
-		String interfaceName = interfaceName(schemaDomain.type().name(), true);
-		Files.createDirectories(path);
-		Files.write(path.resolve(interfaceName + ".java"), singleton(combined));
+	public void writeCombined(String domainPackage, Path path) throws IOException {
+		String interfaceName = interfaceName(domain.type().name(), true);
+		Files.createDirectories(requireNonNull(path));
+		Files.write(path.resolve(interfaceName + ".java"), singleton(combined(requireNonNull(domainPackage))));
 	}
 
 	/**
 	 * Instantiates a new {@link DomainSource} instance.
-	 * @param domain the domain model to be used to generate the source code.
-	 * @param sourcePackage the source package.
+	 * @param domain the domain model for which to generate the source code.
 	 * @return a new {@link DomainSource} instance.
 	 */
-	public static DomainSource domainSource(SchemaDomain domain, String sourcePackage) {
-		return new DomainSource(domain, sourcePackage);
+	public static DomainSource domainSource(Domain domain) {
+		return new DomainSource(domain);
 	}
 
-	private static String toApiString(List<EntityDefinition> definitions, String sourcePackage, String className) {
-		TypeSpec.Builder classBuilder = interfaceBuilder(className)
+	private String toApiString(String sourcePackage) {
+		TypeSpec.Builder classBuilder = interfaceBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
 										.addModifiers(PUBLIC, STATIC, FINAL)
-										.initializer("domainType($L)", className + ".class")
+										.initializer("domainType($L)", domainInterfaceName + ".class")
 										.build());
 
-		definitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
+		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
 
 		return removeInterfaceLineBreaks(JavaFile.builder(sourcePackage.isEmpty() ? "" : sourcePackage, classBuilder.build())
 						.addStaticImport(DomainType.class, "domainType")
@@ -171,12 +167,12 @@ public final class DomainSource {
 						.toString());
 	}
 
-	private static String toImplementationString(List<EntityDefinition> definitions, String sourcePackage, String className) {
-		TypeSpec.Builder classBuilder = classBuilder(className + "Impl")
+	private String toImplementationString(String sourcePackage) {
+		TypeSpec.Builder classBuilder = classBuilder(domainInterfaceName + "Impl")
 						.addModifiers(PUBLIC, FINAL)
 						.superclass(DomainModel.class);
 
-		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
+		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(classBuilder);
 
 		String implementationPackage = sourcePackage.isEmpty() ? "" : sourcePackage;
 
@@ -185,32 +181,32 @@ public final class DomainSource {
 														.build())
 						.skipJavaLangImports(true)
 						.indent(INDENT);
-		if (identityKeyGeneratorUsed(definitions)) {
+		if (identityKeyGeneratorUsed()) {
 			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
 		}
 		if (!implementationPackage.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + ".api." + className), DOMAIN);
+			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + ".api." + domainInterfaceName), DOMAIN);
 		}
 
 		String sourceString = fileBuilder.build().toString();
 		if (!sourcePackage.isEmpty()) {
-			sourceString = addInterfaceImports(sourceString, definitions, sourcePackage + "." + className);
+			sourceString = addInterfaceImports(sourceString, sourcePackage + "." + domainInterfaceName);
 		}
 
 		return sourceString;
 	}
 
-	private static String toCombinedString(List<EntityDefinition> definitions, String sourcePackage, String className) {
-		TypeSpec.Builder classBuilder = classBuilder(className)
+	private String toCombinedString(String sourcePackage) {
+		TypeSpec.Builder classBuilder = classBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC, FINAL)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN)
 										.addModifiers(PUBLIC, STATIC, FINAL)
-										.initializer("domainType($L)", className + ".class")
+										.initializer("domainType($L)", domainInterfaceName + ".class")
 										.build())
 						.superclass(DomainModel.class);
 
-		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(definitions, classBuilder);
-		definitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
+		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(classBuilder);
+		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition)));
 
 		JavaFile.Builder fileBuilder = JavaFile.builder(sourcePackage,
 										classBuilder.addMethod(createDomainConstructor(definitionMethods))
@@ -218,16 +214,16 @@ public final class DomainSource {
 						.addStaticImport(DomainType.class, "domainType")
 						.skipJavaLangImports(true)
 						.indent(INDENT);
-		if (identityKeyGeneratorUsed(definitions)) {
+		if (identityKeyGeneratorUsed()) {
 			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
 		}
 		if (!sourcePackage.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + className), DOMAIN);
+			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + domainInterfaceName), DOMAIN);
 		}
 
 		String sourceString = fileBuilder.build().toString();
 		if (!sourcePackage.isEmpty()) {
-			sourceString = addInterfaceImports(sourceString, definitions, sourcePackage + "." + className);
+			sourceString = addInterfaceImports(sourceString, sourcePackage + "." + domainInterfaceName);
 		}
 
 		return removeInterfaceLineBreaks(sourceString);
@@ -250,9 +246,9 @@ public final class DomainSource {
 						.build();
 	}
 
-	private static Map<EntityDefinition, String> addDefinitionMethods(List<EntityDefinition> definitions, TypeSpec.Builder classBuilder) {
+	private Map<EntityDefinition, String> addDefinitionMethods(TypeSpec.Builder classBuilder) {
 		Map<EntityDefinition, String> definitionMethods = new LinkedHashMap<>();
-		definitions.forEach(definition ->
+		sortedDefinitions.forEach(definition ->
 						addDefinition(definition, classBuilder, definitionMethods::put));
 
 		return definitionMethods;
@@ -510,10 +506,9 @@ public final class DomainSource {
 						.collect(joining("\n"));
 	}
 
-	private static String addInterfaceImports(String sourceString,
-																						Collection<EntityDefinition> definitions,
-																						String parentInterface) {
-		List<String> interfaceNames = definitions.stream()
+	private String addInterfaceImports(String sourceString,
+																		 String parentInterface) {
+		List<String> interfaceNames = sortedDefinitions.stream()
 						.map(DomainSource::createInterface)
 						.map(interfaceSpec -> interfaceSpec.name)
 						.sorted()
@@ -610,8 +605,8 @@ public final class DomainSource {
 		return dependencies;
 	}
 
-	private static boolean identityKeyGeneratorUsed(List<EntityDefinition> definitions) {
-		return definitions.stream()
+	private boolean identityKeyGeneratorUsed() {
+		return sortedDefinitions.stream()
 						.map(entityDefinition -> entityDefinition.primaryKey().generator())
 						.anyMatch(KeyGenerator.Identity.class::isInstance);
 	}

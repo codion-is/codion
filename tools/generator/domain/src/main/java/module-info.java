@@ -25,7 +25,7 @@
 module is.codion.tools.generator.domain {
 	requires java.compiler;
 	requires com.squareup.javapoet;
-	requires transitive is.codion.framework.domain.db;
+	requires is.codion.framework.domain;
 
 	exports is.codion.tools.generator.domain;
 }

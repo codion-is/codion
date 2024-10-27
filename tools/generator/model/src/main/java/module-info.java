@@ -23,8 +23,11 @@
  * </ul>
  */
 module is.codion.tools.generator.model {
-	requires transitive is.codion.tools.generator.domain;
+	requires transitive is.codion.common.db;
 	requires transitive is.codion.swing.common.model;
+
+	requires is.codion.framework.domain.db;
+	requires is.codion.tools.generator.domain;
 
 	exports is.codion.tools.generator.model;
 }

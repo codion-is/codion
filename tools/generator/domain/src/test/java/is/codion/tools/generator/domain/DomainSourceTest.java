@@ -49,13 +49,14 @@ public final class DomainSourceTest {
 							.auditUpdateUserColumnName("update_user")
 							.auditUpdateTimeColumnName("update_time")
 							.build());
-			DomainSource domainSource = DomainSource.domainSource(schemaDomain, "is.codion.petstore.domain");
+			String donainPackage = "is.codion.petstore.domain";
+			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String petstoreApi = textFileContents(DomainSourceTest.class, "PetstoreAPI.java");
-			assertEquals(petstoreApi, domainSource.api());
+			assertEquals(petstoreApi, domainSource.api(donainPackage));
 			String petstoreImpl = textFileContents(DomainSourceTest.class, "PetstoreImpl.java");
-			assertEquals(petstoreImpl, domainSource.implementation());
+			assertEquals(petstoreImpl, domainSource.implementation(donainPackage));
 			String petstoreCombined = textFileContents(DomainSourceTest.class, "Petstore.java");
-			assertEquals(petstoreCombined, domainSource.combined());
+			assertEquals(petstoreCombined, domainSource.combined(donainPackage));
 		}
 	}
 
@@ -63,13 +64,14 @@ public final class DomainSourceTest {
 	void chinook() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
 			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "CHINOOK");
-			DomainSource domainSource = DomainSource.domainSource(schemaDomain, "is.codion.chinook.domain");
+			String domainPackage = "is.codion.chinook.domain";
+			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String chinookApi = textFileContents(DomainSourceTest.class, "ChinookAPI.java");
-			assertEquals(chinookApi, domainSource.api());
+			assertEquals(chinookApi, domainSource.api(domainPackage));
 			String chinookImpl = textFileContents(DomainSourceTest.class, "ChinookImpl.java");
-			assertEquals(chinookImpl, domainSource.implementation());
+			assertEquals(chinookImpl, domainSource.implementation(domainPackage));
 			String chinookCombined = textFileContents(DomainSourceTest.class, "Chinook.java");
-			assertEquals(chinookCombined, domainSource.combined());
+			assertEquals(chinookCombined, domainSource.combined(domainPackage));
 		}
 	}
 
@@ -77,13 +79,14 @@ public final class DomainSourceTest {
 	void world() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
 			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "WORLD");
-			DomainSource domainSource = DomainSource.domainSource(schemaDomain, "is.codion.world.domain");
+			String domainPackage = "is.codion.world.domain";
+			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String worldApi = textFileContents(DomainSourceTest.class, "WorldAPI.java");
-			assertEquals(worldApi, domainSource.api());
+			assertEquals(worldApi, domainSource.api(domainPackage));
 			String worldImpl = textFileContents(DomainSourceTest.class, "WorldImpl.java");
-			assertEquals(worldImpl, domainSource.implementation());
+			assertEquals(worldImpl, domainSource.implementation(domainPackage));
 			String worldCombined = textFileContents(DomainSourceTest.class, "World.java");
-			assertEquals(worldCombined, domainSource.combined());
+			assertEquals(worldCombined, domainSource.combined(domainPackage));
 		}
 	}
 

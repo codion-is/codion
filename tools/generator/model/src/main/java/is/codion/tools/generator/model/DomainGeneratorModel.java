@@ -171,10 +171,10 @@ public final class DomainGeneratorModel {
 		if (schemaTableModel.selection().empty().not().get()) {
 			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
-				domainSource(domain, domainPackageValue.optional()
-								.filter(DomainGeneratorModel::validPackageName)
-								.orElse(""))
-								.writeApiImpl(savePath(Path.of(sourceDirectoryValue.get())));
+				domainSource(domain)
+								.writeApiImpl(domainPackageValue.optional()
+												.filter(DomainGeneratorModel::validPackageName)
+												.orElse(""), savePath(Path.of(sourceDirectoryValue.get())));
 			}
 		}
 	}
@@ -183,10 +183,10 @@ public final class DomainGeneratorModel {
 		if (schemaTableModel.selection().empty().not().get()) {
 			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
-				domainSource(domain, domainPackageValue.optional()
-								.filter(DomainGeneratorModel::validPackageName)
-								.orElse(""))
-								.writeCombined(savePath(Path.of(sourceDirectoryValue.get())));
+				domainSource(domain)
+								.writeCombined(domainPackageValue.optional()
+												.filter(DomainGeneratorModel::validPackageName)
+												.orElse(""), savePath(Path.of(sourceDirectoryValue.get())));
 			}
 		}
 	}
@@ -244,12 +244,13 @@ public final class DomainGeneratorModel {
 	private void updateDomainSource() {
 		SchemaDomain selectedDomain = selectedDomain();
 		if (selectedDomain != null) {
-			DomainSource domainSource = domainSource(selectedDomain, domainPackageValue.optional()
+			DomainSource domainSource = domainSource(selectedDomain);
+			String domainPackage = domainPackageValue.optional()
 							.filter(DomainGeneratorModel::validPackageName)
-							.orElse(""));
-			domainApiValue.set(domainSource.api());
-			domainImplValue.set(domainSource.implementation());
-			domainCombinedValue.set(domainSource.combined());
+							.orElse("");
+			domainApiValue.set(domainSource.api(domainPackage));
+			domainImplValue.set(domainSource.implementation(domainPackage));
+			domainCombinedValue.set(domainSource.combined(domainPackage));
 		}
 		else {
 			domainApiValue.clear();
