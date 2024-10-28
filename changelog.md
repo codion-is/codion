@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.21
+
 ## 0.18.20
 ### is.codion.common.model
 - FilterModel.VisibleItems.comparator() removed.
