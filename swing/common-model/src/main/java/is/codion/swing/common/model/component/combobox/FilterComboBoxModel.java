@@ -125,7 +125,8 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		/**
 		 * Provides a way for a combo box model to translate an item received via {@link ComboBoxSelection#item()} to an actual item to select,
 		 * such as as selecting the String "1" in a String based model when selected item is set to the Integer 1.
-		 * @return the {@link Value} controlling the selected item translator
+		 * @param translator the selected item translator
+		 * @return this builder
 		 */
 		Builder<T> translator(Function<Object, T> translator);
 
