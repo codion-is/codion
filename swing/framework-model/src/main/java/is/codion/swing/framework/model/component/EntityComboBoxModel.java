@@ -223,6 +223,11 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		void set(Collection<Entity.Key> keys);
 
 		/**
+		 * @return the current filter keys
+		 */
+		Collection<Entity.Key> get();
+
+		/**
 		 * Clears and disables this foreign key filter
 		 */
 		void clear();

@@ -337,8 +337,13 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public void set(Collection<Entity.Key> keys) {
-			foreignKeys = new HashSet<>(validateKeys(keys));
+			foreignKeys = unmodifiableSet(new HashSet<>(validateKeys(keys)));
 			items().filter();
+		}
+
+		@Override
+		public Collection<Entity.Key> get() {
+			return foreignKeys == null ? emptySet() : foreignKeys;
 		}
 
 		@Override
@@ -398,10 +403,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			else {
 				clear();
 			}
-		}
-
-		private Collection<Entity.Key> get() {
-			return foreignKeys == null ? emptySet() : foreignKeys;
 		}
 
 		private Collection<Entity.Key> validateKeys(Collection<Entity.Key> keys) {
