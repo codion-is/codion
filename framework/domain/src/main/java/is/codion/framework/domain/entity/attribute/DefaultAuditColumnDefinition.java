@@ -27,7 +27,7 @@ final class DefaultAuditColumnDefinition<T> extends DefaultColumnDefinition<T> i
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private final AuditColumn.AuditAction auditAction;
+	private final AuditAction auditAction;
 
 	private DefaultAuditColumnDefinition(DefaultAuditColumnDefinitionBuilder<T, ?> builder) {
 		super(builder);
@@ -35,16 +35,16 @@ final class DefaultAuditColumnDefinition<T> extends DefaultColumnDefinition<T> i
 	}
 
 	@Override
-	public AuditColumn.AuditAction auditAction() {
+	public AuditAction auditAction() {
 		return auditAction;
 	}
 
 	static class DefaultAuditColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
 					extends AbstractReadOnlyColumnDefinitionBuilder<T, B> {
 
-		private final AuditColumn.AuditAction auditAction;
+		private final AuditAction auditAction;
 
-		DefaultAuditColumnDefinitionBuilder(Column<T> column, AuditColumn.AuditAction auditAction) {
+		DefaultAuditColumnDefinitionBuilder(Column<T> column, AuditAction auditAction) {
 			super(column);
 			this.auditAction = requireNonNull(auditAction);
 		}

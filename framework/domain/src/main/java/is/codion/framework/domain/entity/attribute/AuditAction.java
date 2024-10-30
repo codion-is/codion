@@ -19,21 +19,15 @@
 package is.codion.framework.domain.entity.attribute;
 
 /**
- * A column containing audit information, such as username or timestamp
+ * The possible audit actions
  */
-public interface AuditColumn {
-
+public enum AuditAction {
 	/**
-	 * The possible audit actions
+	 * A record being inserted
 	 */
-	enum AuditAction {
-		/**
-		 * A record being inserted
-		 */
-		INSERT,
-		/**
-		 * A record being updated
-		 */
-		UPDATE
-	}
+	INSERT,
+	/**
+	 * A record being updated
+	 */
+	UPDATE
 }

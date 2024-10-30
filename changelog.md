@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.21
+### is.codion.framework.domain
+- AuditColumn removed, unused.
 
 ## 0.18.20
 ### is.codion.common.model

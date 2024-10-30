@@ -28,8 +28,8 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.Objects;
 
-import static is.codion.framework.domain.entity.attribute.AuditColumn.AuditAction.INSERT;
-import static is.codion.framework.domain.entity.attribute.AuditColumn.AuditAction.UPDATE;
+import static is.codion.framework.domain.entity.attribute.AuditAction.INSERT;
+import static is.codion.framework.domain.entity.attribute.AuditAction.UPDATE;
 import static is.codion.framework.domain.entity.condition.ColumnCondition.factory;
 import static java.util.Objects.requireNonNull;
 
