@@ -35,6 +35,7 @@ import is.codion.swing.framework.ui.component.EntityComponentFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
+import javax.swing.JDialog;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -74,7 +75,9 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	private void displayImage(String title, byte[] imageBytes) {
 		imagePanel.setImage(readImage(imageBytes));
 		if (imagePanel.isShowing()) {
-			Utilities.parentDialog(imagePanel).toFront();
+			JDialog dialog = Utilities.parentDialog(imagePanel);
+			dialog.setTitle(title);
+			dialog.toFront();
 		}
 		else {
 			Dialogs.componentDialog(imagePanel)
