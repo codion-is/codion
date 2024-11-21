@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.21
 ### is.codion.framework.domain
 - AuditColumn removed, unused.
+### is.codion.plugin.imagepanel
+- NavigableImagePanel.isWithinImage() bug fixed, now returns false if image is null.
 
 ## 0.18.20
 ### is.codion.common.model

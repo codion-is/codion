@@ -387,14 +387,18 @@ public class NavigableImagePanel extends JPanel {
 	/**
 	 * Tests whether a given point in the panel falls within the image boundaries.
 	 * @param panelPoint the point on the panel
-	 * @return true if the given point is within the image
+	 * @return true if an image is available and the given point is within the image
 	 */
 	public final boolean isWithinImage(Point panelPoint) {
-		Point2D.Double imagePoint = panelToImagePoint(panelPoint);
-		double width = getImageWidth();
-		double height = getImageHeight();
+		if (image != null) {
+			Point2D.Double imagePoint = panelToImagePoint(panelPoint);
+			double width = getImageWidth();
+			double height = getImageHeight();
 
-		return imagePoint.getX() >= 0 && imagePoint.getX() <= width && imagePoint.getY() >= 0 && imagePoint.getY() <= height;
+			return imagePoint.getX() >= 0 && imagePoint.getX() <= width && imagePoint.getY() >= 0 && imagePoint.getY() <= height;
+		}
+
+		return false;
 	}
 
 	/**
