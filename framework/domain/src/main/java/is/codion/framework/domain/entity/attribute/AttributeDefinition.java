@@ -484,13 +484,4 @@ public interface AttributeDefinition<T> {
 		 */
 		AttributeDefinition<T> build();
 	}
-
-	/**
-	 * Returns a new Comparator instance for sorting attribute definition instances by caption,
-	 * or if that is not available, attribute name, ignoring case
-	 * @return a new Comparator instance
-	 */
-	static Comparator<AttributeDefinition<?>> definitionComparator() {
-		return new AbstractAttributeDefinition.DefinitionComparator();
-	}
 }

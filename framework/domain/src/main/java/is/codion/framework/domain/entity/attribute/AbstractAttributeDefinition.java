@@ -26,7 +26,6 @@ import is.codion.framework.domain.entity.EntityType;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.RoundingMode;
-import java.text.Collator;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.Format;
@@ -460,16 +459,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		@Override
 		public int compare(T o1, T o2) {
 			return LEXICAL_COMPARATOR.compare(captions.getOrDefault(o1, ""), captions.getOrDefault(o2, ""));
-		}
-	}
-
-	static final class DefinitionComparator implements Comparator<AttributeDefinition<?>> {
-
-		private final Collator collator = Collator.getInstance();
-
-		@Override
-		public int compare(AttributeDefinition<?> definition1, AttributeDefinition<?> definition2) {
-			return collator.compare(definition1.toString().toLowerCase(), definition2.toString().toLowerCase());
 		}
 	}
 

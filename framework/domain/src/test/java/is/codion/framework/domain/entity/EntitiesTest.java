@@ -119,20 +119,6 @@ public final class EntitiesTest {
 	}
 
 	@Test
-	void sortAttributes() {
-		EntityDefinition definition = entities.definition(Employee.TYPE);
-		List<AttributeDefinition<?>> attributes = Stream.of(Employee.HIREDATE, Employee.COMMISSION,
-										Employee.SALARY, Employee.JOB)
-						.map(definition.columns()::definition)
-						.sorted(AttributeDefinition.definitionComparator())
-						.collect(toList());
-		assertEquals(Employee.COMMISSION, attributes.get(0).attribute());
-		assertEquals(Employee.HIREDATE, attributes.get(1).attribute());
-		assertEquals(Employee.JOB, attributes.get(2).attribute());
-		assertEquals(Employee.SALARY, attributes.get(3).attribute());
-	}
-
-	@Test
 	void updatableAttributes() {
 		EntityDefinition definition = entities.definition(Detail.TYPE);
 		Collection<AttributeDefinition<?>> attributes = definition.attributes().updatable();

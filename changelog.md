@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - AuditColumn removed, unused.
 - AbstractAttributeDefinition, Item based attributes now use a custom comparator, sorting by caption.
+- AttributeDefinition.definitionComparator() removed.
 ### is.codion.plugin.imagepanel
 - NavigableImagePanel.isWithinImage() bug fixed, now returns false if image is null.
 

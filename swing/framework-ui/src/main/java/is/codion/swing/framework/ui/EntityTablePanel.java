@@ -77,6 +77,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityEditComponentPanel.AttributeDefinitionComparator;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.component.EntityComponentFactory;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -656,7 +657,7 @@ public class EntityTablePanel extends JPanel {
 	public final void editSelected() {
 		List<AttributeDefinition<?>> sortedDefinitions = configuration.editable.get().stream()
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
-						.sorted(AttributeDefinition.definitionComparator())
+						.sorted(new AttributeDefinitionComparator())
 						.collect(toList());
 		Dialogs.selectionDialog(sortedDefinitions)
 						.owner(this)
@@ -1142,7 +1143,7 @@ public class EntityTablePanel extends JPanel {
 						.description(FrameworkMessages.editSelectedTip());
 		configuration.editable.get().stream()
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
-						.sorted(AttributeDefinition.definitionComparator())
+						.sorted(new AttributeDefinitionComparator())
 						.forEach(attributeDefinition -> builder.control(Control.builder()
 										.command(() -> editSelected(attributeDefinition.attribute()))
 										.name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())

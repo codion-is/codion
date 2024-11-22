@@ -87,10 +87,12 @@ import java.awt.font.TextAttribute;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
+import java.text.Collator;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -233,7 +235,7 @@ public class EntityEditComponentPanel extends JPanel {
 		else if (!attributes.isEmpty()) {
 			List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
 							.map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
-							.sorted(AttributeDefinition.definitionComparator())
+							.sorted(new AttributeDefinitionComparator())
 							.collect(Collectors.toList());
 			Dialogs.selectionDialog(sortedDefinitions)
 							.owner(this)
@@ -1316,6 +1318,16 @@ public class EntityEditComponentPanel extends JPanel {
 			this.inactiveBackgroundColor = UIManager.getColor(uiComponentKey + ".inactiveBackground");
 			this.invalidBackgroundColor = darker(backgroundColor);
 			validate();
+		}
+	}
+
+	static final class AttributeDefinitionComparator implements Comparator<AttributeDefinition<?>> {
+
+		private final Collator collator = Collator.getInstance();
+
+		@Override
+		public int compare(AttributeDefinition<?> definition1, AttributeDefinition<?> definition2) {
+			return collator.compare(definition1.toString().toLowerCase(), definition2.toString().toLowerCase());
 		}
 	}
 }
