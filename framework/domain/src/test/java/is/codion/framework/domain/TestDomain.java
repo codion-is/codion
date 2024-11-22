@@ -190,7 +190,7 @@ public final class TestDomain extends DomainModel {
 		Column<Integer> MASTER_ID_2 = TYPE.integerColumn("master_id_2");
 		Column<String> MASTER_NAME = TYPE.stringColumn("master_name");
 		Column<Integer> MASTER_CODE = TYPE.integerColumn("master_code");
-		Column<Integer> INT_VALUE_LIST = TYPE.integerColumn("int_value_list");
+		Column<Integer> INT_ITEMS = TYPE.integerColumn("int_value_list");
 		Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
 
 		ForeignKey MASTER_FK = TYPE.foreignKey("master_fk",
@@ -201,8 +201,8 @@ public final class TestDomain extends DomainModel {
 
 	private static final EntityType DETAIL_SELECT_TABLE_NAME = DOMAIN.entityType("db.entity_test_select");
 
-	private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
-					item(2, "2"), item(3, "3"));
+	private static final List<Item<Integer>> INT_VALUE_ITEMS = asList(item(0, "Zero"), item(1, "One"),
+					item(2, "Two"), item(3, "Three"));
 
 	void detail2() {
 		add(Detail2.TYPE.define(
@@ -249,10 +249,10 @@ public final class TestDomain extends DomainModel {
 										Detail2.MASTER_CODE.define()
 														.column()
 														.caption(Detail2.MASTER_CODE.name()),
-										Detail2.INT_VALUE_LIST.define()
+										Detail2.INT_ITEMS.define()
 														.column()
-														.items(ITEMS)
-														.caption(Detail2.INT_VALUE_LIST.name()),
+														.items(INT_VALUE_ITEMS)
+														.caption(Detail2.INT_ITEMS.name()),
 										Detail2.INT_DERIVED.define()
 														.derived(sourceValues -> {
 															Integer intValue = sourceValues.get(Detail2.INT);
@@ -297,7 +297,7 @@ public final class TestDomain extends DomainModel {
 		Column<Integer> MASTER_CODE = TYPE.integerColumn("master_code");
 		Column<Integer> MASTER_CODE_NON_DENORM = TYPE.integerColumn("master_code_non_denorm");
 		ForeignKey MASTER_VIA_CODE_FK = TYPE.foreignKey("master_via_code_fk", MASTER_CODE_NON_DENORM, Master.CODE);
-		Column<Integer> INT_VALUE_LIST = TYPE.integerColumn("int_value_list");
+		Column<Integer> INT_ITEMS = TYPE.integerColumn("int_value_list");
 		Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
 		Column<byte[]> BYTES = TYPE.byteArrayColumn("bytes");
 	}
@@ -354,10 +354,10 @@ public final class TestDomain extends DomainModel {
 										Detail.MASTER_CODE.define()
 														.denormalized(Detail.MASTER_FK, Master.CODE)
 														.caption(Detail.MASTER_CODE.name()),
-										Detail.INT_VALUE_LIST.define()
+										Detail.INT_ITEMS.define()
 														.column()
-														.items(ITEMS)
-														.caption(Detail.INT_VALUE_LIST.name()),
+														.items(INT_VALUE_ITEMS)
+														.caption(Detail.INT_ITEMS.name()),
 										Detail.INT_DERIVED.define()
 														.derived(sourceValues -> {
 															Integer intValue = sourceValues.get(Detail.INT);

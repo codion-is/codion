@@ -45,7 +45,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 							//instead of the default '-' character
 							.nullCaption("None")
 							//Only select the president and managers from the database
-							.condition(() -> Employee.JOB.in("Manager", "President"))
+							.condition(() -> Employee.JOB.in(Employee.MANAGER, Employee.PRESIDENT))
 							.build();
 			//Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
 			//in case a new manager got hired, fired or promoted

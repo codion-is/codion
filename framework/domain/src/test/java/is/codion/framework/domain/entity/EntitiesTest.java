@@ -461,7 +461,7 @@ public final class EntitiesTest {
 	@Test
 	void setValueItem() {
 		Entity entity = entities.entity(Detail.TYPE);
-		assertThrows(IllegalArgumentException.class, () -> entity.put(Detail.INT_VALUE_LIST, -10));
+		assertThrows(IllegalArgumentException.class, () -> entity.put(Detail.INT_ITEMS, -10));
 	}
 
 	@Test

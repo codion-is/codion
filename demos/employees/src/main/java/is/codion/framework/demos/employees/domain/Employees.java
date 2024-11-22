@@ -67,7 +67,7 @@ public final class Employees extends DomainModel {
 		// Columns for the columns in the employees.employee table
 		Column<Integer> ID = TYPE.integerColumn("id");
 		Column<String> NAME = TYPE.stringColumn("name");
-		Column<String> JOB = TYPE.stringColumn("job");
+		Column<Integer> JOB = TYPE.integerColumn("job");
 		Column<Integer> MANAGER_ID = TYPE.integerColumn("manager_id");
 		Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
 		Column<BigDecimal> SALARY = TYPE.bigDecimalColumn("salary");
@@ -83,10 +83,17 @@ public final class Employees extends DomainModel {
 
 		JRReportType EMPLOYEE_REPORT = JasperReports.reportType("employee_report");
 
-		List<Item<String>> JOB_ITEMS = asList(
-						item("Analyst"), item("Clerk"),
-						item("Manager"), item("President"),
-						item("Salesman"));
+		// Constants for the allowed JOB values
+		int PRESIDENT = 1;
+		int MANAGER = 2;
+		int ANALYST = 3;
+		int SALESMAN = 4;
+		int CLERK = 5;
+
+		List<Item<Integer>> JOB_ITEMS = asList(
+						item(ANALYST, "Analyst"), item(CLERK, "Clerk"),
+						item(MANAGER, "Manager"), item(PRESIDENT, "President"),
+						item(SALESMAN, "Salesman"));
 	}
 	// end::employeeConstants[]
 

@@ -23,6 +23,7 @@ import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -30,7 +31,11 @@ import is.codion.framework.domain.entity.condition.ConditionType;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static is.codion.framework.domain.TestDomain.DOMAIN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DomainTest {
@@ -203,5 +208,21 @@ public class DomainTest {
 		EntityType ref = DOMAIN.entityType("fkCompRef");
 		Column<Integer> id = ref.integerColumn("id");
 		assertThrows(IllegalStateException.class, () -> id.define().booleanColumn(Integer.class, 1, 0));
+	}
+
+	@Test
+	void itemComparator() {
+		List<Integer> integers = new ArrayList<>();
+		integers.add(0);
+		integers.add(1);
+		integers.add(2);
+		integers.add(3);
+		//Sorts by item caption
+		integers.sort(domain.entities().definition(Detail.TYPE)
+						.attributes().definition(Detail.INT_ITEMS).comparator());
+		assertEquals(0, integers.indexOf(1));
+		assertEquals(1, integers.indexOf(3));
+		assertEquals(2, integers.indexOf(2));
+		assertEquals(3, integers.indexOf(0));
 	}
 }

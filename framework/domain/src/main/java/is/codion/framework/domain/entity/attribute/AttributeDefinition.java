@@ -470,7 +470,9 @@ public interface AttributeDefinition<T> {
 		B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern);
 
 		/**
-		 * @param items the Items representing all the valid values for this attribute
+		 * Note that by default items are sorted by to their caption, not their value.
+		 * Use {@link #comparator(Comparator)} to set a custom comparator.
+		 * @param items the {@link Item}s representing all the valid values for this attribute
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case the valid item list contains duplicate values
 		 */

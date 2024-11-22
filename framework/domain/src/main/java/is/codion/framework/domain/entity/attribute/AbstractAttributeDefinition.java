@@ -58,7 +58,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	private static final String INVALID_ITEM_SUFFIX =
 					messageBundle(AbstractAttributeDefinition.class, getBundle(AbstractAttributeDefinition.class.getName())).getString(INVALID_ITEM_SUFFIX_KEY);
 
-	private static final Comparator<?> LEXICAL_COMPARATOR = Text.collator();
+	private static final Comparator<String> LEXICAL_COMPARATOR = Text.collator();
 	private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
 	private static final Comparator<Object> TO_STRING_COMPARATOR = new ToStringComparator();
 	private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
@@ -445,6 +445,24 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		}
 	}
 
+	private static final class ItemComparator<T> implements Comparator<T>, Serializable {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		private final Map<T, String> captions;
+
+		private ItemComparator(List<Item<T>> items) {
+			this.captions = items.stream()
+							.collect(toMap(Item::value, Item::caption));
+		}
+
+		@Override
+		public int compare(T o1, T o2) {
+			return LEXICAL_COMPARATOR.compare(captions.getOrDefault(o1, ""), captions.getOrDefault(o2, ""));
+		}
+	}
+
 	static final class DefinitionComparator implements Comparator<AttributeDefinition<?>> {
 
 		private final Collator collator = Collator.getInstance();
@@ -671,6 +689,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		@Override
 		public final B items(List<Item<T>> items) {
 			this.items = validateItems(items);
+			this.comparator = new ItemComparator<>(this.items);
 			return self();
 		}
 
