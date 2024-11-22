@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.Configuration;
+import is.codion.common.model.CancelException;
 import is.codion.common.property.PropertyValue;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * An exception dialog builder.
@@ -95,4 +97,44 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 	 * @param exception the exception to display
 	 */
 	void show(Throwable exception);
+
+	/**
+	 * Unwraps the given exception, using {@link #WRAPPER_EXCEPTIONS}.
+	 * @param exception the exception to unwrap
+	 * @return the unwrapped exception
+	 */
+	static Throwable unwrap(Throwable exception) {
+		return unwrap(exception, WRAPPER_EXCEPTIONS.get());
+	}
+
+	/**
+	 * Unwraps the given exception.
+	 * @param exception the exception to unwrap
+	 * @param wrapperExceptions the wrapper exceptions
+	 * @return the unwrapped exception
+	 */
+	static Throwable unwrap(Throwable exception, Collection<Class<? extends Throwable>> wrapperExceptions) {
+		requireNonNull(exception);
+		requireNonNull(wrapperExceptions);
+		if (exception instanceof CancelException) {
+			return exception;
+		}
+		if (exception.getCause() == null) {
+			return exception;
+		}
+
+		boolean unwrap = false;
+		for (Class<? extends Throwable> exceptionClass : wrapperExceptions) {
+			unwrap = exceptionClass.isAssignableFrom(exception.getClass());
+			if (unwrap) {
+				break;
+			}
+		}
+		boolean cyclicalCause = exception.getCause() == exception;
+		if (unwrap && !cyclicalCause) {
+			return unwrap(exception.getCause(), wrapperExceptions);
+		}
+
+		return exception;
+	}
 }

@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.model.CancelException;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 
@@ -74,7 +73,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 	@Override
 	public void show(Throwable exception) {
 		requireNonNull(exception);
-		Throwable rootCause = unwrap ? unwrapExceptions(exception, unwrapExceptions) : exception;
+		Throwable rootCause = unwrap ? ExceptionDialogBuilder.unwrap(exception, unwrapExceptions) : exception;
 		setTitle(rootCause);
 		setMessage(rootCause);
 		try {
@@ -116,29 +115,6 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 						.owner(owner)
 						.onShown(new OnShown(exceptionPanel))
 						.show();
-	}
-
-	static Throwable unwrapExceptions(Throwable exception, Collection<Class<? extends Throwable>> exceptions) {
-		if (exception instanceof CancelException) {
-			return exception;
-		}
-		if (exception.getCause() == null) {
-			return exception;
-		}
-
-		boolean unwrap = false;
-		for (Class<? extends Throwable> exceptionClass : exceptions) {
-			unwrap = exceptionClass.isAssignableFrom(exception.getClass());
-			if (unwrap) {
-				break;
-			}
-		}
-		boolean cyclicalCause = exception.getCause() == exception;
-		if (unwrap && !cyclicalCause) {
-			return unwrapExceptions(exception.getCause(), exceptions);
-		}
-
-		return exception;
 	}
 
 	private static String messageTitle(Throwable e) {

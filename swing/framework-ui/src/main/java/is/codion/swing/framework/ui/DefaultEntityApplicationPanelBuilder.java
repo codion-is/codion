@@ -31,6 +31,7 @@ import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.ExceptionDialogBuilder;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -396,8 +397,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			}
 		}
 		catch (Exception e) {
-			applicationFrame.dispose();
-			throw new RuntimeException(e);
+			displayExceptionAndExit(e, applicationFrame);
 		}
 	}
 
@@ -521,12 +521,13 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		return username;
 	}
 
-	private static void displayExceptionAndExit(Throwable exception) {
-		if (exception instanceof CancelException) {
+	private static void displayExceptionAndExit(Throwable exception, JFrame applicationFrame) {
+		Throwable unwrapped = ExceptionDialogBuilder.unwrap(exception);
+		if (unwrapped instanceof CancelException) {
 			System.exit(0);
 		}
 		else {
-			displayException(exception, null);
+			displayException(exception, applicationFrame);
 			System.exit(1);
 		}
 	}
@@ -657,7 +658,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 		@Override
 		public void accept(Exception e) {
-			displayExceptionAndExit(e);
+			displayExceptionAndExit(e, null);
 		}
 	}
 
@@ -697,7 +698,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 		@Override
 		public void uncaughtException(Thread thread, Throwable e) {
-			displayExceptionAndExit(e);
+			displayExceptionAndExit(e, null);
 		}
 	}
 

@@ -2,12 +2,15 @@ Codion Change Log
 ==================
 
 ## 0.18.21
+### is.codion.swing.common.ui
+- ExceptionDialogBuilder.unwrap() added.
 ### is.codion.framework.domain
 - AuditColumn removed, unused.
 - AbstractAttributeDefinition, Item based attributes now use a custom comparator, sorting by caption.
 - AttributeDefinition.definitionComparator() removed.
 ### is.codion.swing.framework.ui
 - EntityTableCellRenderer, Item based cells now use the default horizontal alignment instead of the one based on the the item value type.
+- DefaultEntityApplicationPanelBuilder bug fixed, exception handling during application start improved.
 ### is.codion.plugin.imagepanel
 - NavigableImagePanel.isWithinImage() bug fixed, now returns false if image is null.
 
