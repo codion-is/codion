@@ -6,6 +6,8 @@ Codion Change Log
 - AuditColumn removed, unused.
 - AbstractAttributeDefinition, Item based attributes now use a custom comparator, sorting by caption.
 - AttributeDefinition.definitionComparator() removed.
+### is.codion.swing.framework.ui
+- EntityTableCellRenderer, Item based cells now use the default horizontal alignment instead of the one based on the the item value type.
 ### is.codion.plugin.imagepanel
 - NavigableImagePanel.isWithinImage() bug fixed, now returns false if image is null.
 

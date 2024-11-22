@@ -56,9 +56,16 @@ public final class EntityTableCellRenderer {
 						.optional(attribute)
 						.orElse(null);
 
-		return FilterTableCellRenderer.<Entity, Attribute<?>, T>builder(attributeDefinition.attribute().type().valueClass())
-						.uiSettings(new EntityUISettings(queryCondition))
-						.string(attributeDefinition::string);
+		FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> builder =
+						FilterTableCellRenderer.<Entity, Attribute<?>, T>builder(attributeDefinition.attribute().type().valueClass())
+										.uiSettings(new EntityUISettings(queryCondition))
+										.string(attributeDefinition::string);
+		if (!attributeDefinition.items().isEmpty()) {
+			// Otherwise the horizontal aligment is based on the Item value type
+			builder.horizontalAlignment(FilterTableCellRenderer.HORIZONTAL_ALIGNMENT.get());
+		}
+
+		return builder;
 	}
 
 	/**
