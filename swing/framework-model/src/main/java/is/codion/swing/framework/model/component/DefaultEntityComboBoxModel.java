@@ -83,7 +83,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		this.comboBoxModel.items().visible().predicate().set(filter);
 		this.comboBoxModel.items().visible().predicate().addValidator(predicate -> {
 			if (predicate != filter) {
-				throw new UnsupportedOperationException("EntityComboBoxModel visible predicate can not be changed, use filter()");
+				throw new UnsupportedOperationException("EntityComboBoxModel visible item predicate can only be set via filter().predicate().set()");
 			}
 		});
 		this.condition = Value.builder()
