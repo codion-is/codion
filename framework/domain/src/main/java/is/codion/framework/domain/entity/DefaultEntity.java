@@ -904,11 +904,6 @@ class DefaultEntity implements Entity, Serializable {
 		}
 
 		@Override
-		public Entity immutable() {
-			return new ImmutableEntity(entity.definition, entity.values, entity.originalValues, new HashMap<>());
-		}
-
-		@Override
 		public Builder builder() {
 			return new DefaultEntityBuilder(entity.definition, entity.values, entity.originalValues);
 		}

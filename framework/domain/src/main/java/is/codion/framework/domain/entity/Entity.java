@@ -87,8 +87,7 @@ public interface Entity extends Comparable<Entity> {
 	<T> Optional<T> optional(Attribute<T> attribute);
 
 	/**
-	 * Returns the original value associated with {@code attribute},
-	 * or the current one if it has not been modified..
+	 * Returns the original value associated with {@code attribute}, or the current one if it is unmodified.
 	 * @param attribute the attribute for which to retrieve the original value
 	 * @param <T> the value type
 	 * @return the original value of the given attribute
@@ -175,7 +174,7 @@ public interface Entity extends Comparable<Entity> {
 	 * a foreign key value exists but the actual referenced entity has not
 	 * been loaded, an "empty" entity is returned, containing only the referenced
 	 * key value(s). Null is returned only if the actual foreign key is null.
-	 * @param foreignKey the foreign key for which to retrieve the value
+	 * @param foreignKey the foreign key for which to retrieve the referenced entity
 	 * @return the entity associated with {@code foreignKey}
 	 */
 	Entity entity(ForeignKey foreignKey);
@@ -298,7 +297,6 @@ public interface Entity extends Comparable<Entity> {
 	 * Provides ways to create copies of an entity instance.
 	 * <ul>
 	 *   <li>{@link #mutable()} returns a mutable copy
-	 *   <li>{@link #immutable()} returns an immutable copy
 	 *   <li>{@link #builder()} returns a {@link Builder} instance initialized with the values of the entity being copied
 	 * </ul>
 	 */
@@ -306,15 +304,9 @@ public interface Entity extends Comparable<Entity> {
 
 		/**
 		 * Returns a mutable copy of this entity.
-		 * @return a copy of this entity
+		 * @return a mutable copy of this entity
 		 */
 		Entity mutable();
-
-		/**
-		 * Returns a mutable copy of this entity.
-		 * @return a copy of this entity
-		 */
-		Entity immutable();
 
 		/**
 		 * Returns a new {@link Builder} instance initialized with the values and original values from this entity.

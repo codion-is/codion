@@ -464,8 +464,7 @@ public final class EntitiesTest {
 						.build();
 
 		Iterator<Entity> copies = Stream.of(dept1, dept2)
-						.map(Entity::copy)
-						.map(Entity.Copy::immutable)
+						.map(Entity::immutable)
 						.collect(toList())
 						.iterator();
 		Entity dept1Copy = copies.next();
@@ -486,10 +485,10 @@ public final class EntitiesTest {
 		assertSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
 		assertFalse(emp1.modified());
 
-		copy = copy.copy().immutable();
+		copy = copy.immutable();
 		assertNotSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
 
-		copy = emp1.copy().immutable();
+		copy = emp1.immutable();
 		assertFalse(copy.mutable());
 		assertTrue(emp1.equalValues(copy));
 		assertNotSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));

@@ -414,7 +414,7 @@ public class DefaultEntityTest {
 		testEntity.key(Detail.MASTER_FK);
 
 		//test copy()
-		Entity test2 = testEntity.copy().immutable().copy().mutable();
+		Entity test2 = testEntity.immutable().copy().mutable();
 		assertNotSame(test2, testEntity, "Entity copy should not be == the original");
 		assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
 		assertTrue(test2.equalValues(testEntity), "Entity attribute values should be equal after deepCopy()");
@@ -422,7 +422,7 @@ public class DefaultEntityTest {
 
 		test2.put(Detail.DOUBLE, 2.1);
 		assertTrue(test2.modified());
-		Entity test2Copy = test2.copy().immutable();
+		Entity test2Copy = test2.immutable();
 		assertTrue(test2Copy.modified());
 
 		//test propagate entity reference/denormalized values
@@ -759,7 +759,7 @@ public class DefaultEntityTest {
 		emp.put(Employee.MANAGER_FK, manager);
 		emp.put(Employee.DEPARTMENT_FK, dept2);
 
-		Entity copy = emp.copy().immutable();
+		Entity copy = emp.immutable();
 		assertNotSame(emp, copy);
 		assertTrue(emp.equalValues(copy));
 		assertNotSame(emp.get(Employee.MANAGER_FK), copy.get(Employee.MANAGER_FK));
