@@ -63,11 +63,11 @@ public final class DefaultKeyTest {
 	void singleKeyNull() {
 		Entity.Key key = ENTITIES.keyBuilder(Detail.TYPE).build();
 		assertTrue(key.isNull());
-		key = key.copyBuilder()
+		key = key.copy()
 						.with(Detail.ID, null)
 						.build();
 		assertTrue(key.isNull());
-		key = key.copyBuilder()
+		key = key.copy()
 						.with(Detail.ID, 1L)
 						.build();
 		assertTrue(key.isNotNull());
@@ -99,24 +99,24 @@ public final class DefaultKeyTest {
 						.build();
 		assertNotEquals(compMasterKey, compMasterKey2);
 
-		compMasterKey2 = compMasterKey2.copyBuilder()
+		compMasterKey2 = compMasterKey2.copy()
 						.with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
 						.build();
 		//keys are still null, since COMPOSITE_MASTER_ID_3 is null
 		assertNotEquals(compMasterKey, compMasterKey2);
 
-		compMasterKey = compMasterKey.copyBuilder()
+		compMasterKey = compMasterKey.copy()
 						.with(CompositeMaster.COMPOSITE_MASTER_ID_3, 3)
 						.build();
-		compMasterKey2 = compMasterKey2.copyBuilder()
+		compMasterKey2 = compMasterKey2.copy()
 						.with(CompositeMaster.COMPOSITE_MASTER_ID_3, 3)
 						.build();
 		assertEquals(compMasterKey, compMasterKey2);
 
-		compMasterKey = compMasterKey.copyBuilder()
+		compMasterKey = compMasterKey.copy()
 						.with(CompositeMaster.COMPOSITE_MASTER_ID, null)
 						.build();
-		compMasterKey2 = compMasterKey2.copyBuilder()
+		compMasterKey2 = compMasterKey2.copy()
 						.with(CompositeMaster.COMPOSITE_MASTER_ID, null)
 						.build();
 		//not null since COMPOSITE_MASTER_ID is nullable
@@ -126,7 +126,7 @@ public final class DefaultKeyTest {
 		Entity.Key detailKey2 = ENTITIES.primaryKey(Detail.TYPE, 2L);
 		assertNotEquals(detailKey, detailKey2);
 
-		detailKey2 = detailKey2.copyBuilder()
+		detailKey2 = detailKey2.copy()
 						.with(Detail.ID, 1L)
 						.build();
 		assertEquals(detailKey2, detailKey);

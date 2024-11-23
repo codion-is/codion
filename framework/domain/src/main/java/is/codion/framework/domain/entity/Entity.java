@@ -596,7 +596,7 @@ public interface Entity extends Comparable<Entity> {
 		 * Creates a new {@link Builder} instance, initialized with the values in this key.
 		 * @return a new builder based on this key
 		 */
-		Builder copyBuilder();
+		Builder copy();
 
 		/**
 		 * Returns a LinkedHashMap containing the given entity keys mapped to their entityTypes,

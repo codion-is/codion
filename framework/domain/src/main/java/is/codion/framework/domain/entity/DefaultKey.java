@@ -166,7 +166,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public Builder copyBuilder() {
+	public Builder copy() {
 		return new DefaultKeyBuilder(this);
 	}
 

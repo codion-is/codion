@@ -155,7 +155,7 @@ public final class EntitiesTest {
 		assertThrows(NoSuchElementException.class, key::optional);
 		assertThrows(NoSuchElementException.class, key::column);
 
-		key = key.copyBuilder()
+		key = key.copy()
 						.with(KeyTest.ID1, 1)
 						.with(KeyTest.ID2, 2)
 						.with(KeyTest.ID3, 3)
@@ -164,30 +164,30 @@ public final class EntitiesTest {
 		assertEquals(6, key.hashCode());
 		assertTrue(key.optional(KeyTest.ID1).isPresent());
 
-		key = key.copyBuilder()
+		key = key.copy()
 						.with(KeyTest.ID2, 3)
 						.build();
 		assertEquals(7, key.hashCode());
 
-		key = key.copyBuilder()
+		key = key.copy()
 						.with(KeyTest.ID3, null)
 						.build();
 		assertTrue(key.isNotNull());
 		assertEquals(4, key.hashCode());
-		key = key.copyBuilder()
+		key = key.copy()
 						.with(KeyTest.ID2, null)
 						.build();
 		assertTrue(key.isNull());
 		assertFalse(key.optional(KeyTest.ID2).isPresent());
 		assertEquals(0, key.hashCode());
-		key = key.copyBuilder()
+		key = key.copy()
 						.with(KeyTest.ID2, 4)
 						.build();
 		assertTrue(key.optional(KeyTest.ID2).isPresent());
 		assertTrue(key.isNotNull());
 		assertEquals(5, key.hashCode());
 
-		key = key.copyBuilder()
+		key = key.copy()
 						.with(KeyTest.ID2, 42)
 						.build();
 		assertTrue(key.isNotNull());
