@@ -62,8 +62,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Utilities {
 
-	private static final String COMPONENT = "component";
-
 	private Utilities() {}
 
 	/**
@@ -121,9 +119,8 @@ public final class Utilities {
 	 * @param actions the actions
 	 */
 	public static void linkToEnabledState(StateObserver enabledState, Action... actions) {
-		requireNonNull(enabledState, "enabledState");
-		requireNonNull(actions, "actions");
-		for (Action action : actions) {
+		requireNonNull(enabledState);
+		for (Action action : requireNonNull(actions)) {
 			if (action != null) {
 				action.setEnabled(enabledState.get());
 				enabledState.addConsumer(new EnableAction(action));
@@ -137,9 +134,8 @@ public final class Utilities {
 	 * @param components the components
 	 */
 	public static void linkToEnabledState(StateObserver enabledState, JComponent... components) {
-		requireNonNull(enabledState, "enabledState");
-		requireNonNull(components, "components");
-		for (JComponent component : components) {
+		requireNonNull(enabledState);
+		for (JComponent component : requireNonNull(components)) {
 			if (component != null) {
 				component.setEnabled(enabledState.get());
 				enabledState.addConsumer(new EnableComponent(component));
@@ -155,8 +151,8 @@ public final class Utilities {
 	 * @return a {@link Observer} notified each time the value of the given property changes
 	 */
 	public static <T> Observer<T> propertyChangeEvent(JComponent component, String property) {
-		requireNonNull(component, COMPONENT);
-		requireNonNull(property, "property");
+		requireNonNull(component);
+		requireNonNull(property);
 		Event<T> event = Event.event();
 		component.addPropertyChangeListener(property, changeEvent -> event.accept((T) changeEvent.getNewValue()));
 
@@ -169,7 +165,7 @@ public final class Utilities {
 	 * @param linked the model to link with main
 	 */
 	public static void linkBoundedRangeModels(BoundedRangeModel main, BoundedRangeModel linked) {
-		main.addChangeListener(new BoundedRangeModelListener(requireNonNull(main, "main"), requireNonNull(linked, "linked")));
+		main.addChangeListener(new BoundedRangeModelListener(requireNonNull(main), requireNonNull(linked)));
 	}
 
 	/**
@@ -178,8 +174,8 @@ public final class Utilities {
 	 * @param parent the parent from which to exapand
 	 */
 	public static void expandAll(JTree tree, TreePath parent) {
-		requireNonNull(tree, "tree");
-		requireNonNull(parent, "parent");
+		requireNonNull(tree);
+		requireNonNull(parent);
 		TreeNode node = (TreeNode) parent.getLastPathComponent();
 		if (node.getChildCount() >= 0) {
 			Enumeration<? extends TreeNode> e = node.children();
@@ -197,8 +193,8 @@ public final class Utilities {
 	 * @param parent the parent from which to collapse
 	 */
 	public static void collapseAll(JTree tree, TreePath parent) {
-		requireNonNull(tree, "tree");
-		requireNonNull(parent, "parent");
+		requireNonNull(tree);
+		requireNonNull(parent);
 		TreeNode node = (TreeNode) parent.getLastPathComponent();
 		if (node.getChildCount() >= 0) {
 			Enumeration<? extends TreeNode> e = node.children();

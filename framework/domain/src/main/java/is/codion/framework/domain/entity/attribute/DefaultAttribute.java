@@ -49,10 +49,8 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		if (nullOrEmpty(name)) {
 			throw new IllegalArgumentException("name must be a non-empty string");
 		}
-		requireNonNull(entityType, "entityType");
-		requireNonNull(valueClass, "valueClass");
 		this.name = name;
-		this.type = new DefaultType<>(entityType, valueClass);
+		this.type = new DefaultType<>(requireNonNull(entityType), requireNonNull(valueClass));
 		this.hashCode = Objects.hash(name, entityType);
 	}
 

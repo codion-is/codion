@@ -33,8 +33,7 @@ public final class SQLServerDatabaseFactory implements DatabaseFactory {
 
 	@Override
 	public boolean driverCompatible(String driverClassName) {
-		requireNonNull(driverClassName, "driverClassName");
-		return driverClassName.startsWith(DRIVER_PACKAGE) || driverClassName.startsWith(JTDS_DRIVER_PACKAGE);
+		return requireNonNull(driverClassName).startsWith(DRIVER_PACKAGE) || driverClassName.startsWith(JTDS_DRIVER_PACKAGE);
 	}
 
 	@Override

@@ -44,8 +44,8 @@ final class DefaultServerLocator implements Server.Locator {
 	private final int port;
 
 	private DefaultServerLocator(DefaultBuilder builder) {
-		this.hostName = requireNonNull(builder.hostName, "hostName");
-		this.namePrefix = requireNonNull(builder.namePrefix, "namePrefix");
+		this.hostName = requireNonNull(builder.hostName, "hostName must be specified");
+		this.namePrefix = requireNonNull(builder.namePrefix, "namePrefix must be specified");
 		this.registryPort = builder.registryPort;
 		this.port = builder.port;
 	}

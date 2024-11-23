@@ -172,7 +172,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
 						.sslEnabled(SSL_ENABLED.get())
 						.objectInputFilterFactoryClassName(OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME.get())
-						.adminPort(requireNonNull(ADMIN_PORT.get(), ADMIN_PORT.toString()))
+						.adminPort(ADMIN_PORT.getOrThrow())
 						.connectionLimit(CONNECTION_LIMIT.get())
 						.database(Database.instance())
 						.domainClassNames(Text.parseCommaSeparatedValues(DOMAIN_MODEL_CLASSES.get()))

@@ -114,8 +114,8 @@ public final class DomainGeneratorModel {
 	private final Value<String> implSearchValue = Value.value();
 
 	private DomainGeneratorModel(Database database, User user) {
-		this.database = requireNonNull(database, "database");
-		this.user = requireNonNull(user, "user");
+		this.database = requireNonNull(database);
+		this.user = requireNonNull(user);
 		sourceDirectoryChanged();
 		domainPackageChanged();
 		schemaTableModel.sorter().setSortOrder(SchemaColumns.Id.SCHEMA, SortOrder.ASCENDING);

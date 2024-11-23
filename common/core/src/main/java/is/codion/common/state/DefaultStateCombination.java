@@ -68,7 +68,7 @@ final class DefaultStateCombination implements State.Combination {
 
 	@Override
 	public void add(StateObserver state) {
-		requireNonNull(state, "state");
+		requireNonNull(state);
 		synchronized (observer) {
 			if (!findConsumer(state).isPresent()) {
 				boolean previousValue = get();
@@ -80,7 +80,7 @@ final class DefaultStateCombination implements State.Combination {
 
 	@Override
 	public void remove(StateObserver state) {
-		requireNonNull(state, "state");
+		requireNonNull(state);
 		synchronized (observer) {
 			boolean previousValue = get();
 			findConsumer(state).ifPresent(consumer -> {

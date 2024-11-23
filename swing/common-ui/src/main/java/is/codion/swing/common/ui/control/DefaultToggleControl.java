@@ -34,7 +34,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
 	DefaultToggleControl(DefaultToggleControlBuilder builder) {
 		super(builder);
-		this.value = requireNonNull(builder.value, "value");
+		this.value = requireNonNull(builder.value);
 	}
 
 	@Override

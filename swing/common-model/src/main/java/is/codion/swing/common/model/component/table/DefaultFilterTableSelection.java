@@ -54,7 +54,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	private final FilterModel.Items<R> items;
 
 	DefaultFilterTableSelection(FilterModel.Items<R> items) {
-		this.items = requireNonNull(items, "items");
+		this.items = requireNonNull(items);
 		bindEvents();
 	}
 

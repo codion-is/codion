@@ -74,7 +74,7 @@ final class DefaultPropertyStore implements PropertyStore {
 	}
 
 	DefaultPropertyStore(Properties properties) {
-		this.properties.putAll(requireNonNull(properties, "properties"));
+		this.properties.putAll(requireNonNull(properties));
 		this.properties.stringPropertyNames().forEach(property ->
 						System.setProperty(property, this.properties.getProperty(property)));
 	}
@@ -228,7 +228,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
 	@Override
 	public void writeToFile(Path propertiesFile) throws IOException {
-		requireNonNull(propertiesFile, "propertiesFile");
+		requireNonNull(propertiesFile);
 		if (!Files.exists(propertiesFile) && !propertiesFile.toFile().createNewFile()) {
 			throw new IOException("Unable to create properties file: " + propertiesFile);
 		}
@@ -293,7 +293,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
 		@Override
 		public T getOrThrow(String message) throws IllegalStateException {
-			requireNonNull(message, "message");
+			requireNonNull(message);
 			if (value == null) {
 				throw new IllegalStateException(message);
 			}

@@ -31,7 +31,7 @@ final class AutomaticKeyGenerator extends AbstractQueriedKeyGenerator {
 	private final String valueSource;
 
 	AutomaticKeyGenerator(String valueSource) {
-		this.valueSource = requireNonNull(valueSource, "valueSource");
+		this.valueSource = requireNonNull(valueSource);
 	}
 
 	@Override

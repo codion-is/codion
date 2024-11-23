@@ -41,7 +41,7 @@ public final class ColumnSummaryPanel extends JPanel {
 
 	private ColumnSummaryPanel(SummaryModel model, int horizontalAlignment) {
 		setLayout(new BorderLayout());
-		add(createSummaryField(requireNonNull(model, "model"), horizontalAlignment), BorderLayout.CENTER);
+		add(createSummaryField(requireNonNull(model), horizontalAlignment), BorderLayout.CENTER);
 	}
 
 	/**

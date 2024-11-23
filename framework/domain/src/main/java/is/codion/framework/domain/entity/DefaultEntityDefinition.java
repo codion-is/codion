@@ -521,7 +521,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		@Override
 		public Collection<ForeignKey> get(EntityType referencedEntityType) {
-			requireNonNull(referencedEntityType, "referencedEntityType");
+			requireNonNull(referencedEntityType);
 			return get().stream()
 							.filter(foreignKey -> foreignKey.referencedType().equals(referencedEntityType))
 							.collect(toList());
@@ -529,7 +529,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		@Override
 		public ForeignKeyDefinition definition(ForeignKey foreignKey) {
-			ForeignKeyDefinition definition = entityAttributes.foreignKeyDefinitionMap.get(requireNonNull(foreignKey, "foreignKey"));
+			ForeignKeyDefinition definition = entityAttributes.foreignKeyDefinitionMap.get(requireNonNull(foreignKey));
 			if (definition == null) {
 				throw new IllegalArgumentException("Foreign key: " + foreignKey + " not found in entity of type: " + entityType);
 			}
@@ -592,7 +592,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		private EntityAttributes(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
 			this.entityType = requireNonNull(entityType);
-			if (requireNonNull(attributeDefinitionBuilders, "attributeDefinitionBuilders").isEmpty()) {
+			if (requireNonNull(attributeDefinitionBuilders).isEmpty()) {
 				throw new IllegalArgumentException("One or more attribute definition builder must be specified when defining an entity");
 			}
 			List<EntityType> attributeEntityTypes = attributeDefinitionBuilders.stream()
@@ -873,8 +873,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		@Override
 		public Builder condition(ConditionType conditionType, ConditionProvider conditionProvider) {
-			requireNonNull(conditionType, "conditionType");
-			requireNonNull(conditionProvider, "conditionProvider");
+			requireNonNull(conditionType);
+			requireNonNull(conditionProvider);
 			if (this.conditionProviders == null) {
 				this.conditionProviders = new HashMap<>();
 			}
@@ -887,7 +887,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		@Override
 		public Builder caption(String caption) {
-			this.caption = requireNonNull(caption, "caption");
+			this.caption = requireNonNull(caption);
 			return this;
 		}
 
@@ -896,7 +896,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			if (this.caption != null) {
 				throw new IllegalStateException("Caption has already been set for entity: " + attributes.entityType);
 			}
-			this.captionResourceKey = requireNonNull(captionResourceKey, "captionResourceKey");
+			this.captionResourceKey = requireNonNull(captionResourceKey);
 			return this;
 		}
 
@@ -929,32 +929,32 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			if (attributes.primaryKeyColumnDefinitions.isEmpty()) {
 				throw new IllegalStateException("KeyGenerator can not be set for an entity without a primary key: " + attributes.entityType);
 			}
-			this.keyGenerator = requireNonNull(keyGenerator, "keyGenerator");
+			this.keyGenerator = requireNonNull(keyGenerator);
 			this.keyGenerated = true;
 			return this;
 		}
 
 		@Override
 		public Builder orderBy(OrderBy orderBy) {
-			this.orderBy = requireNonNull(orderBy, "orderBy");
+			this.orderBy = requireNonNull(orderBy);
 			return this;
 		}
 
 		@Override
 		public Builder selectTableName(String selectTableName) {
-			this.selectTableName = requireNonNull(selectTableName, "selectTableName");
+			this.selectTableName = requireNonNull(selectTableName);
 			return this;
 		}
 
 		@Override
 		public Builder selectQuery(SelectQuery selectQuery) {
-			this.selectQuery = requireNonNull(selectQuery, "selectQuery");
+			this.selectQuery = requireNonNull(selectQuery);
 			return this;
 		}
 
 		@Override
 		public Builder comparator(Comparator<Entity> comparator) {
-			this.comparator = requireNonNull(comparator, "comparator");
+			this.comparator = requireNonNull(comparator);
 			return this;
 		}
 
@@ -967,13 +967,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		@Override
 		public Builder stringFactory(Function<Entity, String> stringFactory) {
-			this.stringFactory = requireNonNull(stringFactory, "stringFactory");
+			this.stringFactory = requireNonNull(stringFactory);
 			return this;
 		}
 
 		@Override
 		public Builder validator(EntityValidator validator) {
-			this.validator = requireNonNull(validator, "validator");
+			this.validator = requireNonNull(validator);
 			return this;
 		}
 

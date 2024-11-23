@@ -97,14 +97,14 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	 * @param path the path
 	 */
 	AbstractHttpEntityConnection(DefaultBuilder builder, String path) {
-		this.user = requireNonNull(builder.user, "user");
+		this.user = requireNonNull(builder.user, "user must be specified");
 		this.baseurl = createBaseUrl(builder, path);
 		this.socketTimeout = Duration.ofMillis(builder.socketTimeout);
 		this.httpClient = createHttpClient(builder.connectTimeout, builder.executor);
 		this.headers = new String[] {
-						DOMAIN_TYPE_NAME, requireNonNull(builder.domainType, "domainType").name(),
-						CLIENT_TYPE_ID, requireNonNull(builder.clientTypeId, CLIENT_TYPE_ID),
-						CLIENT_ID, requireNonNull(builder.clientId, CLIENT_ID).toString(),
+						DOMAIN_TYPE_NAME, requireNonNull(builder.domainType, "domainType must be specified").name(),
+						CLIENT_TYPE_ID, requireNonNull(builder.clientTypeId, "clientTypeId must be specified"),
+						CLIENT_ID, requireNonNull(builder.clientId, "clientId must be specified").toString(),
 						AUTHORIZATION, createAuthorizationHeader(user)
 		};
 		this.entities = initializeEntities();
@@ -246,7 +246,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	@Override
 	public final void update(Entity entity) throws DatabaseException {
-		update(singletonList(requireNonNull(entity, "entity")));
+		update(singletonList(requireNonNull(entity)));
 	}
 
 	@Override
@@ -311,7 +311,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	@Override
 	public final <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
-		requireNonNull(reportType, "reportType");
+		requireNonNull(reportType);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("report", serialize(asList(reportType, reportParameters)))));
@@ -394,7 +394,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	private static String createBaseUrl(DefaultBuilder builder, String path) {
-		return (builder.https ? HTTPS : HTTP) + requireNonNull(builder.hostName, "hostName") + ":" + (builder.https ? builder.securePort : builder.port) + path;
+		return (builder.https ? HTTPS : HTTP) + requireNonNull(builder.hostName, "hostName must be specified") + ":" + (builder.https ? builder.securePort : builder.port) + path;
 	}
 
 	private static String createAuthorizationHeader(User user) {

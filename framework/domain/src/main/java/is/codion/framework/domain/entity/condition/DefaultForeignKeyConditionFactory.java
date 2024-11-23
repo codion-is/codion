@@ -41,12 +41,10 @@ import static java.util.stream.Collectors.toMap;
 
 final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Factory {
 
-	private static final String VALUES_PARAMETER = "values";
-
 	private final ForeignKey foreignKey;
 
 	DefaultForeignKeyConditionFactory(ForeignKey foreignKey) {
-		this.foreignKey = requireNonNull(foreignKey, "foreignKey");
+		this.foreignKey = requireNonNull(foreignKey);
 	}
 
 	@Override
@@ -92,12 +90,12 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Fac
 
 	@Override
 	public Condition in(Entity... values) {
-		return in(asList(requireNonNull(values, VALUES_PARAMETER)));
+		return in(asList(requireNonNull(values)));
 	}
 
 	@Override
 	public Condition notIn(Entity... values) {
-		return notIn(asList(requireNonNull(values, VALUES_PARAMETER)));
+		return notIn(asList(requireNonNull(values)));
 	}
 
 	@Override

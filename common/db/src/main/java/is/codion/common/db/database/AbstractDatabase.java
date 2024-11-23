@@ -81,7 +81,7 @@ public abstract class AbstractDatabase implements Database {
 	 * @param url the jdbc url
 	 */
 	protected AbstractDatabase(String url) {
-		this.url = requireNonNull(url, "url");
+		this.url = requireNonNull(url);
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final boolean connectionValid(Connection connection) {
-		requireNonNull(connection, "connection");
+		requireNonNull(connection);
 		try {
 			return connection.isValid(validityCheckTimeout);
 		}
@@ -131,8 +131,8 @@ public abstract class AbstractDatabase implements Database {
 	@Override
 	public final ConnectionPoolWrapper createConnectionPool(ConnectionPoolFactory connectionPoolFactory,
 																													User poolUser) throws DatabaseException {
-		requireNonNull(connectionPoolFactory, "connectionPoolFactory");
-		requireNonNull(poolUser, "poolUser");
+		requireNonNull(connectionPoolFactory);
+		requireNonNull(poolUser);
 		if (connectionPools.containsKey(poolUser.username().toLowerCase())) {
 			throw new IllegalStateException("Connection pool for user " + poolUser.username() + " has already been created");
 		}
@@ -149,7 +149,7 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final ConnectionPoolWrapper connectionPool(String username) {
-		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.get(requireNonNull(username, "username").toLowerCase());
+		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.get(requireNonNull(username).toLowerCase());
 		if (connectionPoolWrapper == null) {
 			throw new IllegalArgumentException("No connection pool available for user: " + username);
 		}
@@ -159,7 +159,7 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final void closeConnectionPool(String username) {
-		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.remove(requireNonNull(username, "username").toLowerCase());
+		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.remove(requireNonNull(username).toLowerCase());
 		if (connectionPoolWrapper != null) {
 			connectionPoolWrapper.close();
 		}

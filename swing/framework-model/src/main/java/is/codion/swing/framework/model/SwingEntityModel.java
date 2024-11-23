@@ -38,8 +38,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
 	 * @param connectionProvider a EntityConnectionProvider
 	 */
 	public SwingEntityModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(new SwingEntityEditModel(requireNonNull(entityType, "entityType"),
-						requireNonNull(connectionProvider, "connectionProvider")));
+		this(new SwingEntityEditModel(requireNonNull(entityType), requireNonNull(connectionProvider)));
 	}
 
 	/**

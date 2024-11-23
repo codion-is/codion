@@ -253,7 +253,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public List<Entity> select(Collection<Entity.Key> keys) throws DatabaseException {
-		requireNonNull(keys, "keys");
+		requireNonNull(keys);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("selectByKey", serialize(keys))));
@@ -273,7 +273,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public List<Entity> select(Select select) throws DatabaseException {
-		requireNonNull(select, "select");
+		requireNonNull(select);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("select", serialize(select))));
@@ -293,7 +293,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException {
-		requireNonNull(entities, "entities");
+		requireNonNull(entities);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("dependencies", serialize(entities))));

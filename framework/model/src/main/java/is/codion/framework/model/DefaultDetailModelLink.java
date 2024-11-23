@@ -47,7 +47,7 @@ public class DefaultDetailModelLink<M extends DefaultEntityModel<M, E, T>, E ext
 	 * @param detailModel the detail model to link
 	 */
 	public DefaultDetailModelLink(M detailModel) {
-		this.detailModel = requireNonNull(detailModel, "detailModel");
+		this.detailModel = requireNonNull(detailModel);
 		if (detailModel.containsTableModel()) {
 			detailModel.tableModel().queryModel().conditionRequired().set(true);
 		}

@@ -52,7 +52,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 	private final String timePattern;
 
 	private DefaultLocaleDateTimePattern(DefaultBuilder builder) {
-		this.delimiter = requireNonNull(builder.delimiter, "delimiter");
+		this.delimiter = requireNonNull(builder.delimiter, "delimiter must be specified");
 		this.fourDigitYear = builder.fourDigitYear;
 		this.timePattern = builder.timePattern;
 	}

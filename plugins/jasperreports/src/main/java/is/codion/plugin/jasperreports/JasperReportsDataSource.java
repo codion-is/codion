@@ -57,8 +57,8 @@ public class JasperReportsDataSource<T> implements JRDataSource {
 	 */
 	public JasperReportsDataSource(Iterator<T> reportIterator, BiFunction<T, JRField, Object> valueProvider,
 																 Consumer<T> onNext) {
-		this.reportIterator = requireNonNull(reportIterator, "reportIterator");
-		this.valueProvider = requireNonNull(valueProvider, "valueProvider");
+		this.reportIterator = requireNonNull(reportIterator);
+		this.valueProvider = requireNonNull(valueProvider);
 		this.onNext = onNext == null ? next -> {} : onNext;
 	}
 
@@ -81,7 +81,7 @@ public class JasperReportsDataSource<T> implements JRDataSource {
 	 */
 	@Override
 	public final Object getFieldValue(JRField field) throws JRException {
-		requireNonNull(field, "field");
+		requireNonNull(field);
 		try {
 			return valueProvider.apply(currentItem, field);
 		}

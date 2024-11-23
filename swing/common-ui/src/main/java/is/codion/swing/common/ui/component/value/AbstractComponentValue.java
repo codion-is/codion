@@ -52,7 +52,7 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
 	 */
 	protected AbstractComponentValue(C component, T nullValue) {
 		super(nullValue);
-		this.component = requireNonNull(component, "component");
+		this.component = requireNonNull(component);
 	}
 
 	@Override

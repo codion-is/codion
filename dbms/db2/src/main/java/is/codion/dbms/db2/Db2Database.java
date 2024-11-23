@@ -55,12 +55,12 @@ final class Db2Database extends AbstractDatabase {
 
 	@Override
 	public String autoIncrementQuery(String idSource) {
-		return "SELECT PREVIOUS VALUE FOR " + requireNonNull(idSource, "idSource");
+		return "SELECT PREVIOUS VALUE FOR " + requireNonNull(idSource);
 	}
 
 	@Override
 	public String sequenceQuery(String sequenceName) {
-		return "SELECT NEXT VALUE FOR " + requireNonNull(sequenceName, "sequenceName");
+		return "SELECT NEXT VALUE FOR " + requireNonNull(sequenceName);
 	}
 
 	@Override

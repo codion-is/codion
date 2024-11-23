@@ -231,7 +231,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean addValidator(Validator<? super T> validator) {
-		requireNonNull(validator, "validator").validate(get());
+		requireNonNull(validator).validate(get());
 		if (validators == null) {
 			validators = new LinkedHashSet<>(1);
 		}
@@ -241,7 +241,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean removeValidator(Validator<? super T> validator) {
-		requireNonNull(validator, "validator");
+		requireNonNull(validator);
 		if (validators != null) {
 			return validators.remove(validator);
 		}

@@ -59,7 +59,7 @@ public abstract class FileTransferHandler extends TransferHandler {
 	 * @param textComponent the text component
 	 */
 	public static void addSingleFileDragAndDropSupport(JTextComponent textComponent) {
-		requireNonNull(textComponent, "textComponent");
+		requireNonNull(textComponent);
 		textComponent.setDragEnabled(true);
 		textComponent.setTransferHandler(new FileTransferHandler() {
 			@Override
@@ -77,7 +77,7 @@ public abstract class FileTransferHandler extends TransferHandler {
 	 * @return true if the given transfer support instance represents a file or a list of files
 	 */
 	public static boolean fileDataFlavor(TransferSupport transferSupport) {
-		requireNonNull(transferSupport, "transferSupport");
+		requireNonNull(transferSupport);
 		try {
 			DataFlavor nixFileDataFlavor = nixFileDataFlavor();
 
@@ -97,7 +97,7 @@ public abstract class FileTransferHandler extends TransferHandler {
 	 * @throws RuntimeException in case of an exception
 	 */
 	public static List<File> transferFiles(TransferSupport transferSupport) {
-		requireNonNull(transferSupport, "transferSupport");
+		requireNonNull(transferSupport);
 		try {
 			for (DataFlavor flavor : transferSupport.getDataFlavors()) {
 				if (flavor.isFlavorJavaFileListType()) {

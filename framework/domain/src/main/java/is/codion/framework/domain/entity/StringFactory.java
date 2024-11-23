@@ -71,8 +71,6 @@ import static java.util.stream.Collectors.joining;
  */
 public final class StringFactory {
 
-	private static final String ATTRIBUTE_PARAM = "attribute";
-
 	private StringFactory() {}
 
 	/**
@@ -148,7 +146,7 @@ public final class StringFactory {
 		 */
 		@Override
 		public String apply(Entity entity) {
-			requireNonNull(entity, "entity");
+			requireNonNull(entity);
 			if (valueProviders.size() == 1) {
 				return valueProviders.get(0).apply(entity);
 			}
@@ -168,8 +166,8 @@ public final class StringFactory {
 		private final Format format;
 
 		private FormattedValueProvider(Attribute<?> attribute, Format format) {
-			this.attribute = requireNonNull(attribute, ATTRIBUTE_PARAM);
-			this.format = requireNonNull(format, "format");
+			this.attribute = requireNonNull(attribute);
+			this.format = requireNonNull(format);
 		}
 
 		@Override
@@ -191,8 +189,8 @@ public final class StringFactory {
 		private final Attribute<?> attribute;
 
 		private ForeignKeyValueProvider(ForeignKey foreignKey, Attribute<?> attribute) {
-			this.foreignKey = requireNonNull(foreignKey, "foreignKey");
-			this.attribute = requireNonNull(attribute, ATTRIBUTE_PARAM);
+			this.foreignKey = requireNonNull(foreignKey);
+			this.attribute = requireNonNull(attribute);
 			if (!attribute.entityType().equals(foreignKey.referencedType())) {
 				throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + foreignKey.entityType());
 			}
@@ -216,7 +214,7 @@ public final class StringFactory {
 		private final Attribute<?> attribute;
 
 		private StringValueProvider(Attribute<?> attribute) {
-			this.attribute = requireNonNull(attribute, ATTRIBUTE_PARAM);
+			this.attribute = requireNonNull(attribute);
 		}
 
 		@Override
@@ -233,7 +231,7 @@ public final class StringFactory {
 		private final String text;
 
 		private StaticTextProvider(String text) {
-			this.text = requireNonNull(text, "text");
+			this.text = requireNonNull(text);
 		}
 
 		@Override

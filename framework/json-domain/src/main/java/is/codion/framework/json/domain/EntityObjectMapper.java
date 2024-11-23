@@ -65,7 +65,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 	private final Entities entities;
 
 	EntityObjectMapper(Entities entities) {
-		this.entities = requireNonNull(entities, "entities");
+		this.entities = requireNonNull(entities);
 		this.entitySerializer = new EntitySerializer(this);
 		this.entityDeserializer = new EntityDeserializer(entities, this);
 		this.conditionSerializer = new ConditionSerializer(this);

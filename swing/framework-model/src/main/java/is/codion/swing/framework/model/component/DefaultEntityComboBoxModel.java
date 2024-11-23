@@ -470,8 +470,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider, EntityComboBoxModel filterModel, ForeignKey filterForeignKey) {
-			this.entityType = requireNonNull(entityType, "entityType");
-			this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+			this.entityType = requireNonNull(entityType);
+			this.connectionProvider = requireNonNull(connectionProvider);
 			this.condition = new DefaultConditionSupplier(entityType);
 			this.comparator = connectionProvider.entities().definition(entityType).comparator();
 			this.filterModel = filterModel;

@@ -97,7 +97,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		addShutdownListener(new ShutdownListener());
 		this.configuration = configuration;
 		try {
-			this.database = requireNonNull(configuration.database(), "database");
+			this.database = requireNonNull(configuration.database());
 			this.clientLogging = configuration.clientLogging();
 			this.domainModels = loadDomainModels(configuration.domainClassNames());
 			configureDatabase(domainModels.values(), database);
@@ -132,7 +132,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	@Override
 	protected final AbstractRemoteEntityConnection connect(RemoteClient remoteClient) throws RemoteException, LoginException {
-		requireNonNull(remoteClient, "remoteClient");
+		requireNonNull(remoteClient);
 		try {
 			AbstractRemoteEntityConnection connection = createRemoteConnection(database(), remoteClient,
 							configuration.port(), configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
@@ -428,7 +428,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * @throws RemoteException in case of an exception
 	 */
 	public static synchronized EntityServer startServer(EntityServerConfiguration configuration) throws RemoteException {
-		requireNonNull(configuration, "configuration");
+		requireNonNull(configuration);
 		long currentTime = System.currentTimeMillis();
 		try {
 			EntityServer server = new EntityServer(configuration);

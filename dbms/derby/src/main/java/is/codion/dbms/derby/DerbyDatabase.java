@@ -65,7 +65,7 @@ final class DerbyDatabase extends AbstractDatabase {
 
 	@Override
 	public String autoIncrementQuery(String idSource) {
-		return AUTO_INCREMENT_QUERY + requireNonNull(idSource, "idSource");
+		return AUTO_INCREMENT_QUERY + requireNonNull(idSource);
 	}
 
 	@Override

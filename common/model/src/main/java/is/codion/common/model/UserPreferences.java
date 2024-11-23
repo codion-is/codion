@@ -28,8 +28,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class UserPreferences {
 
-	private static final String KEY = "key";
-
 	private static Preferences preferences;
 
 	private UserPreferences() {}
@@ -40,7 +38,7 @@ public final class UserPreferences {
 	 * @return the user preference associated with the given key
 	 */
 	public static String getUserPreference(String key, String defaultValue) {
-		return userPreferences().get(requireNonNull(key, KEY), defaultValue);
+		return userPreferences().get(requireNonNull(key), defaultValue);
 	}
 
 	/**
@@ -48,7 +46,7 @@ public final class UserPreferences {
 	 * @param value the preference value to associate with the given key
 	 */
 	public static void setUserPreference(String key, String value) {
-		userPreferences().put(requireNonNull(key, KEY), value);
+		userPreferences().put(requireNonNull(key), value);
 	}
 
 	/**
@@ -56,7 +54,7 @@ public final class UserPreferences {
 	 * @param key the key to use to identify the preference to remove
 	 */
 	public static void removeUserPreference(String key) {
-		userPreferences().remove(requireNonNull(key, KEY));
+		userPreferences().remove(requireNonNull(key));
 	}
 
 	/**

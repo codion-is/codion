@@ -287,7 +287,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public List<Entity> select(Collection<Entity.Key> keys) throws DatabaseException {
-		requireNonNull(keys, "keys");
+		requireNonNull(keys);
 		try {
 			synchronized (httpClient) {
 				return handleJsonResponse(executeJson(createJsonRequest("selectByKey",
@@ -308,7 +308,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public List<Entity> select(Select select) throws DatabaseException {
-		requireNonNull(select, "select");
+		requireNonNull(select);
 		try {
 			synchronized (httpClient) {
 				return handleJsonResponse(executeJson(createJsonRequest("select",
@@ -329,7 +329,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException {
-		requireNonNull(entities, "entities");
+		requireNonNull(entities);
 		try {
 			Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
 			DomainType domainType = entities().domainType();

@@ -61,7 +61,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 	 * @throws NullPointerException in case connectionProvider is null
 	 */
 	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider, Version version) {
-		this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+		this.connectionProvider = requireNonNull(connectionProvider);
 		this.version = version;
 	}
 
@@ -93,8 +93,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 	@Override
 	@SafeVarargs
 	public final void addEntityModels(M... entityModels) {
-		requireNonNull(entityModels, "entityModels");
-		for (M entityModel : entityModels) {
+		for (M entityModel : requireNonNull(entityModels)) {
 			addEntityModel(entityModel);
 		}
 	}

@@ -41,7 +41,7 @@ public interface ResultPacker<T> {
 	 * @throws NullPointerException in case resultSet is null
 	 */
 	default List<T> pack(ResultSet resultSet) throws SQLException {
-		requireNonNull(resultSet, "resultSet");
+		requireNonNull(resultSet);
 		List<T> result = new ArrayList<>();
 		while (resultSet.next()) {
 			T item = get(resultSet);

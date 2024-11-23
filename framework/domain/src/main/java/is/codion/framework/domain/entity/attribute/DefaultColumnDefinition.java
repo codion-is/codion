@@ -283,7 +283,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		@Override
 		public final <C> B columnClass(Class<C> columnClass, Converter<T, C> converter) {
 			this.type = sqlType(columnClass);
-			this.converter = (Converter<T, Object>) requireNonNull(converter, "valueConverter");
+			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.fetcher = fetcher(this.type, (Column<Object>) super.attribute());
 			return self();
 		}
@@ -292,20 +292,20 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		public final <C> B columnClass(Class<C> columnClass, Converter<T, C> converter,
 																	 Fetcher<C> fetcher) {
 			this.type = sqlType(columnClass);
-			this.converter = (Converter<T, Object>) requireNonNull(converter, "valueConverter");
-			this.fetcher = (Fetcher<Object>) requireNonNull(fetcher, "valueFetcher");
+			this.converter = (Converter<T, Object>) requireNonNull(converter);
+			this.fetcher = (Fetcher<Object>) requireNonNull(fetcher);
 			return self();
 		}
 
 		@Override
 		public final B name(String name) {
-			this.name = requireNonNull(name, "name");
+			this.name = requireNonNull(name);
 			return self();
 		}
 
 		@Override
 		public B expression(String expression) {
-			this.expression = requireNonNull(expression, "expression");
+			this.expression = requireNonNull(expression);
 			return self();
 		}
 
@@ -375,7 +375,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		 * @return the corresponding sql type
 		 */
 		private static int sqlType(Class<?> clazz) {
-			return TYPE_MAP.getOrDefault(requireNonNull(clazz, "clazz"), Types.OTHER);
+			return TYPE_MAP.getOrDefault(requireNonNull(clazz), Types.OTHER);
 		}
 
 		private static <T> Fetcher<T> fetcher(int columnType, Column<T> column) {

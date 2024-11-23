@@ -79,7 +79,7 @@ final class DefaultSelectQuery implements SelectQuery {
 
 		@Override
 		public Builder columns(String columns) {
-			if (requireNonNull(columns, "columns").trim().toLowerCase().startsWith("select")) {
+			if (requireNonNull(columns).trim().toLowerCase().startsWith("select")) {
 				throw new IllegalArgumentException("columns clause should not include the 'SELECT' keyword");
 			}
 			this.columns = columns;
@@ -88,7 +88,7 @@ final class DefaultSelectQuery implements SelectQuery {
 
 		@Override
 		public Builder from(String from) {
-			if (requireNonNull(from, "from").trim().toLowerCase().startsWith("from")) {
+			if (requireNonNull(from).trim().toLowerCase().startsWith("from")) {
 				throw new IllegalArgumentException("from clause should not include the 'FROM' keyword");
 			}
 			this.from = from;
@@ -97,7 +97,7 @@ final class DefaultSelectQuery implements SelectQuery {
 
 		@Override
 		public Builder where(String where) {
-			if (requireNonNull(where, "where").trim().toLowerCase().startsWith("where")) {
+			if (requireNonNull(where).trim().toLowerCase().startsWith("where")) {
 				throw new IllegalArgumentException("where clause should not include the 'WHERE' keyword");
 			}
 			this.where = where;
@@ -107,7 +107,7 @@ final class DefaultSelectQuery implements SelectQuery {
 
 		@Override
 		public Builder groupBy(String groupBy) {
-			if (requireNonNull(groupBy, "groupBy").trim().toLowerCase().startsWith("group by")) {
+			if (requireNonNull(groupBy).trim().toLowerCase().startsWith("group by")) {
 				throw new IllegalArgumentException("group by clause should not include the 'GROUP BY' keywords");
 			}
 			this.groupBy = groupBy;
@@ -117,7 +117,7 @@ final class DefaultSelectQuery implements SelectQuery {
 
 		@Override
 		public Builder having(String having) {
-			if (requireNonNull(having, "having").trim().toLowerCase().startsWith("having")) {
+			if (requireNonNull(having).trim().toLowerCase().startsWith("having")) {
 				throw new IllegalArgumentException("having clause should not include the 'HAVING' keywords");
 			}
 			this.having = having;
@@ -127,7 +127,7 @@ final class DefaultSelectQuery implements SelectQuery {
 
 		@Override
 		public Builder orderBy(String orderBy) {
-			if (requireNonNull(orderBy, "orderBy").trim().toLowerCase().startsWith("order by")) {
+			if (requireNonNull(orderBy).trim().toLowerCase().startsWith("order by")) {
 				throw new IllegalArgumentException("orderBy clause should not include the 'ORDER BY' keywords");
 			}
 			this.orderBy = orderBy;

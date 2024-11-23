@@ -175,7 +175,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param editModel the edit model
 	 */
 	protected EntityEditComponentPanel(SwingEntityEditModel editModel) {
-		this.editModel = requireNonNull(editModel, "editModel");
+		this.editModel = requireNonNull(editModel);
 		this.entityComponents = entityComponents(editModel.entityDefinition());
 		if (!editModel.entityType().equals(entityComponents.entityDefinition().entityType())) {
 			throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.entityType() +
@@ -479,8 +479,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final JPanel createInputPanel(JComponent labelComponent, JComponent inputComponent,
 																					String labelBorderLayoutConstraints) {
-		requireNonNull(labelComponent, "labelComponent");
-		requireNonNull(inputComponent, "inputComponent");
+		requireNonNull(labelComponent);
+		requireNonNull(inputComponent);
 		if (labelComponent instanceof JLabel) {
 			// we need to be a bit clever here, since the input component argument isn't necessarily the actual input
 			// component, f.ex. this could be a text area wrapped in a scroll pane or a combobox on a panel with

@@ -85,6 +85,6 @@ public interface DatabaseFactory {
 	 * @throws SQLException in case loading of database driver failed
 	 */
 	static String driverClassName(String url) throws SQLException {
-		return DriverManager.getDriver(requireNonNull(url, "url")).getClass().getName();
+		return DriverManager.getDriver(requireNonNull(url)).getClass().getName();
 	}
 }

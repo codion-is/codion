@@ -57,8 +57,6 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	private static final MessageBundle MESSAGES =
 					messageBundle(DefaultEntityValidator.class, getBundle(DefaultEntityValidator.class.getName()));
 
-	private static final String ENTITY_PARAM = "entity";
-	private static final String ATTRIBUTE_PARAM = "attribute";
 	private static final String VALUE_REQUIRED_KEY = "value_is_required";
 	private static final String INVALID_ITEM_VALUE_KEY = "invalid_item_value";
 
@@ -99,8 +97,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
 	@Override
 	public void validate(Entity entity) throws ValidationException {
-		requireNonNull(entity, ENTITY_PARAM);
-		List<Attribute<?>> attributes = entity.definition().attributes().definitions().stream()
+		List<Attribute<?>> attributes = requireNonNull(entity).definition().attributes().definitions().stream()
 						.filter(definition -> validationRequired(entity, definition))
 						.map(AttributeDefinition::attribute)
 						.collect(Collectors.toList());
@@ -111,9 +108,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
 	@Override
 	public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
-		requireNonNull(entity, ENTITY_PARAM);
-		requireNonNull(attribute, ATTRIBUTE_PARAM);
-		AttributeDefinition<T> definition = entity.definition().attributes().definition(attribute);
+		AttributeDefinition<T> definition = requireNonNull(entity).definition().attributes().definition(attribute);
 		if (!(attribute instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute)) {
 			performNullValidation(entity, definition);
 		}
@@ -145,10 +140,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	}
 
 	private <T> void performNullValidation(Entity entity, AttributeDefinition<T> attributeDefinition) throws NullValidationException {
-		requireNonNull(entity, ENTITY_PARAM);
-		requireNonNull(attributeDefinition, "attributeDefinition");
-		Attribute<T> attribute = attributeDefinition.attribute();
-		if (!nullable(entity, attribute) && entity.isNull(attribute)) {
+		Attribute<T> attribute = requireNonNull(attributeDefinition).attribute();
+		if (!nullable(requireNonNull(entity), attribute) && entity.isNull(attribute)) {
 			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull())
 							&& !(attributeDefinition instanceof ForeignKeyDefinition)) {
 				//a new entity being inserted, allow null for columns with default values and generated primary key values
@@ -177,9 +170,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	}
 
 	private static <T extends Number> void performRangeValidation(Entity entity, Attribute<T> attribute) throws RangeValidationException {
-		requireNonNull(entity, ENTITY_PARAM);
-		requireNonNull(attribute, ATTRIBUTE_PARAM);
-		if (entity.isNull(attribute)) {
+		if (requireNonNull(entity).isNull(requireNonNull(attribute))) {
 			return;
 		}
 
@@ -198,9 +189,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	}
 
 	private static void performLengthValidation(Entity entity, Attribute<String> attribute) throws LengthValidationException {
-		requireNonNull(entity, ENTITY_PARAM);
-		requireNonNull(attribute, ATTRIBUTE_PARAM);
-		if (entity.isNull(attribute)) {
+		if (requireNonNull(entity).isNull(requireNonNull(attribute))) {
 			return;
 		}
 

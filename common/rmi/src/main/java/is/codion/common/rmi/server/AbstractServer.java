@@ -65,8 +65,6 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-	private static final String CLIENT_ID = "clientId";
-
 	private final Map<UUID, ClientConnection<T>> connections = new ConcurrentHashMap<>();
 	private final Map<String, Authenticator> authenticators = new HashMap<>();
 	private final Collection<Authenticator> sharedAuthenticators = new ArrayList<>();
@@ -88,7 +86,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @throws RemoteException in case of an exception
 	 */
 	protected AbstractServer(ServerConfiguration configuration) throws RemoteException {
-		super(requireNonNull(configuration, "configuration").port(),
+		super(requireNonNull(configuration).port(),
 						configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
 		Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 		try {
@@ -122,7 +120,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @throws IllegalArgumentException in case no such client is connected
 	 */
 	public final T connection(UUID clientId) {
-		ClientConnection<T> clientConnection = connections.get(requireNonNull(clientId, CLIENT_ID));
+		ClientConnection<T> clientConnection = connections.get(requireNonNull(clientId));
 		if (clientConnection != null) {
 			return clientConnection.connection();
 		}
@@ -182,10 +180,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		if (shuttingDown) {
 			throw new LoginException("Server is shutting down");
 		}
-		requireNonNull(connectionRequest, "connectionRequest");
-		requireNonNull(connectionRequest.user(), "user");
-		requireNonNull(connectionRequest.clientId(), CLIENT_ID);
-		requireNonNull(connectionRequest.clientTypeId(), "clientTypeId");
+		requireNonNull(connectionRequest);
+		requireNonNull(connectionRequest.user(), "user must be specified");
+		requireNonNull(connectionRequest.clientId(), "clientId must be specified");
+		requireNonNull(connectionRequest.clientTypeId(), "clientTypeId must be specified");
 		synchronized (connections) {
 			ClientConnection<T> clientConnection = connections.get(connectionRequest.clientId());
 			if (clientConnection != null) {
@@ -207,7 +205,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	@Override
 	public final void disconnect(UUID clientId) {
-		ClientConnection<T> clientConnection = connections.remove(requireNonNull(clientId, CLIENT_ID));
+		ClientConnection<T> clientConnection = connections.remove(requireNonNull(clientId));
 		if (clientConnection != null) {
 			try {
 				disconnect(clientConnection.connection());
@@ -253,7 +251,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @throws IllegalStateException in case an authenticator with the same clientTypeId has been added
 	 */
 	public final void addAuthenticator(Authenticator authenticator) {
-		requireNonNull(authenticator, "authenticator");
+		requireNonNull(authenticator);
 		if (authenticator.clientTypeId().isPresent()) {
 			String clientTypeId = authenticator.clientTypeId().get();
 			if (authenticators.containsKey(clientTypeId)) {
@@ -321,7 +319,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @param listener a listener notified when this server is shutting down.
 	 */
 	protected final void addShutdownListener(Runnable listener) {
-		shutdownEvent.addListener(requireNonNull(listener, "listener"));
+		shutdownEvent.addListener(requireNonNull(listener));
 	}
 
 	/**

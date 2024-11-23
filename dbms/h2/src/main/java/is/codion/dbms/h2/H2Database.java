@@ -130,7 +130,7 @@ final class H2Database extends AbstractDatabase {
 
 	@Override
 	public String sequenceQuery(String sequenceName) {
-		return SEQUENCE_VALUE_QUERY + requireNonNull(sequenceName, "sequenceName");
+		return SEQUENCE_VALUE_QUERY + requireNonNull(sequenceName);
 	}
 
 	@Override

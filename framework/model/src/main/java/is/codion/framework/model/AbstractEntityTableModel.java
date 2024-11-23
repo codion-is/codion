@@ -169,7 +169,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final void select(Collection<Entity.Key> keys) {
-		selection().items().set(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
+		selection().items().set(new SelectByKeyPredicate(requireNonNull(keys)));
 	}
 
 	@Override
@@ -199,8 +199,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
-		requireNonNull(foreignKey, "foreignKey");
-		requireNonNull(foreignKeyValues, "foreignKeyValues");
+		requireNonNull(foreignKey);
+		requireNonNull(foreignKeyValues);
 		entityDefinition().foreignKeys().definition(foreignKey);
 		for (Entity entity : items().filtered().get()) {
 			for (Entity foreignKeyValue : foreignKeyValues) {

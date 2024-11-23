@@ -62,7 +62,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 	DefaultRemoteEntityConnectionProvider(DefaultRemoteEntityConnectionProviderBuilder builder) {
 		super(builder);
-		this.hostName = requireNonNull(builder.hostName, "hostName");
+		this.hostName = requireNonNull(builder.hostName, "hostName must be specified");
 		this.port = builder.port;
 		this.registryPort = builder.registryPort;
 		this.namePrefix = builder.namePrefix;

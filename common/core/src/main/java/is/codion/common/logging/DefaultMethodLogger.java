@@ -53,7 +53,7 @@ final class DefaultMethodLogger implements MethodLogger {
 
 	DefaultMethodLogger(int maxSize, ArgumentToString argumentToString) {
 		this.maxSize = maxSize;
-		this.argumentToString = requireNonNull(argumentToString, "argumentStringProvider");
+		this.argumentToString = requireNonNull(argumentToString);
 	}
 
 	@Override

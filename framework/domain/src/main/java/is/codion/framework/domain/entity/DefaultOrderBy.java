@@ -81,8 +81,8 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 
 		private DefaultOrderByColumn(Column<?> column, NullOrder nullOrder,
 																 boolean ascending, boolean ignoreCase) {
-			this.column = requireNonNull(column, "column");
-			this.nullOrder = requireNonNull(nullOrder, "nullOrder");
+			this.column = requireNonNull(column);
+			this.nullOrder = requireNonNull(nullOrder);
 			this.ascending = ascending;
 			this.ignoreCase = ignoreCase;
 		}

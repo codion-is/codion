@@ -48,7 +48,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 
 	DefaultHttpEntityConnectionProvider(DefaultHttpEntityConnectionProviderBuilder builder) {
 		super(builder);
-		this.hostName = requireNonNull(builder.hostName, "hostName");
+		this.hostName = requireNonNull(builder.hostName, "hostName must be specified");
 		this.port = builder.port;
 		this.securePort = builder.securePort;
 		this.https = builder.https;

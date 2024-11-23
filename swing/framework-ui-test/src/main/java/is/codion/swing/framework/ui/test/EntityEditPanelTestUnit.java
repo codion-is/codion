@@ -40,8 +40,8 @@ public class EntityEditPanelTestUnit {
 	 */
 	protected EntityEditPanelTestUnit(SwingEntityEditModel editModel,
 																		Function<SwingEntityEditModel, EntityEditPanel> editPanel) {
-		this.editModel = requireNonNull(editModel, "editModel");
-		this.editPanel = requireNonNull(editPanel, "editPanel");
+		this.editModel = requireNonNull(editModel);
+		this.editPanel = requireNonNull(editPanel);
 	}
 
 	/**

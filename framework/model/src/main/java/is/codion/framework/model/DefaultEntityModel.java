@@ -47,8 +47,6 @@ import static java.util.Objects.requireNonNull;
 public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
 				T extends EntityTableModel<E>> implements EntityModel<M, E, T> {
 
-	private static final String DETAIL_MODEL_PARAMETER = "detailModel";
-
 	private final E editModel;
 	private final T tableModel;
 	private final Map<M, DetailModelLink<M, E, T>> detailModels = new HashMap<>();
@@ -59,8 +57,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	 * @param editModel the edit model
 	 */
 	public DefaultEntityModel(E editModel) {
-		requireNonNull(editModel, "editModel");
-		this.editModel = editModel;
+		this.editModel = requireNonNull(editModel);
 		this.tableModel = null;
 		bindEventsInternal();
 	}
@@ -70,8 +67,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	 * @param tableModel the table model
 	 */
 	public DefaultEntityModel(T tableModel) {
-		requireNonNull(tableModel, "tableModel");
-		this.editModel = tableModel.editModel();
+		this.editModel = requireNonNull(tableModel).editModel();
 		this.tableModel = tableModel;
 		bindEventsInternal();
 	}
@@ -132,16 +128,15 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	@Override
 	@SafeVarargs
 	public final void addDetailModels(M... detailModels) {
-		requireNonNull(detailModels, "detailModels");
-		for (M detailModel : detailModels) {
+		for (M detailModel : requireNonNull(detailModels)) {
 			addDetailModel(detailModel);
 		}
 	}
 
 	@Override
 	public final ForeignKeyDetailModelLink<M, E, T> addDetailModel(M detailModel) {
-		requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
-		Collection<ForeignKey> foreignKeys = detailModel.editModel().entityDefinition().foreignKeys().get(editModel.entityType());
+		Collection<ForeignKey> foreignKeys = requireNonNull(detailModel).editModel()
+						.entityDefinition().foreignKeys().get(editModel.entityType());
 		if (foreignKeys.isEmpty()) {
 			throw new IllegalArgumentException("Entity " + detailModel.editModel().entityType() +
 							" does not reference " + editModel.entityType() + " via a foreign key");
@@ -152,16 +147,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
 	@Override
 	public final ForeignKeyDetailModelLink<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey) {
-		requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
-		requireNonNull(foreignKey, "foreignKey");
-
-		return addDetailModel(new DefaultForeignKeyDetailModelLink<>(detailModel, foreignKey));
+		return addDetailModel(new DefaultForeignKeyDetailModelLink<>(requireNonNull(detailModel), requireNonNull(foreignKey)));
 	}
 
 	@Override
 	public final <L extends DetailModelLink<M, E, T>> L addDetailModel(L detailModelLink) {
-		requireNonNull(detailModelLink, "detailModelLink");
-		if (this == detailModelLink.detailModel()) {
+		if (this == requireNonNull(detailModelLink).detailModel()) {
 			throw new IllegalArgumentException("A model can not be its own detail model");
 		}
 		if (detailModels.containsKey(detailModelLink.detailModel())) {
@@ -175,21 +166,21 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
 	@Override
 	public final boolean containsDetailModel(Class<? extends M> modelClass) {
-		requireNonNull(modelClass, "modelClass");
+		requireNonNull(modelClass);
 		return detailModels.keySet().stream()
 						.anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
 	}
 
 	@Override
 	public final boolean containsDetailModel(EntityType entityType) {
-		requireNonNull(entityType, "entityType");
+		requireNonNull(entityType);
 		return detailModels.keySet().stream()
 						.anyMatch(detailModel -> detailModel.entityType().equals(entityType));
 	}
 
 	@Override
 	public final boolean containsDetailModel(M detailModel) {
-		return detailModels.containsKey(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
+		return detailModels.containsKey(requireNonNull(detailModel));
 	}
 
 	@Override
@@ -213,7 +204,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
 	@Override
 	public final <C extends M> C detailModel(Class<C> modelClass) {
-		requireNonNull(modelClass, "modelClass");
+		requireNonNull(modelClass);
 		return (C) detailModels.keySet().stream()
 						.filter(detailModel -> detailModel.getClass().equals(modelClass))
 						.findFirst()
@@ -222,7 +213,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
 	@Override
 	public final <C extends M> C detailModel(EntityType entityType) {
-		requireNonNull(entityType, "entityType");
+		requireNonNull(entityType);
 		return (C) detailModels.keySet().stream()
 						.filter(detailModel -> detailModel.entityType().equals(entityType))
 						.findFirst()

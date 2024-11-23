@@ -32,9 +32,6 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultObserver<T> implements Observer<T> {
 
-	private static final String CONSUMER = "consumer";
-	private static final String LISTENER = "listener";
-
 	private final Object lock = new Object();
 
 	private Set<Runnable> listeners;
@@ -44,7 +41,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean addConsumer(Consumer<? super T> consumer) {
-		requireNonNull(consumer, CONSUMER);
+		requireNonNull(consumer);
 		synchronized (lock) {
 			return initConsumers().add(consumer);
 		}
@@ -52,7 +49,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean removeConsumer(Consumer<? super T> consumer) {
-		requireNonNull(consumer, CONSUMER);
+		requireNonNull(consumer);
 		synchronized (lock) {
 			return initConsumers().remove(consumer);
 		}
@@ -60,7 +57,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean addListener(Runnable listener) {
-		requireNonNull(listener, LISTENER);
+		requireNonNull(listener);
 		synchronized (lock) {
 			return initListeners().add(listener);
 		}
@@ -68,7 +65,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean removeListener(Runnable listener) {
-		requireNonNull(listener, LISTENER);
+		requireNonNull(listener);
 		synchronized (lock) {
 			return initListeners().remove(listener);
 		}
@@ -76,7 +73,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean addWeakListener(Runnable listener) {
-		requireNonNull(listener, LISTENER);
+		requireNonNull(listener);
 		synchronized (lock) {
 			List<WeakReference<Runnable>> references = initWeakListeners();
 			for (WeakReference<Runnable> reference : references) {
@@ -90,7 +87,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean removeWeakListener(Runnable listener) {
-		requireNonNull(listener, LISTENER);
+		requireNonNull(listener);
 		synchronized (lock) {
 			List<WeakReference<Runnable>> references = initWeakListeners();
 			references.removeIf(reference -> reference.get() == null);
@@ -101,7 +98,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean addWeakConsumer(Consumer<? super T> consumer) {
-		requireNonNull(consumer, CONSUMER);
+		requireNonNull(consumer);
 		synchronized (lock) {
 			List<WeakReference<Consumer<? super T>>> references = initWeakConsumers();
 			for (WeakReference<Consumer<? super T>> reference : references) {
@@ -115,7 +112,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean removeWeakConsumer(Consumer<? super T> consumer) {
-		requireNonNull(consumer, CONSUMER);
+		requireNonNull(consumer);
 		synchronized (lock) {
 			List<WeakReference<Consumer<? super T>>> references = initWeakConsumers();
 			references.removeIf(reference -> reference.get() == null);

@@ -35,7 +35,7 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
 	private final Parser<T> parser;
 
 	public ParsingDocumentFilter(Parser<T> parser) {
-		this.parser = requireNonNull(parser, "parser");
+		this.parser = requireNonNull(parser);
 	}
 
 	@Override

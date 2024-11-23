@@ -732,7 +732,7 @@ public final class DomainSource {
 	}
 
 	static String underscoreToCamelCase(String text) {
-		if (!requireNonNull(text, "text").contains("_")) {
+		if (!requireNonNull(text).contains("_")) {
 			return text;
 		}
 		StringBuilder builder = new StringBuilder();

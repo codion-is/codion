@@ -111,14 +111,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public void addListDataListener(ListDataListener listener) {
-		requireNonNull(listener, "listener");
-		listDataListeners.add(listener);
+		listDataListeners.add(requireNonNull(listener));
 	}
 
 	@Override
 	public void removeListDataListener(ListDataListener listener) {
-		requireNonNull(listener, "listener");
-		listDataListeners.remove(listener);
+		listDataListeners.remove(requireNonNull(listener));
 	}
 
 	@Override

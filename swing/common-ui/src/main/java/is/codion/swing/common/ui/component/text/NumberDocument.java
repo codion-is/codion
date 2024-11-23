@@ -175,9 +175,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		private final Class<T> clazz;
 
 		protected NumberParser(NumberFormat format, Class<T> clazz) {
-			this.format = requireNonNull(format, "format");
+			this.format = requireNonNull(format);
 			this.format.setRoundingMode(RoundingMode.DOWN);
-			this.clazz = requireNonNull(clazz, "clazz");
+			this.clazz = requireNonNull(clazz);
 		}
 
 		@Override
@@ -367,7 +367,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		private boolean silentValidation = false;
 
 		NumberParsingDocumentFilter(NumberParser<T> parser) {
-			this.parser = requireNonNull(parser, "parser");
+			this.parser = requireNonNull(parser);
 			this.rangeValidator = new NumberRangeValidator<>();
 			addValidator(rangeValidator);
 		}

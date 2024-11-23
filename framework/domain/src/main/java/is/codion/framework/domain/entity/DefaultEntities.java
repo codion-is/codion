@@ -54,7 +54,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	 * @param domainType the domainType
 	 */
 	protected DefaultEntities(DomainType domainType) {
-		this.domainType = requireNonNull(domainType, "domainType");
+		this.domainType = requireNonNull(domainType);
 		DefaultKey.setSerializer(domainType.name(), createSerializer(this));
 	}
 
@@ -65,12 +65,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
 	@Override
 	public final EntityDefinition definition(EntityType entityType) {
-		return definitionInternal(requireNonNull(entityType, "entityType").name());
+		return definitionInternal(requireNonNull(entityType).name());
 	}
 
 	@Override
 	public final EntityDefinition definition(String entityTypeName) {
-		return definitionInternal(requireNonNull(entityTypeName, "entityTypeName"));
+		return definitionInternal(requireNonNull(entityTypeName));
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	public final <T> List<Entity.Key> primaryKeys(EntityType entityType, T... values) {
 		EntityDefinition definition = definition(entityType);
 
-		return Arrays.stream(requireNonNull(values, "values"))
+		return Arrays.stream(requireNonNull(values))
 						.map(definition::primaryKey)
 						.collect(toList());
 	}

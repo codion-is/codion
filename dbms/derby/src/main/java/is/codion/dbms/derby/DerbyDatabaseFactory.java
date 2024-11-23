@@ -36,7 +36,7 @@ public final class DerbyDatabaseFactory implements DatabaseFactory {
 
 	@Override
 	public boolean driverCompatible(String driverClassName) {
-		return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
+		return requireNonNull(driverClassName).startsWith(DRIVER_PACKAGE);
 	}
 
 	@Override

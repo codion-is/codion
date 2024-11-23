@@ -75,7 +75,7 @@ final class BoundedItemRandomizer<T> extends DefaultItemRandomizer<T> {
 		if (weightBounds <= 0) {
 			throw new IllegalArgumentException("Bounded weight must be a positive integer");
 		}
-		if (requireNonNull(items, "items").isEmpty()) {
+		if (requireNonNull(items).isEmpty()) {
 			throw new IllegalArgumentException("Items must not be empty");
 		}
 		int rest = weightBounds % items.size();

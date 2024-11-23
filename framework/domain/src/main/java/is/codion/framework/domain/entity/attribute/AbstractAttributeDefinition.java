@@ -167,7 +167,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	private transient DateTimeFormatter dateTimeFormatter;
 
 	protected AbstractAttributeDefinition(AbstractAttributeDefinitionBuilder<T, ?> builder) {
-		requireNonNull(builder, "builder");
+		requireNonNull(builder);
 		this.attribute = builder.attribute;
 		this.caption = builder.caption;
 		this.captionResourceKey = builder.captionResourceKey;
@@ -519,7 +519,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			if (resourceBundleName == null) {
 				throw new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType());
 			}
-			if (resourceNotFound(resourceBundleName, requireNonNull(captionResourceKey, "captionResourceKey"))) {
+			if (resourceNotFound(resourceBundleName, requireNonNull(captionResourceKey))) {
 				throw new IllegalArgumentException("Resource " + captionResourceKey + " not found in bundle: " + resourceBundleName);
 			}
 			this.captionResourceKey = captionResourceKey;
@@ -611,7 +611,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 		@Override
 		public final B format(Format format) {
-			requireNonNull(format, "format");
+			requireNonNull(format);
 			if (attribute.type().isNumerical() && !(format instanceof NumberFormat)) {
 				throw new IllegalArgumentException("NumberFormat required for numerical attribute: " + attribute);
 			}
@@ -624,7 +624,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 		@Override
 		public final B dateTimePattern(String dateTimePattern) {
-			requireNonNull(dateTimePattern, "dateTimePattern");
+			requireNonNull(dateTimePattern);
 			if (!attribute.type().isTemporal()) {
 				throw new IllegalStateException("dateTimePattern is only applicable to temporal attributes: " + attribute);
 			}
@@ -638,7 +638,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 		@Override
 		public final B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern) {
-			requireNonNull(localeDateTimePattern, "localeDateTimePattern");
+			requireNonNull(localeDateTimePattern);
 			if (!attribute.type().isTemporal()) {
 				throw new IllegalStateException("localeDateTimePattern is only applicable to temporal attributes: " + attribute);
 			}
@@ -665,7 +665,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			if (!attribute.type().isDecimal()) {
 				throw new IllegalStateException("decimalRoundingMode is only applicable to decimal attributes: " + attribute);
 			}
-			this.decimalRoundingMode = requireNonNull(decimalRoundingMode, "decimalRoundingMode");
+			this.decimalRoundingMode = requireNonNull(decimalRoundingMode);
 			return self();
 		}
 

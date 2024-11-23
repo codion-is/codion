@@ -34,7 +34,7 @@ final class DefaultItem<T> extends AbstractItem<T> implements Serializable {
 
 	DefaultItem(T value, String caption) {
 		super(value);
-		this.caption = requireNonNull(caption, "caption");
+		this.caption = requireNonNull(caption, "Item caption may not be null");
 	}
 
 	/**

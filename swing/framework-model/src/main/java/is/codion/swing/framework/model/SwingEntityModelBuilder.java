@@ -59,7 +59,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 	 * @param entityType the entityType
 	 */
 	SwingEntityModelBuilder(EntityType entityType) {
-		this.entityType = requireNonNull(entityType, "entityType");
+		this.entityType = requireNonNull(entityType);
 	}
 
 	@Override
@@ -72,7 +72,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 		if (editModelClass != null || tableModelClass != null) {
 			throw new IllegalStateException("Edit or table model class has been set");
 		}
-		this.modelClass = requireNonNull(modelClass, "modelClass");
+		this.modelClass = requireNonNull(modelClass);
 		return this;
 	}
 
@@ -84,7 +84,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 		if (tableModelClass != null) {
 			throw new IllegalStateException("TableModel class has been set");
 		}
-		this.editModelClass = requireNonNull(editModelClass, "editModelClass");
+		this.editModelClass = requireNonNull(editModelClass);
 		return this;
 	}
 
@@ -96,7 +96,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 		if (editModelClass != null) {
 			throw new IllegalStateException("EditModel class has been set");
 		}
-		this.tableModelClass = requireNonNull(tableModelClass, "tableModelClass");
+		this.tableModelClass = requireNonNull(tableModelClass);
 		return this;
 	}
 
@@ -138,8 +138,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 
 	@Override
 	public SwingEntityModel.Builder detailModel(SwingEntityModel.Builder detailModelBuilder) {
-		requireNonNull(detailModelBuilder, "detailModelBuilder");
-		if (!detailModelBuilders.contains(detailModelBuilder)) {
+		if (!detailModelBuilders.contains(requireNonNull(detailModelBuilder))) {
 			detailModelBuilders.add(detailModelBuilder);
 		}
 
@@ -148,7 +147,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 
 	@Override
 	public SwingEntityModel build(EntityConnectionProvider connectionProvider) {
-		requireNonNull(connectionProvider, "connectionProvider");
+		requireNonNull(connectionProvider);
 		try {
 			SwingEntityModel model;
 			if (modelFactory != null) {

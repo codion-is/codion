@@ -43,7 +43,7 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 														boolean caseSensitive) {
 		super(column, operator, values, caseSensitive);
 		for (Object value : values) {
-			requireNonNull(value, "Condition values may not be null");
+			requireNonNull(value, "A condition value may not be null");
 		}
 		validateOperator(operator);
 	}

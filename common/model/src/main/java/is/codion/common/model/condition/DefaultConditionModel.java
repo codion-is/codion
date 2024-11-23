@@ -401,7 +401,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	private void validateOperator(Operator operator) {
-		if (operators != null && !operators.contains(requireNonNull(operator, "operator"))) {
+		if (operators != null && !operators.contains(requireNonNull(operator))) {
 			throw new IllegalArgumentException("Operator " + operator + " not available");
 		}
 	}

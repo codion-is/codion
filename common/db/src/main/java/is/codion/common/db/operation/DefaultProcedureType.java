@@ -31,7 +31,7 @@ final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializa
 	private final String name;
 
 	DefaultProcedureType(String name) {
-		this.name = requireNonNull(name, "name");
+		this.name = requireNonNull(name);
 	}
 
 	@Override

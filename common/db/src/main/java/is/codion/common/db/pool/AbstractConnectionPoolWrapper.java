@@ -60,10 +60,10 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	 */
 	protected AbstractConnectionPoolWrapper(ConnectionFactory connectionFactory, User user, DataSource dataSource,
 																					Function<DataSource, T> poolFactory) {
-		this.connectionFactory = requireNonNull(connectionFactory, "connectionFactory");
-		this.user = requireNonNull(user, "user");
+		this.connectionFactory = requireNonNull(connectionFactory);
+		this.user = requireNonNull(user);
 		this.counter = new DefaultConnectionPoolCounter(this);
-		this.connectionPool = requireNonNull(poolFactory, "poolFactory").apply(createDataSourceProxy(requireNonNull(dataSource, "dataSource")));
+		this.connectionPool = requireNonNull(poolFactory).apply(createDataSourceProxy(requireNonNull(dataSource)));
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 
 	@Override
 	public final Connection connection(User user) throws DatabaseException {
-		requireNonNull(user, "user");
+		requireNonNull(user);
 		checkConnectionPoolCredentials(user);
 		long startTime = counter.isCollectCheckOutTimes() ? System.nanoTime() : 0;
 		try {

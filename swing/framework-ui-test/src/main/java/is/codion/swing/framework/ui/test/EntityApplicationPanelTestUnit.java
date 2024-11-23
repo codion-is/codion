@@ -70,10 +70,10 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
 	 */
 	protected EntityApplicationPanelTestUnit(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass,
 																					 User user, DomainType domainType) {
-		this.modelClass = requireNonNull(modelClass, "modelClass");
-		this.panelClass = requireNonNull(panelClass, "panelClass");
-		this.user = requireNonNull(user, "user");
-		this.domainType = requireNonNull(domainType, "domainType");
+		this.modelClass = requireNonNull(modelClass);
+		this.panelClass = requireNonNull(panelClass);
+		this.user = requireNonNull(user);
+		this.domainType = requireNonNull(domainType);
 	}
 
 	/**

@@ -128,7 +128,7 @@ public final class Text {
 	}
 
 	private static String padString(String string, int length, char padChar, boolean left) {
-		if (requireNonNull(string, "string").length() >= length) {
+		if (requireNonNull(string).length() >= length) {
 			return string;
 		}
 

@@ -62,8 +62,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	DefaultEntityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
 															ConditionModelFactory<Attribute<?>> conditionModelFactory) {
-		this.entityDefinition = connectionProvider.entities().definition(requireNonNull(entityType, "entityType"));
-		this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+		this.entityDefinition = connectionProvider.entities().definition(requireNonNull(entityType));
+		this.connectionProvider = requireNonNull(connectionProvider);
 		this.tableConditionModel = TableConditionModel.tableConditionModel(createConditionModels(entityType, conditionModelFactory));
 		bindEvents();
 	}

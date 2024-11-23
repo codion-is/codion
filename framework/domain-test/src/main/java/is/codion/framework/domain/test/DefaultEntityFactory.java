@@ -132,7 +132,7 @@ public class DefaultEntityFactory implements EntityFactory {
 	 * @throws DatabaseException in case of an exception
 	 */
 	protected <T> T value(Attribute<T> attribute) throws DatabaseException {
-		requireNonNull(attribute, "attribute");
+		requireNonNull(attribute);
 		AttributeDefinition<T> attributeDefinition = entities.definition(attribute.entityType()).attributes().definition(attribute);
 		try {
 			if (attributeDefinition instanceof ForeignKeyDefinition) {

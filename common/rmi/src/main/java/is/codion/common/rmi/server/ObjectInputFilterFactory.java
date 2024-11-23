@@ -42,7 +42,7 @@ public interface ObjectInputFilterFactory {
 	 * @throws IllegalStateException in case no such {@link ObjectInputFilterFactory} implementation is available.
 	 */
 	static ObjectInputFilterFactory instance(String classname) {
-		requireNonNull(classname, "classname");
+		requireNonNull(classname);
 		try {
 			return stream(ServiceLoader.load(ObjectInputFilterFactory.class).spliterator(), false)
 							.filter(factory -> factory.getClass().getName().equals(classname))

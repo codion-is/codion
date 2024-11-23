@@ -30,7 +30,7 @@ final class QueryKeyGenerator extends AbstractQueriedKeyGenerator {
 	private final String query;
 
 	QueryKeyGenerator(String query) {
-		this.query = requireNonNull(query, "query");
+		this.query = requireNonNull(query);
 	}
 
 	@Override

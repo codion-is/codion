@@ -81,7 +81,7 @@ public class NullableCheckBox extends JCheckBox {
 	 */
 	public NullableCheckBox(NullableToggleButtonModel model, String text, Icon icon) {
 		super(text, icon);
-		super.setModel(requireNonNull(model, "model"));
+		super.setModel(requireNonNull(model));
 		setIcon(new NullableIcon());
 		addMouseListener(new NullableMouseListener());
 		KeyEvents.builder(VK_SPACE)

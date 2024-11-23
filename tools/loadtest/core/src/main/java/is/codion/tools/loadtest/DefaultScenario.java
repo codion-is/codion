@@ -56,7 +56,7 @@ final class DefaultScenario<T> implements Scenario<T> {
 
 	@Override
 	public Result run(T application) {
-		requireNonNull(application, "Can not run without an application");
+		requireNonNull(application, "application may not be null");
 		try {
 			beforeRun.accept(application);
 			long startTime = System.nanoTime();

@@ -58,7 +58,7 @@ public abstract class DomainModel implements Domain {
 	 * @param domainType the Domain model type to associate with this domain model
 	 */
 	protected DomainModel(DomainType domainType) {
-		this.domainType = requireNonNull(domainType, "domainType");
+		this.domainType = requireNonNull(domainType);
 		this.entities = new DomainEntities(domainType);
 	}
 
@@ -115,7 +115,7 @@ public abstract class DomainModel implements Domain {
 	 * @throws IllegalArgumentException in case an entity definition is not associated with this domain
 	 */
 	protected final void add(EntityDefinition... definitions) {
-		Arrays.stream(requireNonNull(definitions, "definitions"))
+		Arrays.stream(requireNonNull(definitions))
 						.peek(this::validate)
 						.forEach(entities::addEntityDefinition);
 	}
@@ -264,18 +264,15 @@ public abstract class DomainModel implements Domain {
 		private final Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> procedures = new HashMap<>();
 
 		private void addProcedure(ProcedureType<?, ?> procedureType, DatabaseProcedure<?, ?> procedure) {
-			requireNonNull(procedureType, "procedureType");
-			requireNonNull(procedure, "procedure");
-			if (procedures.containsKey(procedureType)) {
+			if (procedures.containsKey(requireNonNull(procedureType))) {
 				throw new IllegalArgumentException("Procedure already defined: " + procedureType);
 			}
 
-			procedures.put(procedureType, procedure);
+			procedures.put(procedureType, requireNonNull(procedure));
 		}
 
 		private <C, T> DatabaseProcedure<C, T> procedure(ProcedureType<C, T> procedureType) {
-			requireNonNull(procedureType, "procedureType");
-			DatabaseProcedure<C, T> operation = (DatabaseProcedure<C, T>) procedures.get(procedureType);
+			DatabaseProcedure<C, T> operation = (DatabaseProcedure<C, T>) procedures.get(requireNonNull(procedureType));
 			if (operation == null) {
 				throw new IllegalArgumentException("Procedure not found: " + procedureType);
 			}
@@ -289,18 +286,15 @@ public abstract class DomainModel implements Domain {
 		private final Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> functions = new HashMap<>();
 
 		private void addFunction(FunctionType<?, ?, ?> functionType, DatabaseFunction<?, ?, ?> function) {
-			requireNonNull(functionType, "functionType");
-			requireNonNull(function, "function");
-			if (functions.containsKey(functionType)) {
+			if (functions.containsKey(requireNonNull(functionType))) {
 				throw new IllegalArgumentException("Function already defined: " + functionType);
 			}
 
-			functions.put(functionType, function);
+			functions.put(functionType, requireNonNull(function));
 		}
 
 		private <C, T, R> DatabaseFunction<C, T, R> function(FunctionType<C, T, R> functionType) {
-			requireNonNull(functionType, "functionType");
-			DatabaseFunction<C, T, R> operation = (DatabaseFunction<C, T, R>) functions.get(functionType);
+			DatabaseFunction<C, T, R> operation = (DatabaseFunction<C, T, R>) functions.get(requireNonNull(functionType));
 			if (operation == null) {
 				throw new IllegalArgumentException("Function not found: " + functionType);
 			}
@@ -311,18 +305,14 @@ public abstract class DomainModel implements Domain {
 
 	private static final class DomainReports {
 
-		private static final String REPORT = "report";
-
 		private final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports = new HashMap<>();
 
 		private <T, R, P> void addReport(ReportType<T, R, P> reportType, Report<T, R, P> report) {
-			requireNonNull(reportType, "reportType");
-			requireNonNull(report, REPORT);
-			if (reports.containsKey(reportType)) {
+			if (reports.containsKey(requireNonNull(reportType))) {
 				throw new IllegalArgumentException("Report has already been defined: " + reportType);
 			}
 			try {
-				report.load();
+				requireNonNull(report).load();
 				reports.put(reportType, report);
 			}
 			catch (ReportException e) {
@@ -331,7 +321,7 @@ public abstract class DomainModel implements Domain {
 		}
 
 		private <T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType) {
-			return (Report<T, R, P>) reports.get(requireNonNull(reportType, REPORT));
+			return (Report<T, R, P>) reports.get(requireNonNull(reportType));
 		}
 	}
 }

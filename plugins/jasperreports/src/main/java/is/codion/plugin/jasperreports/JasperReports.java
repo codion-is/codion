@@ -96,9 +96,9 @@ public final class JasperReports {
 	 */
 	public static JasperPrint fillReport(JRReport report, JRDataSource dataSource,
 																			 Map<String, Object> reportParameters) throws ReportException {
-		requireNonNull(report, "report");
-		requireNonNull(dataSource, "dataSource");
-		requireNonNull(reportParameters, "reportParameters");
+		requireNonNull(report);
+		requireNonNull(dataSource);
+		requireNonNull(reportParameters);
 		try {
 			return JasperFillManager.fillReport(report.load(), reportParameters, dataSource);
 		}

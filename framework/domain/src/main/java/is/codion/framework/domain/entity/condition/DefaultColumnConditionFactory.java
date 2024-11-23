@@ -28,12 +28,10 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<T> {
 
-	private static final String VALUES_PARAMETER = "values";
-
 	private final Column<T> column;
 
 	DefaultColumnConditionFactory(Column<T> column) {
-		this.column = requireNonNull(column, "column");
+		this.column = requireNonNull(column);
 	}
 
 	@Override
@@ -128,12 +126,12 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 
 	@Override
 	public ColumnCondition<T> in(T... values) {
-		return in(asList(requireNonNull(values, VALUES_PARAMETER)));
+		return in(asList(requireNonNull(values)));
 	}
 
 	@Override
 	public ColumnCondition<T> notIn(T... values) {
-		return notIn(asList(requireNonNull(values, VALUES_PARAMETER)));
+		return notIn(asList(requireNonNull(values)));
 	}
 
 	@Override
@@ -148,12 +146,12 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 
 	@Override
 	public ColumnCondition<String> inIgnoreCase(String... values) {
-		return inIgnoreCase(asList(requireNonNull(values, VALUES_PARAMETER)));
+		return inIgnoreCase(asList(requireNonNull(values)));
 	}
 
 	@Override
 	public ColumnCondition<String> notInIgnoreCase(String... values) {
-		return notInIgnoreCase(asList(requireNonNull(values, VALUES_PARAMETER)));
+		return notInIgnoreCase(asList(requireNonNull(values)));
 	}
 
 	@Override

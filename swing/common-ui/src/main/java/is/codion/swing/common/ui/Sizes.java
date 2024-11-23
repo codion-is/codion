@@ -28,8 +28,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Sizes {
 
-	private static final String COMPONENT = "component";
-
 	private Sizes() {}
 
 	/**
@@ -40,8 +38,7 @@ public final class Sizes {
 	 * @return the component
 	 */
 	public static <T extends JComponent> T setPreferredWidth(T component, int preferredWidth) {
-		requireNonNull(component, COMPONENT);
-		component.setPreferredSize(new Dimension(preferredWidth, component.getPreferredSize().height));
+		requireNonNull(component).setPreferredSize(new Dimension(preferredWidth, component.getPreferredSize().height));
 
 		return component;
 	}
@@ -54,8 +51,7 @@ public final class Sizes {
 	 * @return the component
 	 */
 	public static <T extends JComponent> T setPreferredHeight(T component, int preferredHeight) {
-		requireNonNull(component, COMPONENT);
-		component.setPreferredSize(new Dimension(component.getPreferredSize().width, preferredHeight));
+		requireNonNull(component).setPreferredSize(new Dimension(component.getPreferredSize().width, preferredHeight));
 
 		return component;
 	}
@@ -68,8 +64,7 @@ public final class Sizes {
 	 * @return the component
 	 */
 	public static <T extends JComponent> T setMinimumWidth(T component, int minimumWidth) {
-		requireNonNull(component, COMPONENT);
-		component.setMinimumSize(new Dimension(minimumWidth, component.getMinimumSize().height));
+		requireNonNull(component).setMinimumSize(new Dimension(minimumWidth, component.getMinimumSize().height));
 
 		return component;
 	}
@@ -82,8 +77,7 @@ public final class Sizes {
 	 * @return the component
 	 */
 	public static <T extends JComponent> T setMinimumHeight(T component, int minimumHeight) {
-		requireNonNull(component, COMPONENT);
-		component.setMinimumSize(new Dimension(component.getMinimumSize().width, minimumHeight));
+		requireNonNull(component).setMinimumSize(new Dimension(component.getMinimumSize().width, minimumHeight));
 
 		return component;
 	}
@@ -96,8 +90,7 @@ public final class Sizes {
 	 * @return the component
 	 */
 	public static <T extends JComponent> T setMaximumWidth(T component, int maximumWidth) {
-		requireNonNull(component, COMPONENT);
-		component.setMaximumSize(new Dimension(maximumWidth, component.getMaximumSize().height));
+		requireNonNull(component).setMaximumSize(new Dimension(maximumWidth, component.getMaximumSize().height));
 
 		return component;
 	}
@@ -110,8 +103,7 @@ public final class Sizes {
 	 * @return the component
 	 */
 	public static <T extends JComponent> T setMaximumHeight(T component, int maximumHeight) {
-		requireNonNull(component, COMPONENT);
-		component.setMaximumSize(new Dimension(component.getMaximumSize().width, maximumHeight));
+		requireNonNull(component).setMaximumSize(new Dimension(component.getMaximumSize().width, maximumHeight));
 
 		return component;
 	}

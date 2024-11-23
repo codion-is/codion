@@ -43,7 +43,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
 	 * @param cacheReport true if the report should be cached when loaded
 	 */
 	protected AbstractReport(String reportPath, boolean cacheReport) {
-		this.reportPath = requireNonNull(reportPath, "reportPath");
+		this.reportPath = requireNonNull(reportPath);
 		this.cacheReport = cacheReport;
 	}
 

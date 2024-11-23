@@ -317,8 +317,7 @@ public class EntityPanel extends JPanel {
 	 */
 	public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel,
 										 Consumer<Config> config) {
-		requireNonNull(entityModel, "entityModel");
-		this.entityModel = entityModel;
+		this.entityModel = requireNonNull(entityModel);
 		this.editPanel = editPanel;
 		this.tablePanel = tablePanel;
 		this.editControlPanel = createEditControlPanel();
@@ -387,8 +386,7 @@ public class EntityPanel extends JPanel {
 	 * @throws IllegalArgumentException if this panel already contains a given detail panel
 	 */
 	public final void addDetailPanels(EntityPanel... detailPanels) {
-		requireNonNull(detailPanels, "detailPanels");
-		for (EntityPanel detailPanel : detailPanels) {
+		for (EntityPanel detailPanel : requireNonNull(detailPanels)) {
 			addDetailPanel(detailPanel);
 		}
 	}

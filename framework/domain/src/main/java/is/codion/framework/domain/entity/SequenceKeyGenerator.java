@@ -30,7 +30,7 @@ final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
 	private final String sequenceName;
 
 	SequenceKeyGenerator(String sequenceName) {
-		this.sequenceName = requireNonNull(sequenceName, "sequenceName");
+		this.sequenceName = requireNonNull(sequenceName);
 	}
 
 	@Override

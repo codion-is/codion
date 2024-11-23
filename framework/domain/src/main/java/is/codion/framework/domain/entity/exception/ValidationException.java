@@ -38,7 +38,7 @@ public class ValidationException extends Exception {
 	 */
 	public ValidationException(Attribute<?> attribute, Object value, String message) {
 		super(message);
-		this.attribute = requireNonNull(attribute, "attribute");
+		this.attribute = requireNonNull(attribute);
 		this.value = value;
 	}
 

@@ -195,8 +195,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 * @return a combo box model based on the given column
 	 */
 	public <T> FilterComboBoxModel<T> createComboBoxModel(Column<T> column) {
-		requireNonNull(column, "column");
-		FilterComboBoxModel.Builder<T> builder = createColumnComboBoxModel(column);
+		FilterComboBoxModel.Builder<T> builder = createColumnComboBoxModel(requireNonNull(column));
 		if (entity().nullable(column)) {
 			builder.includeNull(true);
 			if (column.type().valueClass().isInterface()) {

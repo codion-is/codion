@@ -439,7 +439,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @return the non-null values of the given attribute from the given entities.
 	 */
 	static <T> Collection<T> values(Attribute<T> attribute, Collection<Entity> entities) {
-		requireNonNull(attribute, "attribute");
+		requireNonNull(attribute);
 		return requireNonNull(entities).stream()
 						.map(entity -> entity.get(attribute))
 						.filter(Objects::nonNull)
@@ -454,7 +454,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @return the distinct non-null values of the given attribute from the given entities.
 	 */
 	static <T> Collection<T> distinct(Attribute<T> attribute, Collection<Entity> entities) {
-		requireNonNull(attribute, "attribute");
+		requireNonNull(attribute);
 		return requireNonNull(entities).stream()
 						.map(entity -> entity.get(attribute))
 						.filter(Objects::nonNull)

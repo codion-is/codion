@@ -31,7 +31,7 @@ final class DefaultFunctionType<C, T, R> implements FunctionType<C, T, R>, Seria
 	private final String name;
 
 	DefaultFunctionType(String name) {
-		this.name = requireNonNull(name, "name");
+		this.name = requireNonNull(name);
 	}
 
 	@Override

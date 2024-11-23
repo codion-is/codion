@@ -27,7 +27,7 @@ class DefaultValueObserver<T> implements ValueObserver<T> {
 	private final Value<T> value;
 
 	DefaultValueObserver(Value<T> value) {
-		this.value = requireNonNull(value, "value");
+		this.value = requireNonNull(value);
 	}
 
 	@Override

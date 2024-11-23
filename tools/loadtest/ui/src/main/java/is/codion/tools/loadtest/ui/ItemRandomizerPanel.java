@@ -58,7 +58,7 @@ final class ItemRandomizerPanel<T> extends JPanel {
 									.buildValue();
 
 	ItemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
-		this.itemRandomizer = requireNonNull(itemRandomizer, "itemRandomizer");
+		this.itemRandomizer = requireNonNull(itemRandomizer);
 		initializeUI();
 	}
 

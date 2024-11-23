@@ -59,7 +59,7 @@ final class DefaultDomainType implements DomainType, Serializable {
 
 	@Override
 	public EntityType entityType(String name, String resourceBundleName) {
-		return entityTypes().computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
+		return entityTypes().computeIfAbsent(requireNonNull(name), entityTypeName ->
 						EntityType.entityType(entityTypeName, this, resourceBundleName));
 	}
 
@@ -106,7 +106,7 @@ final class DefaultDomainType implements DomainType, Serializable {
 	}
 
 	static DomainType getDomainType(String domainName) {
-		DomainType domainType = DOMAIN_TYPES.get(requireNonNull(domainName, "domainName"));
+		DomainType domainType = DOMAIN_TYPES.get(requireNonNull(domainName));
 		if (domainType == null) {
 			throw new IllegalArgumentException("Domain: " + domainName + " has not been defined");
 		}

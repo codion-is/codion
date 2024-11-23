@@ -50,7 +50,7 @@ public interface AuxiliaryServerFactory<C extends Remote, A extends ServerAdmin,
 	 * @throws IllegalStateException in case no such {@link AuxiliaryServerFactory} implementation is available.
 	 */
 	static <C extends Remote, A extends ServerAdmin, T extends AuxiliaryServer> AuxiliaryServerFactory<C, A, T> instance(String classname) {
-		requireNonNull(classname, "classname");
+		requireNonNull(classname);
 		try {
 			return stream(ServiceLoader.load(AuxiliaryServerFactory.class).spliterator(), false)
 							.filter(serverFactory -> serverFactory.getClass().getName().equals(classname))

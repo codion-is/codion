@@ -73,9 +73,9 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	 * @throws RemoteException in case of an exception
 	 */
 	public DefaultServerAdmin(AbstractServer<?, ? extends ServerAdmin> server, ServerConfiguration configuration) throws RemoteException {
-		super(requireNonNull(configuration, "configuration").adminPort(),
+		super(requireNonNull(configuration).adminPort(),
 						configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
-		this.server = requireNonNull(server, "server");
+		this.server = requireNonNull(server);
 		initializeGarbageCollectionListener();
 	}
 

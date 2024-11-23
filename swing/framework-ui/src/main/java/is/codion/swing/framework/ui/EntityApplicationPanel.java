@@ -747,8 +747,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @param entityPanel the entity panel
 	 */
 	protected final void displayEntityPanelFrame(EntityPanel entityPanel) {
-		requireNonNull(entityPanel, "entityPanel");
-		if (entityPanel.isShowing()) {
+		if (requireNonNull(entityPanel).isShowing()) {
 			Window parentWindow = Utilities.parentWindow(entityPanel);
 			if (parentWindow != null) {
 				parentWindow.toFront();
@@ -779,8 +778,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @param modalDialog if true the dialog is made modal
 	 */
 	protected final void displayEntityPanelDialog(EntityPanel entityPanel, boolean modalDialog) {
-		requireNonNull(entityPanel, "entityPanel");
-		if (entityPanel.isShowing()) {
+		if (requireNonNull(entityPanel).isShowing()) {
 			Window parentWindow = Utilities.parentWindow(entityPanel);
 			if (parentWindow != null) {
 				parentWindow.toFront();
@@ -1099,7 +1097,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		private final Entities entities;
 
 		private EntityDependencyTreeNode(EntityType entityType, Entities entities) {
-			super(requireNonNull(entityType, "entityType"));
+			super(requireNonNull(entityType));
 			this.entities = entities;
 		}
 

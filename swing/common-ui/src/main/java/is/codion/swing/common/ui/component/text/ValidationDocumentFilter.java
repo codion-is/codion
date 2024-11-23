@@ -42,7 +42,7 @@ public class ValidationDocumentFilter<T> extends DocumentFilter {
 	 * @param validator the validator to add
 	 */
 	public final void addValidator(Value.Validator<T> validator) {
-		validators.add(requireNonNull(validator, "validator"));
+		validators.add(requireNonNull(validator));
 	}
 
 	/**

@@ -186,7 +186,7 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 		private final Column<T> foreign;
 
 		DefaultReference(Column<T> column, Column<T> foreign) {
-			if (requireNonNull(column, "column").equals(requireNonNull(foreign, "foreign"))) {
+			if (requireNonNull(column).equals(requireNonNull(foreign))) {
 				throw new IllegalArgumentException("column and foreign column may not be the same");
 			}
 			this.column = column;

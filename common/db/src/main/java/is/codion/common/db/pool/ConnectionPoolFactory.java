@@ -50,7 +50,7 @@ public interface ConnectionPoolFactory {
 	 * @throws IllegalStateException in case no such {@link ConnectionPoolFactory} implementation is available.
 	 */
 	static ConnectionPoolFactory instance(String classname) {
-		requireNonNull(classname, "classname");
+		requireNonNull(classname);
 		try {
 			return stream(ServiceLoader.load(ConnectionPoolFactory.class).spliterator(), false)
 							.filter(factory -> factory.getClass().getName().equals(classname))

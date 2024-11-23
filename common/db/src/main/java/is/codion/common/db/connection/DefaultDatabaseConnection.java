@@ -54,9 +54,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	 * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
 	 */
 	DefaultDatabaseConnection(Database database, User user) throws DatabaseException {
-		this.database = requireNonNull(database, "database");
+		this.database = requireNonNull(database);
 		this.connection = disableAutoCommit(database.createConnection(user));
-		this.user = requireNonNull(user, "user");
+		this.user = requireNonNull(user);
 	}
 
 	/**
@@ -67,7 +67,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	 * @throws DatabaseException in case of an exception while retrieving the username from the connection meta-data
 	 */
 	DefaultDatabaseConnection(Database database, Connection connection) throws DatabaseException {
-		this.database = requireNonNull(database, "database");
+		this.database = requireNonNull(database);
 		this.connection = disableAutoCommit(connection);
 		this.user = user(connection);
 	}
@@ -265,7 +265,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	 * @throws DatabaseException in case disabling auto-commit fails
 	 */
 	private static Connection disableAutoCommit(Connection connection) throws DatabaseException {
-		requireNonNull(connection, "connection");
+		requireNonNull(connection);
 		try {
 			connection.setAutoCommit(false);
 

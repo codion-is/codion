@@ -403,14 +403,14 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 		private DefaultBuilder(Class<T> temporalClass, Value<T> linkedValue) {
 			super(temporalClass, linkedValue);
-			this.temporalClass = requireNonNull(temporalClass, "temporalClass");
+			this.temporalClass = requireNonNull(temporalClass);
 			this.dateTimeParser = createDateTimeParser(temporalClass);
 			dateTimePattern(defaultDateTimePattern());
 		}
 
 		@Override
 		public Builder<T> dateTimePattern(String dateTimePattern) {
-			this.dateTimePattern = requireNonNull(dateTimePattern, "dateTimePattern");
+			this.dateTimePattern = requireNonNull(dateTimePattern);
 			this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern)
 							.withZone(ZoneId.systemDefault());
 			this.mask = createMask(dateTimePattern);
@@ -507,8 +507,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		 * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
 		 */
 		private static String createMask(String dateTimePattern) {
-			requireNonNull(dateTimePattern, "dateTimePattern");
-			StringBuilder stringBuilder = new StringBuilder(dateTimePattern.length());
+			StringBuilder stringBuilder = new StringBuilder(requireNonNull(dateTimePattern).length());
 			for (Character character : dateTimePattern.toCharArray()) {
 				stringBuilder.append(Character.isLetter(character) ? "#" : character);
 			}

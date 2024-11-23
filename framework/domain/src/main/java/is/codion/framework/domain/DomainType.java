@@ -62,7 +62,7 @@ public interface DomainType {
 	 * @return a {@link DomainType}
 	 */
 	static DomainType domainType(Class<?> domainClass) {
-		return domainType(requireNonNull(domainClass, "domainClass").getSimpleName());
+		return domainType(requireNonNull(domainClass).getSimpleName());
 	}
 
 	/**

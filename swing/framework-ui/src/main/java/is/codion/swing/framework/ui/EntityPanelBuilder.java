@@ -63,13 +63,13 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	private Consumer<EntityTablePanel> onBuildTablePanel = new EmptyOnBuild<>();
 
 	EntityPanelBuilder(SwingEntityModel.Builder modelBuilder) {
-		this.modelBuilder = requireNonNull(modelBuilder, "modelBuilder");
+		this.modelBuilder = requireNonNull(modelBuilder);
 		this.entityType = modelBuilder.entityType();
 		this.model = null;
 	}
 
 	EntityPanelBuilder(SwingEntityModel model) {
-		this.model = requireNonNull(model, "model");
+		this.model = requireNonNull(model);
 		this.entityType = model.entityType();
 		this.modelBuilder = null;
 	}
@@ -156,7 +156,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		if (editPanelClass != null || tablePanelClass != null) {
 			throw new IllegalStateException("Edit or table panel class has been set");
 		}
-		this.panelClass = requireNonNull(panelClass, "panelClass");
+		this.panelClass = requireNonNull(panelClass);
 		return this;
 	}
 
@@ -165,7 +165,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		if (panelClass != null) {
 			throw new IllegalStateException("Panel class has been set");
 		}
-		this.editPanelClass = requireNonNull(editPanelClass, "editPanelClass");
+		this.editPanelClass = requireNonNull(editPanelClass);
 		return this;
 	}
 
@@ -174,7 +174,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		if (panelClass != null) {
 			throw new IllegalStateException("Panel class has been set");
 		}
-		this.tablePanelClass = requireNonNull(tablePanelClass, "tablePanelClass");
+		this.tablePanelClass = requireNonNull(tablePanelClass);
 		return this;
 	}
 
@@ -218,7 +218,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
 	@Override
 	public EntityPanel build(EntityConnectionProvider connectionProvider) {
-		requireNonNull(connectionProvider, "connectionProvider");
+		requireNonNull(connectionProvider);
 		if (modelBuilder == null) {
 			throw new IllegalStateException("A SwingEntityModel.Builder is not available in this panel builder: " + entityType);
 		}
@@ -228,8 +228,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
 	@Override
 	public EntityPanel build(SwingEntityModel model) {
-		requireNonNull(model, "model");
-		EntityPanel entityPanel = createPanel(model);
+		EntityPanel entityPanel = createPanel(requireNonNull(model));
 		if (entityPanel.containsTablePanel()) {
 			if (conditionView != null) {
 				entityPanel.tablePanel().conditions().view().set(conditionView);

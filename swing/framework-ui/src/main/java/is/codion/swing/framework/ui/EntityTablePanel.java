@@ -507,7 +507,7 @@ public class EntityTablePanel extends JPanel {
 	 * @param config provides access to the table panel configuration
 	 */
 	public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> config) {
-		this.tableModel = requireNonNull(tableModel, "tableModel");
+		this.tableModel = requireNonNull(tableModel);
 		this.editPanel = null;
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(config);
@@ -537,8 +537,8 @@ public class EntityTablePanel extends JPanel {
 	 * @param config provides access to the table panel configuration
 	 */
 	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel, Consumer<Config> config) {
-		this.tableModel = requireNonNull(tableModel, "tableModel");
-		this.editPanel = validateEditModel(requireNonNull(editPanel, "editPanel"));
+		this.tableModel = requireNonNull(tableModel);
+		this.editPanel = validateEditModel(requireNonNull(editPanel));
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(config);
 		this.table = configuration.tableBuilder.build();
@@ -967,7 +967,7 @@ public class EntityTablePanel extends JPanel {
 	 * @see #initializeSouthPanel()
 	 */
 	protected void layoutPanel(JComponent tableComponent, JPanel southPanel) {
-		requireNonNull(tableComponent, "tableComponent");
+		requireNonNull(tableComponent);
 		setLayout(new BorderLayout());
 		add(tableComponent, BorderLayout.CENTER);
 		if (southPanel != null) {
