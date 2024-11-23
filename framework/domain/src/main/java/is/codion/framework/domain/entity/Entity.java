@@ -497,17 +497,6 @@ public interface Entity extends Comparable<Entity> {
 	}
 
 	/**
-	 * Returns a LinkedHashMap containing the given entity keys mapped to their entityTypes,
-	 * respecting the iteration order of the given collection
-	 * @param keys the entity keys to map by entityType
-	 * @return a Map of entity keys mapped to entityType
-	 */
-	static LinkedHashMap<EntityType, List<Key>> groupKeysByType(Collection<Key> keys) {
-		return requireNonNull(keys).stream()
-						.collect(groupingBy(Key::entityType, LinkedHashMap::new, toList()));
-	}
-
-	/**
 	 * Represents a unique column combination for a given entity.
 	 */
 	interface Key {
@@ -608,6 +597,17 @@ public interface Entity extends Comparable<Entity> {
 		 * @return a new builder based on this key
 		 */
 		Builder copyBuilder();
+
+		/**
+		 * Returns a LinkedHashMap containing the given entity keys mapped to their entityTypes,
+		 * respecting the iteration order of the given collection
+		 * @param keys the entity keys to map by entityType
+		 * @return a Map of entity keys mapped to entityType
+		 */
+		static LinkedHashMap<EntityType, List<Key>> groupByType(Collection<Key> keys) {
+			return requireNonNull(keys).stream()
+							.collect(groupingBy(Key::entityType, LinkedHashMap::new, toList()));
+		}
 
 		/**
 		 * A builder for {@link Key} instances.

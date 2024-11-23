@@ -8,6 +8,7 @@ Codion Change Log
 - AuditColumn removed, unused.
 - AbstractAttributeDefinition, Item based attributes now use a custom comparator, sorting by caption.
 - AttributeDefinition.definitionComparator() removed.
+- Entity.groupKeysByType() moved to Entity.Key and renamed groupByType().
 ### is.codion.swing.framework.ui
 - EntityTableCellRenderer, Item based cells now use the default horizontal alignment instead of the one based on the the item value type.
 - DefaultEntityApplicationPanelBuilder bug fixed, exception handling during application start improved.

@@ -77,9 +77,13 @@ import static is.codion.common.db.database.Database.Operation.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.local.Queries.*;
-import static is.codion.framework.domain.entity.Entity.*;
+import static is.codion.framework.domain.entity.Entity.Key;
+import static is.codion.framework.domain.entity.Entity.Key.groupByType;
+import static is.codion.framework.domain.entity.Entity.groupByType;
+import static is.codion.framework.domain.entity.Entity.originalPrimaryKeys;
+import static is.codion.framework.domain.entity.Entity.primaryKeyMap;
+import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.domain.entity.condition.Condition.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -343,7 +347,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		if (requireNonNull(keys, "keys may not be null").isEmpty()) {
 			return;
 		}
-		Map<EntityType, List<Key>> keysByEntityType = groupKeysByType(keys);
+		Map<EntityType, List<Key>> keysByEntityType = groupByType(keys);
 		throwIfReadOnly(keysByEntityType.keySet());
 
 		List<?> statementValues = null;
@@ -417,7 +421,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		synchronized (connection) {
 			try {
 				List<Entity> result = new ArrayList<>();
-				for (List<Key> entityTypeKeys : groupKeysByType(keys).values()) {
+				for (List<Key> entityTypeKeys : groupByType(keys).values()) {
 					result.addAll(query(where(keys(entityTypeKeys)).build()));
 				}
 				commitIfTransactionIsNotOpen();
@@ -739,7 +743,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 					statementValues.clear();
 				}
 				if (insertedEntities != null) {
-					for (List<Key> entityTypeKeys : groupKeysByType(insertedKeys).values()) {
+					for (List<Key> entityTypeKeys : groupByType(insertedKeys).values()) {
 						insertedEntities.addAll(query(where(keys(entityTypeKeys)).build(), 0));//bypass caching
 					}
 				}
