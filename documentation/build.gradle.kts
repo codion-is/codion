@@ -143,10 +143,10 @@ tasks.register("combinedJavadoc") {
         val javadocTool = javaToolchains.javadocToolFor {
             languageVersion.set(JavaLanguageVersion.of(properties["jdkVersion"] as String))
         }
-        exec {
+        providers.exec {
             executable = javadocTool.get().executablePath.asFile.absolutePath
             args = listOf("@${optionsFile.absolutePath}")
-        }
+        }.result.get()
 
         delete(combinedSrcDir)
     }

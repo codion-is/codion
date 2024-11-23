@@ -155,28 +155,28 @@ configure(frameworkModules()) {
         onlyIf { !file(keystore).exists() }
 
         doLast {
-            exec {
+            providers.exec {
                 executable = keyToolExecutable
                 args = listOf(
                     "-genkeypair", "-keyalg", "RSA", "-keystore", keystore, "-storepass", "crappypass",
                     "-keypass", "crappypass", "-dname", "CN=Dummy, OU=dummy, O=dummy.org, C=DU", "-alias", "Alias",
                     "-storetype", "pkcs12", "-ext", "SAN=dns:localhost"
                 )
-            }
-            exec {
+            }.result.get()
+            providers.exec {
                 executable = keyToolExecutable
                 args = listOf(
                     "-exportcert", "-keystore", keystore, "-storepass", "crappypass",
                     "-alias", "Alias", "-rfc", "-file", certificate
                 )
-            }
-            exec {
+            }.result.get()
+            providers.exec {
                 executable = keyToolExecutable
                 args = listOf(
                     "-import", "-alias", "Alias", "-storepass", "changeit", "-file", certificate,
                     "-keystore", truststore, "-noprompt", "-storetype", "pkcs12"
                 )
-            }
+            }.result.get()
             delete(certificate)
         }
     }
@@ -249,11 +249,11 @@ tasks.register("tagRelease") {
             throw GradleException("Thou shalt not tag a snapshot release")
         }
         val tagName = "v" + project.version
-        exec { commandLine("git", "push", "dev") }
-        exec { commandLine("git", "push", "origin") }
-        exec { commandLine("git", "tag", "-a", tagName, "-m", "$tagName release") }
-        exec { commandLine("git", "push", "dev", tagName) }
-        exec { commandLine("git", "push", "origin", tagName) }
+        providers.exec { commandLine("git", "push", "dev") }.result.get()
+        providers.exec { commandLine("git", "push", "origin") }.result.get()
+        providers.exec { commandLine("git", "tag", "-a", tagName, "-m", "$tagName release") }.result.get()
+        providers.exec { commandLine("git", "push", "dev", tagName) }.result.get()
+        providers.exec { commandLine("git", "push", "origin", tagName) }.result.get()
     }
 }
 
