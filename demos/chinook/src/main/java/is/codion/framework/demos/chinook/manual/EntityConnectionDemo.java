@@ -519,6 +519,11 @@ public final class EntityConnectionDemo {
 			connection.rollbackTransaction();
 			throw new RuntimeException(e);
 		}
+		catch (Throwable e) {
+			// And you may as well include a catch for Throwable, just in case.
+			connection.rollbackTransaction();
+			throw e;
+		}
 		// end::transaction[]
 	}
 

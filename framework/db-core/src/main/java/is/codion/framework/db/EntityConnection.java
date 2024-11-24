@@ -442,7 +442,7 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.
-	 * Any {@link DatabaseException}s and {@link RuntimeException}s encountered are rethrown, other exceptions are rethrown as {@link RuntimeException}s.
+	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions are rethrown wrapped in a {@link RuntimeException}.
 	 * Note that nesting transactions will cause an {@link IllegalStateException} to be thrown, causing the outer transaction to be rolled back.
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run
@@ -452,27 +452,16 @@ public interface EntityConnection extends AutoCloseable {
 	static void transaction(EntityConnection connection, Transactional transactional) throws DatabaseException {
 		requireNonNull(connection);
 		requireNonNull(transactional);
-		connection.startTransaction();
-		try {
+		transaction(connection, () -> {
 			transactional.execute();
-			connection.commitTransaction();
-		}
-		catch (Exception e) {
-			connection.rollbackTransaction();
-			if (e instanceof DatabaseException) {
-				throw (DatabaseException) e;
-			}
-			if (e instanceof RuntimeException) {
-				throw (RuntimeException) e;
-			}
-
-			throw new RuntimeException(e);
-		}
+			return null;
+		});
 	}
 
 	/**
 	 * Executes the given {@link TransactionalResult} instance within a transaction on the given connection, committing on success and rolling back on exception.
-	 * Any {@link DatabaseException}s and {@link RuntimeException}s encountered are rethrown, other exceptions are rethrown as {@link RuntimeException}s.
+	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions are rethrown wrapped in a {@link RuntimeException}.
+	 * Note that nesting transactions will cause an {@link IllegalStateException} to be thrown, causing the outer transaction to be rolled back.
 	 * @param <T> the result type
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run
@@ -490,13 +479,16 @@ public interface EntityConnection extends AutoCloseable {
 
 			return result;
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			connection.rollbackTransaction();
 			if (e instanceof DatabaseException) {
 				throw (DatabaseException) e;
 			}
 			if (e instanceof RuntimeException) {
 				throw (RuntimeException) e;
+			}
+			if (e instanceof Error) {
+				throw (Error) e;
 			}
 
 			throw new RuntimeException(e);

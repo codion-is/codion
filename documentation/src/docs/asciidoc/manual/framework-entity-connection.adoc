@@ -289,6 +289,8 @@ The recommended way to use transactions is to use either of the following, depen
 
 These methods perform a commit on success and rollback on failure.
 
+NOTE: Nested transactions are not supported and will cause an IllegalStateException to be thrown, causing the outer transaction to be rolled back.
+
 ==== Transaction without a result
 
 [source,java,indent=0]

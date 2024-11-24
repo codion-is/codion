@@ -11,6 +11,8 @@ Codion Change Log
 - Entity.groupKeysByType() moved to Entity.Key and renamed groupByType().
 - Entity.Key.copyBuilder() renamed copy().
 - Entity.Copy.immutable() removed.
+### is.codion.framework.db
+- EntityConnection.transaction() now catches Throwable.
 ### is.codion.swing.framework.ui
 - EntityTableCellRenderer, Item based cells now use the default horizontal alignment instead of the one based on the the item value type.
 - DefaultEntityApplicationPanelBuilder bug fixed, exception handling during application start improved.

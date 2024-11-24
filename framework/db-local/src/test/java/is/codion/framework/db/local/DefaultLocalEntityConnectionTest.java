@@ -217,7 +217,7 @@ public class DefaultLocalEntityConnectionTest {
 	void deleteReferentialIntegrity() throws DatabaseException {
 		Entity.Key key = ENTITIES.primaryKey(Department.TYPE, 10);
 		try {
-		  connection.delete(key);
+			connection.delete(key);
 			fail("ReferentialIntegrityException should have been thrown");
 		}
 		catch (ReferentialIntegrityException e) {
@@ -250,7 +250,7 @@ public class DefaultLocalEntityConnectionTest {
 						.with(Employee.SALARY, 2000d)
 						.build();
 		try {
-		  connection.insert(emp);
+			connection.insert(emp);
 			fail("ReferentialIntegrityException should have been thrown");
 		}
 		catch (ReferentialIntegrityException e) {
@@ -289,7 +289,7 @@ public class DefaultLocalEntityConnectionTest {
 	void deleteByKeyWithForeignKeys() throws DatabaseException {
 		Entity accounting = connection.selectSingle(Department.DNAME.equalTo("ACCOUNTING"));
 		try {
-		  connection.delete(accounting.primaryKey());
+			connection.delete(accounting.primaryKey());
 			fail("ReferentialIntegrityException should have been thrown");
 		}
 		catch (ReferentialIntegrityException e) {
@@ -300,7 +300,7 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void deleteByConditionWithForeignKeys() throws DatabaseException {
 		try {
-		  connection.delete(Department.DNAME.equalTo("ACCOUNTING"));
+			connection.delete(Department.DNAME.equalTo("ACCOUNTING"));
 			fail("ReferentialIntegrityException should have been thrown");
 		}
 		catch (ReferentialIntegrityException e) {
@@ -1270,6 +1270,42 @@ public class DefaultLocalEntityConnectionTest {
 			connection2.commitTransaction();
 			assertTrue(connection1.select(Department.DEPTNO.equalTo(-42)).isEmpty());
 			assertThrows(IllegalStateException.class, () -> transaction(connection, () -> transaction(connection, () -> {})));
+		}
+	}
+
+	@Test
+	void transactionErrors() {
+		try (LocalEntityConnection connection = createConnection()) {
+			try {
+				transaction(connection, () -> {
+					throw new DatabaseException("Testing");
+				});
+				fail();
+			}
+			catch (Throwable e) {
+				assertFalse(connection.transactionOpen());
+			}
+			try {
+				transaction(connection, () -> {
+					throw new RuntimeException("Testing");
+				});
+				fail();
+			}
+			catch (Throwable e) {
+				assertFalse(connection.transactionOpen());
+			}
+			try {
+				transaction(connection, () -> {
+					throw new Error("Testing");
+				});
+				fail();
+			}
+			catch (Throwable e) {
+				assertFalse(connection.transactionOpen());
+			}
+		}
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
