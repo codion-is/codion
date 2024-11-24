@@ -387,7 +387,7 @@ public final class EntitiesTest {
 	}
 
 	@Test
-	void strictValidation() throws ValidationException {
+	void strictValidation() {
 		Entity emp = entities.builder(Employee.TYPE)
 						.with(Employee.NAME, "1234567891000")
 						.with(Employee.DEPARTMENT_NO, 1)

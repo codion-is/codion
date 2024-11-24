@@ -26,7 +26,6 @@ import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.CustomerEditModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.plugin.jasperreports.JRReport;
 import is.codion.plugin.jasperreports.JasperReports;
 import is.codion.plugin.jasperreports.JasperReportsDataSource;
@@ -69,7 +68,7 @@ public final class Misc {
 		// end::jasperReportDataSource[]
 	}
 
-	public static void main(String[] args) throws ValidationException {
+	public static void main(String[] args) {
 		// tag::editModel[]
 		EntityConnectionProvider connectionProvider =
 						EntityConnectionProvider.builder()

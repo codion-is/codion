@@ -183,7 +183,7 @@ public interface EntityEditModel {
 	 * @throws IllegalStateException in case inserting is not enabled
 	 * @see EntityValidator#validate(Entity)
 	 */
-	Entity insert() throws ValidationException;
+	Entity insert();
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -197,7 +197,7 @@ public interface EntityEditModel {
 	 * @see #afterInsert()
 	 * @see EntityValidator#validate(Entity)
 	 */
-	Collection<Entity> insert(Collection<Entity> entities) throws ValidationException;
+	Collection<Entity> insert(Collection<Entity> entities);
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -210,7 +210,7 @@ public interface EntityEditModel {
 	 * @throws is.codion.common.db.exception.UpdateException in case the active entity is not modified
 	 * @see EntityValidator#validate(Entity)
 	 */
-	Entity update() throws ValidationException;
+	Entity update();
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -225,7 +225,7 @@ public interface EntityEditModel {
 	 * @see #afterUpdate()
 	 * @see EntityValidator#validate(Entity)
 	 */
-	Collection<Entity> update(Collection<Entity> entities) throws ValidationException;
+	Collection<Entity> update(Collection<Entity> entities);
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -253,7 +253,7 @@ public interface EntityEditModel {
 	 * @return a new {@link Insert} instance
 	 * @throws ValidationException in case validation fails
 	 */
-	Insert createInsert() throws ValidationException;
+	Insert createInsert();
 
 	/**
 	 * Creates a new {@link Insert} instance for inserting the given entities.
@@ -261,7 +261,7 @@ public interface EntityEditModel {
 	 * @return a new {@link Insert} instance
 	 * @throws ValidationException in case validation fails
 	 */
-	Insert createInsert(Collection<Entity> entities) throws ValidationException;
+	Insert createInsert(Collection<Entity> entities);
 
 	/**
 	 * Creates a new {@link Update} instance for updating the active entity.
@@ -269,7 +269,7 @@ public interface EntityEditModel {
 	 * @throws IllegalArgumentException in case the active entity is unmodified
 	 * @throws ValidationException in case validation fails
 	 */
-	Update createUpdate() throws ValidationException;
+	Update createUpdate();
 
 	/**
 	 * Creates a new {@link Update} instance for updating the given entities.
@@ -278,7 +278,7 @@ public interface EntityEditModel {
 	 * @throws IllegalArgumentException in case any of the given entities are unmodified
 	 * @throws ValidationException in case validation fails
 	 */
-	Update createUpdate(Collection<Entity> entities) throws ValidationException;
+	Update createUpdate(Collection<Entity> entities);
 
 	/**
 	 * Creates a new {@link Delete} instance for deleting the active entity.
@@ -322,7 +322,7 @@ public interface EntityEditModel {
 	 * @param attribute the attribute the value is associated with
 	 * @throws ValidationException if the given value is not valid for the given attribute
 	 */
-	void validate(Attribute<?> attribute) throws ValidationException;
+	void validate(Attribute<?> attribute);
 
 	/**
 	 * Validates the given entities, using the underlying validator.
@@ -332,7 +332,7 @@ public interface EntityEditModel {
 	 * @throws ValidationException on finding the first invalid entity
 	 * @see EntityDefinition#validator()
 	 */
-	void validate(Collection<Entity> entities) throws ValidationException;
+	void validate(Collection<Entity> entities);
 
 	/**
 	 * Validates the given entity, using the underlying validator.
@@ -342,7 +342,7 @@ public interface EntityEditModel {
 	 * @throws ValidationException in case the entity is invalid
 	 * @throws NullPointerException in case the entity is null
 	 */
-	void validate(Entity entity) throws ValidationException;
+	void validate(Entity entity);
 
 	/**
 	 * @return an observer notified before an insert is performed
@@ -486,7 +486,7 @@ public interface EntityEditModel {
 		 * Validates the current state of the entity
 		 * @throws ValidationException in case the entity is invalid
 		 */
-		void validate() throws ValidationException;
+		void validate();
 
 		/**
 		 * @param attribute the attribute

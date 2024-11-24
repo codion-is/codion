@@ -157,7 +157,7 @@ public interface World {
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public void validate(Entity city) throws ValidationException {
+		public void validate(Entity city) {
 			super.validate(city);
 			//after a call to super.validate() values that are not nullable
 			//(such as country and population) are guaranteed to be non-null

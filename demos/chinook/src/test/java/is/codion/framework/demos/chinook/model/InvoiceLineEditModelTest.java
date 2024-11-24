@@ -29,7 +29,6 @@ import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public final class InvoiceLineEditModelTest {
 
 	@Test
-	void updateTotals() throws ValidationException {
+	void updateTotals() {
 		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
 			EntityConnection connection = connectionProvider.connection();
 

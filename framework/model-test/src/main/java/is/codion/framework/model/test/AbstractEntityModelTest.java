@@ -25,7 +25,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.DefaultEntityModel;
 import is.codion.framework.model.EntityEditModel;
@@ -74,7 +73,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
-	public void testUpdatePrimaryKey() throws ValidationException {
+	public void testUpdatePrimaryKey() {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -218,7 +217,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
-	public void foreignKeyDetailModelLink() throws ValidationException {
+	public void foreignKeyDetailModelLink() {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -342,7 +341,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
-	public void searchByInsertedEntity() throws ValidationException {
+	public void searchByInsertedEntity() {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -419,7 +418,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
-	public void insertDifferentTypes() throws ValidationException {
+	public void insertDifferentTypes() {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}

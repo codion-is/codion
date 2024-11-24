@@ -163,19 +163,19 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final void validate(Attribute<?> attribute) throws ValidationException {
+	public final void validate(Attribute<?> attribute) {
 		editable.validator.get().validate(editable.entity, attribute);
 	}
 
 	@Override
-	public final void validate(Collection<Entity> entities) throws ValidationException {
+	public final void validate(Collection<Entity> entities) {
 		for (Entity entityToValidate : requireNonNull(entities)) {
 			validate(entityToValidate);
 		}
 	}
 
 	@Override
-	public final void validate(Entity entity) throws ValidationException {
+	public final void validate(Entity entity) {
 		if (entity.entityType().equals(entityType())) {
 			editable.validator.get().validate(entity);
 		}
@@ -185,22 +185,22 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Entity insert() throws ValidationException {
+	public final Entity insert() {
 		return createInsert().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
-	public final Collection<Entity> insert(Collection<Entity> entities) throws ValidationException {
+	public final Collection<Entity> insert(Collection<Entity> entities) {
 		return createInsert(entities).prepare().perform().handle();
 	}
 
 	@Override
-	public final Entity update() throws ValidationException {
+	public final Entity update() {
 		return createUpdate().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
-	public final Collection<Entity> update(Collection<Entity> entities) throws ValidationException {
+	public final Collection<Entity> update(Collection<Entity> entities) {
 		return createUpdate(entities).prepare().perform().handle();
 	}
 
@@ -215,22 +215,22 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Insert createInsert() throws ValidationException {
+	public final Insert createInsert() {
 		return new DefaultInsert();
 	}
 
 	@Override
-	public final Insert createInsert(Collection<Entity> entities) throws ValidationException {
+	public final Insert createInsert(Collection<Entity> entities) {
 		return new DefaultInsert(entities);
 	}
 
 	@Override
-	public final Update createUpdate() throws ValidationException {
+	public final Update createUpdate() {
 		return new DefaultUpdate();
 	}
 
 	@Override
-	public final Update createUpdate(Collection<Entity> entities) throws ValidationException {
+	public final Update createUpdate(Collection<Entity> entities) {
 		return new DefaultUpdate(entities);
 	}
 
@@ -453,14 +453,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Collection<Entity> entities;
 		private final boolean activeEntity;
 
-		private DefaultInsert() throws ValidationException {
+		private DefaultInsert() {
 			this.entities = entityForInsert();
 			this.activeEntity = true;
 			states.verifyInsertEnabled();
 			validate(entities);
 		}
 
-		private DefaultInsert(Collection<Entity> entities) throws ValidationException {
+		private DefaultInsert(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			this.activeEntity = false;
 			states.verifyInsertEnabled();
@@ -521,14 +521,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private final Collection<Entity> entities;
 
-		private DefaultUpdate() throws ValidationException {
+		private DefaultUpdate() {
 			entities = singleton(editable.entity.copy().mutable());
 			states.verifyUpdateEnabled(entities.size());
 			validate(entities);
 			verifyModified(entities);
 		}
 
-		private DefaultUpdate(Collection<Entity> entities) throws ValidationException {
+		private DefaultUpdate(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			states.verifyUpdateEnabled(entities.size());
 			validate(entities);
@@ -845,7 +845,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public void validate() throws ValidationException {
+		public void validate() {
 			validate(entity);
 		}
 
@@ -927,7 +927,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 		}
 
-		private void validate(Entity entity) throws ValidationException {
+		private void validate(Entity entity) {
 			if (entity.entityType().equals(entityDefinition.entityType())) {
 				validator.get().validate(entity);
 			}

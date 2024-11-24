@@ -20,7 +20,6 @@ package is.codion.framework.demos.employees.testing.scenarios;
 
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
@@ -29,7 +28,7 @@ import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
 public final class InsertDepartment implements Performer<EmployeesAppModel> {
 
 	@Override
-	public void perform(EmployeesAppModel application) throws ValidationException {
+	public void perform(EmployeesAppModel application) {
 		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
 		departmentModel.editModel().entity().set(new DefaultEntityFactory(application.connection()).entity(Department.TYPE));
 		departmentModel.editModel().insert();

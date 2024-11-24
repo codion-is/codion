@@ -96,7 +96,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	}
 
 	@Override
-	public void validate(Entity entity) throws ValidationException {
+	public void validate(Entity entity) {
 		List<Attribute<?>> attributes = requireNonNull(entity).definition().attributes().definitions().stream()
 						.filter(definition -> validationRequired(entity, definition))
 						.map(AttributeDefinition::attribute)
@@ -107,7 +107,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	}
 
 	@Override
-	public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+	public <T> void validate(Entity entity, Attribute<T> attribute) {
 		AttributeDefinition<T> definition = requireNonNull(entity).definition().attributes().definition(attribute);
 		if (!(attribute instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute)) {
 			performNullValidation(entity, definition);

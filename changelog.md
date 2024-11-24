@@ -14,6 +14,7 @@ Codion Change Log
 - Entity.groupKeysByType() moved to Entity.Key and renamed groupByType().
 - Entity.Key.copyBuilder() renamed copy().
 - Entity.Copy.immutable() removed.
+- ValidationException now extends RuntimeException, no longer checked.
 ### is.codion.framework.db
 - EntityConnection.transaction() now catches Throwable.
 ### is.codion.swing.framework.ui

@@ -22,7 +22,6 @@ import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -93,33 +92,26 @@ public final class SwingEntityModelTest
 		Entity operations = departmentModel.tableModel().selection().item().get();
 		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();
-		try {
-			departmentModel.editModel().delete();
-			assertFalse(departmentsComboBoxModel.items().contains(operations));
-			departmentModel.editModel().value(Department.ID).set(99);
-			departmentModel.editModel().value(Department.NAME).set("nameit");
-			Entity inserted = departmentModel.editModel().insert();
-			assertTrue(departmentsComboBoxModel.items().contains(inserted));
-			departmentModel.tableModel().selection().item().set(inserted);
-			departmentModel.editModel().value(Department.NAME).set("nameitagain");
-			departmentModel.editModel().update();
-			assertEquals("nameitagain", departmentsComboBoxModel.find(inserted.primaryKey()).orElse(null).get(Department.NAME));
+		departmentModel.editModel().delete();
+		assertFalse(departmentsComboBoxModel.items().contains(operations));
+		departmentModel.editModel().value(Department.ID).set(99);
+		departmentModel.editModel().value(Department.NAME).set("nameit");
+		Entity inserted = departmentModel.editModel().insert();
+		assertTrue(departmentsComboBoxModel.items().contains(inserted));
+		departmentModel.tableModel().selection().item().set(inserted);
+		departmentModel.editModel().value(Department.NAME).set("nameitagain");
+		departmentModel.editModel().update();
+		assertEquals("nameitagain", departmentsComboBoxModel.find(inserted.primaryKey()).orElse(null).get(Department.NAME));
 
-			departmentModel.tableModel().select(Collections.singletonList(primaryKey.copy().with(Department.ID, 20).build()));
-			departmentModel.editModel().value(Department.NAME).set("NewName");
-			departmentModel.editModel().update();
+		departmentModel.tableModel().select(Collections.singletonList(primaryKey.copy().with(Department.ID, 20).build()));
+		departmentModel.editModel().value(Department.NAME).set("NewName");
+		departmentModel.editModel().update();
 
-			for (Entity employee : employeeModel.tableModel().items().get()) {
-				Entity dept = employee.entity(Employee.DEPARTMENT_FK);
-				assertEquals("NewName", dept.get(Department.NAME));
-			}
+		for (Entity employee : employeeModel.tableModel().items().get()) {
+			Entity dept = employee.entity(Employee.DEPARTMENT_FK);
+			assertEquals("NewName", dept.get(Department.NAME));
 		}
-		catch (ValidationException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			connection.rollbackTransaction();
-		}
+		connection.rollbackTransaction();
 	}
 
 	@Test

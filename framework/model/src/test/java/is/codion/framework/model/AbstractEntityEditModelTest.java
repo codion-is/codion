@@ -80,7 +80,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void postEditEvents() throws ValidationException {
+	void postEditEvents() {
 		AtomicInteger insertEvents = new AtomicInteger();
 		AtomicInteger updateEvents = new AtomicInteger();
 		AtomicInteger deleteEvents = new AtomicInteger();
@@ -338,7 +338,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void insert() throws ValidationException {
+	void insert() {
 		assertTrue(employeeEditModel.insert(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -387,7 +387,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void update() throws ValidationException {
+	void update() {
 		assertTrue(employeeEditModel.update(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -610,7 +610,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void modifiedUpdate() throws ValidationException {
+	void modifiedUpdate() {
 		EntityConnection connection = employeeEditModel.connection();
 		StateObserver nameModifiedObserver = employeeEditModel.value(Employee.NAME).modified();
 		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));

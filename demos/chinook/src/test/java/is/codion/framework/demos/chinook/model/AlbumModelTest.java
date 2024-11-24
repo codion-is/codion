@@ -26,7 +26,6 @@ import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ public final class AlbumModelTest {
 	private static final String MASTER_OF_PUPPETS = "Master Of Puppets";
 
 	@Test
-	void albumRefreshedWhenTrackRatingIsUpdated() throws ValidationException {
+	void albumRefreshedWhenTrackRatingIsUpdated() {
 		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
 			EntityConnection connection = connectionProvider.connection();
 			connection.startTransaction();

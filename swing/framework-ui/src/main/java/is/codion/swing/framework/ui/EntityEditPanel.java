@@ -1000,7 +1000,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		@Override
-		public void execute() throws ValidationException {
+		public void execute() {
 			if (!confirm || confirmInsert()) {
 				progressWorkerDialog(editModel().createInsert().prepare()::perform)
 								.title(MESSAGES.getString("inserting"))
@@ -1038,7 +1038,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		@Override
-		public void execute() throws ValidationException {
+		public void execute() {
 			if (!confirm || confirmUpdate()) {
 				progressWorkerDialog(editModel().createUpdate().prepare()::perform)
 								.title(MESSAGES.getString("updating"))

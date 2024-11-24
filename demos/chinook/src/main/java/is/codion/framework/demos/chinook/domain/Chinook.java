@@ -300,14 +300,14 @@ public interface Chinook {
 		}
 
 		@Override
-		public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+		public <T> void validate(Entity entity, Attribute<T> attribute) {
 			super.validate(entity, attribute);
 			if (attribute.equals(emailColumn)) {
 				validateEmail(entity.get(emailColumn));
 			}
 		}
 
-		private void validateEmail(String email) throws ValidationException {
+		private void validateEmail(String email) {
 			if (!EMAIL_PATTERN.matcher(email).matches()) {
 				throw new ValidationException(emailColumn, email, BUNDLE.getString("invalid_email"));
 			}

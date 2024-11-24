@@ -26,7 +26,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -110,7 +109,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	}
 
 	@Test
-	public void onInsert() throws ValidationException {
+	public void onInsert() {
 		TableModel deptModel = createDepartmentTableModel();
 		deptModel.refresh();
 
