@@ -21,7 +21,6 @@ package is.codion.framework.db.http;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Update;
@@ -84,7 +83,7 @@ abstract class AbstractHttpEntityConnectionTest {
 	}
 
 	@Test
-	void report() throws ReportException {
+	void report() {
 		String result = connection.report(TestDomain.REPORT, "");
 		assertNotNull(result);
 	}

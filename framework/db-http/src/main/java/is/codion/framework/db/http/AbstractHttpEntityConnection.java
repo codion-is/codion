@@ -22,7 +22,6 @@ import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
@@ -303,15 +302,12 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public final <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
+	public final <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters){
 		requireNonNull(reportType);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("report", serialize(asList(reportType, reportParameters)))));
 			}
-		}
-		catch (ReportException e) {
-			throw e;
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();

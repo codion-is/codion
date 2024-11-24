@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.employees.ui;
 
-import is.codion.common.db.report.ReportException;
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.domain.entity.Entity;
@@ -59,7 +58,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 	// end::setupControls[]
 
 	// tag::viewEmployeeReport[]
-	private void viewEmployeeReport() throws ReportException {
+	private void viewEmployeeReport() {
 		Collection<Integer> departmentNumbers =
 						Entity.distinct(Department.DEPARTMENT_NO,
 										tableModel().selection().items().get());

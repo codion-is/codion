@@ -18,10 +18,15 @@
  */
 package is.codion.common.db.report;
 
+import java.io.Serial;
+
 /**
  * An exception occurring during report generation.
  */
-public class ReportException extends Exception {
+public class ReportException extends RuntimeException {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Instantiates a new ReportException

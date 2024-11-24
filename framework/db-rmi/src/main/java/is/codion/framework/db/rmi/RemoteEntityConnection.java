@@ -22,7 +22,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -446,5 +445,5 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @throws RemoteException in case of a remote exception
 	 * @see Report#fill(java.sql.Connection, Object)
 	 */
-	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws RemoteException, ReportException;
+	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws RemoteException;
 }

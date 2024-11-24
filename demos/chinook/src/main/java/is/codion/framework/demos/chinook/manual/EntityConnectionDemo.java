@@ -20,7 +20,6 @@ package is.codion.framework.demos.chinook.manual;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -367,7 +366,7 @@ public final class EntityConnectionDemo {
 		// end::function[]
 	}
 
-	static void report(EntityConnectionProvider connectionProvider) throws ReportException {
+	static void report(EntityConnectionProvider connectionProvider) {
 		// tag::report[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -527,7 +526,7 @@ public final class EntityConnectionDemo {
 		// end::transaction[]
 	}
 
-	public static void main(String[] args) throws ReportException {
+	public static void main(String[] args) {
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 

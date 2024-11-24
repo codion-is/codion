@@ -29,7 +29,6 @@ import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.exception.UpdateException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.db.result.ResultPacker;
@@ -631,7 +630,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
+	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) {
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
 		synchronized (connection) {
@@ -646,9 +645,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 				exception = e;
 				rollbackQuietlyIfTransactionIsNotOpen();
 				LOG.error(createLogMessage(null, singletonList(reportType), emptyList(), e), e);
-				if (e instanceof ReportException) {
-					throw (ReportException) e;
-				}
 				throwDatabaseException(e, SELECT);
 				throw runtimeException(e);
 			}

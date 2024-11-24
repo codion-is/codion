@@ -86,7 +86,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
 	 * @throws ReportException in case of an exception
 	 * @see Report#CACHE_REPORTS
 	 */
-	protected final T loadAndCacheReport() throws ReportException {
+	protected final T loadAndCacheReport() {
 		if (cacheReport) {
 			return cachedReport();
 		}
@@ -96,12 +96,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
 
 	private synchronized T cachedReport() {
 		if (cachedReport == null) {
-			try {
-				cachedReport = load();
-			}
-			catch (ReportException e) {
-				throw new RuntimeException(e);
-			}
+			cachedReport = load();
 		}
 
 		return cachedReport;

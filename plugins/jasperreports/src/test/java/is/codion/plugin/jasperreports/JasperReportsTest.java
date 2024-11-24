@@ -65,7 +65,7 @@ public class JasperReportsTest {
 	}
 
 	@Test
-	void fillJdbcReport() throws ReportException {
+	void fillJdbcReport() {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set(REPORT_PATH);
 		HashMap<String, Object> reportParameters = new HashMap<>();
@@ -76,7 +76,7 @@ public class JasperReportsTest {
 	}
 
 	@Test
-	void fillDataSourceReport() throws ReportException {
+	void fillDataSourceReport() {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set(REPORT_PATH);
 		JRReport wrapper = JasperReports.fileReport("employees.jasper");
@@ -131,7 +131,7 @@ public class JasperReportsTest {
 	}
 
 	@Test
-	void classPathReport() throws ReportException {
+	void classPathReport() {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
 		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
@@ -141,7 +141,7 @@ public class JasperReportsTest {
 	}
 
 	@Test
-	void fileReport() throws ReportException {
+	void fileReport() {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
 		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();

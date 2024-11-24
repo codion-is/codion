@@ -22,7 +22,6 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
@@ -102,7 +101,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	}
 
 	@Override
-	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
+	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) {
 		synchronized (connectionProxy) {
 			return connectionProxy.report(reportType, reportParameters);
 		}

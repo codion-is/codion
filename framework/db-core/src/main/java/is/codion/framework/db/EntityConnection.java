@@ -22,7 +22,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.domain.Domain;
@@ -438,7 +437,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.report.ReportException in case of a report exception
 	 * @see Report#fill(java.sql.Connection, Object)
 	 */
-	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException;
+	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters);
 
 	/**
 	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.

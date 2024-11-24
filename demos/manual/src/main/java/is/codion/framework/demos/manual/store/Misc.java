@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.manual.store;
 
-import is.codion.common.db.report.ReportException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -42,7 +41,7 @@ import static is.codion.plugin.jasperreports.JasperReports.fileReport;
 
 public final class Misc {
 
-	static void jasperReports() throws ReportException {
+	static void jasperReports() {
 		EntityConnectionProvider connectionProvider =
 						EntityConnectionProvider.builder()
 										.domainType(Store.DOMAIN)

@@ -23,7 +23,6 @@ import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
@@ -311,13 +310,8 @@ public abstract class DomainModel implements Domain {
 			if (reports.containsKey(requireNonNull(reportType))) {
 				throw new IllegalArgumentException("Report has already been defined: " + reportType);
 			}
-			try {
-				requireNonNull(report).load();
-				reports.put(reportType, report);
-			}
-			catch (ReportException e) {
-				throw new RuntimeException(e);
-			}
+			requireNonNull(report).load();
+			reports.put(reportType, report);
 		}
 
 		private <T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType) {

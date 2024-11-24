@@ -82,7 +82,7 @@ public final class JasperReports {
 	 * @return a filled report ready for display
 	 * @throws ReportException in case of an exception
 	 */
-	public static JasperPrint fillReport(JRReport report, JRDataSource dataSource) throws ReportException {
+	public static JasperPrint fillReport(JRReport report, JRDataSource dataSource) {
 		return fillReport(report, dataSource, new HashMap<>());
 	}
 
@@ -95,7 +95,7 @@ public final class JasperReports {
 	 * @throws ReportException in case of an exception
 	 */
 	public static JasperPrint fillReport(JRReport report, JRDataSource dataSource,
-																			 Map<String, Object> reportParameters) throws ReportException {
+																			 Map<String, Object> reportParameters) {
 		requireNonNull(report);
 		requireNonNull(dataSource);
 		requireNonNull(reportParameters);
