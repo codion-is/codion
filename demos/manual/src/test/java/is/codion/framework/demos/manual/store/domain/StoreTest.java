@@ -43,17 +43,17 @@ public class StoreTest extends DomainTest {
 	}
 
 	@Test
-	public void customer() throws Exception {
+	public void customer() {
 		test(Customer.TYPE);
 	}
 
 	@Test
-	public void address() throws Exception {
+	public void address() {
 		test(Address.TYPE);
 	}
 
 	@Test
-	public void customerAddress() throws Exception {
+	public void customerAddress() {
 		test(CustomerAddress.TYPE);
 	}
 

@@ -22,6 +22,8 @@ import is.codion.common.Serializer;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -32,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserTest {
 
 	@Test
-	void test() throws Exception {
+	void test() throws IOException, ClassNotFoundException {
 		User user = User.parse("scott:tiger");
 		assertEquals("scott", user.username());
 		assertEquals("tiger", String.valueOf(user.password()));

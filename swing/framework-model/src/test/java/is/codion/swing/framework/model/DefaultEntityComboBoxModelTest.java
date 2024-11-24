@@ -165,7 +165,7 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
-	void setForeignKeyFilterEntities() throws Exception {
+	void setForeignKeyFilterEntities() {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
 		employeeComboBoxModel.refresh();
 		Entity blake = employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));

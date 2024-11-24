@@ -49,7 +49,7 @@ public class EntityComboBoxTest {
 					.build();
 
 	@Test
-	void inputProvider() throws Exception {
+	void inputProvider() {
 		EntityComboBoxModel model = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		model.refresh();
 		Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));

@@ -34,7 +34,7 @@ import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.r
 public final class ViewInvoice implements Performer<EntityConnectionProvider> {
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+	public void perform(EntityConnectionProvider connectionProvider) {
 		EntityConnection connection = connectionProvider.connection();
 		Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
 		List<Long> invoiceIds = connection.select(Invoice.ID, Invoice.CUSTOMER_FK.equalTo(customer));

@@ -41,6 +41,7 @@ import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -111,7 +112,7 @@ public class EntityTablePanelTest {
 	}
 
 	@Test
-	void preferences() throws Exception {
+	void preferences() throws BackingStoreException {
 		List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
 		SwingEntityTableModel testModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);
 		EntityTablePanel tablePanel = new EntityTablePanel(testModel);

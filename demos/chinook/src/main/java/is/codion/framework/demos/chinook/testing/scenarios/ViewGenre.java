@@ -34,7 +34,7 @@ import static is.codion.framework.domain.entity.condition.Condition.all;
 public final class ViewGenre implements Performer<EntityConnectionProvider> {
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+	public void perform(EntityConnectionProvider connectionProvider) {
 		EntityConnection connection = connectionProvider.connection();
 		List<Entity> genres = connection.select(all(Genre.TYPE));
 		List<Entity> tracks = connection.select(Track.GENRE_FK.equalTo(genres.get(RANDOM.nextInt(genres.size()))));

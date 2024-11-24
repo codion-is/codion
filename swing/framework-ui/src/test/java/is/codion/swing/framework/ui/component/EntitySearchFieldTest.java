@@ -50,7 +50,7 @@ public class EntitySearchFieldTest {
 					.build();
 
 	@Test
-	void componentValue() throws Exception {
+	void componentValue() {
 		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		ComponentValue<Entity, EntitySearchField> value = EntitySearchField.builder(searchModel)
 						.buildValue();

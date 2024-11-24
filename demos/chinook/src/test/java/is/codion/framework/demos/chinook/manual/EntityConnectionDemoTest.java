@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 public final class EntityConnectionDemoTest {
 
 	@Test
-	void test() throws Exception {
+	void test() {
 		EntityConnectionDemo.main(new String[0]);
 	}
 }

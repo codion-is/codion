@@ -22,6 +22,7 @@ import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.swing.framework.model.SwingEntityModel;
 
@@ -29,7 +30,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 public final class InsertEmployee extends AbstractPerformer {
 
 	@Override
-	public void perform(EmployeesAppModel application) throws Exception {
+	public void perform(EmployeesAppModel application) throws ValidationException {
 		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
 		selectRandomRow(departmentModel.tableModel());
 		SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);

@@ -39,7 +39,7 @@ public final class RaisePrices implements Performer<EntityConnectionProvider> {
 	private static final BigDecimal PRICE_INCREASE = BigDecimal.valueOf(0.01);
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+	public void perform(EntityConnectionProvider connectionProvider) {
 		EntityConnection connection = connectionProvider.connection();
 		Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
 		List<Entity> albums = connection.select(where(Album.ARTIST_FK.equalTo(artist))

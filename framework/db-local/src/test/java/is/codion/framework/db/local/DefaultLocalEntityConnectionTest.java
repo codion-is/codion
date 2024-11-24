@@ -165,7 +165,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void delete() throws Exception {
+	void delete() {
 		connection.startTransaction();
 		try {
 			Entity.Key key = ENTITIES.primaryKey(Department.TYPE, 40);
@@ -309,14 +309,14 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void report() throws Exception {
+	void report() {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
 		assertEquals("result", connection.report(REPORT, reportParameters));
 	}
 
 	@Test
-	void dependencies() throws Exception {
+	void dependencies() {
 		Map<EntityType, Collection<Entity>> empty = connection.dependencies(new ArrayList<>());
 		assertTrue(empty.isEmpty());
 		List<Entity> accounting = connection.select(Department.DNAME.equalTo("ACCOUNTING"));
@@ -379,7 +379,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void selectLimitOffset() throws Exception {
+	void selectLimitOffset() {
 		Select select = Select.all(Employee.TYPE)
 						.orderBy(OrderBy.ascending(Employee.NAME))
 						.limit(2)
@@ -399,7 +399,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void select() throws Exception {
+	void select() {
 		Collection<Entity> result = connection.select(new ArrayList<>());
 		assertTrue(result.isEmpty());
 		result = connection.select(Department.DEPTNO.in(10, 20));
@@ -520,7 +520,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void attributes() throws Exception {
+	void attributes() {
 		List<Entity> emps = connection.select(Select.all(Employee.TYPE)
 						.attributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT)
 						.build());
@@ -556,7 +556,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void count() throws Exception {
+	void count() {
 		int rowCount = connection.count(Count.all(Department.TYPE));
 		assertEquals(4, rowCount);
 		Condition deptNoCondition = Department.DEPTNO.greaterThanOrEqualTo(30);
@@ -574,7 +574,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void selectSingle() throws Exception {
+	void selectSingle() {
 		Entity sales = connection.selectSingle(Department.DNAME.equalTo("SALES"));
 		assertEquals(sales.get(Department.DNAME), "SALES");
 		sales = connection.select(sales.primaryKey());
@@ -801,7 +801,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void selectValues() throws Exception {
+	void selectValues() {
 		List<String> result = connection.select(Department.DNAME);
 		assertEquals("ACCOUNTING", result.get(0));
 		assertEquals("OPERATIONS", result.get(1));
@@ -814,7 +814,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void selectValuesCustomQuery() throws Exception {
+	void selectValuesCustomQuery() {
 		connection.select(EmpnoDeptno.DEPTNO);
 	}
 
@@ -840,7 +840,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void selectForUpdateModified() throws Exception {
+	void selectForUpdateModified() throws SQLException {
 		LocalEntityConnection connection = createConnection();
 		LocalEntityConnection connection2 = createConnection();
 		String originalLocation;
@@ -877,7 +877,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void optimisticLockingDeleted() throws Exception {
+	void optimisticLockingDeleted() {
 		LocalEntityConnection connection = createConnection();
 		EntityConnection connection2 = createConnection();
 		connection.setOptimisticLocking(true);
@@ -913,7 +913,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void optimisticLockingModified() throws Exception {
+	void optimisticLockingModified() {
 		LocalEntityConnection baseConnection = createConnection();
 		LocalEntityConnection optimisticConnection = createConnection(true);
 		optimisticConnection.setOptimisticLocking(true);
@@ -949,7 +949,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void optimisticLockingBlob() throws Exception {
+	void optimisticLockingBlob() {
 		LocalEntityConnection baseConnection = createConnection();
 		LocalEntityConnection optimisticConnection = createConnection();
 		optimisticConnection.setOptimisticLocking(true);
@@ -984,7 +984,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void iterator() throws Exception {
+	void iterator() {
 		try (LocalEntityConnection connection = createConnection()) {
 			Condition condition = all(Employee.TYPE);
 			ResultIterator<Entity> resultIterator = connection.iterator(condition);
@@ -1019,7 +1019,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void dualIterator() throws Exception {
+	void dualIterator() throws SQLException {
 		try (LocalEntityConnection connection = createConnection();
 				 ResultIterator<Entity> deptIterator = connection.iterator(all(Department.TYPE))) {
 			while (deptIterator.hasNext()) {
@@ -1034,7 +1034,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void testConstructor() throws Exception {
+	void testConstructor() {
 		Connection connection = null;
 		try {
 			Database db = Database.instance();
@@ -1308,17 +1308,17 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void foreignKeyFetchDepth() {
-		try (LocalEntityConnection connection = createConnection()) {
-			connection.setLimitForeignKeyFetchDepth(false);
-			assertFalse(connection.isLimitForeignKeyFetchDepth());
-			Entity employee = connection.selectSingle(Employee.ID.equalTo(10));
+		try (LocalEntityConnection conn = createConnection()) {
+			conn.setLimitForeignKeyFetchDepth(false);
+			assertFalse(conn.isLimitForeignKeyFetchDepth());
+			Entity employee = conn.selectSingle(Employee.ID.equalTo(10));
 			Entity manager = employee.get(Employee.MGR_FK);
 			assertNotNull(manager);
 			Entity managersManager = manager.get(Employee.MGR_FK);
 			assertNotNull(managersManager);
-			connection.setLimitForeignKeyFetchDepth(true);
-			assertTrue(connection.isLimitForeignKeyFetchDepth());
-			employee = connection.selectSingle(Employee.ID.equalTo(10));
+			conn.setLimitForeignKeyFetchDepth(true);
+			assertTrue(conn.isLimitForeignKeyFetchDepth());
+			employee = conn.selectSingle(Employee.ID.equalTo(10));
 			manager = employee.get(Employee.MGR_FK);
 			assertNotNull(manager);
 			managersManager = manager.get(Employee.MGR_FK);
@@ -1453,7 +1453,7 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void having() throws Exception {
+	void having() {
 		List<Entity> jobs = connection.select(Select.where(all(Job.TYPE))
 						.having(and(
 										Job.MAX_COMMISSION.equalTo(1500d),

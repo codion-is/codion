@@ -218,7 +218,7 @@ final class EntityPopupMenu extends JPopupMenu {
 		}
 
 		@Override
-		public void execute() throws Exception {
+		public void execute() {
 			setClipboard(entity.string(attribute));
 		}
 	}

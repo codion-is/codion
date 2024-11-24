@@ -22,6 +22,7 @@ import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -76,7 +77,7 @@ public final class SwingEntityModelTest
 	}
 
 	@Test
-	public void testDetailModels() throws Exception {
+	public void testDetailModels() {
 		assertTrue(departmentModel.containsDetailModel(Employee.TYPE));
 		assertFalse(departmentModel.containsDetailModel(Department.TYPE));
 		assertFalse(departmentModel.containsDetailModel(EmpModel.class));
@@ -113,6 +114,9 @@ public final class SwingEntityModelTest
 				assertEquals("NewName", dept.get(Department.NAME));
 			}
 		}
+		catch (ValidationException e) {
+			throw new RuntimeException(e);
+		}
 		finally {
 			connection.rollbackTransaction();
 		}
@@ -124,7 +128,7 @@ public final class SwingEntityModelTest
 	}
 
 	@Test
-	public void test() throws Exception {
+	public void test() {
 		super.test();
 		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();

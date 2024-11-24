@@ -45,7 +45,7 @@ public class DefaultDatabaseConnectionTest {
 	private DefaultDatabaseConnection dbConnection;
 
 	@BeforeEach
-	void before() throws Exception {
+	void before() {
 		dbConnection = new DefaultDatabaseConnection(DATABASE, UNIT_TEST_USER);
 	}
 
@@ -60,7 +60,7 @@ public class DefaultDatabaseConnectionTest {
 	}
 
 	@Test
-	void createConnection() throws Exception {
+	void createConnection() throws SQLException {
 		try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
 			DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
 			assertTrue(databaseConnection.connected());

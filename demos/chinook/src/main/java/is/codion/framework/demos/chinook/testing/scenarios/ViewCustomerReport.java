@@ -32,7 +32,7 @@ import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.r
 public final class ViewCustomerReport implements Performer<EntityConnectionProvider> {
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+	public void perform(EntityConnectionProvider connectionProvider) {
 		EntityConnection connection = connectionProvider.connection();
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", List.of(randomCustomerId()));

@@ -297,7 +297,7 @@ public final class NotesDemo {
 		}
 	}
 
-	private static void startApplication() throws Exception {
+	private static void startApplication() {
 		// Change the default horizontal alignment for temporal table columns
 		FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		// Make all the IntelliJ themes from Flat Look and Feel available (View -> Select Look & Feel)
@@ -319,7 +319,7 @@ public final class NotesDemo {
 						.start();
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		startApplication();
 	}
 

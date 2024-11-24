@@ -41,7 +41,7 @@ public final class AbstractDatabaseTest {
 	}
 
 	@Test
-	void connectionProvider() throws Exception {
+	void connectionProvider() throws SQLException {
 		User sa = User.user("sa");
 		Connection connection = database.createConnection(sa);
 		database.connectionProvider(new ConnectionProvider() {

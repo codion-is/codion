@@ -38,7 +38,7 @@ import static is.codion.framework.domain.entity.Entity.distinct;
 public final class UpdateTotals implements Performer<EntityConnectionProvider> {
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+	public void perform(EntityConnectionProvider connectionProvider) {
 		EntityConnection connection = connectionProvider.connection();
 		Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
 		List<Long> invoiceIds = connection.select(Invoice.ID, Invoice.CUSTOMER_FK.equalTo(customer));

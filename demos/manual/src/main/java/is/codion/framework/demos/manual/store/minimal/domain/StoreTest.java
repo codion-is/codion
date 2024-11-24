@@ -31,12 +31,12 @@ public class StoreTest extends DomainTest {
 	}
 
 	@Test
-	void customer() throws Exception {
+	void customer() {
 		test(Customer.TYPE);
 	}
 
 	@Test
-	void address() throws Exception {
+	void address() {
 		test(Address.TYPE);
 	}
 }

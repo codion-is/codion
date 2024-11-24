@@ -39,6 +39,7 @@ import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
@@ -77,7 +78,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 	// end::createEntityPanels[]
 
 	// tag::importJSON[]
-	public void importJSON() throws Exception {
+	public void importJSON() throws IOException {
 		File file = Dialogs.fileSelectionDialog()
 						.owner(this)
 						.fileFilter(new FileNameExtensionFilter("JSON files", "json"))

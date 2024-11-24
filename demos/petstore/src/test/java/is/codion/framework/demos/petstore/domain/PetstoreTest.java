@@ -31,37 +31,37 @@ public class PetstoreTest extends DomainTest {
 	}
 
 	@Test
-	void address() throws Exception {
+	void address() {
 		test(Address.TYPE);
 	}
 
 	@Test
-	void category() throws Exception {
+	void category() {
 		test(Category.TYPE);
 	}
 
 	@Test
-	void item() throws Exception {
+	void item() {
 		test(Item.TYPE);
 	}
 
 	@Test
-	void product() throws Exception {
+	void product() {
 		test(Product.TYPE);
 	}
 
 	@Test
-	void sellerInfo() throws Exception {
+	void sellerInfo() {
 		test(SellerContactInfo.TYPE);
 	}
 
 	@Test
-	void tag() throws Exception {
+	void tag() {
 		test(Tag.TYPE);
 	}
 
 	@Test
-	void tagItem() throws Exception {
+	void tagItem() {
 		test(TagItem.TYPE);
 	}
 }

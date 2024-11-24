@@ -32,12 +32,12 @@ public class EmployeesTest extends DomainTest {
 	}
 
 	@Test
-	void department() throws Exception {
+	void department() {
 		test(Department.TYPE);
 	}
 
 	@Test
-	void employee() throws Exception {
+	void employee() {
 		test(Employee.TYPE);
 	}
 }

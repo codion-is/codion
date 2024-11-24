@@ -23,10 +23,14 @@ import is.codion.common.db.report.Report;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
+import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.user.User;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 
 import org.junit.jupiter.api.Test;
+
+import java.rmi.RemoteException;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +41,7 @@ public final class DefaultEntityServerAdminTest {
 	private static final String SCOTT = "scott";
 
 	@Test
-	void test() throws Exception {
+	void test() throws RemoteException, ConnectionNotAvailableException, LoginException {
 		Clients.SERVER_HOSTNAME.set("localhost");
 		Clients.TRUSTSTORE.set("src/main/config/truststore.jks");
 		Clients.resolveTrustStore();

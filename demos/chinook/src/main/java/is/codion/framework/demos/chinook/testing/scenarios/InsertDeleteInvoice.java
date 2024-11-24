@@ -42,7 +42,7 @@ import static java.util.stream.Collectors.toSet;
 public final class InsertDeleteInvoice implements Performer<EntityConnectionProvider> {
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+	public void perform(EntityConnectionProvider connectionProvider) {
 		EntityConnection connection = connectionProvider.connection();
 
 		Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));

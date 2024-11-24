@@ -521,9 +521,9 @@ public interface EntityConnection extends AutoCloseable {
 	interface Transactional {
 
 		/**
-		 * @throws Exception in case of an exception
+		 * Executes the given transactional.
 		 */
-		void execute() throws Exception;
+		void execute();
 	}
 
 	/**
@@ -534,9 +534,8 @@ public interface EntityConnection extends AutoCloseable {
 
 		/**
 		 * @return the result
-		 * @throws Exception in case of an exception
 		 */
-		T execute() throws Exception;
+		T execute();
 	}
 
 	/**

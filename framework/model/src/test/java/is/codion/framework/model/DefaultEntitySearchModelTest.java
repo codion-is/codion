@@ -242,7 +242,7 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUp() {
 		searchable = asList(Employee.NAME, Employee.JOB);
 		searchModel = new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
 						.columns(searchable)
@@ -261,7 +261,7 @@ public final class DefaultEntitySearchModelTest {
 		return result.stream().anyMatch(entity -> entity.get(Employee.NAME).equals(employeeName));
 	}
 
-	private static void setupData() throws Exception {
+	private static void setupData() {
 		Entity dept = ENTITIES.builder(Department.TYPE)
 						.with(Department.ID, 88)
 						.with(Department.LOCATION, "TestLoc")

@@ -1123,7 +1123,7 @@ public class EntityPanel extends JPanel {
 		}
 
 		@Override
-		public void execute() throws Exception {
+		public void execute() {
 			switch (direction) {
 				case LEFT:
 					if (previousSiblingPanel != null) {

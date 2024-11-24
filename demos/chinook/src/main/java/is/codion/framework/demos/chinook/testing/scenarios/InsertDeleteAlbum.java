@@ -42,7 +42,7 @@ public final class InsertDeleteAlbum implements Performer<EntityConnectionProvid
 	private static final BigDecimal UNIT_PRICE = BigDecimal.valueOf(2);
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+	public void perform(EntityConnectionProvider connectionProvider) {
 		EntityConnection connection = connectionProvider.connection();
 		Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
 		Entity album = connectionProvider.entities().builder(Album.TYPE)

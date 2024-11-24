@@ -25,6 +25,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -32,6 +33,7 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -103,7 +105,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 		}
 
 		@Override
-		public Void execute(ProgressReporter<String> progressReporter) throws Exception {
+		public Void execute(ProgressReporter<String> progressReporter) throws ValidationException, IOException {
 			Collection<Entity> updatedCities = new ArrayList<>();
 			CityEditModel editModel = editModel();
 			Iterator<Entity> citiesIterator = cities.iterator();

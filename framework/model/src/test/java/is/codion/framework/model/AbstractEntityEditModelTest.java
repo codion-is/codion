@@ -217,7 +217,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void test() throws Exception {
+	void test() {
 		EditableEntity entity = employeeEditModel.entity();
 
 		StateObserver primaryKeyNullState = entity.primaryKeyNull();
@@ -338,7 +338,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void insert() throws Exception {
+	void insert() throws ValidationException {
 		assertTrue(employeeEditModel.insert(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -387,7 +387,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void update() throws Exception {
+	void update() throws ValidationException {
 		assertTrue(employeeEditModel.update(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -423,7 +423,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void delete() throws Exception {
+	void delete() {
 		assertTrue(employeeEditModel.delete(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -445,7 +445,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void setEntity() throws Exception {
+	void setEntity() {
 		Entity martin = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
 		EditableEntity entity = employeeEditModel.entity();
@@ -462,7 +462,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void persist() throws Exception {
+	void persist() {
 		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
 		EditableEntity entity = employeeEditModel.entity();
 		entity.set(king);

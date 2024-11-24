@@ -1947,7 +1947,7 @@ public class EntityTablePanel extends JPanel {
 	private final class AddCommand implements Control.Command {
 
 		@Override
-		public void execute() throws Exception {
+		public void execute() {
 			addEntityDialog(() -> editPanel)
 							.owner(EntityTablePanel.this)
 							.closeDialog(false)
@@ -1958,7 +1958,7 @@ public class EntityTablePanel extends JPanel {
 	private final class EditCommand implements Control.ActionCommand {
 
 		@Override
-		public void execute(ActionEvent actionEvent) throws Exception {
+		public void execute(ActionEvent actionEvent) {
 			editEntityDialog(() -> editPanel)
 							.owner(EntityTablePanel.this)
 							.location(actionEvent.getSource() instanceof MouseEvent ?

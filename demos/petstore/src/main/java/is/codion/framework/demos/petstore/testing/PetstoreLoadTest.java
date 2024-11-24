@@ -68,7 +68,7 @@ public final class PetstoreLoadTest {
 		private static final Random RANDOM = new Random();
 
 		@Override
-		public void perform(PetstoreAppModel application) throws Exception {
+		public void perform(PetstoreAppModel application) {
 			SwingEntityModel categoryModel = application.entityModels().iterator().next();
 			categoryModel.tableModel().selection().clear();
 			categoryModel.tableModel().refresh();
