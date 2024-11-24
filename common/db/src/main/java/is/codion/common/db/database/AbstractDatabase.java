@@ -90,7 +90,7 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
-	public final Connection createConnection(User user) throws DatabaseException {
+	public final Connection createConnection(User user) {
 		try {
 			Connection connection = connectionProvider.connection(user, url);
 			if (transactionIsolation != null) {
@@ -130,7 +130,7 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final ConnectionPoolWrapper createConnectionPool(ConnectionPoolFactory connectionPoolFactory,
-																													User poolUser) throws DatabaseException {
+																													User poolUser) {
 		requireNonNull(connectionPoolFactory);
 		requireNonNull(poolUser);
 		if (connectionPools.containsKey(poolUser.username().toLowerCase())) {

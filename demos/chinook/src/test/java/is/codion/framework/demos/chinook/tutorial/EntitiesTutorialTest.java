@@ -18,8 +18,6 @@
  */
 package is.codion.framework.demos.chinook.tutorial;
 
-import is.codion.common.db.exception.DatabaseException;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -28,7 +26,7 @@ import org.junit.jupiter.api.Test;
 public final class EntitiesTutorialTest {
 
 	@Test
-	void test() throws DatabaseException {
+	void test() {
 		EntitiesTutorial.main(new String[0]);
 	}
 }

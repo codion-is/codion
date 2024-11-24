@@ -19,7 +19,6 @@
 package is.codion.framework.model.test;
 
 import is.codion.common.Operator;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -111,7 +110,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	}
 
 	@Test
-	public void onInsert() throws DatabaseException, ValidationException {
+	public void onInsert() throws ValidationException {
 		TableModel deptModel = createDepartmentTableModel();
 		deptModel.refresh();
 
@@ -153,7 +152,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	}
 
 	@Test
-	public void removeDeletedEntities() throws DatabaseException {
+	public void removeDeletedEntities() {
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.refresh();
 

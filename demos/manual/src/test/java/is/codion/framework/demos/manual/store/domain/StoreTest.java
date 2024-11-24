@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.manual.store.domain;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
@@ -65,7 +64,7 @@ public class StoreTest extends DomainTest {
 		}
 
 		@Override
-		public Optional<Entity> entity(ForeignKey foreignKey) throws DatabaseException {
+		public Optional<Entity> entity(ForeignKey foreignKey) {
 			//see if the currently running test requires an ADDRESS entity
 			if (foreignKey.referencedType().equals(Address.TYPE)) {
 				return Optional.of(connection().insertSelect(entities().builder(Address.TYPE)
@@ -79,7 +78,7 @@ public class StoreTest extends DomainTest {
 		}
 
 		@Override
-		public Entity entity(EntityType entityType) throws DatabaseException {
+		public Entity entity(EntityType entityType) {
 			if (entityType.equals(Address.TYPE)) {
 				//Initialize an entity representing the table STORE.ADDRESS,
 				//which can be used for the testing

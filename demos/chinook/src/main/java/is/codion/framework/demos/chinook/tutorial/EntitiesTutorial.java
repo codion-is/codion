@@ -19,7 +19,6 @@
 package is.codion.framework.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
@@ -147,9 +146,8 @@ public final class EntitiesTutorial {
 
 	/**
 	 * Demonstrates how to use a {@link EntityConnection} to select Entity instances.
-	 * @throws DatabaseException in case of an exception
 	 */
-	private static void selectingEntities(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	private static void selectingEntities(EntityConnectionProvider connectionProvider) {
 		// fetch the connection from the provider, note that the provider returns
 		// the same connection until the previous one has been disconnected or
 		// has become invalid for some reason
@@ -197,9 +195,8 @@ public final class EntitiesTutorial {
 
 	/**
 	 * Demonstrates how to use a {@link EntityConnection} to modify Entity instances.
-	 * @throws DatabaseException in case of an exception
 	 */
-	private static void modifyingEntities(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	private static void modifyingEntities(EntityConnectionProvider connectionProvider) {
 		EntityConnection connection = connectionProvider.connection();
 
 		//this Entities instance serves as a factory for Entity instances
@@ -238,7 +235,7 @@ public final class EntitiesTutorial {
 		connection.delete(Entity.primaryKeys(List.of(album, myBand)));
 	}
 
-	public static void main(String[] args) throws DatabaseException {
+	public static void main(String[] args) {
 		// Configure the database
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");

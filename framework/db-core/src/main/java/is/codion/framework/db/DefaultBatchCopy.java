@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection.BatchCopy;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Entity;
@@ -49,7 +48,7 @@ final class DefaultBatchCopy implements BatchCopy {
 	}
 
 	@Override
-	public void execute() throws DatabaseException {
+	public void execute() {
 		for (Map.Entry<EntityType, Condition> entityTypeCondition : entityTypeConditions.entrySet()) {
 			Select.Builder conditionBuilder = entityTypeCondition.getValue() == null ?
 							Select.all(entityTypeCondition.getKey()) :
@@ -112,7 +111,7 @@ final class DefaultBatchCopy implements BatchCopy {
 		}
 
 		@Override
-		public void execute() throws DatabaseException {
+		public void execute() {
 			build().execute();
 		}
 

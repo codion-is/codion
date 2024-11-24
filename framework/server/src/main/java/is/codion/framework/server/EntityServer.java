@@ -176,7 +176,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 																																	RemoteClient remoteClient, int port,
 																																	RMIClientSocketFactory clientSocketFactory,
 																																	RMIServerSocketFactory serverSocketFactory)
-					throws RemoteException, DatabaseException {
+					throws RemoteException {
 		return new DefaultRemoteEntityConnection(clientDomainModel(remoteClient), database, remoteClient, port,
 						clientSocketFactory, serverSocketFactory);
 	}
@@ -369,7 +369,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		return domainModels.get(DomainType.domainTypeByName(domainTypeName));
 	}
 
-	private static void configureDatabase(Collection<Domain> domainModels, Database database) throws DatabaseException {
+	private static void configureDatabase(Collection<Domain> domainModels, Database database) {
 		for (Domain domain : domainModels) {
 			LocalEntityConnection.configureDatabase(database, domain);
 		}
@@ -397,7 +397,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	private static void createConnectionPools(Database database, String connectionPoolFactoryClassName,
-																						Collection<User> connectionPoolUsers) throws DatabaseException {
+																						Collection<User> connectionPoolUsers) {
 		if (!connectionPoolUsers.isEmpty()) {
 			ConnectionPoolFactory poolFactory;
 			if (nullOrEmpty(connectionPoolFactoryClassName)) {

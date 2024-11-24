@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.model.PlaylistTableModel;
@@ -58,7 +57,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 		control(EDIT_ATTRIBUTE_CONTROLS).clear();
 	}
 
-	private void randomPlaylist() throws DatabaseException {
+	private void randomPlaylist() {
 		RandomPlaylistParametersValue playlistParametersValue = new RandomPlaylistParametersValue(tableModel().connectionProvider());
 		RandomPlaylistParameters randomPlaylistParameters = Dialogs.inputDialog(playlistParametersValue)
 						.owner(this)

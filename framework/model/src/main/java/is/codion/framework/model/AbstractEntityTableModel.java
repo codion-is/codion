@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.FilterModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -159,12 +158,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final void refresh(Collection<Entity.Key> keys) {
-		try {
-			replace(connection().select(keys));
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		replace(connection().select(keys));
 	}
 
 	@Override
@@ -173,7 +167,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
-	public final Collection<Entity> deleteSelected() throws DatabaseException {
+	public final Collection<Entity> deleteSelected() {
 		return editModel.delete(selection().items().get());
 	}
 

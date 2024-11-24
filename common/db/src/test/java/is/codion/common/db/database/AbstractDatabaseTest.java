@@ -19,7 +19,6 @@
 package is.codion.common.db.database;
 
 import is.codion.common.db.database.Database.Operation;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.user.User;
 
@@ -72,7 +71,7 @@ public final class AbstractDatabaseTest {
 	}
 
 	@Test
-	void transactionIsolation() throws DatabaseException, SQLException {
+	void transactionIsolation() throws SQLException {
 		Database db = new TestDatabase();
 		User sa = User.user("sa");
 		Connection connection = db.createConnection(sa);
@@ -87,7 +86,7 @@ public final class AbstractDatabaseTest {
 	}
 
 	@Test
-	void connectionPool() throws DatabaseException {
+	void connectionPool() {
 		Database db = new TestDatabase();
 		db.createConnectionPool(ConnectionPoolFactory.instance(), User.parse("scott:tiger"));
 		assertTrue(db.containsConnectionPool("ScotT"));

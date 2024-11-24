@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection.BatchInsert;
 import is.codion.framework.domain.entity.Entity;
 
@@ -47,7 +46,7 @@ final class DefaultBatchInsert implements BatchInsert {
 	}
 
 	@Override
-	public void execute() throws DatabaseException {
+	public void execute() {
 		List<Entity> batch = new ArrayList<>(batchSize);
 		int progress = 0;
 		while (entityIterator.hasNext()) {
@@ -102,7 +101,7 @@ final class DefaultBatchInsert implements BatchInsert {
 		}
 
 		@Override
-		public void execute() throws DatabaseException {
+		public void execute() {
 			build().execute();
 		}
 

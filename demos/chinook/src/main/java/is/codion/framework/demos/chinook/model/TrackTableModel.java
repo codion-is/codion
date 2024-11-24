@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.value.Value.Validator;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -50,7 +49,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		configureLimit();
 	}
 
-	public void raisePriceOfSelected(BigDecimal increase) throws DatabaseException {
+	public void raisePriceOfSelected(BigDecimal increase) {
 		if (selection().empty().not().get()) {
 			Collection<Long> trackIds = Entity.values(Track.ID, selection().items().get());
 			Collection<Entity> result = connection()

@@ -18,7 +18,6 @@
  */
 package is.codion.common.db.database;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DatabaseTest {
 
 	@Test
-	void validateWithQuery() throws DatabaseException, SQLException {
+	void validateWithQuery() throws SQLException {
 		Database testDatabase = new TestDatabase();
 		Connection connection = testDatabase.createConnection(User.parse("scott:tiger"));
 		assertTrue(testDatabase.connectionValid(connection));

@@ -183,7 +183,7 @@ public interface EntityEditModel {
 	 * @throws IllegalStateException in case inserting is not enabled
 	 * @see EntityValidator#validate(Entity)
 	 */
-	Entity insert() throws DatabaseException, ValidationException;
+	Entity insert() throws ValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -197,7 +197,7 @@ public interface EntityEditModel {
 	 * @see #afterInsert()
 	 * @see EntityValidator#validate(Entity)
 	 */
-	Collection<Entity> insert(Collection<Entity> entities) throws DatabaseException, ValidationException;
+	Collection<Entity> insert(Collection<Entity> entities) throws ValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -210,7 +210,7 @@ public interface EntityEditModel {
 	 * @throws is.codion.common.db.exception.UpdateException in case the active entity is not modified
 	 * @see EntityValidator#validate(Entity)
 	 */
-	Entity update() throws DatabaseException, ValidationException;
+	Entity update() throws ValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -225,7 +225,7 @@ public interface EntityEditModel {
 	 * @see #afterUpdate()
 	 * @see EntityValidator#validate(Entity)
 	 */
-	Collection<Entity> update(Collection<Entity> entities) throws DatabaseException, ValidationException;
+	Collection<Entity> update(Collection<Entity> entities) throws ValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -235,7 +235,7 @@ public interface EntityEditModel {
 	 * @see #beforeDelete()
 	 * @see #afterDelete()
 	 */
-	Entity delete() throws DatabaseException;
+	Entity delete();
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -246,7 +246,7 @@ public interface EntityEditModel {
 	 * @see #beforeDelete()
 	 * @see #afterDelete()
 	 */
-	Collection<Entity> delete(Collection<Entity> entities) throws DatabaseException;
+	Collection<Entity> delete(Collection<Entity> entities);
 
 	/**
 	 * Creates a new {@link Insert} instance for inserting the active entity.
@@ -626,9 +626,8 @@ public interface EntityEditModel {
 			/**
 			 * May be called in a background thread.
 			 * @return the insert result
-			 * @throws DatabaseException in case of a database exception
 			 */
-			Result perform() throws DatabaseException;
+			Result perform();
 		}
 
 		/**
@@ -679,9 +678,8 @@ public interface EntityEditModel {
 			/**
 			 * May be called in a background thread.
 			 * @return the update result
-			 * @throws DatabaseException in case of a database exception
 			 */
-			Result perform() throws DatabaseException;
+			Result perform();
 		}
 
 		/**
@@ -732,9 +730,8 @@ public interface EntityEditModel {
 			/**
 			 * May be called in a background thread.
 			 * @return the delete result
-			 * @throws DatabaseException in case of a database exception
 			 */
-			Result perform() throws DatabaseException;
+			Result perform();
 		}
 
 		/**

@@ -104,7 +104,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * @return an iterator for the given query condition
 	 * @throws DatabaseException in case of an exception
 	 */
-	ResultIterator<Entity> iterator(Condition condition) throws DatabaseException;
+	ResultIterator<Entity> iterator(Condition condition);
 
 	/**
 	 * Returns a result set iterator based on the given select.
@@ -113,7 +113,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * @return an iterator for the given query select
 	 * @throws DatabaseException in case of an exception
 	 */
-	ResultIterator<Entity> iterator(Select select) throws DatabaseException;
+	ResultIterator<Entity> iterator(Select select);
 
 	/**
 	 * @return true if optimistic locking is enabled
@@ -155,8 +155,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * @throws DatabaseException in case there is a problem connecting to the database
 	 * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
 	 */
-	static LocalEntityConnection localEntityConnection(Database database, Domain domain,
-																										 User user) throws DatabaseException {
+	static LocalEntityConnection localEntityConnection(Database database, Domain domain, User user) {
 		return new DefaultLocalEntityConnection(database, domain, user);
 	}
 
@@ -168,8 +167,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * @return a new LocalEntityConnection instance, wrapping the given connection
 	 * @throws DatabaseException in case there is a problem with the supplied connection
 	 */
-	static LocalEntityConnection localEntityConnection(Database database, Domain domain,
-																										 Connection connection) throws DatabaseException {
+	static LocalEntityConnection localEntityConnection(Database database, Domain domain, Connection connection) {
 		return new DefaultLocalEntityConnection(database, domain, connection);
 	}
 
@@ -181,7 +179,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * @return the Database instance
 	 * @throws DatabaseException in case of an exception
 	 */
-	static Database configureDatabase(Database database, Domain domain) throws DatabaseException {
+	static Database configureDatabase(Database database, Domain domain) {
 		return DefaultLocalEntityConnection.configureDatabase(database, domain);
 	}
 }

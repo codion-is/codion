@@ -81,7 +81,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 																					 RemoteClient remoteClient, int port,
 																					 RMIClientSocketFactory clientSocketFactory,
 																					 RMIServerSocketFactory serverSocketFactory)
-					throws DatabaseException, RemoteException {
+					throws RemoteException {
 		super(port, clientSocketFactory, serverSocketFactory);
 		this.connectionHandler = new LocalConnectionHandler(domain, remoteClient, database);
 		this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),

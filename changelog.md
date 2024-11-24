@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.21
+### is.codion.common.db
+- DatabaseException now extends RuntimeException, no longer checked.
 ### is.codion.swing.common.ui
 - ExceptionDialogBuilder.unwrap() added.
 ### is.codion.framework.domain

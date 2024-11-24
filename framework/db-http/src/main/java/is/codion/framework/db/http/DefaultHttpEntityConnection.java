@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -91,16 +90,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public Collection<Entity.Key> insert(Collection<Entity> entities) throws DatabaseException {
+	public Collection<Entity.Key> insert(Collection<Entity> entities) {
 		requireNonNull(entities);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("insert", serialize(entities))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -111,16 +107,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public Collection<Entity> insertSelect(Collection<Entity> entities) throws DatabaseException {
+	public Collection<Entity> insertSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("insertSelect", serialize(entities))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -131,16 +124,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public void update(Collection<Entity> entities) throws DatabaseException {
+	public void update(Collection<Entity> entities) {
 		requireNonNull(entities);
 		try {
 			synchronized (httpClient) {
 				handleResponse(execute(createRequest("update", serialize(entities))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -151,16 +141,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public Collection<Entity> updateSelect(Collection<Entity> entities) throws DatabaseException {
+	public Collection<Entity> updateSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("updateSelect", serialize(entities))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -171,16 +158,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public int update(Update update) throws DatabaseException {
+	public int update(Update update) {
 		requireNonNull(update);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("updateByCondition", serialize(update))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -191,16 +175,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public void delete(Collection<Entity.Key> keys) throws DatabaseException {
+	public void delete(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
 		try {
 			synchronized (httpClient) {
 				throwIfError(execute(createRequest("deleteByKey", serialize(keys))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -211,16 +192,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public int delete(Condition condition) throws DatabaseException {
+	public int delete(Condition condition) {
 		requireNonNull(condition);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("delete", serialize(condition))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -231,7 +209,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
+	public <T> List<T> select(Column<T> column, Select select) {
 		requireNonNull(column);
 		requireNonNull(select);
 		try {
@@ -239,9 +217,6 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleResponse(execute(createRequest("values", serialize(asList(column, select)))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -252,16 +227,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public List<Entity> select(Collection<Entity.Key> keys) throws DatabaseException {
+	public List<Entity> select(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("selectByKey", serialize(keys))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -272,16 +244,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public List<Entity> select(Select select) throws DatabaseException {
+	public List<Entity> select(Select select) {
 		requireNonNull(select);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("select", serialize(select))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -292,16 +261,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException {
+	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) {
 		requireNonNull(entities);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("dependencies", serialize(entities))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -312,15 +278,12 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public int count(Count count) throws DatabaseException {
+	public int count(Count count) {
 		requireNonNull(count);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("count", serialize(count))));
 			}
-		}
-		catch (DatabaseException e) {
-			throw e;
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();

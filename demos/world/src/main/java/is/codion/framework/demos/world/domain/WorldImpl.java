@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.world.domain;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.item.Item;
 import is.codion.framework.db.EntityConnection;
@@ -431,7 +430,7 @@ public final class WorldImpl extends DomainModel {
 	private static final class AverageCityPopulationFunction implements DatabaseFunction<EntityConnection, String, Double> {
 
 		@Override
-		public Double execute(EntityConnection connection, String countryCode) throws DatabaseException {
+		public Double execute(EntityConnection connection, String countryCode) {
 			return connection.select(where(City.COUNTRY_CODE.equalTo(countryCode))
 											.attributes(City.POPULATION)
 											.build()).stream()

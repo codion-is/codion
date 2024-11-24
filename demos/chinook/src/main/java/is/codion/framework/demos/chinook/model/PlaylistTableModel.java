@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
@@ -34,7 +33,7 @@ public final class PlaylistTableModel extends SwingEntityTableModel {
 		super(new PlaylistEditModel(connectionProvider));
 	}
 
-	public void createRandomPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
+	public void createRandomPlaylist(RandomPlaylistParameters parameters) {
 		EntityConnection connection = connection();
 		Entity randomPlaylist = transaction(connection, () -> connection.execute(Playlist.RANDOM_PLAYLIST, parameters));
 		items().visible().addItemAt(0, randomPlaylist);

@@ -19,7 +19,6 @@
 package is.codion.framework.demos.employees.server;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
@@ -46,7 +45,7 @@ public final class EmployeeServerTest {
 
 	@Test
 	void test() throws RemoteException, NotBoundException, LoginException,
-					ConnectionNotAvailableException, DatabaseException {
+					ConnectionNotAvailableException {
 		ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
 		EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)

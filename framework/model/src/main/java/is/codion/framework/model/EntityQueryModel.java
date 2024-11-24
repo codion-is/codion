@@ -43,12 +43,8 @@ import java.util.function.Supplier;
  * {@code
  * Function<EntityQueryModel, List<Entity>> query = queryModel -> {
  *     EntityConnection connection = queryModel.connectionProvider().connection();
- *     try {
- *         return connection.select(Employee.NAME.equalTo("John"));
- *     }
- *     catch (DatabaseException e) {
- *         throw new RuntimeException(e);
- *     }
+ *
+ *     return connection.select(Employee.NAME.equalTo("John"));
  * };
  *
  * tableModel.queryModel().query().set(query);

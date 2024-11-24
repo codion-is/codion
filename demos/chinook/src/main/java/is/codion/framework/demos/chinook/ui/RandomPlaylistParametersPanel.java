@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -112,17 +111,12 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
 	private static DefaultListModel<Entity> createGenreListModel(EntityConnectionProvider connectionProvider) {
 		DefaultListModel<Entity> listModel = new DefaultListModel<>();
-		try {
-			connectionProvider.connection().select(all(Genre.TYPE)
-											.orderBy(ascending(Genre.NAME))
-											.build())
-							.forEach(listModel::addElement);
+		connectionProvider.connection().select(all(Genre.TYPE)
+										.orderBy(ascending(Genre.NAME))
+										.build())
+						.forEach(listModel::addElement);
 
-			return listModel;
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		return listModel;
 	}
 
 	private static final class RandomPlaylistParametersModel {

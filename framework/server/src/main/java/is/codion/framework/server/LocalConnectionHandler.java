@@ -73,7 +73,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private long lastAccessTime = creationTime;
 	private boolean closed = false;
 
-	LocalConnectionHandler(Domain domain, RemoteClient remoteClient, Database database) throws DatabaseException {
+	LocalConnectionHandler(Domain domain, RemoteClient remoteClient, Database database) {
 		this.domain = domain;
 		this.remoteClient = remoteClient;
 		String databaseUsername = remoteClient.databaseUser().username();
@@ -203,7 +203,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		return closed;
 	}
 
-	private EntityConnection fetchConnection() throws DatabaseException {
+	private EntityConnection fetchConnection() {
 		DatabaseException exception = null;
 		try {
 			if (methodLogger.isEnabled()) {
@@ -226,7 +226,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 	}
 
-	private EntityConnection pooledEntityConnection() throws DatabaseException {
+	private EntityConnection pooledEntityConnection() {
 		if (poolEntityConnection.transactionOpen()) {
 			return poolEntityConnection;
 		}
@@ -236,7 +236,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		return poolEntityConnection;
 	}
 
-	private EntityConnection localEntityConnection() throws DatabaseException {
+	private EntityConnection localEntityConnection() {
 		if (!localEntityConnection.connected()) {
 			localEntityConnection.close();//just in case
 			localEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, remoteClient.databaseUser());

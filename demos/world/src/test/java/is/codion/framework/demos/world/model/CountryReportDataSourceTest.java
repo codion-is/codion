@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.world.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
@@ -50,7 +49,7 @@ public final class CountryReportDataSourceTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	@Test
-	void iterate() throws DatabaseException, JRException {
+	void iterate() throws JRException {
 		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
 			Value<Integer> progressCounter = Value.value();
 			Value<String> publishedValue = Value.value();

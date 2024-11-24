@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.manual.store;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -43,7 +42,7 @@ import static is.codion.plugin.jasperreports.JasperReports.fileReport;
 
 public final class Misc {
 
-	static void jasperReports() throws DatabaseException, ReportException {
+	static void jasperReports() throws ReportException {
 		EntityConnectionProvider connectionProvider =
 						EntityConnectionProvider.builder()
 										.domainType(Store.DOMAIN)
@@ -71,7 +70,7 @@ public final class Misc {
 		// end::jasperReportDataSource[]
 	}
 
-	public static void main(String[] args) throws DatabaseException, ValidationException {
+	public static void main(String[] args) throws ValidationException {
 		// tag::editModel[]
 		EntityConnectionProvider connectionProvider =
 						EntityConnectionProvider.builder()

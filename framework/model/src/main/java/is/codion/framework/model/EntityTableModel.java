@@ -156,7 +156,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * @throws is.codion.common.model.CancelException in case the user cancels the operation
 	 * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow deleting
 	 */
-	Collection<Entity> deleteSelected() throws DatabaseException;
+	Collection<Entity> deleteSelected();
 
 	/**
 	 * @return the {@link State} controlling whether this table model handles entity edit events, by replacing updated entities

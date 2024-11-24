@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Genre;
@@ -43,7 +42,7 @@ public final class RandomPlaylist implements Performer<EntityConnectionProvider>
 					asList("Alternative", "Rock", "Metal", "Heavy Metal", "Pop");
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	public void perform(EntityConnectionProvider connectionProvider) {
 		EntityConnection connection = connectionProvider.connection();
 		List<Entity> playlistGenres = connection.select(Genre.NAME.in(GENRES));
 		RandomPlaylistParameters parameters = new RandomPlaylistParameters(PLAYLIST_NAME + " " + UUID.randomUUID(),

@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -42,7 +41,7 @@ public final class AlbumModelTest {
 	private static final String MASTER_OF_PUPPETS = "Master Of Puppets";
 
 	@Test
-	void albumRefreshedWhenTrackRatingIsUpdated() throws DatabaseException, ValidationException {
+	void albumRefreshedWhenTrackRatingIsUpdated() throws ValidationException {
 		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
 			EntityConnection connection = connectionProvider.connection();
 			connection.startTransaction();

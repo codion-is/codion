@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -45,7 +44,7 @@ public class ForeignKeyConditionModelTest {
 					.build();
 
 	@Test
-	void inSearchModel() throws DatabaseException {
+	void inSearchModel() {
 		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder()
 						.includeEqualOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.includeInOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
@@ -68,7 +67,7 @@ public class ForeignKeyConditionModelTest {
 	}
 
 	@Test
-	void equalSearchModel() throws DatabaseException {
+	void equalSearchModel() {
 		ForeignKeyConditionModel condition = ForeignKeyConditionModel.builder()
 						.includeEqualOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())
 						.includeInOperators(EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build())

@@ -53,7 +53,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	 * @throws DatabaseException in case there is a problem connecting to the database
 	 * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
 	 */
-	DefaultDatabaseConnection(Database database, User user) throws DatabaseException {
+	DefaultDatabaseConnection(Database database, User user) {
 		this.database = requireNonNull(database);
 		this.connection = disableAutoCommit(database.createConnection(user));
 		this.user = requireNonNull(user);
@@ -66,7 +66,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	 * @param connection the Connection object to base this DefaultDatabaseConnection on
 	 * @throws DatabaseException in case of an exception while retrieving the username from the connection meta-data
 	 */
-	DefaultDatabaseConnection(Database database, Connection connection) throws DatabaseException {
+	DefaultDatabaseConnection(Database database, Connection connection) {
 		this.database = requireNonNull(database);
 		this.connection = disableAutoCommit(connection);
 		this.user = user(connection);
@@ -264,7 +264,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	 * @return the connection with auto-commit disabled
 	 * @throws DatabaseException in case disabling auto-commit fails
 	 */
-	private static Connection disableAutoCommit(Connection connection) throws DatabaseException {
+	private static Connection disableAutoCommit(Connection connection) {
 		requireNonNull(connection);
 		try {
 			connection.setAutoCommit(false);
@@ -284,7 +284,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	 * @throws DatabaseException in case of an exception while retrieving the username from the connection meta-data
 	 * @see java.sql.DatabaseMetaData#getUserName()
 	 */
-	private static User user(Connection connection) throws DatabaseException {
+	private static User user(Connection connection) {
 		try {
 			return META_DATA_USER_CACHE.computeIfAbsent(connection.getMetaData().getUserName(), User::user);
 		}

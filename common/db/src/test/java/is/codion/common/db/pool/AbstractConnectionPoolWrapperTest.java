@@ -19,7 +19,6 @@
 package is.codion.common.db.pool;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
 
@@ -33,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class AbstractConnectionPoolWrapperTest {
 
 	@Test
-	void test() throws DatabaseException, SQLException, InterruptedException {
+	void test() throws SQLException, InterruptedException {
 		Database database = H2DatabaseFactory.createDatabase("jdbc:h2:mem:h2db", "src/test/sql/create_h2_db.sql");
 
 		assertThrows(IllegalStateException.class, () -> ConnectionPoolFactory.instance("is.codion.none.existing.Factory"));

@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.operation.FunctionType;
@@ -193,17 +192,17 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public final Entity select(Entity.Key key) throws DatabaseException {
+	public final Entity select(Entity.Key key) {
 		return selectSingle(key(key));
 	}
 
 	@Override
-	public final Entity selectSingle(Condition condition) throws DatabaseException {
+	public final Entity selectSingle(Condition condition) {
 		return selectSingle(Select.where(condition).build());
 	}
 
 	@Override
-	public final Entity selectSingle(Select select) throws DatabaseException {
+	public final Entity selectSingle(Select select) {
 		List<Entity> selected = select(select);
 		if (selected.isEmpty()) {
 			throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
@@ -216,65 +215,62 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public final <T> List<T> select(Column<T> column) throws DatabaseException {
+	public final <T> List<T> select(Column<T> column) {
 		return select(requireNonNull(column), Select.all(column.entityType())
 						.orderBy(ascending(column))
 						.build());
 	}
 
 	@Override
-	public final <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
+	public final <T> List<T> select(Column<T> column, Condition condition) {
 		return select(column, Select.where(condition)
 						.orderBy(ascending(column))
 						.build());
 	}
 
 	@Override
-	public final List<Entity> select(Condition condition) throws DatabaseException {
+	public final List<Entity> select(Condition condition) {
 		return select(Select.where(condition).build());
 	}
 
 	@Override
-	public final Entity.Key insert(Entity entity) throws DatabaseException {
+	public final Entity.Key insert(Entity entity) {
 		return insert(singletonList(entity)).iterator().next();
 	}
 
 	@Override
-	public final Entity insertSelect(Entity entity) throws DatabaseException {
+	public final Entity insertSelect(Entity entity) {
 		return insertSelect(singletonList(entity)).iterator().next();
 	}
 
 	@Override
-	public final void update(Entity entity) throws DatabaseException {
+	public final void update(Entity entity) {
 		update(singletonList(requireNonNull(entity)));
 	}
 
 	@Override
-	public final Entity updateSelect(Entity entity) throws DatabaseException {
+	public final Entity updateSelect(Entity entity) {
 		return updateSelect(singletonList(entity)).iterator().next();
 	}
 
 	@Override
-	public final void delete(Entity.Key entityKey) throws DatabaseException {
+	public final void delete(Entity.Key entityKey) {
 		delete(singletonList(entityKey));
 	}
 
 	@Override
-	public final <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws DatabaseException {
+	public final <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) {
 		return execute(functionType, null);
 	}
 
 	@Override
-	public final <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
+	public final <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) {
 		requireNonNull(functionType);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("function", serialize(asList(functionType, argument)))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -285,21 +281,18 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public final <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws DatabaseException {
+	public final <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) {
 		execute(procedureType, null);
 	}
 
 	@Override
-	public final <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
+	public final <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) {
 		requireNonNull(procedureType);
 		try {
 			synchronized (httpClient) {
 				handleResponse(execute(createRequest("procedure", serialize(asList(procedureType, argument)))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -310,14 +303,14 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public final <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
+	public final <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
 		requireNonNull(reportType);
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("report", serialize(asList(reportType, reportParameters)))));
 			}
 		}
-		catch (ReportException | DatabaseException e) {
+		catch (ReportException e) {
 			throw e;
 		}
 		catch (InterruptedException e) {

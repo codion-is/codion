@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -82,7 +81,7 @@ public class DefaultEntityConditionModelTest {
 	}
 
 	@Test
-	void setEqualOperand() throws DatabaseException {
+	void setEqualOperand() {
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 		boolean searchStateChanged = conditionModel.setEqualOperand(Employee.DEPARTMENT_FK, sales);
@@ -98,7 +97,7 @@ public class DefaultEntityConditionModelTest {
 	}
 
 	@Test
-	void setInOperands() throws DatabaseException {
+	void setInOperands() {
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
@@ -117,7 +116,7 @@ public class DefaultEntityConditionModelTest {
 	}
 
 	@Test
-	void clearConditions() throws DatabaseException {
+	void clearConditions() {
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());

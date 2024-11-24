@@ -107,7 +107,7 @@ public class DomainTest {
 	 * @param entityType the type of the entity to test
 	 * @throws DatabaseException in case of an exception
 	 */
-	public final void test(EntityType entityType) throws DatabaseException {
+	public final void test(EntityType entityType) {
 		EntityConnection connection = connectionProvider.connection();
 		connection.startTransaction();
 		try {
@@ -141,7 +141,7 @@ public class DomainTest {
 		 * @return the entity instance to use for testing the entity type
 		 * @throws DatabaseException in case of an exception
 		 */
-		Entity entity(EntityType entityType) throws DatabaseException;
+		Entity entity(EntityType entityType);
 
 		/**
 		 * Initializes an Entity instance to reference via the given foreign key. The entity returned by this method must exist
@@ -152,7 +152,7 @@ public class DomainTest {
 		 * @return an entity for the given foreign key or an empty Optional if none is required
 		 * @throws DatabaseException in case of an exception
 		 */
-		Optional<Entity> entity(ForeignKey foreignKey) throws DatabaseException;
+		Optional<Entity> entity(ForeignKey foreignKey);
 
 		/**
 		 * Modifies one or more values in {@code entity}, for the update test.
@@ -161,7 +161,7 @@ public class DomainTest {
 		 * @param entity the entity to modify
 		 * @throws DatabaseException in case of an exception
 		 */
-		void modify(Entity entity) throws DatabaseException;
+		void modify(Entity entity);
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class DomainTest {
 	 * @return the same entity retrieved from the database after the insert
 	 * @throws DatabaseException in case of an exception
 	 */
-	private static Entity testInsert(Entity entity, EntityConnection connection) throws DatabaseException {
+	private static Entity testInsert(Entity entity, EntityConnection connection) {
 		if (entity == null) {
 			throw new IllegalStateException("EntityFactory.entity() must return a non-null entity");
 		}
@@ -204,7 +204,7 @@ public class DomainTest {
 	 * @param connection the connection to use
 	 * @throws DatabaseException in case of an exception
 	 */
-	private static void testSelect(Entity entity, EntityConnection connection) throws DatabaseException {
+	private static void testSelect(Entity entity, EntityConnection connection) {
 		assertEquals(entity, connection.select(entity.primaryKey()),
 						"Entity of type " + entity.entityType() + " failed equals comparison");
 	}
@@ -215,7 +215,7 @@ public class DomainTest {
 	 * @param connection the connection to use
 	 * @throws DatabaseException in case of an exception
 	 */
-	private static void testSelect(EntityType entityType, EntityConnection connection) throws DatabaseException {
+	private static void testSelect(EntityType entityType, EntityConnection connection) {
 		connection.select(Select.all(entityType)
 						.limit(SELECT_LIMIT)
 						.build());
@@ -228,7 +228,7 @@ public class DomainTest {
 	 * @param connection the connection to use
 	 * @throws DatabaseException in case of an exception
 	 */
-	private static void testUpdate(Entity entity, EntityConnection connection) throws DatabaseException {
+	private static void testUpdate(Entity entity, EntityConnection connection) {
 		if (!entity.modified()) {
 			return;
 		}
@@ -246,7 +246,7 @@ public class DomainTest {
 	 * @param connection the connection to use
 	 * @throws DatabaseException in case of an exception
 	 */
-	private static void testDelete(Entity entity, EntityConnection connection) throws DatabaseException {
+	private static void testDelete(Entity entity, EntityConnection connection) {
 		connection.delete(Entity.primaryKeys(singletonList(entity)));
 		boolean caught = false;
 		try {

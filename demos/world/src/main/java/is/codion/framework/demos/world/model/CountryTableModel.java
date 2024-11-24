@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.world.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.ReportException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
@@ -74,12 +73,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
 	private final class CapitalConditionSupplier implements Supplier<Condition> {
 		@Override
 		public Condition get() {
-			try {
-				return City.ID.in(connection().select(Country.CAPITAL));
-			}
-			catch (DatabaseException e) {
-				throw new RuntimeException(e);
-			}
+			return City.ID.in(connection().select(Country.CAPITAL));
 		}
 	}
 }

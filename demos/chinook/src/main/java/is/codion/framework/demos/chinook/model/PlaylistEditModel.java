@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
@@ -38,7 +37,7 @@ public final class PlaylistEditModel extends SwingEntityEditModel {
 	}
 
 	@Override
-	protected void delete(Collection<Entity> playlists, EntityConnection connection) throws DatabaseException {
+	protected void delete(Collection<Entity> playlists, EntityConnection connection) {
 		transaction(connection, () -> {
 			connection.delete(PlaylistTrack.PLAYLIST_FK.in(playlists));
 			connection.delete(primaryKeys(playlists));

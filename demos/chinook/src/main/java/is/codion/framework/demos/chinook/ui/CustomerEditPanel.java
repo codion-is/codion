@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -101,12 +100,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
 
 		@Override
 		public Collection<String> get() {
-			try {
-				return editModel().connection().select(Customer.STATE);
-			}
-			catch (DatabaseException e) {
-				throw new RuntimeException(e);
-			}
+			return editModel().connection().select(Customer.STATE);
 		}
 	}
 }

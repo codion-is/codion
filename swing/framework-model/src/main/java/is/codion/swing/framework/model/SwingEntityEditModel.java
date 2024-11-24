@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -275,12 +274,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 		@Override
 		public Collection<T> get() {
-			try {
-				return connectionProvider.connection().select(column);
-			}
-			catch (DatabaseException e) {
-				throw new RuntimeException(e);
-			}
+			return connectionProvider.connection().select(column);
 		}
 	}
 

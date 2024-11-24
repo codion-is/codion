@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -47,7 +46,7 @@ public class EntityComboBoxConditionModelTest {
 					.build();
 
 	@Test
-	void searchEntitiesComboBoxModel() throws DatabaseException {
+	void searchEntitiesComboBoxModel() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER)
 						.includeNull(true)
 						.build();
@@ -74,7 +73,7 @@ public class EntityComboBoxConditionModelTest {
 	}
 
 	@Test
-	void inSearchModel() throws DatabaseException {
+	void inSearchModel() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER)
 						.includeNull(true)
 						.build();

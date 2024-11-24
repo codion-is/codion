@@ -18,7 +18,6 @@
  */
 package is.codion.dbms.h2;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -72,7 +71,7 @@ public class H2DatabaseTest {
 	}
 
 	@Test
-	void multipleDatabases(@TempDir Path tempDir) throws DatabaseException, SQLException, IOException {
+	void multipleDatabases(@TempDir Path tempDir) throws SQLException, IOException {
 		Path file1 = tempDir.resolve("h2db_test_1.sql");
 		Path file2 = tempDir.resolve("h2db_test_2.sql");
 		Files.write(file1, singletonList("create schema employees; create table employees.test1 (id int);"));
@@ -93,7 +92,7 @@ public class H2DatabaseTest {
 	}
 
 	@Test
-	void fileDatabase(@TempDir Path tempDir) throws DatabaseException, SQLException {
+	void fileDatabase(@TempDir Path tempDir) throws SQLException {
 		String url = "jdbc:h2:file:" + tempDir.toFile().getAbsolutePath() + "/h2db/database";
 		File dbFile = new File(tempDir.toFile().getAbsolutePath() + "/h2db/database.mv.db");
 		dbFile.deleteOnExit();

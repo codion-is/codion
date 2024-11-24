@@ -252,7 +252,7 @@ public interface Database extends ConnectionFactory {
 	 * @return a new {@link ConnectionPoolWrapper}
 	 * @throws DatabaseException in case of a database exception
 	 */
-	ConnectionPoolWrapper createConnectionPool(ConnectionPoolFactory connectionPoolFactory, User poolUser) throws DatabaseException;
+	ConnectionPoolWrapper createConnectionPool(ConnectionPoolFactory connectionPoolFactory, User poolUser);
 
 	/**
 	 * @param username the username

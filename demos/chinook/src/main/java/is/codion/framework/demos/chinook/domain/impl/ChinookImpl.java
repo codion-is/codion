@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.domain.impl;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.format.LocaleDateTimePattern;
@@ -516,7 +515,7 @@ public final class ChinookImpl extends DomainModel {
 
 		@Override
 		public Collection<Entity> execute(EntityConnection connection,
-																			Collection<Long> invoiceIds) throws DatabaseException {
+																			Collection<Long> invoiceIds) {
 			Collection<Entity> invoices =
 							connection.select(where(Invoice.ID.in(invoiceIds))
 											.forUpdate()
@@ -543,14 +542,14 @@ public final class ChinookImpl extends DomainModel {
 
 		@Override
 		public Entity execute(EntityConnection connection,
-													RandomPlaylistParameters parameters) throws DatabaseException {
+													RandomPlaylistParameters parameters) {
 			List<Long> trackIds = randomTrackIds(connection, parameters.noOfTracks(), parameters.genres());
 
 			return insertPlaylist(connection, parameters.playlistName(), trackIds);
 		}
 
 		private Entity insertPlaylist(EntityConnection connection, String playlistName,
-																	List<Long> trackIds) throws DatabaseException {
+																	List<Long> trackIds) {
 			Entity playlist = connection.insertSelect(createPlaylist(playlistName));
 
 			connection.insert(createPlaylistTracks(playlist.primaryKey().get(), trackIds));
@@ -578,7 +577,7 @@ public final class ChinookImpl extends DomainModel {
 		}
 
 		private static List<Long> randomTrackIds(EntityConnection connection, int noOfTracks,
-																						 Collection<Entity> genres) throws DatabaseException {
+																						 Collection<Entity> genres) {
 			return connection.select(Track.ID,
 							where(Track.GENRE_FK.in(genres))
 											.orderBy(ascending(Track.RANDOM))
@@ -591,7 +590,7 @@ public final class ChinookImpl extends DomainModel {
 
 		@Override
 		public Collection<Entity> execute(EntityConnection entityConnection,
-																			RaisePriceParameters parameters) throws DatabaseException {
+																			RaisePriceParameters parameters) {
 			Select select =
 							where(Track.ID.in(parameters.trackIds()))
 											.forUpdate()

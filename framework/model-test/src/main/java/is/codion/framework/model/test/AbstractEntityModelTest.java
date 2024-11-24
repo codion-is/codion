@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model.test;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
@@ -75,7 +74,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
-	public void testUpdatePrimaryKey() throws DatabaseException, ValidationException {
+	public void testUpdatePrimaryKey() throws ValidationException {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -219,7 +218,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
-	public void foreignKeyDetailModelLink() throws ValidationException, DatabaseException {
+	public void foreignKeyDetailModelLink() throws ValidationException {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -343,7 +342,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
-	public void searchByInsertedEntity() throws DatabaseException, ValidationException {
+	public void searchByInsertedEntity() throws ValidationException {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -364,7 +363,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
-	public void clearForeignKeyOnEmptySelection() throws DatabaseException {
+	public void clearForeignKeyOnEmptySelection() {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -398,7 +397,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
-	public void refreshOnSelection() throws DatabaseException {
+	public void refreshOnSelection() {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -420,7 +419,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 	}
 
 	@Test
-	public void insertDifferentTypes() throws DatabaseException, ValidationException {
+	public void insertDifferentTypes() throws ValidationException {
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}

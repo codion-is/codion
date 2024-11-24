@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -101,7 +100,7 @@ public class SwingEntityEditModelTest {
 	}
 
 	@Test
-	void replace() throws DatabaseException {
+	void replace() {
 		Entity blake = employeeEditModel.connection()
 						.selectSingle(Employee.NAME.equalTo("BLAKE"));
 		employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);

@@ -19,7 +19,6 @@
 package is.codion.framework.demos.chinook.server;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.rmi.server.Authenticator;
@@ -73,7 +72,7 @@ public final class ChinookAuthenticator implements Authenticator {
 	 */
 	private final User authenticationUser = User.user("sa");
 
-	public ChinookAuthenticator() throws DatabaseException {
+	public ChinookAuthenticator() {
 		connectionPool = ConnectionPoolFactory.instance().createConnectionPool(database, authenticationUser);
 	}
 
@@ -110,12 +109,9 @@ public final class ChinookAuthenticator implements Authenticator {
 				throw new ServerAuthenticationException("Wrong username or password");
 			}
 		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
-	private EntityConnection fetchConnectionFromPool() throws DatabaseException {
+	private EntityConnection fetchConnectionFromPool() {
 		return localEntityConnection(database, domain, connectionPool.connection(authenticationUser));
 	}
 

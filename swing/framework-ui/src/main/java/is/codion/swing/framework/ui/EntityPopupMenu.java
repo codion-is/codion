@@ -19,7 +19,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Text;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.framework.db.EntityConnection;
@@ -194,9 +193,6 @@ final class EntityPopupMenu extends JPopupMenu {
 							.delegate(Entity.entity(primaryKey))
 							.method("toString", parameters -> primaryKey + " <RECORD NOT FOUND>")
 							.build();
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
 		}
 	}
 

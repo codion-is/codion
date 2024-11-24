@@ -128,7 +128,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @see #transaction(EntityConnection, Transactional)
 	 * @see #transaction(EntityConnection, TransactionalResult)
 	 */
-	void rollbackTransaction() throws DatabaseException;
+	void rollbackTransaction();
 
 	/**
 	 * Performs a commit and ends the current transaction
@@ -137,7 +137,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @see #transaction(EntityConnection, Transactional)
 	 * @see #transaction(EntityConnection, TransactionalResult)
 	 */
-	void commitTransaction() throws DatabaseException;
+	void commitTransaction();
 
 	/**
 	 * Controls the enabled state of the query result cache.
@@ -163,7 +163,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws DatabaseException;
+	<C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType);
 
 	/**
 	 * Executes the function with the given type
@@ -175,7 +175,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException;
+	<C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument);
 
 	/**
 	 * Executes the procedure with the given type with no arguments
@@ -184,7 +184,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param <T> the procedure argument type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws DatabaseException;
+	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType);
 
 	/**
 	 * Executes the procedure with the given type
@@ -194,7 +194,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param <T> the argument type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException;
+	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument);
 
 	/**
 	 * Inserts the given entity, returning the primary key.
@@ -203,7 +203,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the primary key of the inserted entity
 	 * @throws DatabaseException in case of a database exception
 	 */
-	Entity.Key insert(Entity entity) throws DatabaseException;
+	Entity.Key insert(Entity entity);
 
 	/**
 	 * Inserts the given entity, returning the inserted entity.
@@ -212,7 +212,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the inserted entity
 	 * @throws DatabaseException in case of a database exception
 	 */
-	Entity insertSelect(Entity entity) throws DatabaseException;
+	Entity insertSelect(Entity entity);
 
 	/**
 	 * Inserts the given entities, returning the primary keys.
@@ -221,7 +221,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the primary keys of the inserted entities
 	 * @throws DatabaseException in case of a database exception
 	 */
-	Collection<Entity.Key> insert(Collection<Entity> entities) throws DatabaseException;
+	Collection<Entity.Key> insert(Collection<Entity> entities);
 
 	/**
 	 * Inserts the given entities, returning the inserted entities.
@@ -230,7 +230,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the inserted entities
 	 * @throws DatabaseException in case of a database exception
 	 */
-	Collection<Entity> insertSelect(Collection<Entity> entities) throws DatabaseException;
+	Collection<Entity> insertSelect(Collection<Entity> entities);
 
 	/**
 	 * Updates the given entity based on its attribute values.
@@ -241,7 +241,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.exception.UpdateException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
 	 * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
 	 */
-	void update(Entity entity) throws DatabaseException;
+	void update(Entity entity);
 
 	/**
 	 * Updates the given entity based on its attribute values. Returns the updated entity.
@@ -253,7 +253,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.exception.UpdateException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
 	 * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
 	 */
-	Entity updateSelect(Entity entity) throws DatabaseException;
+	Entity updateSelect(Entity entity);
 
 	/**
 	 * Updates the given entities based on their attribute values.
@@ -264,7 +264,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.exception.UpdateException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
 	 * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
 	 */
-	void update(Collection<Entity> entities) throws DatabaseException;
+	void update(Collection<Entity> entities);
 
 	/**
 	 * Updates the given entities based on their attribute values. Returns the updated entities, in no particular order.
@@ -276,7 +276,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.exception.UpdateException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
 	 * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
 	 */
-	Collection<Entity> updateSelect(Collection<Entity> entities) throws DatabaseException;
+	Collection<Entity> updateSelect(Collection<Entity> entities);
 
 	/**
 	 * Performs an update based on the given update, updating the columns found
@@ -285,7 +285,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the number of affected rows
 	 * @throws DatabaseException in case of a database exception
 	 */
-	int update(Update update) throws DatabaseException;
+	int update(Update update);
 
 	/**
 	 * Deletes the entity with the given primary key.
@@ -294,7 +294,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws DatabaseException in case of a database exception
 	 * @throws is.codion.common.db.exception.DeleteException in case no row or multiple rows were deleted
 	 */
-	void delete(Entity.Key key) throws DatabaseException;
+	void delete(Entity.Key key);
 
 	/**
 	 * Deletes the entities with the given primary keys.
@@ -307,7 +307,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws DatabaseException in case of a database exception
 	 * @throws is.codion.common.db.exception.DeleteException in case the number of deleted rows does not match the number of keys
 	 */
-	void delete(Collection<Entity.Key> keys) throws DatabaseException;
+	void delete(Collection<Entity.Key> keys);
 
 	/**
 	 * Deletes the entities specified by the given condition.
@@ -316,7 +316,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the number of deleted rows
 	 * @throws DatabaseException in case of a database exception
 	 */
-	int delete(Condition condition) throws DatabaseException;
+	int delete(Condition condition);
 
 	/**
 	 * Selects ordered and distinct non-null values of the given column.
@@ -327,7 +327,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws IllegalArgumentException in case the given column has not associated with a table column
 	 * @throws UnsupportedOperationException in case the entity uses a custom column clause or if the column represents an aggregate value
 	 */
-	<T> List<T> select(Column<T> column) throws DatabaseException;
+	<T> List<T> select(Column<T> column);
 
 	/**
 	 * Selects distinct non-null values of the given column. The result is ordered by the selected column.
@@ -339,7 +339,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws IllegalArgumentException in case the given column is not associated with a table column
 	 * @throws UnsupportedOperationException in case the entity uses a custom column clause or if the column represents an aggregate value
 	 */
-	<T> List<T> select(Column<T> column, Condition condition) throws DatabaseException;
+	<T> List<T> select(Column<T> column, Condition condition);
 
 	/**
 	 * Selects distinct non-null values of the given column. If the select provides no
@@ -352,7 +352,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws IllegalArgumentException in case the column and select condition entity types don't match
 	 * @throws UnsupportedOperationException in case the entity uses a custom column clause or if the column represents an aggregate value
 	 */
-	<T> List<T> select(Column<T> column, Select select) throws DatabaseException;
+	<T> List<T> select(Column<T> column, Select select);
 
 	/**
 	 * Selects an entity by key
@@ -362,7 +362,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
 	 * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
 	 */
-	Entity select(Entity.Key key) throws DatabaseException;
+	Entity select(Entity.Key key);
 
 	/**
 	 * Selects a single entity based on the specified condition
@@ -372,7 +372,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
 	 * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
 	 */
-	Entity selectSingle(Condition condition) throws DatabaseException;
+	Entity selectSingle(Condition condition);
 
 	/**
 	 * Selects a single entity based on the specified select
@@ -382,7 +382,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
 	 * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
 	 */
-	Entity selectSingle(Select select) throws DatabaseException;
+	Entity selectSingle(Select select);
 
 	/**
 	 * Selects entities based on the given {@code keys}
@@ -390,7 +390,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return entities based on {@code keys}
 	 * @throws DatabaseException in case of a database exception
 	 */
-	Collection<Entity> select(Collection<Entity.Key> keys) throws DatabaseException;
+	Collection<Entity> select(Collection<Entity.Key> keys);
 
 	/**
 	 * Selects entities based on the given condition
@@ -398,7 +398,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return entities based to the given condition
 	 * @throws DatabaseException in case of a database exception
 	 */
-	List<Entity> select(Condition condition) throws DatabaseException;
+	List<Entity> select(Condition condition);
 
 	/**
 	 * Selects entities based on the given select
@@ -406,7 +406,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return entities based to the given select
 	 * @throws DatabaseException in case of a database exception
 	 */
-	List<Entity> select(Select select) throws DatabaseException;
+	List<Entity> select(Select select);
 
 	/**
 	 * Selects the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes
@@ -416,7 +416,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws DatabaseException in case of a database exception
 	 * @see ForeignKeyDefinition#soft()
 	 */
-	Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException;
+	Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities);
 
 	/**
 	 * Counts the number of rows returned based on the given count conditions
@@ -424,7 +424,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the number of rows fitting the given count conditions
 	 * @throws DatabaseException in case of a database exception
 	 */
-	int count(Count count) throws DatabaseException;
+	int count(Count count);
 
 	/**
 	 * Takes a ReportType object using a JDBC datasource and returns an initialized report result object
@@ -438,7 +438,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.report.ReportException in case of a report exception
 	 * @see Report#fill(java.sql.Connection, Object)
 	 */
-	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;
+	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException;
 
 	/**
 	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.
@@ -449,7 +449,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws DatabaseException in case of a database exception
 	 * @throws RuntimeException in case of exceptions other than {@link DatabaseException}
 	 */
-	static void transaction(EntityConnection connection, Transactional transactional) throws DatabaseException {
+	static void transaction(EntityConnection connection, Transactional transactional) {
 		requireNonNull(connection);
 		requireNonNull(transactional);
 		transaction(connection, () -> {
@@ -469,7 +469,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws DatabaseException in case of a database exception
 	 * @throws RuntimeException in case of exceptions other than {@link DatabaseException}
 	 */
-	static <T> T transaction(EntityConnection connection, TransactionalResult<T> transactional) throws DatabaseException {
+	static <T> T transaction(EntityConnection connection, TransactionalResult<T> transactional) {
 		requireNonNull(connection);
 		requireNonNull(transactional);
 		connection.startTransaction();
@@ -481,9 +481,6 @@ public interface EntityConnection extends AutoCloseable {
 		}
 		catch (Throwable e) {
 			connection.rollbackTransaction();
-			if (e instanceof DatabaseException) {
-				throw (DatabaseException) e;
-			}
 			if (e instanceof RuntimeException) {
 				throw (RuntimeException) e;
 			}
@@ -554,7 +551,7 @@ public interface EntityConnection extends AutoCloseable {
 		 * Executes this copy operation
 		 * @throws DatabaseException in case of an exception
 		 */
-		void execute() throws DatabaseException;
+		void execute();
 
 		/**
 		 * A builder for a {@link BatchCopy} operation.
@@ -590,7 +587,7 @@ public interface EntityConnection extends AutoCloseable {
 			 * Builds and executes this copy operation
 			 * @throws DatabaseException in case of an exception
 			 */
-			void execute() throws DatabaseException;
+			void execute();
 
 			/**
 			 * @return a new {@link BatchCopy} instance
@@ -610,7 +607,7 @@ public interface EntityConnection extends AutoCloseable {
 		 * Executes this batch insert
 		 * @throws DatabaseException in case of an exception
 		 */
-		void execute() throws DatabaseException;
+		void execute();
 
 		/**
 		 * A builder for {@link BatchInsert} operation.
@@ -639,7 +636,7 @@ public interface EntityConnection extends AutoCloseable {
 			 * Builds and executes this insert operation
 			 * @throws DatabaseException in case of an exception
 			 */
-			void execute() throws DatabaseException;
+			void execute();
 
 			/**
 			 * @return a new {@link BatchInsert} instance

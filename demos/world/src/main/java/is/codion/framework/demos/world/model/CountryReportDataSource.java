@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.world.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
@@ -53,19 +52,14 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 	/* See usage in src/main/reports/country_report.jrxml, subreport element */
 	public JRDataSource cityDataSource() {
 		Entity country = currentItem();
-		try {
-			Collection<Entity> largestCities =
-							connection.select(where(City.COUNTRY_FK.equalTo(country))
-											.attributes(City.NAME, City.POPULATION)
-											.orderBy(descending(City.POPULATION))
-											.limit(5)
-											.build());
+		Collection<Entity> largestCities =
+						connection.select(where(City.COUNTRY_FK.equalTo(country))
+										.attributes(City.NAME, City.POPULATION)
+										.orderBy(descending(City.POPULATION))
+										.limit(5)
+										.build());
 
-			return new JasperReportsDataSource<>(largestCities.iterator(), new CityValueProvider());
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		return new JasperReportsDataSource<>(largestCities.iterator(), new CityValueProvider());
 	}
 
 	private static final class CountryValueProvider implements BiFunction<Entity, JRField, Object> {

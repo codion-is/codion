@@ -61,7 +61,7 @@ import static java.util.Arrays.asList;
  */
 public final class EntityConnectionDemo {
 
-	static void select(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void select(EntityConnectionProvider connectionProvider) {
 		// tag::select[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -89,7 +89,7 @@ public final class EntityConnectionDemo {
 		// end::select[]
 	}
 
-	static void fetchDepthEntity(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void fetchDepthEntity(EntityConnectionProvider connectionProvider) {
 		// tag::fetchDepthEntity[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -108,7 +108,7 @@ public final class EntityConnectionDemo {
 		// end::fetchDepthEntity[]
 	}
 
-	static void fetchDepthCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void fetchDepthCondition(EntityConnectionProvider connectionProvider) {
 		// tag::fetchDepthCondition[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -129,7 +129,7 @@ public final class EntityConnectionDemo {
 		// end::fetchDepthCondition[]
 	}
 
-	static void fetchDepthForeignKeyCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void fetchDepthForeignKeyCondition(EntityConnectionProvider connectionProvider) {
 		// tag::fetchDepthConditionForeignKey[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -154,7 +154,7 @@ public final class EntityConnectionDemo {
 		// end::fetchDepthConditionForeignKey[]
 	}
 
-	static void selectKeys(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void selectKeys(EntityConnectionProvider connectionProvider) {
 		// tag::selectKeys[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -167,7 +167,7 @@ public final class EntityConnectionDemo {
 		// end::selectKeys[]
 	}
 
-	static void selectKey(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void selectKey(EntityConnectionProvider connectionProvider) {
 		// tag::selectKey[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -179,7 +179,7 @@ public final class EntityConnectionDemo {
 		// end::selectKey[]
 	}
 
-	static void selectSingleValue(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void selectSingleValue(EntityConnectionProvider connectionProvider) {
 		// tag::selectSingleValue[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -191,7 +191,7 @@ public final class EntityConnectionDemo {
 		// end::selectSingleValue[]
 	}
 
-	static void selectValues(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void selectValues(EntityConnectionProvider connectionProvider) {
 		// tag::selectValues[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -201,7 +201,7 @@ public final class EntityConnectionDemo {
 		// end::selectValues[]
 	}
 
-	static void dependencies(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void dependencies(EntityConnectionProvider connectionProvider) {
 		// tag::dependencies[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -213,7 +213,7 @@ public final class EntityConnectionDemo {
 		// end::dependencies[]
 	}
 
-	static void count(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void count(EntityConnectionProvider connectionProvider) {
 		// tag::count[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -221,7 +221,7 @@ public final class EntityConnectionDemo {
 		// end::count[]
 	}
 
-	static void insert(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void insert(EntityConnectionProvider connectionProvider) {
 		// tag::insert[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -246,7 +246,7 @@ public final class EntityConnectionDemo {
 		// end::insert[]
 	}
 
-	static void update(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void update(EntityConnectionProvider connectionProvider) {
 		// tag::updateEntity[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -266,7 +266,7 @@ public final class EntityConnectionDemo {
 		// end::updateEntity[]
 	}
 
-	static void updateDemo(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void updateDemo(EntityConnectionProvider connectionProvider) {
 		// tag::updateCondition[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -282,7 +282,7 @@ public final class EntityConnectionDemo {
 		// end::updateCondition[]
 	}
 
-	static void deleteCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void deleteCondition(EntityConnectionProvider connectionProvider) {
 		// tag::deleteCondition[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -305,7 +305,7 @@ public final class EntityConnectionDemo {
 		// end::deleteCondition[]
 	}
 
-	static void deleteKey(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void deleteKey(EntityConnectionProvider connectionProvider) {
 		// tag::deleteKey[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -327,7 +327,7 @@ public final class EntityConnectionDemo {
 		// end::deleteKey[]
 	}
 
-	static void iterator(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void iterator(EntityConnectionProvider connectionProvider) {
 		// tag::iterator[]
 		LocalEntityConnection connection = connectionProvider.connection();
 
@@ -343,7 +343,7 @@ public final class EntityConnectionDemo {
 		// end::iterator[]
 	}
 
-	static void function(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void function(EntityConnectionProvider connectionProvider) {
 		// tag::function[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -367,7 +367,7 @@ public final class EntityConnectionDemo {
 		// end::function[]
 	}
 
-	static void report(EntityConnectionProvider connectionProvider) throws ReportException, DatabaseException {
+	static void report(EntityConnectionProvider connectionProvider) throws ReportException {
 		// tag::report[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -378,7 +378,7 @@ public final class EntityConnectionDemo {
 		//end::report[]
 	}
 
-	static void transactionalLambda(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void transactionalLambda(EntityConnectionProvider connectionProvider) {
 		// tag::transactionalLambda[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -400,14 +400,14 @@ public final class EntityConnectionDemo {
 		// end::transactionalLambda[]
 	}
 
-	static void transactionalAnonymous(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void transactionalAnonymous(EntityConnectionProvider connectionProvider) {
 		// tag::transactionalAnonymous[]
 		EntityConnection connection = connectionProvider.connection();
 
 		Transactional transactional = new Transactional() {
 
 			@Override
-			public void execute() throws DatabaseException {
+			public void execute() {
 				Entities entities = connection.entities();
 
 				Entity artist = entities.builder(Artist.TYPE)
@@ -428,7 +428,7 @@ public final class EntityConnectionDemo {
 		// end::transactionalAnonymous[]
 	}
 
-	static void transactionalResultLambda(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void transactionalResultLambda(EntityConnectionProvider connectionProvider) {
 		// tag::transactionalResultLambda[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -450,14 +450,14 @@ public final class EntityConnectionDemo {
 		// end::transactionalResultLambda[]
 	}
 
-	static void transactionalResultAnonymous(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void transactionalResultAnonymous(EntityConnectionProvider connectionProvider) {
 		// tag::transactionalResultAnonymous[]
 		EntityConnection connection = connectionProvider.connection();
 
 		TransactionalResult<Entity.Key> transactional = new TransactionalResult<Entity.Key>() {
 
 			@Override
-			public Entity.Key execute() throws DatabaseException {
+			public Entity.Key execute() {
 				Entities entities = connection.entities();
 
 				Entity artist = entities.builder(Artist.TYPE)
@@ -478,7 +478,7 @@ public final class EntityConnectionDemo {
 		// end::transactionalResultAnonymous[]
 	}
 
-	static void transaction(EntityConnectionProvider connectionProvider) throws DatabaseException {
+	static void transaction(EntityConnectionProvider connectionProvider) {
 		// tag::transaction[]
 		EntityConnection connection = connectionProvider.connection();
 
@@ -527,7 +527,7 @@ public final class EntityConnectionDemo {
 		// end::transaction[]
 	}
 
-	public static void main(String[] args) throws DatabaseException, ReportException {
+	public static void main(String[] args) throws ReportException {
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 

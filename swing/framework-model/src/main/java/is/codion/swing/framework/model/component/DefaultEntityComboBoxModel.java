@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.model.component;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -216,15 +215,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	private Collection<Entity> performQuery() {
-		try {
-			return connectionProvider.connection().select(where(condition.get().get())
-							.attributes(attributes)
-							.orderBy(orderBy)
-							.build());
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		return connectionProvider.connection().select(where(condition.get().get())
+						.attributes(attributes)
+						.orderBy(orderBy)
+						.build());
 	}
 
 	private Optional<Entity> filteredEntity(Entity.Key primaryKey) {

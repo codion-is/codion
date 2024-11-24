@@ -93,9 +93,6 @@ public class DefaultDatabaseConnectionTest {
 		catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Test
@@ -110,20 +107,20 @@ public class DefaultDatabaseConnectionTest {
 			connection.rollbackTransaction();
 			assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
 		}
-		catch (SQLException | DatabaseException e) {
+		catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Test
-	void constructorWithConnection() throws DatabaseException, SQLException {
+	void constructorWithConnection() throws SQLException {
 		Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
 		new DefaultDatabaseConnection(DATABASE, connection).close();
 		assertTrue(connection.isClosed());
 	}
 
 	@Test
-	void constructorWithInvalidConnection() throws DatabaseException, SQLException {
+	void constructorWithInvalidConnection() throws SQLException {
 		Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
 		connection.close();
 		assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, connection));

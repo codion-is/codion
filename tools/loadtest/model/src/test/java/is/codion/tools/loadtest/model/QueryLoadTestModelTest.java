@@ -19,7 +19,6 @@
 package is.codion.tools.loadtest.model;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.tools.loadtest.LoadTest.Scenario;
 import is.codion.tools.loadtest.model.QueryLoadTestModel.QueryApplication;
@@ -49,7 +48,7 @@ public final class QueryLoadTestModelTest {
 									.build();
 
 	@Test
-	void test() throws DatabaseException {
+	void test() {
 		QueryLoadTestModel queryLoadTest = new QueryLoadTestModel(Database.instance(), UNIT_TEST_USER,
 						asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
 		Map<String, AtomicInteger> counters = new HashMap<>();

@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.world.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -36,7 +35,7 @@ public class CountryEditModelTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	@Test
-	void averageCityPopulation() throws DatabaseException {
+	void averageCityPopulation() {
 		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
 			CountryEditModel countryEditModel = new CountryEditModel(connectionProvider);
 			countryEditModel.entity().set(connectionProvider.connection().selectSingle(

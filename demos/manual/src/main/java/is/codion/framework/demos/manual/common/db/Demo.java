@@ -65,7 +65,7 @@ public final class Demo {
 		// end::factory[]
 	}
 
-	private void connection() throws DatabaseException {
+	private void connection() {
 		// tag::connection[]
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 
@@ -77,7 +77,7 @@ public final class Demo {
 		// end::connection[]
 	}
 
-	private void databaseConnection() throws DatabaseException, SQLException {
+	private void databaseConnection() throws SQLException {
 		// tag::databaseConnection[]
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 

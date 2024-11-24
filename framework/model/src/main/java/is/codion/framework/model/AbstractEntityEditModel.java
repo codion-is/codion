@@ -185,32 +185,32 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Entity insert() throws DatabaseException, ValidationException {
+	public final Entity insert() throws ValidationException {
 		return createInsert().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
-	public final Collection<Entity> insert(Collection<Entity> entities) throws DatabaseException, ValidationException {
+	public final Collection<Entity> insert(Collection<Entity> entities) throws ValidationException {
 		return createInsert(entities).prepare().perform().handle();
 	}
 
 	@Override
-	public final Entity update() throws DatabaseException, ValidationException {
+	public final Entity update() throws ValidationException {
 		return createUpdate().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
-	public final Collection<Entity> update(Collection<Entity> entities) throws DatabaseException, ValidationException {
+	public final Collection<Entity> update(Collection<Entity> entities) throws ValidationException {
 		return createUpdate(entities).prepare().perform().handle();
 	}
 
 	@Override
-	public final Entity delete() throws DatabaseException {
+	public final Entity delete() {
 		return createDelete().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
-	public final Collection<Entity> delete(Collection<Entity> entities) throws DatabaseException {
+	public final Collection<Entity> delete(Collection<Entity> entities) {
 		return createDelete(entities).prepare().perform().handle();
 	}
 
@@ -315,7 +315,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @return the inserted entities
 	 * @throws DatabaseException in case of a database exception
 	 */
-	protected Collection<Entity> insert(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+	protected Collection<Entity> insert(Collection<Entity> entities, EntityConnection connection) {
 		return requireNonNull(connection).insertSelect(entities);
 	}
 
@@ -326,7 +326,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @return the updated entities
 	 * @throws DatabaseException in case of a database exception
 	 */
-	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) {
 		return requireNonNull(connection).updateSelect(entities);
 	}
 
@@ -336,7 +336,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param connection the connection to use
 	 * @throws DatabaseException in case of a database exception
 	 */
-	protected void delete(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+	protected void delete(Collection<Entity> entities, EntityConnection connection) {
 		requireNonNull(connection).delete(Entity.primaryKeys(entities));
 	}
 
@@ -486,7 +486,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final class InsertTask implements Task {
 
 			@Override
-			public Result perform() throws DatabaseException {
+			public Result perform() {
 				LOG.debug("{} - insert {}", this, entities);
 				Collection<Entity> inserted = unmodifiableCollection(insert(entities, connection()));
 				if (!entities.isEmpty() && inserted.isEmpty()) {
@@ -553,7 +553,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final class UpdateTask implements Task {
 
 			@Override
-			public Result perform() throws DatabaseException {
+			public Result perform() {
 				LOG.debug("{} - update {}", this, entities);
 
 				return new UpdateResult(update(entities, connection()));
@@ -616,7 +616,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final class DeleteTask implements Task {
 
 			@Override
-			public Result perform() throws DatabaseException {
+			public Result perform() {
 				LOG.debug("{} - delete {}", this, entities);
 				delete(entities, connection());
 
@@ -777,13 +777,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		@Override
 		public void refresh() {
-			try {
-				if (exists.get()) {
-					set(connectionProvider.connection().select(entity.primaryKey()));
-				}
-			}
-			catch (DatabaseException e) {
-				throw new RuntimeException(e);
+			if (exists.get()) {
+				set(connectionProvider.connection().select(entity.primaryKey()));
 			}
 		}
 

@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
@@ -204,15 +203,6 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 		@Override
 		public List<Entity> apply(EntityQueryModel queryModel) {
-			try {
-				return select();
-			}
-			catch (DatabaseException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		private List<Entity> select() throws DatabaseException {
 			Select select = createSelect();
 			if (conditionRequired.get() && !conditionEnabled.get().get()) {
 				resetConditionChanged(select);

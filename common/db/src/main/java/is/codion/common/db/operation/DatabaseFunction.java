@@ -18,8 +18,6 @@
  */
 package is.codion.common.db.operation;
 
-import is.codion.common.db.exception.DatabaseException;
-
 /**
  * A database function
  * @param <C> the connection type required by this function
@@ -33,7 +31,6 @@ public interface DatabaseFunction<C, T, R> {
 	 * @param connection the connection to use
 	 * @param argument the function argument, if any
 	 * @return the function return argument
-	 * @throws DatabaseException in case of an exception during the execution
 	 */
-	R execute(C connection, T argument) throws DatabaseException;
+	R execute(C connection, T argument);
 }

@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.world.ui;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.state.State;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.model.CityEditModel;
@@ -101,7 +100,7 @@ public final class CityEditPanel extends EntityEditPanel {
 		initialFocusAttribute().set(City.NAME);
 	}
 
-	private void populateLocation() throws ValidationException, IOException, DatabaseException {
+	private void populateLocation() throws ValidationException, IOException {
 		CityEditModel editModel = editModel();
 		editModel.populateLocation();
 		displayLocation(singleton(editModel.entity().get()));

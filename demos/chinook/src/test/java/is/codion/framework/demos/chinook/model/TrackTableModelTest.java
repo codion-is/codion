@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -36,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class TrackTableModelTest {
 
 	@Test
-	void raisePriceOfSelected() throws DatabaseException {
+	void raisePriceOfSelected() {
 		EntityConnectionProvider connectionProvider = createConnectionProvider();
 
 		Entity masterOfPuppets = connectionProvider.connection()

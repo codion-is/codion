@@ -19,7 +19,6 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
@@ -74,16 +73,11 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 
 	@Override
 	protected LocalEntityConnection connect() {
-		try {
-			LOG.debug("Initializing connection for {}", user());
-			LocalEntityConnection connection = localEntityConnection(database(), domain(), user());
-			connection.setDefaultQueryTimeout(defaultQueryTimeout);
+		LOG.debug("Initializing connection for {}", user());
+		LocalEntityConnection connection = localEntityConnection(database(), domain(), user());
+		connection.setDefaultQueryTimeout(defaultQueryTimeout);
 
-			return connection;
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		return connection;
 	}
 
 	@Override

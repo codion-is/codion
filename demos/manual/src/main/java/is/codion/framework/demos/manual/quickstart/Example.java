@@ -20,7 +20,6 @@ package is.codion.framework.demos.manual.quickstart;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -252,24 +251,24 @@ public final class Example {
 			}
 
 			@Test
-			void customer() throws DatabaseException {
+			void customer() {
 				test(Customer.TYPE);
 			}
 
 			@Test
-			void address() throws DatabaseException {
+			void address() {
 				test(Address.TYPE);
 			}
 
 			@Test
-			void customerAddress() throws DatabaseException {
+			void customerAddress() {
 				test(CustomerAddress.TYPE);
 			}
 		}
 		// end::domainModelTest[]
 	}
 
-	static void selectEntities() throws DatabaseException {
+	static void selectEntities() {
 		// tag::select[]
 		Store domain = new Store();
 
@@ -294,7 +293,7 @@ public final class Example {
 		// end::select[]
 	}
 
-	static void persistEntities() throws DatabaseException {
+	static void persistEntities() {
 		// tag::persist[]
 		Store domain = new Store();
 

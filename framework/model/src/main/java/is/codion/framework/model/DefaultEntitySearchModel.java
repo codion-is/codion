@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -148,15 +147,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	@Override
 	public List<Entity> search() {
-		try {
-			List<Entity> result = connectionProvider.connection().select(select());
-			result.sort(connectionProvider.entities().definition(entityType).comparator());
+		List<Entity> result = connectionProvider.connection().select(select());
+		result.sort(connectionProvider.entities().definition(entityType).comparator());
 
-			return result;
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		return result;
 	}
 
 	@Override

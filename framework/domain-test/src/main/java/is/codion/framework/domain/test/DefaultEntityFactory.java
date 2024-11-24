@@ -82,7 +82,7 @@ public class DefaultEntityFactory implements EntityFactory {
 	}
 
 	@Override
-	public Entity entity(EntityType entityType) throws DatabaseException {
+	public Entity entity(EntityType entityType) {
 		Entity entity = entities.entity(requireNonNull(entityType));
 		populate(entity, insertableColumns(entities.definition(entityType)));
 
@@ -90,7 +90,7 @@ public class DefaultEntityFactory implements EntityFactory {
 	}
 
 	@Override
-	public Optional<Entity> entity(ForeignKey foreignKey) throws DatabaseException {
+	public Optional<Entity> entity(ForeignKey foreignKey) {
 		if (entities.definition(requireNonNull(foreignKey).referencedType()).readOnly()) {
 			return Optional.empty();
 		}
@@ -106,7 +106,7 @@ public class DefaultEntityFactory implements EntityFactory {
 	}
 
 	@Override
-	public void modify(Entity entity) throws DatabaseException {
+	public void modify(Entity entity) {
 		populate(requireNonNull(entity), updatableColumns(entity.definition()));
 	}
 
@@ -131,7 +131,7 @@ public class DefaultEntityFactory implements EntityFactory {
 	 * @return a random value
 	 * @throws DatabaseException in case of an exception
 	 */
-	protected <T> T value(Attribute<T> attribute) throws DatabaseException {
+	protected <T> T value(Attribute<T> attribute) {
 		requireNonNull(attribute);
 		AttributeDefinition<T> attributeDefinition = entities.definition(attribute.entityType()).attributes().definition(attribute);
 		try {
@@ -191,15 +191,12 @@ public class DefaultEntityFactory implements EntityFactory {
 			if (e instanceof RuntimeException) {
 				throw e;
 			}
-			if (e instanceof DatabaseException) {
-				throw e;
-			}
 
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void populate(Entity entity, Collection<Column<?>> columns) throws DatabaseException {
+	private void populate(Entity entity, Collection<Column<?>> columns) {
 		EntityDefinition definition = entity.definition();
 		for (Column<?> column : columns) {
 			if (!definition.foreignKeys().foreignKeyColumn(column)) {
@@ -302,7 +299,7 @@ public class DefaultEntityFactory implements EntityFactory {
 		return RANDOM.nextDouble() * (max - min) + min;
 	}
 
-	private static Entity insertOrSelect(Entity entity, EntityConnection connection) throws DatabaseException {
+	private static Entity insertOrSelect(Entity entity, EntityConnection connection) {
 		if (entity.primaryKey().isNotNull()) {
 			Collection<Entity> selected = connection.select(singletonList(entity.primaryKey()));
 			if (!selected.isEmpty()) {

@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -33,7 +32,7 @@ public final class EntityPopupMenuTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	@Test
-	void test() throws DatabaseException {
+	void test() {
 		try (EntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
 						.domain(new TestDomain())
 						.user(UNIT_TEST_USER)

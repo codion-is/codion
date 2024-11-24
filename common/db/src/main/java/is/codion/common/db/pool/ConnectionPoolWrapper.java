@@ -66,7 +66,7 @@ public interface ConnectionPoolWrapper {
 	 * @see #setMaximumCheckOutTime(int)
 	 * @see Connection#close()
 	 */
-	Connection connection(User user) throws DatabaseException;
+	Connection connection(User user);
 
 	/**
 	 * @return the user this connection pool is based on.

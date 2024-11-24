@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
 import is.codion.framework.db.EntityConnection;
@@ -43,7 +42,7 @@ public final class TrackEditModel extends SwingEntityEditModel {
 	}
 
 	@Override
-	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) {
 		List<Entity.Key> albumKeys = entities.stream()
 						.filter(entity -> entity.entityType().equals(Track.TYPE))
 						.filter(track -> track.modified(Track.RATING))

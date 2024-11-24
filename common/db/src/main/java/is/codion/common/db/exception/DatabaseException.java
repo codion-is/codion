@@ -25,7 +25,7 @@ import java.util.Optional;
 /**
  * An exception coming from a database-layer.
  */
-public class DatabaseException extends Exception {
+public class DatabaseException extends RuntimeException {
 
 	@Serial
 	private static final long serialVersionUID = 1L;

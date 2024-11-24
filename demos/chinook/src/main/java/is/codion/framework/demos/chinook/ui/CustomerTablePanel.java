@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.ReportException;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.domain.entity.Entity;
@@ -67,7 +66,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 						.execute();
 	}
 
-	private JasperPrint fillCustomerReport() throws DatabaseException, ReportException {
+	private JasperPrint fillCustomerReport() throws ReportException {
 		Collection<Long> customerIDs = Entity.values(Customer.ID,
 						tableModel().selection().items().get());
 		Map<String, Object> reportParameters = new HashMap<>();

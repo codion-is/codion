@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -71,7 +70,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	}
 
 	@Test
-	void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
+	void refreshOnForeignKeyConditionValuesSet() {
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
 		assertEquals(0, employeeTableModel.items().visible().count());
 		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
@@ -192,7 +191,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	}
 
 	@Test
-	void handleEditEvents() throws ValidationException, DatabaseException {
+	void handleEditEvents() throws ValidationException {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		tableModel.refresh();
 		SwingEntityEditModel employeeEditModel = new SwingEntityEditModel(Employee.TYPE, testModel.connectionProvider());

@@ -55,7 +55,7 @@ public class RemoteEntityConnectionProviderTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	@Test
-	void test() throws DatabaseException, RemoteException, ServerAuthenticationException, NotBoundException {
+	void test() throws RemoteException, ServerAuthenticationException, NotBoundException {
 		EntityServerConfiguration configuration = configure();
 
 		String serverName = configuration.serverName();

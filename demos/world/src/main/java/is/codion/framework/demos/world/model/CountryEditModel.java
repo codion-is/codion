@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.world.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -63,11 +62,6 @@ public final class CountryEditModel extends SwingEntityEditModel {
 		if (country == null) {
 			return null;
 		}
-		try {
-			return connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE));
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		return connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE));
 	}
 }

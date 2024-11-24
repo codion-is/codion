@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
@@ -224,7 +223,7 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
-	void setSelectedEntityByKey() throws DatabaseException {
+	void setSelectedEntityByKey() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
 		comboBoxModel.refresh();
 		Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("CLARK"));
@@ -297,7 +296,7 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
-	void test() throws DatabaseException {
+	void test() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
 		AtomicInteger refreshed = new AtomicInteger();
 		Runnable refreshListener = refreshed::incrementAndGet;
@@ -346,7 +345,7 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
-	void comparator() throws DatabaseException {
+	void comparator() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER)
 						.comparator(Comparator.comparing(employee -> employee.get(Department.ID)))
 						.build();

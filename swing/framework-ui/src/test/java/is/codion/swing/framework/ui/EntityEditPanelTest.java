@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -43,7 +42,7 @@ public final class EntityEditPanelTest {
 					.build();
 
 	@Test
-	void test() throws DatabaseException {
+	void test() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
 		TestEditPanel editPanel = new TestEditPanel(editModel);
 		assertThrows(IllegalStateException.class, editPanel::controls);

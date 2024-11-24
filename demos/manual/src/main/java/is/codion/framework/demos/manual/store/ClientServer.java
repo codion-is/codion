@@ -19,7 +19,6 @@
 package is.codion.framework.demos.manual.store;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
@@ -44,7 +43,7 @@ public final class ClientServer {
 	private static final int REGISTRY_PORT = 1099;
 	private static final int HTTP_PORT = 8080;
 
-	private static void runServer() throws RemoteException, DatabaseException {
+	private static void runServer() throws RemoteException {
 		// tag::runServer[]
 		Database database = H2DatabaseFactory
 						.createDatabase("jdbc:h2:mem:testdb",
@@ -78,7 +77,7 @@ public final class ClientServer {
 		// end::runServer[]
 	}
 
-	private static void runServerWithHttp() throws RemoteException, DatabaseException {
+	private static void runServerWithHttp() throws RemoteException {
 		// tag::runServerWithHttp[]
 		Database database = H2DatabaseFactory
 						.createDatabase("jdbc:h2:mem:testdb",
@@ -115,7 +114,7 @@ public final class ClientServer {
 		// end::runServerWithHttp[]
 	}
 
-	public static void main(String[] args) throws RemoteException, DatabaseException {
+	public static void main(String[] args) throws RemoteException {
 		runServer();
 		runServerWithHttp();
 	}

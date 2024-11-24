@@ -18,16 +18,12 @@
  */
 package is.codion.framework.demos.manual.store.minimal.db;
 
-import is.codion.common.db.exception.DatabaseException;
-
 import org.junit.jupiter.api.Test;
-
-import java.sql.SQLException;
 
 public final class StoreDatabaseTest {
 
 	@Test
-	void run() throws DatabaseException, SQLException {
+	void run() {
 		StoreDatabase.storeEntityConnection();
 	}
 }

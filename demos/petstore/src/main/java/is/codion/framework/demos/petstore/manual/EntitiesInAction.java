@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.petstore.manual;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -33,7 +32,7 @@ import static is.codion.framework.demos.petstore.domain.Petstore.Product;
 
 public final class EntitiesInAction {
 
-	public static void main(String[] args) throws DatabaseException {
+	public static void main(String[] args) {
 		// tag::entitiesInAction[]
 		EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
 						.domainType(Petstore.DOMAIN)

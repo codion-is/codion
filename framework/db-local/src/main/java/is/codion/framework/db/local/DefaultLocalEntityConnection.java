@@ -130,7 +130,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	 * @throws DatabaseException in case there is a problem connecting to the database
 	 * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
 	 */
-	DefaultLocalEntityConnection(Database database, Domain domain, User user) throws DatabaseException {
+	DefaultLocalEntityConnection(Database database, Domain domain, User user) {
 		this(domain, DatabaseConnection.databaseConnection(configureDatabase(database, domain), user));
 	}
 
@@ -140,11 +140,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	 * @param domain the domain model
 	 * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
 	 */
-	DefaultLocalEntityConnection(Database database, Domain domain, Connection connection) throws DatabaseException {
+	DefaultLocalEntityConnection(Database database, Domain domain, Connection connection) {
 		this(domain, DatabaseConnection.databaseConnection(configureDatabase(database, domain), connection));
 	}
 
-	private DefaultLocalEntityConnection(Domain domain, DatabaseConnection connection) throws DatabaseException {
+	private DefaultLocalEntityConnection(Domain domain, DatabaseConnection connection) {
 		this.domain = domain;
 		this.connection = connection;
 		this.database = connection.database();
@@ -191,7 +191,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public void rollbackTransaction() throws DatabaseException {
+	public void rollbackTransaction() {
 		synchronized (connection) {
 			try {
 				connection.rollbackTransaction();
@@ -204,7 +204,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public void commitTransaction() throws DatabaseException {
+	public void commitTransaction() {
 		synchronized (connection) {
 			try {
 				connection.commitTransaction();
@@ -234,17 +234,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public Key insert(Entity entity) throws DatabaseException {
+	public Key insert(Entity entity) {
 		return insert(singletonList(requireNonNull(entity, ENTITY))).iterator().next();
 	}
 
 	@Override
-	public Entity insertSelect(Entity entity) throws DatabaseException {
+	public Entity insertSelect(Entity entity) {
 		return insertSelect(singletonList(requireNonNull(entity, ENTITY))).iterator().next();
 	}
 
 	@Override
-	public Collection<Key> insert(Collection<Entity> entities) throws DatabaseException {
+	public Collection<Key> insert(Collection<Entity> entities) {
 		if (requireNonNull(entities, ENTITIES).isEmpty()) {
 			return emptyList();
 		}
@@ -253,7 +253,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public Collection<Entity> insertSelect(Collection<Entity> entities) throws DatabaseException {
+	public Collection<Entity> insertSelect(Collection<Entity> entities) {
 		if (requireNonNull(entities, ENTITIES).isEmpty()) {
 			return emptyList();
 		}
@@ -264,22 +264,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public void update(Entity entity) throws DatabaseException {
+	public void update(Entity entity) {
 		update(singletonList(requireNonNull(entity, ENTITY)));
 	}
 
 	@Override
-	public Entity updateSelect(Entity entity) throws DatabaseException {
+	public Entity updateSelect(Entity entity) {
 		return updateSelect(singletonList(requireNonNull(entity, ENTITY))).iterator().next();
 	}
 
 	@Override
-	public void update(Collection<Entity> entities) throws DatabaseException {
+	public void update(Collection<Entity> entities) {
 		update(entities, null);
 	}
 
 	@Override
-	public Collection<Entity> updateSelect(Collection<Entity> entities) throws DatabaseException {
+	public Collection<Entity> updateSelect(Collection<Entity> entities) {
 		if (requireNonNull(entities, ENTITIES).isEmpty()) {
 			return emptyList();
 		}
@@ -290,7 +290,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public int update(Update update) throws DatabaseException {
+	public int update(Update update) {
 		if (requireNonNull(update, "update may not be null").values().isEmpty()) {
 			throw new IllegalArgumentException("Update requires one or more values");
 		}
@@ -315,7 +315,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public int delete(Condition condition) throws DatabaseException {
+	public int delete(Condition condition) {
 		throwIfReadOnly(requireNonNull(condition, "Delete condition may not be null").entityType());
 
 		EntityDefinition entityDefinition = definition(condition.entityType());
@@ -338,12 +338,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public void delete(Key key) throws DatabaseException {
+	public void delete(Key key) {
 		delete(singletonList(requireNonNull(key, "key may not be null")));
 	}
 
 	@Override
-	public void delete(Collection<Key> keys) throws DatabaseException {
+	public void delete(Collection<Key> keys) {
 		if (requireNonNull(keys, "keys may not be null").isEmpty()) {
 			return;
 		}
@@ -390,17 +390,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public Entity select(Key key) throws DatabaseException {
+	public Entity select(Key key) {
 		return selectSingle(key(key));
 	}
 
 	@Override
-	public Entity selectSingle(Condition condition) throws DatabaseException {
+	public Entity selectSingle(Condition condition) {
 		return selectSingle(where(condition).build());
 	}
 
 	@Override
-	public Entity selectSingle(Select select) throws DatabaseException {
+	public Entity selectSingle(Select select) {
 		List<Entity> entities = select(select);
 		if (entities.isEmpty()) {
 			throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
@@ -413,7 +413,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public Collection<Entity> select(Collection<Key> keys) throws DatabaseException {
+	public Collection<Entity> select(Collection<Key> keys) {
 		if (requireNonNull(keys, "keys may not be null").isEmpty()) {
 			return emptyList();
 		}
@@ -437,12 +437,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public List<Entity> select(Condition condition) throws DatabaseException {
+	public List<Entity> select(Condition condition) {
 		return select(where(condition).build());
 	}
 
 	@Override
-	public List<Entity> select(Select select) throws DatabaseException {
+	public List<Entity> select(Select select) {
 		requireNonNull(select, SELECT_MAY_NOT_BE_NULL);
 		synchronized (connection) {
 			try {
@@ -462,21 +462,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public <T> List<T> select(Column<T> column) throws DatabaseException {
+	public <T> List<T> select(Column<T> column) {
 		return select(requireNonNull(column, "column may not be null"), Select.all(column.entityType())
 						.orderBy(ascending(column))
 						.build());
 	}
 
 	@Override
-	public <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
+	public <T> List<T> select(Column<T> column, Condition condition) {
 		return select(column, where(condition)
 						.orderBy(ascending(column))
 						.build());
 	}
 
 	@Override
-	public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
+	public <T> List<T> select(Column<T> column, Select select) {
 		EntityDefinition entityDefinition = definition(requireNonNull(column, "column may not be null").entityType());
 		if (!requireNonNull(select, SELECT_MAY_NOT_BE_NULL).where().entityType().equals(column.entityType())) {
 			throw new IllegalArgumentException("Condition entity type " + select.where().entityType() +
@@ -511,7 +511,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public int count(Count count) throws DatabaseException {
+	public int count(Count count) {
 		EntityDefinition entityDefinition = definition(requireNonNull(count, "count may not be null").where().entityType());
 		String selectQuery = selectQueries.builder(entityDefinition)
 						.columns("COUNT(*)")
@@ -545,7 +545,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException {
+	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) {
 		Set<EntityType> entityTypes = requireNonNull(entities, ENTITIES).stream()
 						.map(Entity::entityType)
 						.collect(toSet());
@@ -578,12 +578,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws DatabaseException {
+	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) {
 		return execute(functionType, null);
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
+	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) {
 		requireNonNull(functionType, "functionType may not be null");
 		Exception exception = null;
 		logEntry(EXECUTE, functionType, argument);
@@ -604,12 +604,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws DatabaseException {
+	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) {
 		execute(procedureType, null);
 	}
 
 	@Override
-	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
+	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) {
 		requireNonNull(procedureType, "procedureType may not be null");
 		Exception exception = null;
 		logEntry(EXECUTE, procedureType, argument);
@@ -631,7 +631,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
+	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
 		synchronized (connection) {
@@ -664,12 +664,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public ResultIterator<Entity> iterator(Condition condition) throws DatabaseException {
+	public ResultIterator<Entity> iterator(Condition condition) {
 		return iterator(where(condition).build());
 	}
 
 	@Override
-	public ResultIterator<Entity> iterator(Select select) throws DatabaseException {
+	public ResultIterator<Entity> iterator(Select select) {
 		synchronized (connection) {
 			try {
 				return resultIterator(select);
@@ -710,7 +710,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		this.defaultQueryTimeout = defaultQueryTimeout;
 	}
 
-	private Collection<Key> insert(Collection<Entity> entities, Collection<Entity> insertedEntities) throws DatabaseException {
+	private Collection<Key> insert(Collection<Entity> entities, Collection<Entity> insertedEntities) {
 		throwIfReadOnly(entities);
 
 		List<Key> insertedKeys = new ArrayList<>(entities.size());
@@ -763,7 +763,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		}
 	}
 
-	private void update(Collection<Entity> entities, Collection<Entity> updatedEntities) throws DatabaseException {
+	private void update(Collection<Entity> entities, Collection<Entity> updatedEntities) {
 		Map<EntityType, List<Entity>> entitiesByEntityType = groupByType(entities);
 		throwIfReadOnly(entitiesByEntityType.keySet());
 
@@ -1307,30 +1307,27 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		}
 	}
 
-	private void throwIfReadOnly(Collection<Entity> entities) throws DatabaseException {
+	private void throwIfReadOnly(Collection<Entity> entities) {
 		for (Entity entity : entities) {
 			throwIfReadOnly(entity.entityType());
 		}
 	}
 
-	private void throwIfReadOnly(Set<EntityType> entityTypes) throws DatabaseException {
+	private void throwIfReadOnly(Set<EntityType> entityTypes) {
 		for (EntityType entityType : entityTypes) {
 			throwIfReadOnly(entityType);
 		}
 	}
 
-	private void throwIfReadOnly(EntityType entityType) throws DatabaseException {
+	private void throwIfReadOnly(EntityType entityType) {
 		if (definition(entityType).readOnly()) {
 			throw new DatabaseException("Entities of type: " + entityType + " are read only");
 		}
 	}
 
-	private void throwDatabaseException(Exception exception, Operation operation) throws DatabaseException {
+	private void throwDatabaseException(Exception exception, Operation operation) {
 		if (exception instanceof SQLException) {
 			throw database.exception((SQLException) exception, operation);
-		}
-		if (exception instanceof DatabaseException) {
-			throw (DatabaseException) exception;
 		}
 	}
 
@@ -1596,7 +1593,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		catch (Exception ignored) {/*ignored*/}
 	}
 
-	static Database configureDatabase(Database database, Domain domain) throws DatabaseException {
+	static Database configureDatabase(Database database, Domain domain) {
 		new DatabaseConfiguration(requireNonNull(domain, "domain may not be null"), requireNonNull(database, "database may not be null")).configure();
 
 		return database;
@@ -1635,7 +1632,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 			return hashCode;
 		}
 
-		private void configure() throws DatabaseException {
+		private void configure() {
 			synchronized (CONFIGURED_DATABASES) {
 				if (!CONFIGURED_DATABASES.contains(this)) {
 					domain.configure(database);

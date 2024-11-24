@@ -18,8 +18,6 @@
  */
 package is.codion.common.db.operation;
 
-import is.codion.common.db.exception.DatabaseException;
-
 /**
  * A database procedure
  * @param <C> the connection type required by this procedure
@@ -31,7 +29,6 @@ public interface DatabaseProcedure<C, T> {
 	 * Executes this procedure using the given connection
 	 * @param connection the connection to use
 	 * @param argument the procedure argument, if any
-	 * @throws DatabaseException in case of an exception during the execution
 	 */
-	void execute(C connection, T argument) throws DatabaseException;
+	void execute(C connection, T argument);
 }

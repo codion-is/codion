@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -49,17 +48,17 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	}
 
 	@Override
-	protected Collection<Entity> insert(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
+	protected Collection<Entity> insert(Collection<Entity> invoiceLines, EntityConnection connection) {
 		return transaction(connection, () -> updateTotals(connection.insertSelect(invoiceLines), connection));
 	}
 
 	@Override
-	protected Collection<Entity> update(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
+	protected Collection<Entity> update(Collection<Entity> invoiceLines, EntityConnection connection) {
 		return transaction(connection, () -> updateTotals(connection.updateSelect(invoiceLines), connection));
 	}
 
 	@Override
-	protected void delete(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
+	protected void delete(Collection<Entity> invoiceLines, EntityConnection connection) {
 		transaction(connection, () -> {
 			connection.delete(primaryKeys(invoiceLines));
 			updateTotals(invoiceLines, connection);
@@ -70,7 +69,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 		value(InvoiceLine.UNITPRICE).set(track == null ? null : track.get(Track.UNITPRICE));
 	}
 
-	private Collection<Entity> updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
+	private Collection<Entity> updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) {
 		totalsUpdatedEvent.accept(connection.execute(Invoice.UPDATE_TOTALS, distinct(InvoiceLine.INVOICE_ID, invoiceLines)));
 
 		return invoiceLines;

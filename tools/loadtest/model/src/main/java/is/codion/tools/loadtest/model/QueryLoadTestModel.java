@@ -56,7 +56,7 @@ public final class QueryLoadTestModel {
 	 * @throws DatabaseException in case of an exception while constructing the initial connections
 	 */
 	public QueryLoadTestModel(Database database, User user,
-														Collection<? extends Scenario<QueryApplication>> scenarios) throws DatabaseException {
+														Collection<? extends Scenario<QueryApplication>> scenarios) {
 		this.loadTest = LoadTest.builder(this::createApplication, this::disconnectApplication)
 						.user(user)
 						.scenarios(scenarios)

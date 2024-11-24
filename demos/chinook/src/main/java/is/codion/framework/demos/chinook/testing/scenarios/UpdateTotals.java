@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
@@ -54,7 +53,7 @@ public final class UpdateTotals implements Performer<EntityConnectionProvider> {
 		}
 	}
 
-	private static void updateInvoiceLines(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
+	private static void updateInvoiceLines(Collection<Entity> invoiceLines, EntityConnection connection) {
 		transaction(connection, () -> {
 			connection.update(invoiceLines);
 			connection.execute(Invoice.UPDATE_TOTALS, distinct(InvoiceLine.INVOICE_ID, invoiceLines));

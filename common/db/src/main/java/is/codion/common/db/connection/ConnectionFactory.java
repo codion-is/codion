@@ -41,7 +41,7 @@ public interface ConnectionFactory {
 	 * @throws DatabaseException in case of a connection error
 	 * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
 	 */
-	Connection createConnection(User user) throws DatabaseException;
+	Connection createConnection(User user);
 
 	/**
 	 * Validates the given connection.

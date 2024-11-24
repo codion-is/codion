@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
@@ -113,7 +112,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public Collection<Entity.Key> insert(Collection<Entity> entities) throws DatabaseException {
+	public Collection<Entity.Key> insert(Collection<Entity> entities) {
 		requireNonNull(entities);
 		try {
 			synchronized (httpClient) {
@@ -121,9 +120,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 								objectMapper.writeValueAsString(entities))), objectMapper, KEY_LIST_REFERENCE);
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -134,7 +130,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public Collection<Entity> insertSelect(Collection<Entity> entities) throws DatabaseException {
+	public Collection<Entity> insertSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
 		try {
 			synchronized (httpClient) {
@@ -142,9 +138,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 								objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -155,7 +148,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public void update(Collection<Entity> entities) throws DatabaseException {
+	public void update(Collection<Entity> entities) {
 		requireNonNull(entities);
 		try {
 			synchronized (httpClient) {
@@ -163,9 +156,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 								objectMapper.writeValueAsString(entities))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -176,7 +166,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public Collection<Entity> updateSelect(Collection<Entity> entities) throws DatabaseException {
+	public Collection<Entity> updateSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
 		try {
 			synchronized (httpClient) {
@@ -184,9 +174,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 								objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -197,7 +184,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public int update(Update update) throws DatabaseException {
+	public int update(Update update) {
 		requireNonNull(update);
 		try {
 			synchronized (httpClient) {
@@ -205,9 +192,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 								objectMapper.writeValueAsString(update))), objectMapper, Integer.class);
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -218,7 +202,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public void delete(Collection<Entity.Key> keys) throws DatabaseException {
+	public void delete(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
 		try {
 			synchronized (httpClient) {
@@ -226,9 +210,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 								objectMapper.writeValueAsString(keys))));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -239,7 +220,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public int delete(Condition condition) throws DatabaseException {
+	public int delete(Condition condition) {
 		requireNonNull(condition);
 		try {
 			synchronized (httpClient) {
@@ -247,9 +228,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 								objectMapper.writeValueAsString(condition))), objectMapper, Integer.class);
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -260,7 +238,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
+	public <T> List<T> select(Column<T> column, Select select) {
 		requireNonNull(column);
 		requireNonNull(select);
 		try {
@@ -273,9 +251,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 								objectMapper, objectMapper.getTypeFactory().constructCollectionType(List.class, column.type().valueClass()));
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -286,7 +261,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public List<Entity> select(Collection<Entity.Key> keys) throws DatabaseException {
+	public List<Entity> select(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
 		try {
 			synchronized (httpClient) {
@@ -294,9 +269,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 								objectMapper.writeValueAsString(keys))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -307,7 +279,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public List<Entity> select(Select select) throws DatabaseException {
+	public List<Entity> select(Select select) {
 		requireNonNull(select);
 		try {
 			synchronized (httpClient) {
@@ -315,9 +287,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 								objectMapper.writeValueAsString(select))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -328,7 +297,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException {
+	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) {
 		requireNonNull(entities);
 		try {
 			Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
@@ -342,9 +311,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return dependencies;
 			}
 		}
-		catch (DatabaseException e) {
-			throw e;
-		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw logAndWrap(e);
@@ -355,16 +321,13 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public int count(Count count) throws DatabaseException {
+	public int count(Count count) {
 		requireNonNull(count);
 		try {
 			synchronized (httpClient) {
 				return handleJsonResponse(executeJson(createJsonRequest("count",
 								objectMapper.writeValueAsString(count))), objectMapper, Integer.class);
 			}
-		}
-		catch (DatabaseException e) {
-			throw e;
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
