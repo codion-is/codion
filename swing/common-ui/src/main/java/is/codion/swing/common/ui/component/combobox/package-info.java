@@ -20,6 +20,7 @@
  * Package configuration values:
  * <ul>
  * <li>{@link is.codion.swing.common.ui.component.combobox.Completion#COMBO_BOX_COMPLETION_MODE}
+ * <li>{@link is.codion.swing.common.ui.component.combobox.Completion#NORMALIZE}
  * </ul>
  */
 package is.codion.swing.common.ui.component.combobox;

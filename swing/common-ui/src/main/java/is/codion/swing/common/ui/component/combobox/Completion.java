@@ -59,6 +59,20 @@ public final class Completion {
 	}
 
 	/**
+	 * Specifies whether to normalize accented characters in a String during autocomplete.
+	 */
+	public enum Normalize {
+		/**
+		 * The String should be normalized.
+		 */
+		YES,
+		/**
+		 * The String should not be normalized.
+		 */
+		NO
+	}
+
+	/**
 	 * Specifies the default completion model used for comboboxes.
 	 * <ul>
 	 * <li>{@link Completion.Mode#MAXIMUM_MATCH} for maximum match,
@@ -71,6 +85,18 @@ public final class Completion {
 	public static final PropertyValue<Mode> COMBO_BOX_COMPLETION_MODE =
 					Configuration.enumValue(Completion.class.getName() + ".completionMode", Mode.class, Mode.MAXIMUM_MATCH);
 
+	/**
+	 * Specifies whether strings are normalized during completion by default.
+	 * <ul>
+	 * <li>{@link Completion.Normalize#YES}
+	 * <li>{@link Completion.Normalize#NO}
+	 * <li>Value type:String
+	 * <li>Default value: {@link Completion.Normalize#YES}
+	 * </ul>
+	 */
+	public static final PropertyValue<Normalize> NORMALIZE =
+					Configuration.enumValue(Completion.class.getName() + ".normalize", Normalize.class, Normalize.YES);
+
 	private Completion() {}
 
 	/**
@@ -81,7 +107,7 @@ public final class Completion {
 	 * @return the combo box
 	 */
 	public static <C extends JComboBox<T>, T> C maximumMatch(C comboBox) {
-		return maximumMatch(comboBox, Normalize.YES);
+		return maximumMatch(comboBox, NORMALIZE.get());
 	}
 
 	/**
@@ -106,7 +132,7 @@ public final class Completion {
 	 * @return the combo box
 	 */
 	public static <C extends JComboBox<T>, T> C autoComplete(C comboBox) {
-		return autoComplete(comboBox, Normalize.YES);
+		return autoComplete(comboBox, NORMALIZE.get());
 	}
 
 	/**
@@ -162,20 +188,6 @@ public final class Completion {
 		comboBox.addFocusListener(new CompletionFocusListener((JTextComponent) comboBox.getEditor().getEditorComponent()));
 
 		return comboBox;
-	}
-
-	/**
-	 * Specifies whether to normalize accented characters in a String.
-	 */
-	public enum Normalize {
-		/**
-		 * The String should be normalized.
-		 */
-		YES,
-		/**
-		 * The String should not be normalized.
-		 */
-		NO
 	}
 
 	/**
