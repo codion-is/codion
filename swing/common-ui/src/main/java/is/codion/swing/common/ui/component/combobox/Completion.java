@@ -82,7 +82,7 @@ public final class Completion {
 	 * <li>Default value: {@link Completion.Mode#MAXIMUM_MATCH}
 	 * </ul>
 	 */
-	public static final PropertyValue<Mode> COMBO_BOX_COMPLETION_MODE =
+	public static final PropertyValue<Mode> COMPLETION_MODE =
 					Configuration.enumValue(Completion.class.getName() + ".completionMode", Mode.class, Mode.MAXIMUM_MATCH);
 
 	/**
@@ -155,10 +155,10 @@ public final class Completion {
 	 * @param <C> the combo box type
 	 * @param <T> the value type
 	 * @return the combo box
-	 * @see #COMBO_BOX_COMPLETION_MODE
+	 * @see #COMPLETION_MODE
 	 */
 	public static <C extends JComboBox<T>, T> C enable(C comboBox) {
-		return enable(comboBox, COMBO_BOX_COMPLETION_MODE.get());
+		return enable(comboBox, COMPLETION_MODE.get());
 	}
 
 	/**
@@ -168,7 +168,7 @@ public final class Completion {
 	 * @param <C> the combo box type
 	 * @param <T> the value type
 	 * @return the combo box
-	 * @see #COMBO_BOX_COMPLETION_MODE
+	 * @see #COMPLETION_MODE
 	 */
 	public static <C extends JComboBox<T>, T> C enable(C comboBox, Mode completionMode) {
 		requireNonNull(comboBox);

@@ -49,7 +49,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	private Comparator<Item<T>> comparator;
 	private boolean sorted = false;
 	private boolean nullable;
-	private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
+	private Completion.Mode completionMode = Completion.COMPLETION_MODE.get();
 	private boolean mouseWheelScrolling = true;
 	private boolean mouseWheelScrollingWithWrapAround = false;
 	private int maximumRowCount = -1;

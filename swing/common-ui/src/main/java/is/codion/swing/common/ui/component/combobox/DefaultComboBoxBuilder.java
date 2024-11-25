@@ -46,7 +46,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 	private final List<ItemListener> itemListeners = new ArrayList<>();
 
 	private boolean editable = false;
-	private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
+	private Completion.Mode completionMode = Completion.COMPLETION_MODE.get();
 	private ListCellRenderer<T> renderer;
 	private ComboBoxEditor editor;
 	private boolean mouseWheelScrolling = true;

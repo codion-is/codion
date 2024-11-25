@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.22
 ### is.codion.swing.common.ui
 - Completion.NORMALIZE configuration value added.
+- Completion.COMBO_BOX_COMPLETION_MODE renamed COMPLETION_MODE.
 
 ## 0.18.21
 ### is.codion.common.db
