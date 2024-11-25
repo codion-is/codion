@@ -169,18 +169,35 @@ public final class Completion {
 	 * @param <T> the value type
 	 * @return the combo box
 	 * @see #COMPLETION_MODE
+	 * @see #NORMALIZE
 	 */
 	public static <C extends JComboBox<T>, T> C enable(C comboBox, Mode completionMode) {
+		return enable(comboBox, completionMode, NORMALIZE.get());
+	}
+
+	/**
+	 * Enables the given completion mode on the given combo box
+	 * @param comboBox the combo box
+	 * @param completionMode the mode to enable
+	 * @param normalize true if strings should be normalized during completion
+	 * @param <C> the combo box type
+	 * @param <T> the value type
+	 * @return the combo box
+	 * @see #COMPLETION_MODE
+	 * @see #NORMALIZE
+	 */
+	public static <C extends JComboBox<T>, T> C enable(C comboBox, Mode completionMode, Normalize normalize) {
 		requireNonNull(comboBox);
 		requireNonNull(completionMode);
+		requireNonNull(normalize);
 		switch (completionMode) {
 			case NONE:
 				break;
 			case AUTOCOMPLETE:
-				autoComplete(comboBox);
+				autoComplete(comboBox, normalize);
 				break;
 			case MAXIMUM_MATCH:
-				maximumMatch(comboBox);
+				maximumMatch(comboBox, normalize);
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown completion mode: " + completionMode);
