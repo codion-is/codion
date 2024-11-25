@@ -72,6 +72,9 @@ final class AlbumTagPanel extends JPanel {
 					.enabled(selectionEmpty.not())
 					.build();
 
+	/**
+	 * @param tagsValue the list value providing the list component
+	 */
 	AlbumTagPanel(ComponentValue<List<String>, JList<String>> tagsValue) {
 		super(borderLayout());
 		this.tagsValue = tagsValue;

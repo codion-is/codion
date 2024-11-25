@@ -20,11 +20,10 @@ package is.codion.framework.demos.chinook.model;
 
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.model.ForeignKeyDetailModelLink;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
-
-import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
 
 public final class ChinookAppModel extends SwingEntityApplicationModel {
 

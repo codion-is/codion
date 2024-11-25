@@ -45,13 +45,19 @@ public final class AlbumEditPanel extends EntityEditPanel {
 
 		createForeignKeySearchField(Album.ARTIST_FK)
 						.columns(15)
+						// We provide a edit panel supplier, which enables
+						// keyboard shortcuts for adding a new artist (INSERT)
+						// or editing the currently selected one (CTRL-INSERT).
 						.editPanel(this::createArtistEditPanel);
 		createTextField(Album.TITLE)
 						.columns(15);
+		// We create JList based value for the album tags, on which
+		// we then base the custom AlbumTagPanel component below.
 		ComponentValue<List<String>, JList<String>> tagsValue =
 						createList(new DefaultListModel<String>())
 										.items(Album.TAGS)
 										.buildValue();
+		// We set the Album.COVER component to the custom CoverArtPanel component.
 		component(Album.COVER).set(new CoverArtPanel(editModel().value(Album.COVER)));
 
 		JPanel centerPanel = flexibleGridLayoutPanel(2, 2)

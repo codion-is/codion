@@ -21,6 +21,7 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
@@ -44,9 +45,12 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
 	private final EntityPanel invoiceLinePanel;
 
-	public InvoiceEditPanel(SwingEntityEditModel editModel, EntityPanel invoiceLinePanel) {
-		super(editModel, config -> config.clearAfterInsert(false));
-		this.invoiceLinePanel = invoiceLinePanel;
+	public InvoiceEditPanel(SwingEntityEditModel editModel, SwingEntityModel invoiceLineModel) {
+		super(editModel, config ->
+						// We want this edit panel to keep displaying a newly inserted invoice,
+						// since we will continue to work with it, by adding invoice lines for example
+						config.clearAfterInsert(false));
+		this.invoiceLinePanel = createInvoiceLinePanel(invoiceLineModel);
 	}
 
 	@Override
@@ -55,6 +59,8 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
 		createForeignKeySearchField(Invoice.CUSTOMER_FK)
 						.columns(14)
+						// We add a custom selector factory, creating a selector which
+						// displays a table instead of a list when selecting a customer
 						.selectorFactory(new CustomerSelectorFactory());
 		createTemporalFieldPanel(Invoice.DATE)
 						.columns(6);
@@ -112,10 +118,31 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 		add(invoiceLinePanel, BorderLayout.EAST);
 	}
 
+	EntityPanel invoiceLinePanel() {
+		return invoiceLinePanel;
+	}
+
+	private static EntityPanel createInvoiceLinePanel(SwingEntityModel invoiceLineModel) {
+		// Here we construct the InvoiceLine panel, which will
+		// be embedded in this edit panel, see initializeUI().
+		InvoiceLineTablePanel invoiceLineTablePanel =
+						new InvoiceLineTablePanel(invoiceLineModel.tableModel());
+		InvoiceLineEditPanel invoiceLineEditPanel =
+						new InvoiceLineEditPanel(invoiceLineModel.editModel(),
+										invoiceLineTablePanel.table().searchField());
+
+		return new EntityPanel(invoiceLineModel,
+						invoiceLineEditPanel, invoiceLineTablePanel, config ->
+						// We don't include controls so that no buttons appear on this panel
+						config.includeControls(false));
+	}
+
 	private static final class CustomerSelectorFactory implements Function<EntitySearchModel, Selector> {
 
 		@Override
 		public Selector apply(EntitySearchModel searchModel) {
+			// We use the TableSelector, provided by EntitySearchField,
+			// configuring the the visible table columns, the sorting and size
 			TableSelector selector = EntitySearchField.tableSelector(searchModel);
 			selector.table().columnModel().visible().set(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
 			selector.table().model().sorter().setSortOrder(Customer.LASTNAME, ASCENDING);

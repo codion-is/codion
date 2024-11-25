@@ -18,15 +18,21 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
+import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 
 public final class InvoicePanel extends EntityPanel {
 
-	public InvoicePanel(SwingEntityModel invoiceModel, EntityPanel invoiceLinePanel) {
-		super(invoiceModel, new InvoiceEditPanel(invoiceModel.editModel(), invoiceLinePanel),
+	public InvoicePanel(SwingEntityModel invoiceModel) {
+		super(invoiceModel,
+						new InvoiceEditPanel(invoiceModel.editModel(), invoiceModel.detailModel(InvoiceLine.TYPE)),
 						new InvoiceTablePanel(invoiceModel.tableModel()),
+						// The InvoiceLine panel is embedded in InvoiceEditPanel,
+						// so this panel doesn't need to lay out any detail panels.
 						config -> config.detailLayout(DetailLayout.NONE));
-		addDetailPanel(invoiceLinePanel);
+		InvoiceEditPanel editPanel = editPanel();
+		// We still add the InvoiceLine panel as a detail panel for keyboard navigation
+		addDetailPanel(editPanel.invoiceLinePanel());
 	}
 }

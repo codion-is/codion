@@ -58,6 +58,8 @@ public final class CustomerEditPanel extends EntityEditPanel {
 		createTextField(Customer.STATE)
 						.columns(4)
 						.upperCase(true)
+						// CTRL-SPACE displays a dialog for
+						// selecting one of the supplied values
 						.selector(Dialogs.singleSelector(new StatesSupplier()));
 		createTextField(Customer.COUNTRY)
 						.columns(8);

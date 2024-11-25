@@ -31,6 +31,8 @@ public final class AlbumModel extends SwingEntityModel {
 		addDetailModel(trackModel);
 		TrackEditModel trackEditModel = trackModel.editModel();
 		trackEditModel.initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
+		// We refresh the album table model when the rating for a track is modified,
+		// since the album rating is based on the average track rating.
 		trackEditModel.ratingUpdated().addConsumer(tableModel()::refresh);
 	}
 }

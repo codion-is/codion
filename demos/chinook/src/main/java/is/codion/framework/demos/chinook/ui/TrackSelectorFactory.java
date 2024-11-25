@@ -29,6 +29,10 @@ import java.util.function.Function;
 import static is.codion.swing.framework.ui.component.EntitySearchField.tableSelector;
 import static javax.swing.SortOrder.ASCENDING;
 
+/**
+ * Provides a {@link TableSelector} for selecting tracks,
+ * displaying columns for the artist, album and track name.
+ */
 final class TrackSelectorFactory implements Function<EntitySearchModel, Selector> {
 
 	@Override

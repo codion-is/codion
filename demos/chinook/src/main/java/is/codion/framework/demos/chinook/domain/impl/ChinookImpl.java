@@ -46,7 +46,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
-import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
@@ -54,10 +53,10 @@ import static java.lang.String.join;
 import static java.util.Collections.nCopies;
 import static java.util.stream.Collectors.toList;
 
-public final class ChinookImpl extends DomainModel {
+public final class ChinookImpl extends DomainModel implements Chinook {
 
 	public ChinookImpl() {
-		super(Chinook.DOMAIN);
+		super(DOMAIN);
 		add(artist(), album(), employee(), customer(), genre(), mediaType(),
 						track(), invoice(), invoiceLine(), playlist(), playlistTrack());
 		add(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
@@ -476,6 +475,7 @@ public final class ChinookImpl extends DomainModel {
 						.build();
 	}
 
+	// Converts between a SQL VARCHAR ARRAY and a List<String>.
 	private static final class TagsConverter implements Converter<List<String>, Array> {
 
 		private static final int ARRAY_VALUE_INDEX = 2;

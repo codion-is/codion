@@ -25,7 +25,9 @@ import is.codion.swing.framework.ui.EntityPanel;
 public final class AlbumPanel extends EntityPanel {
 
 	public AlbumPanel(SwingEntityModel albumModel) {
-		super(albumModel, new AlbumEditPanel(albumModel.editModel()), new AlbumTablePanel(albumModel.tableModel()));
+		super(albumModel,
+						new AlbumEditPanel(albumModel.editModel()),
+						new AlbumTablePanel(albumModel.tableModel()));
 		SwingEntityModel trackModel = albumModel.detailModel(Track.TYPE);
 		EntityPanel trackPanel = new EntityPanel(trackModel,
 						new TrackEditPanel(trackModel.editModel(), trackModel.tableModel()),

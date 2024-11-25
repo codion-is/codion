@@ -35,6 +35,10 @@ public final class TrackEditModel extends SwingEntityEditModel {
 
 	public TrackEditModel(EntityConnectionProvider connectionProvider) {
 		super(Track.TYPE, connectionProvider);
+		// Create and populates the combo box models for the given foreign keys,
+		// otherwise this would happen when the respective combo boxes are created
+		// which happens on the Event Dispatch Thread.
+		initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
 	}
 
 	Observer<Collection<Entity.Key>> ratingUpdated() {

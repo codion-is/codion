@@ -45,17 +45,20 @@ import static is.codion.framework.demos.chinook.ui.TrackTablePanel.RATINGS;
 
 public final class AlbumTablePanel extends EntityTablePanel {
 
-	private final NavigableImagePanel imagePanel;
+	private final NavigableImagePanel coverPanel;
 
 	public AlbumTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
+						// A custom input component for editing Album.TAGS
 						.editComponentFactory(Album.TAGS, new TagEditComponentFactory())
+						// Custom cell renderer for Album.RATING
+						// rendering the rating as stars, i.e. *****
 						.cellRenderer(Album.RATING, EntityTableCellRenderer.builder(Album.RATING, tableModel)
 										.string(RATINGS::get)
 										.toolTipData(true)
 										.build()));
-		imagePanel = new NavigableImagePanel();
-		imagePanel.setPreferredSize(Windows.screenSizeRatio(0.5));
+		coverPanel = new NavigableImagePanel();
+		coverPanel.setPreferredSize(Windows.screenSizeRatio(0.5));
 		table().doubleClickAction().set(viewCoverControl());
 	}
 
@@ -69,22 +72,22 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	private void viewSelectedCover() {
 		tableModel().selection().item().optional()
 						.filter(album -> album.isNotNull(Album.COVER))
-						.ifPresent(album -> displayImage(album.get(Album.TITLE), album.get(Album.COVER)));
+						.ifPresent(album -> displayCover(album.get(Album.TITLE), album.get(Album.COVER)));
 	}
 
-	private void displayImage(String title, byte[] imageBytes) {
-		imagePanel.setImage(readImage(imageBytes));
-		if (imagePanel.isShowing()) {
-			JDialog dialog = Utilities.parentDialog(imagePanel);
+	private void displayCover(String title, byte[] coverBytes) {
+		coverPanel.setImage(readImage(coverBytes));
+		if (coverPanel.isShowing()) {
+			JDialog dialog = Utilities.parentDialog(coverPanel);
 			dialog.setTitle(title);
 			dialog.toFront();
 		}
 		else {
-			Dialogs.componentDialog(imagePanel)
+			Dialogs.componentDialog(coverPanel)
 							.owner(Utilities.parentWindow(this))
 							.title(title)
 							.modal(false)
-							.onClosed(dialog -> imagePanel.setImage(null))
+							.onClosed(dialog -> coverPanel.setImage(null))
 							.show();
 		}
 	}
@@ -112,7 +115,10 @@ public final class AlbumTablePanel extends EntityTablePanel {
 
 		private TagComponentValue(List<String> tags) {
 			super(new AlbumTagPanel(Components.list(new DefaultListModel<String>())
+							// A list component value based on the items in
+							// the model, as opposed to the selected items
 							.items()
+							// The initial tags to display
 							.value(tags)
 							.buildValue()));
 		}

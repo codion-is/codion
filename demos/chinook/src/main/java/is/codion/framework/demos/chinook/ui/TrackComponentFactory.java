@@ -25,6 +25,9 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 
+/**
+ * Provides a {@link EntitySearchField} using the {@link TrackSelectorFactory}.
+ */
 final class TrackComponentFactory extends DefaultEntityComponentFactory<Entity, EntitySearchField> {
 
 	TrackComponentFactory(ForeignKey trackForeignKey) {

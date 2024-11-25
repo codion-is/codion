@@ -24,6 +24,9 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 public final class EmployeeTablePanel extends EntityTablePanel {
 
 	public EmployeeTablePanel(SwingEntityTableModel tableModel) {
+		// We provide a EmployeeEditPanel instance, which is then accessible
+		// via double click, popup menu (Add/Edit) or keyboard shortcuts:
+		// INSERT to add a new employee or CTRL-INSERT to edit the selected one.
 		super(tableModel, new EmployeeEditPanel(tableModel.editModel()));
 	}
 }
