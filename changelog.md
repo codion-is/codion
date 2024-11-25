@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.22
+
 ## 0.18.21
 ### is.codion.common.db
 - DatabaseException now extends RuntimeException, no longer checked.
