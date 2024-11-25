@@ -17,6 +17,7 @@ Codion Change Log
 - ValidationException now extends RuntimeException, no longer checked.
 ### is.codion.framework.db
 - EntityConnection.transaction() now catches Throwable.
+- EntityConnection.Transactional and TransactionalResult.execute() now throw Exception.
 ### is.codion.swing.framework.ui
 - EntityTableCellRenderer, Item based cells now use the default horizontal alignment instead of the one based on the the item value type.
 - DefaultEntityApplicationPanelBuilder bug fixed, exception handling during application start improved.
