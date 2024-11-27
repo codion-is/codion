@@ -62,13 +62,12 @@ public final class AlbumModelTest {
 			albumTableModel.refresh();
 			assertEquals(1, albumTableModel.items().count());
 
-			List<Entity> modifiedTracks = connection.select(Track.ALBUM_FK.equalTo(masterOfPuppets)).stream()
-							.peek(track -> track.put(Track.RATING, 10))
-							.toList();
+			List<Entity> tracks = connection.select(Track.ALBUM_FK.equalTo(masterOfPuppets));
+			tracks.forEach(track -> track.put(Track.RATING, 10));
 
 			// Update the tracks using the edit model
 			TrackEditModel trackEditModel = albumModel.detailModel(Track.TYPE).editModel();
-			trackEditModel.update(modifiedTracks);
+			trackEditModel.update(tracks);
 
 			// Which should trigger the refresh of the album in the Album model
 			// now with the new rating as the average of the track ratings

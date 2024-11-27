@@ -115,7 +115,7 @@ public abstract class DomainModel implements Domain {
 	 */
 	protected final void add(EntityDefinition... definitions) {
 		Arrays.stream(requireNonNull(definitions))
-						.peek(this::validate)
+						.map(this::validate)
 						.forEach(entities::addEntityDefinition);
 	}
 
@@ -233,11 +233,13 @@ public abstract class DomainModel implements Domain {
 		});
 	}
 
-	private void validate(EntityDefinition definition) {
+	private EntityDefinition validate(EntityDefinition definition) {
 		if (!domainType.contains(requireNonNull(definition).entityType())) {
 			throw new IllegalArgumentException("Entity type '" +
 							definition.entityType() + "' is not part of domain: " + domainType);
 		}
+
+		return definition;
 	}
 
 	private static final class DomainEntities extends DefaultEntities {

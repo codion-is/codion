@@ -34,13 +34,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.util.Collections.reverseOrder;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
@@ -67,7 +68,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 
 	@Override
 	public SelectionDialogBuilder<T> defaultSelection(T defaultSelection) {
-		return defaultSelection(Collections.singletonList(requireNonNull(defaultSelection)));
+		return defaultSelection(singletonList(requireNonNull(defaultSelection)));
 	}
 
 	@Override
@@ -157,12 +158,14 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 		}
 		list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 
-		builder.defaultSelection.stream()
+		List<Integer> sortedDefaultSelectedIndexes = builder.defaultSelection.stream()
 						.mapToInt(listModel::indexOf)
 						.boxed()
-						.sorted(Collections.reverseOrder())//reverse order so that topmost item is selected last
+						.sorted(reverseOrder())//reverse order so that topmost item is selected last
+						.toList();
+		sortedDefaultSelectedIndexes.forEach(index -> list.getSelectionModel().addSelectionInterval(index, index));
+		sortedDefaultSelectedIndexes.stream()
 						.mapToInt(Integer::intValue)
-						.peek(index -> list.getSelectionModel().addSelectionInterval(index, index))
 						.min()
 						.ifPresent(list::ensureIndexIsVisible);
 
