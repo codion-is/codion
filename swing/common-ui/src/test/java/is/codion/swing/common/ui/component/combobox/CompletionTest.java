@@ -30,9 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.InvocationTargetException;
 
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static org.assertj.swing.core.KeyPressInfo.keyCode;
@@ -44,7 +42,7 @@ public final class CompletionTest {
 	private static FrameFixture window;
 
 	@BeforeAll
-	public static void setUp() throws Exception {
+	public static void setUp() {
 		TestFrame frame = GuiActionRunner.execute(TestFrame::new);
 		window = new FrameFixture(frame);
 		window.show();
@@ -62,7 +60,7 @@ public final class CompletionTest {
 	}
 
 	@Test
-	void autoComplete() throws InterruptedException, InvocationTargetException {
+	void autoComplete() {
 		JTextComponentFixture editor = window.textBox("autoCompleteEditor");
 		JComboBox<String> comboBox = window.comboBox("autoCompleteComboBox").target();
 		editor.enterText("j");
@@ -116,7 +114,7 @@ public final class CompletionTest {
 	}
 
 	@Test
-	void autoCompleteNormalize() throws InterruptedException, InvocationTargetException {
+	void autoCompleteNormalize() {
 		JTextComponentFixture editor = window.textBox("autoCompleteNormalizeEditor");
 		JComboBox<String> comboBox = window.comboBox("autoCompleteNormalizeComboBox").target();
 		editor.enterText("j");
@@ -170,7 +168,7 @@ public final class CompletionTest {
 	}
 
 	@Test
-	void maximumMatch() throws InterruptedException, InvocationTargetException {
+	void maximumMatch() {
 		JTextComponentFixture editor = window.textBox("maximumMatchEditor");
 		JComboBox<String> comboBox = window.comboBox("maximumMatchComboBox").target();
 		editor.enterText("j");
@@ -230,7 +228,7 @@ public final class CompletionTest {
 	}
 
 	@Test
-	void maximumMatchNormalize() throws InterruptedException, InvocationTargetException {
+	void maximumMatchNormalize() {
 		JTextComponentFixture editor = window.textBox("maximumMatchNormalizeEditor");
 		JComboBox<String> comboBox = window.comboBox("maximumMatchNormalizeComboBox").target();
 		editor.enterText("j");
@@ -287,7 +285,7 @@ public final class CompletionTest {
 
 	private static final class TestFrame extends JFrame {
 
-		private TestFrame() throws HeadlessException {
+		private TestFrame() {
 			JComboBox<String> autoComplete = createComboBox();
 			autoComplete.setName("autoCompleteComboBox");
 			autoComplete.getEditor().getEditorComponent().setName("autoCompleteEditor");
