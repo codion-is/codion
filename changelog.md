@@ -6,6 +6,7 @@ Codion Change Log
 - Completion.NORMALIZE configuration value added.
 - Completion.COMBO_BOX_COMPLETION_MODE renamed COMPLETION_MODE.
 - ComboBoxBuilder.normalize() added.
+- ItemComboBoxBuilder.normalize() added.
 
 ## 0.18.21
 ### is.codion.common.db

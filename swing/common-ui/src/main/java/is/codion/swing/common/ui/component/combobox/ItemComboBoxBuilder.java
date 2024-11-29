@@ -64,6 +64,14 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
 	ItemComboBoxBuilder<T> completionMode(Completion.Mode completionMode);
 
 	/**
+	 * Specifies whether to normalize strings during auto completion
+	 * @param normalize true if strings should be normalized during autocomplete
+	 * @return this builder instance
+	 * @see #completionMode(Completion.Mode)
+	 */
+	ItemComboBoxBuilder<T> normalize(Completion.Normalize normalize);
+
+	/**
 	 * Enable mouse wheel scrolling on the combo box
 	 * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
 	 * @return this builder instance

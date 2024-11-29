@@ -50,6 +50,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	private boolean sorted = false;
 	private boolean nullable;
 	private Completion.Mode completionMode = Completion.COMPLETION_MODE.get();
+	private Completion.Normalize normalize = Completion.NORMALIZE.get();
 	private boolean mouseWheelScrolling = true;
 	private boolean mouseWheelScrollingWithWrapAround = false;
 	private int maximumRowCount = -1;
@@ -98,6 +99,12 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	@Override
 	public ItemComboBoxBuilder<T> completionMode(Completion.Mode completionMode) {
 		this.completionMode = requireNonNull(completionMode);
+		return this;
+	}
+
+	@Override
+	public ItemComboBoxBuilder<T> normalize(Completion.Normalize normalize) {
+		this.normalize = requireNonNull(normalize);
 		return this;
 	}
 
@@ -153,7 +160,9 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	protected JComboBox<Item<T>> createComponent() {
 		FilterComboBoxModel<Item<T>> itemComboBoxModel = comboBoxModel == null ? createItemComboBoxModel() : comboBoxModel;
 		JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
-		Completion.enable(comboBox, completionMode);
+		if (editor == null) {
+			Completion.enable(comboBox, completionMode, normalize);
+		}
 		if (renderer != null) {
 			comboBox.setRenderer(renderer);
 		}
