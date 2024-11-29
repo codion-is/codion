@@ -277,7 +277,7 @@ public final class NotesDemo {
 		@Override
 		public EntityConnectionProvider create(User user,
 																					 DomainType domainType,
-																					 String clientTypeId,
+																					 String clientType,
 																					 Version clientVersion) {
 			Database database = new H2DatabaseFactory()
 							.create("jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1");

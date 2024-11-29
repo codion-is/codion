@@ -41,7 +41,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 
 	private final User user;
 	private final UUID clientId;
-	private final String clientTypeId;
+	private final String clientType;
 	private final Locale clientLocale = Locale.getDefault();
 	private final ZoneId clientTimeZone = ZoneId.systemDefault();
 	private final Version clientVersion;
@@ -51,7 +51,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	private DefaultConnectionRequest(DefaultBuilder builder) {
 		this.user = requireNonNull(builder.user, "user must be specified");
 		this.clientId = builder.clientId == null ? UUID.randomUUID() : builder.clientId;
-		this.clientTypeId = requireNonNull(builder.clientTypeId, "clientTypeId must be specified");
+		this.clientType = requireNonNull(builder.clientType, "clientType must be specified");
 		this.clientVersion = builder.clientVersion;
 		this.parameters = builder.parameters == null ? null : unmodifiableMap(builder.parameters);
 	}
@@ -67,8 +67,8 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	}
 
 	@Override
-	public String clientTypeId() {
-		return clientTypeId;
+	public String clientType() {
+		return clientType;
 	}
 
 	@Override
@@ -101,7 +101,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 		Builder builder = new DefaultBuilder()
 						.user(user.copy())
 						.clientId(clientId)
-						.clientTypeId(clientTypeId)
+						.clientType(clientType)
 						.clientVersion(clientVersion);
 		if (parameters != null) {
 			parameters.forEach(builder::parameter);
@@ -122,14 +122,14 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 
 	@Override
 	public String toString() {
-		return user + " [" + clientTypeId + "] - " + clientId;
+		return user + " [" + clientType + "] - " + clientId;
 	}
 
 	static final class DefaultBuilder implements Builder {
 
 		private User user;
 		private UUID clientId;
-		private String clientTypeId;
+		private String clientType;
 		private Version clientVersion;
 		private Map<String, Object> parameters;
 
@@ -148,8 +148,8 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 		}
 
 		@Override
-		public Builder clientTypeId(String clientTypeId) {
-			this.clientTypeId = requireNonNull(clientTypeId);
+		public Builder clientType(String clientType) {
+			this.clientType = requireNonNull(clientType);
 			return this;
 		}
 

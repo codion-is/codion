@@ -74,7 +74,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	private static final String AUTHORIZATION = "Authorization";
 	private static final String BASIC = "Basic ";
 	private static final String DOMAIN_TYPE_NAME = "domainTypeName";
-	private static final String CLIENT_TYPE_ID = "clientTypeId";
+	private static final String CLIENT_TYPE = "clientType";
 	private static final String CLIENT_ID = "clientId";
 	private static final String HTTP = "http://";
 	private static final String HTTPS = "https://";
@@ -101,7 +101,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		this.httpClient = createHttpClient(builder.connectTimeout, builder.executor);
 		this.headers = new String[] {
 						DOMAIN_TYPE_NAME, requireNonNull(builder.domainType, "domainType must be specified").name(),
-						CLIENT_TYPE_ID, requireNonNull(builder.clientTypeId, "clientTypeId must be specified"),
+						CLIENT_TYPE, requireNonNull(builder.clientType, "clientType must be specified"),
 						CLIENT_ID, requireNonNull(builder.clientId, "clientId must be specified").toString(),
 						AUTHORIZATION, createAuthorizationHeader(user)
 		};
@@ -412,7 +412,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		private int socketTimeout = SOCKET_TIMEOUT.get();
 		private int connectTimeout = CONNECT_TIMEOUT.get();
 		private User user;
-		private String clientTypeId;
+		private String clientType;
 		private UUID clientId;
 		private Executor executor = DEFAULT_EXECUTOR;
 
@@ -471,8 +471,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		}
 
 		@Override
-		public Builder clientTypeId(String clientTypeId) {
-			this.clientTypeId = requireNonNull(clientTypeId);
+		public Builder clientType(String clientType) {
+			this.clientType = requireNonNull(clientType);
 			return this;
 		}
 

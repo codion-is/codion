@@ -71,7 +71,7 @@ public final class EmployeesServletLoadTest {
 
 	private static EntityConnectionProvider createApplication(User user) throws CancelException {
 		return HttpEntityConnectionProvider.builder()
-						.clientTypeId("EmployeesServletLoadTest")
+						.clientType("EmployeesServletLoadTest")
 						.domainType(Employees.DOMAIN)
 						.user(user)
 						.build();

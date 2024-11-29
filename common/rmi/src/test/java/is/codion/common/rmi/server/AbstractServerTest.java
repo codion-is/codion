@@ -45,7 +45,7 @@ public class AbstractServerTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 	private static final int PORT = 1234;
-	private static final String CLIENT_TYPE_ID = "AbstractServerTest";
+	private static final String CLIENT_TYPE = "AbstractServerTest";
 
 	private static TestServer server;
 
@@ -62,9 +62,9 @@ public class AbstractServerTest {
 
 	@Test
 	void testConnectionCount() throws RemoteException, ServerException {
-		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(CLIENT_TYPE_ID).build();
-		ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(CLIENT_TYPE_ID).build();
-		ConnectionRequest connectionRequest3 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(CLIENT_TYPE_ID).build();
+		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
+		ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
+		ConnectionRequest connectionRequest3 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		server.connect(connectionRequest);
 		assertEquals(1, server.connectionCount());
 		server.connect(connectionRequest2);
@@ -85,8 +85,8 @@ public class AbstractServerTest {
 
 	@Test
 	void testConnectionLimitReached() throws RemoteException, ServerException {
-		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(CLIENT_TYPE_ID).build();
-		ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(CLIENT_TYPE_ID).build();
+		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
+		ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		server.setConnectionLimit(1);
 		assertEquals(1, server.getConnectionLimit());
 		server.connect(connectionRequest);
@@ -97,7 +97,7 @@ public class AbstractServerTest {
 
 	@Test
 	void testConnect() throws RemoteException, ServerException {
-		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(CLIENT_TYPE_ID).build();
+		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		ServerTest connection = server.connect(connectionRequest);
 		assertNotNull(connection);
 		ServerTest connection2 = server.connect(connectionRequest);
@@ -138,7 +138,7 @@ public class AbstractServerTest {
 		TestAuthenticator.LOGOUT_COUNTER.set(0);
 		TestAuthenticator.CLOSE_COUNTER.set(0);
 
-		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(CLIENT_TYPE_ID).build();
+		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		ServerTest connection = server.connect(connectionRequest);
 		assertNotNull(connection);
 		assertEquals(connectionRequest.clientId(), connection.remoteClient().clientId());
@@ -167,9 +167,9 @@ public class AbstractServerTest {
 	void connectionTheftWrongPassword() throws RemoteException, ServerException {
 		UUID connectionId = UUID.randomUUID();
 		ConnectionRequest connectionRequest = ConnectionRequest.builder()
-						.user(UNIT_TEST_USER).clientId(connectionId).clientTypeId(CLIENT_TYPE_ID).build();
+						.user(UNIT_TEST_USER).clientId(connectionId).clientType(CLIENT_TYPE).build();
 		ConnectionRequest connectionRequest2 = ConnectionRequest.builder()
-						.user(User.user(UNIT_TEST_USER.username(), "test".toCharArray())).clientId(connectionId).clientTypeId(CLIENT_TYPE_ID).build();
+						.user(User.user(UNIT_TEST_USER.username(), "test".toCharArray())).clientId(connectionId).clientType(CLIENT_TYPE).build();
 
 		server.connect(connectionRequest);
 
@@ -183,11 +183,11 @@ public class AbstractServerTest {
 	void connectionTheftWrongUsername() throws RemoteException, ServerException {
 		UUID connectionId = UUID.randomUUID();
 		ConnectionRequest connectionRequest = ConnectionRequest.builder()
-						.user(UNIT_TEST_USER).clientId(connectionId).clientTypeId(CLIENT_TYPE_ID).build();
+						.user(UNIT_TEST_USER).clientId(connectionId).clientType(CLIENT_TYPE).build();
 		ConnectionRequest connectionRequest2 = ConnectionRequest.builder()
 						.user(User.user("test", UNIT_TEST_USER.password()))
 						.clientId(connectionId)
-						.clientTypeId(CLIENT_TYPE_ID)
+						.clientType(CLIENT_TYPE)
 						.build();
 
 		server.connect(connectionRequest);
@@ -312,8 +312,8 @@ public class AbstractServerTest {
 		static final AtomicInteger CLOSE_COUNTER = new AtomicInteger();
 
 		@Override
-		public Optional<String> clientTypeId() {
-			return Optional.of(CLIENT_TYPE_ID);
+		public Optional<String> clientType() {
+			return Optional.of(CLIENT_TYPE);
 		}
 
 		@Override

@@ -146,7 +146,7 @@ public final class EntityService implements AuxiliaryServer {
 					Configuration.stringValue("codion.server.http.keyStorePassword");
 
 	static final String DOMAIN_TYPE_NAME = "domainTypeName";
-	static final String CLIENT_TYPE_ID = "clientTypeId";
+	static final String CLIENT_TYPE = "clientType";
 	static final String CLIENT_ID = "clientId";
 
 	private static final String AUTHORIZATION = "Authorization";
@@ -874,14 +874,14 @@ public final class EntityService implements AuxiliaryServer {
 		}
 
 		String domainTypeName = domainTypeName(context);
-		String clientTypeId = clientTypeId(context);
+		String clientType = clientType(context);
 		UUID clientId = clientId(context);
 		User user = user(context);
 
 		return server.connect(ConnectionRequest.builder()
 						.user(user)
 						.clientId(clientId)
-						.clientTypeId(clientTypeId)
+						.clientType(clientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName)
 						.parameter(Server.CLIENT_HOST, remoteHost(context.req()))
 						.build());
@@ -926,8 +926,8 @@ public final class EntityService implements AuxiliaryServer {
 		return checkHeaderParameter(context.header(DOMAIN_TYPE_NAME), DOMAIN_TYPE_NAME);
 	}
 
-	private static String clientTypeId(Context context) throws ServerAuthenticationException {
-		return checkHeaderParameter(context.header(CLIENT_TYPE_ID), CLIENT_TYPE_ID);
+	private static String clientType(Context context) throws ServerAuthenticationException {
+		return checkHeaderParameter(context.header(CLIENT_TYPE), CLIENT_TYPE);
 	}
 
 	private static UUID clientId(Context context) throws ServerAuthenticationException {

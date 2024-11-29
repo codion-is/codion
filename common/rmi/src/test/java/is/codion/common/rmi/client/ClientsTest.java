@@ -36,14 +36,14 @@ public final class ClientsTest {
 		ConnectionRequest request = ConnectionRequest.builder()
 						.user(user)
 						.clientId(uuid)
-						.clientTypeId("test")
+						.clientType("test")
 						.build();
 		assertEquals(user, request.user());
 		assertEquals(uuid, request.clientId());
 		assertFalse(request.clientVersion().isPresent());
 		assertEquals(Version.version(), request.frameworkVersion());
 		assertEquals(uuid.hashCode(), request.hashCode());
-		assertEquals("test", request.clientTypeId());
+		assertEquals("test", request.clientType());
 		assertTrue(request.toString().contains(user.username()));
 	}
 }

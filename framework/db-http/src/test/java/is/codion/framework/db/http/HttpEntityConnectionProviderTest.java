@@ -34,7 +34,7 @@ public class HttpEntityConnectionProviderTest {
 		try {
 			EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
 							.domainType(TestDomain.DOMAIN)
-							.clientTypeId("test")
+							.clientType("test")
 							.user(User.parse("scott:tiger"))
 							.build();
 			assertTrue(connectionProvider instanceof HttpEntityConnectionProvider);

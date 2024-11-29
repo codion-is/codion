@@ -60,11 +60,11 @@ public interface ServerAdmin extends Remote {
 	Collection<RemoteClient> clients(User user) throws RemoteException;
 
 	/**
-	 * @param clientTypeId the client type for which to retrieve the clients
-	 * @return the clients associated with the given user
+	 * @param clientType the type of clients to retrieve
+	 * @return the clients of the given type
 	 * @throws RemoteException in case of a communication error
 	 */
-	Collection<RemoteClient> clients(String clientTypeId) throws RemoteException;
+	Collection<RemoteClient> clients(String clientType) throws RemoteException;
 
 	/**
 	 * @return the identifiers of the client types connected to the server

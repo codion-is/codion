@@ -352,7 +352,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	private boolean hasConnectionTimedOut(AbstractRemoteEntityConnection connection) {
-		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.remoteClient().clientTypeId());
+		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.remoteClient().clientType());
 		if (timeout == null) {
 			timeout = idleConnectionTimeout;
 		}

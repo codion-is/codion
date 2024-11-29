@@ -32,7 +32,7 @@ public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnec
 						.json(true)
 						.domainType(TestDomain.DOMAIN)
 						.user(UNIT_TEST_USER)
-						.clientTypeId("JsonHttpEntityConnectionTest")
+						.clientType("JsonHttpEntityConnectionTest")
 						.clientId(UUID.randomUUID())
 						.build());
 	}

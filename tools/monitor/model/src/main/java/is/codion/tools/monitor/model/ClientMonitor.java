@@ -123,7 +123,7 @@ public final class ClientMonitor {
 				case CLIENT_HOST:
 					return row.clientHost();
 				case CLIENT_TYPE:
-					return row.clientTypeId();
+					return row.clientType();
 				case CLIENT_VERSION:
 					return row.clientVersion()
 									.map(Object::toString)

@@ -61,7 +61,7 @@ public final class DefaultEntityServerAdminTest {
 		try {
 			ConnectionRequest connectionRequest = ConnectionRequest.builder()
 							.user(ADMIN_USER)
-							.clientTypeId("DefaultEntityServerAdminTest")
+							.clientType("DefaultEntityServerAdminTest")
 							.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain")
 							.build();
 			server.connect(connectionRequest);

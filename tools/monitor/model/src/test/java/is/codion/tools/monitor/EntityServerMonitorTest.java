@@ -71,14 +71,14 @@ public class EntityServerMonitorTest {
 
 	@Test
 	void test() throws Exception {
-		String clientTypeId = EntityServerMonitorTest.class.getName();
+		String clientType = EntityServerMonitorTest.class.getName();
 		RemoteEntityConnectionProvider connectionProvider =
 						RemoteEntityConnectionProvider.builder()
 										.hostName("localhost")
 										.port(CONFIGURATION.port())
 										.registryPort(CONFIGURATION.registryPort())
 										.domainType(TestDomain.DOMAIN)
-										.clientTypeId(clientTypeId)
+										.clientType(clientType)
 										.user(UNIT_TEST_USER)
 										.build();
 		connectionProvider.connection();

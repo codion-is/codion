@@ -63,7 +63,7 @@ public final class ClientServer {
 										.registryPort(REGISTRY_PORT)
 										.domainType(Store.DOMAIN)
 										.user(parse("scott:tiger"))
-										.clientTypeId("ClientServer")
+										.clientType("ClientServer")
 										.build();
 
 		EntityConnection connection = connectionProvider.connection();
@@ -100,7 +100,7 @@ public final class ClientServer {
 										.https(false)
 										.domainType(Store.DOMAIN)
 										.user(parse("scott:tiger"))
-										.clientTypeId("ClientServer")
+										.clientType("ClientServer")
 										.build();
 
 		EntityConnection connection = connectionProvider.connection();

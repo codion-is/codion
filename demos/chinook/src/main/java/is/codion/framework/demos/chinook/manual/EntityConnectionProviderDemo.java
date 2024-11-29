@@ -66,7 +66,7 @@ public final class EntityConnectionProviderDemo {
 						RemoteEntityConnectionProvider.builder()
 										.domainType(Chinook.DOMAIN)
 										.user(User.parse("scott:tiger"))
-										.clientTypeId(EntityConnectionProviderDemo.class.getSimpleName())
+										.clientType(EntityConnectionProviderDemo.class.getSimpleName())
 										.hostName("localhost")
 										.registryPort(1099)
 										.build();
@@ -87,7 +87,7 @@ public final class EntityConnectionProviderDemo {
 		HttpEntityConnectionProvider connectionProvider =
 						HttpEntityConnectionProvider.builder()
 										.domainType(Chinook.DOMAIN)
-										.clientTypeId(EntityConnectionProviderDemo.class.getSimpleName())
+										.clientType(EntityConnectionProviderDemo.class.getSimpleName())
 										.user(User.parse("scott:tiger"))
 										.hostName("localhost")
 										.port(8080)

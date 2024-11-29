@@ -472,7 +472,7 @@ public class EntityServiceTest {
 						.POST(bodyPublisher)
 						.headers(new String[] {
 										EntityService.DOMAIN_TYPE_NAME, TestDomain.DOMAIN.name(),
-										EntityService.CLIENT_TYPE_ID, "EntityJavalinTest",
+										EntityService.CLIENT_TYPE, "EntityJavalinTest",
 										EntityService.CLIENT_ID, CLIENT_ID_STRING,
 										"Authorization", createAuthorizationHeader()
 						})

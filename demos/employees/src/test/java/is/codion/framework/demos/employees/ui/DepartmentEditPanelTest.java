@@ -35,7 +35,7 @@ public class DepartmentEditPanelTest extends EntityEditPanelTestUnit {
 	public DepartmentEditPanelTest() {
 		super(new SwingEntityEditModel(Department.TYPE, EntityConnectionProvider.builder()
 										.domainType(Employees.DOMAIN)
-										.clientTypeId(DepartmentEditPanel.class.getName())
+										.clientType(DepartmentEditPanel.class.getName())
 										.user(UNIT_TEST_USER)
 										.build()),
 						DepartmentEditPanel::new);

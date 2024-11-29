@@ -47,7 +47,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private final DomainType domainType;
 	private final UUID clientId;
 	private final Version clientVersion;
-	private final String clientTypeId;
+	private final String clientType;
 	private final Consumer<EntityConnectionProvider> onClose;
 
 	private EntityConnection entityConnection;
@@ -61,7 +61,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		this.user = requireNonNull(builder.user, "A user must be specified");
 		this.domainType = requireNonNull(builder.domainType, "A domainType must be specified");
 		this.clientId = requireNonNull(builder.clientId, "A clientId must be specified");
-		this.clientTypeId = builder.clientTypeId;
+		this.clientType = builder.clientType;
 		this.clientVersion = builder.clientVersion;
 		this.onClose = builder.onClose;
 	}
@@ -93,8 +93,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	}
 
 	@Override
-	public final String clientTypeId() {
-		return clientTypeId;
+	public final String clientType() {
+		return clientType;
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		private User user;
 		private DomainType domainType;
 		private UUID clientId = UUID.randomUUID();
-		private String clientTypeId;
+		private String clientType;
 		private Version clientVersion;
 		private Consumer<EntityConnectionProvider> onClose;
 
@@ -225,8 +225,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		}
 
 		@Override
-		public final B clientTypeId(String clientTypeId) {
-			this.clientTypeId = requireNonNull(clientTypeId);
+		public final B clientType(String clientType) {
+			this.clientType = requireNonNull(clientType);
 			return self();
 		}
 

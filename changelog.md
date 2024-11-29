@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.22
+### is.codion.common.rmi
+- ConnectionRequest.clientTypeId() renamed clientType().
 ### is.codion.swing.common.ui
 - Completion.NORMALIZE configuration value added.
 - Completion.COMBO_BOX_COMPLETION_MODE renamed COMPLETION_MODE.

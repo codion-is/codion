@@ -168,10 +168,10 @@ public interface HttpEntityConnection extends EntityConnection {
 		Builder user(User user);
 
 		/**
-		 * @param clientTypeId the client type id
+		 * @param clientType the client type
 		 * @return this builder instance
 		 */
-		Builder clientTypeId(String clientTypeId);
+		Builder clientType(String clientType);
 
 		/**
 		 * @param clientId the client id

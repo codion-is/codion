@@ -1388,15 +1388,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 			 * Creates a new {@link EntityConnectionProvider} instance.
 			 * @param user the user, may be null in case login is not required {@link Builder#loginRequired(boolean)}.
 			 * @param domainType the domain type
-			 * @param clientTypeId the client type id
+			 * @param clientType the client type
 			 * @param clientVersion the client version
 			 * @return a new {@link EntityConnectionProvider} instance.
 			 */
-			default EntityConnectionProvider create(User user, DomainType domainType, String clientTypeId, Version clientVersion) {
+			default EntityConnectionProvider create(User user, DomainType domainType, String clientType, Version clientVersion) {
 				return EntityConnectionProvider.builder()
 								.user(user)
 								.domainType(domainType)
-								.clientTypeId(clientTypeId)
+								.clientType(clientType)
 								.clientVersion(clientVersion)
 								.build();
 			}

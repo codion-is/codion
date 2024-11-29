@@ -67,7 +67,7 @@ public final class ChinookLoadTest {
 		public EntityConnectionProvider apply(User user) {
 			EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
 							.domainType(Chinook.DOMAIN)
-							.clientTypeId(ChinookAppPanel.class.getName())
+							.clientType(ChinookAppPanel.class.getName())
 							.clientVersion(ChinookAppModel.VERSION)
 							.user(user)
 							.build();

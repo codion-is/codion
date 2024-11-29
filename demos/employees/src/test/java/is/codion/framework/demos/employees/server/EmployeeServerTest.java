@@ -71,7 +71,7 @@ public final class EmployeeServerTest {
 		EmployeeService employeeService = remoteServer.connect(ConnectionRequest.builder()
 						.user(User.parse("scott:tiger"))
 						.clientId(clientId)
-						.clientTypeId("EmployeeServerTest")
+						.clientType("EmployeeServerTest")
 						.build());
 
 		Collection<Entity> employees = employeeService.employees();

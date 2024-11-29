@@ -195,11 +195,11 @@ public final class ClientTutorial {
 
 		@Override
 		public EntityConnectionProvider create(User user, DomainType domainType,
-																					 String clientTypeId, Version clientVersion) {
+																					 String clientType, Version clientVersion) {
 			return LocalEntityConnectionProvider.builder()
 							.user(user)
 							.domain(new Chinook())
-							.clientTypeId(clientTypeId)
+							.clientType(clientType)
 							.build();
 		}
 	}

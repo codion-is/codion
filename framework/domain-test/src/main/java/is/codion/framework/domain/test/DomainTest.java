@@ -89,7 +89,7 @@ public class DomainTest {
 	public DomainTest(Domain domain, Function<EntityConnection, EntityFactory> entityFactory, User user) {
 		this.connectionProvider = LocalEntityConnectionProvider.builder()
 						.domain(requireNonNull(domain))
-						.clientTypeId(getClass().getName())
+						.clientType(getClass().getName())
 						.user(requireNonNull(user))
 						.build();
 		this.entityFactory = requireNonNull(entityFactory);

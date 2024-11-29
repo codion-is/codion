@@ -123,7 +123,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	Collection<User> connectionPoolUsers();
 
 	/**
-	 * @return client type specific idle connection timeouts, mapped to clientTypeId
+	 * @return client type specific idle connection timeouts, mapped to clientType
 	 */
 	Map<String, Integer> clientTypeIdleConnectionTimeouts();
 
@@ -175,7 +175,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 		Builder connectionPoolUsers(Collection<User> connectionPoolUsers);
 
 		/**
-		 * @param clientTypeIdleConnectionTimeouts client type specific idle connection timeouts, mapped to clientTypeId
+		 * @param clientTypeIdleConnectionTimeouts client type specific idle connection timeouts, mapped to clientType
 		 * @return this builder instance
 		 */
 		Builder clientTypeIdleConnectionTimeouts(Map<String, Integer> clientTypeIdleConnectionTimeouts);

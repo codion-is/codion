@@ -140,7 +140,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	/**
 	 * @return the String identifying the client type for this connection provider
 	 */
-	String clientTypeId();
+	String clientType();
 
 	/**
 	 * @return the client version
@@ -202,10 +202,10 @@ public interface EntityConnectionProvider extends AutoCloseable {
 		B clientId(UUID clientId);
 
 		/**
-		 * @param clientTypeId a String identifying the client type for this connection provider
+		 * @param clientType a String identifying the client type for this connection provider
 		 * @return this builder instance
 		 */
-		B clientTypeId(String clientTypeId);
+		B clientType(String clientType);
 
 		/**
 		 * @param clientVersion the client version

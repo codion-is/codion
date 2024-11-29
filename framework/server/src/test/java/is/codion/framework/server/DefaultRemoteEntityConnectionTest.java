@@ -53,7 +53,7 @@ public class DefaultRemoteEntityConnectionTest {
 	void wrongUsername() {
 		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
 										.user(User.user("foo", "bar".toCharArray()))
-										.clientTypeId("DefaultRemoteEntityConnectionTestClient")
+										.clientType("DefaultRemoteEntityConnectionTestClient")
 										.build())
 						.build();
 		assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1234));
@@ -63,7 +63,7 @@ public class DefaultRemoteEntityConnectionTest {
 	void wrongPassword() {
 		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
 										.user(User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray()))
-										.clientTypeId("DefaultRemoteEntityConnectionTestClient")
+										.clientType("DefaultRemoteEntityConnectionTestClient")
 										.build())
 						.build();
 		assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1235));
@@ -73,7 +73,7 @@ public class DefaultRemoteEntityConnectionTest {
 	void rollbackOnClose() throws Exception {
 		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
 										.user(UNIT_TEST_USER)
-										.clientTypeId("DefaultRemoteEntityConnectionTestClient")
+										.clientType("DefaultRemoteEntityConnectionTestClient")
 										.build())
 						.build();
 		DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
@@ -95,7 +95,7 @@ public class DefaultRemoteEntityConnectionTest {
 		try {
 			RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
 											.user(UNIT_TEST_USER)
-											.clientTypeId("DefaultRemoteEntityConnectionTestClient")
+											.clientType("DefaultRemoteEntityConnectionTestClient")
 											.build())
 							.build();
 			adapter = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1240);

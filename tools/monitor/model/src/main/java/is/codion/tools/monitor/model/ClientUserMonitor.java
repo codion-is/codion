@@ -197,7 +197,7 @@ public final class ClientUserMonitor {
 			try {
 				List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items().get());
 				for (RemoteClient remoteClient : server.clients()) {
-					UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientTypeId(),
+					UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientType(),
 									remoteClient.clientHost(), LocalDateTime.now(), remoteClient.clientId(),
 									remoteClient.clientVersion().orElse(null), remoteClient.frameworkVersion());
 					int index = items.indexOf(newUserInfo);
@@ -269,7 +269,7 @@ public final class ClientUserMonitor {
 				case USERNAME_COLUMN:
 					return row.user().username();
 				case CLIENT_TYPE_COLUMN:
-					return row.clientTypeId();
+					return row.clientType();
 				case CLIENT_VERSION_COLUMN:
 					return row.clientVersion();
 				case FRAMEWORK_VERSION_COLUMN:
@@ -289,7 +289,7 @@ public final class ClientUserMonitor {
 	private static final class UserInfo {
 
 		private final User user;
-		private final String clientTypeId;
+		private final String clientType;
 		private final String clientHost;
 		private final Version clientVersion;
 		private final Version frameworkVersion;
@@ -297,10 +297,10 @@ public final class ClientUserMonitor {
 		private UUID clientId;
 		private int connectionCount = 1;
 
-		private UserInfo(User user, String clientTypeId, String clientHost, LocalDateTime lastSeen,
+		private UserInfo(User user, String clientType, String clientHost, LocalDateTime lastSeen,
 										 UUID clientId, Version clientVersion, Version frameworkVersion) {
 			this.user = user;
-			this.clientTypeId = clientTypeId;
+			this.clientType = clientType;
 			this.clientHost = clientHost;
 			this.lastSeen = lastSeen;
 			this.clientId = clientId;
@@ -312,8 +312,8 @@ public final class ClientUserMonitor {
 			return user;
 		}
 
-		public String clientTypeId() {
-			return clientTypeId;
+		public String clientType() {
+			return clientType;
 		}
 
 		public String clientHost() {
@@ -364,13 +364,13 @@ public final class ClientUserMonitor {
 			UserInfo that = (UserInfo) obj;
 
 			return this.user.username().equalsIgnoreCase(that.user.username()) &&
-							this.clientTypeId.equals(that.clientTypeId) && this.clientHost.equals(that.clientHost);
+							this.clientType.equals(that.clientType) && this.clientHost.equals(that.clientHost);
 		}
 
 		@Override
 		public int hashCode() {
 			int result = user.username().toLowerCase().hashCode();
-			result = 31 * result + clientTypeId.hashCode();
+			result = 31 * result + clientType.hashCode();
 			result = 31 * result + clientHost.hashCode();
 
 			return result;

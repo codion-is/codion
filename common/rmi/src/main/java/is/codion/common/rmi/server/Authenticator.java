@@ -34,11 +34,11 @@ import static java.util.stream.StreamSupport.stream;
 public interface Authenticator {
 
 	/**
-	 * Returns the the id of the client type for which to use this authenticator.
-	 * If none is specified, this authenticator is shared between all clients.
+	 * Returns the the client type for which to use this authenticator.
+	 * If none is specified, this authenticator is shared between all client types.
 	 * @return the String identifying the client type for which to use this authenticator or an empty optional in case this authenticator should be shared
 	 */
-	default Optional<String> clientTypeId() {
+	default Optional<String> clientType() {
 		return Optional.empty();
 	}
 

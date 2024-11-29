@@ -78,7 +78,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 							.port(port)
 							.securePort(securePort)
 							.user(user())
-							.clientTypeId(clientTypeId())
+							.clientType(clientType())
 							.clientId(clientId())
 							.json(json)
 							.https(https)

@@ -501,8 +501,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private EntityConnectionProvider initializeConnectionProvider(User user, DomainType domainType,
-																																String clientTypeId, Version clientVersion) {
-		return connectionProviderFactory.create(user, domainType, clientTypeId, clientVersion);
+																																String clientType, Version clientVersion) {
+		return connectionProviderFactory.create(user, domainType, clientType, clientVersion);
 	}
 
 	private static String userInfo(EntityConnectionProvider connectionProvider) {

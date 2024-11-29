@@ -91,7 +91,7 @@ public class EntityServerTest {
 		new TestDomain();
 		ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.clientTypeId("ClientTypeID")
+						.clientType("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
@@ -107,7 +107,7 @@ public class EntityServerTest {
 	void testWrongPassword() {
 		assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.builder()
 						.user(User.user(UNIT_TEST_USER.username(), "foobar".toCharArray()))
-						.clientTypeId(getClass().getSimpleName())
+						.clientType(getClass().getSimpleName())
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build()));
 	}
 
@@ -135,7 +135,7 @@ public class EntityServerTest {
 	void configureConnection() throws Exception {
 		ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.clientTypeId("ClientTypeID")
+						.clientType("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, ConfigureDb.class.getSimpleName()).build();
 		try (RemoteEntityConnection connection = server.connect(connectionRequestTwo)) {
 			//throws exception if table does not exist, which is created during connection configuration
@@ -147,7 +147,7 @@ public class EntityServerTest {
 	void test() throws Exception {
 		ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.clientTypeId("ClientTypeID").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+						.clientType("ClientType").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 
 		RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
 		assertTrue(remoteConnectionOne.connected());
@@ -158,7 +158,7 @@ public class EntityServerTest {
 		assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER.username()));
 
 		try {
-			server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId("ClientTypeID").build());
+			server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).clientType("ClientType").build());
 			fail();
 		}
 		catch (LoginException ignored) {}
@@ -166,7 +166,7 @@ public class EntityServerTest {
 		try {
 			server.connect(ConnectionRequest.builder()
 							.user(UNIT_TEST_USER)
-							.clientTypeId("ClientTypeID")
+							.clientType("ClientType")
 							.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE,
 											new EmptyDomain().type().name()).build());
 			fail();
@@ -175,7 +175,7 @@ public class EntityServerTest {
 
 		ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.clientTypeId("ClientTypeID")
+						.clientType("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
 		admin.setLoggingEnabled(connectionRequestTwo.clientId(), true);
@@ -188,11 +188,11 @@ public class EntityServerTest {
 
 		Collection<RemoteClient> clients = admin.clients(User.user(UNIT_TEST_USER.username()));
 		assertEquals(2, clients.size());
-		clients = admin.clients("ClientTypeID");
+		clients = admin.clients("ClientType");
 		assertEquals(2, clients.size());
 		Collection<String> clientTypes = admin.clientTypes();
 		assertEquals(1, clientTypes.size());
-		assertTrue(clientTypes.contains("ClientTypeID"));
+		assertTrue(clientTypes.contains("ClientType"));
 
 		Collection<User> users = admin.users();
 		assertEquals(1, users.size());
@@ -240,19 +240,19 @@ public class EntityServerTest {
 		//testing with the TestAuthenticator
 		admin.setConnectionLimit(3);
 		assertEquals(3, admin.getConnectionLimit());
-		final String testClientTypeId = "TestAuthenticator";
+		String testClientType = "TestAuthenticator";
 		User john = User.parse("john:hello");
 		ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()
 						.user(john)
-						.clientTypeId(testClientTypeId)
+						.clientType(testClientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		ConnectionRequest connectionRequestHelen = ConnectionRequest.builder()
 						.user(User.parse("helen:juno"))
-						.clientTypeId(testClientTypeId)
+						.clientType(testClientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		ConnectionRequest connectionRequestInvalid = ConnectionRequest.builder()
 						.user(User.parse("foo:bar"))
-						.clientTypeId(testClientTypeId)
+						.clientType(testClientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		server.connect(connectionRequestJohn);
 		RemoteClient clientJohn = admin.clients(john).iterator().next();
@@ -263,7 +263,7 @@ public class EntityServerTest {
 			fail("Should not be able to connect with an invalid user");
 		}
 		catch (LoginException ignored) {/*ignored*/}
-		Collection<RemoteClient> employeesClients = admin.clients(testClientTypeId);
+		Collection<RemoteClient> employeesClients = admin.clients(testClientType);
 		assertEquals(2, employeesClients.size());
 		for (RemoteClient employeesClient : employeesClients) {
 			assertEquals(UNIT_TEST_USER, employeesClient.databaseUser());
@@ -282,7 +282,7 @@ public class EntityServerTest {
 										.port(CONFIGURATION.port())
 										.registryPort(CONFIGURATION.registryPort())
 										.domainType(TestDomain.DOMAIN)
-										.clientTypeId("TestClient")
+										.clientType("TestClient")
 										.user(UNIT_TEST_USER)
 										.build();
 
@@ -337,7 +337,7 @@ public class EntityServerTest {
 						.adminUser(User.parse("scott:tiger"))
 						.database(Database.instance())
 						.connectionPoolUsers(singletonList(UNIT_TEST_USER))
-						.clientTypeIdleConnectionTimeouts(singletonMap("ClientTypeID", 10000))
+						.clientTypeIdleConnectionTimeouts(singletonMap("ClientType", 10000))
 						.domainClassNames(asList("is.codion.framework.server.TestDomain", "is.codion.framework.server.ConfigureDb"))
 						.clientLogging(true)
 						.sslEnabled(true)

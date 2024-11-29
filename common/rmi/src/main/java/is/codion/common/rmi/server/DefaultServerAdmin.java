@@ -122,8 +122,8 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	}
 
 	@Override
-	public final Collection<RemoteClient> clients(String clientTypeId) {
-		return server.clients(clientTypeId);
+	public final Collection<RemoteClient> clients(String clientType) {
+		return server.clients(clientType);
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	@Override
 	public final Collection<String> clientTypes() {
 		return clients().stream()
-						.map(ConnectionRequest::clientTypeId)
+						.map(ConnectionRequest::clientType)
 						.collect(toSet());
 	}
 
