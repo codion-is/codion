@@ -241,31 +241,33 @@ public final class Completion {
 		}
 
 		@Override
-		public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
-			int offs = offset;
-			if (selecting() || comboBoxModel().getSize() == 0) {
-				return;
-			}
-			super.insertString(offs, str, a);
-			boolean match = false;
-			Object item = lookupItem(getText(0, getLength()));
-			if (item != null) {
-				match = true;
-				setSelectedItem(item);
+		public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+			if (selecting()) {
+				super.insertString(offs, str, a);
 			}
 			else {
-				item = comboBox().getSelectedItem();
-				offs = offs - str.length();
+				trimSearchString(offs);
+				Object item = lookupItem(searchPattern(str));
+				boolean match = false;
+				if (item != null) {
+					searchString.insert(Math.min(searchString.length(), offs), str);
+					match = true;
+					setSelectedItem(item);
+				}
+				else {
+					item = comboBox().getSelectedItem();
+					offs = offs - str.length();
+				}
+				setTextAccordingToSelectedItem();
+				if (match) {
+					offs = maximumMatchingOffset(searchString.toString(), item);
+					searchString.replace(0, searchString.length(), getText(0, offs));
+				}
+				else {
+					offs += str.length();
+				}
+				highlightCompletedText(offs);
 			}
-
-			if (match) {
-				offs = maximumMatchingOffset(getText(0, getLength()), item);
-			}
-			else {
-				offs += str.length();
-			}
-			setTextAccordingToSelectedItem();
-			highlightCompletedText(offs);
 		}
 
 		// calculates how many characters are predetermined by the given pattern.
@@ -313,21 +315,23 @@ public final class Completion {
 		}
 
 		@Override
-		public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
-			int offs = offset;
+		public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
 			if (selecting()) {
-				return;
-			}
-			super.insertString(offs, str, a);
-			Object item = lookupItem(getText(0, getLength()));
-			if (item != null) {
-				setSelectedItem(item);
+				super.insertString(offs, str, a);
 			}
 			else {
-				offs = offs - str.length();
+				trimSearchString(offs);
+				Object item = lookupItem(searchPattern(str));
+				if (item != null) {
+					searchString.insert(offs, str);
+					setSelectedItem(item);
+				}
+				else {
+					offs = offs - str.length();
+				}
+				setTextAccordingToSelectedItem();
+				highlightCompletedText(offs + str.length());
 			}
-			setTextAccordingToSelectedItem();
-			highlightCompletedText(offs + str.length());
 		}
 	}
 }

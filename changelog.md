@@ -7,6 +7,7 @@ Codion Change Log
 - Completion.COMBO_BOX_COMPLETION_MODE renamed COMPLETION_MODE.
 - ComboBoxBuilder.normalize() added.
 - ItemComboBoxBuilder.normalize() added.
+- Completion, CompletionDocument refactored to support accented character input in Linux.
 
 ## 0.18.21
 ### is.codion.common.db

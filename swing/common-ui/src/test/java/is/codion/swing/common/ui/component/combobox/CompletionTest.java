@@ -18,17 +18,319 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
+import is.codion.swing.common.ui.component.combobox.Completion.Mode;
+import is.codion.swing.common.ui.component.combobox.Completion.Normalize;
+
+import org.assertj.swing.edt.GuiActionRunner;
+import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.JTextComponentFixture;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
+import java.lang.reflect.InvocationTargetException;
 
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static org.assertj.swing.core.KeyPressInfo.keyCode;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class CompletionTest {
+
+	private static FrameFixture window;
+
+	@BeforeAll
+	public static void setUp() throws Exception {
+		TestFrame frame = GuiActionRunner.execute(TestFrame::new);
+		window = new FrameFixture(frame);
+		window.show();
+	}
+
+	@AfterAll
+	public static void tearDown() {
+		window.cleanUp();
+	}
 
 	@Test
 	void setTwice() {
 		JComboBox<?> comboBox = Completion.maximumMatch(new JComboBox<>());
 		assertThrows(IllegalStateException.class, () -> Completion.maximumMatch(comboBox));
+	}
+
+	@Test
+	void autoComplete() throws InterruptedException, InvocationTargetException {
+		JTextComponentFixture editor = window.textBox("autoCompleteEditor");
+		JComboBox<String> comboBox = window.comboBox("autoCompleteComboBox").target();
+		editor.enterText("j");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("r");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("o");
+		assertEquals(6, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(6, comboBox.getSelectedIndex());
+		editor.enterText("u");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("jú");
+		assertEquals(9, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("u");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("an");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("u");
+		assertEquals(3, comboBox.getSelectedIndex());
+		editor.enterText("s");
+		assertEquals(4, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("ú");
+		assertEquals(5, comboBox.getSelectedIndex());
+		editor.selectAll();
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("jú");
+		assertEquals(9, comboBox.getSelectedIndex());
+		editor.enterText("ní");
+		assertEquals(11, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("i");
+		assertEquals(10, comboBox.getSelectedIndex());
+
+		comboBox.setSelectedItem("Janúar");
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("janu");
+		assertEquals(3, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("ú");
+		assertEquals(5, comboBox.getSelectedIndex());
+	}
+
+	@Test
+	void autoCompleteNormalize() throws InterruptedException, InvocationTargetException {
+		JTextComponentFixture editor = window.textBox("autoCompleteNormalizeEditor");
+		JComboBox<String> comboBox = window.comboBox("autoCompleteNormalizeComboBox").target();
+		editor.enterText("j");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("r");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("o");
+		assertEquals(6, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(6, comboBox.getSelectedIndex());
+		editor.enterText("u");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("jú");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("u");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("an");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("u");
+		assertEquals(3, comboBox.getSelectedIndex());
+		editor.enterText("s");
+		assertEquals(4, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("ú");
+		assertEquals(4, comboBox.getSelectedIndex());
+		editor.selectAll();
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("jú");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.enterText("ní");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("í");
+		assertEquals(8, comboBox.getSelectedIndex());
+
+		comboBox.setSelectedItem("Janúar");
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("janu");
+		assertEquals(3, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("ú");
+		assertEquals(3, comboBox.getSelectedIndex());
+	}
+
+	@Test
+	void maximumMatch() throws InterruptedException, InvocationTargetException {
+		JTextComponentFixture editor = window.textBox("maximumMatchEditor");
+		JComboBox<String> comboBox = window.comboBox("maximumMatchComboBox").target();
+		editor.enterText("j");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("r");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("o");
+		assertEquals(6, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(6, comboBox.getSelectedIndex());
+		editor.enterText("u");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("jú");
+		assertEquals(9, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("u");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("an");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("u");
+		assertEquals(3, comboBox.getSelectedIndex());
+		editor.enterText("s");
+		assertEquals(4, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("ú");
+		assertEquals(5, comboBox.getSelectedIndex());
+		editor.selectAll();
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("jú");
+		assertEquals(9, comboBox.getSelectedIndex());
+		editor.enterText("ní");
+		assertEquals(11, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("i");
+		assertEquals(10, comboBox.getSelectedIndex());
+
+		comboBox.setSelectedItem("Janúar");
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("janu");
+		assertEquals(3, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("ú");
+		assertEquals(5, comboBox.getSelectedIndex());
+	}
+
+	@Test
+	void maximumMatchNormalize() throws InterruptedException, InvocationTargetException {
+		JTextComponentFixture editor = window.textBox("maximumMatchNormalizeEditor");
+		JComboBox<String> comboBox = window.comboBox("maximumMatchNormalizeComboBox").target();
+		editor.enterText("j");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("r");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("o");
+		assertEquals(6, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(6, comboBox.getSelectedIndex());
+		editor.enterText("u");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("jú");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("u");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("an");
+		assertEquals(1, comboBox.getSelectedIndex());
+		editor.enterText("u");
+		assertEquals(3, comboBox.getSelectedIndex());
+		editor.enterText("s");
+		assertEquals(4, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("ú");
+		assertEquals(4, comboBox.getSelectedIndex());
+		editor.selectAll();
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("jú");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.enterText("ní");
+		assertEquals(8, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("í");
+		assertEquals(8, comboBox.getSelectedIndex());
+
+		comboBox.setSelectedItem("Janúar");
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		assertEquals(0, comboBox.getSelectedIndex());
+		editor.enterText("janu");
+		assertEquals(3, comboBox.getSelectedIndex());
+		editor.pressAndReleaseKey(keyCode(KeyEvent.VK_BACK_SPACE));
+		editor.enterText("ú");
+		assertEquals(3, comboBox.getSelectedIndex());
+	}
+
+	private static final class TestFrame extends JFrame {
+
+		private TestFrame() throws HeadlessException {
+			JComboBox<String> autoComplete = createComboBox();
+			autoComplete.setName("autoCompleteComboBox");
+			autoComplete.getEditor().getEditorComponent().setName("autoCompleteEditor");
+			Completion.enable(autoComplete, Mode.AUTOCOMPLETE, Normalize.NO);
+
+			JComboBox<String> autoCompleteNormalize = createComboBox();
+			autoCompleteNormalize.setName("autoCompleteNormalizeComboBox");
+			autoCompleteNormalize.getEditor().getEditorComponent().setName("autoCompleteNormalizeEditor");
+			Completion.enable(autoCompleteNormalize, Mode.AUTOCOMPLETE, Normalize.YES);
+
+			JComboBox<String> maximumMatch = createComboBox();
+			maximumMatch.setName("maximumMatchComboBox");
+			maximumMatch.getEditor().getEditorComponent().setName("maximumMatchEditor");
+			Completion.enable(maximumMatch, Mode.MAXIMUM_MATCH, Normalize.NO);
+
+			JComboBox<String> maximumMatchNormalize = createComboBox();
+			maximumMatchNormalize.setName("maximumMatchNormalizeComboBox");
+			maximumMatchNormalize.getEditor().getEditorComponent().setName("maximumMatchNormalizeEditor");
+			Completion.enable(maximumMatchNormalize, Mode.MAXIMUM_MATCH, Normalize.YES);
+
+			setLayout(gridLayout(0, 1));
+			add(autoComplete);
+			add(autoCompleteNormalize);
+			add(maximumMatch);
+			add(maximumMatchNormalize);
+		}
+	}
+
+	private static JComboBox<String> createComboBox() {
+
+		return new JComboBox<>(new String[] {
+						"-",      //0
+						"Jani",   //1
+						"Janí",   //2
+						"Januar", //3
+						"Janus",  //4
+						"Janúar", //5
+						"Jon",    //6
+						"Jón",    //7
+						"Juni",   //8
+						"Jún",    //9
+						"Júni",   //10
+						"Júní"    //11
+		});
 	}
 }

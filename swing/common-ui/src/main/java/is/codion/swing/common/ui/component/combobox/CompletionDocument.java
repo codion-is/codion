@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.combobox;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
@@ -50,6 +51,7 @@ class CompletionDocument extends PlainDocument {
 	private final JComboBox<?> comboBox;
 	private final ComboBoxModel<?> comboBoxModel;
 	private final boolean normalize;
+	protected final StringBuilder searchString = new StringBuilder();
 	// flag to indicate if setSelectedItem has been called
 	// subsequent calls to remove/insertString should be ignored
 	private boolean selecting = false;
@@ -71,16 +73,31 @@ class CompletionDocument extends PlainDocument {
 	}
 
 	@Override
-	public final void remove(int offset, int len) throws BadLocationException {
-		int offs = offset;
+	public void replace(int offset, int length, String string, AttributeSet attrs) throws BadLocationException {
 		if (selecting) {
-			return;
+			super.replace(offset, length, string, attrs);
 		}
-		if (hitBackspace) {
+		else if (string != null && string.length() > 0) {
+			if (length > 0) {
+				remove(offset, length);
+			}
+			insertString(offset, string, attrs);
+		}
+	}
+
+	@Override
+	public final void remove(int offs, int length) throws BadLocationException {
+		if (selecting) {
+			super.remove(offs, length);
+		}
+		else if (hitBackspace) {
 			hitBackspace = false;
 			boolean selectFirst = false;
 			// user hit backspace => move the selection backwards
 			// old item keeps being selected unless we've backspaced beyond the first character
+			if (searchString.length() > 0) {
+				searchString.replace(searchString.length() - 1, searchString.length(), "");
+			}
 			if (offs > 0) {
 				if (hitBackspaceOnSelection) {
 					offs--;
@@ -92,14 +109,11 @@ class CompletionDocument extends PlainDocument {
 			else {
 				selectFirst = true;
 			}
-			if (selectFirst && comboBoxModel.getSize() > 0) {
+			if (selectFirst) {
 				setSelectedItem(comboBoxModel.getElementAt(0));
 				setTextAccordingToSelectedItem();
 			}
 			highlightCompletedText(offs);
-		}
-		else {
-			super.remove(offs, len);
 		}
 	}
 
@@ -132,44 +146,46 @@ class CompletionDocument extends PlainDocument {
 		}
 	}
 
+	protected final void trimSearchString(int offset) {
+		searchString.replace(Math.min(searchString.length(), offset), searchString.length(), "");
+	}
+
+	protected final String searchPattern(String string) {
+		return new StringBuilder(searchString).insert(searchString.length(), string).toString();
+	}
+
 	protected final void highlightCompletedText(int start) {
 		editorComponent.setCaretPosition(getLength());
 		editorComponent.moveCaretPosition(start);
 	}
 
-	/**
-	 * @param item Value to set for property 'selectedItem'.
-	 */
 	protected final void setSelectedItem(Object item) {
 		selecting = true;
 		comboBoxModel.setSelectedItem(item);
 		selecting = false;
 	}
 
-	protected final Object lookupItem(String pattern) {
+	protected final Object lookupItem(String startsWith) {
 		Object selectedItem = comboBoxModel.getSelectedItem();
 		// only search for a different item if the currently selected does not match
-		if (selectedItem != null && startsWithIgnoreCase(selectedItem.toString(), pattern, normalize)) {
+		if (selectedItem != null && startsWithIgnoreCase(selectedItem.toString(), startsWith, normalize)) {
 			return selectedItem;
 		}
-		else {
-			for (int i = 0; i < comboBoxModel.getSize(); i++) {
-				Object currentItem = comboBoxModel.getElementAt(i);
-				// current item starts with the pattern?
-				if (currentItem != null && startsWithIgnoreCase(currentItem.toString(), pattern, normalize)) {
-					return currentItem;
-				}
+		for (int i = 0; i < comboBoxModel.getSize(); i++) {
+			Object currentItem = comboBoxModel.getElementAt(i);
+			if (currentItem != null && startsWithIgnoreCase(currentItem.toString(), startsWith, normalize)) {
+				return currentItem;
 			}
 		}
 		// no item starts with the pattern => return null
 		return null;
 	}
 
-	protected static boolean startsWithIgnoreCase(String str1, String str2, boolean normalize) {
-		String one = normalize ? normalize(str1) : str1;
-		String two = normalize ? normalize(str2) : str2;
+	protected static boolean startsWithIgnoreCase(String string, String startsWith, boolean normalize) {
+		string = normalize ? normalize(string) : string;
+		startsWith = normalize ? normalize(startsWith) : startsWith;
 
-		return one.toUpperCase().startsWith(two.toUpperCase());
+		return string.toUpperCase().startsWith(startsWith.toUpperCase());
 	}
 
 	protected static String normalize(String string) {

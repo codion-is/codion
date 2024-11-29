@@ -5,4 +5,5 @@ dependencies {
     api(libs.ikonli.swing)
 
     testImplementation(libs.ikonli.foundation.pack)
+    testImplementation(libs.assertj.swing)
 }
