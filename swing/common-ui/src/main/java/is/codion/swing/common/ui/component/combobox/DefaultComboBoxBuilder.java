@@ -47,7 +47,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 
 	private boolean editable = false;
 	private Completion.Mode completionMode = Completion.COMPLETION_MODE.get();
-	private boolean normalize = Completion.NORMALIZE.get().equals(Completion.Normalize.YES);
+	private boolean normalize = true;
 	private ListCellRenderer<T> renderer;
 	private ComboBoxEditor editor;
 	private boolean mouseWheelScrolling = true;
@@ -148,7 +148,10 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 			comboBox.setEditable(true);
 		}
 		if (!editable && editor == null) {
-			Completion.enable(comboBox, completionMode, normalize ? Completion.Normalize.YES : Completion.Normalize.NO);
+			Completion.builder()
+							.mode(completionMode)
+							.normalize(normalize)
+							.enable(comboBox);
 		}
 		if (comboBoxModel instanceof FilterComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
 			((FilterComboBoxModel<T>) comboBoxModel).selection().item().addConsumer(new MoveCaretToStart<>(comboBox));

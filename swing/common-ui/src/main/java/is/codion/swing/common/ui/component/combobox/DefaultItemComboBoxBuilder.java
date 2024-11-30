@@ -50,7 +50,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	private boolean sorted = false;
 	private boolean nullable;
 	private Completion.Mode completionMode = Completion.COMPLETION_MODE.get();
-	private boolean normalize = Completion.NORMALIZE.get().equals(Completion.Normalize.YES);
+	private boolean normalize = true;
 	private boolean mouseWheelScrolling = true;
 	private boolean mouseWheelScrollingWithWrapAround = false;
 	private int maximumRowCount = -1;
@@ -161,7 +161,10 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 		FilterComboBoxModel<Item<T>> itemComboBoxModel = comboBoxModel == null ? createItemComboBoxModel() : comboBoxModel;
 		JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
 		if (editor == null) {
-			Completion.enable(comboBox, completionMode, normalize ? Completion.Normalize.YES : Completion.Normalize.NO);
+			Completion.builder()
+							.mode(completionMode)
+							.normalize(normalize)
+							.enable(comboBox);
 		}
 		if (renderer != null) {
 			comboBox.setRenderer(renderer);

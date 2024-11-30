@@ -32,6 +32,14 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Selects an item in a JComboBox based on values typed on the keyboard.
+ * <pre>
+ * {@code
+ *   Completion.builder()
+ *       .mode(Mode.AUTOCOMPLETE)
+ *       .normalize(false)
+ *       .enable(comboBox);
+ * }
+ *</pre>
  * <p>
  * Based on code originally from: <a href="http://www.orbital-computer.de/JComboBox">http://www.orbital-computer.de/JComboBox</a><br>
  * Included with permission.
@@ -59,20 +67,6 @@ public final class Completion {
 	}
 
 	/**
-	 * Specifies whether to normalize accented characters in a String during autocomplete.
-	 */
-	public enum Normalize {
-		/**
-		 * The String should be normalized.
-		 */
-		YES,
-		/**
-		 * The String should not be normalized.
-		 */
-		NO
-	}
-
-	/**
 	 * Specifies the default completion model used for comboboxes.
 	 * <ul>
 	 * <li>{@link Completion.Mode#MAXIMUM_MATCH} for maximum match,
@@ -88,123 +82,79 @@ public final class Completion {
 	/**
 	 * Specifies whether strings are normalized during completion by default.
 	 * <ul>
-	 * <li>{@link Completion.Normalize#YES}
-	 * <li>{@link Completion.Normalize#NO}
-	 * <li>Value type:String
-	 * <li>Default value: {@link Completion.Normalize#YES}
+	 * <li>Value type:Boolean
+	 * <li>Default value: true
 	 * </ul>
 	 */
-	public static final PropertyValue<Normalize> NORMALIZE =
-					Configuration.enumValue(Completion.class.getName() + ".normalize", Normalize.class, Normalize.YES);
+	public static final PropertyValue<Boolean> NORMALIZE =
+					Configuration.booleanValue(Completion.class.getName() + ".normalize", true);
 
 	private Completion() {}
 
 	/**
-	 * Enables maximum match on the given combobox
-	 * @param comboBox the combobox on which to enable maximum match
-	 * @param <C> the combobox type
-	 * @param <T> the type
-	 * @return the combo box
+	 * @return a new {@link Builder} instance.
 	 */
-	public static <C extends JComboBox<T>, T> C maximumMatch(C comboBox) {
-		return maximumMatch(comboBox, NORMALIZE.get());
+	public static Builder builder() {
+		return new DefaultBuilder();
 	}
 
 	/**
-	 * Enables maximum match on the given combobox
-	 * @param comboBox the combobox on which to enable maximum match
-	 * @param normalize if YES then accented characters are normalized before matching
-	 * @param <C> the combobox type
-	 * @param <T> the type
-	 * @return the combo box
+	 * A builder for combo box completion.
 	 */
-	public static <C extends JComboBox<T>, T> C maximumMatch(C comboBox, Normalize normalize) {
-		new MaximumMatchDocument(comboBox, normalize);
+	public interface Builder {
 
-		return comboBox;
+		/**
+		 * @param mode the mode to enable
+		 * @return this builder
+		 */
+		Builder mode(Mode mode);
+
+		/**
+		 * @param normalize true if accented characters should be normalized before matching
+		 * @return this builder
+		 */
+		Builder normalize(boolean normalize);
+
+		/**
+		 * @param comboBox the combo box on which to enable completion
+		 */
+		void enable(JComboBox<?> comboBox);
 	}
 
-	/**
-	 * Enables auto-completion on the given combobox
-	 * @param comboBox the combobox on which to enable autocompletion
-	 * @param <C> the combobox type
-	 * @param <T> the type
-	 * @return the combo box
-	 */
-	public static <C extends JComboBox<T>, T> C autoComplete(C comboBox) {
-		return autoComplete(comboBox, NORMALIZE.get());
-	}
+	private static final class DefaultBuilder implements Builder {
 
-	/**
-	 * Enables auto-completion on the given combobox
-	 * @param comboBox the combobox on which to enable autocompletion
-	 * @param normalize if YES then accented characters are normalized before matching
-	 * @param <C> the combobox type
-	 * @param <T> the type
-	 * @return the combo box
-	 */
-	public static <C extends JComboBox<T>, T> C autoComplete(C comboBox, Normalize normalize) {
-		new AutoCompletionDocument(comboBox, normalize);
+		private Mode mode = COMPLETION_MODE.get();
+		private boolean normalize = NORMALIZE.get();
 
-		return comboBox;
-	}
-
-	/**
-	 * Enables the default completion mode on the given combo box
-	 * @param comboBox the combo box
-	 * @param <C> the combo box type
-	 * @param <T> the value type
-	 * @return the combo box
-	 * @see #COMPLETION_MODE
-	 */
-	public static <C extends JComboBox<T>, T> C enable(C comboBox) {
-		return enable(comboBox, COMPLETION_MODE.get());
-	}
-
-	/**
-	 * Enables the given completion mode on the given combo box
-	 * @param comboBox the combo box
-	 * @param completionMode the mode to enable
-	 * @param <C> the combo box type
-	 * @param <T> the value type
-	 * @return the combo box
-	 * @see #COMPLETION_MODE
-	 * @see #NORMALIZE
-	 */
-	public static <C extends JComboBox<T>, T> C enable(C comboBox, Mode completionMode) {
-		return enable(comboBox, completionMode, NORMALIZE.get());
-	}
-
-	/**
-	 * Enables the given completion mode on the given combo box
-	 * @param comboBox the combo box
-	 * @param completionMode the mode to enable
-	 * @param normalize true if strings should be normalized during completion
-	 * @param <C> the combo box type
-	 * @param <T> the value type
-	 * @return the combo box
-	 * @see #COMPLETION_MODE
-	 * @see #NORMALIZE
-	 */
-	public static <C extends JComboBox<T>, T> C enable(C comboBox, Mode completionMode, Normalize normalize) {
-		requireNonNull(comboBox);
-		requireNonNull(completionMode);
-		requireNonNull(normalize);
-		switch (completionMode) {
-			case NONE:
-				break;
-			case AUTOCOMPLETE:
-				autoComplete(comboBox, normalize);
-				break;
-			case MAXIMUM_MATCH:
-				maximumMatch(comboBox, normalize);
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown completion mode: " + completionMode);
+		@Override
+		public Builder mode(Mode mode) {
+			this.mode = requireNonNull(mode);
+			return this;
 		}
-		comboBox.addFocusListener(new CompletionFocusListener((JTextComponent) comboBox.getEditor().getEditorComponent()));
 
-		return comboBox;
+		@Override
+		public Builder normalize(boolean normalize) {
+			this.normalize = normalize;
+			return this;
+		}
+
+		@Override
+		public void enable(JComboBox<?> comboBox) {
+			requireNonNull(comboBox);
+			switch (mode) {
+				case NONE:
+					break;
+				case AUTOCOMPLETE:
+					new AutoCompletionDocument(comboBox, normalize);
+					break;
+				case MAXIMUM_MATCH:
+					new MaximumMatchDocument(comboBox, normalize);
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown completion mode: " + mode);
+			}
+			comboBox.addFocusListener(new CompletionFocusListener((JTextComponent) comboBox.getEditor().getEditorComponent()));
+		}
 	}
 
 	/**
@@ -236,8 +186,8 @@ public final class Completion {
 
 	private static final class MaximumMatchDocument extends CompletionDocument {
 
-		private MaximumMatchDocument(JComboBox<?> comboBox, Normalize normalize) {
-			super(comboBox, normalize == Normalize.YES);
+		private MaximumMatchDocument(JComboBox<?> comboBox, boolean normalize) {
+			super(comboBox, normalize);
 		}
 
 		@Override
@@ -310,8 +260,8 @@ public final class Completion {
 
 	private static final class AutoCompletionDocument extends CompletionDocument {
 
-		private AutoCompletionDocument(JComboBox<?> comboBox, Normalize normalize) {
-			super(comboBox, normalize == Normalize.YES);
+		private AutoCompletionDocument(JComboBox<?> comboBox, boolean normalize) {
+			super(comboBox, normalize);
 		}
 
 		@Override

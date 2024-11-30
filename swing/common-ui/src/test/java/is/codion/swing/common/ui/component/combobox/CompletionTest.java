@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.swing.common.ui.component.combobox.Completion.Mode;
-import is.codion.swing.common.ui.component.combobox.Completion.Normalize;
 
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
@@ -55,8 +54,13 @@ public final class CompletionTest {
 
 	@Test
 	void setTwice() {
-		JComboBox<?> comboBox = Completion.maximumMatch(new JComboBox<>());
-		assertThrows(IllegalStateException.class, () -> Completion.maximumMatch(comboBox));
+		JComboBox<?> comboBox = new JComboBox<>();
+		Completion.builder()
+						.mode(Mode.MAXIMUM_MATCH)
+						.enable(comboBox);
+		assertThrows(IllegalStateException.class, () -> Completion.builder()
+						.mode(Mode.AUTOCOMPLETE)
+						.enable(comboBox));
 	}
 
 	@Test
@@ -289,22 +293,34 @@ public final class CompletionTest {
 			JComboBox<String> autoComplete = createComboBox();
 			autoComplete.setName("autoCompleteComboBox");
 			autoComplete.getEditor().getEditorComponent().setName("autoCompleteEditor");
-			Completion.enable(autoComplete, Mode.AUTOCOMPLETE, Normalize.NO);
+			Completion.builder()
+							.mode(Mode.AUTOCOMPLETE)
+							.normalize(false)
+							.enable(autoComplete);
 
 			JComboBox<String> autoCompleteNormalize = createComboBox();
 			autoCompleteNormalize.setName("autoCompleteNormalizeComboBox");
 			autoCompleteNormalize.getEditor().getEditorComponent().setName("autoCompleteNormalizeEditor");
-			Completion.enable(autoCompleteNormalize, Mode.AUTOCOMPLETE, Normalize.YES);
+			Completion.builder()
+							.mode(Mode.AUTOCOMPLETE)
+							.normalize(true)
+							.enable(autoCompleteNormalize);
 
 			JComboBox<String> maximumMatch = createComboBox();
 			maximumMatch.setName("maximumMatchComboBox");
 			maximumMatch.getEditor().getEditorComponent().setName("maximumMatchEditor");
-			Completion.enable(maximumMatch, Mode.MAXIMUM_MATCH, Normalize.NO);
+			Completion.builder()
+							.mode(Mode.MAXIMUM_MATCH)
+							.normalize(false)
+							.enable(maximumMatch);
 
 			JComboBox<String> maximumMatchNormalize = createComboBox();
 			maximumMatchNormalize.setName("maximumMatchNormalizeComboBox");
 			maximumMatchNormalize.getEditor().getEditorComponent().setName("maximumMatchNormalizeEditor");
-			Completion.enable(maximumMatchNormalize, Mode.MAXIMUM_MATCH, Normalize.YES);
+			Completion.builder()
+							.mode(Mode.MAXIMUM_MATCH)
+							.normalize(true)
+							.enable(maximumMatchNormalize);
 
 			setLayout(gridLayout(0, 1));
 			add(autoComplete);
