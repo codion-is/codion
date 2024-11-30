@@ -57,7 +57,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	 * @return this builder instance
 	 * @see #completionMode(Completion.Mode)
 	 */
-	B normalize(Completion.Normalize normalize);
+	B normalize(boolean normalize);
 
 	/**
 	 * @param renderer the renderer for the combo box

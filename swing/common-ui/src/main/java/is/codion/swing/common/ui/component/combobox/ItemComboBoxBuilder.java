@@ -69,7 +69,7 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
 	 * @return this builder instance
 	 * @see #completionMode(Completion.Mode)
 	 */
-	ItemComboBoxBuilder<T> normalize(Completion.Normalize normalize);
+	ItemComboBoxBuilder<T> normalize(boolean normalize);
 
 	/**
 	 * Enable mouse wheel scrolling on the combo box

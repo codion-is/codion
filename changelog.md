@@ -10,6 +10,7 @@ Codion Change Log
 - ComboBoxBuilder.normalize() added.
 - ItemComboBoxBuilder.normalize() added.
 - Completion, CompletionDocument refactored to support accented character input in Linux.
+- ComboBoxBuilder and ItemComboBoxBuilder.normalize() parameter now boolean.
 
 ## 0.18.21
 ### is.codion.common.db
