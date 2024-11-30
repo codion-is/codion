@@ -29,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
@@ -60,7 +61,7 @@ class CompletionDocument extends PlainDocument {
 
 	private JTextComponent editorComponent;
 
-	protected CompletionDocument(JComboBox<?> comboBox, boolean normalize) {
+	private CompletionDocument(JComboBox<?> comboBox, boolean normalize) {
 		this.comboBox = requireNonNull(comboBox);
 		this.comboBox.setEditable(true);
 		this.normalize = normalize;
@@ -203,6 +204,107 @@ class CompletionDocument extends PlainDocument {
 		editorComponent.addFocusListener(new HighlightCompletedOnFocusGainedListener());
 	}
 
+	static final class MaximumMatchDocument extends CompletionDocument {
+
+		MaximumMatchDocument(JComboBox<?> comboBox, boolean normalize) {
+			super(comboBox, normalize);
+		}
+
+		@Override
+		public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+			if (selecting()) {
+				super.insertString(offs, str, a);
+			}
+			else {
+				trimSearchString(offs);
+				Object item = lookupItem(searchPattern(str));
+				boolean match = false;
+				if (item != null) {
+					searchString.insert(Math.min(searchString.length(), offs), str);
+					match = true;
+					setSelectedItem(item);
+				}
+				else {
+					item = comboBox().getSelectedItem();
+					offs = offs - str.length();
+				}
+				setTextAccordingToSelectedItem();
+				if (match) {
+					offs = maximumMatchingOffset(searchString.toString(), item);
+					searchString.replace(0, searchString.length(), getText(0, offs));
+				}
+				else {
+					offs += str.length();
+				}
+				highlightCompletedText(offs);
+			}
+		}
+
+		// calculates how many characters are predetermined by the given pattern.
+		private int maximumMatchingOffset(String pattern, Object selectedItem) {
+			String selectedAsString = selectedItem.toString();
+			int match = selectedAsString.length();
+			// look for items that match the given pattern
+			for (int i = 0; i < comboBoxModel().getSize(); i++) {
+				Object currentItem = comboBoxModel().getElementAt(i);
+				String itemAsString = currentItem == null ? "" : currentItem.toString();
+				if (startsWithIgnoreCase(itemAsString, pattern, normalize())) {
+					// current item matches the pattern
+					// how many leading characters have the selected and the current item in common?
+					int tmpMatch = equalStartLength(itemAsString, selectedAsString);
+					if (tmpMatch < match) {
+						match = tmpMatch;
+					}
+				}
+			}
+
+			return match;
+		}
+
+		// returns how many leading characters two strings have in common?
+		private int equalStartLength(String str1, String str2) {
+			String one = normalize() ? normalize(str1) : str1;
+			String two = normalize() ? normalize(str2) : str2;
+			char[] ch1 = one.toUpperCase().toCharArray();
+			char[] ch2 = two.toUpperCase().toCharArray();
+			int n = Math.min(ch1.length, ch2.length);
+			for (int i = 0; i < n; i++) {
+				if (ch1[i] != ch2[i]) {
+					return i;
+				}
+			}
+
+			return n;
+		}
+	}
+
+	static final class AutoCompletionDocument extends CompletionDocument {
+
+		AutoCompletionDocument(JComboBox<?> comboBox, boolean normalize) {
+			super(comboBox, normalize);
+		}
+
+		@Override
+		public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+			if (selecting()) {
+				super.insertString(offs, str, a);
+			}
+			else {
+				trimSearchString(offs);
+				Object item = lookupItem(searchPattern(str));
+				if (item != null) {
+					searchString.insert(offs, str);
+					setSelectedItem(item);
+				}
+				else {
+					offs = offs - str.length();
+				}
+				setTextAccordingToSelectedItem();
+				highlightCompletedText(offs + str.length());
+			}
+		}
+	}
+
 	private final class MatchKeyAdapter extends KeyAdapter {
 
 		@Override
@@ -247,6 +349,33 @@ class CompletionDocument extends PlainDocument {
 		@Override
 		public void focusGained(FocusEvent e) {
 			highlightCompletedText(0);
+		}
+	}
+
+	/**
+	 * Selects all when the field gains the focus while maintaining the cursor position at 0,
+	 * selects none on focus lost.
+	 */
+	static final class CompletionFocusListener implements FocusListener {
+
+		private final JTextComponent editor;
+
+		CompletionFocusListener(JTextComponent editor) {
+			this.editor = editor;
+		}
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			int length = editor.getText().length();
+			if (length > 0) {
+				editor.setCaretPosition(length);
+				editor.moveCaretPosition(0);
+			}
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			editor.select(0, 0);
 		}
 	}
 }
