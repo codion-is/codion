@@ -70,8 +70,9 @@ public final class CustomerTablePanel extends EntityTablePanel {
 	}
 
 	private JasperPrint fillCustomerReport() {
-		Collection<Long> customerIDs = Entity.values(Customer.ID,
-						tableModel().selection().items().get());
+		Collection<Long> customerIDs =
+						Entity.values(Customer.ID,
+										tableModel().selection().items().get());
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", customerIDs);
 
