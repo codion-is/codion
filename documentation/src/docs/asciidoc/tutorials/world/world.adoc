@@ -53,12 +53,12 @@ image::tutorials/world/lookup.png[]
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/domain/api/World.java[tag=**]
+include::{dir-source}/is/codion/demos/world/domain/api/World.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/domain/api/WorldObjectMapperFactory.java[tag=customSerializer]
+include::{dir-source}/is/codion/demos/world/domain/api/WorldObjectMapperFactory.java[tag=customSerializer]
 ----
 
 Exposing the WorldObjectMapperFactory for the ServiceLoader.
@@ -74,14 +74,14 @@ include::{dir-source}/module-info.java[tag=customSerializer]
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tag=**]
+include::{dir-source}/is/codion/demos/world/domain/WorldImpl.java[tag=**]
 ----
 
 === Domain unit test
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/world/domain/WorldImplTest.java[tag=**]
+include::{dir-test-source}/is/codion/demos/world/domain/WorldImplTest.java[tag=**]
 ----
 
 == Model
@@ -90,88 +90,88 @@ include::{dir-test-source}/is/codion/framework/demos/world/domain/WorldImplTest.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/WorldAppModel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/WorldAppModel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryModel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/CountryModel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryTableModel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/CountryTableModel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/world/model/CountryTableModelTest.java[tag=**]
+include::{dir-test-source}/is/codion/demos/world/model/CountryTableModelTest.java[tag=**]
 ----
 
 .country_report.jrxml
 [%collapsible]
 ====
 [source,xml]
-include::{dir-reports}/is/codion/framework/demos/world/model/country_report.jrxml[]
+include::{dir-reports}/is/codion/demos/world/model/country_report.jrxml[]
 ====
 
 .city_report.jrxml
 [%collapsible]
 ====
 [source,xml]
-include::{dir-reports}/is/codion/framework/demos/world/model/city_report.jrxml[]
+include::{dir-reports}/is/codion/demos/world/model/city_report.jrxml[]
 ====
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryReportDataSource.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/CountryReportDataSource.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/world/model/CountryReportDataSourceTest.java[tag=**]
+include::{dir-test-source}/is/codion/demos/world/model/CountryReportDataSourceTest.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryModel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/CountryModel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryEditModel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/CountryEditModel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryTableModel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/CountryTableModel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CityEditModel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/CityEditModel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CityTableModel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/CityTableModel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryLanguageTableModel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/CountryLanguageTableModel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/ContinentModel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/model/ContinentModel.java[tag=**]
 ----
 
 == Tests
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/world/model/CountryEditModelTest.java[tag=**]
+include::{dir-test-source}/is/codion/demos/world/model/CountryEditModelTest.java[tag=**]
 ----
 
 [#_ui]
@@ -182,65 +182,65 @@ include::{dir-test-source}/is/codion/framework/demos/world/model/CountryEditMode
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/WorldAppPanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/WorldAppPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/CountryPanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/CountryPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/CountryEditPanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/CountryEditPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/CountryTablePanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/CountryTablePanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/CityTablePanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/CityTablePanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/CityEditPanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/CityEditPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/CountryLanguageTablePanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/CountryLanguageTablePanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/CountryLanguageEditPanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/CountryLanguageEditPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/ContinentPanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/ContinentPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/ContinentTablePanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/ContinentTablePanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/LookupTablePanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/LookupTablePanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/ChartTablePanel.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/ChartTablePanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/ChartPanels.java[tag=**]
+include::{dir-source}/is/codion/demos/world/ui/ChartPanels.java[tag=**]
 ----

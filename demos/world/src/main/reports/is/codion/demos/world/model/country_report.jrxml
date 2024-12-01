@@ -1,0 +1,61 @@
+<jasperReport name="country_report" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="65647229-b9ea-492c-9579-df6c5298a9a2">
+	<property name="ireport.scriptlethandling" value="2"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import>is.codion.demos.world.model.CountryReportDataSource</import>
+	<parameter name="CITY_SUBREPORT" class="net.sf.jasperreports.engine.JasperReport"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="continent" class="java.lang.String"/>
+	<field name="region" class="java.lang.String"/>
+	<field name="surfacearea" class="java.lang.Double"/>
+	<field name="population" class="java.lang.Integer"/>
+	<background splitType="Stretch"/>
+	<detail>
+		<band height="52">
+			<element kind="textField" uuid="52591026-2ffa-4ca3-b73d-31bb53463220" x="0" y="14" width="100" height="14">
+				<expression><![CDATA[$F{name}]]></expression>
+			</element>
+			<element kind="textField" uuid="a37319e9-d3d7-4adc-a058-4783281221be" x="100" y="14" width="100" height="14">
+				<expression><![CDATA[$F{continent}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+			<element kind="textField" uuid="94bb3563-d458-47f3-bb98-bb9914e458f7" x="200" y="14" width="140" height="14">
+				<expression><![CDATA[$F{region}]]></expression>
+			</element>
+			<element kind="textField" uuid="7ae9640c-d57f-4cd9-b08c-b2e582ae4084" x="350" y="14" width="84" height="14" pattern="###,###,###,###" hTextAlign="Center">
+				<expression><![CDATA[$F{surfacearea}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+			<element kind="textField" uuid="0aeaac02-df9f-4c84-9533-3daee90d0082" x="435" y="14" width="100" height="14" pattern="###,###,###,###" hTextAlign="Center">
+				<expression><![CDATA[$F{population}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+			<element kind="subreport" uuid="fe0b73e2-e164-4dd6-a08d-9afb8d964fc2" x="-30" y="30" width="595" height="16">
+				<dataSourceExpression><![CDATA[((CountryReportDataSource) $P{REPORT_DATA_SOURCE}).cityDataSource()]]></dataSourceExpression>
+				<expression><![CDATA[$P{CITY_SUBREPORT}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+			<element kind="staticText" uuid="c61d049d-040d-4aba-9cf4-4aa277459142" x="0" y="0" width="100" height="14" bold="true">
+				<text><![CDATA[Name]]></text>
+			</element>
+			<element kind="staticText" uuid="2fcd930a-a99f-4f90-b303-4b33938c1a34" x="100" y="0" width="100" height="14" bold="true">
+				<text><![CDATA[Continent]]></text>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+			<element kind="staticText" uuid="510dab14-feac-4935-b8b6-130686c249dc" x="200" y="0" width="140" height="14" bold="true">
+				<text><![CDATA[Region]]></text>
+			</element>
+			<element kind="staticText" uuid="2ee9691c-9b08-44ea-a57f-fc3e58608a95" x="350" y="0" width="84" height="14" bold="true" hTextAlign="Center">
+				<text><![CDATA[Surface area]]></text>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+			<element kind="staticText" uuid="ac3794a2-c395-49ea-848f-066599941669" x="435" y="0" width="100" height="14" bold="true" hTextAlign="Center">
+				<text><![CDATA[Population]]></text>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</detail>
+</jasperReport>

@@ -172,7 +172,7 @@ A simple foreign key based on a single column.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=foreignKeyCapital]
+include::{dir-world-source}/is/codion/demos/world/domain/api/World.java[tags=foreignKeyCapital]
 ----
 
 Foreign key based on a composite key.
@@ -225,7 +225,7 @@ An entity can include a read-only attribute value from an entity referenced via 
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=denormalizedAttribute]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=denormalizedAttribute]
 ----
 
 === Derived
@@ -235,12 +235,12 @@ The value of a derived attribute is provided via a {url-javadoc}{framework-domai
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=derivedAttribute]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=derivedAttribute]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=derivedAttributeProvider]
+include::{dir-world-source}/is/codion/demos/world/domain/api/World.java[tags=derivedAttributeProvider]
 ----
 
 == Columns
@@ -251,7 +251,7 @@ Column is used to represent attributes that are based on table columns.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=column]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=column]
 ----
 
 ==== Lazy loading
@@ -261,7 +261,7 @@ Note that the selected entity contains a null value by default for lazy loaded v
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=lazy]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=lazy]
 ----
 
 === Primary key
@@ -275,14 +275,14 @@ You can still use the *Entity.columnValuesEqual()* method to check if all column
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=primaryKey]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=primaryKey]
 ----
 
 In case of composite primary keys you simply specify the primary key index.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=compositePrimaryKey]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=compositePrimaryKey]
 ----
 
 === Subquery
@@ -291,7 +291,7 @@ A Column can represent a subquery returning a single value.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=subqueryColumn]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=subqueryColumn]
 ----
 
 === Boolean
@@ -300,7 +300,7 @@ For databases supporting *Types.BOOLEAN* you simply specify a column.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=booleanColumn]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=booleanColumn]
 ----
 
 For databases lacking native boolean support we can define a boolean column, specifying the underlying type and the true/false values.
@@ -338,12 +338,12 @@ A column based on a list of valid items.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=items]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=items]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=item]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=item]
 ----
 
 [#_foreignkey]
@@ -353,7 +353,7 @@ Foreign keys only have a single possible configuration.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=foreignKeyCapital]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=foreignKeyCapital]
 ----
 
 == Domain
@@ -363,7 +363,7 @@ The framework assumes the *entityType* name is the underlying table name, but th
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=defineCity]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=defineCity]
 ----
 
 === Examples
@@ -409,7 +409,7 @@ When sequences are used without triggers the framework can fetch the value from 
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=sequence]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=sequence]
 ----
 
 === Queried
@@ -467,12 +467,12 @@ Validation requiring database access for example belongs in the application mode
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=validator]
+include::{dir-world-source}/is/codion/demos/world/domain/api/World.java[tags=validator]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=validator]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=validator]
 ----
 
 == Examples
@@ -487,31 +487,31 @@ When using a custom data type you must specify the *columnClass* of a ColumnDefi
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=customType]
+include::{dir-world-source}/is/codion/demos/world/domain/api/World.java[tags=customType]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=customTypeClass]
+include::{dir-world-source}/is/codion/demos/world/domain/api/World.java[tags=customTypeClass]
 ----
 
 NOTE: The custom type must be serializable for use in an application using the RMI connection.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=columnClass]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=columnClass]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=converter]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=converter]
 ----
 
 When using the HTTP connection in an application using a custom data type, you must implement a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory], providing a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.html[EntityObjectMapper] instance containing a serializer/deserializer for the custom types.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/api/WorldObjectMapperFactory.java[tags=customSerializer]
+include::{dir-world-source}/is/codion/demos/world/domain/api/WorldObjectMapperFactory.java[tags=customSerializer]
 ----
 
 This *EntityObjectMapperFactory* must be exposed to the ServiceLoader.
