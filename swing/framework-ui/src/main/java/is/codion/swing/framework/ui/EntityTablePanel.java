@@ -1531,7 +1531,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void configureTableConditionPanel(TableConditionPanel<Attribute<?>> tableConditionPanel) {
-		tableConditionPanel.get().forEach(this::configureConditionPanel);
+		tableConditionPanel.panels().forEach(this::configureConditionPanel);
 	}
 
 	private void configureConditionPanel(Attribute<?> attribute, ConditionPanel<?> conditionPanel) {

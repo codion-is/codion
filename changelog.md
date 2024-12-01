@@ -13,6 +13,7 @@ Codion Change Log
 - ComboBoxBuilder and ItemComboBoxBuilder.normalize() parameter now boolean.
 - Completion.Builder added, Normalize removed, related refactoring.
 - ComponentBuilder.name() added.
+- TableConditionPanel.get() and get(identifier) renamed panels() and panel() respectively.
 ### is.codion.swing.framework.ui
 - EntityEditComponentPanel, create component methods now assign a name to the component, using attribute.toString().
 

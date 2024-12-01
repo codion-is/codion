@@ -910,7 +910,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void configureFilterConditionPanel(TableConditionPanel<C> filterConditionPanel) {
-		filterConditionPanel.get().forEach(this::configureFilterPanel);
+		filterConditionPanel.panels().forEach(this::configureFilterPanel);
 	}
 
 	private void configureFilterPanel(C identifier, ConditionPanel<?> filterPanel) {

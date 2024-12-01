@@ -84,28 +84,29 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * @return an unmodifiable view of the condition panels
+	 * @return the condition panels mapped to their respective identifier
 	 */
-	public abstract Map<C, ConditionPanel<?>> get();
+	public abstract Map<C, ConditionPanel<?>> panels();
 
 	/**
 	 * By default this returns all condition panels, override to customize.
 	 * @return the selectable condition panels
+	 * @see #panels()
 	 * @see #select(JComponent)
 	 */
 	public Map<C, ConditionPanel<?>> selectable() {
-		return get();
+		return panels();
 	}
 
 	/**
 	 * @param <T> the condition panel type
 	 * @param identifier the identifier for which to retrieve the {@link ConditionPanel}
 	 * @return the {@link ConditionPanel} associated with the given identifier
-	 * @throws IllegalArgumentException in case no panel is available
+	 * @throws IllegalArgumentException in case no panel is available for the given identifier
 	 */
-	public <T extends ConditionPanel<?>> T get(C identifier) {
+	public <T extends ConditionPanel<?>> T panel(C identifier) {
 		requireNonNull(identifier);
-		ConditionPanel<?> conditionPanel = get().get(identifier);
+		ConditionPanel<?> conditionPanel = panels().get(identifier);
 		if (conditionPanel == null) {
 			throw new IllegalArgumentException("No condition panel available for " + identifier);
 		}
@@ -135,10 +136,11 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * Selects one condition panel to receive the input focus.
-	 * If only one panel is available, that one receives the input focus automatically.
-	 * If multiple condition panels are available a selection dialog is presented.
+	 * Selects one of the selectable condition panels to receive the input focus.
+	 * If only one panel is selectable, that one receives the input focus automatically.
+	 * If multiple condition panels are selectable, a selection dialog is presented.
 	 * @param dialogOwner the selection dialog owner
+	 * @see #selectable()
 	 */
 	public final void select(JComponent dialogOwner) {
 		List<Item<? extends ConditionPanel<?>>> panelItems = selectable().entrySet().stream()
