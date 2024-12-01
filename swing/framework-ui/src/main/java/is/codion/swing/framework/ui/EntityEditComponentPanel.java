@@ -190,7 +190,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param <T> the edit model type
 	 * @return the edit model this panel is based on
 	 */
- 	public final <T extends SwingEntityEditModel> T editModel() {
+	public final <T extends SwingEntityEditModel> T editModel() {
 		return (T) editModel;
 	}
 
@@ -904,6 +904,7 @@ public class EntityEditComponentPanel extends JPanel {
 			throw new IllegalStateException("Component has already been created for attribute: " + attribute);
 		}
 		componentBuilders.put(attribute, componentBuilder
+						.name(attribute.toString())
 						.transferFocusOnEnter(transferFocusOnEnter.get())
 						.link(editModel().value(attribute))
 						.onBuild(new SetComponent<>(attribute)));
