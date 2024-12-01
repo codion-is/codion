@@ -19,12 +19,12 @@ Holds value instances which are bound to input components in the panel below.
 .Show code
 [%collapsible]
 ====
-demos/manual/src/main/java/is/codion/framework/demos/manual/common/demo/ApplicationModel.java
+demos/manual/src/main/java/is/codion/manual/common/demo/ApplicationModel.java
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationModel.java[tags=demoModelImport]
-include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationModel.java[tags=demoModel]
+include::{dir-source}/is/codion/manual/common/demo/ApplicationModel.java[tags=demoModelImport]
+include::{dir-source}/is/codion/manual/common/demo/ApplicationModel.java[tags=demoModel]
 ----
 ====
 
@@ -33,11 +33,11 @@ include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationMo
 .Show code
 [%collapsible]
 ====
-demos/manual/src/main/java/is/codion/framework/demos/manual/common/demo/ApplicationPanel.java
+demos/manual/src/main/java/is/codion/manual/common/demo/ApplicationPanel.java
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationPanel.java[tags=demoPanelImport]
-include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationPanel.java[tags=demoPanel]
+include::{dir-source}/is/codion/manual/common/demo/ApplicationPanel.java[tags=demoPanelImport]
+include::{dir-source}/is/codion/manual/common/demo/ApplicationPanel.java[tags=demoPanel]
 ----
 ====

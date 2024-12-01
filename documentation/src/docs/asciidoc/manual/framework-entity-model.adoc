@@ -27,17 +27,17 @@ EntityTableModel --o EntityEditModel
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/AddressModel.java[tags=addressModel]
+include::{dir-source}/is/codion/manual/store/model/AddressModel.java[tags=addressModel]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerModel.java[tags=customerModel]
+include::{dir-source}/is/codion/manual/store/model/CustomerModel.java[tags=customerModel]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerAddressModel.java[tags=customerAddressModel]
+include::{dir-source}/is/codion/manual/store/model/CustomerAddressModel.java[tags=customerAddressModel]
 ----
 
 == EntityTableModel
@@ -47,14 +47,14 @@ A default edit model implementation is created automatically by the *EntityTable
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
+include::{dir-source}/is/codion/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
 ----
 
 == EntityEditModel
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
+include::{dir-source}/is/codion/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
 ----
 
 [#_detail_models]
@@ -73,7 +73,7 @@ EntityModel --o EntityModel
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/StoreApplicationModel.java[tags=storeAppModel]
+include::{dir-source}/is/codion/manual/store/model/StoreApplicationModel.java[tags=storeAppModel]
 ----
 
 [#_event_binding]
@@ -87,7 +87,7 @@ The example below prints, to the standard output, all changes made to a given at
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerModel.java[tags=customerModel]
+include::{dir-source}/is/codion/manual/store/model/CustomerModel.java[tags=customerModel]
 ----
 
 == Examples

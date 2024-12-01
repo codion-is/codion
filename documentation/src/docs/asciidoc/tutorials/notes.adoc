@@ -12,9 +12,9 @@ gradlew codion-demos-manual:runNotesDemo
 
 image::tutorials/notes_demo.png[]
 
-demos/manual/src/main/java/is/codion/framework/demos/manual/notes/NotesDemo.java
+demos/manual/src/main/java/is/codion/manual/notes/NotesDemo.java
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/notes/NotesDemo.java[tags=notes]
+include::{dir-source}/is/codion/manual/notes/NotesDemo.java[tags=notes]
 ----

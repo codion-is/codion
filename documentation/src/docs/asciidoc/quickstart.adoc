@@ -126,7 +126,7 @@ include::{dir-source-sql}/create_schema.sql[]
 ====
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=store]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=store]
 ----
 ====
 
@@ -138,7 +138,7 @@ This class is continued below.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=storeDomain]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=storeDomain]
 ----
 
 We create a namespace interface and define a *EntityType* constant based on the table and typed *Column* constants for each column, these constants specify the entity API, used when referring to the entity type or its columns.
@@ -149,21 +149,21 @@ Finally, we add the definition builder to the domain model.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=customer]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=customer]
 ----
 
 Next we define an entity based on the table *store.address*.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=address]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=address]
 ----
 
 And finally we define an entity based on the _many-to-many_ relationship table *store.customer_address*, note the foreign keys.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=customerAddress]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=customerAddress]
 ----
 
 === UI
@@ -187,7 +187,7 @@ We use a default *SwingEntityModel* implementation, which internally, creates a 
 
 [source,java,indent=0,options="nowrap"]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=customerPanel]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=customerPanel]
 ----
 
 ==== Detail
@@ -198,7 +198,7 @@ Finally, we create a *EntityPanel* for the customer address and add that as a de
 
 [source,java,indent=0,options="nowrap"]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=detailPanel]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=detailPanel]
 ----
 
 === Domain unit test
@@ -214,7 +214,7 @@ The *test* method performs insert, update, select and delete on a randomly gener
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=domainModelTest]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=domainModelTest]
 ----
 
 === Persistance
@@ -233,14 +233,14 @@ It has three available implementations, one of which is based on a local JDBC co
 
 [source,java,indent=0,options="nowrap"]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=select]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=select]
 ----
 
 ==== Persisting
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=persist]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=persist]
 ----
 
 .Full code
@@ -248,6 +248,6 @@ include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[t
 ====
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tag=**]
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tag=**]
 ----
 ====

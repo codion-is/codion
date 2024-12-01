@@ -9,7 +9,7 @@ This is done by using the {url-javadoc}{tools-loadtest-model}/is/codion/tools/lo
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/test/StoreLoadTest.java[tags=storeLoadTest]
+include::{dir-source}/is/codion/manual/store/test/StoreLoadTest.java[tags=storeLoadTest]
 ----
 
 == Examples

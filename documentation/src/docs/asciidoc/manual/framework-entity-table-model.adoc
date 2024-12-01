@@ -17,10 +17,10 @@ The {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.ht
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
+include::{dir-source}/is/codion/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerAddressTableModel.java[tags=customerAddressTableModel]
+include::{dir-source}/is/codion/manual/store/model/CustomerAddressTableModel.java[tags=customerAddressTableModel]
 ----

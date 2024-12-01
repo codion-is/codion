@@ -9,17 +9,17 @@ The *EntityEditPanel* class exposes methods for creating input components and bi
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/ui/CustomerEditPanel.java[tags=customerEditPanel]
+include::{dir-source}/is/codion/manual/store/ui/CustomerEditPanel.java[tags=customerEditPanel]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/ui/AddressEditPanel.java[tags=addressEditPanel]
+include::{dir-source}/is/codion/manual/store/ui/AddressEditPanel.java[tags=addressEditPanel]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/ui/CustomerAddressEditPanel.java[tags=customerAddressEditPanel]
+include::{dir-source}/is/codion/manual/store/ui/CustomerAddressEditPanel.java[tags=customerAddressEditPanel]
 ----
 
 == Detailed example
@@ -28,14 +28,14 @@ Here's how a text field is created and added to the edit panel.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/ui/EditPanelDemo.java[tags=basic]
+include::{dir-source}/is/codion/manual/store/ui/EditPanelDemo.java[tags=basic]
 ----
 
 And here's the equivilent code, showing what's going on behind the scenes.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/ui/EditPanelDemo.java[tags=expanded]
+include::{dir-source}/is/codion/manual/store/ui/EditPanelDemo.java[tags=expanded]
 ----
 
 == Input controls
@@ -48,7 +48,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/ui/EditPanelDemo.ja
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=booleanValue]
+include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=booleanValue]
 ----
 
 === Foreign key
@@ -63,7 +63,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=foreignKeyValue]
+include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=foreignKeyValue]
 ----
 
 === Temporal
@@ -74,14 +74,14 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=temporalValue]
+include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=temporalValue]
 ----
 
 === Numerical
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=numericalValue]
+include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=numericalValue]
 ----
 
 === Text
@@ -96,7 +96,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=textValue]
+include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=textValue]
 ----
 
 === Selection
@@ -105,7 +105,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=selectionValue]
+include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=selectionValue]
 ----
 
 === Items
@@ -114,7 +114,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=item]
+include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=item]
 ----
 
 == Panels & labels
@@ -125,7 +125,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=panelLabel]
+include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=panelLabel]
 ----
 
 == Custom actions

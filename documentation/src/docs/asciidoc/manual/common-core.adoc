@@ -49,7 +49,7 @@ Events are instantiated via factory methods in the {url-javadoc}{common-core}/is
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=event]
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=event]
 ----
 
 === Value
@@ -85,7 +85,7 @@ Values can be linked so that changes in one are reflected in the other.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=value]
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=value]
 ----
 
 Values can be non-nullable if a _nullValue_ is specified when the value is initialized.
@@ -93,7 +93,7 @@ Null is then translated to the _nullValue_ when set.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=nullValue]
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=nullValue]
 ----
 
 === State
@@ -126,26 +126,26 @@ States are instantiated via factory methods in the {url-javadoc}{common-core}/is
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=state]
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=state]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=observers]
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=observers]
 ----
 
 Any *Action* object can be linked to a *State* instance via the *Utilities.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=action]
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=action]
 ----
 
 Controls can also be linked to a *State* instance.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=control]
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=control]
 ----
 
 NOTE: When a State or Event is linked to a Swing component, for example its enabled state, all state changes must happen on the Event Dispatch Thread.

@@ -14,5 +14,5 @@ For more complex cases, where multiple print controls are required, custom contr
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
+include::{dir-source}/is/codion/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
 ----

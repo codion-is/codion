@@ -21,10 +21,10 @@ The *EntityEditModel* interface exposes a number of methods for manipulating as 
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
+include::{dir-source}/is/codion/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/Misc.java[tags=editModel]
+include::{dir-source}/is/codion/manual/store/Misc.java[tags=editModel]
 ----

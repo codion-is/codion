@@ -25,12 +25,12 @@ You can either extend the EntityPanel class or instantiate one directly, dependi
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityPanels.java[tags=extended]
+include::{dir-source}/is/codion/manual/framework/EntityPanels.java[tags=extended]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityPanels.java[tags=setup]
+include::{dir-source}/is/codion/manual/framework/EntityPanels.java[tags=setup]
 ----
 
 == Detail panels
@@ -40,5 +40,5 @@ See link:#_entityapplicationpanel[EntityApplicationPanel].
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityPanels.java[tags=detailPanel]
+include::{dir-source}/is/codion/manual/framework/EntityPanels.java[tags=detailPanel]
 ----

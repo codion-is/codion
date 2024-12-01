@@ -16,19 +16,19 @@ Control -|> Action
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=control]
+include::{dir-source}/is/codion/manual/common/InputControls.java[tags=control]
 ----
 
 == ToggleControl
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=toggleControl]
+include::{dir-source}/is/codion/manual/common/InputControls.java[tags=toggleControl]
 ----
 
 == Controls
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=controls]
+include::{dir-source}/is/codion/manual/common/InputControls.java[tags=controls]
 ----

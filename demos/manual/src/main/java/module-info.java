@@ -17,9 +17,9 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Manual demo.
+ * Source used in the manual.
  */
-module is.codion.framework.demos.manual {
+module is.codion.manual {
 	requires java.desktop;
 	requires net.sf.jasperreports.core;
 	requires is.codion.common.core;
@@ -38,8 +38,8 @@ module is.codion.framework.demos.manual {
 	requires org.junit.jupiter.api;
 	requires com.formdev.flatlaf.intellijthemes;
 
-	exports is.codion.framework.demos.manual.store.domain;
-	exports is.codion.framework.demos.manual.store.minimal.domain;
-	exports is.codion.framework.demos.manual.store.model;
-	exports is.codion.framework.demos.manual.store.ui;
+	exports is.codion.manual.store.domain;
+	exports is.codion.manual.store.minimal.domain;
+	exports is.codion.manual.store.model;
+	exports is.codion.manual.store.ui;
 }

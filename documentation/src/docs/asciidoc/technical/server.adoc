@@ -122,12 +122,12 @@ Absolute bare-bones examples of how to run the EntityServer and connect to it.
 
 [source]
 ----
-include::{dir-manual-source}/is/codion/framework/demos/manual/store/ClientServer.java[tags=runServer]
+include::{dir-manual-source}/is/codion/manual/store/ClientServer.java[tags=runServer]
 ----
 
 === HTTP
 
 [source]
 ----
-include::{dir-manual-source}/is/codion/framework/demos/manual/store/ClientServer.java[tags=runServerWithHttp]
+include::{dir-manual-source}/is/codion/manual/store/ClientServer.java[tags=runServerWithHttp]
 ----

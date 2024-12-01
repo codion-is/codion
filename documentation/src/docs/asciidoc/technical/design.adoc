@@ -13,7 +13,7 @@ These are usually named after the interface, which makes using static imports qu
 
 [source,java]
 ----
-include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndStyle.java[tags=factories,indent=0]
+include::{dir-manual-source}/is/codion/manual/design/DesignAndStyle.java[tags=factories,indent=0]
 ----
 
 === Builders
@@ -22,7 +22,7 @@ For classes with a more complex state, a `builder` method is provided in the int
 
 [source,java]
 ----
-include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndStyle.java[tags=builders,indent=0]
+include::{dir-manual-source}/is/codion/manual/design/DesignAndStyle.java[tags=builders,indent=0]
 ----
 
 == Accessors
@@ -31,14 +31,14 @@ Immutable fields are accessed using methods named after the field, without a `ge
 
 [source,java]
 ----
-include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndStyle.java[tags=accessors,indent=0]
+include::{dir-manual-source}/is/codion/manual/design/DesignAndStyle.java[tags=accessors,indent=0]
 ----
 
 A `get`/`is` prefix implies that the field is mutable and that a corresponding setter method exists, with a `set` prefix.
 
 [source,java]
 ----
-include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndStyle.java[tags=getters,indent=0]
+include::{dir-manual-source}/is/codion/manual/design/DesignAndStyle.java[tags=getters,indent=0]
 ----
 
 === Observables
@@ -47,7 +47,7 @@ Many classes expose their internal state via the {url-javadoc}{common-core}/is/c
 
 [source,java]
 ----
-include::{dir-manual-source}/is/codion/framework/demos/manual/design/DesignAndStyle.java[tags=mutable,indent=0]
+include::{dir-manual-source}/is/codion/manual/design/DesignAndStyle.java[tags=mutable,indent=0]
 ----
 
 == Exceptions

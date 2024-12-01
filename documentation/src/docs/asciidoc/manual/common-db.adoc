@@ -18,35 +18,35 @@ There are multiple ways to aquire a Database instance.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=systemProperty]
+include::{dir-source}/is/codion/manual/common/db/Demo.java[tags=systemProperty]
 ----
 
 * By setting the JDBC url configuration value directly (which also sets the system property).
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=configuration]
+include::{dir-source}/is/codion/manual/common/db/Demo.java[tags=configuration]
 ----
 
 * By instantiating a DatabaseFactory directly.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=url]
+include::{dir-source}/is/codion/manual/common/db/Demo.java[tags=url]
 ----
 
 * By instantiating a DBMS specific DatabaseFactory directly.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=factory]
+include::{dir-source}/is/codion/manual/common/db/Demo.java[tags=factory]
 ----
 
 A Database instance provides *java.sql.Connection* instances via the *createConnection* method.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=connection]
+include::{dir-source}/is/codion/manual/common/db/Demo.java[tags=connection]
 ----
 
 === DatabaseConnection
@@ -57,5 +57,5 @@ A *DatabaseConnection* instance is created via the *databaseConnection* factory 
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/db/Demo.java[tags=databaseConnection]
+include::{dir-source}/is/codion/manual/common/db/Demo.java[tags=databaseConnection]
 ----
