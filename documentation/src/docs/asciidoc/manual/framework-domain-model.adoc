@@ -116,7 +116,7 @@ _src/main/java/module-info.java_
 [source]
 ----
 provides is.codion.framework.domain.Domain
-          with is.codion.framework.demos.store.domain.StoreImpl;
+          with is.codion.demos.store.domain.StoreImpl;
 ----
 
 or if not using Java Modules (JPMS)
@@ -125,7 +125,7 @@ _src/main/resources/META-INF/services/is.codion.framework.domain.Domain_
 
 [source]
 ----
-is.codion.framework.demos.store.domain.StoreImpl
+is.codion.demos.store.domain.StoreImpl
 ----
 
 NOTE: The domain model implementation must be on the classpath when running with a local JDBC connection, but when running with a RMI or HTTP connection the domain model API is sufficient.

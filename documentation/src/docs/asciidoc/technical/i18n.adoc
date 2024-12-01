@@ -15,12 +15,12 @@ include::{dir-source}/is/codion/demos/chinook/domain/impl/ChinookResources.java[
 
 [source]
 ----
-module is.codion.framework.demos.chinook {
+module is.codion.demos.chinook {
 
 	...
 
 	provides is.codion.common.resource.Resources
-            with is.codion.framework.demos.chinook.domain.impl.ChinookResources;
+            with is.codion.demos.chinook.domain.impl.ChinookResources;
 }
 ----
 
