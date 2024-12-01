@@ -60,7 +60,7 @@ public interface Chinook {
 	DomainType DOMAIN = domainType(Chinook.class);
 
 	interface Artist {
-		EntityType TYPE = DOMAIN.entityType("artist@chinook", Artist.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.artist", Artist.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("artistid");
 		Column<String> NAME = TYPE.stringColumn("name");
@@ -69,7 +69,7 @@ public interface Chinook {
 	}
 
 	interface Album {
-		EntityType TYPE = DOMAIN.entityType("album@chinook", Album.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.album", Album.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("albumid");
 		Column<String> TITLE = TYPE.stringColumn("title");
@@ -83,7 +83,7 @@ public interface Chinook {
 	}
 
 	interface Employee {
-		EntityType TYPE = DOMAIN.entityType("employee@chinook", Employee.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.employee", Employee.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("employeeid");
 		Column<String> LASTNAME = TYPE.stringColumn("lastname");
@@ -105,7 +105,7 @@ public interface Chinook {
 	}
 
 	interface Customer {
-		EntityType TYPE = DOMAIN.entityType("customer@chinook", Customer.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.customer", Customer.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("customerid");
 		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
@@ -127,21 +127,21 @@ public interface Chinook {
 	}
 
 	interface Genre {
-		EntityType TYPE = DOMAIN.entityType("genre@chinook", Genre.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.genre", Genre.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("genreid");
 		Column<String> NAME = TYPE.stringColumn("name");
 	}
 
 	interface MediaType {
-		EntityType TYPE = DOMAIN.entityType("mediatype@chinook", MediaType.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.mediatype", MediaType.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("mediatypeid");
 		Column<String> NAME = TYPE.stringColumn("name");
 	}
 
 	interface Track {
-		EntityType TYPE = DOMAIN.entityType("track@chinook", Track.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.track", Track.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("trackid");
 		Column<String> NAME = TYPE.stringColumn("name");
@@ -174,7 +174,7 @@ public interface Chinook {
 	}
 
 	interface Invoice {
-		EntityType TYPE = DOMAIN.entityType("invoice@chinook", Invoice.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.invoice", Invoice.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("invoiceid");
 		Column<Long> CUSTOMER_ID = TYPE.longColumn("customerid");
@@ -195,7 +195,7 @@ public interface Chinook {
 	}
 
 	interface InvoiceLine {
-		EntityType TYPE = DOMAIN.entityType("invoiceline@chinook", InvoiceLine.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.invoiceline", InvoiceLine.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("invoicelineid");
 		Column<Long> INVOICE_ID = TYPE.longColumn("invoiceid");
@@ -209,7 +209,7 @@ public interface Chinook {
 	}
 
 	interface Playlist {
-		EntityType TYPE = DOMAIN.entityType("playlist@chinook", Playlist.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.playlist", Playlist.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("playlistid");
 		Column<String> NAME = TYPE.stringColumn("name");
@@ -220,7 +220,7 @@ public interface Chinook {
 	}
 
 	interface PlaylistTrack {
-		EntityType TYPE = DOMAIN.entityType("playlisttrack@chinook", PlaylistTrack.class.getName());
+		EntityType TYPE = DOMAIN.entityType("chinook.playlisttrack", PlaylistTrack.class.getName());
 
 		Column<Long> ID = TYPE.longColumn("playlisttrackid");
 		Column<Long> PLAYLIST_ID = TYPE.longColumn("playlistid");

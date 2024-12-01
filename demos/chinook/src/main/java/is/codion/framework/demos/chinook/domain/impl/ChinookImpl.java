@@ -85,7 +85,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 																		FROM chinook.track
 																		JOIN chinook.album ON track.albumid = album.albumid
 																		WHERE album.artistid = artist.artistid"""))
-						.tableName("chinook.artist")
 						.keyGenerator(identity())
 						.orderBy(ascending(Artist.NAME))
 						.stringFactory(Artist.NAME)
@@ -121,7 +120,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.subquery("""
 																		SELECT AVG(rating) FROM chinook.track
 																		WHERE track.albumid = album.albumid"""))
-						.tableName("chinook.album")
 						.keyGenerator(identity())
 						.orderBy(ascending(Album.ARTIST_ID, Album.TITLE))
 						.stringFactory(Album.TITLE)
@@ -184,7 +182,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.searchable(true)
 														.nullable(false)
 														.maximumLength(60))
-						.tableName("chinook.employee")
 						.keyGenerator(identity())
 						.validator(new EmailValidator(Employee.EMAIL))
 						.orderBy(ascending(Employee.LASTNAME, Employee.FIRSTNAME))
@@ -244,7 +241,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										Customer.SUPPORTREP_FK.define()
 														.foreignKey()
 														.attributes(Employee.FIRSTNAME, Employee.LASTNAME))
-						.tableName("chinook.customer")
 						.keyGenerator(identity())
 						.validator(new EmailValidator(Customer.EMAIL))
 						.orderBy(ascending(Customer.LASTNAME, Customer.FIRSTNAME))
@@ -261,7 +257,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.searchable(true)
 														.nullable(false)
 														.maximumLength(120))
-						.tableName("chinook.genre")
 						.keyGenerator(identity())
 						.orderBy(ascending(Genre.NAME))
 						.stringFactory(Genre.NAME)
@@ -277,7 +272,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.column()
 														.nullable(false)
 														.maximumLength(120))
-						.tableName("chinook.mediatype")
 						.keyGenerator(identity())
 						.stringFactory(MediaType.NAME)
 						.smallDataset(true)
@@ -336,7 +330,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.column()
 														.readOnly(true)
 														.selectable(false))
-						.tableName("chinook.track")
 						.keyGenerator(identity())
 						.orderBy(ascending(Track.NAME))
 						.condition(Track.NOT_IN_PLAYLIST, new NotInPlaylistConditionProvider())
@@ -386,7 +379,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 																		FROM chinook.invoiceline
 																		WHERE invoiceid = invoice.invoiceid""")
 														.maximumFractionDigits(2))
-						.tableName("chinook.invoice")
 						// tag::identity[]
 						.keyGenerator(identity())
 						// end::identity[]
@@ -426,7 +418,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										InvoiceLine.TOTAL.define()
 														.derived(new InvoiceLineTotalProvider(),
 																		InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE))
-						.tableName("chinook.invoiceline")
 						.keyGenerator(identity())
 						.build();
 	}
@@ -440,7 +431,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.searchable(true)
 														.nullable(false)
 														.maximumLength(120))
-						.tableName("chinook.playlist")
 						.keyGenerator(identity())
 						.orderBy(ascending(Playlist.NAME))
 						.stringFactory(Playlist.NAME)
@@ -465,7 +455,6 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.foreignKey(3),
 										PlaylistTrack.ALBUM.define()
 														.denormalized(PlaylistTrack.TRACK_FK, Track.ALBUM_FK))
-						.tableName("chinook.playlisttrack")
 						.keyGenerator(identity())
 						.stringFactory(StringFactory.builder()
 										.value(PlaylistTrack.PLAYLIST_FK)
