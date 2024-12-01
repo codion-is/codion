@@ -79,6 +79,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private final List<Runnable> listeners = new ArrayList<>();
 	private final List<Consumer<T>> consumers = new ArrayList<>();
 
+	private String name;
 	private JLabel label;
 	private boolean focusable = true;
 	private int preferredHeight = -1;
@@ -118,6 +119,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (linkedValue != null) {
 			link(linkedValue);
 		}
+	}
+
+	@Override
+	public final B name(String name) {
+		this.name = name;
+		return self();
 	}
 
 	@Override
@@ -482,6 +489,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		component.putClientProperty(COMPONENT_VALUE, componentValue);
 		if (component.isFocusable() && !focusable) {
 			component.setFocusable(false);
+		}
+		if (name != null) {
+			component.setName(name);
 		}
 		setSizes(component);
 		if (border != null) {

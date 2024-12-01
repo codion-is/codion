@@ -89,6 +89,13 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 					Configuration.booleanValue(ComponentBuilder.class.getName() + ".transferFocusOnEnter", false);
 
 	/**
+	 * @param name the name to assign to the component
+	 * @return this builder instance
+	 * @see Component#setName(String)
+	 */
+	B name(String name);
+
+	/**
 	 * @param label the label for the component
 	 * @return this builder instance
 	 * @see JLabel#setLabelFor(Component)
