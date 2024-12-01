@@ -16,33 +16,31 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petstore.ui;
+package is.codion.demos.petstore.ui;
 
-import is.codion.framework.demos.petstore.domain.Petstore.Tag;
-import is.codion.framework.demos.petstore.domain.Petstore.TagItem;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-public class TagItemEditPanel extends EntityEditPanel {
+import static is.codion.demos.petstore.domain.Petstore.SellerContactInfo;
 
-	public TagItemEditPanel(SwingEntityEditModel model) {
+public class ContactInfoEditPanel extends EntityEditPanel {
+
+	public ContactInfoEditPanel(SwingEntityEditModel model) {
 		super(model);
 	}
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(TagItem.ITEM_FK);
-		createForeignKeyComboBox(TagItem.ITEM_FK)
-						.preferredWidth(180);
-		createForeignKeyComboBoxPanel(TagItem.TAG_FK, this::createTagEditPanel)
-						.includeAddButton(true);
-		setLayout(Layouts.flexibleGridLayout(2, 1));
-		addInputPanel(TagItem.ITEM_FK);
-		addInputPanel(TagItem.TAG_FK);
-	}
+		initialFocusAttribute().set(SellerContactInfo.LAST_NAME);
 
-	private TagEditPanel createTagEditPanel() {
-		return new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider()));
+		createTextField(SellerContactInfo.LAST_NAME);
+		createTextField(SellerContactInfo.FIRST_NAME);
+		createTextField(SellerContactInfo.EMAIL);
+
+		setLayout(Layouts.flexibleGridLayout(3, 1));
+		addInputPanel(SellerContactInfo.LAST_NAME);
+		addInputPanel(SellerContactInfo.FIRST_NAME);
+		addInputPanel(SellerContactInfo.EMAIL);
 	}
 }

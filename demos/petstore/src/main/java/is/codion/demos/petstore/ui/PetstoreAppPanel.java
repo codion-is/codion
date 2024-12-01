@@ -16,10 +16,10 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petstore.ui;
+package is.codion.demos.petstore.ui;
 
 import is.codion.common.user.User;
-import is.codion.framework.demos.petstore.model.PetstoreAppModel;
+import is.codion.demos.petstore.model.PetstoreAppModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import static is.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.demos.petstore.domain.Petstore.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.HIDDEN;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {

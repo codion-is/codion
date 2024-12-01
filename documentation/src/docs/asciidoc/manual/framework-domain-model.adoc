@@ -531,7 +531,7 @@ Using the Entity class is rather straight forward.
 
 [source,java,indent=0]
 ----
-include::{dir-petstore-source}/is/codion/framework/demos/petstore/manual/EntitiesInAction.java[tags=entitiesInAction]
+include::{dir-petstore-source}/is/codion/demos/petstore/manual/EntitiesInAction.java[tags=entitiesInAction]
 ----
 
 == Unit Testing

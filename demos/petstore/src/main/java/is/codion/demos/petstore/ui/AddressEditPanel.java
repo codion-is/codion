@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petstore.ui;
+package is.codion.demos.petstore.ui;
 
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -24,7 +24,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JLabel;
 
-import static is.codion.framework.demos.petstore.domain.Petstore.Address;
+import static is.codion.demos.petstore.domain.Petstore.Address;
 
 public class AddressEditPanel extends EntityEditPanel {
 

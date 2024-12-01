@@ -62,7 +62,7 @@ tasks.withType<Test>().configureEach {
 tasks.register<JavaExec>("runClientLocal") {
     group ="application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.petstore.ui.PetstoreAppPanel")
+    mainClass.set("is.codion.demos.petstore.ui.PetstoreAppPanel")
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "local",
@@ -75,7 +75,7 @@ tasks.register<JavaExec>("runClientLocal") {
 tasks.register<JavaExec>("runClientRMI") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.petstore.ui.PetstoreAppPanel")
+    mainClass.set("is.codion.demos.petstore.ui.PetstoreAppPanel")
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType"    to "remote",
@@ -88,7 +88,7 @@ tasks.register<JavaExec>("runClientRMI") {
 tasks.register<JavaExec>("runClientHttp") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.petstore.ui.PetstoreAppPanel")
+    mainClass.set("is.codion.demos.petstore.ui.PetstoreAppPanel")
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "http",
@@ -101,7 +101,7 @@ tasks.register<JavaExec>("runClientHttp") {
 tasks.register<JavaExec>("runLoadTestRMI") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.petstore.testing.PetstoreLoadTest")
+    mainClass.set("is.codion.demos.petstore.testing.PetstoreLoadTest")
     maxHeapSize = "512m"
     systemProperties = mapOf(
             "codion.client.connectionType"    to "remote",
@@ -113,7 +113,7 @@ tasks.register<JavaExec>("runLoadTestRMI") {
 tasks.register<JavaExec>("runLoadTestHttp") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.petstore.testing.PetstoreLoadTest")
+    mainClass.set("is.codion.demos.petstore.testing.PetstoreLoadTest")
     maxHeapSize = "512m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "http",

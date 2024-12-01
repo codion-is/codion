@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petstore.domain;
+package is.codion.demos.petstore.domain;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;

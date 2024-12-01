@@ -16,31 +16,26 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petstore.ui;
+package is.codion.demos.petstore.ui;
 
+import is.codion.demos.petstore.domain.Petstore.Tag;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static is.codion.framework.demos.petstore.domain.Petstore.SellerContactInfo;
+public class TagEditPanel extends EntityEditPanel {
 
-public class ContactInfoEditPanel extends EntityEditPanel {
-
-	public ContactInfoEditPanel(SwingEntityEditModel model) {
+	public TagEditPanel(SwingEntityEditModel model) {
 		super(model);
 	}
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(SellerContactInfo.LAST_NAME);
+		initialFocusAttribute().set(Tag.TAG);
 
-		createTextField(SellerContactInfo.LAST_NAME);
-		createTextField(SellerContactInfo.FIRST_NAME);
-		createTextField(SellerContactInfo.EMAIL);
+		createTextField(Tag.TAG).columns(16);
 
-		setLayout(Layouts.flexibleGridLayout(3, 1));
-		addInputPanel(SellerContactInfo.LAST_NAME);
-		addInputPanel(SellerContactInfo.FIRST_NAME);
-		addInputPanel(SellerContactInfo.EMAIL);
+		setLayout(Layouts.flexibleGridLayout(1, 1));
+		addInputPanel(Tag.TAG);
 	}
 }

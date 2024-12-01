@@ -16,13 +16,13 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petstore.domain;
+package is.codion.demos.petstore.domain;
 
 import is.codion.framework.domain.test.DomainTest;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.demos.petstore.domain.Petstore.*;
 
 public class PetstoreTest extends DomainTest {
 

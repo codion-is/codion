@@ -16,12 +16,12 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petstore.testing;
+package is.codion.demos.petstore.testing;
 
 import is.codion.common.user.User;
+import is.codion.demos.petstore.domain.Petstore;
+import is.codion.demos.petstore.model.PetstoreAppModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.petstore.domain.Petstore;
-import is.codion.framework.demos.petstore.model.PetstoreAppModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.tools.loadtest.LoadTest;

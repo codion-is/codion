@@ -19,15 +19,15 @@
 /**
  * Petstore demo.
  */
-module is.codion.framework.demos.petstore {
+module is.codion.demos.petstore {
 	requires is.codion.tools.loadtest.ui;
 	requires is.codion.swing.framework.ui;
 
-	exports is.codion.framework.demos.petstore.model
+	exports is.codion.demos.petstore.model
 					to is.codion.swing.framework.model, is.codion.swing.framework.ui;
-	exports is.codion.framework.demos.petstore.ui
+	exports is.codion.demos.petstore.ui
 					to is.codion.swing.framework.ui;
 
 	provides is.codion.framework.domain.Domain
-					with is.codion.framework.demos.petstore.domain.Petstore;
+					with is.codion.demos.petstore.domain.Petstore;
 }

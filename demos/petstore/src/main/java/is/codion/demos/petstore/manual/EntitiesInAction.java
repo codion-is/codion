@@ -16,19 +16,19 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petstore.manual;
+package is.codion.demos.petstore.manual;
 
 import is.codion.common.user.User;
+import is.codion.demos.petstore.domain.Petstore;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.petstore.domain.Petstore;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.List;
 
-import static is.codion.framework.demos.petstore.domain.Petstore.Category;
-import static is.codion.framework.demos.petstore.domain.Petstore.Product;
+import static is.codion.demos.petstore.domain.Petstore.Category;
+import static is.codion.demos.petstore.domain.Petstore.Product;
 
 public final class EntitiesInAction {
 
