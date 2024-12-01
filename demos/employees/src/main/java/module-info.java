@@ -19,7 +19,7 @@
 /**
  * Employees demo.
  */
-module is.codion.framework.demos.employees {
+module is.codion.demos.employees {
 	requires net.sf.jasperreports.core;
 	requires is.codion.framework.db.http;
 	requires is.codion.framework.db.local;
@@ -32,20 +32,20 @@ module is.codion.framework.demos.employees {
 	requires is.codion.plugin.jasperreports;
 	requires com.formdev.flatlaf.intellijthemes;
 
-	exports is.codion.framework.demos.employees.domain
+	exports is.codion.demos.employees.domain
 					to is.codion.framework.domain, is.codion.framework.db.local;
-	exports is.codion.framework.demos.employees.model
+	exports is.codion.demos.employees.model
 					to is.codion.swing.framework.ui;
-	exports is.codion.framework.demos.employees.ui
+	exports is.codion.demos.employees.ui
 					to is.codion.swing.framework.ui;
-	exports is.codion.framework.demos.employees.server
+	exports is.codion.demos.employees.server
 					to java.rmi;
 	//for loading of reports from classpath
-	opens is.codion.framework.demos.employees.domain
+	opens is.codion.demos.employees.domain
 					to is.codion.plugin.jasperreports;
 
 	provides is.codion.framework.domain.Domain
-					with is.codion.framework.demos.employees.domain.Employees;
+					with is.codion.demos.employees.domain.Employees;
 	provides is.codion.common.rmi.server.Authenticator
-					with is.codion.framework.demos.employees.server.EmployeesAuthenticator;
+					with is.codion.demos.employees.server.EmployeesAuthenticator;
 }

@@ -89,7 +89,7 @@ tasks.withType<Test>().configureEach {
 tasks.register<JavaExec>("runClientLocal") {
     group ="application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.employees.ui.EmployeesAppPanel")
+    mainClass.set("is.codion.demos.employees.ui.EmployeesAppPanel")
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "local",
@@ -102,7 +102,7 @@ tasks.register<JavaExec>("runClientLocal") {
 tasks.register<JavaExec>("runClientRMI") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.employees.ui.EmployeesAppPanel")
+    mainClass.set("is.codion.demos.employees.ui.EmployeesAppPanel")
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType"    to "remote",
@@ -115,7 +115,7 @@ tasks.register<JavaExec>("runClientRMI") {
 tasks.register<JavaExec>("runClientHttp") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.employees.ui.EmployeesAppPanel")
+    mainClass.set("is.codion.demos.employees.ui.EmployeesAppPanel")
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "http",
@@ -128,7 +128,7 @@ tasks.register<JavaExec>("runClientHttp") {
 tasks.register<JavaExec>("runLoadTestRMI") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.employees.testing.EmployeesLoadTest")
+    mainClass.set("is.codion.demos.employees.testing.EmployeesLoadTest")
     maxHeapSize = "512m"
     systemProperties = mapOf(
             "codion.client.connectionType"    to "remote",
@@ -140,7 +140,7 @@ tasks.register<JavaExec>("runLoadTestRMI") {
 tasks.register<JavaExec>("runLoadTestHttp") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.employees.testing.EmployeesLoadTest")
+    mainClass.set("is.codion.demos.employees.testing.EmployeesLoadTest")
     maxHeapSize = "512m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "http",

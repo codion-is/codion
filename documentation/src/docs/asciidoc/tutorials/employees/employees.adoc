@@ -37,21 +37,21 @@ The entityType in this example contains the actual table name (employees.departm
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tags=departmentConstants]
+include::{dir-source}/is/codion/demos/employees/domain/Employees.java[tags=departmentConstants]
 ----
 
 Next we define the constants required for the employee entity, which is based on the EMPLOYEES.EMPLOYEE table.Here there are two additional attributes with _FK suffixes, we'll use these later when we specify the foreign key attributes for the employee entity.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tags=employeeConstants]
+include::{dir-source}/is/codion/demos/employees/domain/Employees.java[tags=employeeConstants]
 ----
 
 In this section we add a constructor, adding two entity definition builders to the domain model, along with a employee report, loaded from the classpath.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tags=constructor]
+include::{dir-source}/is/codion/demos/employees/domain/Employees.java[tags=constructor]
 ----
 
 Next we add the method defining the department entity. *EntityDefinition.Builder* instances are provided by the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] class, via the *definition* method, which takes an array of *AttributeDefinition.Builder* instances as parameter.
@@ -62,7 +62,7 @@ In this case we simply have the department string provider return the department
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tags=defineDepartment]
+include::{dir-source}/is/codion/demos/employees/domain/Employees.java[tags=defineDepartment]
 ----
 
 Next we define the employee entity.
@@ -71,7 +71,7 @@ Here we also introduce the <<{basedir}/manual/manual.adoc#_foreignkey, ForeignKe
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tags=defineEmployee]
+include::{dir-source}/is/codion/demos/employees/domain/Employees.java[tags=defineEmployee]
 ----
 
 === Domain unit test
@@ -86,7 +86,7 @@ NOTE: The {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/D
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/employees/domain/EmployeesTest.java[tags=domainTest]
+include::{dir-test-source}/is/codion/demos/employees/domain/EmployeesTest.java[tags=domainTest]
 ----
 
 Here is the parameter required for running the Employees test on the default H2 embedded database, assuming the database resides in the working directory.
@@ -104,7 +104,7 @@ We also call the *bindEvents* method we define later on.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/model/EmployeeEditModel.java[tags=constructor]
+include::{dir-source}/is/codion/demos/employees/model/EmployeeEditModel.java[tags=constructor]
 ----
 
 At some point we are going to be editing the manager attribute of an employee which means we'll need a list of managers.
@@ -116,7 +116,7 @@ We start by calling the super class method which creates an unfiltered {url-java
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/model/EmployeeEditModel.java[tags=createForeignKeyComboBox]
+include::{dir-source}/is/codion/demos/employees/model/EmployeeEditModel.java[tags=createForeignKeyComboBox]
 ----
 
 For further information on event binding see <<{basedir}/manual/manual.adoc#_event_binding, Manual#Event binding>>.
@@ -129,7 +129,7 @@ A class extending *EntityEditPanel* must provide a constructor taking a single *
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentEditPanel.java[tags=constructor]
+include::{dir-source}/is/codion/demos/employees/ui/DepartmentEditPanel.java[tags=constructor]
 ----
 
 We override the *intializeUI* method to construct the actual UI, used for editing the department entity.
@@ -137,7 +137,7 @@ The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPan
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentEditPanel.java[tags=initializeUI]
+include::{dir-source}/is/codion/demos/employees/ui/DepartmentEditPanel.java[tags=initializeUI]
 ----
 
 We extend *EntityTablePanel* for the department entity in order to provide a report print action.
@@ -146,7 +146,7 @@ A class extending *EntityTablePanel* must provide a constructor taking a single 
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentTablePanel.java[tags=constructor]
+include::{dir-source}/is/codion/demos/employees/ui/DepartmentTablePanel.java[tags=constructor]
 ----
 
 We create a method for viewing a report, which is called via an action we'll initialize in the next step.
@@ -154,35 +154,35 @@ For further information about report viewing and printing see <<{basedir}/manual
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentTablePanel.java[tags=viewEmployeeReport]
+include::{dir-source}/is/codion/demos/employees/ui/DepartmentTablePanel.java[tags=viewEmployeeReport]
 ----
 
 Next we override *setupControls()* to populate the print control with our custom report one.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentTablePanel.java[tags=setupControls]
+include::{dir-source}/is/codion/demos/employees/ui/DepartmentTablePanel.java[tags=setupControls]
 ----
 
 For editing employee entities we create the *EmployeeEditPanel* class.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeeEditPanel.java[tags=constructor]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeeEditPanel.java[tags=constructor]
 ----
 
 All we have to do is override *initializeUI*.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeeEditPanel.java[tags=initializeUI]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeeEditPanel.java[tags=initializeUI]
 ----
 
 We extend *EntityTablePanel* for the employee entity in order to provide data specific cell coloring.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeeTablePanel.java[]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeeTablePanel.java[]
 ----
 
 [#_main_application_model]
@@ -192,7 +192,7 @@ We create a main application model by extending {url-javadoc}{swing-framework-mo
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/model/EmployeesAppModel.java[tags=applicationModel]
+include::{dir-source}/is/codion/demos/employees/model/EmployeesAppModel.java[tags=applicationModel]
 ----
 
 [#_main_application_panel]
@@ -204,21 +204,21 @@ Overriding *createEntityPanels()* we create two *EntityPanels* using the *SwingE
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeesAppPanel.java[tags=createEntityPanels]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tags=createEntityPanels]
 ----
 
 Next we add a method for importing a JSON text file, which we'll call via an action initialized in the next section.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeesAppPanel.java[tags=importJSON]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tags=importJSON]
 ----
 
 We override *createToolsMenuControls()* to add our import action to the Tools menu.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeesAppPanel.java[tags=createToolsMenuControls]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tags=createToolsMenuControls]
 ----
 
 We create a *main()* method for configuring and running the application.
@@ -226,7 +226,7 @@ See <<{basedir}/technical/client.adoc#_client_configuration, client configuratio
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeesAppPanel.java[tags=main]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tags=main]
 ----
 
 [#_load_test]
@@ -234,32 +234,32 @@ include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeesAppPanel.j
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/testing/EmployeesLoadTest.java[tags=loadTest]
+include::{dir-source}/is/codion/demos/employees/testing/EmployeesLoadTest.java[tags=loadTest]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/testing/scenarios/InsertDepartment.java[tags=loadTest]
+include::{dir-source}/is/codion/demos/employees/testing/scenarios/InsertDepartment.java[tags=loadTest]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/testing/scenarios/InsertEmployee.java[tags=loadTest]
+include::{dir-source}/is/codion/demos/employees/testing/scenarios/InsertEmployee.java[tags=loadTest]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/testing/scenarios/LoginLogout.java[tags=loadTest]
+include::{dir-source}/is/codion/demos/employees/testing/scenarios/LoginLogout.java[tags=loadTest]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/testing/scenarios/SelectDepartment.java[tags=loadTest]
+include::{dir-source}/is/codion/demos/employees/testing/scenarios/SelectDepartment.java[tags=loadTest]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/testing/scenarios/UpdateEmployee.java[tags=loadTest]
+include::{dir-source}/is/codion/demos/employees/testing/scenarios/UpdateEmployee.java[tags=loadTest]
 ----
 
 == Full Demo Source
@@ -269,41 +269,41 @@ include::{dir-source}/is/codion/framework/demos/employees/testing/scenarios/Upda
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tag=**]
+include::{dir-source}/is/codion/demos/employees/domain/Employees.java[tag=**]
 ----
 
 === Domain unit test
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/employees/domain/EmployeesTest.java[tag=**]
+include::{dir-test-source}/is/codion/demos/employees/domain/EmployeesTest.java[tag=**]
 ----
 
 === Model
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/model/EmployeeEditModel.java[tag=**]
+include::{dir-source}/is/codion/demos/employees/model/EmployeeEditModel.java[tag=**]
 ----
 
 === UI
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentEditPanel.java[tag=**]
+include::{dir-source}/is/codion/demos/employees/ui/DepartmentEditPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentTablePanel.java[tag=**]
+include::{dir-source}/is/codion/demos/employees/ui/DepartmentTablePanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeeEditPanel.java[tag=**]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeeEditPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/EmployeesAppPanel.java[tag=**]
+include::{dir-source}/is/codion/demos/employees/ui/EmployeesAppPanel.java[tag=**]
 ----

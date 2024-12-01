@@ -132,7 +132,7 @@ is.codion.demos.chinook.domain.Chinook$Invoice
 is.codion.demos.chinook.domain.Chinook$Playlist$RandomPlaylistParameters
 is.codion.demos.chinook.domain.Chinook$Track
 is.codion.demos.chinook.domain.Chinook$Track$RaisePriceParameters
-is.codion.framework.demos.employees.domain.*
+is.codion.demos.employees.domain.*
 is.codion.demos.world.domain.api.*
 is.codion.demos.petclinic.domain.*
 is.codion.plugin.jasperreports.DefaultJRReportType
