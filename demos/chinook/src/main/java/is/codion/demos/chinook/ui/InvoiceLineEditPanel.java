@@ -56,6 +56,8 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 		createTextField(InvoiceLine.QUANTITY)
 						.selectAllOnFocusGained(true)
 						.columns(2)
+						// Set the INSERT control as the quantity field
+						// action, triggering insert on Enter
 						.action(control(INSERT).get());
 
 		JToolBar updateToolBar = toolBar()

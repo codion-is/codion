@@ -41,11 +41,11 @@ public final class InvoiceModel extends SwingEntityModel {
 		// InvoiceEditPanel, we simply activate the link here.
 		detailModelLink.active().set(true);
 
-		// We listen for when the edit model updates the totals for one or more
-		// invoices, and replace those in the table model, with the updated ones,
-		// which are provided by the event. Note the use of invokeLater() since
-		// the event is triggered during update, which happens in a background
-		// thread, and we are thereby updating the table data off the Event Dispatch Thread.
+		// We listen for when invoice totals are updated by the edit model,
+		// and replace the invoices in the table model with the updated ones.
+		// Note the use of invokeLater() since the event is triggered during
+		// update, which happens in a background thread, so we have to update
+		// the table data on the Event Dispatch Thread.
 		invoiceLineEditModel.addTotalsUpdatedConsumer(updatedInvoices ->
 						SwingUtilities.invokeLater(() -> tableModel().replace(updatedInvoices)));
 	}
