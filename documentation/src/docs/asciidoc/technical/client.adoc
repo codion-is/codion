@@ -92,14 +92,14 @@ image::technical/world-client.png[Client UI,720]
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/tutorial/ClientArchitecture.java[tags=entityModel]
+include::{dir-source}/is/codion/demos/chinook/tutorial/ClientArchitecture.java[tags=entityModel]
 ----
 
 ==== EntityPanel
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/tutorial/ClientArchitecture.java[tags=entityPanel]
+include::{dir-source}/is/codion/demos/chinook/tutorial/ClientArchitecture.java[tags=entityPanel]
 ----
 
 === Full Example
@@ -109,7 +109,7 @@ include::{dir-source}/is/codion/framework/demos/chinook/tutorial/ClientArchitect
 ====
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/tutorial/ClientArchitecture.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/tutorial/ClientArchitecture.java[lines=19..-1]
 ----
 ====
 

@@ -20,7 +20,7 @@ Provides a connection based on a local JDBC connection.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=local]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=local]
 ----
 
 == RemoteEntityConnectionProvider
@@ -31,7 +31,7 @@ Provides a connection based on a remote RMI connection.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=remote]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=remote]
 ----
 
 == HttpEntityConnectionProvider
@@ -42,5 +42,5 @@ Provides a connection based on a remote HTTP connection.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=http]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=http]
 ----

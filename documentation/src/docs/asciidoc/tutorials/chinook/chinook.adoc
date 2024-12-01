@@ -31,12 +31,12 @@ image::tutorials/chinook/customers.png[]
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/domain/Chinook.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/domain/Chinook.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/domain/impl/ChinookImpl.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/domain/impl/ChinookImpl.java[lines=19..-1]
 ----
 
 [#_domain_unit_test]
@@ -44,59 +44,59 @@ include::{dir-source}/is/codion/framework/demos/chinook/domain/impl/ChinookImpl.
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/chinook/domain/ChinookTest.java[lines=19..-1]
+include::{dir-test-source}/is/codion/demos/chinook/domain/ChinookTest.java[lines=19..-1]
 ----
 
 == Model
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/AlbumModel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/model/AlbumModel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/InvoiceModel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/model/InvoiceModel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/InvoiceEditModel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/model/InvoiceEditModel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/InvoiceLineEditModel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/model/InvoiceLineEditModel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/PlaylistEditModel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/model/PlaylistEditModel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/PlaylistTableModel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/model/PlaylistTableModel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/PlaylistTrackEditModel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/model/PlaylistTrackEditModel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/TrackEditModel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/model/TrackEditModel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/TrackTableModel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/model/TrackTableModel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/domain/impl/ChinookResources.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/domain/impl/ChinookResources.java[lines=19..-1]
 ----
 
 [#_main_application_model]
@@ -104,24 +104,24 @@ include::{dir-source}/is/codion/framework/demos/chinook/domain/impl/ChinookResou
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/ChinookAppModel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/model/ChinookAppModel.java[lines=19..-1]
 ----
 
 === Model unit test
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/chinook/model/AlbumModelTest.java[lines=19..-1]
+include::{dir-test-source}/is/codion/demos/chinook/model/AlbumModelTest.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/chinook/model/InvoiceLineEditModelTest.java[lines=19..-1]
+include::{dir-test-source}/is/codion/demos/chinook/model/InvoiceLineEditModelTest.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/chinook/model/TrackTableModelTest.java[lines=19..-1]
+include::{dir-test-source}/is/codion/demos/chinook/model/TrackTableModelTest.java[lines=19..-1]
 ----
 
 [#_ui]
@@ -129,152 +129,152 @@ include::{dir-test-source}/is/codion/framework/demos/chinook/model/TrackTableMod
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/CustomerPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/CustomerPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/CustomerEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/CustomerEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/CustomerTablePanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/CustomerTablePanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/InvoicePanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/InvoicePanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/InvoiceEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/InvoiceEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/InvoiceTablePanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/InvoiceTablePanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/InvoiceConditionPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/InvoiceConditionPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/InvoiceLineEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/InvoiceLineEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/InvoiceLineTablePanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/InvoiceLineTablePanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/ArtistEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/ArtistEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/AlbumPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/AlbumPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/AlbumEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/AlbumEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/AlbumTablePanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/AlbumTablePanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/CoverArtPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/CoverArtPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/AlbumTagPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/AlbumTagPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/TrackEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/TrackEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/DurationComponentValue.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/DurationComponentValue.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/TrackTablePanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/TrackTablePanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/PlaylistPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/PlaylistPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/PlaylistEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/PlaylistEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/PlaylistTablePanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/PlaylistTablePanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/RandomPlaylistParametersPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/RandomPlaylistParametersPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/PlaylistTrackEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/PlaylistTrackEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/PlaylistTrackTablePanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/PlaylistTrackTablePanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/TrackComponentFactory.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/TrackComponentFactory.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/TrackSelectorFactory.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/TrackSelectorFactory.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/EmployeeEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/EmployeeEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/EmployeeTablePanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/EmployeeTablePanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/GenreEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/GenreEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/MediaTypeEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/MediaTypeEditPanel.java[lines=19..-1]
 ----
 
 [#_main_application_panel]
@@ -282,7 +282,7 @@ include::{dir-source}/is/codion/framework/demos/chinook/ui/MediaTypeEditPanel.ja
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/ChinookAppPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/ui/ChinookAppPanel.java[lines=19..-1]
 ----
 
 [#_authenticator]
@@ -290,7 +290,7 @@ include::{dir-source}/is/codion/framework/demos/chinook/ui/ChinookAppPanel.java[
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/server/ChinookAuthenticator.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/server/ChinookAuthenticator.java[lines=19..-1]
 ----
 
 [#_load_test]
@@ -298,55 +298,55 @@ include::{dir-source}/is/codion/framework/demos/chinook/server/ChinookAuthentica
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/ChinookLoadTest.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/ChinookLoadTest.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/LoadTestUtil.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/scenarios/LoadTestUtil.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/InsertDeleteAlbum.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/scenarios/InsertDeleteAlbum.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/LogoutLogin.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/scenarios/LogoutLogin.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/RandomPlaylist.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/scenarios/RandomPlaylist.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/RaisePrices.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/scenarios/RaisePrices.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/UpdateTotals.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/scenarios/UpdateTotals.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/ViewAlbum.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/scenarios/ViewAlbum.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/ViewCustomerReport.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/scenarios/ViewCustomerReport.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/ViewGenre.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/scenarios/ViewGenre.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/ViewInvoice.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/testing/scenarios/ViewInvoice.java[lines=19..-1]
 ----

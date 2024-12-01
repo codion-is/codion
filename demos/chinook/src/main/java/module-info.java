@@ -32,19 +32,19 @@ module is.codion.framework.demos.chinook {
 	requires com.formdev.flatlaf.intellijthemes;
 	requires org.kordamp.ikonli.foundation;
 
-	exports is.codion.framework.demos.chinook.model
+	exports is.codion.demos.chinook.model
 					to is.codion.swing.framework.model, is.codion.swing.framework.ui;
-	exports is.codion.framework.demos.chinook.ui
+	exports is.codion.demos.chinook.ui
 					to is.codion.swing.framework.ui;
-	exports is.codion.framework.demos.chinook.tutorial
+	exports is.codion.demos.chinook.tutorial
 					to is.codion.framework.db.local;
 	//for loading of reports from classpath, accessing default methods in EntityType interfaces and resource bundles
-	opens is.codion.framework.demos.chinook.domain;
+	opens is.codion.demos.chinook.domain;
 
 	provides is.codion.framework.domain.Domain
-					with is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
+					with is.codion.demos.chinook.domain.impl.ChinookImpl;
 	provides is.codion.common.rmi.server.Authenticator
-					with is.codion.framework.demos.chinook.server.ChinookAuthenticator;
+					with is.codion.demos.chinook.server.ChinookAuthenticator;
 	provides is.codion.common.resource.Resources
-					with is.codion.framework.demos.chinook.domain.impl.ChinookResources;
+					with is.codion.demos.chinook.domain.impl.ChinookResources;
 }

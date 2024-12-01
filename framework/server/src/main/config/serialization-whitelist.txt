@@ -127,11 +127,11 @@ is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByColumn
 is.codion.framework.domain.entity.Entity
 is.codion.framework.domain.entity.ImmutableEntity
 is.codion.framework.domain.entity.OrderBy$NullOrder
-is.codion.framework.demos.chinook.domain.Chinook
-is.codion.framework.demos.chinook.domain.Chinook$Invoice
-is.codion.framework.demos.chinook.domain.Chinook$Playlist$RandomPlaylistParameters
-is.codion.framework.demos.chinook.domain.Chinook$Track
-is.codion.framework.demos.chinook.domain.Chinook$Track$RaisePriceParameters
+is.codion.demos.chinook.domain.Chinook
+is.codion.demos.chinook.domain.Chinook$Invoice
+is.codion.demos.chinook.domain.Chinook$Playlist$RandomPlaylistParameters
+is.codion.demos.chinook.domain.Chinook$Track
+is.codion.demos.chinook.domain.Chinook$Track$RaisePriceParameters
 is.codion.framework.demos.employees.domain.*
 is.codion.framework.demos.world.domain.api.*
 is.codion.framework.demos.petclinic.domain.*

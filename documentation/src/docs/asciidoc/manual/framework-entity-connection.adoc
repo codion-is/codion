@@ -48,29 +48,29 @@ connection.setLimitForeignKeyFetchDepth(false);
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth0]
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth0]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth2]
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth2]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthEntity]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthEntity]
 ----
 
 The fetch depth can also be configured on a query basis, either for the whole query or one or more foreign keys.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthCondition]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthCondition]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthConditionForeignKey]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthConditionForeignKey]
 ----
 
 === Selecting entities
@@ -85,21 +85,21 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=select]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=select]
 ----
 
 {url-entity-connection}#select{opar}is.codion.framework.domain.entity.Entity.Key{cpar}[select(Key key)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKey]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKey]
 ----
 
 {url-entity-connection}#select{opar}java.util.Collection{cpar}[select(Collection<Key> keys)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKeys]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKeys]
 ----
 
 === Selecting values
@@ -114,7 +114,7 @@ For selecting the values of a single column.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValues]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValues]
 ----
 
 === iterator
@@ -127,7 +127,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=iterator]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=iterator]
 ----
 
 === dependencies
@@ -138,7 +138,7 @@ For selecting entities that depend on a set of entities via foreign keys.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=dependencies]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=dependencies]
 ----
 
 === count
@@ -149,7 +149,7 @@ For selecting the row count given a count condition.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=count]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=count]
 ----
 
 == Modifying
@@ -168,7 +168,7 @@ For inserting rows.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=insert]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=insert]
 ----
 
 === update
@@ -186,7 +186,7 @@ These methods throw an exception if any of the entities is unmodified.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=updateEntity]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=updateEntity]
 ----
 
 ==== Optimistic locking
@@ -225,7 +225,7 @@ For updating by condition.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=updateCondition]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=updateCondition]
 ----
 
 === delete
@@ -236,7 +236,7 @@ For deleting existing rows.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
 ----
 
 ** {url-entity-connection}#delete{opar}is.codion.framework.domain.entity.Entity.Key{cpar}[delete(Key key)]
@@ -245,7 +245,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteKey]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteKey]
 ----
 
 == Procedures & Functions
@@ -257,7 +257,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=function]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=function]
 ----
 
 === Procedure
@@ -275,7 +275,7 @@ Executing procedures is the same as executing functions, except without a return
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
 ----
 
 == Transaction control
@@ -295,7 +295,7 @@ NOTE: Nested transactions are not supported and will cause an IllegalStateExcept
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalLambda]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalLambda]
 ----
 
 .Same example using an anonymous class
@@ -303,7 +303,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 ====
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalAnonymous]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalAnonymous]
 ----
 ====
 
@@ -311,7 +311,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalResultLambda]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalResultLambda]
 ----
 
 .Same example using an anonymous class
@@ -319,7 +319,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 ====
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalResultAnonymous]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=transactionalResultAnonymous]
 ----
 ====
 
@@ -329,7 +329,7 @@ For a more fine grained transaction control and the ability to rollback, transac
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transaction]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=transaction]
 ----
 
 == LocalEntityConnection
