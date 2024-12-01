@@ -48,7 +48,7 @@ tasks.withType<Test>().configureEach {
 tasks.register<JavaExec>("runClientLocal") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel")
+    mainClass.set("is.codion.demos.schemabrowser.client.ui.SchemaBrowserAppPanel")
     systemProperties = mapOf(
         "codion.client.connectionType" to "local",
         "codion.db.url" to "jdbc:h2:mem:h2db",

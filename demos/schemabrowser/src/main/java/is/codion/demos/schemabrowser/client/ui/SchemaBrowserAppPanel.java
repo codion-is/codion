@@ -16,16 +16,16 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.schemabrowser.client.ui;
+package is.codion.demos.schemabrowser.client.ui;
 
 import is.codion.common.user.User;
+import is.codion.demos.schemabrowser.domain.SchemaBrowser;
+import is.codion.demos.schemabrowser.domain.SchemaBrowser.Constraint;
+import is.codion.demos.schemabrowser.domain.SchemaBrowser.ConstraintColumn;
+import is.codion.demos.schemabrowser.domain.SchemaBrowser.Schema;
+import is.codion.demos.schemabrowser.domain.SchemaBrowser.Table;
+import is.codion.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser;
-import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Constraint;
-import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ConstraintColumn;
-import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Schema;
-import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
-import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;

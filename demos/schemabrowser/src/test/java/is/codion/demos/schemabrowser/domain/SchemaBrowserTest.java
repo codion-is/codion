@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.schemabrowser.domain;
+package is.codion.demos.schemabrowser.domain;
 
 import org.junit.jupiter.api.Test;
 

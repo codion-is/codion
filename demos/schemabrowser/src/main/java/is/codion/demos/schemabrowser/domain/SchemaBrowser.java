@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.schemabrowser.domain;
+package is.codion.demos.schemabrowser.domain;
 
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.framework.domain.DomainModel;
