@@ -21,9 +21,11 @@ package is.codion.framework.demos.manual.common;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
+import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
@@ -51,6 +53,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Supplier;
 
 public final class InputControls {
 
@@ -359,6 +364,51 @@ public final class InputControls {
 										.preferredWidth(160)
 										.build();
 		// end::selectionComboBox[]
+	}
+
+	static void filterComboBoxModel() {
+		// tag::filterComboBoxModel[]
+		Supplier<Collection<String>> items = () ->
+						List.of("One", "Two", "Three");
+
+		FilterComboBoxModel<String> model =
+						FilterComboBoxModel.builder(items)
+										.nullItem("-")
+										.build();
+
+		JComboBox<String> comboBox =
+						Components.comboBox(model)
+										.mouseWheelScrolling(true)
+										.build();
+
+		// Hides the 'Two' item.
+		model.items().visible().predicate()
+						.set(item -> !item.equals("Two"));
+
+		// Prints the selected item
+		model.selection().item()
+						.addConsumer(System.out::println);
+
+		// Refreshes the items using the supplier from above
+		model.refresh();
+		// end::filterComboBoxModel[]
+	}
+
+	static void comboBoxCompletion() {
+		// tag::comboBoxCompletion[]
+		FilterComboBoxModel<String> model =
+						FilterComboBoxModel.builder(List.of("Jon", "Jón", "Jónsi"))
+										.nullItem("-")
+										.build();
+
+		JComboBox<String> comboBox =
+						Components.comboBox(model)
+										// Auto completion
+										.completionMode(Completion.Mode.AUTOCOMPLETE)
+										// Accented characters not normalized
+										.normalize(false)
+										.build();
+		// end::comboBoxCompletion[]
 	}
 
 	static void customTextFields() {

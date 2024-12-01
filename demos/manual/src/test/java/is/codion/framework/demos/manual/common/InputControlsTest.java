@@ -39,5 +39,7 @@ public final class InputControlsTest {
 		InputControls.localDate();
 		InputControls.localDateTime();
 		InputControls.selectionComboBox();
+		InputControls.filterComboBoxModel();
+		InputControls.comboBoxCompletion();
 	}
 }
