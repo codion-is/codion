@@ -16,30 +16,38 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.ui;
+package is.codion.demos.petclinic.ui;
 
-import is.codion.framework.demos.petclinic.domain.api.Vet;
+import is.codion.demos.petclinic.domain.api.Owner;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
-public final class VetEditPanel extends EntityEditPanel {
+public final class OwnerEditPanel extends EntityEditPanel {
 
-	public VetEditPanel(SwingEntityEditModel editModel) {
+	public OwnerEditPanel(SwingEntityEditModel editModel) {
 		super(editModel);
 	}
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Vet.FIRST_NAME);
+		initialFocusAttribute().set(Owner.FIRST_NAME);
 
-		createTextField(Vet.FIRST_NAME);
-		createTextField(Vet.LAST_NAME);
+		createTextField(Owner.FIRST_NAME);
+		createTextField(Owner.LAST_NAME);
+		createTextField(Owner.ADDRESS);
+		createTextField(Owner.CITY);
+		createTextField(Owner.TELEPHONE);
+		createComboBox(Owner.PHONE_TYPE);
 
-		setLayout(gridLayout(2, 1));
+		setLayout(gridLayout(3, 2));
 
-		addInputPanel(Vet.FIRST_NAME);
-		addInputPanel(Vet.LAST_NAME);
+		addInputPanel(Owner.FIRST_NAME);
+		addInputPanel(Owner.LAST_NAME);
+		addInputPanel(Owner.ADDRESS);
+		addInputPanel(Owner.CITY);
+		addInputPanel(Owner.TELEPHONE);
+		addInputPanel(Owner.PHONE_TYPE);
 	}
 }

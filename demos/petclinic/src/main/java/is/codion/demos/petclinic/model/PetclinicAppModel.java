@@ -16,12 +16,12 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.model;
+package is.codion.demos.petclinic.model;
 
+import is.codion.demos.petclinic.domain.api.Owner;
+import is.codion.demos.petclinic.domain.api.Pet;
+import is.codion.demos.petclinic.domain.api.Visit;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.petclinic.domain.api.Owner;
-import is.codion.framework.demos.petclinic.domain.api.Pet;
-import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 

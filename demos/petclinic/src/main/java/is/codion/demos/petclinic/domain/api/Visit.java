@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.domain.api;
+package is.codion.demos.petclinic.domain.api;
 
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -24,17 +24,15 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.time.LocalDate;
 
-import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
+import static is.codion.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
-public interface Pet {
-	EntityType TYPE = DOMAIN.entityType("petclinic.pet");
+public interface Visit {
+	EntityType TYPE = DOMAIN.entityType("petclinic.visit");
 
 	Column<Integer> ID = TYPE.integerColumn("id");
-	Column<String> NAME = TYPE.stringColumn("name");
-	Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
-	Column<Integer> PET_TYPE_ID = TYPE.integerColumn("type_id");
-	Column<Integer> OWNER_ID = TYPE.integerColumn("owner_id");
+	Column<Integer> PET_ID = TYPE.integerColumn("pet_id");
+	Column<LocalDate> VISIT_DATE = TYPE.localDateColumn("visit_date");
+	Column<String> DESCRIPTION = TYPE.stringColumn("description");
 
-	ForeignKey PET_TYPE_FK = TYPE.foreignKey("type_fk", PET_TYPE_ID, PetType.ID);
-	ForeignKey OWNER_FK = TYPE.foreignKey("owner_fk", OWNER_ID, Owner.ID);
+	ForeignKey PET_FK = TYPE.foreignKey("pet_fk", PET_ID, Pet.ID);
 }

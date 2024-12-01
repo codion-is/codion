@@ -16,16 +16,20 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.domain.api;
+package is.codion.demos.petclinic.domain.api;
 
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
+import static is.codion.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
-public interface PetType {
-	EntityType TYPE = DOMAIN.entityType("petclinic.pet_type");
+public interface VetSpecialty {
+	EntityType TYPE = DOMAIN.entityType("petclinic.vet_specialty");
 
-	Column<Integer> ID = TYPE.integerColumn("id");
-	Column<String> NAME = TYPE.stringColumn("name");
+	Column<Integer> VET = TYPE.integerColumn("vet");
+	Column<Integer> SPECIALTY = TYPE.integerColumn("specialty");
+
+	ForeignKey VET_FK = TYPE.foreignKey("vet_fk", VET, Vet.ID);
+	ForeignKey SPECIALTY_FK = TYPE.foreignKey("specialty_fk", SPECIALTY, Specialty.ID);
 }

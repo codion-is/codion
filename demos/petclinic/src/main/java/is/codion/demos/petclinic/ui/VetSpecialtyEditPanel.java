@@ -16,38 +16,37 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.ui;
+package is.codion.demos.petclinic.ui;
 
-import is.codion.framework.demos.petclinic.domain.api.Owner;
+import is.codion.demos.petclinic.domain.api.Specialty;
+import is.codion.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
-public final class OwnerEditPanel extends EntityEditPanel {
+public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
-	public OwnerEditPanel(SwingEntityEditModel editModel) {
+	public VetSpecialtyEditPanel(SwingEntityEditModel editModel) {
 		super(editModel);
+		defaults().foreignKeyComboBoxPreferredWidth().set(200);
 	}
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Owner.FIRST_NAME);
+		initialFocusAttribute().set(VetSpecialty.VET_FK);
 
-		createTextField(Owner.FIRST_NAME);
-		createTextField(Owner.LAST_NAME);
-		createTextField(Owner.ADDRESS);
-		createTextField(Owner.CITY);
-		createTextField(Owner.TELEPHONE);
-		createComboBox(Owner.PHONE_TYPE);
+		createForeignKeyComboBox(VetSpecialty.VET_FK);
+		createForeignKeyComboBoxPanel(VetSpecialty.SPECIALTY_FK, this::createSpecialtyEditPanel)
+						.includeAddButton(true);
 
-		setLayout(gridLayout(3, 2));
+		setLayout(gridLayout(2, 1));
 
-		addInputPanel(Owner.FIRST_NAME);
-		addInputPanel(Owner.LAST_NAME);
-		addInputPanel(Owner.ADDRESS);
-		addInputPanel(Owner.CITY);
-		addInputPanel(Owner.TELEPHONE);
-		addInputPanel(Owner.PHONE_TYPE);
+		addInputPanel(VetSpecialty.VET_FK);
+		addInputPanel(VetSpecialty.SPECIALTY_FK);
+	}
+
+	private SpecialtyEditPanel createSpecialtyEditPanel() {
+		return new SpecialtyEditPanel(new SwingEntityEditModel(Specialty.TYPE, editModel().connectionProvider()));
 	}
 }

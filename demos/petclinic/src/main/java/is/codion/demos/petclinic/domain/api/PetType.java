@@ -16,28 +16,16 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.ui;
+package is.codion.demos.petclinic.domain.api;
 
-import is.codion.framework.demos.petclinic.domain.api.Specialty;
-import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
-public final class SpecialtyEditPanel extends EntityEditPanel {
+public interface PetType {
+	EntityType TYPE = DOMAIN.entityType("petclinic.pet_type");
 
-	public SpecialtyEditPanel(SwingEntityEditModel editModel) {
-		super(editModel);
-	}
-
-	@Override
-	protected void initializeUI() {
-		initialFocusAttribute().set(Specialty.NAME);
-
-		createTextField(Specialty.NAME);
-
-		setLayout(gridLayout(1, 1));
-
-		addInputPanel(Specialty.NAME);
-	}
+	Column<Integer> ID = TYPE.integerColumn("id");
+	Column<String> NAME = TYPE.stringColumn("name");
 }

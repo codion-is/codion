@@ -64,7 +64,7 @@ tasks.withType<Test>().configureEach {
 tasks.register<JavaExec>("runClientLocal") {
     group ="application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.petclinic.ui.PetclinicAppPanel")
+    mainClass.set("is.codion.demos.petclinic.ui.PetclinicAppPanel")
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "local",
@@ -77,7 +77,7 @@ tasks.register<JavaExec>("runClientLocal") {
 tasks.register<JavaExec>("runClientRMI") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.petclinic.ui.PetclinicAppPanel")
+    mainClass.set("is.codion.demos.petclinic.ui.PetclinicAppPanel")
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType"    to "remote",
@@ -90,7 +90,7 @@ tasks.register<JavaExec>("runClientRMI") {
 tasks.register<JavaExec>("runClientHttp") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.framework.demos.petclinic.ui.PetclinicAppPanel")
+    mainClass.set("is.codion.demos.petclinic.ui.PetclinicAppPanel")
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "http",

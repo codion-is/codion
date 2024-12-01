@@ -16,20 +16,20 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.ui;
+package is.codion.demos.petclinic.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.framework.demos.petclinic.domain.api.Owner;
-import is.codion.framework.demos.petclinic.domain.api.Pet;
-import is.codion.framework.demos.petclinic.domain.api.PetType;
-import is.codion.framework.demos.petclinic.domain.api.Petclinic;
-import is.codion.framework.demos.petclinic.domain.api.Specialty;
-import is.codion.framework.demos.petclinic.domain.api.Vet;
-import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
-import is.codion.framework.demos.petclinic.domain.api.Visit;
-import is.codion.framework.demos.petclinic.model.PetclinicAppModel;
-import is.codion.framework.demos.petclinic.model.VetSpecialtyEditModel;
+import is.codion.demos.petclinic.domain.api.Owner;
+import is.codion.demos.petclinic.domain.api.Pet;
+import is.codion.demos.petclinic.domain.api.PetType;
+import is.codion.demos.petclinic.domain.api.Petclinic;
+import is.codion.demos.petclinic.domain.api.Specialty;
+import is.codion.demos.petclinic.domain.api.Vet;
+import is.codion.demos.petclinic.domain.api.VetSpecialty;
+import is.codion.demos.petclinic.domain.api.Visit;
+import is.codion.demos.petclinic.model.PetclinicAppModel;
+import is.codion.demos.petclinic.model.VetSpecialtyEditModel;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;

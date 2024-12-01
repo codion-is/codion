@@ -19,15 +19,15 @@
 /**
  * Petclinic demo.
  */
-module is.codion.framework.demos.petclinic {
+module is.codion.demos.petclinic {
 	requires is.codion.swing.framework.ui;
 	requires com.formdev.flatlaf.intellijthemes;
 
-	exports is.codion.framework.demos.petclinic.model
+	exports is.codion.demos.petclinic.model
 					to is.codion.swing.framework.model, is.codion.swing.framework.ui;
-	exports is.codion.framework.demos.petclinic.ui
+	exports is.codion.demos.petclinic.ui
 					to is.codion.swing.framework.ui;
 
 	provides is.codion.framework.domain.Domain
-					with is.codion.framework.demos.petclinic.domain.PetclinicImpl;
+					with is.codion.demos.petclinic.domain.PetclinicImpl;
 }

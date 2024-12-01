@@ -16,20 +16,28 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.domain.api;
+package is.codion.demos.petclinic.ui;
 
-import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.demos.petclinic.domain.api.Specialty;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
-public interface VetSpecialty {
-	EntityType TYPE = DOMAIN.entityType("petclinic.vet_specialty");
+public final class SpecialtyEditPanel extends EntityEditPanel {
 
-	Column<Integer> VET = TYPE.integerColumn("vet");
-	Column<Integer> SPECIALTY = TYPE.integerColumn("specialty");
+	public SpecialtyEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-	ForeignKey VET_FK = TYPE.foreignKey("vet_fk", VET, Vet.ID);
-	ForeignKey SPECIALTY_FK = TYPE.foreignKey("specialty_fk", SPECIALTY, Specialty.ID);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Specialty.NAME);
+
+		createTextField(Specialty.NAME);
+
+		setLayout(gridLayout(1, 1));
+
+		addInputPanel(Specialty.NAME);
+	}
 }

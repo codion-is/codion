@@ -16,37 +16,40 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.ui;
+package is.codion.demos.petclinic.ui;
 
-import is.codion.framework.demos.petclinic.domain.api.Specialty;
-import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
+import is.codion.demos.petclinic.domain.api.Pet;
+import is.codion.demos.petclinic.domain.api.PetType;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
-public final class VetSpecialtyEditPanel extends EntityEditPanel {
+public final class PetEditPanel extends EntityEditPanel {
 
-	public VetSpecialtyEditPanel(SwingEntityEditModel editModel) {
+	public PetEditPanel(SwingEntityEditModel editModel) {
 		super(editModel);
-		defaults().foreignKeyComboBoxPreferredWidth().set(200);
 	}
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(VetSpecialty.VET_FK);
+		initialFocusAttribute().set(Pet.NAME);
 
-		createForeignKeyComboBox(VetSpecialty.VET_FK);
-		createForeignKeyComboBoxPanel(VetSpecialty.SPECIALTY_FK, this::createSpecialtyEditPanel)
+		createForeignKeyComboBox(Pet.OWNER_FK);
+		createTextField(Pet.NAME);
+		createForeignKeyComboBoxPanel(Pet.PET_TYPE_FK, this::createPetTypeEditPanel)
 						.includeAddButton(true);
+		createTemporalFieldPanel(Pet.BIRTH_DATE);
 
-		setLayout(gridLayout(2, 1));
+		setLayout(gridLayout(2, 2));
 
-		addInputPanel(VetSpecialty.VET_FK);
-		addInputPanel(VetSpecialty.SPECIALTY_FK);
+		addInputPanel(Pet.OWNER_FK);
+		addInputPanel(Pet.NAME);
+		addInputPanel(Pet.PET_TYPE_FK);
+		addInputPanel(Pet.BIRTH_DATE);
 	}
 
-	private SpecialtyEditPanel createSpecialtyEditPanel() {
-		return new SpecialtyEditPanel(new SwingEntityEditModel(Specialty.TYPE, editModel().connectionProvider()));
+	private PetTypeEditPanel createPetTypeEditPanel() {
+		return new PetTypeEditPanel(new SwingEntityEditModel(PetType.TYPE, editModel().connectionProvider()));
 	}
 }

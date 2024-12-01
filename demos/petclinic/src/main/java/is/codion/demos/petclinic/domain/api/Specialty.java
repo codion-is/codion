@@ -16,12 +16,12 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.domain.api;
+package is.codion.demos.petclinic.domain.api;
 
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 
-import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
+import static is.codion.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
 public interface Specialty {
 	EntityType TYPE = DOMAIN.entityType("petclinic.specialty");

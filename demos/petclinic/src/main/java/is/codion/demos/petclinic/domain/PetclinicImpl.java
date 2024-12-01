@@ -16,17 +16,17 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.domain;
+package is.codion.demos.petclinic.domain;
 
-import is.codion.framework.demos.petclinic.domain.api.Owner;
-import is.codion.framework.demos.petclinic.domain.api.Owner.PhoneType;
-import is.codion.framework.demos.petclinic.domain.api.Pet;
-import is.codion.framework.demos.petclinic.domain.api.PetType;
-import is.codion.framework.demos.petclinic.domain.api.Petclinic;
-import is.codion.framework.demos.petclinic.domain.api.Specialty;
-import is.codion.framework.demos.petclinic.domain.api.Vet;
-import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
-import is.codion.framework.demos.petclinic.domain.api.Visit;
+import is.codion.demos.petclinic.domain.api.Owner;
+import is.codion.demos.petclinic.domain.api.Owner.PhoneType;
+import is.codion.demos.petclinic.domain.api.Pet;
+import is.codion.demos.petclinic.domain.api.PetType;
+import is.codion.demos.petclinic.domain.api.Petclinic;
+import is.codion.demos.petclinic.domain.api.Specialty;
+import is.codion.demos.petclinic.domain.api.Vet;
+import is.codion.demos.petclinic.domain.api.VetSpecialty;
+import is.codion.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;

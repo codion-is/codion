@@ -16,23 +16,25 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.petclinic.domain.api;
+package is.codion.demos.petclinic.domain.api;
 
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import java.time.LocalDate;
+import static is.codion.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
-import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
-
-public interface Visit {
-	EntityType TYPE = DOMAIN.entityType("petclinic.visit");
+public interface Owner {
+	EntityType TYPE = DOMAIN.entityType("petclinic.owner");
 
 	Column<Integer> ID = TYPE.integerColumn("id");
-	Column<Integer> PET_ID = TYPE.integerColumn("pet_id");
-	Column<LocalDate> VISIT_DATE = TYPE.localDateColumn("visit_date");
-	Column<String> DESCRIPTION = TYPE.stringColumn("description");
+	Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
+	Column<String> LAST_NAME = TYPE.stringColumn("last_name");
+	Column<String> ADDRESS = TYPE.stringColumn("address");
+	Column<String> CITY = TYPE.stringColumn("city");
+	Column<String> TELEPHONE = TYPE.stringColumn("telephone");
+	Column<PhoneType> PHONE_TYPE = TYPE.column("phone_type", PhoneType.class);
 
-	ForeignKey PET_FK = TYPE.foreignKey("pet_fk", PET_ID, Pet.ID);
+	enum PhoneType {
+		MOBILE, HOME, WORK
+	}
 }
