@@ -19,7 +19,7 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.common.version.Version;
-import is.codion.demos.chinook.domain.Chinook.Customer;
+import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.ForeignKeyDetailModelLink;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;

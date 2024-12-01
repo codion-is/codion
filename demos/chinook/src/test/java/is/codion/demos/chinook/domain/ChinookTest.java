@@ -18,8 +18,7 @@
  */
 package is.codion.demos.chinook.domain;
 
-import is.codion.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
-import is.codion.demos.chinook.domain.impl.ChinookImpl;
+import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -30,7 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static is.codion.demos.chinook.domain.Chinook.*;
+import static is.codion.demos.chinook.domain.api.Chinook.*;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

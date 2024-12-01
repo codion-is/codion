@@ -19,9 +19,9 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.common.event.Event;
-import is.codion.demos.chinook.domain.Chinook.Invoice;
-import is.codion.demos.chinook.domain.Chinook.InvoiceLine;
-import is.codion.demos.chinook.domain.Chinook.Track;
+import is.codion.demos.chinook.domain.api.Chinook.Invoice;
+import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
+import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;

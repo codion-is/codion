@@ -10,7 +10,7 @@ The default i18n strings can be overridden by implementing {url-javadoc}{common-
 
 [source,java]
 ----
-include::{dir-source}/is/codion/demos/chinook/domain/impl/ChinookResources.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/domain/ChinookResources.java[lines=19..-1]
 ----
 
 [source]

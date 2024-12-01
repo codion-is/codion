@@ -18,8 +18,8 @@
  */
 package is.codion.demos.chinook.manual;
 
-import is.codion.demos.chinook.domain.Chinook.Album;
-import is.codion.demos.chinook.domain.Chinook.Artist;
+import is.codion.demos.chinook.domain.api.Chinook.Album;
+import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.Entity;

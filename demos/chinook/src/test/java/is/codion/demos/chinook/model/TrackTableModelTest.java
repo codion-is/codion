@@ -19,9 +19,9 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.common.user.User;
-import is.codion.demos.chinook.domain.Chinook.Album;
-import is.codion.demos.chinook.domain.Chinook.Track;
-import is.codion.demos.chinook.domain.impl.ChinookImpl;
+import is.codion.demos.chinook.domain.ChinookImpl;
+import is.codion.demos.chinook.domain.api.Chinook.Album;
+import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;

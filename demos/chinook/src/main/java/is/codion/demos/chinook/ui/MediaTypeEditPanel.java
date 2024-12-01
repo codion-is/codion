@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.demos.chinook.domain.Chinook.MediaType;
+import is.codion.demos.chinook.domain.api.Chinook.MediaType;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 

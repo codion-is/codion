@@ -21,7 +21,7 @@ package is.codion.demos.chinook.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
-import is.codion.demos.chinook.domain.Chinook;
+import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.model.ChinookAppModel;
 import is.codion.demos.chinook.model.TrackTableModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -56,7 +56,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static is.codion.demos.chinook.domain.Chinook.*;
+import static is.codion.demos.chinook.domain.api.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.radioButton;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;

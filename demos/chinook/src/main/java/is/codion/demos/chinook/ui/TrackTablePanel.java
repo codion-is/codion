@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.demos.chinook.domain.Chinook.Track;
+import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.model.TrackTableModel;
 import is.codion.demos.chinook.ui.DurationComponentValue.DurationPanel;
 import is.codion.framework.domain.entity.EntityDefinition;

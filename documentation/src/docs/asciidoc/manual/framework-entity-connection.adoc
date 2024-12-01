@@ -48,12 +48,12 @@ connection.setLimitForeignKeyFetchDepth(false);
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth0]
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=fetchDepth0]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth2]
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=fetchDepth2]
 ----
 
 [source,java,indent=0]

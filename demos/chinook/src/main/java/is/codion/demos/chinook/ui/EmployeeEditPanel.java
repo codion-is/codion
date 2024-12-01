@@ -23,7 +23,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
 
-import static is.codion.demos.chinook.domain.Chinook.Employee;
+import static is.codion.demos.chinook.domain.api.Chinook.Employee;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;

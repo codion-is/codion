@@ -25,7 +25,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
 
-import static is.codion.demos.chinook.domain.Chinook.*;
+import static is.codion.demos.chinook.domain.api.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.control.Control.command;

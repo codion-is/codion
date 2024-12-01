@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.testing.scenarios;
 
-import is.codion.demos.chinook.domain.Chinook.Customer;
+import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.tools.loadtest.LoadTest.Scenario.Performer;

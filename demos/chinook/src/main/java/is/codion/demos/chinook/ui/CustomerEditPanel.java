@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import static is.codion.demos.chinook.domain.Chinook.Customer;
+import static is.codion.demos.chinook.domain.api.Chinook.Customer;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;

@@ -386,7 +386,7 @@ Based on identity columns, supported by most DBMSs.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/domain/impl/ChinookImpl.java[tags=identity]
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=identity]
 ----
 
 === Automatic

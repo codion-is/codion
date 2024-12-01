@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.demos.chinook.domain.Chinook.Artist;
+import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -29,7 +29,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.List;
 
-import static is.codion.demos.chinook.domain.Chinook.Album;
+import static is.codion.demos.chinook.domain.api.Chinook.Album;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 

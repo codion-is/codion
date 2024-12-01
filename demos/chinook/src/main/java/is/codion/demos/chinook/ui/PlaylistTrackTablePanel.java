@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.demos.chinook.domain.Chinook.PlaylistTrack;
+import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.framework.model.SwingEntityTableModel;

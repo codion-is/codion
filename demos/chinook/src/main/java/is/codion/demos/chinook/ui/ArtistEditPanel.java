@@ -21,7 +21,7 @@ package is.codion.demos.chinook.ui;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static is.codion.demos.chinook.domain.Chinook.Artist;
+import static is.codion.demos.chinook.domain.api.Chinook.Artist;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class ArtistEditPanel extends EntityEditPanel {

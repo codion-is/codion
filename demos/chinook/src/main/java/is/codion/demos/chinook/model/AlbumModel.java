@@ -18,8 +18,8 @@
  */
 package is.codion.demos.chinook.model;
 
-import is.codion.demos.chinook.domain.Chinook.Album;
-import is.codion.demos.chinook.domain.Chinook.Track;
+import is.codion.demos.chinook.domain.api.Chinook.Album;
+import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 

@@ -16,14 +16,14 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.demos.chinook.domain.impl;
+package is.codion.demos.chinook.domain;
 
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.demos.chinook.domain.Chinook;
-import is.codion.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
-import is.codion.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
+import is.codion.demos.chinook.domain.api.Chinook;
+import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
+import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.DomainModel;
@@ -59,7 +59,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		super(DOMAIN);
 		add(artist(), album(), employee(), customer(), genre(), mediaType(),
 						track(), invoice(), invoiceLine(), playlist(), playlistTrack());
-		add(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
+		add(Customer.REPORT, classPathReport(ChinookImpl.class, "customer_report.jasper"));
 		add(Track.RAISE_PRICE, new RaisePriceFunction());
 		add(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());
 		add(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(entities()));

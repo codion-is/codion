@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.demos.chinook.domain.Chinook.Album;
+import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;

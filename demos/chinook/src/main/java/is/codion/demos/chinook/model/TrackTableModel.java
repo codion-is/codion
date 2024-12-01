@@ -20,7 +20,7 @@ package is.codion.demos.chinook.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.value.Value.Validator;
-import is.codion.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
+import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -32,7 +32,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Optional;
 
-import static is.codion.demos.chinook.domain.Chinook.Track;
+import static is.codion.demos.chinook.domain.api.Chinook.Track;
 import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
 

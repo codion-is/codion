@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
+import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.model.PlaylistTableModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;

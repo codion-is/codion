@@ -18,8 +18,8 @@
  */
 package is.codion.demos.chinook.model;
 
-import is.codion.demos.chinook.domain.Chinook.Playlist;
-import is.codion.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
+import is.codion.demos.chinook.domain.api.Chinook.Playlist;
+import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;

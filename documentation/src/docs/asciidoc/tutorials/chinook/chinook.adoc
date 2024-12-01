@@ -31,12 +31,12 @@ image::tutorials/chinook/customers.png[]
 
 [source,java]
 ----
-include::{dir-source}/is/codion/demos/chinook/domain/Chinook.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/domain/api/Chinook.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/demos/chinook/domain/impl/ChinookImpl.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/domain/ChinookImpl.java[lines=19..-1]
 ----
 
 [#_domain_unit_test]
@@ -96,7 +96,7 @@ include::{dir-source}/is/codion/demos/chinook/model/TrackTableModel.java[lines=1
 
 [source,java]
 ----
-include::{dir-source}/is/codion/demos/chinook/domain/impl/ChinookResources.java[lines=19..-1]
+include::{dir-source}/is/codion/demos/chinook/domain/ChinookResources.java[lines=19..-1]
 ----
 
 [#_main_application_model]

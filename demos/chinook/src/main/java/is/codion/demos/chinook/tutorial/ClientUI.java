@@ -22,7 +22,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
-import is.codion.demos.chinook.domain.impl.ChinookImpl;
+import is.codion.demos.chinook.domain.ChinookImpl;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -39,8 +39,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import static is.codion.demos.chinook.domain.Chinook.Album;
-import static is.codion.demos.chinook.domain.Chinook.Artist;
+import static is.codion.demos.chinook.domain.api.Chinook.Album;
+import static is.codion.demos.chinook.domain.api.Chinook.Artist;
 
 /**
  * When running this make sure the chinook demo module directory is the

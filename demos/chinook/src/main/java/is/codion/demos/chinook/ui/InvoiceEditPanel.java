@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.demos.chinook.domain.Chinook.InvoiceLine;
+import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -33,8 +33,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.function.Function;
 
-import static is.codion.demos.chinook.domain.Chinook.Customer;
-import static is.codion.demos.chinook.domain.Chinook.Invoice;
+import static is.codion.demos.chinook.domain.api.Chinook.Customer;
+import static is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;

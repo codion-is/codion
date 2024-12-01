@@ -18,9 +18,9 @@
  */
 package is.codion.demos.chinook.testing.scenarios;
 
-import is.codion.demos.chinook.domain.Chinook;
-import is.codion.demos.chinook.domain.Chinook.Album;
-import is.codion.demos.chinook.domain.Chinook.Artist;
+import is.codion.demos.chinook.domain.api.Chinook;
+import is.codion.demos.chinook.domain.api.Chinook.Album;
+import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;

@@ -22,8 +22,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
-import static is.codion.demos.chinook.domain.Chinook.Customer;
-import static is.codion.demos.chinook.domain.Chinook.Invoice;
+import static is.codion.demos.chinook.domain.api.Chinook.Customer;
+import static is.codion.demos.chinook.domain.api.Chinook.Invoice;
 
 public final class InvoiceEditModel extends SwingEntityEditModel {
 

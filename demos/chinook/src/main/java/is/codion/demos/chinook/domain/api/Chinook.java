@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.demos.chinook.domain;
+package is.codion.demos.chinook.domain.api;
 
 import is.codion.common.db.operation.FunctionType;
 import is.codion.framework.db.EntityConnection;

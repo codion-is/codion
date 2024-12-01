@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.demos.chinook.domain.Chinook.PlaylistTrack;
+import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
 import is.codion.demos.chinook.model.PlaylistTrackEditModel;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.ui.EntityEditPanel;

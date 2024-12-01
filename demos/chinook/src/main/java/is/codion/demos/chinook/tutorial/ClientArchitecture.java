@@ -20,9 +20,9 @@ package is.codion.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
-import is.codion.demos.chinook.domain.Chinook.Album;
-import is.codion.demos.chinook.domain.Chinook.Artist;
-import is.codion.demos.chinook.domain.impl.ChinookImpl;
+import is.codion.demos.chinook.domain.ChinookImpl;
+import is.codion.demos.chinook.domain.api.Chinook.Album;
+import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityEditModel;
