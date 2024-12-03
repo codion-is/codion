@@ -23,8 +23,6 @@ import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 
-import javax.swing.SwingUtilities;
-
 public final class AlbumModel extends SwingEntityModel {
 
 	public AlbumModel(EntityConnectionProvider connectionProvider) {
@@ -34,7 +32,6 @@ public final class AlbumModel extends SwingEntityModel {
 		TrackEditModel trackEditModel = trackModel.editModel();
 		trackEditModel.initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
 		// We refresh albums which rating may have changed, due to a track rating being updated
-		trackEditModel.ratingUpdated().addConsumer(albumKeys ->
-						SwingUtilities.invokeLater(() -> tableModel().refresh(albumKeys)));
+		trackEditModel.ratingUpdated().addConsumer(tableModel()::refresh);
 	}
 }
