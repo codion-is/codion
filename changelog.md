@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.22
 ### is.codion.common.rmi
 - ConnectionRequest.clientTypeId() renamed clientType().
+### is.codion.common.model
+- MultiItemSelection.Indexes.moveDown() and moveUp() renamed increment() and decrement() respectively.
 ### is.codion.swing.common.ui
 - Completion.NORMALIZE configuration value added.
 - Completion.COMBO_BOX_COMPLETION_MODE renamed COMPLETION_MODE.

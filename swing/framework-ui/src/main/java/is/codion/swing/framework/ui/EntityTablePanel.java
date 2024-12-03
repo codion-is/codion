@@ -1366,7 +1366,7 @@ public class EntityTablePanel extends JPanel {
 
 	private CommandControl createMoveSelectionDownControl() {
 		return Control.builder()
-						.command(tableModel.selection().indexes()::moveDown)
+						.command(tableModel.selection().indexes()::increment)
 						.smallIcon(ICONS.down())
 						.description(MESSAGES.getString("selection_down_tip"))
 						.build();
@@ -1374,7 +1374,7 @@ public class EntityTablePanel extends JPanel {
 
 	private CommandControl createMoveSelectionUpControl() {
 		return Control.builder()
-						.command(tableModel.selection().indexes()::moveUp)
+						.command(tableModel.selection().indexes()::decrement)
 						.smallIcon(ICONS.up())
 						.description(MESSAGES.getString("selection_up_tip"))
 						.build();

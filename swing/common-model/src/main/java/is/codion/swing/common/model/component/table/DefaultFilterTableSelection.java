@@ -355,7 +355,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		}
 
 		@Override
-		public void moveUp() {
+		public void decrement() {
 			int visibleSize = items.visible().count();
 			if (visibleSize > 0) {
 				int lastIndex = visibleSize - 1;
@@ -371,7 +371,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		}
 
 		@Override
-		public void moveDown() {
+		public void increment() {
 			int filteredSize = items.visible().count();
 			if (filteredSize > 0) {
 				if (isSelectionEmpty()) {

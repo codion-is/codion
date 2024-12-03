@@ -115,16 +115,16 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 		boolean contains(int index);
 
 		/**
-		 * Moves all selected indexes down one index, wraps around.
-		 * If the selection is empty the first index is selected.
+		 * Increments all selected indexes by one, with wrap-around.
+		 * If the selection is empty the lowest index is selected.
 		 */
-		void moveDown();
+		void increment();
 
 		/**
-		 * Moves all selected indexes up one index, wraps around.
-		 * If the selection is empty the last index is selected.
+		 * Decrements all selected indexes by one, with wrap-around.
+		 * If the selection is empty the highest index is selected.
 		 */
-		void moveUp();
+		void decrement();
 	}
 
 	/**

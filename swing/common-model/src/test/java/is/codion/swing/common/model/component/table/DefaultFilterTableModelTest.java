@@ -406,32 +406,32 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(selection.empty().get());
 		assertFalse(selection.multiple().get());
 		assertEquals(2, selection.index().get());
-		selection.indexes().moveDown();
+		selection.indexes().increment();
 		assertEquals(8, events.get());
 		assertEquals(3, selection.index().get());
-		selection.indexes().moveUp();
-		selection.indexes().moveUp();
+		selection.indexes().decrement();
+		selection.indexes().decrement();
 		assertEquals(1, selection.index().get());
 
-		selection.indexes().moveDown();
-		selection.indexes().moveDown();
+		selection.indexes().increment();
+		selection.indexes().increment();
 
 		assertEquals(3, selection.index().get());
 
 		selection.index().set(0);
-		selection.indexes().moveUp();
+		selection.indexes().decrement();
 		assertEquals(tableModel.items().visible().count() - 1, selection.index().get());
 
 		selection.index().set(tableModel.items().visible().count() - 1);
-		selection.indexes().moveDown();
+		selection.indexes().increment();
 		assertEquals(0, selection.index().get());
 
 		selection.clearSelection();
-		selection.indexes().moveUp();
+		selection.indexes().decrement();
 		assertEquals(tableModel.items().visible().count() - 1, selection.index().get());
 
 		selection.clearSelection();
-		selection.indexes().moveDown();
+		selection.indexes().increment();
 		assertEquals(0, selection.index().get());
 
 		selection.selectAll();
