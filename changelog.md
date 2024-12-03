@@ -18,6 +18,7 @@ Codion Change Log
 - TableConditionPanel.get() and get(identifier) renamed panels() and panel() respectively.
 ### is.codion.swing.framework.ui
 - EntityEditComponentPanel, create component methods now assign a name to the component, using attribute.toString().
+- EntityTablePanel.ControlKeys.MOVE_SELECTION_DOWN and MOVE_SELECTION_UP renamed INCREMENT_SELECTION and DECREMENT_SELECTION respectively, related renaming.
 
 ## 0.18.21
 ### is.codion.common.db

@@ -25,6 +25,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.selection.MultiItemSelection;
 import is.codion.common.model.summary.SummaryModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
@@ -255,15 +256,17 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> SELECT_FILTER = CommandControl.key("selectFilter", keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
-		 * Moves the selection up.<br>
+		 * Decrements the selected indexes, moving the selection up.<br>
 		 * Default key stroke: ALT-SHIFT-UP
+		 * @see MultiItemSelection.Indexes#decrement()
 		 */
-		public static final ControlKey<CommandControl> MOVE_SELECTION_UP = CommandControl.key("moveSelectionUp", keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DECREMENT_SELECTION = CommandControl.key("decrementSelection", keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
-		 * Moves the selection down.<br>
+		 * Increments the selected indexes, moving the selection down.<br>
 		 * Default key stroke: ALT-SHIFT-DOWN
+		 * @see MultiItemSelection.Indexes#increment()
 		 */
-		public static final ControlKey<CommandControl> MOVE_SELECTION_DOWN = CommandControl.key("moveSelectionDown", keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> INCREMENT_SELECTION = CommandControl.key("incrementSelection", keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * The main print action<br>
 		 * Default key stroke: CTRL-P
@@ -821,8 +824,8 @@ public class EntityTablePanel extends JPanel {
 	 * @see ControlKeys#EDIT
 	 * @see ControlKeys#EDIT_SELECTED_ATTRIBUTE
 	 * @see ControlKeys#DELETE
-	 * @see ControlKeys#MOVE_SELECTION_UP
-	 * @see ControlKeys#MOVE_SELECTION_DOWN
+	 * @see ControlKeys#DECREMENT_SELECTION
+	 * @see ControlKeys#INCREMENT_SELECTION
 	 * @see ControlKeys#DISPLAY_ENTITY_MENU
 	 * @see ControlKeys#DISPLAY_POPUP_MENU
 	 */
@@ -852,8 +855,8 @@ public class EntityTablePanel extends JPanel {
 		configuration.controlMap.keyEvent(EDIT).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(EDIT_SELECTED_ATTRIBUTE).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(DELETE).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(MOVE_SELECTION_UP).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(MOVE_SELECTION_DOWN).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(DECREMENT_SELECTION).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(INCREMENT_SELECTION).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(DISPLAY_ENTITY_MENU).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(DISPLAY_POPUP_MENU).ifPresent(keyEvent -> keyEvent.enable(table));
 	}
@@ -1364,19 +1367,19 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private CommandControl createMoveSelectionDownControl() {
+	private CommandControl createIncrementSelectionControl() {
 		return Control.builder()
 						.command(tableModel.selection().indexes()::increment)
 						.smallIcon(ICONS.down())
-						.description(MESSAGES.getString("selection_down_tip"))
+						.description(MESSAGES.getString("increment_selection_tip"))
 						.build();
 	}
 
-	private CommandControl createMoveSelectionUpControl() {
+	private CommandControl createDecrementSelectionControl() {
 		return Control.builder()
 						.command(tableModel.selection().indexes()::decrement)
 						.smallIcon(ICONS.up())
-						.description(MESSAGES.getString("selection_up_tip"))
+						.description(MESSAGES.getString("decrement_selection_tip"))
 						.build();
 	}
 
@@ -1637,8 +1640,8 @@ public class EntityTablePanel extends JPanel {
 			controlMap.control(SELECT_FILTER).set(createSelectFilterControl());
 		}
 		controlMap.control(CLEAR_SELECTION).set(createClearSelectionControl());
-		controlMap.control(MOVE_SELECTION_UP).set(createMoveSelectionUpControl());
-		controlMap.control(MOVE_SELECTION_DOWN).set(createMoveSelectionDownControl());
+		controlMap.control(DECREMENT_SELECTION).set(createDecrementSelectionControl());
+		controlMap.control(INCREMENT_SELECTION).set(createIncrementSelectionControl());
 		controlMap.control(COPY_CELL).set(table.createCopyCellControl());
 		controlMap.control(COPY_ROWS).set(createCopyRowsControl());
 		if (configuration.includeEntityMenu) {
