@@ -28,17 +28,17 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.List;
 
-
 public final class PlaylistTrackEditModel extends SwingEntityEditModel {
 
 	public PlaylistTrackEditModel(EntityConnectionProvider connectionProvider) {
 		super(PlaylistTrack.TYPE, connectionProvider);
 		value(PlaylistTrack.TRACK_FK).persist().set(false);
-		// Filter out tracks already in the current playlist
-		value(PlaylistTrack.PLAYLIST_FK).addConsumer(this::filterPlaylistTracks);
+		// Set the search model condition, so the search results
+		// won't contain tracks already in the currently selected playlist
+		value(PlaylistTrack.PLAYLIST_FK).addConsumer(this::excludePlaylistTracks);
 	}
 
-	private void filterPlaylistTracks(Entity playlist) {
+	private void excludePlaylistTracks(Entity playlist) {
 		foreignKeySearchModel(PlaylistTrack.TRACK_FK).condition().set(() -> playlist == null ? null :
 						Condition.custom(Track.NOT_IN_PLAYLIST,
 										List.of(Playlist.ID),

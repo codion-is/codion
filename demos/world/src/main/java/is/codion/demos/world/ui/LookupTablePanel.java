@@ -138,7 +138,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void configurePopupMenuAndToolBar() {
-		configurePopupMenu(config -> config.clear()
+		configurePopupMenu(layout -> layout.clear()
 						.control(REFRESH)
 						.control(CLEAR)
 						.separator()

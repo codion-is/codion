@@ -32,10 +32,14 @@ import java.util.stream.Stream;
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 	public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
+		// We provide an edit panel, which becomes available via
+		// double click and keyboard shortcuts, instead of embedding it
 		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()), config -> config
+						// Custom component for editing tracks
 						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory(PlaylistTrack.TRACK_FK))
 						// Skip confirmation when deleting
 						.deleteConfirmer(Confirmer.NONE)
+						// No need for the edit toolbar control
 						.includeEditControl(false));
 		table().columnModel()
 						.visible().set(PlaylistTrack.TRACK_FK, PlaylistTrack.ARTIST, PlaylistTrack.ALBUM);

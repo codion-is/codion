@@ -47,6 +47,8 @@ public final class TrackEditModel extends SwingEntityEditModel {
 
 	@Override
 	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) {
+		// Collect the album keys of tracks which rating is
+		// modified, to propagate to the ratingUpdated event
 		List<Entity.Key> albumKeys = entities.stream()
 						.filter(entity -> entity.entityType().equals(Track.TYPE))
 						.filter(track -> track.modified(Track.RATING))

@@ -62,19 +62,30 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 	public TrackTablePanel(TrackTableModel tableModel) {
 		super(tableModel, config -> config
+						// Custom component for editing track ratings
 						.editComponentFactory(Track.RATING, new RatingComponentFactory())
+						// Custom component for editing track durations
 						.editComponentFactory(Track.MILLISECONDS, new DurationComponentFactory(tableModel))
+						// Custom cell renderer for ratings
 						.cellRenderer(Track.RATING, ratingRenderer(tableModel))
+						// Custom cell renderer for track duration (min:sec)
 						.cellRenderer(Track.MILLISECONDS, durationRenderer(tableModel))
+						// Custom cell editor for track ratings
 						.cellEditor(Track.RATING, ratingEditor(tableModel.entityDefinition()))
+						// Custom cell editor for track durations (min:sec:ms)
 						.cellEditor(Track.MILLISECONDS, durationEditor())
 						.includeLimitMenu(true));
-		configurePopupMenu(config -> config.clear()
+		// Add a custom control to the top of the table popup menu.
+		// Start by clearing the popup menu layout
+		configurePopupMenu(layout -> layout.clear()
+						// add our custom control
 						.control(Control.builder()
 										.command(this::raisePriceOfSelected)
 										.name(BUNDLE.getString("raise_price") + "...")
 										.enabled(tableModel().selection().empty().not()))
+						// and a separator
 						.separator()
+						// and add all the default controls
 						.defaults());
 	}
 

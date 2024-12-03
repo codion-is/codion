@@ -38,6 +38,8 @@ public final class PlaylistEditModel extends SwingEntityEditModel {
 
 	@Override
 	protected void delete(Collection<Entity> playlists, EntityConnection connection) {
+		// We delete all playlist tracks along
+		// with the playlist, within a transaction
 		transaction(connection, () -> {
 			connection.delete(PlaylistTrack.PLAYLIST_FK.in(playlists));
 			connection.delete(primaryKeys(playlists));

@@ -39,15 +39,25 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	private static final ResourceBundle BUNDLE = getBundle(PlaylistTablePanel.class.getName());
 
 	public PlaylistTablePanel(SwingEntityTableModel tableModel) {
+		// We provide an edit panel, which becomes available via
+		// double click and keyboard shortcuts, instead of embedding it
 		super(tableModel, new PlaylistEditPanel(tableModel.editModel()));
-		configurePopupMenu(config -> config.clear()
+		// Add a custom control, for creating a random playlist,
+		// positioned below the standard DELETE control.
+		// Start by clearing the popup menu layout
+		configurePopupMenu(layout -> layout.clear()
+						// add all default controls up to and including DELETE
 						.defaults(DELETE)
+						// and a separator
 						.separator()
+						// and our custom control
 						.control(Control.builder()
 										.command(this::randomPlaylist)
 										.name(BUNDLE.getString("random_playlist"))
 										.smallIcon(FrameworkIcons.instance().add()))
+						// and a separator
 						.separator()
+						// and the remaining default controls
 						.defaults());
 	}
 

@@ -32,6 +32,7 @@ public final class PlaylistPanel extends EntityPanel {
 	public PlaylistPanel(SwingEntityModel playlistModel) {
 		super(playlistModel,
 						new PlaylistTablePanel(playlistModel.tableModel()),
+						// We override initializeUI(), so we don't need a detail layout
 						config -> config.detailLayout(DetailLayout.NONE));
 
 		SwingEntityModel playlistTrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
@@ -39,6 +40,7 @@ public final class PlaylistPanel extends EntityPanel {
 						new EntityPanel(playlistTrackModel,
 										new PlaylistTrackTablePanel(playlistTrackModel.tableModel()));
 
+		// We still add the detail panel, for keyboard navigation
 		addDetailPanel(playlistTrackPanel);
 	}
 

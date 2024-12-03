@@ -51,7 +51,6 @@ import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 import static java.lang.String.join;
 import static java.util.Collections.nCopies;
-import static java.util.stream.Collectors.toList;
 
 public final class ChinookImpl extends DomainModel implements Chinook {
 
@@ -513,7 +512,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 			return connection.updateSelect(invoices.stream()
 							.map(UpdateTotalsFunction::updateTotal)
 							.filter(Entity::modified)
-							.collect(toList()));
+							.toList());
 		}
 
 		private static Entity updateTotal(Entity invoice) {
@@ -557,7 +556,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		private List<Entity> createPlaylistTracks(Long playlistId, List<Long> trackIds) {
 			return trackIds.stream()
 							.map(trackId -> createPlaylistTrack(playlistId, trackId))
-							.collect(toList());
+							.toList();
 		}
 
 		private Entity createPlaylistTrack(Long playlistId, Long trackId) {
@@ -588,7 +587,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 
 			return entityConnection.updateSelect(entityConnection.select(select).stream()
 							.map(track -> raisePrice(track, parameters.priceIncrease()))
-							.collect(toList()));
+							.toList());
 		}
 
 		private static Entity raisePrice(Entity track, BigDecimal priceIncrease) {

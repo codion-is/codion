@@ -45,7 +45,7 @@ final class CityTablePanel extends ChartTablePanel {
 														Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL)) ? Color.GREEN : null)
 										.build())
 						.editable(attributes -> attributes.remove(City.LOCATION)));
-		configurePopupMenu(config -> config.clear()
+		configurePopupMenu(layout -> layout.clear()
 						.control(createPopulateLocationControl())
 						.separator()
 						.defaults());
