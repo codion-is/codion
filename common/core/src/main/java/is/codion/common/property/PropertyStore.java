@@ -18,6 +18,8 @@
  */
 package is.codion.common.property;
 
+import is.codion.common.property.DefaultPropertyStore.DefaultSystemPropertyFormatter;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -331,10 +333,11 @@ public interface PropertyStore {
 	}
 
 	/**
+	 * Note that class and module paths are displayed as one item per line.
 	 * @return a String containing all system properties, one per line
 	 */
 	static String systemProperties() {
-		return systemProperties((property, value) -> value);
+		return systemProperties(new DefaultSystemPropertyFormatter());
 	}
 
 	/**

@@ -19,7 +19,6 @@
 package is.codion.common.rmi.server;
 
 import is.codion.common.property.PropertyStore;
-import is.codion.common.property.PropertyStore.PropertyFormatter;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.user.User;
 
@@ -31,7 +30,6 @@ import javax.management.Notification;
 import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
-import java.io.File;
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.management.GarbageCollectorMXBean;
@@ -64,7 +62,6 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
 	private final transient AbstractServer<?, ? extends ServerAdmin> server;
 	private final transient LinkedList<GcEvent> gcEventList = new LinkedList<>();
-	private final transient PropertyFormatter propertyFormatter = new SystemPropertyFormatter();
 
 	/**
 	 * Instantiates a new DefaultServerAdmin instance.
@@ -86,7 +83,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
 	@Override
 	public final String systemProperties() {
-		return PropertyStore.systemProperties(propertyFormatter);
+		return PropertyStore.systemProperties();
 	}
 
 	@Override
@@ -374,22 +371,6 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 		@Override
 		public long duration() {
 			return duration;
-		}
-	}
-
-	private static final class SystemPropertyFormatter implements PropertyFormatter {
-
-		@Override
-		public String formatValue(String property, String value) {
-			if (classOrModulePath(property) && !value.isEmpty()) {
-				return "\n" + String.join("\n", value.split(File.pathSeparator));
-			}
-
-			return value;
-		}
-
-		private static boolean classOrModulePath(String property) {
-			return property.endsWith("class.path") || property.endsWith("module.path");
 		}
 	}
 }

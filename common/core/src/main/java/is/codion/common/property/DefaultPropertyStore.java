@@ -20,6 +20,7 @@ package is.codion.common.property;
 
 import is.codion.common.value.AbstractValue;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -372,6 +373,22 @@ final class DefaultPropertyStore implements PropertyStore {
 			return valueList.stream()
 							.map(encoder)
 							.collect(joining(VALUE_SEPARATOR));
+		}
+	}
+
+	static final class DefaultSystemPropertyFormatter implements PropertyFormatter {
+
+		@Override
+		public String formatValue(String property, String value) {
+			if (classOrModulePath(property) && !value.isEmpty()) {
+				return "\n" + String.join("\n", value.split(File.pathSeparator));
+			}
+
+			return value;
+		}
+
+		private static boolean classOrModulePath(String property) {
+			return property.endsWith("class.path") || property.endsWith("module.path");
 		}
 	}
 }
