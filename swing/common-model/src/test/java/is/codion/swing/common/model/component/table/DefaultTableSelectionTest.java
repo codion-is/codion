@@ -70,20 +70,20 @@ public class DefaultTableSelectionTest {
 	}
 
 	@Test
-	void selectionMode() {
-		assertFalse(testModel.singleSelectionMode().get());
+	void singleSelection() {
+		assertFalse(testModel.singleSelection().get());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelectionMode().get());
+		assertTrue(testModel.singleSelection().get());
 		testModel.setSelectionMode(SINGLE_INTERVAL_SELECTION);
-		assertFalse(testModel.singleSelectionMode().get());
+		assertFalse(testModel.singleSelection().get());
 		testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
-		assertFalse(testModel.singleSelectionMode().get());
+		assertFalse(testModel.singleSelection().get());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelectionMode().get());
-		testModel.singleSelectionMode().set(false);
+		assertTrue(testModel.singleSelection().get());
+		testModel.singleSelection().set(false);
 		assertEquals(MULTIPLE_INTERVAL_SELECTION, testModel.getSelectionMode());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelectionMode().get());
+		assertTrue(testModel.singleSelection().get());
 		assertEquals(SINGLE_SELECTION, testModel.getSelectionMode());
 	}
 

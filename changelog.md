@@ -6,6 +6,7 @@ Codion Change Log
 - ConnectionRequest.clientTypeId() renamed clientType().
 ### is.codion.common.model
 - MultiItemSelection.Indexes.moveDown() and moveUp() renamed increment() and decrement() respectively.
+- MultiItemSelection.singleSelectionMode() renamed singleSelection().
 ### is.codion.swing.common.ui
 - Completion.NORMALIZE configuration value added.
 - Completion.COMBO_BOX_COMPLETION_MODE renamed COMPLETION_MODE.
@@ -16,9 +17,11 @@ Codion Change Log
 - Completion.Builder added, Normalize removed, related refactoring.
 - ComponentBuilder.name() added.
 - TableConditionPanel.get() and get(identifier) renamed panels() and panel() respectively.
+- FilterTable.createSingleSelectionModeControl() renamed createSingleSelectionControl().
 ### is.codion.swing.framework.ui
 - EntityEditComponentPanel, create component methods now assign a name to the component, using attribute.toString().
 - EntityTablePanel.ControlKeys.MOVE_SELECTION_DOWN and MOVE_SELECTION_UP renamed INCREMENT_SELECTION and DECREMENT_SELECTION respectively, related renaming.
+- EntityTablePanel.ControlKeys.SELECTION_MODE renamed SINGLE_SELECTION, Config.includeSelectionModeControl() renamed includeSingleSelectionControl().
 
 ## 0.18.21
 ### is.codion.common.db

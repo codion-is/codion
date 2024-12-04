@@ -222,7 +222,7 @@ public final class FilterTable<R, C> extends JTable {
 	private static final String SELECT_COLUMNS = "select_columns";
 	private static final String RESET = "reset";
 	private static final String RESET_COLUMNS_DESCRIPTION = "reset_columns_description";
-	private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
+	private static final String SINGLE_SELECTION = "single_selection";
 	private static final String AUTO_RESIZE = "auto_resize";
 	private static final String TABLE_CELL_EDITOR = "tableCellEditor";
 	private static final List<Item<Integer>> AUTO_RESIZE_MODES = asList(
@@ -603,12 +603,12 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * @return a ToggleControl for toggling the table selection mode (single or multiple)
+	 * @return a ToggleControl controlling whether single selection mode is enabled
 	 */
-	public ToggleControl createSingleSelectionModeControl() {
+	public ToggleControl createSingleSelectionControl() {
 		return Control.builder()
-						.toggle(tableModel.selection().singleSelectionMode())
-						.name(MESSAGES.getString(SINGLE_SELECTION_MODE))
+						.toggle(tableModel.selection().singleSelection())
+						.name(MESSAGES.getString(SINGLE_SELECTION))
 						.build();
 	}
 

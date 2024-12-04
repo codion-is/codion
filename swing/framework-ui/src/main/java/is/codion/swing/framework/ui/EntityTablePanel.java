@@ -337,7 +337,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * A {@link Control} for toggling between single and multi selection mode.
 		 */
-		public static final ControlKey<ToggleControl> SELECTION_MODE = ToggleControl.key("selectionMode");
+		public static final ControlKey<ToggleControl> SINGLE_SELECTION = ToggleControl.key("singleSelection");
 		/**
 		 * A {@link Control} for clearing the data from the table.
 		 * @see FilterTableModel.Items#clear()
@@ -932,7 +932,7 @@ public class EntityTablePanel extends JPanel {
 	 *   <li>Separator
 	 *   <li>{@link ControlKeys#COLUMN_CONTROLS ControlKeys#COLUMN_CONTROLS}
 	 *   <li>Separator
-	 *   <li>{@link ControlKeys#SELECTION_MODE ControlKeys#SELECTION_MODE}
+	 *   <li>{@link ControlKeys#SINGLE_SELECTION ControlKeys#SINGLE_SELECTION}
 	 *   <li>Separator
 	 *   <li>{@link ControlKeys#CONDITION_CONTROLS ControlKeys#CONDITION_CONTROLS}
 	 *   <li>Separator
@@ -1650,8 +1650,8 @@ public class EntityTablePanel extends JPanel {
 		if (configuration.includePopupMenu) {
 			controlMap.control(DISPLAY_POPUP_MENU).set(command(this::showPopupMenu));
 		}
-		if (configuration.includeSelectionModeControl) {
-			controlMap.control(SELECTION_MODE).set(table.createSingleSelectionModeControl());
+		if (configuration.includeSingleSelectionControl) {
+			controlMap.control(SINGLE_SELECTION).set(table.createSingleSelectionControl());
 		}
 		controlMap.control(REQUEST_TABLE_FOCUS).set(createRequestTableFocusControl());
 		controlMap.control(REQUEST_SEARCH_FIELD_FOCUS).set(createRequestSearchFieldFocusControl());
@@ -1919,7 +1919,7 @@ public class EntityTablePanel extends JPanel {
 						null,
 						COLUMN_CONTROLS,
 						null,
-						SELECTION_MODE,
+						SINGLE_SELECTION,
 						null,
 						CONDITION_CONTROLS,
 						null,
@@ -2032,7 +2032,7 @@ public class EntityTablePanel extends JPanel {
 			FilterTableColumn<Attribute<?>> tableColumn = table().columnModel().getColumn(column);
 			TableCellRenderer renderer = tableColumn.getCellRenderer();
 			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
-							&& ((FilterTableCellRenderer) renderer).filterIndicator()
+							&& ((FilterTableCellRenderer<?>) renderer).filterIndicator()
 							&& tableModel.queryModel().conditions().optional(tableColumn.identifier())
 							.map(conditionModel -> conditionModel.enabled().get()).orElse(false);
 			Font defaultFont = component.getFont();
@@ -2268,7 +2268,7 @@ public class EntityTablePanel extends JPanel {
 		private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.get();
 		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.get();
 		private boolean includePopupMenu = INCLUDE_POPUP_MENU.get();
-		private boolean includeSelectionModeControl = false;
+		private boolean includeSingleSelectionControl = false;
 		private boolean includeAddControl = true;
 		private boolean includeEditControl = true;
 		private boolean includeEditAttributeControl = true;
@@ -2319,7 +2319,7 @@ public class EntityTablePanel extends JPanel {
 			this.includeLimitMenu = config.includeLimitMenu;
 			this.includeEntityMenu = config.includeEntityMenu;
 			this.includePopupMenu = config.includePopupMenu;
-			this.includeSelectionModeControl = config.includeSelectionModeControl;
+			this.includeSingleSelectionControl = config.includeSingleSelectionControl;
 			this.includeAddControl = config.includeAddControl;
 			this.includeEditControl = config.includeEditControl;
 			this.includeEditAttributeControl = config.includeEditAttributeControl;
@@ -2467,11 +2467,11 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeSelectionModeControl true if a 'Single Selection' control should be included in the popup menu
+		 * @param includeSingleSelectionControl true if a 'Single Selection' control should be included in the popup menu
 		 * @return this Config instance
 		 */
-		public Config includeSelectionModeControl(boolean includeSelectionModeControl) {
-			this.includeSelectionModeControl = includeSelectionModeControl;
+		public Config includeSingleSelectionControl(boolean includeSingleSelectionControl) {
+			this.includeSingleSelectionControl = includeSingleSelectionControl;
 			return this;
 		}
 

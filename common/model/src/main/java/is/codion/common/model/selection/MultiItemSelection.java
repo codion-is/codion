@@ -43,9 +43,9 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 	StateObserver single();
 
 	/**
-	 * @return a State controlling the single selection mode of this selection model
+	 * @return a State controlling whether single selection mode is enabled
 	 */
-	State singleSelectionMode();
+	State singleSelection();
 
 	/**
 	 * @return a {@link Mutable} for the index of the selected item, -1 if none is selected and

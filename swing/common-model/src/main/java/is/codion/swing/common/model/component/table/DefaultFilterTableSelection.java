@@ -45,11 +45,11 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	private final DefaultIndexes selectedIndexes = new DefaultIndexes();
 	private final SelectedItem selectedItem = new SelectedItem();
 	private final DefaultItems selectedItems = new DefaultItems();
-	private final Event<?> selectionChanging = Event.event();
-	private final State singleSelectionMode = State.state(false);
-	private final State selectionEmpty = State.state(true);
+	private final Event<?> changing = Event.event();
 	private final State singleSelection = State.state(false);
-	private final StateObserver multipleSelection = State.and(selectionEmpty.not(), singleSelection.not());
+	private final State empty = State.state(true);
+	private final State single = State.state(false);
+	private final StateObserver multiple = State.and(empty.not(), single.not());
 
 	private final FilterModel.Items<R> items;
 
@@ -63,13 +63,13 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		if (getSelectionMode() != selectionMode) {
 			clear();
 			selectionModel.setSelectionMode(selectionMode);
-			singleSelectionMode.set(selectionMode == SINGLE_SELECTION);
+			singleSelection.set(selectionMode == SINGLE_SELECTION);
 		}
 	}
 
 	@Override
-	public State singleSelectionMode() {
-		return singleSelectionMode;
+	public State singleSelection() {
+		return singleSelection;
 	}
 
 	@Override
@@ -109,52 +109,52 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 
 	@Override
 	public void addSelectionInterval(int fromIndex, int toIndex) {
-		selectionChanging.run();
+		changing.run();
 		selectionModel.addSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void setSelectionInterval(int fromIndex, int toIndex) {
-		selectionChanging.run();
+		changing.run();
 		selectionModel.setSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void removeSelectionInterval(int fromIndex, int toIndex) {
-		selectionChanging.run();
+		changing.run();
 		selectionModel.removeSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void insertIndexInterval(int fromIndex, int length, boolean before) {
-		selectionChanging.run();
+		changing.run();
 		selectionModel.insertIndexInterval(fromIndex, length, before);
 	}
 
 	@Override
 	public void removeIndexInterval(int fromIndex, int toIndex) {
-		selectionChanging.run();
+		changing.run();
 		selectionModel.removeIndexInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public Observer<?> changing() {
-		return selectionChanging.observer();
+		return changing.observer();
 	}
 
 	@Override
 	public StateObserver multiple() {
-		return multipleSelection;
+		return multiple;
 	}
 
 	@Override
 	public StateObserver single() {
-		return singleSelection.observer();
+		return single.observer();
 	}
 
 	@Override
 	public StateObserver empty() {
-		return selectionEmpty.observer();
+		return empty.observer();
 	}
 
 	@Override
@@ -233,8 +233,8 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	}
 
 	private void bindEvents() {
-		singleSelectionMode.addConsumer(singleSelection ->
-						setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
+		singleSelection.addConsumer(singleSelectionMode ->
+						setSelectionMode(singleSelectionMode ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
 	}
 
 	private static void checkIndex(int index, int size) {
@@ -249,8 +249,8 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
 			super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
 			if (!isAdjusting) {
-				selectionEmpty.set(super.isSelectionEmpty());
-				singleSelection.set(count() == 1);
+				empty.set(super.isSelectionEmpty());
+				single.set(count() == 1);
 				selectedIndex.notifyListeners();
 				selectedItem.notifyListeners();
 				selectedIndexes.notifyListeners();
