@@ -56,10 +56,6 @@ tasks.register<Jar>("domainJar") {
     }
 }
 
-tasks.jar {
-    finalizedBy(tasks.named("domainJar"))
-}
-
 artifacts {
     add("domain", tasks.named("domainJar"))
 }
@@ -91,15 +87,15 @@ tasks.withType<Test>().configureEach {
 }
 
 tasks.register<JavaExec>("runClientLocal") {
-    group ="application"
+    group = "application"
     classpath = sourceSets.main.get().runtimeClasspath
     mainClass = "is.codion.demos.world.ui.WorldAppPanel"
     maxHeapSize = "128m"
     systemProperties = mapOf(
-            "codion.client.connectionType" to "local",
-            "codion.db.url"                to "jdbc:h2:mem:h2db",
-            "codion.db.initScripts"        to "src/main/sql/create_schema.sql",
-            "sun.awt.disablegrab"          to "true"
+        "codion.client.connectionType" to "local",
+        "codion.db.url" to "jdbc:h2:mem:h2db",
+        "codion.db.initScripts" to "src/main/sql/create_schema.sql",
+        "sun.awt.disablegrab" to "true"
     )
 }
 
@@ -109,10 +105,10 @@ tasks.register<JavaExec>("runClientRMI") {
     mainClass = "is.codion.demos.world.ui.WorldAppPanel"
     maxHeapSize = "128m"
     systemProperties = mapOf(
-            "codion.client.connectionType"    to "remote",
-            "codion.server.hostname"          to properties["serverHostName"],
-            "codion.client.trustStore"        to "../../framework/server/src/main/config/truststore.jks",
-            "sun.awt.disablegrab"             to "true"
+        "codion.client.connectionType" to "remote",
+        "codion.server.hostname" to properties["serverHostName"],
+        "codion.client.trustStore" to "../../framework/server/src/main/config/truststore.jks",
+        "sun.awt.disablegrab" to "true"
     )
 }
 
@@ -122,9 +118,9 @@ tasks.register<JavaExec>("runClientHttp") {
     mainClass = "is.codion.demos.world.ui.WorldAppPanel"
     maxHeapSize = "128m"
     systemProperties = mapOf(
-            "codion.client.connectionType" to "http",
-            "codion.client.http.secure"    to "false",
-            "codion.client.http.hostname"  to properties["serverHostName"],
-            "sun.awt.disablegrab"          to "true"
+        "codion.client.connectionType" to "http",
+        "codion.client.http.secure" to "false",
+        "codion.client.http.hostname" to properties["serverHostName"],
+        "sun.awt.disablegrab" to "true"
     )
 }
