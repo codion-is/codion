@@ -25,6 +25,7 @@ Codion Change Log
 - EntityTablePanel.ControlKeys.MOVE_SELECTION_DOWN and MOVE_SELECTION_UP renamed INCREMENT_SELECTION and DECREMENT_SELECTION respectively, related renaming.
 - EntityTablePanel.ControlKeys.SELECTION_MODE renamed SINGLE_SELECTION, Config.includeSelectionModeControl() renamed includeSingleSelectionControl().
 - EntityTablePanel.Config.POPUP_MENU_LAYOUT and TOOLBAR_LAYOUT configuration values added.
+- EntityApplicationPanel, button for displaying system properties added to about panel, DISPLAY_SYSTEM_PROPERTIES configuration value added.
 
 ## 0.18.21
 ### is.codion.common.db

@@ -21,10 +21,12 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
+import is.codion.common.i18n.Messages;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.observer.Observer;
+import is.codion.common.property.PropertyStore;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -69,6 +71,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -80,6 +83,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.io.File;
@@ -153,6 +157,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 */
 	public static final PropertyValue<Boolean> CALL_SYSTEM_EXIT =
 					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".callSystemExit", false);
+
+	/**
+	 * Specifies whether a button for displaying system properties is included on the about panel.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see #displayAbout()
+	 */
+	public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES =
+					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".displaySystemProperties", true);
 
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
@@ -704,8 +719,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		versionMemoryPanel
 						.add(new JLabel(resourceBundle.getString(CODION_VERSION) + ":"))
 						.add(new JLabel(Version.versionAndMetadataString()))
-						.add(new JLabel(resourceBundle.getString(MEMORY_USAGE) + ":"))
-						.add(new JLabel(MEMORY_USAGE_FORMAT.format((RUNTIME.totalMemory() - RUNTIME.freeMemory()) / 1024) + " KB"));
+						.add(new JLabel(resourceBundle.getString(MEMORY_USAGE) + ":"));
+
+		JLabel memoryLabel = new JLabel(MEMORY_USAGE_FORMAT.format((RUNTIME.totalMemory() - RUNTIME.freeMemory()) / 1024) + " KB");
+		versionMemoryPanel.add(DISPLAY_SYSTEM_PROPERTIES.get() ? borderLayoutPanel()
+						.centerComponent(memoryLabel)
+						.eastComponent(toolBar()
+										.floatable(false)
+										.includeButtonText(true)
+										.action(createDisplaySystemPropertiesControl())
+										.build())
+						.build() : memoryLabel);
 
 		return borderLayoutPanel()
 						.border(emptyBorder())
@@ -1006,6 +1030,40 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 										.name(resourceBundle.getString("open_log_folder"))
 										.description(logFileFolder.getAbsolutePath())
 										.build());
+	}
+
+	private Control createDisplaySystemPropertiesControl() {
+		return Control.builder()
+						.command(() -> Dialogs.componentDialog(Components.textArea()
+														.value(PropertyStore.systemProperties())
+														.editable(false)
+														.font(monospaceFont())
+														.popupMenuControl(textArea -> Control.builder()
+																		.command(() -> {
+																			String text = textArea.getSelectedText();
+																			if (Text.nullOrEmpty(text)) {
+																				text = textArea.getText();
+																			}
+																			Utilities.setClipboard(text);
+																		})
+																		.name(Messages.copy())
+																		.smallIcon(FrameworkIcons.instance().copy())
+																		.build())
+														.scrollPane()
+														.build())
+										.owner(this)
+										.size(Windows.screenSizeRatio(0.33))
+										.title(resourceBundle.getString("system_properties"))
+										.show())
+						.name("ⓘ")
+						.font(monospaceFont())
+						.build();
+	}
+
+	private static Font monospaceFont() {
+		Font font = UIManager.getFont("TextArea.font");
+
+		return new Font(Font.MONOSPACED, font.getStyle(), font.getSize());
 	}
 
 	private static Optional<File> firstLogFile() {
