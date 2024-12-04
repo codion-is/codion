@@ -497,7 +497,7 @@ is/codion/swing/common/ui/component/table/FilterTable_is_IS.properties
 |resize_subsequent_columns|Subsequent columns|Aftari dálka
 |select|Select|Velja
 |select_columns|Select columns|Velja dálka
-|single_selection_mode|Single selection|Einnar línu val
+|single_selection|Single selection|Einnar línu val
 |===
 
 === is/codion/swing/common/ui/component/table/TableConditionPanel.java
@@ -763,6 +763,7 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |open_log|Open Log|Opna Log
 |open_log_file|File|Skrá
 |open_log_folder|Folder|Möppu
+|system_properties|System properties|Kerfisstillingar
 |tools|Tools|Tól
 |tools_mnemonic|T|T
 |view_application_tree|Application Tree|Yfirlitsmynd
@@ -817,16 +818,16 @@ is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 
 |clear_selection_tip|Clear selection|Hreinsa val
 |columns|Columns|Dálkar
+|decrement_selection_tip|Move selection up|Færa val upp
 |delete_dependent_records|Delete these dependent records first|Eyddu þessum tengdu færslum fyrst
 |filtered|filtered|sýjaðar
+|increment_selection_tip|Move selection down|Færa val niður
 |limited_to|Limited to|Takmarkað við
 |refreshing|Refreshing|Endurhleð
 |require_query_condition|Search Condition Required|Krefjast Leitarskilyrðis
 |require_query_condition_description|One or more active search conditions required for displaying data|Eins eða fleiri leitarskilyrða krafist til að sækja gögn
 |row_limit|Row limit|Fjöldatakmörkun
 |selected|selected|valdar
-|selection_down_tip|Move selection down|Færa val niður
-|selection_up_tip|Move selection up|Færa val upp
 |show_condition_panel|Show Condition Panel|Sýna Leitarflöt
 |show_filter_panel|Show Filter Panel|Sýna Sýjunarflöt
 |toggle_summary_tip|Toggle Summary View|Sýna/fela samantekt
