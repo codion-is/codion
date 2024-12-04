@@ -26,8 +26,8 @@ val domain: Configuration by configurations.creating
 tasks.register<Jar>("domainJar") {
     dependsOn("classes")
     group = "build"
-    archiveBaseName.set(archiveBaseName.get() + "-domain")
-    from(sourceSets["main"].output)
+    archiveBaseName = archiveBaseName.get() + "-domain"
+    from(sourceSets.main.get().output)
     include("**/domain/**/*")
     include("**/services/**/*")
     includeEmptyDirs = false
@@ -36,7 +36,7 @@ tasks.register<Jar>("domainJar") {
     }
 }
 
-tasks.named("jar") {
+tasks.jar {
     finalizedBy(tasks.named("domainJar"))
 }
 
@@ -50,7 +50,7 @@ tasks.register<WriteProperties>("writeVersion") {
     property("version", project.version)
 }
 
-tasks.named<ProcessResources>("processResources") {
+tasks.processResources {
     from(tasks.named("writeVersion"))
 }
 
@@ -61,8 +61,8 @@ tasks.withType<Test>().configureEach {
 
 tasks.register<JavaExec>("runClientLocal") {
     group ="application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.demos.petstore.ui.PetstoreAppPanel")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.demos.petstore.ui.PetstoreAppPanel"
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "local",
@@ -74,8 +74,8 @@ tasks.register<JavaExec>("runClientLocal") {
 
 tasks.register<JavaExec>("runClientRMI") {
     group = "application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.demos.petstore.ui.PetstoreAppPanel")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.demos.petstore.ui.PetstoreAppPanel"
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType"    to "remote",
@@ -87,8 +87,8 @@ tasks.register<JavaExec>("runClientRMI") {
 
 tasks.register<JavaExec>("runClientHttp") {
     group = "application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.demos.petstore.ui.PetstoreAppPanel")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.demos.petstore.ui.PetstoreAppPanel"
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "http",
@@ -100,8 +100,8 @@ tasks.register<JavaExec>("runClientHttp") {
 
 tasks.register<JavaExec>("runLoadTestRMI") {
     group = "application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.demos.petstore.testing.PetstoreLoadTest")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.demos.petstore.testing.PetstoreLoadTest"
     maxHeapSize = "512m"
     systemProperties = mapOf(
             "codion.client.connectionType"    to "remote",
@@ -112,8 +112,8 @@ tasks.register<JavaExec>("runLoadTestRMI") {
 
 tasks.register<JavaExec>("runLoadTestHttp") {
     group = "application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.demos.petstore.testing.PetstoreLoadTest")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.demos.petstore.testing.PetstoreLoadTest"
     maxHeapSize = "512m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "http",

@@ -41,18 +41,18 @@ tasks.withType<Test>().configureEach {
 
 tasks.register<JavaExec>("runStoreDemo") {
     group = "application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.manual.store.minimal.ui.StoreDemo")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.manual.store.minimal.ui.StoreDemo"
 }
 
 tasks.register<JavaExec>("runNotesDemo") {
     group = "application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.manual.notes.NotesDemo")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.manual.notes.NotesDemo"
 }
 
 tasks.register<JavaExec>("runApplicationPanel") {
     group = "application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.manual.common.demo.ApplicationPanel")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.manual.common.demo.ApplicationPanel"
 }

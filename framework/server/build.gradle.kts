@@ -45,7 +45,7 @@ tasks.register<JavaExec>("runServer") {
     group = "application"
     description = "Runs the EntityServer with the demo domain models"
     classpath = serverRuntime
-    mainClass.set("is.codion.framework.server.EntityServer")
+    mainClass = "is.codion.framework.server.EntityServer"
     maxHeapSize = "256m"
     systemProperties = mapOf(
             "codion.db.url"                                   to "jdbc:h2:mem:h2db",

@@ -25,7 +25,7 @@ apply(from = "extra-module-info-jasperreports.gradle")
 
 jasperreports {
     srcDir = file("src/test/reports")
-    classpath.from(sourceSets["main"].compileClasspath)
+    classpath.from(sourceSets.main.get().compileClasspath)
 }
 
-sourceSets["test"].resources.srcDir(tasks.named("compileAllReports"))
+sourceSets.test.get().resources.srcDir(tasks.compileAllReports)

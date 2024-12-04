@@ -232,11 +232,11 @@ configure(subprojects) {
 
     tasks.withType<JacocoReport> {
         reports {
-            xml.required.set(true)
-            html.required.set(true)
-            csv.required.set(true)
+            xml.required = true
+            html.required = true
+            csv.required = true
         }
-        dependsOn(tasks.named("test"))
+        dependsOn(tasks.test)
     }
 }
 

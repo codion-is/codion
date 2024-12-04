@@ -18,8 +18,8 @@ dependencies {
 tasks.register<JavaExec>("runServerMonitor") {
     group = "application"
     description = "Runs the server monitor"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.tools.monitor.ui.EntityServerMonitorPanel")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.tools.monitor.ui.EntityServerMonitorPanel"
     maxHeapSize = "512m"
     systemProperties = mapOf(
         "codion.server.hostname" to properties["serverHostName"],

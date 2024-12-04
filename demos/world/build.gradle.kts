@@ -46,8 +46,8 @@ val domain: Configuration by configurations.creating
 tasks.register<Jar>("domainJar") {
     dependsOn("classes")
     group = "build"
-    archiveBaseName.set(archiveBaseName.get() + "-domain")
-    from(sourceSets["main"].output)
+    archiveBaseName = archiveBaseName.get() + "-domain"
+    from(sourceSets.main.get().output)
     include("**/domain/**/*")
     include("**/services/**/*")
     includeEmptyDirs = false
@@ -56,7 +56,7 @@ tasks.register<Jar>("domainJar") {
     }
 }
 
-tasks.named("jar") {
+tasks.jar {
     finalizedBy(tasks.named("domainJar"))
 }
 
@@ -70,7 +70,7 @@ tasks.register<WriteProperties>("writeVersion") {
     property("version", project.version)
 }
 
-tasks.named<ProcessResources>("processResources") {
+tasks.processResources {
     from(tasks.named("writeVersion"))
 }
 
@@ -78,12 +78,12 @@ apply(from = "../../plugins/jasperreports/extra-module-info-jasperreports.gradle
 
 jasperreports {
     classpath.from(
-        sourceSets["main"].java.classesDirectory,
-        configurations.named(sourceSets["main"].compileClasspathConfigurationName)
+        sourceSets.main.get().java.classesDirectory,
+        configurations.named(sourceSets.main.get().compileClasspathConfigurationName)
     )
 }
 
-sourceSets["main"].resources.srcDir(tasks.named("compileAllReports"))
+sourceSets.main.get().resources.srcDir(tasks.compileAllReports)
 
 tasks.withType<Test>().configureEach {
     systemProperty("codion.db.initScripts", "src/main/sql/create_schema.sql")
@@ -92,8 +92,8 @@ tasks.withType<Test>().configureEach {
 
 tasks.register<JavaExec>("runClientLocal") {
     group ="application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.demos.world.ui.WorldAppPanel")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.demos.world.ui.WorldAppPanel"
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "local",
@@ -105,8 +105,8 @@ tasks.register<JavaExec>("runClientLocal") {
 
 tasks.register<JavaExec>("runClientRMI") {
     group = "application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.demos.world.ui.WorldAppPanel")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.demos.world.ui.WorldAppPanel"
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType"    to "remote",
@@ -118,8 +118,8 @@ tasks.register<JavaExec>("runClientRMI") {
 
 tasks.register<JavaExec>("runClientHttp") {
     group = "application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.demos.world.ui.WorldAppPanel")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.demos.world.ui.WorldAppPanel"
     maxHeapSize = "128m"
     systemProperties = mapOf(
             "codion.client.connectionType" to "http",

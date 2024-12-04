@@ -27,8 +27,8 @@ dependencies {
 tasks.register<JavaExec>("runDomainGeneratorH2") {
     group = "application"
     description = "Runs the domain generator using a in-memory H2 database initialized with the demo application schemas"
-    mainClass.set("is.codion.tools.generator.ui.DomainGeneratorPanel")
-    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "is.codion.tools.generator.ui.DomainGeneratorPanel"
+    classpath = sourceSets.main.get().runtimeClasspath
     maxHeapSize = "256m"
     systemProperties = mapOf(
         "codion.db.url" to "jdbc:h2:mem:h2db",
@@ -45,8 +45,8 @@ tasks.register<JavaExec>("runDomainGeneratorH2") {
 
 //tasks.register<JavaExec>("runDomainGeneratorOracle") {
 //    group = "application"
-//    mainClass.set("is.codion.tools.generator.ui.DomainGeneratorPanel")
-//    classpath = sourceSets["main"].runtimeClasspath
+//    mainClass = "is.codion.tools.generator.ui.DomainGeneratorPanel"
+//    classpath = sourceSets.main.get().runtimeClasspath
 //    maxHeapSize = "256m"
 //    systemProperties = mapOf(
 //        "codion.db.url" to "jdbc:oracle:thin:@localhost:1521:sid",
@@ -56,8 +56,8 @@ tasks.register<JavaExec>("runDomainGeneratorH2") {
 
 //tasks.register<JavaExec>("runDomainGeneratorPostgres") {
 //    group = "application"
-//    mainClass.set("is.codion.tools.generator.ui.DomainGeneratorPanel")
-//    classpath = sourceSets["main"].runtimeClasspath
+//    mainClass = "is.codion.tools.generator.ui.DomainGeneratorPanel"
+//    classpath = sourceSets.main.get().runtimeClasspath
 //    maxHeapSize = "256m"
 //    systemProperties = mapOf(
 //        "codion.db.url" to "jdbc:postgresql://localhost:5432/postgres",
@@ -67,8 +67,8 @@ tasks.register<JavaExec>("runDomainGeneratorH2") {
 
 //tasks.register<JavaExec>("runDomainGeneratorMariaDB") {
 //    group = "application"
-//    mainClass.set("is.codion.tools.generator.ui.DomainGeneratorPanel")
-//    classpath = sourceSets["main"].runtimeClasspath
+//    mainClass = "is.codion.tools.generator.ui.DomainGeneratorPanel"
+//    classpath = sourceSets.main.get().runtimeClasspath
 //    maxHeapSize = "256m"
 //    systemProperties = mapOf(
 //        "codion.db.url" to "jdbc:mariadb://localhost:3306/mariadb",

@@ -40,7 +40,7 @@ tasks.register("generateI18nValuesPage") {
     }
 }
 
-tasks.named<org.asciidoctor.gradle.jvm.AsciidoctorTask>("asciidoctor") {
+tasks.asciidoctor {
     dependsOn("copyModuleDependencyGraphs", "generateI18nValuesPage")
     // since the sources included in the docs may have changed, there"s definitely
     // a more gradle like way to do this, but it escapes me
@@ -141,7 +141,7 @@ tasks.register("combinedJavadoc") {
         options.write(optionsFile)
 
         val javadocTool = javaToolchains.javadocToolFor {
-            languageVersion.set(JavaLanguageVersion.of(properties["jdkVersion"] as String))
+            languageVersion = JavaLanguageVersion.of(properties["jdkVersion"] as String)
         }
         providers.exec {
             executable = javadocTool.get().executablePath.asFile.absolutePath

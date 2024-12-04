@@ -29,7 +29,7 @@ tasks.register<WriteProperties>("writeVersion") {
     property("version", project.version)
 }
 
-tasks.named<ProcessResources>("processResources") {
+tasks.processResources {
     from(tasks.named("writeVersion"))
 }
 
@@ -47,8 +47,8 @@ tasks.withType<Test>().configureEach {
 
 tasks.register<JavaExec>("runClientLocal") {
     group = "application"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("is.codion.demos.schemabrowser.client.ui.SchemaBrowserAppPanel")
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"
     systemProperties = mapOf(
         "codion.client.connectionType" to "local",
         "codion.db.url" to "jdbc:h2:mem:h2db",
