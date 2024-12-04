@@ -1,3 +1,7 @@
+plugins {
+    application
+}
+
 dependencies {
     implementation(project(":codion-swing-common-ui"))
     implementation(project(":codion-tools-monitor-model"))
@@ -15,16 +19,13 @@ dependencies {
     testRuntimeOnly(libs.h2)
 }
 
-tasks.register<JavaExec>("runServerMonitor") {
-    group = "application"
-    description = "Runs the server monitor"
-    classpath = sourceSets.main.get().runtimeClasspath
-    mainClass = "is.codion.tools.monitor.ui.EntityServerMonitorPanel"
-    maxHeapSize = "512m"
-    systemProperties = mapOf(
-        "codion.server.hostname" to properties["serverHostName"],
-        "codion.server.admin.user" to "scott:tiger",
-        "codion.client.trustStore" to "../../../framework/server/src/main/config/truststore.jks",
-        "logback.configurationFile" to "src/config/logback.xml"
+application {
+    mainClass.set("is.codion.tools.monitor.ui.EntityServerMonitorPanel")
+    applicationDefaultJvmArgs = listOf(
+        "-Xmx512m",
+        "-Dcodion.server.hostname=" + properties["serverHostName"],
+        "-Dcodion.server.admin.user=scott:tiger",
+        "-Dcodion.client.trustStore=../../../framework/server/src/main/config/truststore.jks",
+        "-Dlogback.configurationFile=src/config/logback.xml"
     )
 }

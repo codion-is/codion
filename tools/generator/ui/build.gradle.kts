@@ -1,3 +1,7 @@
+plugins {
+    application
+}
+
 dependencies {
     implementation(project(":codion-swing-common-ui"))
     implementation(project(":codion-tools-generator-model"))
@@ -16,62 +20,34 @@ dependencies {
 //    runtimeOnly(project(":codion-dbms-mariadb"))
 //    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:3.4.1")
 
-//    runtimeOnly(project(":codion-dbms-db2database"))
-//    runtimeOnly("com.ibm.db2:jcc:11.5.9.0")
-
     testRuntimeOnly(project(":codion-framework-db-local"))
     testRuntimeOnly(project(":codion-framework-db-rmi"))
     testRuntimeOnly(project(":codion-framework-server"))
 }
 
-tasks.register<JavaExec>("runDomainGeneratorH2") {
-    group = "application"
-    description = "Runs the domain generator using a in-memory H2 database initialized with the demo application schemas"
+application {
     mainClass = "is.codion.tools.generator.ui.DomainGeneratorPanel"
-    classpath = sourceSets.main.get().runtimeClasspath
-    maxHeapSize = "256m"
-    systemProperties = mapOf(
-        "codion.db.url" to "jdbc:h2:mem:h2db",
-        "codion.db.initScripts" to
+    applicationDefaultJvmArgs = listOf(
+        "-Xmx256m",
+        "-Dcodion.domain.generator.defaultDomainPackage=is.codion.demo.domain"
+    )
+    applicationDefaultJvmArgs += listOf(
+        "-Dcodion.db.url=jdbc:h2:mem:h2db",
+        "-Dcodion.db.initScripts=" +
                 "../../../demos/chinook/src/main/sql/create_schema.sql," +
                 "../../../demos/employees/src/main/sql/create_schema.sql," +
                 "../../../demos/petclinic/src/main/sql/create_schema.sql," +
                 "../../../demos/petstore/src/main/sql/create_schema.sql," +
                 "../../../demos/world/src/main/sql/create_schema.sql",
-        "codion.domain.generator.defaultUser" to "sa",
-        "codion.domain.generator.defaultDomainPackage" to "is.codion.demo.domain"
+        "-Dcodion.domain.generator.defaultUser=sa",
     )
+//    applicationDefaultJvmArgs += listOf(
+//        "-Dcodion.db.url=jdbc:postgresql://localhost:5432/postgres"
+//    )
+//    applicationDefaultJvmArgs += listOf(
+//        "-Dcodion.db.url=jdbc:oracle:thin:@localhost:1521:sid"
+//    )
+//    applicationDefaultJvmArgs += listOf(
+//        "-Dcodion.db.url=jdbc:mariadb://localhost:3306/mariadb"
+//    )
 }
-
-//tasks.register<JavaExec>("runDomainGeneratorOracle") {
-//    group = "application"
-//    mainClass = "is.codion.tools.generator.ui.DomainGeneratorPanel"
-//    classpath = sourceSets.main.get().runtimeClasspath
-//    maxHeapSize = "256m"
-//    systemProperties = mapOf(
-//        "codion.db.url" to "jdbc:oracle:thin:@localhost:1521:sid",
-//        "codion.domain.generator.defaultDomainPackage" to "is.codion.demo.domain"
-//    )
-//}
-
-//tasks.register<JavaExec>("runDomainGeneratorPostgres") {
-//    group = "application"
-//    mainClass = "is.codion.tools.generator.ui.DomainGeneratorPanel"
-//    classpath = sourceSets.main.get().runtimeClasspath
-//    maxHeapSize = "256m"
-//    systemProperties = mapOf(
-//        "codion.db.url" to "jdbc:postgresql://localhost:5432/postgres",
-//        "codion.domain.generator.defaultDomainPackage" to "is.codion.demo.domain"
-//    )
-//}
-
-//tasks.register<JavaExec>("runDomainGeneratorMariaDB") {
-//    group = "application"
-//    mainClass = "is.codion.tools.generator.ui.DomainGeneratorPanel"
-//    classpath = sourceSets.main.get().runtimeClasspath
-//    maxHeapSize = "256m"
-//    systemProperties = mapOf(
-//        "codion.db.url" to "jdbc:mariadb://localhost:3306/mariadb",
-//        "codion.domain.generator.defaultDomainPackage" to "is.codion.demo.domain"
-//    )
-//}

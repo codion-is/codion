@@ -37,7 +37,7 @@ In order to run a client with a remote or http connection the remote server must
 
 [source,shell]
 ----
-gradlew codion-framework-server:runServer
+gradlew codion-framework-server:run
 ----
 
 To run a demo client with a remote connection use the following command.
@@ -51,7 +51,7 @@ You can run the <<server-monitor.adoc#_server_monitor, Server Monitor>> applicat
 
 [source,shell]
 ----
-gradlew codion-swing-framework-server-monitor:runServerMonitor
+gradlew codion-swing-framework-server-monitor:run
 ----
 
 NOTE: The client handles server restarts gracefully, you can try shutting down the server via the Server Monitor, play around in the client until you get a 'Connection refused' exception.
