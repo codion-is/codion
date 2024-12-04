@@ -1901,7 +1901,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Controls.Layout createPopupMenuLayout() {
-		return Controls.layout(asList(
+		return Config.POPUP_MENU_LAYOUT.optional().orElse(Controls.layout(asList(
 						REFRESH,
 						CLEAR,
 						null,
@@ -1926,11 +1926,11 @@ public class EntityTablePanel extends JPanel {
 						FILTER_CONTROLS,
 						null,
 						COPY_CONTROLS
-		));
+		)));
 	}
 
 	private Controls.Layout createToolBarLayout() {
-		return Controls.layout(asList(
+		return Config.TOOLBAR_LAYOUT.optional().orElse(Controls.layout(asList(
 						TOGGLE_SUMMARIES,
 						TOGGLE_CONDITION_VIEW,
 						TOGGLE_FILTER_VIEW,
@@ -1944,7 +1944,7 @@ public class EntityTablePanel extends JPanel {
 						PRINT,
 						null,
 						ADDITIONAL_TOOLBAR_CONTROLS
-		));
+		)));
 	}
 
 	private final class AddCommand implements Control.Command {
@@ -2247,6 +2247,59 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final PropertyValue<EditAttributeSelection> EDIT_ATTRIBUTE_SELECTION =
 						Configuration.enumValue(EntityTablePanel.class.getName() + ".editAttributeSelection", EditAttributeSelection.class, EditAttributeSelection.MENU);
+
+		/**
+		 * Specifies the default popup menu layout.
+		 * <pre>
+		 * {@code
+		 *  EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList(
+		 *      EntityTablePanel.ControlKeys.REFRESH,
+		 *      null, // <- separator
+		 *      EntityTablePanel.ControlKeys.ADDITIONAL_POPUP_MENU_CONTROLS,
+		 *      null,
+		 *      EntityTablePanel.ControlKeys.CONDITION_CONTROLS,
+		 *      null,
+		 *      EntityTablePanel.ControlKeys.COPY_CONTROLS
+		 *  )));
+		 * }
+		 * </pre>
+		 * <ul>
+		 * <li>Value type: {@link Controls.Layout}
+		 * <li>Default value: null
+		 * </ul>
+		 * @see EntityTablePanel#configurePopupMenu(Consumer)
+		 */
+		public static final PropertyValue<Controls.Layout> POPUP_MENU_LAYOUT =
+						Configuration.value(EntityTablePanel.class.getName() + ".popupMenuLayout", string -> {
+							throw new UnsupportedOperationException("Parsing the popup menu layout from a system property is not supported");
+						});
+
+		/**
+		 * Specifies the default toolbar layout.
+		 * <pre>
+		 * {@code
+		 *  EntityTablePanel.Config.TOOLBAR_LAYOUT.set(Controls.layout(asList(
+		 *      EntityTablePanel.ControlKeys.TOGGLE_CONDITION_VIEW,
+		 *      EntityTablePanel.ControlKeys.TOGGLE_FILTER_VIEW
+		 *      null, // <- separator
+		 *      EntityTablePanel.ControlKeys.ADDITIONAL_TOOLBAR_CONTROLS
+		 *  )));
+		 * }
+		 * </pre>
+		 * <ul>
+		 * <li>Value type: {@link Controls.Layout}
+		 * <li>Default value: null
+		 * </ul>
+		 * <ul>
+		 * <li>Value type: {@link Controls.Layout}
+		 * <li>Default value: null
+		 * </ul>
+		 * @see EntityTablePanel#configureToolBar(Consumer)
+		 */
+		public static final PropertyValue<Controls.Layout> TOOLBAR_LAYOUT =
+						Configuration.value(EntityTablePanel.class.getName() + ".toolBarLayout", string -> {
+							throw new UnsupportedOperationException("Parsing the toolbar layout from a system property is not supported");
+						});
 
 		private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 

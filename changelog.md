@@ -22,6 +22,7 @@ Codion Change Log
 - EntityEditComponentPanel, create component methods now assign a name to the component, using attribute.toString().
 - EntityTablePanel.ControlKeys.MOVE_SELECTION_DOWN and MOVE_SELECTION_UP renamed INCREMENT_SELECTION and DECREMENT_SELECTION respectively, related renaming.
 - EntityTablePanel.ControlKeys.SELECTION_MODE renamed SINGLE_SELECTION, Config.includeSelectionModeControl() renamed includeSingleSelectionControl().
+- EntityTablePanel.Config.POPUP_MENU_LAYOUT and TOOLBAR_LAYOUT configuration values added.
 
 ## 0.18.21
 ### is.codion.common.db

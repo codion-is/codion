@@ -28,12 +28,14 @@ import is.codion.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.EntityTablePanel.ControlKeys;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
 import is.codion.swing.framework.ui.WindowDetailLayout;
 
@@ -42,6 +44,8 @@ import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import javax.swing.JTable;
 import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
@@ -85,6 +89,15 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 						.forEach(LookAndFeelProvider::addLookAndFeel);
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		EntityTablePanel.Config.CONDITION_VIEW.set(ConditionView.SIMPLE);
+		EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList(
+						ControlKeys.REFRESH,
+						null,
+						ControlKeys.ADDITIONAL_POPUP_MENU_CONTROLS,
+						null,
+						ControlKeys.CONDITION_CONTROLS,
+						null,
+						ControlKeys.COPY_CONTROLS
+		)));
 		EntityApplicationPanel.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
 						.applicationName("Schema Browser")
 						.domainType(SchemaBrowser.DOMAIN)
