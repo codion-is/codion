@@ -7,7 +7,7 @@ tasks.register<WriteProperties>("writeVersion") {
     property("version", project.version)
 }
 
-tasks.withType<ProcessResources> {
+tasks.withType<ProcessResources>().configureEach {
     from(tasks.named("writeVersion"))
 
     filesMatching("version.properties") {

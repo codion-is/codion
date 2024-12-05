@@ -20,7 +20,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("is.codion.tools.monitor.ui.EntityServerMonitorPanel")
+    mainClass = "is.codion.tools.monitor.ui.EntityServerMonitorPanel"
     applicationDefaultJvmArgs = listOf(
         "-Xmx512m",
         "-Dcodion.server.hostname=" + properties["serverHostName"],

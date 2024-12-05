@@ -230,7 +230,7 @@ configure(subprojects) {
         options.isDeprecation = true
     }
 
-    tasks.withType<JacocoReport> {
+    tasks.withType<JacocoReport>().configureEach {
         reports {
             xml.required = true
             html.required = true
