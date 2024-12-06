@@ -21,6 +21,9 @@ Codion Change Log
 - TableConditionPanel.get() and get(identifier) renamed panels() and panel() respectively.
 - FilterTable.createSingleSelectionModeControl() renamed createSingleSelectionControl().
 - TextComponentBuilder.initialCaretPosition() renamed caretPosition(), InitialCaretPosition renamed CaretPosition.
+### is.codion.framework.domain
+- DerivedAttribute.SourceValues.optional() default implementation removed.
+- DefaultEntity.DefaultSourceValues implements optional(), no longer throws exception in case the attribute is not a source attribute.
 ### is.codion.swing.framework.ui
 - EntityEditComponentPanel, create component methods now assign a name to the component, using attribute.toString().
 - EntityTablePanel.ControlKeys.MOVE_SELECTION_DOWN and MOVE_SELECTION_UP renamed INCREMENT_SELECTION and DECREMENT_SELECTION respectively, related renaming.

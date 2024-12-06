@@ -33,22 +33,22 @@ public interface DerivedAttribute<T> extends Attribute<T> {
 	interface SourceValues {
 
 		/**
-		 * Returns the source value associated with the given attribute.
-		 * @param attribute the attribute which value to retrieve
+		 * Returns the value associated with the given source attribute.
+		 * @param attribute the source attribute which value to retrieve
 		 * @param <T> the value type
-		 * @return the value associated with attribute
+		 * @return the value associated with the given source attribute
+		 * @throws IllegalArgumentException in case the given attribute is not a source attribute
 		 */
 		<T> T get(Attribute<T> attribute);
 
 		/**
-		 * Returns the source value associated with the given attribute.
+		 * Returns the source value associated with the given attribute or an empty {@link Optional}
+		 * if the associated value is null or if the given attribute is not a source attribute
 		 * @param attribute the attribute which value to retrieve
 		 * @param <T> the value type
-		 * @return the value associated with attribute, an empty Optional in case of null
+		 * @return the value associated with attribute
 		 */
-		default <T> Optional<T> optional(Attribute<T> attribute) {
-			return Optional.ofNullable(get(attribute));
-		}
+		<T> Optional<T> optional(Attribute<T> attribute);
 	}
 
 	/**

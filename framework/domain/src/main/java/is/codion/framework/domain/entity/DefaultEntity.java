@@ -928,5 +928,10 @@ class DefaultEntity implements Entity, Serializable {
 
 			return (T) values.get(attribute);
 		}
+
+		@Override
+		public <T> Optional<T> optional(Attribute<T> attribute) {
+			return Optional.ofNullable((T) values.get(attribute));
+		}
 	}
 }
