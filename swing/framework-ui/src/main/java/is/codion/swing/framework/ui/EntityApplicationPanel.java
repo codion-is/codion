@@ -727,6 +727,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 						.eastComponent(toolBar()
 										.floatable(false)
 										.includeButtonText(true)
+										.preferredHeight(memoryLabel.getHeight())
 										.action(createDisplaySystemPropertiesControl())
 										.build())
 						.build() : memoryLabel);
