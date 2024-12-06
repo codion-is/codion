@@ -30,7 +30,7 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
-import is.codion.swing.common.ui.component.text.TextComponentBuilder.InitialCaretPosition;
+import is.codion.swing.common.ui.component.text.TextComponentBuilder.CaretPosition;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.text.UpdateOn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -598,21 +598,21 @@ public final class ComponentsTest {
 		// initial caret position
 		builder = Components.textArea()
 						.value("hello there")
-						.initialCaretPosition(InitialCaretPosition.START);
+						.caretPosition(CaretPosition.START);
 		textArea = builder.build();
 		assertEquals(0, textArea.getCaretPosition());
 
-		builder.initialCaretPosition(InitialCaretPosition.END);
+		builder.caretPosition(CaretPosition.END);
 		textArea = builder.build();
 		assertEquals(textArea.getDocument().getLength(), textArea.getCaretPosition());
 
 		Value<String> stringValue = Value.value("hello there");
 		builder = Components.textArea(stringValue)
-						.initialCaretPosition(InitialCaretPosition.START);
+						.caretPosition(CaretPosition.START);
 		textArea = builder.build();
 		assertEquals(0, textArea.getCaretPosition());
 
-		builder.initialCaretPosition(InitialCaretPosition.END);
+		builder.caretPosition(CaretPosition.END);
 		textArea = builder.build();
 		assertEquals(textArea.getDocument().getLength(), textArea.getCaretPosition());
 	}

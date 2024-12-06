@@ -59,13 +59,13 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	private Consumer<String> onTextChanged;
 	private boolean dragEnabled = false;
 	private Character focusAcceleratorKey;
-	private InitialCaretPosition initialCaretPosition = InitialCaretPosition.START;
+	private CaretPosition caretPosition = CaretPosition.START;
 	private int caretUpdatePolicy = DefaultCaret.UPDATE_WHEN_ON_EDT;
 
 	protected AbstractTextComponentBuilder(Value<T> linkedValue) {
 		super(linkedValue);
-		// Make sure this is done last, after value linking and setting the initial value
-		onBuild(this::setInitialCaretPosition);
+		// Make sure this is done after value linking and setting the initial value
+		onBuild(this::setCaretPosition);
 	}
 
 	@Override
@@ -183,8 +183,8 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	}
 
 	@Override
-	public final B initialCaretPosition(InitialCaretPosition initialCaretPosition) {
-		this.initialCaretPosition = requireNonNull(initialCaretPosition);
+	public final B caretPosition(CaretPosition caretPosition) {
+		this.caretPosition = requireNonNull(caretPosition);
 		return self();
 	}
 
@@ -265,8 +265,8 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 		return updateOn;
 	}
 
-	private void setInitialCaretPosition(C component) {
-		component.setCaretPosition(initialCaretPosition == InitialCaretPosition.START ? 0 : component.getDocument().getLength());
+	private void setCaretPosition(C component) {
+		component.setCaretPosition(caretPosition == CaretPosition.START ? 0 : component.getDocument().getLength());
 	}
 
 	private static final class AddCaretListener implements Consumer<CaretListener> {

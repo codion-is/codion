@@ -33,10 +33,17 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
 				extends ComponentBuilder<T, C, B> {
 
 	/**
-	 * Specifies the possible initial caret position given an initial value.
+	 * Specifies the possible initial caret positions in case text component has an initial value.
 	 */
-	enum InitialCaretPosition {
-		START, END
+	enum CaretPosition {
+		/**
+		 * Caret positioned at the start.
+		 */
+		START,
+		/**
+		 * Caret positioned at the end.
+		 */
+		END
 	}
 
 	/**
@@ -152,12 +159,13 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
 
 	/**
 	 * Specifies the initial caret position for the component in case an initial value is specified.
-	 * Default {@link InitialCaretPosition#START}
-	 * @param initialCaretPosition the initial caret position
+	 * Default {@link CaretPosition#START}
+	 * @param caretPosition the initial caret position
 	 * @return this builder instance
 	 * @see #value(Object)
+	 * @see JTextComponent#setCaretPosition(int)
 	 */
-	B initialCaretPosition(InitialCaretPosition initialCaretPosition);
+	B caretPosition(CaretPosition caretPosition);
 
 	/**
 	 * @param caretUpdatePolicy the caret update policy
