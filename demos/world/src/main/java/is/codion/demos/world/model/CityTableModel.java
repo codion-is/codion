@@ -39,8 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static java.util.stream.Collectors.toList;
-
 public final class CityTableModel extends SwingEntityTableModel {
 
 	private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
@@ -88,7 +86,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 		private PopulateLocationTask() {
 			cities = selection().items().get().stream()
 							.filter(city -> city.isNull(City.LOCATION))
-							.collect(toList());
+							.toList();
 		}
 
 		public int maximumProgress() {

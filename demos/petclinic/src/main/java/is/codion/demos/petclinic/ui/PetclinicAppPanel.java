@@ -42,8 +42,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import static java.util.Arrays.asList;
-
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 
 	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme";
@@ -99,7 +97,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 										.detailPanel(vetSpecialtyPanelBuilder)
 										.caption("Vets");
 
-		return asList(petTypePanelBuilder, specialtyPanelBuilder, vetPanelBuilder);
+		return List.of(petTypePanelBuilder, specialtyPanelBuilder, vetPanelBuilder);
 	}
 
 	public static void main(String[] args) throws CancelException {
@@ -111,6 +109,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 		EntityApplicationPanel.builder(PetclinicAppModel.class, PetclinicAppPanel.class)
 						.applicationName("Petclinic")
 						.domainType(Petclinic.DOMAIN)
+						.displayStartupDialog(false)
 						.defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
 						.defaultLoginUser(User.parse("scott:tiger"))
 						.start();

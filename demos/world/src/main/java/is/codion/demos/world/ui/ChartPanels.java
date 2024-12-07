@@ -65,17 +65,15 @@ final class ChartPanels {
 		Plot plot = chart.getPlot();
 		plot.setBackgroundPaint(backgroundColor);
 		Color textFieldForeground = UIManager.getColor("TextField.foreground");
-		if (plot instanceof PiePlot) {
-			PiePlot<?> piePlot = (PiePlot<?>) plot;
+		if (plot instanceof PiePlot<?> piePlot) {
 			piePlot.setLabelBackgroundPaint(textFieldForeground);
 			piePlot.setLabelPaint(backgroundColor);
 		}
-		if (plot instanceof CategoryPlot) {
-			CategoryPlot categoryPlot = (CategoryPlot) plot;
+		if (plot instanceof CategoryPlot categoryPlot) {
 			categoryPlot.getDomainAxis().setLabelPaint(textFieldForeground);
+			categoryPlot.getRangeAxis().setLabelPaint(textFieldForeground);
 			categoryPlot.getDomainAxis().setTickLabelPaint(textFieldForeground);
 			categoryPlot.getRangeAxis().setTickLabelPaint(textFieldForeground);
-			categoryPlot.getRangeAxis().setLabelPaint(textFieldForeground);
 		}
 		LegendTitle legend = chart.getLegend();
 		if (legend != null) {

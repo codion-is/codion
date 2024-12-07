@@ -43,8 +43,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import static java.util.Arrays.asList;
-
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
 	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme";
@@ -67,7 +65,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 		EntityPanel lookupPanel = new EntityPanel(lookupModel,
 						new LookupTablePanel(lookupModel.tableModel()));
 
-		return asList(countryPanel, continentPanel, lookupPanel);
+		return List.of(countryPanel, continentPanel, lookupPanel);
 	}
 	// end::initializeEntityPanels[]
 
