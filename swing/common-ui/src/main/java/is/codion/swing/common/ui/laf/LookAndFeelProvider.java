@@ -69,10 +69,10 @@ public interface LookAndFeelProvider {
 	void enable();
 
 	/**
-	 * @return the LookAndFeel instance represented by this provider
-	 * @throws Exception in case an instance could not be created
+	 * @return an instance of the {@link LookAndFeel} represented by this provider
+	 * @throws RuntimeException in case the class is not found or if the {@link LookAndFeel} could not be instantiated
 	 */
-	LookAndFeel lookAndFeel() throws Exception;
+	LookAndFeel lookAndFeel();
 
 	/**
 	 * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to enable.

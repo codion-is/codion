@@ -21,6 +21,7 @@ Codion Change Log
 - TableConditionPanel.get() and get(identifier) renamed panels() and panel() respectively.
 - FilterTable.createSingleSelectionModeControl() renamed createSingleSelectionControl().
 - TextComponentBuilder.initialCaretPosition() renamed caretPosition(), InitialCaretPosition renamed CaretPosition.
+- LookAndFeelProvider.lookAndFeel() no longer throws Exception.
 ### is.codion.framework.domain
 - DerivedAttribute.SourceValues.optional() default implementation removed.
 - DefaultEntity.DefaultSourceValues implements optional(), no longer throws exception in case the attribute is not a source attribute.

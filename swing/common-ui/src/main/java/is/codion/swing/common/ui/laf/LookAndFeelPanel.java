@@ -77,8 +77,8 @@ final class LookAndFeelPanel extends JPanel {
 		try {
 			return lookAndFeelProvider.lookAndFeel().getDefaults();
 		}
-		catch (Exception e) {
-			System.err.println(e.getMessage());
+		catch (RuntimeException e) {
+			System.err.println(e.getCause().getMessage());
 			return nullDefaults;
 		}
 	}

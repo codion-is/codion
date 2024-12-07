@@ -71,8 +71,14 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
 		enabler.accept(lookAndFeelInfo);
 	}
 
-	public LookAndFeel lookAndFeel() throws Exception {
-		return (LookAndFeel) Class.forName(lookAndFeelInfo.getClassName()).getDeclaredConstructor().newInstance();
+	@Override
+	public LookAndFeel lookAndFeel() {
+		try {
+			return (LookAndFeel) Class.forName(lookAndFeelInfo.getClassName()).getDeclaredConstructor().newInstance();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
