@@ -113,7 +113,7 @@ tasks.register("combinedJavadoc") {
     outputs.dir(outputDirectory)
     var classpath: FileCollection = project.files()
     frameworkModules().forEach { module ->
-        inputs.files(module.sourceSets.main.get().java)
+        inputs.files(module.sourceSets.main.get().output)
         module.tasks.withType<Javadoc>().forEach { javadocTask ->
             classpath += javadocTask.classpath
         }
