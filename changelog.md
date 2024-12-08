@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.23
+
 ## 0.18.22
 ### is.codion.common
 - PropertyStore.systemProperties() now uses a DefaultSystemPropertyFormatter, which formats class and module paths as one item per line.
