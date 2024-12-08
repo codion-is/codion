@@ -3,6 +3,13 @@
 :docinfo: shared-head
 :dir-source: ../../../../../demos/manual/src/main/java
 
+Demonstrates basic FilterTableModel, FilterComboBoxModel and FilterTable usage.
+
+[source,shell]
+----
+gradlew codion-demos-manual:runKeyBindingPanel
+----
+
 == KeyBindingPanel
 
 [source,java,linenums]

@@ -19,7 +19,7 @@
 package is.codion.manual.keybinding;
 
 import is.codion.common.item.Item;
-import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.Id;
+import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.ColumnId;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
@@ -29,76 +29,173 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import javax.swing.LookAndFeel;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
-import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 final class KeyBindingModel {
 
-	private static final Collection<String> EXCLUDED_COMPONENTS = asList("PopupMenuSeparator", "ToolBarSeparator", "DesktopIcon");
+	private static final Set<String> EXCLUDED_COMPONENTS = Set.of("PopupMenuSeparator", "ToolBarSeparator", "DesktopIcon");
 
 	private static final String PACKAGE = "javax.swing.";
 	private static final String PRESSED = "pressed ";
 	private static final String RELEASED = "released ";
 
-	private final FilterTableModel<KeyBinding, Id> tableModel;
-	private final FilterComboBoxModel<String> componentComboBoxModel;
+	private final FilterComboBoxModel<String> componentModel;
+	private final FilterTableModel<KeyBindingRow, ColumnId> tableModel;
 
-	KeyBindingModel(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-		this.componentComboBoxModel = FilterComboBoxModel.builder(new ComponentItems(lookAndFeelComboBoxModel)).build();
-		this.componentComboBoxModel.refresh();
+	KeyBindingModel(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelModel) {
+		this.componentModel = FilterComboBoxModel.builder(new ComponentItems(lookAndFeelModel)).build();
+		this.componentModel.refresh();
 		this.tableModel = FilterTableModel.builder(new KeyBindingColumns())
 						.supplier(new KeyBindingItems())
 						.build();
-		bindEvents(lookAndFeelComboBoxModel);
+		bindEvents(lookAndFeelModel);
 	}
 
-	FilterComboBoxModel<String> componentComboBoxModel() {
-		return componentComboBoxModel;
+	FilterComboBoxModel<String> componentModel() {
+		return componentModel;
 	}
 
-	FilterTableModel<KeyBinding, Id> tableModel() {
+	FilterTableModel<KeyBindingRow, ColumnId> tableModel() {
 		return tableModel;
 	}
 
-	private void bindEvents(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-		componentComboBoxModel.refresher().success().addListener(tableModel::refresh);
-		componentComboBoxModel.selection().item().addListener(tableModel::refresh);
-		lookAndFeelComboBoxModel.selection().item().addListener(componentComboBoxModel::refresh);
+	private void bindEvents(FilterComboBoxModel<?> lookAndFeelModel) {
+		// Refresh the component combo box when a look and feel is selected
+		lookAndFeelModel.selection().item().addListener(componentModel::refresh);
+		// Refresh the table model when the component combo box has been refreshed
+		componentModel.refresher().success().addListener(tableModel::refresh);
+		// And when a component is selected
+		componentModel.selection().item().addListener(tableModel::refresh);
 	}
 
-	private static String className(String componentName) {
-		if (componentName.equals("JTableHeader")) {
-			return PACKAGE + "table." + componentName;
-		}
+	record KeyBindingRow(String action, String whenFocused, String whenInFocusedWindow, String whenAncestor) {
 
-		return PACKAGE + componentName;
+		Object value(ColumnId columnId) {
+			return switch (columnId) {
+				case ACTION -> action;
+				case WHEN_FOCUSED -> whenFocused;
+				case WHEN_IN_FOCUSED_WINDOW -> whenInFocusedWindow;
+				case WHEN_ANCESTOR -> whenAncestor;
+			};
+		}
 	}
 
-	static final class KeyBinding {
+	static final class KeyBindingColumns implements Columns<KeyBindingRow, ColumnId> {
 
-		private final String action;
-		private final String whenFocused;
-		private final String whenInFocusedWindow;
-		private final String whenAncestor;
-
-		private KeyBinding(String action, String whenFocused, String whenInFocusedWindow, String whenAncestor) {
-			this.action = action;
-			this.whenFocused = whenFocused;
-			this.whenInFocusedWindow = whenInFocusedWindow;
-			this.whenAncestor = whenAncestor;
+		enum ColumnId {
+			ACTION,
+			WHEN_FOCUSED,
+			WHEN_IN_FOCUSED_WINDOW,
+			WHEN_ANCESTOR
 		}
 
-		private static KeyBinding create(Object actionKey, JComponent component) {
-			return new KeyBinding(actionKey.toString(),
+		private static final List<ColumnId> IDENTIFIERS = List.of(ColumnId.values());
+
+		@Override
+		public List<ColumnId> identifiers() {
+			return IDENTIFIERS;
+		}
+
+		@Override
+		public Class<?> columnClass(ColumnId columnId) {
+			return String.class;
+		}
+
+		@Override
+		public Object value(KeyBindingRow row, ColumnId columnId) {
+			return row.value(columnId);
+		}
+	}
+
+	// Provides the items when populating the component combo box model
+	private static final class ComponentItems implements Supplier<Collection<String>> {
+
+		private final FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelModel;
+
+		private ComponentItems(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelModel) {
+			this.lookAndFeelModel = lookAndFeelModel;
+		}
+
+		@Override
+		public Collection<String> get() {
+			return lookAndFeelModel.selection().item().optional()
+							.map(Item::value)
+							.map(LookAndFeelProvider::lookAndFeel)
+							.map(LookAndFeel::getDefaults)
+							.map(Hashtable::keySet)
+							.map(Collection::stream)
+							.map(keys -> keys
+											.map(Object::toString)
+											.map(ComponentItems::componentName)
+											.flatMap(Optional::stream)
+											.sorted()
+											.toList())
+							.orElse(List.of());
+		}
+
+		private static Optional<String> componentName(String key) {
+			if (key.endsWith("UI") && key.indexOf(".") == -1) {
+				String componentName = key.substring(0, key.length() - 2);
+				if (!EXCLUDED_COMPONENTS.contains(componentName)) {
+					return Optional.of("J" + componentName);
+				}
+			}
+
+			return Optional.empty();
+		}
+	}
+
+	// Provides the rows when populating the key binding table model
+	private final class KeyBindingItems implements Supplier<Collection<KeyBindingRow>> {
+
+		@Override
+		public Collection<KeyBindingRow> get() {
+			return componentModel.selection().item().optional()
+							.map(KeyBindingItems::componentClassName)
+							.map(KeyBindingItems::keyBindings)
+							.orElse(List.of());
+		}
+
+		private static String componentClassName(String componentName) {
+			if (componentName.equals("JTableHeader")) {
+				return PACKAGE + "table." + componentName;
+			}
+
+			return PACKAGE + componentName;
+		}
+
+		private static List<KeyBindingRow> keyBindings(String componentClassName) {
+			try {
+				JComponent component = (JComponent) Class.forName(componentClassName).getDeclaredConstructor().newInstance();
+				ActionMap actionMap = component.getActionMap();
+				Object[] allKeys = actionMap.allKeys();
+				if (allKeys == null) {
+					return List.of();
+				}
+
+				return Arrays.stream(allKeys)
+								.sorted(comparing(Objects::toString))
+								.map(actionKey -> row(actionKey, component))
+								.toList();
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		private static KeyBindingRow row(Object actionKey, JComponent component) {
+			return new KeyBindingRow(actionKey.toString(),
 							keyStrokes(actionKey, component.getInputMap(JComponent.WHEN_FOCUSED)),
 							keyStrokes(actionKey, component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)),
 							keyStrokes(actionKey, component.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)));
@@ -113,7 +210,7 @@ final class KeyBindingModel {
 			return Arrays.stream(allKeys)
 							.filter(keyStroke -> inputMap.get(keyStroke).equals(actionKey))
 							.map(Objects::toString)
-							.map(KeyBinding::movePressedReleased)
+							.map(KeyBindingItems::movePressedReleased)
 							.collect(joining(", "));
 		}
 
@@ -126,107 +223,6 @@ final class KeyBindingModel {
 			}
 
 			return keyStroke;
-		}
-	}
-
-	private final class KeyBindingItems implements Supplier<Collection<KeyBinding>> {
-
-		@Override
-		public Collection<KeyBinding> get() {
-			String componentName = componentComboBoxModel.getSelectedItem();
-			if (componentName == null) {
-				return List.of();
-			}
-			String componentClassName = className(componentName);
-			try {
-				JComponent component = (JComponent) Class.forName(componentClassName).getDeclaredConstructor().newInstance();
-				ActionMap actionMap = component.getActionMap();
-				Object[] allKeys = actionMap.allKeys();
-				if (allKeys == null) {
-					return List.of();
-				}
-
-				return Arrays.stream(allKeys)
-								.sorted(comparing(Objects::toString))
-								.map(actionKey -> KeyBinding.create(actionKey, component))
-								.collect(toList());
-			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-
-	public static final class KeyBindingColumns implements Columns<KeyBinding, Id> {
-
-		public enum Id {
-			ACTION_COLUMN,
-			WHEN_FOCUSED_COLUMN,
-			WHEN_IN_FOCUSED_WINDOW_COLUMN,
-			WHEN_ANCESTOR_COLUMN
-		}
-
-		private static final List<Id> IDENTIFIERS = List.of(Id.values());
-
-		@Override
-		public List<Id> identifiers() {
-			return IDENTIFIERS;
-		}
-
-		@Override
-		public Class<?> columnClass(Id identifier) {
-			return String.class;
-		}
-
-		@Override
-		public Object value(KeyBinding keyBinding, Id identifier) {
-			return switch (identifier) {
-				case ACTION_COLUMN -> keyBinding.action;
-				case WHEN_FOCUSED_COLUMN -> keyBinding.whenFocused;
-				case WHEN_IN_FOCUSED_WINDOW_COLUMN -> keyBinding.whenInFocusedWindow;
-				case WHEN_ANCESTOR_COLUMN -> keyBinding.whenAncestor;
-			};
-		}
-	}
-
-	private static final class ComponentItems implements Supplier<Collection<String>> {
-
-		private final FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel;
-
-		private ComponentItems(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-			this.lookAndFeelComboBoxModel = lookAndFeelComboBoxModel;
-		}
-
-		@Override
-		public Collection<String> get() {
-			Item<LookAndFeelProvider> selectedItem = lookAndFeelComboBoxModel.getSelectedItem();
-			if (selectedItem == null) {
-				return List.of();
-			}
-
-			LookAndFeelProvider lookAndFeelProvider = selectedItem.value();
-			try {
-				return lookAndFeelProvider.lookAndFeel().getDefaults().keySet().stream()
-								.map(Object::toString)
-								.map(ComponentItems::componentName)
-								.flatMap(Optional::stream)
-								.sorted()
-								.collect(toList());
-			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		private static Optional<String> componentName(String key) {
-			if (key.endsWith("UI") && key.indexOf(".") == -1) {
-				String componentName = key.substring(0, key.length() - 2);
-				if (!EXCLUDED_COMPONENTS.contains(componentName)) {
-					return Optional.of("J" + componentName);
-				}
-			}
-
-			return Optional.empty();
 		}
 	}
 }

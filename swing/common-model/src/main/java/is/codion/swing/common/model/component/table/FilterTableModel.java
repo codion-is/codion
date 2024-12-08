@@ -227,6 +227,8 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	interface Columns<R, C> {
 
 		/**
+		 * This method gets called quite often, so it is recommended to return
+		 * a constant List instance, instead of creating one each time.
 		 * @return the column identifiers
 		 */
 		List<C> identifiers();

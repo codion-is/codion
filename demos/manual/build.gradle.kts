@@ -56,3 +56,9 @@ tasks.register<JavaExec>("runApplicationPanel") {
     classpath = sourceSets.main.get().runtimeClasspath
     mainClass = "is.codion.manual.common.demo.ApplicationPanel"
 }
+
+tasks.register<JavaExec>("runKeyBindingPanel") {
+    group = "application"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "is.codion.manual.keybinding.KeyBindingPanel"
+}

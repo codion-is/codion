@@ -18,8 +18,8 @@
  */
 package is.codion.manual.keybinding;
 
-import is.codion.manual.keybinding.KeyBindingModel.KeyBinding;
-import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.Id;
+import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.ColumnId;
+import is.codion.manual.keybinding.KeyBindingModel.KeyBindingRow;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
@@ -31,6 +31,7 @@ import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -38,13 +39,11 @@ import java.awt.BorderLayout;
 import java.util.Arrays;
 import java.util.List;
 
-import static is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.Id.*;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static java.util.Arrays.asList;
 
 /**
  * A utility for displaying component action/input maps for installed look and feels.<br>
@@ -56,15 +55,16 @@ public final class KeyBindingPanel extends JPanel {
 
 	private final LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(true);
 	private final KeyBindingModel keyBindingModel;
-	private final FilterTable<KeyBinding, Id> table;
+	private final FilterTable<KeyBindingRow, ColumnId> table;
 	private final JComboBox<String> componentComboBox;
 
 	public KeyBindingPanel() {
 		super(borderLayout());
 		this.keyBindingModel = new KeyBindingModel(lookAndFeelComboBox.getModel());
-		this.table = FilterTable.builder(keyBindingModel.tableModel(), createColumns()).build();
-		this.componentComboBox = comboBox(keyBindingModel.componentComboBoxModel())
-						.preferredHeight(preferredTextFieldHeight())
+		this.table = FilterTable.builder(keyBindingModel.tableModel(), createColumns())
+						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+						.build();
+		this.componentComboBox = comboBox(keyBindingModel.componentModel())
 						.preferredWidth(200)
 						.build();
 		setBorder(emptyBorder());
@@ -84,27 +84,27 @@ public final class KeyBindingPanel extends JPanel {
 		add(table.searchField(), BorderLayout.SOUTH);
 	}
 
-	private static List<FilterTableColumn<Id>> createColumns() {
-		FilterTableColumn<Id> action = FilterTableColumn.builder(ACTION_COLUMN)
-						.headerValue("Action")
-						.build();
-		FilterTableColumn<Id> whenFocused = FilterTableColumn.builder(WHEN_FOCUSED_COLUMN)
-						.headerValue("When Focused")
-						.build();
-		FilterTableColumn<Id> whenInFocusedWindow = FilterTableColumn.builder(WHEN_IN_FOCUSED_WINDOW_COLUMN)
-						.headerValue("When in Focused Window")
-						.build();
-		FilterTableColumn<Id> whenAncestor = FilterTableColumn.builder(WHEN_ANCESTOR_COLUMN)
-						.headerValue("When Ancestor")
-						.build();
-
-		return asList(action, whenFocused, whenInFocusedWindow, whenAncestor);
+	private static List<FilterTableColumn<ColumnId>> createColumns() {
+		return List.of(FilterTableColumn.builder(ColumnId.ACTION)
+										.headerValue("Action")
+										.build(),
+						FilterTableColumn.builder(ColumnId.WHEN_FOCUSED)
+										.headerValue("When Focused")
+										.build(),
+						FilterTableColumn.builder(ColumnId.WHEN_IN_FOCUSED_WINDOW)
+										.headerValue("When in Focused Window")
+										.build(),
+						FilterTableColumn.builder(ColumnId.WHEN_ANCESTOR)
+										.headerValue("When Ancestor")
+										.build());
 	}
 
 	public static void main(String[] args) {
 		System.setProperty("sun.awt.disablegrab", "true");
 		Arrays.stream(FlatAllIJThemes.INFOS)
 						.forEach(LookAndFeelProvider::addLookAndFeel);
+		findLookAndFeelProvider("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProIJTheme")
+						.ifPresent(LookAndFeelProvider::enable);
 		SwingUtilities.invokeLater(() -> Windows.frame(new KeyBindingPanel())
 						.title("Key Bindings")
 						.defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
