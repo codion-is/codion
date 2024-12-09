@@ -111,19 +111,19 @@ final class DefaultFilterFieldFactory implements FieldFactory {
 		}
 		else if (columnClass.equals(LocalTime.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) localTimeField()
-							.dateTimePattern(conditionModel.dateTimePattern());
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
 		}
 		else if (columnClass.equals(LocalDate.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) localDateField()
-							.dateTimePattern(conditionModel.dateTimePattern());
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
 		}
 		else if (columnClass.equals(LocalDateTime.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) localDateTimeField()
-							.dateTimePattern(conditionModel.dateTimePattern());
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
 		}
 		else if (columnClass.equals(OffsetDateTime.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) offsetDateTimeField()
-							.dateTimePattern(conditionModel.dateTimePattern());
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
 		}
 		else if (columnClass.equals(String.class)) {
 			return (ComponentBuilder<T, ? extends JComponent, ?>) stringField();

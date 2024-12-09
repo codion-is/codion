@@ -93,7 +93,7 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 	}
 
 	@Override
-	public String dateTimePattern() {
+	public Optional<String> dateTimePattern() {
 		return condition.dateTimePattern();
 	}
 

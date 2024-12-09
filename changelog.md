@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.23
+### is.codion.common.model
+- ConditionModel.dateTimePattern() now returns Optional.
 
 ## 0.18.22
 ### is.codion.common

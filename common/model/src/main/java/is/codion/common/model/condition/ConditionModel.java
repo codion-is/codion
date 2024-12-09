@@ -110,7 +110,7 @@ public interface ConditionModel<T> {
 	/**
 	 * @return the date/time format pattern, if any
 	 */
-	String dateTimePattern();
+	Optional<String> dateTimePattern();
 
 	/**
 	 * Note that this is only applicable to string based condition models and only used for

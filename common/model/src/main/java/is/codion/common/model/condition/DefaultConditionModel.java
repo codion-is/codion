@@ -112,8 +112,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	@Override
-	public String dateTimePattern() {
-		return dateTimePattern;
+	public Optional<String> dateTimePattern() {
+		return Optional.ofNullable(dateTimePattern);
 	}
 
 	@Override

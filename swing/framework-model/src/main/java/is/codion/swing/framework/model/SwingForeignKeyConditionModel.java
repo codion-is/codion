@@ -95,7 +95,7 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 	}
 
 	@Override
-	public String dateTimePattern() {
+	public Optional<String> dateTimePattern() {
 		return condition.dateTimePattern();
 	}
 
