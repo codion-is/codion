@@ -6,6 +6,7 @@ Codion Change Log
 - ValueObserver.getOrThrow() added.
 ### is.codion.common.model
 - ConditionModel.dateTimePattern() now returns Optional.
+- ConditionModel.wildcard() now back to being Value based instead of Mutable.
 
 ## 0.18.22
 ### is.codion.common.core

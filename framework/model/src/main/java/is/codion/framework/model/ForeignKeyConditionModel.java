@@ -20,7 +20,6 @@ package is.codion.framework.model;
 
 import is.codion.common.Operator;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -98,7 +97,7 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 	}
 
 	@Override
-	public Mutable<Wildcard> wildcard() {
+	public Value<Wildcard> wildcard() {
 		return condition.wildcard();
 	}
 
