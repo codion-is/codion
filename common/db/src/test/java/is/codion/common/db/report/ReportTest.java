@@ -20,6 +20,8 @@ package is.codion.common.db.report;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -28,7 +30,7 @@ public class ReportTest {
 	@Test
 	void reportPathNotSpecified() {
 		Report.REPORT_PATH.set(null);
-		assertThrows(IllegalStateException.class, Report::reportPath);
+		assertThrows(NoSuchElementException.class, Report::reportPath);
 	}
 
 	@Test

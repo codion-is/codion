@@ -2,11 +2,13 @@ Codion Change Log
 ==================
 
 ## 0.18.23
+## is.codion.common.core
+- ValueObserver.getOrThrow() added.
 ### is.codion.common.model
 - ConditionModel.dateTimePattern() now returns Optional.
 
 ## 0.18.22
-### is.codion.common
+### is.codion.common.core
 - PropertyStore.systemProperties() now uses a DefaultSystemPropertyFormatter, which formats class and module paths as one item per line.
 ### is.codion.common.rmi
 - ConnectionRequest.clientTypeId() renamed clientType().

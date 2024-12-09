@@ -288,18 +288,8 @@ final class DefaultPropertyStore implements PropertyStore {
 		}
 
 		@Override
-		public T getOrThrow() throws IllegalStateException {
+		public T getOrThrow() {
 			return getOrThrow("Required configuration value is missing: " + propertyName);
-		}
-
-		@Override
-		public T getOrThrow(String message) throws IllegalStateException {
-			requireNonNull(message);
-			if (value == null) {
-				throw new IllegalStateException(message);
-			}
-
-			return value;
 		}
 
 		@Override

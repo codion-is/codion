@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -248,7 +249,7 @@ public final class DefaultPropertyStoreTest {
 		DefaultPropertyStore store = new DefaultPropertyStore(properties);
 		PropertyValue<String> propertyValue = store.stringValue("property");
 		propertyValue.set(null);
-		assertThrows(IllegalStateException.class, propertyValue::getOrThrow);
+		assertThrows(NoSuchElementException.class, propertyValue::getOrThrow);
 
 		propertyValue = store.stringValue("property2", "def");
 		propertyValue.set(null);

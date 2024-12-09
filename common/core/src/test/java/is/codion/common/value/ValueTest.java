@@ -22,6 +22,7 @@ import is.codion.common.value.Value.Notify;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -121,6 +122,7 @@ public class ValueTest {
 
 		Value<String> value = Value.value();
 		assertFalse(value.optional().isPresent());
+		assertThrows(NoSuchElementException.class, value::getOrThrow);
 		value.set("hello");
 		assertTrue(value.optional().isPresent());
 

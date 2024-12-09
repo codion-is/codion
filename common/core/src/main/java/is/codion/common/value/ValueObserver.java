@@ -20,8 +20,11 @@ package is.codion.common.value;
 
 import is.codion.common.observer.Observer;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A read only value observer
@@ -35,6 +38,29 @@ public interface ValueObserver<T> extends Observer<T> {
 	T get();
 
 	/**
+	 * @return the value
+	 * @throws NoSuchElementException if no value is present
+	 */
+	default T getOrThrow() {
+		return getOrThrow("No value present");
+	}
+
+	/**
+	 * @param message the error message to use when throwing
+	 * @return the value
+	 * @throws NoSuchElementException if no value is present
+	 */
+	default T getOrThrow(String message) {
+		requireNonNull(message);
+		T value = get();
+		if (value == null) {
+			throw new NoSuchElementException(message);
+		}
+
+		return value;
+	}
+
+	/**
 	 * @return an {@link Optional} wrapping this value.
 	 */
 	default Optional<T> optional() {
@@ -42,7 +68,7 @@ public interface ValueObserver<T> extends Observer<T> {
 			return Optional.ofNullable(get());
 		}
 
-		return Optional.of(get());
+		return Optional.of(getOrThrow());
 	}
 
 	/**
