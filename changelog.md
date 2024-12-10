@@ -7,6 +7,8 @@ Codion Change Log
 ### is.codion.common.model
 - ConditionModel.dateTimePattern() now returns Optional.
 - ConditionModel.wildcard() now back to being Value based instead of Mutable.
+### is.codion.common.rmi
+- ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
 
 ## 0.18.22
 ### is.codion.common.core

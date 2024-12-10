@@ -198,6 +198,7 @@ public interface ServerConfiguration {
 
 	/**
 	 * @return the server name
+	 * @throws IllegalArgumentException in case the supplied server name is null or empty
 	 * @see Builder#serverName(Supplier)
 	 */
 	String serverName();
@@ -265,14 +266,15 @@ public interface ServerConfiguration {
 		B adminPort(int adminPort);
 
 		/**
-		 * @param serverNameSupplier the server name supplier
+		 * @param serverName the server name supplier, must return a non-empty string
 		 * @return this builder instance
 		 */
-		B serverName(Supplier<String> serverNameSupplier);
+		B serverName(Supplier<String> serverName);
 
 		/**
 		 * @param serverName the server name
 		 * @return this builder instance
+		 * @throws IllegalArgumentException in case serverName is null or empty
 		 */
 		B serverName(String serverName);
 

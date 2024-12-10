@@ -251,6 +251,15 @@ public class AbstractServerTest {
 		serverStatistics.timestamp();
 	}
 
+	@Test
+	void emptyServerName() {
+		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder(PORT).serverName((String) null).build());
+		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder(PORT).serverName("").build());
+
+		assertThrows(IllegalArgumentException.class, () -> new TestServer(ServerConfiguration.builder(PORT).serverName(() -> null).build()));
+		assertThrows(IllegalArgumentException.class, () -> new TestServer(ServerConfiguration.builder(PORT).serverName(() -> "").build()));
+	}
+
 	private static class ServerTestImpl implements ServerTest {
 
 		private final RemoteClient remoteClient;
@@ -278,8 +287,12 @@ public class AbstractServerTest {
 		private static final ServerConfiguration CONFIGURATION = configuration();
 
 		private TestServer() throws RemoteException {
-			super(CONFIGURATION);
-			setAdmin(new DefaultServerAdmin(this, CONFIGURATION));
+			this(CONFIGURATION);
+		}
+
+		private TestServer(ServerConfiguration configuration) throws RemoteException {
+			super(configuration);
+			setAdmin(new DefaultServerAdmin(this, configuration));
 			addAuthenticator(new TestAuthenticator());
 		}
 

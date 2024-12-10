@@ -210,7 +210,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		private Database database;
 		private User adminUser;
 		private boolean clientLogging = CLIENT_LOGGING.get();
-		private int idleConnectionTimeout = ServerConfiguration.IDLE_CONNECTION_TIMEOUT.get();
+		private int idleConnectionTimeout = IDLE_CONNECTION_TIMEOUT.get();
 		private String connectionPoolFactory;
 		private final Collection<String> domainClassNames = new HashSet<>();
 		private final Collection<User> connectionPoolUsers = new HashSet<>();
@@ -223,14 +223,19 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 					throw new IllegalStateException("Database must be set before initializing server name");
 				}
 
-				return ServerConfiguration.SERVER_NAME_PREFIX.get() + " " +
+				String serverNamePrefix = SERVER_NAME_PREFIX.get();
+				if (serverNamePrefix.isEmpty()) {
+					throw new IllegalArgumentException("serverNamePrefix must not be empty");
+				}
+
+				return serverNamePrefix + " " +
 								Version.versionString() + "@" + database.name().toUpperCase();
 			});
 		}
 
 		@Override
-		public Builder serverName(Supplier<String> serverNameSupplier) {
-			serverConfigurationBuilder.serverName(serverNameSupplier);
+		public Builder serverName(Supplier<String> serverName) {
+			serverConfigurationBuilder.serverName(serverName);
 			return this;
 		}
 

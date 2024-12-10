@@ -18,6 +18,8 @@
  */
 package is.codion.common.rmi.server;
 
+import is.codion.common.version.Version;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,16 +60,13 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	private final int connectionMaintenanceInterval;
 	private final int connectionLimit;
 
-	private String serverName;
-
 	DefaultServerConfiguration(DefaultServerConfiguration.DefaultBuilder builder) {
 		this.port = builder.serverPort;
 		this.registryPort = builder.registryPort;
 		this.auxiliaryServerFactoryClassNames = unmodifiableCollection(builder.auxiliaryServerFactoryClassNames);
 		this.adminPort = builder.serverAdminPort;
 		this.sslEnabled = builder.sslEnabled;
-		this.serverName = builder.serverName;
-		this.serverNameSupplier = builder.serverNameSupplier == null ? () -> serverName : builder.serverNameSupplier;
+		this.serverNameSupplier = builder.serverName;
 		this.rmiClientSocketFactory = builder.rmiClientSocketFactory;
 		this.rmiServerSocketFactory = builder.rmiServerSocketFactory;
 		this.objectInputFilterFactoryClassName = builder.objectInputFilterFactoryClassName;
@@ -77,8 +76,9 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
 	@Override
 	public String serverName() {
-		if (serverName == null) {
-			serverName = serverNameSupplier.get();
+		String serverName = serverNameSupplier.get();
+		if (serverName == null || serverName.isEmpty()) {
+			throw new IllegalArgumentException("serverName must not be null or empty");
 		}
 
 		return serverName;
@@ -145,8 +145,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private final Collection<String> auxiliaryServerFactoryClassNames = new HashSet<>();
 		private int serverAdminPort;
 		private boolean sslEnabled = true;
-		private String serverName;
-		private Supplier<String> serverNameSupplier;
+		private Supplier<String> serverName = new DefaultServerName();
 		private RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
 		private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
 		private String objectInputFilterFactoryClassName;
@@ -165,15 +164,18 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		}
 
 		@Override
-		public DefaultBuilder serverName(Supplier<String> serverNameSupplier) {
-			this.serverNameSupplier = requireNonNull(serverNameSupplier);
+		public DefaultBuilder serverName(Supplier<String> serverName) {
+			this.serverName = requireNonNull(serverName);
 			return this;
 		}
 
 		@Override
 		public DefaultBuilder serverName(String serverName) {
-			this.serverName = requireNonNull(serverName);
-			return this;
+			if (serverName == null || serverName.isEmpty()) {
+				throw new IllegalArgumentException("serverName must not be null or empty");
+			}
+
+			return serverName(() -> serverName);
 		}
 
 		@Override
@@ -269,6 +271,19 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 			os.flush();
 
 			return os.toByteArray();
+		}
+	}
+
+	private static final class DefaultServerName implements Supplier<String> {
+
+		@Override
+		public String get() {
+			String serverNamePrefix = SERVER_NAME_PREFIX.get();
+			if (serverNamePrefix.isEmpty()) {
+				throw new IllegalArgumentException("serverNamePrefix must not be empty");
+			}
+
+			return serverNamePrefix + " " + Version.versionString();
 		}
 	}
 }

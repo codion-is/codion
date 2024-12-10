@@ -89,15 +89,15 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		super(requireNonNull(configuration).port(),
 						configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
 		Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+		this.configuration = configuration;
+		this.serverInformation = new DefaultServerInformation(UUID.randomUUID(),
+						configuration.serverName(), configuration.port(), ZonedDateTime.now());
+		this.connectionMaintenanceScheduler = TaskScheduler.builder(new MaintenanceTask())
+						.interval(configuration.connectionMaintenanceInterval(), TimeUnit.MILLISECONDS)
+						.initialDelay(configuration.connectionMaintenanceInterval())
+						.start();
+		setConnectionLimit(configuration.connectionLimit());
 		try {
-			this.configuration = configuration;
-			this.serverInformation = new DefaultServerInformation(UUID.randomUUID(),
-							configuration.serverName(), configuration.port(), ZonedDateTime.now());
-			this.connectionMaintenanceScheduler = TaskScheduler.builder(new MaintenanceTask())
-							.interval(configuration.connectionMaintenanceInterval(), TimeUnit.MILLISECONDS)
-							.initialDelay(configuration.connectionMaintenanceInterval())
-							.start();
-			setConnectionLimit(configuration.connectionLimit());
 			configureObjectInputFilter(configuration);
 			startAuxiliaryServers(configuration.auxiliaryServerFactoryClassNames());
 			loadAuthenticators();
