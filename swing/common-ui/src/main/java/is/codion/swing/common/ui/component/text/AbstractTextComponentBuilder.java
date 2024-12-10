@@ -118,19 +118,19 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 
 	@Override
 	public final B disabledTextColor(Color disabledTextColor) {
-		this.disabledTextColor = requireNonNull(disabledTextColor);
+		this.disabledTextColor = disabledTextColor;
 		return self();
 	}
 
 	@Override
 	public final B selectedTextColor(Color selectedTextColor) {
-		this.selectedTextColor = requireNonNull(selectedTextColor);
+		this.selectedTextColor = selectedTextColor;
 		return self();
 	}
 
 	@Override
 	public final B selectionColor(Color selectionColor) {
-		this.selectionColor = requireNonNull(selectionColor);
+		this.selectionColor = selectionColor;
 		return self();
 	}
 
@@ -184,7 +184,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 
 	@Override
 	public final B caretPosition(CaretPosition caretPosition) {
-		this.caretPosition = requireNonNull(caretPosition);
+		this.caretPosition = caretPosition;
 		return self();
 	}
 
@@ -266,7 +266,9 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	}
 
 	private void setCaretPosition(C component) {
-		component.setCaretPosition(caretPosition == CaretPosition.START ? 0 : component.getDocument().getLength());
+		if (caretPosition != null) {
+			component.setCaretPosition(caretPosition == CaretPosition.START ? 0 : component.getDocument().getLength());
+		}
 	}
 
 	private static final class AddCaretListener implements Consumer<CaretListener> {

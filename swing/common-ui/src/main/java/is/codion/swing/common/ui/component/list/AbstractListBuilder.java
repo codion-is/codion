@@ -75,13 +75,13 @@ abstract class AbstractListBuilder<T, V, B extends ListBuilder<T, V, B>> extends
 
 	@Override
 	public final B cellRenderer(ListCellRenderer<T> cellRenderer) {
-		this.cellRenderer = requireNonNull(cellRenderer);
+		this.cellRenderer = cellRenderer;
 		return self();
 	}
 
 	@Override
 	public final B selectionModel(ListSelectionModel selectionModel) {
-		this.selectionModel = requireNonNull(selectionModel);
+		this.selectionModel = selectionModel;
 		return self();
 	}
 

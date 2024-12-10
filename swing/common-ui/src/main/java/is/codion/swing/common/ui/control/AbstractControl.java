@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -233,6 +234,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
 		@Override
 		public final B value(String key, Object value) {
+			requireNonNull(key);
 			if (ENABLED.equals(key)) {
 				throw new IllegalArgumentException("Can not set the enabled property of a Control");
 			}

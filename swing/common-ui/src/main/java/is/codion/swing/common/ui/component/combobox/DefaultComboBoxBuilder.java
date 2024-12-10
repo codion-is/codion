@@ -89,13 +89,13 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 
 	@Override
 	public final B renderer(ListCellRenderer<T> renderer) {
-		this.renderer = requireNonNull(renderer);
+		this.renderer = renderer;
 		return self();
 	}
 
 	@Override
 	public final B editor(ComboBoxEditor editor) {
-		this.editor = requireNonNull(editor);
+		this.editor = editor;
 		return self();
 	}
 

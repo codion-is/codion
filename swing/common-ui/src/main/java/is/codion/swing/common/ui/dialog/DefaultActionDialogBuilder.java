@@ -125,7 +125,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 
 	@Override
 	public final B onShown(Consumer<JDialog> onShown) {
-		this.onShown = onShown;
+		this.onShown = requireNonNull(onShown);
 		return self();
 	}
 

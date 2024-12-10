@@ -350,7 +350,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	@Override
 	public final B transferHandler(TransferHandler transferHandler) {
-		this.transferHandler = requireNonNull(transferHandler);
+		this.transferHandler = transferHandler;
 		return self();
 	}
 
