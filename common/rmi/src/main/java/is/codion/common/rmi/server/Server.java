@@ -76,12 +76,6 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 	ServerInformation serverInformation() throws RemoteException;
 
 	/**
-	 * @return the server load as number of service requests per second
-	 * @throws RemoteException in case of an exception
-	 */
-	int serverLoad() throws RemoteException;
-
-	/**
 	 * @return true if there are connections available
 	 * @throws RemoteException in case of an exception
 	 */

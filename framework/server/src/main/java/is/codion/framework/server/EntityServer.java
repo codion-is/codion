@@ -126,11 +126,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	@Override
-	public final int serverLoad() {
-		return AbstractRemoteEntityConnection.requestsPerSecond();
-	}
-
-	@Override
 	protected final AbstractRemoteEntityConnection connect(RemoteClient remoteClient) throws RemoteException, LoginException {
 		requireNonNull(remoteClient);
 		try {

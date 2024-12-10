@@ -94,8 +94,5 @@ public class DefaultServerLocatorTest {
 
 		@Override
 		protected void maintainConnections(Collection<ClientConnection<Remote>> connections) throws RemoteException {}
-
-		@Override
-		public int serverLoad() {return 0;}
 	}
 }

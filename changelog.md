@@ -9,6 +9,7 @@ Codion Change Log
 - ConditionModel.wildcard() now back to being Value based instead of Mutable.
 ### is.codion.common.rmi
 - ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
+- Server.serverLoad() removed, related refactoring.
 
 ## 0.18.22
 ### is.codion.common.core

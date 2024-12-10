@@ -21,15 +21,12 @@ package is.codion.common.rmi.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -53,7 +50,7 @@ final class DefaultServerLocator implements Server.Locator {
 	@Override
 	public <T extends Remote, A extends ServerAdmin> Server<T, A> locateServer()
 					throws RemoteException, NotBoundException {
-		List<Server<T, A>> servers = findServers(hostName, registryPort, namePrefix, port);
+		List<Server<T, A>> servers = findServersOnHost(hostName, registryPort, namePrefix, port);
 		if (!servers.isEmpty()) {
 			return servers.get(0);
 		}
@@ -76,20 +73,6 @@ final class DefaultServerLocator implements Server.Locator {
 			LOG.info("Creating registry on port: {}", registryPort);
 			return LocateRegistry.createRegistry(registryPort);
 		}
-	}
-
-	private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> findServers(String hostNames,
-																																													int registryPort,
-																																													String serverNamePrefix,
-																																													int requestedServerPort)
-					throws RemoteException {
-		List<Server<T, A>> servers = new ArrayList<>();
-		for (String hostName : hostNames.split(",")) {
-			servers.addAll(findServersOnHost(hostName, registryPort, serverNamePrefix, requestedServerPort));
-		}
-		servers.sort(new ServerComparator<>());
-
-		return servers;
 	}
 
 	private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> findServersOnHost(String hostName,
@@ -139,21 +122,6 @@ final class DefaultServerLocator implements Server.Locator {
 		LOG.warn("No connections available in server \"{}\"", serverInformation.serverName());
 
 		return null;
-	}
-
-	private static final class ServerComparator<T extends Remote, A extends ServerAdmin> implements Comparator<Server<T, A>>, Serializable {
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		@Override
-		public int compare(Server<T, A> o1, Server<T, A> o2) {
-			try {
-				return Integer.compare(o1.serverLoad(), o2.serverLoad());
-			}
-			catch (RemoteException e) {
-				return 1;
-			}
-		}
 	}
 
 	static final class DefaultBuilder implements Server.Locator.Builder {

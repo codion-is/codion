@@ -131,7 +131,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		boolean unreachable = false;
 		try {
 			if (server != null) {
-				server.serverLoad();
+				server.connectionsAvailable();
 			}//just to check the connection
 		}
 		catch (RemoteException e) {

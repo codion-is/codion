@@ -311,11 +311,6 @@ public class AbstractServerTest {
 
 		@Override
 		protected void maintainConnections(Collection<ClientConnection<ServerTest>> connections) throws RemoteException {}
-
-		@Override
-		public int serverLoad() {
-			return 0;
-		}
 	}
 
 	public static final class TestAuthenticator implements Authenticator {
