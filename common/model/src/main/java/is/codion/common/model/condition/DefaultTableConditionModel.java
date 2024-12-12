@@ -22,10 +22,14 @@ import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableMap;
@@ -34,11 +38,15 @@ import static java.util.Objects.requireNonNull;
 final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	private final Map<C, ConditionModel<?>> conditions;
+	private final ValueSet<C> persist;
 	private final StateObserver enabled;
 	private final Event<?> changed = Event.event();
 
 	DefaultTableConditionModel(Map<C, ConditionModel<?>> conditions) {
 		this.conditions = unmodifiableMap(new HashMap<>(conditions));
+		this.persist = ValueSet.<C>builder()
+						.validator(new PersistValidator())
+						.build();
 		this.enabled = State.or(conditions.values().stream()
 						.map(ConditionModel::enabled)
 						.collect(Collectors.toList()));
@@ -48,7 +56,10 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	@Override
 	public void clear() {
-		conditions.values().forEach(ConditionModel::clear);
+		conditions.entrySet().stream()
+						.filter(entry -> !persist.contains(entry.getKey()))
+						.map(Map.Entry::getValue)
+						.forEach(ConditionModel::clear);
 	}
 
 	@Override
@@ -79,5 +90,23 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	@Override
 	public Observer<?> changed() {
 		return changed.observer();
+	}
+
+	@Override
+	public ValueSet<C> persist() {
+		return persist;
+	}
+
+	private final class PersistValidator implements Value.Validator<Set<C>> {
+
+		@Override
+		public void validate(Set<C> identifiers) {
+			if (!conditions.keySet().containsAll(identifiers)) {
+				Set<C> missing = new HashSet<>(identifiers);
+				missing.removeAll(conditions.keySet());
+
+				throw new IllegalArgumentException("Unknown condition identifier(s): " + missing);
+			}
+		}
 	}
 }

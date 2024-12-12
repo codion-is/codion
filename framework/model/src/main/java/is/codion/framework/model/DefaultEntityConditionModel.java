@@ -26,6 +26,7 @@ import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -148,6 +149,11 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	@Override
 	public Observer<?> changed() {
 		return tableConditionModel.changed();
+	}
+
+	@Override
+	public ValueSet<Attribute<?>> persist() {
+		return tableConditionModel.persist();
 	}
 
 	@Override

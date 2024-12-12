@@ -20,6 +20,7 @@ package is.codion.common.model.condition;
 
 import is.codion.common.observer.Observer;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.ValueSet;
 
 import java.util.Map;
 import java.util.Optional;
@@ -56,8 +57,9 @@ public interface TableConditionModel<C> {
 	<T> Optional<ConditionModel<T>> optional(C identifier);
 
 	/**
-	 * Clears the search state of all the condition models, disables them and
-	 * resets the operator to {@link is.codion.common.Operator#EQUAL}
+	 * Clears the search state of all non-persistant condition models, disables them and
+	 * resets the operator to {@link is.codion.common.Operator#EQUAL}.
+	 * @see #persist()
 	 */
 	void clear();
 
@@ -70,6 +72,12 @@ public interface TableConditionModel<C> {
 	 * @return an observer notified each time the condition changes
 	 */
 	Observer<?> changed();
+
+	/**
+	 * @return a {@link ValueSet} controlling the identifiers of conditions which should persist when this condition model is cleared
+	 * @see #clear()
+	 */
+	ValueSet<C> persist();
 
 	/**
 	 * Instantiates a new {@link TableConditionModel}
