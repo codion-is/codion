@@ -26,6 +26,7 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -36,6 +37,7 @@ import static org.assertj.swing.core.KeyPressInfo.keyCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@EnabledIfSystemProperty(named = "java.awt.headless", matches = "true")
 public final class CompletionTest {
 
 	private static FrameFixture window;
