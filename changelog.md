@@ -13,6 +13,8 @@ Codion Change Log
 - Server.serverLoad() removed, related refactoring.
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
+### is.codion.framework.model
+- DefaultForeignKeyDetailModelLink now uses TableConditionModel.persist() to exclude the associated foreign key condition from being cleared.
 
 ## 0.18.22
 ### is.codion.common.core

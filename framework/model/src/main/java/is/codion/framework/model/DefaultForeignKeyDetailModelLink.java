@@ -52,6 +52,9 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 	public DefaultForeignKeyDetailModelLink(M detailModel, ForeignKey foreignKey) {
 		super(detailModel);
 		this.foreignKey = requireNonNull(foreignKey);
+		if (detailModel.containsTableModel()) {
+			detailModel.tableModel().queryModel().conditions().persist().add(foreignKey);
+		}
 	}
 
 	@Override
