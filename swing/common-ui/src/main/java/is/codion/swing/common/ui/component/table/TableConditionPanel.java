@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.Text;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -130,7 +129,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 										.name(MESSAGES.getString("advanced")))
 						.separator()
 						.control(Control.builder()
-										.command(this::clearConditions)
+										.command(this::clear)
 										.name(Messages.clear()))
 						.build();
 	}
@@ -182,9 +181,8 @@ public abstract class TableConditionPanel<C> extends JPanel {
 		});
 	}
 
-	private void clearConditions() {
-		tableConditionModel.get().values()
-						.forEach(ConditionModel::clear);
+	private void clear() {
+		tableConditionModel.clear();
 	}
 
 	/**
