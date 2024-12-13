@@ -18,6 +18,8 @@
  */
 package is.codion.common.value;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -28,7 +30,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 
 	protected final Object lock = new Object();
 
-	private T value;
+	private @Nullable T value;
 
 	protected DefaultValue(DefaultBuilder<T, ?> builder) {
 		super(builder.nullValue, builder.notify);
@@ -43,12 +45,12 @@ class DefaultValue<T> extends AbstractValue<T> {
 	}
 
 	@Override
-	protected final T getValue() {
+	protected final @Nullable T getValue() {
 		return value;
 	}
 
 	@Override
-	protected final void setValue(T value) {
+	protected final void setValue(@Nullable T value) {
 		this.value = value;
 	}
 
@@ -65,7 +67,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public <T> Builder<T, ?> nullable(T value) {
+		public <T> Builder<T, ?> nullable(@Nullable T value) {
 			return (Builder<T, ?>) new DefaultBuilder<>()
 							.value(value);
 		}
@@ -73,7 +75,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 
 	static class DefaultBuilder<T, B extends Builder<T, B>> implements Builder<T, B> {
 
-		private final T nullValue;
+		private final @Nullable T nullValue;
 		private final List<Validator<? super T>> validators = new ArrayList<>();
 		private final List<Value<T>> linkedValues = new ArrayList<>();
 		private final List<ValueObserver<T>> linkedObservers = new ArrayList<>();
@@ -82,7 +84,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		private final List<Consumer<? super T>> consumers = new ArrayList<>();
 		private final List<Consumer<? super T>> weakConsumers = new ArrayList<>();
 
-		private T value;
+		private @Nullable T value;
 		private Notify notify = Notify.WHEN_CHANGED;
 
 		DefaultBuilder() {
@@ -95,7 +97,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public final B value(T value) {
+		public final B value(@Nullable T value) {
 			this.value = value;
 			return self();
 		}
@@ -156,7 +158,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		/**
 		 * @return the initial value
 		 */
-		protected T prepareInitialValue() {
+		protected @Nullable T prepareInitialValue() {
 			return value == null ? nullValue : value;
 		}
 

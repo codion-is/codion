@@ -26,6 +26,8 @@ import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -161,12 +163,12 @@ public interface Database extends ConnectionFactory {
 
 	/**
 	 * Returns a limit/offset clause variation for this database, based on the given limit and offset values.
-	 * If both are null an empty string should be returned.
+	 * If both are null an empty string is returned.
 	 * @param limit the limit
 	 * @param offset the offset
 	 * @return a limit/offset clause
 	 */
-	String limitOffsetClause(Integer limit, Integer offset);
+	String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset);
 
 	/**
 	 * Returns true if this database requires that subqueries by aliased.
@@ -189,7 +191,7 @@ public interface Database extends ConnectionFactory {
 	 * @return the message assigned to the given exception
 	 * @throws NullPointerException in case {@code exception} or {@code operation} is null
 	 */
-	String errorMessage(SQLException exception, Operation operation);
+	@Nullable String errorMessage(SQLException exception, Operation operation);
 
 	/**
 	 * Maps the given SQLException to a DatabaseException.
@@ -262,7 +264,7 @@ public interface Database extends ConnectionFactory {
 
 	/**
 	 * @param username the username
-	 * @return the connection pool for the given user, null if none exists
+	 * @return the connection pool for the given user
 	 * @throws IllegalArgumentException in case no connection pool exists for the given user
 	 */
 	ConnectionPoolWrapper connectionPool(String username);

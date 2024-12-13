@@ -18,6 +18,8 @@
  */
 package is.codion.common.value;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -80,7 +82,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * @see #addValidator(Validator)
 	 */
 	@Override
-	default void accept(T value) {
+	default void accept(@Nullable T value) {
 		set(value);
 	}
 
@@ -91,7 +93,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * @throws IllegalArgumentException in case the given value is invalid
 	 * @see #addValidator(Validator)
 	 */
-	boolean set(T value);
+	boolean set(@Nullable T value);
 
 	/**
 	 * Clears this value, by setting it to null or the null value in case this is a non-null value.
@@ -192,7 +194,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * @param value the initial value
 	 * @return a Value for the given type
 	 */
-	static <T> Value<T> value(T value) {
+	static <T> Value<T> value(@Nullable T value) {
 		return builder()
 						.nullable(value)
 						.build();
@@ -228,7 +230,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		 * @param <T> the value type
 		 * @return a builder for a nullable {@link Value}
 		 */
-		<T> Builder<T, ?> nullable(T value);
+		<T> Builder<T, ?> nullable(@Nullable T value);
 	}
 
 	/**
@@ -242,7 +244,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		 * @param value the initial value
 		 * @return this builder instance
 		 */
-		B value(T value);
+		B value(@Nullable T value);
 
 		/**
 		 * @param notify the notify policy for this value, default {@link Notify#WHEN_CHANGED}
@@ -314,6 +316,6 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		 * @param value the value to validate
 		 * @throws IllegalArgumentException in case of an invalid value
 		 */
-		void validate(T value);
+		void validate(@Nullable T value);
 	}
 }

@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Shared model classes, such as:
+ * <p>Shared model classes.
  * <ul>
  * <li>{@link is.codion.common.model.UserPreferences}
  * <li>{@link is.codion.common.model.CancelException}
@@ -30,7 +30,9 @@
  * <li>{@link is.codion.common.model.summary.TableSummaryModel}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.common.model {
+	requires transitive org.jspecify;
 	requires java.prefs;
 	requires transitive is.codion.common.core;
 

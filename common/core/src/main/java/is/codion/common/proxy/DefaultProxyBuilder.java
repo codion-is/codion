@@ -18,6 +18,8 @@
  */
 package is.codion.common.proxy;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,7 +40,7 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 	private final Map<MethodKey, ProxyMethod<T>> methodMap = new HashMap<>();
 	private final Class<T> interfaceToProxy;
 
-	private T delegate;
+	private @Nullable T delegate;
 
 	DefaultProxyBuilder(Class<T> interfaceToProxy) {
 		if (!requireNonNull(interfaceToProxy).isInterface()) {
@@ -119,15 +121,15 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 		private static final String EQUALS = "equals";
 
 		private final Map<MethodKey, ProxyMethod<T>> methodMap;
-		private final T delegate;
+		private final @Nullable T delegate;
 
-		private DefaultHandler(Map<MethodKey, ProxyMethod<T>> methodMap, T delegate) {
+		private DefaultHandler(Map<MethodKey, ProxyMethod<T>> methodMap, @Nullable T delegate) {
 			this.methodMap = methodMap;
 			this.delegate = delegate;
 		}
 
 		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		public @Nullable Object invoke(Object proxy, Method method, @Nullable Object[] args) throws Throwable {
 			ProxyMethod<T> proxyMethod = methodMap.get(new MethodKey(method));
 			if (proxyMethod != null) {
 				return proxyMethod.invoke(new DefaultProxyMethodParameters<>((T) proxy, delegate, args));
@@ -157,10 +159,10 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 	private static final class DefaultProxyMethodParameters<T> implements ProxyMethod.Parameters<T> {
 
 		private final T proxy;
-		private final T delegate;
+		private final @Nullable T delegate;
 		private final List<?> arguments;
 
-		private DefaultProxyMethodParameters(T proxy, T delegate, Object[] arguments) {
+		private DefaultProxyMethodParameters(T proxy, @Nullable T delegate, @Nullable Object[] arguments) {
 			this.proxy = requireNonNull(proxy);
 			this.delegate = delegate;
 			this.arguments = arguments == null ? emptyList() : unmodifiableList(Arrays.asList(arguments));

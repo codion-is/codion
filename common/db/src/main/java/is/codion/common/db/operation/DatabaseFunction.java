@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.operation;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A database function
  * @param <C> the connection type required by this function
@@ -32,5 +34,5 @@ public interface DatabaseFunction<C, T, R> {
 	 * @param argument the function argument, if any
 	 * @return the function return argument
 	 */
-	R execute(C connection, T argument);
+	@Nullable R execute(C connection, @Nullable T argument);
 }

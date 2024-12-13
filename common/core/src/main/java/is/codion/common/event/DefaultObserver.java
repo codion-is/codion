@@ -20,6 +20,8 @@ package is.codion.common.event;
 
 import is.codion.common.observer.Observer;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -34,10 +36,10 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	private final Object lock = new Object();
 
-	private Set<Runnable> listeners;
-	private Set<Consumer<? super T>> consumers;
-	private List<WeakReference<Runnable>> weakListeners;
-	private List<WeakReference<Consumer<? super T>>> weakConsumers;
+	private @Nullable Set<Runnable> listeners;
+	private @Nullable Set<Consumer<? super T>> consumers;
+	private @Nullable List<WeakReference<Runnable>> weakListeners;
+	private @Nullable List<WeakReference<Consumer<? super T>>> weakConsumers;
 
 	@Override
 	public boolean addConsumer(Consumer<? super T> consumer) {
@@ -121,7 +123,7 @@ final class DefaultObserver<T> implements Observer<T> {
 		}
 	}
 
-	void notifyListeners(T data) {
+	void notifyListeners(@Nullable T data) {
 		for (Runnable listener : listeners()) {
 			listener.run();
 		}

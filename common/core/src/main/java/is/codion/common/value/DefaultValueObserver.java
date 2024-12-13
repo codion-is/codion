@@ -18,6 +18,8 @@
  */
 package is.codion.common.value;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -31,7 +33,7 @@ class DefaultValueObserver<T> implements ValueObserver<T> {
 	}
 
 	@Override
-	public final T get() {
+	public final @Nullable T get() {
 		return value.get();
 	}
 

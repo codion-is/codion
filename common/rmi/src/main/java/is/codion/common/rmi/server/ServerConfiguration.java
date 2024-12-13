@@ -22,6 +22,8 @@ import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.property.PropertyValue;
 
+import org.jspecify.annotations.Nullable;
+
 import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -296,7 +298,7 @@ public interface ServerConfiguration {
 		 * @param objectInputFilterFactoryClassName the object input filter factory class name
 		 * @return this builder instance
 		 */
-		B objectInputFilterFactoryClassName(String objectInputFilterFactoryClassName);
+		B objectInputFilterFactoryClassName(@Nullable String objectInputFilterFactoryClassName);
 
 		/**
 		 * @param connectionMaintenanceInterval the interval between server connection maintenance runs, in milliseconds.
@@ -342,10 +344,9 @@ public interface ServerConfiguration {
 	 */
 	static <B extends Builder<B>> Builder<B> builderFromSystemProperties() {
 		return (Builder<B>) builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
-						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
-						.adminPort(ADMIN_PORT.get())
-						.sslEnabled(SSL_ENABLED.get())
-						.connectionMaintenanceInterval(CONNECTION_MAINTENANCE_INTERVAL.get())
-						.objectInputFilterFactoryClassName(OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME.get());
+						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.getOrThrow()))
+						.adminPort(ADMIN_PORT.getOrThrow())
+						.sslEnabled(SSL_ENABLED.getOrThrow())
+						.connectionMaintenanceInterval(CONNECTION_MAINTENANCE_INTERVAL.getOrThrow());
 	}
 }

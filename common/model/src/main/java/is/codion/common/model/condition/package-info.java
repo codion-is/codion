@@ -17,10 +17,12 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:
+ * <p>Condition related classes.
+ * <p>Package configuration values:
  * <ul>
  * <li>{@link is.codion.common.model.condition.ConditionModel#WILDCARD}
  * <li>{@link is.codion.common.model.condition.ConditionModel#CASE_SENSITIVE}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.common.model.condition;

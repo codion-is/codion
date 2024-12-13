@@ -20,6 +20,7 @@ package is.codion.common.db.database;
 
 import is.codion.common.user.User;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -59,7 +60,7 @@ public class DatabaseTest {
 		}
 
 		@Override
-		public String limitOffsetClause(Integer limit, Integer offset) {
+		public String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset) {
 			return createLimitOffsetClause(limit, offset);
 		}
 

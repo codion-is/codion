@@ -20,6 +20,8 @@ package is.codion.common;
 
 import is.codion.common.property.PropertyValue;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.text.Collator;
@@ -73,7 +75,7 @@ public final class Text {
 	 * @see #DEFAULT_COLLATOR_LANGUAGE
 	 */
 	public static <T> Comparator<T> collator() {
-		return collator(new Locale(DEFAULT_COLLATOR_LANGUAGE.get()));
+		return collator(new Locale(DEFAULT_COLLATOR_LANGUAGE.getOrThrow()));
 	}
 
 	/**
@@ -116,7 +118,7 @@ public final class Text {
 	 * @param commaSeparatedValues a String with comma separated values
 	 * @return the trimmed values
 	 */
-	public static List<String> parseCommaSeparatedValues(String commaSeparatedValues) {
+	public static List<String> parseCommaSeparatedValues(@Nullable String commaSeparatedValues) {
 		if (nullOrEmpty(commaSeparatedValues)) {
 			return Collections.emptyList();
 		}
@@ -150,7 +152,7 @@ public final class Text {
 	 * @param string the string to check
 	 * @return true if the given string is null or empty, false otherwise
 	 */
-	public static boolean nullOrEmpty(String string) {
+	public static boolean nullOrEmpty(@Nullable String string) {
 		return string == null || string.isEmpty();
 	}
 
@@ -159,7 +161,7 @@ public final class Text {
 	 * @param strings the strings to check
 	 * @return true if one of the given strings is null or empty or if no arguments are provided, false otherwise
 	 */
-	public static boolean nullOrEmpty(String... strings) {
+	public static boolean nullOrEmpty(@Nullable String... strings) {
 		if (strings == null || strings.length == 0) {
 			return true;
 		}
@@ -182,7 +184,7 @@ public final class Text {
 
 		private final Locale locale;
 
-		private transient Collator collator;
+		private transient @Nullable Collator collator;
 
 		private SpaceAwareComparator(Locale locale) {
 			this.locale = locale;

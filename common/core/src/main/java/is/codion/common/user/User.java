@@ -18,6 +18,8 @@
  */
 package is.codion.common.user;
 
+import org.jspecify.annotations.Nullable;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -68,7 +70,7 @@ public interface User {
 	 * @return a new User
 	 * @throws IllegalArgumentException in case username is an empty string
 	 */
-	static User user(String username, char[] password) {
+	static User user(String username, char @Nullable[] password) {
 		return new DefaultUser(username, password);
 	}
 

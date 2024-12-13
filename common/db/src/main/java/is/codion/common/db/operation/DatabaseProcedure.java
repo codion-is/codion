@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.operation;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A database procedure
  * @param <C> the connection type required by this procedure
@@ -30,5 +32,5 @@ public interface DatabaseProcedure<C, T> {
 	 * @param connection the connection to use
 	 * @param argument the procedure argument, if any
 	 */
-	void execute(C connection, T argument);
+	void execute(C connection, @Nullable T argument);
 }

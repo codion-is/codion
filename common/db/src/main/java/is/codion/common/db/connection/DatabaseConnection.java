@@ -23,6 +23,8 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -67,7 +69,7 @@ public interface DatabaseConnection extends AutoCloseable {
 	 * until a non-null connection is set.
 	 * @param connection the JDBC connection
 	 */
-	void setConnection(Connection connection);
+	void setConnection(@Nullable Connection connection);
 
 	/**
 	 * Starts a transaction on this connection, to end the transaction use {@link #commitTransaction()} or {@link #rollbackTransaction()}.
@@ -130,12 +132,12 @@ public interface DatabaseConnection extends AutoCloseable {
 	/**
 	 * @param methodLogger the MethodLogger to use, null to disable method logging
 	 */
-	void setMethodLogger(MethodLogger methodLogger);
+	void setMethodLogger(@Nullable MethodLogger methodLogger);
 
 	/**
 	 * @return the MethodLogger being used, possibly null
 	 */
-	MethodLogger getMethodLogger();
+	@Nullable MethodLogger getMethodLogger();
 
 	/**
 	 * Constructs a new DatabaseConnection instance, based on the given Database and User

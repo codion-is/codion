@@ -21,6 +21,8 @@ package is.codion.common.scheduler;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -39,7 +41,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 	private final TimeUnit timeUnit;
 	private final ThreadFactory threadFactory;
 
-	private ScheduledExecutorService executorService;
+	private @Nullable ScheduledExecutorService executorService;
 
 	private DefaultTaskScheduler(DefaultBuilder builder) {
 		this.task = builder.task;
@@ -68,7 +70,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 		synchronized (lock) {
 			stop();
 			executorService = Executors.newSingleThreadScheduledExecutor(threadFactory);
-			executorService.scheduleAtFixedRate(task, initialDelay, interval.get(), timeUnit);
+			executorService.scheduleAtFixedRate(task, initialDelay, interval.getOrThrow(), timeUnit);
 
 			return this;
 		}
@@ -77,7 +79,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 	@Override
 	public void stop() {
 		synchronized (lock) {
-			if (running()) {
+			if (running() && executorService != null) {
 				executorService.shutdownNow();
 				executorService = null;
 			}
@@ -105,7 +107,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 
 		private int interval;
 		private int initialDelay;
-		private TimeUnit timeUnit;
+		private @Nullable TimeUnit timeUnit;
 		private ThreadFactory threadFactory = new DaemonThreadFactory();
 
 		DefaultBuilder(Runnable task) {

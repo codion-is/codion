@@ -18,6 +18,9 @@
  */
 package is.codion.common.value;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -31,12 +34,15 @@ import java.util.function.Supplier;
  */
 public interface Values<T, C extends Collection<T>> extends Value<C>, ValuesObserver<T, C> {
 
+	@Override
+	@NonNull C get();
+
 	/**
 	 * Sets the values.
 	 * @param values the values to set
 	 * @return true if this {@link Values} instance changed
 	 */
-	boolean set(Collection<T> values);
+	boolean set(@Nullable Collection<T> values);
 
 	/**
 	 * Adds a value to this Values instance.
@@ -44,7 +50,7 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, ValuesObse
 	 * @return true if the value was added
 	 * @see Collection#add(Object)
 	 */
-	boolean add(T value);
+	boolean add(@Nullable T value);
 
 	/**
 	 * Adds the given values to this Values instance.
@@ -68,7 +74,7 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, ValuesObse
 	 * @return true if the value was removed
 	 * @see Collection#remove(Object)
 	 */
-	boolean remove(T value);
+	boolean remove(@Nullable T value);
 
 	/**
 	 * Removes the given values from this Values instance.

@@ -32,8 +32,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.security.KeyStore;
 
-import static is.codion.common.Text.nullOrEmpty;
-
 /**
  * Utility methods for remote clients
  */
@@ -95,7 +93,7 @@ public final class Clients {
 	 */
 	public static void resolveTrustStore() {
 		String trustStorePath = TRUSTSTORE.get();
-		if (nullOrEmpty(trustStorePath)) {
+		if (trustStorePath == null || trustStorePath.isEmpty()) {
 			LOG.warn("No truststore specified via {}", TRUSTSTORE.propertyName());
 			return;
 		}

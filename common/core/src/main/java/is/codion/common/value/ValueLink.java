@@ -18,6 +18,8 @@
  */
 package is.codion.common.value;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -107,14 +109,14 @@ final class ValueLink<T> {
 
 		private final Value<T> linkedValue;
 
-		private Value.Validator<T> excluded;
+		private Value.@Nullable Validator<T> excluded;
 
 		private LinkedValidator(Value<T> linkedValue) {
 			this.linkedValue = linkedValue;
 		}
 
 		@Override
-		public void validate(T value) {
+		public void validate(@Nullable T value) {
 			if (linkedValue instanceof AbstractValue) {
 				((AbstractValue<T>) linkedValue).validators()
 								.stream()

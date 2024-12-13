@@ -22,7 +22,9 @@
  * <li>{@link is.codion.common.i18n.Messages}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.common.i18n {
+	requires transitive org.jspecify;
 	requires is.codion.common.core;
 
 	exports is.codion.common.i18n;

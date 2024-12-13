@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.result;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.SQLException;
 import java.util.Iterator;
 
@@ -40,7 +42,7 @@ public interface ResultIterator<T> extends AutoCloseable, Iterable<T> {
 	 * @throws SQLException in case of an exception
 	 * @throws java.util.NoSuchElementException in case no more rows are available
 	 */
-	T next() throws SQLException;
+	@Nullable T next() throws SQLException;
 
 	/**
 	 * Closes the underlying result set and other resources held by this iterator

@@ -20,10 +20,15 @@ package is.codion.common.state;
 
 import is.codion.common.value.ValueObserver;
 
+import org.jspecify.annotations.NonNull;
+
 /**
  * Specifies an observer for a {@link State} instance.
  */
 public interface StateObserver extends ValueObserver<Boolean> {
+
+	@Override
+	@NonNull Boolean get();
 
 	/**
 	 * @return false

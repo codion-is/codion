@@ -25,6 +25,8 @@ import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.common.user.User;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -198,7 +200,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	private final class Close implements ProxyMethod<Connection> {
 
 		@Override
-		public Object invoke(Parameters<Connection> parameters) throws Throwable {
+		public @Nullable Object invoke(Parameters<Connection> parameters) throws Throwable {
 			Connection connection = parameters.delegate();
 			if (!connection.isClosed()) {
 				counter.incrementConnectionsDestroyedCounter();

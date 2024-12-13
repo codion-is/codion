@@ -18,6 +18,8 @@
  */
 package is.codion.common.logging;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -46,14 +48,14 @@ public interface MethodLogger {
 	 * @param method the method being exited
 	 * @return the Entry
 	 */
-	Entry exit(String method);
+	@Nullable Entry exit(String method);
 
 	/**
 	 * @param method the method being exited
 	 * @param exception the exception, if any
 	 * @return the Entry
 	 */
-	Entry exit(String method, Exception exception);
+	@Nullable Entry exit(String method, @Nullable Exception exception);
 
 	/**
 	 * @param method the method being exited
@@ -61,7 +63,7 @@ public interface MethodLogger {
 	 * @param exitMessage the message to associate with exiting the method
 	 * @return the Entry, or null if this logger is not enabled
 	 */
-	Entry exit(String method, Exception exception, String exitMessage);
+	@Nullable Entry exit(String method, @Nullable Exception exception, @Nullable String exitMessage);
 
 	/**
 	 * @return true if this logger is enabled
@@ -115,7 +117,7 @@ public interface MethodLogger {
 		/**
 		 * @return the entry message
 		 */
-		String enterMessage();
+		@Nullable String enterMessage();
 
 		/**
 		 * Returns the duration of the method call this entry represents in nanoseconds,

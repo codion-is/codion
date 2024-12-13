@@ -18,6 +18,8 @@
  */
 package is.codion.common.version;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
@@ -88,13 +90,13 @@ public interface Version extends Comparable<Version> {
 		 * @param metadata the metadata version component
 		 * @return this builder instance
 		 */
-		Builder metadata(String metadata);
+		Builder metadata(@Nullable String metadata);
 
 		/**
 		 * @param build the build information version component
 		 * @return this builder instance
 		 */
-		Builder build(String build);
+		Builder build(@Nullable String build);
 
 		/**
 		 * @return a new {@link Version} instance based on this builder

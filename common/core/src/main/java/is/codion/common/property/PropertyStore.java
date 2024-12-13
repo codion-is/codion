@@ -20,6 +20,8 @@ package is.codion.common.property;
 
 import is.codion.common.property.DefaultPropertyStore.DefaultSystemPropertyFormatter;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -249,7 +251,7 @@ public interface PropertyStore {
 	 * @param value the value
 	 * @throws IllegalArgumentException if the property is value bound
 	 */
-	void setProperty(String propertyName, String value);
+	void setProperty(String propertyName, @Nullable String value);
 
 	/**
 	 * Retrieves the value for the given property, null if no value is present

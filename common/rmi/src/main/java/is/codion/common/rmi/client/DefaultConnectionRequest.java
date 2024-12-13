@@ -21,6 +21,8 @@ package is.codion.common.rmi.client;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZoneId;
@@ -44,9 +46,9 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	private final String clientType;
 	private final Locale clientLocale = Locale.getDefault();
 	private final ZoneId clientTimeZone = ZoneId.systemDefault();
-	private final Version clientVersion;
+	private final @Nullable Version clientVersion;
 	private final Version frameworkVersion = Version.version();
-	private final Map<String, Object> parameters;
+	private final @Nullable Map<String, Object> parameters;
 
 	private DefaultConnectionRequest(DefaultBuilder builder) {
 		this.user = requireNonNull(builder.user, "user must be specified");
@@ -127,11 +129,11 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 
 	static final class DefaultBuilder implements Builder {
 
-		private User user;
-		private UUID clientId;
-		private String clientType;
-		private Version clientVersion;
-		private Map<String, Object> parameters;
+		private @Nullable User user;
+		private @Nullable UUID clientId;
+		private @Nullable String clientType;
+		private @Nullable Version clientVersion;
+		private @Nullable Map<String, Object> parameters;
 
 		DefaultBuilder() {}
 
@@ -154,13 +156,14 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 		}
 
 		@Override
-		public Builder clientVersion(Version clientVersion) {
+		public Builder clientVersion(@Nullable Version clientVersion) {
 			this.clientVersion = clientVersion;
 			return this;
 		}
 
 		@Override
 		public Builder parameter(String key, Object value) {
+			requireNonNull(key);
 			if (parameters == null) {
 				parameters = new HashMap<>();
 			}

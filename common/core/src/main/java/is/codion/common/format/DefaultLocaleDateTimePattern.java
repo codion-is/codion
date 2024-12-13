@@ -18,6 +18,8 @@
  */
 package is.codion.common.format;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.chrono.IsoChronology;
@@ -49,7 +51,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
 	private final String delimiter;
 	private final boolean fourDigitYear;
-	private final String timePattern;
+	private final @Nullable String timePattern;
 
 	private DefaultLocaleDateTimePattern(DefaultBuilder builder) {
 		this.delimiter = requireNonNull(builder.delimiter, "delimiter must be specified");
@@ -92,7 +94,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 	}
 
 	private static String dateTimePattern(Locale locale, String delimiter, boolean fourDigitYear,
-																				String timePattern) {
+																				@Nullable String timePattern) {
 		requireNonNull(locale);
 		String datePattern = DateTimeFormatterBuilder.
 						getLocalizedDateTimePattern(FormatStyle.SHORT, null, IsoChronology.INSTANCE, locale).toLowerCase(locale);
@@ -142,7 +144,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
 		private String delimiter = ".";
 		private boolean fourDigitYear = true;
-		private String timePattern;
+		private @Nullable String timePattern;
 
 		@Override
 		public Builder delimiter(String delimiter) {

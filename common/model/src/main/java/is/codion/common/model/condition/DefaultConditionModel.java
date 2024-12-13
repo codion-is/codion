@@ -29,6 +29,8 @@ import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueObserver;
 import is.codion.common.value.ValueSet;
 
+import org.jspecify.annotations.Nullable;
+
 import java.text.Format;
 import java.util.List;
 import java.util.Optional;
@@ -62,8 +64,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 					.build();
 
 	private final Class<T> valueClass;
-	private final Format format;
-	private final String dateTimePattern;
+	private final @Nullable Format format;
+	private final @Nullable String dateTimePattern;
 	private final List<Operator> operators;
 
 	private DefaultConditionModel(DefaultBuilder<T> builder) {
@@ -162,7 +164,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	@Override
-	public boolean accepts(Comparable<T> value) {
+	public boolean accepts(@Nullable Comparable<T> value) {
 		return valueAccepted(value);
 	}
 
@@ -171,11 +173,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		return conditionChanged.observer();
 	}
 
-	private boolean valueAccepted(Comparable<T> comparable) {
+	private boolean valueAccepted(@Nullable Comparable<T> comparable) {
 		if (!caseSensitive.get()) {
 			comparable = stringOrCharacterToLowerCase(comparable);
 		}
-		switch (operator.get()) {
+		switch (operator.getOrThrow()) {
 			case EQUAL:
 				return isEqual(comparable);
 			case NOT_EQUAL:
@@ -205,7 +207,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 	}
 
-	private boolean isEqual(Comparable<T> comparable) {
+	private boolean isEqual(@Nullable Comparable<T> comparable) {
 		T equalOperand = operands.equal().get();
 		if (!caseSensitive.get()) {
 			equalOperand = stringOrCharacterToLowerCase(equalOperand);
@@ -223,7 +225,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		return comparable.compareTo(equalOperand) == 0;
 	}
 
-	private boolean isNotEqual(Comparable<T> comparable) {
+	private boolean isNotEqual(@Nullable Comparable<T> comparable) {
 		T equalOperand = operands.equal().get();
 		if (!caseSensitive.get()) {
 			equalOperand = stringOrCharacterToLowerCase(equalOperand);
@@ -261,31 +263,31 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						.collect(joining(REGEX_WILDCARD, "", equalOperand.endsWith(WILDCARD_CHARACTER) ? REGEX_WILDCARD : "")), value);
 	}
 
-	private boolean isLessThan(Comparable<T> comparable) {
+	private boolean isLessThan(@Nullable Comparable<T> comparable) {
 		T upperBound = operands.upperBound.get();
 
 		return upperBound == null || comparable != null && comparable.compareTo(upperBound) < 0;
 	}
 
-	private boolean isLessThanOrEqual(Comparable<T> comparable) {
+	private boolean isLessThanOrEqual(@Nullable Comparable<T> comparable) {
 		T upperBound = operands.upperBound.get();
 
 		return upperBound == null || comparable != null && comparable.compareTo(upperBound) <= 0;
 	}
 
-	private boolean isGreaterThan(Comparable<T> comparable) {
+	private boolean isGreaterThan(@Nullable Comparable<T> comparable) {
 		T lowerBound = operands.lowerBound.get();
 
 		return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) > 0;
 	}
 
-	private boolean isGreaterThanOrEqual(Comparable<T> comparable) {
+	private boolean isGreaterThanOrEqual(@Nullable Comparable<T> comparable) {
 		T lowerBound = operands.lowerBound.get();
 
 		return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) >= 0;
 	}
 
-	private boolean isBetweenExclusive(Comparable<T> comparable) {
+	private boolean isBetweenExclusive(@Nullable Comparable<T> comparable) {
 		T lowerBound = operands.lowerBound.get();
 		T upperBound = operands.upperBound.get();
 		if (lowerBound == null && upperBound == null) {
@@ -310,7 +312,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		return lowerCompareResult > 0 && upperCompareResult < 0;
 	}
 
-	private boolean isBetween(Comparable<T> comparable) {
+	private boolean isBetween(@Nullable Comparable<T> comparable) {
 		T lowerBound = operands.lowerBound.get();
 		T upperBound = operands.upperBound.get();
 		if (lowerBound == null && upperBound == null) {
@@ -335,7 +337,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		return lowerCompareResult >= 0 && upperCompareResult <= 0;
 	}
 
-	private boolean isNotBetweenExclusive(Comparable<T> comparable) {
+	private boolean isNotBetweenExclusive(@Nullable Comparable<T> comparable) {
 		T lowerBound = operands.lowerBound.get();
 		T upperBound = operands.upperBound.get();
 		if (lowerBound == null && upperBound == null) {
@@ -360,7 +362,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		return lowerCompareResult < 0 || upperCompareResult > 0;
 	}
 
-	private boolean isNotBetween(Comparable<T> comparable) {
+	private boolean isNotBetween(@Nullable Comparable<T> comparable) {
 		T lowerBound = operands.lowerBound.get();
 		T upperBound = operands.upperBound.get();
 		if (lowerBound == null && upperBound == null) {
@@ -385,11 +387,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		return lowerCompareResult <= 0 || upperCompareResult >= 0;
 	}
 
-	private boolean isIn(Comparable<T> comparable) {
+	private boolean isIn(@Nullable Comparable<T> comparable) {
 		return operands.in.get().contains(comparable);
 	}
 
-	private boolean isNotIn(Comparable<T> comparable) {
+	private boolean isNotIn(@Nullable Comparable<T> comparable) {
 		return !isIn(comparable);
 	}
 
@@ -399,13 +401,13 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 	}
 
-	private void validateOperator(Operator operator) {
+	private void validateOperator(@Nullable Operator operator) {
 		if (operators != null && !operators.contains(requireNonNull(operator))) {
 			throw new IllegalArgumentException("Operator " + operator + " not available");
 		}
 	}
 
-	private static <T> T stringOrCharacterToLowerCase(T value) {
+	private static <T> @Nullable T stringOrCharacterToLowerCase(@Nullable T value) {
 		if (value instanceof String) {
 			return (T) ((String) value).toLowerCase();
 		}
@@ -416,7 +418,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		return value;
 	}
 
-	private static <T> Comparable<T> stringOrCharacterToLowerCase(Comparable<T> comparable) {
+	private static <T> @Nullable Comparable<T> stringOrCharacterToLowerCase(@Nullable Comparable<T> comparable) {
 		if (comparable instanceof String) {
 			return (Comparable<T>) ((String) comparable).toLowerCase();
 		}
@@ -432,7 +434,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		@Override
 		public void run() {
 			if (autoEnable.get()) {
-				switch (operator.get()) {
+				switch (operator.getOrThrow()) {
 					case EQUAL:
 					case NOT_EQUAL:
 						enabled.set(operands.equal.isNotNull());
@@ -513,7 +515,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			private final Value<Wildcard> wildcard;
 			private final ValueObserver<Operator> operatorObserver;
 
-			private T value;
+			private @Nullable T value;
 
 			private EqualOperand(Wildcard wildcard, ValueObserver<Operator> operatorObserver) {
 				super(null, Notify.WHEN_SET);
@@ -524,7 +526,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			}
 
 			@Override
-			protected T getValue() {
+			protected @Nullable T getValue() {
 				return addWildcard(value);
 			}
 
@@ -533,11 +535,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 				this.value = value;
 			}
 
-			private T addWildcard(T operand) {
+			private @Nullable T addWildcard(@Nullable T operand) {
 				if (!(operand instanceof String)) {
 					return operand;
 				}
-				switch (operatorObserver.get()) {
+				switch (operatorObserver.getOrThrow()) {
 					//wildcard only used for EQUAL and NOT_EQUAL
 					case EQUAL:
 					case NOT_EQUAL:
@@ -549,7 +551,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 			private String addWildcard(String operand) {
 				String operandWithWildcards = operand;
-				switch (wildcard.get()) {
+				switch (wildcard.getOrThrow()) {
 					case PREFIX:
 						operandWithWildcards = addWildcardPrefix(operandWithWildcards);
 						break;
@@ -593,15 +595,15 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		private List<Operator> operators;
 		private Operator operator = Operator.EQUAL;
-		private Format format;
-		private String dateTimePattern = LocaleDateTimePattern.builder()
+		private @Nullable Format format;
+		private @Nullable String dateTimePattern = LocaleDateTimePattern.builder()
 						.delimiterDash()
 						.yearFourDigits()
 						.hoursMinutesSeconds()
 						.build()
 						.dateTimePattern();
-		private Wildcard wildcard = WILDCARD.get();
-		private boolean caseSensitive = CASE_SENSITIVE.get();
+		private Wildcard wildcard = WILDCARD.getOrThrow();
+		private boolean caseSensitive = CASE_SENSITIVE.getOrThrow();
 		private boolean autoEnable = true;
 
 		DefaultBuilder(Class<T> valueClass) {
@@ -627,13 +629,13 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		@Override
-		public Builder<T> format(Format format) {
+		public Builder<T> format(@Nullable Format format) {
 			this.format = format;
 			return this;
 		}
 
 		@Override
-		public Builder<T> dateTimePattern(String dateTimePattern) {
+		public Builder<T> dateTimePattern(@Nullable String dateTimePattern) {
 			this.dateTimePattern = dateTimePattern;
 			return this;
 		}

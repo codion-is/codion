@@ -18,6 +18,8 @@
  */
 package is.codion.common;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -33,7 +35,7 @@ public final class Nulls {
 	 * @param object the object to check
 	 * @return true if the object is non null
 	 */
-	public static boolean nonNull(Object object) {
+	public static boolean nonNull(@Nullable Object object) {
 		return Objects.nonNull(object);
 	}
 
@@ -41,7 +43,7 @@ public final class Nulls {
 	 * @param objects the objects to check
 	 * @return true if none of the given objects are null
 	 */
-	public static boolean nonNull(Object... objects) {
+	public static boolean nonNull(@Nullable Object... objects) {
 		if (objects == null) {
 			return false;
 		}

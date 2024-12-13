@@ -175,7 +175,7 @@ public final class Configuration {
 	 * @return a configuration value builder
 	 */
 	public static PropertyValue<String> stringValue(String key) {
-		return stringValue(key, null);
+		return STORE.stringValue(key);
 	}
 
 	/**
@@ -196,7 +196,7 @@ public final class Configuration {
 	 * @return a configuration value builder
 	 */
 	public static <T extends Enum<T>> PropertyValue<T> enumValue(String key, Class<T> enumClass) {
-		return enumValue(key, enumClass, null);
+		return STORE.enumValue(key, enumClass);
 	}
 
 	/**
@@ -242,7 +242,7 @@ public final class Configuration {
 	 * @return a configuration value builder
 	 */
 	public static <T> PropertyValue<T> value(String key, Function<String, T> parser) {
-		return value(key, parser, null);
+		return STORE.value(key, parser, Objects::toString);
 	}
 
 	/**

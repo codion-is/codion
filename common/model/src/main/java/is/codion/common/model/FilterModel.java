@@ -29,6 +29,8 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
@@ -299,7 +301,7 @@ public interface FilterModel<T> {
 		private final Event<Exception> refreshFailedEvent = Event.event();
 		private final State refreshingState = State.state();
 		private final Supplier<Collection<T>> supplier;
-		private final State async = State.state(ASYNC_REFRESH.get());
+		private final State async = State.state(ASYNC_REFRESH.getOrThrow());
 
 		/**
 		 * @param supplier supplies the items when refreshing
@@ -389,13 +391,13 @@ public interface FilterModel<T> {
 		 * Performes an async refresh
 		 * @param onRefresh if specified will be called after a successful refresh
 		 */
-		protected abstract void refreshAsync(Consumer<Collection<T>> onRefresh);
+		protected abstract void refreshAsync(@Nullable Consumer<Collection<T>> onRefresh);
 
 		/**
 		 * Performs a sync refresh
 		 * @param onRefresh if specified will be called after a successful refresh
 		 */
-		protected abstract void refreshSync(Consumer<Collection<T>> onRefresh);
+		protected abstract void refreshSync(@Nullable Consumer<Collection<T>> onRefresh);
 
 		/**
 		 * Processes the refresh result, by replacing the current model items by the result items.

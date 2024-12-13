@@ -21,6 +21,8 @@ package is.codion.common.state;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -28,7 +30,7 @@ final class DefaultState implements State {
 
 	private final Value<Boolean> value;
 
-	private DefaultStateObserver observer;
+	private @Nullable DefaultStateObserver observer;
 
 	private DefaultState(Value.Builder<Boolean, ?> valueBuilder) {
 		this.value = valueBuilder.consumer(new Notifier()).build();
@@ -36,18 +38,18 @@ final class DefaultState implements State {
 
 	@Override
 	public String toString() {
-		return Boolean.toString(value.get());
+		return Boolean.toString(value.getOrThrow());
 	}
 
 	@Override
 	public Boolean get() {
 		synchronized (this.value) {
-			return this.value.get();
+			return this.value.getOrThrow();
 		}
 	}
 
 	@Override
-	public boolean set(Boolean value) {
+	public boolean set(@Nullable Boolean value) {
 		synchronized (this.value) {
 			return this.value.set(value);
 		}
@@ -193,7 +195,7 @@ final class DefaultState implements State {
 		}
 
 		@Override
-		public Builder value(Boolean value) {
+		public Builder value(@Nullable Boolean value) {
 			valueBuilder.value(value);
 			return this;
 		}

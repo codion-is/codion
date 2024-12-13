@@ -18,6 +18,8 @@
  */
 package is.codion.common.item;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -27,18 +29,18 @@ abstract class AbstractItem<T> implements Item<T>, Serializable {
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private final T value;
+	private final @Nullable T value;
 
 	/**
 	 * Creates a new Item.
 	 * @param value the value, may be null
 	 */
-	AbstractItem(T value) {
+	AbstractItem(@Nullable T value) {
 		this.value = value;
 	}
 
 	@Override
-	public final T value() {
+	public final @Nullable T value() {
 		return value;
 	}
 

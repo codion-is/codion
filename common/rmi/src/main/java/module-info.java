@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * RMI client/server classes, such as:
+ * <p>RMI client/server classes.
  * <ul>
  * <li>{@link is.codion.common.rmi.client.ConnectionRequest}
  * <li>{@link is.codion.common.rmi.server.Server}
@@ -31,7 +31,9 @@
  * @uses is.codion.common.rmi.server.ObjectInputFilterFactory
  * @provides is.codion.common.rmi.server.ObjectInputFilterFactory
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.common.rmi {
+	requires transitive org.jspecify;
 	requires org.slf4j;
 	requires jdk.management;
 	requires nl.altindag.ssl;

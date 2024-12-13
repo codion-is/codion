@@ -18,6 +18,8 @@
  */
 package is.codion.common.model;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -28,7 +30,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class UserPreferences {
 
-	private static Preferences preferences;
+	private static @Nullable Preferences preferences;
 
 	private UserPreferences() {}
 

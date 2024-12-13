@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.exception;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * An exception indicating a failed delete operation
  */
@@ -27,7 +29,7 @@ public final class DeleteException extends DatabaseException {
 	 * Instantiates a new {@link DeleteException}
 	 * @param message the message
 	 */
-	public DeleteException(String message) {
+	public DeleteException(@Nullable String message) {
 		super(message);
 	}
 }

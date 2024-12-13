@@ -30,7 +30,7 @@ public class NullsTest {
 		assertTrue(Nulls.nonNull());
 		assertTrue(Nulls.nonNull(new Object[0]));
 		assertTrue(Nulls.nonNull(1));
-		assertFalse(Nulls.nonNull(null));
+		assertFalse(Nulls.nonNull((Object[]) null));
 		assertFalse(Nulls.nonNull(1, null));
 		assertFalse(Nulls.nonNull(null, 1));
 	}

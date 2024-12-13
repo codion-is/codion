@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.exception;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.SQLException;
 
 /**
@@ -30,7 +32,7 @@ public final class UniqueConstraintException extends DatabaseException {
 	 * @param cause the underlying cause
 	 * @param message the error message
 	 */
-	public UniqueConstraintException(SQLException cause, String message) {
+	public UniqueConstraintException(SQLException cause, @Nullable String message) {
 		super(cause, message);
 	}
 }

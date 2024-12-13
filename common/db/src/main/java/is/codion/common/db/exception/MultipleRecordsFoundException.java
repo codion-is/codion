@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.exception;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Exception used when one record was expected but many were found.
  */
@@ -27,7 +29,7 @@ public class MultipleRecordsFoundException extends DatabaseException {
 	 * Instantiates a new MultipleRecordsFoundException
 	 * @param message the exception message
 	 */
-	public MultipleRecordsFoundException(String message) {
+	public MultipleRecordsFoundException(@Nullable String message) {
 		super(message);
 	}
 }

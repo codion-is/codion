@@ -18,6 +18,8 @@
  */
 package is.codion.common.item;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A class encapsulating a constant value and a caption representing the value.
  * {@link Item}s equality is based on their values only.
@@ -38,7 +40,7 @@ public interface Item<T> {
 	/**
 	 * @return the item value
 	 */
-	T value();
+	@Nullable T value();
 
 	/**
 	 * Returns an {@link Item}, with the caption as item.toString() or an empty string in case of a null value
@@ -46,7 +48,7 @@ public interface Item<T> {
 	 * @param <T> the value type
 	 * @return an {@link Item} based on the given value
 	 */
-	static <T> Item<T> item(T value) {
+	static <T> Item<T> item(@Nullable T value) {
 		if (value == null) {
 			return (Item<T>) DefaultItem.NULL_ITEM;
 		}
@@ -62,7 +64,7 @@ public interface Item<T> {
 	 * @return an {@link Item} based on the given value and caption
 	 * @throws NullPointerException if caption is null
 	 */
-	static <T> Item<T> item(T value, String caption) {
+	static <T> Item<T> item(@Nullable T value, String caption) {
 		return new DefaultItem<>(value, caption);
 	}
 
@@ -76,7 +78,7 @@ public interface Item<T> {
 	 * @param <T> the value type
 	 * @return an Item based on the given value and resource bundle
 	 */
-	static <T> Item<T> itemI18n(T value, String resourceBundleName, String resourceBundleKey) {
+	static <T> Item<T> itemI18n(@Nullable T value, String resourceBundleName, String resourceBundleKey) {
 		return new ItemI18n<>(value, resourceBundleName, resourceBundleKey);
 	}
 }

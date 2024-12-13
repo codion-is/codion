@@ -17,7 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:
+ * <p>Database related classes.
+ * <p>Package configuration values:
  * <ul>
  * <li>{@link is.codion.common.db.database.Database#DATABASE_URL}
  * <li>{@link is.codion.common.db.database.Database#DATABASE_INIT_SCRIPTS}
@@ -28,4 +29,5 @@
  * <li>{@link is.codion.common.db.database.Database#CONNECTION_VALIDITY_CHECK_TIMEOUT}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.common.db.database;

@@ -20,6 +20,8 @@ package is.codion.common.property;
 
 import is.codion.common.value.AbstractValue;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -132,7 +134,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
 	@Override
 	public PropertyValue<String> stringValue(String propertyName) {
-		return stringValue(propertyName, null);
+		return value(propertyName, Objects::toString, Objects::toString);
 	}
 
 	@Override
@@ -142,7 +144,9 @@ final class DefaultPropertyStore implements PropertyStore {
 
 	@Override
 	public <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass) {
-		return enumValue(propertyName, enumClass, null);
+		requireNonNull(enumClass);
+
+		return value(propertyName, value -> Enum.valueOf(enumClass, value.toUpperCase()), Objects::toString);
 	}
 
 	@Override
@@ -154,7 +158,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
 	@Override
 	public <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
-		return listValue(propertyName, decoder, encoder, emptyList());
+		return value(propertyName, new ListValueDecoder<>(decoder), new ListValueEncoder<>(encoder), emptyList());
 	}
 
 	@Override
@@ -164,7 +168,13 @@ final class DefaultPropertyStore implements PropertyStore {
 
 	@Override
 	public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
-		return value(propertyName, decoder, encoder, null);
+		if (propertyValues.containsKey(requireNonNull(propertyName))) {
+			throw new IllegalStateException("A value has already been created for the property '" + propertyName + "'");
+		}
+		DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, decoder, encoder);
+		propertyValues.put(propertyName, value);
+
+		return value;
 	}
 
 	@Override
@@ -184,7 +194,7 @@ final class DefaultPropertyStore implements PropertyStore {
 	}
 
 	@Override
-	public void setProperty(String propertyName, String value) {
+	public void setProperty(String propertyName, @Nullable String value) {
 		if (propertyValues.containsKey(requireNonNull(propertyName))) {
 			throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
 		}
@@ -273,10 +283,17 @@ final class DefaultPropertyStore implements PropertyStore {
 		private final String propertyName;
 		private final Function<T, String> encoder;
 
-		private T value;
+		private @Nullable T value;
+
+		private DefaultPropertyValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
+			super(null, Notify.WHEN_CHANGED);
+			this.propertyName = requireNonNull(propertyName);
+			this.encoder = requireNonNull(encoder);
+			set(getInitialValue(propertyName, requireNonNull(decoder)));
+		}
 
 		private DefaultPropertyValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
-			super(defaultValue, Notify.WHEN_CHANGED);
+			super(requireNonNull(defaultValue), Notify.WHEN_CHANGED);
 			this.propertyName = requireNonNull(propertyName);
 			this.encoder = requireNonNull(encoder);
 			set(getInitialValue(propertyName, requireNonNull(decoder)));
@@ -307,12 +324,12 @@ final class DefaultPropertyStore implements PropertyStore {
 		}
 
 		@Override
-		protected T getValue() {
+		protected @Nullable T getValue() {
 			return value;
 		}
 
 		@Override
-		protected void setValue(T value) {
+		protected void setValue(@Nullable T value) {
 			this.value = value;
 			if (value == null) {
 				properties.remove(propertyName);
@@ -324,7 +341,7 @@ final class DefaultPropertyStore implements PropertyStore {
 			}
 		}
 
-		private T getInitialValue(String property, Function<String, T> decoder) {
+		private @Nullable T getInitialValue(String property, Function<String, T> decoder) {
 			String initialValue = System.getProperty(property);
 			if (initialValue == null) {
 				initialValue = properties.getProperty(property);
@@ -343,7 +360,7 @@ final class DefaultPropertyStore implements PropertyStore {
 		}
 
 		@Override
-		public List<T> apply(String stringValue) {
+		public List<T> apply(@Nullable String stringValue) {
 			return stringValue == null ? emptyList() : Arrays.stream(stringValue.split(VALUE_SEPARATOR))
 							.map(decoder)
 							.collect(toList());

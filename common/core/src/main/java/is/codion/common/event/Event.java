@@ -20,6 +20,8 @@ package is.codion.common.event;
 
 import is.codion.common.observer.Observer;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.function.Consumer;
 
 /**
@@ -79,7 +81,7 @@ public interface Event<T> extends Runnable, Consumer<T>, Observer<T> {
 	 * @param data data associated with the event
 	 */
 	@Override
-	void accept(T data);
+	void accept(@Nullable T data);
 
 	/**
 	 * @return an observer notified each time this event occurs

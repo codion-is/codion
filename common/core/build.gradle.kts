@@ -1,3 +1,7 @@
+dependencies {
+    api(libs.jspecify)
+}
+
 tasks.register<WriteProperties>("writeVersion") {
     group = "build"
     description = "Writes the current framework version to a file available as a resource"

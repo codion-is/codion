@@ -18,6 +18,8 @@
  */
 package is.codion.common;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,7 +41,7 @@ public final class Serializer {
 	 * @return a byte array representing the serialized object, an empty byte array in case of null
 	 * @throws IOException in case of an exception
 	 */
-	public static byte[] serialize(Object object) throws IOException {
+	public static byte[] serialize(@Nullable Object object) throws IOException {
 		if (object != null) {
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			new ObjectOutputStream(byteArrayOutputStream).writeObject(object);
@@ -54,11 +56,11 @@ public final class Serializer {
 	 * Deserializes the given byte array into a T, null or an empty byte array result in a null return value
 	 * @param bytes a byte array representing the serialized object
 	 * @param <T> the type of the object represented in the byte array
-	 * @return the deserialized object
+	 * @return the deserialized object, null in case of an empty {@code bytes} array
 	 * @throws IOException in case of an exception
 	 * @throws ClassNotFoundException in case the deserialized class is not found
 	 */
-	public static <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+	public static <T> @Nullable T deserialize(byte @Nullable[] bytes) throws IOException, ClassNotFoundException {
 		if (bytes != null && bytes.length > 0) {
 			return (T) new ObjectInputStream(new ByteArrayInputStream(bytes)).readObject();
 		}

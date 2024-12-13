@@ -17,9 +17,11 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:
+ * <p>Common classes.
+ * <p>Package configuration values:
  * <ul>
  * <li>{@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.common;

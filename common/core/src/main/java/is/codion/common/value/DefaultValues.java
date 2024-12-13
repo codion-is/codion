@@ -18,6 +18,8 @@
  */
 package is.codion.common.value;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Function;
@@ -34,7 +36,7 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 	private final Supplier<? extends C> create;
 	private final Function<C, C> unmodifiable;
 
-	private Value<T> singleValue;
+	private @Nullable Value<T> singleValue;
 
 	DefaultValues(DefaultBuilder<C, T, ?> builder) {
 		super(builder);
@@ -44,11 +46,11 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 
 	@Override
 	public final Iterator<T> iterator() {
-		return get().iterator();
+		return getOrThrow().iterator();
 	}
 
 	@Override
-	public final boolean set(Collection<T> values) {
+	public final boolean set(@Nullable Collection<T> values) {
 		synchronized (lock) {
 			C newValues = create.get();
 			if (values != null) {
@@ -60,10 +62,10 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 	}
 
 	@Override
-	public final boolean add(T value) {
+	public final boolean add(@Nullable T value) {
 		synchronized (lock) {
 			C newValues = create.get();
-			newValues.addAll(get());
+			newValues.addAll(getOrThrow());
 			boolean added = newValues.add(value);
 			set(unmodifiable.apply(newValues));
 
@@ -81,7 +83,7 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 		requireNonNull(values);
 		synchronized (lock) {
 			C newValues = create.get();
-			newValues.addAll(get());
+			newValues.addAll(getOrThrow());
 			boolean added = newValues.addAll(values);
 			set(unmodifiable.apply(newValues));
 
@@ -90,10 +92,10 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 	}
 
 	@Override
-	public final boolean remove(T value) {
+	public final boolean remove(@Nullable T value) {
 		synchronized (lock) {
 			C newValues = create.get();
-			newValues.addAll(get());
+			newValues.addAll(getOrThrow());
 			boolean removed = newValues.remove(value);
 			set(unmodifiable.apply(newValues));
 
@@ -111,7 +113,7 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 		requireNonNull(values);
 		synchronized (lock) {
 			C newValues = create.get();
-			newValues.addAll(get());
+			newValues.addAll(getOrThrow());
 			boolean removed = newValues.removeAll(values);
 			set(unmodifiable.apply(newValues));
 
@@ -122,7 +124,7 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 	@Override
 	public final boolean contains(T value) {
 		synchronized (lock) {
-			return get().contains(value);
+			return getOrThrow().contains(value);
 		}
 	}
 
@@ -130,14 +132,14 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 	public final boolean containsAll(Collection<T> values) {
 		requireNonNull(values);
 		synchronized (lock) {
-			return get().containsAll(values);
+			return getOrThrow().containsAll(values);
 		}
 	}
 
 	@Override
 	public final boolean empty() {
 		synchronized (lock) {
-			return get().isEmpty();
+			return getOrThrow().isEmpty();
 		}
 	}
 
@@ -149,7 +151,7 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 	@Override
 	public final int size() {
 		synchronized (lock) {
-			return get().size();
+			return getOrThrow().size();
 		}
 	}
 
@@ -187,14 +189,14 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 		}
 
 		@Override
-		protected synchronized T getValue() {
-			C collection = DefaultValues.this.get();
+		protected synchronized @Nullable T getValue() {
+			C collection = DefaultValues.this.getOrThrow();
 
 			return collection.isEmpty() ? null : collection.iterator().next();
 		}
 
 		@Override
-		protected synchronized void setValue(T value) {
+		protected synchronized void setValue(@Nullable T value) {
 			DefaultValues.this.set(value == null ? emptyList() : singleton(value));
 		}
 	}

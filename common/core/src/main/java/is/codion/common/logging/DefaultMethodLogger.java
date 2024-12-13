@@ -20,6 +20,8 @@ package is.codion.common.logging;
 
 import is.codion.common.Text;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.PrintWriter;
 import java.io.Serial;
 import java.io.Serializable;
@@ -71,17 +73,17 @@ final class DefaultMethodLogger implements MethodLogger {
 	}
 
 	@Override
-	public Entry exit(String method) {
+	public @Nullable Entry exit(String method) {
 		return exit(method, null);
 	}
 
 	@Override
-	public Entry exit(String method, Exception exception) {
+	public @Nullable Entry exit(String method, @Nullable Exception exception) {
 		return exit(method, exception, null);
 	}
 
 	@Override
-	public synchronized Entry exit(String method, Exception exception, String exitMessage) {
+	public synchronized @Nullable Entry exit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
 		if (!enabled) {
 			return null;
 		}
@@ -141,20 +143,20 @@ final class DefaultMethodLogger implements MethodLogger {
 
 		private final LinkedList<Entry> childEntries = new LinkedList<>();
 		private final String method;
-		private final String enterMessage;
+		private final @Nullable String enterMessage;
 		private final long enterTime;
 		private final long enterTimeNano;
-		private String exitMessage;
+		private @Nullable String exitMessage;
 		private long exitTime;
 		private long exitTimeNano;
-		private String stackTrace;
+		private @Nullable String stackTrace;
 
 		/**
 		 * Creates a new Entry, using the current time
 		 * @param method the method being logged
 		 * @param enterMessage the message associated with entering the method
 		 */
-		private DefaultEntry(String method, String enterMessage) {
+		private DefaultEntry(String method, @Nullable String enterMessage) {
 			this(method, enterMessage, currentTimeMillis(), nanoTime());
 		}
 
@@ -165,8 +167,8 @@ final class DefaultMethodLogger implements MethodLogger {
 		 * @param enterTime the time to associate with entering the method
 		 * @param enterTimeNano the nano time to associate with entering the method
 		 */
-		private DefaultEntry(String method, String enterMessage, long enterTime, long enterTimeNano) {
-			this.method = method;
+		private DefaultEntry(String method, @Nullable String enterMessage, long enterTime, long enterTimeNano) {
+			this.method = requireNonNull(method);
 			this.enterTime = enterTime;
 			this.enterTimeNano = enterTimeNano;
 			this.enterMessage = enterMessage;
@@ -183,7 +185,7 @@ final class DefaultMethodLogger implements MethodLogger {
 		}
 
 		@Override
-		public String enterMessage() {
+		public @Nullable String enterMessage() {
 			return enterMessage;
 		}
 
@@ -243,7 +245,7 @@ final class DefaultMethodLogger implements MethodLogger {
 		/**
 		 * @param exception the exception that occurred during the method call logged by this entry
 		 */
-		private void setException(Exception exception) {
+		private void setException(@Nullable Exception exception) {
 			if (exception != null) {
 				stackTrace = stackTrace(exception);
 			}
@@ -252,7 +254,7 @@ final class DefaultMethodLogger implements MethodLogger {
 		/**
 		 * @param exitMessage the exit message
 		 */
-		private void setExitMessage(String exitMessage) {
+		private void setExitMessage(@Nullable String exitMessage) {
 			this.exitMessage = exitMessage;
 		}
 

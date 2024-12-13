@@ -27,6 +27,8 @@ import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -66,11 +68,11 @@ public abstract class AbstractDatabase implements Database {
 		DriverManager.setLoginTimeout(Database.LOGIN_TIMEOUT.getOrThrow());
 	}
 
-	private static Database instance;
+	private static @Nullable Database instance;
 
 	private final Map<String, ConnectionPoolWrapper> connectionPools = new HashMap<>();
-	private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
-	private final Integer transactionIsolation = TRANSACTION_ISOLATION.get();
+	private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.getOrThrow();
+	private final	@Nullable Integer transactionIsolation = TRANSACTION_ISOLATION.get();
 	private final DefaultQueryCounter queryCounter = new DefaultQueryCounter();
 	private final String url;
 
@@ -198,7 +200,7 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
-	public String errorMessage(SQLException exception, Operation operation) {
+	public @Nullable String errorMessage(SQLException exception, Operation operation) {
 		requireNonNull(exception);
 		requireNonNull(operation);
 
@@ -249,7 +251,7 @@ public abstract class AbstractDatabase implements Database {
 	static Database instance() {
 		try {
 			synchronized (AbstractDatabase.class) {
-				String databaseUrl = DATABASE_URL.get();
+				String databaseUrl = DATABASE_URL.getOrThrow();
 				if (AbstractDatabase.instance == null || !AbstractDatabase.instance.url().equals(databaseUrl)) {
 					Database previousInstance = AbstractDatabase.instance;
 					//replace the instance
@@ -279,7 +281,7 @@ public abstract class AbstractDatabase implements Database {
 	 * @param offset the offset, may be null
 	 * @return a limit/offset clause
 	 */
-	protected static String createLimitOffsetClause(Integer limit, Integer offset) {
+	protected static String createLimitOffsetClause(@Nullable Integer limit, @Nullable Integer offset) {
 		StringBuilder builder = new StringBuilder();
 		if (limit != null) {
 			builder.append(LIMIT).append(limit);
@@ -299,7 +301,7 @@ public abstract class AbstractDatabase implements Database {
 	 * @param offset the offset, may be null
 	 * @return a limit/offset clause
 	 */
-	protected static String createOffsetFetchNextClause(Integer limit, Integer offset) {
+	protected static String createOffsetFetchNextClause(@Nullable Integer limit, @Nullable Integer offset) {
 		StringBuilder builder = new StringBuilder();
 		if (offset != null) {
 			builder.append(OFFSET).append(offset).append(ROWS);
@@ -347,7 +349,7 @@ public abstract class AbstractDatabase implements Database {
 		private final AtomicInteger deletesPerSecondCounter = new AtomicInteger();
 		private final AtomicInteger otherPerSecondCounter = new AtomicInteger();
 
-		private final boolean enabled = COUNT_QUERIES.get();
+		private final boolean enabled = COUNT_QUERIES.getOrThrow();
 
 		@Override
 		public void select() {

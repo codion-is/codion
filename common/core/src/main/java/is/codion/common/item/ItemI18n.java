@@ -18,6 +18,8 @@
  */
 package is.codion.common.item;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -32,9 +34,9 @@ final class ItemI18n<T> extends AbstractItem<T> implements Serializable {
 	private final String resourceBundleName;
 	private final String resourceBundleKey;
 
-	private transient String caption;
+	private transient @Nullable String caption;
 
-	ItemI18n(T value, String resourceBundleName, String resourceBundleKey) {
+	ItemI18n(@Nullable T value, String resourceBundleName, String resourceBundleKey) {
 		super(value);
 		getBundle(requireNonNull(resourceBundleName)).getString(requireNonNull(resourceBundleKey));
 		this.resourceBundleName = resourceBundleName;

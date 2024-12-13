@@ -20,13 +20,15 @@ package is.codion.common.event;
 
 import is.codion.common.observer.Observer;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.function.Consumer;
 
 final class DefaultEvent<T> implements Event<T> {
 
 	private final Object lock = new Object();
 
-	private DefaultObserver<T> observer;
+	private @Nullable DefaultObserver<T> observer;
 
 	@Override
 	public void run() {
@@ -34,7 +36,7 @@ final class DefaultEvent<T> implements Event<T> {
 	}
 
 	@Override
-	public void accept(T data) {
+	public void accept(@Nullable T data) {
 		if (observer != null) {
 			observer.notifyListeners(data);
 		}

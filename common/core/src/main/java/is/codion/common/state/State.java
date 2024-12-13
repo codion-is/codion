@@ -21,6 +21,8 @@ package is.codion.common.state;
 import is.codion.common.Conjunction;
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.Collection;
 
 /**
@@ -43,6 +45,9 @@ import java.util.Collection;
  * @see #builder()
  */
 public interface State extends StateObserver, Value<Boolean> {
+
+	@Override
+	@NonNull Boolean get();
 
 	/**
 	 * Returns a {@link StateObserver} notified each time the state changes

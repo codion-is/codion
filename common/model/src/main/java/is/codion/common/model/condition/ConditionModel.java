@@ -26,6 +26,8 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 
+import org.jspecify.annotations.Nullable;
+
 import java.text.Format;
 import java.util.List;
 import java.util.Optional;
@@ -166,7 +168,7 @@ public interface ConditionModel<T> {
 	 * @param value the value
 	 * @return true if the given value is accepted by this models condition
 	 */
-	boolean accepts(Comparable<T> value);
+	boolean accepts(@Nullable Comparable<T> value);
 
 	/**
 	 * @return an observer notified each time the condition changes
@@ -235,13 +237,13 @@ public interface ConditionModel<T> {
 		 * @param format the format to use when presenting the values, numbers for example
 		 * @return this builder instance
 		 */
-		Builder<T> format(Format format);
+		Builder<T> format(@Nullable Format format);
 
 		/**
 		 * @param dateTimePattern the date/time format pattern to use in case of a date/time value
 		 * @return this builder instance
 		 */
-		Builder<T> dateTimePattern(String dateTimePattern);
+		Builder<T> dateTimePattern(@Nullable String dateTimePattern);
 
 		/**
 		 * @param wildcard the wildcards to use

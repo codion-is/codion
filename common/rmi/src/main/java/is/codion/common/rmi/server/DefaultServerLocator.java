@@ -18,6 +18,7 @@
  */
 package is.codion.common.rmi.server;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,8 +109,8 @@ final class DefaultServerLocator implements Server.Locator {
 		}
 	}
 
-	private static <T extends Remote, A extends ServerAdmin> Server<T, A> getIfReachable(Server<T, A> server,
-																																											 int requestedServerPort) throws RemoteException {
+	private static <T extends Remote, A extends ServerAdmin> @Nullable Server<T, A> getIfReachable(Server<T, A> server,
+																																																 int requestedServerPort) throws RemoteException {
 		ServerInformation serverInformation = server.serverInformation();
 		if (requestedServerPort != -1 && serverInformation.serverPort() != requestedServerPort) {
 			LOG.warn("Server \"{}\" is serving on port {}, requested port was {}",
@@ -126,10 +127,10 @@ final class DefaultServerLocator implements Server.Locator {
 
 	static final class DefaultBuilder implements Server.Locator.Builder {
 
-		private String hostName = ServerConfiguration.RMI_SERVER_HOSTNAME.get();
-		private String namePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
-		private int registryPort = ServerConfiguration.REGISTRY_PORT.get();
-		private int port = ServerConfiguration.SERVER_PORT.get();
+		private String hostName = ServerConfiguration.RMI_SERVER_HOSTNAME.getOrThrow();
+		private String namePrefix = ServerConfiguration.SERVER_NAME_PREFIX.getOrThrow();
+		private int registryPort = ServerConfiguration.REGISTRY_PORT.getOrThrow();
+		private int port = ServerConfiguration.SERVER_PORT.getOrThrow();
 
 		@Override
 		public Builder hostName(String hostName) {

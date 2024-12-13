@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.exception;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.SQLException;
 
 /**
@@ -30,7 +32,7 @@ public final class QueryTimeoutException extends DatabaseException {
 	 * @param cause the underlying cause
 	 * @param message the error message
 	 */
-	public QueryTimeoutException(SQLException cause, String message) {
+	public QueryTimeoutException(SQLException cause, @Nullable String message) {
 		super(cause, message);
 	}
 }

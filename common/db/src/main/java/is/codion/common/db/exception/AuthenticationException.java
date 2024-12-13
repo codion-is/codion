@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.exception;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * An exception indication an authentication failure
  */
@@ -26,7 +28,7 @@ public final class AuthenticationException extends DatabaseException {
 	/**
 	 * @param message the error message
 	 */
-	public AuthenticationException(String message) {
+	public AuthenticationException(@Nullable String message) {
 		super(message);
 	}
 }

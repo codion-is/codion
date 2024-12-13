@@ -17,7 +17,8 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:
+ * <p>RMI server related classes.
+ * <p>Package configuration values:
  * <ul>
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#RMI_SERVER_HOSTNAME}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#SERVER_NAME_PREFIX}
@@ -35,4 +36,5 @@
  * <li>{@link is.codion.common.rmi.server.WhitelistInputFilterFactory#SERIALIZATION_FILTER_DRYRUN}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.common.rmi.server;

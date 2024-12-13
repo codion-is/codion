@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.report;
 
+import org.jspecify.annotations.Nullable;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -35,7 +37,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
 
 	private final boolean cacheReport;
 
-	private T cachedReport;
+	private @Nullable T cachedReport;
 
 	/**
 	 * Instantiates a new AbstractReport.

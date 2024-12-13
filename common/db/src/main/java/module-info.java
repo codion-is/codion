@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Core classes concerned with JDBC connectivity, such as:
+ * <p>Core classes concerned with JDBC connectivity.
  * <ul>
  * <li>{@link is.codion.common.db.database.Database}
  * <li>{@link is.codion.common.db.database.DatabaseFactory}
@@ -29,7 +29,9 @@
  * @uses is.codion.common.db.database.DatabaseFactory
  * @uses is.codion.common.db.pool.ConnectionPoolFactory
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.common.db {
+	requires transitive org.jspecify;
 	requires transitive java.sql;
 	requires transitive is.codion.common.core;
 

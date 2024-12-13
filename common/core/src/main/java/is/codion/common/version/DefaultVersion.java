@@ -18,6 +18,8 @@
  */
 package is.codion.common.version;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -33,8 +35,8 @@ final class DefaultVersion implements Version, Serializable {
 	private final int major;
 	private final int minor;
 	private final int patch;
-	private final String metadata;
-	private final String build;
+	private final @Nullable String metadata;
+	private final @Nullable String build;
 
 	private DefaultVersion(DefaulBuilder builder) {
 		this.major = builder.major;
@@ -109,7 +111,7 @@ final class DefaultVersion implements Version, Serializable {
 		return result;
 	}
 
-	private static int compareMetadata(String metadata, String toCompare) {
+	private static int compareMetadata(@Nullable String metadata, @Nullable String toCompare) {
 		if (metadata != null && toCompare != null) {
 			return metadata.compareToIgnoreCase(toCompare);
 		}
@@ -128,8 +130,8 @@ final class DefaultVersion implements Version, Serializable {
 		private int major = 0;
 		private int minor = 0;
 		private int patch = 0;
-		private String metadata;
-		private String build;
+		private @Nullable String metadata;
+		private @Nullable String build;
 
 		@Override
 		public Builder major(int major) {
@@ -159,13 +161,13 @@ final class DefaultVersion implements Version, Serializable {
 		}
 
 		@Override
-		public Builder metadata(String metadata) {
+		public Builder metadata(@Nullable String metadata) {
 			this.metadata = metadata;
 			return this;
 		}
 
 		@Override
-		public Builder build(String build) {
+		public Builder build(@Nullable String build) {
 			this.build = build;
 			return this;
 		}

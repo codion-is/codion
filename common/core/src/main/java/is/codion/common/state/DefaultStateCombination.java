@@ -20,6 +20,8 @@ package is.codion.common.state;
 
 import is.codion.common.Conjunction;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -158,7 +160,7 @@ final class DefaultStateCombination implements State.Combination {
 		return observer.removeWeakConsumer(consumer);
 	}
 
-	private boolean get(Conjunction conjunction, StateObserver exclude, boolean excludeReplacement) {
+	private boolean get(Conjunction conjunction, @Nullable StateObserver exclude, boolean excludeReplacement) {
 		for (StateCombinationConsumer listener : stateListeners) {
 			StateObserver state = listener.state;
 			boolean value = state.equals(exclude) ? excludeReplacement : state.get();

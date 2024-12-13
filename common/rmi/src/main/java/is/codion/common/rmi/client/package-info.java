@@ -17,11 +17,13 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:
+ * <p>RMI client related classes.
+ * <p>Package configuration values:
  * <ul>
  * <li>{@link is.codion.common.rmi.client.Clients#SERVER_HOSTNAME}
  * <li>{@link is.codion.common.rmi.client.Clients#TRUSTSTORE}
  * <li>{@link is.codion.common.rmi.client.Clients#TRUSTSTORE_PASSWORD}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.common.rmi.client;

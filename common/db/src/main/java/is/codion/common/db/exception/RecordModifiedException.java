@@ -18,13 +18,17 @@
  */
 package is.codion.common.db.exception;
 
+import org.jspecify.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
+
 /**
  * An exception indicating that the row in question has been modified or deleted since it was loaded.
  */
 public final class RecordModifiedException extends UpdateException {
 
 	private final Object row;
-	private final Object modifiedRow;
+	private final @Nullable Object modifiedRow;
 
 	/**
 	 * Instantiates a new RecordModifiedException
@@ -32,9 +36,9 @@ public final class RecordModifiedException extends UpdateException {
 	 * @param modifiedRow the current (modified) version of the row, null if it has been deleted
 	 * @param message a message describing the modification
 	 */
-	public RecordModifiedException(Object row, Object modifiedRow, String message) {
+	public RecordModifiedException(Object row, @Nullable Object modifiedRow, @Nullable String message) {
 		super(message);
-		this.row = row;
+		this.row = requireNonNull(row);
 		this.modifiedRow = modifiedRow;
 	}
 
@@ -48,7 +52,7 @@ public final class RecordModifiedException extends UpdateException {
 	/**
 	 * @return the current (modified) version of the row, null if it has been deleted
 	 */
-	public Object modifiedRow() {
+	public @Nullable Object modifiedRow() {
 		return modifiedRow;
 	}
 }

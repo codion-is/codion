@@ -18,6 +18,8 @@
  */
 package is.codion.common.value;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.Collection;
 
 /**
@@ -26,6 +28,9 @@ import java.util.Collection;
  * @param <C> the collection type
  */
 public interface ValuesObserver<T, C extends Collection<T>> extends ValueObserver<C>, Iterable<T> {
+
+	@Override
+	@NonNull C get();
 
 	/**
 	 * Returns true if this {@link Values} instance contains the specified element

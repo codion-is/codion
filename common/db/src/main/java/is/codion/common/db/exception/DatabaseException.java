@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.exception;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -34,7 +36,7 @@ public class DatabaseException extends RuntimeException {
 	 * The sql statement being run when this exception occurred, if any, transient
 	 * so that it's not available client side if running in a server/client environment
 	 */
-	private final transient String statement;
+	private final transient @Nullable String statement;
 
 	/**
 	 * The underlying error code, if any, transient so that it's not
@@ -46,13 +48,13 @@ public class DatabaseException extends RuntimeException {
 	 * The underlying sql state, if any, transient so that it's not
 	 * available client side if running in a server/client environment
 	 */
-	private final transient String sqlState;
+	private final transient @Nullable String sqlState;
 
 	/**
 	 * Constructs a new DatabaseException instance
 	 * @param message the exception message
 	 */
-	public DatabaseException(String message) {
+	public DatabaseException(@Nullable String message) {
 		this(message, null);
 	}
 
@@ -61,7 +63,7 @@ public class DatabaseException extends RuntimeException {
 	 * @param message the exception message
 	 * @param statement the sql statement which caused the exception
 	 */
-	public DatabaseException(String message, String statement) {
+	public DatabaseException(@Nullable String message, @Nullable String statement) {
 		super(message);
 		this.statement = statement;
 		this.errorCode = -1;
@@ -81,7 +83,7 @@ public class DatabaseException extends RuntimeException {
 	 * @param cause the root cause, the stack trace is copied and used
 	 * @param message the exception message
 	 */
-	public DatabaseException(SQLException cause, String message) {
+	public DatabaseException(SQLException cause, @Nullable String message) {
 		this(cause, message, null);
 	}
 
@@ -91,7 +93,7 @@ public class DatabaseException extends RuntimeException {
 	 * @param message the exception message
 	 * @param statement the sql statement which caused the exception
 	 */
-	public DatabaseException(SQLException cause, String message, String statement) {
+	public DatabaseException(@Nullable SQLException cause, @Nullable String message, @Nullable String statement) {
 		super(message);
 		this.statement = statement;
 		if (cause != null) {

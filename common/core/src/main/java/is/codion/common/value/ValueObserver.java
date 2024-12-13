@@ -20,6 +20,8 @@ package is.codion.common.value;
 
 import is.codion.common.observer.Observer;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,7 +37,7 @@ public interface ValueObserver<T> extends Observer<T> {
 	/**
 	 * @return the value
 	 */
-	T get();
+	@Nullable T get();
 
 	/**
 	 * @return the value
@@ -96,7 +98,7 @@ public interface ValueObserver<T> extends Observer<T> {
 	 * @param value the value
 	 * @return true if the underlying value is equal to the given one
 	 */
-	default boolean isEqualTo(T value) {
+	default boolean isEqualTo(@Nullable T value) {
 		return Objects.equals(get(), value);
 	}
 
@@ -105,7 +107,7 @@ public interface ValueObserver<T> extends Observer<T> {
 	 * @param value the value
 	 * @return true if the underlying value is NOT equal to the given one
 	 */
-	default boolean isNotEqualTo(T value) {
+	default boolean isNotEqualTo(@Nullable T value) {
 		return !isEqualTo(value);
 	}
 }

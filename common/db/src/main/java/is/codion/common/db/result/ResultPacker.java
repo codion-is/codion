@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.result;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -59,5 +61,5 @@ public interface ResultPacker<T> {
 	 * @return the instance fetched from the ResultSet
 	 * @throws SQLException in case of failure
 	 */
-	T get(ResultSet resultSet) throws SQLException;
+	@Nullable T get(ResultSet resultSet) throws SQLException;
 }

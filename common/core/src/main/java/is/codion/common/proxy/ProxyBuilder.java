@@ -18,6 +18,8 @@
  */
 package is.codion.common.proxy;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -109,10 +111,10 @@ public interface ProxyBuilder<T> {
 		/**
 		 * Invokes this proxy method.
 		 * @param parameters the parameters
-		 * @return the result
+		 * @return the result, may be null
 		 * @throws Throwable in case of an exception
 		 */
-		Object invoke(Parameters<T> parameters) throws Throwable;
+		@Nullable Object invoke(Parameters<T> parameters) throws Throwable;
 
 		/**
 		 * Parameters available to the invocation handler when calling a proxy method.

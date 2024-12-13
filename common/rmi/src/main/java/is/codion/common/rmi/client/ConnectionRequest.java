@@ -21,6 +21,8 @@ package is.codion.common.rmi.client;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
+import org.jspecify.annotations.Nullable;
+
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Map;
@@ -111,7 +113,7 @@ public interface ConnectionRequest {
 		 * @param clientVersion the client version
 		 * @return this Builder instance
 		 */
-		Builder clientVersion(Version clientVersion);
+		Builder clientVersion(@Nullable Version clientVersion);
 
 		/**
 		 * @param key the key

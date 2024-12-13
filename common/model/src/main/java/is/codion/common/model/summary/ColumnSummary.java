@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.OptionalDouble;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
+import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
 /**
@@ -57,7 +58,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 
 		@Override
 		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
-			Collection<T> values = summaryValues.values();
+			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				return addSubsetIndicator(summaryValues.format(values.stream()
 								.filter(Objects::nonNull)
@@ -78,7 +79,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 
 		@Override
 		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
-			Collection<T> values = summaryValues.values();
+			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				OptionalDouble average = values.stream()
 								.mapToDouble(value -> value == null ? 0d : value.doubleValue())
@@ -102,7 +103,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 
 		@Override
 		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
-			Collection<T> values = summaryValues.values();
+			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				OptionalDouble min = values.stream()
 								.filter(Objects::nonNull)
@@ -127,7 +128,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 
 		@Override
 		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
-			Collection<T> values = summaryValues.values();
+			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				OptionalDouble max = values.stream()
 								.filter(Objects::nonNull)
@@ -152,7 +153,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 
 		@Override
 		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
-			Collection<T> values = summaryValues.values();
+			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				OptionalDouble min = values.stream()
 								.filter(Objects::nonNull)

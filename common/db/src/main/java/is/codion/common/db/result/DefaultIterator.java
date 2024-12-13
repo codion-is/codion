@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.result;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -43,7 +45,7 @@ final class DefaultIterator<T> implements Iterator<T> {
 	}
 
 	@Override
-	public T next() {
+	public @Nullable T next() {
 		if (!hasNext()) {
 			throw new NoSuchElementException();
 		}

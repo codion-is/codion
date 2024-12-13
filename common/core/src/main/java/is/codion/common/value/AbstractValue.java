@@ -20,6 +20,8 @@ package is.codion.common.value;
 
 import is.codion.common.event.Event;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -46,14 +48,14 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractValue<T> implements Value<T> {
 
-	private final T nullValue;
-	private final Notify notify;
+	private final @Nullable T nullValue;
+	private final @Nullable Notify notify;
 
-	private Event<T> notifier;
-	private Set<Validator<? super T>> validators;
-	private Map<Value<T>, ValueLink<T>> linkedValues;
-	private Map<ValueObserver<T>, ValueObserverLink> linkedObservers;
-	private ValueObserver<T> observer;
+	private @Nullable Event<T> notifier;
+	private @Nullable Set<Validator<? super T>> validators;
+	private @Nullable Map<Value<T>, ValueLink<T>> linkedValues;
+	private @Nullable Map<ValueObserver<T>, ValueObserverLink> linkedObservers;
+	private @Nullable ValueObserver<T> observer;
 
 	/**
 	 * Creates a {@link AbstractValue} instance, which does not notify listeners.
@@ -66,7 +68,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	 * Creates a {@link AbstractValue} instance, which does not notify listeners.
 	 * @param nullValue the value to use instead of null
 	 */
-	protected AbstractValue(T nullValue) {
+	protected AbstractValue(@Nullable T nullValue) {
 		this.nullValue = nullValue;
 		this.notify = null;
 	}
@@ -76,18 +78,18 @@ public abstract class AbstractValue<T> implements Value<T> {
 	 * @param nullValue the value to use instead of null
 	 * @param notify specifies when to notify listeners
 	 */
-	protected AbstractValue(T nullValue, Notify notify) {
+	protected AbstractValue(@Nullable T nullValue, Notify notify) {
 		this.nullValue = nullValue;
 		this.notify = requireNonNull(notify);
 	}
 
 	@Override
-	public final T get() {
+	public final @Nullable T get() {
 		return getValue();
 	}
 
 	@Override
-	public final boolean set(T value) {
+	public final boolean set(@Nullable T value) {
 		T newValue = value == null ? nullValue : value;
 		for (Validator<? super T> validator : validators()) {
 			validator.validate(newValue);
@@ -123,7 +125,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final void accept(T data) {
+	public final void accept(@Nullable T data) {
 		set(data);
 	}
 
@@ -134,6 +136,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean removeListener(Runnable listener) {
+		requireNonNull(listener);
 		if (notifier != null) {
 			return notifier.removeListener(listener);
 		}
@@ -148,6 +151,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean removeConsumer(Consumer<? super T> consumer) {
+		requireNonNull(consumer);
 		if (notifier != null) {
 			return notifier.removeConsumer(consumer);
 		}
@@ -162,6 +166,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean removeWeakListener(Runnable listener) {
+		requireNonNull(listener);
 		if (notifier != null) {
 			return notifier.removeWeakListener(listener);
 		}
@@ -176,6 +181,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final boolean removeWeakConsumer(Consumer<? super T> consumer) {
+		requireNonNull(consumer);
 		if (notifier != null) {
 			return notifier.removeWeakConsumer(consumer);
 		}
@@ -250,7 +256,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final void validate(T value) {
+	public final void validate(@Nullable T value) {
 		validators().forEach(validator -> validator.validate(value));
 	}
 
@@ -258,13 +264,13 @@ public abstract class AbstractValue<T> implements Value<T> {
 	 * Returns the actual internal value.
 	 * @return the value
 	 */
-	protected abstract T getValue();
+	protected abstract @Nullable T getValue();
 
 	/**
 	 * Sets the actual internal value.
 	 * @param value the value
 	 */
-	protected abstract void setValue(T value);
+	protected abstract void setValue(@Nullable T value);
 
 	/**
 	 * Notifies listeners that the underlying value has changed or at least that it may have changed

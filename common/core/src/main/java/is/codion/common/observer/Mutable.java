@@ -18,6 +18,8 @@
  */
 package is.codion.common.observer;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A wrapper for a mutable value, providing a change observer.
  * <pre>
@@ -68,7 +70,7 @@ public interface Mutable<T> extends Observable<T> {
 	 * Sets the value
 	 * @param value the value to set
 	 */
-	void set(T value);
+	void set(@Nullable T value);
 
 	/**
 	 * Clears this {@link Mutable} instance by setting the value to null

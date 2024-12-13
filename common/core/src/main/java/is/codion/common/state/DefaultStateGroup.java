@@ -20,6 +20,8 @@ package is.codion.common.state;
 
 import is.codion.common.value.ValueObserver;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +33,7 @@ final class DefaultStateGroup implements State.Group {
 
 	private final List<State> members = new ArrayList<>();
 
-	private State previousState;
+	private @Nullable State previousState;
 	private boolean disablingStates = false;
 
 	DefaultStateGroup(State... states) {
@@ -98,7 +100,7 @@ final class DefaultStateGroup implements State.Group {
 		previousState = current;
 	}
 
-	private State previousState(State current) {
+	private @Nullable State previousState(State current) {
 		return members.stream()
 						.filter(state -> state != current)
 						.filter(ValueObserver::get)

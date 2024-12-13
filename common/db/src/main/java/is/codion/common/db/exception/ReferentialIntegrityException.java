@@ -20,6 +20,8 @@ package is.codion.common.db.exception;
 
 import is.codion.common.db.database.Database.Operation;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.SQLException;
 
 import static java.util.Objects.requireNonNull;
@@ -37,7 +39,7 @@ public final class ReferentialIntegrityException extends DatabaseException {
 	 * @param message the error message
 	 * @param operation the operation causing this exception
 	 */
-	public ReferentialIntegrityException(SQLException cause, String message, Operation operation) {
+	public ReferentialIntegrityException(SQLException cause, @Nullable String message, Operation operation) {
 		super(cause, message);
 		this.operation = requireNonNull(operation);
 	}

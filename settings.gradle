@@ -201,6 +201,7 @@ dependencyResolutionManagement {
             version("tomcat", "11.0.2")
 
             version("jasperreports", "7.0.1")
+            version("jspecify", "1.0.0")
 
             library("slf4j-api", "org.slf4j", "slf4j-api").versionRef("slf4j.api")
             library("logback-core", "ch.qos.logback", "logback-core").versionRef("logback")
@@ -230,6 +231,8 @@ dependencyResolutionManagement {
             library("log4j-api", "org.apache.logging.log4j", "log4j-api").versionRef("log4j")
             library("log4j-core", "org.apache.logging.log4j", "log4j-core").versionRef("log4j")
             library("tomcat-jdbc", "org.apache.tomcat", "tomcat-jdbc").versionRef("tomcat")
+
+            library("jspecify", "org.jspecify", "jspecify").versionRef("jspecify")
 
             library("jasperreports", "net.sf.jasperreports", "jasperreports").versionRef("jasperreports")
             library("jasperreports-jdt", "net.sf.jasperreports", "jasperreports-jdt").versionRef("jasperreports")

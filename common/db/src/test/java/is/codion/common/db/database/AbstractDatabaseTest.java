@@ -109,7 +109,7 @@ public final class AbstractDatabaseTest {
 
 		@Override
 		public String autoIncrementQuery(String idSource) {
-			return null;
+			return "";
 		}
 
 		@Override

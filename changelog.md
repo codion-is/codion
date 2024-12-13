@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.23
+### is.codion.common
+- JSpecify annotations applied to common modules.
 ## is.codion.common.core
 - ValueObserver.getOrThrow() added.
 ## is.codion.common.db

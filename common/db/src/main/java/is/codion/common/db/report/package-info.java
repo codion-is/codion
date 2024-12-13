@@ -17,10 +17,12 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:
+ * <p>Report related classes.
+ * <p>Package configuration values:
  * <ul>
  * <li>{@link is.codion.common.db.report.Report#REPORT_PATH}
  * <li>{@link is.codion.common.db.report.Report#CACHE_REPORTS}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.common.db.report;

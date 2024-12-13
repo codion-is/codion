@@ -18,6 +18,8 @@
  */
 package is.codion.common.observer;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -65,7 +67,7 @@ public interface Observable<T> extends Observer<T> {
 	/**
 	 * @return the value
 	 */
-	T get();
+	@Nullable T get();
 
 	/**
 	 * @return an Optional based on the current value

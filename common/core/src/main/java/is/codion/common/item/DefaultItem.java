@@ -18,6 +18,8 @@
  */
 package is.codion.common.item;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -32,7 +34,7 @@ final class DefaultItem<T> extends AbstractItem<T> implements Serializable {
 
 	private final String caption;
 
-	DefaultItem(T value, String caption) {
+	DefaultItem(@Nullable T value, String caption) {
 		super(value);
 		this.caption = requireNonNull(caption, "Item caption may not be null");
 	}

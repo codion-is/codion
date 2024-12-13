@@ -42,7 +42,7 @@ public final class WhitelistInputFilterFactory implements ObjectInputFilterFacto
 	@Override
 	public ObjectInputFilter createObjectInputFilter() {
 		String whitelist = SERIALIZATION_FILTER_WHITELIST.getOrThrow();
-		if (SERIALIZATION_FILTER_DRYRUN.get()) {
+		if (SERIALIZATION_FILTER_DRYRUN.getOrThrow()) {
 			return SerializationWhitelist.whitelistDryRun(whitelist);
 		}
 

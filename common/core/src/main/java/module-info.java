@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * Common classes used throughout, such as:
+ * <p>Common classes used throughout.
  * <ul>
  * <li>{@link is.codion.common.observer.Observer}
  * <li>{@link is.codion.common.observer.Observable}
@@ -36,7 +36,9 @@
  * @uses is.codion.common.logging.LoggerProxy
  * @uses is.codion.common.resource.Resources
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.common.core {
+	requires transitive org.jspecify;
 	exports is.codion.common;
 	exports is.codion.common.event;
 	exports is.codion.common.format;

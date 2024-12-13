@@ -26,6 +26,7 @@ import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,8 +78,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private volatile int connectionLimit = -1;
 	private volatile boolean shuttingDown = false;
 
-	private Registry registry;
-	private A admin;
+	private @Nullable Registry registry;
+	private @Nullable A admin;
 
 	/**
 	 * Instantiates a new AbstractServer
@@ -155,7 +156,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @return the maintenance check interval in ms
 	 */
 	public final int getMaintenanceInterval() {
-		return connectionMaintenanceScheduler.interval().get();
+		return connectionMaintenanceScheduler.interval().getOrThrow();
 	}
 
 	/**
@@ -296,6 +297,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @throws IllegalStateException in case an admin instance has already been set
 	 */
 	protected final void setAdmin(A admin) {
+		requireNonNull(admin);
 		if (this.admin != null) {
 			throw new IllegalStateException("Admin has already been set for this server");
 		}
@@ -502,7 +504,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 	}
 
-	private static void unexportSilently(Remote... remotes) {
+	private static void unexportSilently(@Nullable Remote... remotes) {
 		for (Remote remote : remotes) {
 			if (remote != null) {
 				try {
@@ -515,7 +517,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 	}
 
-	private static String clientHost(String requestParameterHost) {
+	private static String clientHost(@Nullable String requestParameterHost) {
 		if (requestParameterHost == null) {
 			try {
 				return getClientHost();

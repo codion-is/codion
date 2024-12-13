@@ -21,6 +21,8 @@ package is.codion.common.state;
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -31,8 +33,8 @@ final class DefaultStateObserver implements StateObserver {
 	private final StateObserver observedState;
 	private final boolean not;
 
-	private Event<Boolean> stateChangedEvent;
-	private DefaultStateObserver notObserver;
+	private @Nullable Event<Boolean> stateChangedEvent;
+	private @Nullable DefaultStateObserver notObserver;
 
 	DefaultStateObserver(StateObserver observedState, boolean not) {
 		this.observedState = requireNonNull(observedState);

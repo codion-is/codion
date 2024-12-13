@@ -20,6 +20,7 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.version.Version;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,9 +55,9 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	private final int adminPort;
 	private final boolean sslEnabled;
 	private final Supplier<String> serverNameSupplier;
-	private final RMIClientSocketFactory rmiClientSocketFactory;
-	private final RMIServerSocketFactory rmiServerSocketFactory;
-	private final String objectInputFilterFactoryClassName;
+	private final @Nullable RMIClientSocketFactory rmiClientSocketFactory;
+	private final @Nullable RMIServerSocketFactory rmiServerSocketFactory;
+	private final @Nullable String objectInputFilterFactoryClassName;
 	private final int connectionMaintenanceInterval;
 	private final int connectionLimit;
 
@@ -146,9 +147,9 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private int serverAdminPort;
 		private boolean sslEnabled = true;
 		private Supplier<String> serverName = new DefaultServerName();
-		private RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
-		private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
-		private String objectInputFilterFactoryClassName;
+		private @Nullable RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
+		private @Nullable RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
+		private @Nullable String objectInputFilterFactoryClassName = OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME.get();
 		private Integer connectionMaintenanceInterval = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
 		private int connectionLimit = -1;
 
@@ -199,7 +200,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		}
 
 		@Override
-		public DefaultBuilder objectInputFilterFactoryClassName(String objectInputFilterFactoryClassName) {
+		public DefaultBuilder objectInputFilterFactoryClassName(@Nullable String objectInputFilterFactoryClassName) {
 			this.objectInputFilterFactoryClassName = objectInputFilterFactoryClassName;
 			return this;
 		}
@@ -266,7 +267,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
 		@Override
 		public String get() {
-			String serverNamePrefix = SERVER_NAME_PREFIX.get();
+			String serverNamePrefix = SERVER_NAME_PREFIX.getOrThrow();
 			if (serverNamePrefix.isEmpty()) {
 				throw new IllegalArgumentException("serverNamePrefix must not be empty");
 			}

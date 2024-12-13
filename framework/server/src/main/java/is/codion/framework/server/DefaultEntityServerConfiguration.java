@@ -170,17 +170,14 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	static EntityServerConfiguration.Builder builderFromSystemProperties() {
 		Builder builder = new DefaultBuilder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
 						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
-						.sslEnabled(SSL_ENABLED.get())
-						.objectInputFilterFactoryClassName(OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME.get())
+						.sslEnabled(SSL_ENABLED.getOrThrow())
 						.adminPort(ADMIN_PORT.getOrThrow())
-						.connectionLimit(CONNECTION_LIMIT.get())
+						.connectionLimit(CONNECTION_LIMIT.getOrThrow())
 						.database(Database.instance())
 						.domainClassNames(Text.parseCommaSeparatedValues(DOMAIN_MODEL_CLASSES.get()))
 						.connectionPoolUsers(Text.parseCommaSeparatedValues(CONNECTION_POOL_USERS.get()).stream()
 										.map(User::parse)
-										.collect(toList()))
-						.clientLogging(CLIENT_LOGGING.get())
-						.idleConnectionTimeout(IDLE_CONNECTION_TIMEOUT.get());
+										.collect(toList()));
 		Map<String, Integer> clientTypeIdleConnectionTimeoutMap = new HashMap<>();
 		for (String clientTimeout : Text.parseCommaSeparatedValues(CLIENT_CONNECTION_TIMEOUT.get())) {
 			String[] split = clientTimeout.split(":");
@@ -209,8 +206,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
 		private Database database;
 		private User adminUser;
-		private boolean clientLogging = CLIENT_LOGGING.get();
-		private int idleConnectionTimeout = IDLE_CONNECTION_TIMEOUT.get();
+		private boolean clientLogging = CLIENT_LOGGING.getOrThrow();
+		private int idleConnectionTimeout = IDLE_CONNECTION_TIMEOUT.getOrThrow();
 		private String connectionPoolFactory;
 		private final Collection<String> domainClassNames = new HashSet<>();
 		private final Collection<User> connectionPoolUsers = new HashSet<>();
@@ -223,7 +220,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 					throw new IllegalStateException("Database must be set before initializing server name");
 				}
 
-				String serverNamePrefix = SERVER_NAME_PREFIX.get();
+				String serverNamePrefix = SERVER_NAME_PREFIX.getOrThrow();
 				if (serverNamePrefix.isEmpty()) {
 					throw new IllegalArgumentException("serverNamePrefix must not be empty");
 				}

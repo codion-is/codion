@@ -23,6 +23,8 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
@@ -41,10 +43,10 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	private final User user;
 	private final Database database;
 
-	private Connection connection;
+	private @Nullable Connection connection;
 	private boolean transactionOpen = false;
 
-	private MethodLogger methodLogger;
+	private @Nullable MethodLogger methodLogger;
 
 	/**
 	 * Constructs a new DefaultDatabaseConnection instance, initialized and ready for use.
@@ -83,12 +85,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	}
 
 	@Override
-	public void setMethodLogger(MethodLogger methodLogger) {
+	public void setMethodLogger(@Nullable MethodLogger methodLogger) {
 		this.methodLogger = methodLogger;
 	}
 
 	@Override
-	public MethodLogger getMethodLogger() {
+	public @Nullable MethodLogger getMethodLogger() {
 		return methodLogger;
 	}
 
@@ -123,15 +125,13 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	}
 
 	@Override
-	public void setConnection(Connection connection) {
+	public void setConnection(@Nullable Connection connection) {
 		this.connection = connection;
 	}
 
 	@Override
 	public Connection getConnection() {
-		verifyOpenConnection();
-
-		return connection;
+		return verifyOpenConnection();
 	}
 
 	@Override
@@ -144,7 +144,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		if (transactionOpen) {
 			throw new IllegalStateException("Transaction already open");
 		}
-		verifyOpenConnection();
+		connection = verifyOpenConnection();
 		logEntry("startTransaction");
 		transactionOpen = true;
 		logExit("startTransaction", null);
@@ -155,7 +155,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		if (!transactionOpen) {
 			throw new IllegalStateException("Transaction is not open");
 		}
-		verifyOpenConnection();
+		connection = verifyOpenConnection();
 		logEntry("rollbackTransaction");
 		SQLException exception = null;
 		try {
@@ -176,7 +176,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		if (!transactionOpen) {
 			throw new IllegalStateException("Transaction is not open");
 		}
-		verifyOpenConnection();
+		connection = verifyOpenConnection();
 		logEntry("commitTransaction");
 		SQLException exception = null;
 		try {
@@ -202,7 +202,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		if (transactionOpen) {
 			throw new IllegalStateException("Can not perform a commit during an open transaction, use 'commitTransaction()'");
 		}
-		verifyOpenConnection();
+		connection = verifyOpenConnection();
 		logEntry("commit");
 		SQLException exception = null;
 		try {
@@ -223,7 +223,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		if (transactionOpen) {
 			throw new IllegalStateException("Can not perform a rollback during an open transaction, use 'rollbackTransaction()'");
 		}
-		verifyOpenConnection();
+		connection = verifyOpenConnection();
 		logEntry("rollback");
 		SQLException exception = null;
 		try {
@@ -244,7 +244,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		}
 	}
 
-	private MethodLogger.Entry logExit(String method, Exception exception) {
+	private MethodLogger.@Nullable Entry logExit(String method, @Nullable Exception exception) {
 		if (methodLogger != null && methodLogger.isEnabled()) {
 			return methodLogger.exit(method, exception);
 		}
@@ -252,10 +252,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		return null;
 	}
 
-	private void verifyOpenConnection() {
+	private Connection verifyOpenConnection() {
 		if (!connected()) {
 			throw new IllegalStateException("Connection is closed");
 		}
+
+		return connection;
 	}
 
 	/**
