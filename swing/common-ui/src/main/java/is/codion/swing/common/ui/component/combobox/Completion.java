@@ -123,7 +123,7 @@ public final class Completion {
 	private static final class DefaultBuilder implements Builder {
 
 		private Mode mode = COMPLETION_MODE.get();
-		private boolean normalize = NORMALIZE.get();
+		private boolean normalize = NORMALIZE.getOrThrow();
 
 		@Override
 		public Builder mode(Mode mode) {

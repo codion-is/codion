@@ -207,7 +207,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	private static Condition foreignKeyCondition(ConditionModel<Entity> conditionModel, ForeignKey foreignKey) {
 		Entity equalOperand = conditionModel.operands().equal().get();
 		Collection<Entity> inOperands = conditionModel.operands().in().get();
-		switch (conditionModel.operator().get()) {
+		switch (conditionModel.operator().getOrThrow()) {
 			case EQUAL:
 				return equalOperand == null ? foreignKey.isNull() : foreignKey.equalTo(equalOperand);
 			case IN:
@@ -224,7 +224,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	private static <T> ColumnCondition<T> columnCondition(ConditionModel<T> conditionModel, Attribute<?> identifier) {
 		Column<T> column = (Column<T>) identifier;
 		Operands<T> operands = conditionModel.operands();
-		switch (conditionModel.operator().get()) {
+		switch (conditionModel.operator().getOrThrow()) {
 			case EQUAL:
 				return equalCondition(conditionModel, column);
 			case NOT_EQUAL:

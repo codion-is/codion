@@ -55,11 +55,11 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 		//Codion does not validate connections coming from a connection pool
 		properties.setTestOnBorrow(true);
 		properties.setValidator(new ConnectionValidator(connectionFactory));
-		properties.setMaxActive(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
-		properties.setInitialSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
-		properties.setMaxIdle(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
-		properties.setMinIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.get());
-		properties.setSuspectTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.get() / 1000);
+		properties.setMaxActive(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.getOrThrow());
+		properties.setInitialSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.getOrThrow());
+		properties.setMaxIdle(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.getOrThrow());
+		properties.setMinIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.getOrThrow());
+		properties.setSuspectTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.getOrThrow() / 1000);
 
 		return new DataSource(properties);
 	}

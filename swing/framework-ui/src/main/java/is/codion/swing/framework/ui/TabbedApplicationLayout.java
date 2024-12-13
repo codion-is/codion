@@ -70,7 +70,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 			throw new IllegalStateException("EntityApplicationPanel has already been laid out: " + applicationPanel);
 		}
 		tabbedPane = Components.tabbedPane()
-						.tabPlacement(TAB_PLACEMENT.get())
+						.tabPlacement(TAB_PLACEMENT.getOrThrow())
 						.focusable(false)
 						// InitializeSelectedPanelListener initializes first panel
 						.changeListener(new InitializeSelectedPanelListener())
@@ -81,7 +81,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 		//tab pane added to a base panel for correct Look&Feel rendering
 		return borderLayoutPanel(new BorderLayout())
 						.centerComponent(tabbedPane)
-						.border(createEmptyBorder(0, Layouts.GAP.get(), 0, Layouts.GAP.get()))
+						.border(createEmptyBorder(0, Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow()))
 						.build();
 	}
 

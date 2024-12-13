@@ -99,10 +99,10 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private LoginProvider loginProvider = new DefaultDialogLoginProvider();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
-	private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.get();
+	private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.getOrThrow();
 	private ImageIcon applicationIcon;
 	private Version applicationVersion;
-	private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.get();
+	private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.getOrThrow();
 	private Supplier<JComponent> loginPanelSouthComponentSupplier = new DefaultSouthComponentSupplier();
 	private Runnable beforeApplicationStarted;
 	private Consumer<P> onApplicationStarted;
@@ -115,7 +115,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private boolean includeMainMenu = true;
 	private Dimension frameSize;
 	private Dimension defaultFrameSize;
-	private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.get();
+	private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.getOrThrow();
 	private User defaultLoginUser;
 	private User automaticLoginUser;
 
@@ -358,7 +358,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		int logoSize = DEFAULT_LOGO_SIZE;
 		if (fontSizePercentage != 100) {
 			setFontSizePercentage(fontSizePercentage);
-			Icons.ICON_SIZE.set(Math.round(Icons.ICON_SIZE.get() * (fontSizePercentage / 100f)));
+			Icons.ICON_SIZE.set(Math.round(Icons.ICON_SIZE.getOrThrow() * (fontSizePercentage / 100f)));
 			logoSize = Math.round(logoSize * (fontSizePercentage / 100f));
 		}
 		if (applicationIcon == null) {

@@ -23,6 +23,8 @@ import is.codion.common.db.report.ReportException;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
+import java.net.URL;
+
 import static java.util.Objects.requireNonNull;
 
 final class ClassPathJRReport extends AbstractJRReport {
@@ -37,7 +39,14 @@ final class ClassPathJRReport extends AbstractJRReport {
 	@Override
 	public JasperReport load() {
 		try {
-			return (JasperReport) JRLoader.loadObject(resourceClass.getResource(reportPath));
+			URL resource = resourceClass.getResource(reportPath);
+			if (resource == null) {
+				throw new ReportException("Unable to load resource: " + reportPath);
+			}
+			return (JasperReport) JRLoader.loadObject(resource);
+		}
+		catch (ReportException e) {
+			throw e;
 		}
 		catch (Exception e) {
 			throw new ReportException("Unable to load report '" + reportPath + "' from classpath", e);

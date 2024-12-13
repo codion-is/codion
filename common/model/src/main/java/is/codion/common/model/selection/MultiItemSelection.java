@@ -80,6 +80,12 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 	interface Indexes extends Mutable<List<Integer>> {
 
 		/**
+		 * @return the selected indexes or an empty list if the selection is empty
+		 */
+		@Override
+		List<Integer> get();
+
+		/**
 		 * @param indexes the indexes to select
 		 */
 		void set(Collection<Integer> indexes);
@@ -132,6 +138,12 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 	 * @param <R> the item type
 	 */
 	interface Items<R> extends Mutable<List<R>> {
+
+		/**
+		 * @return the selected items or an empty list if the selection is empty
+		 */
+		@Override
+		List<R> get();
 
 		/**
 		 * @param items the items to select

@@ -81,12 +81,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public void refresh() {
-		refresh(null);
+		refresher.doRefresh(null);
 	}
 
 	@Override
 	public void refresh(Consumer<Collection<T>> onRefresh) {
-		refresher.doRefresh(onRefresh);
+		refresher.doRefresh(requireNonNull(onRefresh));
 	}
 
 	@Override
@@ -244,7 +244,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean addItem(T item) {
 			requireNonNull(item);
-			if (visible.predicate.isNull() || visible.predicate.get().test(item)) {
+			if (visible.predicate.isNull() || visible.predicate.getOrThrow().test(item)) {
 				if (!visible.items.contains(item)) {
 					visible.items.add(item);
 					visible.sort();
@@ -344,7 +344,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (visible.predicate.isNotNull()) {
 				for (Iterator<T> iterator = visible.items.listIterator(); iterator.hasNext(); ) {
 					T item = iterator.next();
-					if (item != null && !visible.predicate.get().test(item)) {
+					if (item != null && !visible.predicate.getOrThrow().test(item)) {
 						filtered.items.add(item);
 						iterator.remove();
 					}

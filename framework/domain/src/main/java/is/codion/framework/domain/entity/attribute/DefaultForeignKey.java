@@ -215,7 +215,7 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 
 		@Override
 		public ForeignKeyDefinition.Builder foreignKey() {
-			return foreignKey(ForeignKeyDefinition.FOREIGN_KEY_FETCH_DEPTH.get());
+			return foreignKey(ForeignKeyDefinition.FOREIGN_KEY_FETCH_DEPTH.getOrThrow());
 		}
 
 		@Override
@@ -225,7 +225,7 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 
 		@Override
 		public ForeignKeyDefinition.Builder softForeignKey() {
-			return softForeignKey(ForeignKeyDefinition.FOREIGN_KEY_FETCH_DEPTH.get());
+			return softForeignKey(ForeignKeyDefinition.FOREIGN_KEY_FETCH_DEPTH.getOrThrow());
 		}
 
 		@Override

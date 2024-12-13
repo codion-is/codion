@@ -405,7 +405,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		private Boolean groupingUsed;
 		private char decimalSeparator = 0;
 		private int maximumFractionDigits = -1;
-		private boolean convertGroupingToDecimalSeparator = CONVERT_GROUPING_TO_DECIMAL_SEPARATOR.get();
+		private boolean convertGroupingToDecimalSeparator = CONVERT_GROUPING_TO_DECIMAL_SEPARATOR.getOrThrow();
 
 		protected AbstractNumberFieldBuilder(Class<T> type, Value<T> linkedValue) {
 			super(type, linkedValue);

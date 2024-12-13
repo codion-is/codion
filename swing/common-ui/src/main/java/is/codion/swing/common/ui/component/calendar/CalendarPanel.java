@@ -281,7 +281,7 @@ public final class CalendarPanel extends JPanel {
 	 * @return the date currently displayed in this calendar
 	 */
 	public LocalDate getLocalDate() {
-		return LocalDate.of(yearValue.get(), monthValue.get(), dayValue.get());
+		return LocalDate.of(yearValue.getOrThrow(), monthValue.getOrThrow(), dayValue.getOrThrow());
 	}
 
 	/**
@@ -603,14 +603,14 @@ public final class CalendarPanel extends JPanel {
 	private void layoutDayPanel() {
 		getCurrentKeyboardFocusManager().clearFocusOwner();
 		dayGridPanel.removeAll();
-		DayOfWeek dayOfWeek = localDateValue.get().withDayOfMonth(1).getDayOfWeek();
+		DayOfWeek dayOfWeek = localDateValue.getOrThrow().withDayOfMonth(1).getDayOfWeek();
 		Iterator<JLabel> paddingIterator = paddingLabels.iterator();
 		int dayOfWeekColumn = dayColumns.indexOf(dayOfWeek);
 		for (int i = 0; i < dayOfWeekColumn; i++) {
 			dayGridPanel.add(paddingIterator.next());
 		}
 		int counter = dayOfWeekColumn + 1;
-		YearMonth yearMonth = YearMonth.of(yearValue.get(), monthValue.get());
+		YearMonth yearMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow());
 		for (int dayOfMonth = 1; dayOfMonth <= yearMonth.lengthOfMonth(); dayOfMonth++) {
 			dayGridPanel.add(dayLabels.get(dayOfMonth));
 			counter++;
@@ -636,12 +636,12 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private LocalDateTime createLocalDateTime() {
-		return LocalDateTime.of(yearValue.get(), monthValue.get(), dayValue.get(), hourValue.get(), minuteValue.get());
+		return LocalDateTime.of(yearValue.getOrThrow(), monthValue.getOrThrow(), dayValue.getOrThrow(), hourValue.getOrThrow(), minuteValue.getOrThrow());
 	}
 
 	private void updateDateTime() {
 		//prevent illegal day values
-		YearMonth yearMonth = YearMonth.of(yearValue.get(), monthValue.get());
+		YearMonth yearMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow());
 		dayValue.map(day -> day > yearMonth.lengthOfMonth() ? yearMonth.lengthOfMonth() : day);
 		LocalDateTime localDateTime = createLocalDateTime();
 		localDateValue.set(localDateTime.toLocalDate());

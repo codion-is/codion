@@ -44,7 +44,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 	private Collection<Class<? extends Throwable>> unwrapExceptions = WRAPPER_EXCEPTIONS.get();
 	private String message;
 	private boolean unwrap = true;
-	private boolean systemProperties = SYSTEM_PROPERTIES.get();
+	private boolean systemProperties = SYSTEM_PROPERTIES.getOrThrow();
 
 	@Override
 	public ExceptionDialogBuilder message(String message) {

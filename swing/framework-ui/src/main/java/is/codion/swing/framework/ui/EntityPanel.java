@@ -937,7 +937,7 @@ public class EntityPanel extends JPanel {
 
 		return borderLayoutPanel()
 						.minimumSize(new Dimension(0, 0))
-						.border(createEmptyBorder(Layouts.GAP.get(), 0, Layouts.GAP.get(), 0))
+						.border(createEmptyBorder(Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow(), 0))
 						.mouseListener(new ActivateOnMouseClickListener())
 						.build();
 	}
@@ -1262,13 +1262,13 @@ public class EntityPanel extends JPanel {
 		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
 		private Function<Controls, JComponent> controlComponent = new DefaultControlComponent();
 		private Function<EntityEditPanel, JPanel> editBasePanel = new DefaultEditBasePanel();
-		private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
-		private boolean toolbarControls = TOOLBAR_CONTROLS.get();
-		private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
-		private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
+		private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.getOrThrow();
+		private boolean toolbarControls = TOOLBAR_CONTROLS.getOrThrow();
+		private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.getOrThrow();
+		private String controlComponentConstraints = TOOLBAR_CONTROLS.getOrThrow() ?
 						CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
-		private boolean includeControls = INCLUDE_CONTROLS.get();
-		private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
+		private boolean includeControls = INCLUDE_CONTROLS.getOrThrow();
+		private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.getOrThrow();
 		private WindowType windowType = WINDOW_TYPE.get();
 		private PanelState initialEditState = EMBEDDED;
 		private String editPanelContstraints = EDIT_PANEL_CONSTRAINTS.get();

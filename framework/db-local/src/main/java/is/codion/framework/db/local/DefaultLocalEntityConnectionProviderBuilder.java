@@ -35,7 +35,7 @@ public final class DefaultLocalEntityConnectionProviderBuilder
 
 	Domain domain;
 	Database database;
-	int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
+	int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.getOrThrow();
 
 	/**
 	 * Instantiates a new {@link DefaultLocalEntityConnectionProviderBuilder}

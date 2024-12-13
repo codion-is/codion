@@ -93,7 +93,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	@Override
 	public List<Entity> get() {
-		return query.get().apply(this);
+		return query.getOrThrow().apply(this);
 	}
 
 	@Override
@@ -204,7 +204,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		@Override
 		public List<Entity> apply(EntityQueryModel queryModel) {
 			Select select = createSelect();
-			if (conditionRequired.get() && !conditionEnabled.get().get()) {
+			if (conditionRequired.get() && !conditionEnabled.getOrThrow().get()) {
 				resetConditionChanged(select);
 
 				return emptyList();

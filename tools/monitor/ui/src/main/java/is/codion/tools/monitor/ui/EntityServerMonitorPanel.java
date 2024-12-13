@@ -79,7 +79,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
 	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
 	private static final Runtime RUNTIME = Runtime.getRuntime();
-	private static String jdkDir = UserPreferences.getUserPreference(JDK_PREFERENCE_KEY, null);
+	private static String jdkDir = UserPreferences.getUserPreference(JDK_PREFERENCE_KEY);
 
 	private final State alwaysOnTopState = State.state();
 	private final EntityServerMonitor model;
@@ -91,7 +91,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	 */
 	public EntityServerMonitorPanel() throws RemoteException {
 		this(new EntityServerMonitor(Clients.SERVER_HOSTNAME.get(),
-						ServerConfiguration.REGISTRY_PORT.get(), adminUser()));
+						ServerConfiguration.REGISTRY_PORT.getOrThrow(), adminUser()));
 		Thread.setDefaultUncaughtExceptionHandler((t, e) ->
 						displayExceptionDialog(e, Utilities.parentWindow(EntityServerMonitorPanel.this)));
 	}
@@ -109,13 +109,6 @@ public final class EntityServerMonitorPanel extends JPanel {
 
 	public EntityServerMonitor model() {
 		return model;
-	}
-
-	/**
-	 * @return a State controlling the alwaysOnTop state of this panels parent window
-	 */
-	public State alwaysOnTop() {
-		return alwaysOnTopState;
 	}
 
 	public void runJConsole() throws IOException {
@@ -166,7 +159,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 			tabbedPaneBuilder.tab(hostMonitor.hostName() + ":" + hostMonitor.registryPort(), new HostMonitorPanel(hostMonitor));
 		}
 		setLayout(new BorderLayout());
-		int gap = Layouts.GAP.get();
+		int gap = Layouts.GAP.getOrThrow();
 		setBorder(createEmptyBorder(gap, gap, 0, gap));
 		add(tabbedPaneBuilder.build(), BorderLayout.CENTER);
 		add(createSouthPanel(), BorderLayout.SOUTH);

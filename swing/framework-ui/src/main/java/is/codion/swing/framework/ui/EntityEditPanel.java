@@ -603,7 +603,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private CommandControl createInsertControl() {
-		boolean useSaveCaption = EntityEditPanel.Config.USE_SAVE_CAPTION.get();
+		boolean useSaveCaption = EntityEditPanel.Config.USE_SAVE_CAPTION.getOrThrow();
 		char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.insertMnemonic();
 		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.insert();
 		return Control.builder()
@@ -661,7 +661,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 		else {
 			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, editModel().connectionProvider());
-			int gap = Layouts.GAP.get();
+			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
 			Dialogs.componentDialog(dependenciesPanel)
 							.owner(this)
@@ -756,9 +756,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 		private boolean clearAfterInsert = true;
 		private boolean requestFocusAfterInsert = true;
-		private boolean focusActivation = USE_FOCUS_ACTIVATION.get();
-		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.get();
-		private boolean modifiedWarning = MODIFIED_WARNING.get();
+		private boolean focusActivation = USE_FOCUS_ACTIVATION.getOrThrow();
+		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.getOrThrow();
+		private boolean modifiedWarning = MODIFIED_WARNING.getOrThrow();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
 						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 		private Confirmer insertConfirmer = DEFAULT_INSERT_CONFIRMER;

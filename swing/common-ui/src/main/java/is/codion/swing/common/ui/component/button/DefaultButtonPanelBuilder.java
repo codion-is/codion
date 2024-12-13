@@ -32,7 +32,7 @@ import java.awt.GridLayout;
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
 				implements ButtonPanelBuilder {
 
-	private int buttonGap = Layouts.GAP.get();
+	private int buttonGap = Layouts.GAP.getOrThrow();
 
 	DefaultButtonPanelBuilder(Action... actions) {
 		this(Controls.controls(actions));

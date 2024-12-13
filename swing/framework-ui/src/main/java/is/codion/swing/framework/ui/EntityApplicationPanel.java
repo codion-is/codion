@@ -240,9 +240,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 					.build();
 	private final Event<?> exitEvent = Event.event();
 	private final Event<EntityApplicationPanel<?>> onInitialized = Event.event();
-	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.get();
-	private final boolean userPreferencesEnabled = USER_PREFERENCES_ENABLED.get();
-	private final boolean restoreDefaultPreferences = RESTORE_DEFAULT_PREFERENCES.get();
+	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.getOrThrow();
+	private final boolean userPreferencesEnabled = USER_PREFERENCES_ENABLED.getOrThrow();
+	private final boolean restoreDefaultPreferences = RESTORE_DEFAULT_PREFERENCES.getOrThrow();
 
 	private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
 
@@ -405,7 +405,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 			LOG.debug("Exception while disconnecting from database", e);
 		}
 		Stream.of(Window.getWindows()).forEach(Window::dispose);
-		if (CALL_SYSTEM_EXIT.get()) {
+		if (CALL_SYSTEM_EXIT.getOrThrow()) {
 			System.exit(0);
 		}
 	}
@@ -416,7 +416,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see #HELP_URL
 	 */
 	public void displayHelp() throws Exception {
-		Desktop.getDesktop().browse(new URL(HELP_URL.get()).toURI());
+		Desktop.getDesktop().browse(new URL(HELP_URL.getOrThrow()).toURI());
 	}
 
 	/**
@@ -722,7 +722,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 						.add(new JLabel(resourceBundle.getString(MEMORY_USAGE) + ":"));
 
 		JLabel memoryLabel = new JLabel(MEMORY_USAGE_FORMAT.format((RUNTIME.totalMemory() - RUNTIME.freeMemory()) / 1024) + " KB");
-		versionMemoryPanel.add(DISPLAY_SYSTEM_PROPERTIES.get() ? borderLayoutPanel()
+		versionMemoryPanel.add(DISPLAY_SYSTEM_PROPERTIES.getOrThrow() ? borderLayoutPanel()
 						.centerComponent(memoryLabel)
 						.eastComponent(toolBar()
 										.floatable(false)
@@ -897,14 +897,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
-		if (CACHE_ENTITY_PANELS.get() && cachedEntityPanels.containsKey(panelBuilder)) {
+		if (CACHE_ENTITY_PANELS.getOrThrow() && cachedEntityPanels.containsKey(panelBuilder)) {
 			return cachedEntityPanels.get(panelBuilder);
 		}
 
 		EntityPanel entityPanel = panelBuilder.build(applicationModel.connectionProvider());
 		applyUserPreferences(singleton(entityPanel));
 		entityPanel.initialize();
-		if (CACHE_ENTITY_PANELS.get()) {
+		if (CACHE_ENTITY_PANELS.getOrThrow()) {
 			cachedEntityPanels.put(panelBuilder, entityPanel);
 		}
 
@@ -924,7 +924,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	private static JPanel createEmptyBorderBasePanel(EntityPanel entityPanel) {
-		int gap = Layouts.GAP.get();
+		int gap = Layouts.GAP.getOrThrow();
 		return Components.borderLayoutPanel()
 						.centerComponent(entityPanel)
 						.border(createEmptyBorder(gap, gap, 0, gap))
@@ -947,7 +947,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 							JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION;
 		}
 
-		return CONFIRM_EXIT.get() && showConfirmDialog(this,
+		return CONFIRM_EXIT.getOrThrow() && showConfirmDialog(this,
 						FrameworkMessages.confirmExit(), FrameworkMessages.confirmExitTitle(),
 						JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION;
 	}

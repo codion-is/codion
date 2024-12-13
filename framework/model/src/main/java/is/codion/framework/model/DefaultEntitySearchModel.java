@@ -182,7 +182,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			throw new IllegalStateException("No search columns provided for search model: " + entityType);
 		}
 		Collection<Condition> conditions = new ArrayList<>();
-		String[] searchStrings = singleSelection ? new String[] {searchString.get()} : searchString.get().split(separator.get());
+		String[] searchStrings = singleSelection ? new String[] {searchString.get()} : searchString.getOrThrow().split(separator.getOrThrow());
 		for (Column<String> column : columns) {
 			Settings columnSettings = settings.get(column);
 			for (String rawSearchString : searchStrings) {
@@ -204,7 +204,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private Condition createCombinedCondition(Collection<Condition> conditions) {
 		Condition conditionCombination = or(conditions);
-		Condition additionalCondition = condition.get().get();
+		Condition additionalCondition = condition.getOrThrow().get();
 
 		return additionalCondition == null ? conditionCombination : and(additionalCondition, conditionCombination);
 	}
@@ -268,8 +268,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		private String entitiesToString() {
 			return entities.get().stream()
-							.map(stringFunction.get())
-							.collect(joining(separator.get()));
+							.map(stringFunction.getOrThrow())
+							.collect(joining(separator.getOrThrow()));
 		}
 	}
 

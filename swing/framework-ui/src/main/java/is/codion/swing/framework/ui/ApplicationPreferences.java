@@ -107,7 +107,7 @@ final class ApplicationPreferences {
 
 			return new ApplicationPreferences(
 							getUserPreference(applicationDefaultUsernameProperty, System.getProperty("user.name")),
-							getUserPreference(applicationLookAndFeelProperty, null),
+							getUserPreference(applicationLookAndFeelProperty),
 							parseInt(getUserPreference(applicationFontSizeProperty, "100")),
 							parseFrameSize(getUserPreference(applicationFrameSizeProperty, "")),
 							parseBoolean(getUserPreference(applicationFrameMaximizedProperty, "false")));

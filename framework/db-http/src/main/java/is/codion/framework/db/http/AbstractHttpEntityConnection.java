@@ -405,12 +405,12 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 		private DomainType domainType;
 		private String hostName = HOSTNAME.get();
-		private int port = PORT.get();
-		private int securePort = SECURE_PORT.get();
-		private boolean https = SECURE.get();
-		private boolean json = JSON.get();
-		private int socketTimeout = SOCKET_TIMEOUT.get();
-		private int connectTimeout = CONNECT_TIMEOUT.get();
+		private int port = PORT.getOrThrow();
+		private int securePort = SECURE_PORT.getOrThrow();
+		private boolean https = SECURE.getOrThrow();
+		private boolean json = JSON.getOrThrow();
+		private int socketTimeout = SOCKET_TIMEOUT.getOrThrow();
+		private int connectTimeout = CONNECT_TIMEOUT.getOrThrow();
 		private User user;
 		private String clientType;
 		private UUID clientId;

@@ -90,12 +90,12 @@ public final class DomainGeneratorModel {
 					.build();
 	private final State domainPackageSpecified = State.state();
 	private final Value<String> domainPackageValue = Value.builder()
-					.nonNull(DEFAULT_DOMAIN_PACKAGE.get())
+					.nonNull(DEFAULT_DOMAIN_PACKAGE.getOrThrow())
 					.listener(this::domainPackageChanged)
 					.build();
 	private final State sourceDirectorySpecified = State.state();
 	private final Value<String> sourceDirectoryValue = Value.builder()
-					.nonNull(DEFAULT_SOURCE_DIRECTORY.get())
+					.nonNull(DEFAULT_SOURCE_DIRECTORY.getOrThrow())
 					.listener(this::sourceDirectoryChanged)
 					.build();
 	private final Value<String> domainImplValue = Value.builder()
@@ -181,7 +181,7 @@ public final class DomainGeneratorModel {
 				domainSource(domain)
 								.writeApiImpl(domainPackageValue.optional()
 												.filter(DomainGeneratorModel::validPackageName)
-												.orElse(""), includeDto.get(), savePath(Path.of(sourceDirectoryValue.get())));
+												.orElse(""), includeDto.get(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
 			}
 		}
 	}
@@ -193,7 +193,7 @@ public final class DomainGeneratorModel {
 				domainSource(domain)
 								.writeCombined(domainPackageValue.optional()
 												.filter(DomainGeneratorModel::validPackageName)
-												.orElse(""), includeDto.get(), savePath(Path.of(sourceDirectoryValue.get())));
+												.orElse(""), includeDto.get(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
 			}
 		}
 	}

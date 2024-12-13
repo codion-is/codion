@@ -713,7 +713,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 				NumberFormat numberFormat = defaultNumberFormat(attribute);
 				if (attribute.type().isDecimal()) {
 					((DecimalFormat) numberFormat).setParseBigDecimal(attribute.type().isBigDecimal());
-					numberFormat.setMaximumFractionDigits(AttributeDefinition.MAXIMUM_FRACTION_DIGITS.get());
+					numberFormat.setMaximumFractionDigits(AttributeDefinition.MAXIMUM_FRACTION_DIGITS.getOrThrow());
 				}
 
 				return numberFormat;
@@ -723,7 +723,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		}
 
 		private static NumberFormat defaultNumberFormat(Attribute<?> attribute) {
-			boolean grouping = NUMBER_FORMAT_GROUPING.get();
+			boolean grouping = NUMBER_FORMAT_GROUPING.getOrThrow();
 			if (attribute.type().isInteger() || attribute.type().isLong()) {
 				return setSeparators(grouping ? NumberFormat.getIntegerInstance() : nonGroupingIntegerFormat());
 			}
@@ -761,7 +761,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		}
 
 		private static <T> Comparator<T> defaultComparator(Attribute<T> attribute) {
-			if (attribute.type().isString() && USE_LEXICAL_STRING_COMPARATOR.get()) {
+			if (attribute.type().isString() && USE_LEXICAL_STRING_COMPARATOR.getOrThrow()) {
 				return (Comparator<T>) LEXICAL_COMPARATOR;
 			}
 			if (Comparable.class.isAssignableFrom(attribute.type().valueClass())) {

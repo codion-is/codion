@@ -34,12 +34,12 @@ public final class DefaultHttpEntityConnectionProviderBuilder
 				implements HttpEntityConnectionProvider.Builder {
 
 	String hostName = HttpEntityConnection.HOSTNAME.get();
-	int port = HttpEntityConnection.PORT.get();
-	int securePort = HttpEntityConnection.SECURE_PORT.get();
-	boolean https = HttpEntityConnection.SECURE.get();
-	boolean json = HttpEntityConnection.JSON.get();
-	int socketTimeout = HttpEntityConnection.SOCKET_TIMEOUT.get();
-	int connectTimeout = HttpEntityConnection.CONNECT_TIMEOUT.get();
+	int port = HttpEntityConnection.PORT.getOrThrow();
+	int securePort = HttpEntityConnection.SECURE_PORT.getOrThrow();
+	boolean https = HttpEntityConnection.SECURE.getOrThrow();
+	boolean json = HttpEntityConnection.JSON.getOrThrow();
+	int socketTimeout = HttpEntityConnection.SOCKET_TIMEOUT.getOrThrow();
+	int connectTimeout = HttpEntityConnection.CONNECT_TIMEOUT.getOrThrow();
 	Executor executor = AbstractHttpEntityConnection.DEFAULT_EXECUTOR;
 
 	/**

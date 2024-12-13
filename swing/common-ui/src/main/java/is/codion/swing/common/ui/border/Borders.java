@@ -36,7 +36,7 @@ public final class Borders {
 	 * @return a new empty border
 	 */
 	public static Border emptyBorder() {
-		int gap = Layouts.GAP.get();
+		int gap = Layouts.GAP.getOrThrow();
 
 		return BorderFactory.createEmptyBorder(gap, gap, gap, gap);
 	}

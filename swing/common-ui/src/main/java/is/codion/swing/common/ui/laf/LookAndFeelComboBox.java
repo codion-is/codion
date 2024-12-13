@@ -112,7 +112,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 	 * @return a new {@link LookAndFeelComboBox} instance
 	 */
 	public static LookAndFeelComboBox lookAndFeelComboBox() {
-		return new LookAndFeelComboBox(createLookAndFeelComboBoxModel(), ENABLE_ON_SELECTION.get());
+		return new LookAndFeelComboBox(createLookAndFeelComboBoxModel(), ENABLE_ON_SELECTION.getOrThrow());
 	}
 
 	/**

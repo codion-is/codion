@@ -37,6 +37,6 @@ public final class HSQLDatabaseFactory implements DatabaseFactory {
 
 	@Override
 	public Database create(String url) {
-		return new HSQLDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.get());
+		return new HSQLDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.getOrThrow());
 	}
 }

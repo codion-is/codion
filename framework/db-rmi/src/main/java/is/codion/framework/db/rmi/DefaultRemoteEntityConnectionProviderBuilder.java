@@ -34,8 +34,8 @@ public final class DefaultRemoteEntityConnectionProviderBuilder
 				implements RemoteEntityConnectionProvider.Builder {
 
 	String hostName = Clients.SERVER_HOSTNAME.get();
-	int port = ServerConfiguration.SERVER_PORT.get();
-	int registryPort = ServerConfiguration.REGISTRY_PORT.get();
+	int port = ServerConfiguration.SERVER_PORT.getOrThrow();
+	int registryPort = ServerConfiguration.REGISTRY_PORT.getOrThrow();
 	String namePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
 
 	/**

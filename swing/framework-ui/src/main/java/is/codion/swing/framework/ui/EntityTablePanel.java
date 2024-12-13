@@ -466,9 +466,9 @@ public class EntityTablePanel extends JPanel {
 	private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
-	private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.get());
-	private final State orderQueryBySortOrder = State.state(Config.ORDER_QUERY_BY_SORT_ORDER.get());
-	private final State queryHiddenColumns = State.state(Config.QUERY_HIDDEN_COLUMNS.get());
+	private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.getOrThrow());
+	private final State orderQueryBySortOrder = State.state(Config.ORDER_QUERY_BY_SORT_ORDER.getOrThrow());
+	private final State queryHiddenColumns = State.state(Config.QUERY_HIDDEN_COLUMNS.getOrThrow());
 
 	private final FilterTable<Entity, Attribute<?>> table;
 	private final JScrollPane tableScrollPane = new JScrollPane();
@@ -1321,7 +1321,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void toggleView(Value<ConditionView> conditionView, JScrollPane conditionScrollPane) {
-		switch (conditionView.get()) {
+		switch (conditionView.getOrThrow()) {
 			case HIDDEN:
 				conditionView.set(SIMPLE);
 				break;
@@ -1855,7 +1855,7 @@ public class EntityTablePanel extends JPanel {
 			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, tableModel.connectionProvider());
 			dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) ->
 							dependencyTablePanel.applyColumnPreferences(dependencyPanelPreferences.get(entityType)));
-			int gap = Layouts.GAP.get();
+			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
 			Dialogs.componentDialog(dependenciesPanel)
 							.owner(this)
@@ -2312,15 +2312,15 @@ public class EntityTablePanel extends JPanel {
 
 		private TableConditionPanel.Factory<Attribute<?>> conditionPanelFactory = new DefaultConditionPanelFactory();
 		private boolean includeSouthPanel = true;
-		private boolean includeConditions = INCLUDE_CONDITIONS.get();
+		private boolean includeConditions = INCLUDE_CONDITIONS.getOrThrow();
 		private ConditionView conditionView = CONDITION_VIEW.get();
-		private boolean includeFilters = INCLUDE_FILTERS.get();
+		private boolean includeFilters = INCLUDE_FILTERS.getOrThrow();
 		private ConditionView filterView = FILTER_VIEW.get();
-		private boolean includeSummaries = INCLUDE_SUMMARY.get();
-		private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
-		private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.get();
-		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.get();
-		private boolean includePopupMenu = INCLUDE_POPUP_MENU.get();
+		private boolean includeSummaries = INCLUDE_SUMMARY.getOrThrow();
+		private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.getOrThrow();
+		private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.getOrThrow();
+		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.getOrThrow();
+		private boolean includePopupMenu = INCLUDE_POPUP_MENU.getOrThrow();
 		private boolean includeSingleSelectionControl = false;
 		private boolean includeAddControl = true;
 		private boolean includeEditControl = true;
@@ -2332,7 +2332,7 @@ public class EntityTablePanel extends JPanel {
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling = REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 		private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
 		private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
-		private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
+		private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.getOrThrow();
 		private Confirmer deleteConfirmer;
 
 		final ControlMap controlMap;

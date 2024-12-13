@@ -36,6 +36,14 @@ public final class UserPreferences {
 
 	/**
 	 * @param key the key identifying the preference
+	 * @return the user preference associated with the given key
+	 */
+	public static String getUserPreference(String key) {
+		return userPreferences().get(requireNonNull(key), null);
+	}
+
+	/**
+	 * @param key the key identifying the preference
 	 * @param defaultValue the default value if no preference is available
 	 * @return the user preference associated with the given key
 	 */

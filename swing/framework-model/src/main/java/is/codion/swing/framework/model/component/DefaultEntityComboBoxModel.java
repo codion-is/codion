@@ -215,7 +215,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	private Collection<Entity> performQuery() {
-		return connectionProvider.connection().select(where(condition.get().get())
+		return connectionProvider.connection().select(where(condition.getOrThrow().get())
 						.attributes(attributes)
 						.orderBy(orderBy)
 						.build());
@@ -293,7 +293,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 				}
 			}
 
-			return predicate.isNull() || predicate.get().test(entity);
+			return predicate.isNull() || predicate.getOrThrow().test(entity);
 		}
 	}
 
@@ -455,7 +455,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private Supplier<Condition> condition;
 		private Comparator<Entity> comparator;
 		private Collection<Attribute<?>> attributes = emptyList();
-		private boolean handleEditEvents = EntityComboBoxModel.HANDLE_EDIT_EVENTS.get();
+		private boolean handleEditEvents = EntityComboBoxModel.HANDLE_EDIT_EVENTS.getOrThrow();
 		private String nullCaption;
 		private boolean filterSelected = false;
 

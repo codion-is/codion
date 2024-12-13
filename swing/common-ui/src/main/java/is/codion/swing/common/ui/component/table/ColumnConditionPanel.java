@@ -166,7 +166,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	@Override
 	public void requestInputFocus() {
-		switch (condition().operator().get()) {
+		switch (condition().operator().getOrThrow()) {
 			case EQUAL:
 			case NOT_EQUAL:
 				fields.equal().ifPresent(JComponent::requestFocusInWindow);
@@ -429,7 +429,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			bindEvents();
 			controlPanel.add(operatorCombo, BorderLayout.CENTER);
 			addStringConfigurationPopupMenu();
-			onOperatorChanged(condition().operator().get());
+			onOperatorChanged(condition().operator().getOrThrow());
 			initialized = true;
 		}
 	}
@@ -597,7 +597,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 						.renderer(new OperatorComboBoxRenderer())
 						.maximumRowCount(operators.size())
 						.mouseWheelScrollingWithWrapAround(true)
-						.toolTipText(condition().operator().get().description())
+						.toolTipText(condition().operator().getOrThrow().description())
 						.onBuild(comboBox -> operatorComboBoxModel.selection().item().addConsumer(selectedOperator ->
 										comboBox.setToolTipText(selectedOperator.value().description())))
 						.build();
@@ -698,7 +698,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private Controls createWildcardControls() {
-		Wildcard wildcard = condition().wildcard().get();
+		Wildcard wildcard = condition().wildcard().getOrThrow();
 
 		State wildcardNoneState = State.state(wildcard.equals(Wildcard.NONE));
 		State wildcardPostfixState = State.state(wildcard.equals(Wildcard.POSTFIX));

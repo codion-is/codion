@@ -37,6 +37,6 @@ public final class OracleDatabaseFactory implements DatabaseFactory {
 
 	@Override
 	public Database create(String url) {
-		return new OracleDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.get());
+		return new OracleDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.getOrThrow());
 	}
 }

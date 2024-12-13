@@ -96,6 +96,12 @@ public interface FilterModel<T> {
 	interface Items<T> extends Mutable<Collection<T>> {
 
 		/**
+		 * @return the items or an empty list in case of no items
+		 */
+		@Override
+		Collection<T> get();
+
+		/**
 		 * Adds the given item to this model.
 		 * Note that if the item does not pass the {@link VisibleItems#predicate()}, it will be filtered right away.
 		 * @param item the item to add
@@ -160,6 +166,12 @@ public interface FilterModel<T> {
 	 * @param <T> the item type
 	 */
 	interface VisibleItems<T> extends Observable<List<T>> {
+
+		/**
+		 * @return the visible items or an empty list if no item is visible
+		 */
+		@Override
+		List<T> get();
 
 		/**
 		 * @return the {@link Value} controlling the predicate specifying which items should be visible
@@ -245,6 +257,12 @@ public interface FilterModel<T> {
 	 * @param <T> the item type
 	 */
 	interface FilteredItems<T> extends Observable<Collection<T>> {
+
+		/**
+		 * @return the filtered items or an empty collection in case of no filtered items
+		 */
+		@Override
+		Collection<T> get();
 
 		/**
 		 * Returns true if the given item is filtered.

@@ -60,7 +60,7 @@ final class DefaultFontImageIcon implements FontImageIcon {
 
 		private final Ikon ikon;
 
-		private int size = Icons.ICON_SIZE.get();
+		private int size = Icons.ICON_SIZE.getOrThrow();
 		private Color color = Icons.ICON_COLOR.get();
 		private IconPainter iconPainter = DEFAULT_ICON_PAINTER;
 		private ImageIconFactory imageIconFactory = DEFAULT_ICON_FACTORY;

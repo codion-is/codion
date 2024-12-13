@@ -460,7 +460,7 @@ public final class FilterTable<R, C> extends JTable {
 										.build())
 						.owner(getParent())
 						.title(MESSAGES.getString(AUTO_RESIZE))
-						.onOk(() -> setAutoResizeMode(componentValue.get()))
+						.onOk(() -> setAutoResizeMode(componentValue.getOrThrow()))
 						.show();
 	}
 
@@ -935,7 +935,7 @@ public final class FilterTable<R, C> extends JTable {
 		public void mouseClicked(MouseEvent e) {
 			if (e.getClickCount() == 2) {
 				if (doubleClickAction.isNotNull()) {
-					doubleClickAction.get().actionPerformed(new ActionEvent(e, ActionEvent.ACTION_PERFORMED, "doubleClick"));
+					doubleClickAction.getOrThrow().actionPerformed(new ActionEvent(e, ActionEvent.ACTION_PERFORMED, "doubleClick"));
 				}
 				doubleClick.accept(e);
 			}
@@ -1191,10 +1191,10 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean scrollToSelectedItem = true;
 		private boolean sortingEnabled = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
-		private boolean columnReorderingAllowed = ALLOW_COLUMN_REORDERING.get();
+		private boolean columnReorderingAllowed = ALLOW_COLUMN_REORDERING.getOrThrow();
 		private boolean columnResizingAllowed = true;
-		private int autoResizeMode = AUTO_RESIZE_MODE.get();
-		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.get();
+		private int autoResizeMode = AUTO_RESIZE_MODE.getOrThrow();
+		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.getOrThrow();
 		private ConditionView filterView = ConditionView.HIDDEN;
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {

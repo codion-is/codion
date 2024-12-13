@@ -104,7 +104,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 		}
 
 		private int selectedFontSize() {
-			return componentValue.get();
+			return componentValue.getOrThrow();
 		}
 
 		private static List<Item<Integer>> initializeValues() {

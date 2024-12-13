@@ -501,7 +501,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private Consumer<Boolean> createSearchIndicatorConsumer() {
-		switch (searchIndicator.get()) {
+		switch (searchIndicator.getOrThrow()) {
 			case WAIT_CURSOR:
 				return new WaitCursorWhileSearching();
 			case PROGRESS_BAR:
@@ -567,7 +567,7 @@ public final class EntitySearchField extends HintTextField {
 							SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
 		}
 		else {
-			selectorFactory.get().apply(model).select(this, searchResult);
+			selectorFactory.getOrThrow().apply(model).select(this, searchResult);
 		}
 	}
 
@@ -791,7 +791,7 @@ public final class EntitySearchField extends HintTextField {
 			this.selectorPanel = borderLayoutPanel()
 							.centerComponent(scrollPane(list).build())
 							.southComponent(resultLimitLabel)
-							.border(createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
+							.border(createEmptyBorder(Layouts.GAP.getOrThrow(), Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow()))
 							.build();
 		}
 
@@ -876,7 +876,7 @@ public final class EntitySearchField extends HintTextField {
 											.westComponent(table.searchField())
 											.centerComponent(resultLimitLabel)
 											.build())
-							.border(createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
+							.border(createEmptyBorder(Layouts.GAP.getOrThrow(), Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow()))
 							.build();
 		}
 

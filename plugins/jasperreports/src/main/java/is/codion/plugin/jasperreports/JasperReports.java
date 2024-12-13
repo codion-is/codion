@@ -62,7 +62,7 @@ public final class JasperReports {
 	 * @return a report wrapper
 	 */
 	public static JRReport fileReport(String reportPath) {
-		return fileReport(reportPath, Report.CACHE_REPORTS.get());
+		return fileReport(reportPath, Report.CACHE_REPORTS.getOrThrow());
 	}
 
 	/**

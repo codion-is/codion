@@ -164,7 +164,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final void validate(Attribute<?> attribute) {
-		editable.validator.get().validate(editable.entity, attribute);
+		editable.validator.getOrThrow().validate(editable.entity, attribute);
 	}
 
 	@Override
@@ -177,7 +177,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final void validate(Entity entity) {
 		if (entity.entityType().equals(entityType())) {
-			editable.validator.get().validate(entity);
+			editable.validator.getOrThrow().validate(entity);
 		}
 		else {
 			entity.definition().validator().validate(entity);
@@ -683,7 +683,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final State updateEnabled = State.state(true);
 		private final State updateMultipleEnabled = State.state(true);
 		private final State deleteEnabled = State.state(true);
-		private final State postEditEvents = State.state(POST_EDIT_EVENTS.get());
+		private final State postEditEvents = State.state(POST_EDIT_EVENTS.getOrThrow());
 
 		private States(boolean readOnly) {
 			this.readOnly = State.state(readOnly);
@@ -814,7 +814,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		@Override
 		public boolean nullable(Attribute<?> attribute) {
-			return validator.get().nullable(entity, attribute);
+			return validator.getOrThrow().nullable(entity, attribute);
 		}
 
 		@Override
@@ -878,7 +878,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 				return entity.get(attributeDefinition.attribute());
 			}
 
-			return value(attributeDefinition.attribute()).defaultValue().get().get();
+			return value(attributeDefinition.attribute()).defaultValue().getOrThrow().get();
 		}
 
 		private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
@@ -929,7 +929,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private void validate(Entity entity) {
 			if (entity.entityType().equals(entityDefinition.entityType())) {
-				validator.get().validate(entity);
+				validator.getOrThrow().validate(entity);
 			}
 			else {
 				entity.definition().validator().validate(entity);
@@ -938,7 +938,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private boolean isValid(Attribute<?> attribute) {
 			try {
-				validator.get().validate(entity, attribute);
+				validator.getOrThrow().validate(entity, attribute);
 				return true;
 			}
 			catch (ValidationException e) {
@@ -947,11 +947,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
-			modifiedState.set(exists.predicate.get().test(entity) && entity.modified(attribute));
+			modifiedState.set(exists.predicate.getOrThrow().test(entity) && entity.modified(attribute));
 		}
 
 		private void updateValidState() {
-			entityValid.set(validator.get().valid(entity));
+			entityValid.set(validator.getOrThrow().valid(entity));
 		}
 
 		private void updatePrimaryKeyNullState() {
@@ -1002,7 +1002,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private void configurePersistentForeignKeys() {
-			if (PERSIST_FOREIGN_KEYS.get()) {
+			if (PERSIST_FOREIGN_KEYS.getOrThrow()) {
 				entityDefinition.foreignKeys().get().forEach(foreignKey ->
 								value(foreignKey).persist().set(foreignKeyWritable(foreignKey)));
 			}
@@ -1012,7 +1012,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			return foreignKey.references().stream()
 							.map(ForeignKey.Reference::column)
 							.map(entityDefinition.columns()::definition)
-							.filter(ColumnDefinition.class::isInstance)
 							.map(ColumnDefinition.class::cast)
 							.anyMatch(columnDefinition -> !columnDefinition.readOnly());
 		}
@@ -1085,7 +1084,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 
 			private void update() {
-				exists.set(predicate.get().test(entity));
+				exists.set(predicate.getOrThrow().test(entity));
 			}
 		}
 
@@ -1114,7 +1113,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public void update() {
-				modified.set(predicate.get().test(entity));
+				modified.set(predicate.getOrThrow().test(entity));
 			}
 
 			@Override

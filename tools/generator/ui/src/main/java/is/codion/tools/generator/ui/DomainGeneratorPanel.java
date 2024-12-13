@@ -369,8 +369,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private static Border createEmptyBorder() {
-		return BorderFactory.createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(),
-						Layouts.GAP.get(), Layouts.GAP.get());
+		return BorderFactory.createEmptyBorder(Layouts.GAP.getOrThrow(), Layouts.GAP.getOrThrow(),
+						Layouts.GAP.getOrThrow(), Layouts.GAP.getOrThrow());
 	}
 
 	public void showFrame() {

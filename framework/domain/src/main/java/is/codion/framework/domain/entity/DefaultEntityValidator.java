@@ -67,7 +67,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	 * @see #STRICT_VALIDATION
 	 */
 	public DefaultEntityValidator() {
-		this(STRICT_VALIDATION.get());
+		this(STRICT_VALIDATION.getOrThrow());
 	}
 
 	/**

@@ -90,7 +90,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 						.nonNull(builder.loginDelayFactor)
 						.validator(new MinimumValidator(1))
 						.build();
-		this.applicationBatchSize = Value.builder().nonNull(builder.applicationBatchSize)
+		this.applicationBatchSize = Value.builder()
+						.nonNull(builder.applicationBatchSize)
 						.validator(new MinimumValidator(1))
 						.build();
 		this.minimumThinkTime = Value.builder()
@@ -166,7 +167,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	@Override
 	public void addApplicationBatch() {
 		synchronized (applications) {
-			int batchSize = applicationBatchSize.get();
+			int batchSize = applicationBatchSize.getOrThrow();
 			for (int i = 0; i < batchSize; i++) {
 				DefaultApplicationRunner applicationRunner = new DefaultApplicationRunner(user.get(), applicationFactory);
 				applications.put(applicationRunner, applicationRunner.application);
@@ -182,7 +183,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 			if (!applications.isEmpty()) {
 				applications.keySet().stream()
 								.filter(applicationRunner -> !applicationRunner.stopped())
-								.limit(applicationBatchSize.get())
+								.limit(applicationBatchSize.getOrThrow())
 								.collect(toList())
 								.forEach(this::stop);
 			}
@@ -240,8 +241,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	}
 
 	private int initialDelay() {
-		int time = maximumThinkTime.get() - minimumThinkTime.get();
-		return time > 0 ? RANDOM.nextInt(time * loginDelayFactor.get()) + minimumThinkTime.get() : minimumThinkTime.get();
+		int time = maximumThinkTime.getOrThrow() - minimumThinkTime.getOrThrow();
+		return time > 0 ? RANDOM.nextInt(time * loginDelayFactor.getOrThrow()) + minimumThinkTime.getOrThrow() : minimumThinkTime.getOrThrow();
 	}
 
 	private ItemRandomizer<Scenario<T>> createScenarioChooser() {
@@ -374,8 +375,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		}
 
 		private int thinkTime() {
-			int time = maximumThinkTime.get() - minimumThinkTime.get();
-			return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime.get() : minimumThinkTime.get();
+			int time = maximumThinkTime.getOrThrow() - minimumThinkTime.getOrThrow();
+			return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime.getOrThrow() : minimumThinkTime.getOrThrow();
 		}
 	}
 
@@ -488,7 +489,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		@Override
 		public void validate(Integer value) {
 			super.validate(value);
-			if (value > maximumThinkTime.get()) {
+			if (value > maximumThinkTime.getOrThrow()) {
 				throw new IllegalArgumentException("Minimum think time must be equal to or below maximum think time");
 			}
 		}
@@ -503,7 +504,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		@Override
 		public void validate(Integer value) {
 			super.validate(value);
-			if (value < minimumThinkTime.get()) {
+			if (value < minimumThinkTime.getOrThrow()) {
 				throw new IllegalArgumentException("Maximum think time must be equal to or exceed minimum think time");
 			}
 		}

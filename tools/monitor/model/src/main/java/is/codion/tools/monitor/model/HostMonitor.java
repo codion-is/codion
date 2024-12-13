@@ -178,7 +178,7 @@ public final class HostMonitor {
 
 	private static Collection<String> findEntityServers(Registry registry) throws RemoteException {
 		String[] boundNames = registry.list();
-		String serverNamePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
+		String serverNamePrefix = ServerConfiguration.SERVER_NAME_PREFIX.getOrThrow();
 
 		return Arrays.stream(boundNames).filter(name -> name.startsWith(serverNamePrefix)).collect(Collectors.toList());
 	}

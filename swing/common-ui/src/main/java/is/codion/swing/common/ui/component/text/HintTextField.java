@@ -85,7 +85,7 @@ public class HintTextField extends JTextField {
 	@Override
 	public final void paint(Graphics graphics) {
 		super.paint(graphics);
-		if (!hint.get().isEmpty() && !isFocusOwner() && getText().isEmpty()) {
+		if (!hint.getOrThrow().isEmpty() && !isFocusOwner() && getText().isEmpty()) {
 			paintHint(graphics);
 		}
 	}
@@ -110,7 +110,7 @@ public class HintTextField extends JTextField {
 	}
 
 	private String adjustHintLength(FontMetrics fontMetrics, int insets) {
-		String adjustedText = hint.get();
+		String adjustedText = hint.getOrThrow();
 		int hintWidth = fontMetrics.stringWidth(adjustedText) + insets;
 		while (hintWidth > getWidth() && !adjustedText.isEmpty()) {
 			adjustedText = adjustedText.substring(0, adjustedText.length() - 1);

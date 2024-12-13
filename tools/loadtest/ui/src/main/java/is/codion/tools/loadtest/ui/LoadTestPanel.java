@@ -184,7 +184,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private void initializeUI() {
 		setLayout(borderLayout());
-		int gap = Layouts.GAP.get();
+		int gap = Layouts.GAP.getOrThrow();
 		setBorder(createEmptyBorder(gap, gap, 0, gap));
 		add(createCenterPanel(), BorderLayout.CENTER);
 		add(createSouthPanel(), BorderLayout.SOUTH);

@@ -116,6 +116,12 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	interface VisibleColumns<C> extends Mutable<List<C>> {
 
 		/**
+		 * @return the visible columns or an empty list in case no columns are visible
+		 */
+		@Override
+		List<C> get();
+
+		/**
 		 * Arranges the columns so that only the given columns are visible and in the given order
 		 * @param identifiers the column identifiers
 		 * @throws IllegalArgumentException in case a column is not found
@@ -141,6 +147,12 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	 * @param <C> the column identifier type
 	 */
 	interface HiddenColumns<C> extends Observable<Collection<C>> {
+
+		/**
+		 * @return the hidden columns or an empty list in case no columns are hidden
+		 */
+		@Override
+		Collection<C> get();
 
 		/**
 		 * @return an unmodifiable view of the currently hidden columns

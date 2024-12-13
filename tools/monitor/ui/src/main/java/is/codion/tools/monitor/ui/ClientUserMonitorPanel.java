@@ -26,7 +26,6 @@ import is.codion.tools.monitor.model.ClientUserMonitor;
 import is.codion.tools.monitor.model.ClientUserMonitor.UserHistoryColumns;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -179,7 +178,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.value(model.getMaintenanceInterval())
 						.itemListener(e -> {
 							try {
-								model.setMaintenanceInterval((Integer) ((JComboBox<Integer>) e.getSource()).getSelectedItem());
+								model.setMaintenanceInterval((Integer) e.getItem());
 							}
 							catch (RemoteException ex) {
 								onException(ex);

@@ -52,7 +52,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	DefaultInputDialogBuilder(ComponentValue<T, ?> componentValue) {
 		this.componentValue = requireNonNull(componentValue);
 		this.basePanel.add(componentValue.component(), BorderLayout.CENTER);
-		int gap = Layouts.GAP.get();
+		int gap = Layouts.GAP.getOrThrow();
 		this.basePanel.setBorder(createEmptyBorder(gap, gap, 0, gap));
 	}
 

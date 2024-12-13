@@ -47,7 +47,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	private final DomainType domainType;
 	private final Map<String, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
-	private transient boolean validateForeignKeys = VALIDATE_FOREIGN_KEYS.get();
+	private transient boolean validateForeignKeys = VALIDATE_FOREIGN_KEYS.getOrThrow();
 
 	/**
 	 * Instantiates a new DefaultEntities for the given domainType
@@ -187,7 +187,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	}
 
 	private static EntitySerializer createSerializer(Entities entities) {
-		return new EntitySerializer(entities, STRICT_DESERIALIZATION.get());
+		return new EntitySerializer(entities, STRICT_DESERIALIZATION.getOrThrow());
 	}
 
 	private static void validateReference(ForeignKey foreignKey, Attribute<?> referencedAttribute, EntityDefinition referencedEntity) {

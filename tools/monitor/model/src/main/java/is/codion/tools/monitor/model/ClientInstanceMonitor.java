@@ -151,8 +151,9 @@ public final class ClientInstanceMonitor {
 		StringBuilder builder = new StringBuilder(entry.method()).append(" [")
 						.append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.duration())))
 						.append(" μs").append("]");
-		if (entry.enterMessage() != null) {
-			builder.append(": ").append(entry.enterMessage().replace('\n', ' '));
+		String enterMessage = entry.enterMessage();
+		if (enterMessage != null) {
+			builder.append(": ").append(enterMessage.replace('\n', ' '));
 		}
 
 		return builder.toString();

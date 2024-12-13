@@ -62,7 +62,7 @@ public final class EntityTableCellRenderer {
 										.string(attributeDefinition::string);
 		if (!attributeDefinition.items().isEmpty()) {
 			// Otherwise the horizontal aligment is based on the Item value type
-			builder.horizontalAlignment(FilterTableCellRenderer.HORIZONTAL_ALIGNMENT.get());
+			builder.horizontalAlignment(FilterTableCellRenderer.HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 
 		return builder;

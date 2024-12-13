@@ -112,7 +112,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public void refresh() {
-		refresh(null);
+		refresher.doRefresh(null);
 	}
 
 	@Override
@@ -629,7 +629,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public boolean test(R item) {
-			if (predicate.isNotNull() && !predicate.get().test(item)) {
+			if (predicate.isNotNull() && !predicate.getOrThrow().test(item)) {
 				return false;
 			}
 
@@ -667,7 +667,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Predicate<R> validator = new ValidPredicate<>();
 		private ConditionModelFactory<C> filterModelFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
-		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.get();
+		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.getOrThrow();
 
 		DefaultBuilder(Columns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {

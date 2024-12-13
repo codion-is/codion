@@ -39,11 +39,11 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 				T extends EntityTableModel<E>> extends DefaultDetailModelLink<M, E, T> implements ForeignKeyDetailModelLink<M, E, T> {
 
 	private final ForeignKey foreignKey;
-	private final State clearForeignKeyValueOnEmptySelection = State.state(CLEAR_FOREIGN_KEY_VALUE_ON_EMPTY_SELECTION.get());
-	private final State clearForeignKeyConditionOnEmptySelection = State.state(CLEAR_FOREIGN_KEY_CONDITION_ON_EMPTY_SELECTION.get());
-	private final State setForeignKeyValueOnInsert = State.state(SET_FOREIGN_KEY_VALUE_ON_INSERT.get());
-	private final State setForeignKeyConditionOnInsert = State.state(SET_FOREIGN_KEY_CONDITION_ON_INSERT.get());
-	private final State refreshOnSelection = State.state(REFRESH_ON_SELECTION.get());
+	private final State clearForeignKeyValueOnEmptySelection = State.state(CLEAR_FOREIGN_KEY_VALUE_ON_EMPTY_SELECTION.getOrThrow());
+	private final State clearForeignKeyConditionOnEmptySelection = State.state(CLEAR_FOREIGN_KEY_CONDITION_ON_EMPTY_SELECTION.getOrThrow());
+	private final State setForeignKeyValueOnInsert = State.state(SET_FOREIGN_KEY_VALUE_ON_INSERT.getOrThrow());
+	private final State setForeignKeyConditionOnInsert = State.state(SET_FOREIGN_KEY_CONDITION_ON_INSERT.getOrThrow());
+	private final State refreshOnSelection = State.state(REFRESH_ON_SELECTION.getOrThrow());
 
 	/**
 	 * @param detailModel the detail model

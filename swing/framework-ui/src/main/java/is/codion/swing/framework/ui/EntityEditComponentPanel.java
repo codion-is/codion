@@ -166,7 +166,7 @@ public class EntityEditComponentPanel extends JPanel {
 	private final Value<Attribute<?>> afterInsertFocusAttribute = Value.value();
 
 	private final State transferFocusOnEnter = State.state(true);
-	private final State modifiedIndicator = State.state(MODIFIED_INDICATOR.get());
+	private final State modifiedIndicator = State.state(MODIFIED_INDICATOR.getOrThrow());
 
 	private final Defaults defaults = new Defaults();
 
@@ -514,7 +514,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final TextFieldPanel.Builder createTextFieldPanel(Attribute<String> attribute) {
 		return setComponentBuilder(attribute, entityComponents.textFieldPanel(attribute)
-						.columns(defaults.textFieldColumns.get())
+						.columns(defaults.textFieldColumns.getOrThrow())
 						.onBuild(inputPanel -> addValidator(attribute, inputPanel.textField())));
 	}
 
@@ -539,7 +539,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(Attribute<T> attribute) {
 		return setComponentBuilder(attribute, (TextFieldBuilder<T, C, B>) entityComponents.textField(attribute)
-						.columns(defaults.textFieldColumns.get())
+						.columns(defaults.textFieldColumns.getOrThrow())
 						.onBuild(field -> addValidator(attribute, field)));
 	}
 
@@ -609,7 +609,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Integer> createIntegerField(Attribute<Integer> attribute) {
 		return setComponentBuilder(attribute, entityComponents.integerField(attribute)
-						.columns(defaults.textFieldColumns.get())
+						.columns(defaults.textFieldColumns.getOrThrow())
 						.onBuild(field -> addValidator(attribute, field)));
 	}
 
@@ -620,7 +620,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Long> createLongField(Attribute<Long> attribute) {
 		return setComponentBuilder(attribute, entityComponents.longField(attribute)
-						.columns(defaults.textFieldColumns.get())
+						.columns(defaults.textFieldColumns.getOrThrow())
 						.onBuild(field -> addValidator(attribute, field)));
 	}
 
@@ -631,7 +631,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Double> createDoubleField(Attribute<Double> attribute) {
 		return setComponentBuilder(attribute, entityComponents.doubleField(attribute)
-						.columns(defaults.textFieldColumns.get())
+						.columns(defaults.textFieldColumns.getOrThrow())
 						.onBuild(field -> addValidator(attribute, field)));
 	}
 
@@ -642,7 +642,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<BigDecimal> createBigDecimalField(Attribute<BigDecimal> attribute) {
 		return setComponentBuilder(attribute, entityComponents.bigDecimalField(attribute)
-						.columns(defaults.textFieldColumns.get())
+						.columns(defaults.textFieldColumns.getOrThrow())
 						.onBuild(field -> addValidator(attribute, field)));
 	}
 
@@ -687,7 +687,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Attribute<T> attribute, ComboBoxModel<T> comboBoxModel) {
 		return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel)
-						.preferredWidth(defaults.comboBoxPreferredWidth.get()))
+						.preferredWidth(defaults.comboBoxPreferredWidth.getOrThrow()))
 						.onBuild(comboBox -> addValidator(attribute, comboBox));
 	}
 
@@ -699,7 +699,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T> ItemComboBoxBuilder<T> createItemComboBox(Attribute<T> attribute) {
 		return setComponentBuilder(attribute, entityComponents.itemComboBox(attribute)
-						.preferredWidth(defaults.itemComboBoxPreferredWidth.get()))
+						.preferredWidth(defaults.itemComboBoxPreferredWidth.getOrThrow()))
 						.onBuild(comboBox -> addValidator(attribute, comboBox));
 	}
 
@@ -716,7 +716,7 @@ public class EntityEditComponentPanel extends JPanel {
 		comboBoxModel.refresher().failure().addConsumer(this::onException);
 
 		return (ComboBoxBuilder<T, C, B>) setComponentBuilder(column, entityComponents.comboBox(column, comboBoxModel)
-						.preferredWidth(defaults.comboBoxPreferredWidth.get())
+						.preferredWidth(defaults.comboBoxPreferredWidth.getOrThrow())
 						.onSetVisible(EntityEditComponentPanel::refreshIfCleared))
 						.onBuild(comboBox -> addValidator(column, comboBox));
 	}
@@ -731,7 +731,7 @@ public class EntityEditComponentPanel extends JPanel {
 		comboBoxModel.refresher().failure().addConsumer(this::onException);
 
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
-						.preferredWidth(defaults.foreignKeyComboBoxPreferredWidth.get())
+						.preferredWidth(defaults.foreignKeyComboBoxPreferredWidth.getOrThrow())
 						.onSetVisible(EntityEditComponentPanel::refreshIfCleared))
 						.onBuild(comboBox -> addValidator(foreignKey, comboBox));
 	}
@@ -748,7 +748,7 @@ public class EntityEditComponentPanel extends JPanel {
 		comboBoxModel.refresher().failure().addConsumer(this::onException);
 
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanel))
-						.comboBoxPreferredWidth(defaults.foreignKeyComboBoxPreferredWidth.get())
+						.comboBoxPreferredWidth(defaults.foreignKeyComboBoxPreferredWidth.getOrThrow())
 						.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()))
 						.onBuild(comboBoxPanel -> addValidator(foreignKey, comboBoxPanel.comboBox()));
 	}
@@ -761,7 +761,7 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
 										editModel().foreignKeySearchModel(foreignKey))
-						.columns(defaults.foreignKeySearchFieldColumns.get()));
+						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -772,7 +772,7 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
 										editModel().foreignKeySearchModel(foreignKey))
-						.columns(defaults.foreignKeySearchFieldColumns.get()));
+						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -785,7 +785,7 @@ public class EntityEditComponentPanel extends JPanel {
 																																									Supplier<EntityEditPanel> editPanel) {
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
 										editModel().foreignKeySearchModel(foreignKey), editPanel)
-						.columns(defaults.foreignKeySearchFieldColumns.get()));
+						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -1022,10 +1022,10 @@ public class EntityEditComponentPanel extends JPanel {
 	protected static final class Defaults {
 
 		private final Value<Integer> textFieldColumns = Value.builder()
-						.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.get())
+						.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow())
 						.build();
 		private final Value<Integer> foreignKeySearchFieldColumns = Value.builder()
-						.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.get())
+						.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow())
 						.build();
 		private final Value<Integer> foreignKeyComboBoxPreferredWidth = Value.builder()
 						.nonNull(0)
@@ -1157,7 +1157,7 @@ public class EntityEditComponentPanel extends JPanel {
 	private static final class ModifiedIndicator implements Consumer<Boolean> {
 
 		private static final String LABELED_BY_PROPERTY = "labeledBy";
-		private static final int UNDERLINE_STYLE = MODIFIED_INDICATOR_UNDERLINE_STYLE.get();
+		private static final int UNDERLINE_STYLE = MODIFIED_INDICATOR_UNDERLINE_STYLE.getOrThrow();
 
 		private final JComponent component;
 

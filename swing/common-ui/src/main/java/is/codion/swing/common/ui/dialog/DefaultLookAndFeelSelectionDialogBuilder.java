@@ -39,7 +39,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	private static final int PADDING = 10;
 
 	private JComponent owner;
-	private boolean enableOnSelection = LookAndFeelComboBox.ENABLE_ON_SELECTION.get();
+	private boolean enableOnSelection = LookAndFeelComboBox.ENABLE_ON_SELECTION.getOrThrow();
 
 	@Override
 	public LookAndFeelSelectionDialogBuilder owner(JComponent owner) {

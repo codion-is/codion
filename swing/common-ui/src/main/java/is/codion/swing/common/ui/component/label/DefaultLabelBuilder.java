@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, LabelBuilder<T>> implements LabelBuilder<T> {
 
 	private Icon icon;
-	private int horizontalAlignment = HORIZONTAL_ALIGNMENT.get();
+	private int horizontalAlignment = HORIZONTAL_ALIGNMENT.getOrThrow();
 	private Integer displayedMnemonic;
 	private Character displayedMnemonicChar;
 	private int iconTextGap = -1;

@@ -50,7 +50,7 @@ public final class Layouts {
 	 * @see #GAP
 	 */
 	public static BorderLayout borderLayout() {
-		return new BorderLayout(GAP.get(), GAP.get());
+		return new BorderLayout(GAP.getOrThrow(), GAP.getOrThrow());
 	}
 
 	/**
@@ -60,7 +60,7 @@ public final class Layouts {
 	 * @see #GAP
 	 */
 	public static FlowLayout flowLayout(int alignment) {
-		return new FlowLayout(alignment, GAP.get(), GAP.get());
+		return new FlowLayout(alignment, GAP.getOrThrow(), GAP.getOrThrow());
 	}
 
 	/**
@@ -71,7 +71,7 @@ public final class Layouts {
 	 * @see #GAP
 	 */
 	public static GridLayout gridLayout(int rows, int columns) {
-		return new GridLayout(rows, columns, GAP.get(), GAP.get());
+		return new GridLayout(rows, columns, GAP.getOrThrow(), GAP.getOrThrow());
 	}
 
 	/**
@@ -95,7 +95,7 @@ public final class Layouts {
 	 */
 	public static FlexibleGridLayout.Builder flexibleGridLayout() {
 		return FlexibleGridLayout.builder()
-						.horizontalGap(GAP.get())
-						.verticalGap(GAP.get());
+						.horizontalGap(GAP.getOrThrow())
+						.verticalGap(GAP.getOrThrow());
 	}
 }

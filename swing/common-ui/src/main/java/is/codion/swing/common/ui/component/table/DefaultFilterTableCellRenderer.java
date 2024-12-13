@@ -302,7 +302,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private static boolean isSearchResult(FilterTableSearchModel searchModel, int rowIndex, int columnIndex) {
-			return searchModel.currentResult().get().equals(rowIndex, columnIndex);
+			return searchModel.currentResult().getOrThrow().equals(rowIndex, columnIndex);
 		}
 
 		private static boolean alternateRow(int rowIndex) {
@@ -315,9 +315,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private static final ColorProvider<?, ?, ?> NULL_COLOR_PROVIDER = (table, row, identifier, value) -> null;
 
 		private UISettings uiSettings = new DefaultUISettings();
-		private int leftPadding = TABLE_CELL_LEFT_PADDING.get();
-		private int rightPadding = TABLE_CELL_RIGHT_PADDING.get();
-		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.get();
+		private int leftPadding = TABLE_CELL_LEFT_PADDING.getOrThrow();
+		private int rightPadding = TABLE_CELL_RIGHT_PADDING.getOrThrow();
+		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.getOrThrow();
 		private boolean filterIndicator = true;
 		private ColorProvider<R, C, T> backgroundColor = (ColorProvider<R, C, T>) NULL_COLOR_PROVIDER;
 		private ColorProvider<R, C, T> foregroundColor = (ColorProvider<R, C, T>) NULL_COLOR_PROVIDER;
@@ -475,16 +475,16 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private int defaultHorizontalAlignment(Class<T> columnClass) {
 			if (useBooleanRenderer) {
-				return BOOLEAN_HORIZONTAL_ALIGNMENT.get();
+				return BOOLEAN_HORIZONTAL_ALIGNMENT.getOrThrow();
 			}
 			if (Number.class.isAssignableFrom(columnClass)) {
-				return NUMERICAL_HORIZONTAL_ALIGNMENT.get();
+				return NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow();
 			}
 			if (Temporal.class.isAssignableFrom(columnClass)) {
-				return TEMPORAL_HORIZONTAL_ALIGNMENT.get();
+				return TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow();
 			}
 
-			return HORIZONTAL_ALIGNMENT.get();
+			return HORIZONTAL_ALIGNMENT.getOrThrow();
 		}
 	}
 

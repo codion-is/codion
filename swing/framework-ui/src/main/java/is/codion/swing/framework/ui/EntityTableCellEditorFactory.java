@@ -67,7 +67,6 @@ final class EntityTableCellEditorFactory implements FilterTableCellEditor.Factor
 			return foreignKey.references().stream()
 							.map(ForeignKey.Reference::column)
 							.map(referenceAttribute -> editModel.entityDefinition().columns().definition(referenceAttribute))
-							.filter(ColumnDefinition.class::isInstance)
 							.map(ColumnDefinition.class::cast)
 							.noneMatch(ColumnDefinition::updatable);
 		}

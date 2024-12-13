@@ -319,7 +319,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 						.orientation(JSplitPane.HORIZONTAL_SPLIT)
 						.continuousLayout(true)
 						.oneTouchExpandable(true)
-						.dividerSize(GAP.get() * 2)
+						.dividerSize(GAP.getOrThrow() * 2)
 						.resizeWeight(splitPaneResizeWeight)
 						.leftComponent(mainPanel)
 						.propertyChangeListener(new ActivateWhenDetailHidden())
@@ -540,7 +540,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private void initialize() {
-			updateDetailState(panelState.get());
+			updateDetailState(panelState.getOrThrow());
 		}
 
 		private void toggleDetailState() {
@@ -611,7 +611,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private static JPanel createEmptyBorderBasePanel(JComponent component) {
-			int gap = Layouts.GAP.get();
+			int gap = Layouts.GAP.getOrThrow();
 			return Components.borderLayoutPanel()
 							.centerComponent(component)
 							.border(createEmptyBorder(gap, gap, 0, gap))
@@ -630,7 +630,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private PanelState initialState = EMBEDDED;
 		private WindowType windowType;
 		private double splitPaneResizeWeight = DEFAULT_SPLIT_PANE_RESIZE_WEIGHT;
-		private boolean includeControls = INCLUDE_CONTROLS.get();
+		private boolean includeControls = INCLUDE_CONTROLS.getOrThrow();
 
 		private DefaultBuilder(EntityPanel entityPanel) {
 			this.entityPanel = requireNonNull(entityPanel);
