@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.Entities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -93,13 +94,13 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	}
 
 	@Override
-	public final String clientType() {
-		return clientType;
+	public final Optional<String> clientType() {
+		return Optional.ofNullable(clientType);
 	}
 
 	@Override
-	public final Version clientVersion() {
-		return clientVersion;
+	public final Optional<Version> clientVersion() {
+		return Optional.ofNullable(clientVersion);
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import is.codion.common.version.Version;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
+import java.util.Optional;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.UUID;
@@ -140,12 +141,12 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	/**
 	 * @return the String identifying the client type for this connection provider
 	 */
-	String clientType();
+	Optional<String> clientType();
 
 	/**
 	 * @return the client version
 	 */
-	Version clientVersion();
+	Optional<Version> clientVersion();
 
 	/**
 	 * @return an unconfigured {@link Builder} instance, based on the
