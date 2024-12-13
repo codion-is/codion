@@ -51,7 +51,7 @@ public final class AbstractDatabaseTest {
 			}
 		});
 		assertSame(connection, database.createConnection(sa));
-		database.connectionProvider(null);
+		database.connectionProvider(new ConnectionProvider() {});
 		Connection newConnection = database.createConnection(sa);
 		assertNotSame(connection, newConnection);
 		connection.close();

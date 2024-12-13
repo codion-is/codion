@@ -179,7 +179,7 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final void connectionProvider(ConnectionProvider connectionProvider) {
-		this.connectionProvider = connectionProvider == null ? new ConnectionProvider() {} : connectionProvider;
+		this.connectionProvider = requireNonNull(connectionProvider);
 	}
 
 	@Override

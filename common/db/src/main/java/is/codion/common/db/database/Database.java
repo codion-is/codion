@@ -284,7 +284,7 @@ public interface Database extends ConnectionFactory {
 	void closeConnectionPools();
 
 	/**
-	 * Sets the {@link ConnectionProvider} instance used when creating connections.
+	 * Sets the {@link ConnectionProvider} instance to use when creating connections.
 	 * @param connectionProvider the connection provider
 	 */
 	void connectionProvider(ConnectionProvider connectionProvider);

@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.23
 ## is.codion.common.core
 - ValueObserver.getOrThrow() added.
+## is.codion.common.db
+- Database.connectionProvider() no longer accepts null.
 ### is.codion.common.model
 - ConditionModel.dateTimePattern() now returns Optional.
 - ConditionModel.wildcard() now back to being Value based instead of Mutable.
