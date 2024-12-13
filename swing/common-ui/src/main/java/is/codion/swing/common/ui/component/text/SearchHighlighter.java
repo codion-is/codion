@@ -167,7 +167,7 @@ public final class SearchHighlighter {
 				currentSearchTextPositionIndex.set(0);
 			}
 			else {
-				currentSearchTextPositionIndex.set(currentSearchTextPositionIndex.get() + 1);
+				currentSearchTextPositionIndex.set(currentSearchTextPositionIndex.getOrThrow() + 1);
 			}
 			selectCurrentSearchPosition();
 		}
@@ -183,7 +183,7 @@ public final class SearchHighlighter {
 				currentSearchTextPositionIndex.set(searchTextPositions.size() - 1);
 			}
 			else {
-				currentSearchTextPositionIndex.set(currentSearchTextPositionIndex.get() - 1);
+				currentSearchTextPositionIndex.set(currentSearchTextPositionIndex.getOrThrow() - 1);
 			}
 			selectCurrentSearchPosition();
 		}
@@ -201,26 +201,36 @@ public final class SearchHighlighter {
 		selectedSearchTextPosition.clear();
 		highlighter.removeAllHighlights();
 		searchTextPositions.clear();
-		if (!searchStringValue.get().isEmpty()) {
-			Pattern pattern = Pattern.compile(searchStringValue.get(), caseSensitiveState.get() ? 0 : Pattern.CASE_INSENSITIVE);
-			try {
-				Matcher matcher = pattern.matcher(textComponent.getDocument().getText(0, textComponent.getDocument().getLength()));
-				int searchFrom = 0;
-				while (matcher.find(searchFrom)) {
-					Object highlightTag = highlighter.addHighlight(matcher.start(), matcher.end(), highlightPainter);
-					searchTextPositions.add(new MatchPosition(matcher.start(), matcher.end(), highlightTag));
-					searchFrom = matcher.end();
-				}
-				nextSearchPosition();
+		searchStringValue.optional()
+						.filter(string -> !string.isEmpty())
+						.ifPresent(this::searchAndHighlightResults);
+	}
+
+	private void searchAndHighlightResults(String searchString) {
+		Pattern pattern = Pattern.compile(searchString, caseSensitiveState.get() ? 0 : Pattern.CASE_INSENSITIVE);
+		try {
+			Matcher matcher = pattern.matcher(textComponent.getDocument().getText(0, textComponent.getDocument().getLength()));
+			int searchFrom = 0;
+			while (matcher.find(searchFrom)) {
+				Object highlightTag = highlighter.addHighlight(matcher.start(), matcher.end(), highlightPainter);
+				searchTextPositions.add(new MatchPosition(matcher.start(), matcher.end(), highlightTag));
+				searchFrom = matcher.end();
 			}
-			catch (BadLocationException e) {
-				throw new RuntimeException(e);
-			}
+			nextSearchPosition();
+		}
+		catch (BadLocationException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	private void selectCurrentSearchPosition() {
-		MatchPosition matchPosition = searchTextPositions.get(currentSearchTextPositionIndex.get());
+		currentSearchTextPositionIndex.optional()
+						.map(searchTextPositions::get)
+						.ifPresent(this::selectSearchPosition);
+
+	}
+
+	private void selectSearchPosition(MatchPosition matchPosition) {
 		selectedSearchTextPosition.set(matchPosition.start);
 		try {
 			highlighter.removeHighlight(matchPosition.highlightTag);
@@ -232,15 +242,18 @@ public final class SearchHighlighter {
 	}
 
 	private void deselectCurrentSearchPosition() {
-		if (currentSearchTextPositionIndex.isNotNull()) {
-			MatchPosition matchPosition = searchTextPositions.get(currentSearchTextPositionIndex.get());
-			try {
-				highlighter.removeHighlight(matchPosition.highlightTag);
-				matchPosition.highlightTag = highlighter.addHighlight(matchPosition.start, matchPosition.end, highlightPainter);
-			}
-			catch (BadLocationException e) {
-				throw new RuntimeException(e);
-			}
+		currentSearchTextPositionIndex.optional()
+						.map(searchTextPositions::get)
+						.ifPresent(this::deselectSearchPosition);
+	}
+
+	private void deselectSearchPosition(MatchPosition matchPosition) {
+		try {
+			highlighter.removeHighlight(matchPosition.highlightTag);
+			matchPosition.highlightTag = highlighter.addHighlight(matchPosition.start, matchPosition.end, highlightPainter);
+		}
+		catch (BadLocationException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

@@ -18,6 +18,7 @@ Codion Change Log
 - ServerConfiguration.Builder.rmiClientSocketFactory() and rmiServerSocketFactory() removed.
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
+- SearchHighlighter refactored.
 ### is.codion.framework.model
 - DefaultForeignKeyDetailModelLink now uses TableConditionModel.persist() to exclude the associated foreign key condition from being cleared.
 
