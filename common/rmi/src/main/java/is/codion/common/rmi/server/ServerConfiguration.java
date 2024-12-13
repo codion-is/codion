@@ -289,22 +289,8 @@ public interface ServerConfiguration {
 		 * When set to true this also sets the rmi client/server socket factories.
 		 * @param sslEnabled if true then ssl is enabled
 		 * @return this builder instance
-		 * @see #rmiClientSocketFactory(RMIClientSocketFactory)
-		 * @see #rmiServerSocketFactory(RMIServerSocketFactory)
 		 */
 		B sslEnabled(boolean sslEnabled);
-
-		/**
-		 * @param rmiClientSocketFactory the rmi client socket factory to use
-		 * @return this builder instance
-		 */
-		B rmiClientSocketFactory(RMIClientSocketFactory rmiClientSocketFactory);
-
-		/**
-		 * @param rmiServerSocketFactory the rmi server socket factory to use
-		 * @return this builder instance
-		 */
-		B rmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory);
 
 		/**
 		 * @param objectInputFilterFactoryClassName the object input filter factory class name

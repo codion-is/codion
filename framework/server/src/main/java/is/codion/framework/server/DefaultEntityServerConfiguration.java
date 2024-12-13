@@ -258,18 +258,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
-		public Builder rmiClientSocketFactory(RMIClientSocketFactory rmiClientSocketFactory) {
-			serverConfigurationBuilder.rmiClientSocketFactory(rmiClientSocketFactory);
-			return this;
-		}
-
-		@Override
-		public Builder rmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory) {
-			serverConfigurationBuilder.rmiServerSocketFactory(rmiServerSocketFactory);
-			return this;
-		}
-
-		@Override
 		public Builder objectInputFilterFactoryClassName(String objectInputFilterFactoryClassName) {
 			serverConfigurationBuilder.objectInputFilterFactoryClassName(objectInputFilterFactoryClassName);
 			return this;

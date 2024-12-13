@@ -188,25 +188,13 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		public DefaultBuilder sslEnabled(boolean sslEnabled) {
 			this.sslEnabled = sslEnabled;
 			if (sslEnabled) {
-				rmiClientSocketFactory(new SslRMIClientSocketFactory());
-				rmiServerSocketFactory(new SslRMIServerSocketFactory());
+				rmiClientSocketFactory = new SslRMIClientSocketFactory();
+				rmiServerSocketFactory = new SslRMIServerSocketFactory();
 			}
 			else {
-				rmiClientSocketFactory(null);
-				rmiServerSocketFactory(null);
+				rmiClientSocketFactory = null;
+				rmiServerSocketFactory = null;
 			}
-			return this;
-		}
-
-		@Override
-		public DefaultBuilder rmiClientSocketFactory(RMIClientSocketFactory rmiClientSocketFactory) {
-			this.rmiClientSocketFactory = rmiClientSocketFactory;
-			return this;
-		}
-
-		@Override
-		public DefaultBuilder rmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory) {
-			this.rmiServerSocketFactory = rmiServerSocketFactory;
 			return this;
 		}
 
