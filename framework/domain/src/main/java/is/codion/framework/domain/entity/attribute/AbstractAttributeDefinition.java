@@ -310,9 +310,10 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 	@Override
 	public final String caption() {
-		if (attribute.entityType().resourceBundleName() != null) {
+		String resourceBundleName = attribute.entityType().resourceBundleName();
+		if (resourceBundleName != null) {
 			if (resourceCaption == null) {
-				ResourceBundle bundle = getBundle(attribute.entityType().resourceBundleName());
+				ResourceBundle bundle = getBundle(resourceBundleName);
 				resourceCaption = bundle.containsKey(captionResourceKey) ? bundle.getString(captionResourceKey) : "";
 			}
 
@@ -345,7 +346,9 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	@Override
 	public final String string(T value) {
 		if (itemMap != null) {
-			return itemString(value);
+			Item<T> item = itemMap.get(value);
+
+			return item == null ? invalidItemString(value) : item.caption();
 		}
 
 		if (value == null) {
@@ -364,32 +367,27 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		return value.toString();
 	}
 
-	private String itemString(T value) {
-		Item<T> item = itemMap.get(value);
-		if (item == null) {//invalid
-			if (value == null && nullable()) {
-				//technically valid
-				return "";
-			}
-			//mark invalid values
-			return value + " <" + INVALID_ITEM_SUFFIX + ">";
+	private String invalidItemString(T value) {
+		if (value == null && nullable()) {
+			//technically valid
+			return "";
 		}
-
-		return item.caption();
+		//mark invalid values
+		return value + " <" + INVALID_ITEM_SUFFIX + ">";
 	}
 
 	private String defaultDateTimePattern() {
 		if (attribute.type().isLocalDate()) {
-			return DATE_FORMAT.get();
+			return DATE_FORMAT.getOrThrow();
 		}
 		else if (attribute.type().isLocalTime()) {
-			return TIME_FORMAT.get();
+			return TIME_FORMAT.getOrThrow();
 		}
 		else if (attribute.type().isLocalDateTime()) {
-			return DATE_TIME_FORMAT.get();
+			return DATE_TIME_FORMAT.getOrThrow();
 		}
 		else if (attribute.type().isOffsetDateTime()) {
-			return DATE_TIME_FORMAT.get();
+			return DATE_TIME_FORMAT.getOrThrow();
 		}
 
 		return null;
@@ -493,7 +491,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			nullable = true;
 			maximumLength = attribute.type().isCharacter() ? 1 : -1;
 			defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
-			decimalRoundingMode = DECIMAL_ROUNDING_MODE.get();
+			decimalRoundingMode = DECIMAL_ROUNDING_MODE.getOrThrow();
 			minimumValue = defaultMinimumValue();
 			maximumValue = defaultMaximumValue();
 		}

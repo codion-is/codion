@@ -127,19 +127,19 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	@Override
 	public final EntityConnection connection() {
 		synchronized (lock) {
-			validateConnection();
-
-			return entityConnection;
+			return validateConnection();
 		}
 	}
 
 	@Override
 	public final void close() {
 		synchronized (lock) {
-			if (connectionValid()) {
-				close(entityConnection);
+			if (entityConnection != null) {
+				if (connectionValid()) {
+					close(entityConnection);
+				}
+				entityConnection = null;
 			}
-			entityConnection = null;
 		}
 		if (onClose != null) {
 			onClose.accept(this);
@@ -157,7 +157,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	 */
 	protected abstract void close(EntityConnection connection);
 
-	private void validateConnection() {
+	private EntityConnection validateConnection() {
 		if (entityConnection == null) {
 			doConnect();
 		}
@@ -170,6 +170,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 			entityConnection = null;
 			doConnect();
 		}
+
+		return entityConnection;
 	}
 
 	private void doConnect() {

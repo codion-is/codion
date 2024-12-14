@@ -227,9 +227,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	@Override
 	public String caption() {
-		if (entityType.resourceBundleName() != null) {
+		String resourceBundleName = entityType.resourceBundleName();
+		if (resourceBundleName != null) {
 			if (resourceCaption == null) {
-				ResourceBundle bundle = getBundle(entityType.resourceBundleName());
+				ResourceBundle bundle = getBundle(resourceBundleName);
 				resourceCaption = bundle.containsKey(captionResourceKey) ? bundle.getString(captionResourceKey) : "";
 			}
 
@@ -242,8 +243,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
-	public String description() {
-		return description;
+	public Optional<String> description() {
+		return Optional.ofNullable(description);
 	}
 
 	@Override

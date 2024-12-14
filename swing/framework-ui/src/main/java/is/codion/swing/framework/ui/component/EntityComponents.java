@@ -509,10 +509,15 @@ public final class EntityComponents {
 	 */
 	public SliderBuilder slider(Attribute<Integer> attribute) {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		Number minimumValue = attributeDefinition.minimumValue();
+		Number maximumValue = attributeDefinition.maximumValue();
+		if (minimumValue == null || maximumValue == null) {
+			throw new IllegalArgumentException("Cannot create a slider for an attribute without min and max values");
+		}
 
 		BoundedRangeModel boundedRangeModel = new DefaultBoundedRangeModel();
-		boundedRangeModel.setMinimum(attributeDefinition.minimumValue().intValue());
-		boundedRangeModel.setMaximum(attributeDefinition.maximumValue().intValue());
+		boundedRangeModel.setMinimum(minimumValue.intValue());
+		boundedRangeModel.setMaximum(maximumValue.intValue());
 
 		return slider(attribute, boundedRangeModel);
 	}
@@ -537,10 +542,12 @@ public final class EntityComponents {
 	 */
 	public NumberSpinnerBuilder<Integer> integerSpinner(Attribute<Integer> attribute) {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		Number minimumValue = attributeDefinition.minimumValue();
+		Number maximumValue = attributeDefinition.maximumValue();
 
 		return Components.integerSpinner()
-						.minimum(attributeDefinition.minimumValue().intValue())
-						.maximum(attributeDefinition.maximumValue().intValue())
+						.minimum(minimumValue == null ? null : minimumValue.intValue())
+						.maximum(maximumValue == null ? null : maximumValue.intValue())
 						.toolTipText(attributeDefinition.description());
 	}
 
@@ -551,10 +558,12 @@ public final class EntityComponents {
 	 */
 	public NumberSpinnerBuilder<Double> doubleSpinner(Attribute<Double> attribute) {
 		AttributeDefinition<Double> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		Number minimumValue = attributeDefinition.minimumValue();
+		Number maximumValue = attributeDefinition.maximumValue();
 
 		return Components.doubleSpinner()
-						.minimum(attributeDefinition.minimumValue().doubleValue())
-						.maximum(attributeDefinition.maximumValue().doubleValue())
+						.minimum(minimumValue == null ? null : minimumValue.doubleValue())
+						.maximum(maximumValue == null ? null : maximumValue.doubleValue())
 						.toolTipText(attributeDefinition.description());
 	}
 

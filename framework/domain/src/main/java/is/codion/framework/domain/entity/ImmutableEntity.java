@@ -43,7 +43,7 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
 
 	ImmutableEntity(EntityDefinition definition, Map<Attribute<?>, Object> valueMap,
 									Map<Attribute<?>, Object> originalValueMap, Map<Key, ImmutableEntity> immutables) {
-		this.definition = definition;
+		super(definition);
 		values = new HashMap<>(valueMap);
 		immutables.put(primaryKey(), this);
 		replace(values, immutables);

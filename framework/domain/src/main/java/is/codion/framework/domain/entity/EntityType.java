@@ -33,6 +33,8 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Defines an Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
  * A factory for {@link EntityType} instances.
@@ -361,11 +363,21 @@ public interface EntityType {
 	 * Creates a new EntityType instance.
 	 * @param name the entity type name
 	 * @param domainType the domainType to associate this entity type with
-	 * @param resourceBundleName the name of a resource bundle to use for captions, if any
+	 * @return a {@link EntityType} instance with the given name
+	 */
+	static EntityType entityType(String name, DomainType domainType) {
+		return new DefaultEntityType(domainType, name, null);
+	}
+
+	/**
+	 * Creates a new EntityType instance.
+	 * @param name the entity type name
+	 * @param domainType the domainType to associate this entity type with
+	 * @param resourceBundleName the name of a resource bundle to use for captions
 	 * @return a {@link EntityType} instance with the given name
 	 */
 	static EntityType entityType(String name, DomainType domainType,
 															 String resourceBundleName) {
-		return new DefaultEntityType(domainType, name, resourceBundleName);
+		return new DefaultEntityType(domainType, name, requireNonNull(resourceBundleName));
 	}
 }

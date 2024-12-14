@@ -349,8 +349,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		Map<EntityType, List<Key>> keysByEntityType = groupByType(keys);
 		throwIfReadOnly(keysByEntityType.keySet());
 
-		List<?> statementValues = null;
-		List<ColumnDefinition<?>> statementColumns = null;
+		List<?> statementValues = emptyList();
+		List<ColumnDefinition<?>> statementColumns = emptyList();
 		PreparedStatement statement = null;
 		Condition condition = null;
 		String deleteQuery = null;

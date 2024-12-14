@@ -170,12 +170,12 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	}
 
 	private static <T extends Number> void performRangeValidation(Entity entity, Attribute<T> attribute) throws RangeValidationException {
-		if (requireNonNull(entity).isNull(requireNonNull(attribute))) {
+		AttributeDefinition<T> definition = requireNonNull(entity).definition().attributes().definition(attribute);
+		Number value = entity.get(attribute);
+		if (value == null) {
 			return;
 		}
 
-		AttributeDefinition<T> definition = entity.definition().attributes().definition(attribute);
-		Number value = entity.get(definition.attribute());
 		Number minimumValue = definition.minimumValue();
 		if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
 			throw new RangeValidationException(definition.attribute(), value, "'" + definition.caption() + "' " +
@@ -189,13 +189,13 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	}
 
 	private static void performLengthValidation(Entity entity, Attribute<String> attribute) throws LengthValidationException {
-		if (requireNonNull(entity).isNull(requireNonNull(attribute))) {
+		AttributeDefinition<?> definition = requireNonNull(entity).definition().attributes().definition(attribute);
+		String value = entity.get(attribute);
+		if (value == null) {
 			return;
 		}
 
-		AttributeDefinition<?> definition = entity.definition().attributes().definition(attribute);
 		int maximumLength = definition.maximumLength();
-		String value = entity.get(attribute);
 		if (maximumLength != -1 && value.length() > maximumLength) {
 			throw new LengthValidationException(definition.attribute(), value, "'" + definition.caption() + "' " +
 							MESSAGES.getString("value_too_long") + " " + maximumLength + "\n:'" + value + "'");

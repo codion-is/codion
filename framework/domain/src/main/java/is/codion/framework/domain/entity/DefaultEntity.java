@@ -91,7 +91,9 @@ class DefaultEntity implements Entity, Serializable {
 	 */
 	private Key primaryKey;
 
-	protected DefaultEntity() {}
+	protected DefaultEntity(EntityDefinition definition) {
+		this.definition = requireNonNull(definition);
+	}
 
 	/**
 	 * Instantiates a new DefaultEntity
@@ -112,7 +114,8 @@ class DefaultEntity implements Entity, Serializable {
 	 * @throws IllegalArgumentException in case any of the attributes are not part of the entity.
 	 */
 	DefaultEntity(EntityDefinition definition, Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues) {
-		this.values = validateTypes(requireNonNull(definition), values == null ? new HashMap<>() : new HashMap<>(values));
+		this(definition);
+		this.values = validateValues(definition, values == null ? new HashMap<>() : new HashMap<>(values));
 		this.originalValues = validateTypes(definition, originalValues == null ? null : new HashMap<>(originalValues));
 		this.definition = definition;
 	}
@@ -838,6 +841,12 @@ class DefaultEntity implements Entity, Serializable {
 	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
+	}
+
+	private static Map<Attribute<?>, Object> validateValues(EntityDefinition definition, Map<Attribute<?>, Object> values) {
+		validateTypes(definition, values);
+
+		return values;
 	}
 
 	private static Map<Attribute<?>, Object> validateTypes(EntityDefinition definition, Map<Attribute<?>, Object> values) {
