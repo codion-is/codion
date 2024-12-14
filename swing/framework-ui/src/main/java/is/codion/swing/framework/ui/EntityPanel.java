@@ -1281,7 +1281,7 @@ public class EntityPanel extends JPanel {
 			this.controlMap = controlMap(ControlKeys.class);
 			this.enabledEditStates = new LinkedHashSet<>(asList(PanelState.values()));
 			this.caption = entityPanel.model().entityDefinition().caption();
-			this.description = entityPanel.model().entityDefinition().description();
+			this.description = entityPanel.model().entityDefinition().description().orElse(null);
 		}
 
 		private Config(Config config) {

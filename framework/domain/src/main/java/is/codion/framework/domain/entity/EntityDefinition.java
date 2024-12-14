@@ -90,7 +90,7 @@ public interface EntityDefinition {
 	/**
 	 * @return the entity description
 	 */
-	String description();
+	Optional<String> description();
 
 	/**
 	 * @return true if the underlying table is small enough for displaying the contents in a combo box

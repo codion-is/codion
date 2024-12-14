@@ -416,9 +416,8 @@ public final class DomainSource {
 		if (!nullOrEmpty(definition.caption())) {
 			builder.append(LINE_SEPARATOR).append(INDENT).append(".caption(\"").append(definition.caption()).append("\")");
 		}
-		if (!nullOrEmpty(definition.description())) {
-			builder.append(LINE_SEPARATOR).append(INDENT).append(".description(\"").append(definition.description()).append("\")");
-		}
+		definition.description().ifPresent(description ->
+						builder.append(LINE_SEPARATOR).append(INDENT).append(".description(\"").append(description).append("\")"));
 		if (definition.readOnly()) {
 			builder.append(LINE_SEPARATOR).append(INDENT).append(".readOnly(true)");
 		}

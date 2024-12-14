@@ -19,6 +19,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.
+### is.codion.framework.domain
+- EntityDefinition.description() now returns Optional.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.clientType() and clientVersion() now return Optional.
 ### is.codion.framework.model
