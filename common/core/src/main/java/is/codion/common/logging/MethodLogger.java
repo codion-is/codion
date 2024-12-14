@@ -42,7 +42,7 @@ public interface MethodLogger {
 	 * @param method the method being entered
 	 * @param argument the method argument, can be an Object, a collection or an array
 	 */
-	void enter(String method, Object argument);
+	void enter(String method, @Nullable Object argument);
 
 	/**
 	 * @param method the method being exited
@@ -150,7 +150,7 @@ public interface MethodLogger {
 		 * @param argument the argument
 		 * @return a String representation of the argument
 		 */
-		String argumentToString(String methodName, Object argument);
+		String argumentToString(String methodName, @Nullable Object argument);
 	}
 
 	/**
@@ -162,7 +162,7 @@ public interface MethodLogger {
 		private static final String BRACKET_CLOSE = "]";
 
 		@Override
-		public final String argumentToString(String methodName, Object object) {
+		public final String argumentToString(String methodName, @Nullable Object object) {
 			return toString(methodName, object);
 		}
 
@@ -172,7 +172,7 @@ public interface MethodLogger {
 		 * @param object the object
 		 * @return a String representation of the given object
 		 */
-		protected String toString(String methodName, Object object) {
+		protected String toString(String methodName, @Nullable Object object) {
 			return toString(object);
 		}
 
@@ -181,7 +181,7 @@ public interface MethodLogger {
 		 * @param object the object
 		 * @return a String representation of the given object
 		 */
-		protected String toString(Object object) {
+		protected String toString(@Nullable Object object) {
 			if (object == null) {
 				return "";
 			}

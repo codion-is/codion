@@ -21,6 +21,8 @@ package is.codion.common.db.report;
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Connection;
 
 import static java.util.Objects.requireNonNull;
@@ -54,7 +56,7 @@ public interface Report<T, R, P> {
 	 * @return a filled report ready for display
 	 * @throws ReportException in case of an exception
 	 */
-	R fill(Connection connection, P parameters);
+	R fill(Connection connection, @Nullable P parameters);
 
 	/**
 	 * Loads the report this report wrapper is based on.

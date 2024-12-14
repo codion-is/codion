@@ -66,7 +66,7 @@ final class DefaultMethodLogger implements MethodLogger {
 	}
 
 	@Override
-	public synchronized void enter(String method, Object argument) {
+	public synchronized void enter(String method, @Nullable Object argument) {
 		if (enabled) {
 			callStack.push(new DefaultEntry(method, argumentToString.argumentToString(method, argument)));
 		}
