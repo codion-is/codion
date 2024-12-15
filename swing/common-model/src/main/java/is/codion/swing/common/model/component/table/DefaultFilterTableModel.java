@@ -117,7 +117,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public void refresh(Consumer<Collection<R>> onRefresh) {
-		refresher.doRefresh(onRefresh);
+		refresher.doRefresh(requireNonNull(onRefresh));
 	}
 
 	@Override
