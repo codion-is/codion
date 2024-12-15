@@ -63,7 +63,7 @@ import static java.util.ResourceBundle.getBundle;
 /**
  * A JFormattedTextField for Temporal types.
  * <p>
- * Use {@link #getTemporal()} and {@link #setTemporal(Temporal)} for accessing and setting the value.
+ * Use {@link #get()} and {@link #set(Temporal)} for accessing and setting the value.
  * @param <T> the temporal type
  * @see #builder(Class)
  * @see #builder(Class, Value)
@@ -157,16 +157,16 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	/**
-	 * @return the Temporal value currently being displayed, an empty Optional in case of an incomplete/unparseable date
+	 * @return the temporal value currently being displayed, an empty Optional in case of an incomplete/unparseable date
 	 */
 	public Optional<T> optional() {
-		return Optional.ofNullable(getTemporal());
+		return value.optional();
 	}
 
 	/**
 	 * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
 	 */
-	public T getTemporal() {
+	public T get() {
 		try {
 			return dateTimeParser.parse(getText(), formatter);
 		}
@@ -179,14 +179,14 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	 * Sets the temporal value in this field, clears the field if {@code temporal} is null.
 	 * @param temporal the temporal value to set
 	 */
-	public void setTemporal(Temporal temporal) {
+	public void set(Temporal temporal) {
 		setText(temporal == null ? "" : formatter.format(temporal));
 	}
 
 	/**
-	 * @return an observable notified each time the value changes
+	 * @return an {@link Observable} notified each time the value changes
 	 */
-	public Observable<T> temporalValue() {
+	public Observable<T> observable() {
 		return value.observable();
 	}
 
@@ -225,14 +225,14 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 	private void increment(int amount) {
 		int caretPosition = getCaretPosition();
-		T temporal = getTemporal();
+		T temporal = get();
 		if (temporal != null && caretPosition <= dateTimePattern.length()) {
 			char patternCharacter = caretPosition == dateTimePattern.length() ?
 							dateTimePattern.charAt(dateTimePattern.length() - 1) :
 							dateTimePattern.charAt(caretPosition);
 			ChronoUnit chronoUnit = chronoUnit(patternCharacter);
 			if (chronoUnit != null) {
-				setTemporal(temporal.plus(amount, chronoUnit));
+				set(temporal.plus(amount, chronoUnit));
 				setCaretPosition(caretPosition);
 			}
 		}
@@ -283,17 +283,17 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 			Dialogs.calendarDialog()
 							.owner(this)
 							.icon(calendarIcon)
-							.value((LocalDate) getTemporal())
+							.value((LocalDate) get())
 							.selectLocalDate()
-							.ifPresent(this::setTemporal);
+							.ifPresent(this::set);
 		}
 		else if (LocalDateTime.class.equals(temporalClass())) {
 			Dialogs.calendarDialog()
 							.owner(this)
 							.icon(calendarIcon)
-							.value((LocalDateTime) getTemporal())
+							.value((LocalDateTime) get())
 							.selectLocalDateTime()
-							.ifPresent(this::setTemporal);
+							.ifPresent(this::set);
 		}
 		else {
 			throw new IllegalArgumentException("Unsupported temporal type: " + temporalClass());
@@ -304,7 +304,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 		@Override
 		public void contentsChanged(DocumentEvent e) {
-			T temporal = getTemporal();
+			T temporal = get();
 			// preventing the value from becoming null on every single edit, since replace
 			// is implemented as a remove and insert, the remove resulting in a null value,
 			// so we only set the value to null on insert

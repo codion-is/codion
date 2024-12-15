@@ -84,7 +84,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
 	 */
 	public T getTemporal() {
-		return temporalField.getTemporal();
+		return temporalField.get();
 	}
 
 	/**
@@ -92,7 +92,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * @param temporal the temporal value to set
 	 */
 	public void setTemporal(Temporal temporal) {
-		temporalField.setTemporal(temporal);
+		temporalField.set(temporal);
 	}
 
 	/**
@@ -297,7 +297,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
 		private TemporalFieldPanelValue(TemporalFieldPanel<T> inputPanel) {
 			super(inputPanel);
-			inputPanel.temporalField().temporalValue().addListener(new NotifyListeners());
+			inputPanel.temporalField().observable().addListener(new NotifyListeners());
 		}
 
 		@Override

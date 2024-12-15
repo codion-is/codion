@@ -43,7 +43,7 @@ public class TemporalFieldPanelTest {
 	}
 
 	@Test
-	void setTemporal() {
+	void set() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
@@ -55,7 +55,7 @@ public class TemporalFieldPanelTest {
 	}
 
 	@Test
-	void getTemporal() {
+	void get() {
 		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();

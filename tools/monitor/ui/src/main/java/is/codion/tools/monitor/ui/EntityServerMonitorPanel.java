@@ -250,7 +250,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 						.build())
 						.owner(this)
 						.title("Update interval (s)")
-						.onOk(() -> model().setUpdateInterval(field.number().get()))
+						.onOk(() -> model().setUpdateInterval(field.get()))
 						.show();
 	}
 

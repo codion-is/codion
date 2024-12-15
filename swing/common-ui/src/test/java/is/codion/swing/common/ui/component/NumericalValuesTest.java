@@ -42,9 +42,9 @@ public class NumericalValuesTest {
 		Value<Long> longValue = Value.value();
 		NumberField<Long> longField = Components.longField(longValue)
 						.build();
-		assertNull(longField.number().get());
+		assertNull(longField.get());
 		longValue.set(2L);
-		assertEquals(2, longField.number().get().longValue());
+		assertEquals(2, longField.get().longValue());
 		longField.setText("42");
 		assertEquals(42, longValue.get());
 		longField.setText("");
@@ -58,10 +58,10 @@ public class NumericalValuesTest {
 		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField(longPrimitivePropertyValue)
 						.buildValue();
 		NumberField<Long> longField = componentValue.component();
-		assertEquals(0L, longField.number().get());
+		assertEquals(0L, longField.get());
 		assertEquals(0, componentValue.get());
 		longPrimitivePropertyValue.set(2L);
-		assertEquals(2, longField.number().get().longValue());
+		assertEquals(2, longField.get().longValue());
 		longField.setText("42");
 		assertEquals(42, longPrimitivePropertyValue.get());
 		longField.setText("");
@@ -73,9 +73,9 @@ public class NumericalValuesTest {
 		Value<Integer> integerPropertyValue = Value.value();
 		NumberField<Integer> integerField = Components.integerField(integerPropertyValue)
 						.build();
-		assertNull(integerField.number().get());
+		assertNull(integerField.get());
 		integerPropertyValue.set(2);
-		assertEquals(2, integerField.number().get().intValue());
+		assertEquals(2, integerField.get().intValue());
 		integerField.setText("42");
 		assertEquals(42, integerPropertyValue.get());
 		integerField.setText("");
@@ -88,10 +88,10 @@ public class NumericalValuesTest {
 		ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField(integerPropertyValue)
 						.buildValue();
 		NumberField<Integer> integerField = componentValue.component();
-		assertEquals(0, integerField.number().get());
+		assertEquals(0, integerField.get());
 		assertEquals(0, componentValue.get());
 		integerPropertyValue.set(2);
-		assertEquals(2, integerField.number().get().intValue());
+		assertEquals(2, integerField.get().intValue());
 		integerField.setText("42");
 		assertEquals(42, integerPropertyValue.get());
 		integerField.setText("");
@@ -108,11 +108,11 @@ public class NumericalValuesTest {
 						.build();
 		bigDecimalField.setSeparators('.', ',');
 
-		bigDecimalField.number().set(BigDecimal.valueOf(3.14));
+		bigDecimalField.set(BigDecimal.valueOf(3.14));
 		assertEquals("3.14", bigDecimalField.getText());
 
 		bigDecimalField.setText("42.4242");
-		assertEquals(BigDecimal.valueOf(42.4242), bigDecimalField.number().get());
+		assertEquals(BigDecimal.valueOf(42.4242), bigDecimalField.get());
 	}
 
 	@Test
@@ -122,9 +122,9 @@ public class NumericalValuesTest {
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.build();
-		assertNull(doubleField.number().get());
+		assertNull(doubleField.get());
 		doublePropertyValue.set(2.2);
-		assertEquals(Double.valueOf(2.2), doubleField.number().get());
+		assertEquals(Double.valueOf(2.2), doubleField.get());
 		doubleField.setText("42.2");
 		assertEquals(Double.valueOf(42.2), doublePropertyValue.get());
 		doubleField.setText("");
@@ -140,10 +140,10 @@ public class NumericalValuesTest {
 						.buildValue();
 		NumberField<Double> doubleField = componentValue.component();
 		componentValue.link(doublePrimitivePropertyValue);
-		assertEquals(0d, doubleField.number().get());
+		assertEquals(0d, doubleField.get());
 		assertEquals(0d, componentValue.get());
 		doublePrimitivePropertyValue.set(2.2);
-		assertEquals(Double.valueOf(2.2), doubleField.number().get());
+		assertEquals(Double.valueOf(2.2), doubleField.get());
 		doubleField.setText("42.2");
 		assertEquals(42.2, doublePrimitivePropertyValue.get());
 		doubleField.setText("");

@@ -163,7 +163,7 @@ public final class ComponentsTest {
 						.maximumSize(new Dimension(10, 10))
 						.link(value)
 						.buildValue();
-		assertEquals(componentValue.component().number().get(), value.get());
+		assertEquals(componentValue.component().get(), value.get());
 	}
 
 	@Test
@@ -176,7 +176,7 @@ public final class ComponentsTest {
 						.maximumSize(new Dimension(10, 10))
 						.link(value)
 						.buildValue();
-		assertEquals(componentValue.component().number().get(), value.get());
+		assertEquals(componentValue.component().get(), value.get());
 	}
 
 	@Test

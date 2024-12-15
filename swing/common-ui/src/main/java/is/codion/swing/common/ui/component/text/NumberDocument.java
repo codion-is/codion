@@ -18,8 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.observer.Mutable;
-import is.codion.common.observer.Observer;
+import is.codion.common.observer.Observable;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParser.NumberParseResult;
@@ -47,8 +46,6 @@ import static java.util.ResourceBundle.getBundle;
  * A Document implementation for numerical values
  */
 class NumberDocument<T extends Number> extends PlainDocument {
-
-	private final MutableNumber number = new MutableNumber();
 
 	NumberDocument(NumberFormat format, Class<T> clazz) {
 		this(new NumberParsingDocumentFilter<>(new NumberParser<>(format, clazz)));
@@ -101,8 +98,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		}
 	}
 
-	final Mutable<T> number() {
-		return number;
+	final Observable<T> observable() {
+		return getDocumentFilter().value.observable();
 	}
 
 	void setTextComponent(JTextComponent textComponent) {
@@ -147,24 +144,6 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		T value = getNumber();
 		((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
 		setNumber(value);
-	}
-
-	private final class MutableNumber implements Mutable<T> {
-
-		@Override
-		public void set(T value) {
-			setNumber(value);
-		}
-
-		@Override
-		public T get() {
-			return getNumber();
-		}
-
-		@Override
-		public Observer<T> observer() {
-			return getDocumentFilter().value.observer();
-		}
 	}
 
 	static class NumberParser<T extends Number> implements Parser<T> {

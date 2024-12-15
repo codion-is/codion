@@ -42,24 +42,24 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 
 	DurationComponentValue(boolean cellEditor) {
 		super(new DurationPanel(cellEditor));
-		component().minutesField.number().addListener(this::notifyListeners);
-		component().secondsField.number().addListener(this::notifyListeners);
-		component().millisecondsField.number().addListener(this::notifyListeners);
+		component().minutesField.observable().addListener(this::notifyListeners);
+		component().secondsField.observable().addListener(this::notifyListeners);
+		component().millisecondsField.observable().addListener(this::notifyListeners);
 	}
 
 	@Override
 	protected Integer getComponentValue() {
-		return (int) ofMinutes(component().minutesField.number().optional().orElse(0))
-						.plusSeconds(component().secondsField.number().optional().orElse(0))
-						.plusMillis(component().millisecondsField.number().optional().orElse(0))
+		return (int) ofMinutes(component().minutesField.optional().orElse(0))
+						.plusSeconds(component().secondsField.optional().orElse(0))
+						.plusMillis(component().millisecondsField.optional().orElse(0))
 						.toMillis();
 	}
 
 	@Override
 	protected void setComponentValue(Integer milliseconds) {
-		component().minutesField.number().set(minutes(milliseconds));
-		component().secondsField.number().set(seconds(milliseconds));
-		component().millisecondsField.number().set(milliseconds(milliseconds));
+		component().minutesField.set(minutes(milliseconds));
+		component().secondsField.set(seconds(milliseconds));
+		component().millisecondsField.set(milliseconds(milliseconds));
 	}
 
 	static Integer minutes(Integer milliseconds) {

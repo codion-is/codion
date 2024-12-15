@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.Configuration;
-import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
@@ -33,6 +33,7 @@ import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Optional;
 
 import static java.awt.event.KeyEvent.VK_BACK_SPACE;
 import static java.awt.event.KeyEvent.VK_DELETE;
@@ -225,10 +226,31 @@ public final class NumberField<T extends Number> extends HintTextField {
 	}
 
 	/**
-	 * @return a {@link Mutable} instance for the underlying number
+	 * @return the value currently being displayed or an empty Optional in case of null
 	 */
-	public Mutable<T> number() {
-		return document().number();
+	public Optional<T> optional() {
+		return document().observable().optional();
+	}
+
+	/**
+	 * @param number the number to set
+	 */
+	public void set(T number) {
+		document().setNumber(number);
+	}
+
+	/**
+	 * @return the number
+	 */
+	public T get() {
+		return document().getNumber();
+	}
+
+	/**
+	 * @return an {@link Observable} based on the number
+	 */
+	public Observable<T> observable() {
+		return document().observable();
 	}
 
 	/**
@@ -608,7 +630,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected Short getComponentValue() {
-			Number number = component().number().get();
+			Number number = component().get();
 			if (number == null) {
 				return nullable() ? null : (short) 0;
 			}
@@ -618,7 +640,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(Short value) {
-			component().number().set(value);
+			component().set(value);
 		}
 	}
 
@@ -630,7 +652,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected Double getComponentValue() {
-			Number number = component().number().get();
+			Number number = component().get();
 			if (number == null) {
 				return nullable() ? null : 0d;
 			}
@@ -640,7 +662,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(Double value) {
-			component().number().set(value);
+			component().set(value);
 		}
 	}
 
@@ -652,7 +674,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected Integer getComponentValue() {
-			Number number = component().number().get();
+			Number number = component().get();
 			if (number == null) {
 				return nullable() ? null : 0;
 			}
@@ -662,7 +684,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(Integer value) {
-			component().number().set(value);
+			component().set(value);
 		}
 	}
 
@@ -674,7 +696,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected Long getComponentValue() {
-			Number number = component().number().get();
+			Number number = component().get();
 			if (number == null) {
 				return nullable() ? null : 0L;
 			}
@@ -684,7 +706,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(Long value) {
-			component().number().set(value);
+			component().set(value);
 		}
 	}
 
@@ -696,7 +718,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected BigDecimal getComponentValue() {
-			BigDecimal number = component().number().get();
+			BigDecimal number = component().get();
 			if (number == null) {
 				return nullable() ? null : BigDecimal.ZERO;
 			}
@@ -706,7 +728,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(BigDecimal value) {
-			component().number().set(value);
+			component().set(value);
 		}
 	}
 }

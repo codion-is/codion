@@ -20,6 +20,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.
+- TemporalField.setTemporal(), getTemporal() and temporalValue() renamed set(), get() and observable() respectively.
+- NumberField.number() replaced with set(), get() and observable(), optional() added.
 ### is.codion.framework.domain
 - EntityDefinition.description() now returns Optional.
 ### is.codion.framework.db.core
