@@ -5,7 +5,7 @@
 [#_core_classes]
 == Core classes
 
-Three common classes used throughout the framework are {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] and their respective observers {url-javadoc}{common-core}/is/codion/common/observer/Observer.html[Observer], {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver] and {url-javadoc}{common-core}/is/codion/common/value/ValueObserver.html[ValueObserver].
+Three common classes used throughout the framework are {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] and their respective observers {url-javadoc}{common-core}/is/codion/common/observer/Observer.html[Observer] and {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver].
 
 === Event
 
@@ -60,11 +60,11 @@ skinparam genericDisplay old
 
 interface Value<T> {
     +void set(T)
-    +ValueObserver<T> observer()
+    +Observable<T> observable()
     +void link(Value<T> value)
 }
 
-interface ValueObserver<T> {
+interface Observable<T> {
     +T get()
 }
 
@@ -73,8 +73,8 @@ interface Observer<T> {
     +void addConsumer(Consumer<? super T> consumer)
 }
 
-ValueObserver <-- Value
-Observer <-- ValueObserver
+Observable <-- Value
+Observer <-- Observable
 -------------------------------------------
 
 A {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] wraps a value and provides a change listener.

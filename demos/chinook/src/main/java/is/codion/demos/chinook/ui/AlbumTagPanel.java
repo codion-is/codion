@@ -129,7 +129,7 @@ final class AlbumTagPanel extends JPanel {
 	private void addTag() {
 		ComponentValue<String, JTextField> tagValue = stringField().buildValue();
 		State tagNotNull = State.state(false);
-		tagValue.observer().addListener(() -> tagNotNull.set(tagValue.isNotNull()));
+		tagValue.observable().addListener(() -> tagNotNull.set(tagValue.isNotNull()));
 		tagListModel.addElement(inputDialog(tagValue)
 						.owner(this)
 						.title(FrameworkMessages.add())

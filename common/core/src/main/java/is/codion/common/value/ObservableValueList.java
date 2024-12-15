@@ -18,10 +18,10 @@
  */
 package is.codion.common.value;
 
-import java.util.Set;
+import java.util.List;
 
 /**
- * A read only value set observer
+ * A read only value list observable
  * @param <T> the value type
  */
-public interface ValueSetObserver<T> extends ValuesObserver<T, Set<T>> {}
+public interface ObservableValueList<T> extends ObservableValues<T, List<T>> {}

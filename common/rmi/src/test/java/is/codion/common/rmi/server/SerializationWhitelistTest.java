@@ -76,13 +76,13 @@ public final class SerializationWhitelistTest {
 						"#comment",
 						"is.codion.common.value.Value",
 						"is.codion.common.state.State",
-						"is.codion.common.state.StateObserver"
+						"is.codion.common.state.ObservableState"
 		);
 		WhitelistFilter filter = SerializationWhitelist.whitelistFilter(whitelistItems);
 		assertEquals(filter.checkInput("is.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
 		assertEquals(filter.checkInput("is.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
 		assertEquals(filter.checkInput("is.codion.common.state.States"), ObjectInputFilter.Status.REJECTED);
-		assertEquals(filter.checkInput("is.codion.common.state.StateObserver"), ObjectInputFilter.Status.ALLOWED);
+		assertEquals(filter.checkInput("is.codion.common.state.ObservableState"), ObjectInputFilter.Status.ALLOWED);
 		assertEquals(filter.checkInput("is.codion.common.event.Event"), ObjectInputFilter.Status.REJECTED);
 		assertEquals(filter.checkInput("is.codion.common.i18n.Messages"), ObjectInputFilter.Status.REJECTED);
 	}
@@ -118,7 +118,7 @@ public final class SerializationWhitelistTest {
 		assertEquals(filter.checkInput("is.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
 		assertEquals(filter.checkInput("is.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
 		assertEquals(filter.checkInput("is.codion.common.state.States"), ObjectInputFilter.Status.ALLOWED);
-		assertEquals(filter.checkInput("is.codion.common.state.StateObserver"), ObjectInputFilter.Status.ALLOWED);
+		assertEquals(filter.checkInput("is.codion.common.state.ObservableState"), ObjectInputFilter.Status.ALLOWED);
 		assertEquals(filter.checkInput("is.codion.common.event.Event"), ObjectInputFilter.Status.REJECTED);
 		assertEquals(filter.checkInput("is.codion.common.i18n.Messages"), ObjectInputFilter.Status.ALLOWED);
 	}

@@ -19,8 +19,8 @@
 package is.codion.common.state;
 
 import is.codion.common.Conjunction;
+import is.codion.common.observer.Observable;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +40,7 @@ public class StateTest {
 		Runnable stateChangeListener = stateChangeCounter::incrementAndGet;
 		state.addListener(stateChangeListener);
 		//this has no effect, coverage whoring
-		state.observer().addListener(stateChangeListener);
+		state.observable().addListener(stateChangeListener);
 
 		state.set(true);
 		assertEquals(1, stateChangeCounter.get());
@@ -51,7 +51,7 @@ public class StateTest {
 		state.set(false);
 		state.removeListener(stateChangeListener);
 		//this has no effect, coverage whoring
-		state.observer().removeListener(stateChangeListener);
+		state.observable().removeListener(stateChangeListener);
 
 		state.set(false);
 		state.set(true);
@@ -67,9 +67,9 @@ public class StateTest {
 		AtomicInteger notNotStateCounter = new AtomicInteger();
 		Runnable notNotListener = notNotStateCounter::incrementAndGet;
 		State state = State.state();
-		StateObserver not = state.not();
-		StateObserver notNot = not.not();
-		assertSame(state.observer(), notNot);
+		ObservableState not = state.not();
+		ObservableState notNot = not.not();
+		assertSame(state.observable(), notNot);
 		state.addListener(listener);
 		not.addListener(notListener);
 		notNot.addListener(notNotListener);
@@ -283,7 +283,7 @@ public class StateTest {
 		State two = State.state();
 		State three = State.state();
 
-		StateObserver combinationAnd = State.combination(Conjunction.AND, one, two, three);
+		ObservableState combinationAnd = State.combination(Conjunction.AND, one, two, three);
 		Runnable listener = () -> {};
 		Consumer<Boolean> consumer = newValue -> assertEquals(combinationAnd.get(), newValue);
 		combinationAnd.addListener(listener);
@@ -297,7 +297,7 @@ public class StateTest {
 		combinationAnd.removeListener(listener);
 		combinationAnd.removeConsumer(consumer);
 
-		StateObserver combinationOr = State.combination(Conjunction.OR, one, two, three);
+		ObservableState combinationOr = State.combination(Conjunction.OR, one, two, three);
 		consumer = newValue -> assertEquals(combinationOr.get(), newValue);
 		combinationOr.addConsumer(consumer);
 		one.set(true);
@@ -353,13 +353,13 @@ public class StateTest {
 		state.set(false);
 		assertTrue(value.get());
 
-		ValueObserver<Boolean> valueObserver = value.observer();
-		state.link(valueObserver);
+		Observable<Boolean> Observable = value.observable();
+		state.link(Observable);
 		assertTrue(state.get());
 		value.set(false);
-		assertFalse(valueObserver.get());
+		assertFalse(Observable.get());
 
-		state.unlink(valueObserver);
+		state.unlink(Observable);
 		value.set(true);
 		assertFalse(state.get());
 
@@ -384,7 +384,7 @@ public class StateTest {
 		state.removeWeakConsumer(consumer);
 
 		State state2 = State.state();
-		StateObserver combination = State.combination(Conjunction.AND, state, state2);
+		ObservableState combination = State.combination(Conjunction.AND, state, state2);
 		combination.addWeakListener(listener);
 		combination.addWeakListener(listener);
 		combination.addWeakConsumer(consumer);

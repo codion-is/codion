@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.state.StateObserver;
+import is.codion.common.state.ObservableState;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
@@ -170,7 +170,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private final UISettings uiSettings;
 
-		private StateObserver filterEnabled;
+		private ObservableState filterEnabled;
 		private boolean filterEnabledSet = false;
 
 		private Settings(SettingsBuilder<R, C, T> builder) {

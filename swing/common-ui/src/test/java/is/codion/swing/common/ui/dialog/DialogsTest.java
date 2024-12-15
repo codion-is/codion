@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.event.Event;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.icon.Logos;
@@ -115,7 +115,7 @@ public final class DialogsTest {
 						.build();
 
 		Control.Command command = () -> {};
-		StateObserver state = State.state().observer();
+		ObservableState state = State.state().observable();
 
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
 						.onOk(runnable)

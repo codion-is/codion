@@ -20,10 +20,10 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.observer.Observable;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
@@ -95,7 +95,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
 	private Function<EntityConnectionProvider, M> applicationModelFactory = new DefaultApplicationModelFactory();
 	private Function<M, P> applicationPanelFactory = new DefaultApplicationPanelFactory();
-	private ValueObserver<String> frameTitle;
+	private Observable<String> frameTitle;
 
 	private LoginProvider loginProvider = new DefaultDialogLoginProvider();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
@@ -212,7 +212,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> frameTitle(ValueObserver<String> frameTitle) {
+	public EntityApplicationPanel.Builder<M, P> frameTitle(Observable<String> frameTitle) {
 		this.frameTitle = requireNonNull(frameTitle);
 		return this;
 	}

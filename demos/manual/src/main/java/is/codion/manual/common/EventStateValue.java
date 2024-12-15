@@ -20,8 +20,8 @@ package is.codion.manual.common;
 
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -67,23 +67,23 @@ public final class EventStateValue {
 		// a boolean state, false by default
 		State state = State.state();
 
-		// an observer manages the listeners for a State but can not modify it
-		StateObserver observer = state.observer();
-		// a not observer is always available, which is
+		// an observable manages the listeners for a State but can not modify it
+		ObservableState observable = state.observable();
+		// a not observable is always available, which is
 		// always the reverse of the original state
-		StateObserver not = state.not();
+		ObservableState not = state.not();
 
 		// add a listener notified each time the state changes
-		observer.addListener(() -> System.out.println("State changed"));
+		observable.addListener(() -> System.out.println("State changed"));
 
 		state.set(true);//output: 'State changed'
 
-		observer.addConsumer(value -> System.out.println("State: " + value));
+		observable.addConsumer(value -> System.out.println("State: " + value));
 
 		state.set(null);//output: 'State: false'
 
-		// State extends StateObserver so listeners can be added
-		// directly without referring to the StateObserver
+		// State extends ObservableState so listeners can be added
+		// directly without referring to the ObservableState
 		state.addListener(() -> System.out.println("State changed"));
 		// end::state[]
 	}
@@ -203,14 +203,14 @@ public final class EventStateValue {
 		 * @return an observer notified each time the value changes
 		 */
 		public Observer<Integer> changed() {
-			return integer.observer();
+			return integer.observable();
 		}
 
 		/**
 		 * @return a state observer indicating whether the value is negative
 		 */
-		public StateObserver negative() {
-			return negative.observer();
+		public ObservableState negative() {
+			return negative.observable();
 		}
 	}
 	// end::observers[]

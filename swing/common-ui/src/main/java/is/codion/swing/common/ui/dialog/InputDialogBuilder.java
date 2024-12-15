@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.state.StateObserver;
+import is.codion.common.state.ObservableState;
 
 import java.util.function.Predicate;
 
@@ -34,15 +34,15 @@ public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<
 	InputDialogBuilder<T> caption(String caption);
 
 	/**
-	 * A StateObserver indicating whether the input is valid, this state controls the enabled state of the OK button.
+	 * A {@link ObservableState} indicating whether the input is valid, this state controls the enabled state of the OK button.
 	 * Overrides {@link #validator(Predicate)}.
-	 * @param valid a StateObserver indicating whether the input value is valid
+	 * @param valid an {@link ObservableState} indicating whether the input value is valid
 	 * @return this builder instance
 	 */
-	InputDialogBuilder<T> valid(StateObserver valid);
+	InputDialogBuilder<T> valid(ObservableState valid);
 
 	/**
-	 * Sets the {@link #valid(StateObserver)} according to the given predicate.
+	 * Sets the {@link #valid(ObservableState)} according to the given predicate.
 	 * @param validator the valididator predicate
 	 * @return this builder instance
 	 */

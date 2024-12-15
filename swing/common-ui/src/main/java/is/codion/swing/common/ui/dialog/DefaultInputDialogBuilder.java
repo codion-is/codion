@@ -19,10 +19,10 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.observer.Observable;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -81,7 +81,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	@Override
-	public InputDialogBuilder<T> title(ValueObserver<String> title) {
+	public InputDialogBuilder<T> title(Observable<String> title) {
 		okCancelDialogBuilder.title(title);
 		return this;
 	}
@@ -105,7 +105,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	@Override
-	public InputDialogBuilder<T> valid(StateObserver valid) {
+	public InputDialogBuilder<T> valid(ObservableState valid) {
 		okCancelDialogBuilder.okEnabled(valid);
 		return this;
 	}
@@ -148,7 +148,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 		throw new CancelException();
 	}
 
-	private StateObserver createInputValidObserver(Predicate<T> inputValidator) {
+	private ObservableState createInputValidObserver(Predicate<T> inputValidator) {
 		State validInputState = State.state(inputValidator.test(componentValue.get()));
 		componentValue.addListener(new InputValidStateListener<>(validInputState, inputValidator, componentValue));
 

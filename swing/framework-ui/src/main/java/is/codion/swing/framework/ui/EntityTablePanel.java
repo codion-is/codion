@@ -29,8 +29,8 @@ import is.codion.common.model.selection.MultiItemSelection;
 import is.codion.common.model.summary.SummaryModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
@@ -1123,7 +1123,7 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(this::editSelected)
 						.name(FrameworkMessages.edit())
-						.enabled(createEditSelectedEnabledObserver())
+						.enabled(createEditSelectedEnabledObservable())
 						.smallIcon(ICONS.edit())
 						.description(FrameworkMessages.editSelectedTip())
 						.build();
@@ -1138,10 +1138,10 @@ public class EntityTablePanel extends JPanel {
 	 * @see EntityEditModel#updateEnabled()
 	 */
 	private Controls createEditAttributeControls() {
-		StateObserver editSelectedEnabledObserver = createEditSelectedEnabledObserver();
+		ObservableState editSelectedEnabledObservable = createEditSelectedEnabledObservable();
 		ControlsBuilder builder = Controls.builder()
 						.name(FrameworkMessages.edit())
-						.enabled(editSelectedEnabledObserver)
+						.enabled(editSelectedEnabledObservable)
 						.smallIcon(ICONS.edit())
 						.description(FrameworkMessages.editSelectedTip());
 		configuration.editable.get().stream()
@@ -1150,17 +1150,17 @@ public class EntityTablePanel extends JPanel {
 						.forEach(attributeDefinition -> builder.control(Control.builder()
 										.command(() -> editSelected(attributeDefinition.attribute()))
 										.name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())
-										.enabled(editSelectedEnabledObserver)
+										.enabled(editSelectedEnabledObservable)
 										.build()));
 		Controls editControls = builder.build();
 
 		return editControls.empty() ? null : editControls;
 	}
 
-	private StateObserver createEditSelectedEnabledObserver() {
-		StateObserver selectionNotEmpty = tableModel.selection().empty().not();
-		StateObserver updateEnabled = tableModel.editModel().updateEnabled();
-		StateObserver updateMultipleEnabledOrSingleSelection =
+	private ObservableState createEditSelectedEnabledObservable() {
+		ObservableState selectionNotEmpty = tableModel.selection().empty().not();
+		ObservableState updateEnabled = tableModel.editModel().updateEnabled();
+		ObservableState updateMultipleEnabledOrSingleSelection =
 						State.or(tableModel.editModel().updateMultipleEnabled(),
 										tableModel.selection().single());
 
@@ -1206,7 +1206,7 @@ public class EntityTablePanel extends JPanel {
 						.description(Messages.refreshTip())
 						.mnemonic(Messages.refreshMnemonic())
 						.smallIcon(ICONS.refresh())
-						.enabled(tableModel.refresher().observer().not())
+						.enabled(tableModel.refresher().observable().not())
 						.build();
 	}
 
@@ -1558,7 +1558,7 @@ public class EntityTablePanel extends JPanel {
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
 		tableModel.queryModel().conditions().changed().addListener(this::onConditionChanged);
-		tableModel.refresher().observer().addConsumer(this::onRefreshingChanged);
+		tableModel.refresher().observable().addConsumer(this::onRefreshingChanged);
 		tableModel.refresher().failure().addConsumer(this::onException);
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
 	}
@@ -3003,7 +3003,7 @@ public class EntityTablePanel extends JPanel {
 		private StatusPanel() {
 			super(new BorderLayout());
 			add(label, BorderLayout.CENTER);
-			tableModel.refresher().observer().addConsumer(new ConfigurePanel());
+			tableModel.refresher().observable().addConsumer(new ConfigurePanel());
 			tableModel.selection().indexes().addListener(this::updateStatusMessage);
 			tableModel.items().visible().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {

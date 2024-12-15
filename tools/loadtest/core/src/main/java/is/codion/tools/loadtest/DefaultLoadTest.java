@@ -19,11 +19,11 @@
 package is.codion.tools.loadtest;
 
 import is.codion.common.event.Event;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.tools.loadtest.LoadTest.Scenario.Result;
 import is.codion.tools.loadtest.randomizer.ItemRandomizer;
 
@@ -226,8 +226,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	}
 
 	@Override
-	public ValueObserver<Integer> applicationCount() {
-		return applicationCount.observer();
+	public Observable<Integer> applicationCount() {
+		return applicationCount.observable();
 	}
 
 	@Override

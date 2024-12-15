@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.resource.MessageBundle;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.Components;
@@ -181,7 +181,7 @@ final class EntityControls {
 	}
 
 	private static CommandControl createEditControl(Command editEntityCommand, JComponent component,
-																									StateObserver selectionNonEmptyState, KeyStroke keyStroke) {
+																									ObservableState selectionNonEmptyState, KeyStroke keyStroke) {
 		CommandControl control = Control.builder()
 						.command(editEntityCommand)
 						.smallIcon(ICONS.edit())

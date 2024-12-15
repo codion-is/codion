@@ -30,13 +30,13 @@ final class DefaultValueList<T> extends DefaultValues<T, List<T>>
 	}
 
 	@Override
-	public synchronized ValueListObserver<T> observer() {
-		return (ValueListObserver<T>) super.observer();
+	public synchronized ObservableValueList<T> observable() {
+		return (ObservableValueList<T>) super.observable();
 	}
 
 	@Override
-	protected ValueListObserver<T> createObserver() {
-		return new DefaultValueListObserver<>(this);
+	protected ObservableValueList<T> createObservable() {
+		return new DefaultObservableValueList<>(this);
 	}
 
 	static final class DefaultBuilder<T>

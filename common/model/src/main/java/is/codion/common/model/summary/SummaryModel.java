@@ -18,10 +18,10 @@
  */
 package is.codion.common.model.summary;
 
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 
 import java.text.Format;
 import java.util.Collection;
@@ -66,9 +66,9 @@ public interface SummaryModel {
 	Value<Summary> summary();
 
 	/**
-	 * @return an observer for the string representing the summary value
+	 * @return an observable for the string representing the summary value
 	 */
-	ValueObserver<String> summaryText();
+	Observable<String> summaryText();
 
 	/**
 	 * Instantiates a new {@link SummaryModel}

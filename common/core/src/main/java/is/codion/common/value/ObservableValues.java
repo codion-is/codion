@@ -18,16 +18,18 @@
  */
 package is.codion.common.value;
 
+import is.codion.common.observer.Observable;
+
 import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
 
 /**
- * A read only values observer
+ * A read only values observable
  * @param <T> the values type
  * @param <C> the collection type
  */
-public interface ValuesObserver<T, C extends Collection<T>> extends ValueObserver<C>, Iterable<T> {
+public interface ObservableValues<T, C extends Collection<T>> extends Observable<C>, Iterable<T> {
 
 	@Override
 	@NonNull C get();

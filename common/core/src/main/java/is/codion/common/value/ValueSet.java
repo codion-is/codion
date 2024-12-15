@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 public interface ValueSet<T> extends Values<T, Set<T>> {
 
 	@Override
-	ValueSetObserver<T> observer();
+	ObservableValueSet<T> observable();
 
 	/**
 	 * Creates a new empty {@link ValueSet}, using {@link Notify#WHEN_CHANGED}.

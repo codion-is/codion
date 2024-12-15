@@ -19,11 +19,11 @@
 package is.codion.swing.common.ui.component.builder;
 
 import is.codion.common.Configuration;
+import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
-import is.codion.common.state.StateObserver;
+import is.codion.common.state.ObservableState;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -189,8 +189,8 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B toolTipText(String toolTipText);
 
 	/**
-	 * Sets the enabled state of the component, for a dynamic enabled state use {@link #enabled(StateObserver)}.
-	 * Overridden by {@link #enabled(StateObserver)}.
+	 * Sets the enabled state of the component, for a dynamic enabled state use {@link #enabled(ObservableState)}.
+	 * Overridden by {@link #enabled(ObservableState)}.
 	 * @param enabled the enabled state
 	 * @return this builder instance
 	 * @see JComponent#setEnabled(boolean)
@@ -201,7 +201,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @param enabled the state observer controlling the component enabled status
 	 * @return this builder instance
 	 */
-	B enabled(StateObserver enabled);
+	B enabled(ObservableState enabled);
 
 	/**
 	 * @param popupMenuControl a function, receiving the component being built, providing the control to base a popup menu on
@@ -373,11 +373,11 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B link(Value<T> linkedValue);
 
 	/**
-	 * Creates a read-only link to the given {@link ValueObserver}.
+	 * Creates a read-only link to the given {@link Observable}.
 	 * @param linkedValue a value to link to the component value
 	 * @return this builder instance
 	 */
-	B link(ValueObserver<T> linkedValue);
+	B link(Observable<T> linkedValue);
 
 	/**
 	 * @param listener a listener to add to the resulting component value
@@ -393,7 +393,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 
 	/**
 	 * Sets the initial value for the component, unless value(s) have been linked via {@link #link(Value)}
-	 * or {@link #link(ValueObserver)}, which then control the inital value.
+	 * or {@link #link(Observable)}, which then control the inital value.
 	 * The initial value is set before any listeners are added, so no events are triggered.
 	 * @param value the initial value
 	 * @return this builder instance

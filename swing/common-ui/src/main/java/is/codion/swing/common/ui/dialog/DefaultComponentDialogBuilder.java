@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -164,7 +164,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		return dialog;
 	}
 
-	static JDialog createDialog(Window owner, ValueObserver<String> title, ImageIcon icon,
+	static JDialog createDialog(Window owner, Observable<String> title, ImageIcon icon,
 															JComponent component, Dimension size, Component locationRelativeTo,
 															Point location, boolean modal, boolean resizable, Consumer<JDialog> onShown,
 															List<KeyEvents.Builder> keyEventBuilders) {

@@ -18,12 +18,10 @@
  */
 package is.codion.common.value;
 
-import java.util.List;
+import java.util.Set;
 
-final class DefaultValueListObserver<T> extends DefaultValuesObserver<T, List<T>>
-				implements ValueListObserver<T> {
-
-	DefaultValueListObserver(ValueList<T> valueList) {
-		super(valueList);
-	}
-}
+/**
+ * A read only value set observable
+ * @param <T> the value type
+ */
+public interface ObservableValueSet<T> extends ObservableValues<T, Set<T>> {}

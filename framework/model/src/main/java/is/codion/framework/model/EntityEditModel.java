@@ -23,8 +23,8 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -345,7 +345,7 @@ public interface EntityEditModel {
 	void validate(Entity entity);
 
 	/**
-	 * @return an observer notified before an insert is performed
+	 * @return an observer notified before an insert is performed, after validation
 	 */
 	Observer<Collection<Entity>> beforeInsert();
 
@@ -355,7 +355,7 @@ public interface EntityEditModel {
 	Observer<Collection<Entity>> afterInsert();
 
 	/**
-	 * @return an observer notified before an update is performed
+	 * @return an observer notified before an update is performed, after validation
 	 */
 	Observer<Map<Entity.Key, Entity>> beforeUpdate();
 
@@ -417,24 +417,24 @@ public interface EntityEditModel {
 		void revert();
 
 		/**
-		 * @return a {@link StateObserver} indicating whether the entity exists in the database
+		 * @return an {@link ObservableState} indicating whether the entity exists in the database
 		 * @see Exists#predicate()
 		 */
 		Exists exists();
 
 		/**
-		 * Returns a {@link StateObserver} indicating whether any values have been modified.
-		 * @return a {@link StateObserver} indicating the modified state of this entity
+		 * Returns an {@link ObservableState} indicating whether any values have been modified.
+		 * @return an {@link ObservableState} indicating the modified state of this entity
 		 * @see Modified#predicate()
 		 */
 		Modified modified();
 
 		/**
-		 * @return a {@link StateObserver} indicating whether the entity has been edited, that is, exists and is modified
+		 * @return an {@link ObservableState} indicating whether the entity has been edited, that is, exists and is modified
 		 * @see #modified()
 		 * @see #exists()
 		 */
-		StateObserver edited();
+		ObservableState edited();
 
 		/**
 		 * @return an observer notified each time the entity is about to be changed
@@ -453,27 +453,27 @@ public interface EntityEditModel {
 
 		/**
 		 * @param attribute the attribute
-		 * @return a {@link StateObserver} indicating whether the value of the given attribute is null
+		 * @return an {@link ObservableState} indicating whether the value of the given attribute is null
 		 */
-		StateObserver isNull(Attribute<?> attribute);
+		ObservableState isNull(Attribute<?> attribute);
 
 		/**
 		 * @param attribute the attribute
-		 * @return a {@link StateObserver} indicating whether the value of the given attribute is not null
+		 * @return an {@link ObservableState} indicating whether the value of the given attribute is not null
 		 */
-		StateObserver isNotNull(Attribute<?> attribute);
+		ObservableState isNotNull(Attribute<?> attribute);
 
 		/**
-		 * @return a {@link StateObserver} indicating whether the primary key of the entity is null
+		 * @return an {@link ObservableState} indicating whether the primary key of the entity is null
 		 */
-		StateObserver primaryKeyNull();
+		ObservableState primaryKeyNull();
 
 		/**
-		 * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
+		 * @return an {@link ObservableState} indicating the valid status of the underlying Entity.
 		 * @see #validate(Attribute)
 		 * @see EntityValidator#validate(Entity)
 		 */
-		StateObserver valid();
+		ObservableState valid();
 
 		/**
 		 * Controls the validator used by this edit model.
@@ -507,7 +507,7 @@ public interface EntityEditModel {
 		 * Indicates whether the active entity exists in the database.
 		 * @see #predicate()
 		 */
-		interface Exists extends StateObserver {
+		interface Exists extends ObservableState {
 
 			/**
 			 * Controls the 'exists' predicate for this {@link Exists} instance, which is responsible for providing
@@ -523,7 +523,7 @@ public interface EntityEditModel {
 		 * Indicates whether the active entity is modified.
 		 * @see #predicate()
 		 */
-		interface Modified extends StateObserver {
+		interface Modified extends ObservableState {
 
 			/**
 			 * Controls the 'modified' predicate for this {@link Modified} instance, which is responsible for providing
@@ -560,16 +560,16 @@ public interface EntityEditModel {
 		State persist();
 
 		/**
-		 * @return a {@link StateObserver} indicating the valid status of this attribute value.
+		 * @return an {@link ObservableState} indicating the valid status of this attribute value.
 		 */
-		StateObserver valid();
+		ObservableState valid();
 
 		/**
-		 * Returns a {@link StateObserver} instance indicating whether the value of the given attribute has been modified.
-		 * @return a {@link StateObserver} indicating the modified state of the value of the given attribute
+		 * Returns an {@link ObservableState} instance indicating whether the value of the given attribute has been modified.
+		 * @return an {@link ObservableState} indicating the modified state of the value of the given attribute
 		 * @see EditableEntity#modified()
 		 */
-		StateObserver modified();
+		ObservableState modified();
 
 		/**
 		 * Returns an observer notified each time this value is edited via {@link EditableValue#set(Object)}.

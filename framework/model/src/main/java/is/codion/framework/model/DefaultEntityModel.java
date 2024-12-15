@@ -18,8 +18,8 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.value.ObservableValueSet;
 import is.codion.common.value.ValueSet;
-import is.codion.common.value.ValueSetObserver;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -198,8 +198,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	}
 
 	@Override
-	public final ValueSetObserver<M> linkedDetailModels() {
-		return linkedDetailModels.observer();
+	public final ObservableValueSet<M> linkedDetailModels() {
+		return linkedDetailModels.observable();
 	}
 
 	@Override

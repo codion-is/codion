@@ -19,7 +19,7 @@
 package is.codion.common.model.condition;
 
 import is.codion.common.observer.Observer;
-import is.codion.common.state.StateObserver;
+import is.codion.common.state.ObservableState;
 import is.codion.common.value.ValueSet;
 
 import java.util.Map;
@@ -64,9 +64,9 @@ public interface TableConditionModel<C> {
 	void clear();
 
 	/**
-	 * @return a {@link StateObserver} enabled when any of the underlying condition models are enabled
+	 * @return an {@link ObservableState} enabled when any of the underlying condition models are enabled
 	 */
-	StateObserver enabled();
+	ObservableState enabled();
 
 	/**
 	 * @return an observer notified each time the condition changes

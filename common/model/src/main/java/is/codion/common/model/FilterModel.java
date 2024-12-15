@@ -25,8 +25,8 @@ import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 
 import org.jspecify.annotations.Nullable;
@@ -77,7 +77,7 @@ public interface FilterModel<T> {
 	 * Note that this method only throws exceptions when run synchronously off the user interface thread.
 	 * Use {@link Refresher#failure()} to listen for exceptions that happen during asynchronous refresh.
 	 * @param onRefresh called after a successful refresh, may be null
-	 * @see Refresher#observer()
+	 * @see Refresher#observable()
 	 * @see Refresher#success()
 	 * @see Refresher#failure()
 	 * @see Refresher#async()
@@ -294,9 +294,9 @@ public interface FilterModel<T> {
 		State async();
 
 		/**
-		 * @return an observer active while a refresh is in progress
+		 * @return an observable active while a refresh is in progress
 		 */
-		StateObserver observer();
+		ObservableState observable();
 
 		/**
 		 * @return an observer notified each time a successful refresh has been performed
@@ -334,8 +334,8 @@ public interface FilterModel<T> {
 		}
 
 		@Override
-		public final StateObserver observer() {
-			return refreshingState.observer();
+		public final ObservableState observable() {
+			return refreshingState.observable();
 		}
 
 		@Override
@@ -360,7 +360,7 @@ public interface FilterModel<T> {
 		 * Use {@link #failure()} to listen for exceptions that happen during asynchronous refresh.
 		 * @param onRefresh called after a successful refresh, may be null
 		 * @throws RuntimeException in case of an exception when running synchronously.
-		 * @see #observer()
+		 * @see #observable()
 		 * @see #success()
 		 * @see #failure()
 		 * @see #async()

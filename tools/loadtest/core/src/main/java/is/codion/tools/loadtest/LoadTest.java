@@ -18,11 +18,11 @@
  */
 package is.codion.tools.loadtest;
 
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.tools.loadtest.DefaultScenario.DefaultRunResult;
 import is.codion.tools.loadtest.LoadTest.Scenario.Result;
 import is.codion.tools.loadtest.randomizer.ItemRandomizer;
@@ -139,9 +139,9 @@ public interface LoadTest<T> {
 	Map<ApplicationRunner, T> applications();
 
 	/**
-	 * @return an observer notified each time the application count changes
+	 * @return an observable notified each time the application count changes
 	 */
-	ValueObserver<Integer> applicationCount();
+	Observable<Integer> applicationCount();
 
 	/**
 	 * Adds a batch of applications.

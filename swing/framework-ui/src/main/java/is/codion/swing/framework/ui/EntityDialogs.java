@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.observer.Observable;
 import is.codion.common.resource.MessageBundle;
-import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Entity.Copy;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -497,7 +497,7 @@ public final class EntityDialogs {
 		private final EntityTablePanel entityTablePanel;
 
 		private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, Point location, Component locationRelativeTo,
-																	ValueObserver<String> title, ImageIcon icon, Dimension dialogSize, boolean singleSelection,
+																	Observable<String> title, ImageIcon icon, Dimension dialogSize, boolean singleSelection,
 																	Consumer<EntityTablePanel.Config> configureTablePanel) {
 			Control okControl = Control.builder()
 							.command(this::ok)

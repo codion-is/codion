@@ -32,10 +32,15 @@ import java.util.function.Supplier;
  * @param <C> the collection type
  * @see #builder(Supplier, Function)
  */
-public interface Values<T, C extends Collection<T>> extends Value<C>, ValuesObserver<T, C> {
+public interface Values<T, C extends Collection<T>> extends Value<C>, ObservableValues<T, C> {
 
 	@Override
 	@NonNull C get();
+
+	@Override
+	default boolean nullable() {
+		return false;
+	}
 
 	/**
 	 * Sets the values.
@@ -102,11 +107,11 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, ValuesObse
 	Value<T> value();
 
 	/**
-	 * Returns a {@link ValuesObserver} notified each time this value changes.
-	 * @return a {@link ValuesObserver} for this value
+	 * Returns an {@link ObservableValues} notified each time this value changes.
+	 * @return an {@link ObservableValues} for this value
 	 */
 	@Override
-	ValuesObserver<T, C> observer();
+	ObservableValues<T, C> observable();
 
 	/**
 	 * @param create creates an empty instance of the required collection type

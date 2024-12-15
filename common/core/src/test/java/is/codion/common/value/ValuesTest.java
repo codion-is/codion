@@ -46,7 +46,7 @@ public class ValuesTest {
 	@Test
 	void set() {
 		Values<Integer, Set<Integer>> values = Values.builder(emptySet, unmodifiableSet).build();
-		ValuesObserver<Integer, Set<Integer>> observer = values.observer();
+		ObservableValues<Integer, Set<Integer>> observer = values.observable();
 		assertTrue(observer.empty());
 		assertFalse(observer.notEmpty());
 		assertUnmodifiable(observer);
@@ -67,7 +67,7 @@ public class ValuesTest {
 		values = Values.builder(emptySet, unmodifiableSet)
 						.value(initialValues)
 						.build();
-		observer = values.observer();
+		observer = values.observable();
 		assertFalse(observer.empty());
 		assertTrue(observer.notEmpty());
 		assertEquals(initialValues, observer.get());
@@ -166,14 +166,14 @@ public class ValuesTest {
 	@Test
 	void list() {
 		Values<Integer, List<Integer>> values = Values.builder(emptyList, unmodifiableList).build();
-		ValuesObserver<Integer, List<Integer>> observer = values.observer();
-		assertTrue(observer.empty());
-		assertFalse(observer.notEmpty());
-		assertUnmodifiable(observer);
+		ObservableValues<Integer, List<Integer>> observable = values.observable();
+		assertTrue(observable.empty());
+		assertFalse(observable.notEmpty());
+		assertUnmodifiable(observable);
 
-		assertFalse(observer.nullable());
-		assertFalse(observer.isNull());
-		assertTrue(observer.optional().isPresent());
+		assertFalse(observable.nullable());
+		assertFalse(observable.isNull());
+		assertTrue(observable.optional().isPresent());
 
 		assertTrue(values.add(1));
 		assertTrue(values.add(1));
@@ -187,12 +187,12 @@ public class ValuesTest {
 		values = Values.builder(emptyList, unmodifiableList)
 						.value(initialValues)
 						.build();
-		observer = values.observer();
-		assertFalse(observer.empty());
-		assertTrue(observer.notEmpty());
-		assertEquals(initialValues, observer.get());
-		assertUnmodifiable(observer);
-		assertTrue(observer.isEqualTo(initialValues));
+		observable = values.observable();
+		assertFalse(observable.empty());
+		assertTrue(observable.notEmpty());
+		assertEquals(initialValues, observable.get());
+		assertUnmodifiable(observable);
+		assertTrue(observable.isEqualTo(initialValues));
 
 		assertTrue(values.add(1));
 		assertTrue(values.add(2));
@@ -206,8 +206,8 @@ public class ValuesTest {
 		assertTrue(values.add(3));
 
 		values.clear();
-		assertTrue(observer.empty());
-		assertFalse(observer.notEmpty());
+		assertTrue(observable.empty());
+		assertFalse(observable.notEmpty());
 		assertTrue(values.add(3));
 		assertFalse(values.removeAll(1, 2));
 
@@ -217,7 +217,7 @@ public class ValuesTest {
 
 		values.clear();
 		values.addAll(1, 2);
-		assertUnmodifiable(observer);
+		assertUnmodifiable(observable);
 
 		values.clear();
 		assertTrue(values.add(1));
@@ -228,9 +228,9 @@ public class ValuesTest {
 		Value<Integer> value = values.value();
 
 		value.set(1);
-		assertTrue(observer.contains(1));
+		assertTrue(observable.contains(1));
 		value.clear();
-		assertTrue(observer.empty());
+		assertTrue(observable.empty());
 
 		values.set(Collections.singleton(2));
 		assertEquals(2, value.get());
@@ -239,15 +239,15 @@ public class ValuesTest {
 		assertNull(value.get());
 
 		assertTrue(values.addAll(1, 2, 3));
-		assertEquals(3, observer.size());
+		assertEquals(3, observable.size());
 		values.forEach(i -> {});
-		assertFalse(observer.containsAll(asList(1, 2, 4)));
-		assertTrue(observer.containsAll(asList(1, 2, 3)));
+		assertFalse(observable.containsAll(asList(1, 2, 4)));
+		assertTrue(observable.containsAll(asList(1, 2, 3)));
 		assertTrue(values.addAll(1, 2, 3));
 		assertTrue(values.removeAll(1, 2));
 		assertFalse(values.removeAll(1, 2));
 		assertTrue(values.removeAll(2, 3));
-		assertUnmodifiable(observer);
+		assertUnmodifiable(observable);
 
 		values.clear();
 		values.addAll(1, 2);
@@ -284,7 +284,7 @@ public class ValuesTest {
 		assertEquals(3, valueListEventCounter.get());
 	}
 
-	private static void assertUnmodifiable(ValuesObserver<Integer, ? extends Collection<Integer>> observer) {
-		assertThrows(UnsupportedOperationException.class, () -> observer.get().remove(1));
+	private static void assertUnmodifiable(ObservableValues<Integer, ? extends Collection<Integer>> observable) {
+		assertThrows(UnsupportedOperationException.class, () -> observable.get().remove(1));
 	}
 }

@@ -18,8 +18,8 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
@@ -169,8 +169,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
-	public StateObserver searchStringModified() {
-		return searchStringModified.observer();
+	public ObservableState searchStringModified() {
+		return searchStringModified.observable();
 	}
 
 	/**
@@ -252,8 +252,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public StateObserver empty() {
-			return selectionEmpty.observer();
+		public ObservableState empty() {
+			return selectionEmpty.observable();
 		}
 
 		@Override

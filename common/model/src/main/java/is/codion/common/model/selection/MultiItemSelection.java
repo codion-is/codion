@@ -19,8 +19,8 @@
 package is.codion.common.model.selection;
 
 import is.codion.common.observer.Mutable;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,14 +33,14 @@ import java.util.function.Predicate;
 public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 
 	/**
-	 * @return a {@link StateObserver} indicating whether multiple items are selected
+	 * @return an {@link ObservableState} indicating whether multiple items are selected
 	 */
-	StateObserver multiple();
+	ObservableState multiple();
 
 	/**
-	 * @return a {@link StateObserver} indicating whether a single item is selected
+	 * @return an {@link ObservableState} indicating whether a single item is selected
 	 */
-	StateObserver single();
+	ObservableState single();
 
 	/**
 	 * @return a State controlling whether single selection mode is enabled

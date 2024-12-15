@@ -31,7 +31,7 @@ import java.util.Collection;
  * {@code
  * State state = State.state();
  *
- * StateObserver observer = state.observer();
+ * ObservableState observable = state.observable();
  *
  * observer.addConsumer(this::onStateChange);
  *
@@ -44,22 +44,22 @@ import java.util.Collection;
  * @see #state()
  * @see #builder()
  */
-public interface State extends StateObserver, Value<Boolean> {
+public interface State extends ObservableState, Value<Boolean> {
 
 	@Override
 	@NonNull Boolean get();
 
 	/**
-	 * Returns a {@link StateObserver} notified each time the state changes
-	 * @return a {@link StateObserver} notified each time the state changes
+	 * Returns an {@link ObservableState} notified each time the state changes
+	 * @return an {@link ObservableState} notified each time the state changes
 	 */
-	StateObserver observer();
+	ObservableState observable();
 
 	/**
 	 * A state which combines a number of states, either ANDing or ORing those together
 	 * when determining its own state.
 	 */
-	interface Combination extends StateObserver {
+	interface Combination extends ObservableState {
 
 		/**
 		 * Returns the {@link Conjunction} used when combining the states.
@@ -71,13 +71,13 @@ public interface State extends StateObserver, Value<Boolean> {
 		 * Adds a state to this state combination
 		 * @param state the state to add to this state combination
 		 */
-		void add(StateObserver state);
+		void add(ObservableState state);
 
 		/**
 		 * Removes a state from this state combination
 		 * @param state the state to remove from this state combination
 		 */
-		void remove(StateObserver state);
+		void remove(ObservableState state);
 	}
 
 	/**
@@ -134,57 +134,57 @@ public interface State extends StateObserver, Value<Boolean> {
 	/**
 	 * Creates a new {@link State.Combination} instance.
 	 * @param conjunction the conjunction to use
-	 * @param stateObservers the state observers to base this state combination on
+	 * @param observableStates the state observers to base this state combination on
 	 * @return a new {@link State.Combination} instance
 	 */
-	static Combination combination(Conjunction conjunction, StateObserver... stateObservers) {
-		return new DefaultStateCombination(conjunction, stateObservers);
+	static Combination combination(Conjunction conjunction, ObservableState... observableStates) {
+		return new DefaultStateCombination(conjunction, observableStates);
 	}
 
 	/**
 	 * Creates a new {@link State.Combination} instance.
 	 * @param conjunction the conjunction to use
-	 * @param stateObservers the state observers to base this state combination on
+	 * @param observableStates the state observers to base this state combination on
 	 * @return a new {@link State.Combination} instance
 	 */
-	static Combination combination(Conjunction conjunction, Collection<? extends StateObserver> stateObservers) {
-		return new DefaultStateCombination(conjunction, stateObservers);
+	static Combination combination(Conjunction conjunction, Collection<? extends ObservableState> observableStates) {
+		return new DefaultStateCombination(conjunction, observableStates);
 	}
 
 	/**
 	 * Creates a new {@link State.Combination} instance using {@link Conjunction#AND}.
-	 * @param stateObservers the state observers to base this state combination on
+	 * @param observableStates the state observers to base this state combination on
 	 * @return a new {@link State.Combination} instance
 	 */
-	static Combination and(StateObserver... stateObservers) {
-		return new DefaultStateCombination(Conjunction.AND, stateObservers);
+	static Combination and(ObservableState... observableStates) {
+		return new DefaultStateCombination(Conjunction.AND, observableStates);
 	}
 
 	/**
 	 * Creates a new {@link State.Combination} instance using {@link Conjunction#AND}.
-	 * @param stateObservers the state observers to base this state combination on
+	 * @param observableStates the state observers to base this state combination on
 	 * @return a new {@link State.Combination} instance
 	 */
-	static Combination and(Collection<? extends StateObserver> stateObservers) {
-		return new DefaultStateCombination(Conjunction.AND, stateObservers);
+	static Combination and(Collection<? extends ObservableState> observableStates) {
+		return new DefaultStateCombination(Conjunction.AND, observableStates);
 	}
 
 	/**
 	 * Creates a new {@link State.Combination} instance using {@link Conjunction#OR}.
-	 * @param stateObservers the state observers to base this state combination on
+	 * @param observableStates the state observers to base this state combination on
 	 * @return a new {@link State.Combination} instance
 	 */
-	static Combination or(StateObserver... stateObservers) {
-		return new DefaultStateCombination(Conjunction.OR, stateObservers);
+	static Combination or(ObservableState... observableStates) {
+		return new DefaultStateCombination(Conjunction.OR, observableStates);
 	}
 
 	/**
 	 * Creates a new {@link State.Combination} instance using {@link Conjunction#OR}.
-	 * @param stateObservers the state observers to base this state combination on
+	 * @param observableStates the state observers to base this state combination on
 	 * @return a new {@link State.Combination} instance
 	 */
-	static Combination or(Collection<? extends StateObserver> stateObservers) {
-		return new DefaultStateCombination(Conjunction.OR, stateObservers);
+	static Combination or(Collection<? extends ObservableState> observableStates) {
+		return new DefaultStateCombination(Conjunction.OR, observableStates);
 	}
 
 	/**

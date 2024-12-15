@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.control.CommandControl.CommandControlBuilder;
 import is.codion.swing.common.ui.control.ToggleControl.ToggleControlBuilder;
@@ -56,9 +56,9 @@ public interface Control extends Action {
 	Optional<String> name();
 
 	/**
-	 * @return a {@link StateObserver} indicating whether this Control is enabled
+	 * @return an {@link ObservableState} indicating whether this Control is enabled
 	 */
-	StateObserver enabled();
+	ObservableState enabled();
 
 	/**
 	 * @return the mnemonic or an empty Optional if none is available
@@ -105,7 +105,7 @@ public interface Control extends Action {
 	 * Unsupported, the enabled state of Controls is based on their {@code enabled} state observer
 	 * @param enabled the enabled status
 	 * @throws UnsupportedOperationException always
-	 * @see Builder#enabled(StateObserver)
+	 * @see Builder#enabled(ObservableState)
 	 */
 	@Override
 	void setEnabled(boolean enabled);
@@ -233,7 +233,7 @@ public interface Control extends Action {
 		 * @param enabled the state observer which controls the enabled state of the control
 		 * @return this Builder instance
 		 */
-		B enabled(StateObserver enabled);
+		B enabled(ObservableState enabled);
 
 		/**
 		 * @param mnemonic the control mnemonic

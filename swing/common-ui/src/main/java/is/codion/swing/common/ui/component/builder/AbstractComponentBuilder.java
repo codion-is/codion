@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component.builder;
 
-import is.codion.common.state.StateObserver;
+import is.codion.common.observer.Observable;
+import is.codion.common.state.ObservableState;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -64,7 +64,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private final List<Consumer<C>> buildConsumers = new ArrayList<>(1);
 	private final List<Consumer<ComponentValue<T, C>>> buildValueConsumers = new ArrayList<>(1);
 	private final List<Value<T>> linkedValues = new ArrayList<>(1);
-	private final List<ValueObserver<T>> linkedValueObservers = new ArrayList<>(1);
+	private final List<Observable<T>> linkedObservables = new ArrayList<>(1);
 	private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
 	private final Map<Object, Object> clientProperties = new HashMap<>();
 	private final List<FocusListener> focusListeners = new ArrayList<>();
@@ -97,7 +97,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private Color foreground;
 	private Color background;
 	private ComponentOrientation componentOrientation;
-	private StateObserver enabledObserver;
+	private ObservableState enabledObservable;
 	private boolean enabled = true;
 	private Function<C, JPopupMenu> popupMenu;
 	private T value;
@@ -215,8 +215,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B enabled(StateObserver enabled) {
-		this.enabledObserver = enabled;
+	public final B enabled(ObservableState enabled) {
+		this.enabledObservable = enabled;
 		return self();
 	}
 
@@ -376,11 +376,11 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B link(ValueObserver<T> linkedValueObserver) {
-		if (requireNonNull(linkedValueObserver).nullable() && !supportsNull()) {
+	public final B link(Observable<T> linkedObservable) {
+		if (requireNonNull(linkedObservable).nullable() && !supportsNull()) {
 			throw new IllegalArgumentException("Component does not support a nullable value");
 		}
-		this.linkedValueObservers.add(linkedValueObserver);
+		this.linkedObservables.add(linkedObservable);
 		return self();
 	}
 
@@ -500,8 +500,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (!enabled) {
 			component.setEnabled(false);
 		}
-		if (enabledObserver != null) {
-			linkToEnabledState(enabledObserver, component);
+		if (enabledObservable != null) {
+			linkToEnabledState(enabledObservable, component);
 		}
 		if (popupMenu != null) {
 			component.setComponentPopupMenu(popupMenu.apply(component));
@@ -539,11 +539,11 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 			component.setFocusCycleRoot(true);
 		}
 		validators.forEach(componentValue::addValidator);
-		if (valueSet && linkedValues.isEmpty() && linkedValueObservers.isEmpty()) {
+		if (valueSet && linkedValues.isEmpty() && linkedObservables.isEmpty()) {
 			componentValue.set(value);
 		}
 		linkedValues.forEach(componentValue::link);
-		linkedValueObservers.forEach(componentValue::link);
+		linkedObservables.forEach(componentValue::link);
 		listeners.forEach(componentValue::addListener);
 		consumers.forEach(componentValue::addConsumer);
 		if (label != null) {

@@ -18,14 +18,14 @@
  */
 package is.codion.common.state;
 
-import is.codion.common.value.ValueObserver;
+import is.codion.common.observer.Observable;
 
 import org.jspecify.annotations.NonNull;
 
 /**
- * Specifies an observer for a {@link State} instance.
+ * Specifies an observable for a {@link State} instance.
  */
-public interface StateObserver extends ValueObserver<Boolean> {
+public interface ObservableState extends Observable<Boolean> {
 
 	@Override
 	@NonNull Boolean get();
@@ -55,7 +55,7 @@ public interface StateObserver extends ValueObserver<Boolean> {
 	}
 
 	/**
-	 * @return A {@link StateObserver} instance that is always the reverse of this {@link StateObserver} instance
+	 * @return A {@link ObservableState} instance that is always the reverse of this {@link ObservableState} instance
 	 */
-	StateObserver not();
+	ObservableState not();
 }

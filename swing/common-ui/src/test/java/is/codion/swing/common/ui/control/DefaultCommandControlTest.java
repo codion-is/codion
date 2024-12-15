@@ -107,9 +107,9 @@ public final class DefaultCommandControlTest {
 	@Test
 	void setEnabled() {
 		State enabledState = State.state();
-		Control control = Control.builder().command(this::doNothing).name("control").enabled(enabledState.observer()).build();
+		Control control = Control.builder().command(this::doNothing).name("control").enabled(enabledState.observable()).build();
 		assertEquals("control", control.name().orElse(null));
-		assertSame(enabledState.observer(), control.enabled());
+		assertSame(enabledState.observable(), control.enabled());
 		assertFalse(control.isEnabled());
 		SwingUtilities.invokeLater(() -> {
 			enabledState.set(true);

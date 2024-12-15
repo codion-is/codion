@@ -21,6 +21,7 @@ package is.codion.tools.monitor.model;
 import is.codion.common.event.Event;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.logging.LoggerProxy;
+import is.codion.common.observer.Observable;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.common.rmi.server.ServerInformation;
@@ -28,7 +29,6 @@ import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
 import is.codion.framework.server.EntityServerAdmin.DomainOperation;
@@ -203,14 +203,14 @@ public final class ServerMonitor {
 	/**
 	 * @return the amount of memory being used by the server
 	 */
-	public ValueObserver<String> memoryUsage() {
+	public Observable<String> memoryUsage() {
 		return memoryUsageValue;
 	}
 
 	/**
 	 * @return the number of connected clients
 	 */
-	public ValueObserver<Integer> connectionCount() {
+	public Observable<Integer> connectionCount() {
 		return connectionCountValue;
 	}
 

@@ -23,21 +23,19 @@ import is.codion.common.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 import static java.util.Objects.requireNonNull;
 
-final class DefaultStateObserver implements StateObserver {
+final class DefaultObservableState implements ObservableState {
 
 	private final Object lock = new Object();
-	private final StateObserver observedState;
+	private final ObservableState state;
 	private final boolean not;
 
 	private @Nullable Event<Boolean> stateChangedEvent;
-	private @Nullable DefaultStateObserver notObserver;
+	private @Nullable DefaultObservableState notObserver;
 
-	DefaultStateObserver(StateObserver observedState, boolean not) {
-		this.observedState = requireNonNull(observedState);
+	DefaultObservableState(ObservableState state, boolean not) {
+		this.state = requireNonNull(state);
 		this.not = not;
 	}
 
@@ -49,18 +47,18 @@ final class DefaultStateObserver implements StateObserver {
 	@Override
 	public Boolean get() {
 		synchronized (lock) {
-			return not ? !observedState.get() : observedState.get();
+			return not ? !state.get() : state.get();
 		}
 	}
 
 	@Override
-	public StateObserver not() {
+	public ObservableState not() {
 		if (not) {
-			return observedState;
+			return state;
 		}
 		synchronized (lock) {
 			if (notObserver == null) {
-				notObserver = new DefaultStateObserver(this, true);
+				notObserver = new DefaultObservableState(this, true);
 			}
 
 			return notObserver;
@@ -68,43 +66,14 @@ final class DefaultStateObserver implements StateObserver {
 	}
 
 	@Override
-	public boolean addListener(Runnable listener) {
-		return observer().addListener(listener);
-	}
+	public Observer<Boolean> observer() {
+		synchronized (lock) {
+			if (stateChangedEvent == null) {
+				stateChangedEvent = Event.event();
+			}
 
-	@Override
-	public boolean removeListener(Runnable listener) {
-		return observer().removeListener(listener);
-	}
-
-	@Override
-	public boolean addConsumer(Consumer<? super Boolean> consumer) {
-		return observer().addConsumer(consumer);
-	}
-
-	@Override
-	public boolean removeConsumer(Consumer<? super Boolean> consumer) {
-		return observer().removeConsumer(consumer);
-	}
-
-	@Override
-	public boolean addWeakListener(Runnable listener) {
-		return observer().addWeakListener(listener);
-	}
-
-	@Override
-	public boolean removeWeakListener(Runnable listener) {
-		return observer().removeWeakListener(listener);
-	}
-
-	@Override
-	public boolean addWeakConsumer(Consumer<? super Boolean> consumer) {
-		return observer().addWeakConsumer(consumer);
-	}
-
-	@Override
-	public boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {
-		return observer().removeWeakConsumer(consumer);
+			return stateChangedEvent.observer();
+		}
 	}
 
 	void notifyObservers(boolean newValue, boolean previousValue) {
@@ -117,16 +86,6 @@ final class DefaultStateObserver implements StateObserver {
 					notObserver.notifyObservers(previousValue, newValue);
 				}
 			}
-		}
-	}
-
-	private Observer<Boolean> observer() {
-		synchronized (lock) {
-			if (stateChangedEvent == null) {
-				stateChangedEvent = Event.event();
-			}
-
-			return stateChangedEvent.observer();
 		}
 	}
 }

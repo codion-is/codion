@@ -172,13 +172,13 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 	}
 
 	@Override
-	public synchronized ValuesObserver<T, C> observer() {
-		return (ValuesObserver<T, C>) super.observer();
+	public synchronized ObservableValues<T, C> observable() {
+		return (ObservableValues<T, C>) super.observable();
 	}
 
 	@Override
-	protected ValuesObserver<T, C> createObserver() {
-		return new DefaultValuesObserver<>(this);
+	protected ObservableValues<T, C> createObservable() {
+		return new DefaultObservableValues<>(this);
 	}
 
 	private final class SingleValue extends AbstractValue<T> {

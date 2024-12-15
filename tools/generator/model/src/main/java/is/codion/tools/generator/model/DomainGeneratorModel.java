@@ -19,12 +19,12 @@
 package is.codion.tools.generator.model;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
@@ -132,16 +132,16 @@ public final class DomainGeneratorModel {
 		return entityTableModel;
 	}
 
-	public ValueObserver<String> domainImpl() {
-		return domainImplValue.observer();
+	public Observable<String> domainImpl() {
+		return domainImplValue.observable();
 	}
 
-	public ValueObserver<String> domainApi() {
-		return domainApiValue.observer();
+	public Observable<String> domainApi() {
+		return domainApiValue.observable();
 	}
 
-	public ValueObserver<String> domainCombined() {
-		return domainCombinedValue.observer();
+	public Observable<String> domainCombined() {
+		return domainCombinedValue.observable();
 	}
 
 	public State includeDto() {
@@ -198,7 +198,7 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	public StateObserver saveEnabled() {
+	public ObservableState saveEnabled() {
 		return State.and(domainPackageSpecified, sourceDirectorySpecified, populatedSchemaSelected);
 	}
 

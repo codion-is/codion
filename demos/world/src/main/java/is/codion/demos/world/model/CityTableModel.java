@@ -19,8 +19,8 @@
 package is.codion.demos.world.model;
 
 import is.codion.common.event.Event;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -64,8 +64,8 @@ public final class CityTableModel extends SwingEntityTableModel {
 		displayLocationEvent.addConsumer(consumer);
 	}
 
-	public StateObserver citiesWithoutLocationSelected() {
-		return citiesWithoutLocationSelected.observer();
+	public ObservableState citiesWithoutLocationSelected() {
+		return citiesWithoutLocationSelected.observable();
 	}
 
 	private void refreshChartDataset(Collection<Entity> cities) {
@@ -93,8 +93,8 @@ public final class CityTableModel extends SwingEntityTableModel {
 			return cities.size();
 		}
 
-		public StateObserver cancelled() {
-			return cancelled.observer();
+		public ObservableState cancelled() {
+			return cancelled.observable();
 		}
 
 		public void cancel() {

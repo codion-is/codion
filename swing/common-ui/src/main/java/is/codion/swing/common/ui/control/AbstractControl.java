@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
@@ -49,7 +49,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	static final String BACKGROUND = "Background";
 	static final String FOREGROUND = "Foreground";
 
-	private final StateObserver enabledObserver;
+	private final ObservableState enabledObservable;
 
 	// Keep this in a field since it's added as a weak listener
 	private final Enabler enabler = new Enabler();
@@ -58,9 +58,9 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	AbstractControl(AbstractControlBuilder<?, ?> builder) {
 		super((String) builder.values.get(NAME));
 		initialized = true;
-		enabledObserver = builder.enabled == null ? State.state(true) : builder.enabled;
-		enabledObserver.addWeakConsumer(enabler);
-		super.setEnabled(enabledObserver.get());
+		enabledObservable = builder.enabled == null ? State.state(true) : builder.enabled;
+		enabledObservable.addWeakConsumer(enabler);
+		super.setEnabled(enabledObservable.get());
 		builder.values.forEach(super::putValue);
 	}
 
@@ -85,7 +85,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	@Override
 	public final Object getValue(String key) {
 		if (ENABLED.equals(key)) {
-			return enabledObserver.get();
+			return enabledObservable.get();
 		}
 
 		return super.getValue(key);
@@ -112,8 +112,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	}
 
 	@Override
-	public final StateObserver enabled() {
-		return enabledObserver;
+	public final ObservableState enabled() {
+		return enabledObservable;
 	}
 
 	@Override
@@ -170,7 +170,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
 		private final Map<String, Object> values = new HashMap<>();
 
-		private StateObserver enabled;
+		private ObservableState enabled;
 
 		@Override
 		public final B name(String name) {
@@ -179,7 +179,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		}
 
 		@Override
-		public final B enabled(StateObserver enabled) {
+		public final B enabled(ObservableState enabled) {
 			this.enabled = enabled;
 			return self();
 		}

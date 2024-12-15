@@ -20,7 +20,7 @@ package is.codion.swing.common.ui;
 
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
-import is.codion.common.state.StateObserver;
+import is.codion.common.state.ObservableState;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -113,12 +113,12 @@ public final class Utilities {
 	}
 
 	/**
-	 * Links the given actions to the given StateObserver, so that the actions are enabled
+	 * Links the given actions to the given {@link ObservableState}, so that the actions are enabled
 	 * only when the observed state is active
-	 * @param enabledState the StateObserver with which to link the action
+	 * @param enabledState the {@link ObservableState} with which to link the action
 	 * @param actions the actions
 	 */
-	public static void linkToEnabledState(StateObserver enabledState, Action... actions) {
+	public static void linkToEnabledState(ObservableState enabledState, Action... actions) {
 		requireNonNull(enabledState);
 		for (Action action : requireNonNull(actions)) {
 			if (action != null) {
@@ -129,11 +129,11 @@ public final class Utilities {
 	}
 
 	/**
-	 * Links the given components to the given StateObserver, so that each component is enabled only when the observed state is active
-	 * @param enabledState the StateObserver with which to link the components
+	 * Links the given components to the given {@link ObservableState}, so that each component is enabled only when the observed state is active
+	 * @param enabledState the {@link ObservableState} with which to link the components
 	 * @param components the components
 	 */
-	public static void linkToEnabledState(StateObserver enabledState, JComponent... components) {
+	public static void linkToEnabledState(ObservableState enabledState, JComponent... components) {
 		requireNonNull(enabledState);
 		for (JComponent component : requireNonNull(components)) {
 			if (component != null) {

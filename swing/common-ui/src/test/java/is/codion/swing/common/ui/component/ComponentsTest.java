@@ -910,7 +910,7 @@ public final class ComponentsTest {
 		firstValue.link(thirdValue);
 		JTextField textField = Components.stringField()
 						.link(thirdValue)
-						.link(secondValue.observer())
+						.link(secondValue.observable())
 						.build();
 		textField.setText("1");
 		assertEquals("1", firstValue.get());
@@ -942,7 +942,7 @@ public final class ComponentsTest {
 						.validator(validator)
 						.build());
 		assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
-						.link(stringValue.observer())
+						.link(stringValue.observable())
 						.validator(validator)
 						.build());
 	}

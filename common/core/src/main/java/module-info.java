@@ -24,9 +24,8 @@
  * <li>{@link is.codion.common.observer.Mutable}
  * <li>{@link is.codion.common.event.Event}
  * <li>{@link is.codion.common.state.State}
- * <li>{@link is.codion.common.state.StateObserver}
+ * <li>{@link is.codion.common.state.ObservableState}
  * <li>{@link is.codion.common.value.Value}
- * <li>{@link is.codion.common.value.ValueObserver}
  * </ul>
  * <p>
  * Configuration values:

@@ -18,6 +18,8 @@
  */
 package is.codion.common.value;
 
+import is.codion.common.observer.Observable;
+
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -57,7 +59,7 @@ import static java.util.Objects.requireNonNull;
  * @see #value(Object)
  * @see #builder()
  */
-public interface Value<T> extends ValueObserver<T>, Consumer<T> {
+public interface Value<T> extends Observable<T>, Consumer<T> {
 
 	/**
 	 * Specifies when a Value instance notifies its listeners.
@@ -119,10 +121,9 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	}
 
 	/**
-	 * Returns a {@link ValueObserver} notified each time this value changes.
-	 * @return a {@link ValueObserver} for this value
+	 * @return a read-only {@link Observable} instance for this value
 	 */
-	ValueObserver<T> observer();
+	Observable<T> observable();
 
 	/**
 	 * Creates a bidirectional link between this and the given original value,
@@ -142,19 +143,19 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	void unlink(Value<T> originalValue);
 
 	/**
-	 * Creates a unidirectional link between this value and the given original value observer,
-	 * so that changes in the original value are reflected in this one.
-	 * Note that after a call to this method the value of this value is the same as the original value.
-	 * @param originalValue the original value to link this value to
-	 * @throws IllegalArgumentException in case the original value is not valid according to this values validators
+	 * Creates a unidirectional link between this value and the given observable,
+	 * so that changes in the observable are reflected in this one.
+	 * Note that after a call to this method the value of this value is the same as the observable.
+	 * @param observable the observable to link this value to
+	 * @throws IllegalArgumentException in case the observable is not valid according to this values validators
 	 */
-	void link(ValueObserver<T> originalValue);
+	void link(Observable<T> observable);
 
 	/**
-	 * Unlinks this value from the given original value observer
-	 * @param originalValue the original value to unlink
+	 * Unlinks this value from the given observable
+	 * @param observable the observable to unlink
 	 */
-	void unlink(ValueObserver<T> originalValue);
+	void unlink(Observable<T> observable);
 
 	/**
 	 * Adds a validator to this {@link Value}.
@@ -268,12 +269,12 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		B link(Value<T> originalValue);
 
 		/**
-		 * Links the given value observer to the resulting value
-		 * @param originalValue the value to link
+		 * Links the given observable to the resulting value
+		 * @param observable the value to link
 		 * @return this builder instance
-		 * @see Value#link(ValueObserver)
+		 * @see Value#link(Observable)
 		 */
-		B link(ValueObserver<T> originalValue);
+		B link(Observable<T> observable);
 
 		/**
 		 * @param listener a listener to add

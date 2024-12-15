@@ -14,16 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2019 - 2024, Björn Darri Sigurðsson.
  */
 package is.codion.common.value;
 
-import java.util.Set;
+import is.codion.common.observer.Observable;
+import is.codion.common.observer.Observer;
 
-final class DefaultValueSetObserver<T> extends DefaultValuesObserver<T, Set<T>>
-				implements ValueSetObserver<T> {
+import org.jspecify.annotations.Nullable;
 
-	DefaultValueSetObserver(ValueSet<T> valueSet) {
-		super(valueSet);
+import static java.util.Objects.requireNonNull;
+
+class ObservableValue<T> implements Observable<T> {
+
+	private final Value<T> value;
+
+	ObservableValue(Value<T> value) {
+		this.value = requireNonNull(value);
+	}
+
+	@Override
+	public final @Nullable T get() {
+		return value.get();
+	}
+
+	@Override
+	public final boolean nullable() {
+		return value.nullable();
+	}
+
+	@Override
+	public Observer<T> observer() {
+		return value.observer();
+	}
+
+	protected final <V extends Value<T>> V value() {
+		return (V) value;
 	}
 }

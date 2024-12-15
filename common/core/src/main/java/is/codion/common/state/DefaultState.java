@@ -18,8 +18,9 @@
  */
 package is.codion.common.state;
 
+import is.codion.common.observer.Observable;
+import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 
 import org.jspecify.annotations.Nullable;
 
@@ -30,7 +31,7 @@ final class DefaultState implements State {
 
 	private final Value<Boolean> value;
 
-	private @Nullable DefaultStateObserver observer;
+	private @Nullable DefaultObservableState observableState;
 
 	private DefaultState(Value.Builder<Boolean, ?> valueBuilder) {
 		this.value = valueBuilder.consumer(new Notifier()).build();
@@ -68,19 +69,24 @@ final class DefaultState implements State {
 	}
 
 	@Override
-	public StateObserver observer() {
+	public ObservableState observable() {
 		synchronized (this.value) {
-			if (observer == null) {
-				observer = new DefaultStateObserver(this, false);
+			if (observableState == null) {
+				observableState = new DefaultObservableState(this, false);
 			}
 
-			return observer;
+			return observableState;
 		}
 	}
 
 	@Override
-	public StateObserver not() {
-		return observer().not();
+	public ObservableState not() {
+		return observable().not();
+	}
+
+	@Override
+	public Observer<Boolean> observer() {
+		return observable().observer();
 	}
 
 	@Override
@@ -94,13 +100,13 @@ final class DefaultState implements State {
 	}
 
 	@Override
-	public void link(ValueObserver<Boolean> originalValue) {
-		this.value.link(originalValue);
+	public void link(Observable<Boolean> observable) {
+		this.value.link(observable);
 	}
 
 	@Override
-	public void unlink(ValueObserver<Boolean> originalValue) {
-		this.value.unlink(originalValue);
+	public void unlink(Observable<Boolean> observable) {
+		this.value.unlink(observable);
 	}
 
 	@Override
@@ -118,69 +124,13 @@ final class DefaultState implements State {
 		this.value.validate(value);
 	}
 
-	@Override
-	public boolean addListener(Runnable listener) {
-		return observer().addListener(listener);
-	}
-
-	@Override
-	public boolean removeListener(Runnable listener) {
-		if (observer != null) {
-			return observer.removeListener(listener);
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean addConsumer(Consumer<? super Boolean> consumer) {
-		return observer().addConsumer(consumer);
-	}
-
-	@Override
-	public boolean removeConsumer(Consumer<? super Boolean> consumer) {
-		if (observer != null) {
-			return observer.removeConsumer(consumer);
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean addWeakListener(Runnable listener) {
-		return observer().addWeakListener(listener);
-	}
-
-	@Override
-	public boolean removeWeakListener(Runnable listener) {
-		if (observer != null) {
-			return observer.removeWeakListener(listener);
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean addWeakConsumer(Consumer<? super Boolean> consumer) {
-		return observer().addWeakConsumer(consumer);
-	}
-
-	@Override
-	public boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {
-		if (observer != null) {
-			return observer.removeWeakConsumer(consumer);
-		}
-
-		return false;
-	}
-
 	private final class Notifier implements Consumer<Boolean> {
 
 		@Override
 		public void accept(Boolean value) {
 			synchronized (DefaultState.this.value) {
-				if (observer != null) {
-					observer.notifyObservers(value, !value);
+				if (observableState != null) {
+					observableState.notifyObservers(value, !value);
 				}
 			}
 		}
@@ -219,8 +169,8 @@ final class DefaultState implements State {
 		}
 
 		@Override
-		public Builder link(ValueObserver<Boolean> originalState) {
-			valueBuilder.link(originalState);
+		public Builder link(Observable<Boolean> observable) {
+			valueBuilder.link(observable);
 			return this;
 		}
 

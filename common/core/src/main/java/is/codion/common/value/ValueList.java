@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 public interface ValueList<T> extends Values<T, List<T>> {
 
 	@Override
-	ValueListObserver<T> observer();
+	ObservableValueList<T> observable();
 
 	/**
 	 * Creates a new empty {@link ValueList}, using {@link Notify#WHEN_CHANGED}.

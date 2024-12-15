@@ -18,9 +18,9 @@
  */
 package is.codion.common.model.summary;
 
+import is.codion.common.observer.Observable;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 
 import java.util.List;
 
@@ -68,8 +68,8 @@ final class DefaultSummaryModel<T extends Number> implements SummaryModel {
 	}
 
 	@Override
-	public ValueObserver<String> summaryText() {
-		return summaryText.observer();
+	public Observable<String> summaryText() {
+		return summaryText.observable();
 	}
 
 	private void updateSummary() {

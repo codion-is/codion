@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.state.StateObserver;
+import is.codion.common.state.ObservableState;
 
 import javax.swing.Action;
 
@@ -35,7 +35,7 @@ public interface OkCancelDialogBuilder extends ActionDialogBuilder<OkCancelDialo
 	 * @return this builder instance
 	 * @throws IllegalStateException in case an ok action has already been set
 	 */
-	OkCancelDialogBuilder okEnabled(StateObserver okEnabled);
+	OkCancelDialogBuilder okEnabled(ObservableState okEnabled);
 
 	/**
 	 * Note that this is overridden by {@link #cancelAction(Action)}.
@@ -43,7 +43,7 @@ public interface OkCancelDialogBuilder extends ActionDialogBuilder<OkCancelDialo
 	 * @return this builder instance
 	 * @throws IllegalStateException in case a cancel action has already been set
 	 */
-	OkCancelDialogBuilder cancelEnabled(StateObserver cancelEnabled);
+	OkCancelDialogBuilder cancelEnabled(ObservableState cancelEnabled);
 
 	/**
 	 * @param onOk called on ok pressed, before the dialog has been disposed

@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.observer.Observable;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 
 import javax.swing.event.ChangeEvent;
@@ -116,8 +116,8 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 	}
 
 	@Override
-	public ValueObserver<RowColumn> currentResult() {
-		return searchResult.observer();
+	public Observable<RowColumn> currentResult() {
+		return searchResult.observable();
 	}
 
 	private Optional<RowColumn> nextResult(boolean addToSelection) {

@@ -20,8 +20,10 @@ package is.codion.common.value;
 
 import java.util.List;
 
-/**
- * A read only value list observer
- * @param <T> the value type
- */
-public interface ValueListObserver<T> extends ValuesObserver<T, List<T>> {}
+final class DefaultObservableValueList<T> extends DefaultObservableValues<T, List<T>>
+				implements ObservableValueList<T> {
+
+	DefaultObservableValueList(ValueList<T> valueList) {
+		super(valueList);
+	}
+}

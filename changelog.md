@@ -6,6 +6,7 @@ Codion Change Log
 - JSpecify annotations applied to common modules.
 ## is.codion.common.core
 - ValueObserver.getOrThrow() added.
+- ValueObserver merged with Observable, related refactoring and renaming.
 ## is.codion.common.db
 - Database.connectionProvider() no longer accepts null.
 ### is.codion.common.model

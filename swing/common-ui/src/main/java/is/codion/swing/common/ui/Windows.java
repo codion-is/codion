@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui;
 
+import is.codion.common.observer.Observable;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.ImageIcon;
@@ -131,10 +131,10 @@ public final class Windows {
 		FrameBuilder title(String title);
 
 		/**
-		 * @param title a value observer for a dynamic dialog title
+		 * @param title an observable for a dynamic dialog title
 		 * @return this builder instance
 		 */
-		FrameBuilder title(ValueObserver<String> title);
+		FrameBuilder title(Observable<String> title);
 
 		/**
 		 * @param icon the icon
@@ -236,7 +236,7 @@ public final class Windows {
 		private final List<WindowListener> windowListeners = new ArrayList<>(0);
 
 		private ImageIcon icon;
-		private ValueObserver<String> title;
+		private Observable<String> title;
 		private Consumer<WindowEvent> onClosing;
 		private Consumer<WindowEvent> onClosed;
 		private Consumer<WindowEvent> onOpened;
@@ -259,7 +259,7 @@ public final class Windows {
 		}
 
 		@Override
-		public FrameBuilder title(ValueObserver<String> title) {
+		public FrameBuilder title(Observable<String> title) {
 			this.title = requireNonNull(title);
 			return this;
 		}

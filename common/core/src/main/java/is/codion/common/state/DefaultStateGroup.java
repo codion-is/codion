@@ -18,7 +18,7 @@
  */
 package is.codion.common.state;
 
-import is.codion.common.value.ValueObserver;
+import is.codion.common.observer.Observable;
 
 import org.jspecify.annotations.Nullable;
 
@@ -83,7 +83,7 @@ final class DefaultStateGroup implements State.Group {
 		disablingStates = true;
 		members.stream()
 						.filter(state -> state != current)
-						.filter(ValueObserver::get)
+						.filter(Observable::get)
 						.forEach(state -> state.set(false));
 		disablingStates = false;
 	}
@@ -103,7 +103,7 @@ final class DefaultStateGroup implements State.Group {
 	private @Nullable State previousState(State current) {
 		return members.stream()
 						.filter(state -> state != current)
-						.filter(ValueObserver::get)
+						.filter(Observable::get)
 						.findFirst()
 						.orElse(null);
 	}

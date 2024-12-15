@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.state.StateObserver;
+import is.codion.common.state.ObservableState;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 
@@ -31,8 +31,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCancelDialogBuilder> implements OkCancelDialogBuilder {
 
-	private StateObserver okEnabled;
-	private StateObserver cancelEnabled;
+	private ObservableState okEnabled;
+	private ObservableState cancelEnabled;
 	private Runnable onOk;
 	private Runnable onCancel;
 	private Action okAction;
@@ -58,7 +58,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 	}
 
 	@Override
-	public OkCancelDialogBuilder okEnabled(StateObserver okEnabled) {
+	public OkCancelDialogBuilder okEnabled(ObservableState okEnabled) {
 		if (okAction != null) {
 			throw new IllegalStateException("OK action has already been set");
 		}
@@ -68,7 +68,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 	}
 
 	@Override
-	public OkCancelDialogBuilder cancelEnabled(StateObserver cancelEnabled) {
+	public OkCancelDialogBuilder cancelEnabled(ObservableState cancelEnabled) {
 		if (cancelAction != null) {
 			throw new IllegalStateException("Cancel action has already been set");
 		}

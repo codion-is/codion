@@ -21,8 +21,8 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
@@ -52,7 +52,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	private final EntityConditionModel entityConditionModel;
 	private final AdditionalCondition additionalWhere = new DefaultAdditionalCondition();
 	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
-	private final Value<StateObserver> conditionEnabled;
+	private final Value<ObservableState> conditionEnabled;
 	private final State conditionRequired = State.state();
 	private final State conditionChanged = State.state();
 	private final ValueSet<Attribute<?>> attributes = ValueSet.<Attribute<?>>builder()
@@ -122,8 +122,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public StateObserver conditionChanged() {
-		return conditionChanged.observer();
+	public ObservableState conditionChanged() {
+		return conditionChanged.observable();
 	}
 
 	@Override
@@ -132,7 +132,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public Value<StateObserver> conditionEnabled() {
+	public Value<ObservableState> conditionEnabled() {
 		return conditionEnabled;
 	}
 

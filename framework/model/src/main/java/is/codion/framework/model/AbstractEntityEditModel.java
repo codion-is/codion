@@ -21,8 +21,8 @@ package is.codion.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -654,7 +653,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Collection<Entity>> afterDelete = Event.event();
 		private final Event<?> afterInsertUpdateOrDelete = Event.event();
 
-		private Events(StateObserver postEditEvents) {
+		private Events(ObservableState postEditEvents) {
 			afterInsert.addListener(afterInsertUpdateOrDelete);
 			afterUpdate.addListener(afterInsertUpdateOrDelete);
 			afterDelete.addListener(afterInsertUpdateOrDelete);
@@ -730,7 +729,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final State entityValid = State.state();
 		private final DefaultExists exists;
 		private final DefaultModified modified;
-		private final StateObserver editing;
+		private final ObservableState editing;
 		private final Value<EntityValidator> validator;
 
 		private final Entity entity;
@@ -798,7 +797,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public StateObserver edited() {
+		public ObservableState edited() {
 			return editing;
 		}
 
@@ -818,20 +817,20 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public StateObserver isNull(Attribute<?> attribute) {
+		public ObservableState isNull(Attribute<?> attribute) {
 			return attributeNull.computeIfAbsent(attribute,
-							k -> State.state(entity.isNull(attribute))).observer();
+							k -> State.state(entity.isNull(attribute))).observable();
 		}
 
 		@Override
-		public StateObserver isNotNull(Attribute<?> attribute) {
+		public ObservableState isNotNull(Attribute<?> attribute) {
 			return attributeNull.computeIfAbsent(attribute,
-							k -> State.state(entity.isNull(attribute))).observer().not();
+							k -> State.state(entity.isNull(attribute))).observable().not();
 		}
 
 		@Override
-		public StateObserver primaryKeyNull() {
-			return primaryKeyNull.observer();
+		public ObservableState primaryKeyNull() {
+			return primaryKeyNull.observable();
 		}
 
 		@Override
@@ -840,8 +839,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public StateObserver valid() {
-			return entityValid.observer();
+		public ObservableState valid() {
+			return entityValid.observable();
 		}
 
 		@Override
@@ -1034,7 +1033,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 
 			@Override
-			public StateObserver not() {
+			public ObservableState not() {
 				return exists.not();
 			}
 
@@ -1044,43 +1043,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 
 			@Override
-			public boolean addListener(Runnable listener) {
-				return exists.addListener(listener);
-			}
-
-			@Override
-			public boolean removeListener(Runnable listener) {
-				return exists.removeListener(listener);
-			}
-
-			@Override
-			public boolean addConsumer(Consumer<? super Boolean> consumer) {
-				return exists.addConsumer(consumer);
-			}
-
-			@Override
-			public boolean removeConsumer(Consumer<? super Boolean> consumer) {
-				return exists.removeConsumer(consumer);
-			}
-
-			@Override
-			public boolean addWeakListener(Runnable listener) {
-				return exists.addWeakListener(listener);
-			}
-
-			@Override
-			public boolean removeWeakListener(Runnable listener) {
-				return exists.removeWeakListener(listener);
-			}
-
-			@Override
-			public boolean addWeakConsumer(Consumer<? super Boolean> consumer) {
-				return exists.addWeakConsumer(consumer);
-			}
-
-			@Override
-			public boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {
-				return exists.removeWeakConsumer(consumer);
+			public Observer<Boolean> observer() {
+				return exists.observer();
 			}
 
 			private void update() {
@@ -1102,7 +1066,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 
 			@Override
-			public StateObserver not() {
+			public ObservableState not() {
 				return modified.not();
 			}
 
@@ -1117,43 +1081,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 
 			@Override
-			public boolean addListener(Runnable listener) {
-				return modified.addListener(listener);
-			}
-
-			@Override
-			public boolean removeListener(Runnable listener) {
-				return modified.removeListener(listener);
-			}
-
-			@Override
-			public boolean addConsumer(Consumer<? super Boolean> consumer) {
-				return modified.addConsumer(consumer);
-			}
-
-			@Override
-			public boolean removeConsumer(Consumer<? super Boolean> consumer) {
-				return modified.removeConsumer(consumer);
-			}
-
-			@Override
-			public boolean addWeakListener(Runnable listener) {
-				return modified.addWeakListener(listener);
-			}
-
-			@Override
-			public boolean removeWeakListener(Runnable listener) {
-				return modified.removeWeakListener(listener);
-			}
-
-			@Override
-			public boolean addWeakConsumer(Consumer<? super Boolean> consumer) {
-				return modified.addWeakConsumer(consumer);
-			}
-
-			@Override
-			public boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {
-				return modified.removeWeakConsumer(consumer);
+			public Observer<Boolean> observer() {
+				return modified.observer();
 			}
 		}
 
@@ -1183,15 +1112,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 
 			@Override
-			public StateObserver valid() {
+			public ObservableState valid() {
 				return attributeValid.computeIfAbsent(attribute,
-								k -> State.state(isValid(attribute))).observer();
+								k -> State.state(isValid(attribute))).observable();
 			}
 
 			@Override
-			public StateObserver modified() {
+			public ObservableState modified() {
 				return attributeModified.computeIfAbsent(attribute,
-								k -> State.state(exists.get() && entity.modified(attribute))).observer();
+								k -> State.state(exists.get() && entity.modified(attribute))).observable();
 			}
 
 			@Override

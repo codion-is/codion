@@ -20,8 +20,8 @@ package is.codion.common.model.condition;
 
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 
@@ -39,7 +39,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	private final Map<C, ConditionModel<?>> conditions;
 	private final ValueSet<C> persist;
-	private final StateObserver enabled;
+	private final ObservableState enabled;
 	private final Event<?> changed = Event.event();
 
 	DefaultTableConditionModel(Map<C, ConditionModel<?>> conditions) {
@@ -63,7 +63,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public StateObserver enabled() {
+	public ObservableState enabled() {
 		return enabled;
 	}
 

@@ -21,12 +21,12 @@ package is.codion.common.model.condition;
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.format.LocaleDateTimePattern;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
-import is.codion.common.value.ValueObserver;
 import is.codion.common.value.ValueSet;
 
 import org.jspecify.annotations.Nullable;
@@ -479,7 +479,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						.notify(Notify.WHEN_SET)
 						.build();
 
-		private DefaultOperands(Wildcard wildcard, ValueObserver<Operator> operatorObserver) {
+		private DefaultOperands(Wildcard wildcard, Observable<Operator> operatorObserver) {
 			equal = new EqualOperand<>(wildcard, operatorObserver);
 		}
 
@@ -513,11 +513,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		private static final class EqualOperand<T> extends AbstractValue<T> {
 
 			private final Value<Wildcard> wildcard;
-			private final ValueObserver<Operator> operatorObserver;
+			private final Observable<Operator> operatorObserver;
 
 			private @Nullable T value;
 
-			private EqualOperand(Wildcard wildcard, ValueObserver<Operator> operatorObserver) {
+			private EqualOperand(Wildcard wildcard, Observable<Operator> operatorObserver) {
 				super(null, Notify.WHEN_SET);
 				this.wildcard = Value.builder()
 								.nonNull(wildcard)

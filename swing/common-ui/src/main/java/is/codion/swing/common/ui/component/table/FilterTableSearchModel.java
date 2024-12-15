@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.observer.Observable;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,12 +81,12 @@ public interface FilterTableSearchModel {
 	List<RowColumn> searchResults();
 
 	/**
-	 * Returns the {@link ValueObserver} notified of the selected search result row/column if available, otherwise one with row: -1 and column: -1
-	 * @return an observer notified each time the current search result changes
+	 * Returns the {@link Observable} notified of the selected search result row/column if available, otherwise one with row: -1 and column: -1
+	 * @return an observable notified each time the current search result changes
 	 * @see #nextResult()
 	 * @see #previousResult()
 	 */
-	ValueObserver<RowColumn> currentResult();
+	Observable<RowColumn> currentResult();
 
 	/**
 	 * Holds a row/column coordinate

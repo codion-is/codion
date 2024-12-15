@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.value.ValueObserver;
+import is.codion.common.observer.Observable;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.ImageIcon;
@@ -68,10 +68,10 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
 	B title(String title);
 
 	/**
-	 * @param title a value observer for a dynamic dialog title
+	 * @param title an observable for a dynamic dialog title
 	 * @return this builder instance
 	 */
-	B title(ValueObserver<String> title);
+	B title(Observable<String> title);
 
 	/**
 	 * @param icon the dialog icon

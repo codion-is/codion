@@ -107,6 +107,11 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 			event.accept(state);
 		}
 
+		@Override
+		public Observer<Boolean> observer() {
+			return event.observer();
+		}
+
 		/**
 		 * Iterates between the states: null -&gt; false -&gt; true
 		 */
@@ -120,11 +125,6 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 			else {
 				set(null);
 			}
-		}
-
-		@Override
-		public Observer<Boolean> observer() {
-			return event.observer();
 		}
 	}
 }

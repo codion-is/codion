@@ -18,6 +18,8 @@
  */
 package is.codion.common.value;
 
+import is.codion.common.observer.Observable;
+
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		value = builder.prepareInitialValue();
 		builder.validators.forEach(this::addValidator);
 		builder.linkedValues.forEach(this::link);
-		builder.linkedObservers.forEach(this::link);
+		builder.linkedObservables.forEach(this::link);
 		builder.listeners.forEach(this::addListener);
 		builder.weakListeners.forEach(this::addWeakListener);
 		builder.consumers.forEach(this::addConsumer);
@@ -78,7 +80,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		private final @Nullable T nullValue;
 		private final List<Validator<? super T>> validators = new ArrayList<>();
 		private final List<Value<T>> linkedValues = new ArrayList<>();
-		private final List<ValueObserver<T>> linkedObservers = new ArrayList<>();
+		private final List<Observable<T>> linkedObservables = new ArrayList<>();
 		private final List<Runnable> listeners = new ArrayList<>();
 		private final List<Runnable> weakListeners = new ArrayList<>();
 		private final List<Consumer<? super T>> consumers = new ArrayList<>();
@@ -121,8 +123,8 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public final B link(ValueObserver<T> originalValue) {
-			this.linkedObservers.add(requireNonNull(originalValue));
+		public final B link(Observable<T> observable) {
+			this.linkedObservables.add(requireNonNull(observable));
 			return self();
 		}
 

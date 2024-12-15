@@ -19,10 +19,10 @@
 package is.codion.swing.common.ui.component.calendar;
 
 import is.codion.common.item.Item;
+import is.codion.common.observer.Observable;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.ControlKey;
@@ -313,17 +313,17 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	/**
-	 * @return an observer notified each time the date changes
+	 * @return an observable notified each time the date changes
 	 */
-	public ValueObserver<LocalDate> localDateValue() {
-		return localDateValue.observer();
+	public Observable<LocalDate> localDateValue() {
+		return localDateValue.observable();
 	}
 
 	/**
-	 * @return an observer notified each time the date or time changes
+	 * @return an observable notified each time the date or time changes
 	 */
-	public ValueObserver<LocalDateTime> localDateTimeValue() {
-		return localDateTimeValue.observer();
+	public Observable<LocalDateTime> localDateTimeValue() {
+		return localDateTimeValue.observable();
 	}
 
 	/**

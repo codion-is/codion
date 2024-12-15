@@ -18,8 +18,8 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
 import is.codion.demos.chinook.domain.api.Chinook.Genre;
@@ -76,8 +76,8 @@ final class RandomPlaylistParametersPanel extends JPanel {
 						.build(), BorderLayout.CENTER);
 	}
 
-	StateObserver parametersValid() {
-		return model.parametersValid.observer();
+	ObservableState parametersValid() {
+		return model.parametersValid.observable();
 	}
 
 	RandomPlaylistParameters get() {

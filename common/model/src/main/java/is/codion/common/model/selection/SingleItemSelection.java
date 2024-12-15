@@ -21,7 +21,7 @@ package is.codion.common.model.selection;
 import is.codion.common.model.CancelException;
 import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
-import is.codion.common.state.StateObserver;
+import is.codion.common.state.ObservableState;
 
 /**
  * A selection model for managing a single selected item
@@ -30,9 +30,9 @@ import is.codion.common.state.StateObserver;
 public interface SingleItemSelection<T> {
 
 	/**
-	 * @return a {@link StateObserver} indicating whether the selection is empty
+	 * @return an {@link ObservableState} indicating whether the selection is empty
 	 */
-	StateObserver empty();
+	ObservableState empty();
 
 	/**
 	 * To prevent a selection change, add a listener throwing a {@link CancelException}.

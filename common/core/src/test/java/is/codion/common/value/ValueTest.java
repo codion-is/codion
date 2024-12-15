@@ -18,6 +18,7 @@
  */
 package is.codion.common.value;
 
+import is.codion.common.observer.Observable;
 import is.codion.common.value.Value.Notify;
 
 import org.junit.jupiter.api.Test;
@@ -75,14 +76,14 @@ public class ValueTest {
 		assertFalse(intValue.nullable());
 		assertTrue(intValue.optional().isPresent());
 		assertTrue(intValue.isEqualTo(42));
-		ValueObserver<Integer> valueObserver = intValue.observer();
-		assertFalse(valueObserver.nullable());
-		assertTrue(valueObserver.optional().isPresent());
-		assertTrue(valueObserver.isEqualTo(42));
+		Observable<Integer> observable = intValue.observable();
+		assertFalse(observable.nullable());
+		assertTrue(observable.optional().isPresent());
+		assertTrue(observable.isEqualTo(42));
 		Runnable listener = eventCounter::incrementAndGet;
-		assertTrue(valueObserver.addListener(listener));
-		assertFalse(valueObserver.addListener(listener));
-		valueObserver.addConsumer(data -> {
+		assertTrue(observable.addListener(listener));
+		assertFalse(observable.addListener(listener));
+		observable.addConsumer(data -> {
 			if (eventCounter.get() != 2) {
 				assertNotNull(data);
 			}
@@ -98,17 +99,17 @@ public class ValueTest {
 		assertTrue(intValue.isNotNull());
 		assertTrue(intValue.optional().isPresent());
 		assertEquals(-1, intValue.get());
-		assertEquals(-1, valueObserver.get());
+		assertEquals(-1, observable.get());
 		assertEquals(2, eventCounter.get());
 		intValue.clear();
 		assertEquals(-1, intValue.get());
-		assertEquals(-1, valueObserver.get());
+		assertEquals(-1, observable.get());
 		assertEquals(2, eventCounter.get());
 		intValue.set(42);
 		assertEquals(3, eventCounter.get());
 		intValue.clear();
 		assertEquals(-1, intValue.get());
-		assertEquals(-1, valueObserver.get());
+		assertEquals(-1, observable.get());
 
 		Value<String> stringValue = Value.builder()
 						.nonNull("null")
@@ -126,8 +127,8 @@ public class ValueTest {
 		value.set("hello");
 		assertTrue(value.optional().isPresent());
 
-		assertTrue(valueObserver.removeListener(listener));
-		assertFalse(valueObserver.removeListener(listener));
+		assertTrue(observable.removeListener(listener));
+		assertFalse(observable.removeListener(listener));
 	}
 
 	@Test
@@ -183,7 +184,7 @@ public class ValueTest {
 						.build();
 		Value<Integer> uiValue = Value.value();
 		assertFalse(modelValue.nullable());
-		uiValue.link(modelValue.observer());
+		uiValue.link(modelValue.observable());
 		modelValue.addListener(modelValueEventCounter::incrementAndGet);
 		AtomicInteger uiValueEventCounter = new AtomicInteger();
 		uiValue.addListener(uiValueEventCounter::incrementAndGet);
@@ -301,19 +302,19 @@ public class ValueTest {
 
 		assertThrows(IllegalStateException.class, () -> value.unlink(originalValue));
 
-		ValueObserver<Integer> originalValueObserver = originalValue.observer();
+		Observable<Integer> originalObservable = originalValue.observable();
 
-		assertThrows(IllegalArgumentException.class, () -> value.link(originalValueObserver));
+		assertThrows(IllegalArgumentException.class, () -> value.link(originalObservable));
 
 		originalValue.set(2);
 
-		value.link(originalValueObserver);
+		value.link(originalObservable);
 		assertEquals(originalValue.get(), value.get());
 
 		assertThrows(IllegalArgumentException.class, () -> originalValue.set(3));
 
-		value.unlink(originalValueObserver);
-		assertThrows(IllegalStateException.class, () -> value.unlink(originalValueObserver));
+		value.unlink(originalObservable);
+		assertThrows(IllegalStateException.class, () -> value.unlink(originalObservable));
 
 		originalValue.set(3);
 
@@ -324,7 +325,7 @@ public class ValueTest {
 	@Test
 	void weakListeners() {
 		Value<Integer> value = Value.value();
-		ValueObserver<Integer> observer = value.observer();
+		Observable<Integer> observer = value.observable();
 		Runnable listener = () -> {};
 		Consumer<Integer> consumer = integer -> {};
 		observer.addWeakListener(listener);

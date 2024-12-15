@@ -19,6 +19,8 @@
 package is.codion.common.value;
 
 import is.codion.common.event.Event;
+import is.codion.common.observer.Observable;
+import is.codion.common.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 
@@ -51,11 +53,11 @@ public abstract class AbstractValue<T> implements Value<T> {
 	private final @Nullable T nullValue;
 	private final @Nullable Notify notify;
 
-	private @Nullable Event<T> notifier;
+	private @Nullable Event<T> observer;
 	private @Nullable Set<Validator<? super T>> validators;
 	private @Nullable Map<Value<T>, ValueLink<T>> linkedValues;
-	private @Nullable Map<ValueObserver<T>, ValueObserverLink> linkedObservers;
-	private @Nullable ValueObserver<T> observer;
+	private @Nullable Map<Observable<T>, ObservableLink> linkedObservables;
+	private @Nullable Observable<T> observable;
 
 	/**
 	 * Creates a {@link AbstractValue} instance, which does not notify listeners.
@@ -111,9 +113,18 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public synchronized ValueObserver<T> observer() {
+	public synchronized Observable<T> observable() {
+		if (observable == null) {
+			observable = createObservable();
+		}
+
+		return observable;
+	}
+
+	@Override
+	public final synchronized Observer<T> observer() {
 		if (observer == null) {
-			observer = createObserver();
+			observer = Event.event();
 		}
 
 		return observer;
@@ -127,66 +138,6 @@ public abstract class AbstractValue<T> implements Value<T> {
 	@Override
 	public final void accept(@Nullable T data) {
 		set(data);
-	}
-
-	@Override
-	public final boolean addListener(Runnable listener) {
-		return notifier().addListener(listener);
-	}
-
-	@Override
-	public final boolean removeListener(Runnable listener) {
-		requireNonNull(listener);
-		if (notifier != null) {
-			return notifier.removeListener(listener);
-		}
-
-		return false;
-	}
-
-	@Override
-	public final boolean addConsumer(Consumer<? super T> consumer) {
-		return notifier().addConsumer(consumer);
-	}
-
-	@Override
-	public final boolean removeConsumer(Consumer<? super T> consumer) {
-		requireNonNull(consumer);
-		if (notifier != null) {
-			return notifier.removeConsumer(consumer);
-		}
-
-		return false;
-	}
-
-	@Override
-	public final boolean addWeakListener(Runnable listener) {
-		return notifier().addWeakListener(listener);
-	}
-
-	@Override
-	public final boolean removeWeakListener(Runnable listener) {
-		requireNonNull(listener);
-		if (notifier != null) {
-			return notifier.removeWeakListener(listener);
-		}
-
-		return false;
-	}
-
-	@Override
-	public final boolean addWeakConsumer(Consumer<? super T> consumer) {
-		return notifier().addWeakConsumer(consumer);
-	}
-
-	@Override
-	public final boolean removeWeakConsumer(Consumer<? super T> consumer) {
-		requireNonNull(consumer);
-		if (notifier != null) {
-			return notifier.removeWeakConsumer(consumer);
-		}
-
-		return false;
 	}
 
 	@Override
@@ -214,24 +165,24 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final void link(ValueObserver<T> originalValue) {
-		requireNonNull(originalValue);
-		if (linkedObservers == null) {
-			linkedObservers = new LinkedHashMap<>(1);
+	public final void link(Observable<T> observable) {
+		requireNonNull(observable);
+		if (linkedObservables == null) {
+			linkedObservables = new LinkedHashMap<>(1);
 		}
-		set(originalValue.get());
-		linkedObservers.put(originalValue, new ValueObserverLink(originalValue));
+		set(observable.get());
+		linkedObservables.put(observable, new ObservableLink(observable));
 	}
 
 	@Override
-	public final void unlink(ValueObserver<T> originalValue) {
-		requireNonNull(originalValue);
-		if (linkedObservers == null || !linkedObservers.containsKey(originalValue)) {
+	public final void unlink(Observable<T> observable) {
+		requireNonNull(observable);
+		if (linkedObservables == null || !linkedObservables.containsKey(observable)) {
 			throw new IllegalStateException("Values are not linked");
 		}
-		originalValue.removeConsumer(linkedObservers.remove(originalValue));
-		if (linkedObservers.isEmpty()) {
-			linkedObservers = null;
+		observable.removeConsumer(linkedObservables.remove(observable));
+		if (linkedObservables.isEmpty()) {
+			linkedObservables = null;
 		}
 	}
 
@@ -276,16 +227,16 @@ public abstract class AbstractValue<T> implements Value<T> {
 	 * Notifies listeners that the underlying value has changed or at least that it may have changed
 	 */
 	protected final void notifyListeners() {
-		if (notifier != null) {
-			notifier.accept(get());
+		if (observer != null) {
+			observer.accept(get());
 		}
 	}
 
 	/**
-	 * @return a new {@link ValueObserver} instance representing this value
+	 * @return a new {@link Observable} instance representing this value
 	 */
-	protected ValueObserver<T> createObserver() {
-		return new DefaultValueObserver<>(this);
+	protected Observable<T> createObservable() {
+		return new ObservableValue<>(this);
 	}
 
 	final Set<Value<T>> linkedValues() {
@@ -304,17 +255,9 @@ public abstract class AbstractValue<T> implements Value<T> {
 		return changed;
 	}
 
-	private synchronized Event<T> notifier() {
-		if (notifier == null) {
-			notifier = Event.event();
-		}
+	private final class ObservableLink implements Consumer<T> {
 
-		return notifier;
-	}
-
-	private final class ValueObserverLink implements Consumer<T> {
-
-		private ValueObserverLink(ValueObserver<T> originalValue) {
+		private ObservableLink(Observable<T> originalValue) {
 			originalValue.addConsumer(this);
 		}
 

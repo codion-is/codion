@@ -19,8 +19,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
@@ -220,8 +220,8 @@ public final class AbstractEntityEditModelTest {
 	void test() {
 		EditableEntity entity = employeeEditModel.entity();
 
-		StateObserver primaryKeyNullState = entity.primaryKeyNull();
-		StateObserver entityExistsState = entity.exists();
+		ObservableState primaryKeyNullState = entity.primaryKeyNull();
+		ObservableState entityExistsState = entity.exists();
 
 		assertTrue(primaryKeyNullState.get());
 		assertFalse(entityExistsState.get());
@@ -588,9 +588,9 @@ public final class AbstractEntityEditModelTest {
 		employeeEditModel.entity().set(martin);
 		State modifiedState = State.state();
 		State nullState = State.state();
-		StateObserver nameModifiedObserver = employeeEditModel.value(Employee.NAME).modified();
+		ObservableState nameModifiedObserver = employeeEditModel.value(Employee.NAME).modified();
 		nameModifiedObserver.addConsumer(modifiedState::set);
-		StateObserver nameIsNull = employeeEditModel.entity().isNull(Employee.NAME);
+		ObservableState nameIsNull = employeeEditModel.entity().isNull(Employee.NAME);
 		nameIsNull.addConsumer(nullState::set);
 
 		employeeEditModel.value(Employee.NAME).set("JOHN");
@@ -612,7 +612,7 @@ public final class AbstractEntityEditModelTest {
 	@Test
 	void modifiedUpdate() {
 		EntityConnection connection = employeeEditModel.connection();
-		StateObserver nameModifiedObserver = employeeEditModel.value(Employee.NAME).modified();
+		ObservableState nameModifiedObserver = employeeEditModel.value(Employee.NAME).modified();
 		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
 		employeeEditModel.entity().set(martin);
 		employeeEditModel.value(Employee.NAME).set("MARTINEZ");

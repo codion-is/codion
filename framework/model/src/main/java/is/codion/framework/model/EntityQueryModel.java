@@ -20,8 +20,8 @@ package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
 import is.codion.common.observer.Mutable;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -81,7 +81,7 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	/**
 	 * Controls the additional WHERE condition, which can be used in conjunction with {@link #conditions()}.
 	 * The condition supplier may return null in case of no condition.
-	 * Note that in order for the {@link #conditionChanged()} {@link StateObserver} to indicate
+	 * Note that in order for the {@link #conditionChanged()} {@link ObservableState} to indicate
 	 * a changed condition, the additional condition must be set via {@link AdditionalCondition#set(Object)},
 	 * changing the return value of the underlying {@link Supplier} instance does not trigger a changed condition.
 	 * @return the {@link AdditionalCondition} instance controlling the additional WHERE condition
@@ -91,7 +91,7 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	/**
 	 * Controls the additional HAVING condition, which can be used in conjunction with {@link #conditions()}.
 	 * The condition supplier may return null in case of no condition.
-	 * Note that in order for the {@link #conditionChanged()} {@link StateObserver} to indicate
+	 * Note that in order for the {@link #conditionChanged()} {@link ObservableState} to indicate
 	 * a changed condition, the additional condition must be set via {@link AdditionalCondition#set(Object)},
 	 * changing the return value of the underlying {@link Supplier} instance does not trigger a changed condition.
 	 * @return the {@link AdditionalCondition} instance controlling the additional HAVING condition
@@ -110,10 +110,10 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 
 	/**
 	 * When using the default query mechanism, the {@link #conditionChanged()} state is reset after each successful query.
-	 * @return a {@link StateObserver} indicating if the search condition has changed since last reset
+	 * @return an {@link ObservableState} indicating if the search condition has changed since last reset
 	 * @see #resetConditionChanged()
 	 */
-	StateObserver conditionChanged();
+	ObservableState conditionChanged();
 
 	/**
 	 * Resets the {@link #conditionChanged()} state, using the current condition.
@@ -145,12 +145,12 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	/**
 	 * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
 	 * This can be done by enabling the {@link EntityQueryModel#conditionRequired()} {@link State}, which prevents a refresh as long as the
-	 * {@link StateObserver} controlled via this method is disabled. The default {@link StateObserver} is simply {@link EntityConditionModel#enabled()}.
+	 * {@link ObservableState} controlled via this method is disabled. The default {@link ObservableState} is simply {@link EntityConditionModel#enabled()}.
 	 * Override for a more fine grained control, such as requiring a specific column condition to be enabled.
-	 * @return the {@link Value} controlling the {@link StateObserver} specifying if enough conditions are enabled for a safe refresh
+	 * @return the {@link Value} controlling the {@link ObservableState} specifying if enough conditions are enabled for a safe refresh
 	 * @see #conditionRequired()
 	 */
-	Value<StateObserver> conditionEnabled();
+	Value<ObservableState> conditionEnabled();
 
 	/**
 	 * A {@link Value} controlling the override query. Use this to replace the default query.

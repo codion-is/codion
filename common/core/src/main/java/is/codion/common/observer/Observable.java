@@ -20,8 +20,12 @@ package is.codion.common.observer;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A wrapper for a value, providing a change observer.
@@ -70,14 +74,81 @@ public interface Observable<T> extends Observer<T> {
 	@Nullable T get();
 
 	/**
-	 * @return an Optional based on the current value
+	 * @return the value
+	 * @throws NoSuchElementException if no value is present
 	 */
-	default Optional<T> optional() {
-		return Optional.ofNullable(get());
+	default T getOrThrow() {
+		return getOrThrow("No value present");
 	}
 
 	/**
-	 * @return an {@link Observer} notified each time the value may have changed
+	 * @param message the error message to use when throwing
+	 * @return the value
+	 * @throws NoSuchElementException if no value is present
+	 */
+	default T getOrThrow(String message) {
+		requireNonNull(message);
+		T value = get();
+		if (value == null) {
+			throw new NoSuchElementException(message);
+		}
+
+		return value;
+	}
+
+	/**
+	 * @return an {@link Optional} wrapping this value.
+	 */
+	default Optional<T> optional() {
+		if (nullable()) {
+			return Optional.ofNullable(get());
+		}
+
+		return Optional.of(getOrThrow());
+	}
+
+	/**
+	 * @return true if the underlying value is null.
+	 */
+	default boolean isNull() {
+		return get() == null;
+	}
+
+	/**
+	 * @return true if the underlying value is not null.
+	 */
+	default boolean isNotNull() {
+		return !isNull();
+	}
+
+	/**
+	 * If false then get() is guaranteed to never return null.
+	 * @return true if this observable can be null
+	 */
+	default boolean nullable() {
+		return true;
+	}
+
+	/**
+	 * Returns true if the underlying value is equal to the given one. Note that null == null.
+	 * @param value the value
+	 * @return true if the underlying value is equal to the given one
+	 */
+	default boolean isEqualTo(@Nullable T value) {
+		return Objects.equals(get(), value);
+	}
+
+	/**
+	 * Returns true if the underlying value is NOT equal to the given one. Note that null == null.
+	 * @param value the value
+	 * @return true if the underlying value is NOT equal to the given one
+	 */
+	default boolean isNotEqualTo(@Nullable T value) {
+		return !isEqualTo(value);
+	}
+
+	/**
+	 * @return an {@link Observer} notified each time the observed value may have changed
 	 */
 	Observer<T> observer();
 

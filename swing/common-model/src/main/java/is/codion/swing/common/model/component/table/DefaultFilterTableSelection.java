@@ -22,8 +22,8 @@ import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
 import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 
 import javax.swing.DefaultListSelectionModel;
@@ -49,7 +49,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	private final State singleSelection = State.state(false);
 	private final State empty = State.state(true);
 	private final State single = State.state(false);
-	private final StateObserver multiple = State.and(empty.not(), single.not());
+	private final ObservableState multiple = State.and(empty.not(), single.not());
 
 	private final FilterModel.Items<R> items;
 
@@ -143,18 +143,18 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	}
 
 	@Override
-	public StateObserver multiple() {
+	public ObservableState multiple() {
 		return multiple;
 	}
 
 	@Override
-	public StateObserver single() {
-		return single.observer();
+	public ObservableState single() {
+		return single.observable();
 	}
 
 	@Override
-	public StateObserver empty() {
-		return empty.observer();
+	public ObservableState empty() {
+		return empty.observable();
 	}
 
 	@Override

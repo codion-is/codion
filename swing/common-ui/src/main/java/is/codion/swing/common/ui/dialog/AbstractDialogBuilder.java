@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.observer.Observable;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -43,7 +43,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 	protected Window owner;
 	protected Component locationRelativeTo;
 	protected Point location;
-	protected ValueObserver<String> title;
+	protected Observable<String> title;
 	protected ImageIcon icon;
 
 	@Override
@@ -82,7 +82,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 	}
 
 	@Override
-	public final B title(ValueObserver<String> title) {
+	public final B title(Observable<String> title) {
 		this.title = title;
 		return self();
 	}

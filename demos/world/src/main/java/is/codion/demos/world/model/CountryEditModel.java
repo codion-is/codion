@@ -18,8 +18,8 @@
  */
 package is.codion.demos.world.model;
 
+import is.codion.common.observer.Observable;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -54,8 +54,8 @@ public final class CountryEditModel extends SwingEntityEditModel {
 		return comboBoxModel;
 	}
 
-	public ValueObserver<Double> averageCityPopulation() {
-		return averageCityPopulation.observer();
+	public Observable<Double> averageCityPopulation() {
+		return averageCityPopulation.observable();
 	}
 
 	private Double averageCityPopulation(Entity country) {

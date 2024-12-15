@@ -21,9 +21,9 @@ package is.codion.tools.generator.ui;
 import is.codion.common.db.database.Database;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -227,9 +227,9 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 	}
 
-	private static JTextArea createSourceTextArea(ValueObserver<String> sourceValue) {
+	private static JTextArea createSourceTextArea(Observable<String> observable) {
 		return textArea()
-						.link(sourceValue)
+						.link(observable)
 						.rowsColumns(40, 60)
 						.editable(false)
 						.font(monospaceFont())

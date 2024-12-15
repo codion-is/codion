@@ -30,13 +30,13 @@ final class DefaultValueSet<T> extends DefaultValues<T, Set<T>>
 	}
 
 	@Override
-	public synchronized ValueSetObserver<T> observer() {
-		return (ValueSetObserver<T>) super.observer();
+	public synchronized ObservableValueSet<T> observable() {
+		return (ObservableValueSet<T>) super.observable();
 	}
 
 	@Override
-	protected ValueSetObserver<T> createObserver() {
-		return new DefaultValueSetObserver<>(this);
+	protected ObservableValueSet<T> createObservable() {
+		return new DefaultObservableValueSet<>(this);
 	}
 
 	static final class DefaultBuilder<T>

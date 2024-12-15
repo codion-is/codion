@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.component.label;
 
 import is.codion.common.Configuration;
+import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.Icon;
@@ -108,10 +108,10 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
 
 	/**
 	 * @param <T> the type to display in the label (using value.toString() or "" for null).
-	 * @param linkedValueObserver the value observer to link to the label text
+	 * @param observable the observable to link to the label text
 	 * @return a new builder
 	 */
-	static <T> LabelBuilder<T> builder(ValueObserver<T> linkedValueObserver) {
-		return new DefaultLabelBuilder<>(linkedValueObserver);
+	static <T> LabelBuilder<T> builder(Observable<T> observable) {
+		return new DefaultLabelBuilder<>(observable);
 	}
 }

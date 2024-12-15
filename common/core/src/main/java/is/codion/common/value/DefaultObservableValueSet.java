@@ -14,10 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
-/**
- * <p>See {@link is.codion.common.state.State} and {@link is.codion.common.state.ObservableState}.
- */
-@org.jspecify.annotations.NullMarked
-package is.codion.common.state;
+package is.codion.common.value;
+
+import java.util.Set;
+
+final class DefaultObservableValueSet<T> extends DefaultObservableValues<T, Set<T>>
+				implements ObservableValueSet<T> {
+
+	DefaultObservableValueSet(ValueSet<T> valueSet) {
+		super(valueSet);
+	}
+}

@@ -21,10 +21,10 @@ package is.codion.common.value;
 import java.util.Collection;
 import java.util.Iterator;
 
-class DefaultValuesObserver<T, C extends Collection<T>> extends DefaultValueObserver<C>
-				implements ValuesObserver<T, C> {
+class DefaultObservableValues<T, C extends Collection<T>> extends ObservableValue<C>
+				implements ObservableValues<T, C> {
 
-	DefaultValuesObserver(Values<T, C> values) {
+	DefaultObservableValues(Values<T, C> values) {
 		super(values);
 	}
 
@@ -69,4 +69,6 @@ class DefaultValuesObserver<T, C extends Collection<T>> extends DefaultValueObse
 
 		return values.size();
 	}
+
+
 }

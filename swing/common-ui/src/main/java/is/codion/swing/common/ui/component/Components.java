@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
+import is.codion.common.observer.Observable;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -855,11 +855,11 @@ public final class Components {
 
 	/**
 	 * @param <T> the type to display in the label (using value.toString() or "" for null).
-	 * @param linkedValueObserver the value observer to link to the label text
+	 * @param observable the observable to link to the label text
 	 * @return a JLabel builder
 	 */
-	public static <T> LabelBuilder<T> label(ValueObserver<T> linkedValueObserver) {
-		return LabelBuilder.builder(linkedValueObserver);
+	public static <T> LabelBuilder<T> label(Observable<T> observable) {
+		return LabelBuilder.builder(observable);
 	}
 
 	/**

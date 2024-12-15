@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.resource.MessageBundle;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -111,7 +111,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
 						.build();
 		JCheckBox selectNoneBox = checkBox()
 						.link(State.and(visibleStates.values().stream()
-										.map(StateObserver::not)
+										.map(ObservableState::not)
 										.collect(Collectors.toList())))
 						.text(MESSAGES.getString("select_none"))
 						.mnemonic(MESSAGES.getString("select_none_mnemonic").charAt(0))

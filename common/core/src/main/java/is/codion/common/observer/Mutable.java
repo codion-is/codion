@@ -78,4 +78,9 @@ public interface Mutable<T> extends Observable<T> {
 	default void clear() {
 		set(null);
 	}
+
+	@Override
+	default boolean nullable() {
+		return true;
+	}
 }

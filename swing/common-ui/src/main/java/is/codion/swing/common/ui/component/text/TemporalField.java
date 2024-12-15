@@ -19,11 +19,11 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.format.LocaleDateTimePattern;
+import is.codion.common.observer.Observable;
 import is.codion.common.resource.MessageBundle;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -184,10 +184,10 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	/**
-	 * @return an observer notified each time the value changes
+	 * @return an observable notified each time the value changes
 	 */
-	public ValueObserver<T> temporalValue() {
-		return value.observer();
+	public Observable<T> temporalValue() {
+		return value.observable();
 	}
 
 	/**
@@ -271,11 +271,11 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		return null;
 	}
 
-	private StateObserver calendarEnabledState() {
+	private ObservableState calendarEnabledState() {
 		State enabledState = State.state(isEnabled());
 		addPropertyChangeListener("enabled", event -> enabledState.set((Boolean) event.getNewValue()));
 
-		return enabledState.observer();
+		return enabledState.observable();
 	}
 
 	private void displayCalendar() {

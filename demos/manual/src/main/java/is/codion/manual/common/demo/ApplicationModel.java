@@ -19,9 +19,9 @@
 package is.codion.manual.common.demo;
 
 import is.codion.common.item.Item;
+import is.codion.common.observer.Observable;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 
@@ -174,8 +174,8 @@ public final class ApplicationModel {
 		return stringListValue;
 	}
 
-	public ValueObserver<String> message() {
-		return messageValue.observer();
+	public Observable<String> message() {
+		return messageValue.observable();
 	}
 
 	public ComboBoxModel<String> createStringComboBoxModel() {

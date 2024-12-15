@@ -25,13 +25,13 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyStore;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.common.value.ValueObserver;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
@@ -1356,10 +1356,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 		/**
 		 * For a dynamic frame title.
-		 * @param frameTitle the value observer controlling the frame title
+		 * @param frameTitle the observable controlling the frame title
 		 * @return this Builder instance
 		 */
-		Builder<M, P> frameTitle(ValueObserver<String> frameTitle);
+		Builder<M, P> frameTitle(Observable<String> frameTitle);
 
 		/**
 		 * @param includeMainMenu if true then a main menu is included

@@ -19,8 +19,8 @@
 package is.codion.tools.loadtest.model;
 
 import is.codion.common.scheduler.TaskScheduler;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.tools.loadtest.LoadTest;
@@ -71,8 +71,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	private final State collectChartData = State.state();
 	private final State autoRefreshApplications = State.state(true);
-	private final StateObserver chartUpdateSchedulerEnabled;
-	private final StateObserver applicationsRefreshSchedulerEnabled;
+	private final ObservableState chartUpdateSchedulerEnabled;
+	private final ObservableState applicationsRefreshSchedulerEnabled;
 	private final TaskScheduler chartUpdateScheduler;
 	private final TaskScheduler applicationsRefreshScheduler;
 

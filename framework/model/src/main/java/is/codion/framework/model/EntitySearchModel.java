@@ -20,8 +20,8 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -112,9 +112,9 @@ public interface EntitySearchModel {
 	Value<Function<Entity, String>> stringFunction();
 
 	/**
-	 * @return a {@link StateObserver} indicating whether the search string represents the selected entities
+	 * @return an {@link ObservableState} indicating whether the search string represents the selected entities
 	 */
-	StateObserver searchStringModified();
+	ObservableState searchStringModified();
 
 	/**
 	 * @return the settings associated with each search column
@@ -152,9 +152,9 @@ public interface EntitySearchModel {
 		ValueSet<Entity> entities();
 
 		/**
-		 * @return a {@link StateObserver} indicating whether the selection is empty
+		 * @return an {@link ObservableState} indicating whether the selection is empty
 		 */
-		StateObserver empty();
+		ObservableState empty();
 
 		/**
 		 * Clears the selection

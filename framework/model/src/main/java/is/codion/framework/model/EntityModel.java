@@ -18,7 +18,7 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.value.ValueSetObserver;
+import is.codion.common.value.ObservableValueSet;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -85,7 +85,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 	 * @return detail models with an active link to this model, that is, those that should respond to master model events
 	 * @see DetailModelLink#active()
 	 */
-	ValueSetObserver<M> linkedDetailModels();
+	ObservableValueSet<M> linkedDetailModels();
 
 	/**
 	 * Adds the given detail model to this model, a side effect if the detail model contains
