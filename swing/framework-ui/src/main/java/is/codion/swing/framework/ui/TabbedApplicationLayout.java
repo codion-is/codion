@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
- * EntityApplicationPanel layout based on a JTabbedPane.
+ * A {@link is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout} layout based on a {@link JTabbedPane}.
  */
 public class TabbedApplicationLayout implements EntityApplicationPanel.ApplicationLayout {
 
@@ -61,8 +61,8 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 	}
 
 	/**
-	 * Sets the layout to a {@link BorderLayout} and lays out the given application panel, by adding all root entity panels to a tabbed pane.
-	 * Note that this method is responsible for initializing any visible entity panels using {@link EntityPanel#initialize()}.
+	 * @return a {@link javax.swing.JPanel} using a {@link BorderLayout} containing a {@link JTabbedPane} with a tab for each root entity panel.
+	 * @see EntityApplicationPanel#entityPanels()
 	 */
 	@Override
 	public JComponent layout() {
@@ -101,14 +101,6 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 	 */
 	public final JTabbedPane tabbedPane() {
 		return tabbedPane;
-	}
-
-	/**
-	 * @param <T> the application panel type
-	 * @return the application panel
-	 */
-	protected final <T extends EntityApplicationPanel<?>> T applicationPanel() {
-		return (T) applicationPanel;
 	}
 
 	private void addTab(EntityPanel entityPanel) {

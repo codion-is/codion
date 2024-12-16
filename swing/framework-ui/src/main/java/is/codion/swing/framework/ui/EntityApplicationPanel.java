@@ -317,6 +317,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	/**
 	 * @return an unmodifiable view of the main application panels
+	 * @see #createEntityPanels()
 	 */
 	public final List<EntityPanel> entityPanels() {
 		return Collections.unmodifiableList(entityPanels);
@@ -1209,15 +1210,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	public interface ApplicationLayout {
 
 		/**
-		 * Lays out the main component for a given application panel
-		 * @return the main application panel
+		 * Lays out the main component for a given application panel.
+		 * Note that this method is responsible for initializing any visible entity panels using {@link EntityPanel#initialize()}.
+		 * @return the main application component
 		 * @throws IllegalStateException in case the panel has already been laid out
 		 */
 		JComponent layout();
 
 		/**
-		 * Called when the given entity panel is activated.
-		 * @param entityPanel the entity panel to select
+		 * Displays the given entity panel when it is activated.
+		 * @param entityPanel the entity panel being activated
 		 * @see EntityPanel#activate()
 		 * @see EntityPanel#activateEvent()
 		 */

@@ -28,6 +28,8 @@ Codion Change Log
 - EntityConnectionProvider.clientType() and clientVersion() now return Optional.
 ### is.codion.framework.model
 - DefaultForeignKeyDetailModelLink now uses TableConditionModel.persist() to exclude the associated foreign key condition from being cleared.
+### is.codion.swing.framework.ui
+- TabbedApplicationLayout.applicationPanel() removed.
 
 ## 0.18.22
 ### is.codion.common.core
