@@ -785,6 +785,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))
 							.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+							.onOpened(e -> entityPanel.activate())
 							.onClosed(e -> onEntityPanelWindowClosed(entityPanel))
 							.show();
 		}
@@ -815,6 +816,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 							.owner(parentWindow().orElse(null))
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))
+							.onOpened(e -> entityPanel.activate())
 							.onClosed(e -> onEntityPanelWindowClosed(entityPanel))
 							.modal(modalDialog)
 							.show();

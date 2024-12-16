@@ -30,6 +30,7 @@ Codion Change Log
 - DefaultForeignKeyDetailModelLink now uses TableConditionModel.persist() to exclude the associated foreign key condition from being cleared.
 ### is.codion.swing.framework.ui
 - TabbedApplicationLayout.applicationPanel() removed.
+- EntityApplicationPanel.displayEntityPanelFrame() and displayEntityPanelDialog() now initialize the focus by activating the panel when opened.
 
 ## 0.18.22
 ### is.codion.common.core
