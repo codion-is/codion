@@ -48,10 +48,9 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 	State singleSelection();
 
 	/**
-	 * @return a {@link Mutable} for the index of the selected item, -1 if none is selected and
-	 * the minimum selected index if more than one item is selected
+	 * @return the selected {@link Index}
 	 */
-	Mutable<Integer> index();
+	Index index();
 
 	/**
 	 * @return the seleted {@link Indexes}
@@ -73,6 +72,18 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 	 * @return the number of selected items.
 	 */
 	int count();
+
+	/**
+	 * Manages the selected index.
+	 */
+	interface Index extends Mutable<Integer> {
+
+		/**
+		 * @return the selected index or -1 in case the selection is empty
+		 */
+		@Override
+		Integer get();
+	}
 
 	/**
 	 * Manages the selected indexes.

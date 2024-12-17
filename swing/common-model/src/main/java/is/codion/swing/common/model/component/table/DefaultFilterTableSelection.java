@@ -42,7 +42,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 
 	private final FilterListSelectionModel selectionModel = new FilterListSelectionModel();
 	private final SelectedIndex selectedIndex = new SelectedIndex();
-	private final DefaultIndexes selectedIndexes = new DefaultIndexes();
+	private final SelectedIndexes selectedIndexes = new SelectedIndexes();
 	private final SelectedItem selectedItem = new SelectedItem();
 	private final DefaultItems selectedItems = new DefaultItems();
 	private final Event<?> changing = Event.event();
@@ -88,7 +88,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	}
 
 	@Override
-	public Mutable<Integer> index() {
+	public Index index() {
 		return selectedIndex;
 	}
 
@@ -259,7 +259,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		}
 	}
 
-	private final class SelectedIndex implements Mutable<Integer> {
+	private final class SelectedIndex implements Index {
 
 		private final Event<Integer> event = Event.event();
 
@@ -285,7 +285,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		}
 	}
 
-	private final class DefaultIndexes implements Indexes {
+	private final class SelectedIndexes implements Indexes {
 
 		private final Event<List<Integer>> event = Event.event();
 

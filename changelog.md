@@ -13,6 +13,7 @@ Codion Change Log
 - ConditionModel.dateTimePattern() now returns Optional.
 - ConditionModel.wildcard() now back to being Value based instead of Mutable.
 - TableConditionModel.persist() added, for excluding conditions when clearing the model.
+- MultiItemSelection.Index added.
 ### is.codion.common.rmi
 - ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
 - Server.serverLoad() removed, related refactoring.
