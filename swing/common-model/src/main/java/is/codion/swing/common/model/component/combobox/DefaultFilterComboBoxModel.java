@@ -266,7 +266,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public boolean addItems(Collection<T> items) {
-			throw new UnsupportedOperationException();
+			boolean added = false;
+			for (T item : requireNonNull(items)) {
+				added = addItem(item) || added;
+			}
+
+			return added;
 		}
 
 		@Override
@@ -278,6 +283,14 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (visible.items.remove(item)) {
 				fireContentsChanged();
 				visible.notifyChanges();
+				if (Objects.equals(selection.selected.item, item)) {
+					if (modelItems.nullItem != null) {
+						setSelectedItem(null);
+					}
+					else if (!modelItems.visible.items.isEmpty()) {
+						setSelectedItem(modelItems.visible.items.get(0));
+					}
+				}
 
 				return true;
 			}
@@ -287,7 +300,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public boolean removeItems(Collection<T> items) {
-			throw new UnsupportedOperationException();
+			boolean removed = false;
+			for (T item : requireNonNull(items)) {
+				removed = removeItem(item) || removed;
+			}
+
+			return removed;
 		}
 
 		@Override

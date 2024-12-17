@@ -180,9 +180,12 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.items().visible().predicate().clear();
 		assertFalse(testModel.items().visible().contains(BJORN));
 
+		testModel.selection().item().set(SIGGI);
 		//remove visible item
-		testModel.items().removeItem(KALLI);
+		testModel.items().removeItems(asList(KALLI, SIGGI));
+		assertNull(testModel.selection().item().get());
 		assertFalse(testModel.items().visible().contains(KALLI));
+		assertFalse(testModel.items().visible().contains(SIGGI));
 	}
 
 	@Test
@@ -193,9 +196,10 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.items().addItem(BJORN);
 		assertFalse(testModel.items().visible().contains(BJORN));
 
-		//add visible item
-		testModel.items().addItem(KALLI);
+		//add visible items
+		testModel.items().addItems(asList(KALLI, SIGGI));
 		assertTrue(testModel.items().visible().contains(KALLI));
+		assertTrue(testModel.items().visible().contains(SIGGI));
 
 		testModel.items().visible().predicate().clear();
 		assertTrue(testModel.items().visible().contains(BJORN));

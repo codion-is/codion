@@ -254,7 +254,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public void accept(Collection<Entity> deleted) {
-			deleted.forEach(items()::removeItem);
+			items().removeItems(deleted);
 		}
 	}
 
