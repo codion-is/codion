@@ -19,7 +19,7 @@
 package is.codion.common.state;
 
 import is.codion.common.Conjunction;
-import is.codion.common.observer.Observable;
+import is.codion.common.observable.Observable;
 import is.codion.common.value.Value;
 
 import org.junit.jupiter.api.Test;

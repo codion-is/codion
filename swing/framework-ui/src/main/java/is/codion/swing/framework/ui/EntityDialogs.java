@@ -19,7 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.observer.Observable;
+import is.codion.common.observable.Observable;
 import is.codion.common.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Entity.Copy;

@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.label;
 
 import is.codion.common.Configuration;
-import is.codion.common.observer.Observable;
+import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 

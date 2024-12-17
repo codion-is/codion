@@ -21,7 +21,7 @@ package is.codion.swing.common.model.component.combobox;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.model.selection.SingleItemSelection;
-import is.codion.common.observer.Observer;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;

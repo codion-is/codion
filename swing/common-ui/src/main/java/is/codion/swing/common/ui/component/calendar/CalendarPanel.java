@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.calendar;
 
 import is.codion.common.item.Item;
-import is.codion.common.observer.Observable;
+import is.codion.common.observable.Observable;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;

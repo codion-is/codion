@@ -19,7 +19,7 @@
 package is.codion.tools.generator.model;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.observer.Observable;
+import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;

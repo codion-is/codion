@@ -19,8 +19,8 @@
 package is.codion.swing.common.model.component.button;
 
 import is.codion.common.event.Event;
-import is.codion.common.observer.Observable;
-import is.codion.common.observer.Observer;
+import is.codion.common.observable.Observable;
+import is.codion.common.observable.Observer;
 
 import javax.swing.DefaultButtonModel;
 import java.awt.event.ItemEvent;

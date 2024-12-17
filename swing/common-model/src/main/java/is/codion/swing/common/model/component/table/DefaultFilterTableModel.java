@@ -23,7 +23,7 @@ import is.codion.common.model.FilterModel;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
-import is.codion.common.observer.Observer;
+import is.codion.common.observable.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
 

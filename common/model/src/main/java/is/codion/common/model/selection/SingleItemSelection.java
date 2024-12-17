@@ -19,8 +19,8 @@
 package is.codion.common.model.selection;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.observer.Observable;
-import is.codion.common.observer.Observer;
+import is.codion.common.observable.Observable;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 
 /**

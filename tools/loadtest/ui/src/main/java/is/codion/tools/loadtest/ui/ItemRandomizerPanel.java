@@ -18,8 +18,8 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.observer.Observable;
-import is.codion.common.observer.Observer;
+import is.codion.common.observable.Observable;
+import is.codion.common.observable.Observer;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.value.ComponentValue;

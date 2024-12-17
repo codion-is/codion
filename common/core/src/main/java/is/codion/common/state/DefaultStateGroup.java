@@ -18,7 +18,7 @@
  */
 package is.codion.common.state;
 
-import is.codion.common.observer.Observable;
+import is.codion.common.observable.Observable;
 
 import org.jspecify.annotations.Nullable;
 

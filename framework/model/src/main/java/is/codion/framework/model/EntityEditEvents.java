@@ -19,7 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.event.Event;
-import is.codion.common.observer.Observer;
+import is.codion.common.observable.Observer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 

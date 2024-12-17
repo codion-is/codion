@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
-import is.codion.common.observer.Observable;
+import is.codion.common.observable.Observable;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;

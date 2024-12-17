@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
-import is.codion.common.observer.Observer;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
