@@ -26,7 +26,6 @@ import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.event.ListSelectionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,9 +36,8 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultFilterTableSelection<R> implements TableSelection<R> {
+final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel implements TableSelection<R> {
 
-	private final FilterListSelectionModel selectionModel = new FilterListSelectionModel();
 	private final SelectedIndex selectedIndex = new SelectedIndex();
 	private final SelectedIndexes selectedIndexes = new SelectedIndexes();
 	private final DefaultItem selectedItem = new DefaultItem();
@@ -61,7 +59,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	public void setSelectionMode(int selectionMode) {
 		if (getSelectionMode() != selectionMode) {
 			clear();
-			selectionModel.setSelectionMode(selectionMode);
+			super.setSelectionMode(selectionMode);
 			singleSelection.set(selectionMode == SINGLE_SELECTION);
 		}
 	}
@@ -109,31 +107,31 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	@Override
 	public void addSelectionInterval(int fromIndex, int toIndex) {
 		changing.run();
-		selectionModel.addSelectionInterval(fromIndex, toIndex);
+		super.addSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void setSelectionInterval(int fromIndex, int toIndex) {
 		changing.run();
-		selectionModel.setSelectionInterval(fromIndex, toIndex);
+		super.setSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void removeSelectionInterval(int fromIndex, int toIndex) {
 		changing.run();
-		selectionModel.removeSelectionInterval(fromIndex, toIndex);
+		super.removeSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void insertIndexInterval(int fromIndex, int length, boolean before) {
 		changing.run();
-		selectionModel.insertIndexInterval(fromIndex, length, before);
+		super.insertIndexInterval(fromIndex, length, before);
 	}
 
 	@Override
 	public void removeIndexInterval(int fromIndex, int toIndex) {
 		changing.run();
-		selectionModel.removeIndexInterval(fromIndex, toIndex);
+		super.removeIndexInterval(fromIndex, toIndex);
 	}
 
 	@Override
@@ -157,78 +155,21 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	}
 
 	@Override
-	public int getMinSelectionIndex() {
-		return selectionModel.getMinSelectionIndex();
-	}
-
-	@Override
-	public int getMaxSelectionIndex() {
-		return selectionModel.getMaxSelectionIndex();
-	}
-
-	@Override
-	public boolean isSelectedIndex(int index) {
-		return selectionModel.isSelectedIndex(index);
-	}
-
-	@Override
-	public int getAnchorSelectionIndex() {
-		return selectionModel.getAnchorSelectionIndex();
-	}
-
-	@Override
-	public void setAnchorSelectionIndex(int index) {
-		selectionModel.setAnchorSelectionIndex(index);
-	}
-
-	@Override
-	public int getLeadSelectionIndex() {
-		return selectionModel.getLeadSelectionIndex();
-	}
-
-	@Override
-	public void setLeadSelectionIndex(int index) {
-		selectionModel.setLeadSelectionIndex(index);
-	}
-
-	@Override
 	public void clear() {
 		clearSelection();
 	}
 
 	@Override
-	public void clearSelection() {
-		selectionModel.clearSelection();
-	}
-
-	@Override
-	public boolean isSelectionEmpty() {
-		return selectionModel.isSelectionEmpty();
-	}
-
-	@Override
-	public void setValueIsAdjusting(boolean valueIsAdjusting) {
-		selectionModel.setValueIsAdjusting(valueIsAdjusting);
-	}
-
-	@Override
-	public boolean getValueIsAdjusting() {
-		return selectionModel.getValueIsAdjusting();
-	}
-
-	@Override
-	public int getSelectionMode() {
-		return selectionModel.getSelectionMode();
-	}
-
-	@Override
-	public void addListSelectionListener(ListSelectionListener listener) {
-		selectionModel.addListSelectionListener(listener);
-	}
-
-	@Override
-	public void removeListSelectionListener(ListSelectionListener listener) {
-		selectionModel.removeListSelectionListener(listener);
+	protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
+		super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
+		if (!isAdjusting) {
+			empty.set(super.isSelectionEmpty());
+			single.set(count() == 1);
+			selectedIndex.notifyListeners();
+			selectedItem.notifyListeners();
+			selectedIndexes.notifyListeners();
+			selectedItems.notifyListeners();
+		}
 	}
 
 	private void bindEvents() {
@@ -239,22 +180,6 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	private static void checkIndex(int index, int size) {
 		if (index < 0 || index > size - 1) {
 			throw new IndexOutOfBoundsException("Index: " + index + ", size: " + size);
-		}
-	}
-
-	private final class FilterListSelectionModel extends DefaultListSelectionModel {
-
-		@Override
-		protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
-			super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
-			if (!isAdjusting) {
-				empty.set(super.isSelectionEmpty());
-				single.set(count() == 1);
-				selectedIndex.notifyListeners();
-				selectedItem.notifyListeners();
-				selectedIndexes.notifyListeners();
-				selectedItems.notifyListeners();
-			}
 		}
 	}
 
