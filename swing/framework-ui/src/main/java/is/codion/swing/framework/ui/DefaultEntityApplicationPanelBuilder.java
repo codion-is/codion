@@ -392,6 +392,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			if (displayFrame) {
 				applicationFrame.setVisible(true);
 			}
+			applicationPanel.requestInitialFocus();
 			if (onApplicationStarted != null) {
 				onApplicationStarted.accept(applicationPanel);
 			}

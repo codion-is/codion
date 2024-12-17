@@ -2603,6 +2603,8 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
+		 * By default all attributes are editable via the table popup menu or the {@link ControlKeys#EDIT_SELECTED_ATTRIBUTE} control,
+		 * use this method to exclude one or more attributes from being editable.
 		 * @param attributes provides this tables editable attribute value set
 		 * @return this Config instance
 		 */

@@ -466,6 +466,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
+	 * <p>Requests the initial application focus by calling {@link EntityPanel#requestInitialFocus()}
+	 * on the main entity panel.
+	 * <p>By default, the main entity panel is the first one returned by {@link #entityPanels()}.
+	 */
+	public void requestInitialFocus() {
+		if (!entityPanels.isEmpty()) {
+			entityPanels.get(0).requestInitialFocus();
+		}
+	}
+
+	/**
 	 * @param entities the entities
 	 * @return a tree model showing the dependencies between entities via foreign keys
 	 */
