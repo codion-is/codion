@@ -159,12 +159,11 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	private static Condition createCondition(Condition entityCondition, AdditionalCondition additional) {
-		Condition additionalCondition = additional.get().get();
-		if (additionalCondition == null) {
-			return entityCondition;
-		}
-
-		return combination(additional.conjunction().get(), entityCondition, additionalCondition);
+		return additional.optional()
+						.map(Supplier::get)
+						.map(condition -> combination(additional.conjunction().getOrThrow(), entityCondition, condition))
+						.map(Condition.class::cast)
+						.orElse(entityCondition);
 	}
 
 	private Value<OrderBy> createOrderBy() {
