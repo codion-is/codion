@@ -41,7 +41,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
 
-	private final Object lock = new Object();
+	private final Lock lock = new Lock();
 	private final Event<EntityConnection> connectedEvent = Event.event();
 
 	private final User user;
@@ -249,4 +249,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 			return (B) this;
 		}
 	}
+
+	private static final class Lock {}
 }

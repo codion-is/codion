@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
  */
 final class BoundedItemRandomizer<T> extends DefaultItemRandomizer<T> {
 
-	private final Object lock = new Object();
+	private final Lock lock = new Lock();
 	private final int maximumTotalWeight;
 
 	private RandomItem<T> lastAffected;
@@ -116,4 +116,6 @@ final class BoundedItemRandomizer<T> extends DefaultItemRandomizer<T> {
 
 		return item;
 	}
+
+	private static final class Lock {}
 }

@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 
 final class DefaultEvent<T> implements Event<T> {
 
-	private final Object lock = new Object();
+	private final Lock lock = new Lock();
 
 	private @Nullable DefaultObserver<T> observer;
 
@@ -92,4 +92,6 @@ final class DefaultEvent<T> implements Event<T> {
 	public boolean removeWeakConsumer(Consumer<? super T> consumer) {
 		return observer().removeWeakConsumer(consumer);
 	}
+
+	private static final class Lock {}
 }

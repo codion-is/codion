@@ -1094,8 +1094,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			private DefaultEditableValue(Attribute<T> attribute) {
 				this.attribute = attribute;
 				this.defaultValue = Value.builder()
-									.nonNull((Supplier<T>) entityDefinition.attributes().definition(attribute)::defaultValue)
-									.build();
+								.nonNull((Supplier<T>) entityDefinition.attributes().definition(attribute)::defaultValue)
+								.build();
 			}
 
 			@Override
@@ -1104,7 +1104,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 					super.set(entity.original(attribute));
 				}
 			}
-
 
 			@Override
 			public State persist() {

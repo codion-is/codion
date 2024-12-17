@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 
 class DefaultValue<T> extends AbstractValue<T> {
 
-	protected final Object lock = new Object();
+	protected final Lock lock = new Lock();
 
 	private @Nullable T value;
 
@@ -168,4 +168,6 @@ class DefaultValue<T> extends AbstractValue<T> {
 			return (B) this;
 		}
 	}
+	
+	private static final class Lock {}
 }
