@@ -88,8 +88,8 @@ public interface EntityEditModel {
 	EntityConnection connection();
 
 	/**
-	 * Returns a {@link EditableEntity} wrapping the entity being edited. {@link EditableEntity#get()} returns
-	 * an immutable copy of the {@link Entity} instance being edited, while {@link EditableEntity#set(Object)}
+	 * Returns a {@link EditableEntity} wrapping the entity being edited. {@link EntityEditModel.EditableEntity#get()} returns
+	 * an immutable copy of the {@link Entity} instance being edited, while {@link EntityEditModel.EditableEntity#set(Entity)}
 	 * copies the values from the given {@link Entity} into the underlying {@link Entity}.
 	 * Note that value changes must go through the {@link EditableValue} accessible via {@link #value(Attribute)}.
 	 * @return the {@link EditableEntity} wrapping the {@link Entity} instance being edited
@@ -436,15 +436,15 @@ public interface EntityEditModel {
 
 		/**
 		 * @return an observer notified each time the entity is about to be changed
-		 * via {@link EditableEntity#set(Object)} or {@link EditableEntity#defaults()}
-		 * @see EditableEntity#set(Object)
+		 * via {@link EditableEntity#set(Entity)} or {@link EditableEntity#defaults()}
+		 * @see EditableEntity#set(Entity)
 		 * @see #defaults()
 		 */
 		Observer<Entity> changing();
 
 		/**
 		 * Returns an observer notified each time a value changes, either via its associated {@link EditableValue}
-		 * instance or when the entity is set via {@link EditableEntity#set(Object)} or {@link EditableEntity#defaults()}.
+		 * instance or when the entity is set via {@link EditableEntity#set(Entity)} or {@link EditableEntity#defaults()}.
 		 * @return an observer notified each time a value changes
 		 */
 		Observer<Attribute<?>> valueChanged();
