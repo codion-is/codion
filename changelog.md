@@ -31,6 +31,8 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - TabbedApplicationLayout.applicationPanel() removed.
 - EntityApplicationPanel.displayEntityPanelFrame() and displayEntityPanelDialog() now initialize the focus by activating the panel when opened.
+- EntityPanel.activateEvent() renamed activated().
+- EntityApplicationPanel.initializedEvent() renamed initialized().
 
 ## 0.18.22
 ### is.codion.common.core

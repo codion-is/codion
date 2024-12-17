@@ -229,7 +229,7 @@ public class EntityPanel extends JPanel {
 	private final JPanel mainPanel;
 	private final DetailLayout detailLayout;
 	private final DetailController detailController;
-	private final Event<EntityPanel> activateEvent = Event.event();
+	private final Event<EntityPanel> activatedEvent = Event.event();
 	private final Value<PanelState> editPanelState;
 	private final Function<PanelState, PanelState> editPanelStateMapper;
 
@@ -571,20 +571,23 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @return an observer notified before this panel is activated
+	 * @return an observer notified when this panel is activated
 	 * @see #activate()
 	 */
-	public final Observer<EntityPanel> activateEvent() {
-		return activateEvent.observer();
+	public final Observer<EntityPanel> activated() {
+		return activatedEvent.observer();
 	}
 
 	/**
-	 * Activates this panel, by initializing it, bringing its parent window to front and requesting initial focus.
-	 * It is up the panel or application layout to make sure this panel is made visible when activated.
-	 * @see #activateEvent()
+	 * <p>Activates this panel, by initializing it, bringing its parent window to front and requesting initial focus.
+	 * <p>It is up the {@link is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout} (for top level panels)
+	 * and the {@link DetailController} (for detail panels) to make sure this panel is displayed when activated.
+	 * @see #activated()
+	 * @see is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout#activated(EntityPanel)
+	 * @see DetailController#activated(EntityPanel)
 	 */
 	public final void activate() {
-		activateEvent.accept(this);
+		activatedEvent.accept(this);
 		initialize();
 		Window parentWindow = parentWindow(this);
 		if (parentWindow != null) {
@@ -1648,10 +1651,11 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
-		 * Called when the given detail panel is activated.
-		 * @param detailPanel the detail panel to select
+		 * Called when the given detail panel is activated,
+		 * responsible for making sure it becomes visible.
+		 * @param detailPanel the detail panel to display
 		 * @see EntityPanel#activate()
-		 * @see EntityPanel#activateEvent()
+		 * @see EntityPanel#activated()
 		 */
 		default void activated(EntityPanel detailPanel) {}
 	}

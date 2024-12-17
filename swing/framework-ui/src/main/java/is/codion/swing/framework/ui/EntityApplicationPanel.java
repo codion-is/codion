@@ -239,7 +239,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 					.consumer(alwaysOnTop -> parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)))
 					.build();
 	private final Event<?> exitEvent = Event.event();
-	private final Event<EntityApplicationPanel<?>> onInitialized = Event.event();
+	private final Event<EntityApplicationPanel<?>> initializedEvent = Event.event();
 	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.getOrThrow();
 	private final boolean userPreferencesEnabled = USER_PREFERENCES_ENABLED.getOrThrow();
 	private final boolean restoreDefaultPreferences = RESTORE_DEFAULT_PREFERENCES.getOrThrow();
@@ -363,8 +363,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return an observer notified when this application panel is initialized
 	 * @see #initialize()
 	 */
-	public final Observer<EntityApplicationPanel<?>> initializedEvent() {
-		return onInitialized.observer();
+	public final Observer<EntityApplicationPanel<?>> initialized() {
+		return initializedEvent.observer();
 	}
 
 	/**
@@ -457,7 +457,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 				setLayout(new BorderLayout());
 				add(applicationLayout.layout(), BorderLayout.CENTER);
 				bindEvents();
-				onInitialized.accept(this);
+				initializedEvent.accept(this);
 			}
 			finally {
 				initialized = true;
@@ -893,7 +893,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private void addEntityPanel(EntityPanel entityPanel) {
 		EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
-		entityPanel.activateEvent().addConsumer(applicationLayout::activated);
+		entityPanel.activated().addConsumer(applicationLayout::activated);
 		if (entityPanel.containsEditPanel()) {
 			entityPanel.editPanel().active().addConsumer(new SelectActivatedPanel(entityPanel));
 		}
@@ -1220,10 +1220,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		JComponent layout();
 
 		/**
-		 * Displays the given entity panel when it is activated.
+		 * Called when the given entity panel is activated,
+		 * responsible for making sure it becomes visible.
 		 * @param entityPanel the entity panel being activated
 		 * @see EntityPanel#activate()
-		 * @see EntityPanel#activateEvent()
+		 * @see EntityPanel#activated()
 		 */
 		default void activated(EntityPanel entityPanel) {}
 	}

@@ -185,7 +185,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		if (splitPane != null) {
 			throw new IllegalStateException("EntityPanel " + entityPanel + " has already been laid out");
 		}
-		entityPanel.activateEvent().addListener(new ShowIfHidden());
+		entityPanel.activated().addListener(new ShowIfHidden());
 		entityPanel.detailPanels().forEach(this::bindEvents);
 		splitPane = createSplitPane(entityPanel.mainPanel());
 		tabbedPane = createTabbedPane(entityPanel.detailPanels());
@@ -265,7 +265,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	}
 
 	private void bindEvents(EntityPanel detailPanel) {
-		detailPanel.activateEvent().addConsumer(detailController::activated);
+		detailPanel.activated().addConsumer(detailController::activated);
 		controlMap.keyStroke(RESIZE_RIGHT).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

@@ -101,7 +101,7 @@ public final class WindowDetailLayout implements DetailLayout {
 	}
 
 	private void bindEvents(EntityPanel detailPanel) {
-		detailPanel.activateEvent().addConsumer(detailController::activated);
+		detailPanel.activated().addConsumer(detailController::activated);
 	}
 
 	private void setupControls(EntityPanel entityPanel) {
