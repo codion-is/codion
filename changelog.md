@@ -21,6 +21,8 @@ Codion Change Log
 - ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
 - Server.serverLoad() removed, related refactoring.
 - ServerConfiguration.Builder.rmiClientSocketFactory() and rmiServerSocketFactory() removed.
+### is.codion.swing.common.model
+- FilterComboBoxModel.ComboBoxSelection.value() and nullSelected() removed.
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.

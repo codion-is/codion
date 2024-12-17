@@ -50,12 +50,12 @@ public final class EntityComboBoxPanelTest {
 						.buildValue();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
 						Department.NAME.equalTo("SALES"));
-		model.setSelectedItem(sales);
+		model.selection().item().set(sales);
 		assertEquals(sales, value.get());
 		value.clear();
-		Entity entity = model.selection().value();
+		Entity entity = model.selection().item().get();
 		assertNull(entity);
 		value.set(sales);
-		assertEquals(sales, model.selection().value());
+		assertEquals(sales, model.selection().item().get());
 	}
 }

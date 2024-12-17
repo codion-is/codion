@@ -109,7 +109,7 @@ final class EntityControls {
 		return createEditControl(() -> editEntityDialog(editPanel)
 						.owner(comboBox)
 						.confirm(confirm)
-						.entity(() -> comboBox.getModel().selection().value())
+						.entity(() -> comboBox.getModel().selection().item().getOrThrow())
 						.onUpdate(new EntityComboBoxOnUpdate(comboBox.getModel()))
 						.show(), comboBox, comboBox.getModel().selection().empty().not(), keyStroke);
 	}
@@ -128,7 +128,7 @@ final class EntityControls {
 		return createEditControl(() -> editEntityDialog(editPanel)
 						.owner(searchField)
 						.confirm(confirm)
-						.entity(() -> searchField.model().selection().entity().get())
+						.entity(() -> searchField.model().selection().entity().getOrThrow())
 						.onUpdate(new EntitySearchFieldOnUpdate(searchField.model()))
 						.show(), searchField, searchField.model().selection().empty().not(), keyStroke);
 	}
@@ -216,7 +216,7 @@ final class EntityControls {
 		@Override
 		public void accept(Entity inserted) {
 			comboBoxModel.items().addItem(inserted);
-			comboBoxModel.setSelectedItem(inserted);
+			comboBoxModel.selection().item().set(inserted);
 		}
 	}
 
@@ -244,8 +244,8 @@ final class EntityControls {
 
 		@Override
 		public void accept(Entity updated) {
-			comboBoxModel.items().replace(comboBoxModel.selection().value(), updated);
-			comboBoxModel.setSelectedItem(updated);
+			comboBoxModel.items().replace(comboBoxModel.selection().item().get(), updated);
+			comboBoxModel.selection().item().set(updated);
 		}
 	}
 

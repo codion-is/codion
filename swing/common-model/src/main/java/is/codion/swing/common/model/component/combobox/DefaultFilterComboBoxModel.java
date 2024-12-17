@@ -101,7 +101,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public T getSelectedItem() {
-		return selection.selected.get();
+		if (selection.selected.item == null) {
+			return modelItems.nullItem;
+		}
+
+		return selection.selected.item;
 	}
 
 	@Override
@@ -318,7 +322,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void clear() {
-			setSelectedItem(null);
+			selection.item().clear();
 			set(emptyList());
 		}
 
@@ -538,20 +542,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public T value() {
-			if (nullSelected()) {
-				return null;
-			}
-
-			return selected.item;
-		}
-
-		@Override
-		public boolean nullSelected() {
-			return modelItems.includeNull && selected.item == null;
-		}
-
-		@Override
 		public void clear() {
 			selected.clear();
 		}
@@ -577,10 +567,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public T get() {
-			if (item == null) {
-				return modelItems.nullItem;
-			}
-
 			return item;
 		}
 
@@ -604,9 +590,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (!Objects.equals(this.item, toSelect)) {
 				changing.accept(toSelect);
 				this.item = toSelect;
-				empty.set(selection.value() == null);
+				empty.set(toSelect == null);
 				fireContentsChanged();
-				event.accept(this.item);
+				event.accept(toSelect);
 			}
 		}
 
@@ -631,7 +617,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				return null;
 			}
 
-			return itemFinder.value(selection.value());
+			return itemFinder.value(selection.item().get());
 		}
 
 		@Override

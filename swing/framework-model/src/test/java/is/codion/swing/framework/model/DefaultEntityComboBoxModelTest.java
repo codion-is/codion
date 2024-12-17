@@ -200,7 +200,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.filter(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(accounting))
 						.findFirst()
 						.ifPresent(employeeComboBoxModel::setSelectedItem);
-		assertEquals(accounting, deptComboBoxModel.selection().value());
+		assertEquals(accounting, deptComboBoxModel.selection().item().get());
 
 		//non strict filtering
 		employeeComboBoxModel.filter().get(Employee.MGR_FK).strict().set(false);//now shows employees without a manager, as in, Mr King
@@ -228,15 +228,15 @@ public final class DefaultEntityComboBoxModelTest {
 		comboBoxModel.refresh();
 		Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("CLARK"));
 		comboBoxModel.select(clark.primaryKey());
-		assertEquals(clark, comboBoxModel.selection().value());
+		assertEquals(clark, comboBoxModel.selection().item().get());
 		comboBoxModel.setSelectedItem(null);
-		assertNull(comboBoxModel.selection().value());
+		assertNull(comboBoxModel.selection().item().get());
 		comboBoxModel.filter().predicate().set(entity -> false);
 		comboBoxModel.select(clark.primaryKey());
-		assertEquals(clark, comboBoxModel.selection().value());
+		assertEquals(clark, comboBoxModel.selection().item().get());
 		Entity.Key nobodyPK = ENTITIES.primaryKey(Employee.TYPE, -1);
 		comboBoxModel.select(nobodyPK);
-		assertEquals(clark, comboBoxModel.selection().value());
+		assertEquals(clark, comboBoxModel.selection().item().get());
 	}
 
 	@Test
@@ -258,9 +258,9 @@ public final class DefaultEntityComboBoxModelTest {
 		comboBoxModel.setSelectedItem(null);
 		assertNull(empIdValue.get());
 		empIdValue.set(10);
-		assertEquals("ADAMS", comboBoxModel.selection().value().get(Employee.NAME));
+		assertEquals("ADAMS", comboBoxModel.selection().item().getOrThrow().get(Employee.NAME));
 		empIdValue.clear();
-		assertNull(comboBoxModel.selection().value());
+		assertNull(comboBoxModel.selection().item().get());
 	}
 
 	@Test
@@ -311,7 +311,7 @@ public final class DefaultEntityComboBoxModelTest {
 
 		Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("CLARK"));
 		comboBoxModel.setSelectedItem(clark);
-		assertEquals(clark, comboBoxModel.selection().value());
+		assertEquals(clark, comboBoxModel.selection().item().get());
 
 		comboBoxModel.items().clear();
 		assertEquals(0, comboBoxModel.getSize());
@@ -377,6 +377,6 @@ public final class DefaultEntityComboBoxModelTest {
 		model.refresh();
 		assertTrue(model.items().contains(null));
 		assertEquals("-", model.getSelectedItem().toString());
-		assertNull(model.selection().value());
+		assertNull(model.selection().item().get());
 	}
 }

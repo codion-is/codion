@@ -63,7 +63,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 
 	private LookAndFeelComboBox(FilterComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel, boolean enableOnSelection) {
 		super(requireNonNull(comboBoxModel));
-		Item<LookAndFeelProvider> selectedValue = comboBoxModel.selection().value();
+		Item<LookAndFeelProvider> selectedValue = comboBoxModel.selection().item().getOrThrow();
 		originalLookAndFeel = selectedValue == null ? null : selectedValue.value();
 		setRenderer(new LookAndFeelRenderer());
 		setEditor(new LookAndFeelEditor());
@@ -83,7 +83,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 	 * @return the currently selected look and feel
 	 */
 	public LookAndFeelProvider selectedLookAndFeel() {
-		return getModel().selection().value().value();
+		return getModel().selection().item().getOrThrow().value();
 	}
 
 	/**

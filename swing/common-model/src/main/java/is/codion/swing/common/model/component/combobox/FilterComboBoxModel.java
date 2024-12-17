@@ -61,7 +61,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 
 	/**
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-	 * via {@link Builder#nullItem(Object)}, {@link ComboBoxSelection#value()} is usually what you want
+	 * via {@link Builder#nullItem(Object)}, {@link ComboBoxSelection.Item#get()} is usually what you want
 	 */
 	T getSelectedItem();
 
@@ -159,19 +159,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @param <T> the item type
 	 */
 	interface ComboBoxSelection<T> extends SingleItemSelection<T> {
-
-		/**
-		 * @return the selected value, null in case the value representing null is selected
-		 * @see #nullSelected()
-		 */
-		T value();
-
-		/**
-		 * Returns true if this model contains null and it is selected.
-		 * @return true if this model contains null and it is selected, false otherwise
-		 * @see Builder#nullItem(Object)
-		 */
-		boolean nullSelected();
 
 		/**
 		 * Specifies whether filtering the model affects the currently selected item.

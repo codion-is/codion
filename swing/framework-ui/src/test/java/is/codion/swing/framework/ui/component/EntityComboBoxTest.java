@@ -53,7 +53,7 @@ public class EntityComboBoxTest {
 		EntityComboBoxModel model = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		model.refresh();
 		Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
-		model.setSelectedItem(operations);
+		model.selection().item().set(operations);
 		ComponentValue<Entity, EntityComboBox> value = EntityComboBox.builder(model)
 						.buildValue();
 
@@ -83,8 +83,8 @@ public class EntityComboBoxTest {
 		comboBoxModel.setSelectedItem(null);
 		assertNull(empIdValue.get());
 		empIdValue.set(10);
-		assertEquals("ADAMS", comboBoxModel.selection().value().get(Employee.NAME));
+		assertEquals("ADAMS", comboBoxModel.selection().item().getOrThrow().get(Employee.NAME));
 		empIdValue.set(null);
-		assertNull(comboBoxModel.selection().value());
+		assertNull(comboBoxModel.selection().item().get());
 	}
 }

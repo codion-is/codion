@@ -53,16 +53,16 @@ public class ItemComboBoxModelTest {
 
 		model.setSelectedItem(1);
 		assertEquals(model.getSelectedItem(), aOne);
-		assertEquals(1, (int) model.selection().value().value());
-		assertEquals("AOne", model.getSelectedItem().toString());
+		assertEquals(1, model.selection().item().getOrThrow().value());
+		assertEquals("AOne", model.selection().item().getOrThrow().toString());
 		model.setSelectedItem(2);
-		assertEquals(2, (int) model.selection().value().value());
+		assertEquals(2, model.selection().item().getOrThrow().value());
 		assertEquals(model.getSelectedItem(), bTwo);
 		model.setSelectedItem(4);
-		assertEquals(4, (int) model.selection().value().value());
+		assertEquals(4, model.selection().item().getOrThrow().value());
 		assertEquals(model.getSelectedItem(), dFour);
 		model.setSelectedItem(null);
-		assertNull(model.selection().value().value());
+		assertNull(model.selection().item().getOrThrow().value());
 		assertEquals(model.getSelectedItem(), nullItem);
 
 		model.refresh();
@@ -86,12 +86,11 @@ public class ItemComboBoxModelTest {
 	@Test
 	void booleanComboBoxModel() {
 		FilterComboBoxModel<Item<Boolean>> model = ItemComboBoxModel.builder(booleanItems()).build();
-
 		model.setSelectedItem(false);
-		assertEquals(false, model.getSelectedItem().value());
+		assertEquals(false, model.selection().item().getOrThrow().value());
 		model.setSelectedItem(true);
-		assertEquals(true, model.getSelectedItem().value());
+		assertEquals(true, model.selection().item().getOrThrow().value());
 		model.setSelectedItem(null);
-		assertNull(model.getSelectedItem().value());
+		assertNull(model.selection().item().getOrThrow().value());
 	}
 }
