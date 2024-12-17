@@ -43,11 +43,11 @@ public class DefaultToggleControlTest {
 		Value<Boolean> booleanValue = Value.builder().nonNull(false).build();
 		ToggleControl control = Control.builder().toggle(booleanValue).build();
 		control.value().set(true);
-		assertTrue(booleanValue.get());
+		assertTrue(booleanValue.getOrThrow());
 		control.value().set(false);
-		assertFalse(booleanValue.get());
+		assertFalse(booleanValue.getOrThrow());
 		booleanValue.set(true);
-		assertTrue(control.value().get());
+		assertTrue(control.value().getOrThrow());
 
 		Value<Boolean> nullableValue = Value.value(true);
 		ToggleControl nullableControl = Control.builder().toggle(nullableValue).build();
@@ -56,13 +56,13 @@ public class DefaultToggleControlTest {
 						.build()
 						.getModel();
 		assertTrue(toggleButtonModel.isSelected());
-		assertTrue(nullableControl.value().get());
+		assertTrue(nullableControl.value().getOrThrow());
 		toggleButtonModel.setSelected(false);
-		assertFalse(nullableControl.value().get());
+		assertFalse(nullableControl.value().getOrThrow());
 		toggleButtonModel.setSelected(true);
-		assertTrue(nullableControl.value().get());
+		assertTrue(nullableControl.value().getOrThrow());
 		nullableValue.set(false);
-		assertFalse(nullableControl.value().get());
+		assertFalse(nullableControl.value().getOrThrow());
 		nullableValue.clear();
 		assertNull(toggleButtonModel.toggleState().get());
 		assertFalse(toggleButtonModel.isSelected());
@@ -77,15 +77,15 @@ public class DefaultToggleControlTest {
 						.build()
 						.getModel();
 		assertFalse(buttonModel instanceof NullableToggleButtonModel);
-		assertTrue(nonNullableControl.value().get());
+		assertTrue(nonNullableControl.value().getOrThrow());
 		nonNullableValue.set(false);
-		assertFalse(nonNullableControl.value().get());
+		assertFalse(nonNullableControl.value().getOrThrow());
 		nonNullableValue.clear();
-		assertFalse(nonNullableControl.value().get());
+		assertFalse(nonNullableControl.value().getOrThrow());
 
 		State state = State.state(true);
 		ToggleControl toggleControl = Control.toggle(state);
-		assertTrue(toggleControl.value().get());
+		assertTrue(toggleControl.value().getOrThrow());
 		JToggleButton toggleButton = ToggleButtonBuilder.builder()
 						.toggleControl(toggleControl)
 						.build();
@@ -112,11 +112,11 @@ public class DefaultToggleControlTest {
 			assertTrue(control.isEnabled());
 			assertTrue(buttonModel.isEnabled());
 			assertEquals("stateToggleControl", control.name().orElse(null));
-			assertFalse(control.value().get());
+			assertFalse(control.value().getOrThrow());
 			state.set(true);
-			assertTrue(control.value().get());
+			assertTrue(control.value().getOrThrow());
 			state.set(false);
-			assertFalse(control.value().get());
+			assertFalse(control.value().getOrThrow());
 			control.value().set(true);
 			assertTrue(state.get());
 			control.value().set(false);
@@ -140,18 +140,18 @@ public class DefaultToggleControlTest {
 		buttonModel.toggleState().clear();
 		assertNull(value.get());
 		buttonModel.setSelected(false);
-		assertFalse(value.get());
+		assertFalse(value.getOrThrow());
 		buttonModel.setSelected(true);
-		assertTrue(value.get());
+		assertTrue(value.getOrThrow());
 		buttonModel.toggleState().clear();
 		assertNull(value.get());
 
 		value.set(false);
 		assertFalse(buttonModel.isSelected());
-		assertFalse(buttonModel.toggleState().get());
+		assertFalse(buttonModel.toggleState().getOrThrow());
 		value.set(true);
 		assertTrue(buttonModel.isSelected());
-		assertTrue(buttonModel.toggleState().get());
+		assertTrue(buttonModel.toggleState().getOrThrow());
 		value.clear();
 		assertFalse(buttonModel.isSelected());
 		assertNull(buttonModel.toggleState().get());

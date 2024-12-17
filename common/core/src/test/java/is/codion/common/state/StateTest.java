@@ -76,7 +76,7 @@ public class StateTest {
 		assertNotEquals(not.get(), state.get());
 		assertEquals(state.get(), notNot.get());
 		state.set(true);
-		assertFalse(not.optional().orElse(null));
+		assertFalse(not.getOrThrow());
 		assertEquals(1, stateCounter.get());
 		assertEquals(1, notStateCounter.get());
 		assertEquals(1, notNotStateCounter.get());
@@ -345,19 +345,19 @@ public class StateTest {
 						.link(state)
 						.build();
 
-		assertFalse(value.get());
+		assertFalse(value.getOrThrow());
 		state.set(true);
-		assertTrue(value.get());
+		assertTrue(value.getOrThrow());
 
 		value.unlink(state);
 		state.set(false);
-		assertTrue(value.get());
+		assertTrue(value.getOrThrow());
 
 		Observable<Boolean> Observable = value.observable();
 		state.link(Observable);
-		assertTrue(state.get());
+		assertTrue(state.getOrThrow());
 		value.set(false);
-		assertFalse(Observable.get());
+		assertFalse(Observable.getOrThrow());
 
 		state.unlink(Observable);
 		value.set(true);

@@ -78,7 +78,7 @@ public final class DefaultEntityComboBoxModelTest {
 		updated.put(temp.primaryKey(), temp);
 
 		EntityEditEvents.updated(updated);
-		assertEquals("Newname", comboBoxModel.find(temp.primaryKey()).orElse(null).get(Employee.NAME));
+		assertEquals("Newname", comboBoxModel.find(temp.primaryKey()).orElseThrow().get(Employee.NAME));
 
 		EntityEditEvents.deleted(singletonList(temp));
 		assertFalse(comboBoxModel.items().visible().contains(temp));
@@ -126,8 +126,8 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals(11, employeeComboBoxModel.items().filtered().count());
 
 		employeeComboBoxModel.select(entities.primaryKey(Employee.TYPE, 7));//Scott, Analyst, Research
-		assertEquals(3, managerComboBoxModel.selection().item().get().get(Employee.ID));//Jones, Manager, Research
-		assertEquals(20, departmentComboBoxModel.selection().item().get().get(Department.ID));// Research
+		assertEquals(3, managerComboBoxModel.selection().item().getOrThrow().get(Employee.ID));//Jones, Manager, Research
+		assertEquals(20, departmentComboBoxModel.selection().item().getOrThrow().get(Department.ID));// Research
 		//one manager in the research department
 		assertEquals(1, managerComboBoxModel.items().visible().count());
 		assertEquals(3, managerComboBoxModel.items().filtered().count());

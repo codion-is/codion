@@ -45,7 +45,7 @@ public class DefaultFilterTableColumnModelTest {
 
 		testModel.visible(0).set(false);
 		assertEquals(1, hidden.size());
-		assertEquals(1, testModel.hidden().get().size());
+		assertEquals(1, testModel.hidden().getOrThrow().size());
 		testModel.visible(0).set(true);
 		assertEquals(1, shown.size());
 

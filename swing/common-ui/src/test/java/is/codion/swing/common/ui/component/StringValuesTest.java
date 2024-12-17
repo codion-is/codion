@@ -83,7 +83,7 @@ public class StringValuesTest {
 						.build();
 		assertEquals("name", textField.getText());
 		textField.setText("darri");
-		assertFalse(value.get().isEmpty());
+		assertFalse(value.getOrThrow().isEmpty());
 		assertEquals("darri", value.get());
 		textField.setText("");
 		assertNull(value.get());

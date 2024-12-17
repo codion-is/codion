@@ -115,7 +115,7 @@ public final class FilterTableColumnComponentPanel<C> extends JPanel {
 			basePanel.requestFocusInWindow();
 		}
 		basePanel.removeAll();
-		columnModel.visible().get().stream()
+		columnModel.visible().getOrThrow().stream()
 						.map(this::columnComponent)
 						.forEach(basePanel::add);
 		basePanel.add(scrollBarFiller);

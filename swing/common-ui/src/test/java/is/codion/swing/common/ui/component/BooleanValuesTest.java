@@ -47,7 +47,7 @@ public class BooleanValuesTest {
 		booleanValue.set(true);
 		assertTrue(checkBox.isSelected());
 		checkBox.doClick();
-		assertFalse(booleanValue.get());
+		assertFalse(booleanValue.getOrThrow());
 	}
 
 	@Test
@@ -56,9 +56,9 @@ public class BooleanValuesTest {
 		model.setSelectedItem(false);
 		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = Components.booleanComboBox(model)
 						.buildValue();
-		assertFalse(componentValue.get());
+		assertFalse(componentValue.getOrThrow());
 		componentValue.component().getModel().setSelectedItem(true);
-		assertTrue(componentValue.get());
+		assertTrue(componentValue.getOrThrow());
 		componentValue.component().getModel().setSelectedItem(null);
 		assertNull(componentValue.get());
 		componentValue = Components.booleanComboBox().buildValue();
@@ -73,11 +73,11 @@ public class BooleanValuesTest {
 		JToggleButton button = value.component();
 		ButtonModel model = button.getModel();
 
-		assertFalse(value.get());
+		assertFalse(value.getOrThrow());
 		model.setSelected(true);
-		assertTrue(value.get());
+		assertTrue(value.getOrThrow());
 		model.setSelected(false);
-		assertFalse(value.get());
+		assertFalse(value.getOrThrow());
 
 		value.set(true);
 		assertTrue(model.isSelected());
@@ -94,9 +94,9 @@ public class BooleanValuesTest {
 
 		assertNull(value.get());
 		model.setSelected(true);
-		assertTrue(value.get());
+		assertTrue(value.getOrThrow());
 		model.setSelected(false);
-		assertFalse(value.get());
+		assertFalse(value.getOrThrow());
 
 		value.set(true);
 		assertTrue(model.isSelected());
@@ -104,9 +104,9 @@ public class BooleanValuesTest {
 		assertNull(model.toggleState().get());
 
 		model.setSelected(false);
-		assertFalse(value.get());
+		assertFalse(value.getOrThrow());
 		model.setSelected(true);
-		assertTrue(value.get());
+		assertTrue(value.getOrThrow());
 		model.toggleState().set(null);
 		assertNull(value.get());
 	}

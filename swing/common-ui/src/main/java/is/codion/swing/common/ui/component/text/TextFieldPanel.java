@@ -138,7 +138,7 @@ public final class TextFieldPanel extends JPanel {
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 		textField.setEnabled(enabled);
-		button.get().setEnabled(enabled);
+		button.getOrThrow().setEnabled(enabled);
 	}
 
 	@Override

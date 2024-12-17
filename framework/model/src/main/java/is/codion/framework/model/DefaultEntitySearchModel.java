@@ -262,7 +262,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		private boolean searchStringRepresentsSelection() {
-			return (entities.get().isEmpty() && searchString.get().isEmpty()) ||
+			return (entities.get().isEmpty() && searchString.getOrThrow().isEmpty()) ||
 							(!entities.get().isEmpty() && entitiesToString().equals(searchString.get()));
 		}
 

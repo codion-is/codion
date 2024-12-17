@@ -78,9 +78,9 @@ public final class DefaultPropertyStoreTest {
 		PropertyValue<List<String>> stringListValue = store.listValue("stringlist.property", Objects::toString, Objects::toString);
 		assertTrue(store.containsProperty(stringListValue.propertyName()));
 
-		assertTrue(stringListValue.get().contains("value1"));
-		assertTrue(stringListValue.get().contains("value2"));
-		assertTrue(stringListValue.get().contains("value3"));
+		assertTrue(stringListValue.getOrThrow().contains("value1"));
+		assertTrue(stringListValue.getOrThrow().contains("value2"));
+		assertTrue(stringListValue.getOrThrow().contains("value3"));
 
 		stringListValue.set(emptyList());
 		assertEquals("", store.getProperty(stringListValue.propertyName()));
@@ -90,9 +90,9 @@ public final class DefaultPropertyStoreTest {
 		PropertyValue<List<Integer>> integerListValue = store.listValue("intlist.property", Integer::parseInt, Objects::toString);
 		assertTrue(store.containsProperty(integerListValue.propertyName()));
 
-		assertTrue(integerListValue.get().contains(1));
-		assertTrue(integerListValue.get().contains(2));
-		assertTrue(integerListValue.get().contains(3));
+		assertTrue(integerListValue.getOrThrow().contains(1));
+		assertTrue(integerListValue.getOrThrow().contains(2));
+		assertTrue(integerListValue.getOrThrow().contains(3));
 
 		PropertyValue<Integer> intValue1 = store.integerValue("int.property1", 0);
 		assertEquals(42, intValue1.get());
@@ -110,7 +110,7 @@ public final class DefaultPropertyStoreTest {
 		assertFalse(store.containsProperty(doubleValue.propertyName()));
 
 		PropertyValue<Boolean> booleanValue = store.booleanValue("boolean.property", false);
-		assertTrue(booleanValue.get());
+		assertTrue(booleanValue.getOrThrow());
 
 		Collection<String> intProperties = store.propertyNames(propertyName -> propertyName.startsWith("int."));
 		assertTrue(intProperties.contains("int.property1"));
@@ -157,11 +157,11 @@ public final class DefaultPropertyStoreTest {
 		stringValue.set(null);
 		assertEquals("value", stringValue.get());
 		PropertyValue<Boolean> booleanValue1 = store.booleanValue("boolean.property", true);
-		assertTrue(booleanValue1.get());
+		assertTrue(booleanValue1.getOrThrow());
 		booleanValue1.set(false);
-		assertFalse(booleanValue1.get());
+		assertFalse(booleanValue1.getOrThrow());
 		booleanValue1.set(null);
-		assertTrue(booleanValue1.get());
+		assertTrue(booleanValue1.getOrThrow());
 		PropertyValue<Integer> integerValue = store.integerValue("integer.property", 42);
 		assertEquals(42, integerValue.get());
 		integerValue.set(64);
@@ -173,12 +173,12 @@ public final class DefaultPropertyStoreTest {
 		doubleValue.set(null);
 		assertEquals(3.14, doubleValue.get());
 		PropertyValue<List<String>> listValue = store.listValue("stringlist.property", Objects::toString, Objects::toString, asList("value1", "value2"));
-		List<String> strings = listValue.get();
+		List<String> strings = listValue.getOrThrow();
 		assertTrue(strings.contains("value1"));
 		assertTrue(strings.contains("value2"));
 		listValue.set(Arrays.asList("another1", "another2"));
 		listValue.set(null);
-		strings = listValue.get();
+		strings = listValue.getOrThrow();
 		assertTrue(strings.contains("value1"));
 		assertTrue(strings.contains("value2"));
 	}
@@ -197,7 +197,7 @@ public final class DefaultPropertyStoreTest {
 		PropertyValue<Boolean> booleanValue = store.booleanValue("boolean.property.noDefault");
 		assertNull(booleanValue.get());
 		booleanValue.set(true);
-		assertTrue(booleanValue.get());
+		assertTrue(booleanValue.getOrThrow());
 		booleanValue.set(null);
 		assertNull(booleanValue.get());
 		assertFalse(store.containsProperty(booleanValue.propertyName()));

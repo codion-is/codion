@@ -65,7 +65,7 @@ public class EntitySearchFieldTest {
 		assertNull(value.get());
 
 		ComponentValue<Collection<Entity>, EntitySearchField> multiSelectionValue = value.component().multiSelectionValue();
-		assertTrue(multiSelectionValue.get().isEmpty());
+		assertTrue(multiSelectionValue.getOrThrow().isEmpty());
 
 		ComponentValue<Entity, EntitySearchField> singleSelectionValue = value.component().singleSelectionValue();
 		assertNull(singleSelectionValue.get());
@@ -74,7 +74,7 @@ public class EntitySearchFieldTest {
 
 		searchModel.selection().entities().set(Arrays.asList(sales, research));
 
-		assertTrue(multiSelectionValue.get().containsAll(Arrays.asList(sales, research)));
+		assertTrue(multiSelectionValue.getOrThrow().containsAll(Arrays.asList(sales, research)));
 		assertEquals(singleSelectionValue.get(), sales);
 
 		singleSelectionValue.clear();

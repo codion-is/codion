@@ -89,7 +89,7 @@ public final class SwingEntityModelTest
 		departmentsComboBoxModel.refresh();
 		Entity.Key primaryKey = connectionProvider().entities().primaryKey(Department.TYPE, 40);//operations, no employees
 		departmentModel.tableModel().select(Collections.singletonList(primaryKey));
-		Entity operations = departmentModel.tableModel().selection().item().get();
+		Entity operations = departmentModel.tableModel().selection().item().getOrThrow();
 		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();
 		departmentModel.editModel().delete();

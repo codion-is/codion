@@ -76,12 +76,12 @@ public final class EntityComponentsTest {
 										.buildValue();
 		JCheckBox box = componentValue.component();
 		assertTrue(box.isSelected());//default value is true
-		assertTrue(editModel.value(Detail.BOOLEAN).get());
+		assertTrue(editModel.value(Detail.BOOLEAN).getOrThrow());
 
 		box.doClick();
 
 		assertFalse(box.isSelected());
-		assertFalse(editModel.value(Detail.BOOLEAN).get());
+		assertFalse(editModel.value(Detail.BOOLEAN).getOrThrow());
 
 		editModel.value(Detail.BOOLEAN).set(true);
 		assertTrue(box.isSelected());
@@ -97,12 +97,12 @@ public final class EntityComponentsTest {
 										.buildValue();
 		JToggleButton box = componentValue.component();
 		assertTrue(box.isSelected());//default value is true
-		assertTrue(editModel.value(Detail.BOOLEAN).get());
+		assertTrue(editModel.value(Detail.BOOLEAN).getOrThrow());
 
 		box.doClick();
 
 		assertFalse(box.isSelected());
-		assertFalse(editModel.value(Detail.BOOLEAN).get());
+		assertFalse(editModel.value(Detail.BOOLEAN).getOrThrow());
 
 		editModel.value(Detail.BOOLEAN).set(true);
 		assertTrue(box.isSelected());
@@ -119,7 +119,7 @@ public final class EntityComponentsTest {
 										.buildValue();
 		NullableCheckBox box = (NullableCheckBox) componentValue.component();
 		assertTrue(box.isSelected());//default value is true
-		assertTrue(editModel.value(Detail.BOOLEAN_NULLABLE).get());
+		assertTrue(editModel.value(Detail.BOOLEAN_NULLABLE).getOrThrow());
 
 		box.getMouseListeners()[1].mouseClicked(null);
 

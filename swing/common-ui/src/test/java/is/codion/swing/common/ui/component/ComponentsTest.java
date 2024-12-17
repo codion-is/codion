@@ -278,12 +278,12 @@ public final class ComponentsTest {
 						.buildValue();
 		JCheckBox button = componentValue.component();
 		assertTrue(button.isSelected());
-		assertTrue(value.get());
+		assertTrue(value.getOrThrow());
 
 		button.doClick();
 
 		assertFalse(button.isSelected());
-		assertFalse(value.get());
+		assertFalse(value.getOrThrow());
 
 		value.set(true);
 		assertTrue(button.isSelected());
@@ -298,7 +298,7 @@ public final class ComponentsTest {
 						.toggleControl(toggleControl)
 						.build();
 		state.set(true);
-		assertTrue(toggleControl.value().get());
+		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
 		assertFalse(state.get());
 
@@ -323,12 +323,12 @@ public final class ComponentsTest {
 						.buildValue();
 		JToggleButton button = componentValue.component();
 		assertTrue(button.isSelected());
-		assertTrue(value.get());
+		assertTrue(value.getOrThrow());
 
 		button.doClick();
 
 		assertFalse(button.isSelected());
-		assertFalse(value.get());
+		assertFalse(value.getOrThrow());
 
 		value.set(true);
 		assertTrue(button.isSelected());
@@ -344,7 +344,7 @@ public final class ComponentsTest {
 						.buildValue()
 						.component();
 		state.set(true);
-		assertTrue(toggleControl.value().get());
+		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
 		assertFalse(state.get());
 
@@ -371,12 +371,12 @@ public final class ComponentsTest {
 						.buildValue();
 		JRadioButton button = componentValue.component();
 		assertTrue(button.isSelected());
-		assertTrue(value.get());
+		assertTrue(value.getOrThrow());
 
 		button.doClick();
 
 		assertFalse(button.isSelected());
-		assertFalse(value.get());
+		assertFalse(value.getOrThrow());
 
 		value.set(true);
 		assertTrue(button.isSelected());
@@ -392,7 +392,7 @@ public final class ComponentsTest {
 						.buildValue()
 						.component();
 		state.set(true);
-		assertTrue(toggleControl.value().get());
+		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
 		assertFalse(state.get());
 
@@ -424,7 +424,7 @@ public final class ComponentsTest {
 		JCheckBoxMenuItem checkBox = Components.checkBoxMenuItem()
 						.toggleControl(toggleControl)
 						.build();
-		assertTrue(toggleControl.value().get());
+		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
 		assertFalse(state.get());
 		checkBox.setSelected(true);
@@ -452,7 +452,7 @@ public final class ComponentsTest {
 						.toggleControl(toggleControl)
 						.buildValue()
 						.component();
-		assertTrue(toggleControl.value().get());
+		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
 		assertFalse(state.get());
 		button.setSelected(true);
@@ -475,7 +475,7 @@ public final class ComponentsTest {
 						.buildValue();
 		NullableCheckBox box = (NullableCheckBox) componentValue.component();
 		assertTrue(box.isSelected());
-		assertTrue(value.get());
+		assertTrue(value.getOrThrow());
 
 		box.getMouseListeners()[1].mouseClicked(null);
 
