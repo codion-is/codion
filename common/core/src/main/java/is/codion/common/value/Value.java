@@ -59,7 +59,7 @@ import static java.util.Objects.requireNonNull;
  * @see #value(Object)
  * @see #builder()
  */
-public interface Value<T> extends Observable<T>, Consumer<T> {
+public interface Value<T> extends Observable<T> {
 
 	/**
 	 * Specifies when a Value instance notifies its listeners.
@@ -75,17 +75,6 @@ public interface Value<T> extends Observable<T>, Consumer<T> {
 		 * that is, only when the new value differs from the previous value.
 		 */
 		WHEN_CHANGED
-	}
-
-	/**
-	 * Sets the value. Note that change listener notifications depend on the {@link Notify} policy associated with this value.
-	 * @param value the value
-	 * @throws IllegalArgumentException in case the given value is invalid
-	 * @see #addValidator(Validator)
-	 */
-	@Override
-	default void accept(@Nullable T value) {
-		set(value);
 	}
 
 	/**

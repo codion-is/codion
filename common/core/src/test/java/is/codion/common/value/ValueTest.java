@@ -265,7 +265,7 @@ public class ValueTest {
 		Value<Integer> value = Value.value();
 		Value<Integer> listeningValue = Value.value();
 
-		value.addConsumer(listeningValue);
+		value.addConsumer(listeningValue::set);
 		value.set(1);
 
 		assertEquals(1, listeningValue.get());

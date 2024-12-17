@@ -9,6 +9,7 @@ Codion Change Log
 - ValueObserver merged with Observable, related refactoring and renaming.
 - Mutable removed.
 - is.codion.common.observer package renamed observable.
+- Value no longer extends Consumer.
 ## is.codion.common.db
 - Database.connectionProvider() no longer accepts null.
 ### is.codion.common.model

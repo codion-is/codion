@@ -136,11 +136,6 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final void accept(@Nullable T data) {
-		set(data);
-	}
-
-	@Override
 	public final void link(Value<T> originalValue) {
 		requireNonNull(originalValue);
 		if (linkedValues == null) {
