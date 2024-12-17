@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.selection;
 
-import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observable;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 
@@ -76,25 +76,35 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 	/**
 	 * Manages the selected index.
 	 */
-	interface Index extends Mutable<Integer> {
+	interface Index extends Observable<Integer> {
 
 		/**
 		 * @return the selected index or -1 in case the selection is empty
 		 */
 		@Override
 		Integer get();
+
+		/**
+		 * @param index the index to select
+		 */
+		void set(int index);
 	}
 
 	/**
 	 * Manages the selected indexes.
 	 */
-	interface Indexes extends Mutable<List<Integer>> {
+	interface Indexes extends Observable<List<Integer>> {
 
 		/**
 		 * @return the selected indexes or an empty list if the selection is empty
 		 */
 		@Override
 		List<Integer> get();
+
+		/**
+		 * @param indexes the indexes to select
+		 */
+		void set(List<Integer> indexes);
 
 		/**
 		 * @param indexes the indexes to select
@@ -126,6 +136,11 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 		void remove(Collection<Integer> indexes);
 
 		/**
+		 * Clears the selection
+		 */
+		void clear();
+
+		/**
 		 * @param index the index
 		 * @return true if the given index is selected
 		 */
@@ -148,13 +163,18 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 	 * Manages the the selected items.
 	 * @param <R> the item type
 	 */
-	interface Items<R> extends Mutable<List<R>> {
+	interface Items<R> extends Observable<List<R>> {
 
 		/**
 		 * @return the selected items or an empty list if the selection is empty
 		 */
 		@Override
 		List<R> get();
+
+		/**
+		 * @param items the items to select
+		 */
+		void set(List<R> items);
 
 		/**
 		 * @param items the items to select
@@ -196,6 +216,11 @@ public interface MultiItemSelection<T> extends SingleItemSelection<T> {
 		 * @param items the items to remove from the selection
 		 */
 		void remove(Collection<R> items);
+
+		/**
+		 * Clears the selection
+		 */
+		void clear();
 
 		/**
 		 * @param item the item

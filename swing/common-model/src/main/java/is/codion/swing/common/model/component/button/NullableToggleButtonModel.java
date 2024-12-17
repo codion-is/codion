@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.button;
 
 import is.codion.common.event.Event;
-import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 
 import javax.swing.DefaultButtonModel;
@@ -79,13 +79,13 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	}
 
 	/**
-	 * @return a {@link Mutable} controlling the toggle state
+	 * @return the toggle state
 	 */
 	public ToggleState toggleState() {
 		return toggleState;
 	}
 
-	public final class ToggleState implements Mutable<Boolean> {
+	public final class ToggleState implements Observable<Boolean> {
 
 		private final Event<Boolean> event = Event.event();
 
@@ -98,13 +98,22 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 			return state;
 		}
 
-		@Override
+		/**
+		 * @param state the state to set
+		 */
 		public void set(Boolean state) {
 			this.state = state;
 			fireItemStateChanged(new ItemEvent(NullableToggleButtonModel.this, ItemEvent.ITEM_STATE_CHANGED, this,
 							state == null ? NULL : (state ? ItemEvent.SELECTED : ItemEvent.DESELECTED)));
 			fireStateChanged();
 			event.accept(state);
+		}
+
+		/**
+		 * Clears this toggle state
+		 */
+		public void clear() {
+			set(null);
 		}
 
 		@Override

@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
@@ -113,7 +112,7 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	 * Controls the visible columns
 	 * @param <C> the column identifier type
 	 */
-	interface VisibleColumns<C> extends Mutable<List<C>> {
+	interface VisibleColumns<C> extends Observable<List<C>> {
 
 		/**
 		 * @return the visible columns or an empty list in case no columns are visible
@@ -133,7 +132,6 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 		 * @param identifiers the column identifiers
 		 * @throws IllegalArgumentException in case a column is not found
 		 */
-		@Override
 		void set(List<C> identifiers);
 
 		/**

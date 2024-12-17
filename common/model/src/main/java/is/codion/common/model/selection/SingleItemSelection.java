@@ -19,7 +19,7 @@
 package is.codion.common.model.selection;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.ObservableState;
 
@@ -41,12 +41,28 @@ public interface SingleItemSelection<T> {
 	Observer<?> changing();
 
 	/**
-	 * @return a {@link Mutable} controlling the selected item
+	 * @return the selected item
 	 */
-	Mutable<T> item();
+	Item<T> item();
 
 	/**
 	 * Clears the selection
 	 */
 	void clear();
+
+	/**
+	 * @param <T> the item type
+	 */
+	interface Item<T> extends Observable<T> {
+
+		/**
+		 * @param item the item to select
+		 */
+		void set(T item);
+
+		/**
+		 * Clears the selection
+		 */
+		void clear();
+	}
 }

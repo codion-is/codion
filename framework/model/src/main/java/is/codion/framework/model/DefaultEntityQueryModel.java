@@ -19,12 +19,10 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.observer.Mutable;
-import is.codion.common.observer.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
-import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -216,54 +214,31 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		}
 	}
 
-	private static final class MutableConjunction implements Mutable<Conjunction> {
+	private static final class DefaultAdditionalCondition extends AbstractValue<Supplier<Condition>> implements AdditionalCondition {
 
-		private final Value<Conjunction> value = Value.builder()
+		private Supplier<Condition> condition = NULL_CONDITION_SUPPLIER;
+
+		private final Value<Conjunction> conjunction = Value.builder()
 						.nonNull(Conjunction.AND)
 						.build();
 
-		@Override
-		public void set(Conjunction conjunction) {
-			value.set(conjunction);
+		private DefaultAdditionalCondition() {
+			super(NULL_CONDITION_SUPPLIER, Notify.WHEN_SET);
 		}
 
 		@Override
-		public Conjunction get() {
-			return value.get();
-		}
-
-		@Override
-		public Observer<Conjunction> observer() {
-			return value.observer();
-		}
-	}
-
-	private static final class DefaultAdditionalCondition implements AdditionalCondition {
-
-		private final Value<Supplier<Condition>> value = Value.builder()
-						.nonNull(NULL_CONDITION_SUPPLIER)
-						.notify(Notify.WHEN_SET)
-						.build();
-		private final Mutable<Conjunction> conjunction = new MutableConjunction();
-
-		@Override
-		public Mutable<Conjunction> conjunction() {
+		public Value<Conjunction> conjunction() {
 			return conjunction;
 		}
 
 		@Override
-		public void set(Supplier<Condition> condition) {
-			value.set(condition);
+		protected Supplier<Condition> getValue() {
+			return condition;
 		}
 
 		@Override
-		public Supplier<Condition> get() {
-			return value.get();
-		}
-
-		@Override
-		public Observer<Supplier<Condition>> observer() {
-			return value.observer();
+		protected void setValue(Supplier<Condition> condition) {
+			this.condition = condition;
 		}
 	}
 }

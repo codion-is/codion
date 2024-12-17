@@ -7,6 +7,7 @@ Codion Change Log
 ## is.codion.common.core
 - ValueObserver.getOrThrow() added.
 - ValueObserver merged with Observable, related refactoring and renaming.
+- Mutable removed.
 ## is.codion.common.db
 - Database.connectionProvider() no longer accepts null.
 ### is.codion.common.model

@@ -20,7 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.observer.Mutable;
+import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
@@ -382,23 +382,21 @@ public interface EntityEditModel {
 	/**
 	 * Provides access to the active entity being edited.
 	 */
-	interface EditableEntity extends Mutable<Entity> {
+	interface EditableEntity extends Observable<Entity> {
 
 		/**
 		 * Sets the given entity or defaults if null. Use {@link #clear()} in order to clear the entity of all values.
 		 * @param entity the entity to set, if null, then defaults are set
 		 */
-		@Override
 		void set(Entity entity);
 
 		/**
 		 * Clears all values from the underlying entity, disregarding the {@link EditableValue#persist()} directive.
 		 */
-		@Override
 		void clear();
 
 		/**
-		 * Populates this edit model with default values for all attributes.
+		 * Populates this edit model with default values for all non-persistent attributes.
 		 * @see EditableValue#defaultValue()
 		 * @see EditableValue#persist()
 		 * @see AttributeDefinition#defaultValue()

@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.observer.Mutable;
+import is.codion.common.model.selection.SingleItemSelection;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
@@ -515,11 +515,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final class DefaultComboBoxSelection implements ComboBoxSelection<T> {
 
-		private final Selected selected;
+		private final SelectedItem selected;
 		private final State filterSelected = State.state(false);
 
 		private DefaultComboBoxSelection(Function<Object, T> translator) {
-			selected = new Selected(translator);
+			selected = new SelectedItem(translator);
 		}
 
 		@Override
@@ -533,7 +533,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Mutable<T> item() {
+		public Item<T> item() {
 			return selected;
 		}
 
@@ -562,7 +562,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class Selected implements Mutable<T> {
+	private final class SelectedItem implements SingleItemSelection.Item<T> {
 
 		private final Event<T> changing = Event.event();
 		private final Event<T> event = Event.event();
@@ -571,7 +571,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private T item = null;
 
-		private Selected(Function<Object, T> translator) {
+		private SelectedItem(Function<Object, T> translator) {
 			this.translator = translator;
 		}
 
@@ -587,6 +587,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public void set(T item) {
 			setSelectedItem(item);
+		}
+
+		@Override
+		public void clear() {
+			setSelectedItem(null);
 		}
 
 		@Override

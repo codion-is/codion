@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.observer.Mutable;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -169,12 +168,12 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	/**
 	 * Specifies an additional condition supplier.
 	 */
-	interface AdditionalCondition extends Mutable<Supplier<Condition>> {
+	interface AdditionalCondition extends Value<Supplier<Condition>> {
 
 		/**
 		 * Default {@link Conjunction#AND}.
-		 * @return the {@link Mutable} controlling the {@link Conjunction} to use when adding the additional condition
+		 * @return the {@link Value} controlling the {@link Conjunction} to use when adding the additional condition
 		 */
-		Mutable<Conjunction> conjunction();
+		Value<Conjunction> conjunction();
 	}
 }

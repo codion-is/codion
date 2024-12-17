@@ -21,7 +21,6 @@ package is.codion.common.model;
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
 import is.codion.common.model.selection.SingleItemSelection;
-import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
@@ -90,16 +89,21 @@ public interface FilterModel<T> {
 	SingleItemSelection<T> selection();
 
 	/**
-	 * A {@link Mutable} controlling the items in a {@link FilterModel}
+	 * The {@link FilterModel.Items}.
 	 * @param <T> the item type
 	 */
-	interface Items<T> extends Mutable<Collection<T>> {
+	interface Items<T> extends Observable<Collection<T>> {
 
 		/**
 		 * @return the items or an empty list in case of no items
 		 */
 		@Override
 		Collection<T> get();
+
+		/**
+		 * @param items the items
+		 */
+		void set(Collection<T> items);
 
 		/**
 		 * Adds the given item to this model.
@@ -130,6 +134,11 @@ public interface FilterModel<T> {
 		 * @return true if one or more of the items were removed from the visible items
 		 */
 		boolean removeItems(Collection<T> items);
+
+		/**
+		 * Clears the items
+		 */
+		void clear();
 
 		/**
 		 * @return a {@link VisibleItems} providing access to the visible items, in the order they appear in the model

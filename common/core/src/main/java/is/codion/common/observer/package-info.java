@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * <p>{@link is.codion.common.observer.Observer}, {@link is.codion.common.observer.Observable} and {@link is.codion.common.observer.Mutable}.
+ * <p>{@link is.codion.common.observer.Observer} and {@link is.codion.common.observer.Observable}.
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.common.observer;

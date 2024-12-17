@@ -20,7 +20,6 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
-import is.codion.common.observer.Mutable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
@@ -43,7 +42,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	private final FilterListSelectionModel selectionModel = new FilterListSelectionModel();
 	private final SelectedIndex selectedIndex = new SelectedIndex();
 	private final SelectedIndexes selectedIndexes = new SelectedIndexes();
-	private final SelectedItem selectedItem = new SelectedItem();
+	private final DefaultItem selectedItem = new DefaultItem();
 	private final DefaultItems selectedItems = new DefaultItems();
 	private final Event<?> changing = Event.event();
 	private final State singleSelection = State.state(false);
@@ -98,7 +97,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 	}
 
 	@Override
-	public Mutable<R> item() {
+	public Item<R> item() {
 		return selectedItem;
 	}
 
@@ -269,8 +268,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		}
 
 		@Override
-		public void set(Integer index) {
-			requireNonNull(index);
+		public void set(int index) {
 			checkIndex(index, items.visible().count());
 			setSelectionInterval(index, index);
 		}
@@ -350,6 +348,11 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		}
 
 		@Override
+		public void clear() {
+			clearSelection();
+		}
+
+		@Override
 		public boolean contains(int index) {
 			return isSelectedIndex(index);
 		}
@@ -402,7 +405,7 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		}
 	}
 
-	private final class SelectedItem implements Mutable<R> {
+	private final class DefaultItem implements Item<R> {
 
 		private final Event<R> event = Event.event();
 
@@ -416,9 +419,13 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 			return null;
 		}
 
-		@Override
 		public void set(R item) {
 			selectedItems.set(singletonList(requireNonNull(item)));
+		}
+
+		@Override
+		public void clear() {
+			clearSelection();
 		}
 
 		@Override
@@ -486,6 +493,11 @@ final class DefaultFilterTableSelection<R> implements TableSelection<R> {
 		@Override
 		public void remove(Collection<R> itemsToRemove) {
 			rejectNulls(itemsToRemove).forEach(item -> selectedIndexes.remove(items.visible().indexOf(item)));
+		}
+
+		@Override
+		public void clear() {
+			clearSelection();
 		}
 
 		@Override

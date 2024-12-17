@@ -21,7 +21,6 @@
  * <ul>
  * <li>{@link is.codion.common.observer.Observer}
  * <li>{@link is.codion.common.observer.Observable}
- * <li>{@link is.codion.common.observer.Mutable}
  * <li>{@link is.codion.common.event.Event}
  * <li>{@link is.codion.common.state.State}
  * <li>{@link is.codion.common.state.ObservableState}
