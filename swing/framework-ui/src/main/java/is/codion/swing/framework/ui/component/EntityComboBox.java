@@ -84,8 +84,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 						builder.controlMap.keyStroke(ADD).get(), builder.confirmAdd));
 		this.controlMap.control(EDIT).set(createEditControl(builder.editPanel,
 						builder.controlMap.keyStroke(EDIT).get(), builder.confirmEdit));
-		builder.comboBoxModel().refresher().observable()
-						.addConsumer(this::onRefreshingChanged);
+		model().refresher().active().addConsumer(this::refresherActive);
 	}
 
 	@Override
@@ -264,13 +263,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke, confirm);
 	}
 
-	private void onRefreshingChanged(boolean refreshing) {
-		if (refreshing) {
-			setCursor(Cursors.WAIT);
-		}
-		else {
-			setCursor(Cursors.DEFAULT);
-		}
+	private void refresherActive(boolean refresherActive) {
+		setCursor(refresherActive ? Cursors.WAIT : Cursors.DEFAULT);
 	}
 
 	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {

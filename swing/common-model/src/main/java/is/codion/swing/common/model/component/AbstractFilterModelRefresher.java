@@ -66,17 +66,17 @@ public abstract class AbstractFilterModelRefresher<T> extends FilterModel.Abstra
 	}
 
 	private void onRefreshStarted() {
-		setRefreshing(true);
+		setActive(true);
 	}
 
 	private void onRefreshFailedAsync(Exception exception) {
 		refreshWorker = null;
-		setRefreshing(false);
+		setActive(false);
 		notifyFailure(exception);
 	}
 
 	private void onRefreshFailedSync(Exception exception) {
-		setRefreshing(false);
+		setActive(false);
 		if (exception instanceof RuntimeException) {
 			throw (RuntimeException) exception;
 		}
@@ -86,7 +86,7 @@ public abstract class AbstractFilterModelRefresher<T> extends FilterModel.Abstra
 
 	private void onRefreshResult(Collection<T> items, Consumer<Collection<T>> onRefresh) {
 		refreshWorker = null;
-		setRefreshing(false);
+		setActive(false);
 		processResult(items);
 		if (onRefresh != null) {
 			onRefresh.accept(items);

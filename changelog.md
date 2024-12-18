@@ -17,6 +17,7 @@ Codion Change Log
 - ConditionModel.wildcard() now back to being Value based instead of Mutable.
 - TableConditionModel.persist() added, for excluding conditions when clearing the model.
 - MultiItemSelection.Index added.
+- FilterModel.Refresher.observable() renamed active().
 ### is.codion.common.rmi
 - ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
 - Server.serverLoad() removed, related refactoring.

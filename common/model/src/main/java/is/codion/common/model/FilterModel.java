@@ -60,7 +60,7 @@ public interface FilterModel<T> {
 	Items<T> items();
 
 	/**
-	 * @return this models Refresher instance
+	 * @return this models {@link Refresher} instance
 	 */
 	Refresher<T> refresher();
 
@@ -76,7 +76,7 @@ public interface FilterModel<T> {
 	 * Note that this method only throws exceptions when run synchronously off the user interface thread.
 	 * Use {@link Refresher#failure()} to listen for exceptions that happen during asynchronous refresh.
 	 * @param onRefresh called after a successful refresh
-	 * @see Refresher#observable()
+	 * @see Refresher#active()
 	 * @see Refresher#success()
 	 * @see Refresher#failure()
 	 * @see Refresher#async()
@@ -303,9 +303,9 @@ public interface FilterModel<T> {
 		State async();
 
 		/**
-		 * @return an observable active while a refresh is in progress
+		 * @return an observable indicating that a refresh is in progress
 		 */
-		ObservableState observable();
+		ObservableState active();
 
 		/**
 		 * @return an observer notified each time a successful refresh has been performed
@@ -324,9 +324,9 @@ public interface FilterModel<T> {
 	 */
 	abstract class AbstractRefresher<T> implements Refresher<T> {
 
-		private final Event<Collection<T>> refreshEvent = Event.event();
-		private final Event<Exception> refreshFailedEvent = Event.event();
-		private final State refreshingState = State.state();
+		private final Event<Collection<T>> success = Event.event();
+		private final Event<Exception> failure = Event.event();
+		private final State active = State.state();
 		private final Supplier<Collection<T>> supplier;
 		private final State async = State.state(ASYNC_REFRESH.getOrThrow());
 
@@ -343,18 +343,18 @@ public interface FilterModel<T> {
 		}
 
 		@Override
-		public final ObservableState observable() {
-			return refreshingState.observable();
+		public final ObservableState active() {
+			return active.observable();
 		}
 
 		@Override
 		public final Observer<Collection<T>> success() {
-			return refreshEvent.observer();
+			return success.observer();
 		}
 
 		@Override
 		public final Observer<Exception> failure() {
-			return refreshFailedEvent.observer();
+			return failure.observer();
 		}
 
 		/**
@@ -369,7 +369,7 @@ public interface FilterModel<T> {
 		 * Use {@link #failure()} to listen for exceptions that happen during asynchronous refresh.
 		 * @param onRefresh called after a successful refresh, may be null
 		 * @throws RuntimeException in case of an exception when running synchronously.
-		 * @see #observable()
+		 * @see #active()
 		 * @see #success()
 		 * @see #failure()
 		 * @see #async()
@@ -384,11 +384,11 @@ public interface FilterModel<T> {
 		}
 
 		/**
-		 * Sets the refreshing (active) state of this refresher
-		 * @param refreshing true if refresh is starting, false if ended
+		 * Sets the active state of this refresher
+		 * @param refreshActive true if refresh is starting, false if ending
 		 */
-		protected final void setRefreshing(boolean refreshing) {
-			refreshingState.set(refreshing);
+		protected final void setActive(boolean refreshActive) {
+			active.set(refreshActive);
 		}
 
 		/**
@@ -397,7 +397,7 @@ public interface FilterModel<T> {
 		 * @see #success()
 		 */
 		protected final void notifySuccess(Collection<T> items) {
-			refreshEvent.accept(items);
+			success.accept(items);
 		}
 
 		/**
@@ -406,7 +406,7 @@ public interface FilterModel<T> {
 		 * @see #failure()
 		 */
 		protected final void notifyFailure(Exception exception) {
-			refreshFailedEvent.accept(exception);
+			failure.accept(exception);
 		}
 
 		/**

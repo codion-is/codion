@@ -1206,7 +1206,7 @@ public class EntityTablePanel extends JPanel {
 						.description(Messages.refreshTip())
 						.mnemonic(Messages.refreshMnemonic())
 						.smallIcon(ICONS.refresh())
-						.enabled(tableModel.refresher().observable().not())
+						.enabled(tableModel.refresher().active().not())
 						.build();
 	}
 
@@ -1558,7 +1558,7 @@ public class EntityTablePanel extends JPanel {
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
 		tableModel.queryModel().conditions().changed().addListener(this::onConditionChanged);
-		tableModel.refresher().observable().addConsumer(this::onRefreshingChanged);
+		tableModel.refresher().active().addConsumer(this::refresherActive);
 		tableModel.refresher().failure().addConsumer(this::onException);
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
 	}
@@ -1708,13 +1708,8 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private void onRefreshingChanged(boolean refreshing) {
-		if (refreshing) {
-			setCursor(Cursors.WAIT);
-		}
-		else {
-			setCursor(Cursors.DEFAULT);
-		}
+	private void refresherActive(boolean refresherActive) {
+		setCursor(refresherActive ? Cursors.WAIT : Cursors.DEFAULT);
 	}
 
 	private void setConditionViewHidden(JScrollPane scrollPane, Value<ConditionView> conditionView) {
@@ -3005,7 +3000,7 @@ public class EntityTablePanel extends JPanel {
 		private StatusPanel() {
 			super(new BorderLayout());
 			add(label, BorderLayout.CENTER);
-			tableModel.refresher().observable().addConsumer(new ConfigurePanel());
+			tableModel.refresher().active().addConsumer(this::refresherActive);
 			tableModel.selection().indexes().addListener(this::updateStatusMessage);
 			tableModel.items().visible().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {
@@ -3044,16 +3039,12 @@ public class EntityTablePanel extends JPanel {
 			statusMessage.set(configuration.statusMessage.apply(tableModel));
 		}
 
-		private final class ConfigurePanel implements Consumer<Boolean> {
-
-			@Override
-			public void accept(Boolean isRefreshing) {
-				if (configuration.showRefreshProgressBar) {
-					removeAll();
-					add(isRefreshing ? progressPanel : label, BorderLayout.CENTER);
-					revalidate();
-					repaint();
-				}
+		private void refresherActive(boolean refresherActive) {
+			if (configuration.showRefreshProgressBar) {
+				removeAll();
+				add(refresherActive ? progressPanel : label, BorderLayout.CENTER);
+				revalidate();
+				repaint();
 			}
 		}
 

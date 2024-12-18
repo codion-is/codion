@@ -32,7 +32,7 @@ public class CustomerModel extends SwingEntityModel {
 
 	// tag::bindEvents[]
 	private void bindEvents() {
-		tableModel().refresher().observable().addConsumer(refreshing -> {
+		tableModel().refresher().active().addConsumer(refreshing -> {
 			if (refreshing) {
 				System.out.println("Refresh is about to start");
 			}
