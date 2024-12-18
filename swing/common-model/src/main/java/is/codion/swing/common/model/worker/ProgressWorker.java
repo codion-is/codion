@@ -31,9 +31,11 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * <p>A SwingWorker implementation. Note that instances of this class are not reusable.</p>
+ * <p>A {@link SwingWorker} implementation. Instances of this class are not reusable.</p>
  * <p>Note that this implementation does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
- * those directly to the {@code onProgress} and {@code onPublish} handlers for running on the Event Dispatch Thread.</p>
+ * those directly to the {@code onProgress} and {@code onPublish} handlers on the Event Dispatch Thread.</p>
+ * <p>Note that the {@code onStarted} handler is NOT called in case the background task finishes
+ * 	before the {@link javax.swing.SwingWorker.StateValue#STARTED} change event is fired.
  * <pre>
  * {@code
  * ProgressWorker.builder(this::performTask)
@@ -215,7 +217,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		Builder<T, V> maximumProgress(int maximumProgress);
 
 		/**
-		 * Note that this does not get called in case the background processing has finished
+		 * Note that this handler does not get called in case the background task finishes
 		 * before the {@link javax.swing.SwingWorker.StateValue#STARTED} change event is fired.
 		 * @param onStarted called on the EDT before background processing is started
 		 * @return this builder instance

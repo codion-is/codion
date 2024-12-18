@@ -288,7 +288,7 @@ public interface FilterModel<T> {
 
 	/**
 	 * Handles refreshing data for a {@link FilterModel}.
-	 * @param <T> the row type
+	 * @param <T> the type of items produced by this {@link Refresher}
 	 */
 	interface Refresher<T> {
 
@@ -303,16 +303,19 @@ public interface FilterModel<T> {
 		State async();
 
 		/**
+		 * <p>This event is always triggered on the EDT.
 		 * @return an observable indicating that a refresh is in progress
 		 */
 		ObservableState active();
 
 		/**
+		 * <p>This event is always triggered on the EDT.
 		 * @return an observer notified each time a successful refresh has been performed
 		 */
 		Observer<Collection<T>> success();
 
 		/**
+		 * <p>This event is always triggered on the EDT.
 		 * @return an observer notified each time an asynchronous refresh has failed
 		 */
 		Observer<Exception> failure();
@@ -365,8 +368,9 @@ public interface FilterModel<T> {
 		}
 
 		/**
-		 * Refreshes the data. Note that this method only throws exceptions when run synchronously.
-		 * Use {@link #failure()} to listen for exceptions that happen during asynchronous refresh.
+		 * <p>Refreshes the data. Note that this method only throws exceptions when run synchronously.
+		 * <p>Use {@link #failure()} to listen for exceptions that happen during asynchronous refresh.
+		 * <p>This method must be called on the EDT.
 		 * @param onRefresh called after a successful refresh, may be null
 		 * @throws RuntimeException in case of an exception when running synchronously.
 		 * @see #active()
@@ -374,7 +378,7 @@ public interface FilterModel<T> {
 		 * @see #failure()
 		 * @see #async()
 		 */
-		protected final void refresh(Consumer<Collection<T>> onRefresh) {
+		protected final void refresh(@Nullable Consumer<Collection<T>> onRefresh) {
 			if (async.get() && supportsAsyncRefresh()) {
 				refreshAsync(onRefresh);
 			}
@@ -384,7 +388,8 @@ public interface FilterModel<T> {
 		}
 
 		/**
-		 * Sets the active state of this refresher
+		 * <p>Sets the active state of this refresher.
+		 * <p>This method must be called on the EDT.
 		 * @param refreshActive true if refresh is starting, false if ending
 		 */
 		protected final void setActive(boolean refreshActive) {
@@ -392,7 +397,8 @@ public interface FilterModel<T> {
 		}
 
 		/**
-		 * Triggers the successful refresh event with the given items
+		 * <p>Triggers the successful refresh event with the given items
+		 * <p>This method must be called on the EDT.
 		 * @param items the refresh result
 		 * @see #success()
 		 */
@@ -401,7 +407,8 @@ public interface FilterModel<T> {
 		}
 
 		/**
-		 * Triggers the refresh failed event
+		 * <p>Triggers the refresh failed event
+		 * <p>This method must be called on the EDT.
 		 * @param exception the refresh exception
 		 * @see #failure()
 		 */
@@ -415,19 +422,22 @@ public interface FilterModel<T> {
 		protected abstract boolean supportsAsyncRefresh();
 
 		/**
-		 * Performes an async refresh
+		 * <p>Performes an async refresh
+		 * <p>This method must be called on the EDT.
 		 * @param onRefresh if specified will be called after a successful refresh
 		 */
 		protected abstract void refreshAsync(@Nullable Consumer<Collection<T>> onRefresh);
 
 		/**
-		 * Performs a sync refresh
+		 * <p>Performs a sync refresh
+		 * <p>This method must be called on the EDT.
 		 * @param onRefresh if specified will be called after a successful refresh
 		 */
 		protected abstract void refreshSync(@Nullable Consumer<Collection<T>> onRefresh);
 
 		/**
-		 * Processes the refresh result, by replacing the current model items by the result items.
+		 * <p>Processes the refresh result, by replacing the current model items by the result items.
+		 * <p>This method must be called on the EDT.
 		 * @param items the items resulting from the refresh operation
 		 */
 		protected abstract void processResult(Collection<T> items);
