@@ -78,7 +78,12 @@ public interface Observable<T> extends Observer<T> {
 	 * @throws NoSuchElementException if no value is present
 	 */
 	default T getOrThrow() {
-		return getOrThrow("No value present");
+		T value = get();
+		if (value == null) {
+			throw new NoSuchElementException("No value present");
+		}
+
+		return value;
 	}
 
 	/**
@@ -87,10 +92,9 @@ public interface Observable<T> extends Observer<T> {
 	 * @throws NoSuchElementException if no value is present
 	 */
 	default T getOrThrow(String message) {
-		requireNonNull(message);
 		T value = get();
 		if (value == null) {
-			throw new NoSuchElementException(message);
+			throw new NoSuchElementException(requireNonNull(message));
 		}
 
 		return value;

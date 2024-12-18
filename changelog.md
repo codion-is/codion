@@ -10,6 +10,7 @@ Codion Change Log
 - Mutable removed.
 - is.codion.common.observer package renamed observable.
 - Value no longer extends Consumer.
+- Observable.getOrThrow() happy path optimized.
 ## is.codion.common.db
 - Database.connectionProvider() no longer accepts null.
 ### is.codion.common.model
