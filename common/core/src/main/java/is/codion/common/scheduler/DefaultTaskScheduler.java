@@ -34,7 +34,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 
 	private static final Validator<Integer> INTERVAL_VALIDATOR = new IntervalValidator();
 
-	private final Lock lock = new Lock();
+	private final Lock lock = new Lock() {};
 	private final Runnable task;
 	private final Value<Integer> interval;
 	private final int initialDelay;
@@ -186,5 +186,5 @@ final class DefaultTaskScheduler implements TaskScheduler {
 		}
 	}
 	
-	private static final class Lock {}
+	private interface Lock {}
 }

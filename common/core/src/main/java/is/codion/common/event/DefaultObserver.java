@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultObserver<T> implements Observer<T> {
 
-	private final Lock lock = new Lock();
+	private final Lock lock = new Lock() {};
 
 	private @Nullable Set<Runnable> listeners;
 	private @Nullable Set<Consumer<? super T>> consumers;
@@ -220,5 +220,5 @@ final class DefaultObserver<T> implements Observer<T> {
 		return weakConsumers;
 	}
 	
-	private static final class Lock {}
+	private interface Lock {}
 }

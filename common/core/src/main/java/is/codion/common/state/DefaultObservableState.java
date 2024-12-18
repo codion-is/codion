@@ -27,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultObservableState implements ObservableState {
 
-	private final Lock lock = new Lock();
+	private final Lock lock = new Lock() {};
 	private final ObservableState state;
 	private final boolean not;
 
@@ -89,5 +89,5 @@ final class DefaultObservableState implements ObservableState {
 		}
 	}
 
-	private static final class Lock {}
+	private interface Lock {}
 }
