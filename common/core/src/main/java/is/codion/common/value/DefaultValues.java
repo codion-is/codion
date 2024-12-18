@@ -30,8 +30,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 
-class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
-				implements Values<T, C> {
+class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implements Values<T, C> {
 
 	private final Supplier<? extends C> create;
 	private final Function<C, C> unmodifiable;
@@ -184,7 +183,6 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 	private final class SingleValue extends AbstractValue<T> {
 
 		private SingleValue() {
-			super(null);
 			DefaultValues.this.addListener(this::notifyListeners);
 		}
 
@@ -221,6 +219,45 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 		@Override
 		protected C prepareInitialValue() {
 			return unmodifiable.apply(super.prepareInitialValue());
+		}
+	}
+
+	protected static class DefaultObservableValues<T, C extends Collection<T>>
+					extends ObservableValue<C, Values<T, C>>
+					implements ObservableValues<T, C> {
+
+		protected DefaultObservableValues(Values<T, C> values) {
+			super(values);
+		}
+
+		@Override
+		public final Iterator<T> iterator() {
+			return super.value().iterator();
+		}
+
+		@Override
+		public final boolean contains(T value) {
+			return super.value().contains(value);
+		}
+
+		@Override
+		public final boolean containsAll(Collection<T> values) {
+			return super.value().containsAll(values);
+		}
+
+		@Override
+		public final boolean empty() {
+			return super.value().empty();
+		}
+
+		@Override
+		public final boolean notEmpty() {
+			return super.value().notEmpty();
+		}
+
+		@Override
+		public final int size() {
+			return super.value().size();
 		}
 	}
 }

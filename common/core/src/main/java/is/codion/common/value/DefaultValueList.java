@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-final class DefaultValueList<T> extends DefaultValues<T, List<T>>
-				implements ValueList<T> {
+final class DefaultValueList<T> extends DefaultValues<T, List<T>> implements ValueList<T> {
 
 	private DefaultValueList(DefaultBuilder<T> builder) {
 		super(builder);
@@ -50,6 +49,15 @@ final class DefaultValueList<T> extends DefaultValues<T, List<T>>
 		@Override
 		public ValueList<T> build() {
 			return new DefaultValueList<>(this);
+		}
+	}
+
+	private static final class DefaultObservableValueList<T>
+					extends DefaultObservableValues<T, List<T>>
+					implements ObservableValueList<T> {
+
+		private DefaultObservableValueList(ValueList<T> valueList) {
+			super(valueList);
 		}
 	}
 }

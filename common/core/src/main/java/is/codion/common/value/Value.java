@@ -72,7 +72,7 @@ public interface Value<T> extends Observable<T> {
 		WHEN_SET,
 		/**
 		 * Notify listeners when the underlying value is changed via {@link Value#set(Object)},
-		 * that is, only when the new value differs from the previous value.
+		 * that is, only when the new value differs from the previous value, determined by {@link Object#equals(Object)}.
 		 */
 		WHEN_CHANGED
 	}

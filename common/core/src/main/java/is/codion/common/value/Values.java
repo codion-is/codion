@@ -130,8 +130,7 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	 * @param <C> the Collection type
 	 * @param <B> the builder type
 	 */
-	interface Builder<T, C extends Collection<T>, B extends Builder<T, C, B>>
-					extends Value.Builder<C, B> {
+	interface Builder<T, C extends Collection<T>, B extends Builder<T, C, B>> extends Value.Builder<C, B> {
 
 		/**
 		 * @return a new {@link Values} instance based on this builder

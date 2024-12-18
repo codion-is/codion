@@ -52,4 +52,12 @@ final class DefaultValueSet<T> extends DefaultValues<T, Set<T>>
 			return new DefaultValueSet<>(this);
 		}
 	}
+
+	private static final class DefaultObservableValueSet<T> extends DefaultObservableValues<T, Set<T>>
+					implements ObservableValueSet<T> {
+
+		private DefaultObservableValueSet(ValueSet<T> valueSet) {
+			super(valueSet);
+		}
+	}
 }

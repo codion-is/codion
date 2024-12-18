@@ -40,11 +40,11 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An abstract {@link Value} implementation handling everything except the value itself.
- * <p>
- * The constructor parameter {@code notify} specifies whether this {@link Value} instance should call
- * {@link #notifyListeners()} when the value is set or changed via {@link AbstractValue#set(Object)}.
- * Implementations that want to handle notifications manually should use the
+ * <p>An abstract {@link Value} implementation handling everything except the value itself.
+ * <p>The constructor parameter {@code notify} specifies whether this {@link AbstractValue} instance should call
+ * {@link #notifyListeners()} each time the value is set ({@link Notify#WHEN_SET}) or only when it changes
+ * ({@link Notify#WHEN_CHANGED}), which is determined using {@link Object#equals(Object)}.
+ * <p>Implementations that want to handle notifications manually should use the
  * {@link AbstractValue#AbstractValue()} or {@link AbstractValue#AbstractValue(Object)} constructors.
  * @param <T> the value type
  */
@@ -60,14 +60,28 @@ public abstract class AbstractValue<T> implements Value<T> {
 	private @Nullable Observable<T> observable;
 
 	/**
-	 * Creates a {@link AbstractValue} instance, which does not notify listeners.
+	 * <p>Creates a nullable {@link AbstractValue} instance, which does not notify listeners.
 	 */
 	protected AbstractValue() {
-		this(null);
+		this.nullValue = null;
+		this.notify = null;
 	}
 
 	/**
-	 * Creates a {@link AbstractValue} instance, which does not notify listeners.
+	 * Creates a nullable {@link AbstractValue} instance.
+	 * @param notify specifies when to notify listeners
+	 */
+	protected AbstractValue(Notify notify) {
+		this.nullValue = null;
+		this.notify = requireNonNull(notify);
+	}
+
+	/**
+	 * <p>Creates an {@link AbstractValue} instance, which does not notify listeners.
+	 * <p>If {@code nullValue} is non-null, this {@link AbstractValue} instance
+	 * will be non-nullable, meaning {@link #nullable()} returns false, {@link #get()}
+	 * is guaranteed to never return null and when {@link #set(Object)} receives null
+	 * it is automatically translated to {@code nullValue}.
 	 * @param nullValue the value to use instead of null
 	 */
 	protected AbstractValue(@Nullable T nullValue) {
@@ -76,7 +90,11 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	/**
-	 * Creates an {@link AbstractValue} instance.
+	 * <p>Creates an {@link AbstractValue} instance.
+	 * <p>If {@code nullValue} is non-null, this {@link AbstractValue} instance
+	 * will be non-nullable, meaning {@link #nullable()} returns false, {@link #get()}
+	 * is guaranteed to never return null and when {@link #set(Object)} receives null
+	 * it is automatically translated to {@code nullValue}.
 	 * @param nullValue the value to use instead of null
 	 * @param notify specifies when to notify listeners
 	 */
@@ -259,6 +277,34 @@ public abstract class AbstractValue<T> implements Value<T> {
 		@Override
 		public void accept(T value) {
 			set(value);
+		}
+	}
+
+	static class ObservableValue<T, V extends Value<T>> implements Observable<T> {
+
+		private final V value;
+
+		ObservableValue(V value) {
+			this.value = requireNonNull(value);
+		}
+
+		@Override
+		public final @Nullable T get() {
+			return value.get();
+		}
+
+		@Override
+		public final boolean nullable() {
+			return value.nullable();
+		}
+
+		@Override
+		public Observer<T> observer() {
+			return value.observer();
+		}
+
+		protected final V value() {
+			return value;
 		}
 	}
 }

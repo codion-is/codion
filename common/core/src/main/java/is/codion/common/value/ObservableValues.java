@@ -21,6 +21,7 @@ package is.codion.common.value;
 import is.codion.common.observable.Observable;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -39,7 +40,7 @@ public interface ObservableValues<T, C extends Collection<T>> extends Observable
 	 * @param value the element
 	 * @return true if this {@link Values} instance contains the specified element
 	 */
-	boolean contains(T value);
+	boolean contains(@Nullable T value);
 
 	/**
 	 * Returns true if this {@link Values} instance contains all of the elements of the specified collection
