@@ -19,12 +19,10 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.common.ui.control.Control;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import java.awt.Dimension;
@@ -33,6 +31,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T, V>>
 				implements ProgressWorkerDialogBuilder<T, V> {
@@ -40,8 +40,8 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	private final ProgressWorker.Builder<T, V> progressWorkerBuilder;
 	private final ProgressDialog.Builder progressDialogBuilder;
 
-	private Consumer<T> onResult;
-	private Consumer<Exception> onException;
+	private Consumer<T> onResult = result -> {};
+	private Consumer<Exception> onException = new DisplayExceptionInDialog();
 
 	DefaultProgressWorkerDialogBuilder(ProgressResultTask<T, V> progressTask) {
 		this.progressWorkerBuilder = ProgressWorker.builder(progressTask);
@@ -116,7 +116,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	@Override
 	public ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult) {
-		this.onResult = onResult;
+		this.onResult = requireNonNull(onResult);
 		return this;
 	}
 
@@ -124,25 +124,18 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	public ProgressWorkerDialogBuilder<T, V> onResult(String resultMessage) {
 		requireNonNull(resultMessage);
 
-		return onResult(result -> JOptionPane.showMessageDialog(owner, resultMessage, null, JOptionPane.INFORMATION_MESSAGE));
+		return onResult(result -> showMessageDialog(owner, resultMessage, null, INFORMATION_MESSAGE));
 	}
 
 	@Override
 	public ProgressWorkerDialogBuilder<T, V> onException(Consumer<Exception> onException) {
-		this.onException = onException;
+		this.onException = requireNonNull(onException);
 		return this;
 	}
 
 	@Override
 	public ProgressWorkerDialogBuilder<T, V> onException(String exceptionTitle) {
-		return onException(exception -> {
-			if (!(exception instanceof CancelException)) {
-				new DefaultExceptionDialogBuilder()
-								.owner(owner)
-								.title(exceptionTitle)
-								.show(exception);
-			}
-		});
+		return onException(new DisplayExceptionInDialog(requireNonNull(exceptionTitle)));
 	}
 
 	@Override
@@ -180,28 +173,37 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	private void onResult(T result, ProgressDialog progressDialog) {
 		closeDialog(progressDialog);
-		if (onResult != null) {
-			onResult.accept(result);
-		}
+		onResult.accept(result);
 	}
 
 	private void onException(Exception exception, ProgressDialog progressDialog) {
 		closeDialog(progressDialog);
-		if (!(exception instanceof CancelException)) {
-			if (onException != null) {
-				onException.accept(exception);
-			}
-			else {
-				new DefaultExceptionDialogBuilder()
-								.owner(owner)
-								.title(Messages.error())
-								.show(exception);
-			}
-		}
+		onException.accept(exception);
 	}
 
 	private static void closeDialog(ProgressDialog progressDialog) {
 		progressDialog.setVisible(false);
 		progressDialog.dispose();
+	}
+
+	private class DisplayExceptionInDialog implements Consumer<Exception> {
+
+		private final String dialogTitle;
+
+		private DisplayExceptionInDialog() {
+			this(Messages.error());
+		}
+
+		private DisplayExceptionInDialog(String dialogTitle) {
+			this.dialogTitle = dialogTitle;
+		}
+
+		@Override
+		public void accept(Exception exception) {
+			new DefaultExceptionDialogBuilder()
+							.owner(owner)
+							.title(dialogTitle)
+							.show(exception);
+		}
 	}
 }

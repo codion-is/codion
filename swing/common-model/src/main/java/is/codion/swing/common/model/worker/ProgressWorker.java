@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.model.worker;
 
+import is.codion.common.model.CancelException;
+
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
@@ -125,7 +127,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		}
 		catch (ExecutionException e) {
 			Throwable cause = e.getCause();
-			if (cause instanceof Exception) {
+			if (cause instanceof CancelException) {
+				onCancelled.run();
+			}
+			else if (cause instanceof Exception) {
 				onException.accept((Exception) cause);
 			}
 			else {
@@ -255,6 +260,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		Builder<T, V> onException(Consumer<Exception> onException);
 
 		/**
+		 * Called in case the background task is cancelled via {@link SwingWorker#cancel(boolean)}
+		 * or if it throws a {@link CancelException}
 		 * @param onCancelled called on the EDT if the background task was cancelled
 		 * @return this builder instance
 		 */

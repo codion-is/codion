@@ -31,6 +31,8 @@ Codion Change Log
 - SearchHighlighter refactored.
 - TemporalField.setTemporal(), getTemporal() and temporalValue() renamed set(), get() and observable() respectively.
 - NumberField.number() replaced with set(), get() and observable(), optional() added.
+- ProgressWorker.Builder.onCancelled() handler now gets called in case the background task throws CancelException.
+- DefaultProgressWorkerDialogBuilder, CancelException handling removed, some refactoring.
 ### is.codion.framework.domain
 - EntityDefinition.description() now returns Optional.
 ### is.codion.framework.db.core
