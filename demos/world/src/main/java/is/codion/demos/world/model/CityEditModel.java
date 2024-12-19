@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +65,7 @@ public final class CityEditModel extends SwingEntityEditModel {
 	}
 
 	private static Optional<Location> lookupLocation(Entity city) throws IOException {
-		JSONArray jsonArray = toJSONArray(new URL(OPENSTREETMAP_ORG_SEARCH +
+		JSONArray jsonArray = toJSONArray(URI.create(OPENSTREETMAP_ORG_SEARCH +
 						URLEncoder.encode(city.get(City.NAME), UTF_8) + "," +
 						URLEncoder.encode(city.get(City.COUNTRY_FK).get(Country.NAME), UTF_8) + "&format=json"));
 		if (!jsonArray.isEmpty()) {
@@ -77,8 +77,8 @@ public final class CityEditModel extends SwingEntityEditModel {
 		return Optional.empty();
 	}
 
-	private static JSONArray toJSONArray(URL url) throws IOException {
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream(), UTF_8))) {
+	private static JSONArray toJSONArray(URI uri) throws IOException {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(uri.toURL().openConnection().getInputStream(), UTF_8))) {
 			return new JSONArray(reader.lines().collect(joining()));
 		}
 	}

@@ -42,7 +42,7 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 import java.util.Hashtable;
 import java.util.ResourceBundle;
 
@@ -250,7 +250,7 @@ public class NavigableImagePanel extends JPanel {
 	 */
 	public static BufferedImage readImage(String imagePath) throws IOException {
 		if (imagePath.toLowerCase().startsWith("http")) {
-			return ImageIO.read(new URL(imagePath));
+			return ImageIO.read(URI.create(imagePath).toURL());
 		}
 		else {
 			File imageFile = new File(imagePath);

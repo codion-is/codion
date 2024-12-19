@@ -87,7 +87,7 @@ import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -417,7 +417,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see #HELP_URL
 	 */
 	public void displayHelp() throws Exception {
-		Desktop.getDesktop().browse(new URL(HELP_URL.getOrThrow()).toURI());
+		Desktop.getDesktop().browse(URI.create(HELP_URL.getOrThrow()));
 	}
 
 	/**

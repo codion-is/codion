@@ -24,7 +24,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
 
 final class FileJRReport extends AbstractJRReport {
 
@@ -37,7 +37,7 @@ final class FileJRReport extends AbstractJRReport {
 		String fullReportPath = fullReportPath();
 		try {
 			if (fullReportPath.toLowerCase().startsWith("http")) {
-				return (JasperReport) JRLoader.loadObject(new URL(fullReportPath));
+				return (JasperReport) JRLoader.loadObject(URI.create(fullReportPath).toURL());
 			}
 			File reportFile = new File(fullReportPath);
 			if (!reportFile.exists()) {
