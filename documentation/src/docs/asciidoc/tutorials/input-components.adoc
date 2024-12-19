@@ -7,7 +7,7 @@ Demonstrates basic input component usage.
 
 [source,shell]
 ----
-gradlew codion-demos-manual:runApplicationPanel
+gradlew demo-manual:runApplicationPanel
 ----
 
 image::tutorials/input_components.png[]

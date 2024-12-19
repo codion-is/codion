@@ -29,11 +29,11 @@ dependencies {
     serverRuntime(project(":codion-plugin-hikari-pool"))
     serverRuntime(project(":codion-plugin-logback-proxy"))
 
-    serverRuntime(project(path = ":codion-demos-employees", configuration = "domain"))
-    serverRuntime(project(path = ":codion-demos-chinook", configuration = "domain"))
-    serverRuntime(project(path = ":codion-demos-petclinic", configuration = "domain"))
-    serverRuntime(project(path = ":codion-demos-petstore", configuration = "domain"))
-    serverRuntime(project(path = ":codion-demos-world", configuration = "domain"))
+    serverRuntime(project(path = ":demo-employees", configuration = "domain"))
+    serverRuntime(project(path = ":demo-chinook", configuration = "domain"))
+    serverRuntime(project(path = ":demo-petclinic", configuration = "domain"))
+    serverRuntime(project(path = ":demo-petstore", configuration = "domain"))
+    serverRuntime(project(path = ":demo-world", configuration = "domain"))
 
     serverRuntime(project(":codion-dbms-h2"))
     serverRuntime(libs.h2)

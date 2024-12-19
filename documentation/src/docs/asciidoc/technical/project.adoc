@@ -28,7 +28,7 @@ You can start by running a client from one of the demo projects (employees, chin
 
 [source,shell]
 ----
-gradlew codion-demos-chinook:runClientLocal
+gradlew demo-chinook:runClientLocal
 ----
 
 === Remote database connection
@@ -44,7 +44,7 @@ To run a demo client with a remote connection use the following command.
 
 [source,shell]
 ----
-gradlew codion-demos-chinook:runClientRMI
+gradlew demo-chinook:runClientRMI
 ----
 
 You can run the <<server-monitor.adoc#_server_monitor, Server Monitor>> application to see how the server is behaving, with the following command.

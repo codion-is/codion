@@ -478,7 +478,7 @@ To run the above application, use the following Gradle task:
 
 [source,shell]
 ----
-gradlew codion-demos-manual:runStoreDemo
+gradlew demo-manual:runStoreDemo
 ----
 
 == Persistance

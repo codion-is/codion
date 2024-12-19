@@ -4,8 +4,8 @@ plugins {
 
 rootProject.name = "is.codion"
 
-include "codion-documentation"
-project(":codion-documentation").projectDir = file("documentation")
+include "documentation"
+project(":documentation").projectDir = file("documentation")
 
 include "codion-common-core"
 project(":codion-common-core").projectDir = file("common/core")
@@ -154,26 +154,26 @@ project(":codion-plugin-logback-proxy").projectDir = file("plugins/logback-proxy
 include "codion-plugin-tomcat-pool"
 project(":codion-plugin-tomcat-pool").projectDir = file("plugins/tomcat-pool")
 
-include "codion-demos-chinook"
-project(":codion-demos-chinook").projectDir = file("demos/chinook")
+include "demo-chinook"
+project(":demo-chinook").projectDir = file("demos/chinook")
 
-include "codion-demos-employees"
-project(":codion-demos-employees").projectDir = file("demos/employees")
+include "demo-employees"
+project(":demo-employees").projectDir = file("demos/employees")
 
-include "codion-demos-manual"
-project(":codion-demos-manual").projectDir = file("demos/manual")
+include "demo-manual"
+project(":demo-manual").projectDir = file("demos/manual")
 
-include "codion-demos-petclinic"
-project(":codion-demos-petclinic").projectDir = file("demos/petclinic")
+include "demo-petclinic"
+project(":demo-petclinic").projectDir = file("demos/petclinic")
 
-include "codion-demos-petstore"
-project(":codion-demos-petstore").projectDir = file("demos/petstore")
+include "demo-petstore"
+project(":demo-petstore").projectDir = file("demos/petstore")
 
-include "codion-demos-schemabrowser"
-project(":codion-demos-schemabrowser").projectDir = file("demos/schemabrowser")
+include "demo-schemabrowser"
+project(":demo-schemabrowser").projectDir = file("demos/schemabrowser")
 
-include "codion-demos-world"
-project(":codion-demos-world").projectDir = file("demos/world")
+include "demo-world"
+project(":demo-world").projectDir = file("demos/world")
 
 dependencyResolutionManagement {
     repositories {

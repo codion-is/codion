@@ -7,7 +7,7 @@ Demonstrates basic FilterTableModel, FilterComboBoxModel and FilterTable usage.
 
 [source,shell]
 ----
-gradlew codion-demos-manual:runKeyBindingPanel
+gradlew demo-manual:runKeyBindingPanel
 ----
 
 == KeyBindingPanel

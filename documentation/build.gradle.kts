@@ -191,6 +191,6 @@ tasks.register<Zip>("documentationZip") {
 
 fun frameworkModules(): Iterable<Project> {
     return project.parent?.subprojects?.filter { project ->
-        !project.name.contains("demos") && !project.name.contains("documentation")
+        !project.name.startsWith("demo") && !project.name.equals("documentation")
     } ?: emptyList()
 }

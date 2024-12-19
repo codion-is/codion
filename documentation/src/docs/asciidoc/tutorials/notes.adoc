@@ -7,7 +7,7 @@ A Note taking application in ~300 lines.
 
 [source,shell]
 ----
-gradlew codion-demos-manual:runNotesDemo
+gradlew demo-manual:runNotesDemo
 ----
 
 image::tutorials/notes_demo.png[]
