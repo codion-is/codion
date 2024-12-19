@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -238,11 +239,15 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (includeNull) {
 				visible.items.add(0, null);
 			}
-			visible.items.addAll(items);
-			// Notifies both visible and filtered
-			filter(false);
+			//remove duplicates while preserving the original order
+			visible.items.addAll(new LinkedHashSet<>(items));
+			filterInternal();
+			replaceSelectedItem();
 			cleared = items.isEmpty();
-			event.accept(items);
+			visible.sortInternal();
+			filtered.notifyChanges();
+			visible.notifyChanges();
+			notifyChanges();
 		}
 
 		@Override
@@ -251,7 +256,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (visible.predicate.isNull() || visible.predicate.getOrThrow().test(item)) {
 				if (!visible.items.contains(item)) {
 					visible.items.add(item);
-					visible.sort();
+					visible.sortInternal();
+					visible.notifyChanges();
+					notifyChanges();
 
 					return true;
 				}
@@ -259,6 +266,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			else if (!filtered.items.contains(item)) {
 				filtered.items.add(item);
 				filtered.notifyChanges();
+				notifyChanges();
 			}
 
 			return false;
@@ -279,18 +287,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			requireNonNull(item);
 			if (filtered.items.remove(item)) {
 				filtered.notifyChanges();
+				notifyChanges();
 			}
-			if (visible.items.remove(item)) {
-				fireContentsChanged();
+			else if (visible.items.remove(item)) {
 				visible.notifyChanges();
-				if (Objects.equals(selection.selected.item, item)) {
-					if (modelItems.nullItem != null) {
-						setSelectedItem(null);
-					}
-					else if (!modelItems.visible.items.isEmpty()) {
-						setSelectedItem(modelItems.visible.items.get(0));
-					}
-				}
+				notifyChanges();
+				updateSelectedItem(item);
 
 				return true;
 			}
@@ -335,7 +337,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void filter() {
-			filter(selection.filterSelected.get());
+			if (count() > 0) {
+				filter(selection.filterSelected.get());
+			}
 		}
 
 		@Override
@@ -363,16 +367,43 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private void filter(boolean filterSelectedItem) {
 			visible.items.addAll(filtered.items);
 			filtered.items.clear();
-			if (visible.predicate.isNotNull()) {
-				for (Iterator<T> iterator = visible.items.listIterator(); iterator.hasNext(); ) {
+			filterInternal();
+			visible.sortInternal();
+			if (filterSelectedItem
+							&& selection.selected.item != null
+							&& !visible.items.contains(selection.selected.item)) {
+				selection.selected.setSelectedItem(null);
+			}
+			filtered.notifyChanges();
+			visible.notifyChanges();
+			notifyChanges();
+		}
+
+		private void filterInternal() {
+			Predicate<T> predicate = visible.predicate.get();
+			if (predicate != null) {
+				for (Iterator<T> iterator = visible.items.listIterator(); iterator.hasNext();) {
 					T item = iterator.next();
-					if (item != null && !visible.predicate.getOrThrow().test(item)) {
+					if (item != null && !predicate.test(item)) {
 						filtered.items.add(item);
 						iterator.remove();
 					}
 				}
 			}
-			visible.sort();
+		}
+
+		private void updateSelectedItem(T removedItem) {
+			if (Objects.equals(selection.selected.item, removedItem)) {
+				if (modelItems.nullItem != null) {
+					setSelectedItem(null);
+				}
+				else if (!modelItems.visible.items.isEmpty()) {
+					setSelectedItem(modelItems.visible.items.get(0));
+				}
+			}
+		}
+
+		private void replaceSelectedItem() {
 			if (selection.selected.item != null) {
 				int index = visible.items.indexOf(selection.selected.item);
 				if (index != -1) {
@@ -380,16 +411,10 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					selection.selected.item = visible.items.get(index);
 				}
 			}
-			if (filterSelectedItem
-							&& selection.selected.item != null
-							&& !visible.items.contains(selection.selected.item)) {
-				selection.selected.setSelectedItem(null);
-			}
-			else {
-				fireContentsChanged();
-			}
-			visible.notifyChanges();
-			filtered.notifyChanges();
+		}
+
+		private void notifyChanges() {
+			event.accept(get());
 		}
 	}
 
@@ -487,20 +512,22 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void sort() {
-			if (comparator != null && !items.isEmpty()) {
-				if (modelItems.includeNull) {
-					items.remove(0);
-				}
-				items.sort(comparator);
-				if (modelItems.includeNull) {
-					items.add(0, null);
-				}
-				fireContentsChanged();
+			if (sortInternal()) {
 				notifyChanges();
 			}
 		}
 
+		private boolean sortInternal() {
+			if (comparator != null && count() > 0) {
+				items.subList(modelItems.includeNull ? 1 : 0, items.size()).sort(comparator);
+				return true;
+			}
+
+			return false;
+		}
+
 		private void notifyChanges() {
+			fireContentsChanged();
 			event.accept(get());
 		}
 	}
@@ -581,6 +608,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private SelectedItem(Function<Object, T> translator) {
 			this.translator = translator;
+			event.addListener(DefaultFilterComboBoxModel.this::fireContentsChanged);
 		}
 
 		@Override
@@ -609,7 +637,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				changing.accept(toSelect);
 				this.item = toSelect;
 				empty.set(toSelect == null);
-				fireContentsChanged();
 				event.accept(toSelect);
 			}
 		}
