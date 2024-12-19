@@ -43,6 +43,8 @@ Codion Change Log
 ### is.codion.framework.model
 - DefaultForeignKeyDetailModelLink now uses TableConditionModel.persist() to exclude the associated foreign key condition from being cleared.
 - EntityEditModel.EditableEntity and EditableValue renamed EntityEditor and ValueEditor respectively.
+- EntityEditModel.validate() methods moved to EntityEditor.
+- AbstractEntityEditModel.DefaultEntityEditor moved up to package level.
 ### is.codion.swing.framework.ui
 - TabbedApplicationLayout.applicationPanel() removed.
 - EntityApplicationPanel.displayEntityPanelFrame() and displayEntityPanelDialog() now initialize the focus by activating the panel when opened.

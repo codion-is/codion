@@ -296,7 +296,7 @@ public final class AbstractEntityEditModelTest {
 		//test validation
 		try {
 			employeeEditModel.value(Employee.COMMISSION).set(50d);
-			employeeEditModel.validate(Employee.COMMISSION);
+			employeeEditModel.entity().validate(Employee.COMMISSION);
 			fail("Validation should fail on invalid commission value");
 		}
 		catch (ValidationException e) {

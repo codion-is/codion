@@ -1234,7 +1234,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 */
 		protected final String validationMessage() {
 			try {
-				editModel.validate(attribute);
+				editModel.entity().validate(attribute);
 				return null;
 			}
 			catch (ValidationException e) {

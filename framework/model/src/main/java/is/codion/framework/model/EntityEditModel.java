@@ -318,33 +318,6 @@ public interface EntityEditModel {
 	void replace(ForeignKey foreignKey, Collection<Entity> entities);
 
 	/**
-	 * Validates the value associated with the given attribute, using the underlying validator.
-	 * @param attribute the attribute the value is associated with
-	 * @throws ValidationException if the given value is not valid for the given attribute
-	 */
-	void validate(Attribute<?> attribute);
-
-	/**
-	 * Validates the given entities, using the underlying validator.
-	 * For entities of a type other than this edit model is based on,
-	 * their respective validators are used.
-	 * @param entities the entities to validate
-	 * @throws ValidationException on finding the first invalid entity
-	 * @see EntityDefinition#validator()
-	 */
-	void validate(Collection<Entity> entities);
-
-	/**
-	 * Validates the given entity, using the underlying validator.
-	 * For entities of a type other than this edit model is based on,
-	 * their respective validators are used.
-	 * @param entity the entity to validate
-	 * @throws ValidationException in case the entity is invalid
-	 * @throws NullPointerException in case the entity is null
-	 */
-	void validate(Entity entity);
-
-	/**
 	 * @return an observer notified before an insert is performed, after validation
 	 */
 	Observer<Collection<Entity>> beforeInsert();
@@ -485,6 +458,33 @@ public interface EntityEditModel {
 		 * @throws ValidationException in case the entity is invalid
 		 */
 		void validate();
+
+		/**
+		 * Validates the value associated with the given attribute, using the underlying validator.
+		 * @param attribute the attribute the value is associated with
+		 * @throws ValidationException if the given value is not valid for the given attribute
+		 */
+		void validate(Attribute<?> attribute);
+
+		/**
+		 * Validates the given entities, using the underlying validator.
+		 * For entities of a type other than this edit model is based on,
+		 * their respective validators are used.
+		 * @param entities the entities to validate
+		 * @throws ValidationException on finding the first invalid entity
+		 * @see EntityDefinition#validator()
+		 */
+		void validate(Collection<Entity> entities);
+
+		/**
+		 * Validates the given entity, using the underlying validator.
+		 * For entities of a type other than this edit model is based on,
+		 * their respective validators are used.
+		 * @param entity the entity to validate
+		 * @throws ValidationException in case the entity is invalid
+		 * @throws NullPointerException in case the entity is null
+		 */
+		void validate(Entity entity);
 
 		/**
 		 * @param attribute the attribute
