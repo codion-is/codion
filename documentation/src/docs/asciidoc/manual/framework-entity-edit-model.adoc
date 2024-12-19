@@ -8,7 +8,7 @@ skinparam genericDisplay old
 
 interface EntityEditModel {
     +<T> Value<T> value(Attribute<T> attribute)
-    +EntityEditor entity()
+    +EntityEditor editor()
     +Entity insert()
     +Entity update()
     +Entity delete()
@@ -16,7 +16,7 @@ interface EntityEditModel {
 -------------------------------------------
 
 The {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] interface defines the CRUD business logic used by the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class when entities are being edited.
-The *EntityEditModel* works with a single entity instance, which can be retrieved and set via the *EntityEditor* instance accessible via the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html#entity{opar}{cpar}[entity()] method. *EntityEditor* exposes a number of methods for manipulating as well as querying the state of the entity being edited.
+The *EntityEditModel* works with a single entity instance, which can be retrieved and set via the *EntityEditor* instance accessible via the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html#editor{opar}{cpar}[editor()] method. *EntityEditor* exposes a number of methods for manipulating as well as querying the state of the entity being edited.
 
 [source,java,indent=0]
 ----

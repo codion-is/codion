@@ -156,7 +156,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 			return true;
 		}
 		// If the entity is not modified
-		if (!editModel().entity().modified().get()) {
+		if (!editModel().editor().modified().get()) {
 			return true;
 		}
 		// If the current item was modified and

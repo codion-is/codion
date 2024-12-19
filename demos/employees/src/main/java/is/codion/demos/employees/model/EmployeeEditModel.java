@@ -51,7 +51,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 			//in case a new manager got hired, fired or promoted
 			afterInsertUpdateOrDelete().addListener(managerComboBoxModel::refresh);
 			//hide the employee being edited to prevent an employee from being made her own manager
-			entity().addConsumer(employee ->
+			editor().addConsumer(employee ->
 							managerComboBoxModel.filter().predicate().set(manager -> !Objects.equals(manager, employee)));
 			//and only show managers from the currently selected department
 			value(Employee.DEPARTMENT_FK).addConsumer(department ->

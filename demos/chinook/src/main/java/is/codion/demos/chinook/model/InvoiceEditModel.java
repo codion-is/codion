@@ -40,7 +40,7 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 	private void setAddress(Entity customer) {
 		// We only populate the address fields
 		// when we are editing a new invoice
-		if (entity().exists().not().get()) {
+		if (editor().exists().not().get()) {
 			if (customer == null) {
 				value(Invoice.BILLINGADDRESS).clear();
 				value(Invoice.BILLINGCITY).clear();

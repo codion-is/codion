@@ -73,7 +73,7 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 	DefaultEntityEditor(EntityDefinition entityDefinition) {
 		this.entityDefinition = requireNonNull(entityDefinition);
 		this.entity = createEntity(AttributeDefinition::defaultValue);
-		this.exists = new DefaultExists(entity.definition());
+		this.exists = new DefaultExists(entityDefinition);
 		this.modified = new DefaultModified();
 		this.editing = State.and(exists.exists, modified.modified);
 		this.validator = Value.builder()
@@ -214,10 +214,6 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 		attributeModified.forEach(this::updateAttributeModifiedState);
 
 		changed.accept(entity);
-	}
-
-	Entity copy() {
-		return entity.copy().mutable();
 	}
 
 	private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {

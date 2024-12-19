@@ -60,8 +60,8 @@ public final class CityEditPanel extends EntityEditPanel {
 						.control(Control.builder()
 										.command(this::populateLocation)
 										.enabled(State.and(active(),
-														editModel().entity().isNull(City.LOCATION),
-														editModel().entity().exists()))
+														editModel().editor().isNull(City.LOCATION),
+														editModel().editor().exists()))
 										.smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))));
 	}
 
@@ -102,7 +102,7 @@ public final class CityEditPanel extends EntityEditPanel {
 	private void populateLocation() throws IOException {
 		CityEditModel editModel = editModel();
 		editModel.populateLocation();
-		displayLocation(List.of(editModel.entity().get()));
+		displayLocation(List.of(editModel.editor().get()));
 	}
 
 	private void displayLocation(Collection<Entity> cities) {

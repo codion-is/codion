@@ -1234,7 +1234,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 */
 		protected final String validationMessage() {
 			try {
-				editModel.entity().validate(attribute);
+				editModel.editor().validate(attribute);
 				return null;
 			}
 			catch (ValidationException e) {
@@ -1243,11 +1243,11 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		protected final boolean nullable() {
-			return editModel.entity().nullable(attribute);
+			return editModel.editor().nullable(attribute);
 		}
 
 		protected final boolean isNull() {
-			return editModel.entity().isNull(attribute).get();
+			return editModel.editor().isNull(attribute).get();
 		}
 
 		/**

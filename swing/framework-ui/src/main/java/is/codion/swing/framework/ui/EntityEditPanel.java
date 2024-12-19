@@ -175,8 +175,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		createControls();
 		setupFocusActivation();
 		setupKeyboardActions();
-		if (editModel.entity().exists().not().get()) {
-			editModel.entity().defaults();
+		if (editModel.editor().exists().not().get()) {
+			editModel.editor().defaults();
 		}
 	}
 
@@ -198,7 +198,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * @see #requestInitialFocus()
 	 */
 	public final void clearAndRequestFocus() {
-		editModel().entity().defaults();
+		editModel().editor().defaults();
 		requestInitialFocus();
 	}
 
@@ -247,7 +247,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		try {
 			editModel().insert();
 			if (configuration.clearAfterInsert) {
-				editModel().entity().defaults();
+				editModel().editor().defaults();
 			}
 			if (configuration.requestFocusAfterInsert) {
 				requestAfterInsertFocus();
@@ -559,7 +559,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.name(FrameworkMessages.delete())
 						.enabled(State.and(active,
 										editModel().deleteEnabled(),
-										editModel().entity().exists()))
+										editModel().editor().exists()))
 						.description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
 						.mnemonic(FrameworkMessages.deleteMnemonic())
 						.smallIcon(ICONS.delete())
@@ -594,7 +594,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.name(FrameworkMessages.update())
 						.enabled(State.and(active,
 										editModel().updateEnabled(),
-										editModel().entity().edited()))
+										editModel().editor().edited()))
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
 						.smallIcon(ICONS.update())
@@ -620,13 +620,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void bindEvents() {
-		editModel().entity().changing().addConsumer(this::beforeEntity);
+		editModel().editor().changing().addConsumer(this::beforeEntity);
 	}
 
 	private void beforeEntity(Entity entity) {
 		if (configuration.modifiedWarning
-						&& editModel().entity().edited().get()
-						&& !Objects.equals(editModel().entity(), entity)
+						&& editModel().editor().edited().get()
+						&& !Objects.equals(editModel().editor(), entity)
 						&& showConfirmDialog(this,
 						FrameworkMessages.modifiedWarning(), FrameworkMessages.modifiedWarningTitle(),
 						JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
@@ -650,7 +650,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void showEntityMenu() {
-		new EntityPopupMenu(editModel().entity().get(), editModel().connection()).show(this, 0, 0);
+		new EntityPopupMenu(editModel().editor().get(), editModel().connection()).show(this, 0, 0);
 	}
 
 	private void displayDependencies() {
@@ -675,7 +675,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private Map<EntityType, Collection<Entity>> entityDependencies() {
 		setCursor(Cursors.WAIT);
 		try {
-			return editModel().connectionProvider().connection().dependencies(singletonList(editModel().entity().get()));
+			return editModel().connectionProvider().connection().dependencies(singletonList(editModel().editor().get()));
 		}
 		catch (DatabaseException e) {
 			displayException(e);
@@ -1014,7 +1014,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private void handleResult(Insert.Result result) {
 			onInsert.accept(result.handle());
 			if (configuration.clearAfterInsert) {
-				editModel().entity().defaults();
+				editModel().editor().defaults();
 			}
 			if (configuration.requestFocusAfterInsert) {
 				requestAfterInsertFocus();

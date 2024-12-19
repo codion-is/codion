@@ -126,9 +126,9 @@ final class CountryEditPanel extends EntityEditPanel {
 
 	private EntityEditPanel createCapitalEditPanel() {
 		CityEditPanel capitalEditPanel = new CityEditPanel(new SwingEntityEditModel(City.TYPE, editModel().connectionProvider()));
-		if (editModel().entity().exists().get()) {
+		if (editModel().editor().exists().get()) {
 			//if an existing country is selected, then we don't allow it to be changed
-			capitalEditPanel.editModel().value(City.COUNTRY_FK).set(editModel().entity().get());
+			capitalEditPanel.editModel().value(City.COUNTRY_FK).set(editModel().editor().get());
 			//initialize the panel components, so we can configure the country component
 			capitalEditPanel.initialize();
 			//disable the country selection component

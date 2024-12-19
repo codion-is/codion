@@ -233,11 +233,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 		if (tableModel != null && tableModel.selection().empty().not().get()) {
 			return tableModel.selection().items().get();
 		}
-		else if (editModel.entity().exists().not().get()) {
+		else if (editModel.editor().exists().not().get()) {
 			return emptyList();
 		}
 
-		return singletonList(editModel.entity().get());
+		return singletonList(editModel.editor().get());
 	}
 
 	private void bindEventsInternal() {
@@ -248,7 +248,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 			tableModel.selection().indexes().addListener(this::onMasterSelectionChanged);
 		}
 		else {
-			editModel.entity().addListener(this::onMasterSelectionChanged);
+			editModel.editor().addListener(this::onMasterSelectionChanged);
 		}
 	}
 

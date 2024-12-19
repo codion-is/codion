@@ -710,10 +710,10 @@ public final class EntityDialogs {
 
 		private void initializeEditModel(SwingEntityEditModel editModel) {
 			if (entity != null) {
-				editModel.entity().set(entity.get());
+				editModel.editor().set(entity.get());
 			}
 			else {
-				editModel.entity().revert();
+				editModel.editor().revert();
 			}
 		}
 
@@ -743,7 +743,7 @@ public final class EntityDialogs {
 							.name(FrameworkMessages.update())
 							.mnemonic(FrameworkMessages.updateMnemonic())
 							.onException(new EditPanelExceptionHandler(editPanel))
-							.enabled(editPanel.editModel().entity().modified())
+							.enabled(editPanel.editModel().editor().modified())
 							.build();
 		}
 	}
@@ -840,7 +840,7 @@ public final class EntityDialogs {
 
 		@Override
 		public void run() {
-			editPanel.editModel().entity().revert();
+			editPanel.editModel().editor().revert();
 			disposeParentWindow(editPanel);
 		}
 	}

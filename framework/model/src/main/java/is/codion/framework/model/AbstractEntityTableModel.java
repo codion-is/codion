@@ -230,8 +230,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		editModel.afterInsert().addConsumer(this::onInsert);
 		editModel.afterUpdate().addConsumer(this::onUpdate);
 		editModel.afterDelete().addConsumer(this::onDelete);
-		editModel.entity().addConsumer(this::onEntityChanged);
-		selection().item().addConsumer(editModel.entity()::set);
+		editModel.editor().addConsumer(this::onEntityChanged);
+		selection().item().addConsumer(editModel.editor()::set);
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {

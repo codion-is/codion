@@ -95,7 +95,7 @@ public interface EntityEditModel {
 	 * @return the {@link EntityEditor} wrapping the {@link Entity} instance being edited
 	 * @see Entity#immutable()
 	 */
-	EntityEditor entity();
+	EntityEditor editor();
 
 	/**
 	 * Returns the {@link ValueEditor} instance representing {@code attribute} in this edit model.
@@ -362,6 +362,12 @@ public interface EntityEditModel {
 	 * Provides edit access to the underlying entity being edited.
 	 */
 	interface EntityEditor extends Observable<Entity> {
+
+		/**
+		 * @return an immutable copy of the entity being edited
+		 */
+		@Override
+		Entity get();
 
 		/**
 		 * Sets the given entity or defaults if null. Use {@link #clear()} in order to clear the entity of all values.

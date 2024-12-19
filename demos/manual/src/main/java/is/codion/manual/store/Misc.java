@@ -80,16 +80,16 @@ public final class Misc {
 
 		CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
 
-		EntityEditor entity = editModel.entity();
-		entity.value(Customer.ID).defaultValue()
+		EntityEditor editor = editModel.editor();
+		editor.value(Customer.ID).defaultValue()
 						.set(() -> UUID.randomUUID().toString());
 
 		//sets the defaults
-		entity.defaults();
+		editor.defaults();
 		//set the values
-		entity.value(Customer.FIRST_NAME).set("Björn");
-		entity.value(Customer.LAST_NAME).set("Sigurðsson");
-		entity.value(Customer.ACTIVE).set(true);
+		editor.value(Customer.FIRST_NAME).set("Björn");
+		editor.value(Customer.LAST_NAME).set("Sigurðsson");
+		editor.value(Customer.ACTIVE).set(true);
 
 		//inserts and returns the inserted entity
 		Entity customer = editModel.insert();

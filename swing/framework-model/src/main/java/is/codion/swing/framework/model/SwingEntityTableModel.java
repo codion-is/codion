@@ -282,7 +282,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selection().index()
 						.get()
 						.intValue()) {
-			editModel().entity().set(selection().item().get());
+			editModel().editor().set(selection().item().get());
 		}
 	}
 

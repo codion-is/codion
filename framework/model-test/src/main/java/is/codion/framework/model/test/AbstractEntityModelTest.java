@@ -95,7 +95,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		deptTableModel.items().visible().predicate().set(item ->
 						!Objects.equals(80, item.get(Department.ID)));
 
-		deptEditModel.entity().set(operations);
+		deptEditModel.editor().set(operations);
 		deptEditModel.value(Department.ID).set(40);
 		deptEditModel.update();
 
@@ -149,8 +149,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		departmentModel.tableModel().refresh();
 		departmentModel.tableModel().selection().indexes().set(asList(1, 2, 3));
 		assertFalse(departmentModel.tableModel().selection().empty().get());
-		assertTrue(departmentModel.editModel().entity().exists().get());
-		departmentModel.editModel().entity().defaults();
+		assertTrue(departmentModel.editModel().editor().exists().get());
+		departmentModel.editModel().editor().defaults();
 		assertTrue(departmentModel.tableModel().selection().empty().get());
 	}
 
@@ -387,7 +387,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
 
 		departmentModel.tableModel().selection().clear();
-		assertTrue(employeeEditModel.entity().isNull(Employee.DEPARTMENT_FK).get());
+		assertTrue(employeeEditModel.editor().isNull(Employee.DEPARTMENT_FK).get());
 
 		link.clearForeignKeyValueOnEmptySelection().set(false);
 

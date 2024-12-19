@@ -143,7 +143,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final EntityEditor entity() {
+	public final EntityEditor editor() {
 		return editor;
 	}
 
@@ -155,7 +155,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final void refresh() {
 		if (editor.exists().get()) {
-			editor.set(connectionProvider.connection().select(editor.copy().primaryKey()));
+			editor.set(connectionProvider.connection().select(editor.getOrThrow().copy().mutable().primaryKey()));
 		}
 	}
 
@@ -439,7 +439,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private Collection<Entity> entityForInsert() {
-			Entity toInsert = editor.copy();
+			Entity toInsert = editor.getOrThrow().copy().mutable();
 			if (toInsert.definition().primaryKey().generated()) {
 				toInsert.clearPrimaryKey();
 			}
@@ -493,7 +493,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Collection<Entity> entities;
 
 		private DefaultUpdate() {
-			entities = singleton(editor.copy());
+			entities = singleton(editor.getOrThrow().copy().mutable());
 			states.verifyUpdateEnabled(entities.size());
 			editor.validate(entities);
 			verifyModified(entities);
@@ -578,7 +578,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private Entity activeEntity() {
-			Entity copy = editor.copy();
+			Entity copy = editor.getOrThrow().copy().mutable();
 			copy.revert();
 
 			return copy;
