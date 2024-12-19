@@ -18,40 +18,38 @@
  */
 package is.codion.common.db.result;
 
-import org.jspecify.annotations.Nullable;
-
 import java.sql.SQLException;
 import java.util.Iterator;
 
 /**
- * Iterates through a ResultSet fetching instances of T.
+ * Iterates through a {@link java.sql.ResultSet} fetching instances of T.
  * Use try with resources or remember to call {@link #close()} in order to close underlying resources.
- * @param <T> the type to fetch from the result set
+ * @param <T> the type to fetch from the {@link java.sql.ResultSet}
  */
 public interface ResultIterator<T> extends AutoCloseable, Iterable<T> {
 
 	/**
-	 * Returns true if a row is available in the underlying result set.
-	 * @return true if a row is available in the underlying result set
+	 * Returns true if a row is available in the underlying {@link java.sql.ResultSet}.
+	 * @return true if a row is available in the underlying {@link java.sql.ResultSet}
 	 * @throws SQLException in case of an exception
 	 */
 	boolean hasNext() throws SQLException;
 
 	/**
-	 * @return an instance of T fetched from the result set
+	 * @return an instance of T fetched from the {@link java.sql.ResultSet}
 	 * @throws SQLException in case of an exception
 	 * @throws java.util.NoSuchElementException in case no more rows are available
 	 */
-	@Nullable T next() throws SQLException;
+	T next() throws SQLException;
 
 	/**
-	 * Closes the underlying result set and other resources held by this iterator
+	 * Closes the underlying {@link java.sql.ResultSet} and other resources held by this iterator
 	 */
 	void close();
 
 	/**
-	 * Wraps this {@link ResultIterator} in a {@link Iterator}. Any SQLExceptions
-	 * that occur are rethrown as RuntimeExceptions.
+	 * Wraps this {@link ResultIterator} in a {@link Iterator}. Any {@link SQLException}s
+	 * that occur are rethrown wrapped in a {@link RuntimeException}.
 	 * @return a {@link Iterator} instance based on this {@link ResultIterator}
 	 */
 	default Iterator<T> iterator() {

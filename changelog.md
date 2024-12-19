@@ -13,6 +13,7 @@ Codion Change Log
 - Observable.getOrThrow() happy path optimized.
 ## is.codion.common.db
 - Database.connectionProvider() no longer accepts null.
+- ResultPacker.pack() no longer skips null instances returned from get(), caller must handle any null values encountered.
 ### is.codion.common.model
 - ConditionModel.dateTimePattern() now returns Optional.
 - ConditionModel.wildcard() now back to being Value based instead of Mutable.

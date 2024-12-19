@@ -18,8 +18,6 @@
  */
 package is.codion.common.db.result;
 
-import org.jspecify.annotations.Nullable;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,38 +26,34 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A ResultPacker packs the contents of a ResultSet into a List.
+ * A {@link ResultPacker} packs the contents of a {@link ResultSet} into a {@link List}.
  * @param <T> the type of object resulting from the packing
  */
 public interface ResultPacker<T> {
 
 	/**
-	 * Iterates through the given ResultSet, packing its contents into a List using {@link #get(ResultSet)} in the order they appear.
-	 * Items are skipped if {@link #get(ResultSet)} returns null.
-	 * This method does not close the ResultSet.
-	 * @param resultSet the ResultSet instance containing the query result to process
-	 * @return a List containing the data from the query result
+	 * Iterates through the given {@link ResultSet}, packing its contents into a {@link List} using {@link #get(ResultSet)} in the order they appear.
+	 * This method does not close the {@link ResultSet}.
+	 * @param resultSet the {@link ResultSet} instance containing the query result to process
+	 * @return a {@link List} containing the data from the query result
 	 * @throws SQLException thrown if anything goes wrong during the packing
-	 * @throws NullPointerException in case resultSet is null
+	 * @throws NullPointerException in case {@code resultSet} is null
 	 */
 	default List<T> pack(ResultSet resultSet) throws SQLException {
 		requireNonNull(resultSet);
 		List<T> result = new ArrayList<>();
 		while (resultSet.next()) {
-			T item = get(resultSet);
-			if (item != null) {
-				result.add(item);
-			}
+			result.add(get(resultSet));
 		}
 
 		return result;
 	}
 
 	/**
-	 * Fetches a single instance from the given result set, assuming {@link ResultSet#next()} has been called
-	 * @param resultSet the result set
-	 * @return the instance fetched from the ResultSet
+	 * Fetches a single instance from the given {@link ResultSet}, assuming {@link ResultSet#next()} has been called
+	 * @param resultSet the {@link ResultSet}
+	 * @return the instance fetched from the {@link ResultSet}
 	 * @throws SQLException in case of failure
 	 */
-	@Nullable T get(ResultSet resultSet) throws SQLException;
+	T get(ResultSet resultSet) throws SQLException;
 }
