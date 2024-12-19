@@ -194,7 +194,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * Clears the underlying edit model and requests the initial focus.
-	 * @see EntityEditModel.EditableEntity#defaults()
+	 * @see EntityEditModel.EntityEditor#defaults()
 	 * @see #requestInitialFocus()
 	 */
 	public final void clearAndRequestFocus() {
@@ -855,7 +855,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * @param modifiedWarning specifies whether this edit panel presents a warning before discarding unsaved modifications
 		 * @return this Config instance
 		 * @see #MODIFIED_WARNING
-		 * @see EntityEditModel.EditableEntity#edited()
+		 * @see EntityEditModel.EntityEditor#edited()
 		 */
 		public Config modifiedWarning(boolean modifiedWarning) {
 			this.modifiedWarning = modifiedWarning;

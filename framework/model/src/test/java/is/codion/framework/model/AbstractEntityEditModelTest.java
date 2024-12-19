@@ -34,7 +34,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.model.EntityEditModel.EditableEntity;
+import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Derived;
@@ -174,7 +174,7 @@ public final class AbstractEntityEditModelTest {
 	void defaultForeignKeyValue() {
 		Entity employee = employeeEditModel.connection().selectSingle(
 						Employee.NAME.equalTo("MARTIN"));
-		EditableEntity entity = employeeEditModel.entity();
+		EntityEditor entity = employeeEditModel.entity();
 		entity.set(employee);
 		//clear the department foreign key value
 		Entity dept = entity.get().entity(Employee.DEPARTMENT_FK);
@@ -193,7 +193,7 @@ public final class AbstractEntityEditModelTest {
 	@Test
 	void defaults() {
 		employeeEditModel.value(Employee.NAME).defaultValue().set(() -> "Scott");
-		EditableEntity entity = employeeEditModel.entity();
+		EntityEditor entity = employeeEditModel.entity();
 		assertTrue(entity.isNull(Employee.NAME).get());
 		entity.defaults();
 		assertEquals("Scott", employeeEditModel.value(Employee.NAME).get());
@@ -218,7 +218,7 @@ public final class AbstractEntityEditModelTest {
 
 	@Test
 	void test() {
-		EditableEntity entity = employeeEditModel.entity();
+		EntityEditor entity = employeeEditModel.entity();
 
 		ObservableState primaryKeyNullState = entity.primaryKeyNull();
 		ObservableState entityExistsState = entity.exists();
@@ -448,7 +448,7 @@ public final class AbstractEntityEditModelTest {
 	void setEntity() {
 		Entity martin = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
-		EditableEntity entity = employeeEditModel.entity();
+		EntityEditor entity = employeeEditModel.entity();
 		entity.set(king);
 		employeeEditModel.value(Employee.MGR_FK).set(martin);
 		entity.defaults();
@@ -464,7 +464,7 @@ public final class AbstractEntityEditModelTest {
 	@Test
 	void persist() {
 		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
-		EditableEntity entity = employeeEditModel.entity();
+		EntityEditor entity = employeeEditModel.entity();
 		entity.set(king);
 		assertNotNull(employeeEditModel.value(Employee.JOB).get());
 		employeeEditModel.value(Employee.JOB).persist().set(true);
@@ -662,7 +662,7 @@ public final class AbstractEntityEditModelTest {
 		EntityEditModel editModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
 		EntityConnection connection = employeeEditModel.connection();
 		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
-		EditableEntity entity = editModel.entity();
+		EntityEditor entity = editModel.entity();
 		entity.set(martin);
 
 		editModel.value(Employee.NAME).set("newname");

@@ -31,7 +31,7 @@ import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.model.EntityEditModel.EditableEntity;
+import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
@@ -157,7 +157,7 @@ public final class NotesDemo {
 		}
 
 		private void insertDeleteOrUpdate() {
-			EditableEntity entity = editModel().entity();
+			EntityEditor entity = editModel().entity();
 			if (entity.exists().not().get() && entity.isNotNull(Note.NOTE).get()) {
 				// A new note with a non-empty text
 				insert();

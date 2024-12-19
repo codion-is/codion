@@ -23,6 +23,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.manual.store.domain.Store;
 import is.codion.manual.store.domain.Store.Customer;
 import is.codion.manual.store.model.CustomerEditModel;
@@ -79,10 +80,16 @@ public final class Misc {
 
 		CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
 
-		editModel.value(Customer.ID).set(UUID.randomUUID().toString());
-		editModel.value(Customer.FIRST_NAME).set("Björn");
-		editModel.value(Customer.LAST_NAME).set("Sigurðsson");
-		editModel.value(Customer.ACTIVE).set(true);
+		EntityEditor entity = editModel.entity();
+		entity.value(Customer.ID).defaultValue()
+						.set(() -> UUID.randomUUID().toString());
+
+		//sets the defaults
+		entity.defaults();
+		//set the values
+		entity.value(Customer.FIRST_NAME).set("Björn");
+		entity.value(Customer.LAST_NAME).set("Sigurðsson");
+		entity.value(Customer.ACTIVE).set(true);
 
 		//inserts and returns the inserted entity
 		Entity customer = editModel.insert();

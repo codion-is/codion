@@ -68,7 +68,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
 
-	private final DefaultEditableEntity editable;
+	private final DefaultEntityEditor editor;
 	private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
 
 	private final Events events;
@@ -81,24 +81,24 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 */
 	protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		EntityDefinition entityDefinition = requireNonNull(connectionProvider).entities().definition(requireNonNull(entityType));
-		this.editable = new DefaultEditableEntity(entityDefinition, connectionProvider);
+		this.editor = new DefaultEntityEditor(entityDefinition, connectionProvider);
 		this.states = new States(entityDefinition.readOnly());
 		this.events = new Events(states.postEditEvents);
 	}
 
 	@Override
 	public final Entities entities() {
-		return editable.connectionProvider.entities();
+		return editor.connectionProvider.entities();
 	}
 
 	@Override
 	public final EntityDefinition entityDefinition() {
-		return editable.entityDefinition;
+		return editor.entityDefinition;
 	}
 
 	@Override
 	public final String toString() {
-		return getClass() + ", " + editable.entity.entityType();
+		return getClass() + ", " + editor.entity.entityType();
 	}
 
 	@Override
@@ -133,12 +133,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final EntityType entityType() {
-		return editable.entity.entityType();
+		return editor.entity.entityType();
 	}
 
 	@Override
 	public final EntityConnectionProvider connectionProvider() {
-		return editable.connectionProvider;
+		return editor.connectionProvider;
 	}
 
 	@Override
@@ -152,18 +152,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final EditableEntity entity() {
-		return editable;
+	public final EntityEditor entity() {
+		return editor;
 	}
 
 	@Override
-	public final <T> EditableValue<T> value(Attribute<T> attribute) {
-		return editable.value(attribute);
+	public final <T> ValueEditor<T> value(Attribute<T> attribute) {
+		return editor.value(attribute);
 	}
 
 	@Override
 	public final void validate(Attribute<?> attribute) {
-		editable.validator.getOrThrow().validate(editable.entity, attribute);
+		editor.validator.getOrThrow().validate(editor.entity, attribute);
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final void validate(Entity entity) {
 		if (entity.entityType().equals(entityType())) {
-			editable.validator.getOrThrow().validate(entity);
+			editor.validator.getOrThrow().validate(entity);
 		}
 		else {
 			entity.definition().validator().validate(entity);
@@ -347,7 +347,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param values the foreign key entities
 	 */
 	protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> values) {
-		Entity currentForeignKeyValue = editable.entity.entity(foreignKey);
+		Entity currentForeignKeyValue = editor.entity.entity(foreignKey);
 		if (currentForeignKeyValue != null) {
 			for (Entity replacementValue : values) {
 				if (currentForeignKeyValue.equals(replacementValue)) {
@@ -467,7 +467,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private Collection<Entity> entityForInsert() {
-			Entity toInsert = editable.entity.copy().mutable();
+			Entity toInsert = editor.entity.copy().mutable();
 			if (toInsert.definition().primaryKey().generated()) {
 				toInsert.clearPrimaryKey();
 			}
@@ -507,7 +507,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			@Override
 			public Collection<Entity> handle() {
 				if (activeEntity) {
-					editable.setOrDefaults(insertedEntities.iterator().next());
+					editor.setOrDefaults(insertedEntities.iterator().next());
 				}
 				notifyAfterInsert(insertedEntities);
 
@@ -521,7 +521,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Collection<Entity> entities;
 
 		private DefaultUpdate() {
-			entities = singleton(editable.entity.copy().mutable());
+			entities = singleton(editor.entity.copy().mutable());
 			states.verifyUpdateEnabled(entities.size());
 			validate(entities);
 			verifyModified(entities);
@@ -569,11 +569,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				Entity entity = editable.get();
+				Entity entity = editor.get();
 				updatedEntities.stream()
 								.filter(updatedEntity -> updatedEntity.equals(entity))
 								.findFirst()
-								.ifPresent(editable::setOrDefaults);
+								.ifPresent(editor::setOrDefaults);
 				notifyAfterUpdate(originalPrimaryKeyMap(entities, updatedEntities));
 
 				return updatedEntities;
@@ -606,7 +606,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private Entity activeEntity() {
-			Entity copy = editable.entity.copy().mutable();
+			Entity copy = editor.entity.copy().mutable();
 			copy.revert();
 
 			return copy;
@@ -634,7 +634,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			@Override
 			public Collection<Entity> handle() {
 				if (activeEntity) {
-					editable.setOrDefaults(null);
+					editor.setOrDefaults(null);
 				}
 				notifyAfterDelete(deletedEntities);
 
@@ -710,14 +710,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private static final class DefaultEditableEntity implements EditableEntity {
+	private static final class DefaultEntityEditor implements EntityEditor {
 
 		private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
 		private final Event<Attribute<?>> valueChanged = Event.event();
 		private final Event<Entity> changing = Event.event();
 		private final Event<Entity> changed = Event.event();
 
-		private final Map<Attribute<?>, DefaultEditableValue<?>> editableValues = new HashMap<>();
+		private final Map<Attribute<?>, DefaultValueEditor<?>> valueEditors = new HashMap<>();
 		private final Map<Attribute<?>, State> persistValues = new HashMap<>();
 		private final Map<Attribute<?>, State> attributeModified = new HashMap<>();
 		private final Map<Attribute<?>, State> attributeNull = new HashMap<>();
@@ -734,7 +734,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private final Entity entity;
 
-		private DefaultEditableEntity(EntityDefinition entityDefinition, EntityConnectionProvider connectionProvider) {
+		private DefaultEntityEditor(EntityDefinition entityDefinition, EntityConnectionProvider connectionProvider) {
 			this.entityDefinition = entityDefinition;
 			this.connectionProvider = connectionProvider;
 			this.entity = createEntity(AttributeDefinition::defaultValue);
@@ -849,10 +849,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public <T> EditableValue<T> value(Attribute<T> attribute) {
+		public <T> ValueEditor<T> value(Attribute<T> attribute) {
 			entityDefinition.attributes().definition(attribute);
 
-			return (EditableValue<T>) editableValues.computeIfAbsent(attribute, k -> new DefaultEditableValue<>(attribute));
+			return (ValueEditor<T>) valueEditors.computeIfAbsent(attribute, k -> new DefaultValueEditor<>(attribute));
 		}
 
 		private void setOrDefaults(Entity entity) {
@@ -897,9 +897,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private void notifyValueChange(Attribute<?> attribute) {
 			updateStates();
 			updateAttributeStates(attribute);
-			DefaultEditableValue<?> editModelValue = editableValues.get(attribute);
-			if (editModelValue != null) {
-				editModelValue.valueChanged();
+			DefaultValueEditor<?> valueEditor = valueEditors.get(attribute);
+			if (valueEditor != null) {
+				valueEditor.valueChanged();
 			}
 			valueChanged.accept(attribute);
 		}
@@ -1086,12 +1086,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 		}
 
-		private final class DefaultEditableValue<T> extends AbstractValue<T> implements EditableValue<T> {
+		private final class DefaultValueEditor<T> extends AbstractValue<T> implements ValueEditor<T> {
 
 			private final Attribute<T> attribute;
 			private final Value<Supplier<T>> defaultValue;
 
-			private DefaultEditableValue(Attribute<T> attribute) {
+			private DefaultValueEditor(Attribute<T> attribute) {
 				this.attribute = attribute;
 				this.defaultValue = Value.builder()
 								.nonNull((Supplier<T>) entityDefinition.attributes().definition(attribute)::defaultValue)
