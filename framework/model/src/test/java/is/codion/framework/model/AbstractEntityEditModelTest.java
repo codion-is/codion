@@ -138,11 +138,11 @@ public final class AbstractEntityEditModelTest {
 		connection.startTransaction();
 		try {
 			Entity employee = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
-			employeeEditModel.entity().refresh();
+			employeeEditModel.refresh();
 			employeeEditModel.entity().set(employee);
 			employee.put(Employee.NAME, "NOONE");
 			connection.update(employee);
-			employeeEditModel.entity().refresh();
+			employeeEditModel.refresh();
 			assertEquals("NOONE", employeeEditModel.value(Employee.NAME).get());
 		}
 		finally {

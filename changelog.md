@@ -45,6 +45,7 @@ Codion Change Log
 - EntityEditModel.EditableEntity and EditableValue renamed EntityEditor and ValueEditor respectively.
 - EntityEditModel.validate() methods moved to EntityEditor.
 - AbstractEntityEditModel.DefaultEntityEditor moved up to package level.
+- EntityEditModel.EntityEditor.refresh() moved to EntityEditModel along with entityConnectionProvider.
 ### is.codion.swing.framework.ui
 - TabbedApplicationLayout.applicationPanel() removed.
 - EntityApplicationPanel.displayEntityPanelFrame() and displayEntityPanelDialog() now initialize the focus by activating the panel when opened.

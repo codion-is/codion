@@ -211,51 +211,51 @@ public class DefaultFilterComboBoxModelTest {
 		AtomicInteger visibleCounter = new AtomicInteger();
 		AtomicInteger itemsCounter = new AtomicInteger();
 
-		FilterComboBoxModel<String> testModel = FilterComboBoxModel.<String>builder()
+		FilterComboBoxModel<String> model = FilterComboBoxModel.<String>builder()
 						.nullItem(NULL)
 						.build();
-		testModel.items().filtered().addListener(filteredCounter::incrementAndGet);
-		testModel.items().visible().addListener(visibleCounter::incrementAndGet);
-		testModel.items().addListener(itemsCounter::incrementAndGet);
-		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
+		model.items().filtered().addListener(filteredCounter::incrementAndGet);
+		model.items().visible().addListener(visibleCounter::incrementAndGet);
+		model.items().addListener(itemsCounter::incrementAndGet);
+		model.items().visible().predicate().set(item -> !item.equals(BJORN));
 
 		List<String> names = asList(ANNA, KALLI, SIGGI, TOMAS, BJORN);
-		testModel.items().set(names);
+		model.items().set(names);
 		assertEquals(1, filteredCounter.get());
 		assertEquals(1, visibleCounter.get());
 		assertEquals(1, itemsCounter.get());
 
-		testModel.items().clear();
+		model.items().clear();
 		assertEquals(2, filteredCounter.get());
 		assertEquals(2, visibleCounter.get());
 		assertEquals(2, itemsCounter.get());
 
-		testModel.items().addItem(BJORN);//filtered
+		model.items().addItem(BJORN);//filtered
 		assertEquals(3, filteredCounter.get());
 		assertEquals(2, visibleCounter.get());
 		assertEquals(3, itemsCounter.get());
 
-		testModel.items().addItem(ANNA);//visible
+		model.items().addItem(ANNA);//visible
 		assertEquals(3, filteredCounter.get());
 		assertEquals(3, visibleCounter.get());
 		assertEquals(4, itemsCounter.get());
 
-		testModel.items().addItems(asList(KALLI, SIGGI));//visible
+		model.items().addItems(asList(KALLI, SIGGI));//visible
 		assertEquals(3, filteredCounter.get());
 		assertEquals(5, visibleCounter.get());
 		assertEquals(6, itemsCounter.get());
 
-		testModel.items().removeItem(BJORN);//filtered
+		model.items().removeItem(BJORN);//filtered
 		assertEquals(4, filteredCounter.get());
 		assertEquals(5, visibleCounter.get());
 		assertEquals(7, itemsCounter.get());
 
-		testModel.items().addItems(asList(BJORN, TOMAS));//filtered and visible
+		model.items().addItems(asList(BJORN, TOMAS));//filtered and visible
 		assertEquals(5, filteredCounter.get());
 		assertEquals(6, visibleCounter.get());
 		assertEquals(9, itemsCounter.get());
 
-		testModel.items().visible().predicate().clear();
+		model.items().visible().predicate().clear();
 		assertEquals(6, filteredCounter.get());
 		assertEquals(7, visibleCounter.get());
 		assertEquals(10, itemsCounter.get());

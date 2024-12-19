@@ -24,7 +24,6 @@ import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -62,7 +61,6 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 	private final Map<Attribute<?>, State> attributeValid = new HashMap<>();
 
 	private final EntityDefinition entityDefinition;
-	private final EntityConnectionProvider connectionProvider;
 	private final State primaryKeyNull = State.state(true);
 	private final State entityValid = State.state();
 	private final DefaultExists exists;
@@ -72,9 +70,8 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 
 	private final Entity entity;
 
-	DefaultEntityEditor(EntityDefinition entityDefinition, EntityConnectionProvider connectionProvider) {
-		this.entityDefinition = entityDefinition;
-		this.connectionProvider = connectionProvider;
+	DefaultEntityEditor(EntityDefinition entityDefinition) {
+		this.entityDefinition = requireNonNull(entityDefinition);
 		this.entity = createEntity(AttributeDefinition::defaultValue);
 		this.exists = new DefaultExists(entity.definition());
 		this.modified = new DefaultModified();
@@ -110,13 +107,6 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 	@Override
 	public void defaults() {
 		set(null);
-	}
-
-	@Override
-	public void refresh() {
-		if (exists.get()) {
-			set(connectionProvider.connection().select(entity.primaryKey()));
-		}
 	}
 
 	@Override
@@ -210,9 +200,7 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 
 	@Override
 	public <T> EntityEditModel.ValueEditor<T> value(Attribute<T> attribute) {
-		entityDefinition.attributes().definition(attribute);
-
-		return (EntityEditModel.ValueEditor<T>) valueEditors.computeIfAbsent(attribute, k -> new DefaultValueEditor<>(attribute));
+		return (EntityEditModel.ValueEditor<T>) valueEditors.computeIfAbsent(attribute, this::createValueEditor);
 	}
 
 	void setOrDefaults(Entity entity) {
@@ -228,16 +216,8 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 		changed.accept(entity);
 	}
 
-	EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
-	}
-
-	EntityDefinition entityDefinition() {
-		return entityDefinition;
-	}
-
-	Entity entity() {
-		return entity;
+	Entity copy() {
+		return entity.copy().mutable();
 	}
 
 	private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
@@ -376,6 +356,12 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 						.map(entityDefinition.columns()::definition)
 						.map(ColumnDefinition.class::cast)
 						.anyMatch(columnDefinition -> !columnDefinition.readOnly());
+	}
+
+	private <T> DefaultValueEditor<?> createValueEditor(Attribute<T> attribute) {
+		entityDefinition.attributes().definition(attribute);
+
+		return new DefaultValueEditor<>(attribute);
 	}
 
 	private interface ValueSupplier {

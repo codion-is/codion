@@ -174,6 +174,12 @@ public interface EntityEditModel {
 	State postEditEvents();
 
 	/**
+	 * Refreshes the active Entity from the database, discarding all changes.
+	 * If the active Entity is new then calling this method has no effect.
+	 */
+	void refresh();
+
+	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
 	 * Performs an insert on the active entity, sets the primary key values of the active entity
 	 * according to the primary key of the inserted entity
@@ -375,12 +381,6 @@ public interface EntityEditModel {
 		 * @see AttributeDefinition#defaultValue()
 		 */
 		void defaults();
-
-		/**
-		 * Refreshes the active Entity from the database, discarding all changes.
-		 * If the active Entity is new then calling this method has no effect.
-		 */
-		void refresh();
 
 		/**
 		 * Reverts all attribute value changes.

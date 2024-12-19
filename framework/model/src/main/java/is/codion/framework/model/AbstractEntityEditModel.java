@@ -56,6 +56,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
 
+	private final EntityDefinition entityDefinition;
+	private final EntityConnectionProvider connectionProvider;
 	private final DefaultEntityEditor editor;
 	private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
 
@@ -68,20 +70,21 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param connectionProvider the {@link EntityConnectionProvider} instance
 	 */
 	protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		EntityDefinition entityDefinition = requireNonNull(connectionProvider).entities().definition(requireNonNull(entityType));
-		this.editor = new DefaultEntityEditor(entityDefinition, connectionProvider);
+		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(requireNonNull(entityType));
+		this.connectionProvider = connectionProvider;
+		this.editor = new DefaultEntityEditor(entityDefinition);
 		this.states = new States(entityDefinition.readOnly());
 		this.events = new Events(states.postEditEvents);
 	}
 
 	@Override
 	public final Entities entities() {
-		return editor.connectionProvider().entities();
+		return connectionProvider.entities();
 	}
 
 	@Override
 	public final EntityDefinition entityDefinition() {
-		return editor.entityDefinition();
+		return entityDefinition;
 	}
 
 	@Override
@@ -121,12 +124,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final EntityType entityType() {
-		return editor.entity().entityType();
+		return entityDefinition.entityType();
 	}
 
 	@Override
 	public final EntityConnectionProvider connectionProvider() {
-		return editor.connectionProvider();
+		return connectionProvider;
 	}
 
 	@Override
@@ -147,6 +150,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final <T> ValueEditor<T> value(Attribute<T> attribute) {
 		return editor.value(attribute);
+	}
+
+	@Override
+	public final void refresh() {
+		if (editor.exists().get()) {
+			editor.set(connectionProvider.connection().select(editor.copy().primaryKey()));
+		}
 	}
 
 	@Override
@@ -313,7 +323,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param values the foreign key entities
 	 */
 	protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> values) {
-		Entity currentForeignKeyValue = editor.entity().entity(foreignKey);
+		Entity currentForeignKeyValue = editor.value(foreignKey).get();
 		if (currentForeignKeyValue != null) {
 			for (Entity replacementValue : values) {
 				if (currentForeignKeyValue.equals(replacementValue)) {
@@ -429,7 +439,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private Collection<Entity> entityForInsert() {
-			Entity toInsert = editor.entity().copy().mutable();
+			Entity toInsert = editor.copy();
 			if (toInsert.definition().primaryKey().generated()) {
 				toInsert.clearPrimaryKey();
 			}
@@ -483,7 +493,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Collection<Entity> entities;
 
 		private DefaultUpdate() {
-			entities = singleton(editor.entity().copy().mutable());
+			entities = singleton(editor.copy());
 			states.verifyUpdateEnabled(entities.size());
 			editor.validate(entities);
 			verifyModified(entities);
@@ -568,7 +578,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private Entity activeEntity() {
-			Entity copy = editor.entity().copy().mutable();
+			Entity copy = editor.copy();
 			copy.revert();
 
 			return copy;
