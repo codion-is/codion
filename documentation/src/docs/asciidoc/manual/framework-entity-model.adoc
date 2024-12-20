@@ -32,11 +32,6 @@ include::{dir-source}/is/codion/manual/store/model/AddressModel.java[tags=addres
 
 [source,java]
 ----
-include::{dir-source}/is/codion/manual/store/model/CustomerModel.java[tags=customerModel]
-----
-
-[source,java]
-----
 include::{dir-source}/is/codion/manual/store/model/CustomerAddressModel.java[tags=customerAddressModel]
 ----
 

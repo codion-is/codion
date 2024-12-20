@@ -27,8 +27,10 @@ public class StoreApplicationModel extends SwingEntityApplicationModel {
 	public StoreApplicationModel(EntityConnectionProvider connectionProvider) {
 		super(connectionProvider);
 
-		CustomerModel customerModel = new CustomerModel(connectionProvider);
-		CustomerAddressModel customerAddressModel = new CustomerAddressModel(connectionProvider);
+		CustomerModel customerModel =
+						new CustomerModel(connectionProvider);
+		CustomerAddressModel customerAddressModel =
+						new CustomerAddressModel(connectionProvider);
 
 		customerModel.addDetailModel(customerAddressModel);
 

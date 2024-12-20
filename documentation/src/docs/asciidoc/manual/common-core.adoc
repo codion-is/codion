@@ -5,7 +5,7 @@
 [#_core_classes]
 == Core classes
 
-Three common classes used throughout the framework are {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] and their respective observers {url-javadoc}{common-core}/is/codion/common/observable/Observer.html[Observer] and {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver].
+Three common classes used throughout the framework are {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] and their respective observers {url-javadoc}{common-core}/is/codion/common/observable/Observer.html[Observer] and {url-javadoc}{common-core}/is/codion/common/state/ObservableState.html[ObservableState].
 
 === Event
 
@@ -104,22 +104,22 @@ skinparam genericDisplay old
 
 interface State {
     +void set(Boolean value)
-    +StateObserver observer()
+    +ObservableState observer()
     +void link(Value<Boolean> value)
 }
 
-interface StateObserver {
+interface ObservableState {
     +Boolean get()
-    +StateObserver not()
+    +ObservableState not()
 }
 
 interface Value<Boolean> {}
 
 State -|> Value
-State -|> StateObserver
+State -|> ObservableState
 -------------------------------------------
 
-The {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver].
+The {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}{common-core}/is/codion/common/state/ObservableState.html[ObservableState].
 A *State* implements *Value<Boolean>* and is non-nullable with null translating to false.
 
 States are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class.

@@ -32,17 +32,24 @@ public class CustomerModel extends SwingEntityModel {
 
 	// tag::bindEvents[]
 	private void bindEvents() {
-		tableModel().refresher().active().addConsumer(refreshing -> {
-			if (refreshing) {
-				System.out.println("Refresh is about to start");
-			}
-			else {
-				System.out.println("Refresh is about to end");
-			}
-		});
+		CustomerTableModel tableModel = tableModel();
 
-		editModel().value(Customer.FIRST_NAME).addConsumer(value ->
-						System.out.println("First name changed to " + value));
+		tableModel.selection().items()
+						.addConsumer(selected ->
+										System.out.println("Items selected: " + selected));
+
+		tableModel.refresher().success()
+						.addListener(() -> System.out.println("Refresh successful"));
+
+		CustomerEditModel editModel = editModel();
+
+		editModel.afterInsert()
+						.addConsumer(inserted ->
+														System.out.println("Entities inserted" + inserted));
+
+		editModel.value(Customer.FIRST_NAME).edited()
+						.addConsumer(firstName ->
+										System.out.println("First name changed to " + firstName));
 	}
 	// end::bindEvents[]
 }

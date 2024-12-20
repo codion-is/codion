@@ -370,8 +370,12 @@ public interface EntityEditModel {
 		Entity get();
 
 		/**
-		 * Sets the given entity or defaults if null. Use {@link #clear()} in order to clear the entity of all values.
+		 * <p>Populates this editor with the values from the given entity or sets the default value for all attributes in case it is null.
+		 * <p>Use {@link #clear()} in order to clear the editor of all values.
 		 * @param entity the entity to set, if null, then defaults are set
+		 * @see ValueEditor#defaultValue()
+		 * @see ValueEditor#persist()
+		 * @see AttributeDefinition#defaultValue()
 		 */
 		void set(Entity entity);
 
@@ -415,16 +419,16 @@ public interface EntityEditModel {
 
 		/**
 		 * @return an observer notified each time the entity is about to be changed
-		 * via {@link EntityEditor#set(Entity)} or {@link EntityEditor#defaults()}
-		 * @see EntityEditor#set(Entity)
+		 * via {@link #set(Entity)} or {@link #defaults()}
+		 * @see #set(Entity)
 		 * @see #defaults()
 		 */
 		Observer<Entity> changing();
 
 		/**
-		 * Returns an observer notified each time a value changes, either via its associated {@link ValueEditor}
-		 * instance or when the entity is set via {@link EntityEditor#set(Entity)} or {@link EntityEditor#defaults()}.
-		 * @return an observer notified each time a value changes
+		 * Returns an observer notified each time a value is changed, either via its associated {@link ValueEditor}
+		 * instance or when the entity is set via {@link #set(Entity)} or {@link #defaults()}.
+		 * @return an observer notified each time a value is changed
 		 */
 		Observer<Attribute<?>> valueChanged();
 
