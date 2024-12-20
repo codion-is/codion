@@ -59,9 +59,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
 	}
 
 	private Double averageCityPopulation(Entity country) {
-		if (country == null) {
-			return null;
-		}
-		return connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE));
+		return country == null ? null :
+						connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE));
 	}
 }

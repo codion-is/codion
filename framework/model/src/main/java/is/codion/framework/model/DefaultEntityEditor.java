@@ -85,7 +85,7 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 
 	@Override
 	public void set(Entity entity) {
-		changing.accept(entity);
+		changing.accept(entity == null ? null : entity.immutable());
 		setOrDefaults(entity);
 	}
 
@@ -177,19 +177,19 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 	}
 
 	@Override
-	public final void validate(Attribute<?> attribute) {
+	public void validate(Attribute<?> attribute) {
 		validator.getOrThrow().validate(entity, attribute);
 	}
 
 	@Override
-	public final void validate(Collection<Entity> entities) {
+	public void validate(Collection<Entity> entities) {
 		for (Entity entityToValidate : requireNonNull(entities)) {
 			validate(entityToValidate);
 		}
 	}
 
 	@Override
-	public final void validate(Entity entity) {
+	public void validate(Entity entity) {
 		if (entity.entityType().equals(entityDefinition.entityType())) {
 			validator.getOrThrow().validate(entity);
 		}

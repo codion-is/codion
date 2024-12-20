@@ -78,7 +78,7 @@ class CompletionDocument extends PlainDocument {
 		if (selecting) {
 			super.replace(offset, length, string, attrs);
 		}
-		else if (string != null && string.length() > 0) {
+		else if (string != null && !string.isEmpty()) {
 			if (length > 0) {
 				remove(offset, length);
 			}
@@ -96,7 +96,7 @@ class CompletionDocument extends PlainDocument {
 			boolean selectFirst = false;
 			// user hit backspace => move the selection backwards
 			// old item keeps being selected unless we've backspaced beyond the first character
-			if (searchString.length() > 0) {
+			if (!searchString.isEmpty()) {
 				searchString.replace(searchString.length() - 1, searchString.length(), "");
 			}
 			if (offs > 0) {
