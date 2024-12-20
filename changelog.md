@@ -24,6 +24,8 @@ Codion Change Log
 - ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
 - Server.serverLoad() removed, related refactoring.
 - ServerConfiguration.Builder.rmiClientSocketFactory() and rmiServerSocketFactory() removed.
+### is.codion.dbms.h2
+- H2DatabaseFactory.runScript() static methods replaced with ScriptRunner.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.ComboBoxSelection.value() and nullSelected() removed.
 - DefaultFilterTableSelection bug fixed, back to inheriting from DefaultListSelectionModel since some JTable keyboard actions rely on it.

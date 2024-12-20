@@ -21,9 +21,10 @@ package is.codion.dbms.h2;
 import is.codion.common.Text;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.user.User;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -63,42 +64,86 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 	}
 
 	/**
-	 * Runs the given script using the RunScript tool, with the default sysadmin username (sa) and default charset
-	 * @param database the database
-	 * @param scriptPath the path to the script
-	 * @throws SQLException in case of an exception
+	 * Creates a new ScriptRunner instance, using by default the sysadmin username (sa) and the default system charset.
+	 * @param jdbcUrl the jdbc URL
+	 * @return a new {@link ScriptRunner} instance
 	 */
-	public static void runScript(Database database, String scriptPath) throws SQLException {
-		runScript(database, scriptPath, SYSADMIN_USERNAME, "", Charset.defaultCharset());
+	public static ScriptRunner scriptRunner(String jdbcUrl) {
+		return new DefaultScriptRunner(jdbcUrl);
 	}
 
 	/**
-	 * Runs the given script using the RunScript tool
-	 * @param database the database
-	 * @param scriptPath the path to the script
-	 * @param username the username to run the script under
-	 * @param password the password
-	 * @param scriptCharset the script character set
-	 * @throws SQLException in case of an exception
+	 * Runs scripts using the H2 RunScript tool.
 	 */
-	public static void runScript(Database database, String scriptPath, String username, String password, Charset scriptCharset) throws SQLException {
-		try {
-			Class<?> runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
-			Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, Charset.class, boolean.class);
-			execute.invoke(runScriptToolClass.getDeclaredConstructor().newInstance(),
-							database.url(), username, password, scriptPath, scriptCharset, false);
+	public interface ScriptRunner {
+
+		/**
+		 * @param user the user credentials to use
+		 * @return this {@link ScriptRunner}
+		 */
+		ScriptRunner user(User user);
+
+		/**
+		 * @param charset the script charset
+		 * @return this {@link ScriptRunner}
+		 */
+		ScriptRunner charset(Charset charset);
+
+		/**
+		 * @param scriptPath the path to the script to run
+		 * @return this {@link ScriptRunner}
+		 */
+		ScriptRunner run(String scriptPath);
+	}
+
+	private static final class DefaultScriptRunner implements ScriptRunner {
+
+		private final String jdbcUrl;
+
+		private User user = User.user(SYSADMIN_USERNAME);
+		private Charset charset = Charset.defaultCharset();
+
+		private DefaultScriptRunner(String jdbcUrl) {
+			this.jdbcUrl = requireNonNull(jdbcUrl);
 		}
-		catch (ClassNotFoundException cle) {
-			throw new RuntimeException(RUN_TOOL_CLASS_NAME + " must be on classpath for creating an embedded H2 database", cle);
+
+		@Override
+		public ScriptRunner user(User user) {
+			this.user = requireNonNull(user);
+			return this;
 		}
-		catch (InvocationTargetException ite) {
-			if (ite.getCause() instanceof SQLException) {
-				throw (SQLException) ite.getCause();
+
+		@Override
+		public ScriptRunner charset(Charset charset) {
+			this.charset = requireNonNull(charset);
+			return this;
+		}
+
+		@Override
+		public ScriptRunner run(String scriptPath) {
+			runScript(jdbcUrl, scriptPath, user.username(), String.valueOf(user.password()), charset);
+			return this;
+		}
+
+		private static void runScript(String jdbcUrl, String scriptPath, String username, String password, Charset scriptCharset) {
+			try {
+				Class<?> runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
+				runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, Charset.class, boolean.class)
+								.invoke(runScriptToolClass.getDeclaredConstructor().newInstance(),
+												jdbcUrl, username, password, scriptPath, scriptCharset, false);
 			}
-			throw new RuntimeException(ite.getCause());
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+			catch (ClassNotFoundException cle) {
+				throw new RuntimeException(RUN_TOOL_CLASS_NAME + " must be on classpath for running scripts", cle);
+			}
+			catch (InvocationTargetException ite) {
+				if (ite.getCause() instanceof SQLException) {
+					throw new DatabaseException((SQLException) ite.getCause());
+				}
+				throw new RuntimeException(ite.getCause());
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 }
