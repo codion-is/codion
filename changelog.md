@@ -38,6 +38,8 @@ Codion Change Log
 - DefaultProgressWorkerDialogBuilder, CancelException handling removed, some refactoring.
 ### is.codion.framework.domain
 - EntityDefinition.description() now returns Optional.
+- DefaultEntityDefinition, source attributes validated for denormalized attributes.
+- DenormalizedValueProvider now validates the denormalized attribute in case the source is a foreign key.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.clientType() and clientVersion() now return Optional.
 ### is.codion.framework.model

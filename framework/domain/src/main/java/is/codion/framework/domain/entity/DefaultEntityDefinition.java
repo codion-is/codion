@@ -716,6 +716,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 							.map(DerivedAttributeDefinition.class::cast)
 							.forEach(derivedAttribute -> {
 								List<Attribute<?>> sourceAttributes = derivedAttribute.sourceAttributes();
+								validateSourceAttributes(sourceAttributes);
 								for (Attribute<?> sourceAttribute : sourceAttributes) {
 									derivedAttributeMap.computeIfAbsent(sourceAttribute, attribute -> new HashSet<>()).add(derivedAttribute.attribute());
 								}
@@ -737,6 +738,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			return primaryKeyColumnDefinitions.stream()
 							.map(ColumnDefinition::attribute)
 							.collect(toList());
+		}
+
+		private void validateSourceAttributes(List<Attribute<?>> sourceAttributes) {
+			sourceAttributes.forEach(sourceAttribute -> {
+				if (!attributeMap.containsKey(sourceAttribute)) {
+					throw new IllegalArgumentException("Source attribute " + sourceAttribute + " is not part of entity");
+				}
+			});
 		}
 
 		private static void preventDuplicateAttributeNames(List<AttributeDefinition.Builder<?, ?>> builders) {
@@ -820,7 +829,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 						AttributeDefinition<?>> attributeMap, ForeignKey foreignKey) {
 			ColumnDefinition<?> definition = (ColumnDefinition<?>) attributeMap.get(reference.column());
 			if (definition == null) {
-				throw new IllegalArgumentException("Column definition based on column: " + reference.column()
+				throw new IllegalArgumentException("Column: " + reference.column()
 								+ " not found when initializing foreign key: " + foreignKey);
 			}
 

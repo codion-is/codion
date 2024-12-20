@@ -19,8 +19,11 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serial;
+
+import static java.util.Objects.requireNonNull;
 
 final class DenormalizedValueProvider<T> implements DerivedAttribute.Provider<T> {
 
@@ -31,6 +34,14 @@ final class DenormalizedValueProvider<T> implements DerivedAttribute.Provider<T>
 	private final Attribute<T> denormalizedAttribute;
 
 	DenormalizedValueProvider(Attribute<Entity> entityAttribute, Attribute<T> denormalizedAttribute) {
+		requireNonNull(entityAttribute);
+		requireNonNull(denormalizedAttribute);
+		if (entityAttribute instanceof ForeignKey) {
+			EntityType referencedType = ((ForeignKey) entityAttribute).referencedType();
+			if (!denormalizedAttribute.entityType().equals(referencedType)){
+				throw new IllegalArgumentException("Denormalized attribute " + denormalizedAttribute + " must be from entity" + referencedType);
+			}
+		}
 		this.entityAttribute = entityAttribute;
 		this.denormalizedAttribute = denormalizedAttribute;
 	}

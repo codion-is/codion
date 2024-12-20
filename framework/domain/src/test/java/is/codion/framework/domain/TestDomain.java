@@ -244,7 +244,7 @@ public final class TestDomain extends DomainModel {
 														.foreignKey()
 														.caption(Detail2.MASTER_FK.name()),
 										Detail2.MASTER_NAME.define()
-														.denormalized(Detail2.MASTER_FK, Master.NAME)
+														.denormalized(Detail2.MASTER_FK, Master2.NAME)
 														.caption(Detail2.MASTER_NAME.name()),
 										Detail2.MASTER_CODE.define()
 														.column()

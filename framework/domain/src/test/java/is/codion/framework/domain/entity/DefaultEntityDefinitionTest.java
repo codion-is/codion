@@ -218,6 +218,47 @@ public class DefaultEntityDefinitionTest {
 	}
 
 	@Test
+	void invalidDerivedAttribute() {
+		EntityType entityType = DOMAIN_TYPE.entityType("invalidDerivedAttribute");
+		Column<Integer> name = entityType.integerColumn("name");
+		Column<String> info = entityType.stringColumn("info");
+		Attribute<String> derived = entityType.stringAttribute("derived");
+		assertThrows(IllegalArgumentException.class, () -> entityType.define(
+										entityType.integerColumn("id").define().primaryKey(),
+										//name.define().column(), <- the problem
+										info.define().column(),
+										derived.define().derived(sourceValues -> null, name, info))
+						.build());
+	}
+
+	@Test
+	void invalidForeignKey() {
+		assertThrows(IllegalArgumentException.class, () -> Employee.TYPE.define(
+										Employee.ID.define()
+														.primaryKey(),
+//										Employee.DEPARTMENT_NO.define() <- the problem
+//														.column(),
+										Employee.DEPARTMENT_FK.define()
+														.foreignKey())
+						.build());
+	}
+
+	@Test
+	void invalidDenormalizedAttribute() {
+		Attribute<String> denormalized = Employee.TYPE.stringAttribute("denormalized");
+		assertThrows(IllegalArgumentException.class, () -> Employee.TYPE.define(
+										Employee.ID.define()
+														.primaryKey(),
+										Employee.DEPARTMENT_NO.define()
+														.column(),
+										Employee.DEPARTMENT_FK.define()
+														.foreignKey(),
+										denormalized.define()
+														.denormalized(Employee.DEPARTMENT_FK, Employee.JOB))// <- the problem
+						.build());
+	}
+
+	@Test
 	void testGroupByColumns() {
 		EntityType entityType = DOMAIN_TYPE.entityType("testGroupByColumns");
 		class TestDomain extends DomainModel {
