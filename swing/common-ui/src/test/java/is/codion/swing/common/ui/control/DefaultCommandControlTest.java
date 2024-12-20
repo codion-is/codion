@@ -70,9 +70,9 @@ public final class DefaultCommandControlTest {
 			assertTrue(button.isEnabled());
 			button.doClick();
 			assertEquals(1, callCount);
-			assertEquals(button.getForeground(), Color.RED);
-			assertEquals(button.getBackground(), Color.BLACK);
-			assertEquals(button.getFont(), font);
+			assertEquals(Color.RED, button.getForeground());
+			assertEquals(Color.BLACK, button.getBackground());
+			assertEquals(font, button.getFont());
 			assertThrows(UnsupportedOperationException.class, () -> control.putValue("test", "test"));
 		});
 	}
@@ -98,8 +98,8 @@ public final class DefaultCommandControlTest {
 		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "test");
 		Control test = Control.action(actionEvent -> {
 			assertSame(this, actionEvent.getSource());
-			assertEquals(actionEvent.getActionCommand(), "test");
-			assertEquals(actionEvent.getID(), ActionEvent.ACTION_PERFORMED);
+			assertEquals("test", actionEvent.getActionCommand());
+			assertEquals(ActionEvent.ACTION_PERFORMED, actionEvent.getID());
 		});
 		test.actionPerformed(event);
 	}

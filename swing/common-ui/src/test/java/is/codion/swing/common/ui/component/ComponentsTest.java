@@ -120,7 +120,7 @@ public final class ComponentsTest {
 						.background(Color.BLACK)
 						.link(value)
 						.buildValue();
-		assertEquals(componentValue.component().getText(), "42");
+		assertEquals("42", componentValue.component().getText());
 	}
 
 	@Test
@@ -135,7 +135,7 @@ public final class ComponentsTest {
 						.background(Color.BLACK)
 						.link(value)
 						.buildValue();
-		assertEquals(componentValue.component().getText(), "42");
+		assertEquals("42", componentValue.component().getText());
 	}
 
 	@Test
@@ -148,7 +148,7 @@ public final class ComponentsTest {
 						.maximumWidth(10)
 						.link(value)
 						.buildValue();
-		assertEquals(componentValue.component().getText(), "42");
+		assertEquals("42", componentValue.component().getText());
 	}
 
 	@Test

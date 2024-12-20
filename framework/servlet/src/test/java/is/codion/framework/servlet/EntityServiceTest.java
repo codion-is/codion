@@ -135,7 +135,7 @@ public class EntityServiceTest {
 
 		response = HTTP_CLIENT.send(createJsonRequest("isTransactionOpen"), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
-		value = OBJECT_MAPPER.readValue(new String((byte[]) response.body(), UTF_8), Boolean.class);
+		value = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), Boolean.class);
 		assertFalse(value);
 	}
 

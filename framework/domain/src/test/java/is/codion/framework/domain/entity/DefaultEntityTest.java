@@ -397,17 +397,17 @@ public class DefaultEntityTest {
 						detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
 
 		//assert values
-		assertEquals(testEntity.get(Detail.ID), detailId);
+		assertEquals(detailId, testEntity.get(Detail.ID));
 		assertTrue(testEntity.optional(Detail.ID).isPresent());
-		assertEquals(testEntity.get(Detail.INT), detailInt);
-		assertEquals(testEntity.get(Detail.DOUBLE), detailDouble);
-		assertEquals(testEntity.get(Detail.STRING), detailString);
-		assertEquals(testEntity.get(Detail.DATE), detailDate);
-		assertEquals(testEntity.get(Detail.TIMESTAMP), detailTimestamp);
-		assertEquals(testEntity.get(Detail.BOOLEAN), detailBoolean);
-		assertEquals(testEntity.get(Detail.MASTER_FK), referencedEntityValue);
-		assertEquals(testEntity.get(Detail.MASTER_NAME), masterName);
-		assertEquals(testEntity.get(Detail.MASTER_CODE), 7);
+		assertEquals(detailInt, testEntity.get(Detail.INT));
+		assertEquals(detailDouble, testEntity.get(Detail.DOUBLE));
+		assertEquals(detailString, testEntity.get(Detail.STRING));
+		assertEquals(detailDate, testEntity.get(Detail.DATE));
+		assertEquals(detailTimestamp, testEntity.get(Detail.TIMESTAMP));
+		assertEquals(detailBoolean, testEntity.get(Detail.BOOLEAN));
+		assertEquals(referencedEntityValue, testEntity.get(Detail.MASTER_FK));
+		assertEquals(masterName, testEntity.get(Detail.MASTER_NAME));
+		assertEquals(7, testEntity.get(Detail.MASTER_CODE));
 		assertFalse(testEntity.isNull(Detail.MASTER_ID));
 		assertTrue(testEntity.isNotNull(Detail.MASTER_ID));
 
@@ -545,20 +545,20 @@ public class DefaultEntityTest {
 		Entity employee = ENTITIES.builder(Employee.TYPE)
 						.with(Employee.COMMISSION, 1200d)
 						.build();
-		assertEquals(employee.get(Employee.COMMISSION), 1200d);
+		assertEquals(1200d, employee.get(Employee.COMMISSION));
 
 		employee.put(Employee.DEPARTMENT_FK, department);
-		assertEquals(employee.get(Employee.DEPARTMENT_FK), department);
+		assertEquals(department, employee.get(Employee.DEPARTMENT_FK));
 
 		LocalDateTime date = LocalDateTime.now();
 		employee.put(Employee.HIREDATE, date);
-		assertEquals(employee.get(Employee.HIREDATE), date);
+		assertEquals(date, employee.get(Employee.HIREDATE));
 
 		employee.put(Employee.ID, 123);
-		assertEquals(employee.get(Employee.ID), 123);
+		assertEquals(123, employee.get(Employee.ID));
 
 		employee.put(Employee.NAME, "noname");
-		assertEquals(employee.get(Employee.NAME), "noname");
+		assertEquals("noname", employee.get(Employee.NAME));
 
 		//noinspection rawtypes
 		assertThrows(IllegalArgumentException.class, () -> employee.put((Attribute) Employee.NAME, 42));

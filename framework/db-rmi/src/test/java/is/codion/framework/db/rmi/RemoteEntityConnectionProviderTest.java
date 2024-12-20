@@ -98,7 +98,7 @@ public class RemoteEntityConnectionProviderTest {
 							.clientType("test")
 							.user(UNIT_TEST_USER)
 							.build();
-			assertTrue(connectionProvider instanceof RemoteEntityConnectionProvider);
+			assertInstanceOf(RemoteEntityConnectionProvider.class, connectionProvider);
 			assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.connectionType());
 		}
 		finally {

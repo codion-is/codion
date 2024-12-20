@@ -210,7 +210,7 @@ abstract class AbstractHttpEntityConnectionTest {
 		List<String> values = connection.select(Department.NAME);
 		assertEquals(4, values.size());
 		List<Long> ids = connection.select(Department.ID);
-		assertTrue(ids.get(0) instanceof Long);
+		assertInstanceOf(Long.class, ids.get(0));
 	}
 
 	@Test

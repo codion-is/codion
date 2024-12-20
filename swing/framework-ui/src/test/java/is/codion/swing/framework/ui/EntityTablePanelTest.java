@@ -148,7 +148,7 @@ public class EntityTablePanelTest {
 		assertEquals(170, column.getPreferredWidth());
 		condition = testModel.queryModel().conditions().attribute(Detail.STRING);
 		assertFalse(condition.autoEnable().get());
-		assertEquals(condition.wildcard().get(), Wildcard.PREFIX);
+		assertEquals(Wildcard.PREFIX, condition.wildcard().get());
 		assertFalse(condition.caseSensitive().get());
 
 		tablePanel.clearPreferences();

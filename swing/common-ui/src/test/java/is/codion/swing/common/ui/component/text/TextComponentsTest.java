@@ -55,7 +55,7 @@ public class TextComponentsTest {
 		textArea.setText("123");
 		assertThrows(IllegalArgumentException.class, () -> textArea.setText("1234"));
 		DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
-		assertTrue(documentFilter instanceof CaseDocumentFilter);
+		assertInstanceOf(CaseDocumentFilter.class, documentFilter);
 		assertEquals(1, ((CaseDocumentFilter) documentFilter).validators().size());
 		TextComponents.maximumLength(document, -1);
 		textArea.setText("123456789");

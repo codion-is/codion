@@ -39,7 +39,7 @@ public final class DefaultProxyBuilderTest {
 			fail();
 		}
 		catch (Exception e) {
-			assertTrue(e.getCause() instanceof NoSuchMethodException);
+			assertInstanceOf(NoSuchMethodException.class, e.getCause());
 		}
 
 		List<Object> proxyInstance = ProxyBuilder.builder(List.class)

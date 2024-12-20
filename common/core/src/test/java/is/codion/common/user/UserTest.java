@@ -42,7 +42,7 @@ public class UserTest {
 		assertEquals(User.user("scott"), user);
 		user.clearPassword();
 		assertEquals("", String.valueOf(user.password()));
-		assertNotEquals(user, "scott");
+		assertNotEquals("scott", user);
 		assertEquals(user, User.parse("scott:blabla"));
 		assertEquals(User.user("scott"), User.user("ScoTT"));
 		assertEquals(Serializer.deserialize(Serializer.serialize(User.user("scott", "test".toCharArray()))), User.user("Scott"));

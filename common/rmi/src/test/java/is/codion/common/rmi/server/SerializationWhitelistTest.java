@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputFilter;
+import java.io.ObjectInputFilter.Status;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
@@ -79,12 +80,12 @@ public final class SerializationWhitelistTest {
 						"is.codion.common.state.ObservableState"
 		);
 		WhitelistFilter filter = SerializationWhitelist.whitelistFilter(whitelistItems);
-		assertEquals(filter.checkInput("is.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
-		assertEquals(filter.checkInput("is.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
-		assertEquals(filter.checkInput("is.codion.common.state.States"), ObjectInputFilter.Status.REJECTED);
-		assertEquals(filter.checkInput("is.codion.common.state.ObservableState"), ObjectInputFilter.Status.ALLOWED);
-		assertEquals(filter.checkInput("is.codion.common.event.Event"), ObjectInputFilter.Status.REJECTED);
-		assertEquals(filter.checkInput("is.codion.common.i18n.Messages"), ObjectInputFilter.Status.REJECTED);
+		assertEquals(Status.ALLOWED, filter.checkInput("is.codion.common.value.Value"));
+		assertEquals(Status.ALLOWED, filter.checkInput("is.codion.common.state.State"));
+		assertEquals(Status.REJECTED, filter.checkInput("is.codion.common.state.States"));
+		assertEquals(Status.ALLOWED, filter.checkInput("is.codion.common.state.ObservableState"));
+		assertEquals(Status.REJECTED, filter.checkInput("is.codion.common.event.Event"));
+		assertEquals(Status.REJECTED, filter.checkInput("is.codion.common.i18n.Messages"));
 	}
 
 	@Test
@@ -107,19 +108,19 @@ public final class SerializationWhitelistTest {
 						"java.lang.Byte"
 		);
 		WhitelistFilter filter = SerializationWhitelist.whitelistFilter(whitelistItems);
-		assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new byte[0].getClass()));
-		assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new byte[0][].getClass()));
-		assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new Byte[0].getClass()));
-		assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new Byte[0][].getClass()));
-		assertEquals(ObjectInputFilter.Status.REJECTED, filter.checkArrayInput(new Double[0].getClass()));
+		assertEquals(Status.ALLOWED, filter.checkArrayInput(new byte[0].getClass()));
+		assertEquals(Status.ALLOWED, filter.checkArrayInput(new byte[0][].getClass()));
+		assertEquals(Status.ALLOWED, filter.checkArrayInput(new Byte[0].getClass()));
+		assertEquals(Status.ALLOWED, filter.checkArrayInput(new Byte[0][].getClass()));
+		assertEquals(Status.REJECTED, filter.checkArrayInput(new Double[0].getClass()));
 	}
 
 	private static void testFilter(WhitelistFilter filter) {
-		assertEquals(filter.checkInput("is.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
-		assertEquals(filter.checkInput("is.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
-		assertEquals(filter.checkInput("is.codion.common.state.States"), ObjectInputFilter.Status.ALLOWED);
-		assertEquals(filter.checkInput("is.codion.common.state.ObservableState"), ObjectInputFilter.Status.ALLOWED);
-		assertEquals(filter.checkInput("is.codion.common.event.Event"), ObjectInputFilter.Status.REJECTED);
-		assertEquals(filter.checkInput("is.codion.common.i18n.Messages"), ObjectInputFilter.Status.ALLOWED);
+		assertEquals(Status.ALLOWED, filter.checkInput("is.codion.common.value.Value"));
+		assertEquals(Status.ALLOWED, filter.checkInput("is.codion.common.state.State"));
+		assertEquals(Status.ALLOWED, filter.checkInput("is.codion.common.state.States"));
+		assertEquals(Status.ALLOWED, filter.checkInput("is.codion.common.state.ObservableState"));
+		assertEquals(Status.REJECTED, filter.checkInput("is.codion.common.event.Event"));
+		assertEquals(Status.ALLOWED, filter.checkInput("is.codion.common.i18n.Messages"));
 	}
 }

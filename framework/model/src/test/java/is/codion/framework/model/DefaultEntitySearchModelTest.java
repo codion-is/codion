@@ -113,11 +113,11 @@ public final class DefaultEntitySearchModelTest {
 						.with(Employee.JOB, "CLERK")
 						.build();
 		searchModel.selection().entity().set(employee);
-		assertEquals(searchModel.searchString().get(), "CLERK");
+		assertEquals("CLERK", searchModel.searchString().get());
 		searchModel.stringFunction().clear();
 		searchModel.selection().entity().clear();
 		searchModel.selection().entity().set(employee);
-		assertEquals(searchModel.searchString().get(), "Darri");
+		assertEquals("Darri", searchModel.searchString().get());
 	}
 
 	@Test
@@ -131,7 +131,7 @@ public final class DefaultEntitySearchModelTest {
 		assertTrue(contains(result, "johnson"));
 		assertFalse(contains(result, "Andy"));
 		assertFalse(contains(result, "Andrew"));
-		assertEquals(searchModel.searchString().get(), "joh");
+		assertEquals("joh", searchModel.searchString().get());
 		searchModel.selection().entities().set(result);
 		assertFalse(searchModel.selection().empty().get());
 		assertEquals("John" + searchModel.separator().get() + "johnson", searchModel.searchString().get());

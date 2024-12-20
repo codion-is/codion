@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -272,6 +273,7 @@ public final class TestDomain extends DomainModel {
 
 	private static final class MasterComparator implements Comparator<Entity>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
@@ -525,6 +527,7 @@ public final class TestDomain extends DomainModel {
 
 	private static final class DepartmentNameProvider implements DerivedAttribute.Provider<String>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override

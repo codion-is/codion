@@ -576,11 +576,11 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void selectSingle() {
 		Entity sales = connection.selectSingle(Department.DNAME.equalTo("SALES"));
-		assertEquals(sales.get(Department.DNAME), "SALES");
+		assertEquals("SALES", sales.get(Department.DNAME));
 		sales = connection.select(sales.primaryKey());
-		assertEquals(sales.get(Department.DNAME), "SALES");
+		assertEquals("SALES", sales.get(Department.DNAME));
 		sales = connection.selectSingle(Condition.custom(Department.DEPARTMENT_CONDITION_SALES_TYPE));
-		assertEquals(sales.get(Department.DNAME), "SALES");
+		assertEquals("SALES", sales.get(Department.DNAME));
 
 		Entity king = connection.selectSingle(Employee.NAME.equalTo("KING"));
 		assertTrue(king.contains(Employee.MGR_FK));
@@ -941,7 +941,7 @@ public class DefaultLocalEntityConnectionTest {
 				}
 			}
 			catch (DatabaseException e) {
-				e.printStackTrace();
+				fail();
 			}
 			baseConnection.close();
 			optimisticConnection.close();
@@ -1214,28 +1214,28 @@ public class DefaultLocalEntityConnectionTest {
 										.ascending(NULLS_FIRST, Employee.MGR)
 										.build())
 						.build());
-		assertEquals(result.get(0).get(Employee.NAME), "KING");
+		assertEquals("KING", result.get(0).get(Employee.NAME));
 
 		result = connection.select(Select.all(Employee.TYPE)
 						.orderBy(OrderBy.builder()
 										.ascending(NULLS_LAST, Employee.MGR)
 										.build())
 						.build());
-		assertEquals(result.get(result.size() - 1).get(Employee.NAME), "KING");
+		assertEquals("KING", result.get(result.size() - 1).get(Employee.NAME));
 
 		result = connection.select(Select.all(Employee.TYPE)
 						.orderBy(OrderBy.builder()
 										.descending(NULLS_FIRST, Employee.MGR)
 										.build())
 						.build());
-		assertEquals(result.get(0).get(Employee.NAME), "KING");
+		assertEquals("KING", result.get(0).get(Employee.NAME));
 
 		result = connection.select(Select.all(Employee.TYPE)
 						.orderBy(OrderBy.builder()
 										.descending(NULLS_LAST, Employee.MGR)
 										.build())
 						.build());
-		assertEquals(result.get(result.size() - 1).get(Employee.NAME), "KING");
+		assertEquals("KING", result.get(result.size() - 1).get(Employee.NAME));
 	}
 
 	@Test

@@ -92,7 +92,7 @@ public final class DefaultKeyTest {
 						.build();
 		assertEquals(compMasterKey, compMasterKey);
 		assertNotEquals(empKey1, compMasterKey);
-		assertNotEquals(compMasterKey, new Object());
+		assertNotEquals(new Object(), compMasterKey);
 
 		Entity.Key compMasterKey2 = ENTITIES.keyBuilder(CompositeMaster.TYPE)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID, 1)

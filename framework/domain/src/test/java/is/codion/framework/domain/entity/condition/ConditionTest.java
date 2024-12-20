@@ -329,7 +329,7 @@ public final class ConditionTest {
 		assertEquals(columnDefinition.expression() + " = ?", condition.toString(departmentDefinition));
 		condition = Department.NAME.isNull();
 		assertEquals(columnDefinition.expression() + " IS NULL", condition.toString(departmentDefinition));
-		condition = Department.NAME.equalTo((String) null);
+		condition = Department.NAME.equalTo(null);
 		assertEquals(columnDefinition.expression() + " IS NULL", condition.toString(departmentDefinition));
 		condition = Department.NAME.in(emptyList());
 		assertEquals(columnDefinition.expression() + " IN ()", condition.toString(departmentDefinition));

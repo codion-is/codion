@@ -46,7 +46,7 @@ public class ItemsTest {
 		assertEquals("hello", thirdItem.caption());
 
 		assertEquals(newItem, Item.item("hello"));
-		assertNotEquals(newItem, "hello");
+		assertNotEquals("hello", newItem);
 
 		assertEquals(0, Item.item(null).hashCode());
 

@@ -43,7 +43,7 @@ public final class AbstractEntityConnectionProviderTest {
 		EntityConnectionProvider provider = builder.build();
 		assertEquals("description", provider.description());
 		assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.connectionType());
-		assertEquals(provider.entities(), ENTITIES);
+		assertEquals(ENTITIES, provider.entities());
 		assertEquals(UNIT_TEST_USER, provider.user());
 
 		EntityConnection connection1 = provider.connection();

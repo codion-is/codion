@@ -59,44 +59,44 @@ public final class EntitiesTest {
 		EntityDefinition definition = entities.definition(Detail.TYPE);
 
 		//assert types
-		assertEquals(definition.columns().definition(Detail.ID).attribute().type().valueClass(), Long.class);
-		assertEquals(definition.columns().definition(Detail.SHORT).attribute().type().valueClass(), Short.class);
-		assertEquals(definition.columns().definition(Detail.INT).attribute().type().valueClass(), Integer.class);
-		assertEquals(definition.columns().definition(Detail.DOUBLE).attribute().type().valueClass(), Double.class);
-		assertEquals(definition.columns().definition(Detail.STRING).attribute().type().valueClass(), String.class);
-		assertEquals(definition.columns().definition(Detail.DATE).attribute().type().valueClass(), LocalDate.class);
-		assertEquals(definition.columns().definition(Detail.TIMESTAMP).attribute().type().valueClass(), LocalDateTime.class);
-		assertEquals(definition.columns().definition(Detail.BOOLEAN).attribute().type().valueClass(), Boolean.class);
-		assertEquals(definition.foreignKeys().definition(Detail.MASTER_FK).attribute().type().valueClass(), Entity.class);
-		assertEquals(definition.columns().definition(Detail.MASTER_ID).attribute().type().valueClass(), Long.class);
-		assertEquals(definition.attributes().definition(Detail.MASTER_NAME).attribute().type().valueClass(), String.class);
-		assertEquals(definition.attributes().definition(Detail.MASTER_CODE).attribute().type().valueClass(), Integer.class);
+		assertEquals(Long.class, definition.columns().definition(Detail.ID).attribute().type().valueClass());
+		assertEquals(Short.class, definition.columns().definition(Detail.SHORT).attribute().type().valueClass());
+		assertEquals(Integer.class, definition.columns().definition(Detail.INT).attribute().type().valueClass());
+		assertEquals(Double.class, definition.columns().definition(Detail.DOUBLE).attribute().type().valueClass());
+		assertEquals(String.class, definition.columns().definition(Detail.STRING).attribute().type().valueClass());
+		assertEquals(LocalDate.class, definition.columns().definition(Detail.DATE).attribute().type().valueClass());
+		assertEquals(LocalDateTime.class, definition.columns().definition(Detail.TIMESTAMP).attribute().type().valueClass());
+		assertEquals(Boolean.class, definition.columns().definition(Detail.BOOLEAN).attribute().type().valueClass());
+		assertEquals(Entity.class, definition.foreignKeys().definition(Detail.MASTER_FK).attribute().type().valueClass());
+		assertEquals(Long.class, definition.columns().definition(Detail.MASTER_ID).attribute().type().valueClass());
+		assertEquals(String.class, definition.attributes().definition(Detail.MASTER_NAME).attribute().type().valueClass());
+		assertEquals(Integer.class, definition.attributes().definition(Detail.MASTER_CODE).attribute().type().valueClass());
 
 		//assert column names
-		assertEquals(definition.columns().definition(Detail.ID).attribute(), Detail.ID);
-		assertEquals(definition.columns().definition(Detail.SHORT).attribute(), Detail.SHORT);
-		assertEquals(definition.columns().definition(Detail.INT).attribute(), Detail.INT);
-		assertEquals(definition.columns().definition(Detail.DOUBLE).attribute(), Detail.DOUBLE);
-		assertEquals(definition.columns().definition(Detail.STRING).attribute(), Detail.STRING);
-		assertEquals(definition.columns().definition(Detail.DATE).attribute(), Detail.DATE);
-		assertEquals(definition.columns().definition(Detail.TIMESTAMP).attribute(), Detail.TIMESTAMP);
-		assertEquals(definition.columns().definition(Detail.BOOLEAN).attribute(), Detail.BOOLEAN);
-		assertEquals(definition.columns().definition(Detail.MASTER_ID).attribute(), Detail.MASTER_ID);
-		assertEquals(definition.attributes().definition(Detail.MASTER_NAME).attribute(), Detail.MASTER_NAME);
-		assertEquals(definition.attributes().definition(Detail.MASTER_CODE).attribute(), Detail.MASTER_CODE);
+		assertEquals(Detail.ID, definition.columns().definition(Detail.ID).attribute());
+		assertEquals(Detail.SHORT, definition.columns().definition(Detail.SHORT).attribute());
+		assertEquals(Detail.INT, definition.columns().definition(Detail.INT).attribute());
+		assertEquals(Detail.DOUBLE, definition.columns().definition(Detail.DOUBLE).attribute());
+		assertEquals(Detail.STRING, definition.columns().definition(Detail.STRING).attribute());
+		assertEquals(Detail.DATE, definition.columns().definition(Detail.DATE).attribute());
+		assertEquals(Detail.TIMESTAMP, definition.columns().definition(Detail.TIMESTAMP).attribute());
+		assertEquals(Detail.BOOLEAN, definition.columns().definition(Detail.BOOLEAN).attribute());
+		assertEquals(Detail.MASTER_ID, definition.columns().definition(Detail.MASTER_ID).attribute());
+		assertEquals(Detail.MASTER_NAME, definition.attributes().definition(Detail.MASTER_NAME).attribute());
+		assertEquals(Detail.MASTER_CODE, definition.attributes().definition(Detail.MASTER_CODE).attribute());
 
 		//assert captions
 		assertNotNull(definition.columns().definition(Detail.ID).caption());
-		assertEquals(definition.columns().definition(Detail.SHORT).caption(), Detail.SHORT.name());
-		assertEquals(definition.columns().definition(Detail.INT).caption(), Detail.INT.name());
-		assertEquals(definition.columns().definition(Detail.DOUBLE).caption(), Detail.DOUBLE.name());
-		assertEquals(definition.columns().definition(Detail.STRING).caption(), "Detail string");
-		assertEquals(definition.columns().definition(Detail.DATE).caption(), Detail.DATE.name());
-		assertEquals(definition.columns().definition(Detail.TIMESTAMP).caption(), Detail.TIMESTAMP.name());
-		assertEquals(definition.columns().definition(Detail.BOOLEAN).caption(), Detail.BOOLEAN.name());
-		assertEquals(definition.foreignKeys().definition(Detail.MASTER_FK).caption(), Detail.MASTER_FK.name());
-		assertEquals(definition.attributes().definition(Detail.MASTER_NAME).caption(), Detail.MASTER_NAME.name());
-		assertEquals(definition.attributes().definition(Detail.MASTER_CODE).caption(), Detail.MASTER_CODE.name());
+		assertEquals(Detail.SHORT.name(), definition.columns().definition(Detail.SHORT).caption());
+		assertEquals(Detail.INT.name(), definition.columns().definition(Detail.INT).caption());
+		assertEquals(Detail.DOUBLE.name(), definition.columns().definition(Detail.DOUBLE).caption());
+		assertEquals("Detail string", definition.columns().definition(Detail.STRING).caption());
+		assertEquals(Detail.DATE.name(), definition.columns().definition(Detail.DATE).caption());
+		assertEquals(Detail.TIMESTAMP.name(), definition.columns().definition(Detail.TIMESTAMP).caption());
+		assertEquals(Detail.BOOLEAN.name(), definition.columns().definition(Detail.BOOLEAN).caption());
+		assertEquals(Detail.MASTER_FK.name(), definition.foreignKeys().definition(Detail.MASTER_FK).caption());
+		assertEquals(Detail.MASTER_NAME.name(), definition.attributes().definition(Detail.MASTER_NAME).caption());
+		assertEquals(Detail.MASTER_CODE.name(), definition.attributes().definition(Detail.MASTER_CODE).caption());
 
 		//assert hidden status
 		assertTrue(definition.columns().definition(Detail.ID).hidden());
@@ -323,7 +323,7 @@ public final class EntitiesTest {
 			fail();
 		}
 		catch (ValidationException e) {
-			assertTrue(e instanceof NullValidationException);
+			assertInstanceOf(NullValidationException.class, e);
 			assertEquals(Employee.DEPARTMENT_FK, e.attribute());
 		}
 		emp.put(Employee.DEPARTMENT_NO, 1);
@@ -339,7 +339,7 @@ public final class EntitiesTest {
 			fail();
 		}
 		catch (ValidationException e) {
-			assertTrue(e instanceof NullValidationException);
+			assertInstanceOf(NullValidationException.class, e);
 			assertEquals(Employee.SALARY, e.attribute());
 		}
 	}

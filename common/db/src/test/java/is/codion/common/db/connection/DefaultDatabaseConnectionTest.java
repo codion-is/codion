@@ -143,7 +143,7 @@ public class DefaultDatabaseConnectionTest {
 
 	@Test
 	void user() {
-		assertEquals(dbConnection.user(), UNIT_TEST_USER);
+		assertEquals(UNIT_TEST_USER, dbConnection.user());
 	}
 
 	@Test

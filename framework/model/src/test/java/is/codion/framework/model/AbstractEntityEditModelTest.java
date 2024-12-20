@@ -278,9 +278,9 @@ public final class AbstractEntityEditModelTest {
 		employeeEditModel.value(Employee.HIREDATE).set(hiredate);
 		employeeEditModel.value(Employee.NAME).set(name);
 
-		assertEquals(employeeEditModel.value(Employee.COMMISSION).get(), commission, "Commission does not fit");
-		assertEquals(employeeEditModel.value(Employee.HIREDATE).get(), hiredate, "Hiredate does not fit");
-		assertEquals(employeeEditModel.value(Employee.NAME).get(), name, "Name does not fit");
+		assertEquals(commission, employeeEditModel.value(Employee.COMMISSION).get(), "Commission does not fit");
+		assertEquals(hiredate, employeeEditModel.value(Employee.HIREDATE).get(), "Hiredate does not fit");
+		assertEquals(name, employeeEditModel.value(Employee.NAME).get(), "Name does not fit");
 
 		employeeEditModel.value(Employee.COMMISSION).set(originalCommission);
 		assertTrue(editor.modified().get());
