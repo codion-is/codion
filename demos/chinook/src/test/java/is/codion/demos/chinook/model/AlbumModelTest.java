@@ -66,7 +66,7 @@ public final class AlbumModelTest {
 			tracks.forEach(track -> track.put(Track.RATING, 10));
 
 			// Update the tracks using the edit model
-			TrackEditModel trackEditModel = albumModel.detailModel(Track.TYPE).editModel();
+			TrackEditModel trackEditModel = albumModel.detailModels().get(Track.TYPE).editModel();
 			trackEditModel.update(tracks);
 
 			// Which should trigger the refresh of the album in the Album model

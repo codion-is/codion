@@ -28,7 +28,7 @@ public final class AlbumModel extends SwingEntityModel {
 	public AlbumModel(EntityConnectionProvider connectionProvider) {
 		super(Album.TYPE, connectionProvider);
 		SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
-		addDetailModel(trackModel);
+		detailModels().add(trackModel);
 		TrackEditModel trackEditModel = trackModel.editModel();
 		trackEditModel.initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
 		// We refresh albums which rating may have changed, due to a track rating being updated

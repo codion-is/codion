@@ -49,8 +49,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
 	private final E editModel;
 	private final T tableModel;
-	private final Map<M, DetailModelLink<M, E, T>> detailModels = new HashMap<>();
-	private final ValueSet<M> linkedDetailModels = ValueSet.valueSet();
+	private final DefaultDetailModels<M, E, T> detailModels = new DefaultDetailModels<>();
 
 	/**
 	 * Instantiates a new DefaultEntityModel, without a table model
@@ -126,105 +125,15 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	}
 
 	@Override
-	@SafeVarargs
-	public final void addDetailModels(M... detailModels) {
-		for (M detailModel : requireNonNull(detailModels)) {
-			addDetailModel(detailModel);
-		}
-	}
-
-	@Override
-	public final ForeignKeyDetailModelLink<M, E, T> addDetailModel(M detailModel) {
-		Collection<ForeignKey> foreignKeys = requireNonNull(detailModel).editModel()
-						.entityDefinition().foreignKeys().get(editModel.entityType());
-		if (foreignKeys.isEmpty()) {
-			throw new IllegalArgumentException("Entity " + detailModel.editModel().entityType() +
-							" does not reference " + editModel.entityType() + " via a foreign key");
-		}
-
-		return addDetailModel(detailModel, foreignKeys.iterator().next());
-	}
-
-	@Override
-	public final ForeignKeyDetailModelLink<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey) {
-		return addDetailModel(new DefaultForeignKeyDetailModelLink<>(requireNonNull(detailModel), requireNonNull(foreignKey)));
-	}
-
-	@Override
-	public final <L extends DetailModelLink<M, E, T>> L addDetailModel(L detailModelLink) {
-		if (this == requireNonNull(detailModelLink).detailModel()) {
-			throw new IllegalArgumentException("A model can not be its own detail model");
-		}
-		if (detailModels.containsKey(detailModelLink.detailModel())) {
-			throw new IllegalArgumentException("Detail model " + detailModelLink.detailModel() + " has already been added");
-		}
-		detailModels.put(detailModelLink.detailModel(), detailModelLink);
-		detailModelLink.active().addConsumer(new ActiveDetailModelConsumer(detailModelLink));
-
-		return detailModelLink;
-	}
-
-	@Override
-	public final boolean containsDetailModel(Class<? extends M> modelClass) {
-		requireNonNull(modelClass);
-		return detailModels.keySet().stream()
-						.anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
-	}
-
-	@Override
-	public final boolean containsDetailModel(EntityType entityType) {
-		requireNonNull(entityType);
-		return detailModels.keySet().stream()
-						.anyMatch(detailModel -> detailModel.entityType().equals(entityType));
-	}
-
-	@Override
-	public final boolean containsDetailModel(M detailModel) {
-		return detailModels.containsKey(requireNonNull(detailModel));
-	}
-
-	@Override
-	public final Collection<M> detailModels() {
-		return unmodifiableCollection(detailModels.keySet());
-	}
-
-	@Override
-	public final <L extends DetailModelLink<M, E, T>> L detailModelLink(M detailModel) {
-		if (!detailModels.containsKey(requireNonNull(detailModel))) {
-			throw new IllegalStateException("Detail model not found: " + detailModel);
-		}
-
-		return (L) detailModels.get(detailModel);
-	}
-
-	@Override
-	public final ObservableValueSet<M> linkedDetailModels() {
-		return linkedDetailModels.observable();
-	}
-
-	@Override
-	public final <C extends M> C detailModel(Class<C> modelClass) {
-		requireNonNull(modelClass);
-		return (C) detailModels.keySet().stream()
-						.filter(detailModel -> detailModel.getClass().equals(modelClass))
-						.findFirst()
-						.orElseThrow(() -> new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found in model: " + this));
-	}
-
-	@Override
-	public final <C extends M> C detailModel(EntityType entityType) {
-		requireNonNull(entityType);
-		return (C) detailModels.keySet().stream()
-						.filter(detailModel -> detailModel.entityType().equals(entityType))
-						.findFirst()
-						.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + this));
+	public final DetailModels<M, E, T> detailModels() {
+		return detailModels;
 	}
 
 	private void onMasterSelectionChanged() {
-		if (!linkedDetailModels().empty()) {
+		if (!detailModels.linked.empty()) {
 			List<Entity> activeEntities = activeEntities();
-			for (M detailModel : linkedDetailModels()) {
-				detailModels.get(detailModel).onSelection(activeEntities);
+			for (M detailModel : detailModels.linked) {
+				detailModels.models.get(detailModel).onSelection(activeEntities);
 			}
 		}
 	}
@@ -253,15 +162,15 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {
-		detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onInsert(insertedEntities));
+		detailModels.models.keySet().forEach(detailModel -> detailModels.models.get(detailModel).onInsert(insertedEntities));
 	}
 
 	private void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
-		detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onUpdate(updatedEntities));
+		detailModels.models.keySet().forEach(detailModel -> detailModels.models.get(detailModel).onUpdate(updatedEntities));
 	}
 
 	private void onDelete(Collection<Entity> deletedEntities) {
-		detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onDelete(deletedEntities));
+		detailModels.models.keySet().forEach(detailModel -> detailModels.models.get(detailModel).onDelete(deletedEntities));
 	}
 
 	private final class ActiveDetailModelConsumer implements Consumer<Boolean> {
@@ -274,13 +183,114 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
 		@Override
 		public void accept(Boolean active) {
-			linkedDetailModels.set(detailModels.values().stream()
+			detailModels.linked.set(detailModels.models.values().stream()
 							.filter(link -> link.active().get())
 							.map(DetailModelLink::detailModel)
 							.collect(Collectors.toList()));
 			if (active) {
 				detailModelLink.onSelection(activeEntities());
 			}
+		}
+	}
+
+	private final class DefaultDetailModels<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
+					T extends EntityTableModel<E>> implements DetailModels<M, E, T> {
+
+		private final Map<M, DetailModelLink<M, E, T>> models = new HashMap<>();
+		private final ValueSet<M> linked = ValueSet.valueSet();
+
+		@Override
+		public void add(M... detailModels) {
+			for (M detailModel : requireNonNull(detailModels)) {
+				add(detailModel);
+			}
+		}
+
+		@Override
+		public ForeignKeyDetailModelLink<M, E, T> add(M detailModel) {
+			Collection<ForeignKey> foreignKeys = requireNonNull(detailModel).editModel()
+							.entityDefinition().foreignKeys().get(editModel.entityType());
+			if (foreignKeys.isEmpty()) {
+				throw new IllegalArgumentException("Entity " + detailModel.editModel().entityType() +
+								" does not reference " + editModel.entityType() + " via a foreign key");
+			}
+
+			return add(detailModel, foreignKeys.iterator().next());
+		}
+
+		@Override
+		public ForeignKeyDetailModelLink<M, E, T> add(M detailModel, ForeignKey foreignKey) {
+			return add(new DefaultForeignKeyDetailModelLink<>(requireNonNull(detailModel), requireNonNull(foreignKey)));
+		}
+
+		@Override
+		public <L extends DetailModelLink<M, E, T>> L add(L detailModelLink) {
+			if (DefaultEntityModel.this == requireNonNull(detailModelLink).detailModel()) {
+				throw new IllegalArgumentException("A model can not be its own detail model");
+			}
+			if (models.containsKey(detailModelLink.detailModel())) {
+				throw new IllegalArgumentException("Detail model " + detailModelLink.detailModel() + " has already been added");
+			}
+			models.put(detailModelLink.detailModel(), detailModelLink);
+			detailModelLink.active().addConsumer(new ActiveDetailModelConsumer(detailModelLink));
+
+			return detailModelLink;
+		}
+
+		@Override
+		public boolean contains(Class<? extends M> modelClass) {
+			requireNonNull(modelClass);
+			return models.keySet().stream()
+							.anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
+		}
+
+		@Override
+		public boolean contains(EntityType entityType) {
+			requireNonNull(entityType);
+			return models.keySet().stream()
+							.anyMatch(detailModel -> detailModel.entityType().equals(entityType));
+		}
+
+		@Override
+		public boolean contains(M detailModel) {
+			return models.containsKey(requireNonNull(detailModel));
+		}
+
+		@Override
+		public Collection<M> get() {
+			return unmodifiableCollection(models.keySet());
+		}
+
+		@Override
+		public <L extends DetailModelLink<M, E, T>> L link(M detailModel) {
+			if (!models.containsKey(requireNonNull(detailModel))) {
+				throw new IllegalStateException("Detail model not found: " + detailModel);
+			}
+
+			return (L) models.get(detailModel);
+		}
+
+		@Override
+		public ObservableValueSet<M> linked() {
+			return linked.observable();
+		}
+
+		@Override
+		public <C extends M> C get(Class<C> modelClass) {
+			requireNonNull(modelClass);
+			return (C) models.keySet().stream()
+							.filter(detailModel -> detailModel.getClass().equals(modelClass))
+							.findFirst()
+							.orElseThrow(() -> new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found in model: " + this));
+		}
+
+		@Override
+		public <C extends M> C get(EntityType entityType) {
+			requireNonNull(entityType);
+			return (C) models.keySet().stream()
+							.filter(detailModel -> detailModel.entityType().equals(entityType))
+							.findFirst()
+							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + this));
 		}
 	}
 }

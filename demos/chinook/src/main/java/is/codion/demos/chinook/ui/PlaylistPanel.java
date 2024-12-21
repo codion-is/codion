@@ -35,7 +35,8 @@ public final class PlaylistPanel extends EntityPanel {
 						// We specify our custom detail layout
 						config -> config.detailLayout(PlaylistDetailLayout::new));
 
-		SwingEntityModel playlistTrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
+		SwingEntityModel playlistTrackModel =
+						playlistModel.detailModels().get(PlaylistTrack.TYPE);
 		EntityPanel playlistTrackPanel =
 						new EntityPanel(playlistTrackModel,
 										new PlaylistTrackTablePanel(playlistTrackModel.tableModel()));

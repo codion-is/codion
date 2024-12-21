@@ -48,7 +48,7 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 		SwingEntityModel playlistTrackModel = new SwingEntityModel(new PlaylistTrackEditModel(connectionProvider));
 
 		ForeignKeyDetailModelLink<?, ?, ?> playlistTrackLink =
-						playlistModel.addDetailModel(playlistTrackModel);
+						playlistModel.detailModels().add(playlistTrackModel);
 		playlistTrackLink.clearForeignKeyValueOnEmptySelection().set(true);
 		playlistTrackLink.active().set(true);
 
@@ -61,7 +61,7 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 		customerModel.editModel().initializeComboBoxModels(Customer.SUPPORTREP_FK);
 		SwingEntityModel invoiceModel = new InvoiceModel(connectionProvider);
-		customerModel.addDetailModel(invoiceModel);
+		customerModel.detailModels().add(invoiceModel);
 
 		customerModel.tableModel().refresh();
 

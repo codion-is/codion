@@ -194,8 +194,8 @@ public final class WindowDetailLayout implements DetailLayout {
 				window.setVisible(false);
 			}
 			SwingEntityModel detailModel = detailPanel.model();
-			if (entityPanel.model().containsDetailModel(detailModel)) {
-				entityPanel.model().detailModelLink(detailModel).active().set(panelState == WINDOW);
+			if (entityPanel.model().detailModels().contains(detailModel)) {
+				entityPanel.model().detailModels().link(detailModel).active().set(panelState == WINDOW);
 			}
 		}
 

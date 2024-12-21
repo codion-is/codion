@@ -79,7 +79,7 @@ public class EntityPanelBuilderTest {
 		assertEquals(1, departmentPanel.detailPanels().get().size());
 
 		assertEquals(departmentModel, departmentPanel.model());
-		assertEquals(departmentModel.detailModel(Employee.TYPE), employeePanel.model());
+		assertEquals(departmentModel.detailModels().get(Employee.TYPE), employeePanel.model());
 	}
 
 	@Test

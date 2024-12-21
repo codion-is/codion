@@ -524,18 +524,18 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 		private void deactivateDetailModelLink(SwingEntityModel detailModel) {
 			SwingEntityModel model = entityPanel.model();
-			if (model.containsDetailModel(detailModel)) {
-				model.detailModelLink(detailModel).active().set(false);
+			if (model.detailModels().contains(detailModel)) {
+				model.detailModels().link(detailModel).active().set(false);
 			}
 		}
 
 		private void activateDetailModelLink(SwingEntityModel detailModel) {
 			SwingEntityModel model = entityPanel.model();
-			if (model.containsDetailModel(detailModel)) {
-				model.linkedDetailModels().get().stream()
+			if (model.detailModels().contains(detailModel)) {
+				model.detailModels().linked().get().stream()
 								.filter(linkedDetailModel -> linkedDetailModel != detailModel)
-								.forEach(linkedDetailModel -> model.detailModelLink(linkedDetailModel).active().set(false));
-				model.detailModelLink(detailModel).active().set(true);
+								.forEach(linkedDetailModel -> model.detailModels().link(linkedDetailModel).active().set(false));
+				model.detailModels().link(detailModel).active().set(true);
 			}
 		}
 

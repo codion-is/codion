@@ -39,8 +39,8 @@ public final class PetclinicAppModel extends SwingEntityApplicationModel {
 		SwingEntityModel visitModel = new SwingEntityModel(Visit.TYPE, connectionProvider);
 		visitModel.editModel().initializeComboBoxModels(Visit.PET_FK);
 
-		ownersModel.addDetailModel(petsModel);
-		petsModel.addDetailModel(visitModel);
+		ownersModel.detailModels().add(petsModel);
+		petsModel.detailModels().add(visitModel);
 
 		ownersModel.tableModel().refresh();
 

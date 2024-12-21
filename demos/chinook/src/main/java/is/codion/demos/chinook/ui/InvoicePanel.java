@@ -26,7 +26,8 @@ public final class InvoicePanel extends EntityPanel {
 
 	public InvoicePanel(SwingEntityModel invoiceModel) {
 		super(invoiceModel,
-						new InvoiceEditPanel(invoiceModel.editModel(), invoiceModel.detailModel(InvoiceLine.TYPE)),
+						new InvoiceEditPanel(invoiceModel.editModel(),
+										invoiceModel.detailModels().get(InvoiceLine.TYPE)),
 						new InvoiceTablePanel(invoiceModel.tableModel()),
 						// The InvoiceLine panel is embedded in InvoiceEditPanel,
 						// so this panel doesn't need a detail panel layout.

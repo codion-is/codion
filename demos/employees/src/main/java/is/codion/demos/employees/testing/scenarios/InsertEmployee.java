@@ -32,7 +32,7 @@ public final class InsertEmployee extends AbstractPerformer {
 	public void perform(EmployeesAppModel application) {
 		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
 		selectRandomRow(departmentModel.tableModel());
-		SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
+		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 		Entity employee = new DefaultEntityFactory(application.connection()).entity(Employee.TYPE);
 		employee.put(Employee.DEPARTMENT_FK, departmentModel.tableModel().selection().item().get());
 		employeeModel.editModel().editor().set(employee);

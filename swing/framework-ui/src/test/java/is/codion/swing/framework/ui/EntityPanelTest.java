@@ -72,7 +72,7 @@ public final class EntityPanelTest {
 	void detailPanels() {
 		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
 		SwingEntityModel empModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
-		deptModel.addDetailModel(empModel);
+		deptModel.detailModels().add(empModel);
 
 		EntityPanel deptPanel = new EntityPanel(deptModel);
 		EntityPanel empPanel = new EntityPanel(empModel);
@@ -89,7 +89,7 @@ public final class EntityPanelTest {
 		assertThrows(IllegalStateException.class, () -> deptPanel.detailPanels().add(empPanel));
 		assertEquals(1, deptPanel.detailPanels().linked().size());
 
-		deptModel.detailModelLink(empModel).active().set(false);
+		deptModel.detailModels().link(empModel).active().set(false);
 		assertEquals(0, deptPanel.detailPanels().linked().size());
 	}
 }

@@ -223,7 +223,7 @@ public final class Example {
 
 		SwingEntityModel customerAddressModel = new SwingEntityModel(CustomerAddress.TYPE, connectionProvider);
 
-		customerModel.addDetailModel(customerAddressModel);
+		customerModel.detailModels().add(customerAddressModel);
 
 		EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
 						new CustomerAddressEditPanel(customerAddressModel.editModel()));

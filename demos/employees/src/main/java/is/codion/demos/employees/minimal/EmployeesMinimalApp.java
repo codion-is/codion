@@ -260,7 +260,7 @@ public final class EmployeesMinimalApp {
 			super(connectionProvider);
 			SwingEntityModel employeeModel = new SwingEntityModel(new EmployeeEditModel(connectionProvider));
 			SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
-			departmentModel.addDetailModel(employeeModel);
+			departmentModel.detailModels().add(employeeModel);
 			addEntityModel(departmentModel);
 		}
 	}
@@ -282,7 +282,7 @@ public final class EmployeesMinimalApp {
 		protected List<EntityPanel> createEntityPanels() {
 			//now, let's assemble our application
 			SwingEntityModel departmentModel = applicationModel().entityModel(Department.TYPE);
-			SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
+			SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 
 			EntityPanel employeePanel = new EntityPanel(employeeModel,
 							new EmployeeEditPanel(employeeModel.editModel()));

@@ -34,7 +34,7 @@ public final class SwingEntityApplicationModelTest
 	private static class DeptModel extends SwingEntityModel {
 		private DeptModel(EntityConnectionProvider connectionProvider) {
 			super(Department.TYPE, connectionProvider);
-			addDetailModel(new SwingEntityModel(Employee.TYPE, connectionProvider));
+			detailModels().add(new SwingEntityModel(Employee.TYPE, connectionProvider));
 		}
 	}
 }

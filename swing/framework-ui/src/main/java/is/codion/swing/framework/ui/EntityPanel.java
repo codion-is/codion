@@ -1168,7 +1168,7 @@ public class EntityPanel extends JPanel {
 		 */
 		public Collection<EntityPanel> linked() {
 			return panels.stream()
-							.filter(detailPanel -> entityModel.linkedDetailModels().contains(detailPanel.entityModel))
+							.filter(detailPanel -> entityModel.detailModels().linked().contains(detailPanel.entityModel))
 							.collect(toList());
 		}
 

@@ -52,11 +52,11 @@ public final class PetstoreLoadTest {
 											.user(user)
 											.build());
 			SwingEntityModel categoryModel = applicationModel.entityModels().iterator().next();
-			categoryModel.detailModelLink(categoryModel.detailModels().iterator().next()).active().set(true);
-			SwingEntityModel productModel = categoryModel.detailModels().iterator().next();
-			productModel.detailModelLink(productModel.detailModels().iterator().next()).active().set(true);
-			SwingEntityModel itemModel = productModel.detailModels().iterator().next();
-			itemModel.detailModelLink(itemModel.detailModels().iterator().next()).active().set(true);
+			categoryModel.detailModels().link(categoryModel.detailModels().get().iterator().next()).active().set(true);
+			SwingEntityModel productModel = categoryModel.detailModels().get().iterator().next();
+			productModel.detailModels().link(productModel.detailModels().get().iterator().next()).active().set(true);
+			SwingEntityModel itemModel = productModel.detailModels().get().iterator().next();
+			itemModel.detailModels().link(itemModel.detailModels().get().iterator().next()).active().set(true);
 
 			return applicationModel;
 		}
@@ -73,8 +73,8 @@ public final class PetstoreLoadTest {
 			categoryModel.tableModel().selection().clear();
 			categoryModel.tableModel().refresh();
 			selectRandomRow(categoryModel.tableModel());
-			selectRandomRow(categoryModel.detailModels().iterator().next().tableModel());
-			selectRandomRow(categoryModel.detailModels().iterator().next().detailModels().iterator().next().tableModel());
+			selectRandomRow(categoryModel.detailModels().get().iterator().next().tableModel());
+			selectRandomRow(categoryModel.detailModels().get().iterator().next().detailModels().get().iterator().next().tableModel());
 		}
 
 		private static void selectRandomRow(EntityTableModel<?> tableModel) {

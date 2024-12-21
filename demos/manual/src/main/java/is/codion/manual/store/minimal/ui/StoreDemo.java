@@ -109,7 +109,7 @@ public class StoreDemo {
 						new EntityPanel(addressModel,
 										new AddressEditPanel(addressModel.editModel()));
 
-		customerModel.addDetailModel(addressModel);
+		customerModel.detailModels().add(addressModel);
 		customerPanel.detailPanels().add(addressPanel);
 
 		addressPanel.tablePanel()

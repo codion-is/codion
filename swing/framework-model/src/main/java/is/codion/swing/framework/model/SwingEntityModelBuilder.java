@@ -163,7 +163,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 				model = modelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
 			}
 			for (SwingEntityModel.Builder detailProvider : detailModelBuilders) {
-				model.addDetailModel(detailProvider.build(connectionProvider));
+				model.detailModels().add(detailProvider.build(connectionProvider));
 			}
 			onBuildModel.accept(model);
 

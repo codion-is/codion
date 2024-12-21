@@ -72,7 +72,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 		if (!deptModel.containsTableModel()) {
 			return;
 		}
-		deptModel.detailModel(Employee.TYPE).tableModel().queryModel().conditionRequired().set(false);
+		deptModel.detailModels().get(Employee.TYPE).tableModel().queryModel().conditionRequired().set(false);
 		model.refresh();
 		assertTrue(deptModel.tableModel().items().visible().count() > 0);
 	}
@@ -116,7 +116,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 		assertTrue(model.containsEntityModel(departmentModel));
 
 		assertFalse(model.containsEntityModel(Employee.TYPE));
-		Model detailModel = departmentModel.detailModel(Employee.TYPE);
+		Model detailModel = departmentModel.detailModels().get(Employee.TYPE);
 		assertFalse(model.containsEntityModel(detailModel));
 	}
 

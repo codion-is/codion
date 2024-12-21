@@ -58,10 +58,10 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 	@Override
 	protected List<EntityPanel> createEntityPanels() {
 		SwingEntityModel schemaModel = applicationModel().entityModel(Schema.TYPE);
-		SwingEntityModel tableModel = schemaModel.detailModel(Table.TYPE);
-		SwingEntityModel columnModel = tableModel.detailModel(TableColumn.TYPE);
-		SwingEntityModel constraintModel = tableModel.detailModel(Constraint.TYPE);
-		SwingEntityModel columnConstraintModel = constraintModel.detailModel(ConstraintColumn.TYPE);
+		SwingEntityModel tableModel = schemaModel.detailModels().get(Table.TYPE);
+		SwingEntityModel columnModel = tableModel.detailModels().get(TableColumn.TYPE);
+		SwingEntityModel constraintModel = tableModel.detailModels().get(Constraint.TYPE);
+		SwingEntityModel columnConstraintModel = constraintModel.detailModels().get(ConstraintColumn.TYPE);
 
 		EntityPanel schemaPanel = new EntityPanel(schemaModel,
 						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
@@ -115,9 +115,9 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 			SwingEntityModel constraintModel = new SwingEntityModel(Constraint.TYPE, connectionProvider);
 			SwingEntityModel constraintColumnModel = new SwingEntityModel(ConstraintColumn.TYPE, connectionProvider);
 
-			schemaModel.addDetailModel(tableModel);
-			tableModel.addDetailModels(columnModel, constraintModel);
-			constraintModel.addDetailModels(constraintColumnModel);
+			schemaModel.detailModels().add(tableModel);
+			tableModel.detailModels().add(columnModel, constraintModel);
+			constraintModel.detailModels().add(constraintColumnModel);
 
 			addEntityModel(schemaModel);
 		}

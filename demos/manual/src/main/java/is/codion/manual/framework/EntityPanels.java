@@ -72,7 +72,7 @@ public final class EntityPanels {
 		public CustomerPanel(SwingEntityModel entityModel) {
 			super(entityModel);
 			SwingEntityModel addressModel =
-							entityModel.detailModel(Address.TYPE);
+							entityModel.detailModels().get(Address.TYPE);
 			detailPanels().add(new AddressPanel(addressModel));
 		}
 	}
