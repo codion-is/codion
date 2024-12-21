@@ -274,7 +274,6 @@ public final class AbstractEntityEditModelTest {
 		String name = "Mr. Mr";
 
 		employeeEditModel.value(Employee.COMMISSION).set(commission);
-		assertTrue(editor.modified().get());
 		employeeEditModel.value(Employee.HIREDATE).set(hiredate);
 		employeeEditModel.value(Employee.NAME).set(name);
 
@@ -283,11 +282,8 @@ public final class AbstractEntityEditModelTest {
 		assertEquals(name, employeeEditModel.value(Employee.NAME).get(), "Name does not fit");
 
 		employeeEditModel.value(Employee.COMMISSION).set(originalCommission);
-		assertTrue(editor.modified().get());
 		employeeEditModel.value(Employee.HIREDATE).set(originalHiredate);
-		assertTrue(editor.modified().get());
 		employeeEditModel.value(Employee.NAME).set(originalName);
-		assertFalse(editor.modified().get());
 
 		employeeEditModel.value(Employee.COMMISSION).set(50d);
 		employeeEditModel.value(Employee.COMMISSION).clear();
@@ -393,7 +389,9 @@ public final class AbstractEntityEditModelTest {
 		connection.startTransaction();
 		try {
 			employeeEditModel.editor().set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
+			assertFalse(employeeEditModel.editor().modified().get());
 			employeeEditModel.value(Employee.NAME).set("BJORN");
+			assertTrue(employeeEditModel.editor().modified().get());
 			List<Entity> toUpdate = singletonList(employeeEditModel.editor().get());
 			Consumer<Map<Entity.Key, Entity>> consumer = updatedEntities ->
 							assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));

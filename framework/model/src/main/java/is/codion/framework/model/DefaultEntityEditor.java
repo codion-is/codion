@@ -65,7 +65,6 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 	private final State entityValid = State.state();
 	private final DefaultExists exists;
 	private final DefaultModified modified;
-	private final ObservableState editing;
 	private final Value<EntityValidator> validator;
 
 	private final Entity entity;
@@ -75,7 +74,6 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 		this.entity = createEntity(AttributeDefinition::defaultValue);
 		this.exists = new DefaultExists(entityDefinition);
 		this.modified = new DefaultModified();
-		this.editing = State.and(exists.exists, modified.modified);
 		this.validator = Value.builder()
 						.nonNull(entityDefinition.validator())
 						.listener(this::updateValidState)
@@ -122,11 +120,6 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 	@Override
 	public Modified modified() {
 		return modified;
-	}
-
-	@Override
-	public ObservableState edited() {
-		return editing;
 	}
 
 	@Override
@@ -426,7 +419,7 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 
 		@Override
 		public void update() {
-			modified.set(predicate.getOrThrow().test(entity));
+			modified.set(exists.predicate.getOrThrow().test(entity) && predicate.getOrThrow().test(entity));
 		}
 
 		@Override

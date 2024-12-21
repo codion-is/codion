@@ -404,18 +404,13 @@ public interface EntityEditModel {
 		Exists exists();
 
 		/**
-		 * Returns an {@link ObservableState} indicating whether any values have been modified.
+		 * <p>Returns an {@link ObservableState} indicating whether any values have been modified.
+		 * <p>Note that only existing entities are modified, new, or non-existing entities are never modified.
 		 * @return an {@link ObservableState} indicating the modified state of this entity
 		 * @see Modified#predicate()
+		 * @see Exists
 		 */
 		Modified modified();
-
-		/**
-		 * @return an {@link ObservableState} indicating whether the entity has been edited, that is, exists and is modified
-		 * @see #modified()
-		 * @see #exists()
-		 */
-		ObservableState edited();
 
 		/**
 		 * @return an observer notified each time the entity is about to be changed
@@ -528,7 +523,7 @@ public interface EntityEditModel {
 		}
 
 		/**
-		 * Indicates whether the active entity is modified.
+		 * Indicates whether the active entity is modified, that is, exists and has one or more modified attribute values.
 		 * @see #predicate()
 		 */
 		interface Modified extends ObservableState {
@@ -560,7 +555,7 @@ public interface EntityEditModel {
 		void revert();
 
 		/**
-		 * Returns a {@link State} controlling whether the last used value for this attribute should persist when defaults are set.
+		 * <p>Returns a {@link State} controlling whether the last used value for this attribute should persist when defaults are set.
 		 * @return a {@link State} controlling whether the given attribute value should persist when defaults are set
 		 * @see EntityEditor#defaults()
 		 * @see EntityEditModel#PERSIST_FOREIGN_KEYS
@@ -573,14 +568,15 @@ public interface EntityEditModel {
 		ObservableState valid();
 
 		/**
-		 * Returns an {@link ObservableState} instance indicating whether the value of the given attribute has been modified.
+		 * <p>Returns an {@link ObservableState} instance indicating whether the value of the given attribute has been modified.
+		 * <p>Note that only attributes of existing entities are modified, attributes of new, or non-existing entities are never modified.
 		 * @return an {@link ObservableState} indicating the modified state of the value of the given attribute
 		 * @see EntityEditor#modified()
 		 */
 		ObservableState modified();
 
 		/**
-		 * Returns an observer notified each time this value is modified via {@link ValueEditor#set(Object)}.
+		 * <p>Returns an observer notified each time this value is modified via {@link ValueEditor#set(Object)}.
 		 * <p>This event is NOT triggered when the value changes due to the entity being set
 		 * via {@link ValueEditor#set(Object)} or {@link EntityEditor#defaults()}.
 		 * <p>Note that this event is only triggered if the value actually changes.
@@ -589,9 +585,9 @@ public interface EntityEditModel {
 		Observer<T> edited();
 
 		/**
-		 * Returns the {@link Value} instance controlling the default value supplier for the given attribute.
-		 * Used when the underlying value is not persistent.
-		 * Use {@link EntityEditor#defaults()} to populate the model with the default values.
+		 * <p>Returns the {@link Value} instance controlling the default value supplier for the given attribute.
+		 * <p>Used when the underlying value is not persistent.
+		 * <p>Use {@link EntityEditor#defaults()} to populate the model with the default values.
 		 * @return the {@link Value} instance controlling the default value supplier
 		 * @see #persist()
 		 */

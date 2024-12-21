@@ -594,7 +594,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.name(FrameworkMessages.update())
 						.enabled(State.and(active,
 										editModel().updateEnabled(),
-										editModel().editor().edited()))
+										editModel().editor().modified()))
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
 						.smallIcon(ICONS.update())
@@ -625,7 +625,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private void beforeEntity(Entity entity) {
 		if (configuration.modifiedWarning
-						&& editModel().editor().edited().get()
+						&& editModel().editor().modified().get()
 						&& !Objects.equals(editModel().editor(), entity)
 						&& showConfirmDialog(this,
 						FrameworkMessages.modifiedWarning(), FrameworkMessages.modifiedWarningTitle(),
@@ -855,7 +855,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * @param modifiedWarning specifies whether this edit panel presents a warning before discarding unsaved modifications
 		 * @return this Config instance
 		 * @see #MODIFIED_WARNING
-		 * @see EntityEditModel.EntityEditor#edited()
+		 * @see EntityEditModel.EntityEditor#modified()
 		 */
 		public Config modifiedWarning(boolean modifiedWarning) {
 			this.modifiedWarning = modifiedWarning;
