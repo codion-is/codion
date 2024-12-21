@@ -150,14 +150,19 @@ public final class EntityTest {
 		Entity emp = entities.builder(Employee.TYPE)
 						.with(Employee.ID, 3)
 						.build();
-		Map<Key, Entity> entityMap = Entity.primaryKeyMap(asList(dept, emp));
+		Entity emp2 = entities.builder(Employee.TYPE)
+						.with(Employee.ID, null)
+						.build();
+		Map<Key, Entity> entityMap = Entity.primaryKeyMap(asList(dept, emp, emp2));
 		assertSame(dept, entityMap.get(dept.primaryKey()));
 		assertSame(emp, entityMap.get(emp.primaryKey()));
+		assertSame(emp2, entityMap.get(emp2.primaryKey()));
 
 		Entity dept2 = entities.builder(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
 		assertThrows(IllegalArgumentException.class, () -> Entity.primaryKeyMap(asList(dept, dept2, emp)));
+		assertThrows(IllegalArgumentException.class, () -> Entity.primaryKeyMap(asList(emp2, emp2)));
 	}
 
 	@Test
@@ -199,6 +204,11 @@ public final class EntityTest {
 						.build();
 		entityList.add(entityFive);
 
+		Entity entitySix = entities.builder(Department.TYPE)
+						.with(Department.ID, null)
+						.build();
+		entityList.add(entitySix);
+
 		Map<Integer, List<Entity>> map = Entity.groupByValue(Department.ID, entityList);
 		Collection<Entity> ones = map.get(1);
 		assertTrue(ones.contains(entityOne));
@@ -210,6 +220,9 @@ public final class EntityTest {
 		Collection<Entity> threes = map.get(3);
 		assertTrue(threes.contains(entityFour));
 		assertTrue(threes.contains(entityFive));
+
+		Collection<Entity> nulls = map.get(null);
+		assertTrue(nulls.contains(entitySix));
 	}
 
 	@Test

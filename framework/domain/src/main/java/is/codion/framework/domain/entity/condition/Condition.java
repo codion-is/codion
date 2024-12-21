@@ -31,12 +31,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static is.codion.common.Operator.EQUAL;
+import static is.codion.framework.domain.entity.condition.DefaultForeignKeyConditionFactory.compositeEqualCondition;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * <p>Specifies a query condition.</p>
@@ -118,11 +120,11 @@ public interface Condition {
 	static Condition key(Entity.Key key) {
 		if (requireNonNull(key).columns().size() > 1) {
 			Map<Column<?>, Column<?>> columnMap = key.columns().stream()
-							.collect(Collectors.toMap(Function.identity(), Function.identity()));
+							.collect(toMap(identity(), identity()));
 			Map<Column<?>, Object> valueMap = new HashMap<>();
 			key.columns().forEach(column -> valueMap.put(column, key.get(column)));
 
-			return DefaultForeignKeyConditionFactory.compositeEqualCondition(columnMap, EQUAL, valueMap);
+			return compositeEqualCondition(columnMap, EQUAL, valueMap);
 		}
 
 		return key.column().equalTo(key.get());
@@ -146,16 +148,7 @@ public interface Condition {
 		}
 		Entity.Key firstKey = (keys instanceof List) ? ((List<Entity.Key>) keys).get(0) : keys.iterator().next();
 		if (firstKey.columns().size() > 1) {
-			Map<Column<?>, Column<?>> columnMap = firstKey.columns().stream()
-							.collect(Collectors.toMap(Function.identity(), Function.identity()));
-			List<Map<Column<?>, ?>> valueMaps = new ArrayList<>(keys.size());
-			keys.forEach(key -> {//can't use stream and toMap() due to possible null values
-				Map<Column<?>, Object> valueMap = new HashMap<>();
-				key.columns().forEach(column -> valueMap.put(column, key.get(column)));
-				valueMaps.add(valueMap);
-			});
-
-			return DefaultForeignKeyConditionFactory.compositeKeyCondition(columnMap, EQUAL, valueMaps);
+			return compositeEqualCondition(firstKey, keys);
 		}
 
 		return firstKey.column().in(Entity.values(keys));

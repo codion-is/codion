@@ -25,10 +25,10 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
@@ -36,6 +36,7 @@ import static is.codion.common.Operator.EQUAL;
 import static is.codion.common.Operator.NOT_EQUAL;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -156,8 +157,20 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Fac
 						.collect(toList());
 	}
 
-	static Condition compositeKeyCondition(Map<Column<?>, Column<?>> columnReferenceMap, Operator operator,
-																				 List<Map<Column<?>, ?>> valueMaps) {
+	static Condition compositeEqualCondition(Entity.Key firstKey, Collection<Entity.Key> keys) {
+		return compositeKeyCondition(firstKey.columns().stream()
+						.collect(toMap(identity(), identity())), EQUAL, keys.stream()
+						.map(key -> {//can't use stream and toMap() due to possible null values
+							Map<Column<?>, Object> valueMap = new HashMap<>();
+							key.columns().forEach(column -> valueMap.put(column, key.get(column)));
+
+							return valueMap;
+						})
+						.collect(toList()));
+	}
+
+	static Condition compositeKeyCondition(Map<Column<?>, Column<?>> columnReferenceMap,
+																				 Operator operator, List<Map<Column<?>, ?>> valueMaps) {
 		if (valueMaps.size() == 1) {
 			return compositeEqualCondition(columnReferenceMap, operator, valueMaps.get(0));
 		}
@@ -198,7 +211,7 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Fac
 
 	private static Map<Column<?>, Object> valueMap(Entity entity, List<Column<?>> columns) {
 		return columns.stream()
-						.collect(toMap(Function.identity(), entity::get));
+						.collect(toMap(identity(), entity::get));
 	}
 
 	private static ColumnCondition<Object> inCondition(Reference<?> reference, Operator operator, List<Object> values) {

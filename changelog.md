@@ -42,6 +42,7 @@ Codion Change Log
 - EntityDefinition.description() now returns Optional.
 - DefaultEntityDefinition, source attributes validated for denormalized attributes.
 - DenormalizedValueProvider now validates the denormalized attribute in case the source is a foreign key.
+- Entity.groupByValue() can now handle null values.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.clientType() and clientVersion() now return Optional.
 ### is.codion.framework.model

@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -378,7 +379,7 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * Returns the primary keys of the given entities.
 	 * @param entities the entities
-	 * @return a List containing the primary keys of the given entities
+	 * @return a {@link Collection} containing the primary keys of the given entities
 	 */
 	static Collection<Key> primaryKeys(Collection<Entity> entities) {
 		return requireNonNull(entities).stream()
@@ -387,10 +388,10 @@ public interface Entity extends Comparable<Entity> {
 	}
 
 	/**
-	 * Returns the non-null keys referenced by the given foreign key
+	 * Returns the non-null keys referenced by the given {@link ForeignKey}
 	 * @param foreignKey the foreign key
 	 * @param entities the entities
-	 * @return the non-null keys referenced by the given foreign key
+	 * @return a {@link Collection} containing the non-null keys referenced by the given {@link ForeignKey}
 	 */
 	static Collection<Key> keys(ForeignKey foreignKey, Collection<Entity> entities) {
 		return requireNonNull(entities).stream()
@@ -402,7 +403,7 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * Returns the primary keys of the given entities with their original values.
 	 * @param entities the entities
-	 * @return a Collection containing the primary keys of the given entities with their original values
+	 * @return a {@link Collection} containing the primary keys of the given entities with their original values
 	 */
 	static Collection<Key> originalPrimaryKeys(Collection<Entity> entities) {
 		return requireNonNull(entities).stream()
@@ -424,7 +425,7 @@ public interface Entity extends Comparable<Entity> {
 	}
 
 	/**
-	 * Returns the non-null values associated with the given attribute from the given entities.
+	 * Returns the non-null values associated with {@code attribute} from the given entities.
 	 * @param <T> the value type
 	 * @param attribute the attribute which values to retrieve
 	 * @param entities the entities from which to retrieve the attribute value
@@ -454,7 +455,7 @@ public interface Entity extends Comparable<Entity> {
 	}
 
 	/**
-	 * Maps the given entities to their primary key
+	 * Maps the given entities to their primary key, assuming each entity appears only once in the given collection.
 	 * @param entities the entities to map
 	 * @return the mapped entities
 	 * @throws IllegalArgumentException in case a non-unique primary key is encountered
@@ -465,23 +466,25 @@ public interface Entity extends Comparable<Entity> {
 	}
 
 	/**
-	 * Returns a LinkedHashMap containing the given entities mapped to the value of {@code attribute},
+	 * Returns a {@link LinkedHashMap} containing the given entities mapped to the value of {@code attribute},
 	 * respecting the iteration order of the given collection
 	 * @param <T> the key type
 	 * @param attribute the attribute which value should be used for mapping
 	 * @param entities the entities to map by attribute value
-	 * @return a Map of entities mapped to attribute value
+	 * @return a {@link LinkedHashMap} of the given entities mapped to the attribute value
 	 */
 	static <T> LinkedHashMap<T, List<Entity>> groupByValue(Attribute<T> attribute, Collection<Entity> entities) {
-		return requireNonNull(entities).stream()
-						.collect(groupingBy(entity -> entity.get(attribute), LinkedHashMap::new, toList()));
+		LinkedHashMap<T, List<Entity>> result = new LinkedHashMap<>();
+		entities.forEach(entity -> result.computeIfAbsent(entity.get(attribute), k -> new ArrayList<>()).add(entity));
+
+		return result;
 	}
 
 	/**
-	 * Returns a LinkedHashMap containing the given entities mapped to their entityTypes,
+	 * Returns a {@link LinkedHashMap} containing the given entities mapped to their entityTypes,
 	 * respecting the iteration order of the given collection
 	 * @param entities the entities to map by entityType
-	 * @return a Map of entities mapped to entityType
+	 * @return a {@link LinkedHashMap} of the given entities mapped to their {@link EntityType}
 	 */
 	static LinkedHashMap<EntityType, List<Entity>> groupByType(Collection<Entity> entities) {
 		return requireNonNull(entities).stream()
