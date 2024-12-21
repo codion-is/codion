@@ -110,7 +110,7 @@ public class StoreDemo {
 										new AddressEditPanel(addressModel.editModel()));
 
 		customerModel.addDetailModel(addressModel);
-		customerPanel.addDetailPanel(addressPanel);
+		customerPanel.detailPanels().add(addressPanel);
 
 		addressPanel.tablePanel()
 						.conditions().view().set(SIMPLE);

@@ -92,6 +92,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 			throw new IllegalStateException("EntityApplicationPanel has not been laid out");
 		}
 		if (tabbedPane.indexOfComponent(entityPanel) != -1) {
+			entityPanel.initialize();
 			tabbedPane.setSelectedComponent(entityPanel);
 		}
 	}

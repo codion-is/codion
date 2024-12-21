@@ -66,18 +66,14 @@ public final class WindowDetailLayout implements DetailLayout {
 	private WindowDetailLayout(DefaultBuilder builder) {
 		this.entityPanel = builder.entityPanel;
 		this.windowType = builder.windowType;
+		this.entityPanel.detailPanels().added().addConsumer(this::addDetailPanel);
 	}
 
 	@Override
 	public Optional<JComponent> layout() {
-		if (entityPanel.detailPanels().isEmpty()) {
+		if (panelWindows.isEmpty()) {
 			throw new IllegalStateException("EntityPanel " + entityPanel + " has no detail panels");
 		}
-		if (!panelWindows.isEmpty()) {
-			throw new IllegalStateException("EntityPanel " + entityPanel + " has already been laid out");
-		}
-		entityPanel.detailPanels().forEach(this::addDetailPanel);
-		entityPanel.detailPanels().forEach(this::bindEvents);
 		setupControls(entityPanel);
 
 		return Optional.empty();
@@ -98,9 +94,6 @@ public final class WindowDetailLayout implements DetailLayout {
 
 	private void addDetailPanel(EntityPanel detailPanel) {
 		panelWindows.put(detailPanel, new DetailWindow(detailPanel));
-	}
-
-	private void bindEvents(EntityPanel detailPanel) {
 		detailPanel.displayRequested().addConsumer(detailController::display);
 	}
 
@@ -109,7 +102,7 @@ public final class WindowDetailLayout implements DetailLayout {
 			entityPanel.tablePanel().addPopupMenuControls(Controls.builder()
 							.name(MESSAGES.getString(DETAIL_TABLES))
 							.smallIcon(FrameworkIcons.instance().detail())
-							.controls(entityPanel.detailPanels().stream()
+							.controls(entityPanel.detailPanels().get().stream()
 											.map(detailPanel -> Control.builder()
 															.command(windowCommand(detailPanel))
 															.name(detailPanel.caption())

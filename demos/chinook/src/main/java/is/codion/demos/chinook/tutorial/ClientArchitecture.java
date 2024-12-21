@@ -107,7 +107,7 @@ public final class ClientArchitecture {
 		// with a default EntityTablePanel
 		EntityPanel albumPanel = new EntityPanel(albumModel);
 
-		artistPanel.addDetailPanel(albumPanel);
+		artistPanel.detailPanels().add(albumPanel);
 
 		return artistPanel;
 	}

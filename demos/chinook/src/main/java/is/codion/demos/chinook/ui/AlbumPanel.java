@@ -33,6 +33,6 @@ public final class AlbumPanel extends EntityPanel {
 						new TrackEditPanel(trackModel.editModel(), trackModel.tableModel()),
 						new TrackTablePanel(trackModel.tableModel()));
 
-		addDetailPanel(trackPanel);
+		detailPanels().add(trackPanel);
 	}
 }

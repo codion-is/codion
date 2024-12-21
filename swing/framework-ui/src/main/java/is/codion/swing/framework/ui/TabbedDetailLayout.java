@@ -170,6 +170,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
 		this.detailController = new TabbedDetailController(builder.enabledDetailStates, builder.initialState);
 		this.controlMap = builder.controlMap;
+		this.entityPanel.detailPanels().added().addConsumer(this::bindEvents);
 	}
 
 	@Override
@@ -179,16 +180,15 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	@Override
 	public Optional<JComponent> layout() {
-		if (entityPanel.detailPanels().isEmpty()) {
+		if (entityPanel.detailPanels().get().isEmpty()) {
 			throw new IllegalStateException("EntityPanel " + entityPanel + " has no detail panels");
 		}
 		if (splitPane != null) {
 			throw new IllegalStateException("EntityPanel " + entityPanel + " has already been laid out");
 		}
 		entityPanel.displayRequested().addListener(new ShowIfHidden());
-		entityPanel.detailPanels().forEach(this::bindEvents);
 		splitPane = createSplitPane(entityPanel.mainPanel());
-		tabbedPane = createTabbedPane(entityPanel.detailPanels());
+		tabbedPane = createTabbedPane(entityPanel.detailPanels().get());
 		setupControls(entityPanel);
 		detailController.initialize();
 
@@ -296,7 +296,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			tablePanel.addPopupMenuControls(Controls.builder()
 							.name(MESSAGES.getString(DETAIL_TABLES))
 							.smallIcon(ICONS.detail())
-							.controls(entityPanel.detailPanels().stream()
+							.controls(entityPanel.detailPanels().get().stream()
 											.map(detailPanel -> Control.builder()
 															.command(new ActivateDetailPanel(detailPanel))
 															.name(detailPanel.caption())
@@ -472,10 +472,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 		@Override
 		public void display(EntityPanel detailPanel) {
 			requireNonNull(detailPanel);
-			if (tabbedPane == null) {
-				throw new IllegalStateException("Can not display panel since the parent panel has not been laid out");
-			}
-			// Make sure the parent panel is displayed
+			// Ensure the parent panel is initialized and displayed
+			entityPanel.initialize();
 			entityPanel.requestDisplay();
 			tabbedPane.setFocusable(true);
 			tabbedPane.setSelectedComponent(detailPanel);

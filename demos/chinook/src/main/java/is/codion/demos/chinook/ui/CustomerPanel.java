@@ -29,6 +29,6 @@ public final class CustomerPanel extends EntityPanel {
 						new CustomerEditPanel(customerModel.editModel()),
 						new CustomerTablePanel(customerModel.tableModel()));
 
-		addDetailPanel(new InvoicePanel(customerModel.detailModel(Invoice.TYPE)));
+		detailPanels().add(new InvoicePanel(customerModel.detailModel(Invoice.TYPE)));
 	}
 }

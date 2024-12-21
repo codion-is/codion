@@ -53,7 +53,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 		EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
 						new CustomerAddressEditPanel(customerAddressModel.editModel()));
 
-		customerPanel.addDetailPanel(customerAddressPanel);
+		customerPanel.detailPanels().add(customerAddressPanel);
 
 		return List.of(customerPanel);
 	}

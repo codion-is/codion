@@ -45,6 +45,6 @@ final class CountryPanel extends EntityPanel {
 						new CountryLanguageEditPanel(countryLanguageModel.editModel()),
 						new CountryLanguageTablePanel(countryLanguageModel.tableModel()));
 
-		addDetailPanels(cityPanel, countryLanguagePanel);
+		detailPanels().add(cityPanel, countryLanguagePanel);
 	}
 }

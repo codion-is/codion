@@ -65,9 +65,9 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 		EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
 						new TagItemEditPanel(tagItemModel.editModel()));
 
-		categoryPanel.addDetailPanel(productPanel);
-		productPanel.addDetailPanel(itemPanel);
-		itemPanel.addDetailPanels(tagItemPanel);
+		categoryPanel.detailPanels().add(productPanel);
+		productPanel.detailPanels().add(itemPanel);
+		itemPanel.detailPanels().add(tagItemPanel);
 
 		return List.of(categoryPanel);
 	}

@@ -22,35 +22,52 @@ import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 
-import java.awt.BorderLayout;
+import javax.swing.JComponent;
+import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.Components.splitPane;
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 public final class PlaylistPanel extends EntityPanel {
 
 	public PlaylistPanel(SwingEntityModel playlistModel) {
 		super(playlistModel,
 						new PlaylistTablePanel(playlistModel.tableModel()),
-						// We override initializeUI(), so we don't need a detail layout
-						config -> config.detailLayout(DetailLayout.NONE));
+						// We specify our custom detail layout
+						config -> config.detailLayout(PlaylistDetailLayout::new));
 
 		SwingEntityModel playlistTrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
 		EntityPanel playlistTrackPanel =
 						new EntityPanel(playlistTrackModel,
 										new PlaylistTrackTablePanel(playlistTrackModel.tableModel()));
 
-		// We still add the detail panel, for keyboard navigation
-		addDetailPanel(playlistTrackPanel);
+		detailPanels().add(playlistTrackPanel);
 	}
 
-	@Override
-	protected void initializeUI() {
-		setLayout(borderLayout());
-		add(splitPane()
-						.leftComponent(mainPanel())
-						.rightComponent(detailPanel(PlaylistTrack.TYPE).initialize())
-						.continuousLayout(true)
-						.build(), BorderLayout.CENTER);
+	private static final class PlaylistDetailLayout implements DetailLayout {
+
+		private final PlaylistPanel playlistPanel;
+
+		public PlaylistDetailLayout(EntityPanel playlistPanel) {
+			this.playlistPanel = (PlaylistPanel) playlistPanel;
+			playlistPanel.detailPanels().added().addConsumer(this::addDetailPanel);
+		}
+
+		@Override
+		public Optional<JComponent> layout() {
+			return Optional.of(splitPane()
+							.leftComponent(playlistPanel.mainPanel())
+							.rightComponent(playlistPanel.detailPanels().get(PlaylistTrack.TYPE).initialize())
+							.continuousLayout(true)
+							.build());
+		}
+
+		private void addDetailPanel(EntityPanel detailPanel) {
+			detailPanel.displayRequested().addListener(() -> {
+				// Make sure the parent panel is initializes
+				playlistPanel.initialize();
+				// and make sure it is displayed
+				playlistPanel.requestDisplay();
+			});
+		}
 	}
 }

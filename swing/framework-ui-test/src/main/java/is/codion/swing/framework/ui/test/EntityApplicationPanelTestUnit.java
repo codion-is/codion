@@ -99,7 +99,7 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
 
 	private void initialize(EntityPanel entityPanel) {
 		entityPanel.initialize();
-		entityPanel.detailPanels().forEach(this::initialize);
+		entityPanel.detailPanels().get().forEach(this::initialize);
 	}
 
 	private static User testUser() {

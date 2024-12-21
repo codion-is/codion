@@ -73,7 +73,7 @@ public final class EntityPanels {
 			super(entityModel);
 			SwingEntityModel addressModel =
 							entityModel.detailModel(Address.TYPE);
-			addDetailPanel(new AddressPanel(addressModel));
+			detailPanels().add(new AddressPanel(addressModel));
 		}
 	}
 	// end::detailPanel[]

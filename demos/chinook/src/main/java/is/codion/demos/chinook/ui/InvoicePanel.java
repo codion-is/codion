@@ -33,6 +33,6 @@ public final class InvoicePanel extends EntityPanel {
 						config -> config.detailLayout(DetailLayout.NONE));
 		InvoiceEditPanel editPanel = editPanel();
 		// We still add the InvoiceLine panel as a detail panel for keyboard navigation
-		addDetailPanel(editPanel.invoiceLinePanel());
+		detailPanels().add(editPanel.invoiceLinePanel());
 	}
 }

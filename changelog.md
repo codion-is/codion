@@ -61,6 +61,7 @@ Codion Change Log
 - EntityApplicationPanel.requestInitialFocus() added, called by DefaultEntityApplicationBuilder on application start.
 - EntityApplicationPanel.extit(), unsaved modification handling improved, related refactoring.
 - EntityPanel.activated() replaced with requestDisplay() and displayRequested(), ApplicationLayout.activate() and DetailController.activate() renamed display().
+- EntityPanel.DetailPanels added, related refactoring.
 
 ## 0.18.22
 ### is.codion.common.core

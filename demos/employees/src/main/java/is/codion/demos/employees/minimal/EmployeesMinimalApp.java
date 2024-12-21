@@ -288,7 +288,7 @@ public final class EmployeesMinimalApp {
 							new EmployeeEditPanel(employeeModel.editModel()));
 			EntityPanel departmentPanel = new EntityPanel(departmentModel,
 							new DepartmentEditPanel(departmentModel.editModel()));
-			departmentPanel.addDetailPanel(employeePanel);
+			departmentPanel.detailPanels().add(employeePanel);
 
 			return List.of(departmentPanel);
 		}

@@ -185,7 +185,7 @@ public final class ClientTutorial {
 			SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
 			EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
 			EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.editModel()));
-			artistPanel.addDetailPanel(albumPanel);
+			artistPanel.detailPanels().add(albumPanel);
 
 			return List.of(artistPanel);
 		}

@@ -241,7 +241,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 			for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
 				SwingEntityModel detailModel = model.detailModel(detailPanelBuilder.entityType());
 				EntityPanel detailPanel = detailPanelBuilder.build(detailModel);
-				entityPanel.addDetailPanel(detailPanel);
+				entityPanel.detailPanels().add(detailPanel);
 			}
 		}
 		onBuildPanel.accept(entityPanel);

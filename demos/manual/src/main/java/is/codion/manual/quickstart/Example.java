@@ -228,7 +228,7 @@ public final class Example {
 		EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
 						new CustomerAddressEditPanel(customerAddressModel.editModel()));
 
-		customerPanel.addDetailPanel(customerAddressPanel);
+		customerPanel.detailPanels().add(customerAddressPanel);
 
 		//lazy initialization of UI components
 		customerPanel.initialize();

@@ -568,6 +568,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 						.control(createSelectFontSizeControl())
 						.separator()
 						.control(createAlwaysOnTopControl())
+						.separator()
+						.control(createViewApplicationTreeControl())
 						.build());
 	}
 
@@ -980,7 +982,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 			if (editModel.editor().modified().get()) {
 				modifiedPanels.add(panel);
 			}
-			modifiedPanels.addAll(modified(panel.detailPanels()));
+			modifiedPanels.addAll(modified(panel.detailPanels().get()));
 		}
 
 		return modifiedPanels;
@@ -1102,6 +1104,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		tree.setShowsRootHandles(true);
 		tree.setToggleClickCount(1);
 		tree.setRootVisible(false);
+		tree.addTreeSelectionListener(e -> {
+			DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+			EntityPanel entityPanel = (EntityPanel) selectedNode.getUserObject();
+			entityPanel.activate();
+		});
 		Utilities.expandAll(tree, new TreePath(tree.getModel().getRoot()));
 
 		return new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -1109,17 +1116,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private static DefaultTreeModel createApplicationTree(Collection<? extends EntityPanel> entityPanels) {
 		DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
-		addModelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityPanels);
+		addPanelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityPanels);
 
 		return applicationTreeModel;
 	}
 
-	private static void addModelsToTree(DefaultMutableTreeNode root, Collection<? extends EntityPanel> panels) {
+	private static void addPanelsToTree(DefaultMutableTreeNode root, Collection<? extends EntityPanel> panels) {
 		for (EntityPanel entityPanel : panels) {
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.caption());
+			node.setUserObject(entityPanel);
 			root.add(node);
-			if (!entityPanel.detailPanels().isEmpty()) {
-				addModelsToTree(node, entityPanel.detailPanels());
+			if (!entityPanel.detailPanels().get().isEmpty()) {
+				addPanelsToTree(node, entityPanel.detailPanels().get());
 			}
 		}
 	}

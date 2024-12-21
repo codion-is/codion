@@ -77,19 +77,19 @@ public final class EntityPanelTest {
 		EntityPanel deptPanel = new EntityPanel(deptModel);
 		EntityPanel empPanel = new EntityPanel(empModel);
 
-		deptPanel.addDetailPanel(empPanel);
-		assertThrows(IllegalArgumentException.class, () -> deptPanel.addDetailPanel(empPanel));
-		assertNotNull(deptPanel.detailPanel(Employee.TYPE));
-		assertEquals(0, deptPanel.linkedDetailPanels().size());
+		deptPanel.detailPanels().add(empPanel);
+		assertThrows(IllegalArgumentException.class, () -> deptPanel.detailPanels().add(empPanel));
+		assertNotNull(deptPanel.detailPanels().get(Employee.TYPE));
+		assertEquals(0, deptPanel.detailPanels().linked().size());
 
 		assertSame(deptPanel, empPanel.parentPanel().orElseThrow(IllegalStateException::new));
 
 		// activates the detail panel
 		deptPanel.initialize();
-		assertThrows(IllegalStateException.class, () -> deptPanel.addDetailPanels(empPanel));
-		assertEquals(1, deptPanel.linkedDetailPanels().size());
+		assertThrows(IllegalStateException.class, () -> deptPanel.detailPanels().add(empPanel));
+		assertEquals(1, deptPanel.detailPanels().linked().size());
 
 		deptModel.detailModelLink(empModel).active().set(false);
-		assertEquals(0, deptPanel.linkedDetailPanels().size());
+		assertEquals(0, deptPanel.detailPanels().linked().size());
 	}
 }

@@ -71,7 +71,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
 										.splitPaneResizeWeight(0.4)
 										.build()));
-		departmentPanel.addDetailPanel(employeePanel);
+		departmentPanel.detailPanels().add(employeePanel);
 
 		return List.of(departmentPanel);
 	}

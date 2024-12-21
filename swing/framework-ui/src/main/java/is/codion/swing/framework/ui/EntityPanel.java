@@ -222,7 +222,7 @@ public class EntityPanel extends JPanel {
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
 	private final SwingEntityModel entityModel;
-	private final List<EntityPanel> detailPanels = new ArrayList<>();
+	private final DetailPanels detailPanels = new DetailPanels();
 	private final EntityEditPanel editPanel;
 	private final EntityTablePanel tablePanel;
 	private final JPanel editControlPanel;
@@ -341,7 +341,7 @@ public class EntityPanel extends JPanel {
 		super.updateUI();
 		Utilities.updateUI(editControlPanel, mainPanel, tablePanel, editPanel);
 		if (detailPanels != null) {
-			Utilities.updateUI(detailPanels);
+			Utilities.updateUI(detailPanels.get());
 		}
 		if (detailLayout != null) {
 			detailLayout.updateUI();
@@ -381,31 +381,10 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @param detailPanels the detail panels
-	 * @throws IllegalStateException if the panel has already been initialized
-	 * @throws IllegalArgumentException if this panel already contains a given detail panel
+	 * @return the detail panels
 	 */
-	public final void addDetailPanels(EntityPanel... detailPanels) {
-		for (EntityPanel detailPanel : requireNonNull(detailPanels)) {
-			addDetailPanel(detailPanel);
-		}
-	}
-
-	/**
-	 * Adds the given detail panel and sets this panel as the parent panel of the given detail panel.
-	 * @param detailPanel the detail panel to add
-	 * @throws IllegalStateException if the panel has already been initialized
-	 * @throws IllegalArgumentException if this panel already contains the given detail panel
-	 */
-	public final void addDetailPanel(EntityPanel detailPanel) {
-		if (initialized) {
-			throw new IllegalStateException("Detail panels must be added before the panel is initialized");
-		}
-		if (detailPanels.contains(requireNonNull(detailPanel))) {
-			throw new IllegalArgumentException("Panel already contains detail panel: " + detailPanel);
-		}
-		addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
-		detailPanel.setParentPanel(this);
+	public final DetailPanels detailPanels() {
+		return detailPanels;
 	}
 
 	/**
@@ -508,40 +487,6 @@ public class EntityPanel extends JPanel {
 		if (containsEditPanel()) {
 			keyEventBuilder.disable(editControlPanel);
 		}
-	}
-
-	/**
-	 * Returns the detail panels which models have an active link to this panels model.
-	 * @return the currently linked detail EntityPanels, if any
-	 * @see DetailModelLink#active()
-	 */
-	public final Collection<EntityPanel> linkedDetailPanels() {
-		return detailPanels.stream()
-						.filter(detailPanel -> entityModel.linkedDetailModels().contains(detailPanel.entityModel))
-						.collect(toList());
-	}
-
-	/**
-	 * Returns the first detail panel found based on the given {@code entityType}
-	 * @param <T> the entity panel type
-	 * @param entityType the entityType of the detail panel to retrieve
-	 * @return the detail panel of the given type
-	 * @throws IllegalArgumentException in case a panel based on the given entityType was not found
-	 */
-	public final <T extends EntityPanel> T detailPanel(EntityType entityType) {
-		requireNonNull(entityType);
-		return (T) detailPanels.stream()
-						.filter(detailPanel -> detailPanel.model().entityType().equals(entityType))
-						.findFirst()
-						.orElseThrow(() -> new IllegalArgumentException("Detail panel for entity: " + entityType + " not found in panel: " + this));
-	}
-
-	/**
-	 * Returns all detail panels.
-	 * @return the detail panels
-	 */
-	public final Collection<EntityPanel> detailPanels() {
-		return unmodifiableCollection(detailPanels);
 	}
 
 	@Override
@@ -660,7 +605,7 @@ public class EntityPanel extends JPanel {
 		if (containsTablePanel()) {
 			tablePanel.savePreferences();
 		}
-		detailPanels.forEach(EntityPanel::savePreferences);
+		detailPanels.get().forEach(EntityPanel::savePreferences);
 	}
 
 	/**
@@ -672,7 +617,7 @@ public class EntityPanel extends JPanel {
 		if (containsTablePanel()) {
 			tablePanel.applyPreferences();
 		}
-		detailPanels.forEach(EntityPanel::applyPreferences);
+		detailPanels.get().forEach(EntityPanel::applyPreferences);
 	}
 
 	/**
@@ -753,7 +698,7 @@ public class EntityPanel extends JPanel {
 	 * @return the main component to base this entity panel on
 	 */
 	protected final JComponent createMainComponent() {
-		return detailPanels.isEmpty() ? mainPanel() : detailLayout().layout().orElse(mainPanel());
+		return detailPanels.get().isEmpty() ? mainPanel() : detailLayout().layout().orElse(mainPanel());
 	}
 
 	/**
@@ -1154,7 +1099,7 @@ public class EntityPanel extends JPanel {
 					}
 					break;
 				case DOWN:
-					if (!detailPanels.isEmpty()) {
+					if (!detailPanels.get().isEmpty()) {
 						navigateDown();
 					}
 					break;
@@ -1164,10 +1109,93 @@ public class EntityPanel extends JPanel {
 		}
 
 		private void navigateDown() {
-			linkedDetailPanels().stream()
+			detailPanels.linked().stream()
 							.findFirst()
-							.orElse(detailPanels.get(0))
+							.orElse(detailPanels.panels.get(0))
 							.activate();
+		}
+	}
+
+	/**
+	 * Manages the detail panels for a {@link EntityPanel}
+	 */
+	public final class DetailPanels {
+
+		private final List<EntityPanel> panels = new ArrayList<>();
+		private final Event<EntityPanel> panelAdded = Event.event();
+
+		private DetailPanels() {}
+
+		/**
+		 * Adds the given detail panels and sets this panel as their parent panel
+		 * @param detailPanels the detail panels
+		 * @throws IllegalStateException if the panel has already been initialized
+		 * @throws IllegalArgumentException if this panel already contains a given detail panel
+		 */
+		public void add(EntityPanel... detailPanels) {
+			for (EntityPanel detailPanel : requireNonNull(detailPanels)) {
+				add(detailPanel);
+			}
+		}
+
+		/**
+		 * Returns all detail panels.
+		 * @return the detail panels
+		 */
+		public Collection<EntityPanel> get() {
+			return unmodifiableCollection(panels);
+		}
+
+		/**
+		 * Returns the first detail panel found based on the given {@code entityType}
+		 * @param <T> the entity panel type
+		 * @param entityType the entityType of the detail panel to retrieve
+		 * @return the detail panel of the given type
+		 * @throws IllegalArgumentException in case a panel based on the given entityType was not found
+		 */
+		public <T extends EntityPanel> T get(EntityType entityType) {
+			requireNonNull(entityType);
+			return (T) panels.stream()
+							.filter(detailPanel -> detailPanel.model().entityType().equals(entityType))
+							.findFirst()
+							.orElseThrow(() -> new IllegalArgumentException("Detail panel for entity: " + entityType + " not found in panel: " + this));
+		}
+
+		/**
+		 * Returns the detail panels which models have an active link to this panels model.
+		 * @return the currently linked detail EntityPanels, if any
+		 * @see DetailModelLink#active()
+		 */
+		public Collection<EntityPanel> linked() {
+			return panels.stream()
+							.filter(detailPanel -> entityModel.linkedDetailModels().contains(detailPanel.entityModel))
+							.collect(toList());
+		}
+
+		/**
+		 * @return an {@link Observer} notified when a detail panel is added to this panel
+		 * @see #add(EntityPanel...)
+		 */
+		public Observer<EntityPanel> added() {
+			return panelAdded.observer();
+		}
+
+		/**
+		 * Adds the given detail panel and sets this panel as the parent panel of the given detail panel.
+		 * @param detailPanel the detail panel to add
+		 * @throws IllegalStateException if the panel has already been initialized
+		 * @throws IllegalArgumentException if this panel already contains the given detail panel
+		 */
+		private void add(EntityPanel detailPanel) {
+			if (initialized) {
+				throw new IllegalStateException("Detail panels must be added before the panel is initialized");
+			}
+			if (panels.contains(requireNonNull(detailPanel))) {
+				throw new IllegalArgumentException("Panel already contains detail panel: " + detailPanel);
+			}
+			addEntityPanelAndLinkSiblings(detailPanel, panels);
+			detailPanel.setParentPanel(EntityPanel.this);
+			panelAdded.accept(detailPanel);
 		}
 	}
 
