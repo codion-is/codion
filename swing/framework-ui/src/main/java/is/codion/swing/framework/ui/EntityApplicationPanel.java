@@ -376,7 +376,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see EntityApplicationPanel#CALL_SYSTEM_EXIT
 	 */
 	public final void exit() {
-		if (cancelExit()) {
+		handleUnsavedModifications();
+		if (!confirmExit()) {
 			throw new CancelException();
 		}
 
@@ -953,17 +954,23 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		return createTree(createDependencyTreeModel(applicationModel.entities()));
 	}
 
-	private boolean cancelExit() {
+	private void handleUnsavedModifications() {
 		Collection<EntityPanel> modified = modified(entityPanels);
 		if (modifiedWarning && !modified.isEmpty()) {
-			return showConfirmDialog(this,
+			if (showConfirmDialog(this,
 							createModifiedMessage(modified), FrameworkMessages.modifiedWarningTitle(),
-							JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION;
-		}
+							JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
+				modified.iterator().next().activate();
 
-		return CONFIRM_EXIT.getOrThrow() && showConfirmDialog(this,
+				throw new CancelException();
+			}
+		}
+	}
+
+	private boolean confirmExit() {
+		return !CONFIRM_EXIT.getOrThrow() || showConfirmDialog(this,
 						FrameworkMessages.confirmExit(), FrameworkMessages.confirmExitTitle(),
-						JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION;
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
 	}
 
 	private static Collection<EntityPanel> modified(Collection<EntityPanel> panels) {
