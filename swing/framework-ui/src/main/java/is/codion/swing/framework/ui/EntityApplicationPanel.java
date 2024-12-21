@@ -568,8 +568,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 						.control(createSelectFontSizeControl())
 						.separator()
 						.control(createAlwaysOnTopControl())
-						.separator()
-						.control(createViewApplicationTreeControl())
 						.build());
 	}
 
@@ -958,14 +956,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private void handleUnsavedModifications() {
 		Collection<EntityPanel> modified = modified(entityPanels);
-		if (modifiedWarning && !modified.isEmpty()) {
-			if (showConfirmDialog(this,
-							createModifiedMessage(modified), FrameworkMessages.modifiedWarningTitle(),
-							JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
-				modified.iterator().next().activate();
+		if (modifiedWarning && !modified.isEmpty() && showConfirmDialog(this,
+						createModifiedMessage(modified), FrameworkMessages.modifiedWarningTitle(),
+						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.NO_OPTION) {
+			modified.iterator().next().activate();
 
-				throw new CancelException();
-			}
+			throw new CancelException();
 		}
 	}
 
@@ -1104,11 +1100,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		tree.setShowsRootHandles(true);
 		tree.setToggleClickCount(1);
 		tree.setRootVisible(false);
-		tree.addTreeSelectionListener(e -> {
-			DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-			EntityPanel entityPanel = (EntityPanel) selectedNode.getUserObject();
-			entityPanel.activate();
-		});
 		Utilities.expandAll(tree, new TreePath(tree.getModel().getRoot()));
 
 		return new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
