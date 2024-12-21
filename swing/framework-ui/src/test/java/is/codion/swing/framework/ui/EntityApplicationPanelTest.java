@@ -86,7 +86,7 @@ public class EntityApplicationPanelTest {
 
 		public TestApplicationModel(EntityConnectionProvider connectionProvider) {
 			super(connectionProvider);
-			addEntityModel(new SwingEntityModel(Employee.TYPE, connectionProvider));
+			entityModels().add(new SwingEntityModel(Employee.TYPE, connectionProvider));
 		}
 	}
 
@@ -98,7 +98,7 @@ public class EntityApplicationPanelTest {
 
 		@Override
 		protected List<EntityPanel> createEntityPanels() {
-			return singletonList(new EntityPanel(applicationModel().entityModel(Employee.TYPE)));
+			return singletonList(new EntityPanel(applicationModel().entityModels().get(Employee.TYPE)));
 		}
 	}
 }

@@ -43,7 +43,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
 	private final EntityConnectionProvider connectionProvider;
 	private final Version version;
-	private final List<M> entityModels = new ArrayList<>();
+	private final DefaultEntityModels<M, E, T> models = new DefaultEntityModels<>();
 
 	/**
 	 * Instantiates a new DefaultEntityApplicationModel
@@ -91,71 +91,81 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 	}
 
 	@Override
-	@SafeVarargs
-	public final void addEntityModels(M... entityModels) {
-		for (M entityModel : requireNonNull(entityModels)) {
-			addEntityModel(entityModel);
-		}
-	}
-
-	@Override
-	public final void addEntityModel(M entityModel) {
-		if (this.entityModels.contains(requireNonNull(entityModel))) {
-			throw new IllegalArgumentException("Entity model " + entityModel + " has already been added");
-		}
-		this.entityModels.add(entityModel);
-	}
-
-	@Override
-	public final boolean containsEntityModel(Class<? extends M> modelClass) {
-		return entityModels.stream()
-						.anyMatch(entityModel -> entityModel.getClass().equals(modelClass));
-	}
-
-	@Override
-	public final boolean containsEntityModel(EntityType entityType) {
-		return entityModels.stream()
-						.anyMatch(entityModel -> entityModel.entityType().equals(entityType));
-	}
-
-	@Override
-	public final boolean containsEntityModel(M entityModel) {
-		return entityModels.contains(entityModel);
-	}
-
-	@Override
-	public final List<M> entityModels() {
-		return Collections.unmodifiableList(entityModels);
+	public final EntityModels<M, E, T> entityModels() {
+		return models;
 	}
 
 	@Override
 	public final void refresh() {
-		for (M entityModel : entityModels) {
+		for (M entityModel : models.entityModels) {
 			if (entityModel.containsTableModel()) {
 				entityModel.tableModel().refresh();
 			}
 		}
 	}
 
-	@Override
-	public final <C extends M> C entityModel(Class<C> modelClass) {
-		for (M model : entityModels) {
-			if (model.getClass().equals(modelClass)) {
-				return (C) model;
+	private final class DefaultEntityModels<M extends DefaultEntityModel<M, E, T>,
+					E extends AbstractEntityEditModel, T extends EntityTableModel<E>> implements EntityModels<M, E, T> {
+
+		private final List<M> entityModels = new ArrayList<>();
+
+		@Override
+		public void add(M... entityModels) {
+			for (M entityModel : requireNonNull(entityModels)) {
+				add(entityModel);
 			}
 		}
 
-		throw new IllegalArgumentException("EntityModel of type: " + modelClass + " not found");
-	}
-
-	@Override
-	public final <C extends M> C entityModel(EntityType entityType) {
-		for (M entityModel : entityModels) {
-			if (entityModel.entityType().equals(entityType)) {
-				return (C) entityModel;
+		@Override
+		public void add(M entityModel) {
+			if (this.entityModels.contains(requireNonNull(entityModel))) {
+				throw new IllegalArgumentException("Entity model " + entityModel + " has already been added");
 			}
+			this.entityModels.add(entityModel);
 		}
 
-		throw new IllegalArgumentException("EntityModel for type " + entityType + " not  found in model: " + this);
+		@Override
+		public boolean contains(Class<? extends M> modelClass) {
+			return entityModels.stream()
+							.anyMatch(entityModel -> entityModel.getClass().equals(modelClass));
+		}
+
+		@Override
+		public boolean contains(EntityType entityType) {
+			return entityModels.stream()
+							.anyMatch(entityModel -> entityModel.entityType().equals(entityType));
+		}
+
+		@Override
+		public boolean contains(M entityModel) {
+			return entityModels.contains(entityModel);
+		}
+
+		@Override
+		public List<M> get() {
+			return Collections.unmodifiableList(entityModels);
+		}
+
+		@Override
+		public <C extends M> C get(Class<C> modelClass) {
+			for (M model : entityModels) {
+				if (model.getClass().equals(modelClass)) {
+					return (C) model;
+				}
+			}
+
+			throw new IllegalArgumentException("EntityModel of type: " + modelClass + " not found");
+		}
+
+		@Override
+		public <C extends M> C get(EntityType entityType) {
+			for (M entityModel : entityModels) {
+				if (entityModel.entityType().equals(entityType)) {
+					return (C) entityModel;
+				}
+			}
+
+			throw new IllegalArgumentException("EntityModel for type " + entityType + " not  found in model: " + DefaultEntityApplicationModel.this);
+		}
 	}
 }

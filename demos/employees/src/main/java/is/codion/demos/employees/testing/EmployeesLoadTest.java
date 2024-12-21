@@ -57,7 +57,7 @@ public final class EmployeesLoadTest {
 											.user(user)
 											.build());
 
-			SwingEntityModel model = applicationModel.entityModel(Department.TYPE);
+			SwingEntityModel model = applicationModel.entityModels().get(Department.TYPE);
 			model.detailModels().link(model.detailModels().get(Employee.TYPE)).active().set(true);
 			try {
 				model.tableModel().refresh();

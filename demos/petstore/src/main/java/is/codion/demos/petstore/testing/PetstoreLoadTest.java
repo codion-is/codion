@@ -51,7 +51,7 @@ public final class PetstoreLoadTest {
 											.clientType(getClass().getSimpleName())
 											.user(user)
 											.build());
-			SwingEntityModel categoryModel = applicationModel.entityModels().iterator().next();
+			SwingEntityModel categoryModel = applicationModel.entityModels().get().iterator().next();
 			categoryModel.detailModels().link(categoryModel.detailModels().get().iterator().next()).active().set(true);
 			SwingEntityModel productModel = categoryModel.detailModels().get().iterator().next();
 			productModel.detailModels().link(productModel.detailModels().get().iterator().next()).active().set(true);
@@ -69,7 +69,7 @@ public final class PetstoreLoadTest {
 
 		@Override
 		public void perform(PetstoreAppModel application) {
-			SwingEntityModel categoryModel = application.entityModels().iterator().next();
+			SwingEntityModel categoryModel = application.entityModels().get().iterator().next();
 			categoryModel.tableModel().selection().clear();
 			categoryModel.tableModel().refresh();
 			selectRandomRow(categoryModel.tableModel());

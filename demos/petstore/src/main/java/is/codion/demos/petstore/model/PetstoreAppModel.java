@@ -39,6 +39,6 @@ public final class PetstoreAppModel extends SwingEntityApplicationModel {
 		itemModel.detailModels().add(tagItemModel);
 		productModel.detailModels().add(itemModel);
 		categoryModel.detailModels().add(productModel);
-		addEntityModel(categoryModel);
+		entityModels().add(categoryModel);
 	}
 }

@@ -29,7 +29,7 @@ public final class InsertDepartment implements Performer<EmployeesAppModel> {
 
 	@Override
 	public void perform(EmployeesAppModel application) {
-		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
+		SwingEntityModel departmentModel = application.entityModels().get(Department.TYPE);
 		departmentModel.editModel().editor().set(new DefaultEntityFactory(application.connection()).entity(Department.TYPE));
 		departmentModel.editModel().insert();
 	}

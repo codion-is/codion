@@ -94,59 +94,73 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	Entities entities();
 
 	/**
-	 * Adds the given entity models to this model.
-	 * @param entityModels the entity models to add
-	 * @throws IllegalArgumentException in case any of the models has already been added
+	 * @return the {@link EntityModels}
 	 */
-	void addEntityModels(M... entityModels);
-
-	/**
-	 * Adds the given entity model to this model
-	 * @param entityModel the detail model
-	 * @throws IllegalArgumentException in case the model has already been added
-	 */
-	void addEntityModel(M entityModel);
-
-	/**
-	 * @param modelClass the application model class
-	 * @return true if this model contains a EntityModel instance of the given class
-	 */
-	boolean containsEntityModel(Class<? extends M> modelClass);
-
-	/**
-	 * @param entityType the entityType
-	 * @return true if this model contains a EntityModel for the given entityType
-	 */
-	boolean containsEntityModel(EntityType entityType);
-
-	/**
-	 * @param entityModel the entity model
-	 * @return true if this model contains the given EntityModel
-	 */
-	boolean containsEntityModel(M entityModel);
-
-	/**
-	 * @return an unmodifiable List containing the EntityModel instances contained
-	 * in this EntityApplicationModel
-	 */
-	List<M> entityModels();
-
-	/**
-	 * @param <C> the model type
-	 * @param modelClass the model class
-	 * @return the EntityModel of the given type
-	 */
-	<C extends M> C entityModel(Class<C> modelClass);
-
-	/**
-	 * @param <C> the model type
-	 * @param entityType the entityType
-	 * @return the EntityModel based on the given entityType
-	 */
-	<C extends M> C entityModel(EntityType entityType);
+	EntityModels<M, E, T> entityModels();
 
 	/**
 	 * Refreshes all data models contained in this application model
 	 */
 	void refresh();
+
+	/**
+	 * Manages the {@link EntityModel}s for a {@link EntityApplicationModel}
+	 * @param <M> the type of {@link EntityModel} this application model is based on
+	 * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
+	 * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
+	 */
+	interface EntityModels<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+
+		/**
+		 * Adds the given entity models to this model.
+		 * @param entityModels the entity models to add
+		 * @throws IllegalArgumentException in case any of the models has already been added
+		 */
+		void add(M... entityModels);
+
+		/**
+		 * Adds the given entity model to this model
+		 * @param entityModel the detail model
+		 * @throws IllegalArgumentException in case the model has already been added
+		 */
+		void add(M entityModel);
+
+		/**
+		 * @param modelClass the application model class
+		 * @return true if this model contains a EntityModel instance of the given class
+		 */
+		boolean contains(Class<? extends M> modelClass);
+
+		/**
+		 * @param entityType the entityType
+		 * @return true if this model contains a EntityModel for the given entityType
+		 */
+		boolean contains(EntityType entityType);
+
+		/**
+		 * @param entityModel the entity model
+		 * @return true if this model contains the given EntityModel
+		 */
+		boolean contains(M entityModel);
+
+		/**
+		 * @return an unmodifiable List containing the EntityModel instances contained
+		 * in this EntityApplicationModel
+		 */
+		List<M> get();
+
+		/**
+		 * @param <C> the model type
+		 * @param modelClass the model class
+		 * @return the EntityModel of the given type
+		 */
+		<C extends M> C get(Class<C> modelClass);
+
+		/**
+		 * @param <C> the model type
+		 * @param entityType the entityType
+		 * @return the EntityModel based on the given entityType
+		 */
+		<C extends M> C get(EntityType entityType);
+	}
 }

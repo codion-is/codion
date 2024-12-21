@@ -37,7 +37,7 @@ public class StoreApplicationModel extends SwingEntityApplicationModel {
 		//populate the model with rows from the database
 		customerModel.tableModel().refresh();
 
-		addEntityModel(customerModel);
+		entityModels().add(customerModel);
 	}
 }
 // end::storeAppModel[]

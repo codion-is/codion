@@ -45,7 +45,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 		 *     ITEM
 		 *       ITEMTAG
 		 */
-		SwingEntityModel categoryModel = applicationModel().entityModel(Category.TYPE);
+		SwingEntityModel categoryModel = applicationModel().entityModels().get(Category.TYPE);
 		SwingEntityModel productModel = categoryModel.detailModels().get(Product.TYPE);
 		SwingEntityModel itemModel = productModel.detailModels().get(Item.TYPE);
 		SwingEntityModel tagItemModel = itemModel.detailModels().get(TagItem.TYPE);

@@ -261,7 +261,7 @@ public final class EmployeesMinimalApp {
 			SwingEntityModel employeeModel = new SwingEntityModel(new EmployeeEditModel(connectionProvider));
 			SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
 			departmentModel.detailModels().add(employeeModel);
-			addEntityModel(departmentModel);
+			entityModels().add(departmentModel);
 		}
 	}
 
@@ -281,7 +281,7 @@ public final class EmployeesMinimalApp {
 		@Override
 		protected List<EntityPanel> createEntityPanels() {
 			//now, let's assemble our application
-			SwingEntityModel departmentModel = applicationModel().entityModel(Department.TYPE);
+			SwingEntityModel departmentModel = applicationModel().entityModels().get(Department.TYPE);
 			SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 
 			EntityPanel employeePanel = new EntityPanel(employeeModel,

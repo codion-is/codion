@@ -30,7 +30,7 @@ public final class InsertEmployee extends AbstractPerformer {
 
 	@Override
 	public void perform(EmployeesAppModel application) {
-		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
+		SwingEntityModel departmentModel = application.entityModels().get(Department.TYPE);
 		selectRandomRow(departmentModel.tableModel());
 		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 		Entity employee = new DefaultEntityFactory(application.connection()).entity(Employee.TYPE);

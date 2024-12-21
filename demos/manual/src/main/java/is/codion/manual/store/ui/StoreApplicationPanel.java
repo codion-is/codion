@@ -43,7 +43,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 	@Override
 	protected List<EntityPanel> createEntityPanels() {
 		CustomerModel customerModel =
-						applicationModel().entityModel(Customer.TYPE);
+						applicationModel().entityModels().get(Customer.TYPE);
 		CustomerAddressModel customerAddressModel =
 						customerModel.detailModels().get(CustomerAddress.TYPE);
 

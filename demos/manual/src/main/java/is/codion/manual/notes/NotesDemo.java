@@ -232,7 +232,7 @@ public final class NotesDemo {
 		public NotesApplicationModel(EntityConnectionProvider connectionProvider) {
 			super(connectionProvider, VERSION);
 			NoteModel noteModel = new NoteModel(connectionProvider);
-			addEntityModel(noteModel);
+			entityModels().add(noteModel);
 			// Refresh the table model to populate it
 			noteModel.tableModel().refresh();
 		}
@@ -246,7 +246,7 @@ public final class NotesDemo {
 
 		@Override
 		protected List<EntityPanel> createEntityPanels() {
-			NoteModel noteModel = applicationModel().entityModel(Note.TYPE);
+			NoteModel noteModel = applicationModel().entityModels().get(Note.TYPE);
 
 			return List.of(new NotePanel(noteModel));
 		}

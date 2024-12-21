@@ -44,6 +44,6 @@ public final class PetclinicAppModel extends SwingEntityApplicationModel {
 
 		ownersModel.tableModel().refresh();
 
-		addEntityModel(ownersModel);
+		entityModels().add(ownersModel);
 	}
 }

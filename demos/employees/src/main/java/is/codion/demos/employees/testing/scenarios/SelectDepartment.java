@@ -26,7 +26,7 @@ public final class SelectDepartment extends AbstractPerformer {
 
 	@Override
 	public void perform(EmployeesAppModel application) {
-		selectRandomRow(application.entityModel(Department.TYPE).tableModel());
+		selectRandomRow(application.entityModels().get(Department.TYPE).tableModel());
 	}
 }
 // end::loadTest[]

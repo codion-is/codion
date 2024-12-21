@@ -31,7 +31,7 @@ public final class EmployeesAppModel extends SwingEntityApplicationModel {
 		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
 		departmentModel.detailModels().add(new SwingEntityModel(new EmployeeEditModel(connectionProvider)));
 		departmentModel.tableModel().refresh();
-		addEntityModel(departmentModel);
+		entityModels().add(departmentModel);
 	}
 }
 // end::applicationModel[]

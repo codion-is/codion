@@ -31,9 +31,9 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 
 	public ChinookAppModel(EntityConnectionProvider connectionProvider) {
 		super(connectionProvider, VERSION);
-		addEntityModel(createAlbumModel(connectionProvider));
-		addEntityModel(createPlaylistModel(connectionProvider));
-		addEntityModel(createCustomerModel(connectionProvider));
+		entityModels().add(createAlbumModel(connectionProvider));
+		entityModels().add(createPlaylistModel(connectionProvider));
+		entityModels().add(createCustomerModel(connectionProvider));
 	}
 
 	private static SwingEntityModel createAlbumModel(EntityConnectionProvider connectionProvider) {

@@ -62,13 +62,13 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 	public void test() {
 		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
 		Model deptModel = createDepartmentModel();
-		model.addEntityModel(deptModel);
-		assertThrows(IllegalArgumentException.class, () -> model.addEntityModel(deptModel));
-		assertNotNull(model.entityModel(Department.TYPE));
-		assertEquals(1, model.entityModels().size());
+		model.entityModels().add(deptModel);
+		assertThrows(IllegalArgumentException.class, () -> model.entityModels().add(deptModel));
+		assertNotNull(model.entityModels().get(Department.TYPE));
+		assertEquals(1, model.entityModels().get().size());
 		assertEquals(UNIT_TEST_USER, model.user());
 
-		assertThrows(IllegalArgumentException.class, () -> model.entityModel(Employee.TYPE));
+		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get(Employee.TYPE));
 		if (!deptModel.containsTableModel()) {
 			return;
 		}
@@ -85,39 +85,39 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 	@Test
 	public void entityModelByEntityTypeNotFound() {
 		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-		assertThrows(IllegalArgumentException.class, () -> model.entityModel(Department.TYPE));
+		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get(Department.TYPE));
 	}
 
 	@Test
 	public void entityModelByEntityType() {
 		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
 		Model departmentModel = createDepartmentModel();
-		model.addEntityModel(departmentModel);
-		assertEquals(departmentModel, model.entityModel(Department.TYPE));
+		model.entityModels().add(departmentModel);
+		assertEquals(departmentModel, model.entityModels().get(Department.TYPE));
 	}
 
 	@Test
 	public void entityModelByClass() {
 		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
 		Model departmentModel = createDepartmentModel();
-		assertThrows(IllegalArgumentException.class, () -> model.entityModel((Class<? extends Model>) departmentModel.getClass()));
-		model.addEntityModels(departmentModel);
-		assertEquals(departmentModel, model.entityModel((Class<? extends Model>) departmentModel.getClass()));
+		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get((Class<? extends Model>) departmentModel.getClass()));
+		model.entityModels().add(departmentModel);
+		assertEquals(departmentModel, model.entityModels().get((Class<? extends Model>) departmentModel.getClass()));
 	}
 
 	@Test
 	public void containsEntityModel() {
 		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
 		Model departmentModel = createDepartmentModel();
-		model.addEntityModel(departmentModel);
+		model.entityModels().add(departmentModel);
 
-		assertTrue(model.containsEntityModel(Department.TYPE));
-		assertTrue(model.containsEntityModel((Class<? extends Model>) departmentModel.getClass()));
-		assertTrue(model.containsEntityModel(departmentModel));
+		assertTrue(model.entityModels().contains(Department.TYPE));
+		assertTrue(model.entityModels().contains((Class<? extends Model>) departmentModel.getClass()));
+		assertTrue(model.entityModels().contains(departmentModel));
 
-		assertFalse(model.containsEntityModel(Employee.TYPE));
+		assertFalse(model.entityModels().contains(Employee.TYPE));
 		Model detailModel = departmentModel.detailModels().get(Employee.TYPE);
-		assertFalse(model.containsEntityModel(detailModel));
+		assertFalse(model.entityModels().contains(detailModel));
 	}
 
 	protected final EntityConnectionProvider connectionProvider() {

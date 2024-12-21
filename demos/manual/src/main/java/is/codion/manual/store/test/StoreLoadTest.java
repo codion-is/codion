@@ -62,7 +62,7 @@ public class StoreLoadTest {
 
 		@Override
 		public void perform(StoreApplicationModel application) {
-			SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
+			SwingEntityModel customerModel = application.entityModels().get(Customer.TYPE);
 			customerModel.tableModel().refresh();
 			selectRandomRow(customerModel.tableModel());
 		}
