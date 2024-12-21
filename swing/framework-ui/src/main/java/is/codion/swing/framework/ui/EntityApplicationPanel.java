@@ -905,9 +905,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private void addEntityPanel(EntityPanel entityPanel) {
 		EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
-		entityPanel.activated().addConsumer(applicationLayout::activated);
+		entityPanel.displayRequested().addConsumer(applicationLayout::display);
 		if (entityPanel.containsEditPanel()) {
-			entityPanel.editPanel().active().addConsumer(new SelectActivatedPanel(entityPanel));
+			entityPanel.editPanel().active().addConsumer(new DisplayActivatedPanel(entityPanel));
 		}
 	}
 
@@ -1138,18 +1138,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		this.saveDefaultUsername = saveDefaultUsername;
 	}
 
-	private final class SelectActivatedPanel implements Consumer<Boolean> {
+	private final class DisplayActivatedPanel implements Consumer<Boolean> {
 
 		private final EntityPanel entityPanel;
 
-		private SelectActivatedPanel(EntityPanel entityPanel) {
+		private DisplayActivatedPanel(EntityPanel entityPanel) {
 			this.entityPanel = entityPanel;
 		}
 
 		@Override
 		public void accept(Boolean active) {
 			if (active) {
-				applicationLayout.activated(entityPanel);
+				applicationLayout.display(entityPanel);
 			}
 		}
 	}
@@ -1238,13 +1238,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		JComponent layout();
 
 		/**
-		 * Called when the given entity panel is activated,
+		 * Called when the given entity panel should be displayed,
 		 * responsible for making sure it becomes visible.
-		 * @param entityPanel the entity panel being activated
-		 * @see EntityPanel#activate()
-		 * @see EntityPanel#activated()
+		 * @param entityPanel the entity panel should be displayed
+		 * @see EntityPanel#displayRequested()
 		 */
-		default void activated(EntityPanel entityPanel) {}
+		default void display(EntityPanel entityPanel) {}
 	}
 
 	/**

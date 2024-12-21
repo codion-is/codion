@@ -101,7 +101,7 @@ public final class WindowDetailLayout implements DetailLayout {
 	}
 
 	private void bindEvents(EntityPanel detailPanel) {
-		detailPanel.activated().addConsumer(detailController::activated);
+		detailPanel.displayRequested().addConsumer(detailController::display);
 	}
 
 	private void setupControls(EntityPanel entityPanel) {
@@ -132,7 +132,7 @@ public final class WindowDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public void activated(EntityPanel detailPanel) {
+		public void display(EntityPanel detailPanel) {
 			Window panelWindow = detailWindow(detailPanel).window;
 			if (panelWindow != null && panelWindow.isShowing()) {
 				panelWindow.toFront();

@@ -229,7 +229,7 @@ public class EntityPanel extends JPanel {
 	private final JPanel mainPanel;
 	private final DetailLayout detailLayout;
 	private final DetailController detailController;
-	private final Event<EntityPanel> activatedEvent = Event.event();
+	private final Event<EntityPanel> displayRequest = Event.event();
 	private final Value<PanelState> editPanelState;
 	private final Function<PanelState, PanelState> editPanelStateMapper;
 
@@ -571,32 +571,17 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @return an observer notified when this panel is activated
-	 * @see #activate()
-	 */
-	public final Observer<EntityPanel> activated() {
-		return activatedEvent.observer();
-	}
-
-	/**
-	 * <p>Activates this panel, by initializing it, bringing its parent window to front and requesting initial focus.
+	 * <p>Activates this panel, by initializing it, displaying it and requesting initial focus.
 	 * <p>It is up the {@link is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout} (for top level panels)
-	 * and the {@link DetailController} (for detail panels) to make sure this panel is displayed when activated.
-	 * @see #activated()
-	 * @see is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout#activated(EntityPanel)
-	 * @see DetailController#activated(EntityPanel)
+	 * and the {@link DetailController} (for detail panels) to make sure this panel is displayed when activated, by responding
+	 * to the {@link #displayRequested()} {@link Observer}.
+	 * @see #displayRequested()
+	 * @see is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout#display(EntityPanel)
+	 * @see DetailController#display(EntityPanel)
 	 */
 	public final void activate() {
-		activatedEvent.accept(this);
 		initialize();
-		Window parentWindow = parentWindow(this);
-		if (parentWindow != null) {
-			parentWindow.toFront();
-		}
-		Window editPanelWindow = parentWindow(editControlPanel);
-		if (editPanelWindow != null) {
-			editPanelWindow.toFront();
-		}
+		requestDisplay();
 		requestInitialFocus();
 	}
 
@@ -640,6 +625,31 @@ public class EntityPanel extends JPanel {
 		else {
 			requestFocus();
 		}
+	}
+
+	/**
+	 * Requests that this panel be displayed on its parent panel and
+	 * brings its parent window to the front, if one is available.
+	 * @see #displayRequested()
+	 */
+	public final void requestDisplay() {
+		displayRequest.accept(EntityPanel.this);
+		Window parentWindow = parentWindow(EntityPanel.this);
+		if (parentWindow != null) {
+			parentWindow.toFront();
+		}
+		Window editPanelWindow = parentWindow(editControlPanel);
+		if (editPanelWindow != null) {
+			editPanelWindow.toFront();
+		}
+	}
+
+	/**
+	 * @return an {@link Observer} notified when a display request for this panel has been issued
+	 * @see #requestDisplay()
+	 */
+	public final Observer<EntityPanel> displayRequested() {
+		return displayRequest.observer();
 	}
 
 	/**
@@ -1651,13 +1661,12 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
-		 * Called when the given detail panel is activated,
+		 * Called when the given detail panel should be displayed,
 		 * responsible for making sure it becomes visible.
 		 * @param detailPanel the detail panel to display
-		 * @see EntityPanel#activate()
-		 * @see EntityPanel#activated()
+		 * @see EntityPanel#displayRequested()
 		 */
-		default void activated(EntityPanel detailPanel) {}
+		default void display(EntityPanel detailPanel) {}
 	}
 
 	/**
