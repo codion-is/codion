@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EventsTest {
 
@@ -46,16 +46,25 @@ public class EventsTest {
 	}
 
 	@Test
-	void weakListeners() {
+	void preventDuplicates() {
 		Event<Integer> event = Event.event();
 		Runnable listener = () -> {};
 		Consumer<Integer> consumer = integer -> {};
-		event.addWeakListener(listener);
-		event.addWeakListener(listener);
-		event.addWeakConsumer(consumer);
-		event.addWeakConsumer(consumer);
-		event.accept(1);
-		event.removeWeakListener(listener);
-		event.removeWeakConsumer(consumer);
+		assertTrue(event.addListener(listener));
+		assertFalse(event.addListener(listener));
+		assertFalse(event.addWeakListener(listener));
+		assertTrue(event.addConsumer(consumer));
+		assertFalse(event.addConsumer(consumer));
+		assertFalse(event.addWeakConsumer(consumer));
+
+		assertTrue(event.removeListener(listener));
+		assertFalse(event.removeListener(listener));
+		assertTrue(event.addWeakListener(listener));
+		assertFalse(event.addListener(listener));
+
+		assertTrue(event.removeConsumer(consumer));
+		assertFalse(event.removeConsumer(consumer));
+		assertTrue(event.addWeakConsumer(consumer));
+		assertFalse(event.addConsumer(consumer));
 	}
 }

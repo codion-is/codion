@@ -25,7 +25,15 @@ import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 
 /**
- * An event class implementing the {@link Observer} interface.
+ * <p>An event class implementing {@link Observer}.
+ * <p>Events are triggered with {@link #run()} or {@link #accept(Object)}, depending
+ * on whether data should be propagated with the event.
+ * <p>Listeners are notified in the order they were added.
+ * <p>Note that <b>both</b> listeners and consumers are notified each time the event is
+ * triggered, regardless of whether {@link #run()} or {@link #accept(Object)} is used.
+ * <p>Events provide access to their {@link Observer} instance via {@link #observer()}, which can
+ * be used to add listeners and consumers, but can not be used to trigger the event.
+ * <p>Unhandled exceptions occurring in a listener will prevent further listeners from being notified.
  * <pre>
  * {@code
  * Event<Boolean> event = Event.event();
@@ -37,35 +45,22 @@ import java.util.function.Consumer;
  * event.addConsumer(this::onBoolean);
  *
  * event.accept(true);
- * }
- * </pre>
- * The event observer observes the event but can not trigger it.
- * <pre>
- * {@code
+ *
  * Observer<Boolean> observer = event.observer();
  *
  * observer.addListener(this::doSomethingElse);
  * }
  * </pre>
- *
- * Listeners and Consumers can be added using a {@link java.lang.ref.WeakReference}.
+ * <p>Listeners and Consumers can be added using a {@link java.lang.ref.WeakReference}.
  * <pre>
  * {@code
  * observer.addWeakListener(this::doSomethingElse);
  * observer.addWeakConsumer(this::onBoolean);
  * }
  * </pre>
- * Any weak references that no longer refer to a listener/consumer instance
- * are cleared when listeners are added or removed, but to manually clear these empty
- * weak references call {@link #removeWeakListener(Runnable)} or {@link #removeWeakConsumer(Consumer)}
- * with a listener/consumer instance which has not been registered on the observer, such as a new one.
- * <pre>
- * {@code
- * observer.removeWeakListener(() -> {});
- * observer.removeWeakConsumer(value -> {});
- * }
- * </pre>
- * A factory for {@link Event} instances via {@link #event()}.
+ * <p>Any weak references that no longer refer to a listener/consumer instance
+ * are cleared when listeners or consumers are added or removed.
+ * <p>A factory for {@link Event} instances via {@link #event()}.
  * @param <T> the type of data propagated with this event
  */
 public interface Event<T> extends Runnable, Consumer<T>, Observer<T> {

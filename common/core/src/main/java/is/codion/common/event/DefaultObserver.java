@@ -24,9 +24,8 @@ import org.jspecify.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.ListIterator;
 import java.util.function.Consumer;
 
 import static java.util.Collections.emptyList;
@@ -36,189 +35,149 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	private final Lock lock = new Lock() {};
 
-	private @Nullable Set<Runnable> listeners;
-	private @Nullable Set<Consumer<? super T>> consumers;
-	private @Nullable List<WeakReference<Runnable>> weakListeners;
-	private @Nullable List<WeakReference<Consumer<? super T>>> weakConsumers;
+	private @Nullable ArrayList<Object> listeners;
+
+	@Override
+	public boolean addListener(Runnable runnable) {
+		return add(runnable, false);
+	}
+
+	@Override
+	public boolean removeListener(Runnable runnable) {
+		return remove(runnable);
+	}
 
 	@Override
 	public boolean addConsumer(Consumer<? super T> consumer) {
-		requireNonNull(consumer);
-		synchronized (lock) {
-			return initConsumers().add(consumer);
-		}
+		return add(consumer, false);
 	}
 
 	@Override
 	public boolean removeConsumer(Consumer<? super T> consumer) {
-		requireNonNull(consumer);
-		synchronized (lock) {
-			return initConsumers().remove(consumer);
-		}
+		return remove(consumer);
 	}
 
 	@Override
-	public boolean addListener(Runnable listener) {
-		requireNonNull(listener);
-		synchronized (lock) {
-			return initListeners().add(listener);
-		}
+	public boolean addWeakListener(Runnable runnable) {
+		return add(runnable, true);
 	}
 
 	@Override
-	public boolean removeListener(Runnable listener) {
-		requireNonNull(listener);
-		synchronized (lock) {
-			return initListeners().remove(listener);
-		}
-	}
-
-	@Override
-	public boolean addWeakListener(Runnable listener) {
-		requireNonNull(listener);
-		synchronized (lock) {
-			List<WeakReference<Runnable>> references = initWeakListeners();
-			for (WeakReference<Runnable> reference : references) {
-				if (reference.refersTo(listener)) {
-					return false;
-				}
-			}
-			return references.add(new WeakReference<>(listener));
-		}
-	}
-
-	@Override
-	public boolean removeWeakListener(Runnable listener) {
-		requireNonNull(listener);
-		synchronized (lock) {
-			List<WeakReference<Runnable>> references = initWeakListeners();
-			references.removeIf(reference -> reference.get() == null);
-
-			return references.removeIf(reference -> reference.refersTo(listener));
-		}
+	public boolean removeWeakListener(Runnable runnable) {
+		return remove(runnable);
 	}
 
 	@Override
 	public boolean addWeakConsumer(Consumer<? super T> consumer) {
-		requireNonNull(consumer);
-		synchronized (lock) {
-			List<WeakReference<Consumer<? super T>>> references = initWeakConsumers();
-			for (WeakReference<Consumer<? super T>> reference : references) {
-				if (reference.refersTo(consumer)) {
-					return false;
-				}
-			}
-			return references.add(new WeakReference<>(consumer));
-		}
+		return add(consumer, true);
 	}
 
 	@Override
 	public boolean removeWeakConsumer(Consumer<? super T> consumer) {
-		requireNonNull(consumer);
-		synchronized (lock) {
-			List<WeakReference<Consumer<? super T>>> references = initWeakConsumers();
-			references.removeIf(reference -> reference.get() == null);
-
-			return references.removeIf(reference -> reference.refersTo(consumer));
-		}
+		return remove(consumer);
 	}
 
 	void notifyListeners(@Nullable T data) {
-		for (Runnable listener : listeners()) {
-			listener.run();
-		}
-		for (Consumer<? super T> consumer : consumers()) {
-			consumer.accept(data);
-		}
-		for (WeakReference<Runnable> reference : weakListeners()) {
-			Runnable weakListener = reference.get();
-			if (weakListener != null) {
-				weakListener.run();
-			}
-		}
-		for (WeakReference<Consumer<? super T>> reference : weakConsumers()) {
-			Consumer<? super T> consumer = reference.get();
-			if (consumer != null) {
-				consumer.accept(data);
-			}
+		for (Object listener : listeners()) {
+			notifyListener(listener, data);
 		}
 	}
 
-	private List<Runnable> listeners() {
+	private List<Object> listeners() {
 		synchronized (lock) {
-			if (listeners != null && !listeners.isEmpty()) {
-				return new ArrayList<>(listeners);
+			if (listeners == null) {
+				return emptyList();
 			}
-		}
 
-		return emptyList();
+			return new ArrayList<>(listeners);
+		}
 	}
 
-	private List<Consumer<? super T>> consumers() {
+	private boolean add(Object listener, boolean weakReference) {
+		requireNonNull(listener);
 		synchronized (lock) {
-			if (consumers != null && !consumers.isEmpty()) {
-				return new ArrayList<>(consumers);
+			if (contains(listener)) {
+				return false;
 			}
-		}
+			if (listeners == null) {
+				listeners = new ArrayList<>(1);
+			}
 
-		return emptyList();
+			listeners.add(weakReference ? new WeakReference<>(listener) : listener);
+			listeners.trimToSize();
+
+			return true;
+		}
 	}
 
-	private List<WeakReference<Runnable>> weakListeners() {
+	private boolean remove(Object listener) {
+		requireNonNull(listener);
 		synchronized (lock) {
-			if (weakListeners != null && !weakListeners.isEmpty()) {
-				weakListeners.removeIf(reference -> reference.get() == null);
+			if (listeners == null) {
+				return false;
+			}
+			if (remove(listener, listeners.listIterator())) {
+				if (listeners.isEmpty()) {
+					listeners = null;
+				}
+				else {
+					listeners.trimToSize();
+				}
 
-				return new ArrayList<>(weakListeners);
+				return true;
+			}
+
+			return false;
+		}
+	}
+
+	private static boolean remove(Object listener, ListIterator<Object> iterator) {
+		boolean removed = false;
+		while (iterator.hasNext()) {
+			Object next = iterator.next();
+			if (next == listener) {
+				iterator.remove();
+				removed = true;
+			}
+			else if (next instanceof WeakReference) {
+				Object reference = ((WeakReference<?>) next).get();
+				if (reference == listener) {
+					iterator.remove();
+					removed = true;
+				}
+				else if (reference == null) {
+					iterator.remove();
+				}
 			}
 		}
 
-		return emptyList();
+		return removed;
 	}
 
-	private List<WeakReference<Consumer<? super T>>> weakConsumers() {
-		synchronized (lock) {
-			if (weakConsumers != null && !weakConsumers.isEmpty()) {
-				weakConsumers.removeIf(reference -> reference.get() == null);
+	private void notifyListener(Object listener, @Nullable T data) {
+		if (listener instanceof WeakReference<?>) {
+			listener = ((WeakReference<?>) listener).get();
+		}
+		if (listener instanceof Runnable) {
+			((Runnable) listener).run();
+		}
+		else if (listener instanceof Consumer) {
+			((Consumer<@Nullable T>) listener).accept(data);
+		}
+	}
 
-				return new ArrayList<>(weakConsumers);
+	private boolean contains(Object object) {
+		if (listeners != null) {
+			listeners.removeIf(item -> item instanceof WeakReference && ((WeakReference<?>) item).get() == null);
+			for (Object listener : listeners) {
+				if (listener == object || (listener instanceof WeakReference<?> && ((WeakReference<?>) listener).get() == object)) {
+					return true;
+				}
 			}
 		}
 
-		return emptyList();
+		return false;
 	}
 
-	private Set<Runnable> initListeners() {
-		if (listeners == null) {
-			listeners = new LinkedHashSet<>(1);
-		}
-
-		return listeners;
-	}
-
-	private Set<Consumer<? super T>> initConsumers() {
-		if (consumers == null) {
-			consumers = new LinkedHashSet<>(1);
-		}
-
-		return consumers;
-	}
-
-	private List<WeakReference<Runnable>> initWeakListeners() {
-		if (weakListeners == null) {
-			weakListeners = new ArrayList<>(1);
-		}
-
-		return weakListeners;
-	}
-
-	private List<WeakReference<Consumer<? super T>>> initWeakConsumers() {
-		if (weakConsumers == null) {
-			weakConsumers = new ArrayList<>(1);
-		}
-
-		return weakConsumers;
-	}
-	
 	private interface Lock {}
 }

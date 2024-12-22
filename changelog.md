@@ -11,6 +11,7 @@ Codion Change Log
 - is.codion.common.observer package renamed observable.
 - Value no longer extends Consumer.
 - Observable.getOrThrow() happy path optimized.
+- DefaultObserver refactored, improved and optimized. 
 ## is.codion.common.db
 - Database.connectionProvider() no longer accepts null.
 - ResultPacker.pack() no longer skips null instances returned from get(), caller must handle any null values encountered.
