@@ -71,23 +71,17 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final TableSelection<R> selection;
 	private final TableConditionModel<C> filters;
 	private final FilterTableSortModel<R, C> sorter;
-	private final VisiblePredicate visiblePredicate;
-	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = requireNonNull(builder.columns);
 		this.sorter = new DefaultFilterTableSortModel<>(builder.columns);
-		this.modelItems = new DefaultItems(builder.validator);
-		this.selection = new DefaultFilterTableSelection<>(modelItems);
 		this.filters = tableConditionModel(createFilterConditionModels(builder.filterModelFactory == null ?
 						new DefaultColumnFilterFactory() : builder.filterModelFactory));
-		this.visiblePredicate = new VisiblePredicate(filters.get());
-		this.refresher = new DefaultRefresher(builder.supplier == null ? modelItems::get : (Supplier<Collection<R>>) builder.supplier);
-		this.refresher.async().set(builder.asyncRefresh);
-		this.refresher.refreshStrategy.set(builder.refreshStrategy);
+		this.modelItems = new DefaultItems(builder.validator, builder.supplier, builder.refreshStrategy, builder.asyncRefresh);
+		this.selection = new DefaultFilterTableSelection<>(modelItems);
 		this.removeSelectionListener = new RemoveSelectionListener();
-		bindEvents();
+		addTableModelListener(removeSelectionListener);
 	}
 
 	@Override
@@ -107,17 +101,17 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public Refresher<R> refresher() {
-		return refresher;
+		return modelItems.refresher;
 	}
 
 	@Override
 	public void refresh() {
-		refresher.doRefresh(null);
+		modelItems.refresher.doRefresh(null);
 	}
 
 	@Override
 	public void refresh(Consumer<Collection<R>> onRefresh) {
-		refresher.doRefresh(requireNonNull(onRefresh));
+		modelItems.refresher.doRefresh(requireNonNull(onRefresh));
 	}
 
 	@Override
@@ -149,7 +143,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public Value<RefreshStrategy> refreshStrategy() {
-		return refresher.refreshStrategy;
+		return modelItems.refreshStrategy;
 	}
 
 	@Override
@@ -195,11 +189,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private void bindEvents() {
-		addTableModelListener(removeSelectionListener);
-		filters.changed().addListener(modelItems::filter);
-	}
-
 	private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
 		return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
 	}
@@ -212,26 +201,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		return columnFilterModels;
-	}
-
-	private final class DefaultRefresher extends AbstractFilterModelRefresher<R> {
-
-		private final Event<Collection<R>> event = Event.event();
-		private final Value<RefreshStrategy> refreshStrategy = Value.nonNull(RefreshStrategy.CLEAR);
-
-		private DefaultRefresher(Supplier<Collection<R>> supplier) {
-			super(supplier);
-		}
-
-		@Override
-		protected void processResult(Collection<R> items) {
-			modelItems.set(items);
-			event.accept(unmodifiableCollection(items));
-		}
-
-		private void doRefresh(Consumer<Collection<R>> onRefresh) {
-			super.refresh(onRefresh);
-		}
 	}
 
 	private final class DefaultColumnFilterFactory implements ConditionModelFactory<C> {
@@ -252,11 +221,21 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private final Lock lock = new Lock() {};
 
 		private final Predicate<R> validator;
+		private final DefaultRefresher refresher;
+		private final Value<RefreshStrategy> refreshStrategy;
+		private final VisiblePredicate visiblePredicate;
 		private final DefaultVisibleItems visible = new DefaultVisibleItems();
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 
-		private DefaultItems(Predicate<R> validator) {
+		private DefaultItems(Predicate<R> validator, Supplier<? extends Collection<R>> supplier,
+												 RefreshStrategy refreshStrategy, boolean asyncRefresh) {
 			this.validator = validator;
+			this.refresher = new DefaultRefresher(supplier == null ? this::get : supplier, asyncRefresh);
+			this.refreshStrategy = Value.builder()
+							.nonNull(RefreshStrategy.CLEAR)
+							.value(refreshStrategy)
+							.build();
+			this.visiblePredicate = new VisiblePredicate();
 		}
 
 		@Override
@@ -277,7 +256,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		public void set(Collection<R> items) {
 			rejectNulls(items);
 			synchronized (lock) {
-				if (refresher.refreshStrategy.isEqualTo(RefreshStrategy.MERGE) && !items.isEmpty()) {
+				if (refreshStrategy.isEqualTo(RefreshStrategy.MERGE) && !items.isEmpty()) {
 					merge(items);
 				}
 				else {
@@ -491,6 +470,61 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			return items;
 		}
 
+		private final class DefaultRefresher extends AbstractFilterModelRefresher<R> {
+
+			private final Event<Collection<R>> event = Event.event();
+
+			private DefaultRefresher(Supplier<? extends Collection<R>> supplier, boolean asyncRefresh) {
+				super((Supplier<Collection<R>>) supplier);
+				async().set(asyncRefresh);
+			}
+
+			@Override
+			protected void processResult(Collection<R> items) {
+				set(items);
+				event.accept(unmodifiableCollection(items));
+			}
+
+			private void doRefresh(Consumer<Collection<R>> onRefresh) {
+				super.refresh(onRefresh);
+			}
+		}
+
+		private final class VisiblePredicate implements Predicate<R> {
+
+			private final Value<Predicate<R>> predicate;
+
+			private VisiblePredicate() {
+				predicate = Value.builder()
+								.<Predicate<R>>nullable()
+								.notify(WHEN_SET)
+								.listener(DefaultItems.this::filter)
+								.build();
+				filters.changed().addListener(DefaultItems.this::filter);
+			}
+
+			@Override
+			public boolean test(R item) {
+				if (predicate.isNotNull() && !predicate.getOrThrow().test(item)) {
+					return false;
+				}
+
+				return filters.get().entrySet().stream()
+								.filter(entry -> entry.getValue().enabled().get())
+								.allMatch(entry -> accepts(item, entry.getValue(), entry.getKey(), columns));
+			}
+
+			private boolean accepts(R item, ConditionModel<?> condition, C identifier, Columns<R, C> columns) {
+				if (condition.valueClass().equals(String.class)) {
+					String string = columns.string(item, identifier);
+
+					return ((ConditionModel<String>) condition).accepts(string.isEmpty() ? null : string);
+				}
+
+				return condition.accepts(columns.comparable(item, identifier));
+			}
+		}
+
 		private final class DefaultVisibleItems implements VisibleItems<R> {
 
 			private final List<R> items = new ArrayList<>();
@@ -670,42 +704,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private interface Lock {}
-	}
-
-	private final class VisiblePredicate implements Predicate<R> {
-
-		private final Map<C, ConditionModel<?>> columnFilters;
-
-		private final Value<Predicate<R>> predicate = Value.builder()
-						.<Predicate<R>>nullable()
-						.notify(WHEN_SET)
-						.listener(modelItems::filter)
-						.build();
-
-		private VisiblePredicate(Map<C, ConditionModel<?>> columnFilters) {
-			this.columnFilters = columnFilters;
-		}
-
-		@Override
-		public boolean test(R item) {
-			if (predicate.isNotNull() && !predicate.getOrThrow().test(item)) {
-				return false;
-			}
-
-			return columnFilters.entrySet().stream()
-							.filter(entry -> entry.getValue().enabled().get())
-							.allMatch(entry -> accepts(item, entry.getValue(), entry.getKey(), columns));
-		}
-
-		private boolean accepts(R item, ConditionModel<?> condition, C identifier, Columns<R, C> columns) {
-			if (condition.valueClass().equals(String.class)) {
-				String string = columns.string(item, identifier);
-
-				return ((ConditionModel<String>) condition).accepts(string.isEmpty() ? null : string);
-			}
-
-			return condition.accepts(columns.comparable(item, identifier));
-		}
 	}
 
 	private final class RemoveSelectionListener implements TableModelListener {
