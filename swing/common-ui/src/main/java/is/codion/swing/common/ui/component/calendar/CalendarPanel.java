@@ -244,15 +244,11 @@ public final class CalendarPanel extends JPanel {
 							.build();
 		}
 		else {
-			hourValue = Value.builder()
-							.nonNull(0)
-							.build();
-			minuteValue = Value.builder()
-							.nonNull(0)
-							.build();
+			hourValue = Value.nonNull(0);
+			minuteValue = Value.nonNull(0);
 		}
-		localDateValue = Value.value(createLocalDateTime().toLocalDate());
-		localDateTimeValue = Value.value(createLocalDateTime());
+		localDateValue = Value.nullable(createLocalDateTime().toLocalDate());
+		localDateTimeValue = Value.nullable(createLocalDateTime());
 		todaySelected = State.state(todaySelected());
 		dayColumns = IntStream.range(0, DAYS_IN_WEEK)
 						.mapToObj(firstDayOfWeek::plus)

@@ -208,7 +208,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	@Override
 	public EntityApplicationPanel.Builder<M, P> frameTitle(String frameTitle) {
-		return frameTitle(Value.value(requireNonNull(frameTitle)));
+		return frameTitle(Value.nullable(requireNonNull(frameTitle)));
 	}
 
 	@Override

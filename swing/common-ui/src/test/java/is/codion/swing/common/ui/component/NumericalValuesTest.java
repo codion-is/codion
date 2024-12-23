@@ -39,7 +39,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void testLong() {
-		Value<Long> longValue = Value.value();
+		Value<Long> longValue = Value.nullable();
 		NumberField<Long> longField = Components.longField(longValue)
 						.build();
 		assertNull(longField.get());
@@ -53,8 +53,8 @@ public class NumericalValuesTest {
 
 	@Test
 	void testLongPrimitive() {
-		Value<Long> longPrimitivePropertyValue = Value.builder().nonNull(0L).build();
-		assertFalse(longPrimitivePropertyValue.nullable());
+		Value<Long> longPrimitivePropertyValue = Value.nonNull(0L);
+		assertFalse(longPrimitivePropertyValue.isNullable());
 		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField(longPrimitivePropertyValue)
 						.buildValue();
 		NumberField<Long> longField = componentValue.component();
@@ -70,7 +70,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void testInteger() {
-		Value<Integer> integerPropertyValue = Value.value();
+		Value<Integer> integerPropertyValue = Value.nullable();
 		NumberField<Integer> integerField = Components.integerField(integerPropertyValue)
 						.build();
 		assertNull(integerField.get());
@@ -84,7 +84,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void testInt() {
-		Value<Integer> integerPropertyValue = Value.builder().nonNull(0).build();
+		Value<Integer> integerPropertyValue = Value.nonNull(0);
 		ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField(integerPropertyValue)
 						.buildValue();
 		NumberField<Integer> integerField = componentValue.component();
@@ -117,7 +117,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void testDouble() {
-		Value<Double> doublePropertyValue = Value.value();
+		Value<Double> doublePropertyValue = Value.nullable();
 		NumberField<Double> doubleField = Components.doubleField(doublePropertyValue)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
@@ -133,7 +133,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void testDoublePrimitive() {
-		Value<Double> doublePrimitivePropertyValue = Value.builder().nonNull(0d).build();
+		Value<Double> doublePrimitivePropertyValue = Value.nonNull(0d);
 		ComponentValue<Double, NumberField<Double>> componentValue = Components.doubleField()
 						.decimalSeparator('.')
 						.groupingSeparator(',')

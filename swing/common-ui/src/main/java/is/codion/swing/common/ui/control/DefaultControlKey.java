@@ -33,7 +33,7 @@ final class DefaultControlKey<T extends Control> implements ControlKey<T> {
 	DefaultControlKey(String name, Class<T> controlClass, KeyStroke defaultKeyStroke) {
 		this.name = requireNonNull(name);
 		this.controlClass = requireNonNull(controlClass);
-		this.defaultKeyStroke = Value.value(defaultKeyStroke);
+		this.defaultKeyStroke = Value.nullable(defaultKeyStroke);
 	}
 
 	@Override

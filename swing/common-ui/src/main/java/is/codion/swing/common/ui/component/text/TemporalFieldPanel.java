@@ -52,7 +52,7 @@ import static java.util.Objects.requireNonNull;
 public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
 	private final TemporalField<T> temporalField;
-	private final Value<AbstractButton> button = Value.value();
+	private final Value<AbstractButton> button = Value.nullable();
 
 	TemporalFieldPanel(DefaultBuilder<T> builder) {
 		temporalField = requireNonNull(builder.createTemporalField());

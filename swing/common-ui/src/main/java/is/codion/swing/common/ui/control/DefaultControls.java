@@ -123,7 +123,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		private static final ControlItem SEPARATOR = new Separator();
 
-		private final Value<KeyStroke> keyStroke = Value.value();
+		private final Value<KeyStroke> keyStroke = Value.nullable();
 		private final List<ControlKey<?>> defaults;
 		private final List<ControlItem> items = new ArrayList<>();
 

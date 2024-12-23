@@ -339,7 +339,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 		private final NumberRangeValidator<T> rangeValidator;
 		private final NumberParser<T> parser;
-		private final Value<T> value = Value.value();
+		private final Value<T> value = Value.nullable();
 
 		private JTextComponent textComponent;
 		private boolean convertGroupingToDecimalSeparator = true;

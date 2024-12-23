@@ -59,9 +59,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 					.build();
 	private final State editable = State.state();
 	private final State removeDeleted = State.state(true);
-	private final Value<OnInsert> onInsert = Value.builder()
-					.nonNull(EntityTableModel.ON_INSERT.getOrThrow())
-					.build();
+	private final Value<OnInsert> onInsert =
+					Value.nonNull(EntityTableModel.ON_INSERT.getOrThrow());
 
 	private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 

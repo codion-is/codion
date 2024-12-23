@@ -121,8 +121,8 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
 	private static final class RandomPlaylistParametersModel {
 
-		private final Value<String> playlistName = Value.value();
-		private final Value<Integer> noOfTracks = Value.value();
+		private final Value<String> playlistName = Value.nullable();
+		private final Value<Integer> noOfTracks = Value.nullable();
 		private final ValueList<Entity> genres = ValueList.valueList();
 		private final State parametersValid = State.state();
 

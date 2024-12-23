@@ -52,7 +52,7 @@ public final class DesignAndStyle {
 		//tag::factories[]
 		Event<String> event = event(); // Event.event()
 
-		Value<Integer> value = Value.value();
+		Value<Integer> value = Value.nullable();
 
 		State state = State.state(true);
 

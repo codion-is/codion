@@ -435,9 +435,7 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 
 		private DefaultValueEditor(Attribute<T> attribute) {
 			this.attribute = attribute;
-			this.defaultValue = Value.builder()
-							.nonNull((Supplier<T>) entityDefinition.attributes().definition(attribute)::defaultValue)
-							.build();
+			this.defaultValue = Value.nonNull(entityDefinition.attributes().definition(attribute)::defaultValue);
 		}
 
 		@Override

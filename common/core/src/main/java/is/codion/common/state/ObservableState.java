@@ -50,7 +50,7 @@ public interface ObservableState extends Observable<Boolean> {
 	 * @return false
 	 */
 	@Override
-	default boolean nullable() {
+	default boolean isNullable() {
 		return false;
 	}
 

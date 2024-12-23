@@ -632,7 +632,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		protected Short getComponentValue() {
 			Number number = component().get();
 			if (number == null) {
-				return nullable() ? null : (short) 0;
+				return isNullable() ? null : (short) 0;
 			}
 
 			return number.shortValue();
@@ -654,7 +654,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		protected Double getComponentValue() {
 			Number number = component().get();
 			if (number == null) {
-				return nullable() ? null : 0d;
+				return isNullable() ? null : 0d;
 			}
 
 			return number.doubleValue();
@@ -676,7 +676,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		protected Integer getComponentValue() {
 			Number number = component().get();
 			if (number == null) {
-				return nullable() ? null : 0;
+				return isNullable() ? null : 0;
 			}
 
 			return number.intValue();
@@ -698,7 +698,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		protected Long getComponentValue() {
 			Number number = component().get();
 			if (number == null) {
-				return nullable() ? null : 0L;
+				return isNullable() ? null : 0L;
 			}
 
 			return number.longValue();
@@ -720,7 +720,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		protected BigDecimal getComponentValue() {
 			BigDecimal number = component().get();
 			if (number == null) {
-				return nullable() ? null : BigDecimal.ZERO;
+				return isNullable() ? null : BigDecimal.ZERO;
 			}
 
 			return number;

@@ -40,7 +40,7 @@ public class ValueListTest {
 		assertFalse(observer.notEmpty());
 		assertUnmodifiable(observer);
 
-		assertFalse(observer.nullable());
+		assertFalse(observer.isNullable());
 		assertFalse(observer.isNull());
 		assertTrue(observer.optional().isPresent());
 

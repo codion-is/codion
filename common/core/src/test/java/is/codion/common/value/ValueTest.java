@@ -42,7 +42,7 @@ public class ValueTest {
 						.nonNull("NullString")
 						.value("Testing")
 						.build();
-		assertThrows(NullPointerException.class, () -> Value.builder().nonNull(null));
+		assertThrows(NullPointerException.class, () -> Value.nonNull(null));
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class ValueTest {
 				throw new IllegalArgumentException();
 			}
 		};
-		Value<Integer> value = Value.builder().nonNull(0).build();
+		Value<Integer> value = Value.nonNull(0);
 		value.set(11);
 		assertThrows(IllegalArgumentException.class, () -> value.addValidator(validator));
 		value.set(1);
@@ -73,11 +73,11 @@ public class ValueTest {
 						.nonNull(-1)
 						.value(42)
 						.build();
-		assertFalse(intValue.nullable());
+		assertFalse(intValue.isNullable());
 		assertTrue(intValue.optional().isPresent());
 		assertTrue(intValue.isEqualTo(42));
 		Observable<Integer> observable = intValue.observable();
-		assertFalse(observable.nullable());
+		assertFalse(observable.isNullable());
 		assertTrue(observable.optional().isPresent());
 		assertTrue(observable.isEqualTo(42));
 		Runnable listener = eventCounter::incrementAndGet;
@@ -111,17 +111,15 @@ public class ValueTest {
 		assertEquals(-1, intValue.get());
 		assertEquals(-1, observable.get());
 
-		Value<String> stringValue = Value.builder()
-						.nonNull("null")
-						.build();
-		assertFalse(stringValue.nullable());
+		Value<String> stringValue = Value.nonNull("null");
+		assertFalse(stringValue.isNullable());
 		assertEquals("null", stringValue.get());
 		stringValue.set("test");
 		assertEquals("test", stringValue.get());
 		stringValue.clear();
 		assertEquals("null", stringValue.get());
 
-		Value<String> value = Value.value();
+		Value<String> value = Value.nullable();
 		assertFalse(value.optional().isPresent());
 		assertThrows(NoSuchElementException.class, value::getOrThrow);
 		value.set("hello");
@@ -134,8 +132,8 @@ public class ValueTest {
 	@Test
 	void linkValues() {
 		AtomicInteger modelValueEventCounter = new AtomicInteger();
-		Value<Integer> modelValue = Value.value(42);
-		Value<Integer> uiValue = Value.value();
+		Value<Integer> modelValue = Value.nullable(42);
+		Value<Integer> uiValue = Value.nullable();
 		uiValue.link(modelValue);
 
 		assertThrows(IllegalStateException.class, () -> uiValue.link(modelValue));
@@ -171,7 +169,7 @@ public class ValueTest {
 		assertEquals(3, modelValueEventCounter.get());
 		assertEquals(3, uiValueEventCounter.get());
 
-		Value<Integer> valueOne = Value.value();
+		Value<Integer> valueOne = Value.nullable();
 		assertThrows(IllegalArgumentException.class, () -> valueOne.link(valueOne));
 	}
 
@@ -182,8 +180,8 @@ public class ValueTest {
 						.nonNull(0)
 						.value(42)
 						.build();
-		Value<Integer> uiValue = Value.value();
-		assertFalse(modelValue.nullable());
+		Value<Integer> uiValue = Value.nullable();
+		assertFalse(modelValue.isNullable());
 		uiValue.link(modelValue.observable());
 		modelValue.addListener(modelValueEventCounter::incrementAndGet);
 		AtomicInteger uiValueEventCounter = new AtomicInteger();
@@ -215,15 +213,15 @@ public class ValueTest {
 
 	@Test
 	void valueLinks() {
-		Value<Integer> value1 = Value.value();
-		Value<Integer> value2 = Value.value();
-		Value<Integer> value3 = Value.value();
+		Value<Integer> value1 = Value.nullable();
+		Value<Integer> value2 = Value.nullable();
+		Value<Integer> value3 = Value.nullable();
 		value3.addValidator(value -> {
 			if (value != null && value > 4) {
 				throw new IllegalArgumentException();
 			}
 		});
-		Value<Integer> value4 = Value.value();
+		Value<Integer> value4 = Value.nullable();
 
 		value1.link(value2);
 
@@ -262,8 +260,8 @@ public class ValueTest {
 
 	@Test
 	void valueAsConsumer() {
-		Value<Integer> value = Value.value();
-		Value<Integer> listeningValue = Value.value();
+		Value<Integer> value = Value.nullable();
+		Value<Integer> listeningValue = Value.nullable();
 
 		value.addConsumer(listeningValue::set);
 		value.set(1);
@@ -287,7 +285,7 @@ public class ValueTest {
 							}
 						})
 						.build();
-		Value<Integer> originalValue = Value.value(1);
+		Value<Integer> originalValue = Value.nullable(1);
 
 		value.link(originalValue);
 		assertEquals(originalValue.get(), value.get());
@@ -324,7 +322,7 @@ public class ValueTest {
 
 	@Test
 	void weakListeners() {
-		Value<Integer> value = Value.value();
+		Value<Integer> value = Value.nullable();
 		Observable<Integer> observer = value.observable();
 		Runnable listener = () -> {};
 		Consumer<Integer> consumer = integer -> {};
@@ -356,7 +354,7 @@ public class ValueTest {
 		}
 		Test test1 = new Test(1, "Hello");
 		Test test2 = new Test(2, "Hello");
-		Value<Test> value = Value.value(test1);
+		Value<Test> value = Value.nullable(test1);
 		value.addListener(() -> {
 			throw new RuntimeException("Change event should not have been triggered");
 		});
@@ -366,7 +364,7 @@ public class ValueTest {
 
 	@Test
 	void map() {
-		Value<Integer> value = Value.value(0);
+		Value<Integer> value = Value.nullable(0);
 		Function<Integer, Integer> increment = currentValue -> currentValue + 1;
 		value.map(increment);
 		assertEquals(1, value.get());

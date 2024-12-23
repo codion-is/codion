@@ -32,31 +32,42 @@ import static java.util.Objects.requireNonNull;
  * <p>Nullable integer based Value:</p>
  * <pre>
  * {@code
- * Value<Integer> integer = Value.value();
- * integer.set(42);
- * integer.addConsumer(this::onValueChange);
- * integer.nullable(); // true
+ * Value<Integer> value = Value.nullable();
+ * value.set(42);
+ * value.addConsumer(this::onValueChange);
+ * value.isNullable(); // true
+ * }
+ * </pre>
+ * <p>Non-null boolean based Value, using 'false' as a null substitute:</p>
+ * <pre>
+ * {@code
+ * Value<Boolean> value = Value.nonNull(false);
+ * value.set(true);
+ * value.set(null);
+ * value.get(); // false
+ * value.isNullable(); // false
  * }
  * </pre>
  * <p>Non-null String based Value, using "none" as a null substitute:</p>
  * <pre>
  * {@code
- * Value<String> string = Value.builder()
+ * Value<String> value = Value.builder()
  *         .nonNull("none")
- *         .value("hello")
- *         .notify(Notify.WHEN_SET)
- *         .validator(this::validateString)
- *         .listener(this::onStringSet)
+ *         .value("hello")                  // the initial value
+ *         .notify(Notify.WHEN_SET)         // notifies listeners when set
+ *         .validator(this::validateString) // using a validator
+ *         .listener(this::onStringSet)     // and a listener
  *         .build();
- * string.nullable();// false
- * string.set("hey");
- * string.set(null); // reverts to the null substitute: "none"
+ * value.isNullable();// false
+ * value.set("hey");
+ * value.set(null); // reverts to the null substitute: "none"
  * }
  * </pre>
  * <p>A factory for {@link Value} instances.</p>
  * @param <T> the type of the wrapped value
- * @see #value()
- * @see #value(Object)
+ * @see #nullable()
+ * @see #nullable(Object)
+ * @see #nonNull(Object)
  * @see #builder()
  */
 public interface Value<T> extends Observable<T> {
@@ -172,21 +183,33 @@ public interface Value<T> extends Observable<T> {
 	/**
 	 * Creates a new nullable {@link Value} instance, wrapping a null initial value, using {@link Notify#WHEN_CHANGED}.
 	 * @param <T> the value type
-	 * @return a Value for the given type
+	 * @return a nullable Value
 	 */
-	static <T> Value<T> value() {
-		return value(null);
+	static <T> Value<T> nullable() {
+		return nullable(null);
 	}
 
 	/**
 	 * Creates a new nullable {@link Value} instance, wrapping the given initial value, using {@link Notify#WHEN_CHANGED}.
 	 * @param <T> the value type
 	 * @param value the initial value
-	 * @return a Value for the given type
+	 * @return a nullable Value
 	 */
-	static <T> Value<T> value(@Nullable T value) {
+	static <T> Value<T> nullable(@Nullable T value) {
 		return builder()
 						.nullable(value)
+						.build();
+	}
+
+	/**
+	 * Creates a new non-null {@link Value} instance, using the given value as a null-substitute, using {@link Notify#WHEN_CHANGED}.
+	 * @param <T> the value type
+	 * @param nullValue the null value substitute
+	 * @return a non-null Value
+	 */
+	static <T> Value<T> nonNull(T nullValue) {
+		return builder()
+						.nonNull(nullValue)
 						.build();
 	}
 

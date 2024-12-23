@@ -82,7 +82,7 @@ public final class TextFieldPanel extends JPanel {
 	}
 
 	private final JTextField textField;
-	private final Value<AbstractButton> button = Value.value();
+	private final Value<AbstractButton> button = Value.nullable();
 	private final ControlMap controlMap;
 	private final String dialogTitle;
 	private final String caption;

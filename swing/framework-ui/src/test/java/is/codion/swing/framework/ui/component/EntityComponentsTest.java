@@ -322,7 +322,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void integerSpinner() {
-		Value<Integer> value = Value.value();
+		Value<Integer> value = Value.nullable();
 		ComponentValue<Integer, JSpinner> componentValue =
 						entityComponents.integerSpinner(Detail.INT)
 										.link(value)
@@ -336,7 +336,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void doubleSpinner() {
-		Value<Double> value = Value.value();
+		Value<Double> value = Value.nullable();
 		ComponentValue<Double, JSpinner> componentValue =
 						entityComponents.doubleSpinner(Detail.DOUBLE)
 										.link(value)
@@ -350,7 +350,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void slider() {
-		Value<Integer> value = Value.value();
+		Value<Integer> value = Value.nullable();
 		ComponentValue<Integer, JSlider> componentValue =
 						entityComponents.slider(Detail.INT)
 										.link(value)

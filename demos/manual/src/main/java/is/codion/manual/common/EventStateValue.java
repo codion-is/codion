@@ -130,17 +130,16 @@ public final class EventStateValue {
 		// tag::value[]
 		// a nullable value with 2 as the initial value
 		Value<Integer> value =
-						Value.value(2);
+						Value.nullable(2);
 
 		value.set(4);
 
- 		// a non-null value using 0 as null replacement
+		// a non-null value using 0 as null substitute
 		Value<Integer> otherValue =
-						Value.builder()
-										.nonNull(0)
-										// linked to the value above
-										.link(value)
-										.build();
+						Value.nonNull(0);
+
+		// linked to the value above
+		value.link(otherValue);
 
 		System.out.println(otherValue.get());// output: 4
 
@@ -166,7 +165,7 @@ public final class EventStateValue {
 										.value(initialValue)
 										.build();
 
-		System.out.println(value.nullable());//output: false
+		System.out.println(value.isNullable());//output: false
 
 		System.out.println(value.get());// output: 42
 

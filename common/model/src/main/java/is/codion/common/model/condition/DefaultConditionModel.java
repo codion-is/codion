@@ -519,9 +519,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 			private EqualOperand(Wildcard wildcard, Observable<Operator> operatorObserver) {
 				super(null, Notify.WHEN_SET);
-				this.wildcard = Value.builder()
-								.nonNull(wildcard)
-								.build();
+				this.wildcard = Value.nonNull(wildcard);
 				this.operatorObserver = operatorObserver;
 			}
 

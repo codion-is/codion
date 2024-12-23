@@ -238,9 +238,7 @@ public final class EntitySearchField extends HintTextField {
 						.listener(this::updateSearchIndicator)
 						.build();
 		updateSearchIndicator();
-		selectorFactory = Value.builder()
-						.nonNull(builder.selectorFactory)
-						.build();
+		selectorFactory = Value.nonNull(builder.selectorFactory);
 		if (builder.selectAllOnFocusGained) {
 			addFocusListener(new SelectAllFocusListener());
 		}

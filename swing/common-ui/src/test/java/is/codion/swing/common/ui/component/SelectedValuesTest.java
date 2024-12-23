@@ -37,7 +37,7 @@ public class SelectedValuesTest {
 
 	@Test
 	void selectedItemValueLink() {
-		Value<String> value = Value.value();
+		Value<String> value = Value.nullable();
 		ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}),
 										value)
 						.buildValue();

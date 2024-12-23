@@ -107,7 +107,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	private final Class<T> temporalClass;
 	private final DateTimeFormatter formatter;
 	private final DateTimeParser<T> dateTimeParser;
-	private final Value<T> value = Value.value();
+	private final Value<T> value = Value.nullable();
 	private final State valueNull = State.state();
 	private final String dateTimePattern;
 	private final ImageIcon calendarIcon;

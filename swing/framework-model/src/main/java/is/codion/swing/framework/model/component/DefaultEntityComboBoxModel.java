@@ -85,9 +85,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 				throw new UnsupportedOperationException("EntityComboBoxModel visible item predicate can only be set via filter().predicate().set()");
 			}
 		});
-		this.condition = Value.builder()
-						.nonNull(builder.condition)
-						.build();
+		this.condition = Value.nonNull(builder.condition);
 		this.orderBy = builder.orderBy;
 		comboBoxModel.selection().filterSelected().set(builder.filterSelected);
 		if (builder.handleEditEvents) {

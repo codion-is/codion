@@ -104,7 +104,7 @@ public interface Observable<T> extends Observer<T> {
 	 * @return an {@link Optional} wrapping this value.
 	 */
 	default Optional<T> optional() {
-		if (nullable()) {
+		if (isNullable()) {
 			return Optional.ofNullable(get());
 		}
 
@@ -129,7 +129,7 @@ public interface Observable<T> extends Observer<T> {
 	 * If false then get() is guaranteed to never return null.
 	 * @return true if this observable can be null
 	 */
-	default boolean nullable() {
+	default boolean isNullable() {
 		return true;
 	}
 

@@ -39,7 +39,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.common.value.Value.value;
 import static is.codion.common.value.ValueList.valueList;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 import static java.util.Arrays.asList;
@@ -58,24 +57,24 @@ import static java.util.Arrays.asList;
 
 public final class ApplicationModel {
 
-	private final Value<String> shortStringValue = value();
-	private final Value<String> longStringValue = value();
-	private final Value<String> textValue = value();
-	private final Value<LocalDate> localDateValue = value();
-	private final Value<LocalDateTime> localDateTimeValue = value();
-	private final Value<String> formattedStringValue = value();
-	private final Value<Integer> integerValue = value();
-	private final Value<Double> doubleValue = value();
-	private final Value<Boolean> booleanValue = value();
-	private final Value<Boolean> booleanSelectionValue = value();
-	private final Value<Integer> integerItemValue = value();
-	private final Value<String> stringSelectionValue = value();
-	private final Value<Integer> integerSlideValue = value();
-	private final Value<Integer> integerSpinValue = value();
-	private final Value<Integer> integerSelectionValue = value();
-	private final Value<String> itemSpinValue = value();
+	private final Value<String> shortStringValue = Value.nullable();
+	private final Value<String> longStringValue = Value.nullable();
+	private final Value<String> textValue = Value.nullable();
+	private final Value<LocalDate> localDateValue = Value.nullable();
+	private final Value<LocalDateTime> localDateTimeValue = Value.nullable();
+	private final Value<String> formattedStringValue = Value.nullable();
+	private final Value<Integer> integerValue = Value.nullable();
+	private final Value<Double> doubleValue = Value.nullable();
+	private final Value<Boolean> booleanValue = Value.nullable();
+	private final Value<Boolean> booleanSelectionValue = Value.nullable();
+	private final Value<Integer> integerItemValue = Value.nullable();
+	private final Value<String> stringSelectionValue = Value.nullable();
+	private final Value<Integer> integerSlideValue = Value.nullable();
+	private final Value<Integer> integerSpinValue = Value.nullable();
+	private final Value<Integer> integerSelectionValue = Value.nullable();
+	private final Value<String> itemSpinValue = Value.nullable();
 	private final ValueList<String> stringListValue = valueList();
-	private final Value<String> messageValue = value();
+	private final Value<String> messageValue = Value.nullable();
 
 	private final Collection<Value<?>> values = asList(
 					shortStringValue,

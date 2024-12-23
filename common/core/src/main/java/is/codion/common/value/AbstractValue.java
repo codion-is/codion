@@ -79,7 +79,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	/**
 	 * <p>Creates an {@link AbstractValue} instance, which does not notify listeners.
 	 * <p>If {@code nullValue} is non-null, this {@link AbstractValue} instance
-	 * will be non-nullable, meaning {@link #nullable()} returns false, {@link #get()}
+	 * will be non-nullable, meaning {@link #isNullable()} returns false, {@link #get()}
 	 * is guaranteed to never return null and when {@link #set(Object)} receives null
 	 * it is automatically translated to {@code nullValue}.
 	 * @param nullValue the value to use instead of null
@@ -92,7 +92,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	/**
 	 * <p>Creates an {@link AbstractValue} instance.
 	 * <p>If {@code nullValue} is non-null, this {@link AbstractValue} instance
-	 * will be non-nullable, meaning {@link #nullable()} returns false, {@link #get()}
+	 * will be non-nullable, meaning {@link #isNullable()} returns false, {@link #get()}
 	 * is guaranteed to never return null and when {@link #set(Object)} receives null
 	 * it is automatically translated to {@code nullValue}.
 	 * @param nullValue the value to use instead of null
@@ -149,7 +149,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final boolean nullable() {
+	public final boolean isNullable() {
 		return nullValue == null;
 	}
 
@@ -294,8 +294,8 @@ public abstract class AbstractValue<T> implements Value<T> {
 		}
 
 		@Override
-		public final boolean nullable() {
-			return value.nullable();
+		public final boolean isNullable() {
+			return value.isNullable();
 		}
 
 		@Override

@@ -74,8 +74,8 @@ public final class SearchHighlighter {
 	private final State caseSensitiveState;
 	private final Highlighter highlighter = new DefaultHighlighter();
 	private final List<MatchPosition> searchTextPositions = new ArrayList<>();
-	private final Value<Integer> currentSearchTextPositionIndex = Value.value();
-	private final Value<Integer> selectedSearchTextPosition = Value.value();
+	private final Value<Integer> currentSearchTextPositionIndex = Value.nullable();
+	private final Value<Integer> selectedSearchTextPosition = Value.nullable();
 	private final ScrollToRatio scrollToRatio;
 	private final boolean customHighlightColor;
 	private final boolean customSelectedHighlightColor;

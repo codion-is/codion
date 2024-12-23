@@ -51,7 +51,7 @@ public class ValuesTest {
 		assertFalse(observer.notEmpty());
 		assertUnmodifiable(observer);
 
-		assertFalse(observer.nullable());
+		assertFalse(observer.isNullable());
 		assertFalse(observer.isNull());
 		assertTrue(observer.optional().isPresent());
 
@@ -171,7 +171,7 @@ public class ValuesTest {
 		assertFalse(observable.notEmpty());
 		assertUnmodifiable(observable);
 
-		assertFalse(observable.nullable());
+		assertFalse(observable.isNullable());
 		assertFalse(observable.isNull());
 		assertTrue(observable.optional().isPresent());
 

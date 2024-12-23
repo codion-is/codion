@@ -217,9 +217,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final class DefaultRefresher extends AbstractFilterModelRefresher<R> {
 
 		private final Event<Collection<R>> event = Event.event();
-		private final Value<RefreshStrategy> refreshStrategy = Value.builder()
-						.nonNull(RefreshStrategy.CLEAR)
-						.build();
+		private final Value<RefreshStrategy> refreshStrategy = Value.nonNull(RefreshStrategy.CLEAR);
 
 		private DefaultRefresher(Supplier<Collection<R>> supplier) {
 			super(supplier);

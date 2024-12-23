@@ -99,9 +99,7 @@ public final class InputControls {
 						.mnemonic('C')
 						.build();
 
-		Value<Boolean> booleanValue = Value.builder()
-						.nonNull(false)
-						.build();
+		Value<Boolean> booleanValue = Value.nonNull(false);
 
 		ToggleControl toggleValueControl = Control.builder()
 						.toggle(booleanValue)
@@ -171,7 +169,7 @@ public final class InputControls {
 		// tag::basics[]
 		//a nullable integer value, initialized to 42
 		Value<Integer> integerValue =
-						Value.value(42);
+						Value.nullable(42);
 
 		//create a spinner linked to the value
 		JSpinner spinner =
@@ -214,7 +212,7 @@ public final class InputControls {
 	static void nullableCheckBox() {
 		// tag::nullableCheckBox[]
 		//nullable boolean value
-		Value<Boolean> booleanValue = Value.value();
+		Value<Boolean> booleanValue = Value.nullable();
 
 		NullableCheckBox checkBox =
 						(NullableCheckBox) Components.checkBox(booleanValue)
@@ -226,7 +224,7 @@ public final class InputControls {
 
 	static void booleanComboBox() {
 		// tag::booleanComboBox[]
-		Value<Boolean> booleanValue = Value.value();
+		Value<Boolean> booleanValue = Value.nullable();
 
 		JComboBox<Item<Boolean>> comboBox =
 						Components.booleanComboBox(booleanValue)
@@ -237,7 +235,7 @@ public final class InputControls {
 
 	static void stringField() {
 		// tag::stringField[]
-		Value<String> stringValue = Value.value();
+		Value<String> stringValue = Value.nullable();
 
 		JTextField textField =
 						Components.stringField(stringValue)
@@ -249,7 +247,7 @@ public final class InputControls {
 
 	static void characterField() {
 		// tag::characterField[]
-		Value<Character> characterValue = Value.value();
+		Value<Character> characterValue = Value.nullable();
 
 		JTextField textField =
 						Components.characterField(characterValue)
@@ -261,7 +259,7 @@ public final class InputControls {
 
 	static void textArea() {
 		// tag::textArea[]
-		Value<String> stringValue = Value.value();
+		Value<String> stringValue = Value.nullable();
 
 		JTextArea textArea =
 						Components.textArea(stringValue)
@@ -273,7 +271,7 @@ public final class InputControls {
 
 	static void integerField() {
 		// tag::integerField[]
-		Value<Integer> integerValue = Value.value();
+		Value<Integer> integerValue = Value.nullable();
 
 		NumberField<Integer> integerField =
 						Components.integerField(integerValue)
@@ -285,7 +283,7 @@ public final class InputControls {
 
 	static void longField() {
 		// tag::longField[]
-		Value<Long> longValue = Value.value();
+		Value<Long> longValue = Value.nullable();
 
 		NumberField<Long> longField =
 						Components.longField(longValue)
@@ -296,7 +294,7 @@ public final class InputControls {
 
 	static void doubleField() {
 		// tag::doubleField[]
-		Value<Double> doubleValue = Value.value();
+		Value<Double> doubleValue = Value.nullable();
 
 		NumberField<Double> doubleField =
 						Components.doubleField(doubleValue)
@@ -308,7 +306,7 @@ public final class InputControls {
 
 	static void bigDecimalField() {
 		// tag::bigDecimalField[]
-		Value<BigDecimal> bigDecimalValue = Value.value();
+		Value<BigDecimal> bigDecimalValue = Value.nullable();
 
 		NumberField<BigDecimal> bigDecimalField =
 						Components.bigDecimalField(bigDecimalValue)
@@ -321,7 +319,7 @@ public final class InputControls {
 
 	static void localTime() {
 		// tag::localTime[]
-		Value<LocalTime> localTimeValue = Value.value();
+		Value<LocalTime> localTimeValue = Value.nullable();
 
 		TemporalField<LocalTime> temporalField =
 						Components.localTimeField(localTimeValue)
@@ -332,7 +330,7 @@ public final class InputControls {
 
 	static void localDate() {
 		// tag::localDate[]
-		Value<LocalDate> localDateValue = Value.value();
+		Value<LocalDate> localDateValue = Value.nullable();
 
 		TemporalField<LocalDate> temporalField =
 						Components.localDateField(localDateValue)
@@ -343,7 +341,7 @@ public final class InputControls {
 
 	static void localDateTime() {
 		// tag::localDateTime[]
-		Value<LocalDateTime> localDateTimeValue = Value.value();
+		Value<LocalDateTime> localDateTimeValue = Value.nullable();
 
 		TemporalField<LocalDateTime> temporalField =
 						Components.localDateTimeField(localDateTimeValue)
@@ -354,7 +352,7 @@ public final class InputControls {
 
 	static void selectionComboBox() {
 		// tag::selectionComboBox[]
-		Value<String> stringValue = Value.value();
+		Value<String> stringValue = Value.nullable();
 
 		DefaultComboBoxModel<String> comboBoxModel =
 						new DefaultComboBoxModel<>(new String[] {"one", "two", "three"});
@@ -465,7 +463,7 @@ public final class InputControls {
 			}
 		}
 
-		Value<Person> personValue = Value.value();
+		Value<Person> personValue = Value.nullable();
 
 		PersonPanel personPanel = new PersonPanel();
 

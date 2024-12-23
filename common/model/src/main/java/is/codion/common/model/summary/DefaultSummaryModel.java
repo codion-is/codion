@@ -37,7 +37,7 @@ final class DefaultSummaryModel<T extends Number> implements SummaryModel {
 					.nonNull(ColumnSummary.NONE)
 					.listener(this::updateSummary)
 					.build();
-	private final Value<String> summaryText = Value.value();
+	private final Value<String> summaryText = Value.nullable();
 	private final State locked = State.state();
 	private final SummaryValues<T> summaryValues;
 	private final List<Summary> summaries = asList(ColumnSummary.values());

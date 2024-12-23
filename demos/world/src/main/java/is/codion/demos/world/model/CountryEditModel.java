@@ -32,7 +32,7 @@ import java.util.Objects;
 
 public final class CountryEditModel extends SwingEntityEditModel {
 
-	private final Value<Double> averageCityPopulation = Value.value();
+	private final Value<Double> averageCityPopulation = Value.nullable();
 
 	CountryEditModel(EntityConnectionProvider connectionProvider) {
 		super(Country.TYPE, connectionProvider);

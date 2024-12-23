@@ -89,8 +89,8 @@ public final class ServerMonitor {
 
 	private boolean shutdown = false;
 
-	private final Value<Integer> connectionCountValue = Value.value(0);
-	private final Value<String> memoryUsageValue = Value.value("");
+	private final Value<Integer> connectionCountValue = Value.nullable(0);
+	private final Value<String> memoryUsageValue = Value.nullable("");
 	private final FilterTableModel<DomainEntityDefinition, DomainColumns.Id> domainTableModel =
 					FilterTableModel.builder(new DomainColumns())
 									.supplier(new DomainTableItems())

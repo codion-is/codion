@@ -38,7 +38,7 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	@NonNull C get();
 
 	@Override
-	default boolean nullable() {
+	default boolean isNullable() {
 		return false;
 	}
 

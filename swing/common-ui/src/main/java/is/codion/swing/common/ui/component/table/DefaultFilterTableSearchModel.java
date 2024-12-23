@@ -58,9 +58,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 	private final State regularExpression = State.builder()
 					.listener(searchString::clear)
 					.build();
-	private final Value<RowColumn> searchResult = Value.builder()
-					.nonNull(NULL_COORDINATE)
-					.build();
+	private final Value<RowColumn> searchResult = Value.nonNull(NULL_COORDINATE);
 
 	private int searchResultIndex = -1;
 

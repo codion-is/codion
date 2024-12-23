@@ -110,8 +110,8 @@ public final class DomainGeneratorModel {
 					.<String>nullable()
 					.notify(WHEN_SET)
 					.build();
-	private final Value<String> apiSearchValue = Value.value();
-	private final Value<String> implSearchValue = Value.value();
+	private final Value<String> apiSearchValue = Value.nullable();
+	private final Value<String> implSearchValue = Value.nullable();
 
 	private DomainGeneratorModel(Database database, User user) {
 		this.database = requireNonNull(database);

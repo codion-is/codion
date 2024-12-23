@@ -57,18 +57,14 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 					.validator(new AttributeValidator())
 					.build();
 	private final Value<OrderBy> orderBy;
-	private final Value<Integer> limit = Value.value();
-	private final Value<Function<EntityQueryModel, List<Entity>>> query = Value.builder()
-					.<Function<EntityQueryModel, List<Entity>>>nonNull(new DefaultQuery())
-					.build();
+	private final Value<Integer> limit = Value.nullable();
+	private final Value<Function<EntityQueryModel, List<Entity>>> query = Value.nonNull(new DefaultQuery());
 
 	private Select refreshCondition;
 
 	DefaultEntityQueryModel(EntityConditionModel entityConditionModel) {
 		this.entityConditionModel = requireNonNull(entityConditionModel);
-		this.conditionEnabled = Value.builder()
-						.nonNull(entityConditionModel.enabled())
-						.build();
+		this.conditionEnabled = Value.nonNull(entityConditionModel.enabled());
 		this.orderBy = createOrderBy();
 		this.refreshCondition = createSelect();
 		Runnable onConditionChanged = this::onConditionChanged;
@@ -169,10 +165,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	private Value<OrderBy> createOrderBy() {
 		EntityDefinition definition = entityConditionModel.connectionProvider().entities().definition(entityConditionModel.entityType());
 		return definition.orderBy()
-						.map(entityOrderBy -> Value.builder()
-										.nonNull(entityOrderBy)
-										.build())
-						.orElse(Value.value());
+						.map(Value::nonNull)
+						.orElse(Value.nullable());
 	}
 
 	private void resetConditionChanged(Select select) {
@@ -217,9 +211,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 		private Supplier<Condition> condition = NULL_CONDITION_SUPPLIER;
 
-		private final Value<Conjunction> conjunction = Value.builder()
-						.nonNull(Conjunction.AND)
-						.build();
+		private final Value<Conjunction> conjunction = Value.nonNull(Conjunction.AND);
 
 		private DefaultAdditionalCondition() {
 			super(NULL_CONDITION_SUPPLIER, Notify.WHEN_SET);

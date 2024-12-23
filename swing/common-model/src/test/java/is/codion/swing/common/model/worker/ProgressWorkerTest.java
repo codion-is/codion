@@ -31,8 +31,8 @@ public final class ProgressWorkerTest {
 
 	@Test
 	void test() throws Exception {
-		Value<Integer> progressValue = Value.value();
-		Value<String> messageValue = Value.value();
+		Value<Integer> progressValue = Value.nullable();
+		Value<String> messageValue = Value.nullable();
 
 		List<Integer> stateChanges = new ArrayList<>();
 

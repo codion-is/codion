@@ -73,12 +73,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 					.listener(this::reset)
 					.build();
 	private final boolean singleSelection;
-	private final Value<Supplier<Condition>> condition = Value.builder()
-					.nonNull(NULL_CONDITION)
-					.build();
-	private final Value<Function<Entity, String>> stringFunction = Value.builder()
-					.nonNull(DEFAULT_TO_STRING)
-					.build();
+	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION);
+	private final Value<Function<Entity, String>> stringFunction = Value.nonNull(DEFAULT_TO_STRING);
 	private final Value<Integer> limit;
 	private final String description;
 
@@ -92,7 +88,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.stringFunction.set(builder.stringFunction);
 		this.description = builder.description == null ? createDescription() : builder.description;
 		this.singleSelection = builder.singleSelection;
-		this.limit = Value.value(builder.limit);
+		this.limit = Value.nullable(builder.limit);
 	}
 
 	@Override

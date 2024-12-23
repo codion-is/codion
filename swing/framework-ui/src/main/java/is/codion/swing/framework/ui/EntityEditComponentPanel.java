@@ -158,12 +158,11 @@ public class EntityEditComponentPanel extends JPanel {
 	private final Map<Attribute<?>, Value<JComponent>> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 	private final ValueSet<Attribute<?>> selectableComponents;
-	private final Value<JComponent> focusedInputComponent = Value.value();
-
-	private final Value<JComponent> initialFocusComponent = Value.value();
-	private final Value<Attribute<?>> initialFocusAttribute = Value.value();
-	private final Value<JComponent> afterInsertFocusComponent = Value.value();
-	private final Value<Attribute<?>> afterInsertFocusAttribute = Value.value();
+	private final Value<JComponent> focusedInputComponent = Value.nullable();
+	private final Value<JComponent> initialFocusComponent = Value.nullable();
+	private final Value<Attribute<?>> initialFocusAttribute = Value.nullable();
+	private final Value<JComponent> afterInsertFocusComponent = Value.nullable();
+	private final Value<Attribute<?>> afterInsertFocusAttribute = Value.nullable();
 
 	private final State transferFocusOnEnter = State.state(true);
 	private final State modifiedIndicator = State.state(MODIFIED_INDICATOR.getOrThrow());
@@ -1021,21 +1020,11 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected static final class Defaults {
 
-		private final Value<Integer> textFieldColumns = Value.builder()
-						.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow())
-						.build();
-		private final Value<Integer> foreignKeySearchFieldColumns = Value.builder()
-						.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow())
-						.build();
-		private final Value<Integer> foreignKeyComboBoxPreferredWidth = Value.builder()
-						.nonNull(0)
-						.build();
-		private final Value<Integer> itemComboBoxPreferredWidth = Value.builder()
-						.nonNull(0)
-						.build();
-		private final Value<Integer> comboBoxPreferredWidth = Value.builder()
-						.nonNull(0)
-						.build();
+		private final Value<Integer> textFieldColumns = Value.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+		private final Value<Integer> foreignKeySearchFieldColumns = Value.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+		private final Value<Integer> foreignKeyComboBoxPreferredWidth = Value.nonNull(0);
+		private final Value<Integer> itemComboBoxPreferredWidth = Value.nonNull(0);
+		private final Value<Integer> comboBoxPreferredWidth = Value.nonNull(0);
 
 		/**
 		 * Controls the default number columns in text fields, -1 for not setting the columns

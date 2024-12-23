@@ -78,7 +78,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 
 	@Override
 	public final B title(String title) {
-		return title(Value.value(title));
+		return title(Value.nullable(title));
 	}
 
 	@Override
