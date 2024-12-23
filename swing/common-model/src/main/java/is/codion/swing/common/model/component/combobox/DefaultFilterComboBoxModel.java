@@ -199,6 +199,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final class DefaultComboBoxItems implements ComboBoxItems<T> {
 
+		private final Lock lock = new Lock() {};
+
 		private final DefaultVisibleItems visible;
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 		private final Event<Collection<T>> event = Event.event();
@@ -220,94 +222,106 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public Collection<T> get() {
-			List<T> visibleItems = visible.get();
-			if (filtered.items.isEmpty()) {
-				return unmodifiableCollection(new ArrayList<>(visibleItems));
-			}
-			List<T> entities = new ArrayList<>(visibleItems.size() + filtered.items.size());
-			entities.addAll(visibleItems);
-			entities.addAll(filtered.items);
+			synchronized (lock) {
+				List<T> visibleItems = visible.get();
+				if (filtered.items.isEmpty()) {
+					return unmodifiableCollection(new ArrayList<>(visibleItems));
+				}
+				List<T> entities = new ArrayList<>(visibleItems.size() + filtered.items.size());
+				entities.addAll(visibleItems);
+				entities.addAll(filtered.items);
 
-			return unmodifiableList(entities);
+				return unmodifiableList(entities);
+			}
 		}
 
 		@Override
 		public void set(Collection<T> items) {
 			requireNonNull(items);
-			filtered.items.clear();
-			visible.items.clear();
-			if (includeNull) {
-				visible.items.add(0, null);
+			synchronized (lock) {
+				filtered.items.clear();
+				visible.items.clear();
+				if (includeNull) {
+					visible.items.add(0, null);
+				}
+				//remove duplicates while preserving the original order
+				visible.items.addAll(new LinkedHashSet<>(items));
+				filterInternal();
+				replaceSelectedItem();
+				cleared = items.isEmpty();
+				visible.sortInternal();
+				filtered.notifyChanges();
+				visible.notifyChanges();
+				notifyChanges();
 			}
-			//remove duplicates while preserving the original order
-			visible.items.addAll(new LinkedHashSet<>(items));
-			filterInternal();
-			replaceSelectedItem();
-			cleared = items.isEmpty();
-			visible.sortInternal();
-			filtered.notifyChanges();
-			visible.notifyChanges();
-			notifyChanges();
 		}
 
 		@Override
 		public boolean addItem(T item) {
 			requireNonNull(item);
-			if (visible.predicate.isNull() || visible.predicate.getOrThrow().test(item)) {
-				if (!visible.items.contains(item)) {
-					visible.items.add(item);
-					visible.sortInternal();
-					visible.notifyChanges();
-					notifyChanges();
+			synchronized (lock) {
+				if (visible.predicate.isNull() || visible.predicate.getOrThrow().test(item)) {
+					if (!visible.items.contains(item)) {
+						visible.items.add(item);
+						visible.sortInternal();
+						visible.notifyChanges();
+						notifyChanges();
 
-					return true;
+						return true;
+					}
 				}
-			}
-			else if (!filtered.items.contains(item)) {
-				filtered.items.add(item);
-				filtered.notifyChanges();
-				notifyChanges();
-			}
+				else if (!filtered.items.contains(item)) {
+					filtered.items.add(item);
+					filtered.notifyChanges();
+					notifyChanges();
+				}
 
-			return false;
+				return false;
+			}
 		}
 
 		@Override
 		public boolean addItems(Collection<T> items) {
-			boolean added = false;
-			for (T item : requireNonNull(items)) {
-				added = addItem(item) || added;
-			}
+			synchronized (lock) {
+				boolean added = false;
+				for (T item : requireNonNull(items)) {
+					added = addItem(item) || added;
+				}
 
-			return added;
+				return added;
+			}
 		}
 
 		@Override
 		public boolean removeItem(T item) {
 			requireNonNull(item);
-			if (filtered.items.remove(item)) {
-				filtered.notifyChanges();
-				notifyChanges();
-			}
-			else if (visible.items.remove(item)) {
-				visible.notifyChanges();
-				notifyChanges();
-				updateSelectedItem(item);
+			synchronized (lock) {
+				if (filtered.items.remove(item)) {
+					filtered.notifyChanges();
+					notifyChanges();
+				}
+				else if (visible.items.remove(item)) {
+					visible.notifyChanges();
+					notifyChanges();
+					updateSelectedItem(item);
 
-				return true;
-			}
+					return true;
+				}
 
-			return false;
+				return false;
+			}
 		}
 
 		@Override
 		public boolean removeItems(Collection<T> items) {
-			boolean removed = false;
-			for (T item : requireNonNull(items)) {
-				removed = removeItem(item) || removed;
-			}
+			synchronized (lock) {
+				boolean removed = false;
+				for (T item : requireNonNull(items)) {
+					removed = removeItem(item) || removed;
+				}
 
-			return removed;
+				return removed;
+			}
 		}
 
 		@Override
@@ -327,33 +341,43 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public boolean contains(T item) {
-			return visible.items.contains(item) || filtered.items.contains(item);
+			synchronized (lock) {
+				return visible.items.contains(item) || filtered.items.contains(item);
+			}
 		}
 
 		@Override
 		public int count() {
-			return visible.count() + filtered.count();
+			synchronized (lock) {
+				return visible.count() + filtered.count();
+			}
 		}
 
 		@Override
 		public void filter() {
-			if (count() > 0) {
-				filter(selection.filterSelected.get());
+			synchronized (lock) {
+				if (count() > 0) {
+					filter(selection.filterSelected.get());
+				}
 			}
 		}
 
 		@Override
 		public void clear() {
 			selection.item().clear();
-			set(emptyList());
+			synchronized (lock) {
+				set(emptyList());
+			}
 		}
 
 		@Override
 		public void replace(T item, T replacement) {
 			requireNonNull(item);
 			requireNonNull(replacement);
-			removeItem(item);
-			addItem(replacement);
+			synchronized (lock) {
+				removeItem(item);
+				addItem(replacement);
+			}
 			if (Objects.equals(selection.selected.item, item)) {
 				selection.selected.replaceWith(item);
 			}
@@ -382,7 +406,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private void filterInternal() {
 			Predicate<T> predicate = visible.predicate.get();
 			if (predicate != null) {
-				for (Iterator<T> iterator = visible.items.listIterator(); iterator.hasNext();) {
+				for (Iterator<T> iterator = visible.items.listIterator(); iterator.hasNext(); ) {
 					T item = iterator.next();
 					if (item != null && !predicate.test(item)) {
 						filtered.items.add(item);
@@ -416,149 +440,166 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private void notifyChanges() {
 			event.accept(get());
 		}
-	}
 
-	private final class DefaultVisibleItems implements VisibleItems<T> {
+		private final class DefaultVisibleItems implements VisibleItems<T> {
 
-		private final Value<Predicate<T>> predicate = Value.builder()
-						.<Predicate<T>>nullable()
-						.notify(WHEN_SET)
-						.build();
-		private final Comparator<T> comparator;
-		private final List<T> items = new ArrayList<>();
-		private final Event<List<T>> event = Event.event();
+			private final Value<Predicate<T>> predicate = Value.builder()
+							.<Predicate<T>>nullable()
+							.notify(WHEN_SET)
+							.build();
+			private final Comparator<T> comparator;
+			private final List<T> items = new ArrayList<>();
+			private final Event<List<T>> event = Event.event();
 
-		private DefaultVisibleItems(Comparator<T> comparator) {
-			this.comparator = comparator;
-		}
-
-		@Override
-		public Value<Predicate<T>> predicate() {
-			return predicate;
-		}
-
-		@Override
-		public List<T> get() {
-			if (items.isEmpty()) {
-				return emptyList();
-			}
-			if (!modelItems.includeNull) {
-				return unmodifiableList(items);
+			private DefaultVisibleItems(Comparator<T> comparator) {
+				this.comparator = comparator;
 			}
 
-			return unmodifiableList(items.subList(1, getSize()));
-		}
-
-		@Override
-		public Observer<List<T>> observer() {
-			return event.observer();
-		}
-
-		@Override
-		public boolean contains(T item) {
-			if (item == null) {
-				return modelItems.includeNull;
+			@Override
+			public Value<Predicate<T>> predicate() {
+				return predicate;
 			}
 
-			return items.contains(item);
-		}
+			@Override
+			public List<T> get() {
+				synchronized (lock) {
+					if (items.isEmpty()) {
+						return emptyList();
+					}
+					if (!modelItems.includeNull) {
+						return unmodifiableList(items);
+					}
 
-		@Override
-		public int indexOf(T item) {
-			return items.indexOf(item);
-		}
-
-		@Override
-		public T itemAt(int index) {
-			return items.get(index);
-		}
-
-		@Override
-		public boolean addItemAt(int index, T item) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean addItemsAt(int index, Collection<T> items) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public T removeItemAt(int index) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public List<T> removeItems(int fromIndex, int toIndex) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean setItemAt(int index, T item) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public int count() {
-			if (items.isEmpty()) {
-				return 0;
-			}
-			if (!modelItems.includeNull) {
-				return items.size();
+					return unmodifiableList(items.subList(1, getSize()));
+				}
 			}
 
-			return items.size() - 1;
-		}
+			@Override
+			public Observer<List<T>> observer() {
+				return event.observer();
+			}
 
-		@Override
-		public void sort() {
-			if (sortInternal()) {
-				notifyChanges();
+			@Override
+			public boolean contains(T item) {
+				if (item == null) {
+					return modelItems.includeNull;
+				}
+				synchronized (lock) {
+					return items.contains(item);
+				}
+			}
+
+			@Override
+			public int indexOf(T item) {
+				synchronized (lock) {
+					return items.indexOf(item);
+				}
+			}
+
+			@Override
+			public T itemAt(int index) {
+				synchronized (lock) {
+					return items.get(index);
+				}
+			}
+
+			@Override
+			public boolean addItemAt(int index, T item) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public boolean addItemsAt(int index, Collection<T> items) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public T removeItemAt(int index) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public List<T> removeItems(int fromIndex, int toIndex) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public boolean setItemAt(int index, T item) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public int count() {
+				synchronized (lock) {
+					if (items.isEmpty()) {
+						return 0;
+					}
+					if (!modelItems.includeNull) {
+						return items.size();
+					}
+
+					return items.size() - 1;
+				}
+			}
+
+			@Override
+			public void sort() {
+				synchronized (lock) {
+					if (sortInternal()) {
+						notifyChanges();
+					}
+				}
+			}
+
+			private boolean sortInternal() {
+				if (comparator != null && count() > 0) {
+					items.subList(modelItems.includeNull ? 1 : 0, items.size()).sort(comparator);
+					return true;
+				}
+
+				return false;
+			}
+
+			private void notifyChanges() {
+				fireContentsChanged();
+				event.accept(get());
 			}
 		}
 
-		private boolean sortInternal() {
-			if (comparator != null && count() > 0) {
-				items.subList(modelItems.includeNull ? 1 : 0, items.size()).sort(comparator);
-				return true;
+		private final class DefaultFilteredItems implements FilteredItems<T> {
+
+			private final List<T> items = new ArrayList<>();
+			private final Event<Collection<T>> event = Event.event();
+
+			@Override
+			public Collection<T> get() {
+				synchronized (lock) {
+					return unmodifiableCollection(items);
+				}
 			}
 
-			return false;
-		}
+			@Override
+			public Observer<Collection<T>> observer() {
+				return event.observer();
+			}
 
-		private void notifyChanges() {
-			fireContentsChanged();
-			event.accept(get());
-		}
-	}
+			@Override
+			public boolean contains(T item) {
+				synchronized (lock) {
+					return items.contains(item);
+				}
+			}
 
-	private final class DefaultFilteredItems implements FilteredItems<T> {
+			@Override
+			public int count() {
+				synchronized (lock) {
+					return items.size();
+				}
+			}
 
-		private final List<T> items = new ArrayList<>();
-		private final Event<Collection<T>> event = Event.event();
-
-		@Override
-		public Collection<T> get() {
-			return unmodifiableCollection(items);
-		}
-
-		@Override
-		public Observer<Collection<T>> observer() {
-			return event.observer();
-		}
-
-		@Override
-		public boolean contains(T item) {
-			return items.contains(item);
-		}
-
-		@Override
-		public int count() {
-			return items.size();
-		}
-
-		private void notifyChanges() {
-			event.accept(get());
+			private void notifyChanges() {
+				event.accept(get());
+			}
 		}
 	}
 
@@ -728,4 +769,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return collator.compare(o1, o2);
 		}
 	}
+
+	private interface Lock {}
 }
