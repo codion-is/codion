@@ -8,7 +8,7 @@
 class EntityPanel {
     +EntityEditPanel editPanel()
     +EntityTablePanel tablePanel()
-    +Collection<EntityPanel> detailPanels()
+    +DetailPanels detailPanels()
 }
 
 EntityPanel --o EntityEditPanel

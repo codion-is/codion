@@ -60,7 +60,7 @@ An *EntityModel* can contain one or more detail models, usually based on foreign
 [plantuml,entity-detail-model-diagram,svg,align=center]
 -------------------------------------------
 interface EntityModel {
-    +Collection<EntityModel> detailModels()
+    +DetailModels detailModels()
 }
 
 EntityModel --o EntityModel

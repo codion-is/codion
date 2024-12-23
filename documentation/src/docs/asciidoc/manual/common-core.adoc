@@ -17,6 +17,8 @@ interface Event<T> {
     +void run()
     +void accept(T data)
     +Observer<T> observer()
+    +void addListener(Runnable listener)
+    +void addConsumer(Consumer<? super T> consumer)
 }
 
 interface Observer<T> {
@@ -24,13 +26,9 @@ interface Observer<T> {
     +void addConsumer(Consumer<? super T> consumer)
 }
 
-interface Runnable {
-    + void run()
-}
+interface Runnable {}
 
-interface Consumer<T> {
-    + void accept(T data)
-}
+interface Consumer<T> {}
 
 Runnable <-- Event
 Consumer <-- Event
@@ -39,11 +37,13 @@ Observer *-- Event
 
 The {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class is a synchronous event implementation used throughout the framework.
 Classes typically expose observers for their events via public accessors.
-Events are triggered by calling the *run* method in case no data is associated with the event or *accept* in case data should be propogated to listeners.
+Events are triggered by calling the *run* method in case no data is associated with the event or *accept* in case data should be propogated to consumers.
 
 The associated {url-javadoc}{common-core}/is/codion/common/observable/Observer.html[Observer] instance can not trigger the event and can be safely passed around.
 
-Event listeners must implement either https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Runnable.html[Runnable] or https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html[Consumer], depending on whether they use the data associated with the event.
+Event listeners must implement either https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Runnable.html[Runnable] or https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html[Consumer], depending on whether they are interested in the data associated with the event.
+
+NOTE: Both listeners and consumer are notified each time the event is trigger, regardless of whether *run* or *accept* is used, listeners and consumers are notified in the order they were added.
 
 Events are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class.
 
@@ -60,12 +60,16 @@ skinparam genericDisplay old
 
 interface Value<T> {
     +void set(T)
-    +Observable<T> observable()
     +void link(Value<T> value)
+    +Observable<T> observable()
+    +void addListener(Runnable listener)
+    +void addConsumer(Consumer<? super T> consumer)
 }
 
 interface Observable<T> {
     +T get()
+    +void addListener(Runnable listener)
+    +void addConsumer(Consumer<? super T> consumer)
 }
 
 interface Observer<T> {
@@ -77,7 +81,7 @@ Observable <-- Value
 Observer <-- Observable
 -------------------------------------------
 
-A {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] wraps a value and provides a change listener.
+A {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] wraps a value and provides a change observer.
 
 Values are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] class.
 

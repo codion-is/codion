@@ -514,9 +514,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private void verifyModified(Collection<Entity> entities) {
-			for (Entity entityToUpdate : entities) {
-				if (!entityToUpdate.modified()) {
-					throw new IllegalArgumentException("Entity is not modified: " + entityToUpdate);
+			for (Entity entity : entities) {
+				if (!entity.modified()) {
+					throw new IllegalStateException("Entity is not modified: " + entity);
 				}
 			}
 		}

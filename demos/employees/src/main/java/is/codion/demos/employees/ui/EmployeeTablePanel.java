@@ -25,6 +25,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.awt.Color;
 
+// tag::employeeTablePanel[]
 public class EmployeeTablePanel extends EntityTablePanel {
 
 	public EmployeeTablePanel(SwingEntityTableModel tableModel) {
@@ -39,3 +40,4 @@ public class EmployeeTablePanel extends EntityTablePanel {
 										.build()));
 	}
 }
+// end::employeeTablePanel[]

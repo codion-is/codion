@@ -4,7 +4,7 @@
 [plantuml,entity-application-model-diagram,svg,align=center]
 -------------------------------------------
 interface EntityApplicationModel {
-    +List<EntityModel> entityModels()
+    +EntityModels entityModels()
 }
 
 EntityApplicationModel --o EntityModel

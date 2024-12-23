@@ -38,6 +38,7 @@ import static java.util.stream.Collectors.*;
  * A central event hub for listening for entity inserts, updates and deletes.
  * {@link EntityEditModel} uses this to post its events.
  * @see EntityEditModel#POST_EDIT_EVENTS
+ * @see EntityEditModel#postEditEvents()
  */
 public final class EntityEditEvents {
 

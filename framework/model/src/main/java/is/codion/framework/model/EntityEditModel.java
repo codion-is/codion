@@ -46,6 +46,7 @@ import java.util.function.Supplier;
 /**
  * Specifies a class for editing {@link Entity} instances.
  * The underlying attribute values are available via {@link #value(Attribute)}.
+ * @see EntityEditor
  */
 public interface EntityEditModel {
 
@@ -187,7 +188,10 @@ public interface EntityEditModel {
 	 * @throws DatabaseException in case of a database exception
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case inserting is not enabled
-	 * @see EntityValidator#validate(Entity)
+	 * @see #beforeInsert()
+	 * @see #afterInsert()
+	 * @see #insertEnabled()
+	 * @see EntityEditor#validate(Entity)
 	 */
 	Entity insert();
 
@@ -201,7 +205,8 @@ public interface EntityEditModel {
 	 * @throws IllegalStateException in case inserting is not enabled
 	 * @see #beforeInsert()
 	 * @see #afterInsert()
-	 * @see EntityValidator#validate(Entity)
+	 * @see #insertEnabled()
+	 * @see EntityEditor#validate(Entity)
 	 */
 	Collection<Entity> insert(Collection<Entity> entities);
 
@@ -214,7 +219,10 @@ public interface EntityEditModel {
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
 	 * @throws is.codion.common.db.exception.UpdateException in case the active entity is not modified
-	 * @see EntityValidator#validate(Entity)
+	 * @see #beforeUpdate()
+	 * @see #afterUpdate()
+	 * @see #updateEnabled()
+	 * @see EntityEditor#validate(Entity)
 	 */
 	Entity update();
 
@@ -227,9 +235,11 @@ public interface EntityEditModel {
 	 * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified since it was loaded
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
+	 * @throws is.codion.common.db.exception.UpdateException in case any of the given entities are not modified
 	 * @see #beforeUpdate()
 	 * @see #afterUpdate()
-	 * @see EntityValidator#validate(Entity)
+	 * @see #updateEnabled()
+	 * @see EntityEditor#validate(Entity)
 	 */
 	Collection<Entity> update(Collection<Entity> entities);
 
@@ -240,6 +250,7 @@ public interface EntityEditModel {
 	 * @throws IllegalStateException in case deleting is not enabled
 	 * @see #beforeDelete()
 	 * @see #afterDelete()
+	 * @see #deleteEnabled()
 	 */
 	Entity delete();
 
@@ -251,13 +262,16 @@ public interface EntityEditModel {
 	 * @throws IllegalStateException in case deleting is not enabled
 	 * @see #beforeDelete()
 	 * @see #afterDelete()
+	 * @see #deleteEnabled()
 	 */
 	Collection<Entity> delete(Collection<Entity> entities);
 
 	/**
 	 * Creates a new {@link Insert} instance for inserting the active entity.
 	 * @return a new {@link Insert} instance
+	 * @throws IllegalStateException in inserting is not enabled
 	 * @throws ValidationException in case validation fails
+	 * @see #insertEnabled()
 	 */
 	Insert createInsert();
 
@@ -265,15 +279,18 @@ public interface EntityEditModel {
 	 * Creates a new {@link Insert} instance for inserting the given entities.
 	 * @param entities the entities to insert
 	 * @return a new {@link Insert} instance
+	 * @throws IllegalStateException in inserting is not enabled
 	 * @throws ValidationException in case validation fails
+	 * @see #insertEnabled()
 	 */
 	Insert createInsert(Collection<Entity> entities);
 
 	/**
 	 * Creates a new {@link Update} instance for updating the active entity.
 	 * @return a new {@link Update} instance
-	 * @throws IllegalArgumentException in case the active entity is unmodified
+	 * @throws IllegalStateException in case the active entity is unmodified or if updating is not enabled
 	 * @throws ValidationException in case validation fails
+	 * @see #updateEnabled()
 	 */
 	Update createUpdate();
 
@@ -281,14 +298,17 @@ public interface EntityEditModel {
 	 * Creates a new {@link Update} instance for updating the given entities.
 	 * @param entities the entities to update
 	 * @return a new {@link Update} instance
-	 * @throws IllegalArgumentException in case any of the given entities are unmodified
+	 * @throws IllegalStateException in case any of the given entities are unmodified or if updating is not enabled
 	 * @throws ValidationException in case validation fails
+	 * @see #updateEnabled()
 	 */
 	Update createUpdate(Collection<Entity> entities);
 
 	/**
 	 * Creates a new {@link Delete} instance for deleting the active entity.
 	 * @return a new {@link Delete} instance
+	 * @throws IllegalStateException in deleting is not enabled
+	 * @see #deleteEnabled()
 	 */
 	Delete createDelete();
 
@@ -296,6 +316,8 @@ public interface EntityEditModel {
 	 * Creates a new {@link Delete} instance for deleting the given entities.
 	 * @param entities the entities to delete
 	 * @return a new {@link Delete} instance
+	 * @throws IllegalStateException in deleting is not enabled
+	 * @see #deleteEnabled()
 	 */
 	Delete createDelete(Collection<Entity> entities);
 
@@ -647,7 +669,7 @@ public interface EntityEditModel {
 	}
 
 	/**
-	 * Represents a task for updating entities.
+	 * Represents a task for updating entities, split up for use with a background thread.
 	 * <pre>
 	 * {@code
 	 *   Update update = editModel.createUpdate();
@@ -699,7 +721,7 @@ public interface EntityEditModel {
 	}
 
 	/**
-	 * Represents a task for deleting entities.
+	 * Represents a task for deleting entities, split up for use with a background thread.
 	 * <pre>
 	 * {@code
 	 *   Delete delete = editModel.createDelete();
