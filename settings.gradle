@@ -182,7 +182,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         libs {
             version("slf4j.api", "2.0.16")
-            version("logback", "1.5.13")
+            version("logback", "1.5.15")
             version("h2", "2.3.232")
             version("json", "20240303")
 
