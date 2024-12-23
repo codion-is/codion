@@ -102,7 +102,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public int getRowCount() {
-		return modelItems.visible.items.size();
+		return modelItems.visible.count();
 	}
 
 	@Override
@@ -164,7 +164,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return columns.value(modelItems.visible.itemAt(rowIndex), columns.identifier(columnIndex));
+		return modelItems.visible.getValueAt(rowIndex, columnIndex);
 	}
 
 	@Override
@@ -174,7 +174,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public String getStringAt(int rowIndex, C identifier) {
-		return columns.string(modelItems.visible.itemAt(rowIndex), requireNonNull(identifier));
+		return modelItems.visible.getStringAt(rowIndex, identifier);
 	}
 
 	@Override
@@ -225,40 +225,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		protected void processResult(Collection<R> items) {
-			if (refreshStrategy.isEqualTo(RefreshStrategy.MERGE) && !items.isEmpty()) {
-				merge(items);
-			}
-			else {
-				clearAndAdd(items);
-			}
+			modelItems.set(items);
 			event.accept(unmodifiableCollection(items));
-		}
-
-		private void merge(Collection<R> items) {
-			Set<R> itemSet = new HashSet<>(items);
-			modelItems.get().stream()
-							.filter(item -> !itemSet.contains(item))
-							.forEach(items()::removeItem);
-			items.forEach(this::merge);
-		}
-
-		private void merge(R item) {
-			int index = modelItems.visible.indexOf(item);
-			if (index == -1) {
-				modelItems.addItemInternal(item);
-			}
-			else {
-				modelItems.visible.setItemAt(index, item);
-			}
-		}
-
-		private void clearAndAdd(Collection<R> items) {
-			List<R> selectedItems = selection.items().get();
-			modelItems.clear();
-			if (items().addItems(items)) {
-				modelItems.visible.sort();
-			}
-			selection.items().set(selectedItems);
 		}
 
 		private void doRefresh(Consumer<Collection<R>> onRefresh) {
@@ -281,6 +249,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final class DefaultItems implements Items<R> {
 
+		private final Lock lock = new Lock() {};
+
 		private final Predicate<R> validator;
 		private final DefaultVisibleItems visible = new DefaultVisibleItems();
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
@@ -291,50 +261,68 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public Collection<R> get() {
-			if (filtered.items.isEmpty()) {
-				return unmodifiableCollection(new ArrayList<>(visible.items));
-			}
-			List<R> entities = new ArrayList<>(visible.items.size() + filtered.items.size());
-			entities.addAll(visible.items);
-			entities.addAll(filtered.items);
+			synchronized (lock) {
+				if (filtered.items.isEmpty()) {
+					return unmodifiableCollection(new ArrayList<>(visible.items));
+				}
+				List<R> entities = new ArrayList<>(visible.items.size() + filtered.items.size());
+				entities.addAll(visible.items);
+				entities.addAll(filtered.items);
 
-			return unmodifiableList(entities);
+				return unmodifiableList(entities);
+			}
 		}
 
 		@Override
 		public void set(Collection<R> items) {
-			refresher.processResult(rejectNulls(items));
+			rejectNulls(items);
+			synchronized (lock) {
+				if (refresher.refreshStrategy.isEqualTo(RefreshStrategy.MERGE) && !items.isEmpty()) {
+					merge(items);
+				}
+				else {
+					clearAndAdd(items);
+				}
+			}
 		}
 
 		@Override
 		public boolean addItems(Collection<R> items) {
-			return addItemsAtInternal(visible.items.size(), rejectNulls(items));
+			synchronized (lock) {
+				return addItemsAtInternal(visible.items.size(), rejectNulls(items));
+			}
 		}
 
 		@Override
 		public boolean removeItem(R item) {
-			return removeItemInternal(requireNonNull(item), true);
+			synchronized (lock) {
+				return removeItemInternal(requireNonNull(item), true);
+			}
 		}
 
 		@Override
 		public boolean removeItems(Collection<R> items) {
 			rejectNulls(items);
-			selection.setValueIsAdjusting(true);
-			boolean visibleItemRemoved = false;
-			for (R item : items) {
-				visibleItemRemoved = removeItemInternal(item, false) || visibleItemRemoved;
-			}
-			selection.setValueIsAdjusting(false);
-			if (visibleItemRemoved) {
-				modelItems.visible.notifyChanges();
-			}
+			synchronized (lock) {
+				selection.setValueIsAdjusting(true);
+				boolean visibleItemRemoved = false;
+				for (R item : items) {
+					visibleItemRemoved = removeItemInternal(item, false) || visibleItemRemoved;
+				}
+				selection.setValueIsAdjusting(false);
+				if (visibleItemRemoved) {
+					visible.notifyChanges();
+				}
 
-			return visibleItemRemoved;
+				return visibleItemRemoved;
+			}
 		}
 
 		@Override
 		public boolean addItem(R item) {
-			return addItemInternal(requireNonNull(item));
+			synchronized (lock) {
+				return addItemInternal(requireNonNull(item));
+			}
 		}
 
 		@Override
@@ -365,38 +353,69 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public void filter() {
 			List<R> selectedItems = selection.items().get();
-			visible.items.addAll(filtered.items);
-			filtered.items.clear();
-			for (ListIterator<R> visibleItemsIterator = visible.items.listIterator(); visibleItemsIterator.hasNext(); ) {
-				R item = visibleItemsIterator.next();
-				if (!visiblePredicate.test(item)) {
-					visibleItemsIterator.remove();
-					filtered.items.add(item);
+			synchronized (lock) {
+				visible.items.addAll(filtered.items);
+				filtered.items.clear();
+				for (ListIterator<R> visibleItemsIterator = visible.items.listIterator(); visibleItemsIterator.hasNext(); ) {
+					R item = visibleItemsIterator.next();
+					if (!visiblePredicate.test(item)) {
+						visibleItemsIterator.remove();
+						filtered.items.add(item);
+					}
 				}
+				if (!sorter.columnSortOrder().isEmpty()) {
+					visible.items.sort(sorter.comparator());
+				}
+				fireTableDataChanged();
+				filtered.notifyChanges();
 			}
-			if (!sorter.columnSortOrder().isEmpty()) {
-				visible.items.sort(sorter.comparator());
-			}
-			fireTableDataChanged();
-			filtered.notifyChanges();
 			selection.items().set(selectedItems);
 		}
 
 		@Override
 		public void clear() {
-			int filteredSize = filtered.items.size();
-			filtered.items.clear();
-			int visibleSize = visible.items.size();
-			visible.items.clear();
-			if (visibleSize > 0) {
-				fireTableRowsDeleted(0, visibleSize - 1);
+			synchronized (lock) {
+				int filteredSize = filtered.items.size();
+				filtered.items.clear();
+				int visibleSize = visible.items.size();
+				visible.items.clear();
+				if (visibleSize > 0) {
+					fireTableRowsDeleted(0, visibleSize - 1);
+				}
+				if (filteredSize != 0) {
+					filtered.notifyChanges();
+				}
+				if (visibleSize != 0) {
+					visible.notifyChanges();
+				}
 			}
-			if (filteredSize != 0) {
-				filtered.notifyChanges();
+		}
+
+		private void merge(Collection<R> items) {
+			Set<R> itemSet = new HashSet<>(items);
+			get().stream()
+							.filter(item -> !itemSet.contains(item))
+							.forEach(this::removeItem);
+			items.forEach(this::merge);
+		}
+
+		private void merge(R item) {
+			int index = visible.indexOf(item);
+			if (index == -1) {
+				addItemInternal(item);
 			}
-			if (visibleSize != 0) {
-				visible.notifyChanges();
+			else {
+				visible.setItemAt(index, item);
 			}
+		}
+
+		private void clearAndAdd(Collection<R> items) {
+			List<R> selectedItems = selection.items().get();
+			clear();
+			if (addItems(items)) {
+				visible.sort();
+			}
+			selection.items().set(selectedItems);
 		}
 
 		private boolean addItemInternal(R item) {
@@ -494,7 +513,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			@Override
 			public List<R> get() {
-				return unmodifiableList(items);
+				synchronized (lock) {
+					return unmodifiableList(items);
+				}
 			}
 
 			@Override
@@ -504,37 +525,49 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			@Override
 			public boolean contains(R item) {
-				return items.contains(requireNonNull(item));
+				synchronized (lock) {
+					return items.contains(requireNonNull(item));
+				}
 			}
 
 			@Override
 			public int indexOf(R item) {
-				return items.indexOf(requireNonNull(item));
+				synchronized (lock) {
+					return items.indexOf(requireNonNull(item));
+				}
 			}
 
 			@Override
 			public R itemAt(int index) {
-				return items.get(index);
+				synchronized (lock) {
+					return items.get(index);
+				}
 			}
 
 			@Override
 			public boolean addItemsAt(int index, Collection<R> items) {
-				return addItemsAtInternal(index, rejectNulls(items));
+				synchronized (lock) {
+					return addItemsAtInternal(index, rejectNulls(items));
+				}
 			}
 
 			@Override
 			public boolean addItemAt(int index, R item) {
-				return addItemAtInternal(index, requireNonNull(item));
+				synchronized (lock) {
+					return addItemAtInternal(index, requireNonNull(item));
+				}
 			}
 
 			@Override
 			public boolean setItemAt(int index, R item) {
 				validate(requireNonNull(item));
-				if (visiblePredicate.test(item)) {
-					items.set(index, item);
-					fireTableRowsUpdated(index, index);
+				synchronized (lock) {
+					if (visiblePredicate.test(item)) {
+						items.set(index, item);
+						fireTableRowsUpdated(index, index);
 
-					return true;
+						return true;
+					}
 				}
 
 				return false;
@@ -542,36 +575,56 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			@Override
 			public R removeItemAt(int index) {
-				R removed = items.remove(index);
-				fireTableRowsDeleted(index, index);
-				notifyChanges();
+				synchronized (lock) {
+					R removed = items.remove(index);
+					fireTableRowsDeleted(index, index);
+					notifyChanges();
 
-				return removed;
+					return removed;
+				}
 			}
 
 			@Override
 			public List<R> removeItems(int fromIndex, int toIndex) {
-				List<R> subList = items.subList(fromIndex, toIndex);
-				List<R> removedItems = new ArrayList<>(subList);
-				subList.clear();
-				fireTableRowsDeleted(fromIndex, toIndex);
-				notifyChanges();
+				synchronized (lock) {
+					List<R> subList = items.subList(fromIndex, toIndex);
+					List<R> removedItems = new ArrayList<>(subList);
+					subList.clear();
+					fireTableRowsDeleted(fromIndex, toIndex);
+					notifyChanges();
 
-				return removedItems;
+					return removedItems;
+				}
 			}
 
 			@Override
 			public int count() {
-				return items.size();
+				synchronized (lock) {
+					return items.size();
+				}
 			}
 
 			@Override
 			public void sort() {
 				if (!sorter.columnSortOrder().isEmpty()) {
 					List<R> selectedItems = selection.items().get();
-					items.sort(sorter.comparator());
-					fireTableRowsUpdated(0, items.size());
+					synchronized (lock) {
+						items.sort(sorter.comparator());
+						fireTableRowsUpdated(0, items.size());
+					}
 					selection.items().set(selectedItems);
+				}
+			}
+
+			private Object getValueAt(int rowIndex, int columnIndex) {
+				synchronized (lock) {
+					return columns.value(itemAt(rowIndex), columns.identifier(columnIndex));
+				}
+			}
+
+			private String getStringAt(int rowIndex, C identifier) {
+				synchronized (lock) {
+					return columns.string(itemAt(rowIndex), requireNonNull(identifier));
 				}
 			}
 
@@ -587,7 +640,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			@Override
 			public Collection<R> get() {
-				return unmodifiableCollection(items);
+				synchronized (lock) {
+					return unmodifiableCollection(items);
+				}
 			}
 
 			@Override
@@ -597,18 +652,24 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			@Override
 			public boolean contains(R item) {
-				return items.contains(requireNonNull(item));
+				synchronized (lock) {
+					return items.contains(requireNonNull(item));
+				}
 			}
 
 			@Override
 			public int count() {
-				return items.size();
+				synchronized (lock) {
+					return items.size();
+				}
 			}
 
 			private void notifyChanges() {
 				event.accept(get());
 			}
 		}
+
+		private interface Lock {}
 	}
 
 	private final class VisiblePredicate implements Predicate<R> {

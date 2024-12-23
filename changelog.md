@@ -33,6 +33,7 @@ Codion Change Log
 - DefaultFilterTableSelection bug fixed, back to inheriting from DefaultListSelectionModel since some JTable keyboard actions rely on it.
 - DefaultFilterComboBoxModel.DefaultComboBoxItems.removeItem() now sets the selection to null if the selected item is removed, addItems() and removeItems() implemented.
 - DefaultFilterComboBoxModel events fixed, related refactoring.
+- DefaultFilterTableModel synchronized.
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.
