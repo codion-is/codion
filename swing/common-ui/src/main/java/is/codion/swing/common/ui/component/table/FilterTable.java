@@ -738,12 +738,15 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void toggleColumnSorting(int selectedColumn, boolean add) {
 		if (sortingEnabled.get() && selectedColumn != -1) {
-			ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSortOrder(columnModel().getColumn(selectedColumn).identifier());
-			if (add) {
-				tableModel.sorter().addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
-			}
-			else {
-				tableModel.sorter().setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
+			C identifier = columnModel().getColumn(selectedColumn).identifier();
+			if (!tableModel.sorter().locked(identifier).get()) {
+				ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSortOrder(identifier);
+				if (add) {
+					tableModel.sorter().addSortOrder(identifier, nextSortOrder(columnSortOrder.sortOrder()));
+				}
+				else {
+					tableModel.sorter().setSortOrder(identifier, nextSortOrder(columnSortOrder.sortOrder()));
+				}
 			}
 		}
 	}
@@ -978,15 +981,18 @@ public final class FilterTable<R, C> extends JTable {
 			FilterTableColumnModel<C> columnModel = columnModel();
 			int index = columnModel.getColumnIndexAtX(e.getX());
 			if (index >= 0) {
-				if (!getSelectionModel().isSelectionEmpty()) {
-					setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
-				}
-				ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSortOrder(columnModel.getColumn(index).identifier());
-				if (e.isAltDown()) {
-					tableModel.sorter().addSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
-				}
-				else {
-					tableModel.sorter().setSortOrder(columnSortOrder.identifier(), nextSortOrder(columnSortOrder.sortOrder()));
+				C identifier = columnModel.getColumn(index).identifier();
+				if (!tableModel.sorter().locked(identifier).get()) {
+					if (!getSelectionModel().isSelectionEmpty()) {
+						setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
+					}
+					ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSortOrder(identifier);
+					if (e.isAltDown()) {
+						tableModel.sorter().addSortOrder(identifier, nextSortOrder(columnSortOrder.sortOrder()));
+					}
+					else {
+						tableModel.sorter().setSortOrder(identifier, nextSortOrder(columnSortOrder.sortOrder()));
+					}
 				}
 			}
 		}

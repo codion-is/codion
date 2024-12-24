@@ -35,6 +35,7 @@ Codion Change Log
 - DefaultFilterComboBoxModel events fixed, related refactoring.
 - DefaultFilterTableModel synchronized.
 - DefaultFilterComboBoxModel synchronized.
+- FilterTableSortModel.sortingEnabled() replaced with locked().
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.
@@ -42,6 +43,7 @@ Codion Change Log
 - NumberField.number() replaced with set(), get() and observable(), optional() added.
 - ProgressWorker.Builder.onCancelled() handler now gets called in case the background task throws CancelException.
 - DefaultProgressWorkerDialogBuilder, CancelException handling removed, some refactoring.
+- FilterTable bug fixed, sorting actions no longer enabled for columns with sorting locked in the sort model.
 ### is.codion.framework.domain
 - EntityDefinition.description() now returns Optional.
 - DefaultEntityDefinition, source attributes validated for denormalized attributes.

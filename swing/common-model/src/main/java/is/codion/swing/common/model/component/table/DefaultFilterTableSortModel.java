@@ -39,7 +39,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
 	private final Event<Boolean> sortingChanged = Event.event();
 	private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
-	private final Map<C, State> sortingEnabled = new HashMap<>();
+	private final Map<C, State> locked = new HashMap<>();
 	private final RowComparator comparator = new RowComparator();
 
 	DefaultFilterTableSortModel(Columns<R, C> columns) {
@@ -85,10 +85,10 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public State sortingEnabled(C identifier) {
+	public State locked(C identifier) {
 		validateIdentifier(identifier);
 
-		return sortingEnabled.computeIfAbsent(identifier, this::createSortingEnabledState);
+		return locked.computeIfAbsent(identifier, k -> State.state());
 	}
 
 	@Override
@@ -99,8 +99,8 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	private void setSortOrder(C identifier, SortOrder sortOrder, boolean addColumnToSort) {
 		validateIdentifier(identifier);
 		requireNonNull(sortOrder);
-		if (sortingEnabled.containsKey(identifier) && !sortingEnabled.get(identifier).get()) {
-			throw new IllegalStateException("Sorting is disabled for column: " + identifier);
+		if (locked.containsKey(identifier) && locked.get(identifier).get()) {
+			throw new IllegalStateException("Sorting is locked for column: " + identifier);
 		}
 		if (!addColumnToSort) {
 			columnSortOrders.clear();
@@ -116,18 +116,6 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 
 	private boolean removeSortOrder(C identifier) {
 		return columnSortOrders.removeIf(columnSortOrder -> columnSortOrder.identifier().equals(identifier));
-	}
-
-	private State createSortingEnabledState(C identifier) {
-		return State.builder(true)
-						.consumer(enabled -> sortingEnabledChanged(identifier, enabled))
-						.build();
-	}
-
-	private void sortingEnabledChanged(C identifier, boolean sortingEnabled) {
-		if (!sortingEnabled && removeSortOrder(identifier)) {
-			sortingChanged.accept(!columnSortOrders.isEmpty());
-		}
 	}
 
 	private void validateIdentifier(C identifier) {

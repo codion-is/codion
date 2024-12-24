@@ -43,11 +43,11 @@ public interface FilterTableSortModel<R, C> {
 	 * Clears the sorting state and adds the given column sorting order.
 	 * @param identifier the identifier of the column to sort by
 	 * @param sortOrder the sorting order
-	 * @throws IllegalStateException in case sorting is disabled for the given column
+	 * @throws IllegalStateException in case sorting is locked for the given column
 	 * @see #addSortOrder(Object, SortOrder)
 	 * @see #columnSortOrder()
 	 * @see #columnSortOrder(Object)
-	 * @see #sortingEnabled(Object)
+	 * @see #locked(Object)
 	 */
 	void setSortOrder(C identifier, SortOrder sortOrder);
 
@@ -57,11 +57,11 @@ public interface FilterTableSortModel<R, C> {
 	 * {@link #setSortOrder(Object, SortOrder)}.
 	 * @param identifier the identifier of the column to sort by
 	 * @param sortOrder the sorting order
-	 * @throws IllegalStateException in case sorting is disabled for the given column
+	 * @throws IllegalStateException in case sorting is locked for the given column
 	 * @see #setSortOrder(Object, SortOrder)
 	 * @see #columnSortOrder()
 	 * @see #columnSortOrder(Object)
-	 * @see #sortingEnabled(Object)
+	 * @see #locked(Object)
 	 */
 	void addSortOrder(C identifier, SortOrder sortOrder);
 
@@ -83,12 +83,12 @@ public interface FilterTableSortModel<R, C> {
 	void clear();
 
 	/**
-	 * Disabling sorting for a column will cause {@link #setSortOrder(Object, SortOrder)} and
-	 * {@link #addSortOrder(Object, SortOrder)} to throw a {@link IllegalStateException}.
+	 * <p>Locking the sorting for a column will cause a {@link IllegalStateException} to be thrown
+	 * when trying to modify its sorting state.
 	 * @param identifier the column identifier
-	 * @return the {@link State} controlling whether sorting is enabled for the given column
+	 * @return the {@link State} controlling whether sorting is locked for the given column
 	 */
-	State sortingEnabled(C identifier);
+	State locked(C identifier);
 
 	/**
 	 * @return an observer notified each time the sorting changes, with the current sorted state as event data
