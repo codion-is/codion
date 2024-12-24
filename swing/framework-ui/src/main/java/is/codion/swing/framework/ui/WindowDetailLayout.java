@@ -94,7 +94,7 @@ public final class WindowDetailLayout implements DetailLayout {
 
 	private void addDetailPanel(EntityPanel detailPanel) {
 		panelWindows.put(detailPanel, new DetailWindow(detailPanel));
-		detailPanel.displayRequested().addConsumer(detailController::display);
+		detailPanel.display().requested().addConsumer(detailController::display);
 	}
 
 	private void setupControls(EntityPanel entityPanel) {

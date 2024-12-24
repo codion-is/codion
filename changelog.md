@@ -70,6 +70,7 @@ Codion Change Log
 - EntityPanel.DetailPanels added, related refactoring.
 - EntityPanel.builder(SwingEntityModel) removed
 - EntityApplicationPanel.displayEntityPanel() renamed displayEntityPanelWindow().
+- EntityPanel.Display added.
 
 ## 0.18.22
 ### is.codion.common.core

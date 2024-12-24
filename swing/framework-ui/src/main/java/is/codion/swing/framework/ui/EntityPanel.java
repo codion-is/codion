@@ -141,7 +141,7 @@ public class EntityPanel extends JPanel {
 	 */
 	public enum Direction {
 		/**
-		 * Navigate up to the master panel
+		 * Navigate up to the parent panel, if one exists
 		 */
 		UP,
 		/**
@@ -149,11 +149,11 @@ public class EntityPanel extends JPanel {
 		 */
 		DOWN,
 		/**
-		 * Navigate to the next sibling panel
+		 * Navigate to the next panel
 		 */
 		RIGHT,
 		/**
-		 * Navigate to the previous sibling panel
+		 * Navigate to the previous panel
 		 */
 		LEFT
 	}
@@ -229,7 +229,7 @@ public class EntityPanel extends JPanel {
 	private final JPanel mainPanel;
 	private final DetailLayout detailLayout;
 	private final DetailController detailController;
-	private final Event<EntityPanel> displayRequest = Event.event();
+	private final Display display = new Display();
 	private final Value<PanelState> editPanelState;
 	private final Function<PanelState, PanelState> editPanelStateMapper;
 
@@ -237,8 +237,8 @@ public class EntityPanel extends JPanel {
 	private final Controls.Layout controlsLayout;
 
 	private EntityPanel parentPanel;
-	private EntityPanel previousSiblingPanel;
-	private EntityPanel nextSiblingPanel;
+	private EntityPanel previousPanel;
+	private EntityPanel nextPanel;
 	private Window editWindow;
 
 	private boolean initialized = false;
@@ -519,14 +519,14 @@ public class EntityPanel extends JPanel {
 	 * <p>Activates this panel, by initializing it, displaying it and requesting initial focus.
 	 * <p>It is up the {@link is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout} (for top level panels)
 	 * and the {@link DetailController} (for detail panels) to make sure this panel is displayed when activated, by responding
-	 * to the {@link #displayRequested()} {@link Observer}.
-	 * @see #displayRequested()
+	 * to the {@link Display#requested()} {@link Observer}.
+	 * @see Display#requested()
 	 * @see is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout#display(EntityPanel)
 	 * @see DetailController#display(EntityPanel)
 	 */
 	public final void activate() {
 		initialize();
-		requestDisplay();
+		display.request();
 		requestInitialFocus();
 	}
 
@@ -573,28 +573,10 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Requests that this panel be displayed on its parent panel and
-	 * brings its parent window to the front, if one is available.
-	 * @see #displayRequested()
+	 * @return the {@link Display}
 	 */
-	public final void requestDisplay() {
-		displayRequest.accept(EntityPanel.this);
-		Window parentWindow = parentWindow(EntityPanel.this);
-		if (parentWindow != null) {
-			parentWindow.toFront();
-		}
-		Window editPanelWindow = parentWindow(editControlPanel);
-		if (editPanelWindow != null) {
-			editPanelWindow.toFront();
-		}
-	}
-
-	/**
-	 * @return an {@link Observer} notified when a display request for this panel has been issued
-	 * @see #requestDisplay()
-	 */
-	public final Observer<EntityPanel> displayRequested() {
-		return displayRequest.observer();
+	public final Display display() {
+		return display;
 	}
 
 	/**
@@ -898,22 +880,22 @@ public class EntityPanel extends JPanel {
 		this.parentPanel = requireNonNull(parentPanel);
 	}
 
-	final void setPreviousSiblingPanel(EntityPanel previousSiblingPanel) {
-		this.previousSiblingPanel = requireNonNull(previousSiblingPanel);
+	final void setPreviousPanel(EntityPanel previousPanel) {
+		this.previousPanel = requireNonNull(previousPanel);
 	}
 
-	final void setNextSiblingPanel(EntityPanel nextSiblingPanel) {
-		this.nextSiblingPanel = requireNonNull(nextSiblingPanel);
+	final void setNextPanel(EntityPanel nextPanel) {
+		this.nextPanel = requireNonNull(nextPanel);
 	}
 
 	static void addEntityPanelAndLinkSiblings(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
 		if (!entityPanels.isEmpty()) {
-			EntityPanel leftSibling = entityPanels.get(entityPanels.size() - 1);
-			detailPanel.setPreviousSiblingPanel(leftSibling);
-			leftSibling.setNextSiblingPanel(detailPanel);
+			EntityPanel previousPanel = entityPanels.get(entityPanels.size() - 1);
+			detailPanel.setPreviousPanel(previousPanel);
+			previousPanel.setNextPanel(detailPanel);
 			EntityPanel firstPanel = entityPanels.get(0);
-			detailPanel.setNextSiblingPanel(firstPanel);
-			firstPanel.setPreviousSiblingPanel(detailPanel);
+			detailPanel.setNextPanel(firstPanel);
+			firstPanel.setPreviousPanel(detailPanel);
 		}
 		entityPanels.add(detailPanel);
 	}
@@ -1075,13 +1057,13 @@ public class EntityPanel extends JPanel {
 		public void execute() {
 			switch (direction) {
 				case LEFT:
-					if (previousSiblingPanel != null) {
-						previousSiblingPanel.activate();
+					if (previousPanel != null) {
+						previousPanel.activate();
 					}
 					break;
 				case RIGHT:
-					if (nextSiblingPanel != null) {
-						nextSiblingPanel.activate();
+					if (nextPanel != null) {
+						nextPanel.activate();
 					}
 					break;
 				case UP:
@@ -1187,6 +1169,44 @@ public class EntityPanel extends JPanel {
 			addEntityPanelAndLinkSiblings(detailPanel, panels);
 			detailPanel.setParentPanel(EntityPanel.this);
 			panelAdded.accept(detailPanel);
+		}
+	}
+
+	/**
+	 * <p>Manages display requests for an {@link EntityPanel}.
+	 * <p>Use {@link Display#request()} to request that this {@link EntityPanel} is displayed in its parent panel.
+	 * {@link is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout} and {@link DetailLayout} implementations
+	 * are responsible for responding to these requests and making sure the panel is displayed.
+	 */
+	public final class Display {
+
+		private final Event<EntityPanel> request = Event.event();
+
+		private Display() {}
+
+		/**
+		 * Requests that this panel be displayed on its parent panel and
+		 * brings its parent window to the front, if one is available.
+		 * @see #requested()
+		 */
+		public void request() {
+			request.accept(EntityPanel.this);
+			Window parentWindow = parentWindow(EntityPanel.this);
+			if (parentWindow != null) {
+				parentWindow.toFront();
+			}
+			Window editPanelWindow = parentWindow(editControlPanel);
+			if (editPanelWindow != null) {
+				editPanelWindow.toFront();
+			}
+		}
+
+		/**
+		 * @return an {@link Observer} notified when a display request for this panel has been issued
+		 * @see #request()
+		 */
+		public Observer<EntityPanel> requested() {
+			return request.observer();
 		}
 	}
 
@@ -1683,7 +1703,7 @@ public class EntityPanel extends JPanel {
 		 * Called when the given detail panel should be displayed,
 		 * responsible for making sure it becomes visible.
 		 * @param detailPanel the detail panel to display
-		 * @see EntityPanel#displayRequested()
+		 * @see EntityPanel.Display#requested()
 		 */
 		default void display(EntityPanel detailPanel) {}
 	}
