@@ -30,8 +30,8 @@ final class DualValueColumnCondition<T> extends AbstractColumnCondition<T> {
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	DualValueColumnCondition(Column<T> column, T lowerBound, T upperBound, Operator operator) {
-		super(column, operator, asList(lowerBound, upperBound), true);
+	DualValueColumnCondition(Column<T> column, T lower, T upper, Operator operator) {
+		super(column, operator, asList(lower, upper), true);
 		validateOperator(operator);
 	}
 

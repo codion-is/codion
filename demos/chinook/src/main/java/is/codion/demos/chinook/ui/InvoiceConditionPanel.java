@@ -297,18 +297,18 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			}
 
 			private void updateCondition() {
-				condition().operands().lowerBound().set(lowerBound());
-				condition().operands().upperBound().set(upperBound());
+				condition().operands().lower().set(lower());
+				condition().operands().upper().set(upper());
 			}
 
-			private LocalDate lowerBound() {
+			private LocalDate lower() {
 				int year = yearValue.optional().orElse(LocalDate.now().getYear());
 				Month month = monthValue.optional().orElse(JANUARY);
 
 				return LocalDate.of(year, month, 1);
 			}
 
-			private LocalDate upperBound() {
+			private LocalDate upper() {
 				int year = yearValue.optional().orElse(LocalDate.now().getYear());
 				Month month = monthValue.optional().orElse(DECEMBER);
 				YearMonth yearMonth = YearMonth.of(year, month);

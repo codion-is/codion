@@ -86,26 +86,26 @@ public final class EntityConditionFieldFactory implements FieldFactory {
 	}
 
 	@Override
-	public <T> Optional<JComponent> createUpperBoundField(ConditionModel<T> condition) {
+	public <T> Optional<JComponent> createUpperField(ConditionModel<T> condition) {
 		Class<T> columnClass = condition.valueClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no upper bound field required for booleans or entities
 		}
 
 		return Optional.of(inputComponents.component((Attribute<T>) attribute)
-						.link(condition.operands().upperBound())
+						.link(condition.operands().upper())
 						.build());
 	}
 
 	@Override
-	public <T> Optional<JComponent> createLowerBoundField(ConditionModel<T> condition) {
+	public <T> Optional<JComponent> createLowerField(ConditionModel<T> condition) {
 		Class<T> columnClass = condition.valueClass();
 		if (columnClass.equals(Boolean.class) || columnClass.equals(Entity.class)) {
 			return Optional.empty();//no lower bound field required for booleans or entities
 		}
 
 		return Optional.of(inputComponents.component((Attribute<T>) attribute)
-						.link(condition.operands().lowerBound())
+						.link(condition.operands().lower())
 						.build());
 	}
 

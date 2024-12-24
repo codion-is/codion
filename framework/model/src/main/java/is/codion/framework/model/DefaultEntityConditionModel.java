@@ -230,21 +230,21 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 			case NOT_EQUAL:
 				return notEqualCondition(conditionModel, column);
 			case LESS_THAN:
-				return column.lessThan(operands.upperBound().get());
+				return column.lessThan(operands.upper().get());
 			case LESS_THAN_OR_EQUAL:
-				return column.lessThanOrEqualTo(operands.upperBound().get());
+				return column.lessThanOrEqualTo(operands.upper().get());
 			case GREATER_THAN:
-				return column.greaterThan(operands.lowerBound().get());
+				return column.greaterThan(operands.lower().get());
 			case GREATER_THAN_OR_EQUAL:
-				return column.greaterThanOrEqualTo(operands.lowerBound().get());
+				return column.greaterThanOrEqualTo(operands.lower().get());
 			case BETWEEN_EXCLUSIVE:
-				return column.betweenExclusive(operands.lowerBound().get(), operands.upperBound().get());
+				return column.betweenExclusive(operands.lower().get(), operands.upper().get());
 			case BETWEEN:
-				return column.between(operands.lowerBound().get(), operands.upperBound().get());
+				return column.between(operands.lower().get(), operands.upper().get());
 			case NOT_BETWEEN_EXCLUSIVE:
-				return column.notBetweenExclusive(operands.lowerBound().get(), operands.upperBound().get());
+				return column.notBetweenExclusive(operands.lower().get(), operands.upper().get());
 			case NOT_BETWEEN:
-				return column.notBetween(operands.lowerBound().get(), operands.upperBound().get());
+				return column.notBetween(operands.lower().get(), operands.upper().get());
 			case IN:
 				return inCondition(conditionModel, column);
 			case NOT_IN:

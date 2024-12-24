@@ -247,7 +247,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		commissionModel.enabled().set(false);
 		assertEquals(2, counter.get());
 		commissionModel.operator().set(Operator.GREATER_THAN_OR_EQUAL);
-		commissionModel.operands().lowerBound().set(1200d);
+		commissionModel.operands().lower().set(1200d);
 		//automatically set enabled when upper bound is set
 		assertEquals(3, counter.get());
 		empModel.queryModel().conditionChanged().removeListener(conditionChangedListener);

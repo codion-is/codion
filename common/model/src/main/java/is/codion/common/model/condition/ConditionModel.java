@@ -204,12 +204,12 @@ public interface ConditionModel<T> {
 		/**
 		 * @return a {@link Value} controlling the upper bound operand used for range based operators
 		 */
-		Value<T> upperBound();
+		Value<T> upper();
 
 		/**
 		 * @return a {@link Value} controlling the lower bound operand used for range based operators
 		 */
-		Value<T> lowerBound();
+		Value<T> lower();
 	}
 
 	/**

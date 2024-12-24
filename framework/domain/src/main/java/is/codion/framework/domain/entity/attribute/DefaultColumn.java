@@ -198,23 +198,23 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 	}
 
 	@Override
-	public ColumnCondition<T> betweenExclusive(T lowerBound, T upperBound) {
-		return factory(this).betweenExclusive(lowerBound, upperBound);
+	public ColumnCondition<T> betweenExclusive(T lower, T upper) {
+		return factory(this).betweenExclusive(lower, upper);
 	}
 
 	@Override
-	public ColumnCondition<T> between(T lowerBound, T upperBound) {
-		return factory(this).between(lowerBound, upperBound);
+	public ColumnCondition<T> between(T lower, T upper) {
+		return factory(this).between(lower, upper);
 	}
 
 	@Override
-	public ColumnCondition<T> notBetweenExclusive(T lowerBound, T upperBound) {
-		return factory(this).notBetweenExclusive(lowerBound, upperBound);
+	public ColumnCondition<T> notBetweenExclusive(T lower, T upper) {
+		return factory(this).notBetweenExclusive(lower, upper);
 	}
 
 	@Override
-	public ColumnCondition<T> notBetween(T lowerBound, T upperBound) {
-		return factory(this).notBetween(lowerBound, upperBound);
+	public ColumnCondition<T> notBetween(T lower, T upper) {
+		return factory(this).notBetween(lower, upper);
 	}
 
 	@Override

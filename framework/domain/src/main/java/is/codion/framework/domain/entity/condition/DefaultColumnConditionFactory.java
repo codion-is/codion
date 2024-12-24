@@ -185,23 +185,23 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<T> betweenExclusive(T lowerBound, T upperBound) {
-		return new DualValueColumnCondition<>(column, lowerBound, upperBound, BETWEEN_EXCLUSIVE);
+	public ColumnCondition<T> betweenExclusive(T lower, T upper) {
+		return new DualValueColumnCondition<>(column, lower, upper, BETWEEN_EXCLUSIVE);
 	}
 
 	@Override
-	public ColumnCondition<T> between(T lowerBound, T upperBound) {
-		return new DualValueColumnCondition<>(column, lowerBound, upperBound, BETWEEN);
+	public ColumnCondition<T> between(T lower, T upper) {
+		return new DualValueColumnCondition<>(column, lower, upper, BETWEEN);
 	}
 
 	@Override
-	public ColumnCondition<T> notBetweenExclusive(T lowerBound, T upperBound) {
-		return new DualValueColumnCondition<>(column, lowerBound, upperBound, NOT_BETWEEN_EXCLUSIVE);
+	public ColumnCondition<T> notBetweenExclusive(T lower, T upper) {
+		return new DualValueColumnCondition<>(column, lower, upper, NOT_BETWEEN_EXCLUSIVE);
 	}
 
 	@Override
-	public ColumnCondition<T> notBetween(T lowerBound, T upperBound) {
-		return new DualValueColumnCondition<>(column, lowerBound, upperBound, NOT_BETWEEN);
+	public ColumnCondition<T> notBetween(T lower, T upper) {
+		return new DualValueColumnCondition<>(column, lower, upper, NOT_BETWEEN);
 	}
 
 	@Override

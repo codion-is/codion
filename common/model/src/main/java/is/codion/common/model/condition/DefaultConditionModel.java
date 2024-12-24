@@ -85,12 +85,12 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		this.operands.in.addValidator(lockValidator);
 		this.operands.in.addListener(autoEnableListener);
 		this.operands.in.addListener(conditionChanged);
-		this.operands.upperBound.addValidator(lockValidator);
-		this.operands.upperBound.addListener(autoEnableListener);
-		this.operands.upperBound.addListener(conditionChanged);
-		this.operands.lowerBound.addValidator(lockValidator);
-		this.operands.lowerBound.addListener(autoEnableListener);
-		this.operands.lowerBound.addListener(conditionChanged);
+		this.operands.upper.addValidator(lockValidator);
+		this.operands.upper.addListener(autoEnableListener);
+		this.operands.upper.addListener(conditionChanged);
+		this.operands.lower.addValidator(lockValidator);
+		this.operands.lower.addListener(autoEnableListener);
+		this.operands.lower.addListener(conditionChanged);
 		this.valueClass = builder.valueClass;
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
@@ -264,33 +264,33 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	private boolean isLessThan(@Nullable Comparable<T> comparable) {
-		T upperBound = operands.upperBound.get();
+		T upper = operands.upper.get();
 
-		return upperBound == null || comparable != null && comparable.compareTo(upperBound) < 0;
+		return upper == null || comparable != null && comparable.compareTo(upper) < 0;
 	}
 
 	private boolean isLessThanOrEqual(@Nullable Comparable<T> comparable) {
-		T upperBound = operands.upperBound.get();
+		T upper = operands.upper.get();
 
-		return upperBound == null || comparable != null && comparable.compareTo(upperBound) <= 0;
+		return upper == null || comparable != null && comparable.compareTo(upper) <= 0;
 	}
 
 	private boolean isGreaterThan(@Nullable Comparable<T> comparable) {
-		T lowerBound = operands.lowerBound.get();
+		T lower = operands.lower.get();
 
-		return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) > 0;
+		return lower == null || comparable != null && comparable.compareTo(lower) > 0;
 	}
 
 	private boolean isGreaterThanOrEqual(@Nullable Comparable<T> comparable) {
-		T lowerBound = operands.lowerBound.get();
+		T lower = operands.lower.get();
 
-		return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) >= 0;
+		return lower == null || comparable != null && comparable.compareTo(lower) >= 0;
 	}
 
 	private boolean isBetweenExclusive(@Nullable Comparable<T> comparable) {
-		T lowerBound = operands.lowerBound.get();
-		T upperBound = operands.upperBound.get();
-		if (lowerBound == null && upperBound == null) {
+		T lower = operands.lower.get();
+		T upper = operands.upper.get();
+		if (lower == null && upper == null) {
 			return true;
 		}
 
@@ -298,24 +298,24 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			return false;
 		}
 
-		if (lowerBound == null) {
-			return comparable.compareTo(upperBound) < 0;
+		if (lower == null) {
+			return comparable.compareTo(upper) < 0;
 		}
 
-		if (upperBound == null) {
-			return comparable.compareTo(lowerBound) > 0;
+		if (upper == null) {
+			return comparable.compareTo(lower) > 0;
 		}
 
-		int lowerCompareResult = comparable.compareTo(lowerBound);
-		int upperCompareResult = comparable.compareTo(upperBound);
+		int lowerCompareResult = comparable.compareTo(lower);
+		int upperCompareResult = comparable.compareTo(upper);
 
 		return lowerCompareResult > 0 && upperCompareResult < 0;
 	}
 
 	private boolean isBetween(@Nullable Comparable<T> comparable) {
-		T lowerBound = operands.lowerBound.get();
-		T upperBound = operands.upperBound.get();
-		if (lowerBound == null && upperBound == null) {
+		T lower = operands.lower.get();
+		T upper = operands.upper.get();
+		if (lower == null && upper == null) {
 			return true;
 		}
 
@@ -323,24 +323,24 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			return false;
 		}
 
-		if (lowerBound == null) {
-			return comparable.compareTo(upperBound) <= 0;
+		if (lower == null) {
+			return comparable.compareTo(upper) <= 0;
 		}
 
-		if (upperBound == null) {
-			return comparable.compareTo(lowerBound) >= 0;
+		if (upper == null) {
+			return comparable.compareTo(lower) >= 0;
 		}
 
-		int lowerCompareResult = comparable.compareTo(lowerBound);
-		int upperCompareResult = comparable.compareTo(upperBound);
+		int lowerCompareResult = comparable.compareTo(lower);
+		int upperCompareResult = comparable.compareTo(upper);
 
 		return lowerCompareResult >= 0 && upperCompareResult <= 0;
 	}
 
 	private boolean isNotBetweenExclusive(@Nullable Comparable<T> comparable) {
-		T lowerBound = operands.lowerBound.get();
-		T upperBound = operands.upperBound.get();
-		if (lowerBound == null && upperBound == null) {
+		T lower = operands.lower.get();
+		T upper = operands.upper.get();
+		if (lower == null && upper == null) {
 			return true;
 		}
 
@@ -348,24 +348,24 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			return false;
 		}
 
-		if (lowerBound == null) {
-			return comparable.compareTo(upperBound) > 0;
+		if (lower == null) {
+			return comparable.compareTo(upper) > 0;
 		}
 
-		if (upperBound == null) {
-			return comparable.compareTo(lowerBound) < 0;
+		if (upper == null) {
+			return comparable.compareTo(lower) < 0;
 		}
 
-		int lowerCompareResult = comparable.compareTo(lowerBound);
-		int upperCompareResult = comparable.compareTo(upperBound);
+		int lowerCompareResult = comparable.compareTo(lower);
+		int upperCompareResult = comparable.compareTo(upper);
 
 		return lowerCompareResult < 0 || upperCompareResult > 0;
 	}
 
 	private boolean isNotBetween(@Nullable Comparable<T> comparable) {
-		T lowerBound = operands.lowerBound.get();
-		T upperBound = operands.upperBound.get();
-		if (lowerBound == null && upperBound == null) {
+		T lower = operands.lower.get();
+		T upper = operands.upper.get();
+		if (lower == null && upper == null) {
 			return true;
 		}
 
@@ -373,16 +373,16 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			return false;
 		}
 
-		if (lowerBound == null) {
-			return comparable.compareTo(upperBound) >= 0;
+		if (lower == null) {
+			return comparable.compareTo(upper) >= 0;
 		}
 
-		if (upperBound == null) {
-			return comparable.compareTo(lowerBound) <= 0;
+		if (upper == null) {
+			return comparable.compareTo(lower) <= 0;
 		}
 
-		int lowerCompareResult = comparable.compareTo(lowerBound);
-		int upperCompareResult = comparable.compareTo(upperBound);
+		int lowerCompareResult = comparable.compareTo(lower);
+		int upperCompareResult = comparable.compareTo(upper);
 
 		return lowerCompareResult <= 0 || upperCompareResult >= 0;
 	}
@@ -441,17 +441,17 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						break;
 					case LESS_THAN:
 					case LESS_THAN_OR_EQUAL:
-						enabled.set(operands.upperBound.isNotNull());
+						enabled.set(operands.upper.isNotNull());
 						break;
 					case GREATER_THAN:
 					case GREATER_THAN_OR_EQUAL:
-						enabled.set(operands.lowerBound.isNotNull());
+						enabled.set(operands.lower.isNotNull());
 						break;
 					case BETWEEN:
 					case BETWEEN_EXCLUSIVE:
 					case NOT_BETWEEN:
 					case NOT_BETWEEN_EXCLUSIVE:
-						enabled.set(operands.lowerBound.isNotNull() && operands.upperBound.isNotNull());
+						enabled.set(operands.lower.isNotNull() && operands.upper.isNotNull());
 						break;
 					case IN:
 					case NOT_IN:
@@ -470,11 +470,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		private final ValueSet<T> in = ValueSet.<T>builder()
 						.notify(Notify.WHEN_SET)
 						.build();
-		private final Value<T> upperBound = Value.builder()
+		private final Value<T> upper = Value.builder()
 						.<T>nullable()
 						.notify(Notify.WHEN_SET)
 						.build();
-		private final Value<T> lowerBound = Value.builder()
+		private final Value<T> lower = Value.builder()
 						.<T>nullable()
 						.notify(Notify.WHEN_SET)
 						.build();
@@ -494,20 +494,20 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		@Override
-		public Value<T> upperBound() {
-			return upperBound;
+		public Value<T> upper() {
+			return upper;
 		}
 
 		@Override
-		public Value<T> lowerBound() {
-			return lowerBound;
+		public Value<T> lower() {
+			return lower;
 		}
 
 		private void clear() {
 			equal.clear();
 			in.clear();
-			upperBound.clear();
-			lowerBound.clear();
+			upper.clear();
+			lower.clear();
 		}
 
 		private static final class EqualOperand<T> extends AbstractValue<T> {

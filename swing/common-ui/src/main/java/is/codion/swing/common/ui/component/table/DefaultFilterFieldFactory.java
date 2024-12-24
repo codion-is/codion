@@ -56,24 +56,24 @@ final class DefaultFilterFieldFactory implements FieldFactory {
 	}
 
 	@Override
-	public <T> Optional<JComponent> createUpperBoundField(ConditionModel<T> condition) {
+	public <T> Optional<JComponent> createUpperField(ConditionModel<T> condition) {
 		if (condition.valueClass().equals(Boolean.class)) {
 			return Optional.empty();//no upper bound field required for boolean values
 		}
 
 		return Optional.of(createField(condition)
-						.link(condition.operands().upperBound())
+						.link(condition.operands().upper())
 						.build());
 	}
 
 	@Override
-	public <T> Optional<JComponent> createLowerBoundField(ConditionModel<T> condition) {
+	public <T> Optional<JComponent> createLowerField(ConditionModel<T> condition) {
 		if (condition.valueClass().equals(Boolean.class)) {
 			return Optional.empty();//no lower bound field required for boolean values
 		}
 
 		return Optional.of(createField(condition)
-						.link(condition.operands().lowerBound())
+						.link(condition.operands().lower())
 						.build());
 	}
 

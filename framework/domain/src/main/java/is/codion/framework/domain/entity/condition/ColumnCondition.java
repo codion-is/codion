@@ -214,35 +214,35 @@ public interface ColumnCondition<T> extends Condition {
 
 		/**
 		 * Returns a 'betweenExclusive' {@link ColumnCondition}.
-		 * @param lowerBound the lower bound
-		 * @param upperBound the upper bound
+		 * @param lower the lower bound
+		 * @param upper the upper bound
 		 * @return a {@link ColumnCondition}
 		 */
-		ColumnCondition<T> betweenExclusive(T lowerBound, T upperBound);
+		ColumnCondition<T> betweenExclusive(T lower, T upper);
 
 		/**
 		 * Returns a 'between' {@link ColumnCondition}.
-		 * @param lowerBound the lower bound
-		 * @param upperBound the upper bound
+		 * @param lower the lower bound
+		 * @param upper the upper bound
 		 * @return a {@link ColumnCondition}
 		 */
-		ColumnCondition<T> between(T lowerBound, T upperBound);
+		ColumnCondition<T> between(T lower, T upper);
 
 		/**
 		 * Returns a 'notBetweenExclusive' {@link ColumnCondition}.
-		 * @param lowerBound the lower bound
-		 * @param upperBound the upper bound
+		 * @param lower the lower bound
+		 * @param upper the upper bound
 		 * @return a {@link ColumnCondition}
 		 */
-		ColumnCondition<T> notBetweenExclusive(T lowerBound, T upperBound);
+		ColumnCondition<T> notBetweenExclusive(T lower, T upper);
 
 		/**
 		 * Returns a 'notBetween' {@link ColumnCondition}.
-		 * @param lowerBound the lower bound
-		 * @param upperBound the upper bound
+		 * @param lower the lower bound
+		 * @param upper the upper bound
 		 * @return a {@link ColumnCondition}
 		 */
-		ColumnCondition<T> notBetween(T lowerBound, T upperBound);
+		ColumnCondition<T> notBetween(T lower, T upper);
 
 		/**
 		 * Returns a 'isNull' {@link ColumnCondition}.
