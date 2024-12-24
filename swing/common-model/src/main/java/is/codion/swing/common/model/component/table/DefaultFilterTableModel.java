@@ -76,8 +76,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = requireNonNull(builder.columns);
 		this.sorter = new DefaultFilterTableSortModel<>(builder.columns);
-		this.filters = tableConditionModel(createFilterConditionModels(builder.filterModelFactory == null ?
-						new DefaultColumnFilterFactory() : builder.filterModelFactory));
+		this.filters = tableConditionModel(createFilterConditionModels(builder.filterModelFactory));
 		this.modelItems = new DefaultItems(builder.validator, builder.supplier, builder.refreshStrategy, builder.asyncRefresh);
 		this.selection = new DefaultFilterTableSelection<>(modelItems);
 		this.removeSelectionListener = new RemoveSelectionListener();
@@ -201,19 +200,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		return columnFilterModels;
-	}
-
-	private final class DefaultColumnFilterFactory implements ConditionModelFactory<C> {
-
-		@Override
-		public Optional<ConditionModel<?>> create(C identifier) {
-			Class<?> columnClass = getColumnClass(identifier);
-			if (Comparable.class.isAssignableFrom(columnClass)) {
-				return Optional.of(ConditionModel.builder(columnClass).build());
-			}
-
-			return Optional.empty();
-		}
 	}
 
 	private final class DefaultItems implements Items<R> {
@@ -716,6 +702,25 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
+	private static final class DefaultColumnFilterFactory<C> implements ConditionModelFactory<C> {
+
+		private final Columns<?, C> columns;
+
+		private DefaultColumnFilterFactory(Columns<?, C> columns) {
+			this.columns = columns;
+		}
+
+		@Override
+		public Optional<ConditionModel<?>> create(C identifier) {
+			Class<?> columnClass = columns.columnClass(requireNonNull(identifier));
+			if (Comparable.class.isAssignableFrom(columnClass)) {
+				return Optional.of(ConditionModel.builder(columnClass).build());
+			}
+
+			return Optional.empty();
+		}
+	}
+
 	static final class DefaultBuilder<R, C> implements Builder<R, C> {
 
 		private final Columns<R, C> columns;
@@ -731,6 +736,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 				throw new IllegalArgumentException("No columns specified");
 			}
 			this.columns = validateIdentifiers(columns);
+			this.filterModelFactory = new DefaultColumnFilterFactory<>(columns);
 		}
 
 		@Override
