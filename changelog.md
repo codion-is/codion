@@ -68,6 +68,8 @@ Codion Change Log
 - EntityApplicationPanel.extit(), unsaved modification handling improved, related refactoring.
 - EntityPanel.activated() replaced with requestDisplay() and displayRequested(), ApplicationLayout.activate() and DetailController.activate() renamed display().
 - EntityPanel.DetailPanels added, related refactoring.
+- EntityPanel.builder(SwingEntityModel) removed
+- EntityApplicationPanel.displayEntityPanel() renamed displayEntityPanelWindow().
 
 ## 0.18.22
 ### is.codion.common.core

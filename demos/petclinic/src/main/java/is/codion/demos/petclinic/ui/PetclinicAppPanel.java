@@ -66,9 +66,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 		ownersPanel.detailPanels().add(petsPanel);
 		petsPanel.detailPanels().add(visitsPanel);
 
-		EntityPanel typePanel = new EntityPanel(new SwingEntityModel(PetType.TYPE, applicationModel().connectionProvider()));
-
-		return List.of(typePanel, ownersPanel);
+		return List.of(ownersPanel);
 	}
 
 	@Override

@@ -42,7 +42,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
 	private final EntityType entityType;
 	private final SwingEntityModel.Builder modelBuilder;
-	private final SwingEntityModel model;
 	private final List<EntityPanel.Builder> detailPanelBuilders = new ArrayList<>();
 
 	private String caption;
@@ -62,16 +61,13 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	private Consumer<EntityEditPanel> onBuildEditPanel = new EmptyOnBuild<>();
 	private Consumer<EntityTablePanel> onBuildTablePanel = new EmptyOnBuild<>();
 
+	EntityPanelBuilder(EntityType entityType) {
+		this(SwingEntityModel.builder(entityType));
+	}
+
 	EntityPanelBuilder(SwingEntityModel.Builder modelBuilder) {
 		this.modelBuilder = requireNonNull(modelBuilder);
 		this.entityType = modelBuilder.entityType();
-		this.model = null;
-	}
-
-	EntityPanelBuilder(SwingEntityModel model) {
-		this.model = requireNonNull(model);
-		this.entityType = model.entityType();
-		this.modelBuilder = null;
 	}
 
 	@Override
@@ -201,8 +197,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		if (obj instanceof EntityPanelBuilder) {
 			EntityPanelBuilder that = (EntityPanelBuilder) obj;
 
-			return Objects.equals(modelBuilder, that.model) &&
-							Objects.equals(model, that.model) &&
+			return Objects.equals(modelBuilder, that.modelBuilder) &&
 							Objects.equals(panelClass, that.panelClass) &&
 							Objects.equals(editPanelClass, that.editPanelClass) &&
 							Objects.equals(tablePanelClass, that.tablePanelClass);
@@ -213,17 +208,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(modelBuilder, model, panelClass, editPanelClass, tablePanelClass);
+		return Objects.hash(modelBuilder, panelClass, editPanelClass, tablePanelClass);
 	}
 
 	@Override
 	public EntityPanel build(EntityConnectionProvider connectionProvider) {
-		requireNonNull(connectionProvider);
-		if (modelBuilder == null) {
-			throw new IllegalStateException("A SwingEntityModel.Builder is not available in this panel builder: " + entityType);
-		}
-
-		return build(modelBuilder.build(connectionProvider));
+		return build(modelBuilder.build(requireNonNull(connectionProvider)));
 	}
 
 	@Override
@@ -253,6 +243,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	}
 
 	private EntityPanel createPanel(SwingEntityModel entityModel) {
+		if (!entityType.equals(entityModel.entityType())) {
+			throw new IllegalArgumentException("Entity type mismatch, panel builder: " + entityType + ", entityModel: " + entityModel.entityType());
+		}
 		try {
 			EntityPanel entityPanel;
 			if (panelClass().equals(EntityPanel.class)) {

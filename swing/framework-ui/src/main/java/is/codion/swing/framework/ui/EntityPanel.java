@@ -626,7 +626,7 @@ public class EntityPanel extends JPanel {
 	 * @return a panel builder
 	 */
 	public static EntityPanel.Builder builder(EntityType entityType) {
-		return new EntityPanelBuilder(SwingEntityModel.builder(entityType));
+		return new EntityPanelBuilder(entityType);
 	}
 
 	/**
@@ -636,15 +636,6 @@ public class EntityPanel extends JPanel {
 	 */
 	public static EntityPanel.Builder builder(SwingEntityModel.Builder modelBuilder) {
 		return new EntityPanelBuilder(modelBuilder);
-	}
-
-	/**
-	 * Instantiates a new {@link EntityPanel.Builder}
-	 * @param model the {@link SwingEntityModel} to base this panel builder on
-	 * @return a panel builder
-	 */
-	public static EntityPanel.Builder builder(SwingEntityModel model) {
-		return new EntityPanelBuilder(model);
 	}
 
 	//#############################################################################################
@@ -1780,54 +1771,56 @@ public class EntityPanel extends JPanel {
 		Builder preferredSize(Dimension preferredSize);
 
 		/**
-		 * Note that setting the EntityPanel class overrides any table panel or edit panel classes that have been set.
-		 * @param panelClass the EntityPanel class to use when providing this panel
+		 * Note that setting the {@link EntityPanel} class overrides any {@link EntityTablePanel} or {@link EntityEditPanel} classes that have been set.
+		 * @param panelClass the {@link EntityPanel} class to use when creating the panel
 		 * @return this builder instance
+		 * @see #editPanel()
+		 * @see #tablePanel()
 		 */
 		Builder panel(Class<? extends EntityPanel> panelClass);
 
 		/**
-		 * @param editPanelClass the EntityEditPanel class to use when providing this panel
+		 * @param editPanelClass the {@link EntityEditPanel} class to use when creating the panel
 		 * @return this builder instance
 		 */
 		Builder editPanel(Class<? extends EntityEditPanel> editPanelClass);
 
 		/**
-		 * @param tablePanelClass the EntityTablePanel class to use when providing this panel
+		 * @param tablePanelClass the {@link EntityTablePanel} class to use when creating the panel
 		 * @return this builder instance
 		 */
 		Builder tablePanel(Class<? extends EntityTablePanel> tablePanelClass);
 
 		/**
-		 * @param onBuildPanel called after the entity panel has been built
+		 * @param onBuildPanel called after the {@link EntityPanel} has been built
 		 * @return this builder instance
 		 */
 		Builder onBuildPanel(Consumer<EntityPanel> onBuildPanel);
 
 		/**
-		 * @param onBuildEditPanel called after the edit panel has been built
+		 * @param onBuildEditPanel called after the {@link EntityEditPanel} has been built
 		 * @return this builder instance
 		 */
 		Builder onBuildEditPanel(Consumer<EntityEditPanel> onBuildEditPanel);
 
 		/**
-		 * @param onBuildTablePanel called after the table panel has been built
+		 * @param onBuildTablePanel called after the {@link EntityTablePanel} has been built
 		 * @return this builder instance
 		 */
 		Builder onBuildTablePanel(Consumer<EntityTablePanel> onBuildTablePanel);
 
 		/**
-		 * Creates an EntityPanel based on this builder
+		 * Builds an {@link EntityPanel} based on this builder configuration.
 		 * @param connectionProvider the connection provider
-		 * @return an EntityPanel based on this builder
+		 * @return an {@link EntityPanel} based on this builder
 		 * @throws IllegalStateException in case no {@link SwingEntityModel.Builder} has been set
 		 */
 		EntityPanel build(EntityConnectionProvider connectionProvider);
 
 		/**
-		 * Creates an EntityPanel based on this builder
-		 * @param model the EntityModel to base this panel on
-		 * @return an EntityPanel based on this builder
+		 * Builds an {@link EntityPanel} based on this builder configuration
+		 * @param model the {@link SwingEntityModel} to base the panel on
+		 * @return an {@link EntityPanel} based on this builder
 		 */
 		EntityPanel build(SwingEntityModel model);
 	}

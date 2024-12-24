@@ -761,17 +761,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * Displays the panel provided by the given builder in a frame or dialog,
 	 * depending on {@link EntityPanel.Config#WINDOW_TYPE}.
 	 * @param panelBuilder the entity panel builder
+	 * @see #displayEntityPanelFrame(EntityPanel)
+	 * @see #displayEntityPanelDialog(EntityPanel)
 	 */
-	protected final void displayEntityPanel(EntityPanel.Builder panelBuilder) {
-		displayEntityPanel(entityPanel(panelBuilder));
+	protected final void displayEntityPanelWindow(EntityPanel.Builder panelBuilder) {
+		displayEntityPanelWindow(entityPanel(panelBuilder));
 	}
 
 	/**
 	 * Displays the given panel in a frame or dialog,
 	 * depending on {@link EntityPanel.Config#WINDOW_TYPE}.
 	 * @param entityPanel the entity panel
+	 * @see #displayEntityPanelFrame(EntityPanel)
+	 * @see #displayEntityPanelDialog(EntityPanel)
 	 */
-	protected final void displayEntityPanel(EntityPanel entityPanel) {
+	protected final void displayEntityPanelWindow(EntityPanel entityPanel) {
 		if (EntityPanel.Config.WINDOW_TYPE.isEqualTo(WindowType.FRAME)) {
 			displayEntityPanelFrame(entityPanel);
 		}
@@ -781,7 +785,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
-	 * Shows a frame containing the given entity panel
+	 * Displays a frame containing the given entity panel
 	 * @param entityPanel the entity panel
 	 */
 	protected final void displayEntityPanelFrame(EntityPanel entityPanel) {
@@ -804,7 +808,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
-	 * Shows a non-modal dialog containing the given entity panel
+	 * Displays a non-modal dialog containing the given entity panel
 	 * @param entityPanel the entity panel
 	 */
 	protected final void displayEntityPanelDialog(EntityPanel entityPanel) {
@@ -814,9 +818,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	/**
 	 * Shows a dialog containing the given entity panel
 	 * @param entityPanel the entity panel
-	 * @param modalDialog if true the dialog is made modal
+	 * @param modal if true the dialog should be modal
 	 */
-	protected final void displayEntityPanelDialog(EntityPanel entityPanel, boolean modalDialog) {
+	protected final void displayEntityPanelDialog(EntityPanel entityPanel, boolean modal) {
 		if (requireNonNull(entityPanel).isShowing()) {
 			Window parentWindow = Utilities.parentWindow(entityPanel);
 			if (parentWindow != null) {
@@ -830,7 +834,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 							.icon(entityPanel.icon().orElse(null))
 							.onOpened(e -> entityPanel.activate())
 							.onClosed(e -> onEntityPanelWindowClosed(entityPanel))
-							.modal(modalDialog)
+							.modal(modal)
 							.show();
 		}
 	}
@@ -897,7 +901,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {
 		return Control.builder()
-						.command(() -> displayEntityPanel(panelBuilder))
+						.command(() -> displayEntityPanelWindow(panelBuilder))
 						.name(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
 						.smallIcon(panelBuilder.icon().orElse(null))
 						.build();

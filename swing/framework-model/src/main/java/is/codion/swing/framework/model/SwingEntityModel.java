@@ -77,16 +77,17 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
 		EntityType entityType();
 
 		/**
-		 * Sets the model class
-		 * @param modelClass the model class
+		 * Note that setting the {@link SwingEntityModel} class overrides any {@link SwingEntityEditModel} or {@link SwingEntityTableModel} classes that have been set
+		 * @param modelClass the model class to use
 		 * @return this builder instance
 		 * @throws IllegalStateException in case the edit or table model classes have already been set
+		 * @see #editModel(Class)
+		 * @see #tableModel(Class)
 		 */
 		Builder model(Class<? extends SwingEntityModel> modelClass);
 
 		/**
-		 * Sets the edit model class
-		 * @param editModelClass the edit model class
+		 * @param editModelClass the edit model class to use
 		 * @return this builder instance
 		 * @throws IllegalStateException in case the model class has already been set
 		 * @throws IllegalStateException in case the table model class has already been set
@@ -94,8 +95,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
 		Builder editModel(Class<? extends SwingEntityEditModel> editModelClass);
 
 		/**
-		 * Sets the table model class
-		 * @param tableModelClass the table model class
+		 * @param tableModelClass the table model class to use
 		 * @return this builder instance
 		 * @throws IllegalStateException in case the model class has already been set
 		 * @throws IllegalStateException in case the edit model class has already been set
@@ -151,7 +151,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
 		/**
 		 * Builds a {@link SwingEntityModel} instance
 		 * @param connectionProvider the connection provider
-		 * @return a SwingEntityModel instance
+		 * @return a {@link SwingEntityModel} instance based on this builder
 		 */
 		SwingEntityModel build(EntityConnectionProvider connectionProvider);
 	}
