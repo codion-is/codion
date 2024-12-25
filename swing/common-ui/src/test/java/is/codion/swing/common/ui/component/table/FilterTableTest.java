@@ -74,7 +74,7 @@ public class FilterTableTest {
 	}
 
 	private static FilterTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
-		return FilterTableModel.<TestRow, Integer>builder(new FilterTableModel.Columns<TestRow, Integer>() {
+		return FilterTableModel.<TestRow, Integer>builder(new FilterTableModel.TableColumns<TestRow, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return singletonList(0);
@@ -100,7 +100,7 @@ public class FilterTableTest {
 									return customComparator;
 								}
 
-								return FilterTableModel.Columns.super.comparator(integer);
+								return FilterTableModel.TableColumns.super.comparator(integer);
 							}
 						})
 						.supplier(() -> ITEMS)
@@ -123,7 +123,7 @@ public class FilterTableTest {
 
 	@Test
 	void searchField() {
-		FilterTableModel.Columns<List<String>, Integer> columns = new FilterTableModel.Columns<List<String>, Integer>() {
+		FilterTableModel.TableColumns<List<String>, Integer> columns = new FilterTableModel.TableColumns<List<String>, Integer>() {
 			@Override
 			public List<Integer> identifiers() {
 				return asList(0, 1);
@@ -214,7 +214,7 @@ public class FilterTableTest {
 		);
 
 		FilterTableModel<Row, Integer> testModel =
-						FilterTableModel.<Row, Integer>builder(new FilterTableModel.Columns<Row, Integer>() {
+						FilterTableModel.<Row, Integer>builder(new FilterTableModel.TableColumns<Row, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return asList(0, 1);
@@ -461,7 +461,7 @@ public class FilterTableTest {
 
 	@Test
 	void nonUniqueColumnIdentifiers() {
-		FilterTableModel<Object, Integer> model = FilterTableModel.builder(new FilterTableModel.Columns<Object, Integer>() {
+		FilterTableModel<Object, Integer> model = FilterTableModel.builder(new FilterTableModel.TableColumns<Object, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return List.of(0, 1);
@@ -486,7 +486,7 @@ public class FilterTableTest {
 
 	@Test
 	void cellRenderers() {
-		FilterTableModel.Columns<Object, Integer> columns = new FilterTableModel.Columns<>() {
+		FilterTableModel.TableColumns<Object, Integer> columns = new FilterTableModel.TableColumns<>() {
 			@Override
 			public List<Integer> identifiers() {
 				return List.of(0, 1);

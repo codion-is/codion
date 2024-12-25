@@ -34,7 +34,7 @@ import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
 import is.codion.framework.server.EntityServerAdmin.DomainOperation;
 import is.codion.framework.server.EntityServerAdmin.DomainReport;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -549,7 +549,7 @@ public final class ServerMonitor {
 		}
 	}
 
-	public static final class OperationColumns implements Columns<DomainOperation, OperationColumns.Id> {
+	public static final class OperationColumns implements TableColumns<DomainOperation, OperationColumns.Id> {
 
 		public enum Id {
 			DOMAIN,
@@ -602,7 +602,7 @@ public final class ServerMonitor {
 		}
 	}
 
-	public static final class ReportColumns implements Columns<DomainReport, ReportColumns.Id> {
+	public static final class ReportColumns implements TableColumns<DomainReport, ReportColumns.Id> {
 
 		public enum Id {
 			DOMAIN,
@@ -661,7 +661,7 @@ public final class ServerMonitor {
 		}
 	}
 
-	public static final class DomainColumns implements Columns<DomainEntityDefinition, DomainColumns.Id> {
+	public static final class DomainColumns implements TableColumns<DomainEntityDefinition, DomainColumns.Id> {
 
 		public enum Id {
 			DOMAIN,

@@ -21,7 +21,7 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.Event;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
-import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 
 import javax.swing.SortOrder;
 import java.util.ArrayList;
@@ -35,14 +35,14 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R, C> {
 
-	private final Columns<R, C> columns;
+	private final TableColumns<R, C> columns;
 	private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
 	private final Event<Boolean> sortingChanged = Event.event();
 	private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
 	private final Map<C, State> locked = new HashMap<>();
 	private final RowComparator comparator = new RowComparator();
 
-	DefaultFilterTableSortModel(Columns<R, C> columns) {
+	DefaultFilterTableSortModel(TableColumns<R, C> columns) {
 		this.columns = columns;
 	}
 

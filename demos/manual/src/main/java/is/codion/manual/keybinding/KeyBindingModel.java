@@ -22,7 +22,7 @@ import is.codion.common.item.Item;
 import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.ColumnId;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.ActionMap;
@@ -91,7 +91,7 @@ final class KeyBindingModel {
 		}
 	}
 
-	static final class KeyBindingColumns implements Columns<KeyBindingRow, ColumnId> {
+	static final class KeyBindingColumns implements TableColumns<KeyBindingRow, ColumnId> {
 
 		enum ColumnId {
 			ACTION,

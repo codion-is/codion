@@ -19,7 +19,7 @@
 package is.codion.manual.swing.common.model.component.table;
 
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,7 +37,7 @@ public final class FilterTableModelDemo {
 	}
 
 	// Implement Columns, specifying the table columns
-	public static final class PersonColumns implements Columns<Person, PersonColumn> {
+	public static final class PersonColumns implements TableColumns<Person, PersonColumn> {
 
 		private static final List<PersonColumn> COLUMNS = List.of(PersonColumn.values());
 

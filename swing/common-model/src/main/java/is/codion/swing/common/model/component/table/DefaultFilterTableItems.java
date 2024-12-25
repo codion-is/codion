@@ -26,9 +26,9 @@ import is.codion.common.model.condition.TableConditionModel.ConditionModelFactor
 import is.codion.common.observable.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
-import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.swing.common.model.component.table.FilterTableModel.FilterTableModelItems;
 import is.codion.swing.common.model.component.table.FilterTableModel.RefreshStrategy;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
@@ -60,7 +60,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	private final DefaultVisibleItems visible;
 	private final DefaultFilteredItems filtered;
 
-	final Columns<R, C> columns;
+	final TableColumns<R, C> columns;
 	final FilterTableModel.TableSelection<R> selection;
 	final TableConditionModel<C> filters;
 	final FilterTableSortModel<R, C> sorter;
@@ -69,7 +69,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	final Value<RefreshStrategy> refreshStrategy;
 
 	DefaultFilterTableItems(AbstractTableModel tableModel, Predicate<R> validator, Supplier<? extends Collection<R>> supplier,
-													RefreshStrategy refreshStrategy, boolean asyncRefresh, Columns<R, C> columns, ConditionModelFactory<C> filterModelFactory) {
+													RefreshStrategy refreshStrategy, boolean asyncRefresh, TableColumns<R, C> columns, ConditionModelFactory<C> filterModelFactory) {
 		this.tableModel = requireNonNull(tableModel);
 		this.columns = requireNonNull(columns);
 		this.validator = validator;
@@ -392,7 +392,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 							.allMatch(entry -> accepts(item, entry.getValue(), entry.getKey(), columns));
 		}
 
-		private boolean accepts(R item, ConditionModel<?> condition, C identifier, Columns<R, C> columns) {
+		private boolean accepts(R item, ConditionModel<?> condition, C identifier, TableColumns<R, C> columns) {
 			if (condition.valueClass().equals(String.class)) {
 				String string = columns.string(item, identifier);
 

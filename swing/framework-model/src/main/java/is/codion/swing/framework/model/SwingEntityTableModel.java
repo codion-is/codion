@@ -262,7 +262,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final Columns<Entity, Attribute<?>> columns() {
+	public final TableColumns<Entity, Attribute<?>> columns() {
 		return filterModel().columns();
 	}
 
@@ -299,7 +299,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		return entities.iterator().next().entityType();
 	}
 
-	private static final class EntityTableColumns implements Columns<Entity, Attribute<?>> {
+	private static final class EntityTableColumns implements TableColumns<Entity, Attribute<?>> {
 
 		private final EntityDefinition entityDefinition;
 		private final List<Attribute<?>> identifiers;

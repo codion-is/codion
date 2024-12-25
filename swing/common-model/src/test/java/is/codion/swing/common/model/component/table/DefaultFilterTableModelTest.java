@@ -19,8 +19,8 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.state.State;
-import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
 import is.codion.swing.common.model.component.table.FilterTableModel.RefreshStrategy;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -65,7 +65,7 @@ public final class DefaultFilterTableModelTest {
 		}
 	}
 
-	private static final class TestColumns implements Columns<TestRow, Integer> {
+	private static final class TestColumns implements TableColumns<TestRow, Integer> {
 		@Override
 		public List<Integer> identifiers() {
 			return singletonList(0);
@@ -95,7 +95,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void nonUniqueColumnIdentifiers() {
-		assertThrows(IllegalArgumentException.class, () -> FilterTableModel.builder(new Columns<Object, Object>() {
+		assertThrows(IllegalArgumentException.class, () -> FilterTableModel.builder(new TableColumns<Object, Object>() {
 			@Override
 			public List<Object> identifiers() {
 				return List.of(0, 1, 0);
@@ -160,7 +160,7 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void noColumns() {
 		assertThrows(IllegalArgumentException.class, () ->
-						FilterTableModel.<String, Integer>builder(new Columns<String, Integer>() {
+						FilterTableModel.<String, Integer>builder(new TableColumns<String, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return emptyList();

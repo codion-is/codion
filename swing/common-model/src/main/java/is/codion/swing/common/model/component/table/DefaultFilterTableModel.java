@@ -120,7 +120,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Columns<R, C> columns() {
+	public TableColumns<R, C> columns() {
 		return items.columns;
 	}
 
@@ -163,9 +163,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private static final class DefaultColumnFilterFactory<C> implements ConditionModelFactory<C> {
 
-		private final Columns<?, C> columns;
+		private final TableColumns<?, C> columns;
 
-		private DefaultColumnFilterFactory(Columns<?, C> columns) {
+		private DefaultColumnFilterFactory(TableColumns<?, C> columns) {
 			this.columns = columns;
 		}
 
@@ -182,7 +182,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	static final class DefaultBuilder<R, C> implements Builder<R, C> {
 
-		private final Columns<R, C> columns;
+		private final TableColumns<R, C> columns;
 
 		private Supplier<? extends Collection<R>> supplier;
 		private Predicate<R> validator = new ValidPredicate<>();
@@ -190,7 +190,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.getOrThrow();
 
-		DefaultBuilder(Columns<R, C> columns) {
+		DefaultBuilder(TableColumns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {
 				throw new IllegalArgumentException("No columns specified");
 			}
@@ -233,7 +233,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			return new DefaultFilterTableModel<>(this);
 		}
 
-		private Columns<R, C> validateIdentifiers(Columns<R, C> columns) {
+		private TableColumns<R, C> validateIdentifiers(TableColumns<R, C> columns) {
 			if (new HashSet<>(columns.identifiers()).size() != columns.identifiers().size()) {
 				throw new IllegalArgumentException("Column identifiers are not unique");
 			}

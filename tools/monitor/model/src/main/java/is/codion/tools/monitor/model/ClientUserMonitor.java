@@ -25,7 +25,7 @@ import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -222,7 +222,7 @@ public final class ClientUserMonitor {
 		}
 	}
 
-	public static final class UserHistoryColumns implements Columns<UserInfo, UserHistoryColumns.Id> {
+	public static final class UserHistoryColumns implements TableColumns<UserInfo, UserHistoryColumns.Id> {
 
 		public enum Id {
 			USERNAME_COLUMN,

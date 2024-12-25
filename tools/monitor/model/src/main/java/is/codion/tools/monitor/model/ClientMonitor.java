@@ -21,7 +21,7 @@ package is.codion.tools.monitor.model;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
@@ -85,7 +85,7 @@ public final class ClientMonitor {
 		}
 	}
 
-	public static final class RemoteClientColumns implements Columns<RemoteClient, RemoteClientColumns.Id> {
+	public static final class RemoteClientColumns implements TableColumns<RemoteClient, RemoteClientColumns.Id> {
 
 		public enum Id {
 			USER,

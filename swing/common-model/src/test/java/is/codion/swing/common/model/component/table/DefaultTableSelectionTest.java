@@ -36,7 +36,7 @@ public class DefaultTableSelectionTest {
 	public DefaultTableSelectionTest() {
 		List<String> data = asList("A", "B", "C");
 		FilterTableModel<String, Integer> tableModel =
-						FilterTableModel.<String, Integer>builder(new FilterTableModel.Columns<String, Integer>() {
+						FilterTableModel.<String, Integer>builder(new FilterTableModel.TableColumns<String, Integer>() {
 											@Override
 											public List<Integer> identifiers() {
 												return asList(0, 1, 2);

@@ -34,7 +34,7 @@ public class DefaultFilterTableSortModelTest {
 
 	@Test
 	void test() {
-		DefaultFilterTableSortModel<Row, Integer> model = new DefaultFilterTableSortModel<>(new FilterTableModel.Columns<Row, Integer>() {
+		DefaultFilterTableSortModel<Row, Integer> model = new DefaultFilterTableSortModel<>(new FilterTableModel.TableColumns<Row, Integer>() {
 
 			@Override
 			public List<Integer> identifiers() {
@@ -123,7 +123,7 @@ public class DefaultFilterTableSortModelTest {
 
 	@Test
 	void nonComparableColumnClass() {
-		DefaultFilterTableSortModel<ArrayList, Integer> model = new DefaultFilterTableSortModel<>(new FilterTableModel.Columns<ArrayList, Integer>() {
+		DefaultFilterTableSortModel<ArrayList, Integer> model = new DefaultFilterTableSortModel<>(new FilterTableModel.TableColumns<ArrayList, Integer>() {
 			@Override
 			public List<Integer> identifiers() {
 				return Collections.singletonList(0);

@@ -44,6 +44,7 @@ Codion Change Log
 - FilterTableSortModel.locked() moved to Sort.
 - FilterTableModel.FilterTableItems added, refreshStrategy() moved.
 - DefaultFilterTableItems refactored from DefaultFilterTableModel.
+- FilterTableModel.Columns renamed TableColumns.
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.

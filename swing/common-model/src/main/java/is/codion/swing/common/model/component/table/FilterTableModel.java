@@ -41,7 +41,7 @@ import static is.codion.swing.common.model.component.table.DefaultFilterTableMod
  * A {@link FilterTableModel} can not contain null items.
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
- * @see #builder(Columns)
+ * @see #builder(TableColumns)
  */
 public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 
@@ -70,7 +70,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	/**
 	 * @return the table columns
 	 */
-	Columns<R, C> columns();
+	TableColumns<R, C> columns();
 
 	/**
 	 * Returns a String representation of the value for the given row and column.
@@ -141,7 +141,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 * @return a new builder instance
 	 * @throws NullPointerException in case {@code columnValues} is null
 	 */
-	static <R, C> Builder<R, C> builder(Columns<R, C> columns) {
+	static <R, C> Builder<R, C> builder(TableColumns<R, C> columns) {
 		return new DefaultFilterTableModel.DefaultBuilder<>(columns);
 	}
 
@@ -229,11 +229,12 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	}
 
 	/**
-	 * Specifies the columns for a table model
+	 * Specifies the columns for a table model, their identifiers,
+	 * their class and how to extract their value from a row instance.
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
-	interface Columns<R, C> {
+	interface TableColumns<R, C> {
 
 		/**
 		 * This method gets called quite often, so it is recommended to return

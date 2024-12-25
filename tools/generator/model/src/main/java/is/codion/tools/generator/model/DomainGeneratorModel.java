@@ -27,7 +27,7 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.tools.generator.domain.DomainSource;
 
 import javax.swing.SortOrder;
@@ -326,7 +326,7 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	public static final class SchemaColumns implements Columns<SchemaRow, SchemaColumns.Id> {
+	public static final class SchemaColumns implements TableColumns<SchemaRow, SchemaColumns.Id> {
 
 		public enum Id {
 			CATALOG,
@@ -365,7 +365,7 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	public static final class EntityColumns implements Columns<EntityRow, EntityColumns.Id> {
+	public static final class EntityColumns implements TableColumns<EntityRow, EntityColumns.Id> {
 
 		public enum Id {
 			ENTITY,

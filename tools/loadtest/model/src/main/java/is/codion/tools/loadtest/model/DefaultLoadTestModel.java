@@ -22,7 +22,7 @@ import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.Columns;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.LoadTest.ApplicationRunner;
 import is.codion.tools.loadtest.LoadTest.Scenario;
@@ -547,7 +547,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 	}
 
-	public static final class ApplicationColumns implements Columns<ApplicationRow, ApplicationRow.ColumnId> {
+	public static final class ApplicationColumns implements TableColumns<ApplicationRow, ApplicationRow.ColumnId> {
 
 		private static final List<ApplicationRow.ColumnId> IDENTIFIERS = unmodifiableList(Arrays.asList(ApplicationRow.ColumnId.values()));
 
