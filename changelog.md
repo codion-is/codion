@@ -45,6 +45,7 @@ Codion Change Log
 - FilterTableModel.FilterTableItems added, refreshStrategy() moved.
 - DefaultFilterTableItems refactored from DefaultFilterTableModel.
 - FilterTableModel.Columns renamed TableColumns.
+- FilterTableSortModel.Sort and sort() renamed Order and order() respectively.
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.

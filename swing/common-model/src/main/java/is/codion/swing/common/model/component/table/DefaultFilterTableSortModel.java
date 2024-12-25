@@ -52,8 +52,8 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public Sort sort(C identifier) {
-		return new DefaultSort(identifier);
+	public Order order(C identifier) {
+		return new DefaultOrder(identifier);
 	}
 
 	@Override
@@ -120,11 +120,11 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		}
 	}
 
-	private final class DefaultSort implements Sort {
+	private final class DefaultOrder implements Order {
 
 		private final C identifier;
 
-		private DefaultSort(C identifier) {
+		private DefaultOrder(C identifier) {
 			validateIdentifier(identifier);
 			this.identifier = identifier;
 		}

@@ -41,9 +41,9 @@ public interface FilterTableSortModel<R, C> {
 
 	/**
 	 * @param identifier the column identifier
-	 * @return the {@link Sort} for the given column
+	 * @return the {@link Order} for the given column
 	 */
-	Sort sort(C identifier);
+	Order order(C identifier);
 
 	/**
 	 * @return the {@link ColumnSort}
@@ -102,7 +102,7 @@ public interface FilterTableSortModel<R, C> {
 	/**
 	 * Manages the {@link SortOrder} for a given column
 	 */
-	interface Sort {
+	interface Order {
 
 		/**
 		 * Clears the sorting state and adds the given sorting order.
