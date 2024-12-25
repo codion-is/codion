@@ -19,22 +19,22 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.observable.Observable;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueList;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
@@ -43,10 +43,10 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 	private final FilterTableModel<?, C> tableModel;
 	private final FilterTableColumnModel<C> columnModel;
+	private final DefaultResults results = new DefaultResults();
 	private final State caseSensitive = State.builder()
 					.listener(this::performSearch)
 					.build();
-	private final List<RowColumn> searchResults = new ArrayList<>();
 	private final Value<Predicate<String>> predicate = Value.builder()
 					.<Predicate<String>>nullable()
 					.listener(this::performSearch)
@@ -58,9 +58,6 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 	private final State regularExpression = State.builder()
 					.listener(searchString::clear)
 					.build();
-	private final Value<RowColumn> searchResult = Value.nonNull(NULL_COORDINATE);
-
-	private int searchResultIndex = -1;
 
 	DefaultFilterTableSearchModel(FilterTableModel<?, C> tableModel, FilterTableColumnModel<C> columnModel) {
 		this.tableModel = requireNonNull(tableModel);
@@ -89,86 +86,12 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 	}
 
 	@Override
-	public List<RowColumn> searchResults() {
-		return unmodifiableList(new ArrayList<>(searchResults));
-	}
-
-	@Override
-	public Optional<RowColumn> nextResult() {
-		return nextResult(false);
-	}
-
-	@Override
-	public Optional<RowColumn> selectNextResult() {
-		return nextResult(true);
-	}
-
-	@Override
-	public Optional<RowColumn> previousResult() {
-		return previousResult(false);
-	}
-
-	@Override
-	public Optional<RowColumn> selectPreviousResult() {
-		return previousResult(true);
-	}
-
-	@Override
-	public Observable<RowColumn> currentResult() {
-		return searchResult.observable();
-	}
-
-	private Optional<RowColumn> nextResult(boolean addToSelection) {
-		if (searchResults.isEmpty()) {
-			return emptyResult(addToSelection);
-		}
-
-		searchResultIndex = incrementSearchResultIndex();
-		searchResult.set(searchResults.get(searchResultIndex));
-
-		return selectResult(addToSelection);
-	}
-
-	private Optional<RowColumn> previousResult(boolean addToSelection) {
-		if (searchResults.isEmpty()) {
-			return emptyResult(addToSelection);
-		}
-
-		searchResultIndex = decrementSearchResultIndex();
-		searchResult.set(searchResults.get(searchResultIndex));
-
-		return selectResult(addToSelection);
-	}
-
-	private Optional<RowColumn> selectResult(boolean addToSelection) {
-		if (addToSelection) {
-			tableModel.selection().indexes().add(searchResult.getOrThrow().row());
-		}
-		else {
-			tableModel.selection().index().set(searchResult.getOrThrow().row());
-		}
-
-		return searchResult.optional();
-	}
-
-	private Optional<RowColumn> emptyResult(boolean addToSelection) {
-		if (!addToSelection) {
-			tableModel.selection().clearSelection();
-		}
-
-		return Optional.empty();
-	}
-
-	private int incrementSearchResultIndex() {
-		return searchResultIndex == -1 || searchResultIndex == searchResults.size() - 1 ? 0 : searchResultIndex + 1;
-	}
-
-	private int decrementSearchResultIndex() {
-		return searchResultIndex == -1 || searchResultIndex == 0 ? searchResults.size() - 1 : searchResultIndex - 1;
+	public Results results() {
+		return results;
 	}
 
 	private void performSearch() {
-		clearSearchResults();
+		results.clear();
 		if (predicate.isNull() || tableModel.items().visible().count() == 0 || tableModel.getColumnCount() == 0) {
 			return;
 		}
@@ -178,24 +101,15 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 			for (int columnIndex = 0; columnIndex < visibleColumns.size(); columnIndex++) {
 				FilterTableColumn<C> column = visibleColumns.get(columnIndex);
 				if (searchPredicate.test(tableModel.getStringAt(row, column.identifier()))) {
-					searchResults.add(new DefaultRowColumn(row, columnIndex));
+					results.searchResults.add(new DefaultRowColumn(row, columnIndex));
 				}
 			}
 		}
 	}
 
-	private void clearSearchResults() {
-		searchResults.clear();
-		searchResultIndex = -1;
-		searchResult.clear();
-	}
-
 	private void bindEvents() {
 		columnModel.addColumnModelListener(new ClearSearchListener());
-		tableModel.items().visible().addListener(() -> {
-			clearSearchResults();
-			performSearch();
-		});
+		tableModel.items().visible().addListener(this::performSearch);
 	}
 
 	private Predicate<String> predicate(String searchText) {
@@ -214,21 +128,119 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 		return new StringSearchCondition(searchText, caseSensitive);
 	}
 
+	private final class DefaultResults implements Results {
+
+		private final ValueList<RowColumn> searchResults = ValueList.valueList();
+		private final Value<RowColumn> searchResult = Value.nonNull(NULL_COORDINATE);
+
+		private int searchResultIndex = -1;
+
+		@Override
+		public Optional<RowColumn> next() {
+			return next(false);
+		}
+
+		@Override
+		public Optional<RowColumn> selectNext() {
+			return next(true);
+		}
+
+		@Override
+		public Optional<RowColumn> previous() {
+			return previous(false);
+		}
+
+		@Override
+		public Optional<RowColumn> selectPrevious() {
+			return previous(true);
+		}
+
+		@Override
+		public Observable<RowColumn> current() {
+			return searchResult.observable();
+		}
+
+		@Override
+		public List<RowColumn> get() {
+			return searchResults.get();
+		}
+
+		@Override
+		public Observer<List<RowColumn>> observer() {
+			return searchResults.observer();
+		}
+
+		private Optional<RowColumn> next(boolean addToSelection) {
+			if (searchResults.size() == 0) {
+				return empty(addToSelection);
+			}
+
+			searchResultIndex = incrementSearchResultIndex();
+			searchResult.set(searchResults.get().get(searchResultIndex));
+
+			return select(addToSelection);
+		}
+
+		private Optional<RowColumn> previous(boolean addToSelection) {
+			if (searchResults.size() == 0) {
+				return empty(addToSelection);
+			}
+
+			searchResultIndex = decrementSearchResultIndex();
+			searchResult.set(searchResults.get().get(searchResultIndex));
+
+			return select(addToSelection);
+		}
+
+		private Optional<RowColumn> select(boolean addToSelection) {
+			if (addToSelection) {
+				tableModel.selection().indexes().add(searchResult.getOrThrow().row());
+			}
+			else {
+				tableModel.selection().index().set(searchResult.getOrThrow().row());
+			}
+
+			return searchResult.optional();
+		}
+
+		private Optional<RowColumn> empty(boolean addToSelection) {
+			if (!addToSelection) {
+				tableModel.selection().clearSelection();
+			}
+
+			return Optional.empty();
+		}
+
+		private int incrementSearchResultIndex() {
+			return searchResultIndex == -1 || searchResultIndex == searchResults.size() - 1 ? 0 : searchResultIndex + 1;
+		}
+
+		private int decrementSearchResultIndex() {
+			return searchResultIndex == -1 || searchResultIndex == 0 ? searchResults.size() - 1 : searchResultIndex - 1;
+		}
+
+		private void clear() {
+			searchResults.clear();
+			searchResultIndex = -1;
+			searchResult.clear();
+		}
+	}
+
 	private final class ClearSearchListener implements TableColumnModelListener {
 
 		@Override
 		public void columnAdded(TableColumnModelEvent e) {
-			clearSearchResults();
+			results.clear();
 		}
 
 		@Override
 		public void columnRemoved(TableColumnModelEvent e) {
-			clearSearchResults();
+			results.clear();
 		}
 
 		@Override
 		public void columnMoved(TableColumnModelEvent e) {
-			clearSearchResults();
+			results.clear();
 		}
 
 		@Override

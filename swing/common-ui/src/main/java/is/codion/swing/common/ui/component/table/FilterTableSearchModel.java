@@ -52,41 +52,47 @@ public interface FilterTableSearchModel {
 	Value<Predicate<String>> predicate();
 
 	/**
-	 * Finds the next value and selects the row, if none is found the selection is cleared
-	 * @return the row and column of the next item fitting the search condition, an empty Optional if none is found
+	 * @return the {@link Results}
 	 */
-	Optional<RowColumn> nextResult();
+	Results results();
 
 	/**
-	 * Finds the next value and adds the row to the selection
-	 * @return the row and column of the next item fitting the search condition, an empty Optional if none is found
+	 * Manages the search results.
 	 */
-	Optional<RowColumn> selectNextResult();
+	interface Results extends Observable<List<RowColumn>> {
 
-	/**
-	 * Finds the previous value and selects the row, if none is found the selection is cleared
-	 * @return the row and column of the previous item fitting the search condition, an empty Optional if none is found
-	 */
-	Optional<RowColumn> previousResult();
+		/**
+		 * Finds the next value and selects the row, if none is found the selection is cleared
+		 * @return the row and column of the next item fitting the search condition, an empty Optional if none is found
+		 */
+		Optional<RowColumn> next();
 
-	/**
-	 * Finds the previous value and adds the row to the selection
-	 * @return the row and column of the previous item fitting the search condition, an empty Optional if none is found
-	 */
-	Optional<RowColumn> selectPreviousResult();
+		/**
+		 * Finds the next value and adds the row to the selection
+		 * @return the row and column of the next item fitting the search condition, an empty Optional if none is found
+		 */
+		Optional<RowColumn> selectNext();
 
-	/**
-	 * @return an unmodifiable view of all row/column search results
-	 */
-	List<RowColumn> searchResults();
+		/**
+		 * Finds the previous value and selects the row, if none is found the selection is cleared
+		 * @return the row and column of the previous item fitting the search condition, an empty Optional if none is found
+		 */
+		Optional<RowColumn> previous();
 
-	/**
-	 * Returns the {@link Observable} notified of the selected search result row/column if available, otherwise one with row: -1 and column: -1
-	 * @return an observable notified each time the current search result changes
-	 * @see #nextResult()
-	 * @see #previousResult()
-	 */
-	Observable<RowColumn> currentResult();
+		/**
+		 * Finds the previous value and adds the row to the selection
+		 * @return the row and column of the previous item fitting the search condition, an empty Optional if none is found
+		 */
+		Optional<RowColumn> selectPrevious();
+
+		/**
+		 * Returns the {@link Observable} notified of the selected search result row/column if available, otherwise one with row: -1 and column: -1
+		 * @return an observable notified each time the current search result changes
+		 * @see #next()
+		 * @see #previous()
+		 */
+		Observable<RowColumn> current();
+	}
 
 	/**
 	 * Holds a row/column coordinate

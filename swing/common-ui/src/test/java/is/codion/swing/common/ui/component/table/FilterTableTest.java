@@ -240,99 +240,99 @@ public class FilterTableTest {
 
 		FilterTableSearchModel searchModel = table.searchModel();
 		searchModel.searchString().set("b");
-		RowColumn rowColumn = searchModel.nextResult().orElse(null);
+		RowColumn rowColumn = searchModel.results().next().orElse(null);
 		assertEquals(new DefaultRowColumn(1, 1), rowColumn);
 		searchModel.searchString().set("e");
-		rowColumn = searchModel.nextResult().orElse(null);
+		rowColumn = searchModel.results().next().orElse(null);
 		assertEquals(new DefaultRowColumn(4, 1), rowColumn);
 		searchModel.searchString().set("c");
-		rowColumn = searchModel.previousResult().orElse(null);
+		rowColumn = searchModel.results().previous().orElse(null);
 		assertEquals(new DefaultRowColumn(2, 1), rowColumn);
 		searchModel.searchString().set("x");
-		rowColumn = searchModel.nextResult().orElse(null);
+		rowColumn = searchModel.results().next().orElse(null);
 		assertNull(rowColumn);
 
 		table.model().sorter().sort(1).set(SortOrder.DESCENDING);
 
 		searchModel.searchString().set("b");
-		rowColumn = searchModel.nextResult().orElse(null);
+		rowColumn = searchModel.results().next().orElse(null);
 		assertEquals(new DefaultRowColumn(3, 1), rowColumn);
 		searchModel.searchString().set("e");
-		rowColumn = searchModel.previousResult().orElse(null);
+		rowColumn = searchModel.results().previous().orElse(null);
 		assertEquals(new DefaultRowColumn(0, 1), rowColumn);
 
 		searchModel.regularExpression().set(true);
 		searchModel.searchString().set("(?i)B");
-		rowColumn = searchModel.nextResult().orElse(null);
+		rowColumn = searchModel.results().next().orElse(null);
 		assertEquals(new DefaultRowColumn(3, 1), rowColumn);
 
 		Predicate<String> predicate = item -> item.equals("b") || item.equals("e");
 
 		searchModel.predicate().set(predicate);
-		rowColumn = searchModel.selectPreviousResult().orElse(null);
+		rowColumn = searchModel.results().selectPrevious().orElse(null);
 		assertEquals(new DefaultRowColumn(3, 1), rowColumn);
-		rowColumn = searchModel.selectPreviousResult().orElse(null);
+		rowColumn = searchModel.results().selectPrevious().orElse(null);
 		assertEquals(new DefaultRowColumn(0, 1), rowColumn);
 
 		assertEquals(asList(
 						new DefaultRowColumn(0, 1),
 						new DefaultRowColumn(3, 1)
-		), searchModel.searchResults());
+		), searchModel.results().get());
 
 		table.model().sorter().sort(1).set(SortOrder.ASCENDING);
 		table.columnModel().moveColumn(1, 0);
 
 		testModel.items().refresh();
 		searchModel.searchString().set("b");
-		rowColumn = searchModel.nextResult().orElse(null);
+		rowColumn = searchModel.results().next().orElse(null);
 		assertEquals(new DefaultRowColumn(1, 0), rowColumn);
 		searchModel.searchString().set("e");
-		rowColumn = searchModel.nextResult().orElse(null);
+		rowColumn = searchModel.results().next().orElse(null);
 		assertEquals(new DefaultRowColumn(4, 0), rowColumn);
 		searchModel.searchString().set("c");
-		rowColumn = searchModel.previousResult().orElse(null);
+		rowColumn = searchModel.results().previous().orElse(null);
 		assertEquals(new DefaultRowColumn(2, 0), rowColumn);
 		searchModel.searchString().set("x");
-		rowColumn = searchModel.nextResult().orElse(null);
+		rowColumn = searchModel.results().next().orElse(null);
 		assertNull(rowColumn);
 
 		table.model().sorter().sort(0).set(SortOrder.DESCENDING);
 
 		searchModel.searchString().set("b");
-		rowColumn = searchModel.nextResult().orElse(null);
+		rowColumn = searchModel.results().next().orElse(null);
 		assertEquals(new DefaultRowColumn(3, 0), rowColumn);
 		searchModel.searchString().set("e");
-		rowColumn = searchModel.previousResult().orElse(null);
+		rowColumn = searchModel.results().previous().orElse(null);
 		assertEquals(new DefaultRowColumn(0, 0), rowColumn);
 
 		searchModel.regularExpression().set(true);
 		searchModel.searchString().set("(?i)B");
-		rowColumn = searchModel.nextResult().orElse(null);
+		rowColumn = searchModel.results().next().orElse(null);
 		assertEquals(new DefaultRowColumn(3, 0), rowColumn);
 
 		predicate = item -> item.equals("b") || item.equals("e");
 
 		searchModel.predicate().set(predicate);
-		rowColumn = searchModel.selectPreviousResult().orElse(null);
+		rowColumn = searchModel.results().selectPrevious().orElse(null);
 		assertEquals(new DefaultRowColumn(3, 0), rowColumn);
-		rowColumn = searchModel.selectPreviousResult().orElse(null);
+		rowColumn = searchModel.results().selectPrevious().orElse(null);
 		assertEquals(new DefaultRowColumn(0, 0), rowColumn);
 
 		assertEquals(2, testModel.selection().count());
 
-		searchModel.selectPreviousResult();
-		searchModel.selectNextResult();
-		searchModel.selectNextResult();
-		searchModel.selectNextResult();
+		searchModel.results().selectPrevious();
+		searchModel.results().selectNext();
+		searchModel.results().selectNext();
+		searchModel.results().selectNext();
 
-		searchModel.selectPreviousResult().orElse(null);
-		searchModel.selectNextResult().orElse(null);
-		searchModel.selectNextResult().orElse(null);
+		searchModel.results().selectPrevious().orElse(null);
+		searchModel.results().selectNext().orElse(null);
+		searchModel.results().selectNext().orElse(null);
 
 		assertEquals(asList(
 						new DefaultRowColumn(0, 0),
 						new DefaultRowColumn(3, 0)
-		), searchModel.searchResults());
+		), searchModel.results().get());
 	}
 
 	@Test

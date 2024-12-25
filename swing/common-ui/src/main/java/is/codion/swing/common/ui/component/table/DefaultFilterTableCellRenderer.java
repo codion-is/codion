@@ -302,7 +302,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private static boolean isSearchResult(FilterTableSearchModel searchModel, int rowIndex, int columnIndex) {
-			return searchModel.currentResult().getOrThrow().equals(rowIndex, columnIndex);
+			return searchModel.results().current().getOrThrow().equals(rowIndex, columnIndex);
 		}
 
 		private static boolean alternateRow(int rowIndex) {

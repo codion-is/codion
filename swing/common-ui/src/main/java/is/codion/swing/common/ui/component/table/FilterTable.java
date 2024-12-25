@@ -724,15 +724,15 @@ public final class FilterTable<R, C> extends JTable {
 
 	private Optional<RowColumn> searchResult(boolean addToSelection, boolean next) {
 		if (next) {
-			return addToSelection ? searchModel.selectNextResult() : searchModel.nextResult();
+			return addToSelection ? searchModel.results().selectNext() : searchModel.results().next();
 		}
 
-		return addToSelection ? searchModel.selectPreviousResult() : searchModel.previousResult();
+		return addToSelection ? searchModel.results().selectPrevious() : searchModel.results().previous();
 	}
 
 	private void onSearchTextChanged(String searchText) {
 		if (!searchText.isEmpty()) {
-			searchModel.nextResult();
+			searchModel.results().next();
 		}
 	}
 
@@ -863,7 +863,7 @@ public final class FilterTable<R, C> extends JTable {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
 		tableModel.filters().changed().addListener(getTableHeader()::repaint);
-		searchModel.currentResult().addListener(this::repaint);
+		searchModel.results().current().addListener(this::repaint);
 		tableModel.sorter().observer().addListener(getTableHeader()::repaint);
 		tableModel.sorter().observer().addListener(model().items().visible()::sort);
 		addMouseListener(new FilterTableMouseListener());
