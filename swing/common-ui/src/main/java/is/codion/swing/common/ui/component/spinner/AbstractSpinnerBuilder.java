@@ -106,10 +106,10 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 			}
 		}
 		if (mouseWheelScrolling) {
-			spinner.addMouseWheelListener(new SpinnerMouseWheelListener(spinnerModel, false));
+			spinner.addMouseWheelListener(new SpinnerMouseWheelListener(spinner, false));
 		}
 		if (mouseWheelScrollingReversed) {
-			spinner.addMouseWheelListener(new SpinnerMouseWheelListener(spinnerModel, true));
+			spinner.addMouseWheelListener(new SpinnerMouseWheelListener(spinner, true));
 		}
 
 		return spinner;

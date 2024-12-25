@@ -149,7 +149,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	 * @param comboBox the combo box
 	 */
 	static void enableMouseWheelSelection(JComboBox<?> comboBox) {
-		requireNonNull(comboBox).addMouseWheelListener(new ComboBoxMouseWheelListener(comboBox.getModel(), false));
+		requireNonNull(comboBox).addMouseWheelListener(new ComboBoxMouseWheelListener(comboBox, false));
 	}
 
 	/**
@@ -157,6 +157,6 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	 * @param comboBox the combo box
 	 */
 	static void enableMouseWheelSelectionWithWrapAround(JComboBox<?> comboBox) {
-		comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBox.getModel(), true));
+		comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBox, true));
 	}
 }

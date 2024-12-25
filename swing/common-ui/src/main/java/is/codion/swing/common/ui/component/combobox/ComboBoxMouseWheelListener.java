@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Objects;
@@ -30,22 +31,26 @@ import static java.util.Objects.requireNonNull;
  */
 final class ComboBoxMouseWheelListener implements MouseWheelListener {
 
+	private final JComboBox<?> comboBox;
 	private final ComboBoxModel<?> comboBoxModel;
 	private final boolean wrapAround;
 
-	ComboBoxMouseWheelListener(ComboBoxModel<?> comboBoxModel, boolean wrapAround) {
-		this.comboBoxModel = requireNonNull(comboBoxModel);
+	ComboBoxMouseWheelListener(JComboBox<?> comboBox, boolean wrapAround) {
+		this.comboBox = requireNonNull(comboBox);
+		this.comboBoxModel = comboBox.getModel();
 		this.wrapAround = wrapAround;
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent event) {
-		if (comboBoxModel.getSize() == 0) {
-			return;
-		}
-		int wheelRotation = event.getWheelRotation();
-		if (wheelRotation != 0) {
-			comboBoxModel.setSelectedItem(itemToSelect(wheelRotation > 0));
+		if (comboBox.isEnabled()) {
+			if (comboBoxModel.getSize() == 0) {
+				return;
+			}
+			int wheelRotation = event.getWheelRotation();
+			if (wheelRotation != 0) {
+				comboBoxModel.setSelectedItem(itemToSelect(wheelRotation > 0));
+			}
 		}
 	}
 
