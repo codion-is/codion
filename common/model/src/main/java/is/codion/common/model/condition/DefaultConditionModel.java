@@ -529,7 +529,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			}
 
 			@Override
-			protected void setValue(T value) {
+			protected void setValue(@Nullable T value) {
 				this.value = value;
 			}
 

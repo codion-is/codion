@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -52,6 +53,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
@@ -235,7 +237,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 		shuttingDown = true;
 		connectionMaintenanceScheduler.stop();
-		unexportSilently(registry, this, admin);
+		unexportSilently(asList(registry, this, admin));
 		new ArrayList<>(connections.keySet()).forEach(this::disconnect);
 		sharedAuthenticators.forEach(AbstractServer::closeAuthenticator);
 		authenticators.values().forEach(AbstractServer::closeAuthenticator);
@@ -504,7 +506,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 	}
 
-	private static void unexportSilently(@Nullable Remote... remotes) {
+	private static void unexportSilently(List<Remote> remotes) {
 		for (Remote remote : remotes) {
 			if (remote != null) {
 				try {

@@ -253,7 +253,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	}
 
 	private Connection verifyOpenConnection() {
-		if (!connected()) {
+		if (connection == null) {
 			throw new IllegalStateException("Connection is closed");
 		}
 

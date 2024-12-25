@@ -179,8 +179,8 @@ final class DefaultTaskScheduler implements TaskScheduler {
 	private static final class IntervalValidator implements Validator<Integer> {
 
 		@Override
-		public void validate(Integer interval) {
-			if (interval <= 0) {
+		public void validate(@Nullable Integer interval) {
+			if (interval == null || interval <= 0) {
 				throw new IllegalArgumentException("Interval must be a positive integer");
 			}
 		}

@@ -121,7 +121,7 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implemen
 	}
 
 	@Override
-	public final boolean contains(T value) {
+	public final boolean contains(@Nullable T value) {
 		synchronized (lock) {
 			return getOrThrow().contains(value);
 		}
@@ -236,7 +236,7 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implemen
 		}
 
 		@Override
-		public final boolean contains(T value) {
+		public final boolean contains(@Nullable T value) {
 			return super.value().contains(value);
 		}
 
