@@ -46,15 +46,9 @@ public interface FilterTableSortModel<R, C> {
 	Sort sort(C identifier);
 
 	/**
-	 * @param identifier the column identifier
-	 * @return the {@link ColumnSortOrder} associated with the given column
+	 * @return the {@link ColumnSort}
 	 */
-	ColumnSortOrder<C> columnSortOrder(C identifier);
-
-	/**
-	 * @return the current column sort order, in order of priority or an empty list in case this model is unsorted
-	 */
-	List<ColumnSortOrder<C>> columnSortOrder();
+	ColumnSort<C> columnSort();
 
 	/**
 	 * Clears the sorting states from this sort model. Note that only one sorting change event
@@ -97,6 +91,24 @@ public interface FilterTableSortModel<R, C> {
 	}
 
 	/**
+	 * Provides the current column sort order
+	 * @param <C> the column identifier type
+	 */
+	interface ColumnSort<C> {
+
+		/**
+		 * @param identifier the column identifier
+		 * @return the {@link ColumnSortOrder} associated with the given column
+		 */
+		ColumnSortOrder<C> get(C identifier);
+
+		/**
+		 * @return the current column sort order, in order of priority or an empty list in case this model is unsorted
+		 */
+		List<ColumnSortOrder<C>> get();
+	}
+
+	/**
 	 * Manages the {@link SortOrder} for a given column
 	 */
 	interface Sort {
@@ -106,8 +118,7 @@ public interface FilterTableSortModel<R, C> {
 		 * @param sortOrder the sorting order
 		 * @throws IllegalStateException in case sorting is locked for this column
 		 * @see #add(SortOrder)
-		 * @see FilterTableSortModel#columnSortOrder()
-		 * @see FilterTableSortModel#columnSortOrder(Object)
+		 * @see #columnSort()
 		 * @see FilterTableSortModel#locked(Object)
 		 */
 		void set(SortOrder sortOrder);
@@ -119,8 +130,7 @@ public interface FilterTableSortModel<R, C> {
 		 * @param sortOrder the sorting order
 		 * @throws IllegalStateException in case sorting is locked for this column
 		 * @see #set(SortOrder)
-		 * @see FilterTableSortModel#columnSortOrder()
-		 * @see FilterTableSortModel#columnSortOrder(Object)
+		 * @see #columnSort()
 		 * @see FilterTableSortModel#locked(Object)
 		 */
 		void add(SortOrder sortOrder);

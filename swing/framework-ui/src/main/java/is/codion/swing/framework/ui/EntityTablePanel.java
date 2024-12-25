@@ -1783,7 +1783,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private OrderBy orderByFromSortModel() {
-		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = table.model().sorter().columnSortOrder();
+		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = table.model().sorter().columnSort().get();
 		if (columnSortOrder.isEmpty()) {
 			return null;
 		}

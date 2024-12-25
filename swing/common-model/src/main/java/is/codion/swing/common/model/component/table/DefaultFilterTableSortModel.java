@@ -52,23 +52,13 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public ColumnSortOrder<C> columnSortOrder(C identifier) {
-		validateIdentifier(identifier);
-
-		return columnSortOrders.stream()
-						.filter(columnSortOrder -> columnSortOrder.identifier().equals(identifier))
-						.findFirst()
-						.orElse(new DefaultColumnSortOrder<>(identifier, SortOrder.UNSORTED, -1));
-	}
-
-	@Override
 	public Sort sort(C identifier) {
 		return new DefaultSort(identifier);
 	}
 
 	@Override
-	public List<ColumnSortOrder<C>> columnSortOrder() {
-		return unmodifiableList(columnSortOrders);
+	public ColumnSort<C> columnSort() {
+		return new DefaultColumnSort();
 	}
 
 	@Override
@@ -176,6 +166,24 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		@Override
 		public void add(SortOrder sortOrder) {
 			setSortOrder(identifier, sortOrder, true);
+		}
+	}
+
+	private final class DefaultColumnSort implements ColumnSort<C> {
+
+		@Override
+		public ColumnSortOrder<C> get(C identifier) {
+			validateIdentifier(identifier);
+
+			return columnSortOrders.stream()
+							.filter(columnSortOrder -> columnSortOrder.identifier().equals(identifier))
+							.findFirst()
+							.orElse(new DefaultColumnSortOrder<>(identifier, SortOrder.UNSORTED, -1));
+		}
+
+		@Override
+		public List<ColumnSortOrder<C>> get() {
+			return unmodifiableList(columnSortOrders);
 		}
 	}
 

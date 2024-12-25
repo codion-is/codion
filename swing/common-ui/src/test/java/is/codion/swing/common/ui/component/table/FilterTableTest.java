@@ -346,13 +346,13 @@ public class FilterTableTest {
 		tableModel.refresh();
 		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sorter();
 		sortModel.sort(0).set(SortOrder.DESCENDING);
-		assertEquals(SortOrder.DESCENDING, sortModel.columnSortOrder(0).sortOrder());
+		assertEquals(SortOrder.DESCENDING, sortModel.columnSort().get(0).sortOrder());
 		assertEquals(E, tableModel.items().visible().itemAt(0));
 		assertEquals(1, actionsPerformed.get());
 		sortModel.sort(0).set(SortOrder.ASCENDING);
-		assertEquals(SortOrder.ASCENDING, sortModel.columnSortOrder(0).sortOrder());
+		assertEquals(SortOrder.ASCENDING, sortModel.columnSort().get(0).sortOrder());
 		assertEquals(A, tableModel.items().visible().itemAt(0));
-		assertEquals(0, sortModel.columnSortOrder().get(0).identifier());
+		assertEquals(0, sortModel.columnSort().get().get(0).identifier());
 		assertEquals(2, actionsPerformed.get());
 
 		sortModel.sort(0).set(SortOrder.DESCENDING);

@@ -328,7 +328,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 						filtered.items.add(item);
 					}
 				}
-				if (!sorter.columnSortOrder().isEmpty()) {
+				if (!sorter.columnSort().get().isEmpty()) {
 					visible.items.sort(sorter.comparator());
 				}
 				fireTableDataChanged();
@@ -626,7 +626,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			@Override
 			public void sort() {
-				if (!sorter.columnSortOrder().isEmpty()) {
+				if (!sorter.columnSort().get().isEmpty()) {
 					List<R> selectedItems = selection.items().get();
 					synchronized (lock) {
 						items.sort(sorter.comparator());

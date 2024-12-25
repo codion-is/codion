@@ -39,6 +39,7 @@ Codion Change Log
 - DefaultFilterComboBoxModel synchronized.
 - FilterTableSortModel.sortingEnabled() replaced with locked().
 - FilterTableSortModel.Sort added along with sort(), replacing setSortOrder() and addSortOrder().
+- FilterTableSortModel.ColumnSort added along with columnSort(), replacing columnSortOrder(identifier) and columnSortOrder().
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.
