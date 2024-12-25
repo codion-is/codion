@@ -70,33 +70,8 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public State locked(C identifier) {
-		validateIdentifier(identifier);
-
-		return locked.computeIfAbsent(identifier, k -> State.state());
-	}
-
-	@Override
 	public Observer<Boolean> observer() {
 		return sortingChanged.observer();
-	}
-
-	private void setSortOrder(C identifier, SortOrder sortOrder, boolean addColumnToSort) {
-		validateIdentifier(identifier);
-		requireNonNull(sortOrder);
-		if (locked.containsKey(identifier) && locked.get(identifier).get()) {
-			throw new IllegalStateException("Sorting is locked for column: " + identifier);
-		}
-		if (!addColumnToSort) {
-			columnSortOrders.clear();
-		}
-		else {
-			removeSortOrder(identifier);
-		}
-		if (sortOrder != SortOrder.UNSORTED) {
-			columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder, columnSortOrders.size()));
-		}
-		sortingChanged.accept(!columnSortOrders.isEmpty());
 	}
 
 	private boolean removeSortOrder(C identifier) {
@@ -166,6 +141,29 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		@Override
 		public void add(SortOrder sortOrder) {
 			setSortOrder(identifier, sortOrder, true);
+		}
+
+		@Override
+		public State locked() {
+			return locked.computeIfAbsent(identifier, k -> State.state());
+		}
+
+		private void setSortOrder(C identifier, SortOrder sortOrder, boolean addColumnToSort) {
+			validateIdentifier(identifier);
+			requireNonNull(sortOrder);
+			if (locked.containsKey(identifier) && locked.get(identifier).get()) {
+				throw new IllegalStateException("Sorting is locked for column: " + identifier);
+			}
+			if (!addColumnToSort) {
+				columnSortOrders.clear();
+			}
+			else {
+				removeSortOrder(identifier);
+			}
+			if (sortOrder != SortOrder.UNSORTED) {
+				columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder, columnSortOrders.size()));
+			}
+			sortingChanged.accept(!columnSortOrders.isEmpty());
 		}
 	}
 

@@ -739,7 +739,7 @@ public final class FilterTable<R, C> extends JTable {
 	private void toggleColumnSorting(int selectedColumn, boolean add) {
 		if (sortingEnabled.get() && selectedColumn != -1) {
 			C identifier = columnModel().getColumn(selectedColumn).identifier();
-			if (!tableModel.sorter().locked(identifier).get()) {
+			if (!tableModel.sorter().sort(identifier).locked().get()) {
 				ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSort().get(identifier);
 				if (add) {
 					tableModel.sorter().sort(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
@@ -982,7 +982,7 @@ public final class FilterTable<R, C> extends JTable {
 			int index = columnModel.getColumnIndexAtX(e.getX());
 			if (index >= 0) {
 				C identifier = columnModel.getColumn(index).identifier();
-				if (!tableModel.sorter().locked(identifier).get()) {
+				if (!tableModel.sorter().sort(identifier).locked().get()) {
 					if (!getSelectionModel().isSelectionEmpty()) {
 						setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 					}

@@ -51,18 +51,9 @@ public interface FilterTableSortModel<R, C> {
 	ColumnSort<C> columnSort();
 
 	/**
-	 * Clears the sorting states from this sort model. Note that only one sorting change event
-	 * will happen, with the first sort column.
+	 * Clears the sorting states from this sort model
 	 */
 	void clear();
-
-	/**
-	 * <p>Locking the sorting for a column will cause a {@link IllegalStateException} to be thrown
-	 * when trying to modify its sorting state.
-	 * @param identifier the column identifier
-	 * @return the {@link State} controlling whether sorting is locked for the given column
-	 */
-	State locked(C identifier);
 
 	/**
 	 * @return an observer notified each time the sorting changes, with the current sorted state as event data
@@ -119,7 +110,7 @@ public interface FilterTableSortModel<R, C> {
 		 * @throws IllegalStateException in case sorting is locked for this column
 		 * @see #add(SortOrder)
 		 * @see #columnSort()
-		 * @see FilterTableSortModel#locked(Object)
+		 * @see #locked()
 		 */
 		void set(SortOrder sortOrder);
 
@@ -131,9 +122,16 @@ public interface FilterTableSortModel<R, C> {
 		 * @throws IllegalStateException in case sorting is locked for this column
 		 * @see #set(SortOrder)
 		 * @see #columnSort()
-		 * @see FilterTableSortModel#locked(Object)
+		 * @see #locked()
 		 */
 		void add(SortOrder sortOrder);
+
+		/**
+		 * <p>Locking the sorting for a column will cause a {@link IllegalStateException} to be thrown
+		 * when trying to modify its sorting state.
+		 * @return the {@link State} controlling whether sorting is locked for this column
+		 */
+		State locked();
 	}
 
 	/**

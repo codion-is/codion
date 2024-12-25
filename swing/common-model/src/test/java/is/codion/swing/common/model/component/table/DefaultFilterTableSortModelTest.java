@@ -112,9 +112,9 @@ public class DefaultFilterTableSortModelTest {
 
 		model.clear();
 		model.sort(2).set(SortOrder.ASCENDING);
-		model.locked(2).set(true);
+		model.sort(2).locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.sort(2).set(SortOrder.DESCENDING));
-		model.locked(2).set(false);
+		model.sort(2).locked().set(false);
 		model.sort(2).set(SortOrder.DESCENDING);
 		assertEquals(SortOrder.DESCENDING, model.columnSort().get(2).sortOrder());
 
