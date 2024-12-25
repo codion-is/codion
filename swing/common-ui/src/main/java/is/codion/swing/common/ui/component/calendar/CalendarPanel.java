@@ -21,10 +21,12 @@ package is.codion.swing.common.ui.component.calendar;
 import is.codion.common.item.Item;
 import is.codion.common.observable.Observable;
 import is.codion.common.resource.MessageBundle;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
 
@@ -38,7 +40,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
@@ -210,6 +214,7 @@ public final class CalendarPanel extends JPanel {
 	private final JLabel formattedDateLabel;
 	private final boolean includeTime;
 	private final boolean includeTodayButton;
+	private final ObservableState enabledState;
 
 	CalendarPanel(DefaultBuilder builder) {
 		this.includeTime = builder.includeTime;
@@ -218,6 +223,7 @@ public final class CalendarPanel extends JPanel {
 		this.selectedLocale = builder.locale;
 		this.firstDayOfWeek = builder.firstDayOfWeek;
 		this.dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(selectedLocale);
+		this.enabledState = builder.enabled;
 		LocalDateTime dateTime = builder.value == null ? LocalDateTime.now() : builder.value;
 		yearValue = Value.builder()
 						.nonNull(dateTime.getYear())
@@ -256,13 +262,17 @@ public final class CalendarPanel extends JPanel {
 		dayLabels = createDayLabels();
 		paddingLabels = IntStream.range(0, MAX_DAY_FILLERS).mapToObj(counter -> new JLabel()).collect(toList());
 		dayGridPanel = new JPanel(new GridLayout(DAY_GRID_ROWS, DAYS_IN_WEEK));
-		formattedDateLabel = new JLabel("", SwingConstants.CENTER);
-		formattedDateLabel.setBorder(emptyBorder());
+		formattedDateLabel = label()
+						.horizontalAlignment(SwingConstants.CENTER)
+						.border(emptyBorder())
+						.enabled(enabledState)
+						.build();
 		initializeUI();
 		createControls();
 		addKeyEvents();
 		updateFormattedDate();
 		updateDayLabelBorders();
+		enabledState.addConsumer(this::enabledChanged);
 	}
 
 	/**
@@ -305,7 +315,9 @@ public final class CalendarPanel extends JPanel {
 	 * Requests input focus for this calendar panel
 	 */
 	public void requestInputFocus() {
-		dayLabels.get(dayValue.get()).requestFocusInWindow();
+		if (enabledState.get()) {
+			dayLabels.get(dayValue.get()).requestFocusInWindow();
+		}
 	}
 
 	/**
@@ -392,6 +404,12 @@ public final class CalendarPanel extends JPanel {
 		Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 
 		/**
+		 * @param enabled the state controlling the component enabled status
+		 * @return this builder instance
+		 */
+		Builder enabled(ObservableState enabled);
+
+		/**
 		 * @return a new {@link CalendarPanel} based on this builder
 		 */
 		CalendarPanel build();
@@ -406,6 +424,7 @@ public final class CalendarPanel extends JPanel {
 		private LocalDateTime value;
 		private boolean includeTime = false;
 		private boolean includeTodayButton = false;
+		private ObservableState enabled = State.state(true);
 
 		@Override
 		public Builder locale(Locale locale) {
@@ -446,6 +465,12 @@ public final class CalendarPanel extends JPanel {
 		@Override
 		public Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
+			return this;
+		}
+
+		@Override
+		public Builder enabled(ObservableState enabled) {
+			this.enabled = requireNonNull(enabled);
 			return this;
 		}
 
@@ -593,6 +618,7 @@ public final class CalendarPanel extends JPanel {
 		return label(dayOfWeek.getDisplayName(TextStyle.SHORT, selectedLocale))
 						.horizontalAlignment(SwingConstants.CENTER)
 						.border(emptyBorder())
+						.enabled(enabledState)
 						.build();
 	}
 
@@ -667,18 +693,54 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private void createControls() {
-		controlMap.control(PREVIOUS_YEAR).set(command(this::previousYear));
-		controlMap.control(NEXT_YEAR).set(command(this::nextYear));
-		controlMap.control(PREVIOUS_MONTH).set(command(this::previousMonth));
-		controlMap.control(NEXT_MONTH).set(command(this::nextMonth));
-		controlMap.control(PREVIOUS_WEEK).set(command(this::previousWeek));
-		controlMap.control(NEXT_WEEK).set(command(this::nextWeek));
-		controlMap.control(PREVIOUS_DAY).set(command(this::previousDay));
-		controlMap.control(NEXT_DAY).set(command(this::nextDay));
-		controlMap.control(PREVIOUS_HOUR).set(command(this::previousHour));
-		controlMap.control(NEXT_HOUR).set(command(this::nextHour));
-		controlMap.control(PREVIOUS_MINUTE).set(command(this::previousMinute));
-		controlMap.control(NEXT_MINUTE).set(command(this::nextMinute));
+		controlMap.control(PREVIOUS_YEAR).set(Control.builder()
+						.command(this::previousYear)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(NEXT_YEAR).set(Control.builder()
+						.command(this::nextYear)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(PREVIOUS_MONTH).set(Control.builder()
+						.command(this::previousMonth)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(NEXT_MONTH).set(Control.builder()
+						.command(this::nextMonth)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(PREVIOUS_WEEK).set(Control.builder()
+						.command(this::previousWeek)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(NEXT_WEEK).set(Control.builder()
+						.command(this::nextWeek)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(PREVIOUS_DAY).set(Control.builder()
+						.command(this::previousDay)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(NEXT_DAY).set(Control.builder()
+						.command(this::nextDay)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(PREVIOUS_HOUR).set(Control.builder()
+						.command(this::previousHour)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(NEXT_HOUR).set(Control.builder()
+						.command(this::nextHour)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(PREVIOUS_MINUTE).set(Control.builder()
+						.command(this::previousMinute)
+						.enabled(enabledState)
+						.build());
+		controlMap.control(NEXT_MINUTE).set(Control.builder()
+						.command(this::nextMinute)
+						.enabled(enabledState)
+						.build());
 	}
 
 	private void addKeyEvents() {
@@ -728,6 +790,7 @@ public final class CalendarPanel extends JPanel {
 						.columns(YEAR_COLUMNS)
 						.editable(false)
 						.groupingUsed(false)
+						.enabled(enabledState)
 						.onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
 						.build();
 	}
@@ -737,6 +800,7 @@ public final class CalendarPanel extends JPanel {
 		JSpinner monthSpinner = itemSpinner(new SpinnerListModel(monthItems), monthValue)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.editable(false)
+						.enabled(enabledState)
 						.onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
 						.build();
 		JFormattedTextField monthTextField = ((JSpinner.DefaultEditor) monthSpinner.getEditor()).getTextField();
@@ -761,6 +825,7 @@ public final class CalendarPanel extends JPanel {
 						.columns(TIME_COLUMNS)
 						.editable(false)
 						.decimalFormatPattern("00")
+						.enabled(enabledState)
 						.onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
 						.build();
 	}
@@ -771,8 +836,13 @@ public final class CalendarPanel extends JPanel {
 						.columns(TIME_COLUMNS)
 						.editable(false)
 						.decimalFormatPattern("00")
+						.enabled(enabledState)
 						.onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
 						.build();
+	}
+
+	private void enabledChanged(boolean enabled) {
+		dayLabels.values().forEach(label -> label.setEnabled(enabled));
 	}
 
 	private static JSpinner removeCtrlLeftRightArrowKeyEvents(JSpinner spinner) {
@@ -795,10 +865,13 @@ public final class CalendarPanel extends JPanel {
 			this.day = day.intValue();
 			setHorizontalAlignment(CENTER);
 			setFocusable(true);
+			setEnabled(enabledState.get());
 			addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					dayValue.set(day);
+					if (enabledState.get()) {
+						dayValue.set(day);
+					}
 				}
 			});
 		}
@@ -811,8 +884,15 @@ public final class CalendarPanel extends JPanel {
 			}
 		}
 
+		@Override
+		public void setEnabled(boolean enabled) {
+			super.setEnabled(enabled);
+			updateBorder();
+		}
+
 		private void updateBorder() {
-			setBorder(dayValue.isEqualTo(day) ? createEtchedBorder(getForeground(), getForeground()) : createEtchedBorder());
+			Color foreground = isEnabled() ? getForeground() : UIManager.getColor("Label.disabledForeground");
+			setBorder(dayValue.isEqualTo(day) ? createEtchedBorder(foreground, foreground) : createEtchedBorder());
 		}
 	}
 

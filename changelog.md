@@ -53,6 +53,7 @@ Codion Change Log
 - DefaultProgressWorkerDialogBuilder, CancelException handling removed, some refactoring.
 - FilterTable bug fixed, sorting actions no longer enabled for columns with sorting locked in the sort model.
 - ComboBoxMouseWheelListener and SpinnerMouseWheelListener bug fixed, no longer enabled when component is disabled.
+- CalendarPanel.Builder.enabled() added.
 ### is.codion.framework.domain
 - EntityDefinition.description() now returns Optional.
 - DefaultEntityDefinition, source attributes validated for denormalized attributes.
