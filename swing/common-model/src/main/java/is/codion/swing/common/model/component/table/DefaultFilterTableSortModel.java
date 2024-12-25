@@ -62,13 +62,8 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public void setSortOrder(C identifier, SortOrder sortOrder) {
-		setSortOrder(identifier, sortOrder, false);
-	}
-
-	@Override
-	public void addSortOrder(C identifier, SortOrder sortOrder) {
-		setSortOrder(identifier, sortOrder, true);
+	public Sort sort(C identifier) {
+		return new DefaultSort(identifier);
 	}
 
 	@Override
@@ -161,6 +156,26 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 			}
 
 			return 0;
+		}
+	}
+
+	private final class DefaultSort implements Sort {
+
+		private final C identifier;
+
+		private DefaultSort(C identifier) {
+			validateIdentifier(identifier);
+			this.identifier = identifier;
+		}
+
+		@Override
+		public void set(SortOrder sortOrder) {
+			setSortOrder(identifier, sortOrder, false);
+		}
+
+		@Override
+		public void add(SortOrder sortOrder) {
+			setSortOrder(identifier, sortOrder, true);
 		}
 	}
 

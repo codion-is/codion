@@ -40,30 +40,10 @@ public interface FilterTableSortModel<R, C> {
 	Comparator<R> comparator();
 
 	/**
-	 * Clears the sorting state and adds the given column sorting order.
-	 * @param identifier the identifier of the column to sort by
-	 * @param sortOrder the sorting order
-	 * @throws IllegalStateException in case sorting is locked for the given column
-	 * @see #addSortOrder(Object, SortOrder)
-	 * @see #columnSortOrder()
-	 * @see #columnSortOrder(Object)
-	 * @see #locked(Object)
+	 * @param identifier the column identifier
+	 * @return the {@link Sort} for the given column
 	 */
-	void setSortOrder(C identifier, SortOrder sortOrder);
-
-	/**
-	 * Adds the given column sorting order to the currently sorted columns.
-	 * If no column sorting is enabled, this call is the equivilent to using
-	 * {@link #setSortOrder(Object, SortOrder)}.
-	 * @param identifier the identifier of the column to sort by
-	 * @param sortOrder the sorting order
-	 * @throws IllegalStateException in case sorting is locked for the given column
-	 * @see #setSortOrder(Object, SortOrder)
-	 * @see #columnSortOrder()
-	 * @see #columnSortOrder(Object)
-	 * @see #locked(Object)
-	 */
-	void addSortOrder(C identifier, SortOrder sortOrder);
+	Sort sort(C identifier);
 
 	/**
 	 * @param identifier the column identifier
@@ -114,6 +94,36 @@ public interface FilterTableSortModel<R, C> {
 		 * @return the sort priority, -1 if not sorted
 		 */
 		int priority();
+	}
+
+	/**
+	 * Manages the {@link SortOrder} for a given column
+	 */
+	interface Sort {
+
+		/**
+		 * Clears the sorting state and adds the given sorting order.
+		 * @param sortOrder the sorting order
+		 * @throws IllegalStateException in case sorting is locked for this column
+		 * @see #add(SortOrder)
+		 * @see FilterTableSortModel#columnSortOrder()
+		 * @see FilterTableSortModel#columnSortOrder(Object)
+		 * @see FilterTableSortModel#locked(Object)
+		 */
+		void set(SortOrder sortOrder);
+
+		/**
+		 * Adds the given column sorting order to the currently sorted columns.
+		 * If no column sorting is enabled, this call is the equivilent to using
+		 * {@link #set(SortOrder)}.
+		 * @param sortOrder the sorting order
+		 * @throws IllegalStateException in case sorting is locked for this column
+		 * @see #set(SortOrder)
+		 * @see FilterTableSortModel#columnSortOrder()
+		 * @see FilterTableSortModel#columnSortOrder(Object)
+		 * @see FilterTableSortModel#locked(Object)
+		 */
+		void add(SortOrder sortOrder);
 	}
 
 	/**

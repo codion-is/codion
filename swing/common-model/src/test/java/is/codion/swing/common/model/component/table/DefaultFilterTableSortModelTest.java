@@ -73,52 +73,52 @@ public class DefaultFilterTableSortModelTest {
 		assertEquals(1, items.indexOf(secondRow));
 		assertEquals(2, items.indexOf(thirdRow));
 
-		model.setSortOrder(0, SortOrder.ASCENDING);
+		model.sort(0).set(SortOrder.ASCENDING);
 		items.sort(rowComparator);
 		assertEquals(0, items.indexOf(firstRow));
 		assertEquals(1, items.indexOf(secondRow));
 		assertEquals(2, items.indexOf(thirdRow));
 
-		model.setSortOrder(2, SortOrder.ASCENDING);
+		model.sort(2).set(SortOrder.ASCENDING);
 		items.sort(rowComparator);
 		assertEquals(0, items.indexOf(firstRow));
 		assertEquals(1, items.indexOf(secondRow));
 		assertEquals(2, items.indexOf(thirdRow));
 
-		model.setSortOrder(0, SortOrder.ASCENDING);
-		model.addSortOrder(1, SortOrder.DESCENDING);
+		model.sort(0).set(SortOrder.ASCENDING);
+		model.sort(1).add(SortOrder.DESCENDING);
 		items.sort(rowComparator);
 		assertEquals(0, items.indexOf(thirdRow));
 		assertEquals(1, items.indexOf(firstRow));
 		assertEquals(2, items.indexOf(secondRow));
 
-		model.addSortOrder(2, SortOrder.DESCENDING);
+		model.sort(2).add(SortOrder.DESCENDING);
 		items.sort(rowComparator);
 		assertEquals(0, items.indexOf(thirdRow));
 		assertEquals(1, items.indexOf(secondRow));
 		assertEquals(2, items.indexOf(firstRow));
 
-		model.addSortOrder(2, SortOrder.ASCENDING);
+		model.sort(2).add(SortOrder.ASCENDING);
 		items.sort(rowComparator);
 		assertEquals(0, items.indexOf(thirdRow));
 		assertEquals(1, items.indexOf(firstRow));
 		assertEquals(2, items.indexOf(secondRow));
 
-		model.setSortOrder(2, SortOrder.ASCENDING);
+		model.sort(2).set(SortOrder.ASCENDING);
 		items.sort(rowComparator);
 		assertEquals(0, items.indexOf(firstRow));
 		assertEquals(1, items.indexOf(secondRow));
 		assertEquals(2, items.indexOf(thirdRow));
 
 		model.clear();
-		model.setSortOrder(2, SortOrder.ASCENDING);
+		model.sort(2).set(SortOrder.ASCENDING);
 		model.locked(2).set(true);
-		assertThrows(IllegalStateException.class, () -> model.setSortOrder(2, SortOrder.DESCENDING));
+		assertThrows(IllegalStateException.class, () -> model.sort(2).set(SortOrder.DESCENDING));
 		model.locked(2).set(false);
-		model.setSortOrder(2, SortOrder.DESCENDING);
+		model.sort(2).set(SortOrder.DESCENDING);
 		assertEquals(SortOrder.DESCENDING, model.columnSortOrder(2).sortOrder());
 
-		assertThrows(IllegalArgumentException.class, () -> model.setSortOrder(3, SortOrder.ASCENDING));//unknown column
+		assertThrows(IllegalArgumentException.class, () -> model.sort(3).set(SortOrder.ASCENDING));//unknown column
 	}
 
 	@Test
@@ -140,7 +140,7 @@ public class DefaultFilterTableSortModelTest {
 			}
 		});
 		List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
-		model.setSortOrder(0, SortOrder.DESCENDING);
+		model.sort(0).set(SortOrder.DESCENDING);
 		collections.sort(model.comparator());
 	}
 

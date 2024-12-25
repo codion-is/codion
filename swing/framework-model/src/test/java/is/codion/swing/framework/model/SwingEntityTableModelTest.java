@@ -48,7 +48,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Override
 	protected SwingEntityTableModel createDepartmentTableModel() {
 		SwingEntityTableModel deptModel = createTableModel(Department.TYPE, testModel.connectionProvider());
-		deptModel.sorter().setSortOrder(Department.NAME, SortOrder.ASCENDING);
+		deptModel.sorter().sort(Department.NAME).set(SortOrder.ASCENDING);
 
 		return deptModel;
 	}

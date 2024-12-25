@@ -208,7 +208,7 @@ public final class DefaultFilterTableModelTest {
 										.build();
 		testModel.selection().indexes().addListener(selectionEvents::incrementAndGet);
 		testModel.refreshStrategy().set(RefreshStrategy.MERGE);
-		testModel.sorter().setSortOrder(0, SortOrder.ASCENDING);
+		testModel.sorter().sort(0).set(SortOrder.ASCENDING);
 		testModel.refresh();
 		testModel.selection().index().set(1);//b
 

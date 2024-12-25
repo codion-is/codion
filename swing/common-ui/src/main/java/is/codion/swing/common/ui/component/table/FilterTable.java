@@ -742,10 +742,10 @@ public final class FilterTable<R, C> extends JTable {
 			if (!tableModel.sorter().locked(identifier).get()) {
 				ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSortOrder(identifier);
 				if (add) {
-					tableModel.sorter().addSortOrder(identifier, nextSortOrder(columnSortOrder.sortOrder()));
+					tableModel.sorter().sort(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
 				}
 				else {
-					tableModel.sorter().setSortOrder(identifier, nextSortOrder(columnSortOrder.sortOrder()));
+					tableModel.sorter().sort(identifier).set(nextSortOrder(columnSortOrder.sortOrder()));
 				}
 			}
 		}
@@ -988,10 +988,10 @@ public final class FilterTable<R, C> extends JTable {
 					}
 					ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSortOrder(identifier);
 					if (e.isAltDown()) {
-						tableModel.sorter().addSortOrder(identifier, nextSortOrder(columnSortOrder.sortOrder()));
+						tableModel.sorter().sort(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
 					}
 					else {
-						tableModel.sorter().setSortOrder(identifier, nextSortOrder(columnSortOrder.sortOrder()));
+						tableModel.sorter().sort(identifier).set(nextSortOrder(columnSortOrder.sortOrder()));
 					}
 				}
 			}
