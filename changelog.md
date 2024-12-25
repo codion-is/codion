@@ -43,6 +43,7 @@ Codion Change Log
 - FilterTableSortModel.ColumnSort added along with columnSort(), replacing columnSortOrder(identifier) and columnSortOrder().
 - FilterTableSortModel.locked() moved to Sort.
 - FilterTableModel.FilterTableItems added, refreshStrategy() moved.
+- DefaultFilterTableItems refactored from DefaultFilterTableModel.
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.

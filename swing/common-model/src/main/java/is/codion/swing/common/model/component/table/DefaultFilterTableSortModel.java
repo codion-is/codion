@@ -74,10 +74,6 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		return sortingChanged.observer();
 	}
 
-	private boolean removeSortOrder(C identifier) {
-		return columnSortOrders.removeIf(columnSortOrder -> columnSortOrder.identifier().equals(identifier));
-	}
-
 	private void validateIdentifier(C identifier) {
 		if (!columns.identifiers().contains(requireNonNull(identifier))) {
 			throw new IllegalArgumentException("Column not found: " + identifier);
@@ -164,6 +160,10 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 				columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder, columnSortOrders.size()));
 			}
 			sortingChanged.accept(!columnSortOrders.isEmpty());
+		}
+
+		private boolean removeSortOrder(C identifier) {
+			return columnSortOrders.removeIf(columnSortOrder -> columnSortOrder.identifier().equals(identifier));
 		}
 	}
 
