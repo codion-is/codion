@@ -344,7 +344,7 @@ public interface ServerConfiguration {
 	 */
 	static <B extends Builder<B>> Builder<B> builderFromSystemProperties() {
 		return (Builder<B>) builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
-						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.getOrThrow()))
+						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
 						.adminPort(ADMIN_PORT.getOrThrow())
 						.sslEnabled(SSL_ENABLED.getOrThrow())
 						.connectionMaintenanceInterval(CONNECTION_MAINTENANCE_INTERVAL.getOrThrow());

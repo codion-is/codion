@@ -27,6 +27,7 @@ Codion Change Log
 - ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
 - Server.serverLoad() removed, related refactoring.
 - ServerConfiguration.Builder.rmiClientSocketFactory() and rmiServerSocketFactory() removed.
+- ServerConfiguration.builderFromSystemProperties() bug fixed, failed if no AUXILIARY_SERVER_FACTORY_CLASS_NAMES were specified.
 ### is.codion.dbms.h2
 - H2DatabaseFactory.runScript() static methods replaced with ScriptRunner.
 ### is.codion.swing.common.model
