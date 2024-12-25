@@ -56,6 +56,7 @@ Codion Change Log
 - ComboBoxMouseWheelListener and SpinnerMouseWheelListener bug fixed, no longer enabled when component is disabled.
 - CalendarPanel.Builder.enabled() added.
 - FilterTableSearchModel.Results added along with results(), related refactoring and renaming.
+- FilterTable.DefaultBuilder now validates column model indexes.
 ### is.codion.framework.domain
 - EntityDefinition.description() now returns Optional.
 - DefaultEntityDefinition, source attributes validated for denormalized attributes.

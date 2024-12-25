@@ -1205,7 +1205,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = tableModel;
-			this.columns = new ArrayList<>(validateIdentifiers(columns));
+			this.columns = new ArrayList<>(validateColumns(columns));
 			this.cellRendererFactory = FilterTableCellRenderer.factory();
 		}
 
@@ -1333,12 +1333,21 @@ public final class FilterTable<R, C> extends JTable {
 			return new FilterTableComponentValue<>(component);
 		}
 
-		private Collection<FilterTableColumn<C>> validateIdentifiers(List<FilterTableColumn<C>> columns) {
+		private Collection<FilterTableColumn<C>> validateColumns(List<FilterTableColumn<C>> columns) {
 			if (columns.stream()
 							.map(new ColumnIdentifier<>())
 							.distinct()
 							.count() != columns.size()) {
 				throw new IllegalArgumentException("Column identifiers are not unique");
+			}
+			List<Integer> modelIndexes = columns.stream()
+							.map(new ModelIndex())
+							.sorted()
+							.collect(toList());
+			for (int i = 0; i < modelIndexes.size(); i++) {
+				 if (modelIndexes.get(i) != i) {
+					 throw new IllegalArgumentException("Column model indexes should start with zero, be unique and continuous");
+				 }
 			}
 
 			return columns;
@@ -1349,6 +1358,14 @@ public final class FilterTable<R, C> extends JTable {
 			@Override
 			public C apply(FilterTableColumn<C> column) {
 				return column.identifier();
+			}
+		}
+
+		private static final class ModelIndex implements Function<FilterTableColumn<?>, Integer> {
+
+			@Override
+			public Integer apply(FilterTableColumn<?> column) {
+				return column.getModelIndex();
 			}
 		}
 	}

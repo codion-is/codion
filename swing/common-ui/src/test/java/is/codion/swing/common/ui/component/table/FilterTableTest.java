@@ -485,6 +485,45 @@ public class FilterTableTest {
 	}
 
 	@Test
+	void invalidColumnModelIndexes() {
+		FilterTableModel<Object, Integer> model = FilterTableModel.builder(new FilterTableModel.TableColumns<Object, Integer>() {
+							@Override
+							public List<Integer> identifiers() {
+								return List.of(0, 1, 2, 3);
+							}
+
+							@Override
+							public Class<?> columnClass(Integer identifier) {
+								return Object.class;
+							}
+
+							@Override
+							public Object value(Object row, Integer identifier) {
+								return null;
+							}
+						})
+						.build();
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model, asList(
+						filterTableColumn(0, 0),
+						filterTableColumn(1, 1),
+						filterTableColumn(2, 4),
+						filterTableColumn(3, 3)
+		)));
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model, asList(
+						filterTableColumn(0,-1),
+						filterTableColumn(3, 0),
+						filterTableColumn(2, 1),
+						filterTableColumn(1, 2)
+		)));
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model, asList(
+						filterTableColumn(0,42),
+						filterTableColumn(1, 0),
+						filterTableColumn(2, 1),
+						filterTableColumn(3, 2)
+		)));
+	}
+
+	@Test
 	void cellRenderers() {
 		FilterTableModel.TableColumns<Object, Integer> columns = new FilterTableModel.TableColumns<>() {
 			@Override
