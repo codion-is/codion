@@ -59,10 +59,7 @@ public final class EmployeesLoadTest {
 
 			SwingEntityModel model = applicationModel.entityModels().get(Department.TYPE);
 			model.detailModels().link(model.detailModels().get(Employee.TYPE)).active().set(true);
-			try {
-				model.tableModel().refresh();
-			}
-			catch (Exception ignored) {/*ignored*/}
+			model.tableModel().items().refresh();
 
 			return applicationModel;
 		}

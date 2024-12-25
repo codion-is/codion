@@ -210,7 +210,7 @@ public final class EntityComponentsTest {
 	void enumComboBox() {
 		JComboBox<?> comboBox = (JComboBox<?>) entityComponents.component(Detail.ENUM_TYPE).build();
 		FilterComboBoxModel<EnumType> comboBoxModel = (FilterComboBoxModel<EnumType>) comboBox.getModel();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		assertEquals(4, comboBoxModel.getSize());
 		for (EnumType enumType : EnumType.values()) {
 			assertTrue(comboBoxModel.items().contains(enumType));

@@ -73,10 +73,10 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		requireNonNull(attributes);
 		for (Attribute<?> attribute : attributes) {
 			if (attribute instanceof ForeignKey) {
-				foreignKeyComboBoxModel((ForeignKey) attribute).refresh();
+				foreignKeyComboBoxModel((ForeignKey) attribute).items().refresh();
 			}
 			else if (attribute instanceof Column<?>) {
-				comboBoxModel((Column<?>) attribute).refresh();
+				comboBoxModel((Column<?>) attribute).items().refresh();
 			}
 		}
 	}
@@ -88,7 +88,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		synchronized (comboBoxModels) {
 			for (FilterComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
 				if (comboBoxModel instanceof EntityComboBoxModel) {
-					comboBoxModel.refresh();
+					comboBoxModel.items().refresh();
 				}
 			}
 		}
@@ -100,7 +100,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	public final void refreshComboBoxModels() {
 		synchronized (comboBoxModels) {
 			for (FilterComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
-				comboBoxModel.refresh();
+				comboBoxModel.items().refresh();
 			}
 		}
 	}
@@ -204,7 +204,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 			}
 		}
 		FilterComboBoxModel<T> comboBoxModel = builder.build();
-		afterInsertUpdateOrDelete().addListener(comboBoxModel::refresh);
+		afterInsertUpdateOrDelete().addListener(comboBoxModel.items()::refresh);
 
 		return comboBoxModel;
 	}

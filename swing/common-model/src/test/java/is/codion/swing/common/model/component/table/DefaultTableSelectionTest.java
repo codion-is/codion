@@ -54,7 +54,7 @@ public class DefaultTableSelectionTest {
 										})
 										.supplier(() -> data)
 										.build();
-		tableModel.refresh();
+		tableModel.items().refresh();
 
 		testModel = tableModel.selection();
 	}

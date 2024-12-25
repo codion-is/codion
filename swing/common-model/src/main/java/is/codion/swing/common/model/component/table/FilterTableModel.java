@@ -101,11 +101,8 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 */
 	<T> Collection<T> selectedValues(C identifier);
 
-	/**
-	 * Default {@link RefreshStrategy#CLEAR}
-	 * @return the {@link Value} controlling the refresh strategy
-	 */
-	Value<RefreshStrategy> refreshStrategy();
+	@Override
+	FilterTableModelItems<R> items();
 
 	/**
 	 * @return the {@link TableSelection} instance used by this table model
@@ -121,32 +118,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 * @return the sort model
 	 */
 	FilterTableSortModel<R, C> sorter();
-
-	/**
-	 * {@inheritDoc}
-	 * <br><br>
-	 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
-	 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
-	 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
-	 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
-	 * @see #refreshStrategy()
-	 * @see RefreshStrategy
-	 */
-	@Override
-	void refresh();
-
-	/**
-	 * {@inheritDoc}
-	 * <br><br>
-	 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
-	 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
-	 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
-	 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
-	 * @see #refreshStrategy()
-	 * @see RefreshStrategy
-	 */
-	@Override
-	void refresh(Consumer<Collection<R>> onRefresh);
 
 	/**
 	 * Notifies all listeners that all cell values in the table's rows may have changed.
@@ -172,6 +143,44 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 */
 	static <R, C> Builder<R, C> builder(Columns<R, C> columns) {
 		return new DefaultFilterTableModel.DefaultBuilder<>(columns);
+	}
+
+	/**
+	 * @param <R> the row type
+	 */
+	interface FilterTableModelItems<R> extends FilterModel.Items<R> {
+
+		/**
+		 * {@inheritDoc}
+		 * <br><br>
+		 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
+		 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
+		 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
+		 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
+		 * @see #refreshStrategy()
+		 * @see RefreshStrategy
+		 */
+		@Override
+		void refresh();
+
+		/**
+		 * {@inheritDoc}
+		 * <br><br>
+		 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
+		 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
+		 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
+		 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
+		 * @see #refreshStrategy()
+		 * @see RefreshStrategy
+		 */
+		@Override
+		void refresh(Consumer<Collection<R>> onRefresh);
+
+		/**
+		 * Default {@link RefreshStrategy#CLEAR}
+		 * @return the {@link Value} controlling the refresh strategy
+		 */
+		Value<RefreshStrategy> refreshStrategy();
 	}
 
 	/**
@@ -203,7 +212,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		/**
 		 * @param refreshStrategy the refresh strategy to use
 		 * @return this builder instance
-		 * @see FilterTableModel#refresh()
+		 * @see FilterTableModel.Items#refresh()
 		 */
 		Builder<R, C> refreshStrategy(RefreshStrategy refreshStrategy);
 

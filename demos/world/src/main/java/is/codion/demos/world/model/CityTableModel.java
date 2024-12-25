@@ -49,7 +49,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 		super(new CityEditModel(connectionProvider));
 		selection().items().addConsumer(displayLocationEvent);
 		selection().indexes().addListener(this::updateCitiesWithoutLocationSelected);
-		refresher().success().addConsumer(this::refreshChartDataset);
+		items().refresher().success().addConsumer(this::refreshChartDataset);
 	}
 
 	public PieDataset<String> chartDataset() {

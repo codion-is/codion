@@ -51,7 +51,7 @@ public class EntityComboBoxTest {
 	@Test
 	void inputProvider() {
 		EntityComboBoxModel model = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
-		model.refresh();
+		model.items().refresh();
 		Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
 		model.selection().item().set(operations);
 		ComponentValue<Entity, EntityComboBox> value = EntityComboBox.builder(model)
@@ -71,7 +71,7 @@ public class EntityComboBoxTest {
 	@Test
 	void integerSelectorField() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		Entity.Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 3);
 		comboBoxModel.select(jonesKey);
 		EntityComboBox comboBox = EntityComboBox.builder(comboBoxModel).build();

@@ -173,21 +173,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public Refresher<Entity> refresher() {
-		return comboBoxModel.refresher();
-	}
-
-	@Override
-	public void refresh() {
-		comboBoxModel.refresh();
-	}
-
-	@Override
-	public void refresh(Consumer<Collection<Entity>> onRefresh) {
-		comboBoxModel.refresh(onRefresh);
-	}
-
-	@Override
 	public void setSelectedItem(Object selectedItem) {
 		comboBoxModel.setSelectedItem(selectedItem);
 	}
@@ -374,9 +359,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			set(selection().item().get());
 			filterModel.selection().item().addConsumer(this::set);
 			selection().item().addConsumer(selected -> select(filterModel, selected));
-			refresher().success().addListener(filterModel::refresh);
+			items().refresher().success().addListener(filterModel.items()::refresh);
 			// Select the correct foreign key item according to the selected item after refresh
-			filterModel.refresher().success().addListener(() -> select(filterModel, getSelectedItem()));
+			filterModel.items().refresher().success().addListener(() -> select(filterModel, getSelectedItem()));
 		}
 
 		private void select(EntityComboBoxModel filterModel, Entity selected) {

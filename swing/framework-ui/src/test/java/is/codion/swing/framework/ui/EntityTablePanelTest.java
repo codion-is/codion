@@ -59,7 +59,7 @@ public class EntityTablePanelTest {
 	void queryHiddenColumns() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		tableModel.items().get().forEach(employee -> {
 			assertTrue(employee.contains(Employee.ID));
 			assertTrue(employee.contains(Employee.NAME));
@@ -70,7 +70,7 @@ public class EntityTablePanelTest {
 		});
 		tablePanel.table().columnModel().visible().set(Employee.ID, Employee.NAME, Employee.COMMISSION);
 		tablePanel.queryHiddenColumns().set(false);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		tableModel.items().get().forEach(employee -> {
 			assertTrue(employee.contains(Employee.ID));
 			assertTrue(employee.contains(Employee.NAME));
@@ -206,7 +206,7 @@ public class EntityTablePanelTest {
 	@Test
 	void cellRenderers() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		FilterTableCellRenderer<String> nameRenderer = EntityTableCellRenderer.builder(Employee.NAME, tableModel).build();
 		FilterTableCellRenderer<Double> commissionRenderer = EntityTableCellRenderer.builder(Employee.COMMISSION, tableModel).build();
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config

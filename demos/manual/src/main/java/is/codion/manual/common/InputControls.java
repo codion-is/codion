@@ -388,7 +388,7 @@ public final class InputControls {
 						.addConsumer(System.out::println);
 
 		// Refreshes the items using the supplier from above
-		model.refresh();
+		model.items().refresh();
 		// end::filterComboBoxModel[]
 	}
 

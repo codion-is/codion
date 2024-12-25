@@ -115,7 +115,7 @@ public class StoreDemo {
 		addressPanel.tablePanel()
 						.conditions().view().set(SIMPLE);
 
-		customerModel.tableModel().refresh();
+		customerModel.tableModel().items().refresh();
 		customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
 
 		SwingUtilities.invokeLater(() ->

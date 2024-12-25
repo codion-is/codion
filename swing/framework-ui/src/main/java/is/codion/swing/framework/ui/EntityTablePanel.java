@@ -344,9 +344,8 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> CLEAR = CommandControl.key("clear");
 		/**
-		 * A {@link Control} for refreshing the table data.<br>
+		 * A {@link Control} for refreshing the table items.<br>
 		 * Default key stroke: ALT-R
-		 * @see SwingEntityTableModel#refresh()
 		 */
 		public static final ControlKey<CommandControl> REFRESH = CommandControl.key("refresh", keyStroke(VK_R, ALT_DOWN_MASK));
 		/**
@@ -1201,12 +1200,12 @@ public class EntityTablePanel extends JPanel {
 	 */
 	private CommandControl createRefreshControl() {
 		return Control.builder()
-						.command(tableModel::refresh)
+						.command(tableModel.items()::refresh)
 						.name(Messages.refresh())
 						.description(Messages.refreshTip())
 						.mnemonic(Messages.refreshMnemonic())
 						.smallIcon(ICONS.refresh())
-						.enabled(tableModel.refresher().active().not())
+						.enabled(tableModel.items().refresher().active().not())
 						.build();
 	}
 
@@ -1471,7 +1470,7 @@ public class EntityTablePanel extends JPanel {
 
 	private Control createConditionRefreshControl() {
 		return Control.builder()
-						.command(tableModel::refresh)
+						.command(tableModel.items()::refresh)
 						.enabled(tableModel.queryModel().conditionChanged())
 						.smallIcon(ICONS.refreshRequired())
 						.build();
@@ -1558,8 +1557,8 @@ public class EntityTablePanel extends JPanel {
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
 		tableModel.queryModel().conditions().changed().addListener(this::onConditionChanged);
-		tableModel.refresher().active().addConsumer(this::refresherActive);
-		tableModel.refresher().failure().addConsumer(this::onException);
+		tableModel.items().refresher().active().addConsumer(this::refresherActive);
+		tableModel.items().refresher().failure().addConsumer(this::onException);
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
 	}
 
@@ -3000,7 +2999,7 @@ public class EntityTablePanel extends JPanel {
 		private StatusPanel() {
 			super(new BorderLayout());
 			add(label, BorderLayout.CENTER);
-			tableModel.refresher().active().addConsumer(this::refresherActive);
+			tableModel.items().refresher().active().addConsumer(this::refresherActive);
 			tableModel.selection().indexes().addListener(this::updateStatusMessage);
 			tableModel.items().visible().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {

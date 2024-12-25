@@ -59,7 +59,7 @@ public final class AlbumModelTest {
 			AlbumModel albumModel = new AlbumModel(connectionProvider);
 			SwingEntityTableModel albumTableModel = albumModel.tableModel();
 			albumTableModel.queryModel().conditions().setEqualOperand(Album.TITLE, MASTER_OF_PUPPETS);
-			albumTableModel.refresh();
+			albumTableModel.items().refresh();
 			assertEquals(1, albumTableModel.items().count());
 
 			List<Entity> tracks = connection.select(Track.ALBUM_FK.equalTo(masterOfPuppets));

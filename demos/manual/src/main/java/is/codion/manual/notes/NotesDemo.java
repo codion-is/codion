@@ -234,7 +234,7 @@ public final class NotesDemo {
 			NoteModel noteModel = new NoteModel(connectionProvider);
 			entityModels().add(noteModel);
 			// Refresh the table model to populate it
-			noteModel.tableModel().refresh();
+			noteModel.tableModel().items().refresh();
 		}
 	}
 

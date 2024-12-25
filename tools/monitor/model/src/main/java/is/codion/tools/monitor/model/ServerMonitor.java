@@ -333,21 +333,21 @@ public final class ServerMonitor {
 	 * Refreshes the domain model list
 	 */
 	public void refreshDomainList() {
-		domainTableModel.refresh();
+		domainTableModel.items().refresh();
 	}
 
 	/**
 	 * Refreshes the report model list
 	 */
 	public void refreshReportList() {
-		reportTableModel.refresh();
+		reportTableModel.items().refresh();
 	}
 
 	/**
 	 * Refreshes the report model list
 	 */
 	public void refreshOperationList() {
-		operationTableModel.refresh();
+		operationTableModel.items().refresh();
 	}
 
 	/**

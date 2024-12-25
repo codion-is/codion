@@ -75,7 +75,7 @@ public class DefaultEntityComponentFactory<T, C extends JComponent> implements E
 		if (editModel.entities().definition(foreignKey.referencedType()).smallDataset()) {
 			return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, editModel.createForeignKeyComboBoxModel(foreignKey))
 							.value(value)
-							.onSetVisible(comboBox -> comboBox.getModel().refresh())
+							.onSetVisible(comboBox -> comboBox.getModel().items().refresh())
 							.buildValue();
 		}
 

@@ -37,7 +37,7 @@ public final class CountryTableModelTest {
 		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
 			CountryTableModel tableModel = new CountryTableModel(connectionProvider);
 			tableModel.queryModel().conditions().get(Country.CODE).operands().equal().set("ISL");
-			tableModel.refresh();
+			tableModel.items().refresh();
 			tableModel.selection().index().set(0);
 			tableModel.fillCountryReport(new ProgressReporter<String>() {
 				@Override

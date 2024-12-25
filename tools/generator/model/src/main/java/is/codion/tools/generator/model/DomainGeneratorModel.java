@@ -120,7 +120,7 @@ public final class DomainGeneratorModel {
 		domainPackageChanged();
 		schemaTableModel.sorter().sort(SchemaColumns.Id.SCHEMA).set(SortOrder.ASCENDING);
 		entityTableModel.sorter().sort(EntityColumns.Id.ENTITY).set(SortOrder.ASCENDING);
-		schemaTableModel.refresh();
+		schemaTableModel.items().refresh();
 		bindEvents();
 	}
 
@@ -217,7 +217,7 @@ public final class DomainGeneratorModel {
 	}
 
 	private void schemaSelectionChanged() {
-		entityTableModel.refresh();
+		entityTableModel.items().refresh();
 		updateDomainSource();
 		populatedSchemaSelected.set(schemaTableModel.selection().item().optional()
 						.map(SchemaRow::populated)

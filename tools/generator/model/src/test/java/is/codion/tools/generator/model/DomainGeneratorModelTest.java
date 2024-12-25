@@ -39,7 +39,7 @@ public final class DomainGeneratorModelTest {
 	void petstore() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().sorter().sort(SchemaColumns.Id.SCHEMA).set(SortOrder.ASCENDING);
-		model.schemaModel().refresh();
+		model.schemaModel().items().refresh();
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("PETSTORE"))
@@ -56,7 +56,7 @@ public final class DomainGeneratorModelTest {
 	void chinook() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().sorter().sort(SchemaColumns.Id.SCHEMA).set(SortOrder.ASCENDING);
-		model.schemaModel().refresh();
+		model.schemaModel().items().refresh();
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("CHINOOK"))
@@ -73,7 +73,7 @@ public final class DomainGeneratorModelTest {
 	void world() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().sorter().sort(SchemaColumns.Id.SCHEMA).set(SortOrder.ASCENDING);
-		model.schemaModel().refresh();
+		model.schemaModel().items().refresh();
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
 						.filter(item -> item.schema().equals("WORLD"))

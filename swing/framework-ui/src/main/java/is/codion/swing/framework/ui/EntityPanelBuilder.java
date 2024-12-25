@@ -236,7 +236,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		}
 		onBuildPanel.accept(entityPanel);
 		if (refreshWhenInitialized && model.containsTableModel()) {
-			model.tableModel().refresh();
+			model.tableModel().items().refresh();
 		}
 
 		return entityPanel;

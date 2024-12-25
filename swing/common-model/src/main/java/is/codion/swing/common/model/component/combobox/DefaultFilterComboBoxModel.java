@@ -54,7 +54,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final DefaultComboBoxSelection selection;
 	private final DefaultComboBoxItems modelItems;
-	private final DefaultRefresher refresher;
 
 	/**
 	 * Due to a java.util.ConcurrentModificationException in OSX
@@ -63,31 +62,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private DefaultFilterComboBoxModel(DefaultBuilder<T> builder) {
 		selection = new DefaultComboBoxSelection(builder.translator);
-		modelItems = new DefaultComboBoxItems(builder.includeNull, builder.nullItem, builder.comparator);
-		if (builder.supplier == null) {
-			refresher = new DefaultRefresher(new DefaultItemsSupplier());
-			if (builder.items != null) {
-				modelItems.set(builder.items);
-			}
-		}
-		else {
-			refresher = new DefaultRefresher(builder.supplier);
-		}
-	}
-
-	@Override
-	public Refresher<T> refresher() {
-		return refresher;
-	}
-
-	@Override
-	public void refresh() {
-		refresher.doRefresh(null);
-	}
-
-	@Override
-	public void refresh(Consumer<Collection<T>> onRefresh) {
-		refresher.doRefresh(requireNonNull(onRefresh));
+		modelItems = new DefaultComboBoxItems(builder.includeNull, builder.nullItem, builder.comparator, builder.supplier, builder.items);
 	}
 
 	@Override
@@ -201,6 +176,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final Lock lock = new Lock() {};
 
+		private final DefaultRefresher refresher;
 		private final DefaultVisibleItems visible;
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 		private final Event<Collection<T>> event = Event.event();
@@ -210,7 +186,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private boolean cleared = true;
 
-		private DefaultComboBoxItems(boolean includeNull, T nullItem, Comparator<T> comparator) {
+		private DefaultComboBoxItems(boolean includeNull, T nullItem, Comparator<T> comparator,
+																 Supplier<Collection<T>> supplier, Collection<T> items) {
 			this.includeNull = includeNull;
 			this.nullItem = nullItem;
 			this.visible = new DefaultVisibleItems(comparator);
@@ -218,6 +195,30 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				visible.items.add(null);
 			}
 			visible.predicate.addListener(this::filter);
+			if (supplier == null) {
+				refresher = new DefaultRefresher(this::get);
+				if (items != null) {
+					set(items);
+				}
+			}
+			else {
+				refresher = new DefaultRefresher(supplier);
+			}
+		}
+
+		@Override
+		public Refresher<T> refresher() {
+			return refresher;
+		}
+
+		@Override
+		public void refresh() {
+			refresher.doRefresh(null);
+		}
+
+		@Override
+		public void refresh(Consumer<Collection<T>> onRefresh) {
+			refresher.doRefresh(requireNonNull(onRefresh));
 		}
 
 		@Override
@@ -466,11 +467,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					if (items.isEmpty()) {
 						return emptyList();
 					}
-					if (!modelItems.includeNull) {
+					if (!includeNull) {
 						return unmodifiableList(items);
 					}
 
-					return unmodifiableList(items.subList(1, getSize()));
+					return unmodifiableList(items.subList(1, items.size()));
 				}
 			}
 
@@ -482,7 +483,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			@Override
 			public boolean contains(T item) {
 				if (item == null) {
-					return modelItems.includeNull;
+					return includeNull;
 				}
 				synchronized (lock) {
 					return items.contains(item);
@@ -534,7 +535,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					if (items.isEmpty()) {
 						return 0;
 					}
-					if (!modelItems.includeNull) {
+					if (!includeNull) {
 						return items.size();
 					}
 
@@ -553,7 +554,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 			private boolean sortInternal() {
 				if (comparator != null && count() > 0) {
-					items.subList(modelItems.includeNull ? 1 : 0, items.size()).sort(comparator);
+					items.subList(includeNull ? 1 : 0, items.size()).sort(comparator);
 					return true;
 				}
 
@@ -733,14 +734,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public T apply(Object item) {
 			return (T) item;
-		}
-	}
-
-	private final class DefaultItemsSupplier implements Supplier<Collection<T>> {
-
-		@Override
-		public Collection<T> get() {
-			return modelItems.get();
 		}
 	}
 

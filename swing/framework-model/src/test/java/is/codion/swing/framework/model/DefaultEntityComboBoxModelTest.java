@@ -61,7 +61,7 @@ public final class DefaultEntityComboBoxModelTest {
 	@Test
 	void editEvents() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 
 		Entity temp = ENTITIES.builder(Employee.TYPE)
 						.with(Employee.ID, -42)
@@ -105,7 +105,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.filterSelected(true)
 						.build();
 		EntityComboBoxModel departmentComboBoxModel = managerComboBoxModel.filter().get(Employee.DEPARTMENT_FK).builder().build();
-		employeeComboBoxModel.refresh();
+		employeeComboBoxModel.items().refresh();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).strict().set(true);
 		assertEquals(0, employeeComboBoxModel.items().visible().count());
 		assertEquals(16, employeeComboBoxModel.items().filtered().count());
@@ -149,7 +149,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.includeNull(true)
 						.build();
 		EntityComboBoxModel departmentComboBoxModel = employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).builder().build();
-		employeeComboBoxModel.refresh();//refreshes both
+		employeeComboBoxModel.items().refresh();//refreshes both
 		assertFalse(departmentComboBoxModel.items().visible().contains(null));
 		assertEquals(1, employeeComboBoxModel.getSize());
 		Entity.Key accountingKey = CONNECTION_PROVIDER.entities().primaryKey(Department.TYPE, 10);
@@ -167,7 +167,7 @@ public final class DefaultEntityComboBoxModelTest {
 	@Test
 	void setForeignKeyFilterEntities() {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		employeeComboBoxModel.refresh();
+		employeeComboBoxModel.items().refresh();
 		Entity blake = employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
 		assertThrows(IllegalArgumentException.class, () -> employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(blake.primaryKey()));
 
@@ -225,7 +225,7 @@ public final class DefaultEntityComboBoxModelTest {
 	@Test
 	void setSelectedEntityByKey() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("CLARK"));
 		comboBoxModel.select(clark.primaryKey());
 		assertEquals(clark, comboBoxModel.selection().item().get());
@@ -248,7 +248,7 @@ public final class DefaultEntityComboBoxModelTest {
 	@Test
 	void selectorValue() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.createSelectorValue(Department.ID));
 		Value<Integer> empIdValue = comboBoxModel.createSelectorValue(Employee.ID);
 		assertNull(empIdValue.get());
@@ -268,7 +268,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.attributes(Arrays.asList(Employee.NAME, Employee.DEPARTMENT_FK))
 						.build();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		for (Entity emp : comboBoxModel.items().get()) {
 			assertTrue(emp.contains(Employee.ID));
 			assertTrue(emp.contains(Employee.NAME));
@@ -281,7 +281,7 @@ public final class DefaultEntityComboBoxModelTest {
 			assertFalse(emp.contains(Employee.SALARY));
 		}
 		comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		for (Entity emp : comboBoxModel.items().get()) {
 			assertTrue(emp.contains(Employee.ID));
 			assertTrue(emp.contains(Employee.NAME));
@@ -300,12 +300,12 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
 		AtomicInteger refreshed = new AtomicInteger();
 		Runnable refreshListener = refreshed::incrementAndGet;
-		comboBoxModel.refresher().success().addListener(refreshListener);
+		comboBoxModel.items().refresher().success().addListener(refreshListener);
 		assertEquals(Employee.TYPE, comboBoxModel.entityType());
 		comboBoxModel.toString();
 		assertEquals(0, comboBoxModel.getSize());
 		assertNull(comboBoxModel.getSelectedItem());
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		assertTrue(comboBoxModel.getSize() > 0);
 		assertFalse(comboBoxModel.items().cleared());
 
@@ -320,14 +320,14 @@ public final class DefaultEntityComboBoxModelTest {
 		comboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(singleton(ENTITIES.primaryKey(Department.TYPE, 10)));//accounting
 		assertThrows(UnsupportedOperationException.class, () -> comboBoxModel.items().visible().predicate().set(entity -> false));
 
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		assertEquals(1, comboBoxModel.getSize());
 		assertEquals(2, refreshed.get());
 		comboBoxModel.condition().clear();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		assertEquals(7, comboBoxModel.getSize());// 7 in acounting
 		assertEquals(3, refreshed.get());
-		comboBoxModel.refresher().success().removeListener(refreshListener);
+		comboBoxModel.items().refresher().success().removeListener(refreshListener);
 	}
 
 	@Test
@@ -335,12 +335,12 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.orderBy(OrderBy.ascending(Employee.NAME))
 						.build();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		assertEquals("ADAMS", comboBoxModel.getElementAt(0).get(Employee.NAME));
 		comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.orderBy(OrderBy.descending(Employee.NAME))
 						.build();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		assertEquals("WARD", comboBoxModel.getElementAt(0).get(Employee.NAME));
 	}
 
@@ -349,7 +349,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER)
 						.comparator(Comparator.comparing(employee -> employee.get(Department.ID)))
 						.build();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 
 		EntityConnection connection = CONNECTION_PROVIDER.connection();
 
@@ -362,7 +362,7 @@ public final class DefaultEntityComboBoxModelTest {
 	@Test
 	void entity() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		Entity.Key allenPK = ENTITIES.primaryKey(Employee.TYPE, 1);
 		assertNotNull(comboBoxModel.find(allenPK));
 		Entity.Key nobodyPK = ENTITIES.primaryKey(Employee.TYPE, -1);
@@ -374,7 +374,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel model = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER)
 						.includeNull(true)
 						.build();
-		model.refresh();
+		model.items().refresh();
 		assertTrue(model.items().contains(null));
 		assertEquals("-", model.getSelectedItem().toString());
 		assertNull(model.selection().item().get());

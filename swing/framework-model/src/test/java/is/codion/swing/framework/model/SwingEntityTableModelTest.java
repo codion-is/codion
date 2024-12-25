@@ -74,7 +74,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertEquals(0, employeeTableModel.items().visible().count());
 		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
 		employeeTableModel.queryModel().conditions().setInOperands(Employee.DEPARTMENT_FK, singletonList(accounting));
-		employeeTableModel.refresh();
+		employeeTableModel.items().refresh();
 		assertEquals(7, employeeTableModel.items().visible().count());
 	}
 
@@ -85,7 +85,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 	@Test
 	void testFiltering() {
-		testModel.refresh();
+		testModel.items().refresh();
 		ConditionModel<String> filterModel =
 						testModel.filters().get(Detail.STRING);
 		filterModel.operands().equal().set("a");
@@ -95,7 +95,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 	@Test
 	void getValueAt() {
-		testModel.refresh();
+		testModel.items().refresh();
 		assertEquals(1, testModel.getValueAt(0, 0));
 		assertEquals(2, testModel.getValueAt(1, 0));
 		assertEquals(3, testModel.getValueAt(2, 0));
@@ -119,7 +119,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void setValueAt() {
 		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertThrows(IllegalStateException.class, () -> tableModel.setValueAt("newname", 0, 1));
 		tableModel.editable().set(true);
 		tableModel.setValueAt("newname", 0, 1);
@@ -157,11 +157,11 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void conditionChanged() {
 		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
-		tableModel.refresh();
+		tableModel.items().refresh();
 		ConditionModel<String> nameCondition = tableModel.queryModel().conditions().get(Employee.NAME);
 		nameCondition.operands().equal().set("JONES");
 		assertTrue(tableModel.queryModel().conditionChanged().get());
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertFalse(tableModel.queryModel().conditionChanged().get());
 		nameCondition.enabled().set(false);
 		assertTrue(tableModel.queryModel().conditionChanged().get());
@@ -174,25 +174,25 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		EntityQueryModel queryModel = tableModel.queryModel();
 		queryModel.conditionEnabled().set(queryModel.conditions().get(Employee.MGR_FK).enabled());
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(16, tableModel.items().visible().count());
 		queryModel.conditionRequired().set(true);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(0, tableModel.items().visible().count());
 		ConditionModel<Entity> mgrCondition = queryModel.conditions().get(Employee.MGR_FK);
 		mgrCondition.operands().equal().set(null);
 		mgrCondition.enabled().set(true);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(1, tableModel.items().visible().count());
 		mgrCondition.enabled().set(false);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(0, tableModel.items().visible().count());
 	}
 
 	@Test
 	void handleEditEvents() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
-		tableModel.refresh();
+		tableModel.items().refresh();
 		SwingEntityEditModel employeeEditModel = new SwingEntityEditModel(Employee.TYPE, testModel.connectionProvider());
 		employeeEditModel.editor().set(tableModel.items().visible().itemAt(0));
 		String newName = "new name";

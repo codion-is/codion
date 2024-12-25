@@ -91,7 +91,7 @@ public class SwingEntityEditModelTest {
 		ForeignKeyDefinition deptForeignKey = employeeEditModel.entities()
 						.definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK);
 		assertEquals(deptForeignKey.attribute().referencedType(), model.entityType());
-		model.refresh();
+		model.items().refresh();
 		for (Entity department : model.items().get()) {
 			assertTrue(department.contains(Department.ID));
 			assertTrue(department.contains(Department.NAME));
@@ -124,7 +124,7 @@ public class SwingEntityEditModelTest {
 	void enumComboBoxModel() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(EnumEntity.TYPE, CONNECTION_PROVIDER);
 		FilterComboBoxModel<EnumType> comboBoxModel = editModel.comboBoxModel(EnumEntity.ENUM_TYPE);
-		comboBoxModel.refresh();
+		comboBoxModel.items().refresh();
 		assertEquals(4, comboBoxModel.getSize());
 		for (EnumType enumType : EnumType.values()) {
 			assertTrue(comboBoxModel.items().contains(enumType));

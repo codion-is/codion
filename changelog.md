@@ -23,6 +23,7 @@ Codion Change Log
 - MultiItemSelection.Index added.
 - FilterModel.Refresher.observable() renamed active().
 - ConditionModel.Operands.lowerBound() and upperBound() shortened to lower() and upper().
+- FilterModel.refresh() and related methods moved to Items, related refactoring.
 ### is.codion.common.rmi
 - ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
 - Server.serverLoad() removed, related refactoring.
@@ -41,6 +42,7 @@ Codion Change Log
 - FilterTableSortModel.Sort added along with sort(), replacing setSortOrder() and addSortOrder().
 - FilterTableSortModel.ColumnSort added along with columnSort(), replacing columnSortOrder(identifier) and columnSortOrder().
 - FilterTableSortModel.locked() moved to Sort.
+- FilterTableModel.FilterTableItems added, refreshStrategy() moved.
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.

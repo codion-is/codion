@@ -77,7 +77,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
-		departmentModel.tableModel().refresh();
+		departmentModel.tableModel().items().refresh();
 		EntityEditModel deptEditModel = departmentModel.editModel();
 		TableModel deptTableModel = departmentModel.tableModel();
 		Entity.Key operationsKey = deptEditModel.entities().primaryKey(Department.TYPE, 40);//operations
@@ -122,11 +122,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
-		departmentModel.tableModel().refresh();
+		departmentModel.tableModel().items().refresh();
 		assertTrue(departmentModel.tableModel().items().visible().count() > 0);
 
 		Model employeeModel = departmentModel.detailModels().get(Employee.TYPE);
-		employeeModel.tableModel().refresh();
+		employeeModel.tableModel().items().refresh();
 		assertTrue(employeeModel.tableModel().items().visible().count() > 0);
 
 		departmentModel.detailModels().get().forEach(detailModel -> detailModel.tableModel().items().clear());
@@ -146,7 +146,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
-		departmentModel.tableModel().refresh();
+		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().indexes().set(asList(1, 2, 3));
 		assertFalse(departmentModel.tableModel().selection().empty().get());
 		assertTrue(departmentModel.editModel().editor().exists().get());
@@ -177,8 +177,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 			return;
 		}
 
-		departmentModel.tableModel().refresh();
-		departmentModel.detailModels().get(Employee.TYPE).tableModel().refresh();
+		departmentModel.tableModel().items().refresh();
+		departmentModel.detailModels().get(Employee.TYPE).tableModel().items().refresh();
 		assertTrue(departmentModel.detailModels().get(Employee.TYPE).tableModel().items().visible().count() > 0);
 
 		EntityConnection connection = departmentModel.connection();
@@ -271,7 +271,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 			// but not when an existing entity is active
 			empTableModel.queryModel().conditionRequired().set(false);
-			empTableModel.refresh();
+			empTableModel.items().refresh();
 			empTableModel.selection().index().set(0);// select existing
 
 			Entity currentDept = departmentEditModelValue.get();
@@ -302,7 +302,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 		// clearForeignKeyValueOnEmptySelection()
 		detailModelLink.clearForeignKeyValueOnEmptySelection().set(false);
-		deptTableModel.refresh();
+		deptTableModel.items().refresh();
 		deptTableModel.selection().index().set(0);
 		Entity selected = deptTableModel.selection().item().get();
 		assertSame(selected, departmentEditModelValue.get());
@@ -317,7 +317,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		// but not when an existing entity is active
 		deptTableModel.selection().index().set(0);
 
-		empTableModel.refresh();
+		empTableModel.items().refresh();
 		empTableModel.selection().index().set(0);// select existing
 
 		deptTableModel.selection().clear();
@@ -325,7 +325,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 		// clearForeignKeyConditionOnEmptySelection()
 		detailModelLink.clearForeignKeyConditionOnEmptySelection().set(false);
-		deptTableModel.refresh();
+		deptTableModel.items().refresh();
 		deptTableModel.selection().indexes().set(asList(0, 1));
 		List<Entity> selectedEntities = deptTableModel.selection().items().get();
 		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
@@ -374,7 +374,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 		Entity dept = employeeModel.connection().selectSingle(Department.ID.equalTo(10));
 
-		departmentModel.tableModel().refresh();
+		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().item().set(dept);
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
 
@@ -408,7 +408,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 		Entity dept = employeeModel.connection().selectSingle(Department.ID.equalTo(10));
 
-		departmentModel.tableModel().refresh();
+		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().item().set(dept);
 		assertEquals(0, employeeTableModel.items().visible().count());
 

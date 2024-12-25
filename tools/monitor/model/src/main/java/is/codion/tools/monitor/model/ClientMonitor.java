@@ -58,7 +58,7 @@ public final class ClientMonitor {
 	 * Refreshes the client info from the server
 	 */
 	public void refresh() {
-		clientInstanceTableModel.refresh();
+		clientInstanceTableModel.items().refresh();
 	}
 
 	/**

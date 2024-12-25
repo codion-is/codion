@@ -133,7 +133,7 @@ public final class ClientArchitecture {
 		artistPanel.initialize();
 
 		// fetch data from the database
-		artistPanel.model().tableModel().refresh();
+		artistPanel.model().tableModel().items().refresh();
 
 		// uncomment the below line to display the panel
 //    displayInDialog(null, artistPanel, "Artists");

@@ -91,7 +91,7 @@ public class EntityServerMonitorTest {
 		assertNotNull(serverMonitor);
 		ClientUserMonitor clientUserMonitor = serverMonitor.clientMonitor();
 		ClientMonitor clientMonitor = clientUserMonitor.clientMonitor();
-		clientMonitor.clientInstanceTableModel().refresh();
+		clientMonitor.clientInstanceTableModel().items().refresh();
 		assertEquals(1, clientMonitor.clientInstanceTableModel().items().visible().count());
 		RemoteClient remoteClient = clientMonitor.clientInstanceTableModel().items().visible().itemAt(0);
 		assertEquals(connectionProvider.clientId(), remoteClient.clientId());

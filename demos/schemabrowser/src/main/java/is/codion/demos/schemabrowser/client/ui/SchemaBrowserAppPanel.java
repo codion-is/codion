@@ -79,7 +79,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 		tablePanel.detailPanels().add(constraintPanel);
 		constraintPanel.detailPanels().add(columnConstraintPanel);
 
-		schemaModel.tableModel().refresh();
+		schemaModel.tableModel().items().refresh();
 
 		return List.of(schemaPanel);
 	}

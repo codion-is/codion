@@ -21,7 +21,6 @@ package is.codion.swing.framework.model;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -203,6 +202,11 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
+	public final FilterTableModelItems<Entity> items() {
+		return (FilterTableModelItems<Entity>) super.filterModel().items();
+	}
+
+	@Override
 	public final <T> Collection<T> values(Attribute<?> attribute) {
 		return filterModel().values(attribute);
 	}
@@ -215,11 +219,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	@Override
 	public final <T> Collection<T> selectedValues(Attribute<?> attribute) {
 		return filterModel().selectedValues(attribute);
-	}
-
-	@Override
-	public final Value<RefreshStrategy> refreshStrategy() {
-		return filterModel().refreshStrategy();
 	}
 
 	@Override

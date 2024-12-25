@@ -114,7 +114,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private LoadTestPanel(LoadTestModel<T> loadTestModel) {
 		this.loadTestModel = requireNonNull(loadTestModel);
 		this.loadTest = loadTestModel.loadTest();
-		this.loadTestModel.applicationTableModel().refresher().failure().addConsumer(this::displayException);
+		this.loadTestModel.applicationTableModel().items().refresher().failure().addConsumer(this::displayException);
 		initializeUI();
 	}
 
@@ -397,7 +397,7 @@ public final class LoadTestPanel<T> extends JPanel {
 														.build())
 						.popupMenuControls(table -> Controls.builder()
 										.control(Control.builder()
-														.command(table.model()::refresh)
+														.command(table.model().items()::refresh)
 														.name("Refresh")
 														.enabled(model().autoRefreshApplications().not()))
 										.separator()

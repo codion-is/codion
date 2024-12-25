@@ -171,26 +171,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
-	public final Items<Entity> items() {
-		return filterModel.items();
-	}
-
-	@Override
-	public final Refresher<Entity> refresher() {
-		return filterModel.refresher();
-	}
-
-	@Override
-	public final void refresh() {
-		filterModel.refresh();
-	}
-
-	@Override
-	public final void refresh(Consumer<Collection<Entity>> onRefresh) {
-		filterModel.refresh(onRefresh);
-	}
-
-	@Override
 	public final void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
 		requireNonNull(foreignKey);
 		requireNonNull(foreignKeyValues);

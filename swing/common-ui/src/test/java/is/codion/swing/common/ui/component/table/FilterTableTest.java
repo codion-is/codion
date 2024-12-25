@@ -152,7 +152,7 @@ public class FilterTableTest {
 		FilterTable<List<String>, Integer> filterTable = FilterTable.builder(tableModel,
 						asList(filterTableColumn(0), filterTableColumn(1))).build();
 		filterTable.columnModel().visible(1).set(false);
-		tableModel.refresh();
+		tableModel.items().refresh();
 
 		new JScrollPane(filterTable);
 
@@ -236,7 +236,7 @@ public class FilterTableTest {
 						}).supplier(() -> items).build();
 
 		FilterTable<Row, Integer> table = FilterTable.builder(testModel, asList(columnId, columnValue)).build();
-		testModel.refresh();
+		testModel.items().refresh();
 
 		FilterTableSearchModel searchModel = table.searchModel();
 		searchModel.searchString().set("b");
@@ -282,7 +282,7 @@ public class FilterTableTest {
 		table.model().sorter().sort(1).set(SortOrder.ASCENDING);
 		table.columnModel().moveColumn(1, 0);
 
-		testModel.refresh();
+		testModel.items().refresh();
 		searchModel.searchString().set("b");
 		rowColumn = searchModel.nextResult().orElse(null);
 		assertEquals(new DefaultRowColumn(1, 0), rowColumn);
@@ -343,7 +343,7 @@ public class FilterTableTest {
 		Runnable consumer = actionsPerformed::incrementAndGet;
 		table.model().sorter().observer().addListener(consumer);
 
-		tableModel.refresh();
+		tableModel.items().refresh();
 		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sorter();
 		sortModel.sort(0).set(SortOrder.DESCENDING);
 		assertEquals(SortOrder.DESCENDING, sortModel.columnSort().get(0).sortOrder());
@@ -356,7 +356,7 @@ public class FilterTableTest {
 		assertEquals(2, actionsPerformed.get());
 
 		sortModel.sort(0).set(SortOrder.DESCENDING);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(A, tableModel.items().visible().itemAt(4));
 		assertEquals(E, tableModel.items().visible().itemAt(0));
 		sortModel.sort(0).set(SortOrder.ASCENDING);
@@ -369,7 +369,7 @@ public class FilterTableTest {
 		sortModel.sort(0).set(SortOrder.DESCENDING);
 		assertEquals(tableModel.items().visible().count() - 1, tableModel.items().visible().indexOf(NULL));
 
-		tableModel.refresh();
+		tableModel.items().refresh();
 		items.add(NULL);
 		tableModel.items().visible().addItemsAt(0, items);
 		sortModel.sort(0).set(SortOrder.ASCENDING);
@@ -384,7 +384,7 @@ public class FilterTableTest {
 	void customSorting() {
 		FilterTable<TestRow, Integer> table = createTestTable(Comparator.reverseOrder());
 		FilterTableModel<TestRow, Integer> tableModel = table.model();
-		tableModel.refresh();
+		tableModel.items().refresh();
 		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sorter();
 		sortModel.sort(0).set(SortOrder.ASCENDING);
 		assertEquals(E, tableModel.items().visible().itemAt(0));
@@ -396,7 +396,7 @@ public class FilterTableTest {
 	void selectionAndSorting() {
 		FilterTable<TestRow, Integer> table = createTestTable();
 		FilterTableModel<TestRow, Integer> tableModel = table.model();
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
 		//test selection and filtering together
@@ -435,7 +435,7 @@ public class FilterTableTest {
 	@Test
 	void export() {
 		FilterTable<TestRow, Integer> table = createTestTable();
-		table.model().refresh();
+		table.model().items().refresh();
 
 		String expected = "0" + LINE_SEPARATOR +
 						"a" + LINE_SEPARATOR +

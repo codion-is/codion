@@ -107,7 +107,7 @@ public class DefaultLoadTestModelTest {
 		assertEquals(0, model.successfulRunCount(SCENARIO.name()));
 		assertEquals(0, model.unsuccessfulRunCount(SCENARIO.name()));
 
-		model.applicationTableModel().refresh();
+		model.applicationTableModel().items().refresh();
 		model.applicationTableModel().selection().index().set(0);
 		model.removeSelectedApplications();
 //    assertEquals(4, loadTest.applicationCount().get()); //todo flaky in CI

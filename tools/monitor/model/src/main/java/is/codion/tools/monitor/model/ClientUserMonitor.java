@@ -183,7 +183,7 @@ public final class ClientUserMonitor {
 
 	private void refreshUserHistoryTableModel() {
 		try {
-			userHistoryTableModel.refresh();
+			userHistoryTableModel.items().refresh();
 		}
 		catch (Exception e) {
 			LOG.error("Error while refreshing user history table model", e);

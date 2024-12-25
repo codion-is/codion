@@ -34,8 +34,8 @@ public final class WorldAppModel extends SwingEntityApplicationModel {
 		SwingEntityModel lookupModel = new SwingEntityModel(Lookup.TYPE, connectionProvider);
 		ContinentModel continentModel = new ContinentModel(connectionProvider);
 
-		countryModel.tableModel().refresh();
-		continentModel.tableModel().refresh();
+		countryModel.tableModel().items().refresh();
+		continentModel.tableModel().items().refresh();
 
 		entityModels().add(countryModel, lookupModel, continentModel);
 	}

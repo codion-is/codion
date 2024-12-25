@@ -91,7 +91,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 	public void onSelection(Collection<Entity> selectedEntities) {
 		if (detailModel().containsTableModel() &&
 						setForeignKeyConditionOnSelection(selectedEntities) && refreshOnSelection.get()) {
-			detailModel().tableModel().refresh(items -> setForeignKeyValueOnSelection(selectedEntities));
+			detailModel().tableModel().items().refresh(items -> setForeignKeyValueOnSelection(selectedEntities));
 		}
 		else {
 			setForeignKeyValueOnSelection(selectedEntities);
@@ -106,7 +106,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 			Entity insertedEntity = entities.iterator().next();
 			setForeignKeyValueOnInsert(insertedEntity);
 			if (detailModel().containsTableModel() && setForeignKeyConditionOnInsert(insertedEntity)) {
-				detailModel().tableModel().refresh();
+				detailModel().tableModel().items().refresh();
 			}
 		}
 	}

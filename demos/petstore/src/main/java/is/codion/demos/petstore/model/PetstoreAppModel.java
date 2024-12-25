@@ -35,7 +35,7 @@ public final class PetstoreAppModel extends SwingEntityApplicationModel {
 		itemModel.editModel().initializeComboBoxModels(Item.PRODUCT_FK, Item.CONTACT_INFO_FK, Item.ADDRESS_FK);
 		SwingEntityModel tagItemModel = new SwingEntityModel(TagItem.TYPE, connectionProvider);
 		tagItemModel.editModel().initializeComboBoxModels(TagItem.ITEM_FK, TagItem.TAG_FK);
-		categoryModel.tableModel().refresh();
+		categoryModel.tableModel().items().refresh();
 		itemModel.detailModels().add(tagItemModel);
 		productModel.detailModels().add(itemModel);
 		categoryModel.detailModels().add(productModel);

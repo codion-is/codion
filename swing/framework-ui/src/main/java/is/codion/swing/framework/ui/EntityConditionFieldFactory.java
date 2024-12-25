@@ -131,7 +131,7 @@ public final class EntityConditionFieldFactory implements FieldFactory {
 
 			return inputComponents.foreignKeyComboBox((ForeignKey) attribute, comboBoxModel)
 							.completionMode(Completion.Mode.MAXIMUM_MATCH)
-							.onSetVisible(comboBox -> comboBoxModel.refresh())
+							.onSetVisible(comboBox -> comboBoxModel.items().refresh())
 							.build();
 		}
 

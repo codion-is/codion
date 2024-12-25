@@ -99,7 +99,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 	public final void refresh() {
 		for (M entityModel : models.entityModels) {
 			if (entityModel.containsTableModel()) {
-				entityModel.tableModel().refresh();
+				entityModel.tableModel().items().refresh();
 			}
 		}
 	}

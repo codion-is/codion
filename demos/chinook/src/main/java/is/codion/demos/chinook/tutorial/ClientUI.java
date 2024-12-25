@@ -113,7 +113,7 @@ public final class ClientUI {
 										// move focus with Enter key
 										.transferFocusOnEnter(true)
 										// populate the combo box model when shown
-										.onSetVisible(comboBox -> comboBox.getModel().refresh())
+										.onSetVisible(comboBox -> comboBox.getModel().items().refresh())
 										.build();
 
 		// fetch a String Value based on the album title from the edit model

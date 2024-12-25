@@ -72,7 +72,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	@Test
 	public void select() {
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
-		tableModel.refresh();
+		tableModel.items().refresh();
 
 		List<Entity.Key> keys = tableModel.entities().primaryKeys(Employee.TYPE, 1, 2);
 		Entity.Key pk1 = keys.get(0);
@@ -99,7 +99,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	@Test
 	public void selectedEntitiesIterator() {
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
-		tableModel.refresh();
+		tableModel.items().refresh();
 
 		tableModel.selection().indexes().set(asList(0, 3, 5));
 		Iterator<Entity> iterator = tableModel.selection().items().get().iterator();
@@ -111,7 +111,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	@Test
 	public void onInsert() {
 		TableModel deptModel = createDepartmentTableModel();
-		deptModel.refresh();
+		deptModel.items().refresh();
 
 		Entities entities = deptModel.entities();
 		deptModel.onInsert().set(EntityTableModel.OnInsert.ADD_BOTTOM);
@@ -144,7 +144,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		deptModel.editModel().insert(singletonList(dept3));
 		assertEquals(count + 2, deptModel.items().visible().count());
 
-		deptModel.refresh();
+		deptModel.items().refresh();
 		assertEquals(count + 3, deptModel.items().visible().count());
 
 		deptModel.editModel().delete(asList(dept, dept2, dept3));
@@ -153,7 +153,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	@Test
 	public void removeDeletedEntities() {
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
-		tableModel.refresh();
+		tableModel.items().refresh();
 
 		Entities entities = tableModel.entities();
 		Entity.Key pk1 = entities.primaryKey(Employee.TYPE, 1);
@@ -186,7 +186,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	@Test
 	public void deleteNotEnabled() {
 		testModel.editModel().deleteEnabled().set(false);
-		testModel.refresh();
+		testModel.items().refresh();
 		testModel.selection().indexes().set(singletonList(0));
 		assertThrows(IllegalStateException.class, testModel::deleteSelected);
 	}
@@ -196,7 +196,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		assertNotNull(testModel.connectionProvider());
 		assertNotNull(testModel.editModel());
 		assertFalse(testModel.editModel().readOnly().get());
-		testModel.refresh();
+		testModel.items().refresh();
 	}
 
 	@Test
@@ -204,7 +204,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		assertTrue(tableModel.queryModel().attributes().get().isEmpty());
 		tableModel.queryModel().attributes().addAll(Employee.NAME, Employee.HIREDATE);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertTrue(tableModel.items().visible().count() > 0);
 		tableModel.items().get().forEach(employee -> {
 			assertFalse(employee.contains(Employee.COMMISSION));
@@ -219,18 +219,18 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	public void limit() {
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.queryModel().limit().set(6);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(6, tableModel.items().visible().count());
 		ConditionModel<Double> commissionCondition =
 						tableModel.queryModel().conditions().attribute(Employee.COMMISSION);
 		commissionCondition.operator().set(Operator.EQUAL);
 		commissionCondition.enabled().set(true);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		commissionCondition.enabled().set(false);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(6, tableModel.items().visible().count());
 		tableModel.queryModel().limit().clear();
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(16, tableModel.items().visible().count());
 	}
 
@@ -265,7 +265,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		assertFalse(empModel.queryModel().conditionChanged().get());
 		jobModel.enabled().set(true);
 		assertTrue(empModel.queryModel().conditionChanged().get());
-		empModel.refresh();
+		empModel.items().refresh();
 		assertFalse(empModel.queryModel().conditionChanged().get());
 	}
 

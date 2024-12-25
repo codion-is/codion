@@ -234,7 +234,7 @@ public final class Example {
 		customerPanel.initialize();
 
 		//populate the model with data from the database
-		customerModel.tableModel().refresh();
+		customerModel.tableModel().items().refresh();
 
 		Dialogs.componentDialog(customerPanel)
 						.title("Customers")

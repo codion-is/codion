@@ -814,7 +814,7 @@ public class EntityPanel extends JPanel {
 	 */
 	private CommandControl createRefreshTableControl() {
 		return Control.builder()
-						.command(tableModel()::refresh)
+						.command(tableModel().items()::refresh)
 						.name(Messages.refresh())
 						.enabled(editPanel == null ? null : editPanel.active())
 						.description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")

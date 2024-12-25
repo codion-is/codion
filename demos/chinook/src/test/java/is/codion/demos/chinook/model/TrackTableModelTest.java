@@ -45,7 +45,7 @@ public final class TrackTableModelTest {
 		trackTableModel.queryModel().conditions()
 						.setEqualOperand(Track.ALBUM_FK, masterOfPuppets);
 
-		trackTableModel.refresh();
+		trackTableModel.items().refresh();
 		assertEquals(8, trackTableModel.items().visible().count());
 
 		trackTableModel.selection().selectAll();

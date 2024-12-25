@@ -43,7 +43,7 @@ public final class ContinentModel extends SwingEntityModel {
 
 	ContinentModel(EntityConnectionProvider connectionProvider) {
 		super(Continent.TYPE, connectionProvider);
-		tableModel().refresher().success().addConsumer(this::refreshChartDatasets);
+		tableModel().items().refresher().success().addConsumer(this::refreshChartDatasets);
 		CountryModel countryModel = new CountryModel(connectionProvider);
 		detailModels().add(new CountryModelLink(countryModel)).active().set(true);
 	}
@@ -101,7 +101,7 @@ public final class ContinentModel extends SwingEntityModel {
 		public void onSelection(Collection<Entity> selectedEntities) {
 			Collection<String> continentNames = Entity.values(Continent.NAME, selectedEntities);
 			if (detailModel().tableModel().queryModel().conditions().setInOperands(Country.CONTINENT, continentNames)) {
-				detailModel().tableModel().refresh();
+				detailModel().tableModel().items().refresh();
 			}
 		}
 	}

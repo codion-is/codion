@@ -160,8 +160,8 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			setBorder(createEmptyBorder(5, 5, 5, 5));
 			customerConditionPanel = new CustomerConditionPanel(tableConditionModel.get(Invoice.CUSTOMER_FK), tableModel.entityDefinition());
 			dateConditionPanel = new DateConditionPanel(tableConditionModel.get(Invoice.DATE));
-			dateConditionPanel.yearValue.addListener(tableModel::refresh);
-			dateConditionPanel.monthValue.addListener(tableModel::refresh);
+			dateConditionPanel.yearValue.addListener(tableModel.items()::refresh);
+			dateConditionPanel.monthValue.addListener(tableModel.items()::refresh);
 			conditionPanels.put(Invoice.CUSTOMER_FK, customerConditionPanel);
 			conditionPanels.put(Invoice.DATE, dateConditionPanel);
 			initializeUI();

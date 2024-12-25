@@ -111,7 +111,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		chartUpdateScheduler = TaskScheduler.builder(new ChartUpdateTask())
 						.interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
 						.build();
-		applicationsRefreshScheduler = TaskScheduler.builder(applicationTableModel::refresh)
+		applicationsRefreshScheduler = TaskScheduler.builder(applicationTableModel.items()::refresh)
 						.interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
 						.start();
 		bindEvents();

@@ -55,7 +55,7 @@ final class KeyBindingModel {
 
 	KeyBindingModel(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelModel) {
 		this.componentModel = FilterComboBoxModel.builder(new ComponentItems(lookAndFeelModel)).build();
-		this.componentModel.refresh();
+		this.componentModel.items().refresh();
 		this.tableModel = FilterTableModel.builder(new KeyBindingColumns())
 						.supplier(new KeyBindingItems())
 						.build();
@@ -72,11 +72,11 @@ final class KeyBindingModel {
 
 	private void bindEvents(FilterComboBoxModel<?> lookAndFeelModel) {
 		// Refresh the component combo box when a look and feel is selected
-		lookAndFeelModel.selection().item().addListener(componentModel::refresh);
+		lookAndFeelModel.selection().item().addListener(componentModel.items()::refresh);
 		// Refresh the table model when the component combo box has been refreshed
-		componentModel.refresher().success().addListener(tableModel::refresh);
+		componentModel.items().refresher().success().addListener(tableModel.items()::refresh);
 		// And when a component is selected
-		componentModel.selection().item().addListener(tableModel::refresh);
+		componentModel.selection().item().addListener(tableModel.items()::refresh);
 	}
 
 	record KeyBindingRow(String action, String whenFocused, String whenInFocusedWindow, String whenAncestor) {

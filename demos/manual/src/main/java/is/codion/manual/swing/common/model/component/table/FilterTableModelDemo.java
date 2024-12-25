@@ -78,7 +78,7 @@ public final class FilterTableModelDemo {
 										.build();
 
 		// Populate the model
-		tableModel.refresh();
+		tableModel.items().refresh();
 
 		// Select the first row
 		tableModel.selection().index().set(0);

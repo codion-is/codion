@@ -84,7 +84,7 @@ public class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void testRefreshClear() {
-		testModel.refresh();
+		testModel.items().refresh();
 		assertEquals(5, testModel.items().visible().count());
 		testModel.items().clear();
 		assertEquals(1, testModel.getSize());//null item
@@ -264,7 +264,7 @@ public class DefaultFilterComboBoxModelTest {
 	@Test
 	void setNullValueString() {
 		assertTrue(testModel.items().visible().contains(null));
-		testModel.refresh();
+		testModel.items().refresh();
 		assertEquals(5, testModel.items().visible().count());
 		assertEquals(NULL, testModel.getElementAt(0));
 		testModel.setSelectedItem(null);
@@ -358,7 +358,7 @@ public class DefaultFilterComboBoxModelTest {
 	void items() {
 		List<Integer> values = asList(0, 1, 2);
 		FilterComboBoxModel<Integer> model = FilterComboBoxModel.builder(() -> values).build();
-		model.refresh();
+		model.items().refresh();
 		assertEquals(values.size(), model.items().get().size());
 		assertTrue(values.containsAll(model.items().get()));
 	}

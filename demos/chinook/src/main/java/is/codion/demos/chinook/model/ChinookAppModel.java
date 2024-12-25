@@ -38,7 +38,7 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 
 	private static SwingEntityModel createAlbumModel(EntityConnectionProvider connectionProvider) {
 		AlbumModel albumModel = new AlbumModel(connectionProvider);
-		albumModel.tableModel().refresh();
+		albumModel.tableModel().items().refresh();
 
 		return albumModel;
 	}
@@ -52,7 +52,7 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 		playlistTrackLink.clearForeignKeyValueOnEmptySelection().set(true);
 		playlistTrackLink.active().set(true);
 
-		playlistModel.tableModel().refresh();
+		playlistModel.tableModel().items().refresh();
 
 		return playlistModel;
 	}
@@ -63,7 +63,7 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 		SwingEntityModel invoiceModel = new InvoiceModel(connectionProvider);
 		customerModel.detailModels().add(invoiceModel);
 
-		customerModel.tableModel().refresh();
+		customerModel.tableModel().items().refresh();
 
 		return customerModel;
 	}

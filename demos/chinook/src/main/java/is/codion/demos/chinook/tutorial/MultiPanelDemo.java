@@ -51,7 +51,7 @@ public final class MultiPanelDemo {
 						.build();
 
 		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
-		employeeModel.tableModel().refresh();
+		employeeModel.tableModel().items().refresh();
 
 		JPanel basePanel = new JPanel(gridLayout(2, 2));
 		for (int i = 0; i < 4; i++) {

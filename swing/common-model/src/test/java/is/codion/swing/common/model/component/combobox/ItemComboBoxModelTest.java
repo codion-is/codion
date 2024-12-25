@@ -65,7 +65,7 @@ public class ItemComboBoxModelTest {
 		assertNull(model.selection().item().getOrThrow().value());
 		assertEquals(model.getSelectedItem(), nullItem);
 
-		model.refresh();
+		model.items().refresh();
 
 		assertEquals(0, model.items().visible().indexOf(nullItem));
 		assertEquals(1, model.items().visible().indexOf(aOne));

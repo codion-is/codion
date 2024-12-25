@@ -84,7 +84,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 						builder.controlMap.keyStroke(ADD).get(), builder.confirmAdd));
 		this.controlMap.control(EDIT).set(createEditControl(builder.editPanel,
 						builder.controlMap.keyStroke(EDIT).get(), builder.confirmEdit));
-		model().refresher().active().addConsumer(this::refresherActive);
+		model().items().refresher().active().addConsumer(this::refresherActive);
 	}
 
 	@Override

@@ -68,7 +68,7 @@ public final class SwingEntityModelTest
 
 		EntityComboBoxModel comboBoxModel = employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
 		new EntityComboBoxModelValue(comboBoxModel).link(employeeEditModel.value(Employee.MGR_FK));
-		employeeTableModel.refresh();
+		employeeTableModel.items().refresh();
 		for (Entity employee : employeeTableModel.items().get()) {
 			employeeTableModel.selection().item().set(employee);
 			assertFalse(employeeEditModel.editor().modified().get());
@@ -83,10 +83,10 @@ public final class SwingEntityModelTest
 		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 		assertNotNull(employeeModel);
 		assertTrue(departmentModel.detailModels().linked().contains(employeeModel));
-		departmentModel.tableModel().refresh();
+		departmentModel.tableModel().items().refresh();
 		SwingEntityEditModel employeeEditModel = employeeModel.editModel();
 		EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
-		departmentsComboBoxModel.refresh();
+		departmentsComboBoxModel.items().refresh();
 		Entity.Key primaryKey = connectionProvider().entities().primaryKey(Department.TYPE, 40);//operations, no employees
 		departmentModel.tableModel().select(Collections.singletonList(primaryKey));
 		Entity operations = departmentModel.tableModel().selection().item().getOrThrow();
@@ -125,13 +125,13 @@ public final class SwingEntityModelTest
 		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();
 		try {
-			departmentModel.tableModel().refresh();
+			departmentModel.tableModel().items().refresh();
 			Entity department = connection.selectSingle(Department.NAME.equalTo("OPERATIONS"));
 			departmentModel.tableModel().selection().item().set(department);
 			SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 			EntityComboBoxModel deptComboBoxModel = employeeModel.editModel()
 							.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
-			deptComboBoxModel.refresh();
+			deptComboBoxModel.items().refresh();
 			deptComboBoxModel.setSelectedItem(department);
 			departmentModel.tableModel().deleteSelected();
 			assertEquals(3, employeeModel.editModel().foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).getSize());

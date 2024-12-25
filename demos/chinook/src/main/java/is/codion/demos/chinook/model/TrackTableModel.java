@@ -60,7 +60,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 
 	private void configureLimit() {
 		queryModel().limit().set(DEFAULT_LIMIT);
-		queryModel().limit().addListener(this::refresh);
+		queryModel().limit().addListener(items()::refresh);
 		queryModel().limit().addValidator(new LimitValidator());
 	}
 

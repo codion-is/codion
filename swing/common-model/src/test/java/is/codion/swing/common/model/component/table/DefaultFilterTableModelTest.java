@@ -120,7 +120,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void filterItems() {
-		tableModel.refresh();
+		tableModel.items().refresh();
 		tableModel.items().visible().predicate().set(item -> !item.equals(B) && !item.equals(F));
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().contains(B));
@@ -134,7 +134,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void conditionModel() {
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(5, tableModel.items().visible().count());
 		tableModel.filters().get(0).operands().equal().set("a");
 		assertEquals(1, tableModel.items().visible().count());
@@ -145,7 +145,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void addItemsAt() {
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertTrue(tableModel.items().visible().addItemsAt(2, asList(F, G)));
 		assertEquals(2, tableModel.items().visible().indexOf(F));
 		assertEquals(3, tableModel.items().visible().indexOf(G));
@@ -183,19 +183,19 @@ public final class DefaultFilterTableModelTest {
 		AtomicInteger done = new AtomicInteger();
 		Runnable successfulListener = done::incrementAndGet;
 		Consumer<Throwable> failedConsumer = exception -> {};
-		tableModel.refresher().success().addListener(successfulListener);
-		tableModel.refresher().failure().addConsumer(failedConsumer);
-		tableModel.refresh();
+		tableModel.items().refresher().success().addListener(successfulListener);
+		tableModel.items().refresher().failure().addConsumer(failedConsumer);
+		tableModel.items().refresh();
 		assertFalse(tableModel.items().visible().get().isEmpty());
 		assertEquals(1, done.get());
 
 		done.set(0);
-		tableModel.refreshStrategy().set(RefreshStrategy.MERGE);
-		tableModel.refresh();
+		tableModel.items().refreshStrategy().set(RefreshStrategy.MERGE);
+		tableModel.items().refresh();
 		assertEquals(1, done.get());
 
-		tableModel.refresher().success().removeListener(successfulListener);
-		tableModel.refresher().failure().removeConsumer(failedConsumer);
+		tableModel.items().refresher().success().removeListener(successfulListener);
+		tableModel.items().refresher().failure().removeConsumer(failedConsumer);
 	}
 
 	@Test
@@ -207,20 +207,20 @@ public final class DefaultFilterTableModelTest {
 										.supplier(() -> items)
 										.build();
 		testModel.selection().indexes().addListener(selectionEvents::incrementAndGet);
-		testModel.refreshStrategy().set(RefreshStrategy.MERGE);
+		testModel.items().refreshStrategy().set(RefreshStrategy.MERGE);
 		testModel.sorter().sort(0).set(SortOrder.ASCENDING);
-		testModel.refresh();
+		testModel.items().refresh();
 		testModel.selection().index().set(1);//b
 
 		assertEquals(1, selectionEvents.get());
 		assertSame(B, testModel.selection().item().get());
 
 		assertTrue(items.remove(C));
-		testModel.refresh();
+		testModel.items().refresh();
 		assertEquals(1, selectionEvents.get());
 
 		assertTrue(items.remove(B));
-		testModel.refresh();
+		testModel.items().refresh();
 		assertTrue(testModel.selection().isSelectionEmpty());
 		assertEquals(2, selectionEvents.get());
 
@@ -232,7 +232,7 @@ public final class DefaultFilterTableModelTest {
 
 		assertTrue(items.add(B));
 
-		testModel.refresh();
+		testModel.items().refresh();
 		//merge does not sort new items
 		testModel.items().visible().sort();
 
@@ -247,7 +247,7 @@ public final class DefaultFilterTableModelTest {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
 		tableModel.items().visible().addListener(listener);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(1, events.get());
 		tableModel.filters().get(0).operands().equal().set("a");
 		assertFalse(tableModel.items().removeItem(B));
@@ -264,7 +264,7 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.items().filtered().contains(D));
 		assertFalse(tableModel.items().filtered().contains(E));
 		tableModel.filters().get(0).operands().equal().set(null);
-		tableModel.refresh();//two events, clear and add
+		tableModel.items().refresh();//two events, clear and add
 		assertEquals(8, events.get());
 		tableModel.items().visible().removeItems(0, 2);
 		assertEquals(9, events.get());//just a single event when removing multiple items
@@ -280,7 +280,7 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().visible().addListener(listener);
 		State selectionChangedState = State.state();
 		tableModel.selection().item().addConsumer(item -> selectionChangedState.set(true));
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(1, dataChangedEvents.get());
 		tableModel.selection().item().set(B);
 		TestRow h = new TestRow("h");
@@ -304,7 +304,7 @@ public final class DefaultFilterTableModelTest {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
 		tableModel.items().visible().addListener(listener);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(1, events.get());
 		List<TestRow> removed = tableModel.items().visible().removeItems(1, 3);
 		assertEquals(2, events.get());
@@ -316,9 +316,9 @@ public final class DefaultFilterTableModelTest {
 		assertTrue(tableModel.items().contains(D));
 		assertTrue(tableModel.items().contains(E));
 
-		tableModel.refreshStrategy().set(RefreshStrategy.MERGE);
+		tableModel.items().refreshStrategy().set(RefreshStrategy.MERGE);
 		events.set(0);
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertEquals(5, events.get());
 
 		tableModel.items().visible().removeListener(listener);
@@ -326,7 +326,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void clear() {
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertTrue(tableModel.items().visible().count() > 0);
 		tableModel.items().clear();
 		assertEquals(0, tableModel.items().visible().count());
@@ -399,7 +399,7 @@ public final class DefaultFilterTableModelTest {
 		assertTrue(selection.empty().get());
 		assertFalse(selection.multiple().get());
 
-		tableModel.refresh();
+		tableModel.items().refresh();
 		selection.index().set(2);
 		assertEquals(4, events.get());
 		assertTrue(selection.single().get());
@@ -526,7 +526,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void selectionAndFiltering() {
-		tableModel.refresh();
+		tableModel.items().refresh();
 		tableModel.selection().indexes().add(singletonList(3));
 		assertEquals(3, tableModel.selection().getMinSelectionIndex());
 
@@ -540,7 +540,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void visiblePredicate() {
-		tableModel.refresh();
+		tableModel.items().refresh();
 		tableModel.items().visible().predicate().set(item -> false);
 		assertEquals(0, tableModel.items().visible().count());
 	}
@@ -552,7 +552,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void filterAndRemove() {
-		tableModel.refresh();
+		tableModel.items().refresh();
 		tableModel.filters().get(0).operands().equal().set("a");
 		assertTrue(tableModel.items().contains(B));
 		assertFalse(tableModel.items().removeItem(B));
@@ -563,7 +563,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void filtering() {
-		tableModel.refresh();
+		tableModel.items().refresh();
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModel.items().visible().predicate().isNull());
 
@@ -625,7 +625,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void values() {
-		tableModel.refresh();
+		tableModel.items().refresh();
 		tableModel.selection().indexes().set(asList(0, 2));
 		Collection<String> values = tableModel.selectedValues(0);
 		assertEquals(2, values.size());

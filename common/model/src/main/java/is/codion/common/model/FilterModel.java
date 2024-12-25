@@ -60,30 +60,6 @@ public interface FilterModel<T> {
 	Items<T> items();
 
 	/**
-	 * @return this models {@link Refresher} instance
-	 */
-	Refresher<T> refresher();
-
-	/**
-	 * Refreshes the items in this model using its {@link Refresher}.
-	 * @throws RuntimeException in case of an exception when running refresh synchronously
-	 * @see Refresher#refresh()
-	 */
-	void refresh();
-
-	/**
-	 * Refreshes the data in this filter model using its {@link Refresher}.
-	 * Note that this method only throws exceptions when run synchronously off the user interface thread.
-	 * Use {@link Refresher#failure()} to listen for exceptions that happen during asynchronous refresh.
-	 * @param onRefresh called after a successful refresh
-	 * @see Refresher#active()
-	 * @see Refresher#success()
-	 * @see Refresher#failure()
-	 * @see Refresher#async()
-	 */
-	void refresh(Consumer<Collection<T>> onRefresh);
-
-	/**
 	 * @return the {@link SingleItemSelection} instance used by this filter model
 	 */
 	SingleItemSelection<T> selection();
@@ -93,6 +69,29 @@ public interface FilterModel<T> {
 	 * @param <T> the item type
 	 */
 	interface Items<T> extends Observable<Collection<T>> {
+
+		/**
+		 * @return this models {@link Refresher} instance
+		 */
+		Refresher<T> refresher();
+
+		/**
+		 * Refreshes the items in this model using its {@link Refresher}.
+		 * @throws RuntimeException in case of an exception when running refresh synchronously
+		 */
+		void refresh();
+
+		/**
+		 * Refreshes the data in this filter model using its {@link Refresher}.
+		 * Note that this method only throws exceptions when run synchronously off the user interface thread.
+		 * Use {@link Refresher#failure()} to listen for exceptions that happen during asynchronous refresh.
+		 * @param onRefresh called after a successful refresh
+		 * @see Refresher#active()
+		 * @see Refresher#success()
+		 * @see Refresher#failure()
+		 * @see Refresher#async()
+		 */
+		void refresh(Consumer<Collection<T>> onRefresh);
 
 		/**
 		 * @return the items or an empty list in case of no items

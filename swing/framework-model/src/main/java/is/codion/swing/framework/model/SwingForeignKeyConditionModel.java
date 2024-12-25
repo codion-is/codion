@@ -198,7 +198,7 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 		if (equalComboBoxModel != null) {
 			equalComboBoxModel.selection().item().addConsumer(new SetEqualValue());
 			operands().equal().addConsumer(new SelectEqualValue());
-			equalComboBoxModel.refresher().success().addListener(() -> equalComboBoxModel.setSelectedItem(operands().equal().get()));
+			equalComboBoxModel.items().refresher().success().addListener(() -> equalComboBoxModel.setSelectedItem(operands().equal().get()));
 		}
 		if (inSearchModel != null) {
 			inSearchModel.selection().entities().addConsumer(new SetInValues());

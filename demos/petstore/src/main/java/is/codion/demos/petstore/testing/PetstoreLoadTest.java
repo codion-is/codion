@@ -71,7 +71,7 @@ public final class PetstoreLoadTest {
 		public void perform(PetstoreAppModel application) {
 			SwingEntityModel categoryModel = application.entityModels().get().iterator().next();
 			categoryModel.tableModel().selection().clear();
-			categoryModel.tableModel().refresh();
+			categoryModel.tableModel().items().refresh();
 			selectRandomRow(categoryModel.tableModel());
 			selectRandomRow(categoryModel.detailModels().get().iterator().next().tableModel());
 			selectRandomRow(categoryModel.detailModels().get().iterator().next().detailModels().get().iterator().next().tableModel());

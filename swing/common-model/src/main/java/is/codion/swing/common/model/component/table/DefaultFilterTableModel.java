@@ -84,7 +84,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Items<R> items() {
+	public FilterTableModelItems<R> items() {
 		return modelItems;
 	}
 
@@ -96,21 +96,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public int getRowCount() {
 		return modelItems.visible.count();
-	}
-
-	@Override
-	public Refresher<R> refresher() {
-		return modelItems.refresher;
-	}
-
-	@Override
-	public void refresh() {
-		modelItems.refresher.doRefresh(null);
-	}
-
-	@Override
-	public void refresh(Consumer<Collection<R>> onRefresh) {
-		modelItems.refresher.doRefresh(requireNonNull(onRefresh));
 	}
 
 	@Override
@@ -138,11 +123,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	public <T> Collection<T> selectedValues(C identifier) {
 		return (Collection<T>) columnValues(selection().indexes().get().stream(),
 						columns.identifiers().indexOf(identifier));
-	}
-
-	@Override
-	public Value<RefreshStrategy> refreshStrategy() {
-		return modelItems.refreshStrategy;
 	}
 
 	@Override
@@ -202,7 +182,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		return columnFilterModels;
 	}
 
-	private final class DefaultItems implements Items<R> {
+	private final class DefaultItems implements FilterTableModelItems<R> {
 
 		private final Lock lock = new Lock() {};
 
@@ -222,6 +202,26 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 							.value(refreshStrategy)
 							.build();
 			this.visiblePredicate = new VisiblePredicate();
+		}
+
+		@Override
+		public Refresher<R> refresher() {
+			return refresher;
+		}
+
+		@Override
+		public void refresh() {
+			refresher.doRefresh(null);
+		}
+
+		@Override
+		public void refresh(Consumer<Collection<R>> onRefresh) {
+			refresher.doRefresh(requireNonNull(onRefresh));
+		}
+
+		@Override
+		public Value<RefreshStrategy> refreshStrategy() {
+			return refreshStrategy;
 		}
 
 		@Override
