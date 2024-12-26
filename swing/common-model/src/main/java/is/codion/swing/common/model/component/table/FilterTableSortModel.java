@@ -46,14 +46,19 @@ public interface FilterTableSortModel<R, C> {
 	Order order(C identifier);
 
 	/**
-	 * @return the {@link ColumnSort}
+	 * @return the {@link ColumnSort} providing the current sorting state
 	 */
-	ColumnSort<C> columnSort();
+	ColumnSort<C> columns();
 
 	/**
 	 * Clears the sorting states from this sort model
 	 */
 	void clear();
+
+	/**
+	 * @return true if one or more columns are sorted
+	 */
+	boolean sorted();
 
 	/**
 	 * @return an observer notified each time the sorting changes, with the current sorted state as event data
@@ -94,7 +99,7 @@ public interface FilterTableSortModel<R, C> {
 		ColumnSortOrder<C> get(C identifier);
 
 		/**
-		 * @return the current column sort order, in order of priority or an empty list in case this model is unsorted
+		 * @return the currently sorted columns, in order of priority or an empty list in case this model is unsorted
 		 */
 		List<ColumnSortOrder<C>> get();
 	}
@@ -109,7 +114,7 @@ public interface FilterTableSortModel<R, C> {
 		 * @param sortOrder the sorting order
 		 * @throws IllegalStateException in case sorting is locked for this column
 		 * @see #add(SortOrder)
-		 * @see #columnSort()
+		 * @see #columns()
 		 * @see #locked()
 		 */
 		void set(SortOrder sortOrder);
@@ -121,7 +126,7 @@ public interface FilterTableSortModel<R, C> {
 		 * @param sortOrder the sorting order
 		 * @throws IllegalStateException in case sorting is locked for this column
 		 * @see #set(SortOrder)
-		 * @see #columnSort()
+		 * @see #columns()
 		 * @see #locked()
 		 */
 		void add(SortOrder sortOrder);

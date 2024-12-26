@@ -57,16 +57,21 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	}
 
 	@Override
-	public ColumnSort<C> columnSort() {
+	public ColumnSort<C> columns() {
 		return new DefaultColumnSort();
 	}
 
 	@Override
 	public void clear() {
-		if (!columnSortOrders.isEmpty()) {
+		if (sorted()) {
 			columnSortOrders.clear();
 			sortingChanged.accept(false);
 		}
+	}
+
+	@Override
+	public boolean sorted() {
+		return !columnSortOrders.isEmpty();
 	}
 
 	@Override
@@ -159,7 +164,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 			if (sortOrder != SortOrder.UNSORTED) {
 				columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder, columnSortOrders.size()));
 			}
-			sortingChanged.accept(!columnSortOrders.isEmpty());
+			sortingChanged.accept(sorted());
 		}
 
 		private boolean removeSortOrder(C identifier) {

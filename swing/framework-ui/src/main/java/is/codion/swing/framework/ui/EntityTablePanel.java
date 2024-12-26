@@ -1550,7 +1550,7 @@ public class EntityTablePanel extends JPanel {
 		queryHiddenColumns.addListener(setSelectAttributes);
 		orderQueryBySortOrder.addConsumer(enabled ->
 						tableModel.queryModel().orderBy().set(enabled ? orderByFromSortModel() : null));
-		table.model().sorter().observer().addListener(() ->
+		table.model().sort().observer().addListener(() ->
 						tableModel.queryModel().orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel() : null));
 	}
 
@@ -1782,7 +1782,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private OrderBy orderByFromSortModel() {
-		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = table.model().sorter().columnSort().get();
+		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = table.model().sort().columns().get();
 		if (columnSortOrder.isEmpty()) {
 			return null;
 		}

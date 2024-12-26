@@ -167,7 +167,7 @@ public class EntityTablePanelTest {
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		tablePanel.table().model().sorter().order(Employee.NAME).set(SortOrder.ASCENDING);
+		tablePanel.table().model().sort().order(Employee.NAME).set(SortOrder.ASCENDING);
 
 		orderBy = tableModel.queryModel().orderBy().getOrThrow();
 		//still default order by for entity
@@ -183,8 +183,8 @@ public class EntityTablePanelTest {
 		assertTrue(orderBy.orderByColumns().get(0).ascending());
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(0).column());
 
-		tablePanel.table().model().sorter().order(Employee.HIREDATE).set(SortOrder.DESCENDING);
-		tablePanel.table().model().sorter().order(Employee.NAME).add(SortOrder.ASCENDING);
+		tablePanel.table().model().sort().order(Employee.HIREDATE).set(SortOrder.DESCENDING);
+		tablePanel.table().model().sort().order(Employee.NAME).add(SortOrder.ASCENDING);
 
 		orderBy = tableModel.queryModel().orderBy().getOrThrow();
 		assertEquals(2, orderBy.orderByColumns().size());
@@ -193,7 +193,7 @@ public class EntityTablePanelTest {
 		assertTrue(orderBy.orderByColumns().get(1).ascending());
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
-		tablePanel.table().model().sorter().clear();
+		tablePanel.table().model().sort().clear();
 		orderBy = tableModel.queryModel().orderBy().getOrThrow();
 		//back to default order by for entity
 		assertEquals(2, orderBy.orderByColumns().size());

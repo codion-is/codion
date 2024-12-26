@@ -57,7 +57,7 @@ final class FilterTableDemo {
 		FilterTableSearchModel searchModel = filterTable.searchModel();
 		searchModel.predicate().set(value -> value.equals("43"));
 
-		FilterTableSearchModel.RowColumn searchResult = searchModel.currentResult().get();
+		FilterTableSearchModel.RowColumn searchResult = searchModel.results().current().get();
 		System.out.println(searchResult); // row: 1, column: 1
 		// end::filterTable[]
 	}

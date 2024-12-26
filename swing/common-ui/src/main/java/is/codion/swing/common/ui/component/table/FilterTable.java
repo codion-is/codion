@@ -739,13 +739,13 @@ public final class FilterTable<R, C> extends JTable {
 	private void toggleColumnSorting(int selectedColumn, boolean add) {
 		if (sortingEnabled.get() && selectedColumn != -1) {
 			C identifier = columnModel().getColumn(selectedColumn).identifier();
-			if (!tableModel.sorter().order(identifier).locked().get()) {
-				ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSort().get(identifier);
+			if (!tableModel.sort().order(identifier).locked().get()) {
+				ColumnSortOrder<C> columnSortOrder = tableModel.sort().columns().get(identifier);
 				if (add) {
-					tableModel.sorter().order(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
+					tableModel.sort().order(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
 				}
 				else {
-					tableModel.sorter().order(identifier).set(nextSortOrder(columnSortOrder.sortOrder()));
+					tableModel.sort().order(identifier).set(nextSortOrder(columnSortOrder.sortOrder()));
 				}
 			}
 		}
@@ -864,8 +864,7 @@ public final class FilterTable<R, C> extends JTable {
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
 		tableModel.filters().changed().addListener(getTableHeader()::repaint);
 		searchModel.results().current().addListener(this::repaint);
-		tableModel.sorter().observer().addListener(getTableHeader()::repaint);
-		tableModel.sorter().observer().addListener(model().items().visible()::sort);
+		tableModel.sort().observer().addListener(getTableHeader()::repaint);
 		addMouseListener(new FilterTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener(columnReorderingAllowed, columnResizingAllowed));
 		controlMap.keyEvent(COPY_CELL).ifPresent(keyEvent -> keyEvent.enable(this));
@@ -982,16 +981,16 @@ public final class FilterTable<R, C> extends JTable {
 			int index = columnModel.getColumnIndexAtX(e.getX());
 			if (index >= 0) {
 				C identifier = columnModel.getColumn(index).identifier();
-				if (!tableModel.sorter().order(identifier).locked().get()) {
+				if (!tableModel.sort().order(identifier).locked().get()) {
 					if (!getSelectionModel().isSelectionEmpty()) {
 						setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 					}
-					ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columnSort().get(identifier);
+					ColumnSortOrder<C> columnSortOrder = tableModel.sort().columns().get(identifier);
 					if (e.isAltDown()) {
-						tableModel.sorter().order(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
+						tableModel.sort().order(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
 					}
 					else {
-						tableModel.sorter().order(identifier).set(nextSortOrder(columnSortOrder.sortOrder()));
+						tableModel.sort().order(identifier).set(nextSortOrder(columnSortOrder.sortOrder()));
 					}
 				}
 			}

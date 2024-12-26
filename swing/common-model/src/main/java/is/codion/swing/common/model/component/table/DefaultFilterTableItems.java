@@ -84,6 +84,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		this.visiblePredicate = new VisiblePredicate();
 		this.selection = new DefaultFilterTableSelection<>(this);
 		this.sorter = new DefaultFilterTableSortModel<>(columns);
+		this.sorter.observer().addListener(visible::sort);
 	}
 
 	@Override
@@ -210,7 +211,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 					filtered.items.add(item);
 				}
 			}
-			if (!sorter.columnSort().get().isEmpty()) {
+			if (sorter.sorted()) {
 				visible.items.sort(sorter.comparator());
 			}
 			tableModel.fireTableDataChanged();
@@ -518,7 +519,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 		@Override
 		public void sort() {
-			if (!sorter.columnSort().get().isEmpty()) {
+			if (sorter.sorted()) {
 				List<R> selectedItems = selection.items().get();
 				synchronized (lock) {
 					items.sort(sorter.comparator());

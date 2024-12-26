@@ -117,7 +117,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	/**
 	 * @return the sort model
 	 */
-	FilterTableSortModel<R, C> sorter();
+	FilterTableSortModel<R, C> sort();
 
 	/**
 	 * Notifies all listeners that all cell values in the table's rows may have changed.

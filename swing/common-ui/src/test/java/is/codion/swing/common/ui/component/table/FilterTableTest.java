@@ -252,7 +252,7 @@ public class FilterTableTest {
 		rowColumn = searchModel.results().next().orElse(null);
 		assertNull(rowColumn);
 
-		table.model().sorter().order(1).set(SortOrder.DESCENDING);
+		table.model().sort().order(1).set(SortOrder.DESCENDING);
 
 		searchModel.searchString().set("b");
 		rowColumn = searchModel.results().next().orElse(null);
@@ -279,7 +279,7 @@ public class FilterTableTest {
 						new DefaultRowColumn(3, 1)
 		), searchModel.results().get());
 
-		table.model().sorter().order(1).set(SortOrder.ASCENDING);
+		table.model().sort().order(1).set(SortOrder.ASCENDING);
 		table.columnModel().moveColumn(1, 0);
 
 		testModel.items().refresh();
@@ -296,7 +296,7 @@ public class FilterTableTest {
 		rowColumn = searchModel.results().next().orElse(null);
 		assertNull(rowColumn);
 
-		table.model().sorter().order(0).set(SortOrder.DESCENDING);
+		table.model().sort().order(0).set(SortOrder.DESCENDING);
 
 		searchModel.searchString().set("b");
 		rowColumn = searchModel.results().next().orElse(null);
@@ -341,18 +341,18 @@ public class FilterTableTest {
 		FilterTableModel<TestRow, Integer> tableModel = table.model();
 		AtomicInteger actionsPerformed = new AtomicInteger();
 		Runnable consumer = actionsPerformed::incrementAndGet;
-		table.model().sorter().observer().addListener(consumer);
+		table.model().sort().observer().addListener(consumer);
 
 		tableModel.items().refresh();
-		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sorter();
+		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sort();
 		sortModel.order(0).set(SortOrder.DESCENDING);
-		assertEquals(SortOrder.DESCENDING, sortModel.columnSort().get(0).sortOrder());
+		assertEquals(SortOrder.DESCENDING, sortModel.columns().get(0).sortOrder());
 		assertEquals(E, tableModel.items().visible().itemAt(0));
 		assertEquals(1, actionsPerformed.get());
 		sortModel.order(0).set(SortOrder.ASCENDING);
-		assertEquals(SortOrder.ASCENDING, sortModel.columnSort().get(0).sortOrder());
+		assertEquals(SortOrder.ASCENDING, sortModel.columns().get(0).sortOrder());
 		assertEquals(A, tableModel.items().visible().itemAt(0));
-		assertEquals(0, sortModel.columnSort().get().get(0).identifier());
+		assertEquals(0, sortModel.columns().get().get(0).identifier());
 		assertEquals(2, actionsPerformed.get());
 
 		sortModel.order(0).set(SortOrder.DESCENDING);
@@ -377,7 +377,7 @@ public class FilterTableTest {
 		sortModel.order(0).set(SortOrder.DESCENDING);
 		assertEquals(tableModel.items().visible().count() - 2, tableModel.items().visible().indexOf(NULL));
 		sortModel.order(0).set(SortOrder.UNSORTED);
-		table.model().sorter().observer().removeListener(consumer);
+		table.model().sort().observer().removeListener(consumer);
 	}
 
 	@Test
@@ -385,7 +385,7 @@ public class FilterTableTest {
 		FilterTable<TestRow, Integer> table = createTestTable(Comparator.reverseOrder());
 		FilterTableModel<TestRow, Integer> tableModel = table.model();
 		tableModel.items().refresh();
-		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sorter();
+		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sort();
 		sortModel.order(0).set(SortOrder.ASCENDING);
 		assertEquals(E, tableModel.items().visible().itemAt(0));
 		sortModel.order(0).set(SortOrder.DESCENDING);
@@ -411,13 +411,13 @@ public class FilterTableTest {
 		assertEquals(3, selectionModel.getMinSelectionIndex());
 		assertEquals(ITEMS.get(2), selectionModel.item().get());
 
-		table.model().sorter().order(0).set(SortOrder.ASCENDING);
+		table.model().sort().order(0).set(SortOrder.ASCENDING);
 		assertEquals(ITEMS.get(2), selectionModel.item().get());
 		assertEquals(2, selectionModel.getMinSelectionIndex());
 
 		tableModel.selection().indexes().set(singletonList(0));
 		assertEquals(ITEMS.get(0), selectionModel.item().get());
-		table.model().sorter().order(0).set(SortOrder.DESCENDING);
+		table.model().sort().order(0).set(SortOrder.DESCENDING);
 		assertEquals(4, selectionModel.getMinSelectionIndex());
 
 		assertEquals(singletonList(4), selectionModel.indexes().get());

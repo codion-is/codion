@@ -232,8 +232,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final FilterTableSortModel<Entity, Attribute<?>> sorter() {
-		return filterModel().sorter();
+	public final FilterTableSortModel<Entity, Attribute<?>> sort() {
+		return filterModel().sort();
 	}
 
 	@Override

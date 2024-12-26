@@ -80,7 +80,7 @@ final class FilterTableHeaderRenderer<R, C> implements TableCellRenderer {
 	}
 
 	private Icon sortArrowIcon(C identifier, int iconSizePixels) {
-		ColumnSortOrder<C> columnSortOrder = filterTable.model().sorter().columnSort().get(identifier);
+		ColumnSortOrder<C> columnSortOrder = filterTable.model().sort().columns().get(identifier);
 
 		return columnSortOrder.sortOrder() == SortOrder.UNSORTED ? null : new Arrow(columnSortOrder.sortOrder() == SortOrder.DESCENDING, iconSizePixels, columnSortOrder.priority());
 	}

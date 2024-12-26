@@ -118,8 +118,8 @@ public final class DomainGeneratorModel {
 		this.user = requireNonNull(user);
 		sourceDirectoryChanged();
 		domainPackageChanged();
-		schemaTableModel.sorter().order(SchemaColumns.Id.SCHEMA).set(SortOrder.ASCENDING);
-		entityTableModel.sorter().order(EntityColumns.Id.ENTITY).set(SortOrder.ASCENDING);
+		schemaTableModel.sort().order(SchemaColumns.Id.SCHEMA).set(SortOrder.ASCENDING);
+		entityTableModel.sort().order(EntityColumns.Id.ENTITY).set(SortOrder.ASCENDING);
 		schemaTableModel.items().refresh();
 		bindEvents();
 	}
