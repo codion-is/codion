@@ -62,7 +62,7 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 		State okPressed = State.state();
 		CalendarPanel calendarPanel = showCalendarDialog(calendarPanelBuilder.build(), MESSAGES.getString("select_date"), okPressed);
 
-		return okPressed.get() ? Optional.of(calendarPanel.getLocalDate()) : Optional.empty();
+		return okPressed.get() ? calendarPanel.date().optional() : Optional.empty();
 	}
 
 	@Override
@@ -72,7 +72,7 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 		State okPressed = State.state();
 		CalendarPanel calendarPanel = showCalendarDialog(calendarPanelBuilder.build(), MESSAGES.getString("select_date_time"), okPressed);
 
-		return okPressed.get() ? Optional.of(calendarPanel.getLocalDateTime()) : Optional.empty();
+		return okPressed.get() ? calendarPanel.dateTime().optional() : Optional.empty();
 	}
 
 	private CalendarPanel showCalendarDialog(CalendarPanel calendarPanel, String title, State okPressed) {

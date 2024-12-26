@@ -60,6 +60,7 @@ Codion Change Log
 - CalendarPanel.Builder.enabled() added.
 - FilterTableSearchModel.Results added along with results(), related refactoring and renaming.
 - FilterTable.DefaultBuilder now validates column model indexes.
+- CalendarPanel.CalendarDate and CalendarDateTime added along with date() and dateTime(), related refactoring.
 ### is.codion.framework.domain
 - EntityDefinition.description() now returns Optional.
 - DefaultEntityDefinition, source attributes validated for denormalized attributes.

@@ -41,29 +41,29 @@ public final class CalendarPanelTest {
 		Consumer<LocalDate> dateConsumer = date -> dateChangedCounter.incrementAndGet();
 		Consumer<LocalDateTime> dateTimeConsumer = dateTime -> dateTimeChangedCounter.incrementAndGet();
 
-		panel.localDateValue().addConsumer(dateConsumer);
-		panel.localDateTimeValue().addConsumer(dateTimeConsumer);
+		panel.date().addConsumer(dateConsumer);
+		panel.dateTime().addConsumer(dateTimeConsumer);
 
-		panel.setLocalDate(startDate.toLocalDate());
+		panel.date().set(startDate.toLocalDate());
 
 		assertEquals(0, dateChangedCounter.get());
 		assertEquals(2, dateTimeChangedCounter.get());//time gets truncated, once for hours, again for minutes
 
-		panel.setLocalDateTime(startDate.minusMinutes(1));
+		panel.dateTime().set(startDate.minusMinutes(1));
 
 		assertEquals(0, dateChangedCounter.get());
 		assertEquals(4, dateTimeChangedCounter.get());//again, once for hours, again for minutes
 
-		panel.setLocalDateTime(startDate.withMonth(7));
+		panel.dateTime().set(startDate.withMonth(7));
 
 		assertEquals(1, dateChangedCounter.get());
 
-		panel.setLocalDateTime(startDate.withMonth(7).withDayOfMonth(18));
+		panel.dateTime().set(startDate.withMonth(7).withDayOfMonth(18));
 
 		assertEquals(2, dateChangedCounter.get());
 
-		panel.localDateValue().removeConsumer(dateConsumer);
-		panel.localDateTimeValue().removeConsumer(dateTimeConsumer);
+		panel.date().removeConsumer(dateConsumer);
+		panel.dateTime().removeConsumer(dateTimeConsumer);
 	}
 
 	@Test
@@ -74,47 +74,47 @@ public final class CalendarPanelTest {
 						.build();
 
 		panel.previousYear();
-		assertEquals(startDate.withYear(2020), panel.getLocalDateTime());
+		assertEquals(startDate.withYear(2020), panel.dateTime().get());
 		panel.nextYear();
-		assertEquals(startDate, panel.getLocalDateTime());
+		assertEquals(startDate, panel.dateTime().get());
 
 		panel.previousMonth();
-		assertEquals(startDate.withMonth(7), panel.getLocalDateTime());
+		assertEquals(startDate.withMonth(7), panel.dateTime().get());
 		panel.nextMonth();
-		assertEquals(startDate, panel.getLocalDateTime());
+		assertEquals(startDate, panel.dateTime().get());
 
 		panel.previousWeek();
-		assertEquals(startDate.withDayOfMonth(14), panel.getLocalDateTime());
+		assertEquals(startDate.withDayOfMonth(14), panel.dateTime().get());
 		panel.nextWeek();
-		assertEquals(startDate, panel.getLocalDateTime());
+		assertEquals(startDate, panel.dateTime().get());
 
 		panel.previousDay();
-		assertEquals(startDate.withDayOfMonth(20), panel.getLocalDateTime());
+		assertEquals(startDate.withDayOfMonth(20), panel.dateTime().get());
 		panel.nextDay();
-		assertEquals(startDate, panel.getLocalDateTime());
+		assertEquals(startDate, panel.dateTime().get());
 
 		panel.previousHour();
-		assertEquals(startDate.withHour(15), panel.getLocalDateTime());
+		assertEquals(startDate.withHour(15), panel.dateTime().get());
 		panel.nextHour();
-		assertEquals(startDate, panel.getLocalDateTime());
+		assertEquals(startDate, panel.dateTime().get());
 
 		panel.previousMinute();
-		assertEquals(startDate.withMinute(29), panel.getLocalDateTime());
+		assertEquals(startDate.withMinute(29), panel.dateTime().get());
 		panel.nextMinute();
-		assertEquals(startDate, panel.getLocalDateTime());
+		assertEquals(startDate, panel.dateTime().get());
 
 		LocalDateTime date = LocalDateTime.of(2021, 12, 31, 23, 59);
-		panel.setLocalDateTime(date);
+		panel.dateTime().set(date);
 
 		panel.nextHour();
-		assertEquals(date.withYear(2022).withMonth(1).withDayOfMonth(1).withHour(0).withMinute(59), panel.getLocalDateTime());
+		assertEquals(date.withYear(2022).withMonth(1).withDayOfMonth(1).withHour(0).withMinute(59), panel.dateTime().get());
 		panel.previousHour();
-		assertEquals(date, panel.getLocalDateTime());
+		assertEquals(date, panel.dateTime().get());
 
 		panel.nextMinute();
-		assertEquals(date.withYear(2022).withMonth(1).withDayOfMonth(1).withHour(0).withMinute(0), panel.getLocalDateTime());
+		assertEquals(date.withYear(2022).withMonth(1).withDayOfMonth(1).withHour(0).withMinute(0), panel.dateTime().get());
 		panel.previousMinute();
-		assertEquals(date, panel.getLocalDateTime());
+		assertEquals(date, panel.dateTime().get());
 	}
 
 	@Test
@@ -125,8 +125,8 @@ public final class CalendarPanelTest {
 						.value(startDate)
 						.includeTime(false)
 						.build();
-		panel.setLocalDateTime(startDate);
+		panel.dateTime().set(startDate);
 
-		assertEquals(startDate.withHour(0).withMinute(0), panel.getLocalDateTime());
+		assertEquals(startDate.withHour(0).withMinute(0), panel.dateTime().get());
 	}
 }

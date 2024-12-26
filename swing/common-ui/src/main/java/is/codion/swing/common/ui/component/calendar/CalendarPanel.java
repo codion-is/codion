@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.calendar;
 
 import is.codion.common.item.Item;
 import is.codion.common.observable.Observable;
+import is.codion.common.observable.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
@@ -196,8 +197,8 @@ public final class CalendarPanel extends JPanel {
 	private final DateTimeFormatter dateFormatter;
 	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-	private final Value<LocalDate> localDateValue;
-	private final Value<LocalDateTime> localDateTimeValue;
+	private final DefaultCalendarDate date;
+	private final DefaultCalendarDateTime dateTime;
 
 	private final Value<Integer> yearValue;
 	private final Value<Month> monthValue;
@@ -224,28 +225,28 @@ public final class CalendarPanel extends JPanel {
 		this.firstDayOfWeek = builder.firstDayOfWeek;
 		this.dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(selectedLocale);
 		this.enabledState = builder.enabled;
-		LocalDateTime dateTime = builder.value == null ? LocalDateTime.now() : builder.value;
+		LocalDateTime localDateTime = builder.value == null ? LocalDateTime.now() : builder.value;
 		yearValue = Value.builder()
-						.nonNull(dateTime.getYear())
+						.nonNull(localDateTime.getYear())
 						.listener(this::updateDateTime)
 						.listener(new LayoutDayPanelListener())
 						.build();
 		monthValue = Value.builder()
-						.nonNull(dateTime.getMonth())
+						.nonNull(localDateTime.getMonth())
 						.listener(this::updateDateTime)
 						.listener(new LayoutDayPanelListener())
 						.build();
 		dayValue = Value.builder()
-						.nonNull(dateTime.getDayOfMonth())
+						.nonNull(localDateTime.getDayOfMonth())
 						.listener(this::updateDateTime)
 						.build();
 		if (includeTime) {
 			hourValue = Value.builder()
-							.nonNull(dateTime.getHour())
+							.nonNull(localDateTime.getHour())
 							.listener(this::updateDateTime)
 							.build();
 			minuteValue = Value.builder()
-							.nonNull(dateTime.getMinute())
+							.nonNull(localDateTime.getMinute())
 							.listener(this::updateDateTime)
 							.build();
 		}
@@ -253,8 +254,8 @@ public final class CalendarPanel extends JPanel {
 			hourValue = Value.nonNull(0);
 			minuteValue = Value.nonNull(0);
 		}
-		localDateValue = Value.nullable(createLocalDateTime().toLocalDate());
-		localDateTimeValue = Value.nullable(createLocalDateTime());
+		date = new DefaultCalendarDate();
+		dateTime = new DefaultCalendarDateTime();
 		todaySelected = State.state(todaySelected());
 		dayColumns = IntStream.range(0, DAYS_IN_WEEK)
 						.mapToObj(firstDayOfWeek::plus)
@@ -276,39 +277,17 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	/**
-	 * Sets the date to present in this calendar
-	 * @param date the date to set
+	 * @return the calendar date
 	 */
-	public void setLocalDate(LocalDate date) {
-		setLocalDateTime(requireNonNull(date).atStartOfDay());
+	public CalendarDate date() {
+		return date;
 	}
 
 	/**
-	 * @return the date currently displayed in this calendar
+	 * @return the calendar date and time
 	 */
-	public LocalDate getLocalDate() {
-		return LocalDate.of(yearValue.getOrThrow(), monthValue.getOrThrow(), dayValue.getOrThrow());
-	}
-
-	/**
-	 * Sets the date/time to present in this calendar.
-	 * @param dateTime the date/time to set
-	 */
-	public void setLocalDateTime(LocalDateTime dateTime) {
-		requireNonNull(dateTime);
-		if (includeTime) {
-			setYearMonthDayHourMinute(dateTime);
-		}
-		else {
-			setYearMonthDay(dateTime.toLocalDate());
-		}
-	}
-
-	/**
-	 * @return the date/time currently displayed in this calendar
-	 */
-	public LocalDateTime getLocalDateTime() {
-		return localDateTimeValue.get();
+	public CalendarDateTime dateTime() {
+		return dateTime;
 	}
 
 	/**
@@ -318,20 +297,6 @@ public final class CalendarPanel extends JPanel {
 		if (enabledState.get()) {
 			dayLabels.get(dayValue.get()).requestFocusInWindow();
 		}
-	}
-
-	/**
-	 * @return an observable notified each time the date changes
-	 */
-	public Observable<LocalDate> localDateValue() {
-		return localDateValue.observable();
-	}
-
-	/**
-	 * @return an observable notified each time the date or time changes
-	 */
-	public Observable<LocalDateTime> localDateTimeValue() {
-		return localDateTimeValue.observable();
 	}
 
 	/**
@@ -346,6 +311,30 @@ public final class CalendarPanel extends JPanel {
 	 */
 	public static Collection<Class<? extends Temporal>> supportedTypes() {
 		return SUPPORTED_TYPES;
+	}
+
+	/**
+	 * Provides access to the date.
+	 */
+	public interface CalendarDate extends Observable<LocalDate> {
+
+		/**
+		 * Sets the date to present in this calendar
+		 * @param date the date to set
+		 */
+		void set(LocalDate date);
+	}
+
+	/**
+	 * Provides access to the date and time.
+	 */
+	public interface CalendarDateTime extends Observable<LocalDateTime> {
+
+		/**
+		 * Sets the date and time to present in this calendar
+		 * @param dateTime the date and time to set
+		 */
+		void set(LocalDateTime dateTime);
 	}
 
 	/**
@@ -413,6 +402,60 @@ public final class CalendarPanel extends JPanel {
 		 * @return a new {@link CalendarPanel} based on this builder
 		 */
 		CalendarPanel build();
+	}
+
+	private final class DefaultCalendarDate implements CalendarDate {
+
+		private final Value<LocalDate> localDate;
+
+		private DefaultCalendarDate() {
+			localDate = Value.nullable(createLocalDateTime().toLocalDate());
+		}
+
+		@Override
+		public void set(LocalDate date) {
+			dateTime.set(requireNonNull(date).atStartOfDay());
+		}
+
+		@Override
+		public LocalDate get() {
+			return localDate.get();
+		}
+
+		@Override
+		public Observer<LocalDate> observer() {
+			return localDate.observer();
+		}
+	}
+
+	private final class DefaultCalendarDateTime implements CalendarDateTime {
+
+		private final Value<LocalDateTime> localDateTime;
+
+		private DefaultCalendarDateTime() {
+			localDateTime = Value.nullable(createLocalDateTime());
+		}
+
+		@Override
+		public void set(LocalDateTime dateTime) {
+			requireNonNull(dateTime);
+			if (includeTime) {
+				setYearMonthDayHourMinute(dateTime);
+			}
+			else {
+				setYearMonthDay(dateTime.toLocalDate());
+			}
+		}
+
+		@Override
+		public LocalDateTime get() {
+			return localDateTime.get();
+		}
+
+		@Override
+		public Observer<LocalDateTime> observer() {
+			return localDateTime.observer();
+		}
 	}
 
 	private static final class DefaultBuilder implements Builder {
@@ -530,19 +573,19 @@ public final class CalendarPanel extends JPanel {
 
 	private void subtractOne(ChronoUnit unit) {
 		if (unit.isDateBased()) {
-			setYearMonthDay(getLocalDate().minus(1, unit));
+			setYearMonthDay(localDate().minus(1, unit));
 		}
 		else {
-			setYearMonthDayHourMinute(getLocalDateTime().minus(1, unit));
+			setYearMonthDayHourMinute(dateTime.getOrThrow().minus(1, unit));
 		}
 	}
 
 	private void addOne(ChronoUnit unit) {
 		if (unit.isDateBased()) {
-			setYearMonthDay(getLocalDate().plus(1, unit));
+			setYearMonthDay(localDate().plus(1, unit));
 		}
 		else {
-			setYearMonthDayHourMinute(getLocalDateTime().plus(1, unit));
+			setYearMonthDayHourMinute(dateTime.getOrThrow().plus(1, unit));
 		}
 	}
 
@@ -625,7 +668,7 @@ public final class CalendarPanel extends JPanel {
 	private void layoutDayPanel() {
 		getCurrentKeyboardFocusManager().clearFocusOwner();
 		dayGridPanel.removeAll();
-		DayOfWeek dayOfWeek = localDateValue.getOrThrow().withDayOfMonth(1).getDayOfWeek();
+		DayOfWeek dayOfWeek = date.getOrThrow().withDayOfMonth(1).getDayOfWeek();
 		Iterator<JLabel> paddingIterator = paddingLabels.iterator();
 		int dayOfWeekColumn = dayColumns.indexOf(dayOfWeek);
 		for (int i = 0; i < dayOfWeekColumn; i++) {
@@ -666,8 +709,8 @@ public final class CalendarPanel extends JPanel {
 		YearMonth yearMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow());
 		dayValue.map(day -> day > yearMonth.lengthOfMonth() ? yearMonth.lengthOfMonth() : day);
 		LocalDateTime localDateTime = createLocalDateTime();
-		localDateValue.set(localDateTime.toLocalDate());
-		localDateTimeValue.set(localDateTime);
+		date.localDate.set(localDateTime.toLocalDate());
+		dateTime.localDateTime.set(localDateTime);
 		todaySelected.set(todaySelected());
 		updateDayLabelBorders();
 		requestInputFocus();
@@ -679,17 +722,24 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private boolean todaySelected() {
-		return getLocalDate().equals(LocalDate.now());
+		return localDate().equals(LocalDate.now());
+	}
+
+	private LocalDate localDate() {
+		return LocalDate.of(yearValue.getOrThrow(), monthValue.getOrThrow(), dayValue.getOrThrow());
 	}
 
 	private void selectToday() {
 		LocalDate now = LocalDate.now();
-		setLocalDateTime(getLocalDateTime().withYear(now.getYear()).withMonth(now.getMonthValue()).withDayOfMonth(now.getDayOfMonth()));
+		dateTime.set(dateTime.getOrThrow()
+						.withYear(now.getYear())
+						.withMonth(now.getMonthValue())
+						.withDayOfMonth(now.getDayOfMonth()));
 		requestInputFocus();
 	}
 
 	private void updateFormattedDate() {
-		formattedDateLabel.setText(dateFormatter.format(getLocalDateTime()) + (includeTime ? ", " + timeFormatter.format(getLocalDateTime()) : ""));
+		formattedDateLabel.setText(dateFormatter.format(dateTime.getOrThrow()) + (includeTime ? ", " + timeFormatter.format(dateTime.getOrThrow()) : ""));
 	}
 
 	private void createControls() {
