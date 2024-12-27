@@ -92,6 +92,7 @@ Codion Change Log
 - EntityApplicationPanel.displayEntityPanel() renamed displayEntityPanelWindow().
 - EntityPanel.Display added.
 - EntityPanel.activate() bug fixed, requests display first, to ensure correct initial focus.
+- EntityPanel.Display change reverted, activate() and activated() reintroduced, needs polishing.
 
 ## 0.18.22
 ### is.codion.common.core

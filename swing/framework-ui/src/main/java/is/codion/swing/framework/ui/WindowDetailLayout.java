@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.WindowType.FRAME;
 import static java.util.Objects.requireNonNull;
@@ -94,7 +95,7 @@ public final class WindowDetailLayout implements DetailLayout {
 
 	private void addDetailPanel(EntityPanel detailPanel) {
 		panelWindows.put(detailPanel, new DetailWindow(detailPanel));
-		detailPanel.display().requested().addConsumer(detailController::display);
+		detailPanel.activated().addConsumer(detailController::activated);
 	}
 
 	private void setupControls(EntityPanel entityPanel) {
@@ -125,10 +126,16 @@ public final class WindowDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public void display(EntityPanel detailPanel) {
+		public void activated(EntityPanel detailPanel) {
 			Window panelWindow = detailWindow(detailPanel).window;
 			if (panelWindow != null && panelWindow.isShowing()) {
 				panelWindow.toFront();
+				if (detailPanel.containsEditPanel()) {
+					Window editPanelWindow = parentWindow(detailPanel.editPanel());
+					if (editPanelWindow != null) {
+						editPanelWindow.toFront();
+					}
+				}
 			}
 		}
 

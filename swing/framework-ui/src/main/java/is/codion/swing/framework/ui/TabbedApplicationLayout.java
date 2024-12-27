@@ -86,7 +86,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 	}
 
 	@Override
-	public final void display(EntityPanel entityPanel) {
+	public final void activated(EntityPanel entityPanel) {
 		requireNonNull(entityPanel);
 		if (tabbedPane == null) {
 			throw new IllegalStateException("EntityApplicationPanel has not been laid out");

@@ -229,7 +229,7 @@ public class EntityPanel extends JPanel {
 	private final JPanel mainPanel;
 	private final DetailLayout detailLayout;
 	private final DetailController detailController;
-	private final Display display = new Display();
+	private final Event<EntityPanel> activatedEvent = Event.event();
 	private final Value<PanelState> editPanelState;
 	private final Function<PanelState, PanelState> editPanelStateMapper;
 
@@ -516,16 +516,23 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * <p>Activates this panel, by displaying it, by initializing it, and requesting initial focus.
+	 * @return an observer notified when this panel is activated
+	 * @see #activate()
+	 */
+	public final Observer<EntityPanel> activated() {
+		return activatedEvent.observer();
+	}
+
+	/**
+	 * <p>Activates this panel, by initializing it, bringing its parent window to front and requesting initial focus.
 	 * <p>It is up the {@link is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout} (for top level panels)
-	 * and the {@link DetailController} (for detail panels) to make sure this panel is displayed when activated, by responding
-	 * to the {@link Display#requested()} {@link Observer}.
-	 * @see Display#requested()
-	 * @see is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout#display(EntityPanel)
-	 * @see DetailController#display(EntityPanel)
+	 * and the {@link DetailController} (for detail panels) to make sure this panel is displayed when activated.
+	 * @see #activated()
+	 * @see is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout#activated(EntityPanel)
+	 * @see DetailController#activated(EntityPanel)
 	 */
 	public final void activate() {
-		display.request();
+		activatedEvent.accept(this);
 		initialize();
 		requestInitialFocus();
 	}
@@ -570,13 +577,6 @@ public class EntityPanel extends JPanel {
 		else {
 			requestFocus();
 		}
-	}
-
-	/**
-	 * @return the {@link Display}
-	 */
-	public final Display display() {
-		return display;
 	}
 
 	/**
@@ -1705,7 +1705,7 @@ public class EntityPanel extends JPanel {
 		 * @param detailPanel the detail panel to display
 		 * @see EntityPanel.Display#requested()
 		 */
-		default void display(EntityPanel detailPanel) {}
+		default void activated(EntityPanel detailPanel) {}
 	}
 
 	/**

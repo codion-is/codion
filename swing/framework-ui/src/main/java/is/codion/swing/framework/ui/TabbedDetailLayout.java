@@ -186,7 +186,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		if (splitPane != null) {
 			throw new IllegalStateException("EntityPanel " + entityPanel + " has already been laid out");
 		}
-		entityPanel.display().requested().addListener(new ShowIfHidden());
+		entityPanel.activated().addListener(new ShowIfHidden());
 		splitPane = createSplitPane(entityPanel.mainPanel());
 		tabbedPane = createTabbedPane(entityPanel.detailPanels().get());
 		setupControls(entityPanel);
@@ -265,7 +265,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	}
 
 	private void bindEvents(EntityPanel detailPanel) {
-		detailPanel.display().requested().addConsumer(detailController::display);
+		detailPanel.activated().addConsumer(detailController::activated);
 		controlMap.keyStroke(RESIZE_RIGHT).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -470,16 +470,16 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public void display(EntityPanel detailPanel) {
+		public void activated(EntityPanel detailPanel) {
 			requireNonNull(detailPanel);
-			// Ensure the parent panel is initialized and displayed
+			// Ensure the parent panel is initialized
 			entityPanel.initialize();
-			entityPanel.display().request();
 			tabbedPane.setFocusable(true);
 			tabbedPane.setSelectedComponent(detailPanel);
 			tabbedPane.setFocusable(false);
 			showDetailPanel();
 			activateDetailModelLink(detailPanel.model());
+			showWindow(detailPanel);
 		}
 
 		@Override
@@ -495,6 +495,19 @@ public final class TabbedDetailLayout implements DetailLayout {
 			}
 			if (detailController.panelState.isEqualTo(HIDDEN)) {
 				panelState.set(panelStateMapper.apply(HIDDEN));
+			}
+		}
+
+		private void showWindow(EntityPanel detailPanel) {
+			Window parentWindow = parentWindow(detailPanel);
+			if (parentWindow != null) {
+				parentWindow.toFront();
+			}
+			if (detailPanel.containsEditPanel()) {
+				Window editPanelWindow = parentWindow(detailPanel.editPanel());
+				if (editPanelWindow != null) {
+					editPanelWindow.toFront();
+				}
 			}
 		}
 

@@ -909,7 +909,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private void addEntityPanel(EntityPanel entityPanel) {
 		EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
-		entityPanel.display().requested().addConsumer(applicationLayout::display);
+		entityPanel.activated().addConsumer(applicationLayout::activated);
 		if (entityPanel.containsEditPanel()) {
 			entityPanel.editPanel().active().addConsumer(new DisplayActivatedPanel(entityPanel));
 		}
@@ -1152,7 +1152,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		@Override
 		public void accept(Boolean active) {
 			if (active) {
-				applicationLayout.display(entityPanel);
+				applicationLayout.activated(entityPanel);
 			}
 		}
 	}
@@ -1241,12 +1241,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		JComponent layout();
 
 		/**
-		 * Called when the given entity panel should be displayed,
+		 * Called when the given entity panel is activated,
 		 * responsible for making sure it becomes visible.
-		 * @param entityPanel the entity panel should be displayed
-		 * @see EntityPanel.Display#requested()
+		 * @param entityPanel the entity panel being activated
+		 * @see EntityPanel#activate()
+		 * @see EntityPanel#activated()
 		 */
-		default void display(EntityPanel entityPanel) {}
+		default void activated(EntityPanel entityPanel) {}
 	}
 
 	/**
