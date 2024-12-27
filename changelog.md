@@ -91,6 +91,7 @@ Codion Change Log
 - EntityPanel.builder(SwingEntityModel) removed
 - EntityApplicationPanel.displayEntityPanel() renamed displayEntityPanelWindow().
 - EntityPanel.Display added.
+- EntityPanel.activate() bug fixed, requests display first, to ensure correct initial focus.
 
 ## 0.18.22
 ### is.codion.common.core

@@ -516,7 +516,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * <p>Activates this panel, by initializing it, displaying it and requesting initial focus.
+	 * <p>Activates this panel, by displaying it, by initializing it, and requesting initial focus.
 	 * <p>It is up the {@link is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout} (for top level panels)
 	 * and the {@link DetailController} (for detail panels) to make sure this panel is displayed when activated, by responding
 	 * to the {@link Display#requested()} {@link Observer}.
@@ -525,8 +525,8 @@ public class EntityPanel extends JPanel {
 	 * @see DetailController#display(EntityPanel)
 	 */
 	public final void activate() {
-		initialize();
 		display.request();
+		initialize();
 		requestInitialFocus();
 	}
 
