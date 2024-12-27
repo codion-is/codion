@@ -55,7 +55,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -192,7 +191,7 @@ public final class NotesDemo {
 							// Note.CREATED is excluded by default since it is not updatable.
 							.editable(attributes -> attributes.remove(Note.UPDATED)));
 			// Configure the table and columns
-			table().model().sort().order(Note.CREATED).set(SortOrder.DESCENDING);
+			table().model().sort().descending(Note.CREATED);
 			table().setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
 			FilterTableColumnModel<Attribute<?>> columnModel = table().columnModel();
 			columnModel.column(Note.NOTE).setPreferredWidth(280);

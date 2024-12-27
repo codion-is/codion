@@ -40,6 +40,18 @@ public interface FilterTableSortModel<R, C> {
 	Comparator<R> comparator();
 
 	/**
+	 * Clears the sorting state and sorts the given columns {@link SortOrder#ASCENDING}
+	 * @param identifiers the column identifiers
+	 */
+	void ascending(C... identifiers);
+
+	/**
+	 * Clears the sorting state and sorts the given columns {@link SortOrder#DESCENDING}
+	 * @param identifiers the column identifiers
+	 */
+	void descending(C... identifiers);
+
+	/**
 	 * @param identifier the column identifier
 	 * @return the {@link Order} for the given column
 	 */

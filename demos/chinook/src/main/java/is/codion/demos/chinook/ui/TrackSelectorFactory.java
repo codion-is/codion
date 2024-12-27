@@ -27,7 +27,6 @@ import java.awt.Dimension;
 import java.util.function.Function;
 
 import static is.codion.swing.framework.ui.component.EntitySearchField.tableSelector;
-import static javax.swing.SortOrder.ASCENDING;
 
 /**
  * Provides a {@link TableSelector} for selecting tracks,
@@ -39,9 +38,7 @@ final class TrackSelectorFactory implements Function<EntitySearchModel, Selector
 	public TableSelector apply(EntitySearchModel searchModel) {
 		TableSelector selector = tableSelector(searchModel);
 		selector.table().columnModel().visible().set(Track.ARTIST, Track.ALBUM_FK, Track.NAME);
-		selector.table().model().sort().order(Track.ARTIST).set(ASCENDING);
-		selector.table().model().sort().order(Track.ALBUM_FK).add(ASCENDING);
-		selector.table().model().sort().order(Track.NAME).add(ASCENDING);
+		selector.table().model().sort().ascending(Track.ARTIST, Track.ALBUM_FK, Track.NAME);
 		selector.preferredSize(new Dimension(500, 300));
 
 		return selector;

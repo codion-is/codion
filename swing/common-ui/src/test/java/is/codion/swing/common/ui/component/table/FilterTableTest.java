@@ -252,7 +252,7 @@ public class FilterTableTest {
 		rowColumn = searchModel.results().next().orElse(null);
 		assertNull(rowColumn);
 
-		table.model().sort().order(1).set(SortOrder.DESCENDING);
+		table.model().sort().descending(1);
 
 		searchModel.searchString().set("b");
 		rowColumn = searchModel.results().next().orElse(null);
@@ -279,7 +279,7 @@ public class FilterTableTest {
 						new DefaultRowColumn(3, 1)
 		), searchModel.results().get());
 
-		table.model().sort().order(1).set(SortOrder.ASCENDING);
+		table.model().sort().ascending(1);
 		table.columnModel().moveColumn(1, 0);
 
 		testModel.items().refresh();
@@ -296,7 +296,7 @@ public class FilterTableTest {
 		rowColumn = searchModel.results().next().orElse(null);
 		assertNull(rowColumn);
 
-		table.model().sort().order(0).set(SortOrder.DESCENDING);
+		table.model().sort().descending(0);
 
 		searchModel.searchString().set("b");
 		rowColumn = searchModel.results().next().orElse(null);
@@ -411,13 +411,13 @@ public class FilterTableTest {
 		assertEquals(3, selectionModel.getMinSelectionIndex());
 		assertEquals(ITEMS.get(2), selectionModel.item().get());
 
-		table.model().sort().order(0).set(SortOrder.ASCENDING);
+		table.model().sort().ascending(0);
 		assertEquals(ITEMS.get(2), selectionModel.item().get());
 		assertEquals(2, selectionModel.getMinSelectionIndex());
 
 		tableModel.selection().indexes().set(singletonList(0));
 		assertEquals(ITEMS.get(0), selectionModel.item().get());
-		table.model().sort().order(0).set(SortOrder.DESCENDING);
+		table.model().sort().descending(0);
 		assertEquals(4, selectionModel.getMinSelectionIndex());
 
 		assertEquals(singletonList(4), selectionModel.indexes().get());

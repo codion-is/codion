@@ -740,14 +740,18 @@ public final class FilterTable<R, C> extends JTable {
 		if (sortingEnabled.get() && selectedColumn != -1) {
 			C identifier = columnModel().getColumn(selectedColumn).identifier();
 			if (!tableModel.sort().order(identifier).locked().get()) {
-				ColumnSortOrder<C> columnSortOrder = tableModel.sort().columns().get(identifier);
-				if (add) {
-					tableModel.sort().order(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
-				}
-				else {
-					tableModel.sort().order(identifier).set(nextSortOrder(columnSortOrder.sortOrder()));
-				}
+				sortColumn(identifier, add);
 			}
+		}
+	}
+
+	private void sortColumn(C identifier, boolean add) {
+		ColumnSortOrder<C> columnSortOrder = tableModel.sort().columns().get(identifier);
+		if (add) {
+			tableModel.sort().order(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
+		}
+		else {
+			tableModel.sort().order(identifier).set(nextSortOrder(columnSortOrder.sortOrder()));
 		}
 	}
 
@@ -985,13 +989,7 @@ public final class FilterTable<R, C> extends JTable {
 					if (!getSelectionModel().isSelectionEmpty()) {
 						setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 					}
-					ColumnSortOrder<C> columnSortOrder = tableModel.sort().columns().get(identifier);
-					if (e.isAltDown()) {
-						tableModel.sort().order(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
-					}
-					else {
-						tableModel.sort().order(identifier).set(nextSortOrder(columnSortOrder.sortOrder()));
-					}
+					sortColumn(identifier, e.isAltDown());
 				}
 			}
 		}

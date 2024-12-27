@@ -39,7 +39,6 @@ import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutP
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static javax.swing.BorderFactory.createTitledBorder;
-import static javax.swing.SortOrder.ASCENDING;
 
 public final class InvoiceEditPanel extends EntityEditPanel {
 
@@ -145,8 +144,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 			// configuring the the visible table columns, the sorting and size
 			TableSelector selector = EntitySearchField.tableSelector(searchModel);
 			selector.table().columnModel().visible().set(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
-			selector.table().model().sort().order(Customer.LASTNAME).set(ASCENDING);
-			selector.table().model().sort().order(Customer.FIRSTNAME).add(ASCENDING);
+			selector.table().model().sort().ascending(Customer.LASTNAME, Customer.FIRSTNAME);
 			selector.preferredSize(new Dimension(500, 300));
 
 			return selector;

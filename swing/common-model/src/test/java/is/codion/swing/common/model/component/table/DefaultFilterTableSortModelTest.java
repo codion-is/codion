@@ -32,35 +32,35 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DefaultFilterTableSortModelTest {
 
+	DefaultFilterTableSortModel<Row, Integer> model = new DefaultFilterTableSortModel<>(new FilterTableModel.TableColumns<Row, Integer>() {
+
+		@Override
+		public List<Integer> identifiers() {
+			return asList(0, 1, 2);
+		}
+
+		@Override
+		public Class<?> columnClass(Integer identifier) {
+			return Integer.class;
+		}
+
+		@Override
+		public Object value(Row row, Integer identifier) {
+			switch (identifier) {
+				case 0:
+					return row.firstValue;
+				case 1:
+					return row.secondValue.toString();
+				case 2:
+					return row.thirdValue;
+				default:
+					return null;
+			}
+		}
+	});
+
 	@Test
-	void test() {
-		DefaultFilterTableSortModel<Row, Integer> model = new DefaultFilterTableSortModel<>(new FilterTableModel.TableColumns<Row, Integer>() {
-
-			@Override
-			public List<Integer> identifiers() {
-				return asList(0, 1, 2);
-			}
-
-			@Override
-			public Class<?> columnClass(Integer identifier) {
-				return Integer.class;
-			}
-
-			@Override
-			public Object value(Row row, Integer identifier) {
-				switch (identifier) {
-					case 0:
-						return row.firstValue;
-					case 1:
-						return row.secondValue.toString();
-					case 2:
-						return row.thirdValue;
-					default:
-						return null;
-				}
-			}
-		});
-
+	void setSortOrder() {
 		Row firstRow = new Row(1, 2, null);
 		Row secondRow = new Row(1, 2, 5);
 		Row thirdRow = new Row(1, 3, 6);
@@ -122,8 +122,34 @@ public class DefaultFilterTableSortModelTest {
 	}
 
 	@Test
+	void ascendingDescending() {
+		Row firstRow = new Row(1, 3, null);
+		Row secondRow = new Row(1, 2, 5);
+		Row thirdRow = new Row(1, 2, 6);
+		List<Row> items = asList(firstRow, secondRow, thirdRow);
+
+		Comparator<Row> rowComparator = model.comparator();
+
+		model.ascending(1, 2);
+		items.sort(rowComparator);
+		assertEquals(0, items.indexOf(secondRow));
+		assertEquals(1, items.indexOf(thirdRow));
+		assertEquals(2, items.indexOf(firstRow));
+
+		model.descending(1, 2);
+		items.sort(rowComparator);
+		assertEquals(0, items.indexOf(firstRow));
+		assertEquals(1, items.indexOf(thirdRow));
+		assertEquals(2, items.indexOf(secondRow));
+
+		model.order(1).locked().set(true);
+		assertThrows(IllegalStateException.class, () -> model.ascending(2, 1));
+		assertThrows(IllegalStateException.class, () -> model.descending(2, 1));
+	}
+
+	@Test
 	void nonComparableColumnClass() {
-		DefaultFilterTableSortModel<ArrayList, Integer> model = new DefaultFilterTableSortModel<>(new FilterTableModel.TableColumns<ArrayList, Integer>() {
+		DefaultFilterTableSortModel<ArrayList<Object>, Integer> sortModel = new DefaultFilterTableSortModel<>(new FilterTableModel.TableColumns<ArrayList<Object>, Integer>() {
 			@Override
 			public List<Integer> identifiers() {
 				return Collections.singletonList(0);
@@ -135,13 +161,13 @@ public class DefaultFilterTableSortModelTest {
 			}
 
 			@Override
-			public Object value(ArrayList row, Integer identifier) {
+			public Object value(ArrayList<Object> row, Integer identifier) {
 				return row.toString();
 			}
 		});
-		List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
-		model.order(0).set(SortOrder.DESCENDING);
-		collections.sort(model.comparator());
+		List<ArrayList<Object>> collections = asList(new ArrayList<Object>(), new ArrayList<Object>());
+		sortModel.descending(0);
+		collections.sort(sortModel.comparator());
 	}
 
 	private static final class Row {

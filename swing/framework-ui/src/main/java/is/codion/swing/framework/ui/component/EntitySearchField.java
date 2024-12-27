@@ -81,7 +81,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
@@ -934,7 +933,7 @@ public final class EntitySearchField extends HintTextField {
 											.enable(t.searchField()))
 							.build();
 
-			filterTable.model().sort().order(searchModel.columns().iterator().next()).set(SortOrder.ASCENDING);
+			filterTable.model().sort().ascending(searchModel.columns().iterator().next());
 			filterTable.columnModel().visible().set(searchModel.columns().toArray(new Attribute[0]));
 
 			return filterTable;

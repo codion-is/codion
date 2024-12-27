@@ -38,7 +38,7 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void petstore() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
-		model.schemaModel().sort().order(SchemaColumns.Id.SCHEMA).set(SortOrder.ASCENDING);
+		model.schemaModel().sort().ascending(SchemaColumns.Id.SCHEMA);
 		model.schemaModel().items().refresh();
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()
@@ -72,7 +72,7 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void world() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
-		model.schemaModel().sort().order(SchemaColumns.Id.SCHEMA).set(SortOrder.ASCENDING);
+		model.schemaModel().sort().ascending(SchemaColumns.Id.SCHEMA);
 		model.schemaModel().items().refresh();
 
 		List<SchemaRow> schema = model.schemaModel().items().get().stream()

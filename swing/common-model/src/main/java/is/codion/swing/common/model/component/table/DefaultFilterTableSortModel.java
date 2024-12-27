@@ -32,6 +32,7 @@ import java.util.Map;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.SortOrder.*;
 
 final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R, C> {
 
@@ -49,6 +50,16 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 	@Override
 	public Comparator<R> comparator() {
 		return comparator;
+	}
+
+	@Override
+	public void ascending(C... identifiers) {
+		sort(ASCENDING, identifiers);
+	}
+
+	@Override
+	public void descending(C... identifiers) {
+		sort(DESCENDING, identifiers);
 	}
 
 	@Override
@@ -118,11 +129,23 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 								k -> columns.comparator(identifier))).compare(valueOne, valueTwo);
 			}
 			if (comparison != 0) {
-				return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;
+				return sortOrder == DESCENDING ? -comparison : comparison;
 			}
 
 			return 0;
 		}
+	}
+
+	private void sort(SortOrder sortOrder, C... identifiers) {
+		for (C identifier : requireNonNull(identifiers)) {
+			validateIdentifier(identifier);
+			throwIfLocked(identifier);
+		}
+		columnSortOrders.clear();
+		for (C identifier : identifiers) {
+			columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder, columnSortOrders.size()));
+		}
+		sortingChanged.accept(sorted());
 	}
 
 	private final class DefaultOrder implements Order {
@@ -152,16 +175,14 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 		private void setSortOrder(C identifier, SortOrder sortOrder, boolean addColumnToSort) {
 			validateIdentifier(identifier);
 			requireNonNull(sortOrder);
-			if (locked.containsKey(identifier) && locked.get(identifier).get()) {
-				throw new IllegalStateException("Sorting is locked for column: " + identifier);
-			}
+			throwIfLocked(identifier);
 			if (!addColumnToSort) {
 				columnSortOrders.clear();
 			}
 			else {
 				removeSortOrder(identifier);
 			}
-			if (sortOrder != SortOrder.UNSORTED) {
+			if (sortOrder != UNSORTED) {
 				columnSortOrders.add(new DefaultColumnSortOrder<>(identifier, sortOrder, columnSortOrders.size()));
 			}
 			sortingChanged.accept(sorted());
@@ -169,6 +190,12 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 
 		private boolean removeSortOrder(C identifier) {
 			return columnSortOrders.removeIf(columnSortOrder -> columnSortOrder.identifier().equals(identifier));
+		}
+	}
+
+	private void throwIfLocked(C identifier) {
+		if (locked.containsKey(identifier) && locked.get(identifier).get()) {
+			throw new IllegalStateException("Sorting is locked for column: " + identifier);
 		}
 	}
 
@@ -181,7 +208,7 @@ final class DefaultFilterTableSortModel<R, C> implements FilterTableSortModel<R,
 			return columnSortOrders.stream()
 							.filter(columnSortOrder -> columnSortOrder.identifier().equals(identifier))
 							.findFirst()
-							.orElse(new DefaultColumnSortOrder<>(identifier, SortOrder.UNSORTED, -1));
+							.orElse(new DefaultColumnSortOrder<>(identifier, UNSORTED, -1));
 		}
 
 		@Override

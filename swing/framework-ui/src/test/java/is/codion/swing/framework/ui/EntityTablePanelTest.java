@@ -167,7 +167,7 @@ public class EntityTablePanelTest {
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		tablePanel.table().model().sort().order(Employee.NAME).set(SortOrder.ASCENDING);
+		tablePanel.table().model().sort().ascending(Employee.NAME);
 
 		orderBy = tableModel.queryModel().orderBy().getOrThrow();
 		//still default order by for entity
