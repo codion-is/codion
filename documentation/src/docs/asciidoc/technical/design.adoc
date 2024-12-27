@@ -53,3 +53,8 @@ include::{dir-manual-source}/is/codion/manual/design/DesignAndStyle.java[tags=mu
 == Exceptions
 
 There are of course some exceptions to these rules, such as a `get` prefix on an accessor for a functionally immutable field or a `is` prefix on an immutable boolean field, but these exceptions are usually to keep the style of a class being extended, such as Swing components and should be few and far between.
+
+[source,java]
+----
+include::{dir-manual-source}/is/codion/manual/design/DesignAndStyle.java[tags=exceptions,indent=0]
+----

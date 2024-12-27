@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static is.codion.demos.chinook.domain.api.Chinook.*;
-import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ChinookTest extends DomainTest {
@@ -126,14 +125,14 @@ public class ChinookTest extends DomainTest {
 		public void modify(Entity entity) {
 			super.modify(entity);
 			if (entity.entityType().equals(Album.TYPE)) {
-				entity.put(Album.TAGS, asList("tag_one", "tag_two", "tag_three"));
+				entity.put(Album.TAGS, List.of("tag_one", "tag_two", "tag_three"));
 			}
 		}
 
 		@Override
 		protected <T> T value(Attribute<T> attribute) {
 			if (attribute.equals(Album.TAGS)) {
-				return (T) asList("tag_one", "tag_two");
+				return (T) List.of("tag_one", "tag_two");
 			}
 
 			return super.value(attribute);

@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.event.Event.event;
-import static java.util.Arrays.asList;
 import static javax.swing.BorderFactory.createTitledBorder;
 
 public final class DesignAndStyle {
@@ -96,11 +95,19 @@ public final class DesignAndStyle {
 
 		List<Integer> selectedIndexes = selection.indexes().get();
 
-		selection.indexes().set(asList(0, 1, 2));
+		selection.indexes().set(List.of(0, 1, 2));
 
 		selection.items().addListener(() -> System.out.println("Selected items changed"));
 
 		table.sortingEnabled().set(false);
 		//end::mutable[]
+
+		//tag::exceptions[]
+		Value<Integer> integerValue = Value.nullable();
+
+		boolean isNull = integerValue.isNull();
+		boolean isNotNull = integerValue.isNotNull();
+		boolean isNullable = integerValue.isNullable();
+		//end::exceptions[]
 	}
 }

@@ -41,8 +41,11 @@ public final class EntityConnectionProviderDemo {
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
+		Database database = Database.instance();
+
 		LocalEntityConnectionProvider connectionProvider =
 						LocalEntityConnectionProvider.builder()
+										.database(database)
 										.domain(new ChinookImpl())
 										.user(User.parse("scott:tiger"))
 										.build();

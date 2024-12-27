@@ -20,6 +20,7 @@ package is.codion.demos.chinook.manual;
 
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Artist;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.Entity;
@@ -60,6 +61,11 @@ final class ConditionDemo {
 										.set(Album.COVER, null)
 										.build();
 		// end::update[]
+
+		// tag::count[]
+		Count countAlbumsWithCover =
+						Count.where(Album.COVER.isNotNull());
+		// end::count[]
 	}
 
 	private static Entity selectArtist(String artistName) {

@@ -65,12 +65,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.CLEAR;
-import static java.util.Arrays.asList;
 
 // tag::notes[]
 public final class NotesDemo {
 
-	private static final List<String> CREATE_SCHEMA_STATEMENTS = asList(
+	private static final List<String> CREATE_SCHEMA_STATEMENTS = List.of(
 					"create schema notes",
 					"create table notes.note(" +
 									"id identity not null, " +
@@ -323,7 +322,7 @@ public final class NotesDemo {
 	}
 
 	private static Database createSchema(Database database) {
-		List<String> dataStatements = asList(
+		List<String> dataStatements = List.of(
 						"insert into notes.note(note, created) " +
 										"values ('My first note', '2023-10-03 10:40')",
 						"insert into notes.note(note, created) " +

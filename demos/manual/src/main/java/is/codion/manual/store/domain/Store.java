@@ -181,17 +181,14 @@ public final class Store extends DomainModel {
 
 		@Override
 		public String apply(Entity customer) {
-			StringBuilder builder =
-							new StringBuilder(customer.get(Customer.LAST_NAME))
-											.append(", ")
-											.append(customer.get(Customer.FIRST_NAME));
-			if (customer.isNotNull(Customer.EMAIL)) {
-				builder.append(" <")
-								.append(customer.get(Customer.EMAIL))
-								.append(">");
-			}
-
-			return builder.toString();
+			return new StringBuilder()
+							.append(customer.get(Customer.LAST_NAME))
+							.append(", ")
+							.append(customer.get(Customer.FIRST_NAME))
+							.append(customer.optional(Customer.EMAIL)
+											.map(email -> " <" + email + ">")
+											.orElse(""))
+							.toString();
 		}
 	}
 	// end::toString[]

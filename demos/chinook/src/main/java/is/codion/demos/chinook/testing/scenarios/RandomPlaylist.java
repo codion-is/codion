@@ -33,13 +33,12 @@ import java.util.UUID;
 
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.framework.db.EntityConnection.transaction;
-import static java.util.Arrays.asList;
 
 public final class RandomPlaylist implements Performer<EntityConnectionProvider> {
 
 	private static final String PLAYLIST_NAME = "Random playlist";
 	private static final Collection<String> GENRES =
-					asList("Alternative", "Rock", "Metal", "Heavy Metal", "Pop");
+					List.of("Alternative", "Rock", "Metal", "Heavy Metal", "Pop");
 
 	@Override
 	public void perform(EntityConnectionProvider connectionProvider) {

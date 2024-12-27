@@ -19,11 +19,11 @@
 package is.codion.manual.swing.common.ui.component.table;
 
 import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Person;
-import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.PersonColumn;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel;
+import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JTable;
@@ -36,28 +36,29 @@ final class FilterTableDemo {
 	static void demo() {
 		// tag::filterTable[]
 		// See FilterTableModel example
-		FilterTableModel<Person, PersonColumn> tableModel = createFilterTableModel();
+		FilterTableModel<Person, String> tableModel = createFilterTableModel();
 
-		List<FilterTableColumn<PersonColumn>> columns = List.of(
-						FilterTableColumn.builder(PersonColumn.NAME)
-										.headerValue("Name")
-										.build(),
-						FilterTableColumn.builder(PersonColumn.AGE)
-										.headerValue("Age")
-										.build());
+		// Create the columns, specifying the identifier and the model index
+		List<FilterTableColumn<String>> columns = List.of(
+						FilterTableColumn.builder(Person.NAME, 0).build(),
+						FilterTableColumn.builder(Person.AGE, 1).build());
 
-		FilterTable<Person, PersonColumn> filterTable = FilterTable.builder(tableModel, columns)
-						.doubleClickAction(Control.command(() ->
-										tableModel.selection().item().optional()
-														.ifPresent(System.out::println)))
-						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.build();
+		FilterTable<Person, String> table =
+						FilterTable.builder(tableModel, columns)
+										.doubleClickAction(Control.command(() ->
+														tableModel.selection().item().optional()
+																		.ifPresent(System.out::println)))
+										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+										.build();
 
 		// Search for the value "43" in the table
-		FilterTableSearchModel searchModel = filterTable.searchModel();
-		searchModel.predicate().set(value -> value.equals("43"));
+		FilterTableSearchModel searchModel =
+						table.searchModel();
+		searchModel.predicate()
+						.set(value -> value.equals("43"));
 
-		FilterTableSearchModel.RowColumn searchResult = searchModel.results().current().get();
+		RowColumn searchResult =
+						searchModel.results().current().get();
 		System.out.println(searchResult); // row: 1, column: 1
 		// end::filterTable[]
 	}

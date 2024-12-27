@@ -25,7 +25,6 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -82,7 +81,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 										.detailModel(SwingEntityModel.builder(Item.TYPE)
 														.detailModel(SwingEntityModel.builder(TagItem.TYPE)));
 
-		return Arrays.asList(
+		return List.of(
 						EntityPanel.builder(Address.TYPE)
 										.editPanel(AddressEditPanel.class),
 						EntityPanel.builder(sellerContactInfoModelBuilder)

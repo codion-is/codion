@@ -25,6 +25,7 @@ import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Transactional;
 import is.codion.framework.db.EntityConnection.TransactionalResult;
@@ -41,18 +42,15 @@ import net.sf.jasperreports.engine.JasperPrint;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static is.codion.demos.chinook.domain.api.Chinook.*;
-import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.domain.entity.OrderBy.descending;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 import static is.codion.framework.domain.entity.condition.Condition.and;
-import static java.util.Arrays.asList;
 
 /**
  * When running this make sure the chinook demo module directory is the
@@ -162,7 +160,7 @@ public final class EntityConnectionDemo {
 		Entity.Key key42 = entities.primaryKey(Artist.TYPE, 42L);
 		Entity.Key key43 = entities.primaryKey(Artist.TYPE, 43L);
 
-		Collection<Entity> artists = connection.select(asList(key42, key43));
+		Collection<Entity> artists = connection.select(List.of(key42, key43));
 		// end::selectKeys[]
 	}
 
@@ -216,7 +214,8 @@ public final class EntityConnectionDemo {
 		// tag::count[]
 		EntityConnection connection = connectionProvider.connection();
 
-		int numberOfItStaff = connection.count(where(Employee.TITLE.equalTo("IT Staff")));
+		int numberOfItStaff = connection.count(
+						Count.where(Employee.TITLE.equalTo("IT Staff")));
 		// end::count[]
 	}
 
@@ -241,7 +240,8 @@ public final class EntityConnectionDemo {
 						.with(Album.TITLE, "Second album")
 						.build();
 
-		Collection<Entity.Key> albumKeys = connection.insert(asList(firstAlbum, secondAlbum));
+		Collection<Entity.Key> albumKeys =
+						connection.insert(List.of(firstAlbum, secondAlbum));
 		// end::insert[]
 	}
 
@@ -249,7 +249,8 @@ public final class EntityConnectionDemo {
 		// tag::updateEntity[]
 		EntityConnection connection = connectionProvider.connection();
 
-		Entity myBand = connection.selectSingle(Artist.NAME.equalTo("My Band"));
+		Entity myBand = connection.selectSingle(
+						Artist.NAME.equalTo("My Band"));
 
 		myBand.put(Artist.NAME, "Proper Name");
 
@@ -285,7 +286,8 @@ public final class EntityConnectionDemo {
 		// tag::deleteCondition[]
 		EntityConnection connection = connectionProvider.connection();
 
-		Entity aquaman = connection.selectSingle(Artist.NAME.equalTo("Aquaman"));
+		Entity aquaman = connection.selectSingle(
+						Artist.NAME.equalTo("Aquaman"));
 
 		List<Long> aquamanAlbumIds = connection.select(Album.ID,
 						Album.ARTIST_FK.equalTo(aquaman));
@@ -308,21 +310,26 @@ public final class EntityConnectionDemo {
 		// tag::deleteKey[]
 		EntityConnection connection = connectionProvider.connection();
 
-		Entity audioslave = connection.selectSingle(Artist.NAME.equalTo("Audioslave"));
+		Entity audioslave = connection.selectSingle(
+						Artist.NAME.equalTo("Audioslave"));
 
-		List<Entity> albums = connection.select(Album.ARTIST_FK.equalTo(audioslave));
-		List<Entity> tracks = connection.select(Track.ALBUM_FK.in(albums));
-		List<Entity> playlistTracks = connection.select(PlaylistTrack.TRACK_FK.in(tracks));
-		List<Entity> invoiceLines = connection.select(InvoiceLine.TRACK_FK.in(tracks));
+		List<Entity> albums = connection.select(
+						Album.ARTIST_FK.equalTo(audioslave));
+		List<Entity> tracks = connection.select(
+						Track.ALBUM_FK.in(albums));
+		List<Entity> playlistTracks = connection.select(
+						PlaylistTrack.TRACK_FK.in(tracks));
+		List<Entity> invoiceLines = connection.select(
+						InvoiceLine.TRACK_FK.in(tracks));
 
-		List<Entity.Key> toDelete = new ArrayList<>();
-		toDelete.addAll(Entity.primaryKeys(invoiceLines));
-		toDelete.addAll(Entity.primaryKeys(playlistTracks));
-		toDelete.addAll(Entity.primaryKeys(tracks));
-		toDelete.addAll(Entity.primaryKeys(albums));
-		toDelete.add(audioslave.primaryKey());
+		List<Entity> toDelete = new ArrayList<>();
+		toDelete.addAll(invoiceLines);
+		toDelete.addAll(playlistTracks);
+		toDelete.addAll(tracks);
+		toDelete.addAll(albums);
+		toDelete.add(audioslave);
 
-		connection.delete(toDelete);
+		connection.delete(Entity.primaryKeys(toDelete));
 		// end::deleteKey[]
 	}
 
@@ -346,7 +353,7 @@ public final class EntityConnectionDemo {
 		// tag::function[]
 		EntityConnection connection = connectionProvider.connection();
 
-		List<Long> trackIds = asList(123L, 1234L);
+		List<Long> trackIds = List.of(123L, 1234L);
 		BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
 		Collection<Entity> modifiedTracks =
@@ -354,7 +361,7 @@ public final class EntityConnectionDemo {
 										new RaisePriceParameters(trackIds, priceIncrease));
 
 		Collection<Entity> updatedInvoices =
-						connection.execute(Invoice.UPDATE_TOTALS, Arrays.asList(1234L, 3412L));
+						connection.execute(Invoice.UPDATE_TOTALS, List.of(1234L, 3412L));
 
 		String playlistName = "Random playlist";
 		int numberOfTracks = 100;
@@ -371,7 +378,7 @@ public final class EntityConnectionDemo {
 		EntityConnection connection = connectionProvider.connection();
 
 		Map<String, Object> reportParameters = new HashMap<>();
-		reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
+		reportParameters.put("CUSTOMER_IDS", List.of(42, 43, 45));
 
 		JasperPrint jasperPrint = connection.report(Customer.REPORT, reportParameters);
 		//end::report[]

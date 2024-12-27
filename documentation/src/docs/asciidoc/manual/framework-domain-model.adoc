@@ -61,9 +61,10 @@ Represents a row in a table (or query) and maps *Attributes* to their associated
 -------------------------------------------
 
 interface Entity {
+    +Entity.Key primaryKey()
     +<T> T get(Attribute<T> attribute)
     +<T> T put(Attribute<T> attribute, T value)
-    +Entity.Key primaryKey()
+    +boolean modified()
 }
 -------------------------------------------
 
@@ -77,6 +78,8 @@ To define a domain model API we:
 * Create a {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainType.html[DomainType] constant representing the domain.
 * Use the *DomainType* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType] constants for each table, wrapped in a namespace interface.
 * Use the *EntityTypes* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column] constants for each column and a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey] constant for each foreign key.
+
+NOTE: https://en.wikipedia.org/wiki/Constant_interface[Constant interfaces] are considered an anti-pattern in Java, a *public static final class* can be used instead in case interfaces is not acceptable, but that involves a bit more typing, since the constants must all be *public static final*.
 
 These constants represent the domain API and are used when referring to tables, columns or foreign keys.
 
@@ -349,8 +352,6 @@ include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=ite
 [#_foreignkey]
 == Foreign key
 
-Foreign keys only have a single possible configuration.
-
 [source,java,indent=0]
 ----
 include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=foreignKeyCapital]
@@ -358,7 +359,7 @@ include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=for
 
 == Domain
 
-Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html#define{opar}is.codion.framework.domain.entity.attribute.AttributeDefinition.Builder\...{cpar}[EntityType.define()] and adding it to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html#add{opar}is.codion.framework.domain.entity.EntityDefinition{cpar}[add(EntityDefinition)] or {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html#add{opar}is.codion.framework.domain.entity.EntityDefinition.Builder{cpar}[add(EntityDefinition.Builder)] methods in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class.
+Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html#define{opar}is.codion.framework.domain.entity.attribute.AttributeDefinition.Builder\...{cpar}[EntityType.define()] and adding the resulting definition to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html#add{opar}is.codion.framework.domain.entity.EntityDefinition{cpar}[add(EntityDefinition)] method in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class.
 The framework assumes the *entityType* name is the underlying table name, but the *tableName* can be specified via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#tableName{opar}java.lang.String{cpar}[EntityDefinition.Builder.tableName(String)] method.
 
 [source,java,indent=0]
@@ -392,14 +393,13 @@ include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[ta
 === Automatic
 
 This assumes the underlying primary key column is either an auto-increment column or is populated from a sequence using a trigger during insert.
-For auto-increment columns the **valueSource** parameter should be the table name and for a sequence/trigger it should be the sequence name.
 
 [source,java]
 ----
 //Auto increment column in the 'store.customer' table
 .keyGenerator(automatic("store.customer"));
 
-//Trigger and sequence named 'store.customer_seq'
+//Trigger and a sequence named 'store.customer_seq'
 .keyGenerator(automatic("store.customer_seq"));
 ----
 
@@ -418,12 +418,10 @@ The framework can select new primary key values from a query.
 
 [source,java]
 ----
-//Using a query returning the new value
 .keyGenerator(queried("""
-    select new_id
-    from store.id_values
-    where table_name = 'store.customer'
-    """));
+        select next_id
+        from store.id_values
+        where table_name = 'store.customer'"""))
 ----
 
 === Custom

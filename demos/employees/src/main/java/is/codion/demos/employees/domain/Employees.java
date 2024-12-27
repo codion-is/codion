@@ -39,7 +39,6 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
-import static java.util.Arrays.asList;
 
 // tag::departmentConstants[]
 // This class contains the specification for the Employees application domain model
@@ -90,7 +89,7 @@ public final class Employees extends DomainModel {
 		int SALESMAN = 4;
 		int CLERK = 5;
 
-		List<Item<Integer>> JOB_ITEMS = asList(
+		List<Item<Integer>> JOB_ITEMS = List.of(
 						item(ANALYST, "Analyst"), item(CLERK, "Clerk"),
 						item(MANAGER, "Manager"), item(PRESIDENT, "President"),
 						item(SALESMAN, "Salesman"));

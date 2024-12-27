@@ -38,7 +38,6 @@ import static is.codion.framework.domain.entity.condition.Condition.all;
 import static is.codion.tools.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
 import static is.codion.tools.loadtest.ui.LoadTestPanel.loadTestPanel;
-import static java.util.Arrays.asList;
 
 public final class EmployeesServletLoadTest {
 
@@ -52,7 +51,7 @@ public final class EmployeesServletLoadTest {
 	private EmployeesServletLoadTest(User user) {
 		loadTest = LoadTest.builder(EmployeesServletLoadTest::createApplication, EmployeesServletLoadTest::disconnectApplication)
 						.user(user)
-						.scenarios(asList(
+						.scenarios(List.of(
 										scenario(new SelectDepartment(), 4),
 										scenario(new UpdateLocation(), 2),
 										scenario(new SelectEmployees(), 5),

@@ -32,12 +32,12 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.tools.loadtest.LoadTest;
 
+import java.util.List;
 import java.util.function.Function;
 
 import static is.codion.tools.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
 import static is.codion.tools.loadtest.ui.LoadTestPanel.loadTestPanel;
-import static java.util.Arrays.asList;
 
 // tag::loadTest[]
 public final class EmployeesLoadTest {
@@ -70,7 +70,7 @@ public final class EmployeesLoadTest {
 						LoadTest.builder(new EmployeesAppModelFactory(),
 														application -> application.connectionProvider().close())
 										.user(UNIT_TEST_USER)
-										.scenarios(asList(
+										.scenarios(List.of(
 														scenario(new InsertDepartment(), 1),
 														scenario(new InsertEmployee(), 3),
 														scenario(new LoginLogout(), 4),

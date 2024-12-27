@@ -61,7 +61,6 @@ import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelP
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_SPACE;
-import static java.util.Arrays.asList;
 import static javax.swing.BorderFactory.createTitledBorder;
 
 /*
@@ -338,7 +337,7 @@ public final class ApplicationPanel extends JPanel {
 
 	private static class PGValidator implements Value.Validator<String> {
 
-		private final List<String> swearWords = asList("fuck", "shit");
+		private final List<String> swearWords = List.of("fuck", "shit");
 
 		@Override
 		public void validate(String value) {
@@ -357,7 +356,8 @@ public final class ApplicationPanel extends JPanel {
 
 		private static final String DEFAULT_SELECTION = "strings";
 
-		private final List<String> stringsToSelectFrom = Arrays.asList("a", "few", "short", "strings", "to", "choose", "from");
+		private final List<String> stringsToSelectFrom =
+						List.of("a", "few", "short", "strings", "to", "choose", "from");
 
 		@Override
 		public Optional<String> select(JComponent dialogOwner) {

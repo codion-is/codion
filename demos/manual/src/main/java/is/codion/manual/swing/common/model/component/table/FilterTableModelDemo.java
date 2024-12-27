@@ -18,6 +18,7 @@
  */
 package is.codion.manual.swing.common.model.component.table;
 
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 
@@ -25,60 +26,83 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static is.codion.common.Operator.GREATER_THAN_OR_EQUAL;
+import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Person.AGE;
+import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Person.NAME;
+import static javax.swing.SortOrder.ASCENDING;
+
 public final class FilterTableModelDemo {
 	// tag::filterTableModel[]
 	// Define a record representing the table rows
-	public record Person(String name, int age) {}
+	public record Person(String name, int age) {
 
-	// Define an enum identifying the table columns
-	public enum PersonColumn {
-		NAME,
-		AGE
+		// Constants identifying the table columns
+		public static final String NAME = "Name";
+		public static final String AGE = "Age";
 	}
 
-	// Implement Columns, specifying the table columns
-	public static final class PersonColumns implements TableColumns<Person, PersonColumn> {
+	// Implement TableColumns, which specifies the column identifiers,
+	// the column class and how to extract column values from the row
+	public static final class PersonColumns implements TableColumns<Person, String> {
 
-		private static final List<PersonColumn> COLUMNS = List.of(PersonColumn.values());
+		private static final List<String> COLUMNS = List.of(NAME, AGE);
 
 		@Override
-		public List<PersonColumn> identifiers() {
+		public List<String> identifiers() {
 			return COLUMNS;
 		}
 
 		@Override
-		public Class<?> columnClass(PersonColumn column) {
+		public Class<?> columnClass(String column) {
 			return switch (column) {
 				case NAME -> String.class;
 				case AGE -> Integer.class;
+				default -> throw new IllegalArgumentException();
 			};
 		}
 
 		@Override
-		public Object value(Person person, PersonColumn column) {
+		public Object value(Person person, String column) {
 			return switch (column) {
 				case NAME -> person.name();
 				case AGE -> person.age();
+				default -> throw new IllegalArgumentException();
 			};
 		}
 	}
 
-	public static FilterTableModel<Person, PersonColumn> createFilterTableModel() {
+	public static FilterTableModel<Person, String> createFilterTableModel() {
 		// Implement an item supplier responsible for supplying
 		// the table items when the table data is refreshed.
 		// Without one the table can be populated by adding items manually
 		Supplier<Collection<Person>> supplier = () -> List.of(
 						new Person("John", 42),
-						new Person("Mary", 43));
+						new Person("Mary", 43),
+						new Person("Andy", 33),
+						new Person("Joan", 37));
 
 		// Create the table model
-		FilterTableModel<Person, PersonColumn> tableModel =
+		FilterTableModel<Person, String> tableModel =
 						FilterTableModel.builder(new PersonColumns())
 										.supplier(supplier)
 										.build();
 
 		// Populate the model
 		tableModel.items().refresh();
+
+		// Filter out people under 40 years old
+		ConditionModel<Integer> ageFilter =
+						tableModel.filters().get(Person.AGE);
+		ageFilter.operator().set(GREATER_THAN_OR_EQUAL);
+		ageFilter.operands().upper().set(40);
+
+		// Sort by name
+		tableModel.sort()
+						.order(Person.NAME).set(ASCENDING);
+
+		// Print the selected item
+		tableModel.selection().item()
+						.addConsumer(System.out::println);
 
 		// Select the first row
 		tableModel.selection().index().set(0);

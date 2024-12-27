@@ -33,7 +33,6 @@ import java.util.List;
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.manual.store.minimal.domain.Store.Address;
 import static is.codion.manual.store.minimal.domain.Store.Customer;
-import static java.util.Arrays.asList;
 
 public class StoreDatabase {
 
@@ -91,7 +90,7 @@ public class StoreDatabase {
 
 		customer = connection.updateSelect(customer);
 
-		connection.delete(asList(addressKey, customer.primaryKey()));
+		connection.delete(List.of(addressKey, customer.primaryKey()));
 
 		connection.close();
 	}

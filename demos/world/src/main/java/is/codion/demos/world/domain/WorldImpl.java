@@ -37,12 +37,11 @@ import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.lang.Double.parseDouble;
-import static java.util.Arrays.asList;
 
 public final class WorldImpl extends DomainModel {
 
 	// tag::items[]
-	private static final List<Item<String>> CONTINENT_ITEMS = asList(
+	private static final List<Item<String>> CONTINENT_ITEMS = List.of(
 					item("Africa"), item("Antarctica"), item("Asia"),
 					item("Europe"), item("North America"), item("Oceania"),
 					item("South America"));
@@ -201,15 +200,17 @@ public final class WorldImpl extends DomainModel {
 										// end::denormalizedAttribute[]
 										// tag::subqueryColumn[]
 										Country.NO_OF_CITIES.define()
-														.subquery(
-																		"SELECT COUNT(*) FROM world.city " +
-																						"WHERE city.countrycode = country.code")
+														.subquery("""
+																		SELECT COUNT(*)
+																		FROM world.city
+																		WHERE city.countrycode = country.code""")
 														.caption("No. of cities"),
 										// end::subqueryColumn[]
 										Country.NO_OF_LANGUAGES.define()
-														.subquery(
-																		"SELECT COUNT(*) FROM world.countrylanguage " +
-																						"WHERE countrylanguage.countrycode = country.code")
+														.subquery("""
+																		SELECT COUNT(*)
+																		FROM world.countrylanguage
+																		WHERE countrylanguage.countrycode = country.code""")
 														.caption("No. of languages"),
 										// tag::lazy[]
 										Country.FLAG.define()

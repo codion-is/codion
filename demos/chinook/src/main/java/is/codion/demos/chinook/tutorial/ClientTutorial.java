@@ -92,8 +92,10 @@ public final class ClientTutorial {
 															.nullable(false)
 															.maximumLength(120),
 											Artist.NUMBER_OF_ALBUMS.define()
-															.subquery("SELECT COUNT(*) FROM chinook.album " +
-																			"WHERE album.artistid = artist.artistid")
+															.subquery("""
+																			SELECT COUNT(*)
+																			FROM chinook.album
+																			WHERE album.artistid = artist.artistid""")
 															.caption("Albums"))
 							.keyGenerator(automatic("chinook.artist"))
 							.stringFactory(Artist.NAME)

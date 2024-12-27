@@ -6,7 +6,7 @@
 
 The application model layer consists of the {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] class and its associates; the {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel], which provides a table representation of entities and the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] which provides the CRUD operations.
 
-An *EntityModel* always contains an *EntityEditModel* instance and usually contains a *EntityTableModel* as well.
+An *EntityModel* always contains an *EntityEditModel* instance and usually contains a *EntityTableModel* as well. A default edit model implementation is created automatically by the *EntityTableModel* if one is not supplied via a constructor argument.
 
 [plantuml,entity-model-diagram,svg,align=center]
 -------------------------------------------
@@ -33,23 +33,6 @@ include::{dir-source}/is/codion/manual/store/model/AddressModel.java[tags=addres
 [source,java]
 ----
 include::{dir-source}/is/codion/manual/store/model/CustomerAddressModel.java[tags=customerAddressModel]
-----
-
-== EntityTableModel
-
-Every *EntityTableModel* contains a *EntityEditModel* instance.
-A default edit model implementation is created automatically by the *EntityTableModel* if one is not supplied via a constructor argument.
-
-[source,java]
-----
-include::{dir-source}/is/codion/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
-----
-
-== EntityEditModel
-
-[source,java]
-----
-include::{dir-source}/is/codion/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
 ----
 
 [#_detail_models]

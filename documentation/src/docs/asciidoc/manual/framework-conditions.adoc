@@ -10,6 +10,8 @@ The <<{dir-tutorials}/chinook/chinook.adoc#_domain_model, Chinook domain model>>
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/Condition.html[Condition]*::
 Represents an element of a where clause and contains factory methods for creating *Condition* instances.
 
+NOTE: {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey] implement {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ColumnCondition.Factory.html[ColumnCondition.Factory] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ForeignKeyCondition.Factory.html[ForeignKeyCondition.Factory] respectively, and can be used to create *Condition* instances.
+
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=condition]
@@ -27,7 +29,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[
 == Select
 
 *{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html[Select]*::
-Represents a where clause as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*. {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Select.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.Builder.html[Select.Builder] instance for further configuration.
+Represents a where condition as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*. {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Select.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.Builder.html[Select.Builder] instance for further configuration.
 
 [source,java,indent=0]
 ----
@@ -37,9 +39,19 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[
 == Update
 
 *{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html[Update]*::
-Represents a where clause as well as the columns values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Update.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.Builder.html[Update.Builder] instance for specifying the columns to update and their respective values.
+Represents a where condition as well as the columns values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Update.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.Builder.html[Update.Builder] instance for specifying the columns to update and their respective values.
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=update]
+----
+
+== Count
+
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.html[Count]*::
+Represents a where condition specifically for counting records. {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Count.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.Builder.html[Count.Builder].
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=count]
 ----

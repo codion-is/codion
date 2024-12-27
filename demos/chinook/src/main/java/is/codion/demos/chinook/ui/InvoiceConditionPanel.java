@@ -69,7 +69,6 @@ import static is.codion.swing.common.ui.component.table.FilterTableConditionPane
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -288,7 +287,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 			@Override
 			public Collection<JComponent> components() {
-				return asList(yearValue.component(), monthValue.component());
+				return List.of(yearValue.component(), monthValue.component());
 			}
 
 			@Override

@@ -51,70 +51,70 @@ public interface ColumnCondition<T> extends Condition {
 	interface Factory<T> {
 
 		/**
-		 * Returns a 'equalTo' {@link ColumnCondition} or 'isNull' in case the value is null.
+		 * Returns a 'equalTo' {@link ColumnCondition} or 'isNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link ColumnCondition}
 		 */
 		ColumnCondition<T> equalTo(T value);
 
 		/**
-		 * Returns a 'equalTo' {@link ColumnCondition} or 'isNotNull' in case the value is null.
+		 * Returns a 'equalTo' {@link ColumnCondition} or 'isNotNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link ColumnCondition}
 		 */
 		ColumnCondition<T> notEqualTo(T value);
 
 		/**
-		 * Returns a case-insensitive 'equalTo' {@link ColumnCondition} or 'isNull' in case the value is null.
+		 * Returns a case-insensitive 'equalTo' {@link ColumnCondition} or 'isNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link ColumnCondition}
 		 */
 		ColumnCondition<String> equalToIgnoreCase(String value);
 
 		/**
-		 * Returns a case-insensitive 'equalTo' {@link ColumnCondition} or 'isNull' in case the value is null.
+		 * Returns a case-insensitive 'equalTo' {@link ColumnCondition} or 'isNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link ColumnCondition}
 		 */
 		ColumnCondition<Character> equalToIgnoreCase(Character value);
 
 		/**
-		 * Returns a case-insensitive 'notEqualTo' {@link ColumnCondition} or 'isNotNull' in case the value is null.
+		 * Returns a case-insensitive 'notEqualTo' {@link ColumnCondition} or 'isNotNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link ColumnCondition}
 		 */
 		ColumnCondition<String> notEqualToIgnoreCase(String value);
 
 		/**
-		 * Returns a case-insensitive 'notEqualTo' {@link ColumnCondition} or 'isNotNull' in case the value is null.
+		 * Returns a case-insensitive 'notEqualTo' {@link ColumnCondition} or 'isNotNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link ColumnCondition}
 		 */
 		ColumnCondition<Character> notEqualToIgnoreCase(Character value);
 
 		/**
-		 * Returns a 'like' {@link ColumnCondition} or 'isNull' in case the value is null.
+		 * Returns a 'like' {@link ColumnCondition} or 'isNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link ColumnCondition}
 		 */
 		ColumnCondition<String> like(String value);
 
 		/**
-		 * Returns a 'like' {@link ColumnCondition} or 'isNotNull' in case the value is null.
+		 * Returns a 'like' {@link ColumnCondition} or 'isNotNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link ColumnCondition}
 		 */
 		ColumnCondition<String> notLike(String value);
 
 		/**
-		 * Returns a case-insensitive 'like' {@link ColumnCondition} or 'isNull' in case the value is null.
+		 * Returns a case-insensitive 'like' {@link ColumnCondition} or 'isNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link ColumnCondition}
 		 */
 		ColumnCondition<String> likeIgnoreCase(String value);
 
 		/**
-		 * Returns a case-insensitive 'notLike' {@link ColumnCondition} or 'isNotNull' in case the value is null.
+		 * Returns a case-insensitive 'notLike' {@link ColumnCondition} or 'isNotNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link ColumnCondition}
 		 */

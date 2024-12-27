@@ -34,14 +34,14 @@ public interface ForeignKeyCondition extends Condition {
 	interface Factory {
 
 		/**
-		 * Returns a 'equalTo' {@link Condition} or 'isNull' in case the value is null.
+		 * Returns a 'equalTo' {@link Condition} or 'isNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link Condition}
 		 */
 		Condition equalTo(Entity value);
 
 		/**
-		 * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case the value is null.
+		 * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link Condition}
 		 */

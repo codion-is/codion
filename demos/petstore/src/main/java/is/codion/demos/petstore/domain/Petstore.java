@@ -365,7 +365,10 @@ public final class Petstore extends DomainModel {
 														.maximumLength(30)
 														.nullable(false),
 										Tag.REFCOUNT.define()
-														.subquery("SELECT COUNT(*) FROM petstore.tag_item WHERE tagid = tag.tagid")
+														.subquery("""
+																		SELECT COUNT(*)
+																		FROM petstore.tag_item
+																		WHERE tagid = tag.tagid""")
 														.caption(Tag.REFCOUNT.name())
 														.name("refcount"))
 						.tableName("petstore.tag")

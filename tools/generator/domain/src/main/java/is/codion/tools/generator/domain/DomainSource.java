@@ -274,8 +274,7 @@ public final class DomainSource {
 						.addField(FieldSpec.builder(EntityType.class, "TYPE")
 										.addModifiers(PUBLIC, STATIC, FINAL)
 										.initializer("DOMAIN.entityType($S)", definition.tableName().toLowerCase())
-										.build())
-						.addModifiers(PUBLIC);
+										.build());
 		definition.attributes().get().stream()
 						.filter(Column.class::isInstance)
 						.forEach(column -> appendAttribute(interfaceBuilder, column));

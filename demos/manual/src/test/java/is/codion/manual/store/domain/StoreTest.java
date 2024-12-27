@@ -65,7 +65,7 @@ public class StoreTest extends DomainTest {
 
 		@Override
 		public Optional<Entity> entity(ForeignKey foreignKey) {
-			//see if the currently running test requires an ADDRESS entity
+			// See if the currently running test requires an ADDRESS entity
 			if (foreignKey.referencedType().equals(Address.TYPE)) {
 				return Optional.of(connection().insertSelect(entities().builder(Address.TYPE)
 								.with(Address.ID, 21L)
@@ -80,8 +80,8 @@ public class StoreTest extends DomainTest {
 		@Override
 		public Entity entity(EntityType entityType) {
 			if (entityType.equals(Address.TYPE)) {
-				//Initialize an entity representing the table STORE.ADDRESS,
-				//which can be used for the testing
+				// Initialize an entity representing a record in the
+				// STORE.ADDRESS table, to use for testing
 				return entities().builder(Address.TYPE)
 								.with(Address.ID, 42L)
 								.with(Address.STREET, "Street")
@@ -90,8 +90,8 @@ public class StoreTest extends DomainTest {
 								.build();
 			}
 			else if (entityType.equals(Customer.TYPE)) {
-				//Initialize an entity representing the table STORE.CUSTOMER,
-				//which can be used for the testing
+				// Initialize an entity representing a record in the
+				// STORE.CUSTOMER table, to use for testing
 				return entities().builder(Customer.TYPE)
 								.with(Customer.ID, UUID.randomUUID().toString())
 								.with(Customer.FIRST_NAME, "Robert")
@@ -116,7 +116,8 @@ public class StoreTest extends DomainTest {
 				entity.put(Address.CITY, "New City");
 			}
 			else if (entity.entityType().equals(Customer.TYPE)) {
-				//It is sufficient to change the value of a single property, but the more, the merrier
+				// It is sufficient to change the value of a
+				// single property, but the more, the merrier
 				entity.put(Customer.FIRST_NAME, "Jesse");
 				entity.put(Customer.LAST_NAME, "James");
 				entity.put(Customer.ACTIVE, false);

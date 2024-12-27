@@ -156,7 +156,7 @@ public class DomainTest {
 
 		/**
 		 * Modifies one or more values in {@code entity}, for the update test.
-		 * If the entity is not modified, the update test will not be run.
+		 * If the returned entity is not modified, the update test will not be run.
 		 * The default implementation populates the entity with random values.
 		 * @param entity the entity to modify
 		 * @throws DatabaseException in case of an exception

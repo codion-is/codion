@@ -34,14 +34,12 @@ import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.common.value.ValueList.valueList;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
-import static java.util.Arrays.asList;
 
 /*
 // tag::demoModelImport[]
@@ -50,7 +48,7 @@ import static is.codion.common.value.Value.value;
 import static is.codion.common.value.ValueList.valueList;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
-import static java.util.Arrays.asList;
+import static java.util.List;
 // end::demoModelImport[]
 */
 // tag::demoModel[]
@@ -76,7 +74,7 @@ public final class ApplicationModel {
 	private final ValueList<String> stringListValue = valueList();
 	private final Value<String> messageValue = Value.nullable();
 
-	private final Collection<Value<?>> values = asList(
+	private final Collection<Value<?>> values = List.of(
 					shortStringValue,
 					longStringValue,
 					textValue,
@@ -182,7 +180,7 @@ public final class ApplicationModel {
 	}
 
 	public FilterComboBoxModel<Item<Integer>> createIntegerItemComboBoxModel() {
-		return ItemComboBoxModel.builder(asList(
+		return ItemComboBoxModel.builder(List.of(
 										item(1, "One"), item(2, "Two"), item(3, "Three"),
 										item(4, "Four"), item(5, "Five"), item(6, "Six"),
 										item(7, "Seven"), item(8, "Eight"), item(9, "Nine")))
@@ -202,7 +200,7 @@ public final class ApplicationModel {
 	}
 
 	public SpinnerListModel createItemSpinnerModel() {
-		return new SpinnerListModel(Arrays.asList(
+		return new SpinnerListModel(List.of(
 						item("Hello"), item("Everybody"),
 						item("How"), item("Are"), item("You")
 		));
