@@ -626,12 +626,12 @@ public final class DefaultFilterTableModelTest {
 	void values() {
 		tableModel.items().refresh();
 		tableModel.selection().indexes().set(asList(0, 2));
-		Collection<String> values = tableModel.selectedValues(0);
+		Collection<String> values = tableModel.values().selected(0);
 		assertEquals(2, values.size());
 		assertTrue(values.contains("a"));
 		assertTrue(values.contains("c"));
 
-		values = tableModel.values(0);
+		values = tableModel.values().get(0);
 		assertEquals(5, values.size());
 		assertTrue(values.contains("a"));
 		assertTrue(values.contains("b"));
@@ -639,6 +639,10 @@ public final class DefaultFilterTableModelTest {
 		assertTrue(values.contains("d"));
 		assertTrue(values.contains("e"));
 		assertFalse(values.contains("zz"));
+
+		// Unknown identifier
+		assertThrows(IllegalArgumentException.class, () -> tableModel.values().get(1));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.values().selected(1));
 	}
 
 	@Test

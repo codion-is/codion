@@ -53,6 +53,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	static final Comparator<?> STRING_COMPARATOR = Comparator.comparing(Object::toString);
 
 	private final DefaultFilterTableItems<R, C> items;
+	private final DefaultColumnValues columnValues = new DefaultColumnValues();
 	private final RemoveSelectionListener removeSelectionListener;
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
@@ -65,6 +66,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public FilterTableModelItems<R> items() {
 		return items;
+	}
+
+	@Override
+	public ColumnValues<C> values() {
+		return columnValues;
 	}
 
 	@Override
@@ -93,18 +99,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public <T> Collection<T> values(C identifier) {
-		return (Collection<T>) columnValues(IntStream.range(0, items.visible().count()).boxed(),
-						items.columns.identifiers().indexOf(identifier));
-	}
-
-	@Override
-	public <T> Collection<T> selectedValues(C identifier) {
-		return (Collection<T>) columnValues(selection().indexes().get().stream(),
-						items.columns.identifiers().indexOf(identifier));
-	}
-
-	@Override
 	public Class<?> getColumnClass(C identifier) {
 		return items.columns.columnClass(requireNonNull(identifier));
 	}
@@ -116,17 +110,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return items.columns.value(items.visible().itemAt(rowIndex), items.columns.identifier(columnIndex));
+		return columnValues.valueAt(rowIndex, columnIndex);
 	}
 
 	@Override
 	public TableColumns<R, C> columns() {
 		return items.columns;
-	}
-
-	@Override
-	public String getStringAt(int rowIndex, C identifier) {
-		return items.columns.string(items.visible().itemAt(rowIndex), requireNonNull(identifier));
 	}
 
 	@Override
@@ -147,10 +136,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
-		return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
-	}
-
 	private final class RemoveSelectionListener implements TableModelListener {
 
 		@Override
@@ -158,6 +143,46 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			if (e.getType() == TableModelEvent.DELETE) {
 				items.selection.removeIndexInterval(e.getFirstRow(), e.getLastRow());
 			}
+		}
+	}
+
+	private final class DefaultColumnValues implements ColumnValues<C> {
+
+		@Override
+		public <T> Collection<T> get(C identifier) {
+			return (Collection<T>) values(IntStream.range(0, items.visible().count()).boxed(), validateIdentifier(identifier));
+		}
+
+		@Override
+		public <T> Collection<T> selected(C identifier) {
+			return (Collection<T>) values(selection().indexes().get().stream(), validateIdentifier(identifier));
+		}
+
+		@Override
+		public String string(int rowIndex, C identifier) {
+			return items.columns.string(items.visible().itemAt(rowIndex), requireNonNull(identifier));
+		}
+
+		@Override
+		public Object value(int rowIndex, C identifier) {
+			return items.columns.value(items.visible().itemAt(rowIndex), identifier);
+		}
+
+		private List<Object> values(Stream<Integer> rowIndexStream, C identifier) {
+			return rowIndexStream.map(rowIndex -> value(rowIndex, identifier)).collect(toList());
+		}
+
+		private Object valueAt(int rowIndex, int columnIndex) {
+			return value(rowIndex, items.columns.identifier(columnIndex));
+		}
+
+		private C validateIdentifier(C identifier) {
+			int modelIndex = items.columns.identifiers().indexOf(identifier);
+			if (modelIndex == -1) {
+				throw new IllegalArgumentException("Unknown column identifier: " + identifier);
+			}
+
+			return identifier;
 		}
 	}
 

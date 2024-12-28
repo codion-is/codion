@@ -73,36 +73,20 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	TableColumns<R, C> columns();
 
 	/**
-	 * Returns a String representation of the value for the given row and column.
-	 * @param rowIndex the row index
-	 * @param identifier the column identifier
-	 * @return the string value
-	 */
-	String getStringAt(int rowIndex, C identifier);
-
-	/**
-	 * @param identifier the identifier of the column for which to retrieve the values
-	 * @param <T> the value type
-	 * @return the values (including nulls) of the column identified by the given identifier from the visible rows in the table model
-	 */
-	<T> Collection<T> values(C identifier);
-
-	/**
 	 * Returns the class of the column with the given identifier
 	 * @param identifier the column identifier
 	 * @return the Class representing the given column
 	 */
 	Class<?> getColumnClass(C identifier);
 
-	/**
-	 * @param identifier the identifier of the column for which to retrieve the values
-	 * @param <T> the value type
-	 * @return the values (including nulls) of the column identified by the given identifier from the selected rows in the table model
-	 */
-	<T> Collection<T> selectedValues(C identifier);
-
 	@Override
 	FilterTableModelItems<R> items();
+
+	/**
+	 * Provides access to column values
+	 * @return the {@link ColumnValues}
+	 */
+	ColumnValues<C> values();
 
 	/**
 	 * @return the {@link TableSelection} instance used by this table model
@@ -181,6 +165,47 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @return the {@link Value} controlling the refresh strategy
 		 */
 		Value<RefreshStrategy> refreshStrategy();
+	}
+
+	/**
+	 * Provides access to table column values
+	 * @param <C> the column identifier type
+	 */
+	interface ColumnValues<C> {
+
+		/**
+		 * @param identifier the identifier of the column for which to retrieve the values
+		 * @param <T> the value type
+		 * @return the values (including nulls) of the column identified by the given identifier from the visible rows in the table model
+		 * @throws IllegalArgumentException in case of an unknown identifier
+		 */
+		<T> Collection<T> get(C identifier);
+
+		/**
+		 * @param identifier the identifier of the column for which to retrieve the selected values
+		 * @param <T> the value type
+		 * @return the values (including nulls) of the column identified by the given identifier from the selected rows in the table model
+		 * @throws IllegalArgumentException in case of an unknown identifier
+		 */
+		<T> Collection<T> selected(C identifier);
+
+		/**
+		 * Returns the value for the given row and column.
+		 * @param rowIndex the row index
+		 * @param identifier the column identifier
+		 * @return the value
+		 * @see TableColumns#value(Object, Object)
+		 */
+		Object value(int rowIndex, C identifier);
+
+		/**
+		 * Returns a string representation of the value for the given row and column, an empty string in case of null.
+		 * @param rowIndex the row index
+		 * @param identifier the column identifier
+		 * @return the string value or an empty string in case of null
+		 * @see TableColumns#string(Object, Object)
+		 */
+		String string(int rowIndex, C identifier);
 	}
 
 	/**

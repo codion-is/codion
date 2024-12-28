@@ -100,7 +100,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 		for (int row = 0; row < tableModel.items().visible().count(); row++) {
 			for (int columnIndex = 0; columnIndex < visibleColumns.size(); columnIndex++) {
 				FilterTableColumn<C> column = visibleColumns.get(columnIndex);
-				if (searchPredicate.test(tableModel.getStringAt(row, column.identifier()))) {
+				if (searchPredicate.test(tableModel.values().string(row, column.identifier()))) {
 					results.searchResults.add(new DefaultRowColumn(row, columnIndex));
 				}
 			}

@@ -187,11 +187,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final String getStringAt(int rowIndex, Attribute<?> attribute) {
-		return filterModel().getStringAt(rowIndex, attribute);
-	}
-
-	@Override
 	public final void fireTableDataChanged() {
 		filterModel().fireTableDataChanged();
 	}
@@ -207,18 +202,13 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final <T> Collection<T> values(Attribute<?> attribute) {
-		return filterModel().values(attribute);
+	public final ColumnValues<Attribute<?>> values() {
+		return filterModel().values();
 	}
 
 	@Override
 	public final Class<?> getColumnClass(Attribute<?> attribute) {
 		return filterModel().getColumnClass(attribute);
-	}
-
-	@Override
-	public final <T> Collection<T> selectedValues(Attribute<?> attribute) {
-		return filterModel().selectedValues(attribute);
 	}
 
 	@Override

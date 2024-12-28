@@ -513,7 +513,7 @@ public final class FilterTable<R, C> extends JTable {
 		int selectedColumn = getSelectedColumn();
 		if (selectedRow >= 0 && selectedColumn >= 0) {
 			FilterTableColumn<C> column = columnModel().getColumn(selectedColumn);
-			Utilities.setClipboard(model().getStringAt(selectedRow, column.identifier()));
+			Utilities.setClipboard(model().values().string(selectedRow, column.identifier()));
 		}
 	}
 
@@ -1408,7 +1408,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public Collection<T> values() {
-			return subset() ? tableModel.selectedValues(identifier) : tableModel.values(identifier);
+			return subset() ? tableModel.values().selected(identifier) : tableModel.values().get(identifier);
 		}
 
 		@Override
@@ -1481,7 +1481,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private List<String> stringValues(int row, List<FilterTableColumn<C>> columns) {
 			return columns.stream()
-							.map(column -> tableModel.getStringAt(row, column.identifier()))
+							.map(column -> tableModel.values().string(row, column.identifier()))
 							.collect(toList());
 		}
 	}
