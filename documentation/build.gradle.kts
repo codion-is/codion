@@ -3,7 +3,6 @@ plugins {
 }
 
 val documentationVersion = project.version.toString().replace("-SNAPSHOT", "")
-val documentationDir = documentationVersion
 
 tasks.register("copyModuleDependencyGraphs") {
     group = "documentation"
@@ -25,6 +24,14 @@ tasks.register("copyModuleDependencyGraphs") {
 tasks.register("generateI18nValuesPage") {
     group = "documentation"
     description = "Generates the i18n asciidoc page"
+
+    inputs.files(frameworkModules().map { module ->
+        module.sourceSets.main.get().resources.matching {
+            include("**/*.properties")
+        }
+    })
+    outputs.file(file("src/docs/asciidoc/technical/i18n-values.adoc"))
+
     doLast {
         val file = file("src/docs/asciidoc/technical/i18n-values.adoc")
         val moduleFiles = LinkedHashMap<String, List<String>>()
@@ -156,7 +163,7 @@ tasks.register("assembleDocs") {
     dependsOn("combinedJavadoc", "asciidoctor")
     group = "documentation"
     description = "Creates the javadocs and asciidocs and combines them into the documentatio directory"
-    val docFolder = project.layout.buildDirectory.dir(documentationDir).get()
+    val docFolder = project.layout.buildDirectory.dir(documentationVersion).get()
     doLast {
         delete(docFolder)
         copy {
@@ -178,15 +185,15 @@ tasks.register<Sync>("copyToGitHubPages") {
     dependsOn("assembleDocs")
     group = "documentation"
     description = "Copies the assembled docs to the github pages project"
-    from(project.layout.buildDirectory.dir(documentationDir))
-    into("../../codion-pages/doc/$documentationDir")
+    from(project.layout.buildDirectory.dir(documentationVersion))
+    into("../../codion-pages/doc/$documentationVersion")
 }
 
 tasks.register<Zip>("documentationZip") {
     dependsOn("assembleDocs")
     group = "documentation"
     description = "Creates a zip file containing the assembled documentation"
-    from(project.layout.buildDirectory.dir(documentationDir))
+    from(project.layout.buildDirectory.dir(documentationVersion))
 }
 
 fun frameworkModules(): Iterable<Project> {
