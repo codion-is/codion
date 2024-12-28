@@ -338,7 +338,7 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		public R get() {
 			int index = selectedIndex.get();
 			if (index >= 0 && index < items.visible().count()) {
-				return items.visible().itemAt(index);
+				return items.visible().get(index);
 			}
 
 			return null;
@@ -371,7 +371,7 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		public List<R> get() {
 			return unmodifiableList(selectedIndexes.get().stream()
 							.mapToInt(Integer::intValue)
-							.mapToObj(items.visible()::itemAt)
+							.mapToObj(items.visible()::get)
 							.collect(toList()));
 		}
 

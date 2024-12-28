@@ -887,7 +887,7 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public void select(JComponent dialogOwner, List<Entity> entities) {
 			VisibleItems<Entity> visibleItems = table.model().items().visible();
-			if (visibleItems.addItemsAt(0, requireNonNull(entities))) {
+			if (visibleItems.add(0, entities)) {
 				visibleItems.sort();
 			}
 			table.scrollRectToVisible(table.getCellRect(0, 0, true));

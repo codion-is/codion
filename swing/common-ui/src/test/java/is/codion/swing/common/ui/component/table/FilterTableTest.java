@@ -347,23 +347,23 @@ public class FilterTableTest {
 		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sort();
 		sortModel.order(0).set(SortOrder.DESCENDING);
 		assertEquals(SortOrder.DESCENDING, sortModel.columns().get(0).sortOrder());
-		assertEquals(E, tableModel.items().visible().itemAt(0));
+		assertEquals(E, tableModel.items().visible().get(0));
 		assertEquals(1, actionsPerformed.get());
 		sortModel.order(0).set(SortOrder.ASCENDING);
 		assertEquals(SortOrder.ASCENDING, sortModel.columns().get(0).sortOrder());
-		assertEquals(A, tableModel.items().visible().itemAt(0));
+		assertEquals(A, tableModel.items().visible().get(0));
 		assertEquals(0, sortModel.columns().get().get(0).identifier());
 		assertEquals(2, actionsPerformed.get());
 
 		sortModel.order(0).set(SortOrder.DESCENDING);
 		tableModel.items().refresh();
-		assertEquals(A, tableModel.items().visible().itemAt(4));
-		assertEquals(E, tableModel.items().visible().itemAt(0));
+		assertEquals(A, tableModel.items().visible().get(4));
+		assertEquals(E, tableModel.items().visible().get(0));
 		sortModel.order(0).set(SortOrder.ASCENDING);
 
 		List<TestRow> items = new ArrayList<>();
 		items.add(NULL);
-		tableModel.items().visible().addItemsAt(0, items);
+		tableModel.items().visible().add(0, items);
 		sortModel.order(0).set(SortOrder.ASCENDING);
 		assertEquals(0, tableModel.items().visible().indexOf(NULL));
 		sortModel.order(0).set(SortOrder.DESCENDING);
@@ -371,7 +371,7 @@ public class FilterTableTest {
 
 		tableModel.items().refresh();
 		items.add(NULL);
-		tableModel.items().visible().addItemsAt(0, items);
+		tableModel.items().visible().add(0, items);
 		sortModel.order(0).set(SortOrder.ASCENDING);
 		assertEquals(0, tableModel.items().visible().indexOf(NULL));
 		sortModel.order(0).set(SortOrder.DESCENDING);
@@ -387,9 +387,9 @@ public class FilterTableTest {
 		tableModel.items().refresh();
 		FilterTableSortModel<TestRow, Integer> sortModel = table.model().sort();
 		sortModel.order(0).set(SortOrder.ASCENDING);
-		assertEquals(E, tableModel.items().visible().itemAt(0));
+		assertEquals(E, tableModel.items().visible().get(0));
 		sortModel.order(0).set(SortOrder.DESCENDING);
-		assertEquals(A, tableModel.items().visible().itemAt(0));
+		assertEquals(A, tableModel.items().visible().get(0));
 	}
 
 	@Test

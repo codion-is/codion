@@ -270,7 +270,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		List<Entity> entities = objectMapper.deserializeEntities(
 						String.join("\n", Files.readAllLines(file.toPath())));
 		clearTableAndConditions();
-		tableModel().items().visible().addItemsAt(0, entities);
+		tableModel().items().visible().add(0, entities);
 		tableModel().items().visible().sort();
 	}
 

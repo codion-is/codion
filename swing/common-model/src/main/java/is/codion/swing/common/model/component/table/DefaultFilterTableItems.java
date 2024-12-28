@@ -253,14 +253,14 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			addInternal(item);
 		}
 		else {
-			visible.setItemAt(index, item);
+			visible.set(index, item);
 		}
 	}
 
 	private void clearAndAdd(Collection<R> items) {
 		List<R> selectedItems = selection.items().get();
 		clear();
-		if (add(items)) {
+		if (addInternal(visible.items.size(), items)) {
 			visible.sort();
 		}
 		selection.items().set(selectedItems);
@@ -285,7 +285,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	}
 
 	private boolean addInternal(int index, Collection<R> items) {
-		requireNonNull(items);
 		Collection<R> visibleItems = new ArrayList<>(items.size());
 		Collection<R> filteredItems = new ArrayList<>(items.size());
 		for (R item : items) {
@@ -451,28 +450,28 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 
 		@Override
-		public R itemAt(int index) {
+		public R get(int index) {
 			synchronized (lock) {
 				return items.get(index);
 			}
 		}
 
 		@Override
-		public boolean addItemsAt(int index, Collection<R> items) {
+		public boolean add(int index, Collection<R> items) {
 			synchronized (lock) {
 				return addInternal(index, rejectNulls(items));
 			}
 		}
 
 		@Override
-		public boolean addItemAt(int index, R item) {
+		public boolean add(int index, R item) {
 			synchronized (lock) {
 				return addInternal(index, requireNonNull(item));
 			}
 		}
 
 		@Override
-		public boolean setItemAt(int index, R item) {
+		public boolean set(int index, R item) {
 			validate(requireNonNull(item));
 			synchronized (lock) {
 				if (visiblePredicate.test(item)) {
@@ -487,7 +486,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 
 		@Override
-		public R removeItemAt(int index) {
+		public R remove(int index) {
 			synchronized (lock) {
 				R removed = items.remove(index);
 				tableModel.fireTableRowsDeleted(index, index);
@@ -498,7 +497,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 
 		@Override
-		public List<R> removeItems(int fromIndex, int toIndex) {
+		public List<R> remove(int fromIndex, int toIndex) {
 			synchronized (lock) {
 				List<R> subList = items.subList(fromIndex, toIndex);
 				List<R> removedItems = new ArrayList<>(subList);

@@ -122,7 +122,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertThrows(IllegalStateException.class, () -> tableModel.setValueAt("newname", 0, 1));
 		tableModel.editable().set(true);
 		tableModel.setValueAt("newname", 0, 1);
-		Entity entity = tableModel.items().visible().itemAt(0);
+		Entity entity = tableModel.items().visible().get(0);
 		assertEquals("newname", entity.get(Employee.NAME));
 		assertThrows(RuntimeException.class, () -> tableModel.setValueAt("newname", 0, 0));
 	}
@@ -147,10 +147,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 						.with(Department.NAME, "dept")
 						.build();
 		assertThrows(IllegalArgumentException.class, () -> tableModel.items().add(singletonList(dept)));
-		assertThrows(IllegalArgumentException.class, () -> tableModel.items().visible().addItemsAt(0, singletonList(dept)));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.items().visible().add(0, singletonList(dept)));
 
 		assertThrows(NullPointerException.class, () -> tableModel.items().add(singletonList(null)));
-		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemsAt(0, singletonList(null)));
+		assertThrows(NullPointerException.class, () -> tableModel.items().visible().add(0, singletonList(null)));
 	}
 
 	@Test
@@ -193,7 +193,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		tableModel.items().refresh();
 		SwingEntityEditModel employeeEditModel = new SwingEntityEditModel(Employee.TYPE, testModel.connectionProvider());
-		employeeEditModel.editor().set(tableModel.items().visible().itemAt(0));
+		employeeEditModel.editor().set(tableModel.items().visible().get(0));
 		String newName = "new name";
 		employeeEditModel.value(Employee.NAME).set(newName);
 		SwingEntityEditModel departmentEditModel = new SwingEntityEditModel(Department.TYPE, testModel.connectionProvider());
@@ -203,9 +203,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		connection.startTransaction();
 		try {
 			employeeEditModel.update();
-			assertEquals(newName, tableModel.items().visible().itemAt(0).get(Employee.NAME));
+			assertEquals(newName, tableModel.items().visible().get(0).get(Employee.NAME));
 			departmentEditModel.update();
-			assertEquals(newName, tableModel.items().visible().itemAt(0).get(Employee.DEPARTMENT_FK).get(Department.NAME));
+			assertEquals(newName, tableModel.items().visible().get(0).get(Employee.DEPARTMENT_FK).get(Department.NAME));
 		}
 		finally {
 			connection.rollbackTransaction();

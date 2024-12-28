@@ -203,7 +203,7 @@ public interface FilterModel<T> {
 		 * @param index the row index
 		 * @return the item at the given index in this model
 		 */
-		T itemAt(int index);
+		T get(int index);
 
 		/**
 		 * Adds the given item at the given index.
@@ -212,7 +212,7 @@ public interface FilterModel<T> {
 		 * @param item the item to add
 		 * @return true if the item was added to the visible items
 		 */
-		boolean addItemAt(int index, T item);
+		boolean add(int index, T item);
 
 		/**
 		 * Adds the given items at the last index.
@@ -221,7 +221,7 @@ public interface FilterModel<T> {
 		 * @param items the items to add
 		 * @return true if one or more of the items was added to the visible items
 		 */
-		boolean addItemsAt(int index, Collection<T> items);
+		boolean add(int index, Collection<T> items);
 
 		/**
 		 * Sets the item at the given index.
@@ -231,24 +231,24 @@ public interface FilterModel<T> {
 		 * @return true if the item was set, false if it did not pass the visible {@link #predicate()}
 		 * @see VisibleItems#predicate()
 		 */
-		boolean setItemAt(int index, T item);
+		boolean set(int index, T item);
 
 		/**
-		 * Removes from this table model the visible element whose index is between index
+		 * Removes from this table model the visible element at the given index
 		 * @param index the index of the row to be removed
 		 * @return the removed item
 		 * @throws IndexOutOfBoundsException in case the index is out of bounds
 		 */
-		T removeItemAt(int index);
+		T remove(int index);
 
 		/**
-		 * Removes from this table model all visible elements whose index is between fromIndex, inclusive and toIndex, exclusive
+		 * Removes from this table model all visible elements whose index is between {@code fromIndex}, inclusive and {@code toIndex}, exclusive
 		 * @param fromIndex index of first row to be removed
 		 * @param toIndex index after last row to be removed
 		 * @return the removed items
 		 * @throws IndexOutOfBoundsException in case the indexes are out of bounds
 		 */
-		List<T> removeItems(int fromIndex, int toIndex);
+		List<T> remove(int fromIndex, int toIndex);
 
 		/**
 		 * @return the number of visible items

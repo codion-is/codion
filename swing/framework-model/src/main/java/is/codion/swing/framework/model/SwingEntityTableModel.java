@@ -164,7 +164,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		if (!editable().get() || editModel().readOnly().get() || !editModel().updateEnabled().get()) {
 			throw new IllegalStateException("This table model is readOnly or has disabled update");
 		}
-		Entity entity = items().visible().itemAt(rowIndex).copy().mutable();
+		Entity entity = items().visible().get(rowIndex).copy().mutable();
 		entity.put((Attribute<Object>) columns().identifier(modelColumnIndex), value);
 		try {
 			if (entity.modified()) {

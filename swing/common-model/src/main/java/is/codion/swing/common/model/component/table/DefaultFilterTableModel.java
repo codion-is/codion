@@ -160,12 +160,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public String string(int rowIndex, C identifier) {
-			return items.columns.string(items.visible().itemAt(rowIndex), requireNonNull(identifier));
+			return items.columns.string(items.visible().get(rowIndex), requireNonNull(identifier));
 		}
 
 		@Override
 		public Object value(int rowIndex, C identifier) {
-			return items.columns.value(items.visible().itemAt(rowIndex), identifier);
+			return items.columns.value(items.visible().get(rowIndex), identifier);
 		}
 
 		private List<Object> values(Stream<Integer> rowIndexStream, C identifier) {

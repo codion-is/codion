@@ -224,18 +224,18 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 			VisibleItems<Entity> visibleItems = items().visible();
 			switch (onInsert.getOrThrow()) {
 				case ADD_TOP:
-					visibleItems.addItemsAt(0, entitiesToAdd);
+					visibleItems.add(0, entitiesToAdd);
 					break;
 				case ADD_TOP_SORTED:
-					if (visibleItems.addItemsAt(0, entitiesToAdd)) {
+					if (visibleItems.add(0, entitiesToAdd)) {
 						visibleItems.sort();
 					}
 					break;
 				case ADD_BOTTOM:
-					visibleItems.addItemsAt(visibleItems.count(), entitiesToAdd);
+					visibleItems.add(visibleItems.count(), entitiesToAdd);
 					break;
 				case ADD_BOTTOM_SORTED:
-					if (visibleItems.addItemsAt(visibleItems.count(), entitiesToAdd)) {
+					if (visibleItems.add(visibleItems.count(), entitiesToAdd)) {
 						visibleItems.sort();
 					}
 					break;
@@ -268,7 +268,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	 */
 	private void replaceEntitiesByKey(Map<Entity.Key, Entity> entitiesByKey) {
 		Map<Entity.Key, Integer> keyIndexes = keyIndexes(new HashSet<>(entitiesByKey.keySet()));
-		keyIndexes.forEach((key, index) -> items().visible().setItemAt(index, entitiesByKey.remove(key)));
+		keyIndexes.forEach((key, index) -> items().visible().set(index, entitiesByKey.remove(key)));
 		if (!entitiesByKey.isEmpty()) {
 			items().filtered().get().forEach(item -> {
 				Entity replacement = entitiesByKey.remove(item.primaryKey());

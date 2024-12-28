@@ -498,34 +498,34 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			@Override
-			public T itemAt(int index) {
+			public T get(int index) {
 				synchronized (lock) {
 					return items.get(index);
 				}
 			}
 
 			@Override
-			public boolean addItemAt(int index, T item) {
+			public boolean add(int index, T item) {
 				throw new UnsupportedOperationException();
 			}
 
 			@Override
-			public boolean addItemsAt(int index, Collection<T> items) {
+			public boolean add(int index, Collection<T> items) {
 				throw new UnsupportedOperationException();
 			}
 
 			@Override
-			public T removeItemAt(int index) {
+			public T remove(int index) {
 				throw new UnsupportedOperationException();
 			}
 
 			@Override
-			public List<T> removeItems(int fromIndex, int toIndex) {
+			public List<T> remove(int fromIndex, int toIndex) {
 				throw new UnsupportedOperationException();
 			}
 
 			@Override
-			public boolean setItemAt(int index, T item) {
+			public boolean set(int index, T item) {
 				throw new UnsupportedOperationException();
 			}
 
