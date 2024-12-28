@@ -19,20 +19,26 @@
 package is.codion.manual.swing.common.model.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
+import is.codion.swing.common.model.component.table.FilterTableSortModel;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static is.codion.common.Operator.EQUAL;
 import static is.codion.common.Operator.GREATER_THAN_OR_EQUAL;
 import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Person.AGE;
 import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Person.NAME;
 import static javax.swing.SortOrder.ASCENDING;
+import static javax.swing.SortOrder.DESCENDING;
 
 public final class FilterTableModelDemo {
-	// tag::filterTableModel[]
+
+	// tag::person[]
 	// Define a record representing the table rows
 	public record Person(String name, int age) {
 
@@ -40,9 +46,11 @@ public final class FilterTableModelDemo {
 		public static final String NAME = "Name";
 		public static final String AGE = "Age";
 	}
+	// end::person[]
 
+	// tag::personColumns[]
 	// Implement TableColumns, which specifies the column identifiers,
-	// the column class and how to extract column values from the row
+	// the column class and how to extract column values from row objects
 	public static final class PersonColumns implements TableColumns<Person, String> {
 
 		private static final List<String> COLUMNS = List.of(NAME, AGE);
@@ -70,18 +78,21 @@ public final class FilterTableModelDemo {
 			};
 		}
 	}
+	// end::personColumns[]
 
 	public static FilterTableModel<Person, String> createFilterTableModel() {
+		// tag::filterTableModel[]
 		// Implement an item supplier responsible for supplying
-		// the table items when the table data is refreshed.
-		// Without one the table can be populated by adding items manually
+		// the data when the table items are refreshed.
+		// Without one the model can be populated by adding items manually
 		Supplier<Collection<Person>> supplier = () -> List.of(
 						new Person("John", 42),
 						new Person("Mary", 43),
 						new Person("Andy", 33),
 						new Person("Joan", 37));
 
-		// Create the table model
+		// Build the table model, providing the TableColumns
+		// implementation along with the item supplier.
 		FilterTableModel<Person, String> tableModel =
 						FilterTableModel.builder(new PersonColumns())
 										.supplier(supplier)
@@ -89,25 +100,94 @@ public final class FilterTableModelDemo {
 
 		// Populate the model
 		tableModel.items().refresh();
-
-		// Filter out people under 40 years old
-		ConditionModel<Integer> ageFilter =
-						tableModel.filters().get(Person.AGE);
-		ageFilter.operator().set(GREATER_THAN_OR_EQUAL);
-		ageFilter.operands().upper().set(40);
-
-		// Sort by name
-		tableModel.sort()
-						.order(Person.NAME).set(ASCENDING);
-
-		// Print the selected item
-		tableModel.selection().item()
-						.addConsumer(System.out::println);
-
-		// Select the first row
-		tableModel.selection().index().set(0);
+		// end::filterTableModel[]
 
 		return tableModel;
 	}
-	// end::filterTableModel[]
+
+	static void filter(FilterTableModel<Person, String> tableModel) {
+		// tag::filters[]
+		TableConditionModel<String> filters = tableModel.filters();
+
+		// Filter out people under 40 years old
+		ConditionModel<Integer> ageFilter = filters.get(Person.AGE);
+
+		ageFilter.operator().set(GREATER_THAN_OR_EQUAL);
+		ageFilter.operands().upper().set(40);
+		// Not necessary since filters auto-enable by default
+		// when operators and operands are specified
+		ageFilter.enabled().set(true);
+
+		// Filter is automatically disabled when it is cleared
+		ageFilter.clear();
+
+		// Filter out anyone besides John and Joan
+		ConditionModel<String> nameFilter = filters.get(NAME);
+
+		nameFilter.caseSensitive().set(false);
+		// Not necessary, since EQUAL is the default
+		nameFilter.operator().set(EQUAL);
+		nameFilter.operands().equal().set("jo%");
+
+		// Clear all filters
+		filters.clear();
+		// end::filters[]
+	}
+
+	static void select(FilterTableModel<Person, String> tableModel) {
+		// tag::selection[]
+		TableSelection<Person> selection = tableModel.selection();
+
+		// Print the selected items when they change
+		selection.items().addConsumer(System.out::println);
+
+		// Print a message when the minimum selected index changes
+		selection.index().addListener(() ->
+						System.out.println("Selected index changed"));
+
+		// Select the first row
+		selection.index().set(0);
+
+		// Select the first two rows
+		selection.indexes().set(List.of(0, 1));
+
+		// Fetch the selected items
+		List<Person> items = selection.items().get();
+
+		// Or just the first (minimun index)
+		Person item = selection.item().get();
+
+		// Select a specific person
+		selection.item().set(new Person("John", 42));
+
+		// Select all persons over 40
+		selection.items().set(person -> person.age() > 40);
+
+		// Increment all selected indexes by
+		// one, moving the selection down
+		selection.indexes().increment();
+
+		// Clear the selection
+		selection.clear();
+		// end::selection[]
+	}
+
+	static void sort(FilterTableModel<Person, String> tableModel) {
+		// tag::sort[]
+		FilterTableSortModel<Person, String> sort = tableModel.sort();
+
+		// Sort by age and name, ascending
+		sort.ascending(AGE, NAME);
+
+		// Sort by age, descending,
+		// set() clears the previous sort
+		sort.order(AGE).set(DESCENDING);
+		// add sorting by name, ascending,
+		// add() adds to any previous sort
+		sort.order(NAME).add(ASCENDING);
+
+		// Clear the sorting
+		sort.clear();
+		// end::sort[]
+	}
 }

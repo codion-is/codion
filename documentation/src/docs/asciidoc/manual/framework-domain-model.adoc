@@ -111,8 +111,7 @@ include::{dir-source}/is/codion/manual/store/minimal/ManualDomainModel.java[tags
 
 <1> The *DomainType* constant is a required constructor parameter.
 
-{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain] is a https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html[Service Provider Interface (SPI)], and it is recommended to configure the domain implementation class for the https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[Service Loader].
-Without the Service Loader you are restricted to a local JDBC connection, since you must manually provide a domain instance when establishing a connection, instead of just referring to the *DomainType* constant.
+{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain] is a https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html[Service Provider Interface (SPI)], and it is recommended to configure the domain implementation class for the https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ServiceLoader.html[Service Loader]. Without the Service Loader you are restricted to a local JDBC connection, since you must manually provide a domain instance when establishing a connection, instead of just referring to the *DomainType* constant.
 
 _src/main/java/module-info.java_
 

@@ -170,7 +170,7 @@ public class EntityEditComponentPanel extends JPanel {
 	private final Defaults defaults = new Defaults();
 
 	/**
-	 * Instantiates a new EntityEditComponentPanel
+	 * Instantiates a new {@link EntityEditComponentPanel}
 	 * @param editModel the edit model
 	 */
 	protected EntityEditComponentPanel(SwingEntityEditModel editModel) {

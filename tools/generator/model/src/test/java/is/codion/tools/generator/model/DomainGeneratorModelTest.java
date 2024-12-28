@@ -24,10 +24,6 @@ import is.codion.tools.generator.model.DomainGeneratorModel.SchemaColumns;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.SortOrder;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public final class DomainGeneratorModelTest {
@@ -40,11 +36,7 @@ public final class DomainGeneratorModelTest {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().sort().ascending(SchemaColumns.Id.SCHEMA);
 		model.schemaModel().items().refresh();
-
-		List<SchemaRow> schema = model.schemaModel().items().get().stream()
-						.filter(item -> item.schema().equals("PETSTORE"))
-						.collect(toList());
-		model.schemaModel().selection().index().set(model.schemaModel().items().visible().indexOf(schema.get(0)));
+		model.schemaModel().selection().items().set(row -> row.schema().equals("PETSTORE"));
 		model.populateSelected(s -> {});
 		model.domainPackage().set("is.codion.petstore.domain");
 		assertNotNull(model.domainApi().get());
@@ -55,13 +47,9 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void chinook() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
-		model.schemaModel().sort().order(SchemaColumns.Id.SCHEMA).set(SortOrder.ASCENDING);
+		model.schemaModel().sort().ascending(SchemaColumns.Id.SCHEMA);
 		model.schemaModel().items().refresh();
-
-		List<SchemaRow> schema = model.schemaModel().items().get().stream()
-						.filter(item -> item.schema().equals("CHINOOK"))
-						.collect(toList());
-		model.schemaModel().selection().index().set(model.schemaModel().items().visible().indexOf(schema.get(0)));
+		model.schemaModel().selection().items().set(row -> row.schema().equals("CHINOOK"));
 		model.populateSelected(s -> {});
 		model.domainPackage().set("is.codion.chinook.domain");
 		assertNotNull(model.domainApi().get());
@@ -74,11 +62,7 @@ public final class DomainGeneratorModelTest {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().sort().ascending(SchemaColumns.Id.SCHEMA);
 		model.schemaModel().items().refresh();
-
-		List<SchemaRow> schema = model.schemaModel().items().get().stream()
-						.filter(item -> item.schema().equals("WORLD"))
-						.collect(toList());
-		model.schemaModel().selection().index().set(model.schemaModel().items().visible().indexOf(schema.get(0)));
+		model.schemaModel().selection().items().set(row -> row.schema().equals("WORLD"));
 		model.populateSelected(s -> {});
 		model.domainPackage().set("is.codion.world.domain");
 		assertNotNull(model.domainApi().get());

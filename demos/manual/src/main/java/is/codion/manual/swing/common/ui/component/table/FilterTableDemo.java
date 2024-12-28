@@ -22,6 +22,7 @@ import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.control.Control;
@@ -50,15 +51,58 @@ final class FilterTableDemo {
 																		.ifPresent(System.out::println)))
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.build();
+		// end::filterTable[]
+	}
+
+	static void search(FilterTable<Person, String> table) {
+		// tag::search[]
+		FilterTableSearchModel search = table.search();
 
 		// Search for the value "43" in the table
-		FilterTableSearchModel search = table.search();
-		search.predicate()
-						.set(value -> value.equals("43"));
+		search.predicate().set(value -> value.equals("43"));
 
-		RowColumn searchResult =
-						search.results().current().get();
+		RowColumn searchResult = search.results().current().get();
+
 		System.out.println(searchResult); // row: 1, column: 1
-		// end::filterTable[]
+
+		// Print the next available result
+		search.results().next().ifPresent(System.out::println);
+		// end::search[]
+	}
+
+	static void columns(FilterTable<Person, String> table) {
+		// tag::columns[]
+		FilterTableColumnModel<String> columns = table.columnModel();
+
+		// Reorder the columns
+		columns.visible().set(Person.AGE, Person.NAME);
+
+		// Print hidden columns when they change
+		columns.hidden().addConsumer(System.out::println);
+
+		// Hide the age column
+		columns.visible(Person.AGE).set(false);
+
+		// Only show the age column
+		columns.visible().set(Person.AGE);
+
+		// Reset columns to their default location and visibility
+		columns.reset();
+		// end::columns[]
+	}
+
+	static void export(FilterTable<Person, String> table) {
+		// tag::export[]
+		String tabDelimited = table.export()
+						// Tab delimited
+						.delimiter('\t')
+						// Include hidden columns
+						.hidden(true)
+						// Include header
+						.header(true)
+						// Only selected rows
+						.selected(true)
+						.get();
+		// end::export[]
 	}
 }

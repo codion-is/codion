@@ -25,6 +25,7 @@ include::{dir-utilities}/idea/templates/codion.xml[]
 [cols="1,4"]
 |===
 |Name|Template
+
 |et|EntityType TYPE = DOMAIN.entityType("table_name");
 |fk|ForeignKey FK_KEY = TYPE.foreignKey("fk_key");
 |cosh|Column<Short> COLUMN = TYPE.shortColumn("column");

@@ -18,222 +18,98 @@
  */
 package is.codion.manual.quickstart;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.DomainModel;
-import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
-import is.codion.framework.domain.entity.StringFactory;
-import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.test.DomainTest;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 
-import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.automatic;
-import static is.codion.manual.quickstart.Example.Store.*;
-import static java.util.UUID.randomUUID;
+import static is.codion.manual.quickstart.Store.*;
 
 public final class Example {
 
-	// tag::store[]
-	// tag::storeDomain[]
-	public static class Store extends DomainModel {
+	// tag::customerEditPanel[]
+	public class CustomerEditPanel extends EntityEditPanel {
 
-		public static final DomainType DOMAIN = domainType(Store.class);
-
-		public Store() {
-			super(DOMAIN);
-			add(customer(), address(), customerAddress());
-		}
-		// end::storeDomain[]
-
-		// tag::customer[]
-		public interface Customer {
-			EntityType TYPE = DOMAIN.entityType("store.customer");
-
-			Column<String> ID = TYPE.stringColumn("id");
-			Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
-			Column<String> LAST_NAME = TYPE.stringColumn("last_name");
+		public CustomerEditPanel(SwingEntityEditModel editModel) {
+			super(editModel);
 		}
 
-		EntityDefinition customer() {
-			return Customer.TYPE.define(
-											Customer.ID.define()
-															.primaryKey(),
-											Customer.FIRST_NAME.define()
-															.column()
-															.caption("First name")
-															.nullable(false)
-															.maximumLength(40),
-											Customer.LAST_NAME.define()
-															.column()
-															.caption("Last name")
-															.nullable(false)
-															.maximumLength(40))
-							.keyGenerator(new CustomerKeyGenerator())
-							.stringFactory(StringFactory.builder()
-											.value(Customer.LAST_NAME)
-											.text(", ")
-											.value(Customer.FIRST_NAME)
-											.build())
-						.build();
+		@Override
+		protected void initializeUI() {
+			initialFocusAttribute().set(Customer.FIRST_NAME);
+			createTextField(Customer.FIRST_NAME);
+			createTextField(Customer.LAST_NAME);
+			addInputPanel(Customer.FIRST_NAME);
+			addInputPanel(Customer.LAST_NAME);
 		}
-
-		private static final class CustomerKeyGenerator implements KeyGenerator {
-			@Override
-			public void beforeInsert(Entity entity, DatabaseConnection connection) {
-				entity.put(Customer.ID, randomUUID().toString());
-			}
-		}
-
-		// end::customer[]
-		// tag::address[]
-		public interface Address {
-			EntityType TYPE = DOMAIN.entityType("store.address");
-
-			Column<Integer> ID = TYPE.integerColumn("id");
-			Column<String> STREET = TYPE.stringColumn("street");
-			Column<String> CITY = TYPE.stringColumn("city");
-		}
-
-		EntityDefinition address() {
-			return Address.TYPE.define(
-											Address.ID.define()
-															.primaryKey(),
-											Address.STREET.define()
-															.column()
-															.caption("Street")
-															.nullable(false)
-															.maximumLength(120),
-											Address.CITY.define()
-															.column()
-															.caption("City")
-															.nullable(false)
-															.maximumLength(50))
-							.keyGenerator(automatic("store.address"))
-							.stringFactory(StringFactory.builder()
-											.value(Address.STREET)
-											.text(", ")
-											.value(Address.CITY)
-											.build())
-						.build();
-		}
-
-		// end::address[]
-		// tag::customerAddress[]
-		public interface CustomerAddress {
-			EntityType TYPE = DOMAIN.entityType("store.customer_address");
-
-			Column<Integer> ID = TYPE.integerColumn("id");
-			Column<String> CUSTOMER_ID = TYPE.stringColumn("customer_id");
-			Column<Integer> ADDRESS_ID = TYPE.integerColumn("address_id");
-
-			ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
-			ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ID);
-		}
-
-		EntityDefinition customerAddress() {
-			return CustomerAddress.TYPE.define(
-											CustomerAddress.ID.define()
-															.primaryKey(),
-											CustomerAddress.CUSTOMER_ID.define()
-															.column()
-															.nullable(false),
-											CustomerAddress.CUSTOMER_FK.define()
-															.foreignKey()
-															.caption("Customer"),
-											CustomerAddress.ADDRESS_ID.define()
-															.column()
-															.nullable(false),
-											CustomerAddress.ADDRESS_FK.define()
-															.foreignKey()
-															.caption("Address"))
-							.keyGenerator(automatic("store.customer_address"))
-							.caption("Customer address")
-						.build();
-		}
-		// end::customerAddress[]
 	}
-	// end::store[]
+	// end::customerEditPanel[]
 
-	static void customerPanel() {
-		// tag::customerPanel[]
-		class CustomerEditPanel extends EntityEditPanel {
+	// tag::addressEditPanel[]
+	public class AddressEditPanel extends EntityEditPanel {
 
-			public CustomerEditPanel(SwingEntityEditModel editModel) {
-				super(editModel);
-			}
-
-			@Override
-			protected void initializeUI() {
-				initialFocusAttribute().set(Customer.FIRST_NAME);
-				createTextField(Customer.FIRST_NAME);
-				createTextField(Customer.LAST_NAME);
-				addInputPanel(Customer.FIRST_NAME);
-				addInputPanel(Customer.LAST_NAME);
-			}
+		public AddressEditPanel(SwingEntityEditModel editModel) {
+			super(editModel);
 		}
 
+		@Override
+		protected void initializeUI() {
+			initialFocusAttribute().set(CustomerAddress.CUSTOMER_FK);
+			createForeignKeyComboBox(CustomerAddress.CUSTOMER_FK);
+			createForeignKeyComboBox(CustomerAddress.ADDRESS_FK);
+			addInputPanel(CustomerAddress.CUSTOMER_FK);
+			addInputPanel(CustomerAddress.ADDRESS_FK);
+		}
+	}
+	// end::addressEditPanel[]
+
+	void customerPanel() {
+		// tag::customerPanel[]
 		EntityConnectionProvider connectionProvider =
 						LocalEntityConnectionProvider.builder()
 										.domain(new Store())
 										.user(User.parse("scott:tiger"))
 										.build();
 
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel =
+						new SwingEntityModel(Customer.TYPE, connectionProvider);
 
-		EntityPanel customerPanel = new EntityPanel(customerModel,
-						new CustomerEditPanel(customerModel.editModel()));
+		CustomerEditPanel customerEditPanel =
+						new CustomerEditPanel(customerModel.editModel());
+
+		EntityPanel customerPanel =
+						new EntityPanel(customerModel, customerEditPanel);
 		// end::customerPanel[]
 
 		// tag::detailPanel[]
-		class CustomerAddressEditPanel extends EntityEditPanel {
+		SwingEntityModel addressModel =
+						new SwingEntityModel(CustomerAddress.TYPE, connectionProvider);
 
-			public CustomerAddressEditPanel(SwingEntityEditModel editModel) {
-				super(editModel);
-			}
+		customerModel.detailModels().add(addressModel);
 
-			@Override
-			protected void initializeUI() {
-				initialFocusAttribute().set(CustomerAddress.CUSTOMER_FK);
-				createForeignKeyComboBox(CustomerAddress.CUSTOMER_FK);
-				createForeignKeyComboBox(CustomerAddress.ADDRESS_FK);
-				addInputPanel(CustomerAddress.CUSTOMER_FK);
-				addInputPanel(CustomerAddress.ADDRESS_FK);
-			}
-		}
+		AddressEditPanel addressEditPanel =
+						new AddressEditPanel(addressModel.editModel());
 
-		SwingEntityModel customerAddressModel = new SwingEntityModel(CustomerAddress.TYPE, connectionProvider);
+		EntityPanel addressPanel =
+						new EntityPanel(addressModel, addressEditPanel);
 
-		customerModel.detailModels().add(customerAddressModel);
-
-		EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
-						new CustomerAddressEditPanel(customerAddressModel.editModel()));
-
-		customerPanel.detailPanels().add(customerAddressPanel);
+		customerPanel.detailPanels().add(addressPanel);
 
 		//lazy initialization of UI components
 		customerPanel.initialize();
 
-		//populate the model with data from the database
+		//populate the table model with data from the database
 		customerModel.tableModel().items().refresh();
 
 		Dialogs.componentDialog(customerPanel)
@@ -242,33 +118,7 @@ public final class Example {
 		// end::detailPanel[]
 	}
 
-	static void domainModelTest() {
-		// tag::domainModelTest[]
-		class StoreTest extends DomainTest {
-
-			public StoreTest() {
-				super(new Store(), User.parse("scott:tiger"));
-			}
-
-			@Test
-			void customer() {
-				test(Customer.TYPE);
-			}
-
-			@Test
-			void address() {
-				test(Address.TYPE);
-			}
-
-			@Test
-			void customerAddress() {
-				test(CustomerAddress.TYPE);
-			}
-		}
-		// end::domainModelTest[]
-	}
-
-	static void selectEntities() {
+	void selectEntities() {
 		// tag::select[]
 		Store domain = new Store();
 
@@ -276,8 +126,9 @@ public final class Example {
 						LocalEntityConnection.localEntityConnection(
 										Database.instance(), domain, User.parse("scott:tiger"));
 
-		//select customer where last name = Doe
-		Entity johnDoe = connection.selectSingle(Customer.LAST_NAME.equalTo("Doe"));
+		//select customer
+		Entity johnDoe = // where last name = Doe
+						connection.selectSingle(Customer.LAST_NAME.equalTo("Doe"));
 
 		//select all customer addresses
 		List<Entity> customerAddresses = //where customer = john doe
@@ -293,7 +144,7 @@ public final class Example {
 		// end::select[]
 	}
 
-	static void persistEntities() {
+	void persistEntities() {
 		// tag::persist[]
 		Store domain = new Store();
 

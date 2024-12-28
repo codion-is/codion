@@ -102,8 +102,11 @@ There are at minimum three steps involved in creating a Codion application:
 [cols="2,4"]
 |===
 |Module|Artifact
+
 |is.codion.framework.domain|is.codion:codion-framework-domain:{codion-version}
 |===
+
+NOTE: The domain module is transitively included via the UI module.
 
 ==== Defining entities
 
@@ -126,64 +129,89 @@ include::{dir-source-sql}/create_schema.sql[]
 ====
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=store]
+include::{dir-source}/is/codion/manual/quickstart/Store.java[tags=store]
 ----
 ====
 
 To create a domain model we extend the *DomainModel* class and define a *DomainType* constant to identify the domain model.
 
-In the constructor we call methods adding entity definitions to this domain model.
+In the constructor we add three entity definitions to the domain model.
 
 This class is continued below.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=storeDomain]
+include::{dir-source}/is/codion/manual/quickstart/Store.java[tags=storeDomain]
 ----
 
-We create a namespace interface and define a *EntityType* constant based on the table and typed *Column* constants for each column, these constants specify the entity API, used when referring to the entity type or its columns.
-
-In the associated method we create *ColumnDefinition.Builder* instances based on each *Column*, providing further configuration options, such as specifying a caption and maximum length, using methods in the *Column* class.
-We supply these *ColumnDefinition.Builder* instances to the *EntityType.define()* method, which returns a *EntityDefinition.Builder* instance, providing further configuration options for the entity definition, such as the key generation strategy.
-Finally, we add the definition builder to the domain model.
+We create a namespace interface and define a *EntityType* constant based on the *STORE.CUSTOMER* table and typed *Column* constants for each column, these constants specify the entity API, used when referring to the entity type or its columns.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=customer]
+include::{dir-source}/is/codion/manual/quickstart/Store.java[tags=customerApi]
 ----
 
-Next we define an entity based on the table *store.address*.
+In the associated method we create *ColumnDefinition.Builder* instances based on each *Column*, providing further configuration options, such as specifying a caption and maximum length.
 
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=address]
-----
-
-And finally we define an entity based on the _many-to-many_ relationship table *store.customer_address*, note the foreign keys.
+We supply these *ColumnDefinition.Builder* instances to the *EntityType.define()* method, which returns a *EntityDefinition.Builder* instance, providing further configuration options for the entity definition, such as the key generation strategy. Finally we build the *EntityDefinition* and return it.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=customerAddress]
+include::{dir-source}/is/codion/manual/quickstart/Store.java[tags=customerImpl]
+----
+
+Next we define an entity based on the table *STORE.ADDRESS*.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/quickstart/Store.java[tags=address]
+----
+
+And finally we define an entity based on the _many-to-many_ relationship table *STORE.CUSTOMER_ADDRESS*, note the foreign keys.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/quickstart/Store.java[tags=customerAddress]
 ----
 
 === UI
 
-The *EntityPanel* class provides a Swing UI for viewing and editing entities.
-It is composed of a *EntityEditPanel* and a *EntityTablePanel*.
-For each of these panel classes there is a corresponding model class; *SwingEntityModel*, which is composed of a *SwingEntityEditModel* and a *SwingEntityTableModel*.
-The only class you are required to extend is the *EntityEditPanel*, which provides the input controls for editing an entity.
-Below we demonstrate how to set up a simple _master/detail_ panel.
-
 [cols="2,4"]
 |===
 |Module|Artifact
+
 |is.codion.swing.framework.ui|is.codion:codion-swing-framework-ui:{codion-version}
 |===
 
+The *EntityPanel* class provides a Swing UI for viewing and editing entities, it is composed of a *EntityEditPanel* for editing and a *EntityTablePanel* which provides a table view.
+
+Each of these panel classes has a corresponding model class.
+
+[cols="1,3"]
+|===
+|UI class|Model class
+
+|EntityPanel|SwingEntityModel
+|EntityEditPanel|SwingEntityEditModel
+|EntityTablePanel|SwingEntityTableModel
+|===
+
+The *EntityEditPanel* class is the only abstract one, you'll need to extend it and implement the *initializeUI()* method, which initializes the input form.
+
+Below we demonstrate how to set up a simple _master/detail_ panel.
+
 ==== Master
 
-Here we extend a *EntityEditPanel* to provide the UI for editing a customer and use that edit panel class when we assemble the *EntityPanel*.
-We use a default *SwingEntityModel* implementation, which internally, creates a default *SwingEntityEditModel* and *SwingEntityTableModel*.
+We extend *EntityEditPanel* to provide the UI for editing a customer.
+
+[source,java,indent=0,options="nowrap"]
+----
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=customerEditPanel]
+----
+
+We build a *EntityConnectionProvider* used when we create a *SwingEntityModel* based on the *Customer* entity.
+
+We create an instance of our *CustomerEditPanel* and use it along with the model to create a *EntityPanel*.
 
 [source,java,indent=0,options="nowrap"]
 ----
@@ -193,7 +221,14 @@ include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=customerPane
 ==== Detail
 
 Here we create a panel for viewing and editing customer addresses, much like the one above.
-We start by creating a default *SwingEntityModel* instance, which we add as a detail model on the customer model.
+
+[source,java,indent=0,options="nowrap"]
+----
+include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=addressEditPanel]
+----
+
+We create a *SwingEntityModel* based on the *CustomerAddress* entity, adding it as a detail model on the customer model from above.
+
 Finally, we create a *EntityPanel* for the customer address and add that as a detail panel on the customer panel.
 
 [source,java,indent=0,options="nowrap"]
@@ -209,12 +244,13 @@ The *test* method performs insert, update, select and delete on a randomly gener
 [cols="2,4"]
 |===
 |Module|Artifact
+
 |is.codion.framework.domain.test|is.codion:codion-framework-domain-test:{codion-version}
 |===
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=domainModelTest]
+include::{dir-source}/is/codion/manual/quickstart/StoreTest.java[tags=domainModelTest]
 ----
 
 === Persistance
@@ -225,6 +261,7 @@ It has three available implementations, one of which is based on a local JDBC co
 [cols="2,4,2"]
 |===
 |Module|Artifact|Description
+
 |is.codion.framework.db.core|is.codion:codion-framework-db-core:{codion-version}|Core database API
 |is.codion.framework.db.local|is.codion:codion-framework-db-local:{codion-version}|Local JDBC implementation
 |===

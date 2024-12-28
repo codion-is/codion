@@ -61,10 +61,9 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	}
 
 	/**
-	 * Creates and refreshes combo box models for the given attributes. Doing this avoids refreshing the
-	 * data on the EDT when the actual combo boxes are initialized.
-	 * In case of {@link ForeignKey} a foreign key combo box model and in
-	 * case of a {@link Attribute} a attribute combo box model.
+	 * Creates and refreshes combo box models for the given attributes. Doing this in the
+	 * model constructor avoids the models being refreshed when the combo boxes using
+	 * them are initialized, which happens on the EDT.
 	 * @param attributes the attributes for which to initialize combo box models
 	 * @see #createComboBoxModel(Column)
 	 * @see #createForeignKeyComboBoxModel(ForeignKey)
@@ -118,7 +117,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	/**
 	 * Returns the {@link EntityComboBoxModel} for the given foreign key attribute. If one does not exist one is created.
-	 * @param foreignKey the foreign key attribute
+	 * @param foreignKey the foreign key
 	 * @return a {@link EntityComboBoxModel} based on the entity referenced by the given foreign key attribute
 	 * @see #createForeignKeyComboBoxModel(ForeignKey)
 	 */
@@ -162,9 +161,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	/**
 	 * Creates a {@link EntityComboBoxModel} for the given foreign key, override to
 	 * provide a custom {@link EntityComboBoxModel} implementation.
-	 * This method is called when creating a foreign key {@link EntityComboBoxModel} for the edit
-	 * fields used when editing a single record.
-	 * This default implementation returns a sorted {@link EntityComboBoxModel} with the default
+	 * This default implementation returns a sorted {@link EntityComboBoxModel} using the default
 	 * null item caption if the underlying attribute is nullable.
 	 * If the foreign key has select attributes defined, those are set in the combo box model.
 	 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
@@ -187,11 +184,12 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	/**
 	 * Creates a combo box model containing the current values of the given column.
-	 * This default implementation returns a sorted {@link FilterComboBoxModel} with the default nullValueItem
-	 * if the underlying column is nullable
+	 * This default implementation returns a sorted {@link FilterComboBoxModel} using the default
+	 * null item caption if the underlying column is nullable
 	 * @param column the column
 	 * @param <T> the value type
 	 * @return a combo box model based on the given column
+	 * @see FilterComboBoxModel#NULL_CAPTION
 	 */
 	public <T> FilterComboBoxModel<T> createComboBoxModel(Column<T> column) {
 		FilterComboBoxModel.Builder<T> builder = createColumnComboBoxModel(requireNonNull(column));

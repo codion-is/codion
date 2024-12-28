@@ -7,21 +7,21 @@
 [plantuml,filter-table-diagram,svg,align=center]
 -------------------------------------------
 
+class FilterTable {
+    +FilterTableModel model()
+    +FilterTableConditionPanel filters()
+    +TableSummaryModel summaries()
+    +FilterTableSearchModel search()
+    +FilterTableColumnModel columnModel()
+}
+
 class JTable {}
 
 interface TableSummaryModel {}
 
 interface FilterTableColumnModel {}
 
-interface FilterTableSortModel {}
-
 interface FilterTableSearchModel {}
-
-class FilterTable {
-    +FilterTableModel getModel()
-    +FilterTableConditionPanel filterPanel()
-    +JTextField searchField()
-}
 
 class FilterTableConditionPanel {}
 
@@ -29,7 +29,6 @@ FilterTable --|> JTable
 FilterTable --o FilterTableConditionPanel
 FilterTable --o TableSummaryModel
 FilterTable --o FilterTableColumnModel
-FilterTable --o FilterTableSortModel
 FilterTable --o FilterTableSearchModel
 
 -------------------------------------------
@@ -39,4 +38,25 @@ The {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/Fil
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=filterTable]
+----
+
+=== Columns
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=columns]
+----
+
+=== Search
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=search]
+----
+
+=== Export
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=export]
 ----

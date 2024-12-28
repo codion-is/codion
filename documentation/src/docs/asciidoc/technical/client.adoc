@@ -10,9 +10,9 @@
 * Provides a {url-help}/client.html#_keyboard_shortcuts[practically mouse free] user experience
 * Graceful handling of network outages and server restarts
 * Clear separation between model and UI
-* Easy to use load testing harness provided for application models
+* Easy to use load testing harness provided for applications
 * UI data bindings for most common components provided by the framework
-* Implementing data bindings for new components is made simple with building blocks provided by the framework.
+* Implementing data bindings for new components is made simple with building blocks provided by the framework
 * The default UI layout is a simple and intuitive “waterfall” master-detail view
 * Extensive {url-help}/client.html#_searching[searching] and filtering capabilities
 * Flexible keyboard-centric UI based on tab and split panes, detachable panels and toolbars

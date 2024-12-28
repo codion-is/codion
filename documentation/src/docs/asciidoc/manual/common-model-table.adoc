@@ -8,21 +8,56 @@
 -------------------------------------------
 
 interface FilterTableModel {
-    +TableConditionModel filterModel()
-    +FilterTableSelectionModel selectionModel()
+    +TableConditionModel filters()
+    +TableSelection selection()
+    +FilterTableSortModel sort()
 }
 
 interface TableConditionModel {}
 
 interface FilterTableSelectionModel {}
 
+interface FilterTableSortModel {}
+
 FilterTableModel --o TableConditionModel
-FilterTableModel --o FilterTableSelectionModel
+FilterTableModel --o TableSelection
+FilterTableModel --o FilterTableSortModel
 -------------------------------------------
 
 The {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/FilterTableModel.html[FilterTableModel] is a table model central to the framework.
 
 [source,java,indent=0]
 ----
+include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilterTableModelDemo.java[tags=person]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilterTableModelDemo.java[tags=personColumns]
+----
+
+[source,java,indent=0]
+----
 include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilterTableModelDemo.java[tags=filterTableModel]
+----
+
+=== Selection
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilterTableModelDemo.java[tags=selection]
+----
+
+=== Filters
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilterTableModelDemo.java[tags=filters]
+----
+
+=== Sorting
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilterTableModelDemo.java[tags=sort]
 ----
