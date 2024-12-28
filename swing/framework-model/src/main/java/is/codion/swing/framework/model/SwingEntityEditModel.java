@@ -212,7 +212,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		requireNonNull(foreignKey);
 		requireNonNull(entities);
 		if (comboBoxModels.containsKey(foreignKey)) {
-			entities.forEach(foreignKeyComboBoxModel(foreignKey).items()::addItem);
+			entities.forEach(foreignKeyComboBoxModel(foreignKey).items()::add);
 		}
 	}
 
@@ -222,7 +222,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		requireNonNull(entities);
 		clearForeignKeyReferences(foreignKey, entities);
 		if (comboBoxModels.containsKey(foreignKey)) {
-			foreignKeyComboBoxModel(foreignKey).items().removeItems(entities);
+			foreignKeyComboBoxModel(foreignKey).items().remove(entities);
 		}
 	}
 

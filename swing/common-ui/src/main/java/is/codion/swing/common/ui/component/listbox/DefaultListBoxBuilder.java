@@ -164,7 +164,7 @@ final class DefaultListBoxBuilder<T>
 			ListComboBox<T> comboBox = (ListComboBox<T>) component();
 			FilterComboBoxModel<T> comboBoxModel = comboBox.getModel();
 			comboBoxModel.items().clear();
-			value.forEach(comboBoxModel.items()::addItem);
+			value.forEach(comboBoxModel.items()::add);
 		}
 	}
 

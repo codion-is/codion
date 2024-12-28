@@ -258,7 +258,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public boolean addItem(T item) {
+		public boolean add(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
 				if (visible.predicate.isNull() || visible.predicate.getOrThrow().test(item)) {
@@ -282,11 +282,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public boolean addItems(Collection<T> items) {
+		public boolean add(Collection<T> items) {
 			synchronized (lock) {
 				boolean added = false;
 				for (T item : requireNonNull(items)) {
-					added = addItem(item) || added;
+					added = add(item) || added;
 				}
 
 				return added;
@@ -294,7 +294,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public boolean removeItem(T item) {
+		public boolean remove(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
 				if (filtered.items.remove(item)) {
@@ -314,11 +314,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public boolean removeItems(Collection<T> items) {
+		public boolean remove(Collection<T> items) {
 			synchronized (lock) {
 				boolean removed = false;
 				for (T item : requireNonNull(items)) {
-					removed = removeItem(item) || removed;
+					removed = remove(item) || removed;
 				}
 
 				return removed;
@@ -376,8 +376,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			requireNonNull(item);
 			requireNonNull(replacement);
 			synchronized (lock) {
-				removeItem(item);
-				addItem(replacement);
+				remove(item);
+				add(replacement);
 			}
 			if (Objects.equals(selection.selected.item, item)) {
 				selection.selected.replaceWith(item);

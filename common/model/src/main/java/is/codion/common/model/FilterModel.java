@@ -110,7 +110,7 @@ public interface FilterModel<T> {
 		 * @param item the item to add
 		 * @return true if the item was added to the visible items
 		 */
-		boolean addItem(T item);
+		boolean add(T item);
 
 		/**
 		 * Adds the given items to the bottom of this table model.
@@ -118,21 +118,21 @@ public interface FilterModel<T> {
 		 * @param items the items to add
 		 * @return true if one or more of the items was added to the visible items
 		 */
-		boolean addItems(Collection<T> items);
+		boolean add(Collection<T> items);
 
 		/**
 		 * Removes the given item from this model
 		 * @param item the item to remove from the model
 		 * @return true if the item was removed from the visible items
 		 */
-		boolean removeItem(T item);
+		boolean remove(T item);
 
 		/**
 		 * Removes the given items from this table model
 		 * @param items the items to remove from the model
 		 * @return true if one or more of the items were removed from the visible items
 		 */
-		boolean removeItems(Collection<T> items);
+		boolean remove(Collection<T> items);
 
 		/**
 		 * Clears the items

@@ -25,6 +25,7 @@ Codion Change Log
 - ConditionModel.Operands.lowerBound() and upperBound() shortened to lower() and upper().
 - FilterModel.refresh() and related methods moved to Items, related refactoring.
 - TableSummaryModel.summaryModel() renamed get().
+- FilterModel.Items.addItem(), addItems(), removeItem() and removeItems() renamed add() and remove().
 ### is.codion.common.rmi
 - ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
 - Server.serverLoad() removed, related refactoring.

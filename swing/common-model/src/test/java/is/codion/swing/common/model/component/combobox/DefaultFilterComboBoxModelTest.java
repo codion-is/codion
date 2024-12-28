@@ -163,7 +163,7 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(1, testModel.items().visible().count());
 		assertEquals(5, testModel.items().get().size());
 
-		testModel.items().addItem(BJORN);//already contained
+		testModel.items().add(BJORN);//already contained
 		assertEquals(4, testModel.items().filtered().count());
 
 		assertFalse(testModel.items().visible().contains(BJORN));
@@ -176,13 +176,13 @@ public class DefaultFilterComboBoxModelTest {
 	void remove() {
 		//remove filtered item
 		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
-		testModel.items().removeItem(BJORN);
+		testModel.items().remove(BJORN);
 		testModel.items().visible().predicate().clear();
 		assertFalse(testModel.items().visible().contains(BJORN));
 
 		testModel.selection().item().set(SIGGI);
 		//remove visible item
-		testModel.items().removeItems(asList(KALLI, SIGGI));
+		testModel.items().remove(asList(KALLI, SIGGI));
 		assertNull(testModel.selection().item().get());
 		assertFalse(testModel.items().visible().contains(KALLI));
 		assertFalse(testModel.items().visible().contains(SIGGI));
@@ -193,11 +193,11 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.items().clear();
 		//add filtered item
 		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
-		testModel.items().addItem(BJORN);
+		testModel.items().add(BJORN);
 		assertFalse(testModel.items().visible().contains(BJORN));
 
 		//add visible items
-		testModel.items().addItems(asList(KALLI, SIGGI));
+		testModel.items().add(asList(KALLI, SIGGI));
 		assertTrue(testModel.items().visible().contains(KALLI));
 		assertTrue(testModel.items().visible().contains(SIGGI));
 
@@ -230,27 +230,27 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(2, visibleCounter.get());
 		assertEquals(2, itemsCounter.get());
 
-		model.items().addItem(BJORN);//filtered
+		model.items().add(BJORN);//filtered
 		assertEquals(3, filteredCounter.get());
 		assertEquals(2, visibleCounter.get());
 		assertEquals(3, itemsCounter.get());
 
-		model.items().addItem(ANNA);//visible
+		model.items().add(ANNA);//visible
 		assertEquals(3, filteredCounter.get());
 		assertEquals(3, visibleCounter.get());
 		assertEquals(4, itemsCounter.get());
 
-		model.items().addItems(asList(KALLI, SIGGI));//visible
+		model.items().add(asList(KALLI, SIGGI));//visible
 		assertEquals(3, filteredCounter.get());
 		assertEquals(5, visibleCounter.get());
 		assertEquals(6, itemsCounter.get());
 
-		model.items().removeItem(BJORN);//filtered
+		model.items().remove(BJORN);//filtered
 		assertEquals(4, filteredCounter.get());
 		assertEquals(5, visibleCounter.get());
 		assertEquals(7, itemsCounter.get());
 
-		model.items().addItems(asList(BJORN, TOMAS));//filtered and visible
+		model.items().add(asList(BJORN, TOMAS));//filtered and visible
 		assertEquals(5, filteredCounter.get());
 		assertEquals(6, visibleCounter.get());
 		assertEquals(9, itemsCounter.get());

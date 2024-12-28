@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static javax.swing.ListSelectionModel.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,10 +37,10 @@ public class DefaultTableSelectionTest {
 	public DefaultTableSelectionTest() {
 		List<String> data = asList("A", "B", "C");
 		FilterTableModel<String, Integer> tableModel =
-						FilterTableModel.<String, Integer>builder(new FilterTableModel.TableColumns<String, Integer>() {
+						FilterTableModel.builder(new FilterTableModel.TableColumns<String, Integer>() {
 											@Override
 											public List<Integer> identifiers() {
-												return asList(0, 1, 2);
+												return singletonList(0);
 											}
 
 											@Override
@@ -49,7 +50,7 @@ public class DefaultTableSelectionTest {
 
 											@Override
 											public Object value(String row, Integer identifier) {
-												return data.get(identifier);
+												return row;
 											}
 										})
 										.supplier(() -> data)

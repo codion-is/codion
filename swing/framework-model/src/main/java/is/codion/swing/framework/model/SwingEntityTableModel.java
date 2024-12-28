@@ -128,7 +128,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 	private SwingEntityTableModel(SwingEntityEditModel editModel, Collection<Entity> items) {
 		super(requireNonNull(editModel), tableModelBuilder(editModel.entityDefinition()).build());
-		items().addItems(requireNonNull(items));
+		items().add(requireNonNull(items));
 	}
 
 	/**

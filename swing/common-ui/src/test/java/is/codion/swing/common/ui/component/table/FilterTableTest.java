@@ -546,7 +546,7 @@ public class FilterTableTest {
 						FilterTableColumn.builder(1).build());
 
 		FilterTableModel<Object, Integer> model = FilterTableModel.builder(columns).build();
-		model.items().addItem(1);
+		model.items().add(1);
 
 		FilterTableCellRenderer<Object> zeroRenderer = FilterTableCellRenderer.builder(Object.class).build();
 		FilterTableCellRenderer<Object> oneRenderer = FilterTableCellRenderer.builder(Object.class).build();

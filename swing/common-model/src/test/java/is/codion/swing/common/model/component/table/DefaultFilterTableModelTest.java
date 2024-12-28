@@ -249,14 +249,14 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().refresh();
 		assertEquals(1, events.get());
 		tableModel.filters().get(0).operands().equal().set("a");
-		assertFalse(tableModel.items().removeItem(B));
+		assertFalse(tableModel.items().remove(B));
 		assertEquals(3, events.get());
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().contains(A));
-		assertTrue(tableModel.items().removeItem(A));
+		assertTrue(tableModel.items().remove(A));
 		assertEquals(4, events.get());
 		assertFalse(tableModel.items().contains(A));
-		assertFalse(tableModel.items().removeItems(asList(D, E)));
+		assertFalse(tableModel.items().remove(asList(D, E)));
 		assertEquals(4, events.get());//no change event when removing filtered items
 		assertFalse(tableModel.items().visible().contains(D));
 		assertFalse(tableModel.items().visible().contains(E));
@@ -508,7 +508,7 @@ public final class DefaultFilterTableModelTest {
 		selection.items().add(ITEMS.get(4));
 		assertEquals(4, selection.count());
 		assertEquals(0, selection.getMinSelectionIndex());
-		tableModel.items().removeItem(ITEMS.get(0));
+		tableModel.items().remove(ITEMS.get(0));
 		assertEquals(3, selection.count());
 		assertEquals(0, selection.getMinSelectionIndex());
 
@@ -554,9 +554,9 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().refresh();
 		tableModel.filters().get(0).operands().equal().set("a");
 		assertTrue(tableModel.items().contains(B));
-		assertFalse(tableModel.items().removeItem(B));
+		assertFalse(tableModel.items().remove(B));
 		assertFalse(tableModel.items().contains(B));
-		assertTrue(tableModel.items().removeItem(A));
+		assertTrue(tableModel.items().remove(A));
 		assertFalse(tableModel.items().contains(A));
 	}
 
@@ -652,12 +652,12 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void nullItems() {
-		assertThrows(NullPointerException.class, () -> tableModel.items().addItem(null));
-		assertThrows(NullPointerException.class, () -> tableModel.items().removeItem(null));
-		assertThrows(NullPointerException.class, () -> tableModel.items().addItems(null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().add((TestRow) null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().remove((TestRow) null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().add((List<TestRow>) null));
 		Set<TestRow> singleNull = singleton(null);
-		assertThrows(NullPointerException.class, () -> tableModel.items().addItems(singleNull));
-		assertThrows(NullPointerException.class, () -> tableModel.items().removeItems(singleNull));
+		assertThrows(NullPointerException.class, () -> tableModel.items().add(singleNull));
+		assertThrows(NullPointerException.class, () -> tableModel.items().remove(singleNull));
 		assertThrows(NullPointerException.class, () -> tableModel.items().contains(null));
 
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemAt(0, null));
@@ -665,7 +665,7 @@ public final class DefaultFilterTableModelTest {
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().addItemsAt(0, singleNull));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().contains(null));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().indexOf(null));
-		tableModel.items().addItem(new TestRow("test"));
+		tableModel.items().add(new TestRow("test"));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().setItemAt(0, null));
 
 		assertThrows(NullPointerException.class, () -> tableModel.items().filtered().contains(null));

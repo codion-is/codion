@@ -81,7 +81,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 	private void addItem() {
 		FilterComboBoxModel<T> comboBoxModel = getModel();
 		if (itemValue.isNotNull() && !comboBoxModel.items().contains(itemValue.getOrThrow())) {
-			comboBoxModel.items().addItem(itemValue.getOrThrow());
+			comboBoxModel.items().add(itemValue.getOrThrow());
 			itemValue.clear();
 			if (isPopupVisible()) {
 				hidePopup();
@@ -95,7 +95,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 		int index = getSelectedIndex();
 		if (index != -1) {
 			T selecteditem = comboBoxModel.getSelectedItem();
-			comboBoxModel.items().removeItem(selecteditem);
+			comboBoxModel.items().remove(selecteditem);
 			setSelectedIndex(Math.min(index, comboBoxModel.getSize() - 1));
 		}
 	}
@@ -128,7 +128,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 		@Override
 		protected void setValue(Set<T> value) {
 			comboBoxModel.items().clear();
-			value.forEach(comboBoxModel.items()::addItem);
+			value.forEach(comboBoxModel.items()::add);
 		}
 
 		private final class ComboBoxModelListener implements ListDataListener {

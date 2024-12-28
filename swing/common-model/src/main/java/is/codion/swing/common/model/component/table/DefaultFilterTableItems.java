@@ -135,41 +135,41 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	}
 
 	@Override
-	public boolean addItems(Collection<R> items) {
+	public boolean add(Collection<R> items) {
 		synchronized (lock) {
-			return addItemsAtInternal(visible.items.size(), rejectNulls(items));
+			return addInternal(visible.items.size(), rejectNulls(items));
 		}
 	}
 
 	@Override
-	public boolean removeItem(R item) {
+	public boolean remove(R item) {
 		synchronized (lock) {
-			return removeItemInternal(requireNonNull(item), true);
+			return removeInternal(requireNonNull(item), true);
 		}
 	}
 
 	@Override
-	public boolean removeItems(Collection<R> items) {
+	public boolean remove(Collection<R> items) {
 		rejectNulls(items);
 		synchronized (lock) {
 			selection.setValueIsAdjusting(true);
-			boolean visibleItemRemoved = false;
+			boolean visibleRemoved = false;
 			for (R item : items) {
-				visibleItemRemoved = removeItemInternal(item, false) || visibleItemRemoved;
+				visibleRemoved = removeInternal(item, false) || visibleRemoved;
 			}
 			selection.setValueIsAdjusting(false);
-			if (visibleItemRemoved) {
+			if (visibleRemoved) {
 				visible.notifyChanges();
 			}
 
-			return visibleItemRemoved;
+			return visibleRemoved;
 		}
 	}
 
 	@Override
-	public boolean addItem(R item) {
+	public boolean add(R item) {
 		synchronized (lock) {
-			return addItemInternal(requireNonNull(item));
+			return addInternal(requireNonNull(item));
 		}
 	}
 
@@ -243,14 +243,14 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		Set<R> itemSet = new HashSet<>(items);
 		get().stream()
 						.filter(item -> !itemSet.contains(item))
-						.forEach(this::removeItem);
+						.forEach(this::remove);
 		items.forEach(this::merge);
 	}
 
 	private void merge(R item) {
 		int index = visible.indexOf(item);
 		if (index == -1) {
-			addItemInternal(item);
+			addInternal(item);
 		}
 		else {
 			visible.setItemAt(index, item);
@@ -260,17 +260,17 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	private void clearAndAdd(Collection<R> items) {
 		List<R> selectedItems = selection.items().get();
 		clear();
-		if (addItems(items)) {
+		if (add(items)) {
 			visible.sort();
 		}
 		selection.items().set(selectedItems);
 	}
 
-	private boolean addItemInternal(R item) {
-		return addItemAtInternal(visible.count(), item);
+	private boolean addInternal(R item) {
+		return addInternal(visible.count(), item);
 	}
 
-	private boolean addItemAtInternal(int index, R item) {
+	private boolean addInternal(int index, R item) {
 		validate(item);
 		if (visiblePredicate.test(item)) {
 			visible.items.add(index, item);
@@ -284,7 +284,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		return false;
 	}
 
-	private boolean addItemsAtInternal(int index, Collection<R> items) {
+	private boolean addInternal(int index, Collection<R> items) {
 		requireNonNull(items);
 		Collection<R> visibleItems = new ArrayList<>(items.size());
 		Collection<R> filteredItems = new ArrayList<>(items.size());
@@ -309,7 +309,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		return !visibleItems.isEmpty();
 	}
 
-	private boolean removeItemInternal(R item, boolean notifyDataChanged) {
+	private boolean removeInternal(R item, boolean notifyDataChanged) {
 		int visibleItemIndex = visible.items.indexOf(item);
 		if (visibleItemIndex >= 0) {
 			visible.items.remove(visibleItemIndex);
@@ -460,14 +460,14 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		@Override
 		public boolean addItemsAt(int index, Collection<R> items) {
 			synchronized (lock) {
-				return addItemsAtInternal(index, rejectNulls(items));
+				return addInternal(index, rejectNulls(items));
 			}
 		}
 
 		@Override
 		public boolean addItemAt(int index, R item) {
 			synchronized (lock) {
-				return addItemAtInternal(index, requireNonNull(item));
+				return addInternal(index, requireNonNull(item));
 			}
 		}
 
