@@ -30,9 +30,9 @@ public interface TableSummaryModel<C> {
 	/**
 	 * Returns the {@link SummaryModel} associated with the column identified by {@code identifier}
 	 * @param identifier the column identifier
-	 * @return the ColumnSummaryModel for the column identified by the given identifier, an empty Optional if none is available
+	 * @return the {@link SummaryModel} for the column identified by the given identifier, an empty {@link Optional} if none is available
 	 */
-	Optional<SummaryModel> summaryModel(C identifier);
+	Optional<SummaryModel> get(C identifier);
 
 	/**
 	 * @param summaryModelFactory the summary model factory

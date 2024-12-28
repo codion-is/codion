@@ -286,7 +286,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private Border border(FilterTable<?, ?> filterTable, boolean hasFocus, int rowIndex, int columnIndex) {
-			return hasFocus || isSearchResult(filterTable.searchModel(), rowIndex, columnIndex) ? uiSettings.focusedCellBorder() : uiSettings.defaultCellBorder();
+			return hasFocus || isSearchResult(filterTable.search(), rowIndex, columnIndex) ?
+							uiSettings.focusedCellBorder() : uiSettings.defaultCellBorder();
 		}
 
 		private <C> boolean filterEnabled(FilterTable<?, C> filterTable, C identifier) {

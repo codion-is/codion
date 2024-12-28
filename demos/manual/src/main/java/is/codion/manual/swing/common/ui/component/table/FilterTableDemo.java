@@ -52,13 +52,12 @@ final class FilterTableDemo {
 										.build();
 
 		// Search for the value "43" in the table
-		FilterTableSearchModel searchModel =
-						table.searchModel();
-		searchModel.predicate()
+		FilterTableSearchModel search = table.search();
+		search.predicate()
 						.set(value -> value.equals("43"));
 
 		RowColumn searchResult =
-						searchModel.results().current().get();
+						search.results().current().get();
 		System.out.println(searchResult); // row: 1, column: 1
 		// end::filterTable[]
 	}

@@ -24,6 +24,7 @@ Codion Change Log
 - FilterModel.Refresher.observable() renamed active().
 - ConditionModel.Operands.lowerBound() and upperBound() shortened to lower() and upper().
 - FilterModel.refresh() and related methods moved to Items, related refactoring.
+- TableSummaryModel.summaryModel() renamed get().
 ### is.codion.common.rmi
 - ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
 - Server.serverLoad() removed, related refactoring.
@@ -62,6 +63,7 @@ Codion Change Log
 - FilterTableSearchModel.Results added along with results(), related refactoring and renaming.
 - FilterTable.DefaultBuilder now validates column model indexes.
 - CalendarPanel.CalendarDate and CalendarDateTime added along with date() and dateTime(), related refactoring.
+- FilterTable.searchModel() and summaryModel() renamed search() and summaries() respectively.
 ### is.codion.framework.domain
 - EntityDefinition.description() now returns Optional.
 - DefaultEntityDefinition, source attributes validated for denormalized attributes.

@@ -2005,7 +2005,7 @@ public class EntityTablePanel extends JPanel {
 
 	private static boolean containsSummaryModels(FilterTable<Entity, Attribute<?>> table) {
 		return table.columnModel().identifiers().stream()
-						.map(table.summaryModel()::summaryModel)
+						.map(table.summaries()::get)
 						.anyMatch(Optional::isPresent);
 	}
 
@@ -2913,7 +2913,7 @@ public class EntityTablePanel extends JPanel {
 		private Map<Attribute<?>, JComponent> createColumnSummaryPanels() {
 			Map<Attribute<?>, JComponent> components = new HashMap<>();
 			table.columnModel().columns().forEach(column ->
-							table.summaryModel().summaryModel(column.identifier())
+							table.summaries().get(column.identifier())
 											.ifPresent(columnSummaryModel ->
 															components.put(column.identifier(), columnSummaryPanel(columnSummaryModel,
 																			horizontalAlignment(column.getCellRenderer())))));

@@ -252,7 +252,8 @@ public final class FilterTable<R, C> extends JTable {
 	private JTextField searchField;
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
-		super(builder.tableModel, new DefaultFilterTableColumnModel<>(builder.columns),
+		super(builder.tableModel,
+						new DefaultFilterTableColumnModel<>(builder.columns),
 						builder.tableModel.selection());
 		this.tableModel = builder.tableModel;
 		this.searchModel = new DefaultFilterTableSearchModel<>(tableModel, columnModel());
@@ -368,14 +369,14 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return the search model
 	 */
-	public FilterTableSearchModel searchModel() {
+	public FilterTableSearchModel search() {
 		return searchModel;
 	}
 
 	/**
 	 * @return the summary model
 	 */
-	public TableSummaryModel<C> summaryModel() {
+	public TableSummaryModel<C> summaries() {
 		return summaryModel;
 	}
 

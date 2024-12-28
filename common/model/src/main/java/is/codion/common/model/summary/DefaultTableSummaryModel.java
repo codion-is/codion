@@ -38,7 +38,7 @@ final class DefaultTableSummaryModel<C> implements TableSummaryModel<C> {
 	}
 
 	@Override
-	public Optional<SummaryModel> summaryModel(C identifier) {
+	public Optional<SummaryModel> get(C identifier) {
 		return Optional.ofNullable(summaryModels.computeIfAbsent(requireNonNull(identifier), k ->
 						createSummaryModel(k, NumberFormat.getInstance()).orElse(null)));
 	}

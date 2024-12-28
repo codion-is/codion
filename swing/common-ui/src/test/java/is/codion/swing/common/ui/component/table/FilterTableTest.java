@@ -238,7 +238,7 @@ public class FilterTableTest {
 		FilterTable<Row, Integer> table = FilterTable.builder(testModel, asList(columnId, columnValue)).build();
 		testModel.items().refresh();
 
-		FilterTableSearchModel searchModel = table.searchModel();
+		FilterTableSearchModel searchModel = table.search();
 		searchModel.searchString().set("b");
 		RowColumn rowColumn = searchModel.results().next().orElse(null);
 		assertEquals(new DefaultRowColumn(1, 1), rowColumn);
