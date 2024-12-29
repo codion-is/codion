@@ -230,10 +230,10 @@ public interface Condition {
 	 * @param values the values used by this condition string in the same order as their respective columns
 	 * @return a new {@link CustomCondition} instance
 	 * @throws NullPointerException in case any of the parameters are null
+	 * @throws IllegalArgumentException in case the number of columns does not match the number of values
 	 * @see EntityDefinition.Builder#condition(ConditionType, ConditionProvider)
 	 */
-	static CustomCondition custom(ConditionType conditionType, List<Column<?>> columns,
-																List<Object> values) {
+	static CustomCondition custom(ConditionType conditionType, List<Column<?>> columns, List<?> values) {
 		return new DefaultCustomCondition(conditionType, columns, values);
 	}
 }

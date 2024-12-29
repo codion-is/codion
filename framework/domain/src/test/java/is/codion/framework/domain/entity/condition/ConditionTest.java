@@ -47,6 +47,9 @@ public final class ConditionTest {
 		Condition condition = Condition.custom(Department.NAME_NOT_NULL_CONDITION);
 		assertTrue(condition.values().isEmpty());
 		assertTrue(condition.columns().isEmpty());
+		// Column and value count mismatch
+		assertThrows(IllegalArgumentException.class, () ->
+						Condition.custom(Department.NAME_NOT_NULL_CONDITION, singletonList(Department.NAME), asList("Test", "Test2")));
 	}
 
 	@Test

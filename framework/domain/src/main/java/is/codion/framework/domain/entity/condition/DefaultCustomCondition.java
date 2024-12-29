@@ -34,7 +34,7 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
 
 	private final ConditionType conditionType;
 
-	DefaultCustomCondition(ConditionType conditionType, List<Column<?>> columns, List<Object> values) {
+	DefaultCustomCondition(ConditionType conditionType, List<Column<?>> columns, List<?> values) {
 		super(requireNonNull(conditionType).entityType(), columns, values);
 		this.conditionType = conditionType;
 	}

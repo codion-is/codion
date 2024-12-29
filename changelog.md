@@ -74,8 +74,11 @@ Codion Change Log
 - DefaultEntityDefinition, source attributes validated for denormalized attributes.
 - DenormalizedValueProvider now validates the denormalized attribute in case the source is a foreign key.
 - Entity.groupByValue() can now handle null values.
+- AbstractCondition now throws exception if the number of condition columns does not match the number of values.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.clientType() and clientVersion() now return Optional.
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection.createValueString() bug fixed, no longer crashes when the number of condition columns does not match the number of values.
 ### is.codion.framework.model
 - DefaultForeignKeyDetailModelLink now uses TableConditionModel.persist() to exclude the associated foreign key condition from being cleared.
 - EntityEditModel.EditableEntity and EditableValue renamed EntityEditor and ValueEditor respectively.

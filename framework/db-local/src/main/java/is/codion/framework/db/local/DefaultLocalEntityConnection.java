@@ -378,7 +378,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 			}
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(deleteQuery, condition == null ? emptyList() : statementValues, statementColumns, exception), exception);
+				LOG.error(createLogMessage(deleteQuery, statementValues, statementColumns, exception), exception);
 				throwDatabaseException(exception, DELETE);
 				throw runtimeException(exception);
 			}
@@ -1527,6 +1527,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	private static String createValueString(List<?> values, List<ColumnDefinition<?>> columnDefinitions) {
 		if (columnDefinitions == null || columnDefinitions.isEmpty()) {
 			return "no values";
+		}
+		if (values.size() != columnDefinitions.size()) {
+			return "number of condition columns does not match the number of values";
 		}
 		List<String> stringValues = new ArrayList<>(values.size());
 		for (int i = 0; i < values.size(); i++) {
