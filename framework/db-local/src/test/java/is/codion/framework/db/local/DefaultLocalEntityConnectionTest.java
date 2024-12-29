@@ -407,7 +407,7 @@ public class DefaultLocalEntityConnectionTest {
 		result = connection.select(primaryKeys(result));
 		assertEquals(2, result.size());
 		result = connection.select(Department.DEPARTMENT_CONDITION_TYPE.get(
-						asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)));
+						Department.DEPTNO, asList(10, 20)));
 		assertEquals(2, result.size());
 		result = connection.select(EmpnoDeptno.CONDITION.get());
 		assertEquals(7, result.size());
@@ -592,8 +592,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void customCondition() {
-		assertEquals(4, connection.select(Employee.MGR_GREATER_THAN_CONDITION.get(
-						singletonList(Employee.MGR), singletonList(5))).size());
+		assertEquals(4, connection.select(Employee.MGR_GREATER_THAN_CONDITION.get(Employee.MGR, 5)).size());
 	}
 
 	@Test

@@ -26,7 +26,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultConditionType implements ConditionType, Serializable {
@@ -55,6 +55,21 @@ final class DefaultConditionType implements ConditionType, Serializable {
 	@Override
 	public CustomCondition get() {
 		return get(emptyList(), emptyList());
+	}
+
+	@Override
+	public CustomCondition get(List<?> values) {
+		return new DefaultCustomCondition(this, emptyList(), values);
+	}
+
+	@Override
+	public <T> CustomCondition get(Column<T> column, T value) {
+		return get(singletonList(requireNonNull(column)), singletonList(value));
+	}
+
+	@Override
+	public <T> CustomCondition get(Column<T> column, List<T> values) {
+		return get(nCopies(requireNonNull(values).size(), requireNonNull(column)), values);
 	}
 
 	@Override

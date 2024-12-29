@@ -47,6 +47,36 @@ public interface ConditionType {
 	CustomCondition get();
 
 	/**
+	 * <p>Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
+	 * <p>This method assumes that the {@link ConditionProvider} is not based on any columns or has no need for them when creating.
+	 * <p>Note that {@link ConditionProvider#toString(List, List)} will receive a column list filled with as many nulls as there are values.
+	 * @param values the values used by this condition
+	 * @return a {@link CustomCondition} instance
+	 * @see EntityDefinition#condition(ConditionType)
+	 */
+	CustomCondition get(List<?> values);
+
+	/**
+	 * Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
+	 * @param column the column representing the value used by this condition
+	 * @param value the value used by this condition string
+	 * @param <T> the column type
+	 * @return a {@link CustomCondition} instance
+	 * @see EntityDefinition#condition(ConditionType)
+	 */
+	<T> CustomCondition get(Column<T> column, T value);
+
+	/**
+	 * Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
+	 * @param column the column representing the values used by this condition, assuming all the values are for the same column
+	 * @param values the values used by this condition string
+	 * @param <T> the column type
+	 * @return a {@link CustomCondition} instance
+	 * @see EntityDefinition#condition(ConditionType)
+	 */
+	<T> CustomCondition get(Column<T> column, List<T> values);
+
+	/**
 	 * Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
 	 * @param columns the columns representing the values used by this condition, in the same order as their respective values
 	 * @param values the values used by this condition string in the same order as their respective columns

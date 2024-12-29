@@ -49,6 +49,7 @@ public final class ConditionTest {
 		// Column and value count mismatch
 		assertThrows(IllegalArgumentException.class, () ->
 						Department.NAME_NOT_NULL_CONDITION.get(singletonList(Department.NAME), asList("Test", "Test2")));
+		Department.NAME_NOT_NULL_CONDITION.get(asList("Test", "Test2"));
 	}
 
 	@Test
@@ -500,7 +501,7 @@ public final class ConditionTest {
 		condition2 = Employee.ID.notBetweenExclusive(1, 0);
 		assertNotEquals(condition1, condition2);
 
-		condition1 = Department.CONDITION.get(singletonList(Department.NAME), singletonList("Test"));
+		condition1 = Department.CONDITION.get(Department.NAME, "Test");
 		condition2 = Department.CONDITION.get(singletonList(Department.NAME), singletonList("Test"));
 		assertEquals(condition1, condition2);
 

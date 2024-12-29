@@ -70,6 +70,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
 import static is.codion.common.db.database.Database.Operation.*;
@@ -1389,7 +1390,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	private static PreparedStatement setParameterValues(PreparedStatement statement, List<ColumnDefinition<?>> statementColumns,
 																											List<?> statementValues) throws SQLException {
-		if (statementValues.isEmpty()) {
+		if (statementColumns.isEmpty()) {
 			return statement;
 		}
 		if (statementColumns.size() != statementValues.size()) {
@@ -1525,11 +1526,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	private static String createValueString(List<?> values, List<ColumnDefinition<?>> columnDefinitions) {
-		if (columnDefinitions == null || columnDefinitions.isEmpty()) {
-			return "no values";
-		}
-		if (values.size() != columnDefinitions.size()) {
-			return "number of condition columns does not match the number of values";
+		if (columnDefinitions.isEmpty() || columnDefinitions.size() != values.size()) {
+			return values.stream()
+							.map(Objects::toString)
+							.collect(Collectors.joining(", "));
 		}
 		List<String> stringValues = new ArrayList<>(values.size());
 		for (int i = 0; i < values.size(); i++) {

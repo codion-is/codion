@@ -83,6 +83,12 @@ public final class EntityConnectionDemo {
 										.attributes(Track.NAME, Track.ALBUM_FK)
 										.orderBy(descending(Track.NAME))
 										.build());
+
+		List<Long> classicalPlaylistIds = connection.select(
+						Playlist.ID, Playlist.NAME.like("Classical%"));
+
+		List<Entity> nonClassicalTracks = connection.select(
+						Track.NOT_IN_PLAYLIST.get(Playlist.ID, classicalPlaylistIds));
 		// end::select[]
 	}
 

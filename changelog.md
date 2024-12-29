@@ -76,6 +76,7 @@ Codion Change Log
 - Entity.groupByValue() can now handle null values.
 - AbstractCondition now throws exception if the number of condition columns does not match the number of values.
 - Condition.custom() moved to ConditionType.get().
+- ConditionType.get() overloaded with a single column and value and no columns.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.clientType() and clientVersion() now return Optional.
 ### is.codion.framework.db.local

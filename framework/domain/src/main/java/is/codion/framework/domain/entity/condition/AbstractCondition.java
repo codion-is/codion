@@ -49,7 +49,7 @@ public abstract class AbstractCondition implements Condition, Serializable {
 		this.entityType = requireNonNull(entityType);
 		this.columns = unmodifiableList(new ArrayList<>(columns));
 		this.values = unmodifiableList(new ArrayList<>(values));
-		if (columns.size() != values.size()) {
+		if (!columns.isEmpty() && columns.size() != values.size()) {
 			throw new IllegalArgumentException("Number of condition columns must match the number of values");
 		}
 	}
