@@ -67,6 +67,7 @@ public interface EntityDefinition {
 	 * @param conditionType the condition type
 	 * @return the condition provider associated with the given type
 	 * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionType
+	 * @see EntityDefinition.Builder#condition(ConditionType, ConditionProvider)
 	 */
 	ConditionProvider condition(ConditionType conditionType);
 

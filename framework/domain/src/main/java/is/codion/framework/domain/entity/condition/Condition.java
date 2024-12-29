@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.Operator.EQUAL;
 import static is.codion.framework.domain.entity.condition.DefaultForeignKeyConditionFactory.compositeEqualCondition;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -52,8 +51,6 @@ import static java.util.stream.Collectors.toMap;
  * @see #or(Collection)
  * @see #combination(Conjunction, Condition...)
  * @see #combination(Conjunction, Condition...)
- * @see #custom(ConditionType)
- * @see #custom(ConditionType, List, List)
  */
 public interface Condition {
 
@@ -210,30 +207,5 @@ public interface Condition {
 	 */
 	static Combination combination(Conjunction conjunction, Collection<Condition> conditions) {
 		return new DefaultConditionCombination(conjunction, new ArrayList<>(requireNonNull(conditions)));
-	}
-
-	/**
-	 * Creates a new {@link CustomCondition} based on the condition of the given type
-	 * @param conditionType the condition type
-	 * @return a new {@link CustomCondition} instance
-	 * @throws NullPointerException in case the condition type is null
-	 * @see EntityDefinition.Builder#condition(ConditionType, ConditionProvider)
-	 */
-	static CustomCondition custom(ConditionType conditionType) {
-		return custom(conditionType, emptyList(), emptyList());
-	}
-
-	/**
-	 * Creates a new {@link CustomCondition} based on the condition of the given type
-	 * @param conditionType the condition type
-	 * @param columns the columns representing the values used by this condition, in the same order as their respective values
-	 * @param values the values used by this condition string in the same order as their respective columns
-	 * @return a new {@link CustomCondition} instance
-	 * @throws NullPointerException in case any of the parameters are null
-	 * @throws IllegalArgumentException in case the number of columns does not match the number of values
-	 * @see EntityDefinition.Builder#condition(ConditionType, ConditionProvider)
-	 */
-	static CustomCondition custom(ConditionType conditionType, List<Column<?>> columns, List<?> values) {
-		return new DefaultCustomCondition(conditionType, columns, values);
 	}
 }

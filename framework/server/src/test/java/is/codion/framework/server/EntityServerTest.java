@@ -95,8 +95,7 @@ public class EntityServerTest {
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
-		Condition condition = Condition.custom(Employee.MGR_CONDITION_TYPE,
-						singletonList(Employee.MGR), singletonList(4));
+		Condition condition = Employee.MGR_CONDITION_TYPE.get(singletonList(Employee.MGR), singletonList(4));
 
 		connection.select(condition);
 

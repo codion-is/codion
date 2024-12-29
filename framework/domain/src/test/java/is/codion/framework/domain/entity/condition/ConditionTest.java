@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import static is.codion.framework.domain.TestDomain.*;
 import static is.codion.framework.domain.entity.condition.Condition.Combination;
@@ -44,12 +43,12 @@ public final class ConditionTest {
 
 	@Test
 	void customConditionTest() {
-		Condition condition = Condition.custom(Department.NAME_NOT_NULL_CONDITION);
+		Condition condition = Department.NAME_NOT_NULL_CONDITION.get();
 		assertTrue(condition.values().isEmpty());
 		assertTrue(condition.columns().isEmpty());
 		// Column and value count mismatch
 		assertThrows(IllegalArgumentException.class, () ->
-						Condition.custom(Department.NAME_NOT_NULL_CONDITION, singletonList(Department.NAME), asList("Test", "Test2")));
+						Department.NAME_NOT_NULL_CONDITION.get(singletonList(Department.NAME), asList("Test", "Test2")));
 	}
 
 	@Test
@@ -501,10 +500,8 @@ public final class ConditionTest {
 		condition2 = Employee.ID.notBetweenExclusive(1, 0);
 		assertNotEquals(condition1, condition2);
 
-		condition1 = Condition.custom(Department.CONDITION,
-						Collections.singletonList(Department.NAME), Collections.singletonList("Test"));
-		condition2 = Condition.custom(Department.CONDITION,
-						Collections.singletonList(Department.NAME), Collections.singletonList("Test"));
+		condition1 = Department.CONDITION.get(singletonList(Department.NAME), singletonList("Test"));
+		condition2 = Department.CONDITION.get(singletonList(Department.NAME), singletonList("Test"));
 		assertEquals(condition1, condition2);
 
 		condition1 = Condition.or(Employee.ID.equalTo(0),

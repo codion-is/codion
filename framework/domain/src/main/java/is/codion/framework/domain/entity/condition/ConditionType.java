@@ -18,7 +18,11 @@
  */
 package is.codion.framework.domain.entity.condition;
 
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
+
+import java.util.List;
 
 /**
  * Defines a custom condition type.
@@ -34,6 +38,23 @@ public interface ConditionType {
 	 * @return the name
 	 */
 	String name();
+
+	/**
+	 * Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
+	 * @return a {@link CustomCondition} instance
+	 * @see EntityDefinition#condition(ConditionType)
+	 */
+	CustomCondition get();
+
+	/**
+	 * Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
+	 * @param columns the columns representing the values used by this condition, in the same order as their respective values
+	 * @param values the values used by this condition string in the same order as their respective columns
+	 * @return a {@link CustomCondition} instance
+	 * @throws IllegalArgumentException in case the number of columns does not match the number of values
+	 * @see EntityDefinition#condition(ConditionType)
+	 */
+	CustomCondition get(List<Column<?>> columns, List<?> values);
 
 	/**
 	 * Instantiates a new {@link ConditionType} for the given entity type

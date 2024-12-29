@@ -23,7 +23,6 @@ import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.List;
@@ -40,7 +39,7 @@ public final class PlaylistTrackEditModel extends SwingEntityEditModel {
 
 	private void excludePlaylistTracks(Entity playlist) {
 		foreignKeySearchModel(PlaylistTrack.TRACK_FK).condition().set(() -> playlist == null ? null :
-						Condition.custom(Track.NOT_IN_PLAYLIST,
+						Track.NOT_IN_PLAYLIST.get(
 										List.of(Playlist.ID),
 										List.of(playlist.get(Playlist.ID))));
 	}

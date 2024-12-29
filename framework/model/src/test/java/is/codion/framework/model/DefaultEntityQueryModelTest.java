@@ -52,7 +52,7 @@ public final class DefaultEntityQueryModelTest {
 		conditionModel.setInOperands(Employee.NAME, asList("Scott", "John"));
 		Condition condition = queryModel.createSelect().where();
 		assertFalse(condition instanceof Combination);
-		queryModel.where().set(() -> Condition.custom(Employee.CONDITION_2_TYPE));
+		queryModel.where().set(Employee.CONDITION_2_TYPE::get);
 		assertNotNull(queryModel.where().get());
 		condition = queryModel.createSelect().where();
 		assertInstanceOf(Combination.class, condition);
@@ -70,7 +70,7 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(new DefaultEntityConditionModel(Employee.TYPE,
 					CONNECTION_PROVIDER, new AttributeConditionModelFactory(CONNECTION_PROVIDER)));
 		assertFalse(queryModel.conditionChanged().get());
-		queryModel.where().set(() -> Condition.custom(Employee.CONDITION_2_TYPE));
+		queryModel.where().set(Employee.CONDITION_2_TYPE::get);
 		assertTrue(queryModel.conditionChanged().get());
 		queryModel.get();
 		assertFalse(queryModel.conditionChanged().get());
@@ -82,7 +82,7 @@ public final class DefaultEntityQueryModelTest {
 		queryModel = new DefaultEntityQueryModel(new DefaultEntityConditionModel(Job.TYPE,
 					CONNECTION_PROVIDER, new AttributeConditionModelFactory(CONNECTION_PROVIDER)));
 		assertFalse(queryModel.conditionChanged().get());
-		queryModel.having().set(() -> Condition.custom(Job.ADDITIONAL_HAVING));
+		queryModel.having().set(Job.ADDITIONAL_HAVING::get);
 		assertTrue(queryModel.conditionChanged().get());
 		queryModel.get();
 		assertFalse(queryModel.conditionChanged().get());

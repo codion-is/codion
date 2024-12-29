@@ -26,7 +26,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -316,7 +315,7 @@ public final class DefaultEntityComboBoxModelTest {
 		comboBoxModel.items().clear();
 		assertEquals(0, comboBoxModel.getSize());
 
-		comboBoxModel.condition().set(() -> Condition.custom(Employee.ENAME_CLARK));
+		comboBoxModel.condition().set(Employee.ENAME_CLARK::get);
 		comboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(singleton(ENTITIES.primaryKey(Department.TYPE, 10)));//accounting
 		assertThrows(UnsupportedOperationException.class, () -> comboBoxModel.items().visible().predicate().set(entity -> false));
 

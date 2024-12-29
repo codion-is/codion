@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
-import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -225,7 +224,7 @@ public final class DefaultEntitySearchModelTest {
 		List<Entity> result = searchModel.search();
 		assertEquals(1, result.size());
 		searchModel.selection().entities().set(result);
-		searchModel.condition().set(() -> Condition.custom(Employee.CONDITION_1_TYPE));
+		searchModel.condition().set(Employee.CONDITION_1_TYPE::get);
 		assertEquals(1, searchModel.selection().entities().get().size());
 		result = searchModel.search();
 		assertTrue(result.isEmpty());

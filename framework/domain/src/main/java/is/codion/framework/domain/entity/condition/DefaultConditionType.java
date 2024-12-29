@@ -19,11 +19,14 @@
 package is.codion.framework.domain.entity.condition;
 
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultConditionType implements ConditionType, Serializable {
@@ -47,6 +50,16 @@ final class DefaultConditionType implements ConditionType, Serializable {
 	@Override
 	public String name() {
 		return name;
+	}
+
+	@Override
+	public CustomCondition get() {
+		return get(emptyList(), emptyList());
+	}
+
+	@Override
+	public CustomCondition get(List<Column<?>> columns, List<?> values) {
+		return new DefaultCustomCondition(this, columns, values);
 	}
 
 	@Override

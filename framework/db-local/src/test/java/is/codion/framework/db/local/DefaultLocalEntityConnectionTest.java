@@ -406,13 +406,13 @@ public class DefaultLocalEntityConnectionTest {
 		assertEquals(2, result.size());
 		result = connection.select(primaryKeys(result));
 		assertEquals(2, result.size());
-		result = connection.select(Condition.custom(Department.DEPARTMENT_CONDITION_TYPE,
+		result = connection.select(Department.DEPARTMENT_CONDITION_TYPE.get(
 						asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)));
 		assertEquals(2, result.size());
-		result = connection.select(Condition.custom(EmpnoDeptno.CONDITION));
+		result = connection.select(EmpnoDeptno.CONDITION.get());
 		assertEquals(7, result.size());
 
-		Select select = Select.where(Condition.custom(Employee.NAME_IS_BLAKE_CONDITION)).build();
+		Select select = Select.where(Employee.NAME_IS_BLAKE_CONDITION.get()).build();
 		result = connection.select(select);
 		Entity emp = result.iterator().next();
 		assertNotNull(emp.get(Employee.DEPARTMENT_FK));
@@ -552,7 +552,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void selectInvalidColumn() {
-		assertThrows(DatabaseException.class, () -> connection.select(Condition.custom(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE)));
+		assertThrows(DatabaseException.class, () -> connection.select(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE.get()));
 	}
 
 	@Test
@@ -579,7 +579,7 @@ public class DefaultLocalEntityConnectionTest {
 		assertEquals("SALES", sales.get(Department.DNAME));
 		sales = connection.select(sales.primaryKey());
 		assertEquals("SALES", sales.get(Department.DNAME));
-		sales = connection.selectSingle(Condition.custom(Department.DEPARTMENT_CONDITION_SALES_TYPE));
+		sales = connection.selectSingle(Department.DEPARTMENT_CONDITION_SALES_TYPE.get());
 		assertEquals("SALES", sales.get(Department.DNAME));
 
 		Entity king = connection.selectSingle(Employee.NAME.equalTo("KING"));
@@ -592,7 +592,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void customCondition() {
-		assertEquals(4, connection.select(Condition.custom(Employee.MGR_GREATER_THAN_CONDITION,
+		assertEquals(4, connection.select(Employee.MGR_GREATER_THAN_CONDITION.get(
 						singletonList(Employee.MGR), singletonList(5))).size());
 	}
 

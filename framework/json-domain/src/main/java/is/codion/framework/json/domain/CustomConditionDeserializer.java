@@ -21,7 +21,6 @@ package is.codion.framework.json.domain;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.domain.entity.condition.CustomCondition;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -62,6 +61,6 @@ final class CustomConditionDeserializer implements Serializable {
 			values.add(entityObjectMapper.readValue(valueNode.toString(), attributeDefinition.attribute().type().valueClass()));
 		}
 
-		return Condition.custom(definition.entityType().conditionType(conditionTypeName), columns, values);
+		return definition.entityType().conditionType(conditionTypeName).get(columns, values);
 	}
 }

@@ -365,7 +365,7 @@ public final class EntityObjectMapperTest {
 
 	@Test
 	void custom() throws JsonProcessingException {
-		CustomCondition customedCondition = Condition.custom(TestEntity.CONDITION_TYPE,
+		CustomCondition customedCondition = TestEntity.CONDITION_TYPE.get(
 						asList(TestEntity.DECIMAL, TestEntity.DATE_TIME),
 						asList(BigDecimal.valueOf(123.4), LocalDateTime.now()));
 
