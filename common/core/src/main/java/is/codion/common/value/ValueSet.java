@@ -26,8 +26,8 @@ import java.util.Set;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An observable wrapper for a Set of values, including a possible null value.
- * A factory for {@link ValueSet} instances.
+ * <p>An observable wrapper for a Set of values.
+ * <p>A factory for {@link ValueSet} instances.
  * @param <T> the value type
  */
 public interface ValueSet<T> extends Values<T, Set<T>> {
@@ -46,12 +46,13 @@ public interface ValueSet<T> extends Values<T, Set<T>> {
 
 	/**
 	 * Creates a new {@link ValueSet}, using {@link Notify#WHEN_CHANGED}.
-	 * @param value the initial value, may not be null
+	 * @param values the initial values, may not be null
 	 * @param <T> the value type
 	 * @return a new {@link ValueSet}
+	 * @throws NullPointerException in case {@code values} is null
 	 */
-	static <T> ValueSet<T> valueSet(Collection<T> value) {
-		return builder(value).build();
+	static <T> ValueSet<T> valueSet(Collection<T> values) {
+		return builder(values).build();
 	}
 
 	/**
@@ -65,16 +66,16 @@ public interface ValueSet<T> extends Values<T, Set<T>> {
 
 	/**
 	 * Creates a new {@link ValueSet.Builder} instance.
-	 * @param value the initial value
+	 * @param values the initial values, may not be null
 	 * @param <T> the value set type
 	 * @return a new builder
-	 * @throws NullPointerException in case {@code value} is null
+	 * @throws NullPointerException in case {@code values} is null
 	 */
-	static <T> Builder<T> builder(Collection<T> value) {
-		requireNonNull(value);
+	static <T> Builder<T> builder(Collection<T> values) {
+		requireNonNull(values);
 
 		return new DefaultValueSet.DefaultBuilder<T>()
-						.value(new LinkedHashSet<>(value));
+						.value(new LinkedHashSet<>(values));
 	}
 
 	/**

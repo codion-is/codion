@@ -13,6 +13,7 @@ Codion Change Log
 - Observable.getOrThrow() happy path optimized.
 - DefaultObserver refactored, improved and optimized.
 - Value.nullable() renamed isNullable(), Value.value() factory method renamed nullable(), Value.nonNull() factory method added.
+- Values.builder() removed.
 ## is.codion.common.db
 - Database.connectionProvider() no longer accepts null.
 - ResultPacker.pack() no longer skips null instances returned from get(), caller must handle any null values encountered.

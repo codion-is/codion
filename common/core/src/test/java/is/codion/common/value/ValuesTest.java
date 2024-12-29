@@ -29,24 +29,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValuesTest {
 
-	private final Supplier<Set<Integer>> emptySet = LinkedHashSet::new;
-	private final Function<Set<Integer>, Set<Integer>> unmodifiableSet = Collections::unmodifiableSet;
-
-	private final Supplier<List<Integer>> emptyList = ArrayList::new;
-	private final Function<List<Integer>, List<Integer>> unmodifiableList = Collections::unmodifiableList;
-
 	@Test
 	void set() {
-		Values<Integer, Set<Integer>> values = Values.builder(emptySet, unmodifiableSet).build();
-		ObservableValues<Integer, Set<Integer>> observer = values.observable();
+		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
+		ObservableValues<Integer, Set<Integer>> observer = set.observable();
 		assertTrue(observer.empty());
 		assertFalse(observer.notEmpty());
 		assertUnmodifiable(observer);
@@ -55,89 +47,89 @@ public class ValuesTest {
 		assertFalse(observer.isNull());
 		assertTrue(observer.optional().isPresent());
 
-		assertTrue(values.add(1));
-		assertFalse(values.add(1));
-		assertTrue(values.remove(1));
-		assertFalse(values.remove(1));
+		assertTrue(set.add(1));
+		assertFalse(set.add(1));
+		assertTrue(set.remove(1));
+		assertFalse(set.remove(1));
 
 		Set<Integer> initialValues = new HashSet<>();
 		initialValues.add(1);
 		initialValues.add(2);
 
-		values = Values.builder(emptySet, unmodifiableSet)
+		set = ValueSet.<Integer>builder()
 						.value(initialValues)
 						.build();
-		observer = values.observable();
+		observer = set.observable();
 		assertFalse(observer.empty());
 		assertTrue(observer.notEmpty());
 		assertEquals(initialValues, observer.get());
 		assertUnmodifiable(observer);
 		assertTrue(observer.isEqualTo(initialValues));
 
-		assertFalse(values.add(1));
-		assertFalse(values.add(2));
-		assertTrue(values.add(3));
-		assertTrue(values.remove(1));
-		assertTrue(values.remove(2));
+		assertFalse(set.add(1));
+		assertFalse(set.add(2));
+		assertTrue(set.add(3));
+		assertTrue(set.remove(1));
+		assertTrue(set.remove(2));
 
-		values.set(initialValues);
-		assertTrue(values.remove(1));
-		assertTrue(values.remove(2));
-		assertTrue(values.add(3));
+		set.set(initialValues);
+		assertTrue(set.remove(1));
+		assertTrue(set.remove(2));
+		assertTrue(set.add(3));
 
-		values.clear();
+		set.clear();
 		assertTrue(observer.empty());
 		assertFalse(observer.notEmpty());
-		assertTrue(values.add(3));
-		assertFalse(values.removeAll(1, 2));
+		assertTrue(set.add(3));
+		assertFalse(set.removeAll(1, 2));
 
-		assertTrue(values.add(null));
-		assertFalse(values.add(null));
-		assertTrue(values.remove(null));
+		assertTrue(set.add(null));
+		assertFalse(set.add(null));
+		assertTrue(set.remove(null));
 
-		values.clear();
-		values.addAll(1, 2);
+		set.clear();
+		set.addAll(1, 2);
 		assertUnmodifiable(observer);
 
-		values.clear();
-		assertTrue(values.add(1));
-		assertTrue(values.add(2));
+		set.clear();
+		assertTrue(set.add(1));
+		assertTrue(set.add(2));
 
-		values.clear();
+		set.clear();
 
-		Value<Integer> value = values.value();
+		Value<Integer> value = set.value();
 
 		value.set(1);
 		assertTrue(observer.contains(1));
 		value.clear();
 		assertTrue(observer.empty());
 
-		values.set(Collections.singleton(2));
+		set.set(Collections.singleton(2));
 		assertEquals(2, value.get());
 
-		values.clear();
+		set.clear();
 		assertNull(value.get());
 
-		assertTrue(values.addAll(1, 2, 3));
+		assertTrue(set.addAll(1, 2, 3));
 		assertEquals(3, observer.size());
-		values.forEach(i -> {});
+		set.forEach(i -> {});
 		assertFalse(observer.containsAll(asList(1, 2, 4)));
 		assertTrue(observer.containsAll(asList(1, 2, 3)));
-		assertFalse(values.addAll(1, 2, 3));
-		assertTrue(values.removeAll(1, 2));
-		assertFalse(values.removeAll(1, 2));
-		assertTrue(values.removeAll(2, 3));
+		assertFalse(set.addAll(1, 2, 3));
+		assertTrue(set.removeAll(1, 2));
+		assertFalse(set.removeAll(1, 2));
+		assertTrue(set.removeAll(2, 3));
 		assertUnmodifiable(observer);
 
-		values.clear();
-		values.addAll(1, 2);
-		assertFalse(values.set(asList(1, 2)));
+		set.clear();
+		set.addAll(1, 2);
+		assertFalse(set.set(asList(1, 2)));
 	}
 
 	@Test
 	void setEvents() {
-		Values<Integer, Set<Integer>> valueSet = Values.builder(emptySet, unmodifiableSet).build();
-		Value<Integer> singleValue = valueSet.value();
+		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
+		Value<Integer> singleValue = set.value();
 
 		AtomicInteger valueEventCounter = new AtomicInteger();
 		Consumer<Integer> consumer = integer -> valueEventCounter.incrementAndGet();
@@ -145,9 +137,9 @@ public class ValuesTest {
 
 		AtomicInteger valueSetEventCounter = new AtomicInteger();
 		Consumer<Set<Integer>> setConsumer = integers -> valueSetEventCounter.incrementAndGet();
-		valueSet.addConsumer(setConsumer);
+		set.addConsumer(setConsumer);
 
-		valueSet.add(1);
+		set.add(1);
 
 		assertEquals(1, valueEventCounter.get());
 		assertEquals(1, valueSetEventCounter.get());
@@ -157,7 +149,7 @@ public class ValuesTest {
 		assertEquals(2, valueEventCounter.get());
 		assertEquals(2, valueSetEventCounter.get());
 
-		valueSet.clear();
+		set.clear();
 
 		assertEquals(3, valueEventCounter.get());
 		assertEquals(3, valueSetEventCounter.get());
@@ -165,8 +157,8 @@ public class ValuesTest {
 
 	@Test
 	void list() {
-		Values<Integer, List<Integer>> values = Values.builder(emptyList, unmodifiableList).build();
-		ObservableValues<Integer, List<Integer>> observable = values.observable();
+		Values<Integer, List<Integer>> list = ValueList.valueList();
+		ObservableValues<Integer, List<Integer>> observable = list.observable();
 		assertTrue(observable.empty());
 		assertFalse(observable.notEmpty());
 		assertUnmodifiable(observable);
@@ -175,90 +167,90 @@ public class ValuesTest {
 		assertFalse(observable.isNull());
 		assertTrue(observable.optional().isPresent());
 
-		assertTrue(values.add(1));
-		assertTrue(values.add(1));
-		assertTrue(values.remove(1));
-		assertTrue(values.remove(1));
+		assertTrue(list.add(1));
+		assertTrue(list.add(1));
+		assertTrue(list.remove(1));
+		assertTrue(list.remove(1));
 
 		List<Integer> initialValues = new ArrayList<>();
 		initialValues.add(1);
 		initialValues.add(2);
 
-		values = Values.builder(emptyList, unmodifiableList)
+		list = ValueList.<Integer>builder()
 						.value(initialValues)
 						.build();
-		observable = values.observable();
+		observable = list.observable();
 		assertFalse(observable.empty());
 		assertTrue(observable.notEmpty());
 		assertEquals(initialValues, observable.get());
 		assertUnmodifiable(observable);
 		assertTrue(observable.isEqualTo(initialValues));
 
-		assertTrue(values.add(1));
-		assertTrue(values.add(2));
-		assertTrue(values.add(3));
-		assertTrue(values.remove(1));
-		assertTrue(values.remove(2));
+		assertTrue(list.add(1));
+		assertTrue(list.add(2));
+		assertTrue(list.add(3));
+		assertTrue(list.remove(1));
+		assertTrue(list.remove(2));
 
-		values.set(initialValues);
-		assertTrue(values.remove(1));
-		assertTrue(values.remove(2));
-		assertTrue(values.add(3));
+		list.set(initialValues);
+		assertTrue(list.remove(1));
+		assertTrue(list.remove(2));
+		assertTrue(list.add(3));
 
-		values.clear();
+		list.clear();
 		assertTrue(observable.empty());
 		assertFalse(observable.notEmpty());
-		assertTrue(values.add(3));
-		assertFalse(values.removeAll(1, 2));
+		assertTrue(list.add(3));
+		assertFalse(list.removeAll(1, 2));
 
-		assertTrue(values.add(null));
-		assertTrue(values.add(null));
-		assertTrue(values.remove(null));
+		assertTrue(list.add(null));
+		assertTrue(list.add(null));
+		assertTrue(list.remove(null));
 
-		values.clear();
-		values.addAll(1, 2);
+		list.clear();
+		list.addAll(1, 2);
 		assertUnmodifiable(observable);
 
-		values.clear();
-		assertTrue(values.add(1));
-		assertTrue(values.add(2));
+		list.clear();
+		assertTrue(list.add(1));
+		assertTrue(list.add(2));
 
-		values.clear();
+		list.clear();
 
-		Value<Integer> value = values.value();
+		Value<Integer> value = list.value();
 
 		value.set(1);
 		assertTrue(observable.contains(1));
 		value.clear();
 		assertTrue(observable.empty());
 
-		values.set(Collections.singleton(2));
+		list.set(Collections.singleton(2));
 		assertEquals(2, value.get());
 
-		values.clear();
+		list.clear();
 		assertNull(value.get());
 
-		assertTrue(values.addAll(1, 2, 3));
+		assertTrue(list.addAll(1, 2, 3));
 		assertEquals(3, observable.size());
-		values.forEach(i -> {});
+		list.forEach(i -> {});
 		assertFalse(observable.containsAll(asList(1, 2, 4)));
 		assertTrue(observable.containsAll(asList(1, 2, 3)));
-		assertTrue(values.addAll(1, 2, 3));
-		assertTrue(values.removeAll(1, 2));
-		assertFalse(values.removeAll(1, 2));
-		assertTrue(values.removeAll(2, 3));
+		assertTrue(list.addAll(1, 2, 3));
+		assertTrue(list.removeAll(1, 2));
+		assertFalse(list.removeAll(1, 2));
+		assertTrue(list.removeAll(2, 3));
 		assertUnmodifiable(observable);
 
-		values.clear();
-		values.addAll(1, 2);
-		assertFalse(values.set(new LinkedHashSet<>(asList(1, 2))));
-		assertTrue(values.set(new LinkedHashSet<>(asList(2, 1))));
+		list.clear();
+		list.addAll(1, 2);
+		assertFalse(list.set(new LinkedHashSet<>(asList(1, 2))));
+		assertTrue(list.set(new LinkedHashSet<>(asList(2, 1))));
 	}
 
 	@Test
 	void listEvents() {
-		Values<Integer, List<Integer>> valueList = Values.builder(emptyList, unmodifiableList).build();
-		Value<Integer> singleValue = valueList.value();
+		Values<Integer, List<Integer>> list = ValueList.valueList();
+		Value<Integer> singleValue = list.value();
 
 		AtomicInteger valueEventCounter = new AtomicInteger();
 		Consumer<Integer> consumer = integer -> valueEventCounter.incrementAndGet();
@@ -266,9 +258,9 @@ public class ValuesTest {
 
 		AtomicInteger valueListEventCounter = new AtomicInteger();
 		Consumer<List<Integer>> setConsumer = integers -> valueListEventCounter.incrementAndGet();
-		valueList.addConsumer(setConsumer);
+		list.addConsumer(setConsumer);
 
-		valueList.add(1);
+		list.add(1);
 
 		assertEquals(1, valueEventCounter.get());
 		assertEquals(1, valueListEventCounter.get());
@@ -278,7 +270,7 @@ public class ValuesTest {
 		assertEquals(2, valueEventCounter.get());
 		assertEquals(2, valueListEventCounter.get());
 
-		valueList.clear();
+		list.clear();
 
 		assertEquals(3, valueEventCounter.get());
 		assertEquals(3, valueListEventCounter.get());

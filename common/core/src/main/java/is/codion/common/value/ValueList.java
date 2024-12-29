@@ -26,8 +26,8 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An observable wrapper for a List of values, including possible null values.
- * A factory for {@link ValueList} instances.
+ * <p>An observable wrapper for a List of values.
+ * <p>A factory for {@link ValueList} instances.
  * @param <T> the value type
  */
 public interface ValueList<T> extends Values<T, List<T>> {
@@ -46,12 +46,13 @@ public interface ValueList<T> extends Values<T, List<T>> {
 
 	/**
 	 * Creates a new {@link ValueList}, using {@link Notify#WHEN_CHANGED}.
-	 * @param value the initial value, may not be null
+	 * @param values the initial values, may not be null
 	 * @param <T> the value type
 	 * @return a new {@link ValueList}
+	 * @throws NullPointerException in case {@code values} is null
 	 */
-	static <T> ValueList<T> valueList(Collection<T> value) {
-		return builder(value).build();
+	static <T> ValueList<T> valueList(Collection<T> values) {
+		return builder(values).build();
 	}
 
 	/**
@@ -65,16 +66,16 @@ public interface ValueList<T> extends Values<T, List<T>> {
 
 	/**
 	 * Creates a new {@link ValueList.Builder} instance.
-	 * @param value the initial value
+	 * @param values the initial values, may not be null
 	 * @param <T> the value set type
 	 * @return a new builder
-	 * @throws NullPointerException in case {@code value} is null
+	 * @throws NullPointerException in case {@code values} is null
 	 */
-	static <T> Builder<T> builder(Collection<T> value) {
-		requireNonNull(value);
+	static <T> Builder<T> builder(Collection<T> values) {
+		requireNonNull(values);
 
 		return new DefaultValueList.DefaultBuilder<T>()
-						.value(new ArrayList<>(value));
+						.value(new ArrayList<>(values));
 	}
 
 	/**

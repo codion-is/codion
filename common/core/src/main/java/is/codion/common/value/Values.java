@@ -22,15 +22,13 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
- * An observable wrapper for one or more values, including a possible null value.
- * A factory for {@link Values} instances.
+ * <p>An observable wrapper for one or more values.
  * @param <T> the value type
  * @param <C> the collection type
- * @see #builder(Supplier, Function)
+ * @see ValueSet
+ * @see ValueList
  */
 public interface Values<T, C extends Collection<T>> extends Value<C>, ObservableValues<T, C> {
 
@@ -112,17 +110,6 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	 */
 	@Override
 	ObservableValues<T, C> observable();
-
-	/**
-	 * @param create creates an empty instance of the required collection type
-	 * @param unmodifiable returns an unmodifiable view of the given collection
-	 * @param <T> the value type
-	 * @param <C> the collection type
-	 * @return a {@link Values.Builder} instance
-	 */
-	static <T, C extends Collection<T>> Builder<T, C, ?> builder(Supplier<C> create, Function<C, C> unmodifiable) {
-		return new DefaultValues.DefaultBuilder<>(create, unmodifiable);
-	}
 
 	/**
 	 * Builds a {@link Values} instance.
