@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.common.model.FilterModel.Items;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilterTableModel.RefreshStrategy;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
@@ -239,6 +240,46 @@ public final class DefaultFilterTableModelTest {
 
 		assertEquals(5, selectionEvents.get());
 		assertSame(B, testModel.selection().item().get());
+	}
+
+	@Test
+	void addItems() {
+		tableModel.sort().ascending(0);
+		Items<TestRow> items = tableModel.items();
+		items.add(asList(A, B));
+		// does not sort
+		assertTrue(items.visible().add(0, C));
+		assertEquals(0, items.visible().indexOf(C));
+
+		assertTrue(items.remove(C));
+		// sorts
+		assertTrue(items.add(C));
+		assertEquals(2, items.visible().indexOf(C));
+		items.visible().predicate().set(item -> !item.equals(C));
+		// not visible when removed
+		assertFalse(items.remove(C));
+
+		assertFalse(items.add(C));
+		items.visible().predicate().clear();
+		assertEquals(2, items.visible().indexOf(C));
+
+		// does not sort
+		assertTrue(items.visible().add(0, asList(D, E)));
+		assertEquals(0, items.visible().indexOf(D));
+		assertEquals(1, items.visible().indexOf(E));
+
+		items.visible().predicate().set(item -> !item.equals(E));
+		assertEquals(3, items.visible().indexOf(D));
+		assertEquals(-1, items.visible().indexOf(E));
+
+		// not visible when removed
+		assertFalse(items.remove(E));
+
+		items.visible().predicate().clear();
+		assertEquals(asList(A, B, C, D), items.visible().get());
+
+		items.set(asList(B, A, D, C));
+		assertEquals(asList(A, B, C, D), items.visible().get());
 	}
 
 	@Test

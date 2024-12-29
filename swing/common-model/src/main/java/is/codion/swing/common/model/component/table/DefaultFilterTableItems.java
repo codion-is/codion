@@ -137,7 +137,13 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	@Override
 	public boolean add(Collection<R> items) {
 		synchronized (lock) {
-			return addInternal(visible.items.size(), rejectNulls(items));
+			if (addInternal(visible.items.size(), rejectNulls(items))) {
+				visible.sort();
+
+				return true;
+			}
+
+			return false;
 		}
 	}
 
@@ -169,7 +175,13 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	@Override
 	public boolean add(R item) {
 		synchronized (lock) {
-			return addInternal(requireNonNull(item));
+			if (addInternal(requireNonNull(item))) {
+				visible.sort();
+
+				return true;
+			}
+
+			return false;
 		}
 	}
 
@@ -230,11 +242,11 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			if (visibleSize > 0) {
 				tableModel.fireTableRowsDeleted(0, visibleSize - 1);
 			}
-			if (filteredSize != 0) {
-				filtered.notifyChanges();
-			}
 			if (visibleSize != 0) {
 				visible.notifyChanges();
+			}
+			if (filteredSize != 0) {
+				filtered.notifyChanges();
 			}
 		}
 	}
@@ -260,7 +272,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	private void clearAndAdd(Collection<R> items) {
 		List<R> selectedItems = selection.items().get();
 		clear();
-		if (addInternal(visible.items.size(), items)) {
+		if (addInternal(0, items)) {
 			visible.sort();
 		}
 		selection.items().set(selectedItems);

@@ -53,6 +53,7 @@ Codion Change Log
 - FilterTableModel.sorter() renamed sort().
 - FilterTableSortModel.ascending() and descending() added.
 - FilterTableModel.ColumnValues added along with values(), getStringAt(), values() and selectedValues() moved to ColumnValues as string(), get() and selected() respectively.
+- DefaultFilterTableItems.add(item) and add(items) now sort the visible items after adding.
 ### is.codion.swing.common.ui
 - TableConditionPanel bug fixed, clear control did not use TableConditionModel.clear().
 - SearchHighlighter refactored.
