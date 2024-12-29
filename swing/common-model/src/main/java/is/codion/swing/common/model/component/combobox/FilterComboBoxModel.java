@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Configuration;
 import is.codion.common.model.FilterModel;
-import is.codion.common.model.selection.SingleItemSelection;
+import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -158,14 +158,14 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	/**
 	 * @param <T> the item type
 	 */
-	interface ComboBoxSelection<T> extends SingleItemSelection<T> {
+	interface ComboBoxSelection<T> extends SingleSelection<T> {
 
 		/**
-		 * Specifies whether filtering the model affects the currently selected item.
+		 * <p>Specifies whether filtering the model affects the currently selected item.
 		 * If true, the selection is cleared when the selected item is filtered from
 		 * the model, otherwise the selected item can potentially represent a value
 		 * which is not currently visible in the model
-		 * This is false by default.
+		 * <p>This is false by default.
 		 * @return the {@link State} controlling whether filtering affects the selected item
 		 * @see VisibleItems#predicate()
 		 */

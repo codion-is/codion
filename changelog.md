@@ -27,6 +27,7 @@ Codion Change Log
 - TableSummaryModel.summaryModel() renamed get().
 - FilterModel.Items.addItem(), addItems(), removeItem() and removeItems() renamed add() and remove().
 - FilterMode.VisibleItems.itemAt() renamed get(), addItemAt() and addItemsAt() renamed add(), setItemAt() renamed set(), removeItemAt() and removeItemsAt() renamed remove().
+- SingleItemSelection and MultiItemSelection renamed SingleSelection and MultiSelection.
 ### is.codion.common.rmi
 - ServerConfiguration.serverName() now throws exception if the server name supplier returns null or an empty string.
 - Server.serverLoad() removed, related refactoring.

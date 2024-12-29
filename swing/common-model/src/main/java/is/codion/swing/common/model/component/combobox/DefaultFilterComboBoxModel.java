@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.model.selection.SingleItemSelection;
+import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
@@ -639,7 +639,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class SelectedItem implements SingleItemSelection.Item<T> {
+	private final class SelectedItem implements SingleSelection.Item<T> {
 
 		private final Event<T> changing = Event.event();
 		private final Event<T> event = Event.event();

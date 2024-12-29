@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * A selection model
+ * A selection model managing multiple selected items.
  * @param <T> the type of items
  */
-public interface MultiItemSelection<T> extends SingleItemSelection<T> {
+public interface MultiSelection<T> extends SingleSelection<T> {
 
 	/**
 	 * @return an {@link ObservableState} indicating whether multiple items are selected

@@ -24,10 +24,10 @@ import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 
 /**
- * A selection model for managing a single selected item
+ * A selection model managing a single selected item.
  * @param <T> the item type
  */
-public interface SingleItemSelection<T> {
+public interface SingleSelection<T> {
 
 	/**
 	 * @return an {@link ObservableState} indicating whether the selection is empty

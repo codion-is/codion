@@ -20,7 +20,7 @@ package is.codion.common.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
-import is.codion.common.model.selection.SingleItemSelection;
+import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
 import is.codion.common.property.PropertyValue;
@@ -60,9 +60,9 @@ public interface FilterModel<T> {
 	Items<T> items();
 
 	/**
-	 * @return the {@link SingleItemSelection} instance used by this filter model
+	 * @return the {@link SingleSelection} instance used by this model
 	 */
-	SingleItemSelection<T> selection();
+	SingleSelection<T> selection();
 
 	/**
 	 * The {@link FilterModel.Items}.
@@ -82,8 +82,8 @@ public interface FilterModel<T> {
 		void refresh();
 
 		/**
-		 * Refreshes the data in this filter model using its {@link Refresher}.
-		 * Note that this method only throws exceptions when run synchronously off the user interface thread.
+		 * <p>Refreshes the data in this model using its {@link Refresher}.
+		 * <p>Note that this method only throws exceptions when run synchronously off the user interface thread.
 		 * Use {@link Refresher#failure()} to listen for exceptions that happen during asynchronous refresh.
 		 * @param onRefresh called after a successful refresh
 		 * @see Refresher#active()

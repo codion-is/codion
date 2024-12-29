@@ -21,7 +21,7 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
-import is.codion.common.model.selection.MultiItemSelection;
+import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.value.Value;
 
 import javax.swing.ListSelectionModel;
@@ -339,5 +339,5 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 * A selection model for a {@link FilterTableModel}.
 	 * @param <R> the type of rows
 	 */
-	interface TableSelection<R> extends ListSelectionModel, MultiItemSelection<R> {}
+	interface TableSelection<R> extends ListSelectionModel, MultiSelection<R> {}
 }

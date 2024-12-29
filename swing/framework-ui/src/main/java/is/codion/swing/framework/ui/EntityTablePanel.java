@@ -25,7 +25,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.selection.MultiItemSelection;
+import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.model.summary.SummaryModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
@@ -258,13 +258,13 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Decrements the selected indexes, moving the selection up.<br>
 		 * Default key stroke: ALT-SHIFT-UP
-		 * @see MultiItemSelection.Indexes#decrement()
+		 * @see MultiSelection.Indexes#decrement()
 		 */
 		public static final ControlKey<CommandControl> DECREMENT_SELECTION = CommandControl.key("decrementSelection", keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Increments the selected indexes, moving the selection down.<br>
 		 * Default key stroke: ALT-SHIFT-DOWN
-		 * @see MultiItemSelection.Indexes#increment()
+		 * @see MultiSelection.Indexes#increment()
 		 */
 		public static final ControlKey<CommandControl> INCREMENT_SELECTION = CommandControl.key("incrementSelection", keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
