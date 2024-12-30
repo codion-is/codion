@@ -95,16 +95,16 @@ public final class EntityEditPanels {
 		private void foreignKeyValue() {
 			// tag::foreignKeyValue[]
 			EntityComboBox comboBox =
-							createForeignKeyComboBox(Demo.FOREIGN_KEY)
+							createComboBox(Demo.FOREIGN_KEY)
 											.build();
 
 			EntitySearchField searchField =
-							createForeignKeySearchField(Demo.FOREIGN_KEY)
+							createSearchField(Demo.FOREIGN_KEY)
 											.build();
 
 			//readOnly
 			JLabel label =
-							createForeignKeyLabel(Demo.FOREIGN_KEY)
+							createEntityLabel(Demo.FOREIGN_KEY)
 											.build();
 			// end::foreignKeyValue[]
 		}

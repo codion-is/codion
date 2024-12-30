@@ -53,13 +53,13 @@ include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=bool
 
 === Foreign key
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createForeignKeyComboBox(foreignKey)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createComboBox{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createComboBox(foreignKey)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeySearchField{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createForeignKeySearchField(foreignKey)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createSearchField{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createSearchField(foreignKey)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyTextField{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createForeignKeyTextField(foreignKey)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createTextField(foreignKey)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyLabel{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createForeignKeyLabel(foreignKey)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createEntityLabel{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createEntityLabel(foreignKey)]
 
 [source,java,indent=0]
 ----

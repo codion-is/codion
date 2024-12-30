@@ -66,8 +66,8 @@ public final class Example {
 		@Override
 		protected void initializeUI() {
 			initialFocusAttribute().set(CustomerAddress.CUSTOMER_FK);
-			createForeignKeyComboBox(CustomerAddress.CUSTOMER_FK);
-			createForeignKeyComboBox(CustomerAddress.ADDRESS_FK);
+			createComboBox(CustomerAddress.CUSTOMER_FK);
+			createComboBox(CustomerAddress.ADDRESS_FK);
 			addInputPanel(CustomerAddress.CUSTOMER_FK);
 			addInputPanel(CustomerAddress.ADDRESS_FK);
 		}

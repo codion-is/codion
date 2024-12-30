@@ -73,7 +73,7 @@ public class StoreDemo {
 		@Override
 		protected void initializeUI() {
 			initialFocusAttribute().set(Address.STREET);
-			createForeignKeyComboBox(Address.CUSTOMER_FK);
+			createComboBox(Address.CUSTOMER_FK);
 			createTextField(Address.STREET);
 			createTextField(Address.CITY);
 			setLayout(gridLayout(3, 1));

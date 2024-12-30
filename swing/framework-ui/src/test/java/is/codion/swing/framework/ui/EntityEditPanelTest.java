@@ -72,8 +72,8 @@ public final class EntityEditPanelTest {
 			super(editModel);
 			createTextField(Employee.NAME);
 			createItemComboBox(Employee.JOB);
-			createForeignKeyComboBox(Employee.MGR_FK);
-			createForeignKeyComboBox(Employee.DEPARTMENT_FK);
+			createComboBox(Employee.MGR_FK);
+			createComboBox(Employee.DEPARTMENT_FK);
 			createTextField(Employee.SALARY);
 			createTextField(Employee.COMMISSION);
 			createTemporalFieldPanel(Employee.HIREDATE);

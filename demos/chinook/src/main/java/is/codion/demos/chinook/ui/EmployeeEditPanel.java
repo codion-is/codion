@@ -64,7 +64,7 @@ public final class EmployeeEditPanel extends EntityEditPanel {
 						.columns(12);
 		createTextField(Employee.EMAIL)
 						.columns(12);
-		createForeignKeyComboBox(Employee.REPORTSTO_FK)
+		createComboBox(Employee.REPORTSTO_FK)
 						.preferredWidth(120)
 						// Disable transfer focus on Enter, so the Enter key triggers
 						// the default dialog button, when inserting and updating

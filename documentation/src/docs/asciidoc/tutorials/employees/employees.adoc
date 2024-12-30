@@ -135,7 +135,7 @@ include::{dir-source}/is/codion/demos/employees/ui/DepartmentEditPanel.java[tags
 ----
 
 We override the *intializeUI* method to construct the actual UI, used for editing the department entity.
-The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class provides methods for creating all the basic controls required, named *create...*, such as *createTextField(attribute)* or *createForeignKeyComboBox(foreignKey)*.
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class provides methods for creating all the basic controls required, named *create...*, such as *createTextField(column)* or *createComboBox(foreignKey)*.
 
 [source,java]
 ----

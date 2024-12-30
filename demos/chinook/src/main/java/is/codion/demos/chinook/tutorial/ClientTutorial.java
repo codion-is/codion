@@ -151,7 +151,7 @@ public final class ClientTutorial {
 		@Override
 		protected void initializeUI() {
 			initialFocusAttribute().set(Album.ARTIST_FK);
-			createForeignKeySearchField(Album.ARTIST_FK)
+			createSearchField(Album.ARTIST_FK)
 							.columns(15);
 			createTextField(Album.TITLE)
 							.action(control(INSERT).get())

@@ -56,7 +56,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		initialFocusAttribute().set(Invoice.CUSTOMER_FK);
 
-		createForeignKeySearchField(Invoice.CUSTOMER_FK)
+		createSearchField(Invoice.CUSTOMER_FK)
 						.columns(14)
 						// We add a custom selector factory, creating a selector which
 						// displays a table instead of a list when selecting a customer

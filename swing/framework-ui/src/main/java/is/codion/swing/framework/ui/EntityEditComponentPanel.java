@@ -725,7 +725,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param foreignKey the foreign key for which to build a combo box
 	 * @return a foreign key combo box builder
 	 */
-	protected final EntityComboBox.Builder createForeignKeyComboBox(ForeignKey foreignKey) {
+	protected final EntityComboBox.Builder createComboBox(ForeignKey foreignKey) {
 		EntityComboBoxModel comboBoxModel = editModel().comboBoxModel(foreignKey);
 		comboBoxModel.items().refresher().failure().addConsumer(this::onException);
 
@@ -741,8 +741,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key combo box panel builder
 	 */
-	protected final EntityComboBoxPanel.Builder createForeignKeyComboBoxPanel(ForeignKey foreignKey,
-																																						Supplier<EntityEditPanel> editPanel) {
+	protected final EntityComboBoxPanel.Builder createComboBoxPanel(ForeignKey foreignKey,
+																																	Supplier<EntityEditPanel> editPanel) {
 		EntityComboBoxModel comboBoxModel = editModel().comboBoxModel(foreignKey);
 		comboBoxModel.items().refresher().failure().addConsumer(this::onException);
 
@@ -757,7 +757,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param foreignKey the foreign key for which to build a search field
 	 * @return a foreign key search field builder
 	 */
-	protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
+	protected final EntitySearchField.Builder createSearchField(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.searchField(foreignKey,
 										editModel().searchModel(foreignKey))
 						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
@@ -768,7 +768,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param foreignKey the foreign key
 	 * @return a foreign key combo box panel builder
 	 */
-	protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey) {
+	protected final EntitySearchFieldPanel.Builder createSearchFieldPanel(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.searchFieldPanel(foreignKey,
 										editModel().searchModel(foreignKey))
 						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
@@ -780,8 +780,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param editPanel the edit panel supplier to use for the add and/or edit buttons
 	 * @return a foreign key combo box panel builder
 	 */
-	protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey,
-																																									Supplier<EntityEditPanel> editPanel) {
+	protected final EntitySearchFieldPanel.Builder createSearchFieldPanel(ForeignKey foreignKey,
+																																				Supplier<EntityEditPanel> editPanel) {
 		return setComponentBuilder(foreignKey, entityComponents.searchFieldPanel(foreignKey,
 										editModel().searchModel(foreignKey), editPanel)
 						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
@@ -793,7 +793,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param <B> the builder type
 	 * @return a foreign key text field builder
 	 */
-	protected final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> createForeignKeyTextField(ForeignKey foreignKey) {
+	protected final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> createTextField(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.textField(foreignKey));
 	}
 
@@ -812,7 +812,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param foreignKey the foreign key for which to build a label
 	 * @return a foreign key label builder
 	 */
-	protected final LabelBuilder<Entity> createForeignKeyLabel(ForeignKey foreignKey) {
+	protected final LabelBuilder<Entity> createEntityLabel(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.entityLabel(foreignKey));
 	}
 
@@ -1041,7 +1041,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 * Controls the default number of columns in text fields, -1 for not setting the columns
 		 * @return the {@link Value} controlling the default number of columns in foreign key search fields
 		 * @see #DEFAULT_TEXT_FIELD_COLUMNS
-		 * @see #createForeignKeySearchField(ForeignKey)
+		 * @see #createSearchField(ForeignKey)
 		 */
 		public Value<Integer> foreignKeySearchFieldColumns() {
 			return foreignKeySearchFieldColumns;
@@ -1065,8 +1065,8 @@ public class EntityEditComponentPanel extends JPanel {
 
 		/**
 		 * @return the {@link Value} controlling the default width of foreign key combo boxes
-		 * @see #createForeignKeyComboBox(ForeignKey)
-		 * @see #createForeignKeyComboBoxPanel(ForeignKey, Supplier)
+		 * @see #createComboBox(ForeignKey)
+		 * @see #createComboBoxPanel(ForeignKey, Supplier)
 		 */
 		public Value<Integer> foreignKeyComboBoxPreferredWidth() {
 			return foreignKeyComboBoxPreferredWidth;

@@ -69,7 +69,7 @@ public final class CityEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		initialFocusAttribute().set(City.COUNTRY_FK);
 
-		createForeignKeyComboBox(City.COUNTRY_FK)
+		createComboBox(City.COUNTRY_FK)
 						.preferredWidth(120);
 		createTextField(City.NAME);
 		createTextField(City.DISTRICT);

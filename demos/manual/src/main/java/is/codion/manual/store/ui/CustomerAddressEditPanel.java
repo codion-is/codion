@@ -36,7 +36,7 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		initialFocusAttribute().set(CustomerAddress.ADDRESS_FK);
 
-		createForeignKeyComboBoxPanel(CustomerAddress.ADDRESS_FK, this::createAddressEditPanel)
+		createComboBoxPanel(CustomerAddress.ADDRESS_FK, this::createAddressEditPanel)
 						.preferredWidth(280)
 						.includeAddButton(true);
 

@@ -36,14 +36,14 @@ public class ItemEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		initialFocusAttribute().set(Item.PRODUCT_FK);
 
-		createForeignKeyComboBox(Item.PRODUCT_FK);
+		createComboBox(Item.PRODUCT_FK);
 		createTextField(Item.NAME);
 		createTextFieldPanel(Item.DESCRIPTION)
 						.buttonFocusable(false);
 		createTextField(Item.PRICE);
-		createForeignKeyComboBoxPanel(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
+		createComboBoxPanel(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
 						.includeAddButton(true);
-		createForeignKeyComboBoxPanel(Item.ADDRESS_FK, this::createAddressEditPanel)
+		createComboBoxPanel(Item.ADDRESS_FK, this::createAddressEditPanel)
 						.includeAddButton(true);
 		createTextField(Item.IMAGE_URL);
 		createTextField(Item.IMAGE_THUMB_URL);

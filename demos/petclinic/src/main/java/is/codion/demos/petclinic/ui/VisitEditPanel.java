@@ -39,7 +39,7 @@ public final class VisitEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		initialFocusAttribute().set(Visit.PET_FK);
 
-		createForeignKeyComboBox(Visit.PET_FK);
+		createComboBox(Visit.PET_FK);
 		createTemporalFieldPanel(Visit.VISIT_DATE);
 		createTextArea(Visit.DESCRIPTION)
 						.rowsColumns(4, 20);

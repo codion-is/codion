@@ -34,7 +34,7 @@ public class ProductEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		initialFocusAttribute().set(Product.CATEGORY_FK);
 
-		createForeignKeyComboBox(Product.CATEGORY_FK);
+		createComboBox(Product.CATEGORY_FK);
 		createTextField(Product.NAME);
 		createTextField(Product.DESCRIPTION).columns(16);
 

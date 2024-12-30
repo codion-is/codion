@@ -230,9 +230,9 @@ public final class EmployeesMinimalApp {
 			initialFocusAttribute().set(Employee.NAME);
 
 			createTextField(Employee.NAME);
-			createForeignKeyComboBox(Employee.DEPARTMENT_FK);
+			createComboBox(Employee.DEPARTMENT_FK);
 			createTextField(Employee.JOB);
-			createForeignKeyComboBox(Employee.MANAGER_FK);
+			createComboBox(Employee.MANAGER_FK);
 			createTemporalFieldPanel(Employee.HIREDATE);
 			createTextField(Employee.SALARY);
 			createTextField(Employee.COMMISSION);

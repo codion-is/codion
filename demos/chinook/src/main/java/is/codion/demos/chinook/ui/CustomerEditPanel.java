@@ -67,7 +67,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
 						.columns(12);
 		createTextField(Customer.FAX)
 						.columns(12);
-		createForeignKeyComboBox(Customer.SUPPORTREP_FK)
+		createComboBox(Customer.SUPPORTREP_FK)
 						.preferredWidth(120);
 
 		JPanel firstLastNamePanel = gridLayoutPanel(1, 2)

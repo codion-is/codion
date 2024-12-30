@@ -43,7 +43,7 @@ public final class AlbumEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		initialFocusAttribute().set(Album.ARTIST_FK);
 
-		createForeignKeySearchField(Album.ARTIST_FK)
+		createSearchField(Album.ARTIST_FK)
 						.columns(15)
 						// We provide a edit panel supplier, which enables
 						// keyboard shortcuts for adding a new artist (INSERT)
