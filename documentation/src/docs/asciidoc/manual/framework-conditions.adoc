@@ -8,13 +8,37 @@ The <<{dir-tutorials}/chinook/chinook.adoc#_domain_model, Chinook domain model>>
 == Condition
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/Condition.html[Condition]*::
-Represents an element of a where clause and contains factory methods for creating *Condition* instances.
+Represents a query condition and contains factory methods for creating *Condition* instances.
+
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ColumnCondition.html[ColumnCondition]*::
+Represents a column based Condition element.
+
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ForeignKeyCondition.html[ForeignKeyCondition]*::
+Represents a foreign key based Condition element.
 
 NOTE: {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey] implement {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ColumnCondition.Factory.html[ColumnCondition.Factory] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ForeignKeyCondition.Factory.html[ForeignKeyCondition.Factory] respectively, and can be used to create *Condition* instances.
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=condition]
+----
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=columnCondition]
+----
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=foreignKeyCondition]
+----
+
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/CustomCondition.html[CustomCondition]*::
+Provides a way to specify a query condition which can not be created with the column or foreign key based APIs.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=custom]
 ----
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/Condition.Combination.html[Condition.Combination]*::

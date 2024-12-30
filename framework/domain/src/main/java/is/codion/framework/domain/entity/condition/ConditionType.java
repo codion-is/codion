@@ -48,8 +48,8 @@ public interface ConditionType {
 
 	/**
 	 * <p>Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
-	 * <p>This method assumes that the {@link ConditionProvider} is not based on any columns or has no need for them when creating.
-	 * <p>Note that {@link ConditionProvider#toString(List, List)} will receive a column list filled with as many nulls as there are values.
+	 * <p>This method assumes that the {@link ConditionProvider} is not based on any columns or has no need for them when creating the condition string.
+	 * <p>Note that {@link ConditionProvider#toString(List, List)} will receive an empty column list.
 	 * @param values the values used by this condition
 	 * @return a {@link CustomCondition} instance
 	 * @see EntityDefinition#condition(ConditionType)

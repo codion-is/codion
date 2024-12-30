@@ -18,9 +18,53 @@
  */
 package is.codion.framework.domain.entity.condition;
 
+import is.codion.framework.domain.entity.attribute.Column;
+
+import java.util.List;
+
 /**
- * A Condition based on a custom {@link ConditionProvider}
- * associated with {@link ConditionType}
+ * <p>A custom {@link Condition} based on a {@link ConditionProvider}.
+ * <p>Custom conditions are used to create query conditions that can not be created with the
+ * {@link Condition}, {@link ColumnCondition} or {@link ForeignKeyCondition} APIs, for example
+ * conditions using JOINs or native DBMS functionality.
+ * <p>A {@link ConditionType} is associated with a {@link ConditionProvider}, which is responsible
+ * for creating the condition string via {@link ConditionProvider#toString(List, List)}.
+ * <pre>
+ * {@code
+ * // Custom condition with values
+ * Track.TYPE.define(
+ *     ...
+ * ).condition(Track.NOT_IN_PLAYLIST, (columns, values) ->
+ *         new StringBuilder("""
+ *                 trackid NOT IN (
+ *                     SELECT trackid
+ *                     FROM chinook.playlisttrack
+ *                     WHERE playlistid IN ("""
+ *                  )
+ *                 .append(String.join(", ",
+ *                         Collections.nCopies(values.size(), "?")))
+ *                 .append(")\n")
+ *                 .append(")")
+ *                 .toString());
+ *
+ * Condition condition =
+ *         Track.NOT_IN_PLAYLIST.get(Playlist.ID, List.of(42L, 43L));
+ *
+ * // Custom condition without values
+ * Track.TYPE.define(
+ *     ...
+ * ).condition(Track.EXCLUDED, (columns, values) ->
+ *         "trackid not in (select trackid from chinook.excluded_tracks)");
+ *
+ * Condition condition = Track.EXCLUDED.get();
+ *
+ * List<Entity> tracks = connection.select(
+ *         Condition.and(Track.NAME.like("The%"), condition));
+ * }
+ * </pre>
+ * <p>The ? substitute character is replaced with the condition values when when the statement is prepared.
+ * That relies on the {@code columns} List for the value data type, and assumes it contains the {@link Column} associated
+ * with each value at the same index. If the {@code columns} List is empty, no value substitution is performed.
  */
 public interface CustomCondition extends Condition {
 
