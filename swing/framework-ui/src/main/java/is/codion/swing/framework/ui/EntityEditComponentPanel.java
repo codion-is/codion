@@ -729,7 +729,7 @@ public class EntityEditComponentPanel extends JPanel {
 		EntityComboBoxModel comboBoxModel = editModel().comboBoxModel(foreignKey);
 		comboBoxModel.items().refresher().failure().addConsumer(this::onException);
 
-		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
+		return setComponentBuilder(foreignKey, entityComponents.comboBox(foreignKey, comboBoxModel)
 						.preferredWidth(defaults.foreignKeyComboBoxPreferredWidth.getOrThrow())
 						.onSetVisible(EntityEditComponentPanel::refreshIfCleared))
 						.onBuild(comboBox -> addValidator(foreignKey, comboBox));
@@ -746,7 +746,7 @@ public class EntityEditComponentPanel extends JPanel {
 		EntityComboBoxModel comboBoxModel = editModel().comboBoxModel(foreignKey);
 		comboBoxModel.items().refresher().failure().addConsumer(this::onException);
 
-		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanel))
+		return setComponentBuilder(foreignKey, entityComponents.comboBoxPanel(foreignKey, comboBoxModel, editPanel))
 						.comboBoxPreferredWidth(defaults.foreignKeyComboBoxPreferredWidth.getOrThrow())
 						.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()))
 						.onBuild(comboBoxPanel -> addValidator(foreignKey, comboBoxPanel.comboBox()));
@@ -758,7 +758,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a foreign key search field builder
 	 */
 	protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
-		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
+		return setComponentBuilder(foreignKey, entityComponents.searchField(foreignKey,
 										editModel().searchModel(foreignKey))
 						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
 	}
@@ -769,7 +769,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a foreign key combo box panel builder
 	 */
 	protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey) {
-		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
+		return setComponentBuilder(foreignKey, entityComponents.searchFieldPanel(foreignKey,
 										editModel().searchModel(foreignKey))
 						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
 	}
@@ -782,7 +782,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey,
 																																									Supplier<EntityEditPanel> editPanel) {
-		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
+		return setComponentBuilder(foreignKey, entityComponents.searchFieldPanel(foreignKey,
 										editModel().searchModel(foreignKey), editPanel)
 						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
 	}
@@ -794,7 +794,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a foreign key text field builder
 	 */
 	protected final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> createForeignKeyTextField(ForeignKey foreignKey) {
-		return setComponentBuilder(foreignKey, entityComponents.foreignKeyTextField(foreignKey));
+		return setComponentBuilder(foreignKey, entityComponents.textField(foreignKey));
 	}
 
 	/**
@@ -813,7 +813,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a foreign key label builder
 	 */
 	protected final LabelBuilder<Entity> createForeignKeyLabel(ForeignKey foreignKey) {
-		return setComponentBuilder(foreignKey, entityComponents.foreignKeyLabel(foreignKey));
+		return setComponentBuilder(foreignKey, entityComponents.entityLabel(foreignKey));
 	}
 
 	/**

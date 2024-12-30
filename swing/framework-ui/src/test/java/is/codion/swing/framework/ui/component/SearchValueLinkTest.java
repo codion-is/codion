@@ -52,7 +52,7 @@ public class SearchValueLinkTest {
 	@Test
 	void test() {
 		ComponentValue<Entity, EntitySearchField> componentValue =
-						inputComponents.foreignKeySearchField(Employee.DEPARTMENT_FK,
+						inputComponents.searchField(Employee.DEPARTMENT_FK,
 										model.searchModel(Employee.DEPARTMENT_FK)).buildValue();
 		componentValue.link(model.value(Employee.DEPARTMENT_FK));
 		EntitySearchModel searchModel = componentValue.component().model();

@@ -217,13 +217,13 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a foreign key ComboBox builder based on the given foreign key.
+	 * Creates a {@link EntityComboBox.Builder} based on the given foreign key.
 	 * @param foreignKey the foreign key
 	 * @param comboBoxModel the combo box model
 	 * @return a foreign key JComboBox builder
 	 */
-	public EntityComboBox.Builder foreignKeyComboBox(ForeignKey foreignKey,
-																									 EntityComboBoxModel comboBoxModel) {
+	public EntityComboBox.Builder comboBox(ForeignKey foreignKey,
+																				 EntityComboBoxModel comboBoxModel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntityComboBox.builder(comboBoxModel)
@@ -231,15 +231,15 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a builder for a foreign key combo box panel with optional buttons for adding and editing items.
+	 * Creates a {@link EntityComboBoxPanel.Builder} with optional buttons for adding and editing items.
 	 * @param foreignKey the foreign key
 	 * @param comboBoxModel the combo box model
 	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key combo box panel builder
 	 */
-	public EntityComboBoxPanel.Builder foreignKeyComboBoxPanel(ForeignKey foreignKey,
-																														 EntityComboBoxModel comboBoxModel,
-																														 Supplier<EntityEditPanel> editPanel) {
+	public EntityComboBoxPanel.Builder comboBoxPanel(ForeignKey foreignKey,
+																									 EntityComboBoxModel comboBoxModel,
+																									 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntityComboBoxPanel.builder(comboBoxModel, editPanel)
@@ -247,12 +247,12 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a foreign key search field builder based on the given foreign key.
+	 * Creates a {@link EntitySearchField.Builder} based on the given foreign key.
 	 * @param foreignKey the foreign key
 	 * @param searchModel the search model
 	 * @return a foreign key {@link EntitySearchField} builder
 	 */
-	public EntitySearchField.Builder foreignKeySearchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
+	public EntitySearchField.Builder searchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntitySearchField.builder(searchModel)
@@ -260,13 +260,13 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a builder for a foreign key search field panel with an optional button for performing a search.
+	 * Creates a {@link EntitySearchFieldPanel.Builder} with an optional button for performing a search.
 	 * @param foreignKey the foreign key
 	 * @param searchModel the search model
 	 * @return a foreign key search field panel builder
 	 */
-	public EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
-																																	 EntitySearchModel searchModel) {
+	public EntitySearchFieldPanel.Builder searchFieldPanel(ForeignKey foreignKey,
+																												 EntitySearchModel searchModel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntitySearchFieldPanel.builder(searchModel)
@@ -275,15 +275,15 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a builder for a foreign key search field panel with optional buttons for adding and editing items.
+	 * Creates a {@link EntitySearchFieldPanel.Builder} with optional buttons for adding and editing items.
 	 * @param foreignKey the foreign key
 	 * @param searchModel the search model
 	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key search field panel builder
 	 */
-	public EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
-																																	 EntitySearchModel searchModel,
-																																	 Supplier<EntityEditPanel> editPanel) {
+	public EntitySearchFieldPanel.Builder searchFieldPanel(ForeignKey foreignKey,
+																												 EntitySearchModel searchModel,
+																												 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntitySearchFieldPanel.builder(searchModel, editPanel)
@@ -291,12 +291,12 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates foreign key text field builder for the given foreign key, read-only and non-focusable.
+	 * Creates Entity text field builder for the given foreign key, read-only and non-focusable.
 	 * @param foreignKey the foreign key
 	 * @param <B> the builder type
-	 * @return a foreign key JTextField builder
+	 * @return a Entity JTextField builder
 	 */
-	public <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> foreignKeyTextField(ForeignKey foreignKey) {
+	public <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> textField(ForeignKey foreignKey) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return (TextFieldBuilder<Entity, JTextField, B>) Components.textField(Entity.class)
@@ -307,11 +307,11 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a foreign key label builder based on the given foreign key.
+	 * Creates a Entity label builder based on the given foreign key.
 	 * @param foreignKey the foreign key
 	 * @return a foreign key JLabel builder
 	 */
-	public LabelBuilder<Entity> foreignKeyLabel(ForeignKey foreignKey) {
+	public LabelBuilder<Entity> entityLabel(ForeignKey foreignKey) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return Components.<Entity>label()

@@ -109,6 +109,7 @@ Codion Change Log
 - EntityPanel.Display added.
 - EntityPanel.activate() bug fixed, requests display first, to ensure correct initial focus.
 - EntityPanel.Display change reverted, activate() and activated() reintroduced, needs polishing.
+- EntityComponents.foreignKeyComboBox(), foreignKeyComboBoxPanel(), foreignKeySearchField(), foreignKeySearchFieldPanel(), foreignKeyTextField() and foreignKeyLabel() renamed comboBox(), comboBoxPanel(), searchField(), searchFieldPanel(), textField() and entityLabel() respectively.
 
 ## 0.18.22
 ### is.codion.common.core

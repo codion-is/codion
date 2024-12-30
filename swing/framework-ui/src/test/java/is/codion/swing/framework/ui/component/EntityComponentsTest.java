@@ -292,9 +292,9 @@ public final class EntityComponentsTest {
 	}
 
 	@Test
-	void foreignKeyLabel() {
+	void entityLabel() {
 		ComponentValue<Entity, JLabel> componentValue =
-						entityComponents.foreignKeyLabel(Detail.MASTER_FK)
+						entityComponents.entityLabel(Detail.MASTER_FK)
 										.link(editModel.value(Detail.MASTER_FK))
 										.buildValue();
 		JLabel field = componentValue.component();
@@ -304,8 +304,8 @@ public final class EntityComponentsTest {
 	}
 
 	@Test
-	void foreignKeySearchField() {
-		entityComponents.foreignKeySearchField(Detail.MASTER_FK, editModel.searchModel(Detail.MASTER_FK))
+	void searchField() {
+		entityComponents.searchField(Detail.MASTER_FK, editModel.searchModel(Detail.MASTER_FK))
 						.columns(20)
 						.upperCase(true)
 						.lowerCase(false)
@@ -314,8 +314,8 @@ public final class EntityComponentsTest {
 	}
 
 	@Test
-	void foreignKeyComboBox() {
-		entityComponents.foreignKeyComboBox(Detail.MASTER_FK, editModel.comboBoxModel(Detail.MASTER_FK))
+	void entityComboBox() {
+		entityComponents.comboBox(Detail.MASTER_FK, editModel.comboBoxModel(Detail.MASTER_FK))
 						.link(editModel.value(Detail.MASTER_FK))
 						.buildValue();
 	}
