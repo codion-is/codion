@@ -220,7 +220,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
+	public EntitySearchModel createSearchModel(ForeignKey foreignKey) {
 		entityDefinition().foreignKeys().definition(foreignKey);
 		Collection<Column<String>> searchable = entities().definition(foreignKey.referencedType()).columns().searchable();
 		if (searchable.isEmpty()) {
@@ -234,13 +234,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final EntitySearchModel foreignKeySearchModel(ForeignKey foreignKey) {
+	public final EntitySearchModel searchModel(ForeignKey foreignKey) {
 		entityDefinition().foreignKeys().definition(foreignKey);
 		synchronized (entitySearchModels) {
-			// can't use computeIfAbsent here, see comment in SwingEntityEditModel.foreignKeyComboBoxModel()
+			// can't use computeIfAbsent here, see comment in SwingEntityEditModel.comboBoxModel(ForeignKey)
 			EntitySearchModel entitySearchModel = entitySearchModels.get(foreignKey);
 			if (entitySearchModel == null) {
-				entitySearchModel = createForeignKeySearchModel(foreignKey);
+				entitySearchModel = createSearchModel(foreignKey);
 				entitySearchModels.put(foreignKey, entitySearchModel);
 			}
 

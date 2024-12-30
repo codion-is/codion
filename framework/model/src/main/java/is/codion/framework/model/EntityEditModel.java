@@ -158,14 +158,14 @@ public interface EntityEditModel {
 	 * @return a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
 	 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
 	 */
-	EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey);
+	EntitySearchModel createSearchModel(ForeignKey foreignKey);
 
 	/**
 	 * @param foreignKey the foreign key for which to retrieve the {@link EntitySearchModel}
 	 * @return the {@link EntitySearchModel} associated with the {@code foreignKey}, if no search model
 	 * has been initialized for the given foreign key, a new one is created, associated with the foreign key and returned.
 	 */
-	EntitySearchModel foreignKeySearchModel(ForeignKey foreignKey);
+	EntitySearchModel searchModel(ForeignKey foreignKey);
 
 	/**
 	 * @return a state controlling whether this edit model posts insert, update and delete events

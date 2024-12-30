@@ -66,7 +66,7 @@ public final class SwingEntityModelTest
 		SwingEntityEditModel employeeEditModel = employeeModel.editModel();
 		SwingEntityTableModel employeeTableModel = employeeModel.tableModel();
 
-		EntityComboBoxModel comboBoxModel = employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
+		EntityComboBoxModel comboBoxModel = employeeEditModel.comboBoxModel(Employee.MGR_FK);
 		new EntityComboBoxModelValue(comboBoxModel).link(employeeEditModel.value(Employee.MGR_FK));
 		employeeTableModel.items().refresh();
 		for (Entity employee : employeeTableModel.items().get()) {
@@ -85,7 +85,7 @@ public final class SwingEntityModelTest
 		assertTrue(departmentModel.detailModels().linked().contains(employeeModel));
 		departmentModel.tableModel().items().refresh();
 		SwingEntityEditModel employeeEditModel = employeeModel.editModel();
-		EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
+		EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.comboBoxModel(Employee.DEPARTMENT_FK);
 		departmentsComboBoxModel.items().refresh();
 		Entity.Key primaryKey = connectionProvider().entities().primaryKey(Department.TYPE, 40);//operations, no employees
 		departmentModel.tableModel().select(Collections.singletonList(primaryKey));
@@ -130,12 +130,12 @@ public final class SwingEntityModelTest
 			departmentModel.tableModel().selection().item().set(department);
 			SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 			EntityComboBoxModel deptComboBoxModel = employeeModel.editModel()
-							.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
+							.comboBoxModel(Employee.DEPARTMENT_FK);
 			deptComboBoxModel.items().refresh();
 			deptComboBoxModel.setSelectedItem(department);
 			departmentModel.tableModel().deleteSelected();
-			assertEquals(3, employeeModel.editModel().foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).getSize());
-			assertNotNull(employeeModel.editModel().foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).selection().item().get());
+			assertEquals(3, employeeModel.editModel().comboBoxModel(Employee.DEPARTMENT_FK).getSize());
+			assertNotNull(employeeModel.editModel().comboBoxModel(Employee.DEPARTMENT_FK).selection().item().get());
 		}
 		finally {
 			connection.rollbackTransaction();

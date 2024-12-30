@@ -73,13 +73,13 @@ public class DefaultEntityComponentFactory<T, C extends JComponent> implements E
 	private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel,
 																															Entity value, EntityComponents inputComponents) {
 		if (editModel.entities().definition(foreignKey.referencedType()).smallDataset()) {
-			return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, editModel.createForeignKeyComboBoxModel(foreignKey))
+			return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, editModel.createComboBoxModel(foreignKey))
 							.value(value)
 							.onSetVisible(comboBox -> comboBox.getModel().items().refresh())
 							.buildValue();
 		}
 
-		return (ComponentValue<T, C>) inputComponents.foreignKeySearchField(foreignKey, editModel.createForeignKeySearchModel(foreignKey))
+		return (ComponentValue<T, C>) inputComponents.foreignKeySearchField(foreignKey, editModel.createSearchModel(foreignKey))
 						.value(value)
 						.buildValue();
 	}

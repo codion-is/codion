@@ -177,14 +177,14 @@ public final class EmployeesMinimalApp {
 		 * so that is only shows managers.
 		 */
 		@Override
-		public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
+		public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
 			if (foreignKey.equals(Employee.MANAGER_FK)) {
 				return EntityComboBoxModel.builder(Employee.TYPE, connectionProvider())
 								.condition(() -> Employee.JOB.in("Manager", "President"))
 								.build();
 			}
 
-			return super.createForeignKeyComboBoxModel(foreignKey);
+			return super.createComboBoxModel(foreignKey);
 		}
 	}
 

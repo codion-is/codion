@@ -726,7 +726,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a foreign key combo box builder
 	 */
 	protected final EntityComboBox.Builder createForeignKeyComboBox(ForeignKey foreignKey) {
-		EntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
+		EntityComboBoxModel comboBoxModel = editModel().comboBoxModel(foreignKey);
 		comboBoxModel.items().refresher().failure().addConsumer(this::onException);
 
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
@@ -743,7 +743,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final EntityComboBoxPanel.Builder createForeignKeyComboBoxPanel(ForeignKey foreignKey,
 																																						Supplier<EntityEditPanel> editPanel) {
-		EntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
+		EntityComboBoxModel comboBoxModel = editModel().comboBoxModel(foreignKey);
 		comboBoxModel.items().refresher().failure().addConsumer(this::onException);
 
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanel))
@@ -759,7 +759,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
-										editModel().foreignKeySearchModel(foreignKey))
+										editModel().searchModel(foreignKey))
 						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
 	}
 
@@ -770,7 +770,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
-										editModel().foreignKeySearchModel(foreignKey))
+										editModel().searchModel(foreignKey))
 						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
 	}
 
@@ -783,7 +783,7 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey,
 																																									Supplier<EntityEditPanel> editPanel) {
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
-										editModel().foreignKeySearchModel(foreignKey), editPanel)
+										editModel().searchModel(foreignKey), editPanel)
 						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
 	}
 

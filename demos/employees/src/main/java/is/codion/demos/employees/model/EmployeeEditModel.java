@@ -35,10 +35,10 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 	}
 	// end::constructor[]
 
-	// tag::createForeignKeyComboBox[]
+	// tag::createComboBoxModel[]
 	// Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president
 	@Override
-	public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
+	public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
 		if (foreignKey.equals(Employee.MANAGER_FK)) {
 			EntityComboBoxModel managerComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, connectionProvider())
 							//Customize the null value caption so that it displays 'None'
@@ -62,7 +62,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 			return managerComboBoxModel;
 		}
 
-		return super.createForeignKeyComboBoxModel(foreignKey);
+		return super.createComboBoxModel(foreignKey);
 	}
-	// end::createForeignKeyComboBox[]
+	// end::createComboBoxModel[]
 }

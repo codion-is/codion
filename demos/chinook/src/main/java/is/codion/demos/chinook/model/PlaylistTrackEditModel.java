@@ -36,7 +36,7 @@ public final class PlaylistTrackEditModel extends SwingEntityEditModel {
 	}
 
 	private void excludePlaylistTracks(Entity playlist) {
-		foreignKeySearchModel(PlaylistTrack.TRACK_FK).condition().set(() -> playlist == null ? null :
+		searchModel(PlaylistTrack.TRACK_FK).condition().set(() -> playlist == null ? null :
 						Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlist.get(Playlist.ID)));
 	}
 }

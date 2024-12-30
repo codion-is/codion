@@ -119,15 +119,15 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void foreignKeySearchModel() {
-		EntitySearchModel model = employeeEditModel.foreignKeySearchModel(Employee.DEPARTMENT_FK);
+	void searchModel() {
+		EntitySearchModel model = employeeEditModel.searchModel(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
-		assertSame(model, employeeEditModel.foreignKeySearchModel(Employee.DEPARTMENT_FK));
+		assertSame(model, employeeEditModel.searchModel(Employee.DEPARTMENT_FK));
 	}
 
 	@Test
-	void createForeignKeySearchModel() {
-		EntitySearchModel model = employeeEditModel.createForeignKeySearchModel(Employee.DEPARTMENT_FK);
+	void createSearchModel() {
+		EntitySearchModel model = employeeEditModel.createSearchModel(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
 		assertEquals(Department.TYPE, model.entityType());
 	}

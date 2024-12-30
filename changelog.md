@@ -92,6 +92,9 @@ Codion Change Log
 - EntityEditModel.EntityEditor.Modified now only active when the entity exists, consistent with ValueEditor.modified(), EntityEditor.edited() removed.
 - EntityModel.DetailModels added, related refactoring and renaming.
 - EntityApplicationModel.EntityModels added, related renaming.
+- EntityEditModel.createForeignKeySearchModel() and foreignKeySearchModel() renamed createSearchModel() and searchModel() respectively.
+### is.codion.swing.framework.model
+- SwingEntityEditModel.createForeignKeyComboBoxModel() and foreignKeyComboBoxModelModel() renamed createComboBoxModel() and comboBoxModel() respectively.
 ### is.codion.swing.framework.ui
 - TabbedApplicationLayout.applicationPanel() removed.
 - EntityApplicationPanel.displayEntityPanelFrame() and displayEntityPanelDialog() now initialize the focus by activating the panel when opened.

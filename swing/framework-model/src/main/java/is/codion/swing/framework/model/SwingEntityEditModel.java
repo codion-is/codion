@@ -66,13 +66,13 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 * them are initialized, which happens on the EDT.
 	 * @param attributes the attributes for which to initialize combo box models
 	 * @see #createComboBoxModel(Column)
-	 * @see #createForeignKeyComboBoxModel(ForeignKey)
+	 * @see #createComboBoxModel(ForeignKey)
 	 */
 	public final void initializeComboBoxModels(Attribute<?>... attributes) {
 		requireNonNull(attributes);
 		for (Attribute<?> attribute : attributes) {
 			if (attribute instanceof ForeignKey) {
-				foreignKeyComboBoxModel((ForeignKey) attribute).items().refresh();
+				comboBoxModel((ForeignKey) attribute).items().refresh();
 			}
 			else if (attribute instanceof Column<?>) {
 				comboBoxModel((Column<?>) attribute).items().refresh();
@@ -116,12 +116,12 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	}
 
 	/**
-	 * Returns the {@link EntityComboBoxModel} for the given foreign key attribute. If one does not exist one is created.
+	 * Returns the {@link EntityComboBoxModel} for the given foreign key. If one does not exist one is created.
 	 * @param foreignKey the foreign key
-	 * @return a {@link EntityComboBoxModel} based on the entity referenced by the given foreign key attribute
-	 * @see #createForeignKeyComboBoxModel(ForeignKey)
+	 * @return a {@link EntityComboBoxModel} based on the entity referenced by the given foreign key
+	 * @see #createComboBoxModel(ForeignKey)
 	 */
-	public final EntityComboBoxModel foreignKeyComboBoxModel(ForeignKey foreignKey) {
+	public final EntityComboBoxModel comboBoxModel(ForeignKey foreignKey) {
 		entityDefinition().foreignKeys().definition(foreignKey);
 		synchronized (comboBoxModels) {
 			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
@@ -129,7 +129,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 			// see javadoc: must not attempt to update any other mappings of this map
 			EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBoxModels.get(foreignKey);
 			if (comboBoxModel == null) {
-				comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
+				comboBoxModel = createComboBoxModel(foreignKey);
 				comboBoxModels.put(foreignKey, comboBoxModel);
 			}
 
@@ -173,7 +173,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 * @see EntityComboBoxModel.Builder#attributes(Collection)
 	 * @see ForeignKeyDefinition#attributes()
 	 */
-	public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
+	public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeys().definition(foreignKey);
 
 		return EntityComboBoxModel.builder(foreignKey.referencedType(), connectionProvider())
@@ -212,7 +212,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		requireNonNull(foreignKey);
 		requireNonNull(entities);
 		if (comboBoxModels.containsKey(foreignKey)) {
-			entities.forEach(foreignKeyComboBoxModel(foreignKey).items()::add);
+			entities.forEach(comboBoxModel(foreignKey).items()::add);
 		}
 	}
 
@@ -222,7 +222,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		requireNonNull(entities);
 		clearForeignKeyReferences(foreignKey, entities);
 		if (comboBoxModels.containsKey(foreignKey)) {
-			foreignKeyComboBoxModel(foreignKey).items().remove(entities);
+			comboBoxModel(foreignKey).items().remove(entities);
 		}
 	}
 
@@ -230,7 +230,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> entities) {
 		super.replaceForeignKey(foreignKey, entities);
 		if (comboBoxModels.containsKey(foreignKey)) {
-			EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
+			EntityComboBoxModel comboBoxModel = comboBoxModel(foreignKey);
 			entities.forEach(foreignKeyValue -> comboBoxModel.items().replace(foreignKeyValue, foreignKeyValue));
 		}
 	}

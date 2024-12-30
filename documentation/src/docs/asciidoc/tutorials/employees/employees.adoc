@@ -108,7 +108,7 @@ include::{dir-source}/is/codion/demos/employees/model/EmployeeEditModel.java[tag
 ----
 
 At some point we are going to be editing the manager attribute of an employee which means we'll need a list of managers.
-We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager attribute.
+We override *createComboBoxModel* in order to provide a specialized combo box model for the manager attribute.
 
 NOTE: The foreign key (Employee.MANAGER_FK) is used when referring to the manager attribute, very rarely do we have to worry about the underlying reference attribute (Employee.MANAGER_ID).
 
@@ -118,7 +118,7 @@ We then wire up a fiew listeners in order to further restrict the items displaye
 
 [source,java]
 ----
-include::{dir-source}/is/codion/demos/employees/model/EmployeeEditModel.java[tags=createForeignKeyComboBox]
+include::{dir-source}/is/codion/demos/employees/model/EmployeeEditModel.java[tags=createComboBoxModel]
 ----
 
 For further information on event binding see <<{basedir}/manual/manual.adoc#_event_binding, Manual#Event binding>>.
