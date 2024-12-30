@@ -72,8 +72,10 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A factory for {@link ComponentBuilder} instances
+ * <p>A factory for {@link ComponentBuilder} instances
  * based on attributes from a given entity definition.
+ * <p>Note that the component created by {@link #component(Attribute)} for a {@link ForeignKey} is a non-editable and
+ * non-focusable {@link JTextField} displaying a String representation of the referenced Entity.
  * @see #entityComponents(EntityDefinition)
  */
 public final class EntityComponents {
@@ -100,7 +102,7 @@ public final class EntityComponents {
 	public boolean supports(Attribute<?> attribute) {
 		requireNonNull(attribute);
 		if (attribute instanceof ForeignKey) {
-			return false;
+			return true;
 		}
 		AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
 		if (!attributeDefinition.items().isEmpty()) {
@@ -138,6 +140,9 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 		if (!attributeDefinition.items().isEmpty()) {
 			return (ComponentBuilder<T, C, B>) itemComboBox(attribute);
+		}
+		if (attribute instanceof ForeignKey) {
+			return (ComponentBuilder<T, C, B>) textField((ForeignKey) attribute);
 		}
 		Attribute.Type<T> type = attribute.type();
 		if (type.isTemporal()) {
@@ -291,10 +296,11 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates Entity text field builder for the given foreign key, read-only and non-focusable.
+	 * Creates {@link Entity} text field builder for the given foreign key, read-only and non-focusable,
+	 * displaying the String representation the {@link Entity}
 	 * @param foreignKey the foreign key
 	 * @param <B> the builder type
-	 * @return a Entity JTextField builder
+	 * @return a {@link Entity} JTextField builder
 	 */
 	public <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> textField(ForeignKey foreignKey) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
