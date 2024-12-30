@@ -43,7 +43,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -292,12 +291,12 @@ public final class EntityComponentsTest {
 	}
 
 	@Test
-	void entityLabel() {
-		ComponentValue<Entity, JLabel> componentValue =
-						entityComponents.entityLabel(Detail.MASTER_FK)
+	void entityTextField() {
+		ComponentValue<Entity, JTextField> componentValue =
+						entityComponents.textField(Detail.MASTER_FK)
 										.link(editModel.value(Detail.MASTER_FK))
 										.buildValue();
-		JLabel field = componentValue.component();
+		JTextField field = componentValue.component();
 		Entity entity = editModel.entities().builder(Master.TYPE).with(Master.NAME, "name").build();
 		editModel.value(Detail.MASTER_FK).set(entity);
 		assertEquals("name", field.getText());
@@ -367,7 +366,5 @@ public final class EntityComponentsTest {
 		EntityDefinition definition = CONNECTION_PROVIDER.entities().definition(Detail.TYPE);
 		definition.columns().definitions()
 						.forEach(columnDefinition -> entityComponents.component(columnDefinition.attribute()).build());
-
-		assertThrows(IllegalArgumentException.class, () -> entityComponents.component(Detail.MASTER_FK));
 	}
 }

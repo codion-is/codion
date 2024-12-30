@@ -32,7 +32,6 @@ import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
-import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
@@ -310,18 +309,6 @@ public final class EntityComponents {
 						.format(new EntityReadOnlyFormat())
 						.editable(false)
 						.focusable(false);
-	}
-
-	/**
-	 * Creates a Entity label builder based on the given foreign key.
-	 * @param foreignKey the foreign key
-	 * @return a foreign key JLabel builder
-	 */
-	public LabelBuilder<Entity> entityLabel(ForeignKey foreignKey) {
-		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
-
-		return Components.<Entity>label()
-						.toolTipText(foreignKeyDefinition.description());
 	}
 
 	/**

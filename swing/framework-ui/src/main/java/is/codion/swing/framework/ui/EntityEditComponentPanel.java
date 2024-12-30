@@ -808,15 +808,6 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
-	 * Creates a builder for a read-only foreign key label.
-	 * @param foreignKey the foreign key for which to build a label
-	 * @return a foreign key label builder
-	 */
-	protected final LabelBuilder<Entity> createEntityLabel(ForeignKey foreignKey) {
-		return setComponentBuilder(foreignKey, entityComponents.entityLabel(foreignKey));
-	}
-
-	/**
 	 * Creates a builder for a label using the caption and mnemonic associated with {@code attribute}. If an input component exists
 	 * for the given attribute the label is associated with it via {@link JLabel#setLabelFor(Component)}.
 	 * @param attribute the attribute from which to retrieve the caption

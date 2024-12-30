@@ -103,8 +103,8 @@ public final class EntityEditPanels {
 											.build();
 
 			//readOnly
-			JLabel label =
-							createEntityLabel(Demo.FOREIGN_KEY)
+			JTextField textField =
+							createTextField(Demo.FOREIGN_KEY)
 											.build();
 			// end::foreignKeyValue[]
 		}
