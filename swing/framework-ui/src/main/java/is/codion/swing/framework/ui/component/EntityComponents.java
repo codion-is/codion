@@ -32,7 +32,6 @@ import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
-import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
@@ -56,7 +55,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import java.io.Serial;
 import java.math.BigDecimal;
@@ -64,7 +62,6 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.time.temporal.Temporal;
-import java.util.List;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
@@ -615,15 +612,6 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * @param listModel the list model to base the list on
-	 * @param <T> the value type
-	 * @return a builder factory for a list
-	 */
-	public <T> EntityListBuilderFactory<T> list(ListModel<T> listModel) {
-		return new DefaultListBuilderFactory<>(listModel);
-	}
-
-	/**
 	 * @param entityDefinition the entity definition
 	 * @return a new {@link EntityComponents} instance
 	 */
@@ -631,71 +619,10 @@ public final class EntityComponents {
 		return new EntityComponents(entityDefinition);
 	}
 
-	/**
-	 * A factory for list builders.
-	 * @param <T> the value type
-	 */
-	public interface EntityListBuilderFactory<T> {
-
-		/**
-		 * A JList builder, where the value is represented by the list items.
-		 * @param attribute the attribute
-		 * @return a JList builder
-		 */
-		ListBuilder.Items<T> items(Attribute<List<T>> attribute);
-
-		/**
-		 * A multi selection JList builder, where the value is represented by the selected items.
-		 * @param attribute the attribute
-		 * @return a JList builder
-		 */
-		ListBuilder.SelectedItems<T> selectedItems(Attribute<List<T>> attribute);
-
-		/**
-		 * A single selection JList builder, where the value is represented by the selected item.
-		 * @param attribute the attribute
-		 * @return a JList builder
-		 */
-		ListBuilder.SelectedItem<T> selectedItem(Attribute<T> attribute);
-	}
-
 	private static <T> FilterComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
 		return FilterComboBoxModel.builder(asList(attribute.type().valueClass().getEnumConstants()))
 						.includeNull(nullable)
 						.build();
-	}
-
-	private final class DefaultListBuilderFactory<T> implements EntityListBuilderFactory<T> {
-
-		private final ListBuilder.Factory<T> builderFactory;
-
-		private DefaultListBuilderFactory(ListModel<T> listModel) {
-			this.builderFactory = Components.list(listModel);
-		}
-
-		@Override
-		public ListBuilder.Items<T> items(Attribute<List<T>> attribute) {
-			AttributeDefinition<List<T>> attributeDefinition = entityDefinition.attributes().definition(attribute);
-
-			return builderFactory.items()
-							.toolTipText(attributeDefinition.description());
-		}
-
-		@Override
-		public ListBuilder.SelectedItems<T> selectedItems(Attribute<List<T>> attribute) {
-			AttributeDefinition<List<T>> attributeDefinition = entityDefinition.attributes().definition(attribute);
-
-			return builderFactory.selectedItems()
-							.toolTipText(attributeDefinition.description());
-		}
-
-		@Override
-		public ListBuilder.SelectedItem<T> selectedItem(Attribute<T> attribute) {
-			AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
-
-			return builderFactory.selectedItem()
-							.toolTipText(attributeDefinition.description());
-		}
 	}
 
 	private static final class EntityReadOnlyFormat extends Format {

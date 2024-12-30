@@ -113,6 +113,7 @@ Codion Change Log
 - EntityEditComponentPanel.createForeignKeyComboBox(), createForeignKeyComboBoxPanel(), createForeignKeySearchField(), createForeignKeySearchFieldPanel(), createForeignKeyTextField() and createForeignKeyLabel() renamed createComboBox(), createComboBoxPanel(), createSearchField(), createSearchFieldPanel(), createTextField() and createEntityLabel() respectively.
 - EntityComponents.component() now returns a entity text field for foreign keys.
 - EntityComponents.entityLabel(), EntityEditComponentPanel.createEntityLabel() removed.
+- EntityComponents.list() removed.
 
 ## 0.18.22
 ### is.codion.common.core

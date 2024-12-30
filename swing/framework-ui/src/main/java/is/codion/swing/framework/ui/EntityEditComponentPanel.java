@@ -61,7 +61,6 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
 import is.codion.swing.framework.ui.component.EntityComponents;
-import is.codion.swing.framework.ui.component.EntityComponents.EntityListBuilderFactory;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 import is.codion.swing.framework.ui.component.EntitySearchFieldPanel;
 
@@ -100,7 +99,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
@@ -109,6 +107,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A base class for entity edit panels, managing the components used for editing entities.
@@ -235,7 +234,7 @@ public class EntityEditComponentPanel extends JPanel {
 			List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
 							.map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
 							.sorted(new AttributeDefinitionComparator())
-							.collect(Collectors.toList());
+							.collect(toList());
 			Dialogs.selectionDialog(sortedDefinitions)
 							.owner(this)
 							.title(FrameworkMessages.selectInputField())
@@ -261,6 +260,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @see #displayException(Exception)
 	 */
 	protected void onException(Exception exception) {
+		requireNonNull(exception);
 		if (!(exception instanceof CancelException)) {
 			displayException(exception);
 		}
@@ -803,8 +803,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param <T> the value type
 	 * @return a list builder factory
 	 */
-	protected final <T> EntityListBuilderFactory<T> createList(ListModel<T> listModel) {
-		return new DefaultEntityListBuilderFactory<>(listModel);
+	protected final <T> ListBuilderFactory<T> createList(ListModel<T> listModel) {
+		return new ListBuilderFactory<>(listModel);
 	}
 
 	/**
@@ -931,7 +931,7 @@ public class EntityEditComponentPanel extends JPanel {
 		return components.keySet().stream()
 						.filter(selectableComponents::contains)
 						.filter(attribute -> componentSelectable(component(attribute).get()))
-						.collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableCollection));
+						.collect(collectingAndThen(toList(), Collections::unmodifiableCollection));
 	}
 
 	private boolean isInputComponent(JComponent component) {
@@ -1064,27 +1064,52 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 	}
 
-	private final class DefaultEntityListBuilderFactory<T> implements EntityListBuilderFactory<T> {
+	/**
+	 * A factory for list builders for list based attributes.
+	 * @param <T> the value type
+	 */
+	public final class ListBuilderFactory<T> {
 
-		private final EntityListBuilderFactory<T> builderFactory;
+		private final ListBuilder.Factory<T> builderFactory;
 
-		private DefaultEntityListBuilderFactory(ListModel<T> listModel) {
-			this.builderFactory = entityComponents.list(listModel);
+		private ListBuilderFactory(ListModel<T> listModel) {
+			this.builderFactory = Components.list(listModel);
 		}
 
-		@Override
+		/**
+		 * A JList builder, where the value is represented by the list items.
+		 * @param attribute the attribute
+		 * @return a JList builder
+		 */
 		public ListBuilder.Items<T> items(Attribute<List<T>> attribute) {
-			return setComponentBuilder(attribute, builderFactory.items(attribute));
+			AttributeDefinition<List<T>> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
+
+			return setComponentBuilder(attribute, builderFactory.items()
+							.toolTipText(attributeDefinition.description()));
 		}
 
-		@Override
+		/**
+		 * A multi selection JList builder, where the value is represented by the selected items.
+		 * @param attribute the attribute
+		 * @return a JList builder
+		 */
 		public ListBuilder.SelectedItems<T> selectedItems(Attribute<List<T>> attribute) {
-			return setComponentBuilder(attribute, builderFactory.selectedItems(attribute));
+			AttributeDefinition<List<T>> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
+
+			return setComponentBuilder(attribute, builderFactory.selectedItems()
+							.toolTipText(attributeDefinition.description()));
 		}
 
-		@Override
+		/**
+		 * A single selection JList builder, where the value is represented by the selected item.
+		 * @param attribute the attribute
+		 * @return a JList builder
+		 */
 		public ListBuilder.SelectedItem<T> selectedItem(Attribute<T> attribute) {
-			return setComponentBuilder(attribute, builderFactory.selectedItem(attribute));
+			AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
+
+			return setComponentBuilder(attribute, builderFactory.selectedItem()
+							.toolTipText(attributeDefinition.description()));
 		}
 	}
 
