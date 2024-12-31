@@ -51,6 +51,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
+	private static final Comparator<?> NULL_COMPARATOR = new NullComparator<>();
 
 	private final DefaultComboBoxSelection selection;
 	private final DefaultComboBoxItems modelItems;
@@ -143,7 +144,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public Builder<T> comparator(Comparator<T> comparator) {
-			this.comparator = comparator;
+			this.comparator = comparator == null ? (Comparator<T>) NULL_COMPARATOR : comparator;
 			return this;
 		}
 
@@ -453,7 +454,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			private final Event<List<T>> event = Event.event();
 
 			private DefaultVisibleItems(Comparator<T> comparator) {
-				this.comparator = comparator;
+				this.comparator = requireNonNull(comparator);
 			}
 
 			@Override
@@ -544,6 +545,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			@Override
+			public Comparator<T> comparator() {
+				return comparator;
+			}
+
+			@Override
 			public void sort() {
 				synchronized (lock) {
 					if (sortInternal()) {
@@ -553,7 +559,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			private boolean sortInternal() {
-				if (comparator != null && count() > 0) {
+				if (comparator != NULL_COMPARATOR && count() > 0) {
 					items.subList(includeNull ? 1 : 0, items.size()).sort(comparator);
 					return true;
 				}
@@ -734,6 +740,14 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public T apply(Object item) {
 			return (T) item;
+		}
+	}
+
+	private static final class NullComparator<T> implements Comparator<T> {
+
+		@Override
+		public int compare(T o1, T o2) {
+			return 0;
 		}
 	}
 

@@ -31,6 +31,7 @@ import is.codion.common.value.Value;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -267,7 +268,16 @@ public interface FilterModel<T> {
 		int count();
 
 		/**
-		 * Sorts the visible items according to the underlying comparator, if one is available, preserving the selection.
+		 * Note that this {@link Comparator}s sorting behaviour may be configured elsewhere,
+		 * and is not guaranteed to sort, since it may be disabled.
+		 * @return the {@link Comparator} used to sort the visible items
+		 * @see #sort()
+		 */
+		Comparator<T> comparator();
+
+		/**
+		 * Sorts the visible items using {@link #comparator()}, preserving the selection.
+		 * @see #comparator()
 		 */
 		void sort();
 	}

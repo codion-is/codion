@@ -34,6 +34,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -526,6 +527,11 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			synchronized (lock) {
 				return items.size();
 			}
+		}
+
+		@Override
+		public Comparator<R> comparator() {
+			return sorter.comparator();
 		}
 
 		@Override

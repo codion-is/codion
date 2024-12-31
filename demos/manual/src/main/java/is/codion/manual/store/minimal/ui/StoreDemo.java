@@ -66,8 +66,8 @@ public class StoreDemo {
 
 	private static class AddressEditPanel extends EntityEditPanel {
 
-		private AddressEditPanel(SwingEntityEditModel addressEditModel) {
-			super(addressEditModel);
+		private AddressEditPanel(SwingEntityEditModel editModel) {
+			super(editModel);
 		}
 
 		@Override
@@ -99,24 +99,25 @@ public class StoreDemo {
 
 		SwingEntityModel customerModel =
 						new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel addressModel =
+						new SwingEntityModel(Address.TYPE, connectionProvider);
+
+		customerModel.detailModels().add(addressModel);
+
 		EntityPanel customerPanel =
 						new EntityPanel(customerModel,
 										new CustomerEditPanel(customerModel.editModel()));
-
-		SwingEntityModel addressModel =
-						new SwingEntityModel(Address.TYPE, connectionProvider);
 		EntityPanel addressPanel =
 						new EntityPanel(addressModel,
 										new AddressEditPanel(addressModel.editModel()));
 
-		customerModel.detailModels().add(addressModel);
 		customerPanel.detailPanels().add(addressPanel);
 
+		customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
 		addressPanel.tablePanel()
 						.conditions().view().set(SIMPLE);
 
 		customerModel.tableModel().items().refresh();
-		customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
 
 		SwingUtilities.invokeLater(() ->
 						Dialogs.componentDialog(customerPanel.initialize())

@@ -144,7 +144,7 @@ public interface FilterTableSortModel<R, C> {
 		void add(SortOrder sortOrder);
 
 		/**
-		 * <p>Locking the sorting for a column will cause a {@link IllegalStateException} to be thrown
+		 * <p>Locking the sorting for a column will cause an {@link IllegalStateException} to be thrown
 		 * when trying to modify its sorting state.
 		 * @return the {@link State} controlling whether sorting is locked for this column
 		 */
