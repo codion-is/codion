@@ -51,7 +51,7 @@ public class StoreDemo {
 
 		@Override
 		protected void initializeUI() {
-			initialFocusAttribute().set(Customer.FIRST_NAME);
+			focus().initial().set(Customer.FIRST_NAME);
 			createTextField(Customer.FIRST_NAME);
 			createTextField(Customer.LAST_NAME);
 			createTextField(Customer.EMAIL);
@@ -72,7 +72,7 @@ public class StoreDemo {
 
 		@Override
 		protected void initializeUI() {
-			initialFocusAttribute().set(Address.STREET);
+			focus().initial().set(Address.STREET);
 			createComboBox(Address.CUSTOMER_FK);
 			createTextField(Address.STREET);
 			createTextField(Address.CITY);

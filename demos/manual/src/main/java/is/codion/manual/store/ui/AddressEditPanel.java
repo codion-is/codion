@@ -33,7 +33,7 @@ public class AddressEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Address.STREET);
+		focus().initial().set(Address.STREET);
 
 		createTextField(Address.STREET).columns(25);
 		createTextField(Address.CITY).columns(25);

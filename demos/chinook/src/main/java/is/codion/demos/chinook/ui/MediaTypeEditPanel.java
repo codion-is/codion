@@ -32,7 +32,7 @@ public final class MediaTypeEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(MediaType.NAME);
+		focus().initial().set(MediaType.NAME);
 
 		createTextField(MediaType.NAME);
 

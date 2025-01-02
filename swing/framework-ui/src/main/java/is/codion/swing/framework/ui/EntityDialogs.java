@@ -798,7 +798,7 @@ public final class EntityDialogs {
 
 		@Override
 		public void accept(JDialog dialog) {
-			editPanel.requestInitialFocus();
+			editPanel.focus().initial().request();
 		}
 	}
 

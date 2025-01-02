@@ -23,16 +23,12 @@ import is.codion.common.model.CancelException;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
@@ -89,14 +85,11 @@ import java.math.BigDecimal;
 import java.text.Collator;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -105,9 +98,8 @@ import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A base class for entity edit panels, managing the components used for editing entities.
@@ -156,14 +148,8 @@ public class EntityEditComponentPanel extends JPanel {
 	private final EntityComponents entityComponents;
 	private final Map<Attribute<?>, Value<JComponent>> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
-	private final ValueSet<Attribute<?>> selectableComponents;
-	private final Value<JComponent> focusedInputComponent = Value.nullable();
-	private final Value<JComponent> initialFocusComponent = Value.nullable();
-	private final Value<Attribute<?>> initialFocusAttribute = Value.nullable();
-	private final Value<JComponent> afterInsertFocusComponent = Value.nullable();
-	private final Value<Attribute<?>> afterInsertFocusAttribute = Value.nullable();
+	private final InputFocus inputFocus;
 
-	private final State transferFocusOnEnter = State.state(true);
 	private final State modifiedIndicator = State.state(MODIFIED_INDICATOR.getOrThrow());
 
 	private final Defaults defaults = new Defaults();
@@ -179,9 +165,7 @@ public class EntityEditComponentPanel extends JPanel {
 			throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.entityType() +
 							", entityComponents: " + entityComponents.entityDefinition().entityType());
 		}
-		selectableComponents = ValueSet.builder(editModel.entityDefinition().attributes().get())
-						.validator(new SelectableComponentValidator(editModel.entityDefinition()))
-						.build();
+		inputFocus = new InputFocus(this);
 	}
 
 	/**
@@ -193,64 +177,10 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
-	 * Sets the initial focus, if an initial focus component or component attribute
-	 * has been set that component receives the focus, if not, or if that component
-	 * is not focusable, this panel receives the focus.
-	 * Note that if this panel is not visible then calling this method has no effect.
-	 * @see #isVisible()
-	 * @see #initialFocusAttribute()
-	 * @see #initialFocusComponent()
+	 * @return the {@link InputFocus} instance, managing the input focus
 	 */
-	public final void requestInitialFocus() {
-		if (isVisible()) {
-			requestFocus(getInitialFocusComponent());
-		}
-	}
-
-	/**
-	 * Request focus for the component associated with the given attribute.
-	 * If no component is associated with the attribute calling this method has no effect.
-	 * Uses {@link JComponent#requestFocusInWindow()}.
-	 * @param attribute the attribute of the component to select
-	 */
-	public final void requestComponentFocus(Attribute<?> attribute) {
-		component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocusInWindow());
-	}
-
-	/**
-	 * Displays a dialog allowing the user the select an input component which should receive the keyboard focus.
-	 * If only one input component is available then that component is selected automatically.
-	 * If no component is available, f.ex. when the panel is not visible, this method does nothing.
-	 * @see #selectableComponents()
-	 * @see #requestComponentFocus(Attribute)
-	 */
-	public final void selectInputComponent() {
-		Entities entities = editModel().entities();
-		Collection<Attribute<?>> attributes = selectComponentAttributes();
-		if (attributes.size() == 1) {
-			requestComponentFocus(attributes.iterator().next());
-		}
-		else if (!attributes.isEmpty()) {
-			List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
-							.map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
-							.sorted(new AttributeDefinitionComparator())
-							.collect(toList());
-			Dialogs.selectionDialog(sortedDefinitions)
-							.owner(this)
-							.title(FrameworkMessages.selectInputField())
-							.selectSingle()
-							.ifPresent(attributeDefinition -> requestComponentFocus(attributeDefinition.attribute()));
-		}
-	}
-
-	/**
-	 * Specifies the attributes that should be included when presenting a component selection list.
-	 * Remove an attribute to exclude it from component selection.
-	 * @return the {@link ValueSet} specifying attributes that should be included in component selection
-	 * @see #selectInputComponent()
-	 */
-	protected final ValueSet<Attribute<?>> selectableComponents() {
-		return selectableComponents;
+	public final InputFocus focus() {
+		return inputFocus;
 	}
 
 	/**
@@ -277,46 +207,6 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		return components.computeIfAbsent(attribute, this::createComponentValue);
-	}
-
-	/**
-	 * Sets the component that should receive the focus when the UI is cleared or activated.
-	 * Takes precedence over the one set via {@link #initialFocusAttribute()}
-	 * @return the {@link Value} controlling the initial focus component
-	 */
-	protected final Value<JComponent> initialFocusComponent() {
-		return initialFocusComponent;
-	}
-
-	/**
-	 * Sets the component associated with the given attribute as the component
-	 * that should receive the initial focus in this edit panel.
-	 * This is overridden by {@link #initialFocusComponent()}.
-	 * @return the {@link Value} controlling the initial focus attribute
-	 * @see #initialFocusComponent()
-	 */
-	protected final Value<Attribute<?>> initialFocusAttribute() {
-		return initialFocusAttribute;
-	}
-
-	/**
-	 * Sets the component that should receive the focus after an insert has been performed.
-	 * Takes precedence over the one set via {@link #afterInsertFocusAttribute()}
-	 * @return the {@link Value} controlling the after insert focus component
-	 */
-	protected final Value<JComponent> afterInsertFocusComponent() {
-		return afterInsertFocusComponent;
-	}
-
-	/**
-	 * Sets the component associated with the given attribute as the component
-	 * that should receive the focus after an insert is performed in this edit panel.
-	 * This is overridden by {@link #afterInsertFocusComponent()}.
-	 * @return the {@link Value} controlling the after insert focus attribute
-	 * @see #afterInsertFocusComponent()
-	 */
-	protected final Value<Attribute<?>> afterInsertFocusAttribute() {
-		return afterInsertFocusAttribute;
 	}
 
 	/**
@@ -350,16 +240,6 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final State modifiedIndicator() {
 		return modifiedIndicator;
-	}
-
-	/**
-	 * If set to true then components created subsequently will transfer focus on enter, otherwise not.
-	 * Note that changing this has no effect on components that have already been created.
-	 * @return the {@link State} controlling whether components transfer focus on enter
-	 * @see ComponentBuilder#TRANSFER_FOCUS_ON_ENTER
-	 */
-	protected final State transferFocusOnEnter() {
-		return transferFocusOnEnter;
 	}
 
 	/**
@@ -730,7 +610,7 @@ public class EntityEditComponentPanel extends JPanel {
 		comboBoxModel.items().refresher().failure().addConsumer(this::onException);
 
 		return setComponentBuilder(foreignKey, entityComponents.comboBox(foreignKey, comboBoxModel)
-						.preferredWidth(defaults.foreignKeyComboBoxPreferredWidth.getOrThrow())
+						.preferredWidth(defaults.entityComboBoxPreferredWidth.getOrThrow())
 						.onSetVisible(EntityEditComponentPanel::refreshIfCleared))
 						.onBuild(comboBox -> addValidator(foreignKey, comboBox));
 	}
@@ -747,7 +627,7 @@ public class EntityEditComponentPanel extends JPanel {
 		comboBoxModel.items().refresher().failure().addConsumer(this::onException);
 
 		return setComponentBuilder(foreignKey, entityComponents.comboBoxPanel(foreignKey, comboBoxModel, editPanel))
-						.comboBoxPreferredWidth(defaults.foreignKeyComboBoxPreferredWidth.getOrThrow())
+						.comboBoxPreferredWidth(defaults.entityComboBoxPreferredWidth.getOrThrow())
 						.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()))
 						.onBuild(comboBoxPanel -> addValidator(foreignKey, comboBoxPanel.comboBox()));
 	}
@@ -760,7 +640,7 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final EntitySearchField.Builder createSearchField(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.searchField(foreignKey,
 										editModel().searchModel(foreignKey))
-						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
+						.columns(defaults.searchFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -771,7 +651,7 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final EntitySearchFieldPanel.Builder createSearchFieldPanel(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.searchFieldPanel(foreignKey,
 										editModel().searchModel(foreignKey))
-						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
+						.columns(defaults.searchFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -784,7 +664,7 @@ public class EntityEditComponentPanel extends JPanel {
 																																				Supplier<EntityEditPanel> editPanel) {
 		return setComponentBuilder(foreignKey, entityComponents.searchFieldPanel(foreignKey,
 										editModel().searchModel(foreignKey), editPanel)
-						.columns(defaults.foreignKeySearchFieldColumns.getOrThrow()));
+						.columns(defaults.searchFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -823,51 +703,6 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
-	 * @return the component that should receive the initial focus when the UI is initialized
-	 */
-	protected JComponent getInitialFocusComponent() {
-		if (initialFocusComponent.isNotNull()) {
-			return initialFocusComponent.get();
-		}
-
-		if (initialFocusAttribute.isNotNull()) {
-			return component(initialFocusAttribute.get()).get();
-		}
-
-		return null;
-	}
-
-	/**
-	 * @return the component that should receive the focus when the UI is initialized after insert
-	 */
-	protected JComponent getAfterInsertFocusComponent() {
-		if (afterInsertFocusComponent.isNotNull()) {
-			return afterInsertFocusComponent.get();
-		}
-
-		if (afterInsertFocusAttribute.isNotNull()) {
-			return component(afterInsertFocusAttribute.get()).get();
-		}
-
-		return getInitialFocusComponent();
-	}
-
-	/**
-	 * Request focus after an insert operation
-	 * @see #getAfterInsertFocusComponent()
-	 */
-	protected final void requestAfterInsertFocus() {
-		requestFocus(getAfterInsertFocusComponent());
-	}
-
-	/**
-	 * Request focus after an update operation
-	 */
-	protected final void requestAfterUpdateFocus() {
-		requestFocus(focusedInputComponent.optional().orElse(getInitialFocusComponent()));
-	}
-
-	/**
 	 * Adds a validator to the given text component
 	 * @param attribute the attribute of the value to validate
 	 * @param textComponent the text component
@@ -887,6 +722,10 @@ public class EntityEditComponentPanel extends JPanel {
 		new ComponentValidator<>(attribute, comboBox, editModel, comboBox.getToolTipText(), "ComboBox").validate();
 	}
 
+	protected final Map<Attribute<?>, Value<JComponent>> components() {
+		return unmodifiableMap(components);
+	}
+
 	private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
 		requireNonNull(attribute);
 		requireNonNull(componentBuilder);
@@ -895,20 +734,11 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 		componentBuilders.put(attribute, componentBuilder
 						.name(attribute.toString())
-						.transferFocusOnEnter(transferFocusOnEnter.get())
+						.transferFocusOnEnter(inputFocus.transferOnEnter.get())
 						.link(editModel().value(attribute))
 						.onBuild(new SetComponent<>(attribute)));
 
 		return componentBuilder;
-	}
-
-	private void requestFocus(JComponent component) {
-		if (component != null && component.isFocusable()) {
-			component.requestFocus();
-		}
-		else {
-			requestFocus();
-		}
 	}
 
 	private JComponent getComponentOrThrow(Attribute<?> attribute) {
@@ -918,20 +748,6 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		return component.get();
-	}
-
-	/**
-	 * @return an unmodifiable view of the attributes to present when selecting an input component in this panel,
-	 * this returns all (non-excluded) attributes that have an associated component in this panel
-	 * that is enabled, displayable, visible and focusable.
-	 * @see #selectableComponents()
-	 * @see #component(Attribute)
-	 */
-	private Collection<Attribute<?>> selectComponentAttributes() {
-		return components.keySet().stream()
-						.filter(selectableComponents::contains)
-						.filter(attribute -> componentSelectable(component(attribute).get()))
-						.collect(collectingAndThen(toList(), Collections::unmodifiableCollection));
 	}
 
 	private boolean isInputComponent(JComponent component) {
@@ -946,28 +762,6 @@ public class EntityEditComponentPanel extends JPanel {
 						.<JComponent>nullable()
 						.consumer(new AddModifiedIndicator(attribute))
 						.build();
-	}
-
-	/**
-	 * Returns true if this component can be selected, that is,
-	 * if it is non-null, displayable, visible, focusable and enabled.
-	 * @param component the component
-	 * @return true if this component can be selected
-	 */
-	private static boolean componentSelectable(JComponent component) {
-		return component != null &&
-						component.isDisplayable() &&
-						component.isVisible() &&
-						component.isEnabled() &&
-						focusable(component);
-	}
-
-	private static boolean focusable(JComponent component) {
-		if (component instanceof JSpinner) {
-			return ((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField().isFocusable();
-		}
-
-		return component.isFocusable();
 	}
 
 	private static JComponent focusableComponent(JComponent component) {
@@ -1007,13 +801,191 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
+	 * Manages the components that should receive the input focus.
+	 */
+	public static final class InputFocus {
+
+		private final EntityEditComponentPanel editComponentPanel;
+
+		private final State transferOnEnter = State.state(true);
+		private final Initial initial = new Initial();
+		private final AfterInsert afterInsert = new AfterInsert();
+		private final AfterUpdate afterUpdate = new AfterUpdate();
+
+		private InputFocus(EntityEditComponentPanel editComponentPanel) {
+			this.editComponentPanel = editComponentPanel;
+		}
+
+		/**
+		 * If set to true then components created subsequently will transfer focus on enter, otherwise not.
+		 * Note that changing this has no effect on components that have already been created.
+		 * @return the {@link State} controlling whether components transfer focus on enter
+		 * @see ComponentBuilder#TRANSFER_FOCUS_ON_ENTER
+		 */
+		public State transferOnEnter() {
+			return transferOnEnter;
+		}
+
+		/**
+		 * Request focus for the component associated with the given attribute.
+		 * If no component is associated with the attribute calling this method has no effect.
+		 * Uses {@link JComponent#requestFocusInWindow()}.
+		 * @param attribute the attribute of the component to select
+		 */
+		public void request(Attribute<?> attribute) {
+			editComponentPanel.component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocusInWindow());
+		}
+
+		/**
+		 * @return the initial focus settings
+		 */
+		public Initial initial() {
+			return initial;
+		}
+
+		/**
+		 * @return the after insert focus settings
+		 */
+		public AfterInsert afterInsert() {
+			return afterInsert;
+		}
+
+		/**
+		 * @return the after update focus settings
+		 */
+		public AfterUpdate afterUpdate() {
+			return afterUpdate;
+		}
+
+		private void requestFocus(JComponent component) {
+			if (component != null && component.isFocusable()) {
+				component.requestFocus();
+			}
+			else {
+				editComponentPanel.requestFocus();
+			}
+		}
+
+		/**
+		 * Manages the component that should receive the initial focus when the panel is activated.
+		 */
+		public final class Initial {
+
+			private Supplier<JComponent> component = () -> null;
+
+			private Initial() {}
+
+			/**
+			 * <p>Sets the the component that should receive the focus when this edit panel is cleared or activated.
+			 * @param component the component that should receive the focus when this edit panel is cleared or activated
+			 */
+			public void set(JComponent component) {
+				requireNonNull(component);
+				set(() -> component);
+			}
+
+			/**
+			 * Sets the component associated with the given attribute as the component
+			 * that should receive the initial focus in this edit panel.
+			 * @param attribute the attribute which component should receive the focus this edit panel is cleared or activated
+			 */
+			public void set(Attribute<?> attribute) {
+				requireNonNull(attribute);
+				set(() -> editComponentPanel.component(attribute).get());
+			}
+
+			/**
+			 * <p>Sets the {@link Supplier} supplying the component that should receive the focus when this edit panel is cleared or activated.
+			 * @param component supplies the component that should receive the focus when this edit panel is cleared or activated
+			 */
+			public void set(Supplier<JComponent> component) {
+				this.component = requireNonNull(component);
+			}
+
+			/**
+			 * <p>Requests the initial focus, if an initial focus component or component attribute
+			 * has been set, that component receives the focus, if not, or if that component
+			 * is not focusable, this panel receives the focus.
+			 * <p>Note that if this panel is not visible then calling this method has no effect.
+			 */
+			public void request() {
+				if (editComponentPanel.isVisible()) {
+					requestFocus(component.get());
+				}
+			}
+		}
+
+		/**
+		 * Manages the component that should receive focus after insert has been performed.
+		 */
+		public final class AfterInsert {
+
+			private Supplier<JComponent> component = initial.component;
+
+			private AfterInsert() {}
+
+			/**
+			 * Sets the component that should receive the focus after an insert has been performed.
+			 * @param component the component that should receive the focus after an insert has been performed
+			 */
+			public void set(JComponent component) {
+				requireNonNull(component);
+				set(() -> component);
+			}
+
+			/**
+			 * Sets the component associated with the given attribute as the component
+			 * that should receive the focus after an insert is performed in this edit panel.
+			 * @param attribute the attribute which component should receive the focus after an insert has been performed
+			 */
+			public void set(Attribute<?> attribute) {
+				requireNonNull(attribute);
+				set(() -> editComponentPanel.component(attribute).get());
+			}
+
+			/**
+			 * Sets the {@link Supplier} supplying the component that should receive the focus after an insert has been performed.
+			 * Takes precedence over the one set via {@link #set(Attribute)}
+			 * @param component supplies the component that should receive the focus after an insert has been performed
+			 */
+			public void set(Supplier<JComponent> component) {
+				this.component = requireNonNull(component);
+			}
+
+			/**
+			 * Request focus after an insert operation
+			 */
+			public void request() {
+				requestFocus(component.get());
+			}
+		}
+
+		/**
+		 * Manages the component that should receive focus after an update has been performed.
+		 */
+		public final class AfterUpdate {
+
+			private JComponent focusedInputComponent;
+
+			private AfterUpdate() {}
+
+			/**
+			 * Request focus after an update operation
+			 */
+			public void request() {
+				requestFocus(focusedInputComponent == null ? initial.component.get() : focusedInputComponent);
+			}
+		}
+	}
+
+	/**
 	 * Specifies the availible default values for component builders.
 	 */
 	protected static final class Defaults {
 
 		private final Value<Integer> textFieldColumns = Value.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
-		private final Value<Integer> foreignKeySearchFieldColumns = Value.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
-		private final Value<Integer> foreignKeyComboBoxPreferredWidth = Value.nonNull(0);
+		private final Value<Integer> searchFieldColumns = Value.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+		private final Value<Integer> entityComboBoxPreferredWidth = Value.nonNull(0);
 		private final Value<Integer> itemComboBoxPreferredWidth = Value.nonNull(0);
 		private final Value<Integer> comboBoxPreferredWidth = Value.nonNull(0);
 
@@ -1034,8 +1006,8 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @see #DEFAULT_TEXT_FIELD_COLUMNS
 		 * @see #createSearchField(ForeignKey)
 		 */
-		public Value<Integer> foreignKeySearchFieldColumns() {
-			return foreignKeySearchFieldColumns;
+		public Value<Integer> searchFieldColumns() {
+			return searchFieldColumns;
 		}
 
 		/**
@@ -1059,8 +1031,8 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @see #createComboBox(ForeignKey)
 		 * @see #createComboBoxPanel(ForeignKey, Supplier)
 		 */
-		public Value<Integer> foreignKeyComboBoxPreferredWidth() {
-			return foreignKeyComboBoxPreferredWidth;
+		public Value<Integer> entityComboBoxPreferredWidth() {
+			return entityComboBoxPreferredWidth;
 		}
 	}
 
@@ -1137,7 +1109,7 @@ public class EntityEditComponentPanel extends JPanel {
 				JComponent component = (JComponent) focusedComponent;
 				EntityEditComponentPanel parent = Utilities.parentOfType(EntityEditComponentPanel.class, component);
 				if (parent != null && parent.isInputComponent(component)) {
-					parent.focusedInputComponent.set(component);
+					parent.inputFocus.afterUpdate.focusedInputComponent = component;
 				}
 			}
 		}
@@ -1200,20 +1172,6 @@ public class EntityEditComponentPanel extends JPanel {
 			Map<TextAttribute, Object> attributes = (Map<TextAttribute, Object>) font.getAttributes();
 			attributes.put(TextAttribute.INPUT_METHOD_UNDERLINE, modified ? UNDERLINE_STYLE : null);
 			label.setFont(font.deriveFont(attributes));
-		}
-	}
-
-	private static final class SelectableComponentValidator implements Value.Validator<Set<Attribute<?>>> {
-
-		private final EntityDefinition definition;
-
-		private SelectableComponentValidator(EntityDefinition definition) {
-			this.definition = definition;
-		}
-
-		@Override
-		public void validate(Set<Attribute<?>> attributes) {
-			attributes.forEach(attribute -> definition.attributes().definition(attribute));
 		}
 	}
 

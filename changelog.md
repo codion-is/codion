@@ -71,6 +71,8 @@ Codion Change Log
 - FilterTable.DefaultBuilder now validates column model indexes.
 - CalendarPanel.CalendarDate and CalendarDateTime added along with date() and dateTime(), related refactoring.
 - FilterTable.searchModel() and summaryModel() renamed search() and summaries() respectively.
+- ExceptionDialogBuilder.WRAPPER_EXCEPTIONS no longer contains RuntimeException, now that we've stopped using checked exceptions.
+- LookAndFeelComboBox bug fixed, now handles the case when the current look and feel is not available in the combo box model.
 ### is.codion.framework.domain
 - EntityDefinition.description() now returns Optional.
 - DefaultEntityDefinition, source attributes validated for denormalized attributes.
@@ -115,6 +117,9 @@ Codion Change Log
 - EntityComponents.component() now returns a entity text field for foreign keys.
 - EntityComponents.entityLabel(), EntityEditComponentPanel.createEntityLabel() removed.
 - EntityComponents.list() removed.
+- EntityEditComponentPanel.InputFocus added, related refactoring.
+- EntityEditComponentPanel.selectInputComponent() moved to EntityEditPanel, selectableComponents() replaced with EntityEditPanel.Config.excludeFromSelection().
+- DefaultEntityApplicationPanelBuilder now validates that the look and feel exists on the classpath.
 
 ## 0.18.22
 ### is.codion.common.core

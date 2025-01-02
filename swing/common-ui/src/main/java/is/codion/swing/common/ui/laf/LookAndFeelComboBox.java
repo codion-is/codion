@@ -27,7 +27,7 @@ import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.Component;
 import java.util.Comparator;
@@ -37,14 +37,16 @@ import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.component.combobox.ComboBoxBuilder.enableMouseWheelSelection;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.enableLookAndFeel;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.UIManager.getLookAndFeel;
 
 /**
  * A combo box for selecting a LookAndFeel.
  * Instantiate via factory methods {@link #lookAndFeelComboBox()} or {@link #lookAndFeelComboBox(boolean)}.
  * @see #lookAndFeelComboBox()
  * @see #lookAndFeelComboBox(boolean)
- * @see LookAndFeelProvider#addLookAndFeel(javax.swing.UIManager.LookAndFeelInfo)
+ * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelInfo)
  * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelProvider)
  */
 public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvider>> {
@@ -63,8 +65,9 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 
 	private LookAndFeelComboBox(FilterComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel, boolean enableOnSelection) {
 		super(requireNonNull(comboBoxModel));
-		Item<LookAndFeelProvider> selectedValue = comboBoxModel.selection().item().getOrThrow();
-		originalLookAndFeel = selectedValue == null ? null : selectedValue.value();
+		originalLookAndFeel = comboBoxModel.selection().item().optional()
+						.map(Item::value)
+						.orElse(lookAndFeelProvider(new LookAndFeelInfo("Original", getLookAndFeel().getName())));
 		setRenderer(new LookAndFeelRenderer());
 		setEditor(new LookAndFeelEditor());
 		enableMouseWheelSelection(this);
@@ -90,7 +93,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 	 * Enables the currently selected look and feel, if it is already selected, this method does nothing
 	 */
 	public void enableSelected() {
-		String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
+		String currentLookAndFeelClassName = getLookAndFeel().getClass().getName();
 		if (!selectedLookAndFeel().lookAndFeelInfo().getClassName().equals(currentLookAndFeelClassName)) {
 			enableLookAndFeel(selectedLookAndFeel());
 		}
@@ -101,7 +104,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 	 * if it is already enabled, this method does nothing
 	 */
 	public void revert() {
-		String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
+		String currentLookAndFeelClassName = getLookAndFeel().getClass().getName();
 		if (originalLookAndFeel != null && !currentLookAndFeelClassName.equals(originalLookAndFeel.lookAndFeelInfo().getClassName())) {
 			enableLookAndFeel(originalLookAndFeel);
 		}
@@ -179,7 +182,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 	}
 
 	private static Optional<Item<LookAndFeelProvider>> currentLookAndFeel(FilterComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel) {
-		String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
+		String currentLookAndFeelClassName = getLookAndFeel().getClass().getName();
 
 		return comboBoxModel.items().get().stream()
 						.filter(item -> item.value().lookAndFeelInfo().getClassName().equals(currentLookAndFeelClassName))

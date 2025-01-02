@@ -38,7 +38,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
 	// tag::initializeUI[]
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Department.DEPARTMENT_NO);
+		focus().initial().set(Department.DEPARTMENT_NO);
 
 		createTextField(Department.DEPARTMENT_NO)
 						.columns(3)
@@ -50,7 +50,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
 						.columns(12);
 
 		editModel().editor().exists().addConsumer(exists ->
-						initialFocusAttribute().set(exists ? Department.NAME : Department.DEPARTMENT_NO));
+						focus().initial().set(exists ? Department.NAME : Department.DEPARTMENT_NO));
 
 		setLayout(borderLayout());
 		add(borderLayoutPanel()

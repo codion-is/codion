@@ -32,7 +32,7 @@ public final class GenreEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Genre.NAME);
+		focus().initial().set(Genre.NAME);
 
 		createTextField(Genre.NAME);
 

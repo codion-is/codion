@@ -29,12 +29,12 @@ public class ItemEditPanel extends EntityEditPanel {
 	public ItemEditPanel(SwingEntityEditModel model) {
 		super(model);
 		defaults().textFieldColumns().set(14);
-		defaults().foreignKeyComboBoxPreferredWidth().set(180);
+		defaults().entityComboBoxPreferredWidth().set(180);
 	}
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Item.PRODUCT_FK);
+		focus().initial().set(Item.PRODUCT_FK);
 
 		createComboBox(Item.PRODUCT_FK);
 		createTextField(Item.NAME);

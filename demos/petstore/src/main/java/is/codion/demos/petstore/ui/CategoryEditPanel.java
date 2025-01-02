@@ -32,7 +32,7 @@ public class CategoryEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Category.NAME);
+		focus().initial().set(Category.NAME);
 
 		createTextField(Category.NAME);
 		createTextField(Category.DESCRIPTION).columns(18);

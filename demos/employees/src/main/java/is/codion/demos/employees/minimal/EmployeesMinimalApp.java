@@ -202,7 +202,7 @@ public final class EmployeesMinimalApp {
 
 		@Override
 		protected void initializeUI() {
-			initialFocusAttribute().set(Department.DEPARTMENT_NO);
+			focus().initial().set(Department.DEPARTMENT_NO);
 
 			createTextField(Department.DEPARTMENT_NO);
 			createTextField(Department.NAME);
@@ -227,7 +227,7 @@ public final class EmployeesMinimalApp {
 
 		@Override
 		protected void initializeUI() {
-			initialFocusAttribute().set(Employee.NAME);
+			focus().initial().set(Employee.NAME);
 
 			createTextField(Employee.NAME);
 			createComboBox(Employee.DEPARTMENT_FK);

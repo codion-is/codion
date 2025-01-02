@@ -32,7 +32,7 @@ public final class VetEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Vet.FIRST_NAME);
+		focus().initial().set(Vet.FIRST_NAME);
 
 		createTextField(Vet.FIRST_NAME);
 		createTextField(Vet.LAST_NAME);

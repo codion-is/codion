@@ -41,7 +41,7 @@ final class CountryEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Country.CODE);
+		focus().initial().set(Country.CODE);
 
 		createTextField(Country.CODE)
 						.columns(6)

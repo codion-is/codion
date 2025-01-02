@@ -36,7 +36,7 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(CountryLanguage.COUNTRY_FK);
+		focus().initial().set(CountryLanguage.COUNTRY_FK);
 
 		createComboBox(CountryLanguage.COUNTRY_FK)
 						.preferredWidth(120);

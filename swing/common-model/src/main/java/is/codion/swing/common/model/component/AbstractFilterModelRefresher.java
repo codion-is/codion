@@ -42,7 +42,7 @@ public abstract class AbstractFilterModelRefresher<T> extends FilterModel.Abstra
 	}
 
 	@Override
-	protected final boolean supportsAsyncRefresh() {
+	protected final boolean isUserInterfaceThread() {
 		return SwingUtilities.isEventDispatchThread();
 	}
 

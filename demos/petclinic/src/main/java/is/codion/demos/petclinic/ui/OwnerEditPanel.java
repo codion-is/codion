@@ -32,7 +32,7 @@ public final class OwnerEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Owner.FIRST_NAME);
+		focus().initial().set(Owner.FIRST_NAME);
 
 		createTextField(Owner.FIRST_NAME);
 		createTextField(Owner.LAST_NAME);

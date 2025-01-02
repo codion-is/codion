@@ -39,7 +39,7 @@ final class PlaylistTrackEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(PlaylistTrack.TRACK_FK);
+		focus().initial().set(PlaylistTrack.TRACK_FK);
 		createSearchField(PlaylistTrack.TRACK_FK)
 						.selectorFactory(new TrackSelectorFactory())
 						.transferFocusOnEnter(false)

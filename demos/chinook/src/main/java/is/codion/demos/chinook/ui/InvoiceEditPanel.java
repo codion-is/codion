@@ -54,7 +54,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Invoice.CUSTOMER_FK);
+		focus().initial().set(Invoice.CUSTOMER_FK);
 
 		createSearchField(Invoice.CUSTOMER_FK)
 						.columns(14)

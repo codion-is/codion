@@ -551,7 +551,8 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @return the {@link Value} controlling the edit panel state, either HIDDEN, EMBEDDED or WINDOW
+	 * @return the {@link Value} controlling the edit panel state, either {@link PanelState#HIDDEN},
+	 * {@link PanelState#EMBEDDED} or {@link PanelState#WINDOW}
 	 */
 	public final Value<PanelState> editPanelState() {
 		return editPanelState;
@@ -559,14 +560,14 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Requests focus for this panel. If an edit panel is available and not hidden, the component
-	 * defined as the initialFocusComponent gets the input focus.
+	 * defined as the initial focus component by {@link EntityEditComponentPanel#focus()} gets the input focus.
 	 * If no edit panel is available the table panel gets the focus, otherwise the first child
-	 * component of this EntityPanel is used.
-	 * @see EntityEditPanel#initialFocusComponent()
+	 * component of this {@link EntityPanel} is used.
+	 * @see EntityEditPanel#focus()
 	 */
 	public final void requestInitialFocus() {
 		if (editPanel != null && editPanel.isShowing()) {
-			editPanel.requestInitialFocus();
+			editPanel.focus().initial().request();
 		}
 		else if (tablePanel != null) {
 			tablePanel.table().requestFocus();
@@ -925,7 +926,7 @@ public class EntityPanel extends JPanel {
 		if (editPanelState.isEqualTo(HIDDEN)) {
 			editPanelState.map(editPanelStateMapper);
 		}
-		editPanel().requestInitialFocus();
+		editPanel().focus().initial().request();
 	}
 
 	private void selectInputComponent() {
@@ -1849,7 +1850,7 @@ public class EntityPanel extends JPanel {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			editPanel.requestAfterUpdateFocus();
+			editPanel.focus().afterUpdate().request();
 		}
 	}
 

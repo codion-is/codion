@@ -41,7 +41,7 @@ public final class AlbumEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Album.ARTIST_FK);
+		focus().initial().set(Album.ARTIST_FK);
 
 		createSearchField(Album.ARTIST_FK)
 						.columns(15)

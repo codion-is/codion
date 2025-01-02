@@ -52,12 +52,4 @@ public final class EntityEditComponentPanelTest {
 		assertThrows(IllegalStateException.class, () -> componentPanel.createTextField(Employee.NAME));
 		assertTrue(componentPanel.component(Employee.JOB).isNull());
 	}
-
-	@Test
-	void selectableComponents() {
-		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityEditComponentPanel componentPanel = new EntityEditComponentPanel(editModel);
-		assertThrows(NullPointerException.class, () -> componentPanel.selectableComponents().add(null));
-		assertThrows(IllegalArgumentException.class, () -> componentPanel.selectableComponents().add(Department.NAME));
-	}
 }

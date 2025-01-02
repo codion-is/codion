@@ -333,9 +333,10 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private void enableLookAndFeel() {
+		String className = validateLookAndFeel(lookAndFeelClassName());
 		try {
-			findLookAndFeelProvider(lookAndFeelClassName())
-							.orElse(lookAndFeelProvider(new LookAndFeelInfo("LookAndFeel", lookAndFeelClassName())))
+			findLookAndFeelProvider(className)
+							.orElse(lookAndFeelProvider(new LookAndFeelInfo("LookAndFeel", className)))
 							.enable();
 		}
 		catch (Exception e) {
@@ -537,6 +538,18 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		if (!(exception instanceof CancelException)) {
 			Window focusOwnerParentWindow = parentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
 			displayExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
+		}
+	}
+
+	private static String validateLookAndFeel(String className) {
+		try {
+			Class.forName(className);
+
+			return className;
+		}
+		catch (ClassNotFoundException e) {
+			LOG.error("Exception while enabling Look and Feel", e);
+			throw new RuntimeException("LookAndFeel class not found: " + className, e);
 		}
 	}
 

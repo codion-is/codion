@@ -39,7 +39,7 @@ final class PlaylistEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(Playlist.NAME);
+		focus().initial().set(Playlist.NAME);
 
 		setLayout(borderLayout());
 		add(borderLayoutPanel()

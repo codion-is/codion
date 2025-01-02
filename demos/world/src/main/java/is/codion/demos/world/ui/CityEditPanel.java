@@ -67,7 +67,7 @@ public final class CityEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(City.COUNTRY_FK);
+		focus().initial().set(City.COUNTRY_FK);
 
 		createComboBox(City.COUNTRY_FK)
 						.preferredWidth(120);
@@ -96,7 +96,7 @@ public final class CityEditPanel extends EntityEditPanel {
 		JComponent countryComponent = component(City.COUNTRY_FK).get();
 		countryComponent.setEnabled(false);
 		countryComponent.setFocusable(false);
-		initialFocusAttribute().set(City.NAME);
+		focus().initial().set(City.NAME);
 	}
 
 	private void populateLocation() throws IOException {

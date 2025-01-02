@@ -29,16 +29,17 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
 	public VetSpecialtyEditPanel(SwingEntityEditModel editModel) {
 		super(editModel);
-		defaults().foreignKeyComboBoxPreferredWidth().set(200);
 	}
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(VetSpecialty.VET_FK);
+		focus().initial().set(VetSpecialty.VET_FK);
 
-		createComboBox(VetSpecialty.VET_FK);
+		createComboBox(VetSpecialty.VET_FK)
+						.preferredWidth(200);
 		createComboBoxPanel(VetSpecialty.SPECIALTY_FK, this::createSpecialtyEditPanel)
-						.includeAddButton(true);
+						.includeAddButton(true)
+						.preferredWidth(200);
 
 		setLayout(gridLayout(2, 1));
 

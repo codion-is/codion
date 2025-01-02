@@ -28,8 +28,11 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -53,6 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import java.awt.Component;
@@ -60,8 +64,12 @@ import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -76,10 +84,11 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_I;
 import static java.awt.event.KeyEvent.VK_V;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
 
@@ -145,7 +154,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 */
 	private static final State.Group ACTIVE_STATE_GROUP = State.group();
 
-	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
+	private static final Consumer<Config> NO_CONFIGURATION = emptyConsumer();
 
 	private final Controls.Layout controlsLayout;
 	private final State active;
@@ -195,11 +204,37 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	/**
 	 * Clears the underlying edit model and requests the initial focus.
 	 * @see EntityEditModel.EntityEditor#defaults()
-	 * @see #requestInitialFocus()
+	 * @see #focus()
 	 */
 	public final void clearAndRequestFocus() {
 		editModel().editor().defaults();
-		requestInitialFocus();
+		focus().initial().request();
+	}
+
+	/**
+	 * <p>Displays a dialog allowing the user the select an input component which should receive the keyboard focus.
+	 * <p>If only one input component is available that component is selected automatically without displaying a selection dialog.
+	 * <p>If no component is available, f.ex. when the panel is not visible or none of the available components is focusable, this method does nothing.
+	 * <p>Input components can be excluded from this selection using {@link Config#excludeFromSelection(Collection)}
+	 * @see InputFocus#request(Attribute)
+	 */
+	public final void selectInputComponent() {
+		Collection<Attribute<?>> attributes = selectComponentAttributes();
+		if (attributes.size() == 1) {
+			focus().request(attributes.iterator().next());
+		}
+		else if (!attributes.isEmpty()) {
+			Entities entities = editModel().entities();
+			List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
+							.map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
+							.sorted(new AttributeDefinitionComparator())
+							.collect(toList());
+			Dialogs.selectionDialog(sortedDefinitions)
+							.owner(this)
+							.title(FrameworkMessages.selectInputField())
+							.selectSingle()
+							.ifPresent(attributeDefinition -> focus().request(attributeDefinition.attribute()));
+		}
 	}
 
 	/**
@@ -250,7 +285,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 				editModel().editor().defaults();
 			}
 			if (configuration.requestFocusAfterInsert) {
-				requestAfterInsertFocus();
+				focus().afterInsert().request();
 			}
 
 			return true;
@@ -288,7 +323,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	public final boolean delete() {
 		try {
 			editModel().delete();
-			requestInitialFocus();
+			focus().initial().request();
 
 			return true;
 		}
@@ -325,7 +360,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	public final boolean update() {
 		try {
 			editModel().update();
-			requestAfterUpdateFocus();
+			focus().afterUpdate().request();
 
 			return true;
 		}
@@ -442,7 +477,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.definition(exception.attribute())
 						.caption();
 		JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
-		requestComponentFocus(exception.attribute());
+		focus().request(exception.attribute());
 	}
 
 	/**
@@ -458,7 +493,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * <pre>
 	 * {@code
 	 *   protected void initializeUI() {
-	 *      initialFocusAttribute().set(DomainModel.USER_NAME);
+	 *      focus().initial().set(DomainModel.USER_NAME);
 	 *
 	 *      createTextField(DomainModel.USER_NAME);
 	 *      createTextField(DomainModel.USER_ADDRESS);
@@ -623,6 +658,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		editModel().editor().changing().addConsumer(this::beforeEntity);
 	}
 
+	private Collection<Attribute<?>> selectComponentAttributes() {
+		return components().keySet().stream()
+						.filter(attribute -> !configuration.excludeFromSelection.contains(attribute))
+						.filter(attribute -> componentSelectable(component(attribute).get()))
+						.collect(collectingAndThen(toList(), Collections::unmodifiableCollection));
+	}
+
 	private void beforeEntity(Entity entity) {
 		if (configuration.modifiedWarning
 						&& editModel().editor().modified().get()
@@ -692,6 +734,22 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
+	}
+
+	private static boolean componentSelectable(JComponent component) {
+		return component != null &&
+						component.isDisplayable() &&
+						component.isVisible() &&
+						component.isEnabled() &&
+						focusable(component);
+	}
+
+	private static boolean focusable(JComponent component) {
+		if (component instanceof JSpinner) {
+			return ((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField().isFocusable();
+		}
+
+		return component.isFocusable();
 	}
 
 	private static Controls.Layout createControlsLayout() {
@@ -764,6 +822,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private Confirmer insertConfirmer = DEFAULT_INSERT_CONFIRMER;
 		private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
 		private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
+		private Set<Attribute<?>> excludeFromSelection = emptySet();
 
 		final ControlMap controlMap;
 
@@ -784,6 +843,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeEntityMenu = config.includeEntityMenu;
 			this.modifiedWarning = config.modifiedWarning;
+			this.excludeFromSelection = unmodifiableSet(new HashSet<>(config.excludeFromSelection));
 		}
 
 		/**
@@ -815,7 +875,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * @param requestFocusAfterInsert controls whether the UI should request focus after insert has been performed
 		 * @return this Config instance
-		 * @see EntityEditComponentPanel#requestInitialFocus()
+		 * @see InputFocus#afterInsert()
 		 */
 		public Config requestFocusAfterInsert(boolean requestFocusAfterInsert) {
 			this.requestFocusAfterInsert = requestFocusAfterInsert;
@@ -886,6 +946,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 */
 		public Config updateConfirmer(Confirmer updateConfirmer) {
 			this.updateConfirmer = requireNonNull(updateConfirmer);
+			return this;
+		}
+
+		/**
+		 * Specifies the attributes that should be excluded when presenting a component selection list.
+		 * @param excludeFromSelection a {@link Collection} containing the attributes to exclude from component selection
+		 * @return this Config instance
+		 * @throws IllegalArgumentException in case an attribute is not found in the underlying entity
+		 * @see #selectInputComponent()
+		 */
+		public Config excludeFromSelection(Collection<Attribute<?>> excludeFromSelection) {
+			this.excludeFromSelection = unmodifiableSet(new HashSet<>(excludeFromSelection));
 			return this;
 		}
 	}
@@ -1017,7 +1089,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 				editModel().editor().defaults();
 			}
 			if (configuration.requestFocusAfterInsert) {
-				requestAfterInsertFocus();
+				focus().afterInsert().request();
 			}
 		}
 
@@ -1051,7 +1123,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 		private void handleResult(Update.Result result) {
 			onUpdate.accept(result.handle());
-			requestAfterUpdateFocus();
+			focus().afterUpdate().request();
 		}
 
 		private void onException(Exception exception) {
@@ -1084,7 +1156,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 		private void handleResult(Delete.Result result) {
 			onDelete.accept(result.handle());
-			requestInitialFocus();
+			focus().initial().request();
 		}
 
 		private void onException(Exception exception) {
