@@ -32,7 +32,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JToggleButton;
 
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItems;
+import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.booleanItems;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BooleanValuesTest {

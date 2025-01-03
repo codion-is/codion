@@ -89,7 +89,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.List;
 
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItems;
+import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.booleanItems;
 import static is.codion.swing.common.ui.layout.Layouts.*;
 import static java.util.Objects.requireNonNull;
 

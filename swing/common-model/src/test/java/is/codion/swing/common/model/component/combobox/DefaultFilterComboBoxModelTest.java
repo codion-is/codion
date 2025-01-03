@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.model.component.combobox;
 
+import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 
@@ -33,6 +34,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static is.codion.common.item.Item.item;
+import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.booleanItems;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -361,6 +364,67 @@ public class DefaultFilterComboBoxModelTest {
 		model.items().refresh();
 		assertEquals(values.size(), model.items().get().size());
 		assertTrue(values.containsAll(model.items().get()));
+	}
+
+	@Test
+	void testItemComboBox() {
+		Item<Integer> nullItem = item(null, "");
+		Item<Integer> aOne = item(1, "AOne");
+		Item<Integer> bTwo = item(2, "BTwo");
+		Item<Integer> cThree = item(3, "CThree");
+		Item<Integer> dFour = item(4, "DFour");
+
+		List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
+		FilterComboBoxModel<Item<Integer>> model = FilterComboBoxModel.builder(items)
+						.sorted(true)
+						.build();
+
+		assertEquals(0, model.items().visible().indexOf(nullItem));
+		assertEquals(1, model.items().visible().indexOf(aOne));
+		assertEquals(2, model.items().visible().indexOf(bTwo));
+		assertEquals(3, model.items().visible().indexOf(cThree));
+		assertEquals(4, model.items().visible().indexOf(dFour));
+
+		model.setSelectedItem(1);
+		assertEquals(model.getSelectedItem(), aOne);
+		assertEquals(1, model.selection().item().getOrThrow().value());
+		assertEquals("AOne", model.selection().item().getOrThrow().toString());
+		model.setSelectedItem(2);
+		assertEquals(2, model.selection().item().getOrThrow().value());
+		assertEquals(model.getSelectedItem(), bTwo);
+		model.setSelectedItem(4);
+		assertEquals(4, model.selection().item().getOrThrow().value());
+		assertEquals(model.getSelectedItem(), dFour);
+		model.setSelectedItem(null);
+		assertNull(model.selection().item().getOrThrow().value());
+		assertEquals(model.getSelectedItem(), nullItem);
+
+		model.items().refresh();
+
+		assertEquals(0, model.items().visible().indexOf(nullItem));
+		assertEquals(1, model.items().visible().indexOf(aOne));
+		assertEquals(2, model.items().visible().indexOf(bTwo));
+		assertEquals(3, model.items().visible().indexOf(cThree));
+		assertEquals(4, model.items().visible().indexOf(dFour));
+
+		FilterComboBoxModel<Item<Integer>> unsortedModel = FilterComboBoxModel.builder(items).build();
+
+		assertEquals(0, unsortedModel.items().visible().indexOf(nullItem));
+		assertEquals(1, unsortedModel.items().visible().indexOf(cThree));
+		assertEquals(2, unsortedModel.items().visible().indexOf(bTwo));
+		assertEquals(3, unsortedModel.items().visible().indexOf(aOne));
+		assertEquals(4, unsortedModel.items().visible().indexOf(dFour));
+	}
+
+	@Test
+	void booleanItemComboBoxModel() {
+		FilterComboBoxModel<Item<Boolean>> model = FilterComboBoxModel.builder(booleanItems()).build();
+		model.setSelectedItem(false);
+		assertEquals(false, model.selection().item().getOrThrow().value());
+		model.setSelectedItem(true);
+		assertEquals(true, model.selection().item().getOrThrow().value());
+		model.setSelectedItem(null);
+		assertNull(model.selection().item().getOrThrow().value());
 	}
 
 	@BeforeEach

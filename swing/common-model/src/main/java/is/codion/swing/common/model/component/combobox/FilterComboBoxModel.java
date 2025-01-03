@@ -19,6 +19,7 @@
 package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Configuration;
+import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
@@ -35,6 +36,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.common.item.Item.item;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -105,9 +108,45 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @param items the items to display in the model
 	 * @param <T> the item type
 	 * @return a new {@link ItemComboBoxModelBuilder}
+	 * @see FilterComboBoxModel#booleanItems()
+	 * @see FilterComboBoxModel#booleanItems(String)
+	 * @see FilterComboBoxModel#booleanItems(String, String, String)
 	 */
 	static <T> ItemComboBoxModelBuilder<T> builder(List<Item<T>> items) {
 		return new DefaultFilterComboBoxModel.DefaultItemComboBoxModelBuilder<>(items);
+	}
+
+	/**
+	 * @return items for null, true and false, using the default captions
+	 * @see FilterComboBoxModel#NULL_CAPTION
+	 * @see Messages#yes()
+	 * @see Messages#no()
+	 */
+	static List<Item<Boolean>> booleanItems() {
+		return booleanItems(NULL_CAPTION.get());
+	}
+
+	/**
+	 * @param nullCaption the caption for the null value
+	 * @return items for null, true and false, using the given null caption and the default true/false captions
+	 * @see Messages#yes()
+	 * @see Messages#no()
+	 */
+	static List<Item<Boolean>> booleanItems(String nullCaption) {
+		return booleanItems(nullCaption, Messages.yes(), Messages.no());
+	}
+
+	/**
+	 * @param nullCaption the caption for null
+	 * @param trueCaption the caption for true
+	 * @param falseCaption the caption for false
+	 * @return items for null, true and false
+	 */
+	static List<Item<Boolean>> booleanItems(String nullCaption, String trueCaption, String falseCaption) {
+		return asList(
+						item(null, requireNonNull(nullCaption)),
+						item(true, requireNonNull(trueCaption)),
+						item(false, requireNonNull(falseCaption)));
 	}
 
 	/**
