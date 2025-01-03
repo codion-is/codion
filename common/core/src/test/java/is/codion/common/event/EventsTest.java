@@ -18,6 +18,7 @@
  */
 package is.codion.common.event;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -66,5 +67,18 @@ public class EventsTest {
 		assertFalse(event.removeConsumer(consumer));
 		assertTrue(event.addWeakConsumer(consumer));
 		assertFalse(event.addConsumer(consumer));
+	}
+
+	@Test
+	void eventAsConsumer() {
+		// DefaultObserver bug in 0.18.23
+		Event<Integer> event = Event.event();
+		Event<Integer> consumer = Event.event();
+
+		event.addConsumer(consumer);
+
+		consumer.addConsumer(Assertions::assertNotNull);
+
+		event.accept(1);
 	}
 }

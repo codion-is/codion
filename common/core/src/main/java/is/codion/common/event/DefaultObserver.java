@@ -35,11 +35,11 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	private final Lock lock = new Lock() {};
 
-	private @Nullable ArrayList<Object> listeners;
+	private @Nullable ArrayList<Listener<?>> listeners;
 
 	@Override
 	public boolean addListener(Runnable runnable) {
-		return add(runnable, false);
+		return add(new RunnableListener(requireNonNull(runnable)));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean addConsumer(Consumer<? super T> consumer) {
-		return add(consumer, false);
+		return add(new ConsumerListener<>(requireNonNull(consumer)));
 	}
 
 	@Override
@@ -59,7 +59,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean addWeakListener(Runnable runnable) {
-		return add(runnable, true);
+		return add(new WeakRunnableListener(requireNonNull(runnable)));
 	}
 
 	@Override
@@ -69,7 +69,7 @@ final class DefaultObserver<T> implements Observer<T> {
 
 	@Override
 	public boolean addWeakConsumer(Consumer<? super T> consumer) {
-		return add(consumer, true);
+		return add(new WeakConsumerListener<>(requireNonNull(consumer)));
 	}
 
 	@Override
@@ -78,12 +78,12 @@ final class DefaultObserver<T> implements Observer<T> {
 	}
 
 	void notifyListeners(@Nullable T data) {
-		for (Object listener : listeners()) {
+		for (Listener<?> listener : listeners()) {
 			notifyListener(listener, data);
 		}
 	}
 
-	private List<Object> listeners() {
+	private List<Listener<?>> listeners() {
 		synchronized (lock) {
 			if (listeners == null) {
 				return emptyList();
@@ -93,8 +93,7 @@ final class DefaultObserver<T> implements Observer<T> {
 		}
 	}
 
-	private boolean add(Object listener, boolean weakReference) {
-		requireNonNull(listener);
+	private boolean add(Listener<?> listener) {
 		synchronized (lock) {
 			if (contains(listener)) {
 				return false;
@@ -103,7 +102,7 @@ final class DefaultObserver<T> implements Observer<T> {
 				listeners = new ArrayList<>(1);
 			}
 
-			listeners.add(weakReference ? new WeakReference<>(listener) : listener);
+			listeners.add(listener);
 			listeners.trimToSize();
 
 			return true;
@@ -131,52 +130,115 @@ final class DefaultObserver<T> implements Observer<T> {
 		}
 	}
 
-	private static boolean remove(Object listener, ListIterator<Object> iterator) {
+	private static boolean remove(Object listenerToRemove, ListIterator<Listener<?>> iterator) {
 		boolean removed = false;
 		while (iterator.hasNext()) {
-			Object next = iterator.next();
-			if (next == listener) {
+			Object listener = iterator.next().get();
+			if (listener == listenerToRemove) {
 				iterator.remove();
 				removed = true;
 			}
-			else if (next instanceof WeakReference) {
-				Object reference = ((WeakReference<?>) next).get();
-				if (reference == listener) {
-					iterator.remove();
-					removed = true;
-				}
-				else if (reference == null) {
-					iterator.remove();
-				}
+			else if (listener == null) {
+				iterator.remove();
 			}
 		}
 
 		return removed;
 	}
 
-	private void notifyListener(Object listener, @Nullable T data) {
-		if (listener instanceof WeakReference<?>) {
-			listener = ((WeakReference<?>) listener).get();
+	private void notifyListener(Listener<?> listener, @Nullable T data) {
+		if (listener instanceof RunnableListener) {
+			((RunnableListener) listener).get().run();
 		}
-		if (listener instanceof Runnable) {
-			((Runnable) listener).run();
+		else if (listener instanceof ConsumerListener) {
+			((ConsumerListener<@Nullable T>) listener).get().accept(data);
 		}
-		else if (listener instanceof Consumer) {
-			((Consumer<@Nullable T>) listener).accept(data);
+		else if (listener instanceof WeakRunnableListener) {
+			Runnable runnable = ((WeakRunnableListener) listener).get();
+			if (runnable != null) {
+				runnable.run();
+			}
+		}
+		else if (listener instanceof WeakConsumerListener<?>) {
+			Consumer<@Nullable T> consumer = ((WeakConsumerListener<T>) listener).get();
+			if (consumer != null) {
+				consumer.accept(data);
+			}
 		}
 	}
 
-	private boolean contains(Object object) {
+	private boolean contains(Listener<?> reference) {
 		if (listeners != null) {
-			listeners.removeIf(item -> item instanceof WeakReference && ((WeakReference<?>) item).get() == null);
-			for (Object listener : listeners) {
-				if (listener == object || (listener instanceof WeakReference<?> && ((WeakReference<?>) listener).get() == object)) {
+			listeners.removeIf(listener -> listener.get() == null);
+			for (Listener<?> listener : listeners) {
+				if (listener.get() == reference.get()) {
 					return true;
 				}
 			}
 		}
 
 		return false;
+	}
+
+	private interface Listener<T> {
+
+		T get();
+	}
+
+	private static final class RunnableListener implements Listener<Runnable> {
+
+		private final Runnable runnable;
+
+		private RunnableListener(Runnable runnable) {
+			this.runnable = runnable;
+		}
+
+		@Override
+		public Runnable get() {
+			return runnable;
+		}
+	}
+
+	private static final class WeakRunnableListener implements Listener<Runnable> {
+
+		private final WeakReference<Runnable> weakReference;
+
+		private WeakRunnableListener(Runnable runnable) {
+			this.weakReference = new WeakReference<>(runnable);
+		}
+
+		@Override
+		public @Nullable Runnable get() {
+			return weakReference.get();
+		}
+	}
+
+	private static final class ConsumerListener<T> implements Listener<Consumer<T>> {
+
+		private final Consumer<T> consumer;
+
+		private ConsumerListener(Consumer<T> consumer) {
+			this.consumer = consumer;
+		}
+
+		@Override
+		public Consumer<T> get() {
+			return consumer;
+		}
+	}
+
+	private static final class WeakConsumerListener<T> implements Listener<Consumer<T>> {
+
+		private final WeakReference<Consumer<T>> weakReference;
+
+		private WeakConsumerListener(Consumer<T> consumer) {
+			this.weakReference = new WeakReference<>(consumer);
+		}
+
+		@Override
+		public @Nullable Consumer<T> get() {
+			return weakReference.get();
+		}
 	}
 
 	private interface Lock {}
