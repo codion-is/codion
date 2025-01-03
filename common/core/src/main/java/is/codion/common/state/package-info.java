@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
  */
 /**
  * <p>See {@link is.codion.common.state.State} and {@link is.codion.common.state.ObservableState}.
