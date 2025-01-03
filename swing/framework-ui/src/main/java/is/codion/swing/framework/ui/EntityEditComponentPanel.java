@@ -764,14 +764,6 @@ public class EntityEditComponentPanel extends JPanel {
 						.build();
 	}
 
-	private static JComponent focusableComponent(JComponent component) {
-		if (component instanceof JSpinner) {
-			return ((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField();
-		}
-
-		return component;
-	}
-
 	private static JLabel setLabelForComponent(JLabel label, JComponent component) {
 		if (component != null && label.getLabelFor() != component) {
 			label.setLabelFor(component);
@@ -864,6 +856,14 @@ public class EntityEditComponentPanel extends JPanel {
 			else {
 				editComponentPanel.requestFocus();
 			}
+		}
+
+		private static JComponent focusableComponent(JComponent component) {
+			if (component instanceof JSpinner) {
+				return ((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField();
+			}
+
+			return component;
 		}
 
 		/**
