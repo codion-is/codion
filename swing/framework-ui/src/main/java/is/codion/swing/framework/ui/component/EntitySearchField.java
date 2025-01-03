@@ -36,7 +36,6 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Cursors;
@@ -651,7 +650,7 @@ public final class EntitySearchField extends HintTextField {
 				items.add(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
 				columnBasePanelBuilder.add(createSettingsPanel(entry.getValue()), entry.getKey().name());
 			}
-			FilterComboBoxModel<Item<Column<String>>> columnComboBoxModel = ItemComboBoxModel.builder(items).build();
+			FilterComboBoxModel<Item<Column<String>>> columnComboBoxModel = FilterComboBoxModel.builder(items).build();
 			JPanel columnBasePanel = columnBasePanelBuilder.build();
 			if (columnComboBoxModel.getSize() > 0) {
 				columnComboBoxModel.selection().item().addConsumer(selected ->

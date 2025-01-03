@@ -20,6 +20,7 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Text;
 import is.codion.common.event.Event;
+import is.codion.common.item.Item;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
@@ -36,6 +37,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
@@ -46,6 +48,7 @@ import java.util.function.Supplier;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
@@ -170,6 +173,53 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public FilterComboBoxModel<T> build() {
 			return new DefaultFilterComboBoxModel<>(this);
+		}
+	}
+
+	static final class DefaultItemComboBoxModelBuilder<T> implements ItemComboBoxModelBuilder<T> {
+
+		private final List<Item<T>> items;
+
+		private boolean sorted = false;
+		private Comparator<Item<T>> comparator;
+
+		DefaultItemComboBoxModelBuilder(List<Item<T>> items) {
+			this.items = requireNonNull(items);
+		}
+
+		@Override
+		public ItemComboBoxModelBuilder<T> sorted(boolean sorted) {
+			this.sorted = sorted;
+			if (!sorted) {
+				this.comparator = null;
+			}
+			return this;
+		}
+
+		@Override
+		public ItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator) {
+			this.sorted = true;
+			this.comparator = requireNonNull(comparator);
+			return this;
+		}
+
+		@Override
+		public FilterComboBoxModel<Item<T>> build() {
+			FilterComboBoxModel.Builder<Item<T>> builder = new DefaultBuilder<>(items, null)
+							.translator(new SelectedItemTranslator<>(items));
+			if (!sorted) {
+				builder.comparator(null);
+			}
+			if (comparator != null) {
+				builder.comparator(comparator);
+			}
+
+			FilterComboBoxModel<Item<T>> comboBoxModel = builder.build();
+			if (comboBoxModel.items().contains(Item.item(null))) {
+				comboBoxModel.setSelectedItem(null);
+			}
+
+			return comboBoxModel;
 		}
 	}
 
@@ -740,6 +790,25 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public T apply(Object item) {
 			return (T) item;
+		}
+	}
+
+	private static final class SelectedItemTranslator<T> implements Function<Object, Item<T>> {
+
+		private final Map<T, Item<T>> itemMap;
+
+		private SelectedItemTranslator(List<Item<T>> items) {
+			itemMap = items.stream()
+							.collect(toMap(Item::value, Function.identity()));
+		}
+
+		@Override
+		public Item<T> apply(Object item) {
+			if (item instanceof Item) {
+				return itemMap.get(((Item<T>) item).value());
+			}
+
+			return itemMap.get(item);
 		}
 	}
 

@@ -41,7 +41,7 @@ public class ItemComboBoxModelTest {
 		Item<Integer> dFour = item(4, "DFour");
 
 		List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-		FilterComboBoxModel<Item<Integer>> model = ItemComboBoxModel.builder(items)
+		FilterComboBoxModel<Item<Integer>> model = FilterComboBoxModel.builder(items)
 						.sorted(true)
 						.build();
 
@@ -74,7 +74,7 @@ public class ItemComboBoxModelTest {
 		assertEquals(4, model.items().visible().indexOf(dFour));
 
 		//test unsorted final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-		FilterComboBoxModel<Item<Integer>> unsortedModel = ItemComboBoxModel.builder(items).build();
+		FilterComboBoxModel<Item<Integer>> unsortedModel = FilterComboBoxModel.builder(items).build();
 
 		assertEquals(0, unsortedModel.items().visible().indexOf(nullItem));
 		assertEquals(1, unsortedModel.items().visible().indexOf(cThree));
@@ -85,7 +85,7 @@ public class ItemComboBoxModelTest {
 
 	@Test
 	void booleanComboBoxModel() {
-		FilterComboBoxModel<Item<Boolean>> model = ItemComboBoxModel.builder(booleanItems()).build();
+		FilterComboBoxModel<Item<Boolean>> model = FilterComboBoxModel.builder(booleanItems()).build();
 		model.setSelectedItem(false);
 		assertEquals(false, model.selection().item().getOrThrow().value());
 		model.setSelectedItem(true);

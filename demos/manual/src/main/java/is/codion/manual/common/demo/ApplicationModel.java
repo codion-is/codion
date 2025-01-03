@@ -23,7 +23,6 @@ import is.codion.common.observable.Observable;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultBoundedRangeModel;
@@ -180,7 +179,7 @@ public final class ApplicationModel {
 	}
 
 	public FilterComboBoxModel<Item<Integer>> createIntegerItemComboBoxModel() {
-		return ItemComboBoxModel.builder(List.of(
+		return FilterComboBoxModel.builder(List.of(
 										item(1, "One"), item(2, "Two"), item(3, "Three"),
 										item(4, "Four"), item(5, "Five"), item(6, "Six"),
 										item(7, "Seven"), item(8, "Eight"), item(9, "Nine")))

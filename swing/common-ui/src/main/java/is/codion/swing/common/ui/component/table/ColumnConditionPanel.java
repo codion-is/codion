@@ -28,7 +28,6 @@ import is.codion.common.observable.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -587,7 +586,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private JComboBox<Item<Operator>> createOperatorComboBox(List<Operator> operators) {
-		FilterComboBoxModel<Item<Operator>> operatorComboBoxModel = ItemComboBoxModel.builder(operators.stream()
+		FilterComboBoxModel<Item<Operator>> operatorComboBoxModel = FilterComboBoxModel.builder(operators.stream()
 						.map(operator -> Item.item(operator, operatorCaptions.apply(operator)))
 						.collect(toList()))
 						.build();

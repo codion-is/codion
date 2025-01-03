@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.24
 ## is.codion.common.core
 - DefaultObserver bug fixed, did not work correctly when a consumer implemented both Runnable and Consumer, such as Event, then it was notified only as Runnable.
+### is.codion.swing.common.model
+- ItemComboBoxModel.builder() moved to FilterComboBoxModel.
 
 ## 0.18.23
 ### is.codion.common

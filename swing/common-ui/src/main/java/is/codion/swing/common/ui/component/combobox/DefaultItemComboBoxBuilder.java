@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.component.combobox;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -201,17 +200,17 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 			items.add(0, nullItem);
 		}
 		if (comparator != null) {
-			comboBoxModel = ItemComboBoxModel.builder(items)
+			comboBoxModel = FilterComboBoxModel.builder(items)
 							.sorted(comparator)
 							.build();
 		}
 		else if (sorted) {
-			comboBoxModel = ItemComboBoxModel.builder(items)
+			comboBoxModel = FilterComboBoxModel.builder(items)
 							.sorted(true)
 							.build();
 		}
 		else {
-			comboBoxModel = ItemComboBoxModel.builder(items).build();
+			comboBoxModel = FilterComboBoxModel.builder(items).build();
 		}
 
 		return comboBoxModel;

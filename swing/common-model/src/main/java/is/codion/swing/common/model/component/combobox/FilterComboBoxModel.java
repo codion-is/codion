@@ -19,6 +19,7 @@
 package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.Configuration;
+import is.codion.common.item.Item;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.property.PropertyValue;
@@ -28,6 +29,7 @@ import is.codion.common.value.Value;
 import javax.swing.ComboBoxModel;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -99,6 +101,16 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	}
 
 	/**
+	 * Returns a {@link ItemComboBoxModelBuilder}, by default unsorted.
+	 * @param items the items to display in the model
+	 * @param <T> the item type
+	 * @return a new {@link ItemComboBoxModelBuilder}
+	 */
+	static <T> ItemComboBoxModelBuilder<T> builder(List<Item<T>> items) {
+		return new DefaultFilterComboBoxModel.DefaultItemComboBoxModelBuilder<>(items);
+	}
+
+	/**
 	 * Builds a {@link FilterComboBoxModel}
 	 * @param <T> the item type
 	 */
@@ -134,6 +146,33 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @return a new {@link FilterComboBoxModel} instance
 		 */
 		FilterComboBoxModel<T> build();
+	}
+
+	/**
+	 * <p>Builds {@link FilterComboBoxModel} implementations based on the {@link Item} class.
+	 * <p>Note that item combo box models are unsorted by default, the provided items are assumed to be ordered.
+	 * <p>Use {@link #sorted(boolean)} or {@link #sorted(Comparator)} for a sorted combo box model.
+	 * @param <T> the item type
+	 */
+	interface ItemComboBoxModelBuilder<T> {
+
+		/**
+		 * Default false.
+		 * @param sorted true if the items should be sorted
+		 * @return this builder instance
+		 */
+		ItemComboBoxModelBuilder<T> sorted(boolean sorted);
+
+		/**
+		 * @param comparator the comparator to sort by
+		 * @return this builder instance
+		 */
+		ItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator);
+
+		/**
+		 * @return a new {@link FilterComboBoxModel}
+		 */
+		FilterComboBoxModel<Item<T>> build();
 	}
 
 	/**
