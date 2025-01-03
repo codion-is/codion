@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.24
+
 ## 0.18.23
 ### is.codion.common
 - JSpecify annotations applied to common modules.
