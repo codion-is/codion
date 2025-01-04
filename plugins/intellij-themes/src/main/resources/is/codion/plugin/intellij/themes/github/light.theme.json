@@ -1,0 +1,102 @@
+{
+  "name": "Github - Light",
+  "dark": false,
+  "author": "Yash Pal <iyashpal.dev@gmail.com>",
+  "parentTheme": "IntelliJ",
+  "editorScheme": "/theme/scheme/light.xml",
+
+  "colors": {
+    "black": "#0d1117",
+    "white": "#ffffff",
+    "borderColor": "#d0d7de",
+    "foreground": "#1f2328",
+    "disabledForeground": "#1f232860",
+    "background": "#ffffff",
+    "selectionForeground": "#2f363d",
+    "selectionBackground": "#ebf0f4"
+  },
+  "ui": {
+    "*": {
+      "foreground": "foreground",
+      "background": "background",
+      "borderColor": "borderColor",
+      "focusColor": "#ffffff00",
+
+      "selectionBackground": "selectionBackground",
+      "selectionForeground": "selectionForeground",
+      "selectionInactiveForeground": "selectionForeground",
+      "selectionInactiveBackground": "selectionBackground"
+    },
+
+    "Button": {
+      "foreground": "#24292f",
+      "focusedBorderColor": "borderColor",
+      "default": {
+        "foreground": "#24292f",
+        "startBackground": "#24c44d",
+        "endBackground": "#21963f",
+        "startBorderColor": "#24c44d60",
+        "endBorderColor": "#21963f60",
+        "focusColor": "#138934",
+        "focusedBorderColor": "#13893460"
+      }
+    },
+
+    "SegmentedButton": {
+      "selectedStartBorderColor": "borderColor",
+      "selectedEndBorderColor": "borderColor",
+      "selectedButtonColor": "borderColor",
+      "focusedSelectedButtonColor": "borderColor"
+    },
+
+    "SidePanel.background": "#f6f8fa",
+
+    "MainToolbar.background": "#ffffff",
+    "MainToolbar.separatorColor": "#d0d7de",
+
+    "ToolBar.background": "white",
+
+    "ScrollBar.background": "#ffffff00",
+    "ScrollPane.background": "#ffffff00",
+
+    "Popup.background": "#f6f8fa",
+
+    "ToolWindow.background": "#ffffff",
+    "ToolWindow.Header.background": "#f6f8fa",
+    "ToolWindow.Header.inactiveBackground": "#f6f8fa",
+    "ToolWindow.Header.borderColor": "borderColor",
+
+    "TitlePane.background": "#f6f8fa",
+
+    "TextPane.background": "#ffffff",
+    "TextField.selectionBackground": "#3b82f6",
+    "TextField.selectionForeground": "#ffffff",
+    "TextArea.selectionBackground": "#3b82f6",
+    "TextArea.selectionForeground": "#ffffff",
+
+    "RunWidget": {
+      "foreground": "foreground",
+      "runningBackground": "#24c44d",
+      "hoverBackground": "#00000019",
+      "pressedBackground": "#00000028"
+    }
+  },
+  "icons": {
+    "ColorPalette": {
+      "ColorPalette": {
+        "Tree.iconColor": "#334155",
+        "Checkbox.Border.Default": "#475569",
+        "Checkbox.Border.Disabled": "#cbd5e1",
+        "Checkbox.Border.Selected": "#22c55e",
+        "Checkbox.Background.Default": "#ffffff",
+        "Checkbox.Background.Selected": "#22c55e",
+        "Checkbox.Background.Disabled": "#e2e8f0",
+        "Checkbox.Foreground.Selected": "#ffffff",
+        "Checkbox.Foreground.Disabled": "#94a3b8",
+        "Checkbox.Focus.Wide": "#6ee7b7",
+        "Checkbox.Focus.Thin.Default": "#22c55e",
+        "Checkbox.Focus.Thin.Selected": "#6ee7b7"
+      }
+    }
+  }
+}

@@ -24,6 +24,8 @@ import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.model.ChinookAppModel;
 import is.codion.demos.chinook.model.TrackTableModel;
+import is.codion.plugin.intellij.IntelliJThemes;
+import is.codion.plugin.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
@@ -40,7 +42,6 @@ import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.ButtonGroup;
@@ -50,7 +51,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import java.awt.Dimension;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -67,7 +67,6 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppModel> {
 
-	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme";
 	private static final String LANGUAGE_PREFERENCES_KEY = ChinookAppPanel.class.getSimpleName() + ".language";
 	private static final String LANGUAGE_IS = "is";
 	private static final String LANGUAGE_EN = "en";
@@ -175,7 +174,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	public static void main(String[] args) throws CancelException {
 		String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
 		Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
-		Arrays.stream(FlatAllIJThemes.INFOS).forEach(LookAndFeelProvider::addLookAndFeel);
+		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS);
 		Completion.COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
 		EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
@@ -197,7 +196,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						.applicationName("Chinook")
 						.applicationVersion(ChinookAppModel.VERSION)
 						.domainType(Chinook.DOMAIN)
-						.defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
+						.defaultLookAndFeelClassName(MaterialTheme.class.getName())
 						.defaultLoginUser(User.parse("scott:tiger"))
 						.start();
 	}

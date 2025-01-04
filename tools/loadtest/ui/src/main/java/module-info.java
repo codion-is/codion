@@ -24,7 +24,7 @@
  */
 module is.codion.tools.loadtest.ui {
 	requires org.jfree.jfreechart;
-	requires com.formdev.flatlaf.intellijthemes;
+	requires is.codion.plugin.intellij.themes;
 	requires transitive is.codion.tools.loadtest.model;
 	requires transitive is.codion.swing.common.ui;
 

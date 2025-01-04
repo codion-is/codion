@@ -1,0 +1,51 @@
+{
+  "name": "Cute Pink Dark",
+  "dark": true,
+  "author": "Ingo Steinke (openmindculture)",
+  "editorScheme": "/cute_pink_dark.xml",
+  "colors": {
+    "blackBg": "#000000",
+    "whiteBg": "#FFFFFF",
+    "pinkDeepBg": "#F14874",
+    "whiteText": "#FFFFFF",
+    "pinkLight": "#FCEAF1",
+    "pinkLightBg": "#FCEAF1",
+    "pinkMediumBg": "#FCDEE9",
+    "pinkDarkBg": "#F4B4CC",
+    "pinkDarkerBg": "#763F56",
+    "purpleLightText": "#A192AB",
+    "purpleMediumText": "#826585",
+    "purpleDarkText": "#2A035B",
+    "purpleRedBorder": "#F14874",
+    "purpleRedFocusRect": "#F26D90"
+  },
+  "ui": {
+    "*": {
+      "background": "pinkDarkerBg",
+      "selectedBackground": "pinkMediumBg",
+      "hoverBackground": "pinkDarkBg",
+      "foreground": "pinkLight",
+      "disabledText": "purpleLightText",
+      "selectionBackground": "pinkDeepBg",
+      "selectionForeground": "pinkLight",
+      "underlineColor": "purpleRedBorder",
+      "errorFocusColor": "purpleRedFocusRect"
+    },
+    "Editor.background": "blackBg",
+    "Button.default.foreground": "pinkLight",
+    "Borders": {
+      "color": "purpleRedBorder",
+      "ContrastBorderColor": "purpleRedBorder"
+    },
+    "Panel.foreground": "purpleDarkText",
+    "Panel.foreground.hover": "purpleDarkText",
+    "Panel.hoverForeground": "purpleDarkText",
+    "ScrollPane.background": "whiteBg",
+    "ScrollPane.foreground": "purpleDarkText",
+    "TextArea.foreground": "purpleDarkText",
+    "TextField.background": "whiteBg",
+    "TextField.foreground": "purpleDarkText",
+    "TextField.inactiveForeground": "purpleDarkText",
+    "Viewport.foreground": "purpleDarkText"
+  }
+}

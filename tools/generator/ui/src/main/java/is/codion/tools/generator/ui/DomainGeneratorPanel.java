@@ -24,6 +24,8 @@ import is.codion.common.model.CancelException;
 import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
+import is.codion.plugin.intellij.IntelliJThemes;
+import is.codion.plugin.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -41,8 +43,6 @@ import is.codion.tools.generator.model.DomainGeneratorModel.EntityColumns;
 import is.codion.tools.generator.model.DomainGeneratorModel.SchemaColumns;
 import is.codion.tools.generator.model.EntityRow;
 import is.codion.tools.generator.model.SchemaRow;
-
-import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -66,7 +66,6 @@ import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -92,9 +91,6 @@ public final class DomainGeneratorPanel extends JPanel {
 	 */
 	public static final PropertyValue<String> DEFAULT_USER =
 					stringValue("codion.domain.generator.defaultUser");
-
-	private static final String DEFAULT_FLAT_LOOK_AND_FEEL =
-					"com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme";
 
 	private static final double RESIZE_WEIGHT = 0.2;
 
@@ -496,12 +492,11 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * @param arguments no arguments required
 	 */
 	public static void main(String[] arguments) {
-		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeel);
+		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		LookAndFeelProvider.SYSTEM.set(false);
 		LookAndFeelProvider.CROSS_PLATFORM.set(false);
 		findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName(),
-						DEFAULT_FLAT_LOOK_AND_FEEL)).ifPresent(LookAndFeelProvider::enable);
+						MaterialTheme.class.getName())).ifPresent(LookAndFeelProvider::enable);
 		try {
 			SwingUtilities.invokeLater(DomainGeneratorPanel::start);
 		}

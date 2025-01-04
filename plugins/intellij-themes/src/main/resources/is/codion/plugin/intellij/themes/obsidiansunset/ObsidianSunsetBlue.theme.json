@@ -1,0 +1,107 @@
+{
+  "name": "Obsidian Sunset Blue",
+  "author": "Łukasz Czerniawski",
+  "dark": true,
+  "editorScheme": "theme/ObsidianSunset-color-theme.xml",
+  "ui": {
+    "*": {
+      "background": "#1C1B1A",
+      "foreground": "#CED0D5",
+      "selectionBackground": "#a2a1a133",
+      "selectionInactiveBackground": "#a2a1a133",
+      "borderColor": "#11151c"
+    },
+
+    "ActionButton": {
+      "pressedBackground": "#0d0c0b",
+      "pressedBorderColor": "#0d0c0b"
+    },
+
+    "SearchMatch": {
+      "endBackground": "#3572EF",
+      "startBackground": "#3572EF"
+    },
+
+    "Borders": {
+      "color": "#11151c"
+    },
+
+    "EditorTabs": {
+      "background": "#1C1B1A",
+      "hoverBackground": "#1e1e1e"
+    },
+
+    "ToolWindow": {
+      "Button": {
+        "selectedBackground": "#0d0c0b",
+        "selectedForeground": "#3572EF"
+      },
+      "Header": {
+        "inactiveBackground": "#1C1B1A"
+      }
+    },
+
+    "DefaultTabs": {
+      "inactiveUnderlineColor": "#588bea",
+      "underlineColor": "#3572EF",
+      "underlineHeight": 4,
+      "hoverBackground": "#a2a1a133",
+      "underlinedTabBackground": "#363635"
+    },
+
+    "TabbedPane": {
+      "underlineColor": "#3572EF",
+      "tabSelectionHeight": 2,
+      "tabSelectionArc": 4
+    },
+
+    "Tree": {
+      "border": "4,12,4,12",
+      "rowHeight": 24
+    },
+
+    "List": {
+      "Button": {
+        "leftRightInset": 8,
+        "separatorInset": 4
+      },
+      "border": "4,0,4,0",
+      "rowHeight": "24"
+    },
+
+    "Component": {
+      "focusedBorderColor": "#3572EF",
+      "focusColor": "#3572EF"
+    },
+
+    "Button": {
+      "default": {
+        "endBackground": "#3572EF",
+        "endBorderColor": "#3572EF",
+        "foreground": "#CED0D5",
+        "startBackground": "#3572EF",
+        "startBorderColor": "#3572EF",
+        "focusColor": "#a2a1a133",
+        "focusedBorderColor": "#a2a1a133"
+      },
+      "focusedBorderColor": "#3572EF",
+      "disabledText": "#588bea",
+      "disabledBorderColor": "#588bea",
+      "endBackground": "#a2a1a133",
+      "endBorderColor": "#a2a1a133",
+      "foreground": "#CED0D5",
+      "startBackground": "#a2a1a133",
+      "startBorderColor": "#a2a1a133"
+    },
+
+    "Plugins": {
+      "lightSelectionBackground": "#363635",
+      "hoverBackground": "#3d3d3c"
+    },
+
+    "Table": {
+      "lightSelectionBackground": "#363635",
+      "hoverBackground": "#3d3d3c"
+    }
+  }
+}

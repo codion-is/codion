@@ -23,7 +23,7 @@
  * </ul>
  */
 module is.codion.tools.generator.ui {
-	requires com.formdev.flatlaf.intellijthemes;
+	requires is.codion.plugin.intellij.themes;
 	requires is.codion.swing.common.ui;
 	requires is.codion.tools.generator.model;
 

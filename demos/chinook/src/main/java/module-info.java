@@ -29,7 +29,7 @@ module is.codion.framework.demos.chinook {
 	requires is.codion.plugin.jasperreports;
 	requires is.codion.plugin.imagepanel;
 	requires net.sf.jasperreports.core;
-	requires com.formdev.flatlaf.intellijthemes;
+	requires is.codion.plugin.intellij.themes;
 	requires org.kordamp.ikonli.foundation;
 
 	exports is.codion.demos.chinook.model

@@ -12,6 +12,8 @@ Codion Change Log
 - ExceptionDialogBuilder.WRAPPER_EXCEPTIONS, RuntimeException re-added, but unwrapping now unwraps according to the exact class, not isAssignableFrom, RemoteException removed.
 ### is.codion.swing.framework.ui 
 - DefaultEntityApplicationPanelBuilder no longer validates that the look and feel exists on the classpath, should not prevent application start.
+### is.codion.plugin.intellij.themes
+- Added a bunch of IntelliJ theme based look and feels along with all of those available in com.formdev.flatlaf-intellij-themes.
 
 ## 0.18.23
 ### is.codion.common

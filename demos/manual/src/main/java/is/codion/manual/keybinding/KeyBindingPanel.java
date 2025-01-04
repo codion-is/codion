@@ -20,13 +20,12 @@ package is.codion.manual.keybinding;
 
 import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.ColumnId;
 import is.codion.manual.keybinding.KeyBindingModel.KeyBindingRow;
+import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
-
-import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -36,7 +35,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
-import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -101,9 +99,9 @@ public final class KeyBindingPanel extends JPanel {
 
 	public static void main(String[] args) {
 		System.setProperty("sun.awt.disablegrab", "true");
-		Arrays.stream(FlatAllIJThemes.INFOS)
+		IntelliJThemes.get()
 						.forEach(LookAndFeelProvider::addLookAndFeel);
-		findLookAndFeelProvider("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProIJTheme")
+		findLookAndFeelProvider("is.codion.plugin.intellij.themes.monokaipro.MonokaiPro")
 						.ifPresent(LookAndFeelProvider::enable);
 		SwingUtilities.invokeLater(() -> Windows.frame(new KeyBindingPanel())
 						.title("Key Bindings")

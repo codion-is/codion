@@ -30,7 +30,7 @@ module is.codion.demos.employees {
 	requires is.codion.swing.framework.ui;
 	requires is.codion.framework.server;
 	requires is.codion.plugin.jasperreports;
-	requires com.formdev.flatlaf.intellijthemes;
+	requires is.codion.plugin.intellij.themes;
 
 	exports is.codion.demos.employees.domain
 					to is.codion.framework.domain, is.codion.framework.db.local;

@@ -22,7 +22,7 @@
 module is.codion.tools.monitor.ui {
 	requires org.slf4j;
 	requires org.jfree.jfreechart;
-	requires com.formdev.flatlaf.intellijthemes;
+	requires is.codion.plugin.intellij.themes;
 	requires is.codion.framework.server;
 	requires is.codion.swing.common.ui;
 	requires is.codion.tools.monitor.model;

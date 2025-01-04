@@ -24,6 +24,8 @@ import is.codion.demos.employees.domain.Employees.Department;
 import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.plugin.intellij.IntelliJThemes;
+import is.codion.plugin.intellij.themes.arc.Arc;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -35,13 +37,10 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
 
-import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
-
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,8 +48,6 @@ import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMap
 
 // tag::createEntityPanels[]
 public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel> {
-
-	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme";
 
 	public EmployeesAppPanel(EmployeesAppModel applicationModel) {
 		super(applicationModel);
@@ -114,13 +111,12 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
 	// tag::main[]
 	public static void main(String[] args) {
-		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeel);
+		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		EntityApplicationPanel.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
 						.applicationName("Employees")
 						.domainType(Employees.DOMAIN)
-						.defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
+						.defaultLookAndFeelClassName(Arc.class.getName())
 						.defaultLoginUser(User.parse("scott:tiger"))
 						.start();
 	}

@@ -1,0 +1,19 @@
+{
+  "name": "aKusaN Light",
+  "dark": false,
+  "author": "aKusaNas",
+  "editorScheme": "/theme/aKusaN_light.xml",
+  "ui": {
+    "*": {
+      "background": "#ffffff",
+      "foreground": "#000000"
+    },
+    "FileColor": {
+      "Green": "#DEF5E5",
+      "Orange": "#fe801988",
+      "Rose": "#cc241d44",
+      "Violet": "#d3869b22",
+      "Yellow": "#FEFFDB"
+    }
+  }
+}

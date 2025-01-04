@@ -154,6 +154,9 @@ project(":codion-plugin-logback-proxy").projectDir = file("plugins/logback-proxy
 include "codion-plugin-tomcat-pool"
 project(":codion-plugin-tomcat-pool").projectDir = file("plugins/tomcat-pool")
 
+include "codion-plugin-intellij-themes"
+project(":codion-plugin-intellij-themes").projectDir = file("plugins/intellij-themes")
+
 include "demo-chinook"
 project(":demo-chinook").projectDir = file("demos/chinook")
 
@@ -178,6 +181,7 @@ project(":demo-world").projectDir = file("demos/world")
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
     versionCatalogs {
         libs {

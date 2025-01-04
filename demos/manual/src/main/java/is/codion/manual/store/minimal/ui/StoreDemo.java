@@ -24,13 +24,12 @@ import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.manual.store.minimal.domain.Store;
+import is.codion.plugin.intellij.themes.material.MaterialDarker;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -84,7 +83,7 @@ public class StoreDemo {
 	}
 
 	public static void main(String[] args) throws Exception {
-		UIManager.setLookAndFeel(new FlatMaterialDarkerIJTheme());
+		UIManager.setLookAndFeel(new MaterialDarker());
 
 		Database database = H2DatabaseFactory
 						.createDatabase("jdbc:h2:mem:h2db",

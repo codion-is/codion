@@ -21,7 +21,7 @@ dependencies {
 
     testImplementation(project(":codion-swing-framework-ui-test"))
 
-    implementation(libs.flatlaf.intellij.themes)
+    implementation(project(":codion-plugin-intellij-themes"))
 
     runtimeOnly(project(":codion-plugin-logback-proxy"))
 

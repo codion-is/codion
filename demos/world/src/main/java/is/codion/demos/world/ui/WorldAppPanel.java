@@ -27,6 +27,8 @@ import is.codion.demos.world.domain.api.World.Lookup;
 import is.codion.demos.world.model.ContinentModel;
 import is.codion.demos.world.model.CountryModel;
 import is.codion.demos.world.model.WorldAppModel;
+import is.codion.plugin.intellij.IntelliJThemes;
+import is.codion.plugin.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -35,17 +37,13 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.SwingConstants;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
-
-	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme";
 
 	public WorldAppPanel(WorldAppModel applicationModel) {
 		super(applicationModel);
@@ -71,7 +69,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
 	public static void main(String[] args) throws CancelException {
 		Locale.setDefault(new Locale("en", "EN"));
-		Arrays.stream(FlatAllIJThemes.INFOS)
+		IntelliJThemes.get()
 						.forEach(LookAndFeelProvider::addLookAndFeel);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
@@ -81,7 +79,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 						.applicationName("World")
 						.domainType(World.DOMAIN)
 						.applicationVersion(WorldAppModel.VERSION)
-						.defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
+						.defaultLookAndFeelClassName(MonokaiPro.class.getName())
 						.defaultLoginUser(User.parse("scott:tiger"))
 						.start();
 	}

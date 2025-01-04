@@ -3,5 +3,5 @@ dependencies {
 
     api(project(":codion-swing-common-ui"))
 
-    implementation(libs.flatlaf.intellij.themes)
+    implementation(project(":codion-plugin-intellij-themes"))
 }

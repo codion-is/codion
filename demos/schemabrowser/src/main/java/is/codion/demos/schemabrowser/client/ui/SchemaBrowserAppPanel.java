@@ -26,6 +26,8 @@ import is.codion.demos.schemabrowser.domain.SchemaBrowser.Schema;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.plugin.intellij.IntelliJThemes;
+import is.codion.plugin.intellij.themes.arc.Arc;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.control.Controls;
@@ -39,17 +41,12 @@ import is.codion.swing.framework.ui.EntityTablePanel.ControlKeys;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
 import is.codion.swing.framework.ui.WindowDetailLayout;
 
-import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
-
 import javax.swing.JTable;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
-
-	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme";
 
 	public SchemaBrowserAppPanel(SchemaBrowserApplicationModel applicationModel) {
 		super(applicationModel);
@@ -85,8 +82,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 	}
 
 	public static void main(String[] args) {
-		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeel);
+		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		EntityTablePanel.Config.CONDITION_VIEW.set(ConditionView.SIMPLE);
 		EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList(
@@ -102,7 +98,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 						.applicationName("Schema Browser")
 						.domainType(SchemaBrowser.DOMAIN)
 						.defaultLoginUser(User.parse("scott:tiger"))
-						.defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
+						.defaultLookAndFeelClassName(Arc.class.getName())
 						.start();
 	}
 

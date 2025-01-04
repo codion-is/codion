@@ -23,12 +23,12 @@ module is.codion.demos.world {
 	requires is.codion.swing.framework.ui;
 	requires is.codion.plugin.jasperreports;
 	requires is.codion.framework.json.domain;
-	requires com.formdev.flatlaf.intellijthemes;
 	requires org.kordamp.ikonli.foundation;
 	requires net.sf.jasperreports.core;
 	requires org.jfree.jfreechart;
 	requires org.jxmapviewer.jxmapviewer2;
 	requires org.json;
+	requires is.codion.plugin.intellij.themes;
 
 	exports is.codion.demos.world.domain;
 	exports is.codion.demos.world.model

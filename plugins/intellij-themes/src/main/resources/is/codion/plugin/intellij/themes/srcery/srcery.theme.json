@@ -1,0 +1,151 @@
+{
+  "name": "srcery",
+  "dark": true,
+  "author": "Nils de Groot <nils@peeko.nl>",
+  "editorScheme": "/srcery.xml",
+  "colors": {
+    "bg0": "#1c1b19",
+    "bg1": "#262522",
+    "bg2": "#312f2c",
+    "bg3": "#3b3935",
+
+    "fg0": "#fce8c3",
+    "fg1": "#caba9c",
+    "fg2": "#baa67f",
+    "fg3": "#968566",
+
+    "black": "#1c1b19",
+    "blackOpacity": "#1c1b1922",
+    "red": "#ef2f27",
+    "redOpacity": "#ef2f2722",
+    "green": "#519f50",
+    "greenOpacity": "#519f5022",
+    "yellow": "#fbb829",
+    "yellowOpacity": "#fbb82922",
+    "blue": "#2c78bf",
+    "blueOpacity": "#2c78bf22",
+    "magenta": "#e02c6d",
+    "magentaOpacity": "#e02c6d22",
+    "cyan": "#0aaeb3",
+    "cyanOpacity": "#0aaeb322",
+    "white": "#baa67f",
+    "whiteOpacity": "#baa67f22",
+
+    "brightBlack": "#918175",
+    "brightRed": "#f75341",
+    "brightGreen": "#98bc37",
+    "brightYellow": "#fed06e",
+    "brightBlue": "#68a8e4",
+    "brightMagenta": "#ff5c8f",
+    "brightCyan": "#2be4d0",
+    "brightWhite": "#fce8c3",
+
+    "orange": "#ff5f00",
+    "brightOrange": "#ff8700",
+    "hardBlack": "#121212",
+
+    "xgray1": "#262626",
+    "xgray2": "#303030",
+    "xgray3": "#3a3a3a",
+    "xgray3Opacity": "#3a3a3a22",
+    "xgray4": "#444444",
+    "xgray5": "#4e4e4e",
+    "xgray6": "#585858"
+  },
+  "ui": {
+    "*": {
+      "background": "bg1",
+      "foreground": "fg0",
+
+      "selectionBackground": "xgray2",
+      "selectionInactiveBackground": "bg0",
+      "selectionInactiveForeground": "fg0",
+      "underlineColor": "magenta",
+
+      "hoverBackground": "xgrax3Opacity",
+
+      "borderColor": "bg2",
+      "separatorColor": "bg2",
+      "disabledBorderColor": "bg0"
+    },
+    "ActionButton": {
+      "hoverBackground": "bg3"
+    },
+    "Button": {
+      "startBackground": "bg3",
+      "endBackground": "bg3",
+      "startBorderColor": "bg3",
+      "endBorderColor": "bg3",
+      "default": {
+        "startBackground": "bg3",
+        "endBackground": "bg3",
+        "startBorderColor": "bg3",
+        "endBorderColor": "bg3"
+      }
+    },
+    "EditorTabs": {
+      "underlinedTabBackground": "bg3",
+      "inactiveUnderlineColor": "xgray6"
+    },
+    "FileColor": {
+      "Blue": "blueOpacity",
+      "Green": "greenOpacity",
+      "Gray": "whiteOpacity",
+      "Orange": "orangeOpacity",
+      "Rose": "magentaOpacity",
+      "Yellow": "yellowOpacity"
+    },
+    "Link": {
+      "activeForeground": "brightBlue",
+      "hoverForeground": "blue"
+    },
+    "Table": {
+      "stripeColor": "bg0",
+      "lightSelectionForeground": "fg0",
+      "lightSelectionInactiveForeground":"fg3",
+      "lightSelectionBackground": "bg2",
+      "lightSelectionInactiveBackground":"bg0"
+    },
+    "TextArea": {
+      "background": "bg0",
+      "foreground": "fg0",
+      "selectionBackground": "bg1",
+      "selectionForeground": "fg0"
+    },
+    "ToolWindow": {
+      "Header": {
+        "background": "bg3",
+        "inactiveBackground": "bg1"
+      },
+      "HeaderTab": {
+        "selectedInactiveBackground": "bg1"
+      }
+    }
+  },
+  "icons": {
+    "ColorPalette": {
+      "Actions.Blue": "#2c78bf",
+      "Actions.Green": "#519f50",
+      "Actions.Grey": "#baa67f",
+      "Actions.Red": "#ef2f27",
+      "Actions.Yellow": "#fbb829",
+
+      "Objects.Blue": "#68a8e4",
+      "Objects.Green": "#98bc37",
+      "Objects.Grey": "#baa67f",
+      "Objects.Red": "#f75341",
+      "Objects.Yellow": "#fed06e",
+      "Objects.Pink": "#ff5c8f",
+
+      "Checkbox.Background.Default.Dark": "#282828",
+      "Checkbox.Border.Default.Dark": "#fbf1c7",
+      "Checkbox.Foreground.Selected.Dark": "#fbf1c7",
+      "Checkbox.Focus.Wide.Dark": "#458588",
+      "Checkbox.Focus.Thin.Default.Dark": "#458588",
+      "Checkbox.Focus.Thin.Selected.Dark": "#458588",
+      "Checkbox.Background.Disabled.Dark": "#282828",
+      "Checkbox.Border.Disabled.Dark": "#a89984",
+      "Checkbox.Foreground.Disabled.Dark": "#a89984"
+    }
+  }
+}

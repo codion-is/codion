@@ -20,9 +20,7 @@
  * Source used in the manual.
  */
 module is.codion.manual {
-	requires java.desktop;
 	requires net.sf.jasperreports.core;
-	requires is.codion.common.core;
 	requires is.codion.dbms.h2;
 	requires is.codion.framework.db.local;
 	requires is.codion.framework.db.rmi;
@@ -30,13 +28,12 @@ module is.codion.manual {
 	requires is.codion.framework.server;
 	requires is.codion.framework.servlet;
 	requires is.codion.tools.loadtest.ui;
-	requires is.codion.swing.common.ui;
 	requires is.codion.swing.framework.model;
 	requires is.codion.swing.framework.ui;
 	requires is.codion.plugin.jasperreports;
+	requires is.codion.plugin.intellij.themes;
 	requires is.codion.framework.domain.test;
 	requires org.junit.jupiter.api;
-	requires com.formdev.flatlaf.intellijthemes;
 
 	exports is.codion.manual.store.domain;
 	exports is.codion.manual.store.minimal.domain;

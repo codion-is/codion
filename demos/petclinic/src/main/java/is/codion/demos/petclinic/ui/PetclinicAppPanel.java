@@ -30,21 +30,18 @@ import is.codion.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.demos.petclinic.domain.api.Visit;
 import is.codion.demos.petclinic.model.PetclinicAppModel;
 import is.codion.demos.petclinic.model.VetSpecialtyEditModel;
+import is.codion.plugin.intellij.IntelliJThemes;
+import is.codion.plugin.intellij.themes.arc.Arc;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
-import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
-
-	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme";
 
 	public PetclinicAppPanel(PetclinicAppModel appModel) {
 		super(appModel);
@@ -102,15 +99,14 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
 	public static void main(String[] args) throws CancelException {
 		Locale.setDefault(new Locale("en", "EN"));
-		Arrays.stream(FlatAllIJThemes.INFOS)
-						.forEach(LookAndFeelProvider::addLookAndFeel);
+		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
 		EntityApplicationPanel.builder(PetclinicAppModel.class, PetclinicAppPanel.class)
 						.applicationName("Petclinic")
 						.domainType(Petclinic.DOMAIN)
 						.displayStartupDialog(false)
-						.defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
+						.defaultLookAndFeelClassName(Arc.class.getName())
 						.defaultLoginUser(User.parse("scott:tiger"))
 						.start();
 	}

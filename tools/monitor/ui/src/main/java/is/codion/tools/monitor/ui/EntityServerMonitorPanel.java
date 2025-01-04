@@ -25,6 +25,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
+import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
@@ -39,7 +40,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.monitor.model.EntityServerMonitor;
 import is.codion.tools.monitor.model.HostMonitor;
 
-import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +56,6 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.model.UserPreferences.setUserPreference;
@@ -302,7 +301,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	public static void main(String[] arguments) {
 		UiManagerDefaults.initialize();
 		Clients.resolveTrustStore();
-		Arrays.stream(FlatAllIJThemes.INFOS)
+		IntelliJThemes.get()
 						.forEach(LookAndFeelProvider::addLookAndFeel);
 		SwingUtilities.invokeLater(() -> {
 			try {

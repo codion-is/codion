@@ -17,7 +17,7 @@ dependencies {
 
     runtimeOnly(project(":codion-plugin-logback-proxy"))
 
-    implementation(libs.flatlaf.intellij.themes)
+    implementation(project(":codion-plugin-intellij-themes"))
     implementation(libs.ikonli.foundation.pack)
 
     testImplementation(project(":codion-framework-domain-test"))
