@@ -22,6 +22,7 @@ import is.codion.common.model.CancelException;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class ExceptionDialogBuilderTest {
 	@Test
 	void unwrap() {
 		Exception rootException = new Exception();
-		RuntimeException wrapper = new RuntimeException(rootException);
+		Exception wrapper = new RuntimeException(rootException);
 		List<Class<? extends Throwable>> toUnwrap = new ArrayList<>();
 		toUnwrap.add(RuntimeException.class);
 		Throwable unwrapped = ExceptionDialogBuilder.unwrap(wrapper, toUnwrap);
@@ -55,5 +56,21 @@ public class ExceptionDialogBuilderTest {
 		rootException = new RuntimeException();
 		unwrapped = ExceptionDialogBuilder.unwrap(rootException, toUnwrap);
 		assertEquals(rootException, unwrapped);
+
+		rootException = new TestRuntimeException();
+		wrapper = new RuntimeException(new InvocationTargetException(rootException));
+
+		unwrapped = ExceptionDialogBuilder.unwrap(rootException, toUnwrap);
+		assertEquals(rootException, unwrapped);
+
+		rootException = new TestRuntimeException();
+		wrapper = new InvocationTargetException(new RuntimeException(rootException));
+
+		unwrapped = ExceptionDialogBuilder.unwrap(rootException, toUnwrap);
+		assertEquals(rootException, unwrapped);
+	}
+
+	private static final class TestRuntimeException extends RuntimeException {
+		private TestRuntimeException() {}
 	}
 }

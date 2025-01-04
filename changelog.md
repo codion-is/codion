@@ -9,6 +9,7 @@ Codion Change Log
 - ItemComboBoxModel removed, methods moved to FilterComboBoxModel.
 ### is.codion.swing.common.ui
 - LookAndFeelPanel.initializeLookAndFeelDefaults() error message improved.
+- ExceptionDialogBuilder.WRAPPER_EXCEPTIONS, RuntimeException re-added, but unwrapping now unwraps according to the exact class, not isAssignableFrom, RemoteException removed.
 ### is.codion.swing.framework.ui 
 - DefaultEntityApplicationPanelBuilder no longer validates that the look and feel exists on the classpath, should not prevent application start.
 
