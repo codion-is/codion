@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - ItemComboBoxModel.builder() moved to FilterComboBoxModel.
 - ItemComboBoxModel removed, methods moved to FilterComboBoxModel.
+- DefaultItemComboBoxModelBuilder null handling now nullItem() based.
 ### is.codion.swing.common.ui
 - LookAndFeelPanel.initializeLookAndFeelDefaults() error message improved.
 - ExceptionDialogBuilder.WRAPPER_EXCEPTIONS, RuntimeException re-added, but unwrapping now unwraps according to the exact class, not isAssignableFrom, RemoteException removed.

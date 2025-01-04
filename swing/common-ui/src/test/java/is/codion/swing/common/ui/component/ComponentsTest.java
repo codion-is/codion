@@ -519,8 +519,8 @@ public final class ComponentsTest {
 						.buildValue();
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
 		FilterComboBoxModel<Item<Integer>> model = (FilterComboBoxModel<Item<Integer>>) comboBox.getModel();
-		assertEquals(0, model.items().visible().indexOf(Item.item(null)));
-		assertTrue(model.items().contains(Item.item(null)));
+		assertEquals(0, model.items().visible().indexOf(null));
+		assertTrue(model.items().contains(null));
 
 		assertNull(value.get());
 		comboBox.setSelectedItem(1);
@@ -530,7 +530,7 @@ public final class ComponentsTest {
 		comboBox.setSelectedItem(3);
 		assertEquals(3, value.get());
 		comboBox.setSelectedItem(4);//does not exist
-		assertEquals(3, value.get());
+		assertNull(value.get());
 	}
 
 	@Test

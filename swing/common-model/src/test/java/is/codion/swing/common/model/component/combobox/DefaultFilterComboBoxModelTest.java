@@ -379,7 +379,7 @@ public class DefaultFilterComboBoxModelTest {
 						.sorted(true)
 						.build();
 
-		assertEquals(0, model.items().visible().indexOf(nullItem));
+		assertEquals(0, model.items().visible().indexOf(null));
 		assertEquals(1, model.items().visible().indexOf(aOne));
 		assertEquals(2, model.items().visible().indexOf(bTwo));
 		assertEquals(3, model.items().visible().indexOf(cThree));
@@ -396,12 +396,12 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(4, model.selection().item().getOrThrow().value());
 		assertEquals(model.getSelectedItem(), dFour);
 		model.setSelectedItem(null);
-		assertNull(model.selection().item().getOrThrow().value());
+		assertNull(model.selection().item().get());
 		assertEquals(model.getSelectedItem(), nullItem);
 
 		model.items().refresh();
 
-		assertEquals(0, model.items().visible().indexOf(nullItem));
+		assertEquals(0, model.items().visible().indexOf(null));
 		assertEquals(1, model.items().visible().indexOf(aOne));
 		assertEquals(2, model.items().visible().indexOf(bTwo));
 		assertEquals(3, model.items().visible().indexOf(cThree));
@@ -409,7 +409,7 @@ public class DefaultFilterComboBoxModelTest {
 
 		FilterComboBoxModel<Item<Integer>> unsortedModel = FilterComboBoxModel.builder(items).build();
 
-		assertEquals(0, unsortedModel.items().visible().indexOf(nullItem));
+		assertEquals(0, unsortedModel.items().visible().indexOf(null));
 		assertEquals(1, unsortedModel.items().visible().indexOf(cThree));
 		assertEquals(2, unsortedModel.items().visible().indexOf(bTwo));
 		assertEquals(3, unsortedModel.items().visible().indexOf(aOne));
@@ -418,13 +418,16 @@ public class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void booleanItemComboBoxModel() {
-		FilterComboBoxModel<Item<Boolean>> model = FilterComboBoxModel.builder(booleanItems()).build();
+		List<Item<Boolean>> items = booleanItems();
+		FilterComboBoxModel<Item<Boolean>> model = FilterComboBoxModel.builder(items).build();
+		assertSame(items.get(0), model.getSelectedItem());
+		assertNull(model.selection().item().get());
 		model.setSelectedItem(false);
 		assertEquals(false, model.selection().item().getOrThrow().value());
 		model.setSelectedItem(true);
 		assertEquals(true, model.selection().item().getOrThrow().value());
 		model.setSelectedItem(null);
-		assertNull(model.selection().item().getOrThrow().value());
+		assertNull(model.selection().item().get());
 	}
 
 	@BeforeEach

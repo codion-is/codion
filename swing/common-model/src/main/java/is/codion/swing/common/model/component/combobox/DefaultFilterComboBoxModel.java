@@ -179,12 +179,15 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	static final class DefaultItemComboBoxModelBuilder<T> implements ItemComboBoxModelBuilder<T> {
 
 		private final List<Item<T>> items;
+		private final Item<T> nullItem;
 
 		private boolean sorted = false;
 		private Comparator<Item<T>> comparator;
 
-		DefaultItemComboBoxModelBuilder(List<Item<T>> items) {
-			this.items = requireNonNull(items);
+		DefaultItemComboBoxModelBuilder(List<Item<T>> modelItems) {
+			items = new ArrayList<>(requireNonNull(modelItems));
+			int indexOfNullItem = items.indexOf(Item.item(null));
+			nullItem = indexOfNullItem >= 0 ? items.remove(indexOfNullItem) : null;
 		}
 
 		@Override
@@ -206,7 +209,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public FilterComboBoxModel<Item<T>> build() {
 			FilterComboBoxModel.Builder<Item<T>> builder = new DefaultBuilder<>(items, null)
-							.translator(new SelectedItemTranslator<>(items));
+							.translator(new SelectedItemTranslator<>(items))
+							.nullItem(nullItem);
 			if (!sorted) {
 				builder.comparator(null);
 			}
@@ -214,12 +218,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				builder.comparator(comparator);
 			}
 
-			FilterComboBoxModel<Item<T>> comboBoxModel = builder.build();
-			if (comboBoxModel.items().contains(Item.item(null))) {
-				comboBoxModel.setSelectedItem(null);
-			}
-
-			return comboBoxModel;
+			return builder.build();
 		}
 	}
 
