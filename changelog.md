@@ -7,6 +7,8 @@ Codion Change Log
 ### is.codion.swing.common.model
 - ItemComboBoxModel.builder() moved to FilterComboBoxModel.
 - ItemComboBoxModel removed, methods moved to FilterComboBoxModel.
+### is.codion.swing.framework.ui 
+- DefaultEntityApplicationPanelBuilder no longer validates that the look and feel exists on the classpath, should not prevent application start.
 
 ## 0.18.23
 ### is.codion.common
