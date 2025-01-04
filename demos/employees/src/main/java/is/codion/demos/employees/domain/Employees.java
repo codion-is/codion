@@ -117,6 +117,7 @@ public final class Employees extends DomainModel {
 														.column()
 														.caption("Name")
 														.maximumLength(14)
+														.searchable(true)
 														.nullable(false),
 										Department.LOCATION.define()
 														.column()
