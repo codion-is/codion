@@ -491,8 +491,6 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * @param arguments no arguments required
 	 */
 	public static void main(String[] arguments) {
-		LookAndFeelProvider.SYSTEM.set(false);
-		LookAndFeelProvider.CROSS_PLATFORM.set(false);
 		findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName(),
 						MaterialTheme.class.getName())).ifPresent(LookAndFeelProvider::enable);
 		try {

@@ -12,6 +12,8 @@ Codion Change Log
 - LookAndFeelPanel.initializeLookAndFeelDefaults() error message improved.
 - ExceptionDialogBuilder.WRAPPER_EXCEPTIONS, RuntimeException re-added, but unwrapping now unwraps according to the exact class, not isAssignableFrom, RemoteException removed.
 - LookAndFeelProviders added, ServiceLoader based, related refactoring.
+- LookAndFeelProvider.CROSS_PLATFORM and SYSTEM configuration values removed.
+- LookAndFeelComboBox now populates the first item with the system or cross platform look and feels, depending on LookAndFeelComboBox.DEFAULT_LOOK_AND_FEEL, 
 ### is.codion.swing.framework.ui 
 - DefaultEntityApplicationPanelBuilder no longer validates that the look and feel exists on the classpath, should not prevent application start.
 ### is.codion.plugin.intellij.themes

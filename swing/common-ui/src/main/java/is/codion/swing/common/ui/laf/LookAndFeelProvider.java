@@ -18,9 +18,7 @@
  */
 package is.codion.swing.common.ui.laf;
 
-import is.codion.common.Configuration;
 import is.codion.common.model.UserPreferences;
-import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.LookAndFeel;
@@ -33,27 +31,9 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Provides a LookAndFeel implementation.
+ * Provides a {@link LookAndFeel} implementation.
  */
 public interface LookAndFeelProvider {
-
-	/**
-	 * Specifies whether the cross platform Look and Feel should be available for selection.
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 */
-	PropertyValue<Boolean> CROSS_PLATFORM = Configuration.booleanValue(LookAndFeelProvider.class.getName() + ".crossPlatform", true);
-
-	/**
-	 * Specifies whether the cross platform Look and Feel should be available for selection.
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 */
-	PropertyValue<Boolean> SYSTEM = Configuration.booleanValue(LookAndFeelProvider.class.getName() + ".system", true);
 
 	/**
 	 * @return the look and feel info
@@ -72,7 +52,7 @@ public interface LookAndFeelProvider {
 	LookAndFeel lookAndFeel();
 
 	/**
-	 * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to enable.
+	 * Instantiates a new {@link LookAndFeelProvider}, using {@link UIManager#setLookAndFeel(String)} to enable.
 	 * @param lookAndFeelInfo the look and feel info
 	 * @return a look and feel provider
 	 */
@@ -81,7 +61,7 @@ public interface LookAndFeelProvider {
 	}
 
 	/**
-	 * Instantiates a new LookAndFeelProvider.
+	 * Instantiates a new {@link LookAndFeelProvider}.
 	 * @param lookAndFeelInfo the look and feel info
 	 * @param enabler configures and enables this look and feel
 	 * @return a look and feel provider
