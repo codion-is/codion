@@ -24,14 +24,12 @@ import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.model.ChinookAppModel;
 import is.codion.demos.chinook.model.TrackTableModel;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.plugin.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -174,7 +172,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	public static void main(String[] args) throws CancelException {
 		String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
 		Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
-		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS);
 		Completion.COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
 		EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);

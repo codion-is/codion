@@ -24,12 +24,10 @@ import is.codion.demos.employees.domain.Employees.Department;
 import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.plugin.intellij.themes.arc.Arc;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -111,7 +109,6 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
 	// tag::main[]
 	public static void main(String[] args) {
-		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		EntityApplicationPanel.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
 						.applicationName("Employees")

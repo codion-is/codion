@@ -24,6 +24,6 @@ public class IntelliJThemesTest {
 
 	@Test
 	void test() {
-		IntelliJThemes.get().forEach(theme -> theme.lookAndFeel().getDefaults());
+		new IntelliJThemes().get().forEach(theme -> theme.lookAndFeel().getDefaults());
 	}
 }

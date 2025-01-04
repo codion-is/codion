@@ -47,6 +47,8 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
 				LOOK_AND_FEEL_PROVIDERS.put(systemProvider.lookAndFeelInfo().getClassName(), systemProvider);
 			}
 		}
+		LookAndFeelProviders.instances().forEach(providers ->
+						providers.get().forEach(LookAndFeelProviders::addLookAndFeel));
 	}
 
 	private final LookAndFeelInfo lookAndFeelInfo;

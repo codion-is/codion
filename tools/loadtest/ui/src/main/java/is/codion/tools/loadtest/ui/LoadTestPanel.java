@@ -21,7 +21,6 @@ package is.codion.tools.loadtest.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -72,7 +71,7 @@ import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProviders.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
@@ -103,8 +102,6 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	static {
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-		IntelliJThemes.get()
-						.forEach(LookAndFeelProvider::addLookAndFeel);
 		findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName()))
 						.ifPresent(LookAndFeelProvider::enable);
 	}

@@ -26,12 +26,10 @@ import is.codion.demos.schemabrowser.domain.SchemaBrowser.Schema;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.plugin.intellij.themes.arc.Arc;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -82,7 +80,6 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 	}
 
 	public static void main(String[] args) {
-		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		EntityTablePanel.Config.CONDITION_VIEW.set(ConditionView.SIMPLE);
 		EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList(

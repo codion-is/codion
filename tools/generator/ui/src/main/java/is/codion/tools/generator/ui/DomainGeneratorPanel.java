@@ -24,7 +24,6 @@ import is.codion.common.model.CancelException;
 import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.plugin.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
@@ -75,7 +74,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProviders.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Arrays.asList;
@@ -492,7 +491,6 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * @param arguments no arguments required
 	 */
 	public static void main(String[] arguments) {
-		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		LookAndFeelProvider.SYSTEM.set(false);
 		LookAndFeelProvider.CROSS_PLATFORM.set(false);
 		findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName(),

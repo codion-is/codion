@@ -22,7 +22,7 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.plugin.intellij.IntelliJThemes;
+import is.codion.plugin.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 import is.codion.swing.common.ui.Sizes;
@@ -56,7 +56,7 @@ import java.util.function.Predicate;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProviders.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_SPACE;
@@ -412,9 +412,7 @@ public final class ApplicationPanel extends JPanel {
 	}
 
 	public static void main(String[] args) {
-		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
-
-		findLookAndFeelProvider( "is.codion.plugin.intellij.themes.monokaipro.MonokaiPro")
+		findLookAndFeelProvider(MonokaiPro.class)
 						.ifPresent(LookAndFeelProvider::enable);
 
 		ApplicationModel applicationModel = new ApplicationModel();

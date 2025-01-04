@@ -20,7 +20,6 @@ package is.codion.manual.keybinding;
 
 import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.ColumnId;
 import is.codion.manual.keybinding.KeyBindingModel.KeyBindingRow;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
@@ -40,7 +39,7 @@ import java.util.List;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProviders.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 /**
@@ -99,8 +98,6 @@ public final class KeyBindingPanel extends JPanel {
 
 	public static void main(String[] args) {
 		System.setProperty("sun.awt.disablegrab", "true");
-		IntelliJThemes.get()
-						.forEach(LookAndFeelProvider::addLookAndFeel);
 		findLookAndFeelProvider("is.codion.plugin.intellij.themes.monokaipro.MonokaiPro")
 						.ifPresent(LookAndFeelProvider::enable);
 		SwingUtilities.invokeLater(() -> Windows.frame(new KeyBindingPanel())

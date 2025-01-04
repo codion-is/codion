@@ -28,9 +28,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.Window;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -91,50 +88,6 @@ public interface LookAndFeelProvider {
 	 */
 	static LookAndFeelProvider lookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
 		return new DefaultLookAndFeelProvider(lookAndFeelInfo, enabler);
-	}
-
-	/**
-	 * Adds a new look and feel provider.
-	 * @param lookAndFeelInfo the look and feel info
-	 */
-	static void addLookAndFeel(LookAndFeelInfo lookAndFeelInfo) {
-		addLookAndFeel(lookAndFeelProvider(lookAndFeelInfo));
-	}
-
-	/**
-	 * Adds a new look and feel provider.
-	 * @param lookAndFeelInfo the look and feel info
-	 * @param enabler configures and enables this look and feel
-	 */
-	static void addLookAndFeel(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
-		addLookAndFeel(lookAndFeelProvider(lookAndFeelInfo, enabler));
-	}
-
-	/**
-	 * Adds the given look and feel provider.
-	 * Note that this replaces any existing look and feel provider based on the same classname.
-	 * @param lookAndFeelProvider the look and feel provider to add
-	 */
-	static void addLookAndFeel(LookAndFeelProvider lookAndFeelProvider) {
-		DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS
-						.put(requireNonNull(lookAndFeelProvider).lookAndFeelInfo().getClassName(), lookAndFeelProvider);
-	}
-
-	/**
-	 * @return the available {@link LookAndFeelProvider}s
-	 * @see #addLookAndFeel(LookAndFeelProvider)
-	 */
-	static Map<String, LookAndFeelProvider> lookAndFeelProviders() {
-		return Collections.unmodifiableMap(DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS);
-	}
-
-	/**
-	 * Returns a look and feel provider with the given classname, if available
-	 * @param className the look and feel classname
-	 * @return a look and feel provider, an empty Optional if not found
-	 */
-	static Optional<LookAndFeelProvider> findLookAndFeelProvider(String className) {
-		return className == null ? Optional.empty() : Optional.ofNullable(DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.get(className));
 	}
 
 	/**

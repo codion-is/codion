@@ -120,6 +120,7 @@ import is.codion.plugin.intellij.themes.trashpanda.TrashPandaStarlight;
 import is.codion.plugin.intellij.themes.vuesion.Vuesion;
 import is.codion.plugin.intellij.themes.xcodedark.XcodeDark;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.laf.LookAndFeelProviders;
 
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Collection;
@@ -132,15 +133,12 @@ import static java.util.Collections.unmodifiableList;
  * <p>Provides Look And Feels based on IntelliJ themes.
  * <p>Uses Flat Look And Feel under the hood.
  */
-public final class IntelliJThemes {
+public final class IntelliJThemes implements LookAndFeelProviders {
 
-	private IntelliJThemes() {}
+	private final Collection<LookAndFeelProvider> providers;
 
-	/**
-	 * @return all available IntelliJ Theme Look and Feels
-	 */
-	public static Collection<LookAndFeelProvider> get() {
-		return unmodifiableList(asList(
+	public IntelliJThemes() {
+		providers = unmodifiableList(asList(
 						lookAndFeelProvider(new LookAndFeelInfo("Nature Aurora Borealis", AuroraBorealis.class.getName())),
 						lookAndFeelProvider(new LookAndFeelInfo("Nature Autumn", Autumn.class.getName())),
 						lookAndFeelProvider(new LookAndFeelInfo("Nature Everest", Everest.class.getName())),
@@ -250,5 +248,12 @@ public final class IntelliJThemes {
 						lookAndFeelProvider(new LookAndFeelInfo("Vuesion", Vuesion.class.getName())),
 						lookAndFeelProvider(new LookAndFeelInfo("XCode Dark", XcodeDark.class.getName()))
 		));
+	}
+
+	/**
+	 * @return all available IntelliJ Theme Look and Feels
+	 */
+	public Collection<LookAndFeelProvider> get() {
+		return providers;
 	}
 }

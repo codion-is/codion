@@ -29,10 +29,8 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.plugin.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -208,7 +206,6 @@ public final class ClientTutorial {
 	public static void main(String[] args) {
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
-		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)

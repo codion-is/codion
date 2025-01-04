@@ -30,9 +30,7 @@ import is.codion.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.demos.petclinic.domain.api.Visit;
 import is.codion.demos.petclinic.model.PetclinicAppModel;
 import is.codion.demos.petclinic.model.VetSpecialtyEditModel;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.plugin.intellij.themes.arc.Arc;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -99,7 +97,6 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
 	public static void main(String[] args) throws CancelException {
 		Locale.setDefault(new Locale("en", "EN"));
-		IntelliJThemes.get().forEach(LookAndFeelProvider::addLookAndFeel);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
 		EntityApplicationPanel.builder(PetclinicAppModel.class, PetclinicAppPanel.class)

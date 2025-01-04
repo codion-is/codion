@@ -68,4 +68,7 @@ module is.codion.plugin.intellij.themes {
 	exports is.codion.plugin.intellij.themes.trashpanda;
 	exports is.codion.plugin.intellij.themes.vuesion;
 	exports is.codion.plugin.intellij.themes.xcodedark;
+
+	provides is.codion.swing.common.ui.laf.LookAndFeelProviders
+					with is.codion.plugin.intellij.IntelliJThemes;
 }

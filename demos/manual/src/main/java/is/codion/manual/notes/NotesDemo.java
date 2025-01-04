@@ -32,13 +32,11 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.model.EntityEditModel.EntityEditor;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.plugin.intellij.themes.material.MaterialDarker;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -296,9 +294,6 @@ public final class NotesDemo {
 	private static void startApplication() {
 		// Change the default horizontal alignment for temporal table columns
 		FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-		// Make all the IntelliJ themes available (View -> Select Look & Feel)
-		IntelliJThemes.get()
-						.forEach(LookAndFeelProvider::addLookAndFeel);
 
 		EntityApplicationPanel.builder(NotesApplicationModel.class, NotesApplicationPanel.class)
 						.frameTitle("Notes")
@@ -310,6 +305,7 @@ public final class NotesDemo {
 						.connectionProviderFactory(new NotesConnectionProviderFactory())
 						// Automatically login with the H2Database super user
 						.automaticLoginUser(User.user("sa"))
+						// IntelliJ theme based Flat Look and Feels are available
 						.defaultLookAndFeelClassName(MaterialDarker.class.getName())
 						// Runs on the EventDispatchThread
 						.start();

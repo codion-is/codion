@@ -58,15 +58,14 @@ public class ExceptionDialogBuilderTest {
 		assertEquals(rootException, unwrapped);
 
 		rootException = new TestRuntimeException();
-		wrapper = new RuntimeException(new InvocationTargetException(rootException));
+		toUnwrap.add(InvocationTargetException.class);
 
-		unwrapped = ExceptionDialogBuilder.unwrap(rootException, toUnwrap);
+		unwrapped = ExceptionDialogBuilder.unwrap(new RuntimeException(new InvocationTargetException(rootException)), toUnwrap);
 		assertEquals(rootException, unwrapped);
 
 		rootException = new TestRuntimeException();
-		wrapper = new InvocationTargetException(new RuntimeException(rootException));
 
-		unwrapped = ExceptionDialogBuilder.unwrap(rootException, toUnwrap);
+		unwrapped = ExceptionDialogBuilder.unwrap(new InvocationTargetException(new RuntimeException(rootException)), toUnwrap);
 		assertEquals(rootException, unwrapped);
 	}
 

@@ -25,7 +25,6 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
@@ -62,7 +61,7 @@ import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProviders.findLookAndFeelProvider;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
@@ -301,8 +300,6 @@ public final class EntityServerMonitorPanel extends JPanel {
 	public static void main(String[] arguments) {
 		UiManagerDefaults.initialize();
 		Clients.resolveTrustStore();
-		IntelliJThemes.get()
-						.forEach(LookAndFeelProvider::addLookAndFeel);
 		SwingUtilities.invokeLater(() -> {
 			try {
 				findLookAndFeelProvider(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName()))

@@ -46,8 +46,8 @@ import static javax.swing.UIManager.getLookAndFeel;
  * Instantiate via factory methods {@link #lookAndFeelComboBox()} or {@link #lookAndFeelComboBox(boolean)}.
  * @see #lookAndFeelComboBox()
  * @see #lookAndFeelComboBox(boolean)
- * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelInfo)
- * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelProvider)
+ * @see LookAndFeelProviders#addLookAndFeel(LookAndFeelInfo)
+ * @see LookAndFeelProviders#addLookAndFeel(LookAndFeelProvider)
  */
 public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvider>> {
 
@@ -175,7 +175,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 	}
 
 	private static List<Item<LookAndFeelProvider>> initializeAvailableLookAndFeels() {
-		return LookAndFeelProvider.lookAndFeelProviders().values().stream()
+		return LookAndFeelProviders.lookAndFeelProviders().stream()
 						.sorted(Comparator.comparing(lookAndFeelProvider -> lookAndFeelProvider.lookAndFeelInfo().getName()))
 						.map(provider -> Item.item(provider, provider.lookAndFeelInfo().getName()))
 						.collect(Collectors.toList());

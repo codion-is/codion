@@ -27,10 +27,8 @@ import is.codion.demos.world.domain.api.World.Lookup;
 import is.codion.demos.world.model.ContinentModel;
 import is.codion.demos.world.model.CountryModel;
 import is.codion.demos.world.model.WorldAppModel;
-import is.codion.plugin.intellij.IntelliJThemes;
 import is.codion.plugin.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -69,8 +67,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
 	public static void main(String[] args) throws CancelException {
 		Locale.setDefault(new Locale("en", "EN"));
-		IntelliJThemes.get()
-						.forEach(LookAndFeelProvider::addLookAndFeel);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
