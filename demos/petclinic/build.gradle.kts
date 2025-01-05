@@ -7,7 +7,7 @@ dependencies {
     runtimeOnly(project(":codion-framework-db-rmi"))
     runtimeOnly(project(":codion-framework-db-http"))
 
-    implementation(project(":codion-plugin-intellij-themes"))
+    implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
     testImplementation(project(":codion-framework-domain-test"))
     testImplementation(project(":codion-swing-framework-ui-test"))

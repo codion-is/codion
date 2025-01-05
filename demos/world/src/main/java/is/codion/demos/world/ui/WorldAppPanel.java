@@ -27,7 +27,7 @@ import is.codion.demos.world.domain.api.World.Lookup;
 import is.codion.demos.world.model.ContinentModel;
 import is.codion.demos.world.model.CountryModel;
 import is.codion.demos.world.model.WorldAppModel;
-import is.codion.plugin.intellij.themes.monokaipro.MonokaiPro;
+import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;

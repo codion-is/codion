@@ -24,7 +24,7 @@ import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.manual.store.minimal.domain.Store;
-import is.codion.plugin.intellij.themes.material.MaterialDarker;
+import is.codion.plugin.flatlaf.intellij.themes.material.MaterialDarker;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;

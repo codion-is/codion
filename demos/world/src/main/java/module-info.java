@@ -28,7 +28,7 @@ module is.codion.demos.world {
 	requires org.jfree.jfreechart;
 	requires org.jxmapviewer.jxmapviewer2;
 	requires org.json;
-	requires is.codion.plugin.intellij.themes;
+	requires is.codion.plugin.flatlaf.intellij.themes;
 
 	exports is.codion.demos.world.domain;
 	exports is.codion.demos.world.model

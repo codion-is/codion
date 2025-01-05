@@ -17,7 +17,7 @@ dependencies {
     implementation(project(":codion-framework-servlet"))
     implementation(project(":codion-dbms-h2"))
 
-    implementation(project(":codion-plugin-intellij-themes"))
+    implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
     implementation(libs.jasperreports) {
         isTransitive = false

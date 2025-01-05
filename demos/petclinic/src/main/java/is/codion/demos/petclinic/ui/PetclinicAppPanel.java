@@ -30,7 +30,7 @@ import is.codion.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.demos.petclinic.domain.api.Visit;
 import is.codion.demos.petclinic.model.PetclinicAppModel;
 import is.codion.demos.petclinic.model.VetSpecialtyEditModel;
-import is.codion.plugin.intellij.themes.arc.Arc;
+import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;

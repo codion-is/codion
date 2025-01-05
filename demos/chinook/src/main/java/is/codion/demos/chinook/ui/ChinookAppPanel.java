@@ -24,7 +24,7 @@ import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.model.ChinookAppModel;
 import is.codion.demos.chinook.model.TrackTableModel;
-import is.codion.plugin.intellij.themes.materialtheme.MaterialTheme;
+import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;

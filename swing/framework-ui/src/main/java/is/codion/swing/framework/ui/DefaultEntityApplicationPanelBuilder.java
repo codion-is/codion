@@ -774,148 +774,148 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	static {
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkIJTheme",
-						"is.codion.plugin.intellij.themes.material.ArcDark");
+						"is.codion.plugin.flatlaf.intellij.themes.material.ArcDark");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme",
-						"is.codion.plugin.intellij.themes.material.AtomOneDark");
+						"is.codion.plugin.flatlaf.intellij.themes.material.AtomOneDark");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightIJTheme",
-						"is.codion.plugin.intellij.themes.material.AtomOneLight");
+						"is.codion.plugin.flatlaf.intellij.themes.material.AtomOneLight");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme",
-						"is.codion.plugin.intellij.themes.material.Dracula");
+						"is.codion.plugin.flatlaf.intellij.themes.material.Dracula");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme",
-						"is.codion.plugin.intellij.themes.material.GitHubMaterial");
+						"is.codion.plugin.flatlaf.intellij.themes.material.GitHubMaterial");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme",
-						"is.codion.plugin.intellij.themes.material.GitHubDarkMaterial");
+						"is.codion.plugin.flatlaf.intellij.themes.material.GitHubDarkMaterial");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatLightOwlIJTheme",
-						"is.codion.plugin.intellij.themes.material.LightOwl");
+						"is.codion.plugin.flatlaf.intellij.themes.material.LightOwl");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme",
-						"is.codion.plugin.intellij.themes.material.MaterialDarker");
+						"is.codion.plugin.flatlaf.intellij.themes.material.MaterialDarker");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanIJTheme",
-						"is.codion.plugin.intellij.themes.material.MaterialDeepOcean");
+						"is.codion.plugin.flatlaf.intellij.themes.material.MaterialDeepOcean");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterIJTheme",
-						"is.codion.plugin.intellij.themes.material.MaterialLighter");
+						"is.codion.plugin.flatlaf.intellij.themes.material.MaterialLighter");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicIJTheme",
-						"is.codion.plugin.intellij.themes.material.MaterialOceanic");
+						"is.codion.plugin.flatlaf.intellij.themes.material.MaterialOceanic");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialPalenightIJTheme",
-						"is.codion.plugin.intellij.themes.material.MaterialPalenight");
+						"is.codion.plugin.flatlaf.intellij.themes.material.MaterialPalenight");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProIJTheme",
-						"is.codion.plugin.intellij.themes.material.MonokaiProMaterial");
+						"is.codion.plugin.flatlaf.intellij.themes.material.MonokaiProMaterial");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMoonlightIJTheme",
-						"is.codion.plugin.intellij.themes.material.Moonlight");
+						"is.codion.plugin.flatlaf.intellij.themes.material.Moonlight");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlIJTheme",
-						"is.codion.plugin.intellij.themes.material.NightOwl");
+						"is.codion.plugin.flatlaf.intellij.themes.material.NightOwl");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkIJTheme",
-						"is.codion.plugin.intellij.themes.material.SolarizedDark");
+						"is.codion.plugin.flatlaf.intellij.themes.material.SolarizedDark");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightIJTheme",
-						"is.codion.plugin.intellij.themes.material.SolarizedLight");
+						"is.codion.plugin.flatlaf.intellij.themes.material.SolarizedLight");
 
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme",
-						"is.codion.plugin.intellij.themes.arc.ArcOrange");
+						"is.codion.plugin.flatlaf.intellij.themes.arc.ArcOrange");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme",
-						"is.codion.plugin.intellij.themes.arc.ArcDarkOrange");
+						"is.codion.plugin.flatlaf.intellij.themes.arc.ArcDarkOrange");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme",
-						"is.codion.plugin.intellij.themes.arc.ArcDark");
+						"is.codion.plugin.flatlaf.intellij.themes.arc.ArcDark");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatArcIJTheme",
-						"is.codion.plugin.intellij.themes.arc.Arc");
+						"is.codion.plugin.flatlaf.intellij.themes.arc.Arc");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme",
-						"is.codion.plugin.intellij.themes.carbon.Carbon");
+						"is.codion.plugin.flatlaf.intellij.themes.carbon.Carbon");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatCobalt2IJTheme",
-						"is.codion.plugin.intellij.themes.cobalt2.Cobalt2");
+						"is.codion.plugin.flatlaf.intellij.themes.cobalt2.Cobalt2");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme",
-						"is.codion.plugin.intellij.themes.cyan.Cyan");
+						"is.codion.plugin.flatlaf.intellij.themes.cyan.Cyan");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme",
-						"is.codion.plugin.intellij.themes.darkflat.DarkFlat");
+						"is.codion.plugin.flatlaf.intellij.themes.darkflat.DarkFlat");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme",
-						"is.codion.plugin.intellij.themes.darkpurple.DarkPurple");
+						"is.codion.plugin.flatlaf.intellij.themes.darkpurple.DarkPurple");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme",
-						"is.codion.plugin.intellij.themes.dracula.Dracula");
+						"is.codion.plugin.flatlaf.intellij.themes.dracula.Dracula");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatGradiantoDarkFuchsiaIJTheme",
-						"is.codion.plugin.intellij.themes.gradianto.GradiantoDarkFuchsia");
+						"is.codion.plugin.flatlaf.intellij.themes.gradianto.GradiantoDarkFuchsia");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme",
-						"is.codion.plugin.intellij.themes.gradianto.GradiantoDeepOcean");
+						"is.codion.plugin.flatlaf.intellij.themes.gradianto.GradiantoDeepOcean");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatGradiantoMidnightBlueIJTheme",
-						"is.codion.plugin.intellij.themes.gradianto.GradiantoMidnightBlue");
+						"is.codion.plugin.flatlaf.intellij.themes.gradianto.GradiantoMidnightBlue");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme",
-						"is.codion.plugin.intellij.themes.gradianto.GradiantoNatureGreen");
+						"is.codion.plugin.flatlaf.intellij.themes.gradianto.GradiantoNatureGreen");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme",
-						"is.codion.plugin.intellij.themes.gray.Gray");
+						"is.codion.plugin.flatlaf.intellij.themes.gray.Gray");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme",
-						"is.codion.plugin.intellij.themes.gruvbox.GruvboxDarkHard");
+						"is.codion.plugin.flatlaf.intellij.themes.gruvbox.GruvboxDarkHard");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkMediumIJTheme",
-						"is.codion.plugin.intellij.themes.gruvbox.GruvboxDarkMedium");
+						"is.codion.plugin.flatlaf.intellij.themes.gruvbox.GruvboxDarkMedium");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkSoftIJTheme",
-						"is.codion.plugin.intellij.themes.gruvbox.GruvboxDarkSoft");
+						"is.codion.plugin.flatlaf.intellij.themes.gruvbox.GruvboxDarkSoft");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme",
-						"is.codion.plugin.intellij.themes.hiberbee.HiberbeeDark");
+						"is.codion.plugin.flatlaf.intellij.themes.hiberbee.HiberbeeDark");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatHighContrastIJTheme",
-						"is.codion.plugin.intellij.themes.highcontrast.HighContrast");
+						"is.codion.plugin.flatlaf.intellij.themes.highcontrast.HighContrast");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme",
-						"is.codion.plugin.intellij.themes.lightflat.LightFlat");
+						"is.codion.plugin.flatlaf.intellij.themes.lightflat.LightFlat");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme",
-						"is.codion.plugin.intellij.themes.materialtheme.MaterialTheme");
+						"is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatMonocaiIJTheme",
-						"is.codion.plugin.intellij.themes.monocai.Monocai");
+						"is.codion.plugin.flatlaf.intellij.themes.monocai.Monocai");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatMonokaiProIJTheme",
-						"is.codion.plugin.intellij.themes.monokaipro.MonokaiPro");
+						"is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatNordIJTheme",
-						"is.codion.plugin.intellij.themes.nord.Nord");
+						"is.codion.plugin.flatlaf.intellij.themes.nord.Nord");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme",
-						"is.codion.plugin.intellij.themes.onedark.OneDark");
+						"is.codion.plugin.flatlaf.intellij.themes.onedark.OneDark");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme",
-						"is.codion.plugin.intellij.themes.solarized.SolarizedDark");
+						"is.codion.plugin.flatlaf.intellij.themes.solarized.SolarizedDark");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme",
-						"is.codion.plugin.intellij.themes.solarized.SolarizedLight");
+						"is.codion.plugin.flatlaf.intellij.themes.solarized.SolarizedLight");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatSpacegrayIJTheme",
-						"is.codion.plugin.intellij.themes.spacegray.Spacegray");
+						"is.codion.plugin.flatlaf.intellij.themes.spacegray.Spacegray");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme",
-						"is.codion.plugin.intellij.themes.vuesion.Vuesion");
+						"is.codion.plugin.flatlaf.intellij.themes.vuesion.Vuesion");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme",
-						"is.codion.plugin.intellij.themes.xcodedark.XcodeDark");
+						"is.codion.plugin.flatlaf.intellij.themes.xcodedark.XcodeDark");
 	}
 }

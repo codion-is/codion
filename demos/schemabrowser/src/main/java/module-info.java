@@ -22,7 +22,7 @@
 module is.codion.demos.schemabrowser {
 	requires is.codion.tools.loadtest.ui;
 	requires is.codion.swing.framework.ui;
-	requires is.codion.plugin.intellij.themes;
+	requires is.codion.plugin.flatlaf.intellij.themes;
 
 	exports is.codion.demos.schemabrowser.client.ui
 					to is.codion.swing.framework.ui;

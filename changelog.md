@@ -16,9 +16,10 @@ Codion Change Log
 - LookAndFeelComboBox now populates the first item with the system or cross platform look and feels, depending on LookAndFeelComboBox.DEFAULT_LOOK_AND_FEEL, 
 ### is.codion.swing.framework.ui 
 - DefaultEntityApplicationPanelBuilder no longer validates that the look and feel exists on the classpath, should not prevent application start.
-### is.codion.plugin.intellij.themes
+### is.codion.plugin.flatlaf.intellij.themes
 - Added a bunch of IntelliJ theme based look and feels along with all of those available in com.formdev.flatlaf-intellij-themes.
 - IntelliJThemes now implements LookAndFeelProviders.
+- Module is.codion.plugin.intellij.themes renamed is.codion.plugin.flatlaf.intellij.themes.
 
 ## 0.18.23
 ### is.codion.common

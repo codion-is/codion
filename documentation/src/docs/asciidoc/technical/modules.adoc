@@ -556,12 +556,12 @@ image::modules/plugins/jasperreports/build/reports/dependency-graph/dependency-g
 === Look & Feel
 
 [discrete]
-==== codion-plugin-intellij-themes
+==== codion-plugin-flatlaf-intellij-themes
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/plugins/intellij-themes/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/plugins/flatlaf-intellij-themes/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 === Other

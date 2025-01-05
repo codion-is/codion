@@ -5,7 +5,7 @@ plugins {
 dependencies {
     implementation(project(":codion-swing-common-ui"))
     implementation(project(":codion-tools-monitor-model"))
-    implementation(project(":codion-plugin-intellij-themes"))
+    implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
     implementation(libs.slf4j.api)
 

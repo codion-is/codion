@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.plugin.intellij.themes.materialtheme.MaterialTheme;
+import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;

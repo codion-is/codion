@@ -24,7 +24,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
-import is.codion.plugin.intellij.themes.materialtheme.MaterialTheme;
+import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;

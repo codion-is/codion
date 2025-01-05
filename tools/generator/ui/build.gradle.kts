@@ -6,7 +6,7 @@ dependencies {
     implementation(project(":codion-swing-common-ui"))
     implementation(project(":codion-tools-generator-model"))
 
-    implementation(project(":codion-plugin-intellij-themes"))
+    implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
     runtimeOnly(project(":codion-dbms-h2"))
     runtimeOnly(libs.h2)

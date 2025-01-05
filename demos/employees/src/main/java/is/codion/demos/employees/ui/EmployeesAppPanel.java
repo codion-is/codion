@@ -24,7 +24,7 @@ import is.codion.demos.employees.domain.Employees.Department;
 import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.plugin.intellij.themes.arc.Arc;
+import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
