@@ -18,6 +18,7 @@ Codion Change Log
 - LookAndFeelEnabler.enableLookAndFeel() added, related refactoring.
 ### is.codion.swing.framework.ui 
 - DefaultEntityApplicationPanelBuilder no longer validates that the look and feel exists on the classpath, should not prevent application start.
+- EntityApplicationPanel.Builder.defaultLookAndFeelClassName() and lookAndFeelClassName() renamed defaultLookAndFeel() and lookAndFeel() respectively, overloaded with Class parameter. 
 ### is.codion.plugin.flatlaf.intellij.themes
 - Added a bunch of IntelliJ theme based look and feels along with all of those available in com.formdev.flatlaf-intellij-themes.
 - IntelliJThemes now implements LookAndFeelProviders.

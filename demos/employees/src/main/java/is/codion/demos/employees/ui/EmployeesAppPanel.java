@@ -113,7 +113,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 		EntityApplicationPanel.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
 						.applicationName("Employees")
 						.domainType(Employees.DOMAIN)
-						.defaultLookAndFeelClassName(Arc.class.getName())
+						.defaultLookAndFeel(Arc.class)
 						.defaultLoginUser(User.parse("scott:tiger"))
 						.start();
 	}

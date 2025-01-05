@@ -95,7 +95,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 						.applicationName("Schema Browser")
 						.domainType(SchemaBrowser.DOMAIN)
 						.defaultLoginUser(User.parse("scott:tiger"))
-						.defaultLookAndFeelClassName(Arc.class.getName())
+						.defaultLookAndFeel(Arc.class)
 						.start();
 	}
 

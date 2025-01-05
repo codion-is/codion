@@ -151,13 +151,23 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> defaultLookAndFeelClassName(String defaultLookAndFeelClassName) {
+	public EntityApplicationPanel.Builder<M, P> defaultLookAndFeel(Class<? extends LookAndFeel> defaultLookAndFeelClass) {
+		return defaultLookAndFeel(requireNonNull(defaultLookAndFeelClass).getName());
+	}
+
+	@Override
+	public EntityApplicationPanel.Builder<M, P> defaultLookAndFeel(String defaultLookAndFeelClassName) {
 		this.defaultLookAndFeelClassName = requireNonNull(defaultLookAndFeelClassName);
 		return this;
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> lookAndFeelClassName(String lookAndFeelClassName) {
+	public EntityApplicationPanel.Builder<M, P> lookAndFeel(Class<? extends LookAndFeel> lookAndFeelClass) {
+		return lookAndFeel(requireNonNull(lookAndFeelClass).getName());
+	}
+
+	@Override
+	public EntityApplicationPanel.Builder<M, P> lookAndFeel(String lookAndFeelClassName) {
 		this.lookAndFeelClassName = requireNonNull(lookAndFeelClassName);
 		return this;
 	}

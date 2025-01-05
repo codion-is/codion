@@ -306,7 +306,7 @@ public final class NotesDemo {
 						// Automatically login with the H2Database super user
 						.automaticLoginUser(User.user("sa"))
 						// IntelliJ theme based Flat Look and Feels are available
-						.defaultLookAndFeelClassName(MaterialDarker.class.getName())
+						.defaultLookAndFeel(MaterialDarker.class)
 						// Runs on the EventDispatchThread
 						.start();
 	}

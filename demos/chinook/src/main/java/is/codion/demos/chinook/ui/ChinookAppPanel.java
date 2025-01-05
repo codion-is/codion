@@ -193,7 +193,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						.applicationName("Chinook")
 						.applicationVersion(ChinookAppModel.VERSION)
 						.domainType(Chinook.DOMAIN)
-						.defaultLookAndFeelClassName(MaterialTheme.class.getName())
+						.defaultLookAndFeel(MaterialTheme.class)
 						.defaultLoginUser(User.parse("scott:tiger"))
 						.start();
 	}

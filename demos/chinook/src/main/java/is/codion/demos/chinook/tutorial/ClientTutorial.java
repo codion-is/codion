@@ -212,7 +212,7 @@ public final class ClientTutorial {
 						.applicationModelFactory(ApplicationModel::new)
 						.applicationPanelFactory(ApplicationPanel::new)
 						.connectionProviderFactory(new LocalConnectionProviderFactory())
-						.defaultLookAndFeelClassName(MaterialTheme.class.getName())
+						.defaultLookAndFeel(MaterialTheme.class)
 						.applicationName("Artists and Albums")
 						.defaultLoginUser(User.parse("scott:tiger"))
 						.start();

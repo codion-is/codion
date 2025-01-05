@@ -71,6 +71,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.LookAndFeel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -1285,24 +1286,36 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> applicationVersion(Version applicationVersion);
 
 		/**
+		 * Sets the default look and feel class, used in case no look and feel settings are found in user preferences.
+		 * @param defaultLookAndFeelClass the default look and feel class
+		 * @return this Builder instance
+		 * @see LookAndFeelProvider
+		 */
+		Builder<M, P> defaultLookAndFeel(Class<? extends LookAndFeel> defaultLookAndFeelClass);
+
+		/**
 		 * Sets the default look and feel classname, used in case no look and feel settings are found in user preferences.
-		 * Note that for an external Look and Feels to be enabled, it must be registered via
-		 * {@link LookAndFeelProvider#addLookAndFeel(LookAndFeelEnabler)}
-		 * before starting the application.
 		 * @param defaultLookAndFeelClassName the default look and feel classname
 		 * @return this Builder instance
+		 * @see LookAndFeelProvider
 		 */
-		Builder<M, P> defaultLookAndFeelClassName(String defaultLookAndFeelClassName);
+		Builder<M, P> defaultLookAndFeel(String defaultLookAndFeelClassName);
+
+		/**
+		 * Sets the look and feel class, overrides any look and feel settings found in user preferences.
+		 * @param lookAndFeelClass the look and feel class
+		 * @return this Builder instance
+		 * @see LookAndFeelProvider
+		 */
+		Builder<M, P> lookAndFeel(Class<? extends LookAndFeel> lookAndFeelClass);
 
 		/**
 		 * Sets the look and feel classname, overrides any look and feel settings found in user preferences.
-		 * Note that for an external Look and Feels to be enabled, it must be registered via
-		 * {@link LookAndFeelProvider#addLookAndFeel(LookAndFeelEnabler)}
-		 * before starting the application.
 		 * @param lookAndFeelClassName the look and feel classname
 		 * @return this Builder instance
+		 * @see LookAndFeelProvider
 		 */
-		Builder<M, P> lookAndFeelClassName(String lookAndFeelClassName);
+		Builder<M, P> lookAndFeel(String lookAndFeelClassName);
 
 		/**
 		 * @param connectionProviderFactory the connection provider factory
