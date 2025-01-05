@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/lczerniawski/ObsidianSunset-JetBrains
+ */
 public final class ObsidianSunsetOrange extends IntelliJTheme.ThemeLaf {
 
 	public ObsidianSunsetOrange() {

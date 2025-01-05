@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/perlun/jetbrains-one-dark-theme
+ */
 public final class OneDark extends IntelliJTheme.ThemeLaf {
 
 	public OneDark() {

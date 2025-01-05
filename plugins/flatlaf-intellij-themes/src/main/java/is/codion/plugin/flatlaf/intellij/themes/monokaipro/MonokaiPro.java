@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/subtheme-dev/monokai-pro
+ */
 public final class MonokaiPro extends IntelliJTheme.ThemeLaf {
 
 	public MonokaiPro() {

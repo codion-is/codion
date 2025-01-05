@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/coeiico/jetbrains-nightfall-theme
+ */
 public final class Nightfall extends IntelliJTheme.ThemeLaf {
 
 	public Nightfall() {

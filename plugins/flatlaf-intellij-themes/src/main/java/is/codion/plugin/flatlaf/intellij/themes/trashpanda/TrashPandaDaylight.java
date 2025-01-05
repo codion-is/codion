@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/jasonhulbert/jetbrains-trash-panda-theme
+ */
 public final class TrashPandaDaylight extends IntelliJTheme.ThemeLaf {
 
 	public TrashPandaDaylight() {

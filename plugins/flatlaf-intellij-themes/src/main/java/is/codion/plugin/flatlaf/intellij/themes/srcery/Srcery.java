@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/srcery-colors/srcery-intellij
+ */
 public final class Srcery extends IntelliJTheme.ThemeLaf {
 
 	public Srcery() {

@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/iyashpal/intellij-github-themes
+ */
 public final class GithubDarkDefault extends IntelliJTheme.ThemeLaf {
 
 	public GithubDarkDefault() {

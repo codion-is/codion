@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/aKusaNas/aKusaN-no-Yami
+ */
 public final class AkusanLight extends IntelliJTheme.ThemeLaf {
 
 	public AkusanLight() {

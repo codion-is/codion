@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/antelle/intellij-xcode-dark-theme
+ */
 public final class XcodeDark extends IntelliJTheme.ThemeLaf {
 
 	public XcodeDark() {

@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/marcosramos87/one-pauintxi-theme
+ */
 public final class OnePauintxiAllBlue extends IntelliJTheme.ThemeLaf {
 
 	public OnePauintxiAllBlue() {

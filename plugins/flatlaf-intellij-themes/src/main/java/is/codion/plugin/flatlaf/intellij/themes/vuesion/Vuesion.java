@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/vuesion/intellij-theme
+ */
 public final class Vuesion extends IntelliJTheme.ThemeLaf {
 
 	public Vuesion() {

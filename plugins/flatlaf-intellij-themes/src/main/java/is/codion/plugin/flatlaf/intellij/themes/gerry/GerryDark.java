@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/gerry-themes/gerry-themes
+ */
 public final class GerryDark extends IntelliJTheme.ThemeLaf {
 
 	public GerryDark() {

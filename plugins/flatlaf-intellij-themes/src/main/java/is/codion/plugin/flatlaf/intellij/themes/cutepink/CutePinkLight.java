@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/openmindculture/intellij-cute-pink-light-theme
+ */
 public final class CutePinkLight extends IntelliJTheme.ThemeLaf {
 
 	public CutePinkLight() {

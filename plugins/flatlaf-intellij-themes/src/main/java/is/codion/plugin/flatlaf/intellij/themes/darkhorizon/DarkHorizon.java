@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/ewwwdp/dark-horizon-jetbrains
+ */
 public final class DarkHorizon extends IntelliJTheme.ThemeLaf {
 
 	public DarkHorizon() {

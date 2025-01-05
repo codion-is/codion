@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/Vincent-P/gruvbox-intellij-theme
+ */
 public final class GruvboxMaterialLightMedium extends IntelliJTheme.ThemeLaf {
 
 	public GruvboxMaterialLightMedium() {

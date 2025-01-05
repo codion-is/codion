@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/Hecatoncheir/espresso_light_theme
+ */
 public final class EspressoLight extends IntelliJTheme.ThemeLaf {
 
 	public EspressoLight() {

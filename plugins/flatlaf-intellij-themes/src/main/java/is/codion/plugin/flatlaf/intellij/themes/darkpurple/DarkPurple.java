@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/OlyaB/DarkPurpleTheme
+ */
 public final class DarkPurple extends IntelliJTheme.ThemeLaf {
 
 	public DarkPurple() {

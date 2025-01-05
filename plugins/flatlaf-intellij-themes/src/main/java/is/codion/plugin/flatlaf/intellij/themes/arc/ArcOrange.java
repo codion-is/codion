@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://gitlab.com/zlamalp/arc-theme-idea
+ */
 public final class ArcOrange extends IntelliJTheme.ThemeLaf {
 
 	public ArcOrange() {

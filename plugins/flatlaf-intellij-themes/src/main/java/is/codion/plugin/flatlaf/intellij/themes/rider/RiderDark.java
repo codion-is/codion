@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/JetBrains/rider-theme-pack
+ */
 public final class RiderDark extends IntelliJTheme.ThemeLaf {
 
 	public RiderDark() {

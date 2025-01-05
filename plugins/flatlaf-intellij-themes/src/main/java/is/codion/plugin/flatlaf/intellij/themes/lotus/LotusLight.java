@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/blai30/Lotus-Theme
+ */
 public final class LotusLight extends IntelliJTheme.ThemeLaf {
 
 	public LotusLight() {

@@ -22,6 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
+/**
+ * https://github.com/francma/everforest-jetbrains
+ */
 public final class EverforestLightSoft extends IntelliJTheme.ThemeLaf {
 
 	public EverforestLightSoft() {
