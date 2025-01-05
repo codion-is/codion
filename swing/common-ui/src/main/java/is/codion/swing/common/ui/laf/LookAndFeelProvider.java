@@ -97,11 +97,11 @@ public interface LookAndFeelProvider {
 	}
 
 	/**
-	 * Returns a look and feel provider with the given classname, if available
+	 * Returns a look and feel provider with the given classname, if found in the available looks and feels
 	 * @param className the look and feel classname
 	 * @return a look and feel provider, an empty Optional if not found
 	 */
 	static Optional<LookAndFeelEnabler> findLookAndFeel(String className) {
-		return className == null ? Optional.empty() : Optional.ofNullable(LOOK_AND_FEEL_PROVIDERS.get(className));
+		return Optional.ofNullable(LOOK_AND_FEEL_PROVIDERS.get(requireNonNull(className)));
 	}
 }

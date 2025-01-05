@@ -61,8 +61,6 @@ import java.util.concurrent.TimeUnit;
 import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
-import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.defaultLookAndFeelName;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
@@ -74,6 +72,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private static final Logger LOG = LoggerFactory.getLogger(EntityServerMonitorPanel.class);
 
 	private static final String JDK_PREFERENCE_KEY = EntityServerMonitorPanel.class.getSimpleName() + ".jdkPathPreferenceKey";
+	private static final String LOOK_AND_FEEL_PROPERTY = ".lookAndFeel";
 	private static final double SCREEN_SIZE_RATIO = 0.75;
 	private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
 	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
@@ -277,8 +276,8 @@ public final class EntityServerMonitorPanel extends JPanel {
 										.columns(8)
 										.editable(false)
 										.horizontalAlignment(SwingConstants.CENTER)
-										.onBuild(memoryUsageField -> TaskScheduler.builder(() -> SwingUtilities.invokeLater(() ->
-																		memoryUsageField.setText(memoryUsage())))
+										.onBuild(memoryUsageField -> TaskScheduler.builder(() ->
+																		SwingUtilities.invokeLater(() -> memoryUsageField.setText(memoryUsage())))
 														.interval(MEMORY_USAGE_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
 														.start())
 										.build())
@@ -294,7 +293,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelEnabler selectedLookAndFeel) {
-		setUserPreference(EntityServerMonitorPanel.class.getName(),
+		setUserPreference(EntityServerMonitorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
 						selectedLookAndFeel.lookAndFeelInfo().getClassName());
 	}
 
@@ -303,8 +302,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 		Clients.resolveTrustStore();
 		SwingUtilities.invokeLater(() -> {
 			try {
-				findLookAndFeel(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName(), FlatDarculaLaf.class.getName()))
-								.ifPresent(LookAndFeelEnabler::enable);
+				LookAndFeelEnabler.enableLookAndFeel(EntityServerMonitorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY, FlatDarculaLaf.class);
 				new EntityServerMonitorPanel().showFrame();
 			}
 			catch (Exception exception) {

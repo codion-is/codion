@@ -15,6 +15,7 @@ Codion Change Log
 - LookAndFeelProvider.CROSS_PLATFORM and SYSTEM configuration values removed.
 - LookAndFeelComboBox now populates the first item with the system or cross platform look and feels, depending on LookAndFeelComboBox.DEFAULT_LOOK_AND_FEEL.
 - LookAndFeelProvider renamed LookAndFeelEnabler, LookAndFeelProviders renamed LookAndFeelProvider, related refactoring.
+- LookAndFeelEnabler.enableLookAndFeel() added, related refactoring.
 ### is.codion.swing.framework.ui 
 - DefaultEntityApplicationPanelBuilder no longer validates that the look and feel exists on the classpath, should not prevent application start.
 ### is.codion.plugin.flatlaf.intellij.themes

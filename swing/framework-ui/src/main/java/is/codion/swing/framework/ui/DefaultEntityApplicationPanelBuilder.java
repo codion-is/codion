@@ -34,7 +34,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.ExceptionDialogBuilder;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.icon.Icons;
-import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -46,6 +45,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
@@ -344,9 +344,9 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private void enableLookAndFeel() {
 		try {
-			String className = lookAndFeelClassName();
-			findLookAndFeel(className)
-							.orElse(LookAndFeelEnabler.lookAndFeelEnabler(new LookAndFeelInfo("LookAndFeel", className)))
+			Class<LookAndFeel> lookAndFeelClass = (Class<LookAndFeel>) Class.forName(lookAndFeelClassName());
+			findLookAndFeel(lookAndFeelClass)
+							.orElse(lookAndFeelEnabler(new LookAndFeelInfo(lookAndFeelClass.getSimpleName(), lookAndFeelClass.getName())))
 							.enable();
 		}
 		catch (Exception e) {

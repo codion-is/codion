@@ -18,14 +18,16 @@
  */
 package is.codion.swing.common.ui.laf;
 
-import is.codion.common.model.UserPreferences;
 import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import java.util.Optional;
 import java.util.function.Consumer;
 
+import static is.codion.common.model.UserPreferences.getUserPreference;
+import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -44,7 +46,7 @@ public interface LookAndFeelEnabler {
 	void enable();
 
 	/**
-	 * @return an instance of the {@link LookAndFeel} represented by this provider
+	 * @return a new instance of the {@link LookAndFeel} represented by this provider
 	 * @throws RuntimeException in case the class is not found or if the {@link LookAndFeel} could not be instantiated
 	 */
 	LookAndFeel lookAndFeel();
@@ -71,21 +73,32 @@ public interface LookAndFeelEnabler {
 	}
 
 	/**
-	 * Returns the look and feel specified by the given user preference or the system look and feel if no preference value is found.
+	 * Enables the look and feel specified by the given user preference or the default system look and feel if no preference value is found.
 	 * @param userPreferencePropertyName the name of the user preference look and feel property
-	 * @return the look and feel specified by user preference or the default system look and feel
 	 */
-	static String defaultLookAndFeelName(String userPreferencePropertyName) {
-		return defaultLookAndFeelName(userPreferencePropertyName, Utilities.systemLookAndFeelClassName());
+	static void enableLookAndFeel(String userPreferencePropertyName) {
+		enableLookAndFeel(userPreferencePropertyName, systemLookAndFeelClassName());
 	}
 
 	/**
-	 * Returns the look and feel specified by the given user preference or the system look and feel if no preference value is found.
+	 * Enables the look and feel specified by the given user preference or the default one if no preference value is found.
 	 * @param userPreferencePropertyName the name of the user preference look and feel property
-	 * @param defaultLookAndFeel the default look and feel to use if none is found in user preferences
-	 * @return the look and feel specified by user preference or the default system look and feel
+	 * @param defaultLookAndFeel the default look and feel class to use if none is found in user preferences
 	 */
-	static String defaultLookAndFeelName(String userPreferencePropertyName, String defaultLookAndFeel) {
-		return UserPreferences.getUserPreference(userPreferencePropertyName, defaultLookAndFeel);
+	static void enableLookAndFeel(String userPreferencePropertyName, Class<? extends LookAndFeel> defaultLookAndFeel) {
+		enableLookAndFeel(userPreferencePropertyName, requireNonNull(defaultLookAndFeel).getName());
+	}
+
+	/**
+	 * Enables the look and feel specified by the given user preference or the default one if no preference value is found.
+	 * @param userPreferencePropertyName the name of the user preference look and feel property
+	 * @param defaultLookAndFeel the classname of the default look and feel to use if none is found in user preferences
+	 */
+	static void enableLookAndFeel(String userPreferencePropertyName, String defaultLookAndFeel) {
+		Optional.ofNullable(getUserPreference(userPreferencePropertyName, defaultLookAndFeel))
+						.map(LookAndFeelProvider::findLookAndFeel)
+						.filter(Optional::isPresent)
+						.map(Optional::get)
+						.ifPresent(LookAndFeelEnabler::enable);
 	}
 }

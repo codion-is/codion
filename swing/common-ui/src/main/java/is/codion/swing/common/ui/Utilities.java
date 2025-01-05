@@ -35,6 +35,7 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.Component;
@@ -346,7 +347,7 @@ public final class Utilities {
 	public static String systemLookAndFeelClassName() {
 		String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
 		if (systemLookAndFeel.endsWith("GTKLookAndFeel")) {
-			systemLookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
+			systemLookAndFeel = MetalLookAndFeel.class.getName();
 		}
 
 		return systemLookAndFeel;

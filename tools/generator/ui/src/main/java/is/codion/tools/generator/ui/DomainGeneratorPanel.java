@@ -74,8 +74,7 @@ import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
-import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.defaultLookAndFeelName;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Arrays.asList;
@@ -93,6 +92,7 @@ public final class DomainGeneratorPanel extends JPanel {
 					stringValue("codion.domain.generator.defaultUser");
 
 	private static final double RESIZE_WEIGHT = 0.2;
+	private static final String LOOK_AND_FEEL_PROPERTY = ".lookAndFeel";
 
 	private final DomainGeneratorModel model;
 	private final FilterTable<SchemaRow, SchemaColumns.Id> schemaTable;
@@ -483,7 +483,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelEnabler lookAndFeelEnabler) {
-		setUserPreference(DomainGeneratorPanel.class.getName(),
+		setUserPreference(DomainGeneratorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
 						lookAndFeelEnabler.lookAndFeelInfo().getClassName());
 	}
 
@@ -492,8 +492,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * @param arguments no arguments required
 	 */
 	public static void main(String[] arguments) {
-		findLookAndFeel(defaultLookAndFeelName(DomainGeneratorPanel.class.getName(), FlatDarculaLaf.class.getName()))
-						.ifPresent(LookAndFeelEnabler::enable);
+		enableLookAndFeel(DomainGeneratorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY, FlatDarculaLaf.class);
 		try {
 			SwingUtilities.invokeLater(DomainGeneratorPanel::start);
 		}

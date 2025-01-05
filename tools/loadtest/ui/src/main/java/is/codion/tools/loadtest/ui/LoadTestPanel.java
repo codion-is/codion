@@ -71,8 +71,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
-import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.defaultLookAndFeelName;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
@@ -92,6 +91,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
 	private static final int SPINNER_STEP_SIZE = 10;
 	private static final double RESIZE_WEIGHT = 0.8;
+	private static final String LOOK_AND_FEEL_PROPERTY = ".lookAndFeel";
 	private static final NumberFormat DURATION_FORMAT = NumberFormat.getIntegerInstance();
 	private static final String DEFAULT_TITLE = "Codion LoadTest";
 	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
@@ -103,8 +103,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	static {
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-		findLookAndFeel(defaultLookAndFeelName(LoadTestPanel.class.getName(), FlatDarculaLaf.class.getName()))
-						.ifPresent(LookAndFeelEnabler::enable);
+		enableLookAndFeel(LoadTestPanel.class.getName() + LOOK_AND_FEEL_PROPERTY, FlatDarculaLaf.class);
 	}
 
 	private boolean exiting;
@@ -391,8 +390,8 @@ public final class LoadTestPanel<T> extends JPanel {
 						.doubleClickAction(command(this::viewException))
 						.scrollToSelectedItem(false)
 						.cellRenderer(ColumnId.DURATION, FilterTableCellRenderer.builder(Integer.class)
-														.string(duration -> duration == null ? null : DURATION_FORMAT.format(duration))
-														.build())
+										.string(duration -> duration == null ? null : DURATION_FORMAT.format(duration))
+										.build())
 						.popupMenuControls(table -> Controls.builder()
 										.control(Control.builder()
 														.command(table.model().items()::refresh)
@@ -546,7 +545,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelEnabler selectedLookAndFeel) {
-		setUserPreference(LoadTestPanel.class.getName(),
+		setUserPreference(LoadTestPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
 						selectedLookAndFeel.lookAndFeelInfo().getClassName());
 	}
 
