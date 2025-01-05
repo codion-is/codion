@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.laf;
 
+import is.codion.swing.common.ui.Utilities;
+
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -27,25 +29,26 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
+final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 
 	private static final Consumer<LookAndFeelInfo> DEFAULT_ENABLER = new DefaultEnabler();
 
-	static final Map<String, LookAndFeelProvider> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
+	static final Map<String, LookAndFeelEnabler> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
 
 	static {
-		LookAndFeelProviders.instances().forEach(providers ->
-						providers.get().forEach(LookAndFeelProviders::addLookAndFeel));
+		LookAndFeelProvider.instances().forEach(providers ->
+						providers.get().forEach(lookAndFeelEnabler -> LOOK_AND_FEEL_PROVIDERS
+										.put(requireNonNull(lookAndFeelEnabler).lookAndFeelInfo().getClassName(), lookAndFeelEnabler)));
 	}
 
 	private final LookAndFeelInfo lookAndFeelInfo;
 	private final Consumer<LookAndFeelInfo> enabler;
 
-	DefaultLookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo) {
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo) {
 		this(lookAndFeelInfo, DEFAULT_ENABLER);
 	}
 
-	DefaultLookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
 		this.lookAndFeelInfo = requireNonNull(lookAndFeelInfo);
 		this.enabler = requireNonNull(enabler);
 	}
@@ -80,11 +83,11 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof DefaultLookAndFeelProvider)) {
+		if (!(obj instanceof DefaultLookAndFeelEnabler)) {
 			return false;
 		}
 
-		DefaultLookAndFeelProvider that = (DefaultLookAndFeelProvider) obj;
+		DefaultLookAndFeelEnabler that = (DefaultLookAndFeelEnabler) obj;
 
 		return lookAndFeelInfo.getClassName().equals(that.lookAndFeelInfo.getClassName());
 	}
@@ -100,6 +103,7 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
 		public void accept(LookAndFeelInfo lookAndFeelInfo) {
 			try {
 				UIManager.setLookAndFeel(requireNonNull(lookAndFeelInfo).getClassName());
+				Utilities.updateComponentTreeForAllWindows();
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);

@@ -36,7 +36,7 @@ final class LookAndFeelPanel extends JPanel {
 	private static final int COLOR_LABEL_WIDTH = 42;
 
 	private final UIDefaults nullDefaults = new UIDefaults(0, 0.1f);
-	private final Map<LookAndFeelProvider, UIDefaults> lookAndFeelDefaults = new ConcurrentHashMap<>();
+	private final Map<LookAndFeelEnabler, UIDefaults> lookAndFeelDefaults = new ConcurrentHashMap<>();
 
 	private final JLabel textLabel = new JLabel();
 	private final JLabel colorLabel = Components.label()
@@ -49,7 +49,7 @@ final class LookAndFeelPanel extends JPanel {
 		add(colorLabel, BorderLayout.EAST);
 	}
 
-	void setLookAndFeel(LookAndFeelProvider lookAndFeel, boolean selected) {
+	void setLookAndFeel(LookAndFeelEnabler lookAndFeel, boolean selected) {
 		textLabel.setOpaque(true);
 		colorLabel.setOpaque(true);
 		textLabel.setText(lookAndFeel.lookAndFeelInfo().getName());
@@ -69,17 +69,17 @@ final class LookAndFeelPanel extends JPanel {
 		}
 	}
 
-	private UIDefaults defaults(LookAndFeelProvider lookAndFeelProvider) {
-		return lookAndFeelDefaults.computeIfAbsent(lookAndFeelProvider, this::initializeLookAndFeelDefaults);
+	private UIDefaults defaults(LookAndFeelEnabler lookAndFeelEnabler) {
+		return lookAndFeelDefaults.computeIfAbsent(lookAndFeelEnabler, this::initializeLookAndFeelDefaults);
 	}
 
-	private UIDefaults initializeLookAndFeelDefaults(LookAndFeelProvider lookAndFeelProvider) {
+	private UIDefaults initializeLookAndFeelDefaults(LookAndFeelEnabler lookAndFeelEnabler) {
 		try {
-			return lookAndFeelProvider.lookAndFeel().getDefaults();
+			return lookAndFeelEnabler.lookAndFeel().getDefaults();
 		}
 		catch (RuntimeException e) {
 			System.err.println("Could not initialize defaults for LookAndFeel: " +
-							lookAndFeelProvider.lookAndFeelInfo() + ": " + e.getCause().getMessage());
+							lookAndFeelEnabler.lookAndFeelInfo() + ": " + e.getCause().getMessage());
 			return nullDefaults;
 		}
 	}

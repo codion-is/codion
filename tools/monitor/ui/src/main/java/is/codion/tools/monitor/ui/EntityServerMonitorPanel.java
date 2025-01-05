@@ -34,7 +34,7 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.icon.Logos;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.monitor.model.EntityServerMonitor;
 import is.codion.tools.monitor.model.HostMonitor;
@@ -61,8 +61,8 @@ import java.util.concurrent.TimeUnit;
 import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
-import static is.codion.swing.common.ui.laf.LookAndFeelProviders.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.defaultLookAndFeelName;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
@@ -293,7 +293,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 		return User.parse(ServerConfiguration.ADMIN_USER.getOrThrow());
 	}
 
-	private static void lookAndFeelSelected(LookAndFeelProvider selectedLookAndFeel) {
+	private static void lookAndFeelSelected(LookAndFeelEnabler selectedLookAndFeel) {
 		setUserPreference(EntityServerMonitorPanel.class.getName(),
 						selectedLookAndFeel.lookAndFeelInfo().getClassName());
 	}
@@ -303,8 +303,8 @@ public final class EntityServerMonitorPanel extends JPanel {
 		Clients.resolveTrustStore();
 		SwingUtilities.invokeLater(() -> {
 			try {
-				findLookAndFeelProvider(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName(), FlatDarculaLaf.class.getName()))
-								.ifPresent(LookAndFeelProvider::enable);
+				findLookAndFeel(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName(), FlatDarculaLaf.class.getName()))
+								.ifPresent(LookAndFeelEnabler::enable);
 				new EntityServerMonitorPanel().showFrame();
 			}
 			catch (Exception exception) {

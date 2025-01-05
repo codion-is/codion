@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.resource.MessageBundle;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -54,10 +54,10 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	}
 
 	@Override
-	public Control createControl(Consumer<LookAndFeelProvider> selectedLookAndFeel) {
+	public Control createControl(Consumer<LookAndFeelEnabler> selectedLookAndFeel) {
 		MessageBundle resourceBundle =
-						messageBundle(LookAndFeelProvider.class,
-										getBundle(LookAndFeelProvider.class.getName()));
+						messageBundle(DefaultLookAndFeelSelectionDialogBuilder.class,
+										getBundle(DefaultLookAndFeelSelectionDialogBuilder.class.getName()));
 		String caption = resourceBundle.getString("select_look_and_feel");
 
 		return Control.builder()
@@ -67,7 +67,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	}
 
 	@Override
-	public void selectLookAndFeel(Consumer<LookAndFeelProvider> selectedLookAndFeel) {
+	public void selectLookAndFeel(Consumer<LookAndFeelEnabler> selectedLookAndFeel) {
 		requireNonNull(selectedLookAndFeel);
 		LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(enableOnSelection);
 		JPanel basePanel = new JPanel(new BorderLayout());
@@ -75,8 +75,8 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 		basePanel.add(lookAndFeelComboBox, BorderLayout.CENTER);
 		new DefaultOkCancelDialogBuilder(basePanel)
 						.owner(owner)
-						.title(messageBundle(LookAndFeelProvider.class,
-										getBundle(LookAndFeelProvider.class.getName())).getString("select_look_and_feel"))
+						.title(messageBundle(DefaultLookAndFeelSelectionDialogBuilder.class,
+										getBundle(DefaultLookAndFeelSelectionDialogBuilder.class.getName())).getString("select_look_and_feel"))
 						.onOk(() -> selectedLookAndFeel.accept(lookAndFeelComboBox.selectedLookAndFeel()))
 						.onCancel(lookAndFeelComboBox::revert)
 						.show();

@@ -34,7 +34,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.generator.model.DomainGeneratorModel;
 import is.codion.tools.generator.model.DomainGeneratorModel.EntityColumns;
@@ -74,8 +74,8 @@ import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
-import static is.codion.swing.common.ui.laf.LookAndFeelProviders.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.defaultLookAndFeelName;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Arrays.asList;
@@ -482,9 +482,9 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 	}
 
-	private static void lookAndFeelSelected(LookAndFeelProvider lookAndFeelProvider) {
+	private static void lookAndFeelSelected(LookAndFeelEnabler lookAndFeelEnabler) {
 		setUserPreference(DomainGeneratorPanel.class.getName(),
-						lookAndFeelProvider.lookAndFeelInfo().getClassName());
+						lookAndFeelEnabler.lookAndFeelInfo().getClassName());
 	}
 
 	/**
@@ -492,8 +492,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * @param arguments no arguments required
 	 */
 	public static void main(String[] arguments) {
-		findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName(), FlatDarculaLaf.class.getName()))
-						.ifPresent(LookAndFeelProvider::enable);
+		findLookAndFeel(defaultLookAndFeelName(DomainGeneratorPanel.class.getName(), FlatDarculaLaf.class.getName()))
+						.ifPresent(LookAndFeelEnabler::enable);
 		try {
 			SwingUtilities.invokeLater(DomainGeneratorPanel::start);
 		}

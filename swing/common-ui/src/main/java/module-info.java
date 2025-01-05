@@ -30,8 +30,8 @@
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableSearchModel}
  * <li>{@link is.codion.swing.common.ui.dialog.Dialogs}
  * <li>{@link is.codion.swing.common.ui.key.KeyEvents}
+ * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelEnabler}
  * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelProvider}
- * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelProviders}
  * <li>{@link is.codion.swing.common.ui.layout.Layouts}
  * </ul>
  */
@@ -68,5 +68,5 @@ module is.codion.swing.common.ui {
 	exports is.codion.swing.common.ui.laf;
 	exports is.codion.swing.common.ui.layout;
 
-	uses is.codion.swing.common.ui.laf.LookAndFeelProviders;
+	uses is.codion.swing.common.ui.laf.LookAndFeelProvider;
 }

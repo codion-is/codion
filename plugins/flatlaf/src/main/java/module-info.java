@@ -24,6 +24,6 @@ module is.codion.plugin.flatlaf {
 	requires is.codion.swing.common.ui;
 	requires transitive com.formdev.flatlaf;
 
-	provides is.codion.swing.common.ui.laf.LookAndFeelProviders
-					with is.codion.plugin.flatlaf.FlatLookAndFeelProviders;
+	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
+					with is.codion.plugin.flatlaf.FlatLookAndFeelProvider;
 }

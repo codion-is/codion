@@ -34,6 +34,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.ExceptionDialogBuilder;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.icon.Icons;
+import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -67,8 +68,8 @@ import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
-import static is.codion.swing.common.ui.laf.LookAndFeelProviders.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
@@ -344,8 +345,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private void enableLookAndFeel() {
 		try {
 			String className = lookAndFeelClassName();
-			findLookAndFeelProvider(className)
-							.orElse(lookAndFeelProvider(new LookAndFeelInfo("LookAndFeel", className)))
+			findLookAndFeel(className)
+							.orElse(LookAndFeelEnabler.lookAndFeelEnabler(new LookAndFeelInfo("LookAndFeel", className)))
 							.enable();
 		}
 		catch (Exception e) {

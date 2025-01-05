@@ -34,7 +34,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -56,7 +56,7 @@ import java.util.function.Predicate;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
-import static is.codion.swing.common.ui.laf.LookAndFeelProviders.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_SPACE;
@@ -412,8 +412,8 @@ public final class ApplicationPanel extends JPanel {
 	}
 
 	public static void main(String[] args) {
-		findLookAndFeelProvider(MonokaiPro.class)
-						.ifPresent(LookAndFeelProvider::enable);
+		findLookAndFeel(MonokaiPro.class)
+						.ifPresent(LookAndFeelEnabler::enable);
 
 		ApplicationModel applicationModel = new ApplicationModel();
 

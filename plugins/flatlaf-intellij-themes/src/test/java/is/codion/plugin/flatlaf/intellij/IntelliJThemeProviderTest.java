@@ -18,14 +18,12 @@
  */
 package is.codion.plugin.flatlaf.intellij;
 
-import is.codion.plugin.flatlaf.intellij.IntelliJThemes;
-
 import org.junit.jupiter.api.Test;
 
-public class IntelliJThemesTest {
+public class IntelliJThemeProviderTest {
 
 	@Test
 	void test() {
-		new IntelliJThemes().get().forEach(theme -> theme.lookAndFeel().getDefaults());
+		new IntelliJThemeProvider().get().forEach(theme -> theme.lookAndFeel().getDefaults());
 	}
 }

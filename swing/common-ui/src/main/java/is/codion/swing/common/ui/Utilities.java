@@ -113,6 +113,16 @@ public final class Utilities {
 	}
 
 	/**
+	 * Calls {@link SwingUtilities#updateComponentTreeUI(Component)} for all windows.
+	 * @see Window#getWindows()
+	 */
+	public static void updateComponentTreeForAllWindows() {
+		for (Window window : Window.getWindows()) {
+			SwingUtilities.updateComponentTreeUI(window);
+		}
+	}
+
+	/**
 	 * Links the given actions to the given {@link ObservableState}, so that the actions are enabled
 	 * only when the observed state is active
 	 * @param enabledState the {@link ObservableState} with which to link the action

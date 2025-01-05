@@ -23,7 +23,7 @@ import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.ColumnId;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -53,7 +53,7 @@ final class KeyBindingModel {
 	private final FilterComboBoxModel<String> componentModel;
 	private final FilterTableModel<KeyBindingRow, ColumnId> tableModel;
 
-	KeyBindingModel(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelModel) {
+	KeyBindingModel(FilterComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
 		this.componentModel = FilterComboBoxModel.builder(new ComponentItems(lookAndFeelModel)).build();
 		this.componentModel.items().refresh();
 		this.tableModel = FilterTableModel.builder(new KeyBindingColumns())
@@ -121,9 +121,9 @@ final class KeyBindingModel {
 	// Provides the items when populating the component combo box model
 	private static final class ComponentItems implements Supplier<Collection<String>> {
 
-		private final FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelModel;
+		private final FilterComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel;
 
-		private ComponentItems(FilterComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelModel) {
+		private ComponentItems(FilterComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
 			this.lookAndFeelModel = lookAndFeelModel;
 		}
 
@@ -131,7 +131,7 @@ final class KeyBindingModel {
 		public Collection<String> get() {
 			return lookAndFeelModel.selection().item().optional()
 							.map(Item::value)
-							.map(LookAndFeelProvider::lookAndFeel)
+							.map(LookAndFeelEnabler::lookAndFeel)
 							.map(LookAndFeel::getDefaults)
 							.map(Hashtable::keySet)
 							.map(Collection::stream)

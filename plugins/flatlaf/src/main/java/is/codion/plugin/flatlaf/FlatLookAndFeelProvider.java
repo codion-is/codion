@@ -18,8 +18,8 @@
  */
 package is.codion.plugin.flatlaf;
 
+import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
-import is.codion.swing.common.ui.laf.LookAndFeelProviders;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -32,24 +32,24 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
 
 /**
  * Provides all available Flat Look and Feels
  */
-public final class FlatLookAndFeelProviders implements LookAndFeelProviders {
+public final class FlatLookAndFeelProvider implements LookAndFeelProvider {
 
-	public FlatLookAndFeelProviders() {}
+	public FlatLookAndFeelProvider() {}
 
 	@Override
-	public Collection<LookAndFeelProvider> get() {
+	public Collection<LookAndFeelEnabler> get() {
 		return Arrays.asList(
-						lookAndFeelProvider(new LookAndFeelInfo("Flat Look & Feel Darcula ", FlatDarculaLaf.class.getName())),
-						lookAndFeelProvider(new LookAndFeelInfo("Flat Look & Feel Dark", FlatDarkLaf.class.getName())),
-						lookAndFeelProvider(new LookAndFeelInfo("Flat Look & Feel IntelliJ", FlatIntelliJLaf.class.getName())),
-						lookAndFeelProvider(new LookAndFeelInfo("Flat Look & Feel Light", FlatLightLaf.class.getName())),
-						lookAndFeelProvider(new LookAndFeelInfo("Flat Look & Feel Mac Dark", FlatMacDarkLaf.class.getName())),
-						lookAndFeelProvider(new LookAndFeelInfo("Flat Look & Feel Mac Light", FlatMacLightLaf.class.getName()))
+						lookAndFeelEnabler(new LookAndFeelInfo("Flat Darcula ", FlatDarculaLaf.class.getName())),
+						lookAndFeelEnabler(new LookAndFeelInfo("Flat Dark", FlatDarkLaf.class.getName())),
+						lookAndFeelEnabler(new LookAndFeelInfo("Flat IntelliJ", FlatIntelliJLaf.class.getName())),
+						lookAndFeelEnabler(new LookAndFeelInfo("Flat Light", FlatLightLaf.class.getName())),
+						lookAndFeelEnabler(new LookAndFeelInfo("Flat Mac Dark", FlatMacDarkLaf.class.getName())),
+						lookAndFeelEnabler(new LookAndFeelInfo("Flat Mac Light", FlatMacLightLaf.class.getName()))
 		);
 	}
 }

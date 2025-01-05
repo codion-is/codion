@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import javax.swing.JComponent;
 import java.util.function.Consumer;
@@ -45,12 +45,12 @@ public interface LookAndFeelSelectionDialogBuilder {
 	 * Displays a dialog allowing the user the select between all available Look and Feels.
 	 * @param selectedLookAndFeel called when the OK button is pressed
 	 */
-	void selectLookAndFeel(Consumer<LookAndFeelProvider> selectedLookAndFeel);
+	void selectLookAndFeel(Consumer<LookAndFeelEnabler> selectedLookAndFeel);
 
 	/**
 	 * Creates a {@link Control} for selecting the Look and Feel.
 	 * @param selectedLookAndFeel called when the OK button is pressed
 	 * @return a Control for displaying a dialog for selecting a look and feel
 	 */
-	Control createControl(Consumer<LookAndFeelProvider> selectedLookAndFeel);
+	Control createControl(Consumer<LookAndFeelEnabler> selectedLookAndFeel);
 }

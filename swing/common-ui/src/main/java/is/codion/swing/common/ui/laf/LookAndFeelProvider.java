@@ -14,89 +14,94 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2021 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
 package is.codion.swing.common.ui.laf;
 
-import is.codion.common.model.UserPreferences;
-import is.codion.swing.common.ui.Utilities;
-
 import javax.swing.LookAndFeel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.Window;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+import static is.codion.swing.common.ui.laf.DefaultLookAndFeelEnabler.LOOK_AND_FEEL_PROVIDERS;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 /**
- * Provides a {@link LookAndFeel} implementation.
+ * Provides one or more look and feel enablers.
+ * @see LookAndFeelEnabler
  */
 public interface LookAndFeelProvider {
 
 	/**
-	 * @return the look and feel info
+	 * @return the available {@link LookAndFeelEnabler}s
 	 */
-	LookAndFeelInfo lookAndFeelInfo();
+	Collection<LookAndFeelEnabler> get();
 
 	/**
-	 * Configures and enables this LookAndFeel.
+	 * @return all {@link LookAndFeelProvider} registered with the {@link ServiceLoader}
 	 */
-	void enable();
-
-	/**
-	 * @return an instance of the {@link LookAndFeel} represented by this provider
-	 * @throws RuntimeException in case the class is not found or if the {@link LookAndFeel} could not be instantiated
-	 */
-	LookAndFeel lookAndFeel();
-
-	/**
-	 * Instantiates a new {@link LookAndFeelProvider}, using {@link UIManager#setLookAndFeel(String)} to enable.
-	 * @param lookAndFeelInfo the look and feel info
-	 * @return a look and feel provider
-	 */
-	static LookAndFeelProvider lookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo) {
-		return new DefaultLookAndFeelProvider(lookAndFeelInfo);
+	static Collection<LookAndFeelProvider> instances() {
+		return stream(ServiceLoader.load(LookAndFeelProvider.class).spliterator(), false)
+						.collect(Collectors.toList());
 	}
 
 	/**
-	 * Instantiates a new {@link LookAndFeelProvider}.
+	 * Adds a new look and feel provider.
+	 * @param lookAndFeelInfo the look and feel info
+	 */
+	static void addLookAndFeel(LookAndFeelInfo lookAndFeelInfo) {
+		addLookAndFeel(lookAndFeelEnabler(lookAndFeelInfo));
+	}
+
+	/**
+	 * Adds a new look and feel provider.
 	 * @param lookAndFeelInfo the look and feel info
 	 * @param enabler configures and enables this look and feel
-	 * @return a look and feel provider
 	 */
-	static LookAndFeelProvider lookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
-		return new DefaultLookAndFeelProvider(lookAndFeelInfo, enabler);
+	static void addLookAndFeel(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
+		addLookAndFeel(lookAndFeelEnabler(lookAndFeelInfo, enabler));
 	}
 
 	/**
-	 * Returns the look and feel specified by the given user preference or the system look and feel if no preference value is found.
-	 * @param userPreferencePropertyName the name of the user preference look and feel property
-	 * @return the look and feel specified by user preference or the default system look and feel
+	 * Adds the given look and feel provider.
+	 * Note that this replaces any existing look and feel provider based on the same classname.
+	 * @param lookAndFeelEnabler the look and feel provider to add
 	 */
-	static String defaultLookAndFeelName(String userPreferencePropertyName) {
-		return defaultLookAndFeelName(userPreferencePropertyName, Utilities.systemLookAndFeelClassName());
+	static void addLookAndFeel(LookAndFeelEnabler lookAndFeelEnabler) {
+		LOOK_AND_FEEL_PROVIDERS
+						.put(requireNonNull(lookAndFeelEnabler).lookAndFeelInfo().getClassName(), lookAndFeelEnabler);
 	}
 
 	/**
-	 * Returns the look and feel specified by the given user preference or the system look and feel if no preference value is found.
-	 * @param userPreferencePropertyName the name of the user preference look and feel property
-	 * @param defaultLookAndFeel the default look and feel to use if none is found in user preferences
-	 * @return the look and feel specified by user preference or the default system look and feel
+	 * @return the available {@link LookAndFeelEnabler}s
+	 * @see #addLookAndFeel(LookAndFeelEnabler)
 	 */
-	static String defaultLookAndFeelName(String userPreferencePropertyName, String defaultLookAndFeel) {
-		return UserPreferences.getUserPreference(userPreferencePropertyName, defaultLookAndFeel);
+	static Collection<LookAndFeelEnabler> lookAndFeels() {
+		return unmodifiableCollection(new ArrayList<>(LOOK_AND_FEEL_PROVIDERS.values()));
 	}
 
 	/**
-	 * Enables the given look and feel and updates all window component trees.
-	 * @param lookAndFeelProvider the look and feel provider to enable
+	 * Returns a look and feel provider for the given class, if available
+	 * @param clazz the look and feel class
+	 * @return a look and feel provider, an empty Optional if not found
 	 */
-	static void enableLookAndFeel(LookAndFeelProvider lookAndFeelProvider) {
-		requireNonNull(lookAndFeelProvider).enable();
-		for (Window window : Window.getWindows()) {
-			SwingUtilities.updateComponentTreeUI(window);
-		}
+	static Optional<LookAndFeelEnabler> findLookAndFeel(Class<? extends LookAndFeel> clazz) {
+		return findLookAndFeel(requireNonNull(clazz).getName());
+	}
+
+	/**
+	 * Returns a look and feel provider with the given classname, if available
+	 * @param className the look and feel classname
+	 * @return a look and feel provider, an empty Optional if not found
+	 */
+	static Optional<LookAndFeelEnabler> findLookAndFeel(String className) {
+		return className == null ? Optional.empty() : Optional.ofNullable(LOOK_AND_FEEL_PROVIDERS.get(className));
 	}
 }

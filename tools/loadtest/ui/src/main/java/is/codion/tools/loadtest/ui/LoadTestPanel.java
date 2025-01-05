@@ -29,7 +29,7 @@ import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.LoadTest.Scenario;
@@ -71,8 +71,8 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
-import static is.codion.swing.common.ui.laf.LookAndFeelProviders.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.defaultLookAndFeelName;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
@@ -103,8 +103,8 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	static {
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-		findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName(), FlatDarculaLaf.class.getName()))
-						.ifPresent(LookAndFeelProvider::enable);
+		findLookAndFeel(defaultLookAndFeelName(LoadTestPanel.class.getName(), FlatDarculaLaf.class.getName()))
+						.ifPresent(LookAndFeelEnabler::enable);
 	}
 
 	private boolean exiting;
@@ -545,7 +545,7 @@ public final class LoadTestPanel<T> extends JPanel {
 		return MEMORY_USAGE_FORMAT.format((RUNTIME.totalMemory() - RUNTIME.freeMemory()) / 1024) + " KB";
 	}
 
-	private static void lookAndFeelSelected(LookAndFeelProvider selectedLookAndFeel) {
+	private static void lookAndFeelSelected(LookAndFeelEnabler selectedLookAndFeel) {
 		setUserPreference(LoadTestPanel.class.getName(),
 						selectedLookAndFeel.lookAndFeelInfo().getClassName());
 	}
