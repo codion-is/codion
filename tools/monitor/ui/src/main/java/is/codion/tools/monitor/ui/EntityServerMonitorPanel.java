@@ -25,7 +25,6 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
@@ -40,6 +39,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.monitor.model.EntityServerMonitor;
 import is.codion.tools.monitor.model.HostMonitor;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -303,7 +303,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 		Clients.resolveTrustStore();
 		SwingUtilities.invokeLater(() -> {
 			try {
-				findLookAndFeelProvider(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName(), MonokaiPro.class.getName()))
+				findLookAndFeelProvider(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName(), FlatDarculaLaf.class.getName()))
 								.ifPresent(LookAndFeelProvider::enable);
 				new EntityServerMonitorPanel().showFrame();
 			}

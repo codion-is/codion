@@ -24,7 +24,6 @@ import is.codion.common.model.CancelException;
 import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
-import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -42,6 +41,8 @@ import is.codion.tools.generator.model.DomainGeneratorModel.EntityColumns;
 import is.codion.tools.generator.model.DomainGeneratorModel.SchemaColumns;
 import is.codion.tools.generator.model.EntityRow;
 import is.codion.tools.generator.model.SchemaRow;
+
+import com.formdev.flatlaf.FlatDarculaLaf;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -491,7 +492,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * @param arguments no arguments required
 	 */
 	public static void main(String[] arguments) {
-		findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName(), MonokaiPro.class.getName()))
+		findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName(), FlatDarculaLaf.class.getName()))
 						.ifPresent(LookAndFeelProvider::enable);
 		try {
 			SwingUtilities.invokeLater(DomainGeneratorPanel::start);

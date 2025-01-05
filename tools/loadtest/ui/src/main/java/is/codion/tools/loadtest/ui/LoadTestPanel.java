@@ -21,7 +21,6 @@ package is.codion.tools.loadtest.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
-import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -39,6 +38,7 @@ import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow;
 import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow.ColumnId;
 import is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -103,7 +103,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	static {
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-		findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName(), MonokaiPro.class.getName()))
+		findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName(), FlatDarculaLaf.class.getName()))
 						.ifPresent(LookAndFeelProvider::enable);
 	}
 
