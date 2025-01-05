@@ -21,6 +21,7 @@ package is.codion.tools.loadtest.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
+import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -102,7 +103,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	static {
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-		findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName()))
+		findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName(), MonokaiPro.class.getName()))
 						.ifPresent(LookAndFeelProvider::enable);
 	}
 
