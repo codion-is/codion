@@ -555,8 +555,21 @@ image::modules/plugins/jasperreports/build/reports/dependency-graph/dependency-g
 
 === Look & Feel
 
+Provides all available https://github.com/JFormDesigner/FlatLaf[Flat Look & Feels].
+
+[discrete]
+==== codion-plugin-flatlaf
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/plugins/flatlaf/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
 [discrete]
 ==== codion-plugin-flatlaf-intellij-themes
+
+Provides a bunch of IntelliJ Theme based https://github.com/JFormDesigner/FlatLaf[Flat Look & Feels].
 
 .Dependency graph
 [%collapsible]

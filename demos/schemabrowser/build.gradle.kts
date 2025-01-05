@@ -2,6 +2,7 @@ dependencies {
     implementation(project(":codion-tools-loadtest-ui"))
     implementation(project(":codion-swing-framework-ui"))
 
+    implementation(project(":codion-plugin-flatlaf"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
     runtimeOnly(project(":codion-plugin-logback-proxy"))

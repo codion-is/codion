@@ -25,6 +25,7 @@ dependencies {
     runtimeOnly(project(":codion-framework-db-rmi"))
     runtimeOnly(project(":codion-framework-db-http"))
 
+    implementation(project(":codion-plugin-flatlaf"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
     compileOnly(libs.jasperreports.jdt) {
