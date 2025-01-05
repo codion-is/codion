@@ -22,6 +22,7 @@ import is.codion.plugin.flatlaf.intellij.themes.akusan.AkusanDark;
 import is.codion.plugin.flatlaf.intellij.themes.akusan.AkusanGray;
 import is.codion.plugin.flatlaf.intellij.themes.akusan.AkusanLight;
 import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
+import is.codion.plugin.flatlaf.intellij.themes.arc.ArcDark;
 import is.codion.plugin.flatlaf.intellij.themes.arc.ArcDarkOrange;
 import is.codion.plugin.flatlaf.intellij.themes.arc.ArcOrange;
 import is.codion.plugin.flatlaf.intellij.themes.carbon.Carbon;
@@ -71,7 +72,7 @@ import is.codion.plugin.flatlaf.intellij.themes.highcontrast.HighContrast;
 import is.codion.plugin.flatlaf.intellij.themes.lightflat.LightFlat;
 import is.codion.plugin.flatlaf.intellij.themes.lotus.LotusDark;
 import is.codion.plugin.flatlaf.intellij.themes.lotus.LotusLight;
-import is.codion.plugin.flatlaf.intellij.themes.material.ArcDark;
+import is.codion.plugin.flatlaf.intellij.themes.material.ArcDarkMaterial;
 import is.codion.plugin.flatlaf.intellij.themes.material.AtomOneDark;
 import is.codion.plugin.flatlaf.intellij.themes.material.AtomOneLight;
 import is.codion.plugin.flatlaf.intellij.themes.material.Dracula;
@@ -202,7 +203,7 @@ public final class IntelliJThemes implements LookAndFeelProviders {
 						lookAndFeelProvider(new LookAndFeelInfo("Espresso Light", EspressoLight.class.getName())),
 
 						// From FlatLaf
-						lookAndFeelProvider(new LookAndFeelInfo("Arc Dark (Material)", ArcDark.class.getName())),
+						lookAndFeelProvider(new LookAndFeelInfo("Arc Dark (Material)", ArcDarkMaterial.class.getName())),
 						lookAndFeelProvider(new LookAndFeelInfo("Atom One Dark (Material)", AtomOneDark.class.getName())),
 						lookAndFeelProvider(new LookAndFeelInfo("Atom One Light (Material)", AtomOneLight.class.getName())),
 						lookAndFeelProvider(new LookAndFeelInfo("Dracula (Material)", Dracula.class.getName())),

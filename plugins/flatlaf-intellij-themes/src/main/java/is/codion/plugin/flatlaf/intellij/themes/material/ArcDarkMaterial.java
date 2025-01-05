@@ -22,9 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
-public final class ArcDark extends IntelliJTheme.ThemeLaf {
+public final class ArcDarkMaterial extends IntelliJTheme.ThemeLaf {
 
-	public ArcDark() {
-		super(load(ArcDark.class.getResourceAsStream("Arc Dark.theme.json")));
+	public ArcDarkMaterial() {
+		super(load(ArcDarkMaterial.class.getResourceAsStream("Arc Dark.theme.json")));
 	}
 }

@@ -774,7 +774,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	static {
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkIJTheme",
-						"is.codion.plugin.flatlaf.intellij.themes.material.ArcDark");
+						"is.codion.plugin.flatlaf.intellij.themes.material.ArcDarkMaterial");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme",
 						"is.codion.plugin.flatlaf.intellij.themes.material.AtomOneDark");

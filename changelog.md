@@ -20,6 +20,7 @@ Codion Change Log
 - Added a bunch of IntelliJ theme based look and feels along with all of those available in com.formdev.flatlaf-intellij-themes.
 - IntelliJThemes now implements LookAndFeelProviders.
 - Module is.codion.plugin.intellij.themes renamed is.codion.plugin.flatlaf.intellij.themes.
+- is.codion.plugin.flatlaf.intellij.themes.material.ArcDark renamed ArcDarkMaterial, was being used instead of non-material ArcDark.
 ### is.codion.plugin.flatlaf
 - FlatLookAndFeelProviders in module is.codion.plugin.flatlaf added.
 
