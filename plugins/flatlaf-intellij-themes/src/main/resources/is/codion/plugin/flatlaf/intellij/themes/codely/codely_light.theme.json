@@ -101,6 +101,7 @@
       }
     },
     "Table": {
+      "selectionBackground": "#999999",
       "lightSelectionBackground": "#504945",
       "lightSelectionForeground": "fg",
       "lightSelectionInactiveBackground": "bg",

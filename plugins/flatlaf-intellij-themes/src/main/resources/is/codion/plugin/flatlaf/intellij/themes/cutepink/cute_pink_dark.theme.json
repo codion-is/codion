@@ -46,6 +46,9 @@
     "TextField.background": "whiteBg",
     "TextField.foreground": "purpleDarkText",
     "TextField.inactiveForeground": "purpleDarkText",
-    "Viewport.foreground": "purpleDarkText"
+    "Viewport.foreground": "purpleDarkText",
+    "FormattedTextField.foreground": "purpleDarkText",
+    "Spinner.foreground": "purpleDarkText",
+    "ComboBox.foreground": "purpleDarkText"
   }
 }

@@ -1317,7 +1317,7 @@
       "lightSelectionInactiveBackground": "second",
       "lightSelectionInactiveForeground": "text",
       "rowHeight": 32,
-      "selectionBackground": "table",
+      "selectionBackground": "#999999",
       "selectionForeground": "activeFg",
       "selectionInactiveBackground": "table",
       "selectionInactiveForeground": "selFg",
