@@ -140,7 +140,10 @@ tasks.register("combinedJavadoc") {
             addStringOption("-module-source-path", combinedSrcDir)
             destinationDirectory = file(outputDirectory)
             docTitle = "Codion Framework API $documentationVersion"
-            links("https://docs.oracle.com/en/java/javase/" + properties["jdkVersion"] + "/docs/api/")
+            links(
+                "https://docs.oracle.com/en/java/javase/" + properties["jdkVersion"] + "/docs/api/",
+                "https://jspecify.dev/docs/api/"
+            )
             encoding = "UTF-8"
             noTimestamp(true)
         }

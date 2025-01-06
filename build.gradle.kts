@@ -52,7 +52,10 @@ configure(frameworkModules()) {
 
     tasks.withType<Javadoc>().configureEach {
         val docletOptions = options as StandardJavadocDocletOptions
-        docletOptions.links("https://docs.oracle.com/javase/" + properties["jdkVersion"] + "/docs/api/")
+        docletOptions.links(
+            "https://docs.oracle.com/en/java/javase/" + properties["jdkVersion"] + "/docs/api/",
+            "https://jspecify.dev/docs/api/"
+        )
         docletOptions.encoding = "UTF-8"
     }
 
