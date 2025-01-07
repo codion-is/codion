@@ -69,4 +69,7 @@ module is.codion.swing.common.ui {
 	exports is.codion.swing.common.ui.layout;
 
 	uses is.codion.swing.common.ui.laf.LookAndFeelProvider;
+
+	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
+					with is.codion.swing.common.ui.laf.PlatformLookAndFeelProvider;
 }

@@ -26,7 +26,6 @@ import is.codion.demos.schemabrowser.domain.SchemaBrowser.Schema;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.control.Controls;
@@ -95,7 +94,6 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 						.applicationName("Schema Browser")
 						.domainType(SchemaBrowser.DOMAIN)
 						.defaultLoginUser(User.parse("scott:tiger"))
-						.defaultLookAndFeel(Arc.class)
 						.start();
 	}
 

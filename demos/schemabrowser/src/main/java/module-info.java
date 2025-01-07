@@ -21,7 +21,6 @@
  */
 module is.codion.demos.schemabrowser {
 	requires is.codion.swing.framework.ui;
-	requires is.codion.plugin.flatlaf.intellij.themes;
 
 	exports is.codion.demos.schemabrowser.client.ui
 					to is.codion.swing.framework.ui;

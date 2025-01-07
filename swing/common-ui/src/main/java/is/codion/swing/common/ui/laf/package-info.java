@@ -17,9 +17,6 @@
  * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:
- * <ul>
- * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelComboBox#DEFAULT_LOOK_AND_FEEL}
- * </ul>
+ * Look and feel related classes
  */
 package is.codion.swing.common.ui.laf;

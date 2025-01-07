@@ -10,6 +10,9 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.UISettings.selectionForeground() added.
 - DefaultFilterTableCellRenderer uses UISettings.selectionForeground().
+- LookAndFeelEnabler.platform() added.
+- PlatformLookAndFeelProvider added, related refactoring.
+- LookAndFeelSelectionDialogBuilder.includePlatformLookAndFeels() added along with INCLUDE_PLATFORM_LOOK_AND_FEELS, for excluding platform look and feels from the selection if auxiliary ones are available.
 
 ## 0.18.24
 ## is.codion.common.core

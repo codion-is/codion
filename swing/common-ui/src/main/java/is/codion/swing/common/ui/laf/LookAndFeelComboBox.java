@@ -26,22 +26,16 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.Component;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
 import static is.codion.swing.common.ui.component.combobox.ComboBoxBuilder.enableMouseWheelSelection;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeels;
-import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
-import static javax.swing.UIManager.getCrossPlatformLookAndFeelClassName;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.UIManager.getLookAndFeel;
 
 /**
@@ -55,31 +49,6 @@ import static javax.swing.UIManager.getLookAndFeel;
 public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler>> {
 
 	/**
-	 * The look and feel to enable when no look and feel is selected.
-	 */
-	public enum DefaultLookAndFeel {
-		/**
-		 * The system look and feel
-		 */
-		SYSTEM,
-		/**
-		 * The cross-platform look and feel
-		 */
-		CROSS_PLATFORM,
-	}
-
-	/**
-	 * Species which look and feel to use when none is selected in the combo box.
-	 * <ul>
-	 * <li>Value type: {@link DefaultLookAndFeel}
-	 * <li>Default value: {@link DefaultLookAndFeel#SYSTEM}
-	 * </ul>
-	 */
-	public static final PropertyValue<DefaultLookAndFeel> DEFAULT_LOOK_AND_FEEL =
-					Configuration.enumValue(LookAndFeelComboBox.class.getName() + ".defaultLookAndFeel",
-									DefaultLookAndFeel.class, DefaultLookAndFeel.SYSTEM);
-
-	/**
 	 * Specifies whether to enable the Look and Feel dynamically when selected
 	 * <ul>
 	 * <li>Value type: Boolean
@@ -89,24 +58,16 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	public static final PropertyValue<Boolean> ENABLE_ON_SELECTION =
 					Configuration.booleanValue(LookAndFeelComboBox.class.getName() + ".enableOnSelection", true);
 
-	private static final LookAndFeelEnabler CROSS_PLATFORM_LOOK_AND_FEEL =
-					LookAndFeelEnabler.lookAndFeelEnabler(new LookAndFeelInfo("Cross Platform", getCrossPlatformLookAndFeelClassName()));
+	private final LookAndFeelEnabler originalLookAndFeel = createOriginalLookAndFeel();
 
-	private static final LookAndFeelEnabler SYSTEM_LOOK_AND_FEEL =
-					LookAndFeelEnabler.lookAndFeelEnabler(new LookAndFeelInfo("System", systemLookAndFeelClassName()));
-
-	private final LookAndFeelEnabler originalLookAndFeel;
-
-	private LookAndFeelComboBox(FilterComboBoxModel<Item<LookAndFeelEnabler>> comboBoxModel, boolean enableOnSelection) {
-		super(requireNonNull(comboBoxModel));
-		originalLookAndFeel = comboBoxModel.selection().item().optional()
-						.map(Item::value)
-						.orElse(LookAndFeelEnabler.lookAndFeelEnabler(new LookAndFeelInfo("Original", getLookAndFeel().getName())));
+	private LookAndFeelComboBox(boolean enableOnSelection) {
+		super(createLookAndFeelComboBoxModel());
 		setRenderer(new LookAndFeelRenderer());
 		setEditor(new LookAndFeelEditor());
 		enableMouseWheelSelection(this);
+		getModel().selection().item().set(item(originalLookAndFeel));
 		if (enableOnSelection) {
-			comboBoxModel.selection().item().addConsumer(lookAndFeelProvider ->
+			getModel().selection().item().addConsumer(lookAndFeelProvider ->
 							SwingUtilities.invokeLater(() -> lookAndFeelProvider.value().enable()));
 		}
 	}
@@ -149,7 +110,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	 * @return a new {@link LookAndFeelComboBox} instance
 	 */
 	public static LookAndFeelComboBox lookAndFeelComboBox() {
-		return new LookAndFeelComboBox(createLookAndFeelComboBoxModel(), ENABLE_ON_SELECTION.getOrThrow());
+		return new LookAndFeelComboBox(ENABLE_ON_SELECTION.getOrThrow());
 	}
 
 	/**
@@ -158,7 +119,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	 * @return a new {@link LookAndFeelComboBox} instance
 	 */
 	public static LookAndFeelComboBox lookAndFeelComboBox(boolean enableOnSelection) {
-		return new LookAndFeelComboBox(createLookAndFeelComboBoxModel(), enableOnSelection);
+		return new LookAndFeelComboBox(enableOnSelection);
 	}
 
 	private static final class LookAndFeelEditor extends BasicComboBoxEditor {
@@ -201,28 +162,17 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		}
 	}
 
+	private static LookAndFeelEnabler createOriginalLookAndFeel() {
+		LookAndFeel lookAndFeel = getLookAndFeel();
+
+		return new DefaultLookAndFeelEnabler(new LookAndFeelInfo(lookAndFeel.getName(), lookAndFeel.getClass().getName()));
+	}
+
 	private static FilterComboBoxModel<Item<LookAndFeelEnabler>> createLookAndFeelComboBoxModel() {
-		List<Item<LookAndFeelEnabler>> items = new ArrayList<>(initializeAvailableLookAndFeels());
-		DefaultLookAndFeel defaultLookAndFeel = DEFAULT_LOOK_AND_FEEL.get();
-		items.add(0, item(defaultLookAndFeel == DefaultLookAndFeel.SYSTEM ? SYSTEM_LOOK_AND_FEEL : CROSS_PLATFORM_LOOK_AND_FEEL));
-		FilterComboBoxModel<Item<LookAndFeelEnabler>> comboBoxModel = FilterComboBoxModel.builder(items).build();
-		currentLookAndFeel(comboBoxModel).ifPresent(comboBoxModel::setSelectedItem);
-
-		return comboBoxModel;
-	}
-
-	private static List<Item<LookAndFeelEnabler>> initializeAvailableLookAndFeels() {
-		return lookAndFeels().stream()
-						.sorted(comparing(lookAndFeelProvider -> lookAndFeelProvider.lookAndFeelInfo().getName()))
-						.map(provider -> item(provider, provider.lookAndFeelInfo().getName()))
-						.collect(Collectors.toList());
-	}
-
-	private static Optional<Item<LookAndFeelEnabler>> currentLookAndFeel(FilterComboBoxModel<Item<LookAndFeelEnabler>> comboBoxModel) {
-		String currentLookAndFeelClassName = getLookAndFeel().getClass().getName();
-
-		return comboBoxModel.items().get().stream()
-						.filter(item -> item.value().lookAndFeelInfo().getClassName().equals(currentLookAndFeelClassName))
-						.findFirst();
+		return FilterComboBoxModel.builder(lookAndFeels().stream()
+										.map(provider -> item(provider, provider.lookAndFeelInfo().getName()))
+										.collect(toList()))
+						.sorted(true)
+						.build();
 	}
 }

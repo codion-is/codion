@@ -41,15 +41,22 @@ public interface LookAndFeelEnabler {
 	LookAndFeelInfo lookAndFeelInfo();
 
 	/**
-	 * Configures and enables this LookAndFeel.
+	 * Configures and enables the {@link LookAndFeel} represented by this enabler.
 	 */
 	void enable();
 
 	/**
-	 * @return a new instance of the {@link LookAndFeel} represented by this provider
+	 * @return a new instance of the {@link LookAndFeel} represented by this enabler
 	 * @throws RuntimeException in case the class is not found or if the {@link LookAndFeel} could not be instantiated
 	 */
 	LookAndFeel lookAndFeel();
+
+	/**
+	 * @return true if the look and feel enabled by this enabler is a built-in platform Look and Feel
+	 */
+	default boolean platform() {
+		return false;
+	}
 
 	/**
 	 * Instantiates a new {@link LookAndFeelEnabler}, using {@link UIManager#setLookAndFeel(String)} to enable.

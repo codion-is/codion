@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
+class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 
 	private static final Consumer<LookAndFeelInfo> DEFAULT_ENABLER = new DefaultEnabler();
 
@@ -54,17 +54,17 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	}
 
 	@Override
-	public LookAndFeelInfo lookAndFeelInfo() {
+	public final LookAndFeelInfo lookAndFeelInfo() {
 		return lookAndFeelInfo;
 	}
 
 	@Override
-	public void enable() {
+	public final void enable() {
 		enabler.accept(lookAndFeelInfo);
 	}
 
 	@Override
-	public LookAndFeel lookAndFeel() {
+	public final LookAndFeel lookAndFeel() {
 		try {
 			return (LookAndFeel) Class.forName(lookAndFeelInfo.getClassName()).getDeclaredConstructor().newInstance();
 		}
@@ -74,12 +74,12 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	}
 
 	@Override
-	public String toString() {
+	public final String toString() {
 		return lookAndFeelInfo.getName();
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public final boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -93,7 +93,7 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	}
 
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		return lookAndFeelInfo().getClassName().hashCode();
 	}
 
