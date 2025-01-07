@@ -197,7 +197,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			R row = filterTable.model().items().visible().get(rowIndex);
 			C identifier = filterTable.columnModel().getColumn(columnIndex).identifier();
 			boolean alternateRow = alternateRow(rowIndex);
-			Color foreground = foregroundColor(filterTable, row, identifier, value);
+			Color foreground = foregroundColor(filterTable, row, identifier, value, isSelected);
 			Color background = backgroundColor(filterTable, row, identifier, value, isSelected, alternateRow);
 			Border border = border(filterTable, hasFocus, rowIndex, columnIndex);
 			if (cellRenderer instanceof DefaultTableCellRenderer) {
@@ -214,10 +214,13 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			}
 		}
 
-		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value) {
+		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected) {
 			Color foreground = foregroundColor.color(filterTable, row, identifier, value);
+			if (foreground != null) {
+				return foreground;
+			}
 
-			return foreground == null ? uiSettings.foreground() : foreground;
+			return selected ? uiSettings.selectionForeground() : uiSettings.foreground();
 		}
 
 		private Color backgroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {

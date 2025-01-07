@@ -287,6 +287,14 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		Color alternateRowColor();
 
 		/**
+		 * The table selection foreground color associated with the {@code Table.selectionForeground} UI key
+		 * @return the selection foreground color
+		 * @see UIManager#getColor(Object)
+		 * @see UIManager#put(Object, Object)
+		 */
+		Color selectionForeground();
+
+		/**
 		 * The table selection background color associated with the {@code Table.selectionBackground} UI key
 		 * @return the selection background color
 		 * @see UIManager#getColor(Object)
@@ -364,6 +372,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		private Color filteredBackground;
 		private Color alternateFilteredBackground;
 		private Color alternateBackground;
+		private Color selectionForeground;
 		private Color selectionBackground;
 		private Color alternateSelectionBackground;
 		private Border defaultCellBorder;
@@ -383,6 +392,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 			if (alternateBackground == null) {
 				alternateBackground = darker(background, DOUBLE_DARKENING_FACTOR);
 			}
+			selectionForeground = UIManager.getColor("Table.selectionForeground");
 			selectionBackground = UIManager.getColor("Table.selectionBackground");
 			filteredBackground = darker(background, DARKENING_FACTOR);
 			alternateFilteredBackground = darker(alternateBackground, DARKENING_FACTOR);
@@ -404,6 +414,11 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		@Override
 		public final Color alternateRowColor() {
 			return alternateRowColor;
+		}
+
+		@Override
+		public final Color selectionForeground() {
+			return selectionForeground;
 		}
 
 		@Override

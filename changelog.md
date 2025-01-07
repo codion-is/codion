@@ -7,6 +7,9 @@ Codion Change Log
 ## is.codion.framework.model
 - EntitySearchModel.Builder.attributes() added.
 - EntitySearchModel.Builder.orderBy() added.
+### is.codion.swing.common.ui
+- FilterTableCellRenderer.UISettings.selectionForeground() added.
+- DefaultFilterTableCellRenderer uses UISettings.selectionForeground().
 
 ## 0.18.24
 ## is.codion.common.core
