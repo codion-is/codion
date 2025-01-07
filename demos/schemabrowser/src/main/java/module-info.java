@@ -20,7 +20,6 @@
  * Schema browser demo.
  */
 module is.codion.demos.schemabrowser {
-	requires is.codion.tools.loadtest.ui;
 	requires is.codion.swing.framework.ui;
 	requires is.codion.plugin.flatlaf.intellij.themes;
 
