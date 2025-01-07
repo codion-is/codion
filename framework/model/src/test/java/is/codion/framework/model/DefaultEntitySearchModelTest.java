@@ -23,8 +23,10 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.model.DefaultEntitySearchModel.DefaultBuilder;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -39,7 +41,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntitySearchModelTest {
@@ -59,28 +61,28 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void constructorNullEntityType() {
-		assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(null, CONNECTION_PROVIDER));
+		assertThrows(NullPointerException.class, () -> new DefaultBuilder(null, CONNECTION_PROVIDER));
 	}
 
 	@Test
 	void constructorNullConnectionProvider() {
-		assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, null));
+		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, null));
 	}
 
 	@Test
 	void constructorNullColumns() {
-		assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).columns(null));
+		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).columns(null));
 	}
 
 	@Test
 	void searchWithNoColumns() {
-		assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).columns(emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).columns(emptyList()));
 	}
 
 	@Test
 	void constructorIncorrectEntityColumn() {
-		assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-						.columns(singletonList(Department.NAME)));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+						.columns(singleton(Department.NAME)));
 	}
 
 	@Test
@@ -96,7 +98,7 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void singleSelection() {
-		EntitySearchModel model = new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+		EntitySearchModel model = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
 						.singleSelection(true)
 						.build();
 		List<Entity> entities = asList(ENTITIES.entity(Employee.TYPE), ENTITIES.entity(Employee.TYPE));
@@ -242,12 +244,12 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void attributes() {
-		assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-						.attributes(singletonList(Department.NAME)));
+		DefaultBuilder builder = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER);
+		assertThrows(IllegalArgumentException.class, () -> builder.attributes(singleton(Department.NAME)));
 
-		EntitySearchModel model = new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+		EntitySearchModel model = builder
 						.columns(searchable)
-						.attributes(asList(Employee.NAME))
+						.attributes(singleton(Employee.NAME))
 						.build();
 		model.searchString().set("John");
 		Entity john = model.search().get(0);
@@ -258,10 +260,26 @@ public final class DefaultEntitySearchModelTest {
 						.forEach(attribute -> assertFalse(john.contains(attribute)));
 	}
 
+	@Test
+	void orderBy() {
+		DefaultBuilder builder = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER);
+		assertThrows(IllegalArgumentException.class, () -> builder.orderBy(OrderBy.ascending(Department.NAME)));
+
+		EntitySearchModel model = builder
+						.orderBy(OrderBy.descending(Employee.NAME))
+						.build();
+		model.searchString().set("Jo");
+		List<Entity> result = model.search();
+		assertEquals(3, result.size());
+		assertEquals("John", result.get(0).get(Employee.NAME));
+		assertEquals("johnson", result.get(1).get(Employee.NAME));
+		assertEquals("JONES", result.get(2).get(Employee.NAME));
+	}
+
 	@BeforeEach
 	void setUp() {
 		searchable = asList(Employee.NAME, Employee.JOB);
-		searchModel = new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+		searchModel = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
 						.columns(searchable)
 						.build();
 

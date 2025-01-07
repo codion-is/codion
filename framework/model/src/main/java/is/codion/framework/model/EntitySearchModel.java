@@ -26,7 +26,9 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
@@ -207,6 +209,13 @@ public interface EntitySearchModel {
 		 * @throws IllegalArgumentException in case an attribute is not associated with the underlying entity
 		 */
 		Builder attributes(Collection<Attribute<?>> attributes);
+
+		/**
+		 * Defaults to {@link EntityDefinition#orderBy()}.
+		 * @param orderBy the {@link OrderBy} to use when querying entities from the database
+		 * @return this builder
+		 */
+		Builder orderBy(OrderBy orderBy);
 
 		/**
 		 * Override the default toString() for search elements when displayed in a field based on this model
