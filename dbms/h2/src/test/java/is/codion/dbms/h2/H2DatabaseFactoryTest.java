@@ -22,6 +22,7 @@ import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -36,7 +37,7 @@ public final class H2DatabaseFactoryTest {
 		H2DatabaseFactory.scriptRunner(database.url())
 						.user(user)
 						.charset(StandardCharsets.UTF_8)
-						.run("classpath:create_schema.sql");
+						.run("src" + File.separator + "test" + File.separator + "resources" + File.separator + "create_schema.sql");
 
 		Connection connection = database.createConnection(user);
 
