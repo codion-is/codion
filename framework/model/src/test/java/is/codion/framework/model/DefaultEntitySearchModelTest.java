@@ -240,6 +240,24 @@ public final class DefaultEntitySearchModelTest {
 		assertEquals(4, searchModel.search().size());
 	}
 
+	@Test
+	void attributes() {
+		assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+						.attributes(singletonList(Department.NAME)));
+
+		EntitySearchModel model = new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+						.columns(searchable)
+						.attributes(asList(Employee.NAME))
+						.build();
+		model.searchString().set("John");
+		Entity john = model.search().get(0);
+		assertTrue(john.contains(Employee.ID));
+		assertTrue(john.contains(Employee.NAME));
+		ENTITIES.definition(Employee.TYPE).attributes().get().stream()
+						.filter(attribute -> !(attribute.equals(Employee.NAME) || attribute.equals(Employee.ID)))
+						.forEach(attribute -> assertFalse(john.contains(attribute)));
+	}
+
 	@BeforeEach
 	void setUp() {
 		searchable = asList(Employee.NAME, Employee.JOB);

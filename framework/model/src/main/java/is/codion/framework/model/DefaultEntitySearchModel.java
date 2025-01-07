@@ -28,6 +28,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
@@ -41,8 +42,7 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
@@ -60,6 +60,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private final EntityType entityType;
 	private final Collection<Column<String>> columns;
+	private final Collection<Attribute<?>> attributes;
 	private final DefaultSelection selection = new DefaultSelection();
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<Column<String>, Settings> settings;
@@ -83,6 +84,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.connectionProvider = builder.connectionProvider;
 		this.separator.set(builder.separator);
 		this.columns = unmodifiableCollection(builder.columns);
+		this.attributes = builder.attributes;
 		this.settings = unmodifiableMap(columns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
 		this.stringFunction.set(builder.stringFunction);
@@ -194,6 +196,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		return Select.where(createCombinedCondition(conditions))
+						.attributes(attributes)
 						.limit(limit.get())
 						.build();
 	}
@@ -319,6 +322,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private final EntityType entityType;
 		private final EntityConnectionProvider connectionProvider;
 		private Collection<Column<String>> columns;
+		private Collection<Attribute<?>> attributes = emptyList();
 		private Function<Entity, String> stringFunction = DEFAULT_TO_STRING;
 		private String description;
 		private boolean singleSelection = false;
@@ -336,8 +340,15 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			if (requireNonNull(columns).isEmpty()) {
 				throw new IllegalArgumentException("One or more search column is required");
 			}
-			validateColumns(columns);
+			validateAttributes(columns);
 			this.columns = columns;
+			return this;
+		}
+
+		@Override
+		public Builder attributes(Collection<Attribute<?>> attributes) {
+			validateAttributes(requireNonNull(attributes));
+			this.attributes = attributes;
 			return this;
 		}
 
@@ -376,10 +387,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			return new DefaultEntitySearchModel(this);
 		}
 
-		private void validateColumns(Collection<Column<String>> columns) {
-			for (Column<String> column : columns) {
-				if (!entityType.equals(column.entityType())) {
-					throw new IllegalArgumentException("Column '" + column + "' is not part of entity " + entityType);
+		private void validateAttributes(Collection<? extends Attribute<?>> attributes) {
+			for (Attribute<?> attribute : attributes) {
+				if (!entityType.equals(attribute.entityType())) {
+					throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityType);
 				}
 			}
 		}

@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.25
+## is.codion.framework.model
+- EntitySearchModel.Builder.attributes() added.
 
 ## 0.18.24
 ## is.codion.common.core

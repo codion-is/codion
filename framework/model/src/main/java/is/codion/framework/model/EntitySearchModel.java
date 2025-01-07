@@ -27,6 +27,7 @@ import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
@@ -196,9 +197,16 @@ public interface EntitySearchModel {
 		/**
 		 * @param columns the columns to search by
 		 * @return this builder
-		 * @throws IllegalArgumentException in case {@code columns} is empty
+		 * @throws IllegalArgumentException in case {@code columns} is empty or a column is not associated with the underlying entity
 		 */
 		Builder columns(Collection<Column<String>> columns);
+
+		/**
+		 * @param attributes the attributes to include when querying entities from the database, an empty Collection means all
+		 * @return this builder
+		 * @throws IllegalArgumentException in case an attribute is not associated with the underlying entity
+		 */
+		Builder attributes(Collection<Attribute<?>> attributes);
 
 		/**
 		 * Override the default toString() for search elements when displayed in a field based on this model
