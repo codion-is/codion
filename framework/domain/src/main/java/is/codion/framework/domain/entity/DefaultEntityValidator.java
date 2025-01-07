@@ -80,7 +80,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	}
 
 	@Override
-	public boolean valid(Entity entity) {
+	public final boolean valid(Entity entity) {
 		try {
 			validate(entity);
 			return true;
