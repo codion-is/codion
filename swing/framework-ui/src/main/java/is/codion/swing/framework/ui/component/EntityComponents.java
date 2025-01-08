@@ -92,45 +92,17 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * @param attribute the attribute
-	 * @return true if {@link #component(Attribute)} supports the given attribute
-	 */
-	public boolean supports(Attribute<?> attribute) {
-		requireNonNull(attribute);
-		if (attribute instanceof ForeignKey) {
-			return true;
-		}
-		AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-		if (!attributeDefinition.items().isEmpty()) {
-			return true;
-		}
-
-		Attribute.Type<?> type = attribute.type();
-		return type.isLocalTime() ||
-						type.isLocalDate() ||
-						type.isLocalDateTime() ||
-						type.isOffsetDateTime() ||
-						type.isString() ||
-						type.isCharacter() ||
-						type.isBoolean() ||
-						type.isShort() ||
-						type.isInteger() ||
-						type.isLong() ||
-						type.isDouble() ||
-						type.isBigDecimal() ||
-						type.isEnum() ||
-						type.isByteArray();
-	}
-
-	/**
-	 * Returns a {@link ComponentBuilder} instance for a default input component for the given attribute.
+	 * <p>Returns a {@link ComponentBuilder} instance for a default input component for the given attribute.
+	 * <p>Note that this method does not create an input component for {@link ForeignKey}s, it simply returns
+	 * a non-focusable and non-editable {@link JTextField} from {@link #textField(ForeignKey)}.
+	 * <p>Input components for {@link ForeignKey}s ({@link EntityComboBox} or {@link EntitySearchField}) require a data model,
+	 * use {@link #comboBox(Attribute, ComboBoxModel)} or {@link #searchField(ForeignKey, EntitySearchModel)}.
 	 * @param attribute the attribute for which to create the input component
 	 * @param <T> the attribute type
 	 * @param <C> the component type
 	 * @param <B> the builder type
 	 * @return the component builder handling input for {@code attribute}
-	 * @throws IllegalArgumentException in case the attribute type is not supported
-	 * @see #supports(Attribute)
+	 * @throws IllegalArgumentException in case the given attribute is not supported
 	 */
 	public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
