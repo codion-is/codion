@@ -506,10 +506,6 @@ public final class Components {
 	 * @return a JTextField builder
 	 */
 	public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass) {
-		if (Number.class.isAssignableFrom(valueClass)) {
-			return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass);
-		}
-
 		return TextFieldBuilder.builder(valueClass);
 	}
 
@@ -523,10 +519,6 @@ public final class Components {
 	 */
 	public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass,
 																																																									 Value<T> linkedValue) {
-		if (Number.class.isAssignableFrom(valueClass)) {
-			return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass, (Value<Number>) linkedValue);
-		}
-
 		return TextFieldBuilder.builder(valueClass, linkedValue);
 	}
 

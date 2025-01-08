@@ -402,6 +402,9 @@ public final class EntityComponents {
 		if (attribute.type().isTemporal()) {
 			return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute);
 		}
+		if (attribute.type().isNumerical()) {
+			return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) attribute.type().valueClass());
+		}
 
 		return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
 						.format(attributeDefinition.format())

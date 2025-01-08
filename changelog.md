@@ -13,6 +13,9 @@ Codion Change Log
 - LookAndFeelEnabler.platform() added.
 - PlatformLookAndFeelProvider added, related refactoring.
 - LookAndFeelSelectionDialogBuilder.includePlatformLookAndFeels() added along with INCLUDE_PLATFORM_LOOK_AND_FEELS, for excluding platform look and feels from the selection if auxiliary ones are available.
+- Components.textField() no longer forwards call to NumberField in case of numerical values.
+### is.codion.swing.framework.ui
+- EntityComponents.textField() now forwards call to NumberField in case of numerical attributes.
 
 ## 0.18.24
 ## is.codion.common.core
