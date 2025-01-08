@@ -364,7 +364,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * @return an upper bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		<T> Optional<JComponent> createUpperField(ConditionModel<T> condition);
+		default <T> Optional<JComponent> createUpperField(ConditionModel<T> condition) {
+			return Optional.empty();
+		}
 
 		/**
 		 * Creates the field representing the lower bound operand, linked to {@link Operands#lower()}
@@ -373,7 +375,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * @return a lower bound input field, or an empty Optional if it does not apply to the bound type
 		 * @throws IllegalArgumentException in case the bound type is not supported
 		 */
-		<T> Optional<JComponent> createLowerField(ConditionModel<T> condition);
+		default <T> Optional<JComponent> createLowerField(ConditionModel<T> condition) {
+			return Optional.empty();
+		};
 
 		/**
 		 * Creates the field representing the {@link Operator#IN} operands, linked to {@link Operands#in()}

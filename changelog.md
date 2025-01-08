@@ -14,6 +14,7 @@ Codion Change Log
 - PlatformLookAndFeelProvider added, related refactoring.
 - LookAndFeelSelectionDialogBuilder.includePlatformLookAndFeels() added along with INCLUDE_PLATFORM_LOOK_AND_FEELS, for excluding platform look and feels from the selection if auxiliary ones are available.
 - Components.textField() no longer forwards call to NumberField in case of numerical values.
+- ColumnConditionPanel.FieldFactory.createLowerField() and createUpperField() now with default implementations.
 ### is.codion.swing.framework.ui
 - EntityComponents.textField() now forwards call to NumberField in case of numerical attributes.
 - EntityComponents.textField() now creates an non-focusable, read only text field for item based attributes.
